@@ -1,0 +1,11 @@
+TypeError: Cannot read properties of undefined (reading 'enabled')
+    at baselineProbe (/workspace/scratch/15e65af8d25e/pulse/wasm/test/runtime/mem9-09c-boundaries.cjs:219:51)
+    at main (/workspace/scratch/15e65af8d25e/pulse/wasm/test/runtime/mem9-09c-boundaries.cjs:253:23)
+    at Object.<anonymous> (/workspace/scratch/15e65af8d25e/pulse/wasm/test/runtime/mem9-09c-boundaries.cjs:259:30)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47

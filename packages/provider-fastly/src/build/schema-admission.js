@@ -10,8 +10,8 @@ class __PulseFastlyAdmissionFrame {
 }
 function __pulse_fastly_admission_enter(handle: i32, budget: __PulseJsonAdmissionBudget,
   stack: Array<__PulseFastlyAdmissionFrame>, active: Set<i32>): bool {
-  if (handle <= 0 || handle > __pulse_fastly_values.length) return budget.fail(12)
-  const value = __pulse_fastly_values[handle - 1]
+  if (!__pulse_fastly_has_value(handle)) return budget.fail(12)
+  const value = __pulse_fastly_value(handle)
   const array = value.kind == PULSE_VALUE_ARRAY
   const object = value.kind == PULSE_VALUE_OBJECT
   if (!budget.node(stack.length + (array || object ? 1 : 0))) return false
@@ -36,7 +36,7 @@ function __pulse_fastly_admit_bounded_value(handle: i32, limits: __PulseJsonAdmi
   if (!__pulse_fastly_admission_enter(handle, budget, stack, active)) return budget
   while (stack.length > 0) {
     const frame = stack[stack.length - 1]
-    const value = __pulse_fastly_values[frame.handle - 1]
+    const value = __pulse_fastly_value(frame.handle)
     if (frame.index == value.values.length) { active.delete(frame.handle); stack.pop(); continue }
     const index = frame.index++
     if (index > 0 && !budget.addBytes(1)) return budget

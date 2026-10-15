@@ -89,6 +89,7 @@ function loadGuestToolchain() {
 
 const { resolveAsc } = loadBuildSupport();
 const { generateCanonicalNativeAssemblyScript } = loadNativeGenerator();
+const nativeHandleOwnership = require('./native-handle-ownership.js');
 const { pulseJwtAssemblyScriptSource } = loadJwtNativeSource();
 const {
   GUEST_LINK_STAGE_INVOCATION_VERSION,
@@ -1514,6 +1515,7 @@ ${nativeStringFields}
   }
   binaryBody: Uint8Array | null = null
   immutable: bool = false
+${nativeHandleOwnership.fields(options.handleTracing)}
 }
 class __PulseFastlyHeader {
   constructor(public name: string, public value: string) {}
@@ -1646,7 +1648,7 @@ class __PulseJsonParser {
 const PULSE_FASTLY_PENDING_NONE: i32 = 0
 const PULSE_FASTLY_PENDING_ASYNC: i32 = 1
 const PULSE_FASTLY_PENDING_READY: i32 = 2
-@lazy const __pulse_fastly_values = new Array<__PulseFastlyValue>()
+${nativeHandleOwnership.tableSource(options.handleTracing)}
 // Primitive handles have value semantics. Bounded caches keep admitted scalar
 // validation loops from retaining a fresh boxed value for every iteration.
 @lazy const __pulse_fastly_scalar_handles = new StaticArray<i32>(4)
@@ -1686,8 +1688,6 @@ function __pulse_fastly_out_i32(): StaticArray<i32> { return new StaticArray<i32
 function __pulse_fastly_out_value(out: StaticArray<i32>): i32 { return load<i32>(changetype<usize>(out)) }
 function __pulse_fastly_utf8(value: string): ArrayBuffer { return String.UTF8.encode(value, false) }
 function __pulse_fastly_decode(buffer: Uint8Array, length: i32): string { return String.UTF8.decodeUnsafe(buffer.dataStart, length, false) }
-function __pulse_fastly_put(value: __PulseFastlyValue): i32 { __pulse_fastly_values.push(value); return __pulse_fastly_values.length }
-function __pulse_fastly_value(handle: i32): __PulseFastlyValue { if (handle <= 0 || handle > __pulse_fastly_values.length) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 1, -1); return new __PulseFastlyValue() } return unchecked(__pulse_fastly_values[handle - 1]) }
 ${nativeStringConcat}
 ${nativeStringTrim}
 ${nativeStringIndex}
@@ -1697,7 +1697,7 @@ function __pulse_fastly_string_value(value: string): i32 {
   if (index >= 0) { const cached = unchecked(__pulse_fastly_character_handles[index]); if (cached != 0) return cached }
   const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_STRING; item.text = value;
   const handle = __pulse_fastly_put(item);
-  if (index >= 0) unchecked(__pulse_fastly_character_handles[index] = handle);
+  if (index >= 0) { unchecked(__pulse_fastly_character_handles[index] = handle); ${options.handleTracing ? 'if (handle != 0) __pulse_handle_cache_roots.push(handle);' : ''} }
   return handle
 }
 function __pulse_fastly_find(object: __PulseFastlyValue, key: string): i32 { for (let i = 0; i < object.keys.length; i += 1) if (unchecked(object.keys[i]) == key) return i; return -1 }
@@ -1805,7 +1805,7 @@ function __pulse_fastly_fetch_body(value: __PulseFastlyValue): string { if (valu
 function __pulse_fastly_scalar(kind: i32, boolean: i32, slot: i32): i32 {
   const cached = unchecked(__pulse_fastly_scalar_handles[slot]); if (cached != 0) return cached;
   const item = new __PulseFastlyValue(); item.kind = kind; item.boolean = boolean;
-  const handle = __pulse_fastly_put(item); unchecked(__pulse_fastly_scalar_handles[slot] = handle); return handle
+  const handle = __pulse_fastly_put(item); unchecked(__pulse_fastly_scalar_handles[slot] = handle); ${options.handleTracing ? 'if (handle != 0) __pulse_handle_cache_roots.push(handle);' : ''} return handle
 }
 function host_value_undefined(): i32 { return __pulse_fastly_scalar(PULSE_VALUE_UNDEFINED, 0, 0) }
 function host_value_null(): i32 { return __pulse_fastly_scalar(PULSE_VALUE_NULL, 0, 1) }
@@ -1816,13 +1816,13 @@ function host_value_number(value: f64): i32 {
   const index = cacheable ? i32(value) : -1;
   if (index >= 0) { const cached = unchecked(__pulse_fastly_integer_handles[index]); if (cached != 0) return cached }
   const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_NUMBER; item.number = value;
-  const handle = __pulse_fastly_put(item); if (index >= 0) unchecked(__pulse_fastly_integer_handles[index] = handle); return handle
+  const handle = __pulse_fastly_put(item); if (index >= 0) { unchecked(__pulse_fastly_integer_handles[index] = handle); ${options.handleTracing ? 'if (handle != 0) __pulse_handle_cache_roots.push(handle);' : ''} } return handle
 }
 function host_value_string(pointer: i32, length: i32): i32 {
   const text = changetype<string>(pointer);
   if (text.length > 1 && text.length <= 128 && __pulse_fastly_literal_handles.has(text)) return __pulse_fastly_literal_handles.get(text);
   const handle = __pulse_fastly_string_value(text);
-  if (text.length > 1 && text.length <= 128 && __pulse_fastly_literal_handles.size < 1024) __pulse_fastly_literal_handles.set(text, handle);
+  if (text.length > 1 && text.length <= 128 && __pulse_fastly_literal_handles.size < 1024) { __pulse_fastly_literal_handles.set(text, handle); ${options.handleTracing ? 'if (handle != 0) __pulse_handle_cache_roots.push(handle);' : ''} }
   return handle
 }
 function host_value_array(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_ARRAY; return __pulse_fastly_put(item) }
@@ -2060,9 +2060,16 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     );
   }
   const bindings = resolveCapabilityBindings(plan, options);
+  // Keep final provider eligibility authoritative over the portable artifact
+  // and caller options. Only the selected crypto guest uses the linked policy;
+  // that policy excludes active codecs regardless of JSON arena configuration.
+  const numericRegions = facts.guestUnits.length === 0 ? 'fastly-numeric-regions-v2'
+    : jwtCrypto && jwtCrypto.guestUnitRequired ? 'fastly-linked-numeric-regions-v1' : undefined;
   const portable = packageApplication.enabled(plan) ? packageApplication.portable(plan) : generateCanonicalNativeAssemblyScript(plan, {
-    ...options, numericRegions: facts.guestUnits.length === 0 ? 'fastly-numeric-regions-v1' : undefined
+    ...options, numericRegions,
+    handleOwnership: facts.guestUnits.length === 0 ? 'fastly-handle-tracing-v1' : undefined
   });
+  nativeHandleOwnership.validateRoots(plan, portable.manifest);
   const portableSource = stripPulseHostImports(portable.source);
   const hasJwt = (plan.effects || []).some((effect) => effect.kind === 'jwt.verify');
   const hasSign = plan.effects.some(effect => effect.kind === 'jwt.sign');
@@ -2073,6 +2080,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     '',
     fastlyRuntimeSource(plan, bindings, {
       ...options,
+      handleTracing: portable.manifest.handleOwnership?.enabled === true,
       jwtCrypto,
       es256KeyRecords
     }),
@@ -2089,7 +2097,10 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./native-fetch-deadlines.js').runtimeSource(plan),
     applicationErrors.settlementEnabled(plan) ? applicationErrors.runtimeSource(plan) : '',
     effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan) }),
+    ...(portable.manifest.numericRegions?.accounting === 'fastly-read-loop-v1' && portable.manifest.numericRegions.regions.length > 0
+      ? [nativeValueBudget.numericRegionSource()] : []),
     portableSource,
+    nativeHandleOwnership.providerSource(plan, portable.manifest.handleOwnership?.enabled === true),
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
     ''
   ].join('\n');
@@ -2128,6 +2139,13 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     portableSourceHash: portable.sourceHash,
     schemaCodecs: portable.manifest.schemaCodecs,
     ...(portable.manifest.numericRegions ? { numericRegions: portable.manifest.numericRegions } : {}),
+    handleOwnership: portable.manifest.handleOwnership ? Object.freeze({ ...portable.manifest.handleOwnership,
+      providerRoots: portable.manifest.handleOwnership.enabled ? Object.freeze(nativeHandleOwnership.providerRoots(plan)) : Object.freeze([])
+    }) : Object.freeze({
+      policy: null, enabled: false,
+      reason: packageApplication.enabled(plan) ? 'package-owned-emitter' : 'linked-runtime',
+      roots: Object.freeze([]), checkpoints: 'none'
+    }),
     handlerBodies: portable.manifest.handlerBodies,
     ...(portable.manifest.reportOwnership ? { reportOwnership: portable.manifest.reportOwnership } : {}),
     dispatcher: portable.manifest.dispatcher,

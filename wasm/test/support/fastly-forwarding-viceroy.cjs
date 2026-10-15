@@ -12,7 +12,9 @@ const PIN = { version: '0.21.1' };
 // executable digest. The qualification record pins the reviewed Linux binary.
 async function qualifyViceroy(wasmFile, dir) {
     const launcher = cli.inspectFastlyComputeLauncher({ viceroyBinary: process.env.PULSE_VICEROY_BIN, required: true });
-    assert.equal(launcher.inspection.version, PIN.version, 'Review the ABI before qualifying another Viceroy version');
+    const engine = launcher.viceroyInspection;
+    assert.ok(engine, 'The selected launcher must identify its Viceroy engine');
+    assert.equal(engine.version, PIN.version, 'Review the ABI before qualifying another Viceroy version');
     let mode = 'echo', firstResolve, originFinished = false, originBytes = 0, originHeaders;
     const timers = new Set();
     const later = (fn, ms) => { const timer = setTimeout(() => { timers.delete(timer); fn(); }, ms); timers.add(timer); };
@@ -159,7 +161,7 @@ async function qualifyViceroy(wasmFile, dir) {
                 assert.deepEqual(r.bytes, input);
             }
         });
-        return { status: 'passed', kind: 'local-Viceroy', engine: launcher.inspection.version, engineSha256: hash(fs.readFileSync(launcher.inspection.binary)), wasmSha256: hash(fs.readFileSync(wasmFile)), cases, observations, livePlatform: false, hostQueueBound: 'not measured', timingClaim: 'diagnostic sequential loopback samples; not a Rust comparison or performance acceptance' };
+        return { status: 'passed', kind: 'local-Viceroy', engine: engine.version, engineSha256: hash(fs.readFileSync(engine.binary)), launcher: launcher.kind, wasmSha256: hash(fs.readFileSync(wasmFile)), cases, observations, livePlatform: false, hostQueueBound: 'not measured', timingClaim: 'diagnostic sequential loopback samples; not a Rust comparison or performance acceptance' };
     }
     finally {
         for (const timer of timers)

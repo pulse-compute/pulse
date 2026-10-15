@@ -4,12 +4,21 @@
 // read must be definitely initialized and every write must preserve f64. Checking
 // the first loop entry plus all writes establishes the invariant by induction;
 // values initialized only in a loop/one branch never become definite live-outs.
-const POLICY = 'fastly-numeric-regions-v1';
+const POLICY = 'fastly-numeric-regions-v2';
+const LINKED_POLICY = 'fastly-linked-numeric-regions-v1';
+const HOST_POLICY = 'host-numeric-regions-v1';
 const arithmetic = new Set(['+', '-', '*', '/', '%']);
 const comparisons = new Set(['===', '!==', '==', '!=', '<', '<=', '>', '>=']);
-function prepareNumericRegions({ plan, policy, schemaActive, budgeted, localName }) {
-  if (policy !== undefined && policy !== POLICY) throw new TypeError('Unknown private numeric-region emission policy');
-  const enabled = policy === POLICY && schemaActive && !budgeted;
+function prepareNumericRegions({ plan, policy, schemaActive, budgeted, readLoopBudget = false, localName }) {
+  if (policy !== undefined && policy !== POLICY && policy !== LINKED_POLICY && policy !== HOST_POLICY) throw new TypeError('Unknown private numeric-region emission policy');
+  // MEM9-06 qualifies allocation avoidance without a collector for Fastly stub
+  // builds. Linked fixed-memory builds remain excluded when codecs are active,
+  // including with arena elision; the provider selects this narrower policy.
+  const realizationEligible = policy === HOST_POLICY || policy === POLICY || policy === LINKED_POLICY && !schemaActive;
+  // Only the unlinked Fastly writer supplies the private charge/materialization
+  // helpers. Host caches and linked memory need independent qualification.
+  const accounting = budgeted && readLoopBudget && policy === POLICY;
+  const enabled = realizationEligible && (!budgeted || accounting);
   const globals = [], regions = [], declined = [];
   const localIds = new Set((plan.locals || []).map(x => x.id));
   function proveExpression(e, definite) {
@@ -80,13 +89,22 @@ function prepareNumericRegions({ plan, policy, schemaActive, budgeted, localName
   }
   function render(statement, region, counterName) {
     const name = id => region.names.get(id);
+    const number = value => accounting ? `__pulse_numeric_charge_number(${value})` : value;
+    const boolean = value => accounting ? `__pulse_numeric_charge_boolean(${value})` : value;
     const truthy = e => proveExpression(e, new Set(region.names.keys())) === 'boolean'
-      ? expression(e) : `(${expression(e)} != 0.0 && !isNaN(${expression(e)}))`;
+      ? expression(e) : accounting ? `__pulse_numeric_truthy(${expression(e)})`
+        : `(${expression(e)} != 0.0 && !isNaN(${expression(e)}))`;
     function expression(e) {
-      if (e.kind === 'literal') return Object.is(e.value, -0) ? '(-0.0)' : `(<f64>${e.value})`;
+      if (e.kind === 'literal') return number(Object.is(e.value, -0) ? '(-0.0)' : `(<f64>${e.value})`);
       if (e.kind === 'local') return name(e.id);
-      if (e.kind === 'binary') return `(${expression(e.left)} ${e.operator.replace('===', '==').replace('!==', '!=')} ${expression(e.right)})`;
-      if (e.kind === 'unary') return e.operator === '!' ? `(!${truthy(e.value)})` : `(${e.operator}${expression(e.value)})`;
+      if (e.kind === 'binary') {
+        // Fastly inequality first boxes equality, then its negation. Both
+        // boolean cache admissions must happen in that order.
+        if (accounting && ['!=', '!=='].includes(e.operator)) return boolean(`!${boolean(`(${expression(e.left)} == ${expression(e.right)})`)}`);
+        const value = `(${expression(e.left)} ${e.operator.replace('===', '==').replace('!==', '!=')} ${expression(e.right)})`;
+        return arithmetic.has(e.operator) ? number(value) : boolean(value);
+      }
+      if (e.kind === 'unary') return e.operator === '!' ? boolean(`(!${truthy(e.value)})`) : number(`(${e.operator}${expression(e.value)})`);
       if (e.kind === 'conditional') return `(${truthy(e.test)} ? ${expression(e.whenTrue)} : ${expression(e.whenFalse)})`;
       throw new Error('Unproven numeric expression');
     }
@@ -95,24 +113,28 @@ function prepareNumericRegions({ plan, policy, schemaActive, budgeted, localName
       if (s.kind === 'local') return set(s.localId, expression(s.value));
       if (s.kind === 'expression') {
         const e = s.expression, id = e.target.id;
-        if (e.kind === 'update') return set(id, `${name(id)} ${e.operator === '++' ? '+' : '-'} 1.0`);
-        return set(id, e.operator === '=' ? expression(e.value) : `(${name(id)} ${e.operator.slice(0, -1)} ${expression(e.value)})`);
+        if (e.kind === 'update') {
+          const value = `${name(id)} ${e.operator === '++' ? '+' : '-'} ${number('1.0')}`;
+          return set(id, accounting ? number(`(${value})`) : value);
+        }
+        return set(id, e.operator === '=' ? expression(e.value) : number(`(${name(id)} ${e.operator.slice(0, -1)} ${expression(e.value)})`));
       }
       if (['break', 'continue'].includes(s.kind)) return [s.kind];
       if (s.kind === 'if') return [`if (${truthy(s.test)}) {`, ...(s.then || []).flatMap(lines).map(x => '  ' + x), '} else {', ...(s.else || []).flatMap(lines).map(x => '  ' + x), '}'];
       const counter = counterName();
       return [`for (let ${counter}: i32 = 0; ${counter} < ${s.maxIterations}; ${counter} += 1) {`,
-        ...set(s.localId, `<f64>${counter}`).map(x => '  ' + x), `  if (!${truthy(s.test)}) break`,
+        ...set(s.localId, number(`<f64>${counter}`)).map(x => '  ' + x), `  if (!${truthy(s.test)}) break`,
         ...s.body.flatMap(lines).map(x => '  ' + x), '}'];
     }
     return [
       ...(region.reset ? [...region.names.values()].map(n => `${n}_written = false`) : []),
       ...lines(statement),
-      ...(region.box ? [...region.names].map(([id, n]) => `if (${n}_written) ${localName(id)} = host_value_number(${n})`) : [])
+      ...(region.box ? [...region.names].map(([id, n]) => `if (${n}_written) ${localName(id)} = ${accounting ? '__pulse_numeric_box' : 'host_value_number'}(${n})`) : [])
     ];
   }
-  return { select, render, globals, manifest: () => Object.freeze({ policy: POLICY, enabled,
-    reason: !schemaActive ? 'schema-inactive' : budgeted ? 'execution-budget' : policy !== POLICY ? 'not-selected' : 'proven-regions-only',
+  return { select, render, globals, manifest: () => Object.freeze({ policy: policy || POLICY, enabled,
+    reason: policy === LINKED_POLICY && schemaActive ? 'schema-active-linked' : budgeted && !accounting ? 'execution-budget' : !realizationEligible ? 'not-selected' : 'proven-regions-only',
+    ...(accounting ? { accounting: 'fastly-read-loop-v1' } : {}),
     regions: Object.freeze(regions), declined: Object.freeze(declined) }) };
 }
-module.exports = { POLICY, prepareNumericRegions };
+module.exports = { POLICY, LINKED_POLICY, HOST_POLICY, prepareNumericRegions };

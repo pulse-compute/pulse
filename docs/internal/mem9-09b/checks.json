@@ -1,0 +1,1473 @@
+{
+  "schemaVersion": "pulse.mem9-09b.development-checks.v1",
+  "targetBranch": "codex/mem9-integration",
+  "pullRequest": "https://github.com/pulse-compute/pulse/pull/355",
+  "classification": "Development qualification; not full integrated compliance, release/installed-consumer or external-provider qualification",
+  "source": {
+    "localCommit": "821f6e8dec43813f66d5f798b89fe2c54be7084e",
+    "publishedCommit": "80cdabeda67f550c10aa7cfb085880ffa69e4064",
+    "tree": "7229ce985bfd715a026928c588da5a1100276e83",
+    "workingTreeAtCostAndQualificationStart": "clean",
+    "note": "Published source tree was verified identical to local tested tree. Commit metadata differs. Evidence/documentation receipt follows testing."
+  },
+  "retrySource": {
+    "localCommit": "61786c250cb0c60f0e743cc350d8065fe4ef39dc",
+    "publishedCommit": "2b5d46a73e9a85678a07e3b956885b03fb6e00bf",
+    "tree": "7ff04cb63d96426b8ef74dc845920d33ca0fa7b7",
+    "workingTreeAtStart": "clean",
+    "onlyChangeFromInitialSource": "One line in wasm/test/runtime/assert-application-error-boundaries.cjs supplies ownership: { enabled: false } to its direct layout fixture. Production/compiler/provider source is identical."
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "assemblyScript": "0.28.18",
+    "lockSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3"
+  },
+  "qualification": {
+    "status": "complete-development-coverage-across-two-sources",
+    "passingTaskIds": 158,
+    "note": "Not a terminal 158-task run or a reusable full qualification checkpoint. Initial run failed after 148 passes; retry covers the repaired fixture and nine unrun tasks. Production source is identical.",
+    "initial": {
+      "status": "failed",
+      "completedTasks": 149,
+      "passed": 148,
+      "failed": 1,
+      "notRun": [
+        "node-cross-target-conformance",
+        "grip-cross-target-conformance",
+        "four-mode-conformance",
+        "fastly-native-platform-capabilities",
+        "fastly-native-http-shell",
+        "fastly-native-http-effects",
+        "provider-fastly-package",
+        "provider-fastly-apps",
+        "fastly-javascript-runtime"
+      ],
+      "report": {
+        "file": "qualification1.json",
+        "bytes": 131726,
+        "sha256": "acb1493d7fc480a44928c2666f09eca45e7a47bc660dcbcdb091673190df04c6"
+      },
+      "log": {
+        "file": "qualification1.log",
+        "bytes": 21979,
+        "sha256": "463ea8e7b97bb6f1c262b965f0e3da698c4c16df6ac169220bf16a045ef4e4bf"
+      }
+    },
+    "retry": {
+      "status": "passed",
+      "completedTasks": 10,
+      "notRun": [],
+      "report": {
+        "file": "qualification2.json",
+        "bytes": 9600,
+        "sha256": "2972912f6855ac5e31e3a7999333bb0e9d5ac3838f5d5d2b057896302fd9ac9d"
+      },
+      "log": {
+        "file": "qualification2.log",
+        "bytes": 14344,
+        "sha256": "680d36639f322b6816e8e6236c0e7d711a33d2e61b69b36a505dbffdfb7100ee"
+      }
+    },
+    "taskLogs": [
+      {
+        "run": 1,
+        "name": "report-capsule-contract",
+        "file": "report-capsule-contract.log",
+        "bytes": 557,
+        "sha256": "dac2e9a284d88e4e4f1dcf55cbca9892684aed1963d70b36780de7c937e000f3"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-workflow",
+        "file": "cli-report-workflow.log",
+        "bytes": 126,
+        "sha256": "b0719f302fe6ff0e24bb6a0557ce240b8545dce2e5cf286e8c8b7b3112a016aa"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-viewer",
+        "file": "cli-report-viewer.log",
+        "bytes": 473,
+        "sha256": "b2f3066938cb564cba77f8e73b6a284c3f1f7b090806d4e91d956691ca1bffec"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-retained-evidence",
+        "file": "cli-report-retained-evidence.log",
+        "bytes": 821,
+        "sha256": "b2275c54363cfee73ca4eeb8c152b024e789a9cfdf5f65f116fcc7c486f3a5ed"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-size-evidence",
+        "file": "cli-report-size-evidence.log",
+        "bytes": 152,
+        "sha256": "7b49f2f74daaaae9d58d822a3c40997f7b765f781105346bb9bf52c371732b3f"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-capture-proof",
+        "file": "cli-report-capture-proof.log",
+        "bytes": 1353,
+        "sha256": "e09f2fc12c90e203925720f58d7be24d8b6039c6f979c6e4ece7bbaaca2d4910"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-entry-proof",
+        "file": "cli-report-entry-proof.log",
+        "bytes": 2887,
+        "sha256": "e7c9d70ac29b8c93aaf973a0847122cc8ed3a85176d80ab63dc4f132046de5e9"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-reference-provenance",
+        "file": "cli-report-reference-provenance.log",
+        "bytes": 316,
+        "sha256": "40dfec237b90a257ae58fdc41187b2ecb41c344b57533a999d0d30855f9c98a6"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-handler-topology",
+        "file": "cli-report-handler-topology.log",
+        "bytes": 1436,
+        "sha256": "4097e4549df5f67f1680373de72b7ead32da62d62aaab77740ef590d67f5d657"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-handler-associations",
+        "file": "cli-report-handler-associations.log",
+        "bytes": 169,
+        "sha256": "e8f5fb02974eb5e5d92dd66099967ce2bff71340df29dcdc66270e8025da42af"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-imported-inputs",
+        "file": "cli-report-imported-inputs.log",
+        "bytes": 305,
+        "sha256": "c26e3eca38b2af3f4fb7805f4ea43acc8d29b2e9713c51f93d68e0fb53613a55"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-resource-inventory",
+        "file": "cli-report-resource-inventory.log",
+        "bytes": 430,
+        "sha256": "4742b59fe4a0c7068263ccfef725b715ba92ec7fd4833f4e936968f6b9666cb4"
+      },
+      {
+        "run": 1,
+        "name": "cli-report-graph-diagnostics",
+        "file": "cli-report-graph-diagnostics.log",
+        "bytes": 379,
+        "sha256": "9b113625f4df8dc4283da2daae143ae87978c7563946995c3af4887245007e89"
+      },
+      {
+        "run": 1,
+        "name": "multifile-source-indexes",
+        "file": "multifile-source-indexes.log",
+        "bytes": 45,
+        "sha256": "e59673e97fdeb90039a38f41e39f93d239a5062600be498e61405522df2664f1"
+      },
+      {
+        "run": 1,
+        "name": "guest-json-roundtrip",
+        "file": "guest-json-roundtrip.log",
+        "bytes": 90,
+        "sha256": "250c726913dde6e425f1f05a88a8892854c2b2f37f86dd00cc9fcde5ee45fc90"
+      },
+      {
+        "run": 1,
+        "name": "pure-helper-contract",
+        "file": "pure-helper-contract.log",
+        "bytes": 141,
+        "sha256": "51c6707c5f91a4387ad89381bfcff3caea77ae9685adf30c9f98a43ae6edef94"
+      },
+      {
+        "run": 1,
+        "name": "suite-shape",
+        "file": "suite-shape.log",
+        "bytes": 41,
+        "sha256": "334f8f4614de562fe5d10463bb0b734dde4bdc0d4a9d9e085947f65ac13bacb8"
+      },
+      {
+        "run": 1,
+        "name": "test-orchestration",
+        "file": "test-orchestration.log",
+        "bytes": 1064,
+        "sha256": "bb9bcfcc61c7cab80978af85f0910986aa4011bf136cdaf896f9e5f13a1dc99b"
+      },
+      {
+        "run": 1,
+        "name": "package-exports",
+        "file": "package-exports.log",
+        "bytes": 63,
+        "sha256": "620dabe7893a0e0a2a0083ac56a200b88765bda77895e98c47722b1bb11ffff4"
+      },
+      {
+        "run": 1,
+        "name": "boundaries",
+        "file": "boundaries.log",
+        "bytes": 224,
+        "sha256": "673b6201648909621106cfa1f3af2ecda959df7688c6a8390484bf6de6a97330"
+      },
+      {
+        "run": 1,
+        "name": "workspace-hygiene",
+        "file": "workspace-hygiene.log",
+        "bytes": 65,
+        "sha256": "14bf84a2cea12e92bce6ad28f772a73acb46a101d5255efdee9dc0e9c342c92c"
+      },
+      {
+        "run": 1,
+        "name": "hidden-contracts",
+        "file": "hidden-contracts.log",
+        "bytes": 112,
+        "sha256": "b0d07a62f096a3c495eca8c334ebded93a1ddf95a496c07e3c43118bbe15fb7c"
+      },
+      {
+        "run": 1,
+        "name": "release-feature-acceptance",
+        "file": "release-feature-acceptance.log",
+        "bytes": 100,
+        "sha256": "ce01fea429289694ab3d6db8a591e6e5842785c781ef04f8bb1be42f5d3bb243"
+      },
+      {
+        "run": 1,
+        "name": "release-runtime-policy",
+        "file": "release-runtime-policy.log",
+        "bytes": 584,
+        "sha256": "a370f3402c99c8972adfd54bb1bdcbb4554e9ee64805b9eb0d69659ae4653dc2"
+      },
+      {
+        "run": 1,
+        "name": "release-seal-lifecycle",
+        "file": "release-seal-lifecycle.log",
+        "bytes": 488,
+        "sha256": "717c9d2f70158a86aab6881976ed4f01286c87f47c82504d5375045f8cf683cd"
+      },
+      {
+        "run": 1,
+        "name": "release-checkpoints",
+        "file": "release-checkpoints.log",
+        "bytes": 62,
+        "sha256": "eb2390369e900e04bbf65712c722720a014a274129f56e2bb950cdc0c97c8b45"
+      },
+      {
+        "run": 1,
+        "name": "release-recovery-runner",
+        "file": "release-recovery-runner.log",
+        "bytes": 47486,
+        "sha256": "94d9fbb846dfeacb0b03bdc43afb81ed296067a2fd759a488a4c389d84851adb"
+      },
+      {
+        "run": 1,
+        "name": "release-recovery",
+        "file": "release-recovery.log",
+        "bytes": 90,
+        "sha256": "508a0da28f873551c7240dd9eb97258b805fc8bf4204b25e6acc437637780df0"
+      },
+      {
+        "run": 1,
+        "name": "release-tag",
+        "file": "release-tag.log",
+        "bytes": 110,
+        "sha256": "84813d71b96931d09502bf2d9a33a9ea9a23895a468d430cbdfd40e12af78f31"
+      },
+      {
+        "run": 1,
+        "name": "api-surface",
+        "file": "api-surface.log",
+        "bytes": 112,
+        "sha256": "72ae6e9145a6217b37175888a59fd6718937d174ee1e8c1009d32e361c2f1019"
+      },
+      {
+        "run": 1,
+        "name": "logging-contract",
+        "file": "logging-contract.log",
+        "bytes": 100,
+        "sha256": "250ed2ef7d8e7c249c300b8eb44df6a36f8b7e8f545f4d0e9b1d90cfd989d15c"
+      },
+      {
+        "run": 1,
+        "name": "s3-design-contract",
+        "file": "s3-design-contract.log",
+        "bytes": 128,
+        "sha256": "633798a97981a42f8eb4b4534a1a3b369d1eba4ffd504614b44c3e4eaea95c7e"
+      },
+      {
+        "run": 1,
+        "name": "kv-design-contract",
+        "file": "kv-design-contract.log",
+        "bytes": 185,
+        "sha256": "460980145d170ca43f7b0c7af6f0a68fcd588e3c1068dd8acb5f7b6dee366337"
+      },
+      {
+        "run": 1,
+        "name": "kv-conditional-runtime",
+        "file": "kv-conditional-runtime.log",
+        "bytes": 112,
+        "sha256": "099993c1331c0b9ecc5861e1d6446589d5dd3dd6c725a0c2952ea11dd1e8405b"
+      },
+      {
+        "run": 1,
+        "name": "kv-conditional-gates",
+        "file": "kv-conditional-gates.log",
+        "bytes": 189,
+        "sha256": "7461acbf17df08cc70e925c1ba4d2936f95ba45b235b6894607a79e01e255281"
+      },
+      {
+        "run": 1,
+        "name": "s3-read-contract",
+        "file": "s3-read-contract.log",
+        "bytes": 155,
+        "sha256": "64b705e071841d45de8195590c7145981ba9ab294bd667fcae85e3c5b661df11"
+      },
+      {
+        "run": 1,
+        "name": "s3-write-contract",
+        "file": "s3-write-contract.log",
+        "bytes": 101,
+        "sha256": "c44352d10985250a8bd75caddd1dee5dcc11182cfe4e63113ad73a6fb095e63d"
+      },
+      {
+        "run": 1,
+        "name": "crypto-config-planning",
+        "file": "crypto-config-planning.log",
+        "bytes": 132,
+        "sha256": "f0bd6466c4cdaea4923a910011dc087181e0f2f8d8dd50ca1a543dc871c708d2"
+      },
+      {
+        "run": 1,
+        "name": "crypto-es256-signing",
+        "file": "crypto-es256-signing.log",
+        "bytes": 97,
+        "sha256": "538fae1059c91b768501e644ca6b90945bdc662f1d68727f65d3410503dc8def"
+      },
+      {
+        "run": 1,
+        "name": "crypto-rs256",
+        "file": "crypto-rs256.log",
+        "bytes": 509,
+        "sha256": "e87cc4f9c5fc74f0cea47850bc2748dfaa29935d639d14bd5e60777ff9b7b84f"
+      },
+      {
+        "run": 1,
+        "name": "crypto-digest-text-contract",
+        "file": "crypto-digest-text-contract.log",
+        "bytes": 118,
+        "sha256": "d38e6eb47a03fe6ceeef8ddd34138ea4920fb279937366783613b6c6391c6974"
+      },
+      {
+        "run": 1,
+        "name": "reachable-graph",
+        "file": "reachable-graph.log",
+        "bytes": 215,
+        "sha256": "dd9b8737febeb3712781f1949f26d882b159d27160cfce0a9cca5eaadaeb43ac"
+      },
+      {
+        "run": 1,
+        "name": "project-modules",
+        "file": "project-modules.log",
+        "bytes": 81,
+        "sha256": "d6b9875711b70aac9276a6d87706dec95cdac7a24f43f60d65e2c9714ab0a86a"
+      },
+      {
+        "run": 1,
+        "name": "package-reachability",
+        "file": "package-reachability.log",
+        "bytes": 115,
+        "sha256": "cf2529ae95c9f13f9c65a246ee8d57465b3d40905aaaea42b9061a586fe97fdb"
+      },
+      {
+        "run": 1,
+        "name": "provider-toolchain",
+        "file": "provider-toolchain.log",
+        "bytes": 145,
+        "sha256": "7a3c6123c712abf97460b998e0dbb55a036187414c17dda9fd1cec5ddba02098"
+      },
+      {
+        "run": 1,
+        "name": "schema-registry",
+        "file": "schema-registry.log",
+        "bytes": 229,
+        "sha256": "acd08c340e8d1f0027e7a25598fc759ae6e21728b79a9b96fb7e8c9d8045659a"
+      },
+      {
+        "run": 1,
+        "name": "continuation-registry",
+        "file": "continuation-registry.log",
+        "bytes": 137,
+        "sha256": "3c671433498470a7364bbe60b158b86b4599d6c6a877da06a84919ddeb4bc74d"
+      },
+      {
+        "run": 1,
+        "name": "entities-contracts",
+        "file": "entities-contracts.log",
+        "bytes": 611,
+        "sha256": "571a190fd447549e59eca2280512bf86277476a69408bc956e7c805eb0178cba"
+      },
+      {
+        "run": 1,
+        "name": "entities-schema-bridge",
+        "file": "entities-schema-bridge.log",
+        "bytes": 565,
+        "sha256": "bd0953d88382715b73af8c6fba359d4e3274af5a76d63992132d324cf60c1331"
+      },
+      {
+        "run": 1,
+        "name": "entities-javascript-runtime",
+        "file": "entities-javascript-runtime.log",
+        "bytes": 54,
+        "sha256": "77838f20e85bb1a244f1030ad8d669259b721a9afbb0ba71a5df5448c08a832a"
+      },
+      {
+        "run": 1,
+        "name": "entities-json-rpc-corpus",
+        "file": "entities-json-rpc-corpus.log",
+        "bytes": 224,
+        "sha256": "f970589887a2c27f2a692a5a0076b6dd2bad97d7310b4b67ceffdeb287389b6b"
+      },
+      {
+        "run": 1,
+        "name": "mcp-http",
+        "file": "mcp-http.log",
+        "bytes": 99,
+        "sha256": "e368ef604eb1c7fd3b3e83a405f738379c071c601c18da2c11a7f50dc59c8819"
+      },
+      {
+        "run": 1,
+        "name": "pulse-context-corpus",
+        "file": "pulse-context-corpus.log",
+        "bytes": 114,
+        "sha256": "ff088c5462e2d77b0f64d81ae76a10e02ccc8b889e3c2210d630a3397ddde780"
+      },
+      {
+        "run": 1,
+        "name": "pulse-context-application",
+        "file": "pulse-context-application.log",
+        "bytes": 178,
+        "sha256": "761c61369d329ad6f14c1e0d1a65b399070add20c0148a875aaf898b1985a338"
+      },
+      {
+        "run": 1,
+        "name": "pulse-context-host",
+        "file": "pulse-context-host.log",
+        "bytes": 208,
+        "sha256": "7bb76539faac179ff90e8b7dd03145212f692c3194b25e4a0e90124f802ec2e9"
+      },
+      {
+        "run": 1,
+        "name": "mcp-compatibility",
+        "file": "mcp-compatibility.log",
+        "bytes": 107,
+        "sha256": "2929b5e1d92ff222e8c94ea7149becb02893466ddb35a70ba6b30d556a216252"
+      },
+      {
+        "run": 1,
+        "name": "mcp-tools",
+        "file": "mcp-tools.log",
+        "bytes": 94,
+        "sha256": "3fd3ca4e1b669122a45d9859ca4f1413b8a9ff4e8fe023bc23301b9fe2896844"
+      },
+      {
+        "run": 1,
+        "name": "mcp-authorization",
+        "file": "mcp-authorization.log",
+        "bytes": 201,
+        "sha256": "56521bde6d2604253511b6965db5ecc72be85d33453f01cc2db44892d55d5f4c"
+      },
+      {
+        "run": 1,
+        "name": "entities-package-owned-lowering",
+        "file": "entities-package-owned-lowering.log",
+        "bytes": 492,
+        "sha256": "7e465d36b63d27cf66e44ba517fecd74e7506bc74c8e8bbdc83edecb21f10509"
+      },
+      {
+        "run": 1,
+        "name": "entities-catalog",
+        "file": "entities-catalog.log",
+        "bytes": 344,
+        "sha256": "ede80b3844e948f3b12da690d83f3ccbb633c6bcb6d75539cde584b218d3bea2"
+      },
+      {
+        "run": 1,
+        "name": "entities-inspection",
+        "file": "entities-inspection.log",
+        "bytes": 474,
+        "sha256": "3f0f464baecefd1869b43c513ed4ee78a40f38b2c52ba9fa496752743d8f28d7"
+      },
+      {
+        "run": 1,
+        "name": "entities-orchestration-demo",
+        "file": "entities-orchestration-demo.log",
+        "bytes": 467,
+        "sha256": "22a18d182f96ad8818f61b4e47eb930e3fd6966cfbaa10d1aefe28aaee7eb8ca"
+      },
+      {
+        "run": 1,
+        "name": "npm-source-imports",
+        "file": "npm-source-imports.log",
+        "bytes": 157,
+        "sha256": "3dd1676ed41527670348e84010af4e6ebc5bd23a459ce7e2f85da1802d1939ca"
+      },
+      {
+        "run": 1,
+        "name": "fastly-numeric-regions",
+        "file": "fastly-numeric-regions.log",
+        "bytes": 383,
+        "sha256": "a225012aeec89ac8a4598211121cc5b853c0b578faf0ccc86062506636d7c22b"
+      },
+      {
+        "run": 1,
+        "name": "fastly-numeric-budgets",
+        "file": "fastly-numeric-budgets.log",
+        "bytes": 529,
+        "sha256": "bfceffe27cc587421f9a355fd86606d06cc188fa9ac1828eec9f08d3fb929d61"
+      },
+      {
+        "run": 1,
+        "name": "fastly-handle-ownership",
+        "file": "fastly-handle-ownership.log",
+        "bytes": 1466,
+        "sha256": "ead4308cf16aed965ad549e0343c387deb01dc050b98d71088f883dcf9304e39"
+      },
+      {
+        "run": 1,
+        "name": "fastly-handle-frames",
+        "file": "fastly-handle-frames.log",
+        "bytes": 906,
+        "sha256": "703edbfe7953a3456d33a6175dd130157bf215586df9a7c12e37cc3b14cfac57"
+      },
+      {
+        "run": 1,
+        "name": "pure-helper-vocabulary",
+        "file": "pure-helper-vocabulary.log",
+        "bytes": 9003,
+        "sha256": "3c7669b73d26ec2c9d7255bfda5a9eae5603daa5c5445e2053806c07f6cab3c7"
+      },
+      {
+        "run": 1,
+        "name": "pure-string-index",
+        "file": "pure-string-index.log",
+        "bytes": 240,
+        "sha256": "e687c88d4cd5712b931edb444c1cefa25669334b020bbb7faed80a09e05a1d9b"
+      },
+      {
+        "run": 1,
+        "name": "pure-field-projection",
+        "file": "pure-field-projection.log",
+        "bytes": 175,
+        "sha256": "89d55b2931dc166385bd95a80855a4191310ec740a52a7ada0e642b620b0efae"
+      },
+      {
+        "run": 1,
+        "name": "pure-guarded-arguments",
+        "file": "pure-guarded-arguments.log",
+        "bytes": 94,
+        "sha256": "885d77e0e0698cb526a31e67a56c39622ed55d55df0debe5f247a7a5aea90e96"
+      },
+      {
+        "run": 1,
+        "name": "pure-source-helpers",
+        "file": "pure-source-helpers.log",
+        "bytes": 364,
+        "sha256": "d1e0d1f4479bb8b2a976491d226b35cab04e0dc4477f6e241194ee5e788fcd84"
+      },
+      {
+        "run": 1,
+        "name": "pure-record-helpers",
+        "file": "pure-record-helpers.log",
+        "bytes": 826,
+        "sha256": "38db7c3be24c190c923a35a9adfde41449f303bc994f1adb6ebbc6ca552814d3"
+      },
+      {
+        "run": 1,
+        "name": "pure-argument-helpers",
+        "file": "pure-argument-helpers.log",
+        "bytes": 92,
+        "sha256": "1da42472975829157a2865c96803f4ee4a07621d7c0179c1ad966b6ff2e1e514"
+      },
+      {
+        "run": 1,
+        "name": "pure-loop-helpers",
+        "file": "pure-loop-helpers.log",
+        "bytes": 139,
+        "sha256": "d25f0b10e70a7ab24e7e6c8bab3a240344f5ba2ae2b08fc20fc1ff67a4e45a30"
+      },
+      {
+        "run": 1,
+        "name": "fastly-driver-behavior-o09",
+        "file": "fastly-driver-behavior-o09.log",
+        "bytes": 359,
+        "sha256": "2d75508c355a52bb1f2fc8857b51685ee9657dd49ee1fee8abbef57075dd03e4"
+      },
+      {
+        "run": 1,
+        "name": "kv-native-abi-feasibility",
+        "file": "kv-native-abi-feasibility.log",
+        "bytes": 140,
+        "sha256": "88b56b6f7c8111814c06edcd4a3cda881e22702453b84e3f1daa8a3dc155f087"
+      },
+      {
+        "run": 1,
+        "name": "s3-native-read",
+        "file": "s3-native-read.log",
+        "bytes": 132,
+        "sha256": "1206dde2f0edf0d5f8afdbab061f369d989b203ad6e8b0bfe8b758aa7543487a"
+      },
+      {
+        "run": 1,
+        "name": "s3-body-read",
+        "file": "s3-body-read.log",
+        "bytes": 289,
+        "sha256": "653993e8a02e58ba2686dc8167cf45e854012cd1f2ad0cce8181bd45f4645ea2"
+      },
+      {
+        "run": 1,
+        "name": "s3-node-transport",
+        "file": "s3-node-transport.log",
+        "bytes": 97,
+        "sha256": "eddb8440028f9447f8bd69ea3466a0d66eab55a7d7691775c33b4a253e994b3d"
+      },
+      {
+        "run": 1,
+        "name": "canonical-api-lowering",
+        "file": "canonical-api-lowering.log",
+        "bytes": 146,
+        "sha256": "2880129cf81d502aa6bd3160d7fe9d1351d2deae310f79106f29fe6763ac70bf"
+      },
+      {
+        "run": 1,
+        "name": "canonical-native-plan",
+        "file": "canonical-native-plan.log",
+        "bytes": 260,
+        "sha256": "9ac3f54163af220974ff864f8c35cbbb2ce87f3b2b8232ac92bb7868188337fe"
+      },
+      {
+        "run": 1,
+        "name": "shared-stage-o19",
+        "file": "shared-stage-o19.log",
+        "bytes": 226,
+        "sha256": "052e85b4e67340af8d7c21e01f240d879aeb444a7a928c7ca54292cbe02e2e96"
+      },
+      {
+        "run": 1,
+        "name": "str02b-node-native",
+        "file": "str02b-node-native.log",
+        "bytes": 607,
+        "sha256": "d6f6875d832050f18323a6d7f2a99318ea31c8649974cbd54f8fc72898f0c087"
+      },
+      {
+        "run": 1,
+        "name": "fastly-incoming-body-forwarding",
+        "file": "fastly-incoming-body-forwarding.log",
+        "bytes": 228,
+        "sha256": "faae7a0e0caa70bdf950c75203bcaecbab43deaee8ea92ba452c89e98bbb5646"
+      },
+      {
+        "run": 1,
+        "name": "str03a-generated-output",
+        "file": "str03a-generated-output.log",
+        "bytes": 276,
+        "sha256": "65c40c96eddc71dbf97aa58e83abe65f3842f5da3678b4ffb63c61a62a5aa250"
+      },
+      {
+        "run": 1,
+        "name": "str03c-bounded-transforms",
+        "file": "str03c-bounded-transforms.log",
+        "bytes": 425,
+        "sha256": "be6bab325927f45d40f90a15449ac548659e9453cd664de68d5a1f610bc404d4"
+      },
+      {
+        "run": 1,
+        "name": "bounded-app-logic",
+        "file": "bounded-app-logic.log",
+        "bytes": 341,
+        "sha256": "2f87fa48d882960dc47776e1eeee24de668645cbe8e42c4268f651c4ca000257"
+      },
+      {
+        "run": 1,
+        "name": "bounded-read-loops",
+        "file": "bounded-read-loops.log",
+        "bytes": 1792,
+        "sha256": "60f19a068f42fb68043d40f11a7833f613f8feb363a4f44224e777375c520b96"
+      },
+      {
+        "run": 1,
+        "name": "bounded-loop-helpers",
+        "file": "bounded-loop-helpers.log",
+        "bytes": 129,
+        "sha256": "4dbccbfb3e1633b6a5fb09ed3ec11bf14d5da6c14b643b19e5845f9aee239931"
+      },
+      {
+        "run": 1,
+        "name": "logging-lowering",
+        "file": "logging-lowering.log",
+        "bytes": 98,
+        "sha256": "15ad21897a13f040334dbe1aff8f14b4212de0b82a46835804fe4da253bb2329"
+      },
+      {
+        "run": 1,
+        "name": "canonical-router-lowering",
+        "file": "canonical-router-lowering.log",
+        "bytes": 2147,
+        "sha256": "8dffafda92bab90a0027c1dc02356af58b64aae5c17284feacd5990e98e4a207"
+      },
+      {
+        "run": 1,
+        "name": "canonical-router-terminal-middleware",
+        "file": "canonical-router-terminal-middleware.log",
+        "bytes": 4582,
+        "sha256": "650e2edbe3b674bad36368221a10356fb230ef54e4f86bda556ed253d0b6f8f4"
+      },
+      {
+        "run": 1,
+        "name": "router-selected-groups",
+        "file": "router-selected-groups.log",
+        "bytes": 97,
+        "sha256": "fe1724934240527005ff3fe8d5a89f9dce82a9cfef8c362fe6c686513ff09154"
+      },
+      {
+        "run": 1,
+        "name": "json-as-compatibility",
+        "file": "json-as-compatibility.log",
+        "bytes": 626,
+        "sha256": "45d98a1340510029cee39b1e98d9a54257b4c3a853215d612658b020b1c2b56b"
+      },
+      {
+        "run": 1,
+        "name": "entities-envelope-feasibility",
+        "file": "entities-envelope-feasibility.log",
+        "bytes": 1692,
+        "sha256": "53f840c778e0c636a4f7b8e518079a01ea10935a5e4bd1b38b6ff82a32b31cbe"
+      },
+      {
+        "run": 1,
+        "name": "entities-managed-handler",
+        "file": "entities-managed-handler.log",
+        "bytes": 374,
+        "sha256": "bb20d69617432c43ba71588248757f1b16408a260399c2249fbb7235f79d3d85"
+      },
+      {
+        "run": 1,
+        "name": "entities-managed-handler-effects",
+        "file": "entities-managed-handler-effects.log",
+        "bytes": 222,
+        "sha256": "686bffffa7fd9325df7cd59c5730b92917ac6d9f4fd8cea6e66ecbf90442e6ef"
+      },
+      {
+        "run": 1,
+        "name": "entities-native-runtime",
+        "file": "entities-native-runtime.log",
+        "bytes": 516,
+        "sha256": "d654f76dcd5ec4588df5697d92075350b7f587c98e44fb9f855d4557bc7b13d8"
+      },
+      {
+        "run": 1,
+        "name": "entities-hardening",
+        "file": "entities-hardening.log",
+        "bytes": 340,
+        "sha256": "299ba9fcb5c87c3fea33a4515658474ccb34bf265926ec28d4c06417d6174e85"
+      },
+      {
+        "run": 1,
+        "name": "entities-node-native-workflow",
+        "file": "entities-node-native-workflow.log",
+        "bytes": 243,
+        "sha256": "81b4db07173971f90588ab6821efc249268d0399cfcd498b8d7b31f325799abc"
+      },
+      {
+        "run": 1,
+        "name": "fastly-entities-native-workflow",
+        "file": "fastly-entities-native-workflow.log",
+        "bytes": 291,
+        "sha256": "6b0035cb3cc88aa77a8213709c4b37958cfc18e696142e92d7c3e8d7ae3ee2ee"
+      },
+      {
+        "run": 1,
+        "name": "crypto-native-guest-source",
+        "file": "crypto-native-guest-source.log",
+        "bytes": 126,
+        "sha256": "8dd652b90cdd6d1c4de3cfafd61dbe5a0ae39f27635eda760babf04496445a5e"
+      },
+      {
+        "run": 1,
+        "name": "guest-link-package",
+        "file": "guest-link-package.log",
+        "bytes": 181,
+        "sha256": "260445b7c3de985b35125213b04c2902900f723384b547414d2bca27a3846947"
+      },
+      {
+        "run": 1,
+        "name": "guest-link-materialization-stage",
+        "file": "guest-link-materialization-stage.log",
+        "bytes": 145,
+        "sha256": "b059e7e91643f68a5e1f666f4017089eee35e26cbbc9fd911430108ac87f0055"
+      },
+      {
+        "run": 1,
+        "name": "guest-link-audit-diagnostics",
+        "file": "guest-link-audit-diagnostics.log",
+        "bytes": 137,
+        "sha256": "3b3f8994d62eeb87ca6b71bdab6c43369ad34022c13e60d0448543b7225f6e05"
+      },
+      {
+        "run": 1,
+        "name": "assets-lowering-plan",
+        "file": "assets-lowering-plan.log",
+        "bytes": 106,
+        "sha256": "6c54586bfb28b29f45b735bf2fe39799a75a341d8cb5f78717495a3cd57e2480"
+      },
+      {
+        "run": 1,
+        "name": "assets-package-owned-lowering",
+        "file": "assets-package-owned-lowering.log",
+        "bytes": 111,
+        "sha256": "10feae3ce33aa1309921d4d375e15299c133df20a11c5650db660c2c63626cb1"
+      },
+      {
+        "run": 1,
+        "name": "assets-native-embedded",
+        "file": "assets-native-embedded.log",
+        "bytes": 129,
+        "sha256": "9b9bad09104e17164301a25d0eaf93d4692fde3dd490a2dbc428f973fb24f180"
+      },
+      {
+        "run": 1,
+        "name": "grip-package-owned-lowering",
+        "file": "grip-package-owned-lowering.log",
+        "bytes": 84,
+        "sha256": "d33e6633a34949d9f907e8a43ff3124fe4328cd185d1856f0a14f3ba504aba84"
+      },
+      {
+        "run": 1,
+        "name": "jwt-package-owned-lowering",
+        "file": "jwt-package-owned-lowering.log",
+        "bytes": 232,
+        "sha256": "aacf8bc91ecc18011ea341324bd17477d923ad6f29fd8f9e8accd505bbf31197"
+      },
+      {
+        "run": 1,
+        "name": "canonical-api-runtime",
+        "file": "canonical-api-runtime.log",
+        "bytes": 165,
+        "sha256": "5b4651b3873cbce08b8ee94bb1bf30f6201d9a2eeed8b872e18fcab56d081df0"
+      },
+      {
+        "run": 1,
+        "name": "canonical-opaque-node-emission",
+        "file": "canonical-opaque-node-emission.log",
+        "bytes": 762,
+        "sha256": "0018fcdbf22575ae5f1f7ecb654700684f8c5b437b7128b63e604becc31ed254"
+      },
+      {
+        "run": 1,
+        "name": "grip-package-runtime",
+        "file": "grip-package-runtime.log",
+        "bytes": 87,
+        "sha256": "fe153c6957a3c37c9bff425ecad3c75714122f571b90b575e2aa61dc9a295ea5"
+      },
+      {
+        "run": 1,
+        "name": "package-root-native",
+        "file": "package-root-native.log",
+        "bytes": 148,
+        "sha256": "1c105a3e41551757e7fb0c5447c6755abf82581c153858fd39119ef3e70c5fe3"
+      },
+      {
+        "run": 1,
+        "name": "canonical-native-wasm",
+        "file": "canonical-native-wasm.log",
+        "bytes": 741,
+        "sha256": "491fe0c3a064c5586981e37ecb4a6d5df639f2bae9f2b42f64142087d7f0e67a"
+      },
+      {
+        "run": 1,
+        "name": "cli-javascript-target-compilation",
+        "file": "cli-javascript-target-compilation.log",
+        "bytes": 160,
+        "sha256": "574bd5d3e74b6517a90862bc882b21ba3eb7197359c8265db86d92c40175bd38"
+      },
+      {
+        "run": 1,
+        "name": "target-support",
+        "file": "target-support.log",
+        "bytes": 106,
+        "sha256": "12c339576f6a9d7d31a95bfd5c15e20f6c3df0cd2ee53b954a851269abb41d10"
+      },
+      {
+        "run": 1,
+        "name": "jwt-javascript-admission",
+        "file": "jwt-javascript-admission.log",
+        "bytes": 105,
+        "sha256": "09ded27ad5ffc4117ce696a40e07b734ff260f2f40b145cbf5c7e75f990abc1f"
+      },
+      {
+        "run": 1,
+        "name": "crypto-runtime-builtin",
+        "file": "crypto-runtime-builtin.log",
+        "bytes": 223,
+        "sha256": "4ff44be0b47354b5f1d7945d6c8baf7335424e6650322fb91afbc14111e55d37"
+      },
+      {
+        "run": 1,
+        "name": "javascript-effect-adapter",
+        "file": "javascript-effect-adapter.log",
+        "bytes": 97,
+        "sha256": "1433c01a6f9b04748712bd2db9e8bfb30b3da7b88f2b2756f7cf1b2d6517892c"
+      },
+      {
+        "run": 1,
+        "name": "logging-runtime",
+        "file": "logging-runtime.log",
+        "bytes": 101,
+        "sha256": "1c22d6d93c4d048ecd2a5b1e633d9c1a90511181ea9c59a517567b4f82f6201a"
+      },
+      {
+        "run": 1,
+        "name": "assets-javascript-runtime",
+        "file": "assets-javascript-runtime.log",
+        "bytes": 54,
+        "sha256": "77838f20e85bb1a244f1030ad8d669259b721a9afbb0ba71a5df5448c08a832a"
+      },
+      {
+        "run": 1,
+        "name": "jwt-signing",
+        "file": "jwt-signing.log",
+        "bytes": 141,
+        "sha256": "c75f2b2e4975b1e334beaeaad02df178d5f418116bca285db339cb597dd12192"
+      },
+      {
+        "run": 1,
+        "name": "jwt-es256-signing",
+        "file": "jwt-es256-signing.log",
+        "bytes": 140,
+        "sha256": "83c07861c954a919aabda2b21bf3ea7f2f290a9239c081c9c6b08aa49d981d19"
+      },
+      {
+        "run": 1,
+        "name": "jwt-rs256",
+        "file": "jwt-rs256.log",
+        "bytes": 11446,
+        "sha256": "3e9d24d06deddd11d5f4beb6db2b69252cf69c992c47a9d80c59c8a23b759e14"
+      },
+      {
+        "run": 1,
+        "name": "s3-write-conformance",
+        "file": "s3-write-conformance.log",
+        "bytes": 179,
+        "sha256": "3b35d27182f6ca91869b40939ad5d141d147a04ee26e93cd84622338a09613e1"
+      },
+      {
+        "run": 1,
+        "name": "crypto-cross-target-conformance",
+        "file": "crypto-cross-target-conformance.log",
+        "bytes": 160,
+        "sha256": "ec5f4d2554d28c7345147bd0742fc121db408362e74e27d14a8c67e529761dcc"
+      },
+      {
+        "run": 1,
+        "name": "crypto-digest-text-conformance",
+        "file": "crypto-digest-text-conformance.log",
+        "bytes": 181,
+        "sha256": "1d3ecfec26bbc45895575345ac356b745533c12cdf69fc49ef7d0abf2fd92645"
+      },
+      {
+        "run": 1,
+        "name": "crypto-digest-storage-conformance",
+        "file": "crypto-digest-storage-conformance.log",
+        "bytes": 160,
+        "sha256": "3110094dc701abe43a4e43b2fc9fd0866aa5ee9b327ba288a97c97670ff53c7f"
+      },
+      {
+        "run": 1,
+        "name": "multifile-source-identity",
+        "file": "multifile-source-identity.log",
+        "bytes": 186,
+        "sha256": "ddd6118e94d615de1ebedce441e79d058119d389e90e874be53898c0a5a648da"
+      },
+      {
+        "run": 1,
+        "name": "text-capacity-conformance",
+        "file": "text-capacity-conformance.log",
+        "bytes": 191,
+        "sha256": "3b83cdc75d989dfcf2de1a186314f53fe771f0a0aa534bd6e8fda6aa18fae173"
+      },
+      {
+        "run": 1,
+        "name": "events-conformance",
+        "file": "events-conformance.log",
+        "bytes": 787,
+        "sha256": "67fa506d69b9f8ed0517a680b8a2c2aabec249bd3078c54adbb2b28cdf4aacc9"
+      },
+      {
+        "run": 1,
+        "name": "node-router-context-parity",
+        "file": "node-router-context-parity.log",
+        "bytes": 85,
+        "sha256": "d9e6875fe18d0fc95b70e1788a2880434c1efebd979253d510062bead56682f9"
+      },
+      {
+        "run": 1,
+        "name": "catalog-router-parity",
+        "file": "catalog-router-parity.log",
+        "bytes": 658,
+        "sha256": "0dfec3e6ff429ca398cda0da6362d634fcee31a1e66f787d6bbc58f8149ffad1"
+      },
+      {
+        "run": 1,
+        "name": "fetch-projections-request-bodies",
+        "file": "fetch-projections-request-bodies.log",
+        "bytes": 84,
+        "sha256": "930593e34133dbccff853522b33a6db7cb4beaabf36cad31ad0adf8d52bdce85"
+      },
+      {
+        "run": 1,
+        "name": "config-secrets-kv-redaction",
+        "file": "config-secrets-kv-redaction.log",
+        "bytes": 81,
+        "sha256": "017bbf6af2604ea5fa3adb5247d456cb6dc9dfe4f4a2dc65dcb5bcf45cdbd192"
+      },
+      {
+        "run": 1,
+        "name": "kv-conditional-conformance",
+        "file": "kv-conditional-conformance.log",
+        "bytes": 455,
+        "sha256": "f2cc8ec20d2e5e86400dd607581e694243a643e7ca861c6ba8f4b227e04251f0"
+      },
+      {
+        "run": 1,
+        "name": "kv-conditional-adversarial",
+        "file": "kv-conditional-adversarial.log",
+        "bytes": 2415,
+        "sha256": "36d0700f66e02b00e7ec4fbb679a13508d550ee4b7bd6abb37951ce733b339dc"
+      },
+      {
+        "run": 1,
+        "name": "fastly-conditional-kv",
+        "file": "fastly-conditional-kv.log",
+        "bytes": 303,
+        "sha256": "f0e1d1e6d3c5fe570b950da2844fcce63fd89fe5f873da9f20afd88b1bbecabd"
+      },
+      {
+        "run": 1,
+        "name": "schema-codecs",
+        "file": "schema-codecs.log",
+        "bytes": 2328,
+        "sha256": "80e9e82b3246a1506442fdf87eb36aa2697e2fd66fcd20c5b9c8ac94b0a2ec9d"
+      },
+      {
+        "run": 1,
+        "name": "schema-kv-parity",
+        "file": "schema-kv-parity.log",
+        "bytes": 359,
+        "sha256": "b92fb83d426d3ae0ab1ad8301d7c7c82f2414a30d50ea7fda0de201a56818c37"
+      },
+      {
+        "run": 1,
+        "name": "time-conformance",
+        "file": "time-conformance.log",
+        "bytes": 137,
+        "sha256": "c6abfccbb669499931c337c54d1ab4de01e1b146a5edeb8d03c3ca358d72bf4a"
+      },
+      {
+        "run": 1,
+        "name": "time-consumer",
+        "file": "time-consumer.log",
+        "bytes": 311,
+        "sha256": "d7ba7a43557c94e30c6976406f0684c0ea0760653a604213fa4948966f724619"
+      },
+      {
+        "run": 1,
+        "name": "request-budget-transport",
+        "file": "request-budget-transport.log",
+        "bytes": 108,
+        "sha256": "2e61c66d8f8ff1732817d78a95964f4152868ca11a50d4b08c4cbb3ba6e171fc"
+      },
+      {
+        "run": 1,
+        "name": "node-launcher",
+        "file": "node-launcher.log",
+        "bytes": 120,
+        "sha256": "a267934be9a31aba827b8f9ffe6d08d0b5a5e0dd3eeb0df308bdc4eb72ee4f22"
+      },
+      {
+        "run": 1,
+        "name": "http-input-outcomes",
+        "file": "http-input-outcomes.log",
+        "bytes": 7899,
+        "sha256": "10b445a3b98fa912d436805d0b235459d8909a688609ef4da0d92a52d41b5fbb"
+      },
+      {
+        "run": 1,
+        "name": "application-errors",
+        "file": "application-errors.log",
+        "bytes": 472,
+        "sha256": "db15b969482a82fb9f52e04d174cab5234bff0bba7a5e08db31e56df7c0b217b"
+      },
+      {
+        "run": 1,
+        "name": "application-error-boundaries",
+        "file": "application-error-boundaries.log",
+        "bytes": 1067,
+        "sha256": "0bc2806086261feb6b39157c15b2c96cdacf63a6f9cd20b8fff439f9f10d3c5e"
+      },
+      {
+        "run": 2,
+        "name": "application-error-boundaries",
+        "file": "application-error-boundaries.log",
+        "bytes": 124,
+        "sha256": "bea6dd8e00feac3c1a0dd69d29bb40217504feb66b83fb32acb16695b7718a58"
+      },
+      {
+        "run": 2,
+        "name": "node-cross-target-conformance",
+        "file": "node-cross-target-conformance.log",
+        "bytes": 81,
+        "sha256": "bbd65a9b938a8368ded2a21b9432efae1c5e71a2fde41dbcc20741b34ceb78eb"
+      },
+      {
+        "run": 2,
+        "name": "grip-cross-target-conformance",
+        "file": "grip-cross-target-conformance.log",
+        "bytes": 81,
+        "sha256": "f18dedd84c0afe2a8ce94a7b787bd34d2bfa155505ae7178ac854e6683fa1a55"
+      },
+      {
+        "run": 2,
+        "name": "four-mode-conformance",
+        "file": "four-mode-conformance.log",
+        "bytes": 91,
+        "sha256": "64277fe69bde68ce56923fb90c4cf18032932e318cfb26abfb93dd6f2eca1cce"
+      },
+      {
+        "run": 2,
+        "name": "fastly-native-platform-capabilities",
+        "file": "fastly-native-platform-capabilities.log",
+        "bytes": 3432,
+        "sha256": "13f51f8445b97e5bd39d686bda40cf56e116581840da3b56a2316eb17f6d0651"
+      },
+      {
+        "run": 2,
+        "name": "fastly-native-http-shell",
+        "file": "fastly-native-http-shell.log",
+        "bytes": 2561,
+        "sha256": "7f2a82c19dc3429bc5550f386891c7fb377478017abac5b712f15e05c726fa9d"
+      },
+      {
+        "run": 2,
+        "name": "fastly-native-http-effects",
+        "file": "fastly-native-http-effects.log",
+        "bytes": 1746,
+        "sha256": "e54d475197c34d72877317b4f70997991f3c374724a8c403583f78314a530127"
+      },
+      {
+        "run": 2,
+        "name": "provider-fastly-package",
+        "file": "provider-fastly-package.log",
+        "bytes": 202,
+        "sha256": "ec834d9df2079aee5b88a3192552eca1ef3dbc6fb321b372816fe71bca6ebeed"
+      },
+      {
+        "run": 2,
+        "name": "provider-fastly-apps",
+        "file": "provider-fastly-apps.log",
+        "bytes": 135,
+        "sha256": "218894da8ee625f7dd8dd1aad66d8e20cb58bd10927becac0e3536312af02195"
+      },
+      {
+        "run": 2,
+        "name": "fastly-javascript-runtime",
+        "file": "fastly-javascript-runtime.log",
+        "bytes": 394,
+        "sha256": "9b0514bf274229ac65be3acc92eb94243712098ac9609b383db90209a1186877"
+      }
+    ]
+  },
+  "lifetime": {
+    "status": "passed",
+    "sourceLog": {
+      "file": "fastly-handle-frames.log",
+      "bytes": 906,
+      "sha256": "703edbfe7953a3456d33a6175dd130157bf215586df9a7c12e37cc3b14cfac57"
+    }
+  },
+  "cost": {
+    "status": "passed",
+    "report": {
+      "file": "results.json",
+      "bytes": 87437,
+      "sha256": "1ab7e2da37b408ef0eea7855fd841ba45a8c130cffe0fd2ca83b5fb524c6b97d"
+    },
+    "log": {
+      "file": "cost1.log",
+      "bytes": 7059,
+      "sha256": "f7718a1fa8541c74d77d6b2f3a5e3fcb58f7d56c676bf3791108ef620abb5370"
+    }
+  },
+  "allocationGates": {
+    "fixture": "wasm/test/provider/assert-fastly-schema-allocation.cjs",
+    "additions": 524288,
+    "maximumAllowedBytes": 134217728,
+    "default": {
+      "status": "passed",
+      "throughTask": "fastly-native-platform-capabilities",
+      "observedCapacityBytes": 28835840,
+      "log": {
+        "file": "fastly-native-platform-capabilities.log",
+        "bytes": 3432,
+        "sha256": "13f51f8445b97e5bd39d686bda40cf56e116581840da3b56a2316eb17f6d0651"
+      }
+    },
+    "elided": {
+      "status": "passed",
+      "override": "elideJsonCacheArena: true; fixture and original assertions unchanged",
+      "observedCapacityBytes": 28835840,
+      "log": {
+        "file": "allocation-elided.log",
+        "bytes": 205,
+        "sha256": "e4511e62ad7bce54563e30be0020a4098312940f58a974b03e26c3176ea7015b"
+      }
+    },
+    "comparison": "09A measured 28835840 default and 19398656 elided bytes. 09B now admits the fixture with its digest effect; report the elided capacity regression without treating the cap as a performance promise."
+  },
+  "checks": [
+    {
+      "name": "build",
+      "command": "pnpm 12.4.2 run build",
+      "status": "passed",
+      "log": {
+        "file": "build.log",
+        "bytes": 33,
+        "sha256": "abe5c9d719903afbe4be884aeca81c6125d3ca5107edf9276efdd63fc98e34df"
+      }
+    },
+    {
+      "name": "maintenance",
+      "command": "node scripts/validate-maintainer-control-plane.cjs",
+      "status": "passed",
+      "log": {
+        "file": "maintenance.log",
+        "bytes": 346,
+        "sha256": "29950389946494af3858f362b70af5c7b5f6fb80d0ead3121f400beab98e5536"
+      }
+    },
+    {
+      "name": "documentation",
+      "command": "npm run docs:check",
+      "status": "passed",
+      "log": {
+        "file": "docs-check.log",
+        "bytes": 474,
+        "sha256": "70a3814029d4b75ca42577fb10281263bda21eed252601fd9df218f32624c6a6"
+      }
+    },
+    {
+      "name": "documentation-release",
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "log": {
+        "file": "docs-release.log",
+        "bytes": 170564,
+        "sha256": "912e797674eb3873325bca64986708fcaa580890d481ec85afcefc003536508a"
+      }
+    },
+    {
+      "name": "release-preflight",
+      "command": "node scripts/release-preflight.cjs --check",
+      "status": "passed",
+      "log": {
+        "file": "release-preflight.log",
+        "bytes": 138,
+        "sha256": "90164d93711492362d0e80f11ee5af6eab8a784580ffbfaf1445e4ec25c87c17"
+      }
+    }
+  ],
+  "developmentAttempts": [
+    {
+      "run": "frames-dev1",
+      "status": "failed",
+      "note": "Fixture rejected duplicate registration of the same handler at the same route; replaced with supported overlapping use/post registrations.",
+      "log": {
+        "file": "frames-dev1.log",
+        "bytes": 2485,
+        "sha256": "16e9e24f0704a407c811d6b0f75c9b9885d5dcbc80a9de3b3e4db99c4b6b368e"
+      }
+    },
+    {
+      "run": "frames-dev2",
+      "status": "failed",
+      "note": "Fixture supplied optional config result to state.set; corrected fixture typing/default handling.",
+      "log": {
+        "file": "frames-dev2.log",
+        "bytes": 4165,
+        "sha256": "ec9b41b3778360fb0a0cc0b83909da153ae0ac9fac3115a4d2c55f90f8507abb"
+      }
+    },
+    {
+      "run": "frames-dev3",
+      "status": "failed",
+      "note": "Fixture did not produce a shared stage for the chosen config-effect shape; switched to supported fetch-text stage and verified emitted stage ownership.",
+      "log": {
+        "file": "frames-dev3.log",
+        "bytes": 876,
+        "sha256": "80dd2dfd6b9098aa3112a5b21d8d1b7cd8d45c98ef16cfba499b57cc4caad591"
+      }
+    },
+    {
+      "run": "frames-dev4",
+      "status": "passed",
+      "note": "Initial lifetime matrix, before expanded resource/immediate/fatal coverage.",
+      "log": {
+        "file": "frames-dev4.log",
+        "bytes": 840,
+        "sha256": "32ce664e2f8da399f22dd49db796d1a8202f5352781d6ed3761aaa92fea50962"
+      }
+    },
+    {
+      "run": "frames-dev5",
+      "status": "failed",
+      "note": "Parity used a real clock and crossed a second boundary; pinned clockUnixSeconds to 1700000000.",
+      "log": {
+        "file": "frames-dev5.log",
+        "bytes": 2427,
+        "sha256": "13d52230e71241f2a42fedd38903aab84ba4d176878e0e2b7686fa31ea9eebc8"
+      },
+      "report": {
+        "file": "frames-dev5.json",
+        "bytes": 1743,
+        "sha256": "76c93a75359de83d90ea50763d9c9bc8c0be5de32f72d2aea1dd668a314b1ffb"
+      }
+    },
+    {
+      "run": "frames-dev6",
+      "status": "passed",
+      "note": "Expanded resource matrix, before final immediate-result and terminal-failure regressions.",
+      "log": {
+        "file": "frames-dev6.log",
+        "bytes": 1893,
+        "sha256": "9060c590a9e4f11195276749e431ee7f85b8f5ae9e50afed006f6780e5b43550"
+      },
+      "report": {
+        "file": "frames-dev6.json",
+        "bytes": 1743,
+        "sha256": "e1429e47ab20c5874f6bc4dde3d0ebda59a5a34875f8cb18b42648fdcfca4765"
+      }
+    },
+    {
+      "run": "frames-dev7",
+      "status": "passed",
+      "note": "Final development 09B and 09A regressions, superseded by the clean 158-task run.",
+      "log": {
+        "file": "frames-dev7.log",
+        "bytes": 4219,
+        "sha256": "c9919e92eb71f7228ea168dd05ee8c73e76321733248ada8efcb90b13425c753"
+      },
+      "report": {
+        "file": "frames-dev7.json",
+        "bytes": 2651,
+        "sha256": "3c4bb3a57cad3adf66680b00922b9d83929ee4ca9e72fe22e25153d506a39358"
+      }
+    }
+  ],
+  "remaining": [
+    "MEM9-09C proposal and qualification",
+    "Latest reconciliation",
+    "Full integrated compliance through release controllers",
+    "Installed-consumer and external-provider qualification",
+    "Human architecture review and merge"
+  ],
+  "scope": {
+    "status": "decision-required",
+    "consistency": {
+      "errors": [],
+      "warnings": [
+        "declaration names protected boundary effect-capability-model, but changed paths did not infer it",
+        "declaration names protected boundary continuation-runtime, but changed paths did not infer it"
+      ]
+    },
+    "report": {
+      "file": "scope.json",
+      "bytes": 3855,
+      "sha256": "9755cc3e40d123333f55d7a26d5a7c85ed89a5548a8ee13f37c4dd5f6efc5104"
+    },
+    "note": "Consistent declaration; human protected-boundary decision remains required."
+  },
+  "defectFound": {
+    "cause": "The traced table refused all new handles after a latched provider error, preventing normal terminal 502/504 responses.",
+    "resolution": "Allow terminal allocation while keeping checkpoints suppressed; compare response, trace and original failure code/stage against retained controls."
+  },
+  "qualificationFailure": {
+    "task": "application-error-boundaries",
+    "cause": "Its direct layout fixture omitted the ownership descriptor required since 09A; rendering the return block dereferenced undefined.",
+    "resolution": "Supply ownership: { enabled: false } in the fixture. Production callers already provide ownership, so production code is unchanged. Retry includes the failed task and all nine unrun tasks."
+  },
+  "externalProviderLimitations": {
+    "providerReality": false,
+    "viceroyAvailable": false,
+    "skips": [
+      {
+        "run": "qualification1.json",
+        "task": "fastly-entities-native-workflow",
+        "message": "skip - exact-artifact Viceroy replay requires PULSE_VICEROY_BIN; fixture ABI is not provider reality"
+      },
+      {
+        "run": "qualification2.json",
+        "task": "fastly-native-platform-capabilities",
+        "message": "skip - fetch deadline HTTP replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality"
+      },
+      {
+        "run": "qualification2.json",
+        "task": "fastly-native-platform-capabilities",
+        "message": "skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality"
+      }
+    ]
+  },
+  "receiptChecks": {
+    "note": "All commands exited zero after adding the evidence and integration progress record. Subsequent edits only record these check results and wrap README prose.",
+    "maintenance": {
+      "status": "passed",
+      "log": {
+        "file": "maintenance-final.log",
+        "bytes": 173,
+        "sha256": "ebc9ff872f4e0a5d5be1c3723d3e2716d9a968c120e4802d49311b938505bae0"
+      }
+    },
+    "documentation": {
+      "status": "passed",
+      "log": {
+        "file": "docs-check-final.log",
+        "bytes": 474,
+        "sha256": "70a3814029d4b75ca42577fb10281263bda21eed252601fd9df218f32624c6a6"
+      }
+    },
+    "documentationRelease": {
+      "status": "passed",
+      "log": {
+        "file": "docs-release-final.log",
+        "bytes": 172375,
+        "sha256": "5c6ed2427b1a208ced07f3a5c3da108b5bfa0cc9a2dd39f17282c0b664648d43"
+      }
+    },
+    "scope": {
+      "status": "decision-required",
+      "consistency": {
+        "errors": [],
+        "warnings": [
+          "declaration names protected boundary effect-capability-model, but changed paths did not infer it",
+          "declaration names protected boundary continuation-runtime, but changed paths did not infer it"
+        ]
+      },
+      "report": {
+        "file": "scope-final.json",
+        "bytes": 4703,
+        "sha256": "cf3c6ade94d71ee590659676071bbee2fcd5649a0885745f904f3fa0103dc5df"
+      },
+      "log": {
+        "file": "scope-final.log",
+        "bytes": 1028,
+        "sha256": "677037f15e17280311c52597095159b5615b93ebc524f896927672225d9a3fd5"
+      }
+    }
+  }
+}

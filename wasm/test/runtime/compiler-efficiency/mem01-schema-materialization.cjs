@@ -10,7 +10,7 @@ const { root, hash } = require('./schema-cost-profile.cjs');
 const platform = require('../../../../packages/provider-fastly/src/build/native-platform-capabilities');
 const hostPath = path.join(root, 'packages/provider-fastly/src/testing/native-platform-capabilities-host.js');
 const { resolveAsc } = require('../../../packages/build-support/src/assemblyscript-compile');
-const { appendAssemblyScriptOptimizationArgs } = require('../../../packages/build-support/src/native-optimization');
+const { appendAssemblyScriptOptimizationArgs, appendJsonCacheArenaArgs } = require('../../../packages/build-support/src/native-optimization');
 const { normalizeSchemaRegistry } = require('../../../packages/contracts/src/schema-json/registry');
 const { buildCanonicalSchemaBundle } = require('../../../packages/schema-json/src/compiler/canonical-schema-codecs');
 const { compileCanonicalSource } = require('../../../packages/compiler/src/canonical-api-compiler');
@@ -24,6 +24,9 @@ function replaceExact(source, before, after, count = 1) {
 }
 
 function instrument(source) {
+  // Current tracing plans have sparse IDs; pinned historical/retained emitters
+  // still use arrays. Diagnostic enumeration never allocates a keys() array.
+  const sparse = source.includes('@lazy let __pulse_fastly_values = new Map<');
   // Do not invoke lazy collection or rope getters while observing.
   source = replaceExact(source, '  immutable: bool = false', [
     '  immutable: bool = false',
@@ -34,15 +37,17 @@ function instrument(source) {
   ].join('\n'));
   source += '\n' + [
     '@external("mem01", "checkpoint") declare function mem01_checkpoint(stage: i32, encode: bool, handle: i32, text: usize): void',
-    'export function mem01_count(): i32 { return __pulse_fastly_values.length }',
-    'export function mem01_ptr(h: i32): usize { return changetype<usize>(unchecked(__pulse_fastly_values[h - 1])) }',
-    'export function mem01_kind(h: i32): i32 { return unchecked(__pulse_fastly_values[h - 1]).kind }',
-    'export function mem01_text(h: i32): usize { return changetype<usize>(unchecked(__pulse_fastly_values[h - 1]).textLeaf) }',
-    'export function mem01_frozen(h: i32): bool { return unchecked(__pulse_fastly_values[h - 1]).immutable }',
-    'export function mem01_length(h: i32): i32 { return unchecked(__pulse_fastly_values[h - 1]).mem01_length() }',
-    'export function mem01_child(h: i32, i: i32): i32 { return unchecked(__pulse_fastly_values[h - 1]).mem01_child(i) }',
-    'export function mem01_key_count(h: i32): i32 { return unchecked(__pulse_fastly_values[h - 1]).mem01_key_count() }',
-    'export function mem01_key(h: i32, i: i32): usize { return unchecked(__pulse_fastly_values[h - 1]).mem01_key(i) }'
+    `export function mem01_count(): i32 { return __pulse_fastly_values.${sparse ? 'size' : 'length'} }`,
+    `export function mem01_last(): i32 { return ${sparse ? '__pulse_handle_next' : '__pulse_fastly_values.length'} }`,
+    `export function mem01_has(h: i32): bool { return ${sparse ? '__pulse_fastly_has_value(h)' : 'h > 0 && h <= __pulse_fastly_values.length'} }`,
+    'export function mem01_ptr(h: i32): usize { return changetype<usize>(__pulse_fastly_value(h)) }',
+    'export function mem01_kind(h: i32): i32 { return __pulse_fastly_value(h).kind }',
+    'export function mem01_text(h: i32): usize { return changetype<usize>(__pulse_fastly_value(h).textLeaf) }',
+    'export function mem01_frozen(h: i32): bool { return __pulse_fastly_value(h).immutable }',
+    'export function mem01_length(h: i32): i32 { return __pulse_fastly_value(h).mem01_length() }',
+    'export function mem01_child(h: i32, i: i32): i32 { return __pulse_fastly_value(h).mem01_child(i) }',
+    'export function mem01_key_count(h: i32): i32 { return __pulse_fastly_value(h).mem01_key_count() }',
+    'export function mem01_key(h: i32, i: i32): usize { return __pulse_fastly_value(h).mem01_key(i) }'
   ].join('\n') + '\n';
   const entry = source.match(/function __pulse_fastly_schema_apply\(schemaId: string, valueHandle: i32, encode: bool(?:, textResult: bool = false)?\): i32 \{/)[0];
   source = replaceExact(source, entry, entry + '\n  mem01_checkpoint(0, encode, valueHandle, 0)');
@@ -96,6 +101,7 @@ function diagnosticCompile(source, mode, directory, options = {}) {
   fs.writeFileSync(path.join(cwd, name), source);
   const args = [asc.script, name, '--outFile', output, '--runtime', 'incremental', '--noAssert', '--optimize'];
   appendAssemblyScriptOptimizationArgs(args, undefined, { guestLinked: false });
+  appendJsonCacheArenaArgs(args, options.elideJsonCacheArena, true);
   if (options.maximumMemoryPages) args.push('--maximumMemory', String(options.maximumMemoryPages));
   args.push('--use', 'abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort', '--exportRuntime',
     '--transform', transform, '--path', path.join(fallback, 'node_modules'), '--path', path.dirname(jsonRoot));
@@ -140,7 +146,9 @@ function observer(options = {}) {
   }
   function table() {
     const e = instance.exports, before = events, values = [];
-    for (let h = 1; h <= e.mem01_count(); h++) {
+    const last = e.mem01_last?.() ?? e.mem01_count();
+    for (let h = 1; h <= last; h++) {
+      if (e.mem01_has && !e.mem01_has(h)) continue;
       values.push({ handle: h, pointer: e.mem01_ptr(h), kind: e.mem01_kind(h), frozen: Boolean(e.mem01_frozen(h)), textPointer: e.mem01_text(h),
         children: Array.from({ length: e.mem01_length(h) }, (_, i) => e.mem01_child(h, i)),
         keys: Array.from({ length: e.mem01_key_count(h) }, (_, i) => e.mem01_key(h, i)) });

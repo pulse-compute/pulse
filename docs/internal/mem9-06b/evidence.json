@@ -1,0 +1,339 @@
+{
+  "schemaVersion": "pulse.mem9-06b.receipt.v1",
+  "recordedAt": "2026-10-14",
+  "source": {
+    "sourceRevision": "8b655d0f5fc3b583bd9ffb1f1050bf199045d81e",
+    "sourceTree": "7d415643e69f171bca16ac5a13cb1046524403a1",
+    "workingTree": ""
+  },
+  "sourceAfter": {
+    "sourceRevision": "8b655d0f5fc3b583bd9ffb1f1050bf199045d81e",
+    "sourceTree": "7d415643e69f171bca16ac5a13cb1046524403a1",
+    "workingTree": ""
+  },
+  "prerequisiteHead": "310a3b4546f1c2de2e31b024376a8821648e7ae0",
+  "campaign": {
+    "status": "passed",
+    "cells": 8,
+    "builds": 24,
+    "successfulExecutions": 96,
+    "intentionalFailureExecutions": 72,
+    "schemaLinkedExclusions": 2,
+    "linkedAudits": 16,
+    "negativeValidatorChecks": 3,
+    "reportSha256": "5571908b017295549b2166f2d1b0b6f58d11dd61c05092ca69715b3bb28ba0a0"
+  },
+  "archive": {
+    "file": "pulse-mem9-06b-evidence.zip",
+    "sha256": "7985fa4158626c79413a17230900f4d8a3200948708f3b25fabd13ef3781fb64",
+    "bytes": 7995381,
+    "report": "campaign/report.json"
+  },
+  "rows": [
+    {
+      "runtime": "stub",
+      "iterations": 0,
+      "arena": "default",
+      "proof": {
+        "selected": 6,
+        "policy": "fastly-numeric-regions-v2",
+        "controlBlocksEqual": true,
+        "declined": [
+          "unknown live-in",
+          "257-iteration flat loop",
+          "output/body-transform budgets"
+        ]
+      },
+      "boxed": {
+        "scenario": "ok",
+        "outcomeSha256": "4e65de7903e99fe1dacc463af1f9112188b03c448ff920421a3c6489efe5e63a",
+        "capacityBytes": 1310720,
+        "handles": 639,
+        "numbers": 567,
+        "allocatorSpanBytes": 1150624,
+        "managedAfterFullGc": null
+      },
+      "production": {
+        "scenario": "ok",
+        "outcomeSha256": "4e65de7903e99fe1dacc463af1f9112188b03c448ff920421a3c6489efe5e63a",
+        "capacityBytes": 1310720,
+        "handles": 621,
+        "numbers": 549,
+        "allocatorSpanBytes": 1148608,
+        "managedAfterFullGc": null
+      }
+    },
+    {
+      "runtime": "stub",
+      "iterations": 256,
+      "arena": "default",
+      "proof": {
+        "selected": 6,
+        "policy": "fastly-numeric-regions-v2",
+        "controlBlocksEqual": true,
+        "declined": [
+          "unknown live-in",
+          "257-iteration flat loop",
+          "output/body-transform budgets"
+        ]
+      },
+      "boxed": {
+        "scenario": "ok",
+        "outcomeSha256": "fc80ca0b0eed4aceae400eb7118306101d32cfaa29704d3a0b83c074a0206e72",
+        "capacityBytes": 2621440,
+        "handles": 1919,
+        "numbers": 1847,
+        "allocatorSpanBytes": 1310368,
+        "managedAfterFullGc": null
+      },
+      "production": {
+        "scenario": "ok",
+        "outcomeSha256": "fc80ca0b0eed4aceae400eb7118306101d32cfaa29704d3a0b83c074a0206e72",
+        "capacityBytes": 1310720,
+        "handles": 621,
+        "numbers": 549,
+        "allocatorSpanBytes": 1148608,
+        "managedAfterFullGc": null
+      }
+    },
+    {
+      "runtime": "ES256",
+      "iterations": 0,
+      "arena": "default",
+      "proof": {
+        "selected": 6,
+        "policy": "fastly-linked-numeric-regions-v1",
+        "controlBlocksEqual": true,
+        "declined": [
+          "unknown live-in",
+          "257-iteration flat loop",
+          "output/body-transform budgets"
+        ]
+      },
+      "boxed": {
+        "scenario": "ok",
+        "outcomeSha256": "ec7f2aeed8f6434fd0bb15d59332a18f6424a8d4511bc8d9d18935f4c7ab5ae3",
+        "capacityBytes": 2097152,
+        "handles": 708,
+        "numbers": 571,
+        "allocatorSpanBytes": 1085600,
+        "managedAfterFullGc": 620704
+      },
+      "production": {
+        "scenario": "ok",
+        "outcomeSha256": "ec7f2aeed8f6434fd0bb15d59332a18f6424a8d4511bc8d9d18935f4c7ab5ae3",
+        "capacityBytes": 2097152,
+        "handles": 690,
+        "numbers": 553,
+        "allocatorSpanBytes": 1083536,
+        "managedAfterFullGc": 618688
+      }
+    },
+    {
+      "runtime": "ES256",
+      "iterations": 256,
+      "arena": "default",
+      "proof": {
+        "selected": 6,
+        "policy": "fastly-linked-numeric-regions-v1",
+        "controlBlocksEqual": true,
+        "declined": [
+          "unknown live-in",
+          "257-iteration flat loop",
+          "output/body-transform budgets"
+        ]
+      },
+      "boxed": {
+        "scenario": "ok",
+        "outcomeSha256": "a182d7b28c8606fff58ab93fe03b0c66c235bec1f1fc6d2fe6b06380c636104f",
+        "capacityBytes": 2097152,
+        "handles": 1988,
+        "numbers": 1851,
+        "allocatorSpanBytes": 1234032,
+        "managedAfterFullGc": 768160
+      },
+      "production": {
+        "scenario": "ok",
+        "outcomeSha256": "a182d7b28c8606fff58ab93fe03b0c66c235bec1f1fc6d2fe6b06380c636104f",
+        "capacityBytes": 2097152,
+        "handles": 690,
+        "numbers": 553,
+        "allocatorSpanBytes": 1083536,
+        "managedAfterFullGc": 618688
+      }
+    },
+    {
+      "runtime": "RS256",
+      "iterations": 0,
+      "arena": "default",
+      "proof": {
+        "selected": 6,
+        "policy": "fastly-linked-numeric-regions-v1",
+        "controlBlocksEqual": true,
+        "declined": [
+          "unknown live-in",
+          "257-iteration flat loop",
+          "output/body-transform budgets"
+        ]
+      },
+      "boxed": {
+        "scenario": "ok",
+        "outcomeSha256": "f9f6c690d4464da808122e72acf7c9536aef825166304dd0a027a81df5212686",
+        "capacityBytes": 2097152,
+        "handles": 721,
+        "numbers": 571,
+        "allocatorSpanBytes": 1331008,
+        "managedAfterFullGc": 634288
+      },
+      "production": {
+        "scenario": "ok",
+        "outcomeSha256": "f9f6c690d4464da808122e72acf7c9536aef825166304dd0a027a81df5212686",
+        "capacityBytes": 2097152,
+        "handles": 703,
+        "numbers": 553,
+        "allocatorSpanBytes": 1330976,
+        "managedAfterFullGc": 632272
+      }
+    },
+    {
+      "runtime": "RS256",
+      "iterations": 256,
+      "arena": "default",
+      "proof": {
+        "selected": 6,
+        "policy": "fastly-linked-numeric-regions-v1",
+        "controlBlocksEqual": true,
+        "declined": [
+          "unknown live-in",
+          "257-iteration flat loop",
+          "output/body-transform budgets"
+        ]
+      },
+      "boxed": {
+        "scenario": "ok",
+        "outcomeSha256": "dd9c9816802a67bfbbe891b37a05d431cad8f330a8351f4fc58f29e23c442b0f",
+        "capacityBytes": 2097152,
+        "handles": 2001,
+        "numbers": 1851,
+        "allocatorSpanBytes": 1243392,
+        "managedAfterFullGc": 781744
+      },
+      "production": {
+        "scenario": "ok",
+        "outcomeSha256": "dd9c9816802a67bfbbe891b37a05d431cad8f330a8351f4fc58f29e23c442b0f",
+        "capacityBytes": 2097152,
+        "handles": 703,
+        "numbers": 553,
+        "allocatorSpanBytes": 1331200,
+        "managedAfterFullGc": 632272
+      }
+    },
+    {
+      "runtime": "schema-linked",
+      "iterations": 256,
+      "arena": "default",
+      "proof": {
+        "selected": 0,
+        "policy": "fastly-linked-numeric-regions-v1",
+        "reason": "schema-active-linked",
+        "boxedSourceEqual": true
+      }
+    },
+    {
+      "runtime": "schema-linked",
+      "iterations": 256,
+      "arena": "elided",
+      "proof": {
+        "selected": 0,
+        "policy": "fastly-linked-numeric-regions-v1",
+        "reason": "schema-active-linked",
+        "boxedSourceEqual": true
+      }
+    }
+  ],
+  "checks": [
+    {
+      "command": "pnpm build",
+      "status": "passed",
+      "log": "checks/mem9-06b-build.log",
+      "sha256": "abe5c9d719903afbe4be884aeca81c6125d3ca5107edf9276efdd63fc98e34df"
+    },
+    {
+      "command": "node wasm/test/performance/mem9-06b.cjs --out <new-output-directory>",
+      "status": "passed",
+      "log": "checks/mem9-06b-campaign.log",
+      "sha256": "fae299844ba2237ee0512ee082275a932ec38c1e9484a4646437a43f861c3a90"
+    },
+    {
+      "command": "node wasm/test/performance/mem9-06b.cjs --check <output-directory>/report.json",
+      "status": "passed",
+      "log": "checks/mem9-06b-evidence-check.log",
+      "sha256": "195a34a4fcdc949372892ced5c10e3d338922367daf98c6d04defe7315cc3cdc"
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task fastly-numeric-regions --task canonical-native-wasm --task fastly-native-http-shell --task fastly-native-http-effects --task fastly-native-platform-capabilities --report <focused.json>",
+      "status": "passed",
+      "log": "checks/mem9-06b-focused.log",
+      "sha256": "79d4e9e6db7164f419840a916e02cd0a68318179aba5ee972bf5143b89d1bafe"
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --report <unit.json>",
+      "status": "failed-existing-boundary",
+      "log": "checks/mem9-06b-unit.log",
+      "sha256": "48efeb29d6524aae281ef5cb8e98c19016239cd137b641de3fda027a0d218bba"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "log": "checks/mem9-06b-maintainer.log",
+      "sha256": "29950389946494af3858f362b70af5c7b5f6fb80d0ead3121f400beab98e5536"
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "log": "checks/mem9-06b-docs-check.log",
+      "sha256": "f07225ec1fa878f3ab551c20d2d858f4dc405cc7eeda86be8333e06fb1911adf"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "log": "checks/mem9-06b-docs-release.log",
+      "sha256": "3eb219bb10e22e3d79f7e801558d119dcabf653a7e1b4eac9f38316d31c2b451"
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --base 310a3b4546f1c2de2e31b024376a8821648e7ae0 --head HEAD --declaration-file <pr-body> --check",
+      "status": "passed",
+      "log": "checks/mem9-06b-scope.log",
+      "sha256": "d908b798bb4d8415ccf34c28fc60ebef881d88f7fa98c470c8a6bbfc9cb62615"
+    }
+  ],
+  "focused": {
+    "sourceRevision": "8b655d0f5fc3b583bd9ffb1f1050bf199045d81e",
+    "status": "passed",
+    "selectedTasks": [
+      "fastly-numeric-regions",
+      "canonical-native-wasm",
+      "fastly-native-http-shell",
+      "fastly-native-http-effects",
+      "fastly-native-platform-capabilities"
+    ],
+    "completedTasks": 5
+  },
+  "unit": {
+    "status": "failed",
+    "selectedTasks": 62,
+    "completedTasks": 3,
+    "passed": 2,
+    "failed": "boundaries",
+    "notRun": 59,
+    "reason": "Pre-existing CLI report snapshot import of canonical-project-compiler outside the approved list; offending source and boundary rules unchanged from latest.",
+    "waived": false
+  },
+  "dependencyRestore": "Reused the lockfile-pinned workspace restored with lifecycle scripts disabled for MEM9-06A; dependency hashes are captured in campaign/report.json.",
+  "deferred": [
+    "full release and installed-consumer acceptance at sprint boundary",
+    "Viceroy/deployed Fastly qualification",
+    "schema-active linked runtime failure",
+    "general scalar lifetime/handle reclamation"
+  ]
+}

@@ -781,6 +781,16 @@ const allowedLocalIdentifierDefinitions = new Map(Object.entries({
   ],
   'packages/runtime-core-as/src/compiler/canonical-native.js': [
     'CANONICAL_NATIVE_AS_GENERATOR_VERSION'
+  ],
+  // Private numeric emission selectors owned by the canonical runtime emitter;
+  // these do not define a public configuration option, wire protocol or host ABI.
+  'packages/runtime-core-as/src/compiler/canonical-native-numeric.js': [
+    'HOST_POLICY',
+    'LINKED_POLICY'
+  ],
+  // Private whole-plan Fastly ownership selector; no public option or host ABI.
+  'packages/runtime-core-as/src/compiler/canonical-native-ownership.js': [
+    'HANDLE_OWNERSHIP_POLICY'
   ]
 }).map(([file, identifiers]) => [file, toSet(identifiers)]));
 

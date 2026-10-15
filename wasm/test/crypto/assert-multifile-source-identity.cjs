@@ -104,7 +104,12 @@ async function main(options = {}) {
     if (contents.has('pulse-report-inventory.json')) {
       const inventoryFile = 'pulse-report-inventory.json', completionFile = 'pulse-report-completion.json';
       const manifestFile = 'pulse-build.json';
-      const codec = require('../../packages/cli/src/internal/report/capsule');
+      // Packed acceptance must decode with the same byte-verified installed CLI.
+      // The caller's workspace-product-module guard remains authoritative.
+      const cliRoot = options.packedRoot
+        ? path.join(options.packedRoot, 'node_modules/@pulse-compute/cli')
+        : path.resolve(__dirname, '../../packages/cli');
+      const codec = require(path.join(cliRoot, 'src/internal/report/capsule'));
       const stored = contents.get(inventoryFile);
       const inventory = JSON.parse(codec.serializeCapsule(codec.parseCapsule(stored)));
       // Expand to canonical semantic JSON (sorted keys); preserve that order

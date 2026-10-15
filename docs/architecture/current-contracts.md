@@ -234,10 +234,18 @@ on reuse. Required guest-link disassembly audits remain mandatory. This changes
 artifact policy, not handler admission, the effect ABI, optimizer posture, or
 provider authority. See [optional Native text artifacts](../concepts/compilation-and-lowering.md#optional-native-text-artifacts).
 
-## Fastly numeric loop regions
+## Native numeric loop regions
 
-Schema-active, non-guest-linked Fastly Native builds select a private canonical
-numeric-region policy. The canonical emitter proves numeric initialization and
+Non-guest-linked Fastly Native builds select a private canonical numeric-region
+policy for both schema/incremental and schema-inactive/stub runtimes. Builds with
+the selected linked crypto guest use a narrower policy that requires inactive
+schema codecs. Schema-active linked builds retain boxed emission, including when
+JSON cache arena elision is requested. Other linked guests are not opted in.
+The provider-neutral `pulse_host` compiler used by Node Native selects its
+separately qualified host policy for schema and stub builds without linked guests.
+Provider writers retain authority over final emission; caller options or a
+portable intermediate cannot bypass the Fastly runtime gate.
+The canonical emitter proves numeric initialization and
 all reaching writes around bounded pure loops, using stable local IDs rather
 than type hints. Eligible regions use private f64 slots and box written values
 into the existing local handles before generic consumers or effects. Boxes
@@ -245,14 +253,105 @@ already held by aliases, collections and state remain immutable. Zero-trip and
 conditional writes preserve untouched handles. Arithmetic order, IEEE values,
 loop caps, control-state IDs and guard weights remain unchanged.
 
+The same proof applies to synchronous pure helper bodies and shared HTTP stages.
+Helper parameters remain unknown live-ins regardless of their type annotations;
+only independently initialized numeric regions are selected. Helper slots still
+reset on each call and clear at returns. A helper loop containing an early return
+keeps its existing emission. Shared-stage regions box before effects, transfers
+or generic consumers, preserving invocation frames and continuation ownership.
+Region write flags reset on every entry, including repeated calls/registrations.
+
+Unlinked Fastly read-loop plans also admit these proven regions. Each eliminated
+uncached numeric allocation pays the existing value/byte charge at its original
+evaluation point, in evaluation order. Integer and boolean cache admissions use
+the original host value operations, preserving cache state for later boxed code.
+Region exits materialize already-charged numbers without a second charge. This
+does not refund the cumulative budget or defer failures to the region boundary;
+exhaustion still closes the invocation and traps. Charge and materialization
+helpers check the latched failure even for cached values. The accounting policy,
+effect cap, loop caps and linear-memory ceiling are unchanged. These private
+Fastly helpers add no host import or public option. Manifests identify this path
+with `accounting: fastly-read-loop-v1`.
+
 Unknown live-ins, coercive operations, nested assignment results, generic calls
-and collection writes decline this optimization. Helper/shared-stage bodies and package-owned application emitters,
-non-schema builds, linked guests, and entire read-loop/output/body-transform
-budgeted plans retain existing emission. Node Native and JavaScript are unchanged.
-No host ABI, allocation ceiling, cache default, GC policy, or reclamation protocol
-is added. Generic handle retention remains; deliberately retained snapshots
-still require storage. Generator manifests record the policy, selected regions
+and collection writes decline this optimization. Effectful helper bodies,
+package-owned application emitters, Node linked guests, Fastly schema-active
+linked builds, Node budgeted plans, linked-guest budgeted plans, and entire
+output/body-transform plans retain existing emission. Node's rotating scalar
+cache needs separate accounting qualification; this Fastly realization does not
+extend the `pulse_host` ABI. JavaScript is unchanged. Node collections
+continue to store JavaScript values directly; numeric region exits allocate normal
+host handles without mutating, releasing or reusing existing entries. Node host
+handle counts, guest linear-memory capacity and process heap/RSS are distinct
+measurement domains. Eliminating host entries is not a guest-byte or RSS claim.
+Fastly stub allocation avoidance requires no collector. The selected linked
+runtime retains its fixed 32-page memory, disjoint Rust/static/invocation-frame
+ranges and unchanged allocator. Final-link audits remain mandatory; allocation
+avoidance does not make a previously failing schema/guest combination eligible.
+The numeric policy adds no host ABI, allocation ceiling, cache default, GC policy,
+or reclamation protocol. Generic handle retention outside the separately qualified
+ownership slice below remains; deliberately retained snapshots still require
+storage. Generator manifests record the policy, selected regions
 and declined loop reasons, and source hashes bind the emitted strategy.
+
+## Fastly Native handle ownership
+
+Unlinked, schema-enabled Fastly Native plans using the incremental managed runtime
+select the private `fastly-handle-tracing-v1` policy only when their entire plan
+passes the complete owner audit. The policy admits ordinary expressions,
+pure loops, terminal HTTP handlers, request metadata/text/JSON, schema codecs,
+responses, request state and logging, audited pure/async helpers, shared stages,
+Router error lanes and the explicit Fastly effect allowlist. Events, package-owned
+application emitters, unknown frames/expressions/statements/capabilities/effects
+and all allocation-budgeted plans are excluded. Stub and linked runtimes, Node Native and JavaScript keep their existing
+lifetime behavior. No public configuration or host ABI is added.
+
+Compiler root descriptors enumerate the result, helper return, every declared
+local and effect-result slot, and both request-state arrays from their declarations.
+Effect results remain roots independently of ready/pending flags. The provider
+validates that descriptor and adds its request-header snapshot, occupied caches,
+all payload/ready slots, opaque-resource pins and forwarding marker/result when present.
+Completed expressions and loop control boundaries may collect only after values
+are rooted or discarded and no unregistered handle temporary remains. Numeric
+regions checkpoint only after boxing their outputs. A latched error suppresses
+collection. Parsers, codecs, host operations and expression evaluation never
+invoke the tracer internally.
+
+Pure helper calls defer collection until the complete caller expression returns;
+earlier arguments and borrowed returns can remain on the native stack. Async helper
+and shared-stage slots are global roots with their existing reset/transfer ordering.
+Additional checkpoints follow rooted helper returns, stage exits, complete sibling
+dispatch and resume result transfer. No collection occurs during payload construction,
+provider settlement or between a borrowed result and guest acceptance. Router recovery
+constructs and roots its error before collection can resume. Invocation tickets,
+deadlines, pending resource IDs and mode flags are not value handles.
+
+Fetch and opaque-body wrappers are pinned until invocation end. Existing provider
+cleanup remains responsible for closing bodies and retiring/reaping requests;
+tracing adds no destructor, cancellation, retry or resource reuse. This conservative
+policy does not bound wrapper churn independently of the existing invocation limits.
+Request-duration and fetch deadlines remain usable; allocation budgets retain their
+separate retain-until-terminal behavior.
+
+Eligible plans use a sparse map with monotonically increasing positive IDs.
+Tracing follows collection handle edges and direct rope object edges independently,
+using iterative worklists without flattening strings or allocating lazy backing
+stores. A complete survivor map replaces the old table; invalid edges fail before
+publication. IDs are never recycled; exhaustion fails through the existing value
+error at stage 1 before wrapping. `__pulse_drop` remains a no-op. The existing
+managed collector reclaims objects after their last strong reference disappears.
+
+The initial private trigger is `max(1024, live mappings after the previous pass)`
+new handles between safe points. Cache entries remain pinned and an occupied-slot
+index avoids scanning empty cache capacity. Table and tracing storage track the
+reachable graph plus allocations since a safe point, with old and survivor tables
+coexisting during a pass. All local slots remain conservative roots, even after
+their source scope ends. Live snapshots, caches and unflattened rope graphs still
+require storage; a long operation without a checkpoint can allocate substantially.
+Wasm memory need not shrink. This does not change cumulative budget accounting or
+qualify general reclamation for excluded runtimes. See the measured first slice
+and residuals in [MEM9-09](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/mem9-09/README.md) and the
+[frame/effect extension](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/mem9-09b/README.md).
 
 ## Native internal helper sharing
 

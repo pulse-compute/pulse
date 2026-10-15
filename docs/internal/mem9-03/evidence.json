@@ -1,0 +1,924 @@
+{
+  "schemaVersion": "pulse.mem9-03.receipt.v1",
+  "status": "complete",
+  "changeClass": "evidence",
+  "source": {
+    "sourceRevision": "bb45ed4e6a52131acaceef85b584274e64558d47",
+    "sourceTree": "3dd73a21992d8f23f1a2f3055b8ccc064f40410c",
+    "workingTree": ""
+  },
+  "coverage": {
+    "fixtures": 11,
+    "cells": 33,
+    "executions": 132,
+    "targets": [
+      "node-native",
+      "fastly-native-injected-abi"
+    ],
+    "sizes": [
+      0,
+      64,
+      512
+    ],
+    "arena": "default"
+  },
+  "reportSha256": "ac27bdb0e6c676b6784439d39bebfe0c148aa1fd936bc2f5c5db00d99e38ea07",
+  "dependencies": {
+    "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+    "installedLockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+    "packages": {
+      "typescript": {
+        "version": "5.9.3",
+        "manifestSha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+      },
+      "assemblyscript": {
+        "version": "0.28.18",
+        "manifestSha256": "e09a22d5667fd83f4119862e9e717f722ae46d68fc57eec8c33620cde07d5916"
+      },
+      "json-as": {
+        "version": "1.5.0",
+        "manifestSha256": "dc6a65c22d62266557de1519c5bd3546fc5ed635e7429a59f30a996672dae696"
+      }
+    },
+    "workspacePreparation": "lockfile install with scripts disabled; pnpm build required before run"
+  },
+  "summary": [
+    {
+      "id": "numeric",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        21,
+        365,
+        2773
+      ],
+      "numericHandles": [
+        5,
+        277,
+        2181
+      ],
+      "stringHandles": [
+        7,
+        7,
+        7
+      ],
+      "incrementalHandles": 2752,
+      "handlesPerIteration": 5.375,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "numeric",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        19,
+        20,
+        21
+      ],
+      "numericHandles": [
+        4,
+        5,
+        6
+      ],
+      "stringHandles": [
+        8,
+        8,
+        8
+      ],
+      "incrementalHandles": 2,
+      "handlesPerIteration": 0.00390625,
+      "managedAfterFullGc": [
+        1576896,
+        1577008,
+        1577120
+      ],
+      "ordinaryCapacityBytes": [
+        2621440,
+        2621440,
+        2621440
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "flat-loop-cap",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        21,
+        341,
+        2581
+      ],
+      "numericHandles": [
+        5,
+        261,
+        2053
+      ],
+      "stringHandles": [
+        7,
+        7,
+        7
+      ],
+      "incrementalHandles": 2560,
+      "handlesPerIteration": 5,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "flat-loop-cap",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        19,
+        20,
+        1043
+      ],
+      "numericHandles": [
+        4,
+        5,
+        1028
+      ],
+      "stringHandles": [
+        8,
+        8,
+        8
+      ],
+      "incrementalHandles": 1024,
+      "handlesPerIteration": 2,
+      "managedAfterFullGc": [
+        1576896,
+        1577008,
+        1699648
+      ],
+      "ordinaryCapacityBytes": [
+        2621440,
+        2621440,
+        2621440
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "unknown",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        22,
+        342,
+        2582
+      ],
+      "numericHandles": [
+        5,
+        261,
+        2053
+      ],
+      "stringHandles": [
+        8,
+        8,
+        8
+      ],
+      "incrementalHandles": 2560,
+      "handlesPerIteration": 5,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "unknown",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        18,
+        146,
+        1042
+      ],
+      "numericHandles": [
+        3,
+        131,
+        1027
+      ],
+      "stringHandles": [
+        8,
+        8,
+        8
+      ],
+      "incrementalHandles": 1024,
+      "handlesPerIteration": 2,
+      "managedAfterFullGc": [
+        1576784,
+        1592016,
+        1699536
+      ],
+      "ordinaryCapacityBytes": [
+        2621440,
+        2621440,
+        2621440
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "strings",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        20,
+        468,
+        3604
+      ],
+      "numericHandles": [
+        5,
+        261,
+        2053
+      ],
+      "stringHandles": [
+        6,
+        134,
+        1030
+      ],
+      "incrementalHandles": 3584,
+      "handlesPerIteration": 7,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "strings",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        18,
+        211,
+        1555
+      ],
+      "numericHandles": [
+        4,
+        132,
+        1028
+      ],
+      "stringHandles": [
+        7,
+        72,
+        520
+      ],
+      "incrementalHandles": 1537,
+      "handlesPerIteration": 3.001953125,
+      "managedAfterFullGc": [
+        1576752,
+        1601312,
+        1773344
+      ],
+      "ordinaryCapacityBytes": [
+        2621440,
+        2621440,
+        2621440
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "overwrite-object",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        25,
+        473,
+        3609
+      ],
+      "numericHandles": [
+        6,
+        326,
+        2566
+      ],
+      "stringHandles": [
+        9,
+        73,
+        521
+      ],
+      "incrementalHandles": 3584,
+      "handlesPerIteration": 7,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "overwrite-object",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        20,
+        148,
+        1044
+      ],
+      "numericHandles": [
+        4,
+        132,
+        1028
+      ],
+      "stringHandles": [
+        8,
+        8,
+        8
+      ],
+      "incrementalHandles": 1024,
+      "handlesPerIteration": 2,
+      "managedAfterFullGc": [
+        1577232,
+        1592464,
+        1699984
+      ],
+      "ordinaryCapacityBytes": [
+        2621440,
+        2621440,
+        2621440
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "snapshots",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        20,
+        340,
+        2580
+      ],
+      "numericHandles": [
+        5,
+        261,
+        2053
+      ],
+      "stringHandles": [
+        5,
+        5,
+        5
+      ],
+      "incrementalHandles": 2560,
+      "handlesPerIteration": 5,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "N numeric snapshots, deliberately live through response construction"
+    },
+    {
+      "id": "snapshots",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        18,
+        146,
+        1042
+      ],
+      "numericHandles": [
+        4,
+        132,
+        1028
+      ],
+      "stringHandles": [
+        6,
+        6,
+        6
+      ],
+      "incrementalHandles": 1024,
+      "handlesPerIteration": 2,
+      "managedAfterFullGc": [
+        1576896,
+        1593120,
+        1707808
+      ],
+      "ordinaryCapacityBytes": [
+        2621440,
+        2621440,
+        2621440
+      ],
+      "liveData": "N numeric snapshots, deliberately live through response construction"
+    },
+    {
+      "id": "pure-helper",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        21,
+        341,
+        2581
+      ],
+      "numericHandles": [
+        5,
+        261,
+        2053
+      ],
+      "stringHandles": [
+        7,
+        7,
+        7
+      ],
+      "incrementalHandles": 2560,
+      "handlesPerIteration": 5,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "pure-helper",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        19,
+        147,
+        1043
+      ],
+      "numericHandles": [
+        4,
+        132,
+        1028
+      ],
+      "stringHandles": [
+        8,
+        8,
+        8
+      ],
+      "incrementalHandles": 1024,
+      "handlesPerIteration": 2,
+      "managedAfterFullGc": [
+        1576896,
+        1592128,
+        1699648
+      ],
+      "ordinaryCapacityBytes": [
+        2621440,
+        2621440,
+        2621440
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "shared-stage",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        54,
+        374,
+        2614
+      ],
+      "numericHandles": [
+        12,
+        268,
+        2060
+      ],
+      "stringHandles": [
+        21,
+        21,
+        21
+      ],
+      "incrementalHandles": 2560,
+      "handlesPerIteration": 5,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "shared-stage",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        34,
+        160,
+        1056
+      ],
+      "numericHandles": [
+        6,
+        132,
+        1028
+      ],
+      "stringHandles": [
+        19,
+        19,
+        19
+      ],
+      "incrementalHandles": 1022,
+      "handlesPerIteration": 1.99609375,
+      "managedAfterFullGc": [
+        1579888,
+        1594768,
+        1702288
+      ],
+      "ordinaryCapacityBytes": [
+        2621440,
+        2621440,
+        2621440
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "stub",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        19,
+        339,
+        2579
+      ],
+      "numericHandles": [
+        5,
+        261,
+        2053
+      ],
+      "stringHandles": [
+        6,
+        6,
+        6
+      ],
+      "incrementalHandles": 2560,
+      "handlesPerIteration": 5,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "stub",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        11,
+        139,
+        1035
+      ],
+      "numericHandles": [
+        2,
+        130,
+        1026
+      ],
+      "stringHandles": [
+        5,
+        5,
+        5
+      ],
+      "incrementalHandles": 1024,
+      "handlesPerIteration": 2,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": [
+        1310720,
+        1310720,
+        1310720
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "linked",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        41,
+        361,
+        2601
+      ],
+      "numericHandles": [
+        6,
+        262,
+        2054
+      ],
+      "stringHandles": [
+        21,
+        21,
+        21
+      ],
+      "incrementalHandles": 2560,
+      "handlesPerIteration": 5,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "linked",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        55,
+        182,
+        1078
+      ],
+      "numericHandles": [
+        5,
+        132,
+        1028
+      ],
+      "stringHandles": [
+        37,
+        37,
+        37
+      ],
+      "incrementalHandles": 1023,
+      "handlesPerIteration": 1.998046875,
+      "managedAfterFullGc": [
+        535472,
+        550464,
+        657984
+      ],
+      "ordinaryCapacityBytes": [
+        2097152,
+        2097152,
+        2097152
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "read-loop",
+      "target": "node",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        19,
+        146,
+        1042
+      ],
+      "numericHandles": [
+        3,
+        130,
+        1026
+      ],
+      "stringHandles": [
+        9,
+        9,
+        9
+      ],
+      "incrementalHandles": 1023,
+      "handlesPerIteration": 1.998046875,
+      "managedAfterFullGc": [
+        null,
+        null,
+        null
+      ],
+      "ordinaryCapacityBytes": null,
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    },
+    {
+      "id": "read-loop",
+      "target": "fastly",
+      "sizes": [
+        0,
+        64,
+        512
+      ],
+      "handles": [
+        30,
+        157,
+        1053
+      ],
+      "numericHandles": [
+        5,
+        132,
+        1028
+      ],
+      "stringHandles": [
+        16,
+        16,
+        16
+      ],
+      "incrementalHandles": 1023,
+      "handlesPerIteration": 1.998046875,
+      "managedAfterFullGc": [
+        1579168,
+        1594288,
+        1701808
+      ],
+      "ordinaryCapacityBytes": [
+        2621440,
+        2621440,
+        2621440
+      ],
+      "liveData": "constant-size working state; no per-iteration history is semantically retained"
+    }
+  ],
+  "validation": {
+    "evidenceValidator": "passed",
+    "negativeMutations": 6,
+    "checks": [
+      {
+        "name": "focused",
+        "status": "failed",
+        "selected": 63,
+        "completed": 3,
+        "results": [
+          {
+            "name": "suite-shape",
+            "status": "passed"
+          },
+          {
+            "name": "package-exports",
+            "status": "passed"
+          },
+          {
+            "name": "boundaries",
+            "status": "failed"
+          }
+        ],
+        "sourceIdentity": {
+          "sourceRevision": "3b69fa5c9c5c8f2630559ca544df9b8210d5e3e3",
+          "sourceIdentityKind": "git-commit",
+          "sourceDigestSha256": null,
+          "sourceFiles": null
+        },
+        "sha256": "96e8c2549ef40f9639ae834133838b71a3d067fe7e51c6cbd1aba88833cce92d"
+      },
+      {
+        "name": "targeted",
+        "status": "passed",
+        "selected": 3,
+        "completed": 3,
+        "results": [
+          {
+            "name": "fastly-numeric-regions",
+            "status": "passed"
+          },
+          {
+            "name": "pure-source-helpers",
+            "status": "passed"
+          },
+          {
+            "name": "shared-stage-o19",
+            "status": "passed"
+          }
+        ],
+        "sourceIdentity": {
+          "sourceRevision": "3b69fa5c9c5c8f2630559ca544df9b8210d5e3e3",
+          "sourceIdentityKind": "git-commit",
+          "sourceDigestSha256": null,
+          "sourceFiles": null
+        },
+        "sha256": "a88e656eb7ab9b2a4146e872d33ed1c14e5d2663f137d9a2a1099c57ae574535"
+      }
+    ],
+    "baseBoundaryReproduction": {
+      "sourceRevision": "2497084d1d2e000f0d70ef2a0874af6a0dba116c",
+      "status": "failed",
+      "logSha256": "46325653546868127e72297ab8993bea7cf65d2fe87f889a7e45d071a8569078"
+    },
+    "repositoryChecks": [
+      {
+        "command": "npm run maintainer:sync",
+        "status": "passed",
+        "logSha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+      },
+      {
+        "command": "npm run docs:sync",
+        "status": "passed",
+        "logSha256": "21831da1df2a362b85192483f6fa1ead2573ab0bb2acbcafbf0565636fefdc7b"
+      },
+      {
+        "command": "npm run maintainer:check",
+        "status": "passed",
+        "logSha256": "29950389946494af3858f362b70af5c7b5f6fb80d0ead3121f400beab98e5536"
+      },
+      {
+        "command": "npm run docs:check",
+        "status": "passed",
+        "logSha256": "32479e85a13e7391d3e4136ade08a60f2734a68b817f892dbb56f09a75594471"
+      },
+      {
+        "command": "node scripts/documentation-release.cjs",
+        "status": "passed",
+        "logSha256": "0c851ebea11649cb380ddc06b56b4e6b029b43043d09163a74129ac04d05bb70"
+      }
+    ],
+    "documentationWorkingState": {
+      "parentCommit": "bb45ed4e6a52131acaceef85b584274e64558d47",
+      "added": [
+        "docs/internal/mem9-03/README.md",
+        "docs/internal/mem9-03/evidence.json"
+      ],
+      "readmeSha256": "efbc00899b4c9659c42673e23d0efd5a47d80bebad5e8434b518ab51999227bb",
+      "note": "Documentation checks preceded addition of archive/check hashes to this receipt. Diagnostic and product bytes were unchanged."
+    }
+  },
+  "archive": {
+    "file": "pulse-mem9-03-evidence.tar.gz",
+    "bytes": 13204353,
+    "sha256": "e0105ee228e49f9fd2cf84832ae0743c762383ab97787826122e57efd61078ab",
+    "content": "Raw campaigns, worker artifacts, failed attempts, focused checks, maintenance/documentation logs and both probe-source snapshots"
+  }
+}
