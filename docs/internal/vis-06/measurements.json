@@ -3991,5 +3991,22 @@
       "tasks": 3,
       "assertions": 201
     }
+  ],
+  "sourceCommitMap": [
+    {
+      "local": "9da7f64fa7c1dc0bf22c4e5e890679422f246c2f",
+      "published": "4eecb1b05aa303261b9d14509295472a045a6c0d",
+      "tree": "923155eeed20cc1ff5b35900e98e12a56a3910cd"
+    },
+    {
+      "local": "9b98589f8666c88be265f3fc0a9de82e7f8ff1c9",
+      "published": "c546ec0ddb6ca0defadee4c3f4693f143253bde0",
+      "tree": "d36165debe1065e4e4e8da7fbe18e7575de554c2"
+    },
+    {
+      "local": "cb4f58e720d7ba1a4a9efc7ba563cc76e378210e",
+      "published": "905a00749b5c4d6f8b62d5c99cfeb99c2e385ef9",
+      "tree": "15f9dca4d42cf1ecd91a0a0a5fa000d7a223bd9f"
+    }
   ]
 }

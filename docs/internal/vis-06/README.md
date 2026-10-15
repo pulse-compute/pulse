@@ -101,9 +101,10 @@ No Catalog implementation changes belong in this PR.
 The machine record is [measurements.json](./measurements.json). It retains all
 13 attempted measurement runs, including two timed-out exhaustive experiments
 and superseded watchdog/layout-of-measurement attempts. Development failures and
-their corrections are listed separately. Source checkpoints `9da7f64` and
-`9b98589` preserve earlier diagnostic implementations; later receipts also pin
-the measured worker bytes. No large Catalog payload is committed.
+their corrections are listed separately. Published source checkpoints `4eecb1b` and `c546ec0` preserve earlier diagnostic
+implementations. `sourceCommitMap` binds local evidence commits to identical
+published trees; worker hashes bind measured uncommitted diagnostic bytes. No
+large Catalog payload is committed.
 
 | Input / mode | Observed result | Derivation | External peak RSS |
 | --- | --- | ---: | ---: |
