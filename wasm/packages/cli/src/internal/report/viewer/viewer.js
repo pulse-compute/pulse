@@ -498,12 +498,12 @@
     const host=el('div');let page=0;
     function draw(){
       const pages=Math.max(1,Math.ceil(rows.length/20));
-      const previous=button('Previous associations',()=>{page--;draw();host.querySelector('button').focus();});
-      const next=button('Next associations',()=>{page++;draw();host.querySelectorAll('button').at(-1).focus();});
+      const previous=button('Previous associations',()=>{page--;draw();host.querySelector('.association-page-status').focus();});
+      const next=button('Next associations',()=>{page++;draw();host.querySelector('.association-page-status').focus();});
       previous.disabled=page===0;next.disabled=page+1>=pages;
       host.replaceChildren(el('p',{class:'small-note'},'Coverage: '+coverageText(coverage)),
         ...rows.slice(page*20,(page+1)*20).map(associationDetail),
-        el('div',{class:'atlas-controls'},previous,el('span',{},rows.length+' associations · page '+(page+1)+' / '+pages),next),
+        el('div',{class:'atlas-controls'},previous,el('span',{class:'association-page-status',tabindex:-1,role:'status'},rows.length+' associations · page '+(page+1)+' / '+pages),next),
         ...(!rows.length?[el('p',{},'No observed associations. Missing evidence does not establish absence.')]:[]));
     }
     draw();return host;
@@ -517,11 +517,11 @@
   }
   function siteDetail(row, focused=false) {
     const binding = bindings.get(row.binding.bindingId);
+    const associations = model.queries?.site(row.id) || {rows:siteAssociations(row.id),coverage:analyticsCoverage('associations')};
     return el('article',{class:'surface panel-pad subsection'},el('h3',{id:focused?'use-site-title':undefined,tabindex:focused?-1:undefined,class:'record-text'},row.surfaceId+' · site '+(useSiteIndex.get(row.id)+1)),
       kv([['Definition owner',definitionLink(row.ownerId)],['Capability',authoredFact(row.capability)],['Operation',row.operation],['Binding state',[row.binding.state,row.binding.kind,row.binding.reason].filter(Boolean).join(' · ')],
         ['Logical binding',binding?el('a',{href:'#bindings/'+P.bindings.indexOf(binding)},binding.name+' · '+binding.resolution):'No resolved binding'],['Reference ID',row.binding.referenceId??'Not recorded'],['Authored use source',authoredSource(row.source)]]),
-      analyticsCoverageNote('useSites'),detailSection('Contextual consumers',associationList(siteAssociations(row.id),
-        model.queries?.site(row.id).coverage || analyticsCoverage('associations'))),analyticsEvidence(row));
+      analyticsCoverageNote('useSites'),detailSection('Contextual consumers',associationList(associations.rows,associations.coverage)),analyticsEvidence(row));
   }
   const atlas=createReportAtlas({model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,select:id=>{
     const hash='#atlas/'+registrationIndex.get(id);
@@ -531,6 +531,7 @@
   let atlasFocus=false;
   function renderAtlas(){atlas.open($('#view-atlas'));}
   function registrationDetail(row) {
+    const associations = model.queries?.route(row.id) || {rows:registrationAssociations(row.id),coverage:analyticsCoverage('associations')};
     return el('article',{class:'surface panel-pad subsection'},el('h3',{id:'registration-title',tabindex:-1,class:'record-text'},registrationLabel(row)),
       el('p',{},el('a',{href:'#atlas/'+registrationIndex.get(row.id),class:'button subtle',on:{click:()=>atlas.routing()}},'Show in execution atlas')),
       kv([['Definition',row.handlerId?definitionLink(row.handlerId):'No authored definition'],['Authored',String(row.authored)],['Registration source',authoredSource(row.source)],
@@ -539,8 +540,7 @@
       detailSection('Static continuation links',kv(Object.entries(row.flow).map(([key,id])=>[key,id?registrationLink(id):'No retained link'])),
         note('Links and associations explain static dependencies. They are not a request execution trace.')),
       upstreamDetail(row.id),
-      detailSection('Capability and binding associations',associationList(registrationAssociations(row.id),
-        model.queries?.route(row.id).coverage || analyticsCoverage('associations'))),analyticsCoverageNote('registrations'),analyticsEvidence(row));
+      detailSection('Capability and binding associations',associationList(associations.rows,associations.coverage)),analyticsCoverageNote('registrations'),analyticsEvidence(row));
   }
   function definitionDetail(row) {
     const ownSites=definitionSites(row.id), callers=helperCallers(row.id), callees=helperCallees(row.id);

@@ -10,6 +10,12 @@ module.exports=({renderedTree})=>{
   assert.ok(route);visit('#registrations/'+m.registrationIndex.get(route.id));
   assert.match(tree.get('view-handlers').textContent,/Upstream admission candidates/);
   assert.match(tree.get('view-handlers').textContent,/Includes predecessors with no binding operations/);
+  const paged=m.registrations.find(r=>m.queries.route(r.id).rows.length>20);assert.ok(paged);
+  visit('#registrations/'+m.registrationIndex.get(paged.id));
+  click('Next associations');assert.equal(tree.document.activeElement.attrs.class,'association-page-status');
+  assert.match(tree.document.activeElement.textContent,/page 2/);
+  click('Previous associations');assert.equal(tree.document.activeElement.attrs.class,'association-page-status');
+  assert.match(tree.document.activeElement.textContent,/page 1/);
   const site=capsule.analytics.useSites.find(s=>m.queries.site(s.id).rows.length);
   visit('#use-sites/'+m.useSiteIndex.get(site.id));assert.match(tree.get('view-handlers').textContent,/Contextual consumers/);
   const binding=capsule.bindings.find(b=>m.bindingProjection(b.id).consumerCount);

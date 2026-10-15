@@ -118,3 +118,92 @@ latency. Then every full per-consumer row list and every binding consumer set is
 compared to the unrestricted VIS-06 oracle. No private Catalog payload is committed.
 The separate fresh build receipt checks actual v2 capture on the same pinned
 Catalog source and recipe; neither run is installed-package or release acceptance.
+
+## Qualified Catalog result
+
+Final query source: local commit `dfecaee78a56bd22989a25fe7e4e8bbf08fe7fff`,
+clean at measurement start; production file hashes are in the receipt. Input
+SHA-256 `82b628db399c2331f682b482b744d03ffc81f0e43ae37c6f3fa9091daacdef19` is
+exactly the qualified VIS-06 fresh capture: Catalog
+`54a5bb5876f228a5778b66fb9beb2b2007cf5d18`, Fastly Native,
+`experimental-native-bounded-size`, Node 24.19.0, AssemblyScript 0.28.18,
+report capture enabled, WAT disabled and JSON arena elision disabled.
+
+Every **255/255 consumer row list** and **10/10 binding consumer set** matches.
+That includes all **983,012 unique associations**, 217 consumers with rows,
+212 consumers with named-binding rows, 6,398 sites, 919,182 consumer/site pairs,
+18,730 distinct paths and 72-hop explanations. The aggregate semantic digest is
+`20bff8cf8b2bd0ef5afde8e0b09a6e960d3fcd277859bd75c8cf597373eaafce`, identical
+to the VIS-06 completed monolithic and partitioned oracles. Static query coverage
+remains **partial / unsupported-mapping**; exhaustive equivalence is not runtime
+path feasibility or proof that an operation executed. Small and mixed fixtures
+also complete every consumer/binding comparison.
+
+| Measure | Old limited capture | New compact capture from identical facts |
+| --- | ---: | ---: |
+| Raw complete-capsule JSON bytes | 40,728,001 | 16,296,324 |
+| Actual stored bytes, including final newline | 40,728,002 | 16,296,325 |
+| Raw analytics bytes | 30,050,435 | 5,618,758 |
+| Normalized whole-capsule candidate bytes | 7,111,986 | 5,664,748 |
+| Persisted contextual row table | 10,000 rows, truncated | Absent; generated on demand |
+
+The complete capsule is **60.0% smaller than the capped baseline**, while queries
+recover the full qualified answers. These are report-data sizes, not Wasm bytes.
+The unchanged storage codec falls back to raw JSON for both whole capsules;
+normalized candidate sizes above are **not** emitted-file sizes. Analytics alone
+has a 1,588,318-byte normalized representation. Full unrestricted legacy
+associations alone require 1,660,578,467 raw bytes; there is no successfully
+normalized full legacy capsule to compare. Its earlier pipeline exceeded the RSS
+watchdog after derivation completed.
+
+| New query/capture measurement | Observed |
+| --- | ---: |
+| Fact index construction | 3.14 ms |
+| All 255 entry projections | 111.26 ms |
+| Entry median / p95 / maximum | 0.410 / 0.920 / 4.683 ms |
+| All 10 binding queries | 695.64 ms |
+| Binding median / maximum | 68.09 / 93.16 ms |
+| Warm first 20 explanation rows | 0.040 ms |
+| Maximum charged work for an entry | 1,523 of the retained 250,000 safety budget |
+| New capsule creation and validation | 5.21 s |
+| Storage selection/encoding | 0.62 s |
+| Exact replay plus serialization checks | 14.20 s |
+| HTML generation | 5.11 s; 16,542,205 bytes |
+| Entire measurement + full-oracle qualification | 162.96 s; 736.1 MiB peak sampled RSS |
+
+Forcing all expanded rows **only in the diagnostic** took 14.17 seconds in the new
+engine versus 44.73 seconds in the canonical oracle during the same run.
+Comparison, digesting and byte counting have separate recorded timings. The
+entire-harness memory maximum includes both input and output captures, replay,
+HTML and the partitioned oracle; it is not a browser-only memory measurement.
+One entry cache and one binding viewer cache are sufficient for these measured
+queries; no additional persistent index or global owner table is justified.
+
+The first Catalog attempt also passed. Its storage-size field was misleadingly
+named `normalizedBytes`; the second attempt records selected storage and candidate
+encoding separately and requalifies the final exhaustion-reporting change. Both
+unaltered receipts are retained. The independent 90,000-registration safety test
+checks explicit partial budget exhaustion, including reverse-query aggregation.
+
+## Fresh production capture
+
+The same pinned Catalog source was rebuilt on published commit
+`005af237c37b98de3aaace59aee42b86269a6f20` (tree-identical to the qualified local
+commit). All 270 source blobs match their pinned Git identities before and after
+the build. Production capture emits v2, and its canonical analytics exactly equal
+the qualified facts. Final and prelink artifact sizes **and hashes are identical**
+to VIS-06: final Wasm 2,840,977 bytes,
+`d32d0de43ac0af868fdefce2e4c48efdfa78058337e57b24cbabd70dfd857b72`;
+prelink 2,690,561 bytes,
+`93c1004763ef4610899b3e94e329a7cf71f620b29dce3ae79667235931aacd32`.
+
+Fresh raw capsule size is 16,296,323 bytes, SHA-256
+`f40dcb8338d2d8ff7fe123d074cc0ab2174fa55153930e05f84f5296ed7c2b53`.
+Its one-byte difference from the factored comparison capsule is build metadata;
+the analytics match exactly. Observed build plus artifact collection took
+425.35 seconds versus 623.89 seconds in VIS-06. Compiler durations also varied
+(239.59 versus 326.87 seconds), despite identical output, so the entire wall-time
+change is **not** attributed to VIS-07. The report query and storage measurements
+above isolate the representation change. Both builds used the same 600-second
+per-compiler timeout and no provider artifact reuse. This is workspace-source
+qualification, not installed-package acceptance or a full release seal.
