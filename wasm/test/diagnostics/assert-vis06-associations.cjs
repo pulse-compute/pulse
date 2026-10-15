@@ -6,6 +6,7 @@ const os = require('node:os');
 const { instrument, queryRelations, canonicalJson, sha256 } = require('./vis06-derivation.cjs');
 const { capture } = require('./vis06-inputs.cjs');
 const { supervise } = require('./vis06-run.cjs');
+const { qualify } = require('./vis06-qualification.cjs');
 const production = require('../../packages/cli/src/internal/report/handler-associations');
 const { validateHandlerTopology } = require('../../packages/cli/src/internal/report/handler-topology');
 
@@ -28,11 +29,30 @@ async function main() {
         assert.deepEqual(queries.binding(b), [...new Set(oracle.rows.filter(row => sites.get(row.useSiteId).binding.bindingId === b)
           .map(row => row.consumerRegistrationId))].sort()); assertions++;
       }
+      const qualified = qualify(value, queries, [...queries.bindingIds, 'unused-binding']);
+      assert.equal(qualified.counts.rows, oracle.rows.length);
+      assert.equal(qualified.counts.rawAssociationArrayBytes, Buffer.byteLength(JSON.stringify(oracle.rows)));
+      assert.deepEqual(qualified.coverage, oracle.coverage);
+      assert.equal(qualified.routeSemanticDigest, sha256(canonicalJson(value.registrations.map(r =>
+        [r.id, sha256(canonicalJson(oracle.rows.filter(row => row.consumerRegistrationId === r.id)))]))));
+      assert.equal(qualified.bindingComparisons.find(b => b.binding === 'unused-binding').consumers, 0);
+      assertions += 5;
       return { oracle, factor };
     }
     const { oracle, factor } = parity(a);
+    const empty = structuredClone(a);
+    for (const key of ['handlers', 'registrations', 'useSites', 'helperCalls']) {
+      empty[key] = []; empty.coverage[key] = { status: 'complete', observed: 0, expected: 0, reason: null };
+    }
+    assert.equal(parity(empty).oracle.coverage.status, 'unavailable'); assertions++;
     require('../cli/assert-report-handler-associations.cjs').assertFixture(a, { event: true, error: true });
     assert.equal(oracle.rows.length, 160); assertions++;
+    const broken = queryRelations(a, factor.relations);
+    assert.throws(() => qualify(a, { ...broken, route(id) {
+      const rows = broken.route(id); if (rows.length) rows[0].conditional = 'incorrect'; return rows;
+    } }, broken.bindingIds), /Whole-row parity/);
+    assert.throws(() => qualify(a, { ...broken, binding: () => [] }, broken.bindingIds), /Binding reverse parity/);
+    assertions += 2;
     const missing = structuredClone(a); missing.registrations[0].control = { state: 'unavailable', value: null, reason: 'not-recorded' };
     const unknown = parity(missing).oracle;
     assert.ok(unknown.rows.some(r => r.conditional === null)); assertions++;
