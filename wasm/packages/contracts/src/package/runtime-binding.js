@@ -42,12 +42,46 @@ const { createHash } = require('node:crypto');
 // maximum. Checking only memory size after execution would not impose a bound.
 function assertMemoryBound(bytes) {
   let p = 8, memories = 0;
+  const types = [], functions = [], imports = [], exports = new Map();
   function leb(end = bytes.length) { let n = 0, shift = 0; for (let i = 0; i < 5 && p < end; i++) {
     const b = bytes[p++]; n += (b & 127) * 2 ** shift; if (!(b & 128)) return n; shift += 7;
   } throw failure(); }
+  function name(end) { const n = leb(end); if (p + n > end) throw failure(); const value = bytes.toString('utf8', p, p + n); p += n; return value; }
+  function signatureType(end) {
+    const count = leb(end), result = [];
+    for (let i = 0; i < count; i++) {
+      const type = bytes[p++];
+      if (p > end || ![0x7f, 0x7e, 0x7d, 0x7c, 0x7b, 0x70, 0x6f].includes(type)) throw failure();
+      result.push(type);
+    }
+    return result;
+  }
   while (p < bytes.length) {
     const id = bytes[p++], size = leb(), end = p + size;
     if (end > bytes.length) throw failure();
+    if (id === 1) {
+      const count = leb(end);
+      for (let i = 0; i < count; i++) {
+        if (bytes[p++] !== 0x60) throw failure();
+        types.push({ parameters: signatureType(end), results: signatureType(end) });
+      }
+      if (p !== end) throw failure();
+    }
+    if (id === 2) {
+      const count = leb(end);
+      for (let i = 0; i < count; i++) {
+        const module = name(end), field = name(end);
+        if (bytes[p++] !== 0) throw failure();
+        const type = leb(end); functions.push(type); imports.push({ module, name: field, type });
+      }
+      if (p !== end) throw failure();
+    }
+    if (id === 3) { const count = leb(end); for (let i = 0; i < count; i++) functions.push(leb(end)); if (p !== end) throw failure(); }
+    if (id === 7) {
+      const count = leb(end);
+      for (let i = 0; i < count; i++) { const field = name(end), kind = bytes[p++], index = leb(end); if (kind === 0) exports.set(field, index); }
+      if (p !== end) throw failure();
+    }
     if (id === 5) {
       memories = leb(end); if (memories !== 1 || leb(end) !== 1) throw failure();
       const min = leb(end), max = leb(end);
@@ -56,6 +90,21 @@ function assertMemoryBound(bytes) {
     p = end;
   }
   if (memories !== 1) throw failure();
+  function expect(type, parameters, results) {
+    const actual = types[type];
+    if (!actual || JSON.stringify(actual) !== JSON.stringify({ parameters, results })) throw failure();
+  }
+  const i32 = 0x7f;
+  for (const entry of imports) {
+    if (entry.module === 'pulse_package' && entry.name === 'input_len') expect(entry.type, [i32], [i32]);
+    else if (entry.module === 'pulse_package' && entry.name === 'input_read') expect(entry.type, [i32, i32, i32], [i32]);
+    else if (entry.module === 'env' && entry.name === 'abort') expect(entry.type, [i32, i32, i32, i32], []);
+    else throw failure();
+  }
+  for (const name of ['start', 'resume', 'buffer', 'capacity', 'output_ptr', 'output_len', 'aux_ptr', 'aux_len']) {
+    if (!exports.has(name)) throw failure();
+    expect(functions[exports.get(name)], name === 'resume' ? [i32] : [], [i32]);
+  }
 }
 function validateRuntimeBinding(input) {
   const artifact = normalizeRuntimeBinding(input);

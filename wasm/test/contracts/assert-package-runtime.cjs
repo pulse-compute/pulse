@@ -5,7 +5,7 @@ const { capturePackageHttp, closePackageHttp, capturePackageRequest, normalizePa
   executePackageOperation, validateRuntimeArtifact } = require('../../../packages/provider-node/src/runtime/package-operations.js');
 
 // An independent, tiny ABI consumer. No protocol package or lowerer registration.
-function moduleBytes(status = 2, repeat = false, maximum = 32) {
+function moduleBytes(status = 2, repeat = false, maximum = 32, wrongSignature = false) {
   const u = n => { const a = []; do { const b = n & 127; n >>>= 7; a.push(b | (n ? 128 : 0)); } while(n); return a; };
   const s = n => { const a = u(n); if (a.at(-1) & 64) a.push(0); return a; };
   const vec = xs => [ ...u(xs.length), ...xs.flat() ];
@@ -17,13 +17,13 @@ function moduleBytes(status = 2, repeat = false, maximum = 32) {
   const data = [...Buffer.from('private-message')];
   return Buffer.from([0,97,115,109,1,0,0,0,
     ...section(1, vec([[0x60,0,1,0x7f],[0x60,1,0x7f,1,0x7f]])),
-    ...section(3,vec(names.map((_,i)=>[i===1?1:0]))),
+    ...section(3,vec(names.map((_,i)=>[i===1 || wrongSignature && i===0 ? 1 : 0]))),
     ...section(5,[1,...(maximum === null ? [0,2] : [1,2,...u(maximum)])]),
     ...section(7,vec([...names.map((n,i)=>[...str(n),0,i]),[...str('memory'),2,0]])),
     ...section(10,vec(code)), ...section(11,[1,0,0x41,...s(1024),0x0b,...u(data.length),...data])]);
 }
-function artifact(status = 2, repeat = false, maximum = 32) {
-  const wasm = moduleBytes(status, repeat, maximum);
+function artifact(status = 2, repeat = false, maximum = 32, wrongSignature = false) {
+  const wasm = moduleBytes(status, repeat, maximum, wrongSignature);
   return {version:'pulse.package-runtime-binding.v1',id:'independent.v1',package:'@independent/protocol',contractId:'independent.protocol',
     kind:'package-runtime-wasm',mediaType:'application/wasm',data:{abi:'pulse.package-wasm.v1',wasm:wasm.toString('base64'),
       sha256:createHash('sha256').update(wasm).digest('hex'),operations:[{name:'execute',configuration:'v1',capabilities:['http.snapshot','crypto.sha256','crypto.hmac-sha256']}]}};
@@ -37,6 +37,7 @@ const key = 'this-is-a-private-test-key-32-bytes';
 const realization = {algorithms:['SHA-256','HMAC-SHA256'].map(algorithm=>({algorithm,available:true,realization:'guest-source:pulse-hmac-as'}))};
 async function main() {
   validateRuntimeArtifact(artifact());
+  assert.throws(()=>validateRuntimeArtifact(artifact(2,false,32,true)), /ABI/);
   for (const max of [null,33]) assert.throws(()=>validateRuntimeArtifact(artifact(2,false,max)));
   for (const change of [a=>a.version='v2',a=>a.data.abi='v2',a=>a.data.sha256='0'.repeat(64),a=>a.data.operations[0].capabilities.push('ambient.secret')]) {
     const a=artifact();change(a); assert.throws(()=>validateRuntimeArtifact(a));
