@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { isTrustedLowerer } = require('@pulse-compute/wasm-contracts/library/manifest');
 const fs = require('node:fs');
 const { createRequire } = require('node:module');
 const path = require('node:path');
@@ -82,7 +83,7 @@ function catalogDescriptor(record, productRecord) {
   const nativeSupported = Boolean(
     product
     && ['supported', 'provider-dependent'].includes(product.targets.native.status)
-    && compiler.trust === 'first-party'
+    && isTrustedLowerer(compiler.trust)
     && validation.status === 'ok'
     && wasm.mode !== 'lowering-plan-only'
     && wasm.sidecar
@@ -130,11 +131,13 @@ function discoverPackageContractCatalog(options = {}) {
   const records = discoverLowerableLibraryManifests({
     cwd,
     workspaceRoot: options.workspaceRoot,
+    packageDirs: options.packageDirs,
     scanNodeModules: options.scanNodeModules !== false
   });
   const productCatalog = discoverPulsePackageContracts({
     cwd,
     workspaceRoot: options.workspaceRoot,
+    packageDirs: options.packageDirs,
     scanNodeModules: options.scanNodeModules !== false
   });
   const productsByContract = new Map(productCatalog.contracts.map((entry) => [entry.contractId, { contract: entry, metadataHash: entry.metadataHash }]));
@@ -168,7 +171,7 @@ function discoverPackageContractCatalog(options = {}) {
     }),
     contracts: Object.freeze(contracts),
     policy: Object.freeze({
-      trustedFirstPartyOnly: true,
+      trustedBuildDependencies: true,
       sourceSubstringSelection: false,
       graphReachabilitySelection: true,
       publicRegistration: false,
@@ -615,6 +618,7 @@ function recognizeProjectPackageOperations(entryFile, options = {}) {
   const manifestRecords = discoverLowerableLibraryManifests({
     cwd: rootDir,
     workspaceRoot: options.workspaceRoot,
+    packageDirs: options.packageDirs,
     scanNodeModules: true
   });
   const selected = selectPackageRecords(manifestRecords, sourceText, options.selectedContracts);
@@ -640,6 +644,7 @@ function recognizeProjectPackageOperations(entryFile, options = {}) {
     const result = buildPackageOwnedLoweringPlan({
       cwd: rootDir,
       workspaceRoot: options.workspaceRoot,
+    packageDirs: options.packageDirs,
       manifestRecords,
       contractId: record.manifest.contractId,
       sourcePath: sourceName,
@@ -736,7 +741,7 @@ function recognizeProjectPackageOperations(entryFile, options = {}) {
       lateLoweringReceivesSourceAst: false,
       lateLoweringReceivesSourceText: false,
       lateLoweringInput: CANONICAL_PACKAGE_OPERATION_VERSION,
-      firstPartyBuildersOnly: true,
+      trustedBuildDependencies: true,
       externalRegistration: false
     })
   });
@@ -880,7 +885,7 @@ function combinePackageOperationRecognitions(recognitions = []) {
       lateLoweringReceivesSourceAst: false,
       lateLoweringReceivesSourceText: false,
       lateLoweringInput: CANONICAL_PACKAGE_OPERATION_VERSION,
-      firstPartyBuildersOnly: true,
+      trustedBuildDependencies: true,
       externalRegistration: false
     })
   });
@@ -944,7 +949,7 @@ function packageOperationRecognitionFromEffects(effects = []) {
       lateLoweringReceivesSourceAst: false,
       lateLoweringReceivesSourceText: false,
       lateLoweringInput: CANONICAL_PACKAGE_OPERATION_VERSION,
-      firstPartyBuildersOnly: true,
+      trustedBuildDependencies: true,
       externalRegistration: false
     })
   });

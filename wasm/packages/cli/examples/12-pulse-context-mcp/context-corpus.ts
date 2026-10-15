@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "56fc9899d29465e8edeff2d57638983290fb57482482cb9bc385a040426c5e4d",
+  "corpusHash": "51ab74296351005d9771fa1d60af00d947e9611334e31e0a39784600245179d9",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -372,9 +372,9 @@ export const contextCorpus = freeze({
         "endLine": 185,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:One application contract and one compiler spine",
-        "sha256": "af1a6588f6d316aad51107691a54a833c2ef9adaa078f92f00fb6e8598237248",
+        "sha256": "8a150a7110ccf987ac69af17f91bc1734504efd91ab84bbe3086cda76b0dd1b3",
         "startLine": 63,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4ee4e1bb4e0c9a6ee6bfb5b83f26b7beb6b67e1b"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b099b95b99f3f6a37065bed8654d6d6a28d59ef7"
       },
       "status": "candidate",
       "tags": [
@@ -451,9 +451,9 @@ export const contextCorpus = freeze({
         "endLine": 1452,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Retained build metadata",
-        "sha256": "af1a6588f6d316aad51107691a54a833c2ef9adaa078f92f00fb6e8598237248",
+        "sha256": "8a150a7110ccf987ac69af17f91bc1734504efd91ab84bbe3086cda76b0dd1b3",
         "startLine": 1434,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4ee4e1bb4e0c9a6ee6bfb5b83f26b7beb6b67e1b"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b099b95b99f3f6a37065bed8654d6d6a28d59ef7"
       },
       "status": "candidate",
       "tags": [
@@ -538,9 +538,9 @@ export const contextCorpus = freeze({
         "endLine": 2193,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Providers, targets, and eligibility",
-        "sha256": "af1a6588f6d316aad51107691a54a833c2ef9adaa078f92f00fb6e8598237248",
+        "sha256": "8a150a7110ccf987ac69af17f91bc1734504efd91ab84bbe3086cda76b0dd1b3",
         "startLine": 1832,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4ee4e1bb4e0c9a6ee6bfb5b83f26b7beb6b67e1b"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b099b95b99f3f6a37065bed8654d6d6a28d59ef7"
       },
       "status": "candidate",
       "tags": [
@@ -704,17 +704,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "contract",
-      "content": "## Package-owned capabilities\n\nNormal package roots are canonical for application authors. JavaScript targets\nexecute the package implementation; supported Native targets recognize the\nsame root symbols and lower the accepted subset into canonical package\noperations. Compatibility subpaths do not define the recommended surface.\n\nProduct metadata, application exports, executable compiler authority, and\nprovider realization are separate owners:\n\n- `pulse.package.json` describes product, target, ownership, and conformance\n  metadata and cannot execute compiler code;\n- a trusted compiler manifest and builder own static recognition, diagnostics,\n  payloads, and optional sidecar ABI;\n- shared contracts own versioned operation and result semantics;\n- providers own host realization.\n\nThe feature-to-compiler seam is exact. The library kit constructs a versioned,\nimmutable builder invocation from documented source-recognition inputs; it\ndoes not forward caller option bags. The builder's package-owned artifact and\ncontributions are normalized into a versioned result envelope before compiler\norchestration. Shared package contracts reject unknown fields, owner/version\nmismatches, nondeterministic order, and mutable canonical operations.\n\nPackage builders emit provider-neutral capability and crypto requirements.\nThey do not receive provider drivers, target descriptors, runtime objects,\nresolved secrets, raw CLI configuration, compiler caches, or arbitrary\nTypeScript programs/services. Target eligibility begins after canonical\nrequirements exist.\n\nPackage effects require an explicit `PulseContext` and use the same\nrequest-owned bridge as core effects. There is no ambient current request,\nmutable global registration, or package-specific scheduler.\n\nThe Beta executes lowerers only from synchronized first-party\npackages. Explicit provider toolchains are the narrow exception that may load a\nselected project package; they do not enable dependency scanning or plugin\nself-registration and do not widen lowerer trust. A general plugin API remains\nunavailable until the machine-readable readiness gates for provenance,\ndiscovery, negotiation, security, compatibility, and isolated loading are\nimplemented and release gated.\n\nSee [Package-owned lowering](../concepts/package-owned-lowering.md), the\n[package lowerer contract](../contributing/package-lowerer-contract.md), and\n[plugin readiness](../maintainers/plugin-readiness.md).\n",
-      "contentSha256": "bf989ee6d75beb1b4117e0723550f49f1477415e28df202b4f709f32d7bb97d3",
+      "content": "## Package-owned capabilities\n\nNormal package roots are canonical for application authors. JavaScript targets\nexecute the package implementation; supported Native targets recognize the\nsame root symbols and lower the accepted subset into canonical package\noperations. Compatibility subpaths do not define the recommended surface.\n\nProduct metadata, application exports, executable compiler authority, and\nprovider realization are separate owners:\n\n- `pulse.package.json` describes product, target, ownership, and conformance\n  metadata and cannot execute compiler code;\n- a trusted compiler manifest and builder own static recognition, diagnostics,\n  payloads, and optional sidecar ABI;\n- shared contracts own versioned operation and result semantics;\n- providers own host realization.\n\nThe feature-to-compiler seam is exact. The library kit constructs a versioned,\nimmutable builder invocation from documented source-recognition inputs; it\ndoes not forward caller option bags. The builder's package-owned artifact and\ncontributions are normalized into a versioned result envelope before compiler\norchestration. Shared package contracts reject unknown fields, owner/version\nmismatches, nondeterministic order, and mutable canonical operations.\n\nPackage builders emit provider-neutral capability and crypto requirements.\nThey do not receive provider drivers, target descriptors, runtime objects,\nresolved secrets, raw CLI configuration, compiler caches, or arbitrary\nTypeScript programs/services. Target eligibility begins after canonical\nrequirements exist.\n\nPackage effects require an explicit `PulseContext` and use the same\nrequest-owned bridge as core effects. There is no ambient current request,\nmutable global registration, or package-specific scheduler.\n\nPackage lowerers are trusted build dependencies. A resolved workspace or npm\npackage may declare static `pulse.package.json` product metadata and the\nversioned `pulsewasm.manifest.cjs` compiler contract. Admission depends on\nmatching supported protocol versions and package ownership, not a package-name\nallowlist, a monorepo registration, or equality with Pulse's release version.\nUse `compiler.trust: 'build-dependency'` and matching `lowering.trust`;\n`first-party` remains a compatible alias with the same execution authority.\n\nThe project graph discovers declarations from the package resolved at each\nimport, including nested dependencies. Unrelated installed manifests are not\nexecuted by graph compilation. Explicit catalog inspection may enumerate\nworkspace and installed declarations. Recognition runs only for graph-selected\npackage contracts. Conflicting contract/import ownership fails closed.\nManifest, builder, sidecar, and product metadata paths must stay inside their\npackage after realpath resolution; package-root links such as pnpm's are valid.\n\nManifests and builders run ordinary CommonJS in the compiler process with its\nfilesystem, environment, and Node authority. This is an explicit trust model,\nnot sandboxing, signature verification, resource isolation, or failure\ncontainment. Applications choose and maintain their build dependencies.\nProtocol validation occurs after loading the trusted manifest and before\nloading its builder. Unknown protocol versions are rejected, not guessed from\nnpm semver. Builder results, canonical operations, and provider requirements\nstill pass their existing versioned validators. Package admission does not\ncreate a host capability or expand the separate prebuilt-guest contract.\nA general compiler-plugin hook API remains deferred; the scoped external\nlowerer contract is available independently of that readiness gate.\n\nSee [Package-owned lowering](../concepts/package-owned-lowering.md), the\n[package lowerer contract](../contributing/package-lowerer-contract.md), and\n[plugin readiness](../maintainers/plugin-readiness.md).\n",
+      "contentSha256": "eb942ff4794dec589318c6267302440b720f2ffd62b680f94e1b42134e6c7aec",
       "id": "contract/package-authority",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 2239,
+        "endLine": 2259,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Package-owned capabilities",
-        "sha256": "af1a6588f6d316aad51107691a54a833c2ef9adaa078f92f00fb6e8598237248",
+        "sha256": "8a150a7110ccf987ac69af17f91bc1734504efd91ab84bbe3086cda76b0dd1b3",
         "startLine": 2194,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4ee4e1bb4e0c9a6ee6bfb5b83f26b7beb6b67e1b"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b099b95b99f3f6a37065bed8654d6d6a28d59ef7"
       },
       "status": "candidate",
       "tags": [
@@ -877,9 +877,9 @@ export const contextCorpus = freeze({
         "endLine": 1597,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Report comparison contract",
-        "sha256": "af1a6588f6d316aad51107691a54a833c2ef9adaa078f92f00fb6e8598237248",
+        "sha256": "8a150a7110ccf987ac69af17f91bc1734504efd91ab84bbe3086cda76b0dd1b3",
         "startLine": 1453,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4ee4e1bb4e0c9a6ee6bfb5b83f26b7beb6b67e1b"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b099b95b99f3f6a37065bed8654d6d6a28d59ef7"
       },
       "status": "candidate",
       "tags": [
@@ -9142,8 +9142,8 @@ export const contextCorpus = freeze({
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",
-      "sha256": "af1a6588f6d316aad51107691a54a833c2ef9adaa078f92f00fb6e8598237248",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4ee4e1bb4e0c9a6ee6bfb5b83f26b7beb6b67e1b"
+      "sha256": "8a150a7110ccf987ac69af17f91bc1734504efd91ab84bbe3086cda76b0dd1b3",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b099b95b99f3f6a37065bed8654d6d6a28d59ef7"
     },
     {
       "path": "docs/concepts/bodies.md",

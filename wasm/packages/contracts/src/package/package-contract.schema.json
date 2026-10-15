@@ -162,7 +162,7 @@
           "$ref": "#/$defs/packageRelativePath"
         },
         "trust": {
-          "const": "first-party"
+          "enum": ["build-dependency", "first-party"]
         },
         "canonicalOperationVersion": {
           "const": "pulse.canonical-package-operation.v1"

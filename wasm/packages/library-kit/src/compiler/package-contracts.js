@@ -12,7 +12,6 @@ const {
   validatePackageContractCatalog
 } = loadPackageContractAuthority();
 const { discoverLowerableLibraryManifests } = require('./handler-library-contracts.js');
-const { TRUSTED_LOWERER_PACKAGES } = require('@pulse-compute/wasm-contracts/library/manifest');
 
 
 function loadPackageContractAuthority() {
@@ -99,11 +98,12 @@ function packageContractPath(packageJson) {
 }
 
 function resolveInsidePackage(packageDir, reference, field, expectedKind = 'file') {
-  const root = path.resolve(packageDir);
-  const resolved = path.resolve(packageDir, reference);
+  const root = fs.realpathSync(packageDir);
+  const candidate = path.resolve(packageDir, reference);
+  if (!fs.existsSync(candidate)) throw new TypeError(`${field} does not exist: ${reference}.`);
+  const resolved = fs.realpathSync(candidate);
   const relative = path.relative(root, resolved);
   if (relative.startsWith('..') || path.isAbsolute(relative)) throw new TypeError(`${field} must remain inside ${root}.`);
-  if (!fs.existsSync(resolved)) throw new TypeError(`${field} does not exist: ${reference}.`);
   const stat = fs.statSync(resolved);
   if (expectedKind === 'file' && !stat.isFile()) throw new TypeError(`${field} must identify a file: ${reference}.`);
   if (expectedKind === 'directory' && !stat.isDirectory()) throw new TypeError(`${field} must identify a directory: ${reference}.`);
@@ -126,16 +126,17 @@ function sortedUnique(values) {
 }
 
 function validateLowererAlignment(contract, lowerable, packageDir) {
-  if (contract.targets.native.status !== 'supported') return null;
+  if (!['supported', 'provider-dependent'].includes(contract.targets.native.status)) return null;
   if (!lowerable) throw new TypeError(`Native package contract ${contract.contractId} has no package-owned lowering manifest.`);
   const manifest = lowerable.manifest;
+  if (manifest.compiler.trust !== contract.lowering.trust) throw new TypeError(`Package contract ${contract.contractId} lowerer trust does not match its manifest.`);
   if (manifest.contractId !== contract.contractId) throw new TypeError(`Package contract ${contract.contractId} does not match lowerer contract ${manifest.contractId}.`);
   if (manifest.npmPackage !== contract.npmPackage) throw new TypeError(`Package contract ${contract.contractId} lowerer package does not match ${contract.npmPackage}.`);
   if (manifest.lowerableSubpath !== contract.targets.native.lowerableSubpath) throw new TypeError(`Package contract ${contract.contractId} lowerable subpath does not match the trusted lowerer manifest.`);
   const expectedManifest = path.relative(packageDir, lowerable.manifestFile).replace(/\\/g, '/').replace(/^(?!\.)/, './');
   if (contract.lowering.manifest !== expectedManifest) throw new TypeError(`Package contract ${contract.contractId} lowering.manifest must identify ${expectedManifest}.`);
   const manifestRequirements = sortedUnique(manifest.modes && manifest.modes.wasm && manifest.modes.wasm.hostCapabilities || []);
-  if (JSON.stringify(manifestRequirements) !== JSON.stringify([...contract.targets.native.providerRequirements])) {
+  if (contract.targets.native.status === 'supported' && JSON.stringify(manifestRequirements) !== JSON.stringify([...contract.targets.native.providerRequirements])) {
     throw new TypeError(`Package contract ${contract.contractId} provider requirements do not match the trusted lowerer manifest.`);
   }
   const manifestSymbols = sortedUnique(manifest.facade && manifest.facade.symbols || []);
@@ -145,7 +146,7 @@ function validateLowererAlignment(contract, lowerable, packageDir) {
   const semanticCases = sortedUnique(manifest.modes && manifest.modes.wasm && manifest.modes.wasm.lowerings
     ? manifest.modes.wasm.lowerings.map((entry) => entry.tsSymbol)
     : []);
-  if (JSON.stringify(semanticCases) !== JSON.stringify([...contract.conformance.semanticCases])) {
+  if (contract.targets.native.status === 'supported' && JSON.stringify(semanticCases) !== JSON.stringify([...contract.conformance.semanticCases])) {
     throw new TypeError(`Package contract ${contract.contractId} semantic cases do not match the trusted lowerer operations.`);
   }
   return Object.freeze({ manifest, manifestFile: lowerable.manifestFile, manifestRequirements, semanticCases });
@@ -164,7 +165,7 @@ function discoverPulsePackageContracts(inputs = {}) {
   const externalDirs = inputs.scanNodeModules === false ? [] : nodeModulesPackageDirs(workspaceRoot, cwd).map((entry) => path.resolve(entry));
   const packageDirs = [];
   const seenPackageDirs = new Set();
-  for (const packageDir of [...workspaceDirs, ...externalDirs]) {
+  for (const packageDir of inputs.packageDirs || [...workspaceDirs, ...externalDirs]) {
     const resolved = path.resolve(packageDir);
     const identity = fs.existsSync(resolved) ? fs.realpathSync.native(resolved) : resolved;
     if (seenPackageDirs.has(identity)) continue;
@@ -174,6 +175,7 @@ function discoverPulsePackageContracts(inputs = {}) {
   const lowerableByPackage = new Map(discoverLowerableLibraryManifests({
     cwd,
     workspaceRoot,
+    packageDirs: inputs.packageDirs,
     scanNodeModules: inputs.scanNodeModules !== false
   }).map((record) => [record.packageName, record]));
   const records = [];
@@ -181,7 +183,6 @@ function discoverPulsePackageContracts(inputs = {}) {
   for (const packageDir of packageDirs) {
     const packageJsonFile = path.join(packageDir, 'package.json');
     const packageJson = readJson(packageJsonFile);
-    if (!TRUSTED_LOWERER_PACKAGES.includes(packageJson && packageJson.name)) continue;
     const contractRef = packageContractPath(packageJson);
     if (!packageJson || !contractRef) continue;
     if (typeof packageJson.name !== 'string' || packageJson.name.trim().length === 0) {

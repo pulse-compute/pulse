@@ -146,7 +146,7 @@ function normalizePackageReachabilityProjection(input) {
       packageUseFromResolvedReachabilityOnly: true,
       typeOnlyImportsActivateContracts: false,
       substringSelection: false,
-      firstPartyLowerersOnly: true,
+      trustedBuildDependencies: true,
       publicPluginApi: false
     })
   });

@@ -441,15 +441,47 @@ function packageOwner(packageName) {
   return 'third-party';
 }
 
+function discoverResolvedPackageContract(context, manifestPath, packageName) {
+  if (!manifestPath || context.fixedPackageContractCatalog) return;
+  const packageDir = fs.realpathSync(path.dirname(manifestPath));
+  if (context.packageContractDirs.has(packageDir)) return;
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  if (!manifest.pulse?.contract && !manifest.pulsewasm?.manifest && !manifest.pulsewasm?.lowerableManifest) return;
+  if (manifest.name !== packageName) throw new TypeError(`Resolved lowerer package identity must match ${packageName}.`);
+  context.packageContractDirs.add(packageDir);
+  const catalog = discoverPackageContractCatalog({ cwd: context.rootDir, workspaceRoot: context.workspaceRoot,
+    packageDirs: [...context.packageContractDirs] });
+  context.packageContractCatalog = catalog;
+  for (const entry of catalog.contracts) {
+    context.packageContractsBySubpath.set(entry.lowerableSubpath, entry);
+    for (const subpath of entry.compatibilitySubpaths) context.packageContractsBySubpath.set(subpath, entry);
+    context.packageContractsByPackage.set(entry.packageName, catalog.contracts.filter(value => value.packageName === entry.packageName));
+  }
+  for (const entry of catalog.productCatalog.contracts) {
+    context.packageProductContractsByPackage.set(entry.npmPackage, entry);
+    context.packageProductContractsBySpecifier.set(entry.authoring.import, { contract: entry, role: 'authoring' });
+    for (const specifier of entry.ownership.helperImports) context.packageProductContractsBySpecifier.set(specifier, { contract: entry, role: 'helper' });
+    for (const specifier of entry.ownership.reExportImports) context.packageProductContractsBySpecifier.set(specifier, { contract: entry, role: 're-export' });
+  }
+}
+
 function packageModuleForSpecifier(context, importer, classification) {
   const packageName = classification.packageName;
   const specifier = classification.specifier;
+  // Resolve the installed copy at this import before granting compiler authority.
+  const resolvedManifest = searchNodeModulesPackage(importer.absolutePath, packageName, context.workspaceRoot)
+    || context.workspacePackages.get(packageName);
+  discoverResolvedPackageContract(context, resolvedManifest, packageName);
   const contract = context.packageContractsBySubpath.get(specifier) || null;
+  const declaredOwners = context.packageContractsByPackage.get(packageName) || [];
+  if (resolvedManifest && declaredOwners.some(entry => entry.packageDir && fs.realpathSync(entry.packageDir) !== fs.realpathSync(path.dirname(resolvedManifest)))) {
+    throw new TypeError(`Resolved package ${packageName} does not match its selected lowerer owner.`);
+  }
   const productBinding = context.packageProductContractsBySpecifier.get(specifier) || null;
   const productContract = productBinding && productBinding.contract || context.packageProductContractsByPackage.get(packageName) || null;
   const productRole = productBinding && productBinding.role || null;
   const trusted = CORE_AUTHORING_PACKAGES.has(packageName) || productContract || context.packageContractsByPackage.has(packageName);
-  let manifestPath = (trusted || !context.nativePackageSources) && context.workspacePackages.get(packageName);
+  let manifestPath = (trusted || !context.nativePackageSources) && resolvedManifest;
   if (!manifestPath && importer.packageSource && importer.packageSource.packageName === packageName) manifestPath = path.join(importer.packageSource.root, 'package.json');
   if (!manifestPath) manifestPath = searchNodeModulesPackage(importer.absolutePath, packageName, context.workspaceRoot, context.nativePackageSources && !trusted ? context : undefined);
   let manifest;
@@ -839,7 +871,7 @@ function createContext(entryFile, options = {}) {
   const packageContractCatalog = options.packageContractCatalog || discoverPackageContractCatalog({
     cwd: rootDir,
     workspaceRoot,
-    scanNodeModules: true
+    packageDirs: []
   });
   const packageContractsBySubpath = new Map();
   for (const entry of packageContractCatalog.contracts) {
@@ -875,6 +907,8 @@ function createContext(entryFile, options = {}) {
     nativePackageSources: options.target !== 'javascript',
     workspacePackages: workspacePackageIndex(workspaceRoot),
     packageContractCatalog,
+    fixedPackageContractCatalog: Boolean(options.packageContractCatalog),
+    packageContractDirs: new Set(),
     packageContractsBySubpath,
     packageContractsByPackage,
     packageProductContractsByPackage,

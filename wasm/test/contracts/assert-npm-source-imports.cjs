@@ -118,17 +118,8 @@ async function main() {
  const untrusted=path.join(temp,'untrusted-metadata');setup(untrusted);
  write(untrusted,'node_modules/@fixture/tick/package.json',JSON.stringify({...manifest,pulsewasm:{manifest:'./compiler.cjs'},pulse:{contract:'./compiler.cjs'}}));
  write(untrusted,'node_modules/@fixture/tick/compiler.cjs','globalThis.__PULSE_NPM_PLUGIN_EXECUTED=true;throw new Error("untrusted compiler metadata executed");');
- assert.equal(compile(untrusted).nativeEligibility.eligible,true,'source imports grant no metadata/compiler authority');
- assert.equal(globalThis.__PULSE_NPM_PLUGIN_EXECUTED,undefined);
- const {TRUSTED_LOWERER_PACKAGES}=require('../../packages/contracts/src/library/manifest');
- const release=JSON.parse(fs.readFileSync(path.join(repo,'release/pulse-release-manifest.json')));
- const lowerers=[];
- for(const dir of fs.readdirSync(path.join(repo,'packages'),{withFileTypes:true}).filter(e=>e.isDirectory())) {
-  const file=path.join(repo,'packages',dir.name,'package.json');if(!fs.existsSync(file))continue;
-  const pkg=JSON.parse(fs.readFileSync(file));if(pkg.pulsewasm?.manifest)lowerers.push(pkg.name);
- }
- assert.deepEqual([...TRUSTED_LOWERER_PACKAGES].sort(),lowerers.sort(),'new first-party compiler authority requires an explicit policy update');
- assert.ok(TRUSTED_LOWERER_PACKAGES.every(name=>JSON.stringify(release.packages).includes(name)));
+ assert.throws(()=>compile(untrusted), /canonical manifest/, 'advertising a lowerer opts into contract validation');
+ assert.equal(globalThis.__PULSE_NPM_PLUGIN_EXECUTED,undefined,'invalid declaration fails before loading code');
  const symlinkRoot=path.join(temp,'symlink');setup(symlinkRoot);
  fs.unlinkSync(path.join(symlinkRoot,'node_modules/@fixture/tick/worker.js'));
  fs.symlinkSync(write(temp,'outside.js',handlers),path.join(symlinkRoot,'node_modules/@fixture/tick/worker.js'));

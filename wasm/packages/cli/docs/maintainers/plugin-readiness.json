@@ -12,8 +12,17 @@
     "isolatedPackageLoading": false
   },
   "currentExtensionBoundary": {
-    "lowerers": "trusted first-party release packages only",
+    "lowerers": "trusted first-party and third-party build dependencies admitted by versioned contracts; import-resolved package ownership; no package allowlist or compiler-release version equality; no sandbox",
     "providers": "explicit package selection through pulse.provider-toolchain.v1; bare host IDs use the @pulse-compute/provider-<id> convention, scoped names are exact, and none is internal; no scanning or self-registration"
   },
-  "designRule": "The explicit provider toolchain contract does not imply general plugin discovery, isolated loading, or lowerer extensibility. Do not publish a general third-party plugin API design until every readiness requirement is implemented and release-gated."
+  "designRule": "The trusted package-lowerer contract and explicit provider toolchain are available scoped extension seams. This readiness record concerns general compiler hooks and isolated untrusted plugins; it does not gate trusted external lowerers.",
+  "trustedPackageLowerers": {
+    "available": true,
+    "trust": "build-dependency",
+    "legacyTrust": "first-party",
+    "sandboxed": false,
+    "packageAllowlist": false,
+    "requiresCompilerReleaseVersion": false,
+    "compatibility": "exact-versioned-contracts"
+  }
 }

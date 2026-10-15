@@ -1,5 +1,7 @@
 'use strict';
 
+const { isTrustedLowerer } = require('../library/manifest.js');
+
 const {
   CANONICAL_PACKAGE_EFFECT_VERSION
 } = require('../handler/canonical-runtime.js');
@@ -13,7 +15,7 @@ const PACKAGE_CONFORMANCE_VERSION = 'pulse.package-conformance.v1';
 const PACKAGE_CONTRACT_CATALOG_VERSION = 'pulse.package-contract-catalog.v2';
 const PACKAGE_CONTRACT_DISCOVERY_VERSION = 'pulse.package-contract-discovery.v1';
 const PACKAGE_PRODUCT_METADATA_PACKAGE_POLICY = 'any-static-npm-package';
-const PACKAGE_NATIVE_LOWERING_TRUST_POLICY = 'first-party-only';
+const PACKAGE_NATIVE_LOWERING_TRUST_POLICY = 'trusted-build-dependency';
 const PROFILE_TOKEN_POLICY = 'opaque-direct-use';
 const CANONICAL_PACKAGE_OPERATION_VERSION = 'pulse.canonical-package-operation.v1';
 const PACKAGE_LOWERING_BUNDLE_VERSION = 'pulse.package-lowering-bundle.v1';
@@ -265,7 +267,7 @@ function normalizePackageCompilerBuilder(input, authority) {
     trust: nonEmptyString(input.trust, 'packageCompilerBuilder.trust')
   };
   if (normalized.owner !== authority.npmPackage) throw new TypeError('packageCompilerBuilder.owner must equal the manifest npmPackage.');
-  if (normalized.trust !== 'first-party') throw new TypeError('packageCompilerBuilder.trust must be first-party.');
+  if (!isTrustedLowerer(normalized.trust)) throw new TypeError('packageCompilerBuilder.trust must be build-dependency (or first-party).');
   return deepFreeze(normalized);
 }
 
@@ -848,9 +850,9 @@ function normalizePackageContract(input) {
     policy: expectedPolicy
   };
 
-  if (normalized.targets.native.status === 'supported') {
+  if (['supported', 'provider-dependent'].includes(normalized.targets.native.status)) {
     if (!normalized.targets.native.lowerableSubpath || !normalized.lowering.manifest) throw new TypeError('A supported native package contract requires lowerableSubpath and lowering.manifest.');
-    if (normalized.lowering.trust !== 'first-party') throw new TypeError('The current native package-lowering contract requires lowering.trust first-party.');
+    if (!isTrustedLowerer(normalized.lowering.trust)) throw new TypeError('Native package lowering requires lowering.trust build-dependency (or first-party).');
     if (normalized.lowering.canonicalOperationVersion !== CANONICAL_PACKAGE_OPERATION_VERSION
       || normalized.lowering.bundleVersion !== PACKAGE_LOWERING_BUNDLE_VERSION
       || normalized.lowering.providerRequirementVersion !== PROVIDER_REQUIREMENT_RECORD_VERSION) {

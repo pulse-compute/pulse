@@ -176,6 +176,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     title: 'Package effects',
     tasks: Object.freeze([
       'package-reachability',
+      'external-lowerers',
       'crypto-digest-text-contract',
       'crypto-digest-text-conformance',
       'crypto-digest-storage-conformance',

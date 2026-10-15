@@ -3,6 +3,8 @@
 const { findLowerableManifestRecord } = require('@pulse-compute/wasm-library-kit/compiler/package-lowering');
 const { loadLowerableCompilerBuilder } = require('@pulse-compute/wasm-library-kit/compiler/handler-library-contracts');
 const { compileManagedHandlerNativeBundle } = require('./handler-ir-managed.js');
+const { isTrustedLowerer } = require('@pulse-compute/wasm-contracts/library/manifest');
+const path = require('node:path');
 const applications = new WeakMap();
 
 function attachTerminalPackageNative(compiled, inputs) {
@@ -14,8 +16,8 @@ function terminalPackageNativeForCompiled(compiled) {
   if (!inputs) return null;
   const { application, recognition, managedHandlers, schemaBundle, cwd, workspaceRoot } = inputs;
   const selected = recognition.packages.find(entry => entry.contractId === application.contractId);
-  if (!selected || selected.builder.trust !== 'first-party') throw new TypeError('Native application requires its selected trusted lowerer.');
-  const { record } = findLowerableManifestRecord({ cwd, workspaceRoot, contractId: selected.contractId, npmPackage: selected.package });
+  if (!selected || !isTrustedLowerer(selected.builder.trust)) throw new TypeError('Native application requires its selected trusted lowerer.');
+  const { record } = findLowerableManifestRecord({ cwd, workspaceRoot, packageDirs: recognition.dependencies.map(file => path.dirname(file)), contractId: selected.contractId, npmPackage: selected.package });
   const exportName = record?.manifest?.compiler?.nativeApplicationExport;
   if (!exportName) return null;
   const loaded = loadLowerableCompilerBuilder(record);

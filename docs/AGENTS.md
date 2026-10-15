@@ -6,7 +6,7 @@ These instructions extend the repository root guidance for `docs/`.
   reference, authors, and the gated maintainer namespace.
 - Distinguish current canonical behavior from compatibility and internal history.
 - Bind executable or contract-sensitive examples to canonical source files whenever practical.
-- Do not promise public third-party lowerers or providers while `publicPluginApi` remains false.
+- Document trusted external package lowerers and explicitly selected provider toolchains separately from the deferred general plugin API. Do not imply sandboxing or arbitrary compiler hooks.
 - Do not describe dependency-bound validation as complete unless the dependency bundle was restored and the commands actually passed.
 - Add contributor and maintainer pages to `scripts/documentation-ownership.cjs`
   and keep their review dates honest.
