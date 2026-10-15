@@ -1,10 +1,12 @@
 'use strict';
-function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,registrationLink,pointLink,bindingLink,onRouting,onInspect}) {
+function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,registrationLink,pointLink,bindingLink,onRouting,onInspect,onDismiss,onPanelOpen}) {
   const local={binding:null,scope:null,query:'',pin:null,page:0,evidencePage:0,zoom:1};
   let host,graph,viewport,projection;
   const svgEl=(tag,attrs={},text)=>{const n=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;};
   const short=(s,n=31)=>s.length>n?s.slice(0,n-1)+'…':s;
-  const consumerName=g=>(m.definitionById.get(g.handlerId)?.name?m.definitionLabel(m.definitionById.get(g.handlerId)):null)||m.registrationLabel(g.registrations[0]);
+  const registrationName=r=>{const p=m.entryPointById.get(r.id);return p?[p.type==='event'?'Event':p.method,p.path,p.eventType].filter(Boolean).join(' '):m.registrationLabel(r);};
+  const consumerName=g=>registrationName(g.registrations[0])+(g.registrations.length>1?' · +'+(g.registrations.length-1)+' instances':'');
+  const compactPoint=id=>{const link=pointLink(id);link.textContent='Open Entry Point';return link;};
   function setZoom(value){local.zoom=Math.max(.65,Math.min(1.6,value));if(graph){graph.setAttribute('width',Math.ceil(990*local.zoom));graph.setAttribute('height',Math.ceil(Number(graph.getAttribute('data-height'))*local.zoom));}const out=host.querySelector('#binding-zoom');if(out)out.textContent=Math.round(local.zoom*100)+'%';}
   function choose(pin){local.pin=pin;local.evidencePage=0;render(host);onInspect();host.querySelector('#binding-inspector-title')?.focus({preventScroll:true});}
   function draw(){
@@ -26,18 +28,19 @@ function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,
     }
     function node(x,y,title,subtitle,hint,pin){
       const chosen=local.pin?.kind===pin.kind&&local.pin?.key===pin.key;
-      const n=svgEl('g',{transform:`translate(${x} ${y})`,class:'atlas-node binding-node'+(chosen?' selected':''),role:'button',tabindex:0,'aria-pressed':chosen,'aria-label':title+' · '+subtitle,'data-binding-node':pin.kind});
+      const n=svgEl('g',{transform:`translate(${x} ${y})`,class:'atlas-node binding-node'+(chosen?' selected':''),role:'button',tabindex:0,'aria-pressed':chosen,'aria-label':title+' · '+subtitle,'data-binding-node':pin.kind,'data-binding-key':pin.key});
       n.append(svgEl('title',{},title+' · '+subtitle),svgEl('rect',{width:260,height:76,rx:12}),svgEl('text',{x:14,y:24,class:'atlas-node-title'},short(title)),svgEl('text',{x:14,y:45,class:'atlas-node-source'},short(subtitle,35)),svgEl('text',{x:14,y:64,class:'atlas-node-hint'},short(hint,42)));
       n.addEventListener('click',()=>choose(pin));n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose(pin);}});
       for(const event of ['pointerenter','focus'])n.addEventListener(event,()=>highlight(pin));for(const event of ['pointerleave','blur'])n.addEventListener(event,()=>highlight(local.pin));graph.append(n);
     }
-    consumers.forEach((g,i)=>node(24,60+i*96,consumerName(g),g.mount?m.registrationLabel(m.registrationById.get(g.mount)):'Application root',g.registrations.length+' instances · '+g.rows.length+' association rows',{kind:'consumer',key:g.key}));
+    consumers.forEach((g,i)=>node(24,60+i*96,consumerName(g),g.mount?m.registrationLabel(m.registrationById.get(g.mount)):'Application root','Candidate · '+g.registrations.length+' instances · '+g.rows.length+' association rows',{kind:'consumer',key:g.key}));
     node(365,middle-38,projection.binding.name,projection.binding.kind+' · '+projection.binding.resolution,projection.sites.length+' use sites · '+projection.consumerCount+' consumers',{kind:'binding',key:projection.binding.id});
     ops.forEach((g,i)=>node(700,60+i*96,g.name,g.sites.length+' distinct authored use sites',g.rows.length+' association rows',{kind:'operation',key:g.name}));
     highlight(local.pin);
     viewport=el('div',{id:'binding-viewport',class:'atlas-viewport',tabindex:0,'aria-label':'Scrollable binding graph. Drag empty space to pan.'},graph);
     let drag;viewport.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0||e.target.closest('.atlas-node'))return;drag={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};viewport.setPointerCapture(e.pointerId);});
     viewport.addEventListener('pointermove',e=>{if(drag){viewport.scrollLeft=drag.left+drag.x-e.clientX;viewport.scrollTop=drag.top+drag.y-e.clientY;}});for(const e of ['pointerup','pointercancel','lostpointercapture'])viewport.addEventListener(e,()=>drag=null);
+    viewport.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();const box=viewport.getBoundingClientRect(),x=e.clientX-box.left,y=e.clientY-box.top,old=local.zoom,left=viewport.scrollLeft,top=viewport.scrollTop;setZoom(old+(e.deltaY<0?.1:-.1));viewport.scrollLeft=(left+x)*local.zoom/old-x;viewport.scrollTop=(top+y)*local.zoom/old-y;},{passive:false});
     return viewport;
   }
   function inspector(){
@@ -46,14 +49,14 @@ function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,
     const title=c?consumerName(c):o?.name||projection?.binding.name||'Binding evidence';
     const pageCount=Math.max(1,Math.ceil(rows.length/20));local.evidencePage=Math.min(local.evidencePage,pageCount-1);
     const prev=button('Previous evidence',()=>{local.evidencePage--;render(host);host.querySelector('#binding-evidence-page').focus();}),next=button('Next evidence',()=>{local.evidencePage++;render(host);host.querySelector('#binding-evidence-page').focus();});prev.disabled=local.evidencePage===0;next.disabled=local.evidencePage+1>=pageCount;
-    return el('aside',{class:'atlas-selection surface panel-pad',id:'binding-inspector'},el('div',{class:'eyebrow'},'CONNECTION EVIDENCE'),el('h3',{id:'binding-inspector-title',tabindex:-1,class:'record-text'},title),
-      el('p',{class:'small-note'},'Static associations, not execution or effective permissions. Counts are projected rows and distinct use sites, not request counts.'),
-      c?el('div',{},el('h4',{},'Exact registration instances'),...c.registrations.map(r=>el('p',{},button('Reveal '+m.registrationLabel(r),()=>onRouting(r.id),'text-button record-text'),pointLink(r.id),el('span',{},' · '),registrationLink(r.id)))):null,
+    return el('aside',{class:'atlas-selection surface panel-pad',id:'binding-inspector'},button('Dismiss details',onDismiss),el('div',{class:'eyebrow'},'POSSIBLE CONNECTION'),el('h3',{id:'binding-inspector-title',tabindex:-1,class:'record-text'},title),
+      el('p',{class:'small-note'},'Static candidates · '+m.coverageText(projection?.coverage||m.analyticsCoverage('associations'))),
+      c?el('div',{},el('h4',{},'Exact registration instances'),...c.registrations.slice(0,3).map(r=>el('p',{},el('span',{class:'record-text'},registrationName(r)),el('br'),button('Reveal in Routing',()=>onRouting(r.id),'text-button'),el('span',{},' · '),compactPoint(r.id))),c.registrations.length>3?el('p',{},'All '+c.registrations.length+' exact instances are in Advanced exact evidence.'):null):null,
       el('p',{class:'small-note'},rows.length+' association rows · '+sites.length+' distinct use sites'),
       el('details',{class:'details-block'},el('summary',{},'Authored operations and sources'),...sites.slice(0,20).map(s=>el('p',{class:'record-text'},useSiteLink(s.id),' · '+s.operation+' · '+m.authoredSource(s.source))),sites.length>20?el('p',{class:'small-note'},'First 20 sites shown here. All associated sites are linked from the paged evidence below; the binding inventory lists all authored sites.'):null),
       projection?bindingLink(projection.binding.id):null,
-      ...rows.slice(local.evidencePage*20,(local.evidencePage+1)*20).map(associationDetail),
-      rows.length?el('div',{class:'atlas-controls'},prev,el('span',{id:'binding-evidence-page',tabindex:-1},'Evidence '+(local.evidencePage+1)+' / '+pageCount),next):el('p',{},'No recorded association in this scope. This does not establish absence of dependencies.'));
+      el('details',{class:'details-block',open:!!local.exactOpen,on:{toggle:e=>{local.exactOpen=e.target.open;}}},el('summary',{},'Advanced exact evidence'),...(c?.registrations||[]).map(r=>el('p',{},pointLink(r.id),' · ',registrationLink(r.id))),...rows.slice(local.evidencePage*20,(local.evidencePage+1)*20).map(associationDetail),
+      rows.length?el('div',{class:'atlas-controls'},prev,el('span',{id:'binding-evidence-page',tabindex:-1},'Evidence '+(local.evidencePage+1)+' / '+pageCount),next):el('p',{},'No recorded association in this scope. This does not establish absence of dependencies.')));
   }
   function render(container){
     const camera=viewport?{left:viewport.scrollLeft,top:viewport.scrollTop}:null;
@@ -62,23 +65,24 @@ function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,
     projection=local.binding?m.bindingProjection(local.binding,local.scope,true):null;
     const search=el('input',{id:'binding-search',type:'search',value:local.query,placeholder:'Find a binding…','aria-label':'Find a binding',on:{input:e=>{local.query=e.target.value;const caret=e.target.selectionStart;render(host);const input=host.querySelector('#binding-search');input.focus();input.setSelectionRange(caret,caret);}}});
     const picker=el('div',{class:'binding-picker','aria-label':'Logical bindings'},inventory.filter(b=>(b.name+' '+b.kind).toLowerCase().includes(local.query.toLowerCase())).map(b=>{const btt=button(b.name+' · '+b.kind,()=>{local.binding=b.id;local.pin=null;local.page=0;local.evidencePage=0;render(host);host.querySelector('#binding-summary').focus();});btt.setAttribute('aria-pressed',String(local.binding===b.id));btt.setAttribute('data-binding-id',b.id);return btt;}));
-    const select=el('select',{id:'binding-select','aria-label':'Logical binding',on:{change:e=>{local.binding=e.target.value;local.pin=null;local.page=0;local.evidencePage=0;render(host);host.querySelector('#binding-select').focus();}}},inventory.map(b=>el('option',{value:b.id,selected:local.binding===b.id},b.name+' · '+b.kind)));
+    const select=el('select',{id:'binding-select','aria-label':'Logical binding',on:{change:e=>{if(!e.target.value)return;local.binding=e.target.value;local.pin=null;local.page=0;local.evidencePage=0;render(host);host.querySelector('#binding-select').focus();}}},el('option',{value:'',disabled:true,selected:!inventory.some(b=>b.id===local.binding&&(b.name+' '+b.kind).toLowerCase().includes(local.query.toLowerCase()))},'Choose a matching binding'),inventory.filter(b=>(b.name+' '+b.kind).toLowerCase().includes(local.query.toLowerCase())).map(b=>el('option',{value:b.id,selected:local.binding===b.id},b.name+' · '+b.kind)));
     const coverage=projection?.coverage||m.analyticsCoverage('associations'),scope=m.registrationById.get(local.scope);
     const coverageNote=el('p',{id:'binding-coverage',class:'binding-coverage'},el('strong',{},coverage.status==='complete'?'Static association data':coverage.status==='partial'?'Partial association data':'Association data unavailable'),' · '+m.coverageText(coverage));
-    const main=el('div',{class:'atlas-main surface panel-pad'},el('div',{class:'binding-desktop-picker'},el('label',{class:'search-box'},search),picker),el('label',{class:'binding-mobile-picker'},'Binding',select),
-      el('div',{class:'atlas-crumbs'},el('span',{},scope?'Scope: '+m.registrationLabel(scope):'Scope: Application'),scope?button('All consumers',()=>{local.scope=null;local.pin=null;local.page=0;local.evidencePage=0;render(host);}):null),
-      el('p',{id:'binding-summary',tabindex:-1,class:'small-note'},projection?projection.consumerCount+' distinct consumers · '+projection.sites.length+' distinct authored use sites · '+projection.rows.length+' association rows':'No logical bindings recorded.'),
-      el('details',{class:'binding-reading-note'},el('summary',{},'Coverage and unresolved sites'),el('p',{class:'small-note'},'Use-site coverage: '+m.coverageText(m.analyticsCoverage('useSites'))+' · '+m.useSites.filter(s=>!s.binding.bindingId&&s.binding.state!=='not-applicable').length+' sites have unresolved binding identity; they cannot be drawn as named resources.')));
+    const main=el('div',{class:'atlas-main'},el('div',{class:'atlas-search-row'},search,select),
+      el('p',{id:'binding-summary',tabindex:-1,class:'small-note'},projection?projection.consumerCount+' possible entry points · '+projection.sites.length+' authored sites · '+coverage.status+' evidence':'No logical bindings recorded.'),
+      el('details',{class:'binding-reading-note',on:{toggle:e=>{if(e.target.open)onPanelOpen();}}},el('summary',{},'Scope / evidence'),
+        el('div',{class:'atlas-crumbs'},el('span',{},scope?'Scope: '+m.registrationLabel(scope):'Scope: Application'),scope?button('All consumers',()=>{local.scope=null;local.pin=null;local.page=0;local.evidencePage=0;render(host);}):null),coverageNote,picker,
+        el('p',{class:'small-note'},'Use-site coverage: '+m.coverageText(m.analyticsCoverage('useSites'))+' · '+m.useSites.filter(s=>!s.binding.bindingId&&s.binding.state!=='not-applicable').length+' sites have unresolved binding identity; they cannot be drawn as named resources. Curves show static associations, not a request sequence or effective permissions.')));
     if(projection){
-      if(!projection.rows.length)main.append(el('p',{class:'small-note'},'No recorded association in this scope. Missing evidence does not mean no dependencies.'));
+
       const pages=Math.max(1,Math.ceil(Math.max(projection.consumers.length,projection.operations.length)/12));local.page=Math.min(local.page,pages-1);
       const prev=button('Previous graph page',()=>{local.page--;render(host);host.querySelector('#binding-graph-page').focus();}),next=button('Next graph page',()=>{local.page++;render(host);host.querySelector('#binding-graph-page').focus();});prev.disabled=local.page===0;next.disabled=local.page+1>=pages;
       const fit=button('Fit binding graph',()=>{setZoom(Math.min(1,(viewport.clientWidth-24)/990,(viewport.clientHeight-24)/Number(graph.getAttribute('data-height'))));viewport.scrollLeft=0;viewport.scrollTop=0;});
-      main.append(el('div',{class:'atlas-controls'},fit,button('Zoom out',()=>setZoom(local.zoom-.1)),el('span',{id:'binding-zoom'},Math.round(local.zoom*100)+'%'),button('Zoom in',()=>setZoom(local.zoom+.1)),button('Clear selection',()=>choose(null))),draw(),
-        el('details',{class:'binding-reading-note'},el('summary',{},'Reading these connections'),el('p',{class:'small-note'},'Curves connect retained consumers to a binding, and the binding to authored operations. They are not a request sequence. Hover highlights related connections; select a node to inspect.')),
-        pages>1?el('div',{class:'atlas-controls'},prev,el('span',{id:'binding-graph-page',tabindex:-1},'Graph page '+(local.page+1)+' / '+pages+' · up to 12 consumer groups and 12 operations per page'),next):el('span',{class:'sr-only'},'All consumer groups and operations shown.'));
+      main.append(el('div',{class:'atlas-controls'},fit,button('Zoom out',()=>setZoom(local.zoom-.1)),el('span',{id:'binding-zoom'},Math.round(local.zoom*100)+'%'),button('Zoom in',()=>setZoom(local.zoom+.1)),button('Center binding',()=>{viewport.scrollLeft=Math.max(0,495*local.zoom-viewport.clientWidth/2);viewport.scrollTop=Math.max(0,Number(graph.getAttribute('data-height'))*local.zoom/2-viewport.clientHeight/2);}),button('Clear selection',()=>{local.pin=null;render(host);onDismiss();})),draw(),
+
+        pages>1?el('div',{class:'binding-pagination atlas-controls'},prev,el('span',{id:'binding-graph-page',tabindex:-1},'Graph page '+(local.page+1)+' / '+pages+' · up to 12 consumer groups and 12 operations per page'),next):el('span',{class:'sr-only'},'All consumer groups and operations shown.'));
     }
-    host.replaceChildren(coverageNote,el('div',{class:'atlas-workspace'},main,inspector()));if(camera&&viewport){viewport.scrollLeft=camera.left;viewport.scrollTop=camera.top;}
+    host.replaceChildren(el('div',{class:'atlas-workspace'},main,inspector()));if(camera&&viewport){viewport.scrollLeft=camera.left;viewport.scrollTop=camera.top;}
   }
   return {render,configure({binding=null,scope=null}={}){viewport=null;local.binding=binding;local.scope=scope;local.pin=null;local.page=0;local.evidencePage=0;}};
 }

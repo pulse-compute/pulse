@@ -1678,14 +1678,34 @@ Contextual **Explore execution** and **Explore consumers** actions open the
 Execution Explorer. Exact details and **Back to Explorer** preserve its live
 selection, scope, expanded set, mode, zoom, pan, and focus within the open report.
 A new explicit exploration replaces that return context; page reload recreates
-the focused context rather than persisting camera state. Full-window layout and
-visual/browser qualification are separate VIS-09 work. New entry-point, binding,
+the focused context rather than persisting camera state. New entry-point, binding,
 authored-definition, registration, use-site and Explorer links use percent-encoded
 full capsule IDs. Historical numeric route, binding, entry, authored-record and
 atlas hashes continue resolving by their original capsule-local indices.
 Anonymous labels use retained source file:line and registration type/order/mount
 context, never a fabricated name or a display label as identity. No navigation
 change modifies the embedded capsule, evidence hash, exact export or comparison.
+
+VIS-09 opens the Explorer as a fixed, full-window surface inside the offline
+report, including on narrow screens. Compact controls leave the canvas available;
+no native fullscreen API is used. Selection inspects an exact registration;
+a separate **+** / **−** mount control reveals or collapses one neighborhood
+without changing selection. Center explicitly reveals selected ancestry; ordinary
+collapse does not reopen it. Containment curves and dashed binding-candidate
+curves retain their distinct static meanings. Route paths and event types lead
+compact labels; exact identities and source ranges remain in advanced details.
+
+One dismissible inspector shows type, relationship and coverage, with links to
+Entry Point, Binding and authored details. Table/help and scope/evidence panels
+replace that inspector while open. The routing table remains an optional paged
+alternative reaching every registration beyond the graph's 300-node display cap;
+binding graph and exact evidence pages retain all consumers and associations.
+Zoom never shrinks text below 65%; fit can therefore require scrolling. Search,
+keyboard node navigation, focus containment, Escape dismissal, close-to-origin
+focus restoration, pointer panning and modifier-wheel zoom work without network
+access. Browser evidence for Catalog and small/mixed capsules is recorded under
+`docs/internal/vis-09/`; these are presentation changes, with the strict CSP and
+complete exported capsule unchanged.
 
 ## Providers, targets, and eligibility
 

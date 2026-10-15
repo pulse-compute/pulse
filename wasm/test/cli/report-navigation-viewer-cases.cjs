@@ -40,7 +40,7 @@ module.exports=({renderedTree})=>{
   assert.equal(m.state.selectedRegistration,http.id);assert.ok(tree.get('atlas-viewport'));
   const selectedNode=tree.get('view-atlas').querySelectorAll('g').find(n=>n.attrs['data-atlas-registration']===http.id);selectedNode.events.keydown({key:'Enter',preventDefault(){}});
   assert.equal(tree.get('view-atlas').attrs['data-inspector'],'true');
-  click(null,'Expand workspace');click(null,'+');
+  assert.ok(tree.document.body.classList.contains('atlas-expanded'));click(null,'+');
   const viewport=tree.get('atlas-viewport'),graph=viewport.children[0];viewport.scrollLeft=123;viewport.scrollTop=47;
   const width=graph.attrs.width,nodeIds=tree.get('view-atlas').querySelectorAll('g').map(n=>n.attrs['data-atlas-registration']).filter(Boolean);
   const link=tree.get('view-atlas').querySelectorAll('a').find(n=>n.attrs.href===m.detailHash('handlers',http.registration.handlerId));assert.ok(link);link.focus();

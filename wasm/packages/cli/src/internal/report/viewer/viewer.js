@@ -74,7 +74,7 @@
   const navigation = [['entry-points','Entry Points','routes'],['bindings','Bindings','link']];
   const secondaryNavigation = [['routes','HTTP size analysis','routes'],['resources','Resources & sizes','box'],['schemas','Schemas','layers'],['evidence','Evidence','evidence'],['handlers','Authored records','code'],['entries','All entry records','code'],['helpers','Compiled helpers','chip']];
   const viewIds = [...navigation,...secondaryNavigation,['atlas']].map(([id])=>id);
-  let explorerReturn=null,activeHash='';
+  let explorerReturn=null,activeHash='',explorerOrigin=null,restoreOrigin=false;
   const button = (label, fn, cls='button subtle') => el('button',{type:'button',class:cls,on:{click:fn}},label);
   const note = text => el('div',{class:'plain-note'},icon('info'),el('p',{},text));
   const kv = entries => el('dl',{class:'kv-list'},entries.map(([key,value]) => el('div',{class:'kv-row'},el('dt',{},key),el('dd',{class:'record-text'},value))));
@@ -532,12 +532,13 @@
   const pointLink = id => model.entryPointById.has(id)
     ? el('a',{href:model.detailHash('entry-points',id),class:'record-text'},'Open Entry Point · '+model.entryPointById.get(id).label) : registrationLink(id);
   const bindingLink = id => el('a',{href:model.detailHash('bindings',id),class:'record-text'},'Open Binding · '+bindings.get(id).name);
-  const atlas=createReportAtlas({model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,pointLink,bindingLink,select:id=>{
+  const atlas=createReportAtlas({onClose:mode=>{restoreOrigin=true;location.hash=explorerOrigin?.hash||(mode==='bindings'?'#bindings':'#entry-points');},model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,pointLink,bindingLink,select:id=>{
     const hash=model.detailHash('explorer/entry',id);
     if(location.hash===hash)atlas.center(id,true);else {atlasFocus=true;location.hash=hash;}
   }});
-  function exploreEntry(id){explorerReturn=null;atlas.focusEntry(id);atlasFocus=true;const hash=model.detailHash('explorer/entry',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
-  function exploreBinding(id){explorerReturn=null;atlasFocus=true;atlas.bindings({binding:id});const hash=model.detailHash('explorer/binding',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  function rememberExplorerOrigin(){const focused=document.activeElement,label=focused?.textContent;explorerOrigin={hash:location.hash||'#entry-points',label,index:$$('button').filter(n=>n.textContent===label).indexOf(focused)};}
+  function exploreEntry(id){rememberExplorerOrigin();explorerReturn=null;atlas.focusEntry(id);atlasFocus=true;const hash=model.detailHash('explorer/entry',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  function exploreBinding(id){rememberExplorerOrigin();explorerReturn=null;atlasFocus=true;atlas.bindings({binding:id});const hash=model.detailHash('explorer/binding',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
   let atlasFocus=false;
   function renderAtlas(){atlas.open($('#view-atlas'));}
   const inventories=createReportInventories({model,el,button,replace,heading:sectionHeading,note,kv,tag,definitionLink,registrationLink,useSiteLink,entryLink,evidenceCards,exploreEntry,exploreBinding});
@@ -669,6 +670,7 @@
     showView(['registrations','use-sites'].includes(view)?'handlers':view,restore);
     activeHash=location.hash;
     if(restore)return;
+    if(restoreOrigin){restoreOrigin=false;const origin=explorerOrigin;explorerReturn=null;replace($('#explorer-return'));const target=$$('button').filter(n=>n.textContent===origin?.label)[origin?.index];(target||(state.view==='bindings'?$('#binding-inventory-search'):$('#entry-point-title')||$('#entry-point-search')))?.focus({preventScroll:true});return;}
     if(state.selectedEntryPoint)$('#entry-point-title')?.focus();
     if(state.selectedDefinition)$('#definition-title').focus();
     if(state.selectedRegistration&&view==='registrations')$('#registration-title').focus();
@@ -705,8 +707,9 @@
   $('#modal-close').addEventListener('click',closeModal);$('#modal-backdrop').addEventListener('click',closeModal);
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else if(!$('#route-drawer').hidden)closeDrawer();else if(state.view==='atlas'&&atlas.escape())e.preventDefault();}
-    const active=!$('#modal').hidden?$('#modal'):!$('#route-drawer').hidden?$('#route-drawer'):null;
+    const active=!$('#modal').hidden?$('#modal'):!$('#route-drawer').hidden?$('#route-drawer'):state.view==='atlas'?$('#view-atlas'):null;
     if(e.key==='Tab'&&active){const nodes=$$('button:not([disabled]),a[href],input,select,summary,[tabindex="0"]',active).filter(n=>!n.hidden&&n.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&(document.activeElement===first||!active.contains(document.activeElement))){e.preventDefault();last?.focus();}else if(!e.shiftKey&&(document.activeElement===last||!active.contains(document.activeElement))){e.preventDefault();first?.focus();}}
+    if(e.key==='/'&&state.view==='atlas'&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();($('#atlas-search')||$('#binding-search'))?.focus();}
     if(e.key==='/'&&state.view!=='atlas'&&!active&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();const target=state.view==='bindings'?'#binding-inventory-search':state.view==='routes'?'#route-search':'#entry-point-search';if(!['bindings','routes','entry-points'].includes(state.view)){location.hash='entry-points';setTimeout(()=>$('#entry-point-search').focus(),0);}else $(target)?.focus();}
   });
   window.addEventListener('hashchange',onHash);onHash();
