@@ -10,7 +10,7 @@ function write(root, name, content) {
 
 function setup(root, variant = 'full', localPackage = false) {
   let source = fs.readFileSync(path.join(__dirname, '../fixtures/projects/report-analytics/index.ts'), 'utf8');
-  // Keep line/offset coordinates when isolating the existing error+event failure.
+  // Keep line/offset coordinates across HTTP/error, HTTP/event and combined cells.
   const omit = (start, end) => {
     const from = source.indexOf(start), to = source.indexOf(end, from);
     if (from < 0 || to < 0) throw new Error('Fixture boundary missing');
