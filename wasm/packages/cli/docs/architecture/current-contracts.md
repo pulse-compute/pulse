@@ -142,6 +142,12 @@ adapter around this entry for direct JavaScript/Native parity. It is not a
 public listener, process-global bus, or production transport; Fastly, browser,
 and ESP32 event realizations remain unclaimed.
 
+Mixed Native applications may combine HTTP application-error handlers with
+event entries. Compiler-owned HTTP cursor boundaries protect the HTTP error
+lane; event records in the shared routing inventory are not HTTP cursor entries.
+An event effect failure remains an event execution failure and cannot enter
+HTTP middleware or application-error handlers.
+
 Each JavaScript or Native event invocation owns its state, effects,
 cancellation, redaction, logging, completion, and disposal. HTTP and event
 handlers may await the shared one-way `ctx.emit(type, { schema, payload? })`

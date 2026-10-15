@@ -225,8 +225,10 @@ function buildNativeControl({
     activeHandler = undefined;
   }
   const entryBlock = compileSequence(plan.entry.body || [], fallthroughBlock);
+  // Event records share the routing inventory, but enter through event.runtime-id,
+  // not the HTTP cursor. Only HTTP entries participate in application-error routing.
   if (applicationErrors && (!routerCursor || !routerLocal('mode') || !routerLocal('error')
-    || plan.routing.entries.some(entry => !protectedEntries.has(entry.index)))) {
+    || plan.routing.entries.some(entry => entry.kind !== 'event' && !protectedEntries.has(entry.index)))) {
     fail('Router application errors require explicit compiler-owned entry boundaries.');
   }
   const resumeRequirements = new Map();

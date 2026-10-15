@@ -199,20 +199,37 @@ async function execute(native, variant) {
     ['/helper-a', 'stopped', ['ROOT'], 403, [['x-stop', 'yes']]],
     ['/missing', 'Not Found', ['ROOT'], 404]
   ];
-  if (variant === 'http') cases.push(['/error', 'AN9:recovery', ['ROOT', 'RECOVERY'], 418]);
+  if (variant !== 'event') cases.push(['/error', 'AN9:recovery', ['ROOT', 'RECOVERY'], 418]);
   for (const [url, body, effects, status = 200, headers = []] of cases) {
     calls.length = 0;
     const result = await nativeHost.executeCanonicalNativeModule(native, { request: { path: url, headers }, providerAdapter });
     assert.equal(result.response.status, status, url); assert.equal(result.response.body, body, url);
     assert.deepEqual(calls.map(e => e.name), effects, url); count++;
   }
-  if (variant === 'event') {
+  if (variant !== 'http') {
     calls.length = 0;
     const result = await nativeHost.executeCanonicalNativeEvent(native, {
       version: events.EVENT_FRAME_VERSION, type: 'analytics.tick', schemaId: null
     }, { providerAdapter });
     assert.equal(result.status, events.EVENT_EXECUTION_STATUS.COMPLETED);
     assert.deepEqual(calls.map(e => e.name), ['EVENT'], 'event does not inherit HTTP middleware'); count++;
+  }
+  if (variant === 'full') {
+    const failingAdapter = { ...providerAdapter, dispatchEffect: async (...args) => {
+      if (args[0].name === 'EVENT') {
+        calls.push(args[0]);
+        throw Object.assign(new Error('fixture effect failed'), { code: 'AN9_EFFECT' });
+      }
+      return providerAdapter.dispatchEffect(...args);
+    } };
+    calls.length = 0;
+    const failed = await nativeHost.executeCanonicalNativeEvent(native, {
+      version: events.EVENT_FRAME_VERSION, type: 'analytics.tick', schemaId: null
+    }, { providerAdapter: failingAdapter });
+    assert.equal(failed.status, events.EVENT_EXECUTION_STATUS.FAILED);
+    assert.equal(failed.error.category, 'handler-failed');
+    assert.equal(failed.error.code, 'AN9_EFFECT');
+    assert.deepEqual(calls.map(e => e.name), ['EVENT'], 'event failure cannot enter HTTP middleware or error handlers'); count++;
   }
   return count;
 }
@@ -222,8 +239,7 @@ async function main() {
   const cells = [];
   try {
     require('./report-handler-name-cases.cjs')(directory);
-    // Planning/observation covers imported declarations plus both entry lanes;
-    // combined error/event Native generation is isolated in issue #329.
+    // Planning, generation and execution cover imported declarations and both lanes.
     setup(directory);
     let project = resolveProject({ cwd: directory, metadataOnly: true });
     const compiled = execution.compileProject(project), plan = buildCanonicalNativePlan(compiled);
@@ -257,7 +273,7 @@ async function main() {
     assert.equal(missing.analytics.coverage.handlers.status, 'unavailable');
     const controlOwner = withoutProjection();
     let negative = 0;
-    for (const variant of ['http', 'event']) {
+    for (const variant of ['http', 'event', 'full']) {
       let defaultReport;
       for (const optimization of ['default', 'experimental-native-bounded-size']) {
         setup(directory, variant);
@@ -272,7 +288,21 @@ async function main() {
         assert.deepEqual(prepared.native.wasm, control.native.wasm);
         assert.deepEqual(prepared.native.manifest.optimization, control.native.manifest.optimization);
         const value = report(project, prepared, optimization);
-        assertTopology(value, { event: variant === 'event', error: variant === 'http' });
+        assertTopology(value, { event: variant !== 'http', error: variant !== 'event' });
+        if (variant === 'full' && optimization === 'default') {
+          const unprotected = structuredClone(prepared.plan);
+          const errorIndex = unprotected.routing.entries.find(entry => entry.kind === 'error').index;
+          const cursor = unprotected.locals.find(local => local.name === '__pulse_router_cursor').id;
+          const guard = unprotected.entry.body.find(statement => statement.kind === 'if'
+            && statement.test.left?.id === cursor && statement.test.right?.value === errorIndex);
+          assert.ok(guard, 'fixture has a compiler-owned HTTP error entry boundary');
+          guard.test.operator = '!==';
+          assert.throws(() => require('../../packages/runtime-core-as/src/compiler/canonical-native')
+            .generateCanonicalNativeAssemblyScript(unprotected), error =>
+            error.code === 'PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED'
+            && /explicit compiler-owned entry boundaries/.test(error.message),
+          'event coexistence must not waive missing HTTP error boundaries');
+        }
         assert.equal(report(project, control, optimization).analytics, undefined, 'disabled observation cannot invent analytics');
         assertIntegration(value, defaultReport || value);
         if (optimization === 'default') defaultReport = value;
