@@ -1,9 +1,9 @@
 
 <a class="skip-link" href="#main">Skip to report</a>
 <aside class="sidebar" aria-label="Report navigation">
-  <a class="brand" href="#routes" aria-label="Pulse report routes"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="M3 15h5l3-8 5 15 3-10 2 3h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>pulse<span class="brand-sub">report</span></span></a>
+  <a class="brand" href="#entry-points" aria-label="Pulse report entry points"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="M3 15h5l3-8 5 15 3-10 2 3h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>pulse<span class="brand-sub">report</span></span></a>
   <div class="app-switch"><div class="app-monogram">P</div><div><strong id="sidebar-app"></strong><span>Application snapshot</span></div></div>
-  <div class="nav-label">EXPLORE</div>
+  <div class="nav-label">EXECUTION</div>
   <nav id="desktop-nav" class="nav-list"></nav>
   <div class="sidebar-note"><span class="side-rule"></span><strong>Evidence, not inference.</strong><p>A static view of declarations,<br>resources, and recorded facts.</p></div>
   <div class="sidebar-bottom"><button id="design-button" class="design-button"><span class="small-icon" data-icon="sliders"></span><span>About this report</span><span class="small-icon" data-icon="arrow-up-right"></span></button><div class="offline-label"><span class="tiny-dot"></span>Self-contained · Offline</div></div>
@@ -17,6 +17,9 @@
     <div class="summary-strip" id="summary-strip"></div>
     <section id="build-summary" class="build-summary surface" aria-label="Build summary"></section>
     <div class="content-area">
+      <div id="explorer-return"></div>
+      <p id="navigation-status" role="status" class="small-note"></p>
+      <section id="view-entry-points" class="view" aria-label="Entry Points" hidden></section>
       <section id="view-routes" class="view" aria-label="Route inventory">
         <div class="section-heading"><div><h2>Route inventory <span class="count-pill" id="route-total"></span></h2><p>Registrations may select an operation and continue through shared stages.</p></div><span class="subtle-label" id="mapping-label"></span></div>
         <p class="small-note" id="route-behavior-summary"></p>
@@ -33,7 +36,7 @@
         <div class="route-bottom-grid"><div class="mini-panel"><div class="mini-title"><span>ARTIFACT COMPOSITION</span><a href="#resources">Explore resources <span data-icon="arrow-right"></span></a></div><div id="compact-ledger"></div></div><div class="mini-panel"><div class="mini-title"><span>EVIDENCE COVERAGE</span><a href="#evidence">View evidence <span data-icon="arrow-right"></span></a></div><div id="compact-coverage" class="compact-coverage"></div></div></div>
       </section>
       <section id="view-resources" class="view" aria-label="Resources and artifact sizes" hidden></section>
-      <section id="view-atlas" class="view" aria-label="Execution atlas and registration table" hidden></section>
+      <section id="view-atlas" class="view" aria-label="Execution Explorer" hidden></section>
       <section id="view-handlers" class="view" aria-label="Authored handlers and associations" hidden></section>
       <section id="view-entries" class="view" aria-label="Entry inventory" hidden></section>
       <section id="view-helpers" class="view" aria-label="Helpers and consolidated stages" hidden></section>

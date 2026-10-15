@@ -735,3 +735,11 @@ body.overlay-open{overflow:hidden}
 #view-handlers .details-block{padding:12px 0;overflow-wrap:anywhere}
 #view-handlers .details-block>summary{cursor:pointer}
 #view-handlers .step-list .details-block{min-width:0}
+
+/* Secondary report sections stay available without competing execution catalogs. */
+.report-sections { margin-top: 12px; }
+.report-sections > summary { cursor: pointer; padding: 10px 12px; font-size: 12px; color: var(--muted); }
+#explorer-return:not(:empty) { margin-bottom: 16px; }
+#entry-point-list .evidence-label { margin-right: 10px; }
+#entry-point-list li { padding: 10px 0; }
+@media (max-width: 760px) { .mobile-nav .report-sections { margin: 0; flex: 0 0 auto; } }
