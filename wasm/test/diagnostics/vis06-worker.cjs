@@ -59,7 +59,8 @@ function run(input, mode, send = () => {}) {
   receipt.guardrails = { associations: mode === 'limited' ? 10000 : null,
     work: mode === 'limited' ? 250000 : null, pathHops: mode === 'limited' ? 64 : null,
     reader: encoding.LIMITS, viewerDisplayNodes: 300 };
-  const probe = instrument({ unrestricted: mode !== 'limited', relationsOnly: mode === 'relations',
+  const isRelations = mode.startsWith('relations');
+  const probe = instrument({ unrestricted: mode !== 'limited', relationsOnly: isRelations,
     progress: counters => send({ stage: 'derive', counters }) });
   receipt.deriverSha256 = probe.sourceSha256;
   receipt.instrumentedSha256 = probe.instrumentedSha256;
@@ -72,7 +73,7 @@ function run(input, mode, send = () => {}) {
     assert.equal(canonicalJson(result.rows), canonicalJson(analytics.associations));
     assert.deepEqual(result.coverage, analytics.coverage.associations);
   });
-  if (mode === 'relations') {
+  if (isRelations) {
     const queries = stage('queryIndex', () => queryRelations(analytics, probe.relations));
     receipt.relations = probe.relations.length;
     receipt.relationsBytes = Buffer.byteLength(JSON.stringify(probe.relations));
@@ -87,7 +88,35 @@ function run(input, mode, send = () => {}) {
       const start = performance.now(); focused.derive(analytics);
       receipt.focusedTraversals.push({ consumer: consumer.id, kind: consumer.kind,
         elapsedMs: performance.now() - start, relations: focused.relations.length, counters: focused.stats.counters });
-      assert.deepEqual(queryRelations(analytics, focused.relations).route(consumer.id), queries.route(consumer.id));
+      const queryStart = performance.now(), projected = queryRelations(analytics, focused.relations).route(consumer.id);
+      receipt.focusedTraversals.at(-1).projectionMs = performance.now() - queryStart;
+      const oracleProbe = instrument({ unrestricted: true, focus: consumer.id }), oracleStart = performance.now();
+      const oracle = oracleProbe.derive(analytics);
+      receipt.focusedTraversals.at(-1).oracleMs = performance.now() - oracleStart;
+      receipt.focusedTraversals.at(-1).associations = projected.length;
+      receipt.focusedTraversals.at(-1).coverage = oracle.coverage;
+      assert.deepEqual(projected, oracle.rows);
+      assert.deepEqual(projected, queries.route(consumer.id));
+      receipt.focusedTraversals.at(-1).semanticParity = true;
+    }
+    receipt.traversalCoverage = result.coverage;
+    send({ stage: 'relationResult', relations: receipt.relations, relationsBytes: receipt.relationsBytes,
+      factsAndRelationsBytes: receipt.factsAndRelationsBytes,
+      factsAndRelationsNormalizedBytes: receipt.factsAndRelationsNormalizedBytes,
+      derivationExhausted: receipt.derivationExhausted, instrumentation: receipt.instrumentation,
+      focusedTraversals: receipt.focusedTraversals });
+    if (mode === 'relations-focused') {
+      receipt.bindingQueries = queries.bindingIds.length;
+      receipt.bindingConsumerCounts = {};
+      stage('allBindingConsumerQueries', () => {
+        for (const id of queries.bindingIds) receipt.bindingConsumerCounts[id] = queries.binding(id).length;
+      });
+      receipt.coverage = { status: result.coverage.status, reason: result.coverage.reason,
+        scope: 'owner relationship traversal; full association materialization not performed' };
+      receipt.semanticParity = 'selected consumers only; whole-input oracle incomplete';
+      receipt.status = 'completed'; receipt.peakRssKiB = process.resourceUsage().maxRSS;
+      receipt.sampledHeapPeakBytes = Math.max(probe.stats.sampledHeapBytes, ...Object.values(memory).map(m => m.heapUsed));
+      return receipt;
     }
     let expandedCount = 0;
     const routeDigests = [], routeMs = [], bindingConsumers = new Map(queries.bindingIds.map(id => [id, new Set()]));
@@ -109,7 +138,8 @@ function run(input, mode, send = () => {}) {
     });
     receipt.bindingQueries = queries.bindingIds.length;
     receipt.bindingReverseParity = true;
-    receipt.coverage = { status: 'diagnostic-relations', reason: 'coverage belongs to projected rows; no persisted format proposed' };
+    receipt.coverage = { status: result.coverage.status, reason: result.coverage.reason,
+      scope: 'owner traversal; row coverage retained by route projections; no persisted format proposed' };
   } else {
     const rows = result.rows, byConsumer = new Map(), pairs = new Set(), used = new Set();
     const paths = new Set(), boundConsumers = new Set();
