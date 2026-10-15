@@ -77,6 +77,18 @@ function run(input, mode, send = () => {}) {
   if (isRelations) {
     const queries = stage('queryIndex', () => queryRelations(analytics, probe.relations));
     receipt.relations = probe.relations.length;
+    if (mode === 'relations-qualified') {
+      receipt.qualification = stage('allConsumerOracleParity', () =>
+        require('./vis06-qualification.cjs').qualify(analytics, queries, decoded.bindings.map(b => b.id), send));
+      receipt.status = 'completed';
+      receipt.coverage = receipt.qualification.coverage;
+      receipt.semanticParity = receipt.qualification.semanticParity;
+      receipt.routeSemanticDigest = receipt.qualification.routeSemanticDigest;
+      receipt.peakRssKiB = process.resourceUsage().maxRSS;
+      receipt.sampledHeapPeakBytes = Math.max(receipt.qualification.sampledHeapPeakBytes,
+        probe.stats.sampledHeapBytes, ...Object.values(memory).map(m => m.heapUsed));
+      return receipt;
+    }
     receipt.relationsBytes = Buffer.byteLength(JSON.stringify(probe.relations));
     receipt.relationsNormalizedBytes = Buffer.byteLength(JSON.stringify(encoding.encode(probe.relations)));
     const facts = { ...analytics }; delete facts.associations;

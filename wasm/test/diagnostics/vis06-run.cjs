@@ -11,7 +11,7 @@ function supervise({ input, mode, output, timeoutMs = 60000, rssMiB = 1536, heap
     if (!Number.isSafeInteger(value) || value <= 0) throw new Error(`Invalid ${name}`);
   }
   if (process.platform !== 'linux') throw new Error('VIS06 RSS watchdog requires Linux /proc');
-  if (!['limited', 'unrestricted', 'relations', 'relations-focused'].includes(mode)) throw new Error('Invalid diagnostic mode');
+  if (!['limited', 'unrestricted', 'relations', 'relations-focused', 'relations-qualified'].includes(mode)) throw new Error('Invalid diagnostic mode');
   fs.mkdirSync(path.dirname(output), { recursive: true });
   if (fs.existsSync(output)) throw new Error('Refusing to overwrite an attempted-run receipt');
   const receipt = { version: 'pulse.vis06-measurement.v1', status: 'running', mode,
@@ -84,7 +84,7 @@ function supervise({ input, mode, output, timeoutMs = 60000, rssMiB = 1536, heap
 module.exports = { supervise };
 if (require.main === module) {
   const [input, mode, output, timeout = '60000', rss = '1536', heap = '1024'] = process.argv.slice(2);
-  if (!input || !output) throw new Error('Usage: vis06-run.cjs INPUT limited|unrestricted|relations|relations-focused OUTPUT [TIMEOUT_MS RSS_MIB HEAP_MIB]');
+  if (!input || !output) throw new Error('Usage: vis06-run.cjs INPUT limited|unrestricted|relations|relations-focused|relations-qualified OUTPUT [TIMEOUT_MS RSS_MIB HEAP_MIB]');
   supervise({ input: path.resolve(input), mode, output: path.resolve(output), timeoutMs: Number(timeout), rssMiB: Number(rss), heapMiB: Number(heap) })
     .then(r => { console.log(JSON.stringify({ status: r.status, failure: r.failure, output })); process.exitCode = r.status === 'completed' ? 0 : 1; });
 }
