@@ -117,11 +117,12 @@ const ownerPaths = [
   'release/pulse-release-manifest.json'
 ];
 includesAll(lowerer, [
-  '## Application promise versus internal protocol',
+  '## Application support and protocol compatibility',
   '## Canonical owner map',
   '## Contract pipeline',
   LOWERABLE_LIBRARY_MANIFEST_VERSION,
   LOWERABLE_LIBRARY_MANIFEST_KIND,
+  'build-dependency',
   'first-party'
 ], 'package lowerer reference');
 for (const relative of ownerPaths) {
