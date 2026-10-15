@@ -1670,8 +1670,9 @@ entry records remain discoverable when authored analytics are unavailable.
 Bindings shows possible entry-point consumers, authored operations and their
 coverage, separately from retained inventory references. Dynamic/unknown binding
 sites remain accessible without being promoted to invented named bindings.
-HTTP size analysis, schemas, resources, evidence, authored records, all entry
-records and compiled helpers remain under **More report sections**. Simple
+HTTP size analysis, assets and sizes, evidence, authored records, all entry
+records and compiled helpers remain under **More report sections**. VIS-10
+promotes Schemas to primary navigation alongside Entry Points and Bindings. Simple
 inventory questions do not require opening the Explorer.
 
 Contextual **Explore execution** and **Explore consumers** actions open the
@@ -1706,6 +1707,22 @@ focus restoration, pointer panning and modifier-wheel zoom work without network
 access. Browser evidence for Catalog and small/mixed capsules is recorded under
 `docs/internal/vis-09/`; these are presentation changes, with the strict CSP and
 complete exported capsule unchanged.
+
+VIS-10 adds a **Table | Explore** view switch to Entry Points and Bindings.
+Compact HTTP/event rows share verb colors and columns with binding consumer
+lists. Inventory search, type/method filters and table pagination remain in
+memory; switching back to an unchanged exploration resumes the live canvas.
+Contextual exploration remains available in record details. Exact recorded
+schema and binding references are distinct from possible binding associations;
+missing references never establish non-use.
+
+**Assets & sizes** groups embedded assets and response payloads with recorded
+entry/route associations by resource kind and media type. Group source-byte
+sums count recorded construction sites and may include duplicate payloads;
+unmeasured inputs remain explicit. These totals never imply retained Wasm size,
+exclusive route ownership or deletion savings. Unassociated text, schema and
+other technical resource records remain in a lazily rendered Advanced census.
+The physical artifact ledger, complete capsule and JSON export are unchanged.
 
 ## Providers, targets, and eligibility
 

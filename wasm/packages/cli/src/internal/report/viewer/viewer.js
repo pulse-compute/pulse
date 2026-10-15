@@ -71,10 +71,10 @@
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
-  const navigation = [['entry-points','Entry Points','routes'],['bindings','Bindings','link']];
-  const secondaryNavigation = [['routes','HTTP size analysis','routes'],['resources','Resources & sizes','box'],['schemas','Schemas','layers'],['evidence','Evidence','evidence'],['handlers','Authored records','code'],['entries','All entry records','code'],['helpers','Compiled helpers','chip']];
+  const navigation = [['entry-points','Entry Points','routes'],['bindings','Bindings','link'],['schemas','Schemas','layers']];
+  const secondaryNavigation = [['routes','HTTP size analysis','routes'],['resources','Assets & sizes','box'],['evidence','Evidence','evidence'],['handlers','Authored records','code'],['entries','All entry records','code'],['helpers','Compiled helpers','chip']];
   const viewIds = [...navigation,...secondaryNavigation,['atlas']].map(([id])=>id);
-  let explorerReturn=null,activeHash='',explorerOrigin=null,restoreOrigin=false;
+  let explorerReturn=null,activeHash='',explorerOrigin=null,restoreOrigin=false,inventorySession=null;
   const button = (label, fn, cls='button subtle') => el('button',{type:'button',class:cls,on:{click:fn}},label);
   const note = text => el('div',{class:'plain-note'},icon('info'),el('p',{},text));
   const kv = entries => el('dl',{class:'kv-list'},entries.map(([key,value]) => el('div',{class:'kv-row'},el('dt',{},key),el('dd',{class:'record-text'},value))));
@@ -152,13 +152,13 @@
     $('#snapshot-label').textContent = mode === 'current' ? 'Retained completed build · current inputs matched.' : mode === 'artifact' ? 'Completed artifact verified · current project not checked.' : 'Historical capsule replay · current project and original artifact bytes not checked.';
     $('#revision-label').textContent = 'Revision: ' + (P.provenance.revision ?? 'unknown') + ' · dirty: ' + (P.provenance.dirty === null ? 'unknown' : P.provenance.dirty ? 'yes' : 'no');
     $('#hash-button').textContent = P.evidenceHash.value.slice(0,12); $('#hash-button').title = 'SHA-256 ' + P.evidenceHash.value;
-    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Entry Points',String(model.entryPoints.length),model.entryPoints.filter(p=>p.type==='http').length+' HTTP · '+model.entryPoints.filter(p=>p.type==='event').length+' events · observed inventory','entry-points'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),P.coverage.resources.status+' inventory · input and retained bytes differ','resources']];
+    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Entry Points',String(model.entryPoints.length),model.entryPoints.filter(p=>p.type==='http').length+' HTTP · '+model.entryPoints.filter(p=>p.type==='event').length+' events · observed inventory','entry-points'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Assets & payloads',String(model.assetResources.length),'Recorded assets and associated responses · source bytes','resources']];
     replace($('#summary-strip'),items.map(([label,value,sub,view],i)=>el('a',{class:'summary-item clickable',href:'#'+view},el('div',{class:'summary-top'},label,icon(view === 'routes' ? 'routes' : 'box')),i===0?byteDisplay(A.bytes,'summary-value'):el('div',{class:'summary-value'+(value==='Unavailable'?' small':'')},value),el('div',{class:'summary-sub'},sub))));
     $('#route-total').textContent = P.routes.length;
     $('#route-behavior-summary').textContent = `${routeCounts.distinctMethodPaths??'Unknown'} distinct method/path pairs · ${routeCounts.terminal} terminal · ${routeCounts.continuing} continuing · ${routeCounts.unknown} behavior not recorded. Continuing means a handler can transfer control, including errors; it may also respond early.`;
     const mapped = P.routes.filter(r=>factValue(measurement(r,'handler-body')?.fact)!==null).length;
     $('#mapping-label').textContent = `${mapped} / ${P.routes.length} handler mappings · ${A.stage}`;
-    replace($('#compact-ledger'),ledger(A));
+    replace($('#compact-ledger'),ledger(A),el('div',{class:'asset-overview'},model.assetGroups().map(g=>el('a',{href:'#resources'},g.label+' · '+bytes(g.input)+' known source bytes'+(g.known<g.resources.length?' · '+(g.resources.length-g.known)+' unmeasured':'')))));
     const tests=P.evidence.filter(e=>e.kind==='test'&&e.artifactIds.includes(A.id));
     replace($('#compact-coverage'),[['handler-body','Handler mappings'],['reachable','Reachability roots']].map(([metric,label])=>{
       const c=mappingCoverage(metric);
@@ -394,18 +394,18 @@
   function renderResources() {
     const sectionNames={0:'Custom',1:'Type',2:'Import',3:'Function',4:'Table',5:'Memory',6:'Global',7:'Export',8:'Start',9:'Element',10:'Code',11:'Data',12:'Data count',13:'Tag'};
     const factCell=f=>el('td',{class:'numeric'},el('div',{class:'metric-value'},factText(f)),el('div',{class:'secondary'},f.state==='available'?f.basis+' · '+f.coverage:f.reason??f.state));
-    const resourceRows=[];
-    sortedResources().forEach(r=>{
+    function resourceRows(resources){const rows=[];
+    resources.forEach(r=>{
       const i=resourceIndex.get(r.id),g=r.generator;
       const open=state.expandedResources.has(r.id);
       const expand=button((open?'▾ ':'▸ ')+r.name,()=>{open?state.expandedResources.delete(r.id):state.expandedResources.add(r.id);renderResources();$('#resource-expand-'+i).focus({preventScroll:true});},'resource-expand mono');
       expand.id='resource-expand-'+i;expand.setAttribute('aria-expanded',String(open));expand.setAttribute('aria-controls','resource-detail-'+i);
       const firstRoute=routes.get(r.routeIds[0]);
-      resourceRows.push(el('tr',{'data-resource-index':i},el('td',{},expand,r.kind==='response-payload'?el('div',{class:'secondary record-text'},
+      rows.push(el('tr',{'data-resource-index':i},el('td',{},expand,r.kind==='response-payload'?el('div',{class:'secondary record-text'},
         (r.mediaType??'Media type unresolved')+' · '+(firstRoute?firstRoute.method+' '+firstRoute.path:'Entry association unavailable')):null),el('td',{},r.kind),factCell(r.inputBytes),
         el('td',{class:'numeric'},el('div',{class:'metric-value'},factText(g?.representationBytes)),el('div',{class:'secondary'},g?representationLabels[g.representation]:'Not recorded')),
         factCell(r.retainedPayloadBytes),el('td',{},r.routeIds.length+' recorded routes')));
-      resourceRows.push(el('tr',{hidden:!open},el('td',{colspan:6},el('div',{id:'resource-detail-'+i,class:'resource-detail'},...(open?[
+      rows.push(el('tr',{hidden:!open},el('td',{colspan:6},el('div',{id:'resource-detail-'+i,class:'resource-detail'},...(open?[
         el('div',{},el('h3',{},'Resource facts'),kv([[r.kind==='response-payload'?'UTF-8 response payload bytes':'Source input bytes',factText(r.inputBytes)],['Input evidence',qualifier(r.inputBytes)],
           ['Representation',g?representationLabels[g.representation]:'Not recorded'],['Representation bytes',factText(g?.representationBytes)],['Representation evidence',qualifier(g?.representationBytes)],
           ['Producer',g?g.producer.name+' · '+g.producer.version:'Not recorded'],['Entry coverage',g?`${g.entryCoverage.status} · ${g.entryCoverage.observed} / ${g.entryCoverage.expected??'unknown'}${g.entryCoverage.reason?' · '+g.entryCoverage.reason:''}`:'Not recorded'],
@@ -413,6 +413,7 @@
           g?.schemaId?button('View schema structure',()=>openSchema(g.schemaId)):null,routeChips(r.routeIds),entryLinks(r.entryIds)),
         el('div',{},el('h3',{},'Evidence'),...evidenceCards(r.evidenceIds))]:[])))));
     });
+    return rows;}
     const artifactPanels=P.artifacts.map(a=>{
       const rows=[{name:'Header',bytes:8},...a.sections.map(s=>({name:sectionNames[s.id]||'Section '+s.id,bytes:s.bytes}))]
         .map(s=>el('tr',{},el('td',{},s.name),el('td',{},bytes(s.bytes)),el('td',{},exact(s.bytes))));
@@ -433,23 +434,23 @@
       },'schema-sort-button');control.id='resource-sort-'+key;
       return el('th',{'aria-sort':state.resourceSort===key?(state.resourceDir==='asc'?'ascending':'descending'):'none'},control);
     };
-    const resourceTable=el('table',{class:'inventory-table resource-table'},
+    const resourceTable=(rows,sortable=false)=>el('table',{class:'inventory-table resource-table'},
       el('caption',{class:'sr-only'},'Resource input and retained sizes'),
-      el('thead',{},el('tr',{},sortHead('name','Resource'),el('th',{},'Category'),sortHead('input','Input bytes'),sortHead('representation','Representation bytes'),sortHead('retained','Retained payload'),el('th',{},'References'))),
-      el('tbody',{},resourceRows));
+      el('thead',{},el('tr',{},sortable?sortHead('name','Resource'):el('th',{},'Resource'),el('th',{},'Category'),sortable?sortHead('input','Input bytes'):el('th',{},'Source bytes'),sortable?sortHead('representation','Representation bytes'):el('th',{},'Representation bytes'),sortable?sortHead('retained','Retained payload'):el('th',{},'Retained payload'),el('th',{},'References'))),el('tbody',{},resourceRows(rows)));
+    const groups=model.assetGroups();
+    const advanced=el('details',{id:'resource-advanced',class:'details-block',open:!!state.resourceAdvanced,on:{toggle:e=>{state.resourceAdvanced=e.target.open;if(e.target.open&&!advanced.querySelector('table'))advanced.append(el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'All resource evidence'},resourceTable(sortedResources().filter(r=>model.technicalResources.includes(r)),true)));}}},
+      el('summary',{},'Advanced resource evidence · '+model.technicalResources.length+' records'),
+      note('Packed base64 text is input encoding, not Wasm data size. Normalized descriptor bytes describe schema structure, not generated code. Dynamic expressions are unresolved, not zero. Includes unassociated text construction sites, schema descriptors and generated support. These are evidence records, not distinct assets. Equal payloads at different sites remain separate.'),
+      P.resourceProducers?el('div',{},el('h3',{},'Producer coverage'),P.resourceProducers.map(row=>el('p',{class:'small-note'},resourceScopes[row.scope]+' · '+coverageText(row.coverage)))):note('Producer coverage was not recorded in this historical capsule.'),
+      state.resourceAdvanced?el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'All resource evidence'},resourceTable(sortedResources().filter(r=>model.technicalResources.includes(r)),true)):null);
     replace($('#view-resources'),
-      sectionHeading('Resources & artifact sizes','Exact physical ledgers, separate from resource inputs and attribution.',P.resources.length),
-      note('Do not add route sizes or resource input sizes to artifact bytes. Shared data is counted once physically.'),artifactPanels,
-      el('div',{class:'subsection'},sectionHeading('Resource inventory','Source input, packed representation and final retained payload are separate facts.',P.resources.length),
-        note('Packed base64 text is the build input encoding, not Wasm data size. Text-response input bytes measure the resolved string encoded as UTF-8; Native string storage and retained Wasm bytes remain unmapped. Normalized descriptor bytes describe schema structure, not generated validator code.'),
-        note('Text responses are canonical construction sites, not distinct physical assets or execution counts. Equal payloads at different sites remain separate. Dynamic expressions are unresolved, not zero. Only literal strings and directly bound const strings are measured; custom/JSON responses and arbitrary expression evaluation are outside this scope.'),
-        P.resourceProducers?el('div',{class:'surface panel-pad'},el('h3',{},'Producer coverage'),P.resourceProducers.map(row=>el('div',{class:'coverage-line'},
-          el('div',{},resourceScopes[row.scope]+' · '+row.coverage.status),el('p',{},`${row.coverage.observed} recorded / ${row.coverage.expected??'unknown'} expected${row.coverage.reason?' · '+row.coverage.reason:''}`))),
-          el('p',{class:'small-note'},'Selected assets cover resolved lookups, not unused manifest files. Text-response producer coverage counts observed sites including dynamic sites, not resolved sizes or complete consumers. Generated dispatcher responses may have no known entry. Package realization records are counted without retaining private contents. Other generated support is not enumerated.'),
-          P.resourceProducers.some(row=>row.scope==='canonical-text-responses')?null:el('p',{class:'small-note'},'Text-response coverage was not recorded in this capsule; no payload census can be inferred.'))
-          :note('Producer coverage was not recorded in this historical capsule.'),
-        P.resources.length?el('div',{class:'surface table-surface'},el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'Scrollable resource inventory'},resourceTable))
-          :note('No resource records. Inventory coverage: '+P.coverage.resources.status+'.')));
+      sectionHeading('Assets & sizes','Embedded assets and associated response payloads, grouped by type.',model.assetResources.length),
+      note('Source-byte totals describe recorded inputs and response construction sites. They are not deduplicated physical bytes or deletion savings. Retained Wasm size remains separate.'),
+      el('div',{class:'asset-groups'},groups.length?groups.map(g=>el('details',{class:'asset-group',open:state.assetGroups?.has(g.label),on:{toggle:e=>{state.assetGroups??=new Set();e.target.open?state.assetGroups.add(g.label):state.assetGroups.delete(g.label);}}},
+        el('summary',{},el('strong',{},g.label),el('span',{},g.resources.length+' records · '+bytes(g.input)+' known source bytes'+(g.known<g.resources.length?' · '+(g.resources.length-g.known)+' unmeasured':''))),
+        el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':g.label},resourceTable(g.resources)))):note('No embedded assets or associated response payloads recorded. This does not establish that the application has none.')),
+      el('p',{class:'small-note'},model.technicalResources.length+' technical or unassociated records are available in Advanced resource evidence. Schemas are also available in the Schemas inventory.'),
+      sectionHeading('Physical artifact sizes','Exact file accounting. Resource input sizes must not be added to these totals.'),artifactPanels,advanced);
   }
 
   function schemaSortHead(key,label) {return el('th',{'data-schema-sort':key,'aria-sort':state.schemaSort===key?(state.schemaDir==='asc'?'ascending':'descending'):'none'},button(label+' ↕',()=>{state.schemaDir=state.schemaSort===key?(state.schemaDir==='asc'?'desc':'asc'):(key==='name'?'asc':'desc');state.schemaSort=key;renderSchemaRows();},'schema-sort-button'));}
@@ -532,16 +533,45 @@
   const pointLink = id => model.entryPointById.has(id)
     ? el('a',{href:model.detailHash('entry-points',id),class:'record-text'},'Open Entry Point · '+model.entryPointById.get(id).label) : registrationLink(id);
   const bindingLink = id => el('a',{href:model.detailHash('bindings',id),class:'record-text'},'Open Binding · '+bindings.get(id).name);
-  const atlas=createReportAtlas({onClose:mode=>{restoreOrigin=true;location.hash=explorerOrigin?.hash||(mode==='bindings'?'#bindings':'#entry-points');},model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,pointLink,bindingLink,select:id=>{
+  const atlas=createReportAtlas({onClose:mode=>{restoreOrigin=true;location.hash=explorerOrigin?.hash||(mode==='bindings'?'#bindings':'#entry-points');},onTable:mode=>{
+    if(inventorySession){
+      const kind=mode==='bindings'?'bindings':'entry-points';if(inventorySession.kind!==kind){inventorySession.kind=kind;explorerOrigin.hash='#'+kind;}
+      inventorySession.hash=activeHash;inventorySession.selected=state.selectedRegistration;inventorySession.focus=document.activeElement;
+      const selection=atlas.inventorySelection();
+      if(inventorySession.kind==='entry-points'&&model.entryPointById.has(selection)){
+        const index=model.filteredEntryPoints().findIndex(p=>p.id===selection);
+        if(index>=0){explorerOrigin.hash=model.detailHash('entry-points',selection);state.entryPointPage=Math.floor(index/50);}
+      }else if(inventorySession.kind==='bindings'&&bindings.has(selection))explorerOrigin.hash=model.detailHash('bindings',selection);
+    }
+    restoreOrigin=true;location.hash=explorerOrigin?.hash||'#entry-points';
+  },model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,pointLink,bindingLink,select:id=>{
     const hash=model.detailHash('explorer/entry',id);
     if(location.hash===hash)atlas.center(id,true);else {atlasFocus=true;location.hash=hash;}
   }});
   function rememberExplorerOrigin(){const focused=document.activeElement,label=focused?.textContent;explorerOrigin={hash:location.hash||'#entry-points',label,index:$$('button').filter(n=>n.textContent===label).indexOf(focused)};}
-  function exploreEntry(id){rememberExplorerOrigin();explorerReturn=null;atlas.focusEntry(id);atlasFocus=true;const hash=model.detailHash('explorer/entry',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
-  function exploreBinding(id){rememberExplorerOrigin();explorerReturn=null;atlasFocus=true;atlas.bindings({binding:id});const hash=model.detailHash('explorer/binding',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  function exploreEntry(id){inventorySession=null;rememberExplorerOrigin();explorerReturn=null;atlas.focusEntry(id);atlasFocus=true;const hash=model.detailHash('explorer/entry',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  function exploreBinding(id){inventorySession=null;rememberExplorerOrigin();explorerReturn=null;atlasFocus=true;atlas.bindings({binding:id});const hash=model.detailHash('explorer/binding',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  function inventorySignature(kind){return JSON.stringify(kind==='bindings'?[kind,state.bindingSearch,state.selectedBinding]:[kind,state.entryPointSearch,state.entryPointType,state.entryPointMethod,state.entryPointEvent,state.selectedEntryPoint]);}
+  function exploreInventory(kind) {
+    const signature=inventorySignature(kind);
+    rememberExplorerOrigin();
+    if(inventorySession?.signature===signature&&inventorySession.hash){
+      explorerReturn={hash:inventorySession.hash,selected:inventorySession.selected,focus:inventorySession.focus};location.hash=inventorySession.hash;return;
+    }
+    explorerReturn=null;inventorySession={signature,kind};
+    if(kind==='bindings'){
+      const matching=[...bindings.values()].filter(b=>(b.name+' '+b.kind+' '+b.resolution).toLowerCase().includes(state.bindingSearch));
+      const id=matching.find(b=>b.id===state.selectedBinding)?.id||matching[0]?.id||null;
+      atlas.bindings({binding:id,query:state.bindingSearch,inventory:true});
+      location.hash='#explorer/inventory/bindings';
+    }else{
+      const matching=model.filteredEntryPoints(),id=matching.find(p=>p.id===state.selectedEntryPoint)?.registration?.id||null;
+      atlas.focusInventory(id);state.selectedRegistration=id;location.hash='#explorer/inventory/entry-points';
+    }
+  }
   let atlasFocus=false;
   function renderAtlas(){atlas.open($('#view-atlas'));}
-  const inventories=createReportInventories({model,el,button,replace,heading:sectionHeading,note,kv,tag,definitionLink,registrationLink,useSiteLink,entryLink,evidenceCards,exploreEntry,exploreBinding});
+  const inventories=createReportInventories({model,el,button,replace,heading:sectionHeading,note,kv,tag,definitionLink,registrationLink,useSiteLink,entryLink,evidenceCards,exploreEntry,exploreBinding,exploreInventory,methodTag,bytes});
   function renderEntryPoints(){inventories.renderEntryPoints($('#view-entry-points'));}
   function registrationDetail(row) {
     const associations = model.queries?.route(row.id) || {rows:registrationAssociations(row.id),coverage:analyticsCoverage('associations')};
@@ -650,6 +680,8 @@
     const resolve=(rows,key=token)=>key===null?null:/^\d+$/.test(key)?rows[Number(key)]?.id||null:rows.find(r=>r.id===key)?.id||null;
     let view=[...viewIds,'registrations','use-sites'].includes(kind)?kind:'entry-points';
     let explorerId=null,explorerKind=null;
+    const inventoryExplorer=kind==='explorer'&&parts[1]==='inventory'&&['entry-points','bindings'].includes(parts[2]);
+    if(inventoryExplorer)view='atlas';
     if(kind==='explorer'&&['entry','binding'].includes(parts[1])){view='atlas';explorerKind=parts[1];try{explorerId=decodeURIComponent(parts.slice(2).join('/'));}catch{explorerId=null;}}
     let invalidExplorer=false;
     if(explorerKind&&!(explorerKind==='entry'?registrationById:bindings).has(explorerId)){invalidExplorer=true;view=explorerKind==='entry'?'entry-points':'bindings';}
@@ -660,17 +692,18 @@
     state.selectedBinding=view==='bindings'?resolve(P.bindings):null;
     state.selectedEntry=view==='entries'?resolve(P.entries):null;
     state.selectedDefinition=view==='handlers'?resolve(definitions):null;
-    state.selectedRegistration=restore?explorerReturn.selected:explorerKind==='entry'?(registrationById.has(explorerId)?explorerId:null):['registrations','atlas'].includes(view)?resolve(registrations):null;
+    state.selectedRegistration=restore?explorerReturn.selected:inventoryExplorer?state.selectedRegistration:explorerKind==='entry'?(registrationById.has(explorerId)?explorerId:null):['registrations','atlas'].includes(view)?resolve(registrations):null;
     state.selectedUseSite=view==='use-sites'?resolve(useSites):null;
     $('#navigation-status').textContent=invalidExplorer?'Requested Explorer record is unavailable in this capsule.':'';
-    if(view==='atlas'&&!restore){
+    if(view==='atlas'&&!restore&&!inventoryExplorer){
       if(explorerKind==='binding')atlas.bindings({binding:bindings.has(explorerId)?explorerId:null});
       else {atlas.routing();if(explorerKind==='entry'&&state.view!=='atlas')atlas.focusEntry(state.selectedRegistration);}
     }
+    if(inventoryExplorer&&!inventorySession){if(parts[2]==='bindings')atlas.bindings({inventory:true});else atlas.focusInventory(null);}
     showView(['registrations','use-sites'].includes(view)?'handlers':view,restore);
     activeHash=location.hash;
     if(restore)return;
-    if(restoreOrigin){restoreOrigin=false;const origin=explorerOrigin;explorerReturn=null;replace($('#explorer-return'));const target=$$('button').filter(n=>n.textContent===origin?.label)[origin?.index];(target||(state.view==='bindings'?$('#binding-inventory-search'):$('#entry-point-title')||$('#entry-point-search')))?.focus({preventScroll:true});return;}
+    if(restoreOrigin){restoreOrigin=false;const origin=explorerOrigin;if(inventorySession)inventorySession.signature=inventorySignature(inventorySession.kind);if(!inventorySession)explorerReturn=null;replace($('#explorer-return'));const target=inventorySession?$('#'+inventorySession.kind+'-explore'):$$('button').filter(n=>n.textContent===origin?.label)[origin?.index];(target||(state.view==='bindings'?$('#binding-inventory-search'):$('#entry-point-title')||$('#entry-point-search')))?.focus({preventScroll:true});return;}
     if(state.selectedEntryPoint)$('#entry-point-title')?.focus();
     if(state.selectedDefinition)$('#definition-title').focus();
     if(state.selectedRegistration&&view==='registrations')$('#registration-title').focus();

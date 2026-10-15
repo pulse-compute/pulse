@@ -12,17 +12,17 @@ module.exports=({renderedTree})=>{
   tree.renderers.buildNavigation();
   for(const name of ['desktop-nav','mobile-nav']){
     const root=tree.get(name),primary=root.children.filter(n=>n.tag==='a');
-    assert.deepEqual(primary.map(n=>n.attrs.href),['#entry-points','#bindings']);
+    assert.deepEqual(primary.map(n=>n.attrs.href),['#entry-points','#bindings','#schemas']);
     assert.ok(root.children.some(n=>n.tag==='details'&&n.children[0].textContent==='More report sections'));
     assert.ok(!root.querySelectorAll('a').some(n=>n.attrs.href==='#atlas'));
   }
   visit('');assert.equal(m.state.view,'entry-points');
-  assert.equal(tree.get('entry-point-list').querySelectorAll('li').length,m.entryPoints.length);
+  assert.equal(tree.get('entry-point-list').querySelectorAll('tr').filter(n=>n.attrs['data-entry-point-id']).length,m.entryPoints.length);
   const event=m.entryPoints.find(p=>p.type==='event'),http=m.entryPoints.find(p=>p.type==='http'&&p.registration.mountPath.length);
   assert.ok(event&&http);assert.equal(event.eventType,'analytics.tick');
   tree.get('entry-point-type').events.change({target:{value:'event'}});
-  assert.equal(tree.get('entry-point-list').querySelectorAll('li').length,1);
-  assert.equal(tree.get('entry-point-list').querySelectorAll('li')[0].attrs['data-entry-point-id'],event.id);
+  assert.equal(tree.get('entry-point-list').querySelectorAll('tr').filter(n=>n.attrs['data-entry-point-id']).length,1);
+  assert.equal(tree.get('entry-point-list').querySelectorAll('tr').filter(n=>n.attrs['data-entry-point-id'])[0].attrs['data-entry-point-id'],event.id);
   assert.ok(tree.get('entry-point-event'));
   tree.get('entry-point-type').events.change({target:{value:'http'}});assert.ok(tree.get('entry-point-method'));
   tree.get('entry-point-method').events.change({target:{value:'GET'}});
@@ -30,6 +30,19 @@ module.exports=({renderedTree})=>{
   tree.get('entry-point-type').events.change({target:{value:'all'}});
   tree.get('entry-point-search').events.input({target:{value:event.eventType}});assert.equal(m.filteredEntryPoints().length,1);
   tree.get('entry-point-search').events.input({target:{value:''}});
+
+  // Inventory modes retain filters and the same live graph on a round trip.
+  tree.get('entry-point-type').events.change({target:{value:'event'}});
+  click(tree.get('view-entry-points'),'Explore');tree.renderers.onHash();
+  assert.equal(tree.get('atlas-rows').querySelectorAll('tr').length,1);
+  assert.equal(tree.get('atlas-rows').querySelectorAll('tr')[0].attrs['data-atlas-row'],event.id);
+  const modeViewport=tree.get('atlas-viewport');modeViewport.scrollLeft=47;
+  click(null,'Table');tree.renderers.onHash();
+  assert.equal(m.state.entryPointType,'event');
+  click(tree.get('view-entry-points'),'Explore');tree.renderers.onHash();
+  assert.equal(tree.get('atlas-viewport'),modeViewport);assert.equal(modeViewport.scrollLeft,47);
+  click(null,'Table');tree.renderers.onHash();
+  tree.get('entry-point-type').events.change({target:{value:'all'}});
 
   // Entry -> Explorer -> exact handler/source -> return: retain the live graph,
   // expanded mounts, scope, selected record, zoom, pan and keyboard focus.
@@ -97,7 +110,7 @@ module.exports=({renderedTree})=>{
   large.routes=Array.from({length:115},(_,i)=>({...seed,id:'route:page-'+i,entryId:'entry:page-'+i,order:i}));
   const paged=renderedTree(large);paged.location.hash='#entry-points';paged.renderers.onHash();const observed=[];
   for(let page=0;page<3;page++){
-    observed.push(...paged.get('entry-point-list').querySelectorAll('li').map(n=>n.attrs['data-entry-point-id']));
+    observed.push(...paged.get('entry-point-list').querySelectorAll('tr').filter(n=>n.attrs['data-entry-point-id']).map(n=>n.attrs['data-entry-point-id']));
     const next=paged.get('view-entry-points').querySelectorAll('button').find(n=>n.textContent==='Next entry points');
     assert.equal(next.disabled,page===2);if(!next.disabled){next.events.click();assert.equal(paged.document.activeElement.id,'entry-point-count');}
   }

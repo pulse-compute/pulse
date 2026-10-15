@@ -1,6 +1,6 @@
 'use strict';
 // Geometry uses SVG attributes, never inline style or a second evidence payload.
-function createReportAtlas({model:m,el,button,select,registrationLink,definitionLink,associationDetail,useSiteLink,pointLink,bindingLink,onClose}) {
+function createReportAtlas({model:m,el,button,select,registrationLink,definitionLink,associationDetail,useSiteLink,pointLink,bindingLink,onClose,onTable}) {
   const local={scope:null,query:'',expanded:new Set(),page:0,zoom:1,graph:true,mode:'routing',full:true,inspector:false,camera:null};
   let host,viewport,svg,layout,nodes=new Map(),expanders=new Map();
   const bindingExplorer=createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,registrationLink,pointLink,bindingLink,
@@ -12,7 +12,7 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
     host?.setAttribute('role','dialog');host?.setAttribute('aria-modal','true');host?.setAttribute('aria-label','Execution Explorer');
     host?.setAttribute('data-expanded','true');host?.setAttribute('data-inspector',String(local.inspector));
     if(local.inspector)for(const panel of host?.querySelectorAll('.atlas-table-disclosure,.binding-reading-note')||[])panel.open=false;
-    const inspect=host?.querySelector('#atlas-inspector-toggle');if(inspect){inspect.textContent=local.inspector?'Hide details':'Show details';inspect.setAttribute('aria-expanded',String(local.inspector));}
+    const inspect=host?.querySelector('#atlas-inspector-toggle');if(inspect){inspect.textContent='ⓘ';inspect.setAttribute('aria-label',local.inspector?'Hide details':'Show details');inspect.setAttribute('title',local.inspector?'Hide details':'Show details');inspect.setAttribute('aria-expanded',String(local.inspector));}
   }
   function dismiss(){local.inspector=false;applyWorkspace();host.querySelector('#atlas-inspector-toggle')?.focus({preventScroll:true});}
   function bindings(options){
@@ -25,9 +25,11 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
   function toolbar(){
     const routing=button('Routing',()=>{local.mode='routing';render(host);host.querySelector('#atlas-routing-tab').focus({preventScroll:true});});routing.id='atlas-routing-tab';routing.setAttribute('aria-pressed',String(local.mode==='routing'));
     const binding=button('Bindings',()=>{bindings();host.querySelector('#atlas-bindings-tab').focus({preventScroll:true});});binding.id='atlas-bindings-tab';binding.setAttribute('aria-pressed',String(local.mode==='bindings'));
-    const details=button(local.inspector?'Hide details':'Show details',()=>{local.inspector=!local.inspector;applyWorkspace();});details.id='atlas-inspector-toggle';
-    const close=button('Close',()=>onClose(local.mode));close.id='atlas-close';close.setAttribute('aria-label','Close Explorer');
-    return el('div',{class:'atlas-toolbar'},el('strong',{},'Explorer'),el('div',{class:'atlas-controls'},routing,binding,details,close));
+    const details=button('ⓘ',()=>{local.inspector=!local.inspector;applyWorkspace();});details.id='atlas-inspector-toggle';details.setAttribute('aria-label',local.inspector?'Hide details':'Show details');
+    const close=button('×',()=>onClose(local.mode));close.id='atlas-close';close.setAttribute('aria-label','Close Explorer');
+    const table=button('Table',()=>onTable?onTable(local.mode):onClose(local.mode),'view-mode');table.id='atlas-table-view';table.setAttribute('aria-pressed','false');
+    const explore=button('Explore',()=>{},'view-mode active');explore.setAttribute('aria-pressed','true');
+    return el('div',{class:'atlas-toolbar'},el('div',{class:'view-switch',role:'group','aria-label':'Inventory view'},table,explore),el('div',{class:'atlas-controls'},routing,binding,details,close));
   }
   const selected=()=>m.registrationById.get(m.state.selectedRegistration);
   const label=r=>r?m.registrationLabel(r):'Application';
@@ -116,9 +118,10 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
     }
     const r=selected();
     if(r){if(local.scope&&r.id!==local.scope&&!r.mountPath.includes(local.scope))local.scope=null;}
+    if(local.inventory){local.allowedIds=new Set(m.filteredEntryPoints().filter(p=>p.registration).map(p=>p.id));}
     layout=m.atlasLayout(local);local.page=Math.min(local.page,Math.max(0,Math.ceil(layout.matches.length/50)-1));
     const coverage=m.analyticsCoverage('registrations'),missing=coverage.status==='unavailable';
-    const search=el('input',{id:'atlas-search',type:'search',value:local.query,placeholder:'Find a path, handler or source…','aria-label':'Search atlas registrations',on:{input:e=>{local.query=e.target.value;const start=e.target.selectionStart,end=e.target.selectionEnd;local.page=0;render(host);const input=host.querySelector('#atlas-search');input.focus({preventScroll:true});input.setSelectionRange(start,end);}}});
+    const search=el('input',{id:'atlas-search',type:'search',value:local.inventory?m.state.entryPointSearch:local.query,placeholder:'Find a path, handler or source…','aria-label':'Search atlas registrations',on:{input:e=>{if(local.inventory){m.state.entryPointSearch=e.target.value.toLowerCase();m.state.entryPointPage=0;local.query='';for(const p of m.filteredEntryPoints())for(const id of p.registration?.mountPath||[])local.expanded.add(id);}else local.query=e.target.value;const start=e.target.selectionStart,end=e.target.selectionEnd;local.page=0;render(host);const input=host.querySelector('#atlas-search');input.focus({preventScroll:true});input.setSelectionRange(start,end);}}});
     const crumbs=el('nav',{id:'atlas-scope',tabindex:-1,'aria-label':'Atlas scope',class:'atlas-crumbs'},button('Application',()=>scope(null),'text-button'));
     if(local.scope)for(const id of [...m.registrationById.get(local.scope).mountPath,local.scope]){const b=button(label(m.registrationById.get(id)),()=>scope(id),'text-button');if(id===local.scope)b.setAttribute('aria-current','location');crumbs.append(el('span',{},'/'),b);}
     const controls=el('div',{class:'atlas-controls'});
@@ -132,9 +135,9 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
     const prev=button('Previous page',()=>{local.page--;redraw();host.querySelector('#atlas-page').focus({preventScroll:true});}),next=button('Next page',()=>{local.page++;redraw();host.querySelector('#atlas-page').focus({preventScroll:true});});prev.disabled=local.page===0;next.disabled=(local.page+1)*50>=layout.matches.length;
     const page=el('div',{class:'atlas-controls'},prev,el('span',{id:'atlas-page',tabindex:-1},'Page '+(local.page+1)+' of '+Math.max(1,Math.ceil(layout.matches.length/50))),next);
     const main=el('div',{class:'atlas-main'},el('div',{class:'atlas-search-row'},search,crumbs),
-      el('p',{id:'atlas-count',class:'small-note','aria-live':'polite'},missing?'Registration analytics unavailable · '+coverage.reason:layout.matches.length+' matching / '+layout.scoped.length+' in scope / '+m.registrations.length+' retained registrations'));
+      el('p',{id:'atlas-count',class:'small-note','aria-live':'polite'},missing?'Registration analytics unavailable · '+coverage.reason:layout.matches.length+' matching / '+layout.scoped.length+' in scope / '+m.registrations.length+' retained registrations'+(local.inventory?' · Inventory filters active':'')));
     viewport=null;svg=null;
-    if(local.graph&&!missing){const fit=button('Fit scope',()=>{zoom(Math.min(1,(viewport.clientWidth-24)/layout.width,(viewport.clientHeight-24)/layout.height));viewport.scrollLeft=0;viewport.scrollTop=0;}),centerButton=button('Center selection',()=>{if(r){local.query='';r.mountPath.forEach(id=>local.expanded.add(id));redraw(r.id);}});centerButton.disabled=!r;
+    if(local.graph&&!missing){const fit=button('Fit scope',()=>{zoom(Math.min(1,(viewport.clientWidth-24)/layout.width,(viewport.clientHeight-24)/layout.height));viewport.scrollLeft=0;viewport.scrollTop=0;}),centerButton=button('Center selection',()=>{if(r){local.query='';if(local.inventory)m.state.entryPointSearch='';r.mountPath.forEach(id=>local.expanded.add(id));redraw(r.id);}});centerButton.disabled=!r;
       const zoomOut=button('−',()=>zoom(local.zoom-.1)),zoomIn=button('+',()=>zoom(local.zoom+.1));zoomOut.setAttribute('aria-label','Zoom out');zoomIn.setAttribute('aria-label','Zoom in');
       controls.append(fit,centerButton,zoomOut,el('span',{id:'atlas-zoom'},Math.round(local.zoom*100)+'%'),zoomIn,focus,expand,collapse);main.append(controls,drawGraph(),
         el('p',{class:'atlas-status small-note'},'Containment · Select to inspect · + expands a mount · '+layout.points.filter(p=>p.r).length+' registration nodes shown'+(layout.truncated?' · graph display limited to 300 nodes; narrow the scope or search. All matches remain in table pages.':'.')));
@@ -157,6 +160,6 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
     const row=host.querySelector('.atlas-active'),table=host.querySelector('.atlas-table-scroll');
     if(row&&table)table.scrollTop+=row.getBoundingClientRect().top-table.getBoundingClientRect().top-40;
   }
-  return {open,center,bindings,focusEntry(id){local.inspector=false;local.explicit=true;local.mode='routing';local.graph=true;local.scope=m.registrationById.get(id)?.mountPath.at(-1)||null;local.query='';local.page=0;local.camera=null;local.expanded.clear();local.revealedSelection=null;},resume(){applyWorkspace();},routing(){local.mode='routing';},leave(){document.body.classList.remove('atlas-expanded');},escape(){for(const panel of host?.querySelectorAll('.atlas-table-disclosure,.binding-reading-note')||[]){if(panel.open){panel.open=false;local.tableOpen=false;panel.querySelector('summary')?.focus();return true;}}if(local.inspector){dismiss();return true;}onClose(local.mode);return true;}};
+  return {open,center,bindings,inventorySelection(){return local.mode==='bindings'?bindingExplorer.selection():m.state.selectedRegistration;},focusInventory(id){local.inventory=true;local.allowedIds=null;local.inspector=false;local.mode='routing';local.scope=null;local.query='';local.page=0;local.camera=null;local.expanded.clear();if(m.state.entryPointSearch||m.state.entryPointType!=='all')for(const p of m.filteredEntryPoints())for(const ancestor of p.registration?.mountPath||[])local.expanded.add(ancestor);local.revealedSelection=null;},focusEntry(id){local.inventory=false;local.allowedIds=null;local.inspector=false;local.explicit=true;local.mode='routing';local.graph=true;local.scope=m.registrationById.get(id)?.mountPath.at(-1)||null;local.query='';local.page=0;local.camera=null;local.expanded.clear();local.revealedSelection=null;},resume(){applyWorkspace();},routing(){local.mode='routing';},leave(){document.body.classList.remove('atlas-expanded');},escape(){for(const panel of host?.querySelectorAll('.atlas-table-disclosure,.binding-reading-note')||[]){if(panel.open){panel.open=false;local.tableOpen=false;panel.querySelector('summary')?.focus();return true;}}if(local.inspector){dismiss();return true;}onClose(local.mode);return true;}};
 }
 if(typeof module!=='undefined')module.exports={createReportAtlas};
