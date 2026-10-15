@@ -168,7 +168,7 @@ watchdog after derivation completed.
 | New capsule creation and validation | 5.21 s |
 | Storage selection/encoding | 0.62 s |
 | Exact replay plus serialization checks | 14.20 s |
-| HTML generation | 5.11 s; 16,542,205 bytes |
+| HTML generation at measured commit `005af237` | 5.11 s; 16,542,205 bytes |
 | Entire measurement + full-oracle qualification | 162.96 s; 736.1 MiB peak sampled RSS |
 
 Forcing all expanded rows **only in the diagnostic** took 14.17 seconds in the new
@@ -207,3 +207,28 @@ change is **not** attributed to VIS-07. The report query and storage measurement
 above isolate the representation change. Both builds used the same 600-second
 per-compiler timeout and no provider artifact reuse. This is workspace-source
 qualification, not installed-package acceptance or a full release seal.
+
+
+## Final validation
+
+The complete registered unit profile passed **63/63 tasks in 295.76 seconds** on
+clean local commit `f24898e4d8206876e180bf09f56d51090eb75ab4`, published with the
+identical tree as `b3c79dd3e9cf744bd4738924b2dd78f4c3e0ee5e`. The final rerun
+includes graph queries, historical compatibility, source-independent imported
+replay, exact exports, schema contracts and offline viewer interactions. The
+first unit attempt exposed an obsolete v1 table assertion in the imported-input
+test; the test now checks v2 query answers and rejects tampered ownership facts.
+The final viewer fix preserves keyboard focus at the first and last explanation
+pages. Its asset bytes postdate the HTML size measurement above; the qualified
+query engine is unchanged.
+
+Production topology integration also passed 112 runtime executions across the
+four HTTP/error/event and default/bounded recipes, with 54 negative topology
+cases. TypeScript build, maintainer checks, documentation checks and local
+documentation release simulation passed. Machine evidence retains prior failed
+attempts, log hashes, immutable source identities and equivalent published trees.
+
+Full CLI, native/JavaScript/conformance, installed-package, visual-browser and
+release-seal qualification remain deferred. The unit and focused checks above,
+full static Catalog equivalence and fresh production capture are the completed
+scope; this PR does not claim a release seal.

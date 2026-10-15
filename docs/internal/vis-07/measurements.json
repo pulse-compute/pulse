@@ -18176,6 +18176,10 @@
     {
       "localCommit": "dfecaee78a56bd22989a25fe7e4e8bbf08fe7fff",
       "tree": "893d2c62588d608d460e2bc2d92333bf11ebaa18"
+    },
+    {
+      "localCommit": "f24898e4d8206876e180bf09f56d51090eb75ab4",
+      "tree": "5f1402762707d0d63e2379d972fe5b665c375727"
     }
   ],
   "validationAttempts": [
@@ -18262,6 +18266,31 @@
       "logSha256": "92f3126b31736fc59205ad0f98f6e399b24670015eedac9cd398e23f4b3dae23"
     },
     {
+      "name": "unit-2",
+      "status": "passed",
+      "log": "vis07-unit-2.log",
+      "sourceCommit": "f24898e4d8206876e180bf09f56d51090eb75ab4",
+      "sourceTree": "5f1402762707d0d63e2379d972fe5b665c375727",
+      "publishedEquivalent": "b3c79dd3e9cf744bd4738924b2dd78f4c3e0ee5e",
+      "tasks": 63,
+      "durationSeconds": 295.76,
+      "exitCode": 0,
+      "scope": "Complete registered unit profile on an unchanged clean candidate; includes relationship, viewer, imported-source replay and production topology checks.",
+      "logSha256": "c0c87fe23ebaadfecf7c5037e329e1ab00b94666d83ec2c9a98a33d23b85f3b1"
+    },
+    {
+      "name": "final-maintainer",
+      "status": "passed",
+      "log": "vis07-final-maintainer.log",
+      "logSha256": "29950389946494af3858f362b70af5c7b5f6fb80d0ead3121f400beab98e5536"
+    },
+    {
+      "name": "final-docs",
+      "status": "passed",
+      "log": "vis07-final-docs.log",
+      "logSha256": "8bb1445015174fb2b2f3704ba1b9fe00bdf6fc3847f39192312a9fd5e8819656"
+    },
+    {
       "name": "maintainer",
       "status": "passed",
       "log": "vis07-maintainer.log",
@@ -18288,9 +18317,9 @@
     {
       "name": "scope",
       "status": "valid-declaration",
-      "log": "vis07-scope.log",
+      "log": "vis07-final-scope.log",
       "scope": "architecture-change; explicit VIS-07 implementation direction covers the report format/query contract; human retains merge/release authority",
-      "logSha256": "03c91b64241bc7c7a922f814d731a0263eaea8988506de4a4cb8dc1fb56078ee"
+      "logSha256": "3ec282f00fc5412b1ac428ed58714f4b1a4498774d31bb0334d406c27238094b"
     }
   ],
   "freshBuild": {
@@ -18568,6 +18597,11 @@
       "localCommit": "dfecaee78a56bd22989a25fe7e4e8bbf08fe7fff",
       "publishedCommit": "005af237c37b98de3aaace59aee42b86269a6f20",
       "tree": "893d2c62588d608d460e2bc2d92333bf11ebaa18"
+    },
+    {
+      "localCommit": "f24898e4d8206876e180bf09f56d51090eb75ab4",
+      "publishedCommit": "b3c79dd3e9cf744bd4738924b2dd78f4c3e0ee5e",
+      "tree": "5f1402762707d0d63e2379d972fe5b665c375727"
     }
   ]
 }
