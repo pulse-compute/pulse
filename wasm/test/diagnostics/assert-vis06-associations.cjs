@@ -68,6 +68,18 @@ async function main() {
     const full = unbounded.derive(deep);
     assert.equal(full.rows.length, 520); assert.ok(unbounded.stats.counters.work > 250000);
     assert.ok(unbounded.stats.counters.maxPathHops > 64); assertions += 4;
+    const workOnly = structuredClone(deep);
+    workOnly.registrations = Array.from({ length: 400 }, (_, i) => ({ ...structuredClone(deep.registrations[0]),
+      id: `work-${i}`, flow: { next: i === 399 ? null : `work-${i + 1}`, child: null, parentContinue: null } }));
+    workOnly.registrations.forEach((r, i) => {
+      r.kind = 'route'; r.handlerId = base.handlerId;
+      r.match = { state: 'available', value: { method: 'GET', path: `/work/${i}`, eventType: null }, reason: null };
+      r.control.value = { pattern: `/work/${i}`, normal: false, error: false, terminal: true, eligibility: false };
+    });
+    const workProbe = instrument();
+    assert.equal(workProbe.derive(workOnly).coverage.reason, 'graph-budget-exhausted');
+    assert.equal(workProbe.stats.counters.work, 250001);
+    assert.equal(workProbe.stats.counters.maxPathHops, 1); assertions += 3;
     const input = path.join(dir, 'input.json'); fs.writeFileSync(input, '{}');
     const worker = path.join(dir, 'worker.cjs');
     async function failure(name, source, options, expected) {
@@ -83,6 +95,9 @@ async function main() {
     await failure('exception', "throw new Error('controlled algorithmic defect')", {}, 'worker-exit-without-completion');
     await failure('false-success', "process.send({result:{status:'completed'}});process.exit(2)", {}, 'worker-exit-without-completion');
     await failure('oom', 'const a=[];while(true)a.push(new Array(100000).fill(1));', { heapMiB: 16 }, 'heap-oom');
+    fs.writeFileSync(input, '{"kind":1,"kind":2}');
+    const invalid = await supervise({ input, mode: 'limited', output: path.join(dir, 'duplicate.json') });
+    assert.equal(invalid.status, 'incomplete'); assert.equal(invalid.error.code, 'REPORT_DUPLICATE_KEY'); assertions += 2;
     assert.deepEqual(production.LIMITS, { work: 250000, associations: 10000 }); assertions++;
     assert.deepEqual(production.deriveHandlerAssociations(a), { rows: a.associations, coverage: a.coverage.associations }); assertions++;
     console.log(JSON.stringify({ status: 'passed', assertions, baselineParity: true, prototypeParity: true,

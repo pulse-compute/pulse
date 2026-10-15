@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
-const { fork } = require('node:child_process');
+const { fork, execFileSync } = require('node:child_process');
 const { performance } = require('node:perf_hooks');
 const { sha256 } = require('./vis06-derivation.cjs');
 
@@ -16,6 +16,10 @@ function supervise({ input, mode, output, timeoutMs = 60000, rssMiB = 1536, heap
   if (fs.existsSync(output)) throw new Error('Refusing to overwrite an attempted-run receipt');
   const receipt = { version: 'pulse.vis06-measurement.v1', status: 'running', mode,
     inputSha256: sha256(fs.readFileSync(input)), startedAt: new Date().toISOString(),
+    pulseSha: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: path.resolve(__dirname, '../../..'), encoding: 'utf8' }).trim(),
+    diagnosticFiles: Object.fromEntries(fs.readdirSync(__dirname).filter(f => f.startsWith('vis06-') && f.endsWith('.cjs'))
+      .sort().map(f => [f, sha256(fs.readFileSync(path.join(__dirname, f)))])),
+    workerSha256: sha256(fs.readFileSync(worker)),
     watchdog: { timeoutMs, rssMiB, heapMiB, sampleIntervalMs: 20 },
     sampledPeakRssBytes: 0, progress: [], qualification: false };
   const write = () => { fs.writeFileSync(output + '.tmp', JSON.stringify(receipt, null, 2) + '\n'); fs.renameSync(output + '.tmp', output); };

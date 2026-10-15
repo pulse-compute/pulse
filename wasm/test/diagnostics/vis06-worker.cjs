@@ -6,6 +6,7 @@ const { performance } = require('node:perf_hooks');
 const { execFileSync } = require('node:child_process');
 const assert = require('node:assert/strict');
 const { instrument, queryRelations, canonicalJson, sha256 } = require('./vis06-derivation.cjs');
+const { parseJson } = require('../../packages/cli/src/internal/report/data');
 const report = path.resolve(__dirname, '../../packages/cli/src/internal/report');
 const encoding = require(path.join(report, 'encoding'));
 const capsule = require(path.join(report, 'capsule'));
@@ -43,7 +44,7 @@ function run(input, mode, send = () => {}) {
   receipt.diagnosticFiles = Object.fromEntries(fs.readdirSync(__dirname).filter(f => f.startsWith('vis06-') && f.endsWith('.cjs'))
     .sort().map(f => [f, sha256(fs.readFileSync(path.join(__dirname, f)))]));
   receipt.lockfileSha256 = sha256(fs.readFileSync(path.resolve(__dirname, '../../../pnpm-lock.yaml')));
-  const decoded = stage('inputDecode', () => encoding.decode(JSON.parse(bytes)));
+  const decoded = stage('inputDecode', () => encoding.decode(parseJson(bytes)));
   const isCapsule = decoded.kind === 'pulse.application-report';
   stage('inputValidation', () => {
     if (isCapsule) capsule.validateCapsule(decoded);
@@ -82,8 +83,21 @@ function run(input, mode, send = () => {}) {
     receipt.rawFactsBytes = Buffer.byteLength(JSON.stringify(facts));
     receipt.factsAndRelationsBytes = Buffer.byteLength(JSON.stringify({ facts, relations: probe.relations }));
     receipt.factsAndRelationsNormalizedBytes = Buffer.byteLength(JSON.stringify(encoding.encode({ facts, relations: probe.relations })));
+    const sitesPerOwner = new Map(), callsPerOwner = new Map(), attemptsPerConsumer = new Map();
+    for (const site of analytics.useSites) sitesPerOwner.set(site.ownerId, (sitesPerOwner.get(site.ownerId) || 0) + 1);
+    for (const call of analytics.helperCalls) for (const id of call.registrationIds)
+      callsPerOwner.set(id, (callsPerOwner.get(id) || 0) + (sitesPerOwner.get(call.calleeId) || 0));
+    const registrationMap = new Map(analytics.registrations.map(r => [r.id, r]));
+    for (const relation of probe.relations) attemptsPerConsumer.set(relation.consumer,
+      (attemptsPerConsumer.get(relation.consumer) || 0) + (sitesPerOwner.get(registrationMap.get(relation.owner).handlerId) || 0) + (callsPerOwner.get(relation.owner) || 0));
+    receipt.predictedEmissionAttempts = [...attemptsPerConsumer.values()].reduce((a, b) => a + b, 0);
+    receipt.predictionScope = 'exact site/helper expansion count from owner relations, before identity deduplication; not a completed materialization oracle';
+    const rank = [...analytics.registrations].filter(r => r.handlerId)
+      .sort((a, b) => (attemptsPerConsumer.get(b.id) || 0) - (attemptsPerConsumer.get(a.id) || 0) || a.order - b.order);
+    const rankedRoutes = rank.filter(r => r.kind === 'route');
     receipt.focusedTraversals = [];
-    for (const consumer of [...new Set([analytics.registrations[0], analytics.registrations.find(r => r.kind === 'route'), analytics.registrations.at(-1)])].filter(Boolean)) {
+    for (const consumer of [...new Set([rank[0], rankedRoutes[Math.floor(rankedRoutes.length / 2)],
+      analytics.registrations.at(-1), analytics.registrations.find(r => r.kind === 'event')])].filter(Boolean)) {
       const focused = instrument({ unrestricted: true, relationsOnly: true, focus: consumer.id });
       const start = performance.now(); focused.derive(analytics);
       receipt.focusedTraversals.push({ consumer: consumer.id, kind: consumer.kind,
@@ -101,15 +115,18 @@ function run(input, mode, send = () => {}) {
     }
     receipt.traversalCoverage = result.coverage;
     send({ stage: 'relationResult', relations: receipt.relations, relationsBytes: receipt.relationsBytes,
+      predictedEmissionAttempts: receipt.predictedEmissionAttempts,
       factsAndRelationsBytes: receipt.factsAndRelationsBytes,
       factsAndRelationsNormalizedBytes: receipt.factsAndRelationsNormalizedBytes,
       derivationExhausted: receipt.derivationExhausted, instrumentation: receipt.instrumentation,
       focusedTraversals: receipt.focusedTraversals });
     if (mode === 'relations-focused') {
-      receipt.bindingQueries = queries.bindingIds.length;
+      const bindingIds = decoded.bindings.map(b => b.id).sort();
+      receipt.bindingQueries = bindingIds.length;
+      receipt.bindingsWithAuthoredSites = queries.bindingIds.length;
       receipt.bindingConsumerCounts = {};
       stage('allBindingConsumerQueries', () => {
-        for (const id of queries.bindingIds) receipt.bindingConsumerCounts[id] = queries.binding(id).length;
+        for (const id of bindingIds) receipt.bindingConsumerCounts[id] = queries.binding(id).length;
       });
       receipt.coverage = { status: result.coverage.status, reason: result.coverage.reason,
         scope: 'owner relationship traversal; full association materialization not performed' };

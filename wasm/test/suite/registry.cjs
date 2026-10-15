@@ -1327,7 +1327,6 @@ const installedCorpusOwners = Object.freeze({
 
 const profiles = Object.freeze({
   unit: Object.freeze([
-    'vis06-association-diagnostic',
     'report-capsule-contract',
     'cli-report-workflow',
     'cli-report-viewer',
