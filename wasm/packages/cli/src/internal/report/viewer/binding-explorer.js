@@ -1,5 +1,5 @@
 'use strict';
-function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,registrationLink,onRouting,onInspect}) {
+function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,registrationLink,pointLink,bindingLink,onRouting,onInspect}) {
   const local={binding:null,scope:null,query:'',pin:null,page:0,evidencePage:0,zoom:1};
   let host,graph,viewport,projection;
   const svgEl=(tag,attrs={},text)=>{const n=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;};
@@ -11,7 +11,7 @@ function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,
     const consumers=projection.consumers.slice(local.page*12,(local.page+1)*12),ops=projection.operations.slice(local.page*12,(local.page+1)*12);
     const height=Math.max(330,Math.max(consumers.length,ops.length)*96+100),middle=height/2;
     graph=svgEl('svg',{class:'atlas-svg binding-svg',viewBox:`0 0 990 ${height}`,width:990*local.zoom,height:height*local.zoom,'data-height':height,'aria-label':'Static consumers, logical binding and recorded operations'});
-    for(const [x,t] of [[24,'CONTEXTUAL CONSUMERS'],[378,'LOGICAL BINDING'],[710,'AUTHORED OPERATIONS']])graph.append(svgEl('text',{x,y:28,class:'binding-column-title'},t));
+    for(const [x,t] of [[24,'POSSIBLE ENTRY POINTS'],[378,'LOGICAL BINDING'],[710,'AUTHORED OPERATIONS']])graph.append(svgEl('text',{x,y:28,class:'binding-column-title'},t));
     const edges=[];
     const edge=(d,kind,key)=>{const n=svgEl('path',{d,class:'atlas-edge binding-edge','aria-hidden':'true'});graph.append(n);edges.push({n,kind,key});};
     consumers.forEach((g,i)=>edge(`M284 ${98+i*96} C330 ${98+i*96} 330 ${middle} 365 ${middle}`,'consumer',g.key));
@@ -48,10 +48,10 @@ function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,
     const prev=button('Previous evidence',()=>{local.evidencePage--;render(host);host.querySelector('#binding-evidence-page').focus();}),next=button('Next evidence',()=>{local.evidencePage++;render(host);host.querySelector('#binding-evidence-page').focus();});prev.disabled=local.evidencePage===0;next.disabled=local.evidencePage+1>=pageCount;
     return el('aside',{class:'atlas-selection surface panel-pad',id:'binding-inspector'},el('div',{class:'eyebrow'},'CONNECTION EVIDENCE'),el('h3',{id:'binding-inspector-title',tabindex:-1,class:'record-text'},title),
       el('p',{class:'small-note'},'Static associations, not execution or effective permissions. Counts are projected rows and distinct use sites, not request counts.'),
-      c?el('div',{},el('h4',{},'Exact registration instances'),...c.registrations.map(r=>el('p',{},button('Reveal '+m.registrationLabel(r),()=>onRouting(r.id),'text-button record-text'),registrationLink(r.id)))):null,
+      c?el('div',{},el('h4',{},'Exact registration instances'),...c.registrations.map(r=>el('p',{},button('Reveal '+m.registrationLabel(r),()=>onRouting(r.id),'text-button record-text'),pointLink(r.id),el('span',{},' · '),registrationLink(r.id)))):null,
       el('p',{class:'small-note'},rows.length+' association rows · '+sites.length+' distinct use sites'),
       el('details',{class:'details-block'},el('summary',{},'Authored operations and sources'),...sites.slice(0,20).map(s=>el('p',{class:'record-text'},useSiteLink(s.id),' · '+s.operation+' · '+m.authoredSource(s.source))),sites.length>20?el('p',{class:'small-note'},'First 20 sites shown here. All associated sites are linked from the paged evidence below; the binding inventory lists all authored sites.'):null),
-      projection?el('a',{href:'#bindings/'+[...m.bindings.keys()].indexOf(projection.binding.id)},'Open full binding inventory'):null,
+      projection?bindingLink(projection.binding.id):null,
       ...rows.slice(local.evidencePage*20,(local.evidencePage+1)*20).map(associationDetail),
       rows.length?el('div',{class:'atlas-controls'},prev,el('span',{id:'binding-evidence-page',tabindex:-1},'Evidence '+(local.evidencePage+1)+' / '+pageCount),next):el('p',{},'No recorded association in this scope. This does not establish absence of dependencies.'));
   }
@@ -59,7 +59,7 @@ function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,
     const camera=viewport?{left:viewport.scrollLeft,top:viewport.scrollTop}:null;
     host=container;const inventory=[...m.bindings.values()];
     if(!m.bindings.has(local.binding))local.binding=inventory[0]?.id||null;
-    projection=local.binding?m.bindingProjection(local.binding,local.scope):null;
+    projection=local.binding?m.bindingProjection(local.binding,local.scope,true):null;
     const search=el('input',{id:'binding-search',type:'search',value:local.query,placeholder:'Find a binding…','aria-label':'Find a binding',on:{input:e=>{local.query=e.target.value;const caret=e.target.selectionStart;render(host);const input=host.querySelector('#binding-search');input.focus();input.setSelectionRange(caret,caret);}}});
     const picker=el('div',{class:'binding-picker','aria-label':'Logical bindings'},inventory.filter(b=>(b.name+' '+b.kind).toLowerCase().includes(local.query.toLowerCase())).map(b=>{const btt=button(b.name+' · '+b.kind,()=>{local.binding=b.id;local.pin=null;local.page=0;local.evidencePage=0;render(host);host.querySelector('#binding-summary').focus();});btt.setAttribute('aria-pressed',String(local.binding===b.id));btt.setAttribute('data-binding-id',b.id);return btt;}));
     const select=el('select',{id:'binding-select','aria-label':'Logical binding',on:{change:e=>{local.binding=e.target.value;local.pin=null;local.page=0;local.evidencePage=0;render(host);host.querySelector('#binding-select').focus();}}},inventory.map(b=>el('option',{value:b.id,selected:local.binding===b.id},b.name+' · '+b.kind)));

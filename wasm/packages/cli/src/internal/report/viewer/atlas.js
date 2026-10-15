@@ -1,9 +1,9 @@
 'use strict';
 // Geometry uses SVG attributes, never inline style or a second evidence payload.
-function createReportAtlas({model:m,el,button,select,registrationLink,definitionLink,associationDetail,useSiteLink}) {
+function createReportAtlas({model:m,el,button,select,registrationLink,definitionLink,associationDetail,useSiteLink,pointLink,bindingLink}) {
   const local={scope:null,query:'',expanded:new Set(),page:0,zoom:1,graph:false,mode:'routing',full:false,inspector:false,inspectorWidth:1,camera:null};
   let host,viewport,svg,layout,nodes=new Map();
-  const bindingExplorer=createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,registrationLink,
+  const bindingExplorer=createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,registrationLink,pointLink,bindingLink,
     onRouting:id=>{local.mode='routing';local.graph=true;select(id);render(host);center(id,true);},
     onInspect:()=>{local.inspector=true;applyWorkspace();}});
   function rememberCamera(){if(viewport)local.camera={left:viewport.scrollLeft,top:viewport.scrollTop};}
@@ -33,7 +33,7 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
     const full=button(local.full?'Exit expanded view':'Expand workspace',expand);full.id='atlas-workspace-toggle';
     const details=button(local.inspector?'Hide details':'Show details',()=>{local.inspector=!local.inspector;applyWorkspace();});details.id='atlas-inspector-toggle';
     const smaller=button('Narrower details',()=>{local.inspectorWidth=Math.max(0,local.inspectorWidth-1);applyWorkspace();}),larger=button('Wider details',()=>{local.inspectorWidth=Math.min(2,local.inspectorWidth+1);applyWorkspace();});
-    return el('div',{class:'atlas-toolbar'},el('strong',{},'Execution workspace'),el('div',{class:'atlas-controls'},routing,binding),el('div',{class:'atlas-controls'},details,el('span',{class:'atlas-resize-controls'},smaller,larger),full));
+    return el('div',{class:'atlas-toolbar'},el('strong',{},'Execution Explorer'),el('div',{class:'atlas-controls'},routing,binding),el('div',{class:'atlas-controls'},details,el('span',{class:'atlas-resize-controls'},smaller,larger),full));
   }
   const selected=()=>m.registrationById.get(m.state.selectedRegistration);
   const label=r=>r?m.registrationLabel(r):'Application';
@@ -95,14 +95,19 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
   }
   function selectionPanel() {
     const r=selected();if(!r)return el('aside',{class:'atlas-selection surface panel-pad'},el('h3',{},'Select a registration'),el('p',{class:'small-note'},'Use the graph or table to inspect one exact instance.'));
-    const h=m.definitionById.get(r.handlerId),branch=r.kind==='mount'?r.id:r.mountPath.at(-1);
+    const h=m.definitionById.get(r.handlerId),branch=r.kind==='mount'?r.id:r.mountPath.at(-1),context=m.entryPointById.has(r.id)?m.entryPointContext(r.id):null;
     return el('aside',{class:'atlas-selection surface panel-pad'},el('div',{class:'eyebrow'},'SELECTED REGISTRATION'),el('h3',{id:'atlas-selected-title',tabindex:-1,class:'record-text'},label(r)),
       el('p',{class:'small-note'},control(r)),el('h4',{},'Registration source'),el('p',{class:'record-text'},m.authoredSource(r.source)),
       el('h4',{},'Authored definition'),h?definitionLink(h.id):el('p',{},'Routing structure · no authored definition'),
       h?el('p',{class:'small-note'},m.definitionRegistrations(h.id).length+' registration instances'):null,
       el('h4',{},'Mount ancestry'),r.mountPath.length?r.mountPath.map(id=>button(label(m.registrationById.get(id)),()=>choose(m.registrationById.get(id)),'text-button record-text')):el('p',{},'Application root'),
       branch?button('Focus owning subrouter',()=>scope(branch)):null,
-      button('Explore bindings',()=>bindings({scope:r.id})),el('p',{},registrationLink(r.id)),el('p',{class:'small-note'},'Open registration details for exact control, continuation and association evidence.'));
+      button('Explore bindings',()=>bindings({scope:r.id})),el('p',{},pointLink(r.id)),el('p',{},registrationLink(r.id)),
+      context?el('details',{class:'details-block'},el('summary',{},'Admission and possible bindings'),
+        el('p',{},'Admission: '+(context.admission?m.coverageText(context.admission.coverage):'unavailable · historical representation')),
+        ...(context.admission?.relations||[]).map(relation=>el('p',{},registrationLink(relation.owner))),
+        el('p',{},'Binding associations: '+m.coverageText(context.coverage)),...context.bindings.map(b=>el('p',{},bindingLink(b.id))),
+        context.bindings.length?null:el('p',{},'No observed bindings; incomplete evidence cannot establish no use.')):null,el('p',{class:'small-note'},'Open registration details for exact control, continuation and association evidence.'));
   }
   function render(container) {
     host=container;
@@ -137,13 +142,13 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
         el('p',{class:'small-note'},layout.points.filter(p=>p.r).length+' registration nodes shown'+(layout.truncated?' · graph display limited to 300 nodes; narrow the scope or search. All matches remain in table pages.':'.')));
     }
     main.append(el('details',{class:'atlas-table-disclosure',open:!local.full},el('summary',{},'Routing execution table'),table,page));
-    host.replaceChildren(toolbar(),el('div',{class:'section-heading'},el('div',{},el('h2',{},'Execution atlas'),el('p',{},'Focus a subrouter. Follow one registration to its authored evidence.'))),
+    host.replaceChildren(toolbar(),el('div',{class:'section-heading'},el('div',{},el('h2',{},'Execution Explorer'),el('p',{},'Focus a subrouter. Follow one registration to its authored evidence.'))),
       el('p',{class:'small-note'},'Static compiler evidence, not observed requests. Registration coverage: '+m.coverageText(coverage)),el('div',{class:'atlas-workspace'},main,selectionPanel()));
     applyWorkspace();if(viewport&&local.camera){viewport.scrollLeft=local.camera.left;viewport.scrollTop=local.camera.top;local.camera=null;}
   }
   // Opening is explicit on narrow screens; no graph DOM is built until needed.
   function open(container) {
-    if(!host)local.graph=typeof matchMedia==='function'&&!matchMedia('(max-width: 760px)').matches;
+    if(!host&&!local.explicit)local.graph=typeof matchMedia==='function'&&!matchMedia('(max-width: 760px)').matches;
     if(selected()&&local.query&&!m.atlasLayout({query:local.query}).matches.some(r=>r.id===selected().id))local.query='';
     render(container);
     if(local.mode!=='routing')return;
@@ -153,6 +158,6 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
     const row=host.querySelector('.atlas-active'),table=host.querySelector('.atlas-table-scroll');
     if(row&&table)table.scrollTop+=row.getBoundingClientRect().top-table.getBoundingClientRect().top-40;
   }
-  return {open,center,bindings,routing(){local.mode='routing';},leave(){local.full=false;document.body.classList.remove('atlas-expanded');},escape(){if(local.full){expand();return true;}return false;}};
+  return {open,center,bindings,focusEntry(id){local.explicit=true;local.mode='routing';local.graph=true;local.scope=m.registrationById.get(id)?.mountPath.at(-1)||null;local.query='';local.page=0;local.camera=null;local.expanded.clear();},resume(){applyWorkspace();},routing(){local.mode='routing';},leave(){document.body.classList.remove('atlas-expanded');},escape(){if(local.full){expand();return true;}return false;}};
 }
 if(typeof module!=='undefined')module.exports={createReportAtlas};

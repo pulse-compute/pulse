@@ -27,7 +27,7 @@ module.exports = ({renderedTree}) => {
   require('./report-atlas-viewer-cases.cjs')({capsule,renderedTree});
   const visit=hash=>{tree.location.hash=hash;tree.renderers.onHash();return tree.get('view-handlers').textContent;};
   tree.renderers.buildNavigation();
-  assert.ok(tree.get('desktop-nav').textContent.includes('Handlers'));
+  assert.ok(tree.get('desktop-nav').textContent.includes('Authored records'));
   assert.ok(tree.get('desktop-nav').textContent.includes('Compiled helpers'));
   visit('#handlers');
   assert.equal(tree.get('handler-list').children[0].children.length,a.handlers.length,'one list row per definition');
@@ -44,7 +44,7 @@ module.exports = ({renderedTree}) => {
   assert.equal(tree.document.activeElement.id,'definition-title');
   assert.equal(tree.get('definition-title').textContent, reused.name);
   assert.ok(text.includes('Registration instances'));
-  for(const registration of model.definitionRegistrations(reused.id)) assert.ok(tree.nodes().some(n=>n.attrs.href==='#registrations/'+model.registrationIndex.get(registration.id)));
+  for(const registration of model.definitionRegistrations(reused.id)) assert.ok(tree.nodes().some(n=>n.attrs.href===model.detailHash('registrations',registration.id)));
   assert.equal(model.definitionSites(reused.id).filter(s=>s.surfaceId==='ctx.config.get').length,3,'repeated reads remain distinct');
   tree.get('handler-search').events.input({target:{value:'HELPER_TOKEN'}});
   assert.ok(tree.get('handler-list').textContent.includes(model.definitionLabel(helper)));
@@ -63,11 +63,11 @@ module.exports = ({renderedTree}) => {
   const mounted=a.registrations.filter(r=>r.kind==='route'&&r.mountPath.length);
   assert.ok(new Set(mounted.flatMap(r=>r.mountPath)).size>=2);
   for(const registration of mounted) {
-    text=visit('#registrations/'+model.registrationIndex.get(registration.id));
+    text=visit(model.detailHash('registrations',registration.id));
     assert.equal(tree.document.activeElement.id,'registration-title');
     assert.ok(tree.get('registration-title').textContent.startsWith(model.definitionById.get(registration.handlerId).name+' · '));
     assert.match(text,/Ordered mount instances/);
-    for(const id of registration.mountPath) assert.ok(tree.nodes().some(n=>n.attrs.href==='#registrations/'+model.registrationIndex.get(id)));
+    for(const id of registration.mountPath) assert.ok(tree.nodes().some(n=>n.attrs.href===model.detailHash('registrations',id)));
   }
   const inherited=a.associations.find(row=>row.via.some(h=>h.kind==='middleware'));
   text=visit('#registrations/'+model.registrationIndex.get(inherited.consumerRegistrationId));
@@ -79,7 +79,7 @@ module.exports = ({renderedTree}) => {
     assert.equal(tree.document.activeElement.id,'use-site-title');assert.ok(text.includes(site.binding.state));assert.ok(text.includes(model.authoredSource(site.source)));
     if(site.binding.bindingId) {
       const b=capsule.bindings.findIndex(b=>b.id===site.binding.bindingId);
-      assert.ok(tree.nodes().some(n=>n.attrs.href==='#bindings/'+b));
+      assert.ok(tree.nodes().some(n=>n.attrs.href===model.detailHash('bindings',site.binding.bindingId)));
       visit('#bindings/'+b);assert.equal(tree.document.activeElement.id,'binding-title-'+b);
       assert.ok(tree.get('view-bindings').textContent.includes('Authored use sites'));
     }
@@ -97,7 +97,7 @@ module.exports = ({renderedTree}) => {
 
   for(const analytics of [undefined,projectHandlerTopology()]) {
     const old=f.fixture(true);if(analytics)old.analytics=analytics;
-    const absent=renderedTree(f.createCapsule(old));absent.renderers.buildNavigation();assert.match(absent.get('desktop-nav').textContent,/Handlers—/);absent.location.hash='#handlers';absent.renderers.onHash();
+    const absent=renderedTree(f.createCapsule(old));absent.renderers.buildNavigation();assert.match(absent.get('desktop-nav').textContent,/Authored records/);absent.location.hash='#handlers';absent.renderers.onHash();
     assert.match(absent.get('view-handlers').textContent,/Handler definitions unavailable · not-recorded/);
     assert.match(absent.get('view-handlers').textContent,/All registration instances · Unavailable/);
   }
@@ -114,13 +114,13 @@ module.exports = ({renderedTree}) => {
   duplicates.get('handler-search').events.input({target:{value:reused.name}});
   assert.equal(duplicates.get('handler-list').children[0].children.length,2,'same names retain separate list entries');
   for(const row of [reused,imported]) {
-    assert.ok(duplicates.nodes().some(n=>n.attrs.href==='#handlers/'+model.definitionIndex.get(row.id)));
+    assert.ok(duplicates.nodes().some(n=>n.attrs.href===model.detailHash('handlers',row.id)));
     assert.ok(duplicates.get('handler-list').textContent.includes(row.source.value.file+':'+row.source.value.start.line+':'+row.source.value.start.column),'source disambiguates names');
   }
   const unnamed=structuredClone(capsule);unnamed.analytics.handlers.find(h=>h.id===reused.id).name=null;
   const unnamedCapsule=f.createCapsule(unnamed), unnamedTree=renderedTree(unnamedCapsule);
   unnamedTree.location.hash='#handlers/'+model.definitionIndex.get(reused.id);unnamedTree.renderers.onHash();
-  assert.match(unnamedTree.get('definition-title').textContent,/^Anonymous handler \d+$/);
+  assert.match(unnamedTree.get('definition-title').textContent,/^Anonymous handler · .+:\d+$/);
   assert.ok(!unnamedTree.get('definition-title').textContent.includes('reused'),'older missing names are not reconstructed from source');
   assert.equal(serializeCapsule(unnamedCapsule),createReportViewModel(unnamedCapsule).canonicalJson);
 

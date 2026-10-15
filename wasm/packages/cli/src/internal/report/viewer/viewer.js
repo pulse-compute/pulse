@@ -71,7 +71,10 @@
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
-  const navigation = [['routes','Routes','routes'],['atlas','Execution atlas','layers'],['handlers','Handlers','code'],['entries','Entries','code'],['helpers','Compiled helpers','chip'],['resources','Resources','box'],['schemas','Schemas','layers'],['bindings','Bindings','link'],['evidence','Evidence','evidence']];
+  const navigation = [['entry-points','Entry Points','routes'],['bindings','Bindings','link']];
+  const secondaryNavigation = [['routes','HTTP size analysis','routes'],['resources','Resources & sizes','box'],['schemas','Schemas','layers'],['evidence','Evidence','evidence'],['handlers','Authored records','code'],['entries','All entry records','code'],['helpers','Compiled helpers','chip']];
+  const viewIds = [...navigation,...secondaryNavigation,['atlas']].map(([id])=>id);
+  let explorerReturn=null,activeHash='';
   const button = (label, fn, cls='button subtle') => el('button',{type:'button',class:cls,on:{click:fn}},label);
   const note = text => el('div',{class:'plain-note'},icon('info'),el('p',{},text));
   const kv = entries => el('dl',{class:'kv-list'},entries.map(([key,value]) => el('div',{class:'kv-row'},el('dt',{},key),el('dd',{class:'record-text'},value))));
@@ -100,7 +103,10 @@
     setTimeout(() => URL.revokeObjectURL(url),1500); toast('Complete capsule exported. View filters do not change evidence.');
   }
   function buildNavigation() {
-    for (const root of [$('#desktop-nav'),$('#mobile-nav')]) replace(root,navigation.map(([id,label,glyph]) => el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,id === 'evidence' ? null : el('span',{class:'nav-count'},id==='atlas'?(analyticsCoverage('registrations').status==='unavailable'?'—':registrations.length):id==='handlers'?(analyticsCoverage('handlers').status==='unavailable'?'—':definitions.length):id==='helpers'?(helperState==='recorded'?helpers.length:'—'):P[id].length))));
+    const item=([id,label,glyph])=>el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,
+      id==='entry-points'?el('span',{class:'nav-count'},model.entryPoints.length):id==='bindings'?el('span',{class:'nav-count'},P.bindings.length):null);
+    for(const root of [$('#desktop-nav'),$('#mobile-nav')])replace(root,navigation.map(item),
+      el('details',{class:'report-sections'},el('summary',{},'More report sections'),secondaryNavigation.map(item)));
   }
   function ledger(artifact, large=false) {
     const parts=composition(artifact);
@@ -146,10 +152,10 @@
     $('#snapshot-label').textContent = mode === 'current' ? 'Retained completed build · current inputs matched.' : mode === 'artifact' ? 'Completed artifact verified · current project not checked.' : 'Historical capsule replay · current project and original artifact bytes not checked.';
     $('#revision-label').textContent = 'Revision: ' + (P.provenance.revision ?? 'unknown') + ' · dirty: ' + (P.provenance.dirty === null ? 'unknown' : P.provenance.dirty ? 'yes' : 'no');
     $('#hash-button').textContent = P.evidenceHash.value.slice(0,12); $('#hash-button').title = 'SHA-256 ' + P.evidenceHash.value;
-    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Route registrations',inventoryCount('routes'),P.coverage.routes.status+' inventory · '+(routeCounts.distinctMethodPaths??'unknown')+' distinct method/path pairs','routes'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),P.coverage.resources.status+' inventory · input and retained bytes differ','resources']];
+    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Entry Points',String(model.entryPoints.length),model.entryPoints.filter(p=>p.type==='http').length+' HTTP · '+model.entryPoints.filter(p=>p.type==='event').length+' events · observed inventory','entry-points'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),P.coverage.resources.status+' inventory · input and retained bytes differ','resources']];
     replace($('#summary-strip'),items.map(([label,value,sub,view],i)=>el('a',{class:'summary-item clickable',href:'#'+view},el('div',{class:'summary-top'},label,icon(view === 'routes' ? 'routes' : 'box')),i===0?byteDisplay(A.bytes,'summary-value'):el('div',{class:'summary-value'+(value==='Unavailable'?' small':'')},value),el('div',{class:'summary-sub'},sub))));
     $('#route-total').textContent = P.routes.length;
-    $('#route-behavior-summary').textContent = `${routeCounts.terminal} terminal · ${routeCounts.continuing} continuing · ${routeCounts.unknown} behavior not recorded. Continuing means a handler can transfer control, including errors; it may also respond early.`;
+    $('#route-behavior-summary').textContent = `${routeCounts.distinctMethodPaths??'Unknown'} distinct method/path pairs · ${routeCounts.terminal} terminal · ${routeCounts.continuing} continuing · ${routeCounts.unknown} behavior not recorded. Continuing means a handler can transfer control, including errors; it may also respond early.`;
     const mapped = P.routes.filter(r=>factValue(measurement(r,'handler-body')?.fact)!==null).length;
     $('#mapping-label').textContent = `${mapped} / ${P.routes.length} handler mappings · ${A.stage}`;
     replace($('#compact-ledger'),ledger(A));
@@ -234,7 +240,7 @@
     tabs.addEventListener('keydown',e=>{let i=ids.indexOf(state.drawerTab);if(e.key==='ArrowRight')i=(i+1)%3;else if(e.key==='ArrowLeft')i=(i+2)%3;else if(e.key==='Home')i=0;else if(e.key==='End')i=2;else return;e.preventDefault();state.drawerTab=ids[i];renderDrawer();$('#drawer-tab-'+ids[i]).focus();});
     const panel=el('div',{id:'drawer-panel',role:'tabpanel','aria-labelledby':'drawer-tab-'+state.drawerTab,tabindex:0});
     if(state.drawerTab==='facts') panel.append(el('div',{class:'drawer-facts-grid'},
-      detailSection('Authored handler and associations',definitionById.has(r.handlerId)?definitionLink(r.handlerId):el('p',{},'Handler definition unavailable'),registrationById.has(r.entryId)?registrationLink(r.entryId):analyticsCoverageNote('registrations')),
+      detailSection('Authored handler and associations',el('p',{},el('a',{href:model.detailHash('entry-points',model.entryPointById.has(r.entryId)?r.entryId:r.id)},'Open Entry Point')),definitionById.has(r.handlerId)?definitionLink(r.handlerId):el('p',{},'Handler definition unavailable'),registrationById.has(r.entryId)?registrationLink(r.entryId):analyticsCoverageNote('registrations')),
       detailSection('Registration behavior',el('p',{},routeBehavior(r)),note(r.behavior ? 'Compiler handler IR · continuing includes conditional next() and error transfers. This is not a complete endpoint execution chain.' : 'Compiler behavior evidence was not retained. Router nesting, source names and dispatcher membership do not establish behavior.')),
       detailSection('Handler attribution',el('strong',{},handlerAttribution(r).label),el('p',{},handlerAttribution(r).detail)),
       detailSection('Declarations',el('p',{},declarationLabels[declarationState(r)]),...r.declarationIds.map(id=>{const d=declarations.get(id);return el('p',{},d.kind+': '+d.name);}),note('Recorded declarations are not proof of effective permissions.')),
@@ -260,7 +266,7 @@
           resolution.variants.length?resolution.variants.map(m=>el('section',{class:'measurement-record'},byteDisplay(factValue(m.fact)),kv([['Exact bytes',exact(factValue(m.fact))],['Evidence',qualifier(m.fact)],['Method',m.method],['Mapped chunks',`${m.mappedChunks} / ${m.expectedChunks??'unknown'}`],['Physical artifact',A.id+' · '+A.stage],['Root set',m.rootSetId??'Not applicable'],['Root',m.rootId??'Not applicable'],['Body identities',m.bodyIds.join(', ')||'Not recorded'],['Measurement records',m.recordIds.join(', ')]]),...evidenceCards(m.fact.evidenceIds))):el('p',{class:'small-note'},'No measurement record was retained for this metric.')));
       }
     } else panel.append(...evidenceCards(r.evidenceIds),detailSection('Traceability',kv([['Source',sourceText(r.source)],['Registration → handler',r.id+' → '+r.handlerId],['Capsule SHA-256',P.evidenceHash.value]])),el('details',{class:'details-block'},el('summary',{},'Raw route record'),el('pre',{class:'record-text'},JSON.stringify(r,null,2))));
-    replace($('#drawer-content'),el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},entryLink(r.entryId)),tabs,panel);
+    replace($('#drawer-content'),explorerReturn?el('a',{href:explorerReturn.hash,class:'button subtle'},'Back to Explorer'):null,el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},entryLink(r.entryId)),tabs,panel);
   }
   function dispatcherDetails(route) {
     const view=routeDispatchers(route);
@@ -473,9 +479,9 @@
     for(const th of $$('[data-schema-sort]'))th.setAttribute('aria-sort',th.dataset.schemaSort===key?(state.schemaDir==='asc'?'ascending':'descending'):'none');
   }
   // Local ordinals navigate this capsule; canonical IDs remain in record details.
-  const definitionLink = id => el('a',{href:'#handlers/'+definitionIndex.get(id),class:'record-text'},definitionLabel(definitionById.get(id)));
-  const registrationLink = id => el('a',{href:'#registrations/'+registrationIndex.get(id),class:'record-text'},registrationLabel(registrationById.get(id)));
-  const useSiteLink = id => { const row=useSiteById.get(id); return el('a',{href:'#use-sites/'+useSiteIndex.get(id),class:'record-text'},row.surfaceId+' · site '+(useSiteIndex.get(id)+1)); };
+  const definitionLink = id => el('a',{href:model.detailHash('handlers',id),class:'record-text'},definitionLabel(definitionById.get(id)));
+  const registrationLink = id => el('a',{href:model.detailHash('registrations',id),class:'record-text'},registrationLabel(registrationById.get(id)));
+  const useSiteLink = id => { const row=useSiteById.get(id); return el('a',{href:model.detailHash('use-sites',id),class:'record-text'},row.surfaceId+' · site '+(useSiteIndex.get(id)+1)); };
   const analyticsEvidence = row => el('details',{class:'details-block'},el('summary',{},'Retained record and producer evidence'),el('pre',{class:'record-text'},JSON.stringify(row,null,2)));
   const analyticsCoverageNote = key => el('p',{class:'small-note'},'Coverage: '+coverageText(analyticsCoverage(key)));
   const registrationLinks = rows => el('ul',{class:'analytics-links'},rows.map(row=>el('li',{},registrationLink(row.id))));
@@ -520,20 +526,26 @@
     const associations = model.queries?.site(row.id) || {rows:siteAssociations(row.id),coverage:analyticsCoverage('associations')};
     return el('article',{class:'surface panel-pad subsection'},el('h3',{id:focused?'use-site-title':undefined,tabindex:focused?-1:undefined,class:'record-text'},row.surfaceId+' · site '+(useSiteIndex.get(row.id)+1)),
       kv([['Definition owner',definitionLink(row.ownerId)],['Capability',authoredFact(row.capability)],['Operation',row.operation],['Binding state',[row.binding.state,row.binding.kind,row.binding.reason].filter(Boolean).join(' · ')],
-        ['Logical binding',binding?el('a',{href:'#bindings/'+P.bindings.indexOf(binding)},binding.name+' · '+binding.resolution):'No resolved binding'],['Reference ID',row.binding.referenceId??'Not recorded'],['Authored use source',authoredSource(row.source)]]),
+        ['Logical binding',binding?el('a',{href:model.detailHash('bindings',binding.id)},binding.name+' · '+binding.resolution):'No resolved binding'],['Reference ID',row.binding.referenceId??'Not recorded'],['Authored use source',authoredSource(row.source)]]),
       analyticsCoverageNote('useSites'),detailSection('Contextual consumers',associationList(associations.rows,associations.coverage)),analyticsEvidence(row));
   }
-  const atlas=createReportAtlas({model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,select:id=>{
-    const hash='#atlas/'+registrationIndex.get(id);
+  const pointLink = id => model.entryPointById.has(id)
+    ? el('a',{href:model.detailHash('entry-points',id),class:'record-text'},'Open Entry Point · '+model.entryPointById.get(id).label) : registrationLink(id);
+  const bindingLink = id => el('a',{href:model.detailHash('bindings',id),class:'record-text'},'Open Binding · '+bindings.get(id).name);
+  const atlas=createReportAtlas({model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,pointLink,bindingLink,select:id=>{
+    const hash=model.detailHash('explorer/entry',id);
     if(location.hash===hash)atlas.center(id,true);else {atlasFocus=true;location.hash=hash;}
   }});
-  function exploreBinding(id){atlas.bindings({binding:id});const hash='#atlas'+(state.selectedRegistration?'/'+registrationIndex.get(state.selectedRegistration):'');if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  function exploreEntry(id){explorerReturn=null;atlas.focusEntry(id);atlasFocus=true;const hash=model.detailHash('explorer/entry',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  function exploreBinding(id){explorerReturn=null;atlasFocus=true;atlas.bindings({binding:id});const hash=model.detailHash('explorer/binding',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
   let atlasFocus=false;
   function renderAtlas(){atlas.open($('#view-atlas'));}
+  const inventories=createReportInventories({model,el,button,replace,heading:sectionHeading,note,kv,tag,definitionLink,registrationLink,useSiteLink,entryLink,evidenceCards,exploreEntry,exploreBinding});
+  function renderEntryPoints(){inventories.renderEntryPoints($('#view-entry-points'));}
   function registrationDetail(row) {
     const associations = model.queries?.route(row.id) || {rows:registrationAssociations(row.id),coverage:analyticsCoverage('associations')};
     return el('article',{class:'surface panel-pad subsection'},el('h3',{id:'registration-title',tabindex:-1,class:'record-text'},registrationLabel(row)),
-      el('p',{},el('a',{href:'#atlas/'+registrationIndex.get(row.id),class:'button subtle',on:{click:()=>atlas.routing()}},'Show in execution atlas')),
+      el('p',{},button('Explore execution',()=>exploreEntry(row.id))),
       kv([['Definition',row.handlerId?definitionLink(row.handlerId):'No authored definition'],['Authored',String(row.authored)],['Registration source',authoredSource(row.source)],
         ['Router',row.routerId],['Router path',row.routerPath.join(' → ')],['Entry',entryLink(row.id)]]),
       detailSection('Ordered mount instances',row.mountPath.length?el('ol',{class:'step-list'},row.mountPath.map(id=>el('li',{},registrationLink(id)))):el('p',{},'No enclosing mounts recorded.')),
@@ -568,11 +580,11 @@
       note('Static capability and binding associations describe recognized usage, not effective permissions or runtime execution. Missing evidence is not zero. Compiled helpers and byte attribution remain separate.'),
       el('details',{class:'details-block'},el('summary',{},'Analytics coverage'),kv((model.queries?['handlers','registrations','useSites','helperCalls']:['handlers','registrations','useSites','helperCalls','associations']).map(key=>[key,coverageText(analyticsCoverage(key))]))),
       selected?definitionDetail(selected):null,registration?registrationDetail(registration):null,site?siteDetail(site,true):null,
-      el('div',{class:'surface panel-pad subsection'},el('label',{class:'search-box inventory-search'},icon('search'),search),
+      el('details',{class:'surface panel-pad subsection',open:!selected&&!registration&&!site},el('summary',{},'Search authored records'),el('label',{class:'search-box inventory-search'},icon('search'),search),
         el('div',{class:'analytics-filters'},filter('handler-kind','Definition kind',state.definitionKind,[['all','All definitions'],['handler','Handlers'],['helper','Linked helpers']],v=>state.definitionKind=v),
           filter('handler-role','Registration role',state.definitionRole,[['all','All roles'],...['route','middleware','error','event','fallback'].map(v=>[v,v])],v=>state.definitionRole=v)),
         el('p',{id:'handler-count',class:'small-note','aria-live':'polite'}),el('div',{id:'handler-list'})),
-      el('p',{},el('a',{href:'#atlas',class:'button subtle'},'Explore execution atlas')),
+      el('p',{},el('a',{href:'#entry-points'},'Browse Entry Points')),
       el('details',{class:'surface panel-pad'},el('summary',{},'All registration instances · '+(analyticsCoverage('registrations').status==='unavailable'?'Unavailable':registrations.length)),
         analyticsCoverageNote('registrations'),registrationLinks([...registrations].sort((a,b)=>a.order-b.order))));
     renderDefinitionList();
@@ -604,11 +616,7 @@
       el('div',{class:'surface panel-pad'},el('label',{class:'search-box inventory-search'},icon('search'),search),el('div',{id:'entry-list'})));
     renderEntryList();
   }
-  function renderBindings() {
-    replace($('#view-bindings'),sectionHeading('Binding inventory','Logical names and retained resolution state; no secret values or inferred grants.',P.bindings.length),note('A reference describes usage. Bound does not establish per-route authority or current deployment health.'),
-      ...P.bindings.map(b=>el('article',{class:'surface panel-pad subsection'},el('h3',{id:'binding-title-'+P.bindings.indexOf(b),tabindex:-1},b.name),button('Explore '+b.name+' graph',()=>exploreBinding(b.id)),kv([['Kind',b.kind],['Declared',String(b.declared)],['Referenced',String(b.referenced)],['Resolution',b.resolution]]),routeChips(b.routeIds),entryLinks(b.entryIds),detailSection('Authored use sites',analyticsCoverageNote('useSites'),...bindingSites(b.id).map(site=>el('p',{},useSiteLink(site.id),' · ',definitionLink(site.ownerId)))),el('details',{class:'details-block'},el('summary',{},'Binding evidence'),...evidenceCards(b.evidenceIds)))),
-      P.bindings.length?null:note('No binding records. Inventory coverage: '+P.coverage.bindings.status+'.'));
-  }
+  function renderBindings(){inventories.renderBindings($('#view-bindings'));}
   function renderEvidence() {
     replace($('#view-evidence'),sectionHeading('Evidence & provenance','Recorded scope, availability and producer identity. No security grade or inferred pass.'),
       el('div',{class:'two-column'},el('div',{class:'surface panel-pad'},el('h3',{},'Capsule identity'),kv([['SHA-256',P.evidenceHash.value],['Profile / host',P.context.profile+' / '+P.context.host],['Recipe',P.provenance.recipe.name+' '+P.provenance.recipe.version],['Optimization',P.provenance.recipe.optimization],['Revision',P.provenance.revision??'Unknown'],['Dirty',P.provenance.dirty===null?'Unknown':String(P.provenance.dirty)]]),note('This digest identifies evidence; it is not a signature or security attestation.')),
@@ -626,29 +634,51 @@
     if($('#route-drawer').hidden)lastDrawerFocus=document.activeElement;
     state.selected=r.id;renderDrawer();$('#route-drawer').hidden=false;$('#drawer-backdrop').hidden=false;setPageInert(true);document.body.classList.add('overlay-open');$('#drawer-close').focus({preventScroll:true});
   }
-  function showView(view) {
+  function showView(view,restore=false) {
     if(view!=='atlas')atlas.leave();
-    state.view=view;for(const [id] of navigation)$('#view-'+id).hidden=id!==view;
+    state.view=view;for(const id of viewIds)$('#view-'+id).hidden=id!==view;
     for(const a of $$('[data-view]')){a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}
-    if(view==='routes')renderRoutes();else if(view==='atlas')renderAtlas();else if(view==='handlers')renderHandlers();else if(view==='entries')renderEntries();else if(view==='helpers')renderHelpers();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
+    replace($('#explorer-return'),explorerReturn&&view!=='atlas'?el('a',{href:explorerReturn.hash,class:'button subtle'},'Back to Explorer'):null);
+    if(restore){atlas.resume();explorerReturn.focus?.focus({preventScroll:true});return;}
+    if(view==='entry-points')renderEntryPoints();else if(view==='routes')renderRoutes();else if(view==='atlas')renderAtlas();else if(view==='handlers')renderHandlers();else if(view==='entries')renderEntries();else if(view==='helpers')renderHelpers();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
   }
   function onHash() {
     if(location.hash==='#main')return;
-    const match=/^#(routes|atlas|handlers|registrations|use-sites|entries|helpers|resources|schemas|bindings|evidence)(?:\/(\d+))?$/.exec(location.hash),view=match?.[1]??'routes',index=match?.[2]===undefined?null:Number(match[2]);
-    closeModal();closeDrawer(false);state.selectedEntry=view==='entries'&&index!==null?P.entries[index]?.id:null;
-    state.selectedDefinition=view==='handlers'&&index!==null?definitions[index]?.id:null;
-    state.selectedRegistration=['registrations','atlas'].includes(view)&&index!==null?registrations[index]?.id:null;
-    state.selectedUseSite=view==='use-sites'&&index!==null?useSites[index]?.id:null;
-    showView(['registrations','use-sites'].includes(view)?'handlers':view);
+    const parts=location.hash.slice(1).split('/'),kind=parts[0];let token;
+    try{token=parts[1]===undefined?null:decodeURIComponent(parts[1]);}catch{token=null;}
+    const resolve=(rows,key=token)=>key===null?null:/^\d+$/.test(key)?rows[Number(key)]?.id||null:rows.find(r=>r.id===key)?.id||null;
+    let view=[...viewIds,'registrations','use-sites'].includes(kind)?kind:'entry-points';
+    let explorerId=null,explorerKind=null;
+    if(kind==='explorer'&&['entry','binding'].includes(parts[1])){view='atlas';explorerKind=parts[1];try{explorerId=decodeURIComponent(parts.slice(2).join('/'));}catch{explorerId=null;}}
+    let invalidExplorer=false;
+    if(explorerKind&&!(explorerKind==='entry'?registrationById:bindings).has(explorerId)){invalidExplorer=true;view=explorerKind==='entry'?'entry-points':'bindings';}
+    const restore=view==='atlas'&&explorerReturn?.hash===location.hash;
+    if(state.view==='atlas'&&view!=='atlas')explorerReturn={hash:activeHash,selected:state.selectedRegistration,focus:document.activeElement};
+    closeModal();closeDrawer(false);
+    state.selectedEntryPoint=view==='entry-points'?resolve(model.entryPoints):null;
+    state.selectedBinding=view==='bindings'?resolve(P.bindings):null;
+    state.selectedEntry=view==='entries'?resolve(P.entries):null;
+    state.selectedDefinition=view==='handlers'?resolve(definitions):null;
+    state.selectedRegistration=restore?explorerReturn.selected:explorerKind==='entry'?(registrationById.has(explorerId)?explorerId:null):['registrations','atlas'].includes(view)?resolve(registrations):null;
+    state.selectedUseSite=view==='use-sites'?resolve(useSites):null;
+    $('#navigation-status').textContent=invalidExplorer?'Requested Explorer record is unavailable in this capsule.':'';
+    if(view==='atlas'&&!restore){
+      if(explorerKind==='binding')atlas.bindings({binding:bindings.has(explorerId)?explorerId:null});
+      else {atlas.routing();if(explorerKind==='entry'&&state.view!=='atlas')atlas.focusEntry(state.selectedRegistration);}
+    }
+    showView(['registrations','use-sites'].includes(view)?'handlers':view,restore);
+    activeHash=location.hash;
+    if(restore)return;
+    if(state.selectedEntryPoint)$('#entry-point-title')?.focus();
     if(state.selectedDefinition)$('#definition-title').focus();
     if(state.selectedRegistration&&view==='registrations')$('#registration-title').focus();
-    if(view==='atlas'&&atlasFocus){atlas.center(state.selectedRegistration,true);atlasFocus=false;}
+    if(view==='atlas'&&atlasFocus){if(explorerKind==='binding')$('#binding-summary')?.focus({preventScroll:true});else atlas.center(state.selectedRegistration,true);atlasFocus=false;}
     if(state.selectedUseSite)$('#use-site-title').focus();
-    if(view==='bindings'&&index!==null&&P.bindings[index])$('#binding-title-'+index).focus();
+    if(state.selectedBinding)$('#binding-title-'+P.bindings.findIndex(b=>b.id===state.selectedBinding)).focus();
     if(state.selectedEntry)$('#entry-title').focus();
-    if(view==='routes'&&index!==null&&P.routes[index])displayDrawer(P.routes[index]);
-    if(view==='schemas'&&index!==null&&P.schemas[index]){const s=P.schemas[index];state.expandedSchemas.add(s.id);state.schemaSearch=s.schemaId.toLowerCase();renderSchemas();$('#schema-expand-'+index).focus();}
-    if(view==='helpers'&&index!==null&&helpers[index]){state.helperSearch='';state.helperRole='all';state.helperOrigin='all';state.expandedHelpers.add(helpers[index].id);renderHelpers();$('#helper-expand-'+index).focus();}
+    if(view==='routes'){const id=resolve(P.routes);if(id)displayDrawer(routes.get(id));}
+    if(view==='schemas'){const id=resolve(P.schemas);if(id){const s=schemas.get(id);state.expandedSchemas.add(id);state.schemaSearch=s.schemaId.toLowerCase();renderSchemas();$('#schema-expand-'+schemaIndex.get(id)).focus();}}
+    if(view==='helpers'){const id=resolve(helpers);if(id){state.helperSearch='';state.helperRole='all';state.helperOrigin='all';state.expandedHelpers.add(id);renderHelpers();$('#helper-expand-'+helperIndex.get(id)).focus();}}
   }
   function openModal(title,content) {
     lastModalFocus=document.activeElement;$('#modal-title').textContent=title;replace($('#modal-content'),content);$('#modal').hidden=false;$('#modal-backdrop').hidden=false;setPageInert(true);$('#route-drawer').inert=true;document.body.classList.add('overlay-open');$('#modal-close').focus();
@@ -674,10 +704,10 @@
   for(const [id,offset] of [['drawer-previous',-1],['drawer-next',1]])$('#'+id).addEventListener('click',()=>{const r=visibleRoutes[visibleRoutes.findIndex(r=>r.id===state.selected)+offset];if(r)location.hash='routes/'+routeIndex.get(r.id);});
   $('#modal-close').addEventListener('click',closeModal);$('#modal-backdrop').addEventListener('click',closeModal);
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else if(!$('#route-drawer').hidden)closeDrawer();else if(atlas.escape())e.preventDefault();}
+    if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else if(!$('#route-drawer').hidden)closeDrawer();else if(state.view==='atlas'&&atlas.escape())e.preventDefault();}
     const active=!$('#modal').hidden?$('#modal'):!$('#route-drawer').hidden?$('#route-drawer'):null;
     if(e.key==='Tab'&&active){const nodes=$$('button:not([disabled]),a[href],input,select,summary,[tabindex="0"]',active).filter(n=>!n.hidden&&n.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&(document.activeElement===first||!active.contains(document.activeElement))){e.preventDefault();last?.focus();}else if(!e.shiftKey&&(document.activeElement===last||!active.contains(document.activeElement))){e.preventDefault();first?.focus();}}
-    if(e.key==='/'&&state.view!=='atlas'&&!active&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();if(state.view!=='routes'){location.hash='routes';setTimeout(()=>$('#route-search').focus(),0);}else $('#route-search').focus();}
+    if(e.key==='/'&&state.view!=='atlas'&&!active&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();const target=state.view==='bindings'?'#binding-inventory-search':state.view==='routes'?'#route-search':'#entry-point-search';if(!['bindings','routes','entry-points'].includes(state.view)){location.hash='entry-points';setTimeout(()=>$('#entry-point-search').focus(),0);}else $(target)?.focus();}
   });
   window.addEventListener('hashchange',onHash);onHash();
 })();

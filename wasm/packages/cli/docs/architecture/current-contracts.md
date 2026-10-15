@@ -1662,6 +1662,31 @@ link into authored analytics using capsule-local navigation. There is no new
 physical-size attribution. Semantic comparison is owned by AN9-06 below the
 report comparison contract.
 
+VIS-08 makes **Entry Points** and **Bindings** the two primary execution
+inventories in offline HTML. Entry Points combines exact HTTP route and event
+registration instances with explicit type labels and method/event filters; it
+is a view taxonomy, not a compiler schema change. Historical route and event
+entry records remain discoverable when authored analytics are unavailable.
+Bindings shows possible entry-point consumers, authored operations and their
+coverage, separately from retained inventory references. Dynamic/unknown binding
+sites remain accessible without being promoted to invented named bindings.
+HTTP size analysis, schemas, resources, evidence, authored records, all entry
+records and compiled helpers remain under **More report sections**. Simple
+inventory questions do not require opening the Explorer.
+
+Contextual **Explore execution** and **Explore consumers** actions open the
+Execution Explorer. Exact details and **Back to Explorer** preserve its live
+selection, scope, expanded set, mode, zoom, pan, and focus within the open report.
+A new explicit exploration replaces that return context; page reload recreates
+the focused context rather than persisting camera state. Full-window layout and
+visual/browser qualification are separate VIS-09 work. New entry-point, binding,
+authored-definition, registration, use-site and Explorer links use percent-encoded
+full capsule IDs. Historical numeric route, binding, entry, authored-record and
+atlas hashes continue resolving by their original capsule-local indices.
+Anonymous labels use retained source file:line and registration type/order/mount
+context, never a fabricated name or a display label as identity. No navigation
+change modifies the embedded capsule, evidence hash, exact export or comparison.
+
 ## Providers, targets, and eligibility
 
 Target selection is explicit and never falls back automatically. Target support
