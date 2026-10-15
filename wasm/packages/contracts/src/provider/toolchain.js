@@ -54,6 +54,7 @@ const DRIVER_FIELDS = Object.freeze([
   'prepareNativeExecution',
   'prepareNativeRequest',
   'createGeneratedOutput',
+  'capturePackageRequest',
   'createLoweringPlan',
   'inspectRealization',
   'writeTarget',
@@ -375,6 +376,7 @@ function defineProviderDriver(input, expected = {}) {
   if (input.prepareNativeRequest !== undefined && typeof input.prepareNativeRequest !== 'function') {
     throw new TypeError(`Pulse provider driver ${id} prepareNativeRequest must be a function.`);
   }
+  if (input.capturePackageRequest !== undefined && typeof input.capturePackageRequest !== 'function') throw new TypeError('Pulse provider capturePackageRequest must be a function.');
   if (input.createGeneratedOutput !== undefined && typeof input.createGeneratedOutput !== 'function') throw new TypeError('Pulse provider createGeneratedOutput must be a function.');
   const descriptor = input.descriptor === undefined ? undefined : normalizeDescriptor(input.descriptor);
   if (descriptor && descriptor.id !== id) throw new TypeError(`Pulse provider driver ${id} descriptor identity does not match.`);
@@ -405,6 +407,7 @@ function defineProviderDriver(input, expected = {}) {
     prepareNativeExecution: input.prepareNativeExecution,
     prepareNativeRequest: input.prepareNativeRequest,
     createGeneratedOutput: input.createGeneratedOutput,
+    capturePackageRequest: input.capturePackageRequest,
     createLoweringPlan: input.createLoweringPlan,
     inspectRealization: input.inspectRealization,
     writeTarget: input.writeTarget,

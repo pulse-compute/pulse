@@ -177,6 +177,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     tasks: Object.freeze([
       'package-reachability',
       'external-lowerers',
+      'package-runtime',
       'crypto-digest-text-contract',
       'crypto-digest-text-conformance',
       'crypto-digest-storage-conformance',

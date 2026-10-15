@@ -288,6 +288,18 @@ Deterministic fetch fixtures resolved before optional live network fetch.
 
 Provider-owned Node profile configuration.
 
+### `node.bindings.packages`
+
+Explicit package, contractId, artifact, operations, secret reference, keyId, keyVersion, trustDomain and HTTPS origin. Captures exact HTTP bytes up to 65536 body bytes; incompatible with bodyForwarding/bodyTransform. See the package runtime binding contract.
+
+- **Type:** Readonly<Record<string, PackageRuntimeBinding>>
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Trusted package Wasm on Node
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
 ### `node.bodyTransform`
 
 Opt-in finite request text chunks. Requires generatedOutput and maxDurationMs; incompatible with bodyForwarding. Input 65536 bytes, output 262144 bytes, at most 4 times delivered input bytes. Strict UTF-8, one reader/writer, EOF required before output.close().

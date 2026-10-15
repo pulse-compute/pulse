@@ -354,7 +354,10 @@ function writeNodeJavascriptSourcePackage(options = {}) {
     ? writeFile(outDir, 'schema-json-codecs.cjs', schemaBundle.moduleSource)
     : undefined;
 
+  const packageArtifacts = options.packageArtifacts || [];
+  const artifactRecord = packageArtifacts.length ? writeFile(outDir, 'package-realization-artifacts.json', stableJson(packageArtifacts)) : null;
   const manifest = Object.freeze({
+    ...(artifactRecord ? { packageRuntime: Object.freeze({ version: 'pulse.package-runtime-artifacts.v1', ...artifactRecord }) } : {}),
     version: NODE_JAVASCRIPT_SOURCE_PACKAGE_VERSION,
     status: 'packaged',
     provider: 'node',
@@ -402,6 +405,7 @@ function writeNodeJavascriptSourcePackage(options = {}) {
         + packageRecord.bytes
         + entryRecord.bytes
         + planRecord.bytes
+        + (artifactRecord ? artifactRecord.bytes : 0)
         + (schemaRegistryRecord ? schemaRegistryRecord.bytes : 0)
         + (schemaCodecsRecord ? schemaCodecsRecord.bytes : 0)
     })
@@ -421,6 +425,7 @@ function writeNodeJavascriptSourcePackage(options = {}) {
       packageRecord,
       entryRecord,
       planRecord,
+      ...(artifactRecord ? [artifactRecord] : []),
       ...(schemaRegistryRecord ? [schemaRegistryRecord] : []),
       ...(schemaCodecsRecord ? [schemaCodecsRecord] : []),
       manifestRecord,

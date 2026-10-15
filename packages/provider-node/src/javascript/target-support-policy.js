@@ -14,6 +14,7 @@ function classifyNodeJavascriptCapability(id, options = {}) {
   if (capability === 'response.output') return decision(capability, options.generatedOutput ? 'eligible' : 'blocked', options.generatedOutput ? 'node-generated-output-experimental' : 'node-generated-output-not-configured', 'provider-node');
   if (capability === 'request.body.forward' || capability === 'req.body') return decision(capability,
     options.bodyForwarding ? 'eligible' : 'blocked', options.bodyForwarding ? 'node-incoming-body-forwarding' : 'node-incoming-body-forwarding-not-configured', 'provider-node');
+  if (capability === 'package.invoke') return decision(capability, 'eligible', 'node-package-wasm-v1', 'provider-node');
   if (capability === 'crypto.digestText') return decision(capability, 'eligible', 'node-javascript-crypto-sha256-runtime-builtin', 'provider-node');
   if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(capability)) return decision(capability, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (isJavascriptCoreCapability(capability)) {
@@ -86,6 +87,7 @@ function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, opt
   if (requirement === 'request.body.transform') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'response.output') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'request.body.forward') return classifyNodeJavascriptCapability(requirement, options);
+  if (requirement === 'package.invoke') return decision(requirement, 'eligible', 'node-package-wasm-v1', 'provider-node');
   if (requirement === 'crypto.digestText') return decision(requirement, 'eligible', 'node-javascript-crypto-sha256-runtime-builtin', 'provider-node');
   if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(requirement)) return decision(requirement, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (requirement === 'request') {

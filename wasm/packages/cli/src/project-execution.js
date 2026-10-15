@@ -529,6 +529,7 @@ function requiresExactNativeExecution(compiled) {
   const algorithms = compiled.cryptoRealizationPlan && compiled.cryptoRealizationPlan.algorithms || [];
   const operations = compiled.metadata && compiled.metadata.providerOperations || [];
   return Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+    || compiled.metadata?.capabilities?.includes('package.invoke')
     || compiled.metadata?.capabilities?.includes('response.output')
     || compiled.metadata?.capabilities?.includes('request.body.forward')
     || compiled.metadata?.capabilities?.includes('request.body.transform')
@@ -805,6 +806,7 @@ function buildProjectWithReport(project, options, reportAttempt) {
         outDir,
         javascript: Object.freeze({
           schemaBundle: compiled.schema.bundle,
+          packageArtifacts: packageRealizationArtifactsForCompiled(compiled),
           reporting: project.reporting,
           strict: project.strict !== false,
           maxStructuredBodyBytes: project.schemas && project.schemas.maxBytes,
@@ -2626,6 +2628,7 @@ async function startJavascriptDevServer(project, options = {}) {
 
   let prepared;
   let application;
+  let applicationPackageArtifacts = [];
   let compileError;
   let schemaCodecs;
   let reloadTimer;
@@ -2662,6 +2665,7 @@ async function startJavascriptDevServer(project, options = {}) {
       const nextCompiled = compileProject(project);
       prepared = next;
       application = next.loaded.application;
+      applicationPackageArtifacts = packageRealizationArtifactsForCompiled(nextCompiled);
       schemaCodecs = createCanonicalSchemaCodecs(nextCompiled.schema.bundle.registry);
       compileError = undefined;
       const watchFiles = javascriptProjectWatchFiles(project, next, nextCompiled);
@@ -2719,6 +2723,7 @@ async function startJavascriptDevServer(project, options = {}) {
     secrets: project.dev.secrets,
     kv: project.dev.kv,
     bindings: project.providerConfig.bindings,
+    packageArtifacts: () => applicationPackageArtifacts,
     maxDurationMs: project.providerConfig.maxDurationMs,
     bodyForwarding: project.providerConfig.bodyForwarding,
     generatedOutput: project.providerConfig.generatedOutput,
@@ -2865,11 +2870,12 @@ async function startDevServer(project, options = {}) {
     const closed = () => { if (!res.writableFinished) disconnected(); };
     req.once('aborted', disconnected); res.once('close', closed);
     const budget = require('@pulse-compute/wasm-host-runtime/runtime/canonical-api-runtime').createRequestBudget({ ...providerExecutionOptions(project, {}), signal:connection.signal });
-    let ingress, outputExecution;
+    let ingress, outputExecution, packageCapture;
     if (options.once) res.once('finish', () => server.close());
     try {
       if (compileError) throw compileError;
-      const bodyLimit = project.schemas.active ? Math.min(project.dev.maxBodyBytes, project.schemas.maxBytes) : project.dev.maxBodyBytes;
+      const packageCaptureEnabled = Boolean(project.providerConfig.bindings?.packages && Object.keys(project.providerConfig.bindings.packages).length);
+      const bodyLimit = Math.min(packageCaptureEnabled ? 65536 : Infinity, project.schemas.active ? Math.min(project.dev.maxBodyBytes, project.schemas.maxBytes) : project.dev.maxBodyBytes);
       budget.check();
       const body = forwarding ? undefined : await budget.race(readRequestBody(req, bodyLimit, budget));
       const host = req.headers.host || `${project.dev.host}:${project.dev.port}`;
@@ -2887,6 +2893,13 @@ async function startDevServer(project, options = {}) {
         liveFetch: project.dev.networkFetch,
         executionId: `dev:${++handled}`
       });
+      if (packageCaptureEnabled) {
+        const capture = providerDriver(project).capturePackageRequest;
+        if (!capture || forwarding) throw new PulseProjectError('PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE', 'Selected provider cannot capture package HTTP inputs.');
+        packageCapture = capture(req, body, executionOptions);
+        if (packageCapture.version !== 'pulse.provider-package-http.v1') throw new PulseProjectError('PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE', 'Unsupported package HTTP capture version.');
+        executionOptions = { ...executionOptions, ...packageCapture.options };
+      }
       outputExecution = providerDriver(project).createGeneratedOutput?.(res, { ...executionOptions, requestMethod: req.method });
       executionOptions = { ...executionOptions, outputExecution };
       if (forwarding) {
@@ -2916,6 +2929,7 @@ async function startDevServer(project, options = {}) {
       events(Object.freeze({ event: 'request-error', method: req.method || 'GET', path: req.url || '/', error: errorSummary(error, project.dev.secrets) }));
     } finally {
       outputExecution?.dispose();
+      packageCapture?.close();
       await ingress?.close();
       req.removeListener('aborted',disconnected);res.removeListener('close',closed);budget.close();
     }

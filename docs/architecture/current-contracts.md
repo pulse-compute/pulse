@@ -2257,6 +2257,26 @@ See [Package-owned lowering](../concepts/package-owned-lowering.md), the
 [package lowerer contract](../contributing/package-lowerer-contract.md), and
 [plugin readiness](../maintainers/plugin-readiness.md).
 
+## Trusted package runtime Wasm
+
+A reachable package may contribute a versioned private runtime Wasm artifact
+and `package.invoke` effects without a monorepo registration. The managed
+runtime accepts only the generic versioned definition, bounded string payload
+and live request context. The compiler validates static artifact ownership,
+operation/configuration, Wasm ABI and declared memory maximum. This is separate
+from the internal prebuilt guest-link contract below.
+
+Node implements the generic host binding for Native and JavaScript: explicit
+package/operation grants, authoritative pre-normalization HTTP captures,
+trusted time and provider-only named key lookup. Cryptography uses the existing
+explicitly selected Crypto byte realization. Native protocol logic runs only
+in package Wasm. Fastly has no implementation and fails capability planning.
+Memory, input/output, crypto commands and request lifetime are bounded; trusted
+code is not sandboxed or forcibly CPU-preempted. Package results and sensitive
+HTTP/key data are excluded from effect traces. Applications and operators own
+build dependency trust and the truth of their configured HTTPS termination
+origin. See the exact [runtime binding contract](../contributing/package-lowerer-contract.md#trusted-package-runtime-bindings).
+
 ## Internal prebuilt guest units
 
 Native compilation may select a synchronized first-party prebuilt core-Wasm
