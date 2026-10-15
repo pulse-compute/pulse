@@ -494,13 +494,34 @@
       kv([['Consumer',registrationLink(row.consumerRegistrationId)],['Use site',useSiteLink(row.useSiteId)],['Coverage',coverageText(row.coverage)]]),
       el('ol',{class:'step-list'},row.via.map(hop=>el('li',{},hop.kind+' · ',hop.kind==='helper'?callDetail(callById.get(hop.id)):registrationLink(hop.id)))),analyticsEvidence(row));
   }
+  function associationList(rows, coverage) {
+    const host=el('div');let page=0;
+    function draw(){
+      const pages=Math.max(1,Math.ceil(rows.length/20));
+      const previous=button('Previous associations',()=>{page--;draw();host.querySelector('button').focus();});
+      const next=button('Next associations',()=>{page++;draw();host.querySelectorAll('button').at(-1).focus();});
+      previous.disabled=page===0;next.disabled=page+1>=pages;
+      host.replaceChildren(el('p',{class:'small-note'},'Coverage: '+coverageText(coverage)),
+        ...rows.slice(page*20,(page+1)*20).map(associationDetail),
+        el('div',{class:'atlas-controls'},previous,el('span',{},rows.length+' associations · page '+(page+1)+' / '+pages),next),
+        ...(!rows.length?[el('p',{},'No observed associations. Missing evidence does not establish absence.')]:[]));
+    }
+    draw();return host;
+  }
+  function upstreamDetail(id) {
+    if(!model.queries)return note('Upstream admission independent of use sites was not recorded by this historical representation.');
+    const result=model.queries.upstream(id);
+    return detailSection('Upstream admission candidates',el('p',{class:'small-note'},coverageText(result.coverage)),
+      registrationLinks(result.relations.map(r=>registrationById.get(r.owner))),
+      note('Includes predecessors with no binding operations. These are static candidates, not observed execution.'));
+  }
   function siteDetail(row, focused=false) {
     const binding = bindings.get(row.binding.bindingId);
     return el('article',{class:'surface panel-pad subsection'},el('h3',{id:focused?'use-site-title':undefined,tabindex:focused?-1:undefined,class:'record-text'},row.surfaceId+' · site '+(useSiteIndex.get(row.id)+1)),
       kv([['Definition owner',definitionLink(row.ownerId)],['Capability',authoredFact(row.capability)],['Operation',row.operation],['Binding state',[row.binding.state,row.binding.kind,row.binding.reason].filter(Boolean).join(' · ')],
         ['Logical binding',binding?el('a',{href:'#bindings/'+P.bindings.indexOf(binding)},binding.name+' · '+binding.resolution):'No resolved binding'],['Reference ID',row.binding.referenceId??'Not recorded'],['Authored use source',authoredSource(row.source)]]),
-      analyticsCoverageNote('useSites'),detailSection('Contextual consumers',analyticsCoverageNote('associations'),
-        ...siteAssociations(row.id).map(associationDetail),siteAssociations(row.id).length?null:el('p',{},'No observed associations.')),analyticsEvidence(row));
+      analyticsCoverageNote('useSites'),detailSection('Contextual consumers',associationList(siteAssociations(row.id),
+        model.queries?.site(row.id).coverage || analyticsCoverage('associations'))),analyticsEvidence(row));
   }
   const atlas=createReportAtlas({model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,select:id=>{
     const hash='#atlas/'+registrationIndex.get(id);
@@ -517,8 +538,9 @@
       detailSection('Ordered mount instances',row.mountPath.length?el('ol',{class:'step-list'},row.mountPath.map(id=>el('li',{},registrationLink(id)))):el('p',{},'No enclosing mounts recorded.')),
       detailSection('Static continuation links',kv(Object.entries(row.flow).map(([key,id])=>[key,id?registrationLink(id):'No retained link'])),
         note('Links and associations explain static dependencies. They are not a request execution trace.')),
-      detailSection('Capability and binding associations',analyticsCoverageNote('associations'),...registrationAssociations(row.id).map(associationDetail),
-        registrationAssociations(row.id).length?null:el('p',{},'No observed associations.')),analyticsCoverageNote('registrations'),analyticsEvidence(row));
+      upstreamDetail(row.id),
+      detailSection('Capability and binding associations',associationList(registrationAssociations(row.id),
+        model.queries?.route(row.id).coverage || analyticsCoverage('associations'))),analyticsCoverageNote('registrations'),analyticsEvidence(row));
   }
   function definitionDetail(row) {
     const ownSites=definitionSites(row.id), callers=helperCallers(row.id), callees=helperCallees(row.id);
@@ -544,7 +566,7 @@
     }
     replace($('#view-handlers'),sectionHeading('Handlers','Authored handlers and linked helpers. Roles belong to registration instances.',analyticsCoverage('handlers').status==='unavailable'?'Unavailable':definitions.length),
       note('Static capability and binding associations describe recognized usage, not effective permissions or runtime execution. Missing evidence is not zero. Compiled helpers and byte attribution remain separate.'),
-      el('details',{class:'details-block'},el('summary',{},'Analytics coverage'),kv(['handlers','registrations','useSites','helperCalls','associations'].map(key=>[key,coverageText(analyticsCoverage(key))]))),
+      el('details',{class:'details-block'},el('summary',{},'Analytics coverage'),kv((model.queries?['handlers','registrations','useSites','helperCalls']:['handlers','registrations','useSites','helperCalls','associations']).map(key=>[key,coverageText(analyticsCoverage(key))]))),
       selected?definitionDetail(selected):null,registration?registrationDetail(registration):null,site?siteDetail(site,true):null,
       el('div',{class:'surface panel-pad subsection'},el('label',{class:'search-box inventory-search'},icon('search'),search),
         el('div',{class:'analytics-filters'},filter('handler-kind','Definition kind',state.definitionKind,[['all','All definitions'],['handler','Handlers'],['helper','Linked helpers']],v=>state.definitionKind=v),

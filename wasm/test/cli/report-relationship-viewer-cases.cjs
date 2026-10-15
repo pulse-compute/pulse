@@ -1,0 +1,24 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {graphFixture}=require('./report-handler-viewer-cases.cjs');
+const {serializeCapsule}=require('../../packages/cli/src/internal/report/capsule');
+module.exports=({renderedTree})=>{
+  const capsule=graphFixture(),saved=serializeCapsule(capsule),tree=renderedTree(capsule),m=tree.renderers.model;
+  const visit=hash=>{tree.location.hash=hash;tree.renderers.onHash();};
+  const click=label=>{const button=tree.nodes().find(n=>n.tag==='button'&&n.textContent===label);assert.ok(button,label);assert.ok(!button.disabled);button.events.click();};
+  const route=m.registrations.find(r=>m.queries.upstream(r.id).relations.length);
+  assert.ok(route);visit('#registrations/'+m.registrationIndex.get(route.id));
+  assert.match(tree.get('view-handlers').textContent,/Upstream admission candidates/);
+  assert.match(tree.get('view-handlers').textContent,/Includes predecessors with no binding operations/);
+  const site=capsule.analytics.useSites.find(s=>m.queries.site(s.id).rows.length);
+  visit('#use-sites/'+m.useSiteIndex.get(site.id));assert.match(tree.get('view-handlers').textContent,/Contextual consumers/);
+  const binding=capsule.bindings.find(b=>m.bindingProjection(b.id).consumerCount);
+  visit('#bindings');click('Explore '+binding.name+' graph');tree.renderers.onHash();
+  assert.ok(tree.get('binding-viewport'));assert.doesNotMatch(tree.get('binding-coverage').textContent,/unavailable/);
+  const node=tree.nodes().find(n=>n.attrs['data-binding-node']==='consumer');assert.ok(node);node.events.click();
+  assert.match(tree.get('binding-inspector').textContent,/Exact registration instances/);
+  const links=tree.nodes().filter(n=>n.attrs.href?.startsWith('#registrations/'));assert.ok(links.length);
+  visit(links[0].attrs.href);assert.equal(tree.document.activeElement.id,'registration-title');
+  assert.equal(m.canonicalJson,saved);assert.equal(serializeCapsule(capsule),saved);
+  console.log('ok - VIS-07 graph-backed binding/registration/site navigation, admission and exact export');
+};

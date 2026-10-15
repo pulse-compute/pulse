@@ -41,15 +41,12 @@ function projectHandlerTopology(topology, references = []) {
   });
   const coverage = (rows, count) => rows === undefined ? unavailable() : rows.length === count ? complete(count)
     : { status: 'partial', observed: count, expected: rows.length, reason: 'not-recorded' };
-  const analytics = { version: 'pulse.report-analytics.v1', handlers, registrations, useSites, helperCalls, associations: [],
+  const analytics = { version: 'pulse.report-analytics.v2', handlers, registrations, useSites, helperCalls,
     coverage: { handlers: topology ? complete(handlers.length) : unavailable(),
       registrations: topology ? complete(registrations.length) : unavailable(),
       useSites: coverage(topology?.useSites, useSites.length), helperCalls: topology?.helperCallsComplete === false
         ? { status: 'partial', observed: helperCalls.length, expected: null, reason: 'not-recorded' }
-        : coverage(topology?.helperCalls, helperCalls.length),
-      associations: unavailable() } };
-  const associations = deriveHandlerAssociations(analytics);
-  analytics.associations = associations.rows; analytics.coverage.associations = associations.coverage;
+        : coverage(topology?.helperCalls, helperCalls.length) } };
   return analytics;
 }
 
@@ -212,7 +209,9 @@ function validateHandlerTopology(capsule) {
     else ensure(coverage.reason !== null, 'REPORT_COVERAGE');
     if (['unavailable', 'not-applicable'].includes(coverage.status)) ensure(coverage.observed === 0 && coverage.expected === null, 'REPORT_COVERAGE');
   }
-  if (analytics.coverage.associations.status === 'unavailable') {
+  if (analytics.version === 'pulse.report-analytics.v2') {
+    // All canonical facts above are validated; no expanded table is persisted.
+  } else if (analytics.coverage.associations.status === 'unavailable') {
     ensure(analytics.associations.length === 0 && analytics.coverage.associations.reason === 'not-recorded', 'REPORT_COVERAGE');
   } else {
     const expected = deriveHandlerAssociations(analytics);

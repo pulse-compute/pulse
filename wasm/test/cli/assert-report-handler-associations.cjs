@@ -68,7 +68,7 @@ function main() {
       fs.writeFileSync(source, `import { Pulse } from '@pulse-compute/pulse';\nimport { Router } from '@pulse-compute/runtime';\nconst app = new Pulse({ auto: true });\n${text}\nexport default app;\n`);
       const project = resolveProject({ cwd: directory, metadataOnly: true });
       const compiled = compileProject(project), plan = buildCanonicalNativePlan(compiled);
-      return projectHandlerTopology(collectCanonicalReportReferences(compiled, plan).topology);
+      return require('../support/report-legacy-analytics.cjs')(projectHandlerTopology(collectCanonicalReportReferences(compiled, plan).topology));
     };
     const a = capture(`
 const before = async (ctx, next) => { const value = await ctx.config.get('BEFORE'); return next(); };

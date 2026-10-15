@@ -35,8 +35,8 @@ module.exports = function assertIntegration(value, baseline = value) {
     'physical capture/recipe changes cannot masquerade as authored changes');
   for (const name of SEMANTIC_COLLECTIONS) {
     const row = comparison.summary.inventories.find(r => r.collection === name);
-    assert.equal(row.counts.unchanged, value.analytics[name].length, name);
-    for (const side of ['before', 'after']) assert.equal(row.identityCoverage[side].status, 'complete', name);
+    assert.equal(row.counts.unchanged, (value.analytics[name]?.length || 0), name);
+    for (const side of ['before', 'after']) assert.equal(row.identityCoverage[side].status, name==='associations'&&value.analytics.version==='pulse.report-analytics.v2'?'unavailable':'complete', name);
   }
   const serialized = serializeComparison(comparison);
   assert.equal(serializeComparison(parseComparison(serialized)), serialized);
