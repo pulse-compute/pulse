@@ -1,9 +1,308 @@
 {
   "version": "pulse.vis06-campaign.v1",
   "qualification": false,
-  "freshCatalogSource": "blocked: automatic approval review rejected private repository clone",
+  "freshCatalogSource": {
+    "catalogRevision": "54a5bb5876f228a5778b66fb9beb2b2007cf5d18",
+    "catalogApiTree": "94cfc2e5fd5fcfdc536e6d82ef61b8ea65e5496d",
+    "sourceFiles": 270,
+    "allSourceBlobsVerified": true,
+    "pulseRevision": "c18acc70fded0695ea22ef732b90e1e7fadca8d4",
+    "options": {
+      "experimentalNativeBoundedSize": true,
+      "timeoutMs": 600000,
+      "emitWat": false
+    },
+    "elapsedMs": 623894,
+    "inputSha256": "82b628db399c2331f682b482b744d03ffc81f0e43ae37c6f3fa9091daacdef19",
+    "inputBytes": 40728001,
+    "provenance": {
+      "revision": null,
+      "dirty": null,
+      "sourceFingerprint": null,
+      "buildEvidenceId": "evidence:47c2fa0a5d2e068c929733cafa9c6f41626df4aaf6389362b9418f55e80a5730",
+      "toolchain": [
+        {
+          "name": "AssemblyScript",
+          "version": "0.28.18"
+        },
+        {
+          "name": "pulse",
+          "version": "1.0.0-beta.8"
+        }
+      ],
+      "recipe": {
+        "name": "pulse-native",
+        "version": "pulse.canonical-native-wasm.v2",
+        "optimization": "experimental-native-bounded-size",
+        "guestLinked": false,
+        "elideJsonCacheArena": false
+      }
+    },
+    "sourceResolution": "exact GitHub blobs with local Pulse workspace package links; not installed-package qualification",
+    "status": "completed",
+    "buildWallMs": 585501,
+    "captureWallMs": 38393,
+    "profile": "fastly",
+    "host": "fastly",
+    "target": "native",
+    "reporting": "info",
+    "reportCapture": true,
+    "emitWat": false,
+    "elideJsonCacheArena": false,
+    "sourceVerifiedBeforeAndAfter": true,
+    "apiSourceFiles": 268,
+    "sourceManifestSha256": "0a5e1036bc87f189b482f66a535e842358c489c89cebf59226df4f4b9a71eb1e",
+    "captureScriptSha256": "efcc18e0f9134391d019cd07aa9adfa46a3efa025b0152ebe0a80344f2d55060",
+    "buildLogSha256": "59df6d6679c685d50439bd0a405cc46e4aa7fecf46293d7a9b039eb4c4f44e09",
+    "buildManifestSha256": "e2cf3b15cdd15e2f9fb5b6ba47931743545e22f0cecefbb546685b95d888b62d",
+    "environment": {
+      "platform": "Linux",
+      "architecture": "x86_64",
+      "kernel": "6.18.44",
+      "node": "v24.19.0",
+      "pnpm": "12.4.2"
+    },
+    "artifacts": [
+      {
+        "sha256": "93c1004763ef4610899b3e94e329a7cf71f620b29dce3ae79667235931aacd32",
+        "bytes": 2690561,
+        "stage": "prelink",
+        "host": "fastly",
+        "target": "portable-native-wasm"
+      },
+      {
+        "sha256": "d32d0de43ac0af868fdefce2e4c48efdfa78058337e57b24cbabd70dfd857b72",
+        "bytes": 2840977,
+        "stage": "final",
+        "host": "fastly",
+        "target": "fastly-compute-native"
+      }
+    ],
+    "build": {
+      "version": 1,
+      "operation": "native-build",
+      "timingScope": "build-start-through-inventory-capture",
+      "totalDurationMs": 543553,
+      "compilationDurationMs": 326871,
+      "stages": [
+        {
+          "name": "input snapshot",
+          "durationMs": 459
+        },
+        {
+          "name": "preparation",
+          "durationMs": 2
+        },
+        {
+          "name": "portable compilation",
+          "durationMs": 327263
+        },
+        {
+          "name": "artifact emission",
+          "durationMs": 1601
+        },
+        {
+          "name": "provider realization",
+          "durationMs": 213476
+        },
+        {
+          "name": "verification and manifest",
+          "durationMs": 752
+        }
+      ],
+      "compilers": [
+        {
+          "phase": "portable",
+          "artifactId": "artifact:93c1004763ef4610899b3e94e329a7cf71f620b29dce3ae79667235931aacd32",
+          "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+          "durationMs": 123922,
+          "timeoutMs": 600000,
+          "flags": [
+            {
+              "name": "--outFile",
+              "value": "<wasm-output>"
+            },
+            {
+              "name": "--runtime",
+              "value": "incremental"
+            },
+            {
+              "name": "--noAssert",
+              "value": null
+            },
+            {
+              "name": "--optimize",
+              "value": null
+            },
+            {
+              "name": "--transform",
+              "value": "native-retention-transform.cjs"
+            },
+            {
+              "name": "--runPasses",
+              "value": "merge-similar-functions"
+            },
+            {
+              "name": "--optimizeLevel",
+              "value": "3"
+            },
+            {
+              "name": "--shrinkLevel",
+              "value": "2"
+            },
+            {
+              "name": "--maximumMemory",
+              "value": "4096"
+            },
+            {
+              "name": "--exportRuntime",
+              "value": null
+            },
+            {
+              "name": "--transform",
+              "value": "json-as"
+            },
+            {
+              "name": "--path",
+              "value": "<dependency-search-path>"
+            },
+            {
+              "name": "--path",
+              "value": "<dependency-search-path>"
+            },
+            {
+              "name": "--transform",
+              "value": "report-capture.cjs"
+            }
+          ],
+          "flagsComplete": true,
+          "optimization": {
+            "optimizeLevel": 3,
+            "shrinkLevel": 2,
+            "converge": false
+          },
+          "toolchain": [
+            {
+              "name": "AssemblyScript",
+              "version": "0.28.18"
+            },
+            {
+              "name": "Node.js",
+              "version": "24.19.0"
+            },
+            {
+              "name": "json-as",
+              "version": "1.5.0"
+            },
+            {
+              "name": "Binaryen (asc)",
+              "version": "129.0.0-nightly.20260428"
+            }
+          ],
+          "cache": "not-reused"
+        },
+        {
+          "phase": "provider",
+          "artifactId": "artifact:d32d0de43ac0af868fdefce2e4c48efdfa78058337e57b24cbabd70dfd857b72",
+          "compilerVersion": "pulse.fastly-native-platform-capabilities-compiler.v1",
+          "durationMs": 202949,
+          "timeoutMs": 600000,
+          "flags": [
+            {
+              "name": "--outFile",
+              "value": "<wasm-output>"
+            },
+            {
+              "name": "--runtime",
+              "value": "incremental"
+            },
+            {
+              "name": "--noAssert",
+              "value": null
+            },
+            {
+              "name": "--optimize",
+              "value": null
+            },
+            {
+              "name": "--transform",
+              "value": "native-retention-transform.cjs"
+            },
+            {
+              "name": "--runPasses",
+              "value": "merge-similar-functions"
+            },
+            {
+              "name": "--optimizeLevel",
+              "value": "3"
+            },
+            {
+              "name": "--shrinkLevel",
+              "value": "2"
+            },
+            {
+              "name": "--maximumMemory",
+              "value": "4096"
+            },
+            {
+              "name": "--use",
+              "value": "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort"
+            },
+            {
+              "name": "--exportRuntime",
+              "value": null
+            },
+            {
+              "name": "--transform",
+              "value": "json-as"
+            },
+            {
+              "name": "--path",
+              "value": "<dependency-search-path>"
+            },
+            {
+              "name": "--path",
+              "value": "<dependency-search-path>"
+            },
+            {
+              "name": "--transform",
+              "value": "report-capture.cjs"
+            }
+          ],
+          "flagsComplete": true,
+          "optimization": {
+            "optimizeLevel": 3,
+            "shrinkLevel": 2,
+            "converge": false
+          },
+          "toolchain": [
+            {
+              "name": "AssemblyScript",
+              "version": "0.28.18"
+            },
+            {
+              "name": "Node.js",
+              "version": "24.19.0"
+            },
+            {
+              "name": "json-as",
+              "version": "1.5.0"
+            },
+            {
+              "name": "Binaryen (asc)",
+              "version": "129.0.0-nightly.20260428"
+            }
+          ],
+          "cache": "not-reused"
+        }
+      ],
+      "providerArtifactReuse": "not-reused",
+      "cache": "not-recorded"
+    },
+    "pinning": "External receipt binds verified Catalog Git blobs and API tree to unmodified report input hash; capsule revision/fingerprint fields remain null. Workspace-linked source build, not installed-package or runtime qualification."
+  },
   "baseline": "1c9874b464d48ef7d3d73beec11dbe411c84302e",
-  "stopDecision": "Retain both 60-second exhaustive failures; do not raise budgets for brute force. Measure focused raw-relationship queries instead.",
+  "stopDecision": "Retain all three 60-second exhaustive failures (two historical, one fresh); do not raise budgets for brute force. Fresh owner traversal and selected-consumer oracle comparisons completed. Full unique-row count and whole-Catalog equivalence remain unqualified.",
   "attempts": [
     {
       "id": "catalog-limited-1",
@@ -3952,6 +4251,1225 @@
       },
       "error": null,
       "stderr": ""
+    },
+    {
+      "version": "pulse.vis06-measurement.v1",
+      "status": "completed",
+      "mode": "limited",
+      "inputSha256": "82b628db399c2331f682b482b744d03ffc81f0e43ae37c6f3fa9091daacdef19",
+      "startedAt": "2026-10-15T01:13:07.460Z",
+      "pulseSha": "c18acc70fded0695ea22ef732b90e1e7fadca8d4",
+      "diagnosticFiles": {
+        "vis06-derivation.cjs": "831ec830d5812be49d30832e7c5e0fee0ceccd945b5d751dc9aa5e6a214eaaea",
+        "vis06-inputs.cjs": "9d70bcb25e88ff389e6d35f9829f4037f78b9fa99422bc29e4009ca80d3049db",
+        "vis06-memory-probe.cjs": "8840ca6ef1df60481b9bcaadd8224955262e8dd40b1ac14a1fd94be66282a64e",
+        "vis06-run.cjs": "6cfb4f91c88034f2bde1f44d0275f20b5c67de349d876b0248a9e149f905acd9",
+        "vis06-worker.cjs": "43a556ce0e0fdd118dd4a80845b0bed8963b3df89368160d1a5bc8a7eb876be0"
+      },
+      "workerSha256": "43a556ce0e0fdd118dd4a80845b0bed8963b3df89368160d1a5bc8a7eb876be0",
+      "watchdog": {
+        "timeoutMs": 60000,
+        "rssMiB": 1536,
+        "heapMiB": 1024,
+        "sampleIntervalMs": 20,
+        "procPid": "344467"
+      },
+      "sampledPeakRssBytes": 687374336,
+      "progress": [
+        {
+          "stage": "inputDecode",
+          "state": "started"
+        },
+        {
+          "stage": "inputDecode",
+          "state": "finished",
+          "elapsedMs": 2908.689062,
+          "memory": {
+            "rss": 365002752,
+            "heapTotal": 244523008,
+            "heapUsed": 129056688,
+            "external": 85334789,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 356448
+          }
+        },
+        {
+          "stage": "inputValidation",
+          "state": "started"
+        },
+        {
+          "stage": "inputValidation",
+          "state": "finished",
+          "elapsedMs": 14154.696963000002,
+          "memory": {
+            "rss": 646107136,
+            "heapTotal": 482787328,
+            "heapUsed": 332141152,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        },
+        {
+          "stage": "derive",
+          "state": "started"
+        },
+        {
+          "stage": "derive",
+          "state": "finished",
+          "elapsedMs": 909.9106810000012,
+          "memory": {
+            "rss": 606695424,
+            "heapTotal": 442740736,
+            "heapUsed": 330410456,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        },
+        {
+          "stage": "baselineParity",
+          "state": "started"
+        },
+        {
+          "stage": "baselineParity",
+          "state": "finished",
+          "elapsedMs": 2010.1695160000017,
+          "memory": {
+            "rss": 681287680,
+            "heapTotal": 576208896,
+            "heapUsed": 493879456,
+            "external": 44637035,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        },
+        {
+          "stage": "derivationResult",
+          "counts": {
+            "rows": 10000,
+            "consumersWithRows": 7,
+            "consumersWithBindingRows": 3,
+            "representedUseSites": 6384,
+            "consumerSitePairs": 9438,
+            "distinctPaths": 330,
+            "extraPathRows": 562
+          },
+          "coverage": {
+            "status": "partial",
+            "observed": 10000,
+            "expected": null,
+            "reason": "graph-budget-exhausted"
+          },
+          "derivationExhausted": false,
+          "instrumentation": {
+            "stages": {
+              "indexing": {
+                "inclusiveMs": 2.519241999998485,
+                "selfMs": 2.519241999998485
+              },
+              "identityAndDedup": {
+                "inclusiveMs": 863.6036309997835,
+                "selfMs": 863.6036309997835
+              },
+              "expansionInclusive": {
+                "inclusiveMs": 880.2289549999623,
+                "selfMs": 16.625324000178807
+              },
+              "routingGraph": {
+                "inclusiveMs": 6.934617000006256,
+                "selfMs": 6.934617000006256
+              },
+              "traversalInclusive": {
+                "inclusiveMs": 882.1912390000034,
+                "selfMs": 3.0968070000380976
+              },
+              "sorting": {
+                "inclusiveMs": 15.187449000000925,
+                "selfMs": 15.187449000000925
+              }
+            },
+            "counters": {
+              "work": 21474,
+              "consumersStarted": 10,
+              "consumersFinished": 10,
+              "graphs": 7,
+              "graphNodes": 3570,
+              "graphEdges": 3829,
+              "emissionAttempts": 10001,
+              "duplicates": 0,
+              "maxPathHops": 44,
+              "relations": 0
+            },
+            "sampledHeapBytes": 336823448,
+            "sampledRssBytes": 646500352,
+            "currentConsumer": "entry:c551c5f6da5bdae478fd8cc7626a2f5b44c9e563d77aae7387ac06ed12077294"
+          },
+          "routeSemanticDigest": "2d9e9e30046c89c4b3f0ea824a64011e9d1ba97692808b9e29c7b37113267264"
+        },
+        {
+          "stage": "productionNormalizationAdmission",
+          "state": "started"
+        },
+        {
+          "stage": "productionNormalizationAdmission",
+          "state": "finished",
+          "elapsedMs": 1457.5980149999996,
+          "memory": {
+            "rss": 530927616,
+            "heapTotal": 306180096,
+            "heapUsed": 224748320,
+            "external": 44637035,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        },
+        {
+          "stage": "rawEncoding",
+          "state": "started"
+        },
+        {
+          "stage": "rawEncoding",
+          "state": "finished",
+          "elapsedMs": 181.74970799999937,
+          "memory": {
+            "rss": 587231232,
+            "heapTotal": 346910720,
+            "heapUsed": 265506240,
+            "external": 44637035,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        },
+        {
+          "stage": "normalizedEncoding",
+          "state": "started"
+        },
+        {
+          "stage": "normalizedEncoding",
+          "state": "finished",
+          "elapsedMs": 879.3671770000001,
+          "memory": {
+            "rss": 656277504,
+            "heapTotal": 385748992,
+            "heapUsed": 285137008,
+            "external": 44633096,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        },
+        {
+          "stage": "normalizedStringify",
+          "state": "started"
+        },
+        {
+          "stage": "normalizedStringify",
+          "state": "finished",
+          "elapsedMs": 34.58066999999937,
+          "memory": {
+            "rss": 663355392,
+            "heapTotal": 392863744,
+            "heapUsed": 292279824,
+            "external": 44633096,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        },
+        {
+          "stage": "readerAdmission",
+          "state": "started"
+        },
+        {
+          "stage": "readerAdmission",
+          "state": "finished",
+          "elapsedMs": 119.35126799999853,
+          "memory": {
+            "rss": 680558592,
+            "heapTotal": 410218496,
+            "heapUsed": 273896272,
+            "external": 44633096,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        },
+        {
+          "stage": "viewerProjection",
+          "state": "started"
+        },
+        {
+          "stage": "viewerProjection",
+          "state": "finished",
+          "elapsedMs": 51.154537000002165,
+          "memory": {
+            "rss": 683180032,
+            "heapTotal": 412749824,
+            "heapUsed": 303069616,
+            "external": 44633096,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        }
+      ],
+      "qualification": false,
+      "pid": 13,
+      "lastConsumer": {
+        "stage": "derive",
+        "counters": {
+          "work": 21474,
+          "consumersStarted": 10,
+          "consumersFinished": 10,
+          "graphs": 7,
+          "graphNodes": 3570,
+          "graphEdges": 3829,
+          "emissionAttempts": 10001,
+          "duplicates": 0,
+          "maxPathHops": 44,
+          "relations": 0,
+          "sampledHeapBytes": 336823448
+        }
+      },
+      "elapsedMs": 24123.672182,
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "completedAt": "2026-10-15T01:13:31.592Z",
+      "failure": null,
+      "result": {
+        "mode": "limited",
+        "stages": {
+          "inputDecode": 2908.689062,
+          "inputValidation": 14154.696963000002,
+          "derive": 909.9106810000012,
+          "baselineParity": 2010.1695160000017,
+          "productionNormalizationAdmission": 1457.5980149999996,
+          "rawEncoding": 181.74970799999937,
+          "normalizedEncoding": 879.3671770000001,
+          "normalizedStringify": 34.58066999999937,
+          "readerAdmission": 119.35126799999853,
+          "viewerProjection": 51.154537000002165
+        },
+        "memory": {
+          "inputDecode": {
+            "rss": 365002752,
+            "heapTotal": 244523008,
+            "heapUsed": 129056688,
+            "external": 85334789,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 356448
+          },
+          "inputValidation": {
+            "rss": 646107136,
+            "heapTotal": 482787328,
+            "heapUsed": 332141152,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          },
+          "derive": {
+            "rss": 606695424,
+            "heapTotal": 442740736,
+            "heapUsed": 330410456,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          },
+          "baselineParity": {
+            "rss": 681287680,
+            "heapTotal": 576208896,
+            "heapUsed": 493879456,
+            "external": 44637035,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          },
+          "productionNormalizationAdmission": {
+            "rss": 530927616,
+            "heapTotal": 306180096,
+            "heapUsed": 224748320,
+            "external": 44637035,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          },
+          "rawEncoding": {
+            "rss": 587231232,
+            "heapTotal": 346910720,
+            "heapUsed": 265506240,
+            "external": 44637035,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          },
+          "normalizedEncoding": {
+            "rss": 656277504,
+            "heapTotal": 385748992,
+            "heapUsed": 285137008,
+            "external": 44633096,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          },
+          "normalizedStringify": {
+            "rss": 663355392,
+            "heapTotal": 392863744,
+            "heapUsed": 292279824,
+            "external": 44633096,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          },
+          "readerAdmission": {
+            "rss": 680558592,
+            "heapTotal": 410218496,
+            "heapUsed": 273896272,
+            "external": 44633096,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          },
+          "viewerProjection": {
+            "rss": 683180032,
+            "heapTotal": 412749824,
+            "heapUsed": 303069616,
+            "external": 44633096,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 670256
+          }
+        },
+        "status": "completed",
+        "inputSha256": "82b628db399c2331f682b482b744d03ffc81f0e43ae37c6f3fa9091daacdef19",
+        "node": "v24.19.0",
+        "pulseSha": "c18acc70fded0695ea22ef732b90e1e7fadca8d4",
+        "diagnosticFiles": {
+          "vis06-derivation.cjs": "831ec830d5812be49d30832e7c5e0fee0ceccd945b5d751dc9aa5e6a214eaaea",
+          "vis06-inputs.cjs": "9d70bcb25e88ff389e6d35f9829f4037f78b9fa99422bc29e4009ca80d3049db",
+          "vis06-memory-probe.cjs": "8840ca6ef1df60481b9bcaadd8224955262e8dd40b1ac14a1fd94be66282a64e",
+          "vis06-run.cjs": "6cfb4f91c88034f2bde1f44d0275f20b5c67de349d876b0248a9e149f905acd9",
+          "vis06-worker.cjs": "43a556ce0e0fdd118dd4a80845b0bed8963b3df89368160d1a5bc8a7eb876be0"
+        },
+        "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+        "provenance": {
+          "revision": null,
+          "dirty": null,
+          "sourceFingerprint": null,
+          "buildEvidenceId": "evidence:47c2fa0a5d2e068c929733cafa9c6f41626df4aaf6389362b9418f55e80a5730",
+          "toolchain": [
+            {
+              "name": "AssemblyScript",
+              "version": "0.28.18"
+            },
+            {
+              "name": "pulse",
+              "version": "1.0.0-beta.8"
+            }
+          ],
+          "recipe": {
+            "name": "pulse-native",
+            "version": "pulse.canonical-native-wasm.v2",
+            "optimization": "experimental-native-bounded-size",
+            "guestLinked": false,
+            "elideJsonCacheArena": false
+          }
+        },
+        "context": {
+          "profile": "fastly",
+          "host": "fastly",
+          "target": "native",
+          "representation": "canonical-native-wasm",
+          "primaryArtifactId": "artifact:d32d0de43ac0af868fdefce2e4c48efdfa78058337e57b24cbabd70dfd857b72"
+        },
+        "validation": "production capsule validation",
+        "input": {
+          "handlers": 214,
+          "registrations": 255,
+          "useSites": 6398,
+          "helperCalls": 141,
+          "associations": 10000,
+          "coverage": {
+            "handlers": {
+              "status": "complete",
+              "observed": 214,
+              "expected": 214,
+              "reason": null
+            },
+            "registrations": {
+              "status": "complete",
+              "observed": 255,
+              "expected": 255,
+              "reason": null
+            },
+            "useSites": {
+              "status": "complete",
+              "observed": 6398,
+              "expected": 6398,
+              "reason": null
+            },
+            "helperCalls": {
+              "status": "complete",
+              "observed": 141,
+              "expected": 141,
+              "reason": null
+            },
+            "associations": {
+              "status": "partial",
+              "observed": 10000,
+              "expected": null,
+              "reason": "graph-budget-exhausted"
+            }
+          }
+        },
+        "guardrails": {
+          "associations": 10000,
+          "work": 250000,
+          "pathHops": 64,
+          "reader": {
+            "bytes": 67108864,
+            "depth": 64,
+            "nodes": 2000000,
+            "stringBytes": 1048576,
+            "records": 100000
+          },
+          "viewerDisplayNodes": 300
+        },
+        "deriverSha256": "4d4380f84b8d356193b016c25b9fe7e3d17e4a72f0f4454148e7f3b1e0a18945",
+        "instrumentedSha256": "cca36f99a658a0e9901e49fd7839ba9847957ff3bda36eeb08d7413a5f6859b2",
+        "instrumentation": {
+          "stages": {
+            "indexing": {
+              "inclusiveMs": 2.519241999998485,
+              "selfMs": 2.519241999998485
+            },
+            "identityAndDedup": {
+              "inclusiveMs": 863.6036309997835,
+              "selfMs": 863.6036309997835
+            },
+            "expansionInclusive": {
+              "inclusiveMs": 880.2289549999623,
+              "selfMs": 16.625324000178807
+            },
+            "routingGraph": {
+              "inclusiveMs": 6.934617000006256,
+              "selfMs": 6.934617000006256
+            },
+            "traversalInclusive": {
+              "inclusiveMs": 882.1912390000034,
+              "selfMs": 3.0968070000380976
+            },
+            "sorting": {
+              "inclusiveMs": 15.187449000000925,
+              "selfMs": 15.187449000000925
+            }
+          },
+          "counters": {
+            "work": 21474,
+            "consumersStarted": 10,
+            "consumersFinished": 10,
+            "graphs": 7,
+            "graphNodes": 3570,
+            "graphEdges": 3829,
+            "emissionAttempts": 10001,
+            "duplicates": 0,
+            "maxPathHops": 44,
+            "relations": 0
+          },
+          "sampledHeapBytes": 336823448,
+          "sampledRssBytes": 646500352,
+          "currentConsumer": "entry:c551c5f6da5bdae478fd8cc7626a2f5b44c9e563d77aae7387ac06ed12077294"
+        },
+        "derivationExhausted": false,
+        "coverage": {
+          "status": "partial",
+          "observed": 10000,
+          "expected": null,
+          "reason": "graph-budget-exhausted"
+        },
+        "counts": {
+          "rows": 10000,
+          "consumersWithRows": 7,
+          "consumersWithBindingRows": 3,
+          "representedUseSites": 6384,
+          "consumerSitePairs": 9438,
+          "distinctPaths": 330,
+          "extraPathRows": 562
+        },
+        "routeSemanticDigest": "2d9e9e30046c89c4b3f0ea824a64011e9d1ba97692808b9e29c7b37113267264",
+        "productionNormalizationAdmission": "accepted",
+        "normalizationScope": "canonical normalizer; diagnostic structuredClone only after production rejects trusted generated output; reader unchanged",
+        "rawBytes": 40728001,
+        "analyticsBytes": 30050435,
+        "normalizedBytes": 7111986,
+        "readerAdmission": "REPORT_LIMIT",
+        "viewerScope": "model construction only; no browser/layout qualification",
+        "peakRssKiB": 670256,
+        "sampledHeapPeakBytes": 493879456
+      },
+      "id": "catalog-fresh-limited-1",
+      "receiptSha256": "693bff78b32813a9d5f6fc12fe9f39c438844116659e669edf8be57323f20863",
+      "disposition": "retained; fresh source-pinned comparison",
+      "implementationCheckpoint": "c18acc70fded0695ea22ef732b90e1e7fadca8d4"
+    },
+    {
+      "version": "pulse.vis06-measurement.v1",
+      "status": "incomplete",
+      "mode": "unrestricted",
+      "inputSha256": "82b628db399c2331f682b482b744d03ffc81f0e43ae37c6f3fa9091daacdef19",
+      "startedAt": "2026-10-15T01:13:37.239Z",
+      "pulseSha": "c18acc70fded0695ea22ef732b90e1e7fadca8d4",
+      "diagnosticFiles": {
+        "vis06-derivation.cjs": "831ec830d5812be49d30832e7c5e0fee0ceccd945b5d751dc9aa5e6a214eaaea",
+        "vis06-inputs.cjs": "9d70bcb25e88ff389e6d35f9829f4037f78b9fa99422bc29e4009ca80d3049db",
+        "vis06-memory-probe.cjs": "8840ca6ef1df60481b9bcaadd8224955262e8dd40b1ac14a1fd94be66282a64e",
+        "vis06-run.cjs": "6cfb4f91c88034f2bde1f44d0275f20b5c67de349d876b0248a9e149f905acd9",
+        "vis06-worker.cjs": "43a556ce0e0fdd118dd4a80845b0bed8963b3df89368160d1a5bc8a7eb876be0"
+      },
+      "workerSha256": "43a556ce0e0fdd118dd4a80845b0bed8963b3df89368160d1a5bc8a7eb876be0",
+      "watchdog": {
+        "timeoutMs": 60000,
+        "rssMiB": 1536,
+        "heapMiB": 1024,
+        "sampleIntervalMs": 20,
+        "procPid": "346021"
+      },
+      "sampledPeakRssBytes": 688898048,
+      "progress": [
+        {
+          "stage": "inputDecode",
+          "state": "started"
+        },
+        {
+          "stage": "inputDecode",
+          "state": "finished",
+          "elapsedMs": 3254.222827,
+          "memory": {
+            "rss": 364498944,
+            "heapTotal": 244785152,
+            "heapUsed": 129190848,
+            "external": 85334789,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 355956
+          }
+        },
+        {
+          "stage": "inputValidation",
+          "state": "started"
+        },
+        {
+          "stage": "inputValidation",
+          "state": "finished",
+          "elapsedMs": 13790.563423,
+          "memory": {
+            "rss": 647725056,
+            "heapTotal": 482263040,
+            "heapUsed": 331949080,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 671700
+          }
+        },
+        {
+          "stage": "derive",
+          "state": "started"
+        }
+      ],
+      "qualification": false,
+      "pid": 13,
+      "lastConsumer": {
+        "stage": "derive",
+        "counters": {
+          "work": 516533,
+          "consumersStarted": 132,
+          "consumersFinished": 132,
+          "graphs": 116,
+          "graphNodes": 59160,
+          "graphEdges": 63861,
+          "emissionAttempts": 392379,
+          "duplicates": 0,
+          "maxPathHops": 72,
+          "relations": 0,
+          "sampledHeapBytes": 433911952
+        }
+      },
+      "failure": "timeout",
+      "elapsedMs": 60090.423578,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "stderr": "",
+      "completedAt": "2026-10-15T01:14:37.340Z",
+      "result": null,
+      "id": "catalog-fresh-unrestricted-1",
+      "receiptSha256": "5c793f9784b008e8c67695f63c3c96ea5890b746812a926a2af43225b7d98858",
+      "disposition": "retained; fresh source-pinned comparison",
+      "implementationCheckpoint": "c18acc70fded0695ea22ef732b90e1e7fadca8d4"
+    },
+    {
+      "version": "pulse.vis06-measurement.v1",
+      "status": "completed",
+      "mode": "relations-focused",
+      "inputSha256": "82b628db399c2331f682b482b744d03ffc81f0e43ae37c6f3fa9091daacdef19",
+      "startedAt": "2026-10-15T01:14:42.346Z",
+      "pulseSha": "c18acc70fded0695ea22ef732b90e1e7fadca8d4",
+      "diagnosticFiles": {
+        "vis06-derivation.cjs": "831ec830d5812be49d30832e7c5e0fee0ceccd945b5d751dc9aa5e6a214eaaea",
+        "vis06-inputs.cjs": "9d70bcb25e88ff389e6d35f9829f4037f78b9fa99422bc29e4009ca80d3049db",
+        "vis06-memory-probe.cjs": "8840ca6ef1df60481b9bcaadd8224955262e8dd40b1ac14a1fd94be66282a64e",
+        "vis06-run.cjs": "6cfb4f91c88034f2bde1f44d0275f20b5c67de349d876b0248a9e149f905acd9",
+        "vis06-worker.cjs": "43a556ce0e0fdd118dd4a80845b0bed8963b3df89368160d1a5bc8a7eb876be0"
+      },
+      "workerSha256": "43a556ce0e0fdd118dd4a80845b0bed8963b3df89368160d1a5bc8a7eb876be0",
+      "watchdog": {
+        "timeoutMs": 60000,
+        "rssMiB": 1536,
+        "heapMiB": 1024,
+        "sampleIntervalMs": 20,
+        "procPid": "347910"
+      },
+      "sampledPeakRssBytes": 722255872,
+      "progress": [
+        {
+          "stage": "inputDecode",
+          "state": "started"
+        },
+        {
+          "stage": "inputDecode",
+          "state": "finished",
+          "elapsedMs": 2821.987734,
+          "memory": {
+            "rss": 364417024,
+            "heapTotal": 244523008,
+            "heapUsed": 130457608,
+            "external": 85334789,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 355892
+          }
+        },
+        {
+          "stage": "inputValidation",
+          "state": "started"
+        },
+        {
+          "stage": "inputValidation",
+          "state": "finished",
+          "elapsedMs": 12588.453518,
+          "memory": {
+            "rss": 642572288,
+            "heapTotal": 484835328,
+            "heapUsed": 336893664,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 666804
+          }
+        },
+        {
+          "stage": "derive",
+          "state": "started"
+        },
+        {
+          "stage": "derive",
+          "state": "finished",
+          "elapsedMs": 213.68182299999899,
+          "memory": {
+            "rss": 604311552,
+            "heapTotal": 444289024,
+            "heapUsed": 337490760,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 666804
+          }
+        },
+        {
+          "stage": "queryIndex",
+          "state": "started"
+        },
+        {
+          "stage": "queryIndex",
+          "state": "finished",
+          "elapsedMs": 37.423280999999406,
+          "memory": {
+            "rss": 604065792,
+            "heapTotal": 444289024,
+            "heapUsed": 301677808,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 666804
+          }
+        },
+        {
+          "stage": "relationResult",
+          "relations": 28812,
+          "relationsBytes": 38567905,
+          "predictedEmissionAttempts": 983012,
+          "factsAndRelationsBytes": 44186789,
+          "factsAndRelationsNormalizedBytes": 4470853,
+          "derivationExhausted": true,
+          "instrumentation": {
+            "stages": {
+              "indexing": {
+                "inclusiveMs": 3.1228769999997894,
+                "selfMs": 3.1228769999997894
+              },
+              "routingGraph": {
+                "inclusiveMs": 119.0466150000102,
+                "selfMs": 119.0466150000102
+              },
+              "traversalInclusive": {
+                "inclusiveMs": 69.73950700000387,
+                "selfMs": 69.73950700000387
+              },
+              "sorting": {
+                "inclusiveMs": 0.007813000000169268,
+                "selfMs": 0.007813000000169268
+              }
+            },
+            "counters": {
+              "work": 264657,
+              "consumersStarted": 255,
+              "consumersFinished": 255,
+              "graphs": 217,
+              "graphNodes": 110670,
+              "graphEdges": 125543,
+              "emissionAttempts": 0,
+              "duplicates": 0,
+              "maxPathHops": 0,
+              "relations": 28812
+            },
+            "sampledHeapBytes": 368885840,
+            "sampledRssBytes": 647553024,
+            "currentConsumer": "entry:739856ea369be07a5c73e18d7b5d0c78f406df01ea8431c4a4394015f0b7f93e"
+          },
+          "focusedTraversals": [
+            {
+              "consumer": "entry:7e43ce0d2abc6066c5299a9de234c3f176fe12bee7568b39c20fb304931be1ae",
+              "kind": "middleware",
+              "elapsedMs": 8.836551000000327,
+              "relations": 212,
+              "counters": {
+                "work": 7830,
+                "consumersStarted": 1,
+                "consumersFinished": 1,
+                "graphs": 1,
+                "graphNodes": 510,
+                "graphEdges": 637,
+                "emissionAttempts": 0,
+                "duplicates": 0,
+                "maxPathHops": 0,
+                "relations": 212
+              },
+              "projectionMs": 912.4830170000023,
+              "oracleMs": 667.287733000001,
+              "associations": 6843,
+              "coverage": {
+                "status": "partial",
+                "observed": 6843,
+                "expected": null,
+                "reason": "unsupported-mapping"
+              },
+              "semanticParity": true
+            },
+            {
+              "consumer": "entry:468901fbbc8084a5d3390cde94a652e92ba88f9d79930d88f31032f5b8902065",
+              "kind": "route",
+              "elapsedMs": 4.8871929999986605,
+              "relations": 54,
+              "counters": {
+                "work": 7485,
+                "consumersStarted": 1,
+                "consumersFinished": 1,
+                "graphs": 1,
+                "graphNodes": 510,
+                "graphEdges": 515,
+                "emissionAttempts": 0,
+                "duplicates": 0,
+                "maxPathHops": 0,
+                "relations": 54
+              },
+              "projectionMs": 355.3817310000013,
+              "oracleMs": 450.4015699999982,
+              "associations": 2328,
+              "coverage": {
+                "status": "complete",
+                "observed": 2328,
+                "expected": 2328,
+                "reason": null
+              },
+              "semanticParity": true
+            },
+            {
+              "consumer": "entry:739856ea369be07a5c73e18d7b5d0c78f406df01ea8431c4a4394015f0b7f93e",
+              "kind": "error",
+              "elapsedMs": 3.019445000001724,
+              "relations": 1,
+              "counters": {
+                "work": 7439,
+                "consumersStarted": 1,
+                "consumersFinished": 1,
+                "graphs": 1,
+                "graphNodes": 510,
+                "graphEdges": 637,
+                "emissionAttempts": 0,
+                "duplicates": 0,
+                "maxPathHops": 0,
+                "relations": 1
+              },
+              "projectionMs": 1.2195629999987432,
+              "oracleMs": 4.323485000000801,
+              "associations": 14,
+              "coverage": {
+                "status": "partial",
+                "observed": 14,
+                "expected": null,
+                "reason": "unsupported-mapping"
+              },
+              "semanticParity": true
+            }
+          ]
+        },
+        {
+          "stage": "allBindingConsumerQueries",
+          "state": "started"
+        },
+        {
+          "stage": "allBindingConsumerQueries",
+          "state": "finished",
+          "elapsedMs": 3.2480869999999413,
+          "memory": {
+            "rss": 566906880,
+            "heapTotal": 309088256,
+            "heapUsed": 142947344,
+            "external": 44637035,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 728200
+          }
+        }
+      ],
+      "qualification": false,
+      "pid": 13,
+      "lastConsumer": {
+        "stage": "derive",
+        "counters": {
+          "work": 264657,
+          "consumersStarted": 255,
+          "consumersFinished": 255,
+          "graphs": 217,
+          "graphNodes": 110670,
+          "graphEdges": 125543,
+          "emissionAttempts": 0,
+          "duplicates": 0,
+          "maxPathHops": 0,
+          "relations": 28812,
+          "sampledHeapBytes": 368885840
+        }
+      },
+      "elapsedMs": 21506.505121000002,
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "completedAt": "2026-10-15T01:15:03.861Z",
+      "failure": null,
+      "result": {
+        "mode": "relations-focused",
+        "stages": {
+          "inputDecode": 2821.987734,
+          "inputValidation": 12588.453518,
+          "derive": 213.68182299999899,
+          "queryIndex": 37.423280999999406,
+          "allBindingConsumerQueries": 3.2480869999999413
+        },
+        "memory": {
+          "inputDecode": {
+            "rss": 364417024,
+            "heapTotal": 244523008,
+            "heapUsed": 130457608,
+            "external": 85334789,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 355892
+          },
+          "inputValidation": {
+            "rss": 642572288,
+            "heapTotal": 484835328,
+            "heapUsed": 336893664,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 666804
+          },
+          "derive": {
+            "rss": 604311552,
+            "heapTotal": 444289024,
+            "heapUsed": 337490760,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 666804
+          },
+          "queryIndex": {
+            "rss": 604065792,
+            "heapTotal": 444289024,
+            "heapUsed": 301677808,
+            "external": 44606828,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 666804
+          },
+          "allBindingConsumerQueries": {
+            "rss": 566906880,
+            "heapTotal": 309088256,
+            "heapUsed": 142947344,
+            "external": 44637035,
+            "arrayBuffers": 40874560,
+            "highWaterRssKiB": 728200
+          }
+        },
+        "status": "completed",
+        "inputSha256": "82b628db399c2331f682b482b744d03ffc81f0e43ae37c6f3fa9091daacdef19",
+        "node": "v24.19.0",
+        "pulseSha": "c18acc70fded0695ea22ef732b90e1e7fadca8d4",
+        "diagnosticFiles": {
+          "vis06-derivation.cjs": "831ec830d5812be49d30832e7c5e0fee0ceccd945b5d751dc9aa5e6a214eaaea",
+          "vis06-inputs.cjs": "9d70bcb25e88ff389e6d35f9829f4037f78b9fa99422bc29e4009ca80d3049db",
+          "vis06-memory-probe.cjs": "8840ca6ef1df60481b9bcaadd8224955262e8dd40b1ac14a1fd94be66282a64e",
+          "vis06-run.cjs": "6cfb4f91c88034f2bde1f44d0275f20b5c67de349d876b0248a9e149f905acd9",
+          "vis06-worker.cjs": "43a556ce0e0fdd118dd4a80845b0bed8963b3df89368160d1a5bc8a7eb876be0"
+        },
+        "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+        "provenance": {
+          "revision": null,
+          "dirty": null,
+          "sourceFingerprint": null,
+          "buildEvidenceId": "evidence:47c2fa0a5d2e068c929733cafa9c6f41626df4aaf6389362b9418f55e80a5730",
+          "toolchain": [
+            {
+              "name": "AssemblyScript",
+              "version": "0.28.18"
+            },
+            {
+              "name": "pulse",
+              "version": "1.0.0-beta.8"
+            }
+          ],
+          "recipe": {
+            "name": "pulse-native",
+            "version": "pulse.canonical-native-wasm.v2",
+            "optimization": "experimental-native-bounded-size",
+            "guestLinked": false,
+            "elideJsonCacheArena": false
+          }
+        },
+        "context": {
+          "profile": "fastly",
+          "host": "fastly",
+          "target": "native",
+          "representation": "canonical-native-wasm",
+          "primaryArtifactId": "artifact:d32d0de43ac0af868fdefce2e4c48efdfa78058337e57b24cbabd70dfd857b72"
+        },
+        "validation": "production capsule validation",
+        "input": {
+          "handlers": 214,
+          "registrations": 255,
+          "useSites": 6398,
+          "helperCalls": 141,
+          "associations": 10000,
+          "coverage": {
+            "handlers": {
+              "status": "complete",
+              "observed": 214,
+              "expected": 214,
+              "reason": null
+            },
+            "registrations": {
+              "status": "complete",
+              "observed": 255,
+              "expected": 255,
+              "reason": null
+            },
+            "useSites": {
+              "status": "complete",
+              "observed": 6398,
+              "expected": 6398,
+              "reason": null
+            },
+            "helperCalls": {
+              "status": "complete",
+              "observed": 141,
+              "expected": 141,
+              "reason": null
+            },
+            "associations": {
+              "status": "partial",
+              "observed": 10000,
+              "expected": null,
+              "reason": "graph-budget-exhausted"
+            }
+          }
+        },
+        "guardrails": {
+          "associations": null,
+          "work": null,
+          "pathHops": null,
+          "reader": {
+            "bytes": 67108864,
+            "depth": 64,
+            "nodes": 2000000,
+            "stringBytes": 1048576,
+            "records": 100000
+          },
+          "viewerDisplayNodes": 300
+        },
+        "deriverSha256": "4d4380f84b8d356193b016c25b9fe7e3d17e4a72f0f4454148e7f3b1e0a18945",
+        "instrumentedSha256": "ac8ac249269ba406cd17e38b340064b344b5b633af7667049b73c67912ff5c23",
+        "instrumentation": {
+          "stages": {
+            "indexing": {
+              "inclusiveMs": 3.1228769999997894,
+              "selfMs": 3.1228769999997894
+            },
+            "routingGraph": {
+              "inclusiveMs": 119.0466150000102,
+              "selfMs": 119.0466150000102
+            },
+            "traversalInclusive": {
+              "inclusiveMs": 69.73950700000387,
+              "selfMs": 69.73950700000387
+            },
+            "sorting": {
+              "inclusiveMs": 0.007813000000169268,
+              "selfMs": 0.007813000000169268
+            }
+          },
+          "counters": {
+            "work": 264657,
+            "consumersStarted": 255,
+            "consumersFinished": 255,
+            "graphs": 217,
+            "graphNodes": 110670,
+            "graphEdges": 125543,
+            "emissionAttempts": 0,
+            "duplicates": 0,
+            "maxPathHops": 0,
+            "relations": 28812
+          },
+          "sampledHeapBytes": 368885840,
+          "sampledRssBytes": 647553024,
+          "currentConsumer": "entry:739856ea369be07a5c73e18d7b5d0c78f406df01ea8431c4a4394015f0b7f93e"
+        },
+        "derivationExhausted": true,
+        "coverage": {
+          "status": "partial",
+          "reason": "unsupported-mapping",
+          "scope": "owner relationship traversal; full association materialization not performed"
+        },
+        "relations": 28812,
+        "relationsBytes": 38567905,
+        "relationsNormalizedBytes": 2060366,
+        "rawFactsBytes": 5618861,
+        "factsAndRelationsBytes": 44186789,
+        "factsAndRelationsNormalizedBytes": 4470853,
+        "predictedEmissionAttempts": 983012,
+        "predictionScope": "exact site/helper expansion count from owner relations, before identity deduplication; not a completed materialization oracle",
+        "focusedTraversals": [
+          {
+            "consumer": "entry:7e43ce0d2abc6066c5299a9de234c3f176fe12bee7568b39c20fb304931be1ae",
+            "kind": "middleware",
+            "elapsedMs": 8.836551000000327,
+            "relations": 212,
+            "counters": {
+              "work": 7830,
+              "consumersStarted": 1,
+              "consumersFinished": 1,
+              "graphs": 1,
+              "graphNodes": 510,
+              "graphEdges": 637,
+              "emissionAttempts": 0,
+              "duplicates": 0,
+              "maxPathHops": 0,
+              "relations": 212
+            },
+            "projectionMs": 912.4830170000023,
+            "oracleMs": 667.287733000001,
+            "associations": 6843,
+            "coverage": {
+              "status": "partial",
+              "observed": 6843,
+              "expected": null,
+              "reason": "unsupported-mapping"
+            },
+            "semanticParity": true
+          },
+          {
+            "consumer": "entry:468901fbbc8084a5d3390cde94a652e92ba88f9d79930d88f31032f5b8902065",
+            "kind": "route",
+            "elapsedMs": 4.8871929999986605,
+            "relations": 54,
+            "counters": {
+              "work": 7485,
+              "consumersStarted": 1,
+              "consumersFinished": 1,
+              "graphs": 1,
+              "graphNodes": 510,
+              "graphEdges": 515,
+              "emissionAttempts": 0,
+              "duplicates": 0,
+              "maxPathHops": 0,
+              "relations": 54
+            },
+            "projectionMs": 355.3817310000013,
+            "oracleMs": 450.4015699999982,
+            "associations": 2328,
+            "coverage": {
+              "status": "complete",
+              "observed": 2328,
+              "expected": 2328,
+              "reason": null
+            },
+            "semanticParity": true
+          },
+          {
+            "consumer": "entry:739856ea369be07a5c73e18d7b5d0c78f406df01ea8431c4a4394015f0b7f93e",
+            "kind": "error",
+            "elapsedMs": 3.019445000001724,
+            "relations": 1,
+            "counters": {
+              "work": 7439,
+              "consumersStarted": 1,
+              "consumersFinished": 1,
+              "graphs": 1,
+              "graphNodes": 510,
+              "graphEdges": 637,
+              "emissionAttempts": 0,
+              "duplicates": 0,
+              "maxPathHops": 0,
+              "relations": 1
+            },
+            "projectionMs": 1.2195629999987432,
+            "oracleMs": 4.323485000000801,
+            "associations": 14,
+            "coverage": {
+              "status": "partial",
+              "observed": 14,
+              "expected": null,
+              "reason": "unsupported-mapping"
+            },
+            "semanticParity": true
+          }
+        ],
+        "traversalCoverage": {
+          "status": "partial",
+          "observed": 0,
+          "expected": null,
+          "reason": "unsupported-mapping"
+        },
+        "bindingQueries": 10,
+        "bindingsWithAuthoredSites": 9,
+        "bindingConsumerCounts": {
+          "binding:073367072db212bd35301f1d76fa85808d2b43a7985201fc95371b8bfb89f22a": 210,
+          "binding:0b512c9234b12cb47baa5de752614fcf11ac0cbacf59acbc7e6edaf128ec5bbd": 212,
+          "binding:292244db90341bd22ebacb9207f6174edfd6f435444279fb236152a6c7af4a5e": 208,
+          "binding:30c55d6a23b36ed8d5619c0a5689357be494813a52b504d5e0cc536b6971a781": 0,
+          "binding:46c25f491d32b724f54a03e01842d9ac9eba5af694d4db1880a0cab26ce7d1ac": 141,
+          "binding:4cad8427c130ae6df8e85c296d292dcab9c4eed3330d01f3dd83dd57a9e7a7eb": 114,
+          "binding:586c996577a3a83f960dc87d42f7a8b524c464749087f816188b932c6479dda0": 212,
+          "binding:74d9662bf978c4c098fafa7e0a55e6ed9639a47438194025ef53c84129cce797": 208,
+          "binding:93d509349c7aed15a7c1b5efd29cf634562efb51b11c114a39522ae74118229a": 211,
+          "binding:b50d0541a20a2c479bfd01dbd0a4758bddb37872ce937db51cbc0a11c063e6a2": 212
+        },
+        "semanticParity": "selected consumers only; whole-input oracle incomplete",
+        "peakRssKiB": 728200,
+        "sampledHeapPeakBytes": 368885840
+      },
+      "id": "catalog-fresh-relations-focused-1",
+      "receiptSha256": "3661373e6dbfe221b1fced1e19cbbf9d762a3d3cca897a847872780edc02cd07",
+      "disposition": "retained; fresh source-pinned comparison",
+      "implementationCheckpoint": "c18acc70fded0695ea22ef732b90e1e7fadca8d4"
     }
   ],
   "developmentAttempts": [
@@ -3990,6 +5508,20 @@
       "status": "passed",
       "tasks": 3,
       "assertions": 201
+    },
+    {
+      "attempt": "fresh Catalog shell clone after read approval",
+      "status": "failed",
+      "reason": "No shell Git credentials; approved GitHub connector retrieved the pinned tree and 270 blobs instead. Every blob hash verified before and after the build."
+    },
+    {
+      "attempt": "fresh Catalog build and report capture",
+      "status": "passed",
+      "catalogRevision": "54a5bb5876f228a5778b66fb9beb2b2007cf5d18",
+      "pulseRevision": "c18acc70fded0695ea22ef732b90e1e7fadca8d4",
+      "inputSha256": "82b628db399c2331f682b482b744d03ffc81f0e43ae37c6f3fa9091daacdef19",
+      "buildWallMs": 585501,
+      "captureWallMs": 38393
     }
   ],
   "sourceCommitMap": [

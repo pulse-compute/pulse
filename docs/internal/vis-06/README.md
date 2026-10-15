@@ -78,7 +78,7 @@ new implementation against this oracle and the accepted static semantics.
 Empty query arrays are never a non-use assertion; callers must retain input and
 traversal coverage. Relationships with no binding operation are retained too.
 
-## Input provenance and acceptance limitation
+## Input provenance
 
 Pulse baseline is `1c9874b464d48ef7d3d73beec11dbe411c84302e`; Node is v24.19.0.
 Receipts bind diagnostic source bytes, lockfile, input payload and derivation
@@ -88,23 +88,123 @@ mounts/helpers, conditional continuation, explicit error handling and HTTP/event
 It deliberately does not require combined error/event Wasm emission (the known
 separate #329 limitation). Binding values and predicates are not captured.
 
-Catalog is the retained VIS05 capsule: 255 registrations, 214 definitions,
-6,398 authored use sites and 141 helper calls. Its recorded recipe is Fastly
-Native, `experimental-native-bounded-size`, AssemblyScript 0.28.18. Its source
-revision/fingerprint are absent. Automatic approval review rejected reading the
-private Catalog source repository, so a fresh Catalog SHA/build comparison remains
-blocked. Historical-capture results must not be labeled fresh application results.
-No Catalog implementation changes belong in this PR.
+The fresh Catalog comparison pins source `54a5bb5876f228a5778b66fb9beb2b2007cf5d18`
+and API tree `94cfc2e5fd5fcfdc536e6d82ef61b8ea65e5496d`. All 268 API blobs plus the
+root package manifest and instructions matched their Git hashes before and after
+the build. Source access was explicitly approved after the initial rejection;
+the GitHub connector supplied the files because shell Git lacked credentials.
+No Catalog implementation or configuration was edited.
+
+The fresh build used Pulse `c18acc70fded0695ea22ef732b90e1e7fadca8d4`, whose
+production source is unchanged from the integration baseline above. API package
+resolution linked to this built workspace; Catalog's checked-in beta.5 package
+declarations were not rewritten. This is source-build diagnostic evidence, not
+installed-package qualification. Profile/host is Fastly Native; reporting is
+`info`; report capture is enabled; recipe is `experimental-native-bounded-size`;
+WAT and JSON-cache-arena elision are off. AssemblyScript is 0.28.18, json-as 1.5.0,
+and each compiler invocation retains a 600,000 ms timeout. Full sanitized compiler
+flags and toolchain versions are in the machine receipt.
+
+Build plus project resolution completed in 585,501 ms; validated artifact report
+collection took another 38,393 ms. The final Wasm is 2,840,977 bytes. The unmodified
+40,728,001-byte report has SHA-256
+`82b628db399c2331f682b482b744d03ffc81f0e43ae37c6f3fa9091daacdef19`.
+The collector currently leaves capsule revision/fingerprint fields null; the
+external receipt binds the report hash to the verified source and recipe instead.
+
+The retained historical VIS05 capsule is kept separately; its source revision is
+unknown. Both captures have 255 registrations, 214 definitions, 6,398 authored
+use sites and 141 helper calls, but their payload and analytics hashes differ.
+Historical results are not relabeled as fresh results. Neither payload nor private
+application source is committed here.
+
+To reproduce the fresh input, check out the pinned Catalog source and prepare the
+Pulse workspace dependencies/build. In the isolated API checkout, resolve
+`@pulse-compute/{pulse,runtime,crypto,jwt,s3,provider-node,provider-fastly}` to the
+corresponding Pulse workspace packages. From the Pulse repository root, run this
+with `CATALOG_API` set to the absolute Catalog `apps/api` path and `CAPTURE` to a
+new output file, then use that file with the diagnostic commands above:
+
+```sh
+node <<'JS'
+const fs = require('node:fs');
+const { resolveProject } = require('./wasm/packages/cli/src/project-config');
+const { buildProject } = require('./wasm/packages/cli/src/project-execution');
+const { collectArtifactReport } = require('./wasm/packages/cli/src/internal/report/retained');
+const project = resolveProject({ cwd: process.env.CATALOG_API, profile: 'fastly' });
+const built = buildProject(project, {
+  experimentalNativeBoundedSize: true, timeoutMs: 600000, emitWat: false
+});
+fs.writeFileSync(process.env.CAPTURE,
+  JSON.stringify(collectArtifactReport(built.files.manifest).capsule), { flag: 'wx' });
+JS
+```
+
+Build timings are retained in the report, so a new build need not reproduce its
+whole-payload hash. Verify source/recipe identity and each new input hash, then
+require limited-mode parity with that input's own canonical rows and coverage.
 
 ## Findings
 
 The machine record is [measurements.json](./measurements.json). It retains all
-13 attempted measurement runs, including two timed-out exhaustive experiments
+16 attempted measurement runs, including three timed-out exhaustive experiments
 and superseded watchdog/layout-of-measurement attempts. Development failures and
 their corrections are listed separately. Published source checkpoints `4eecb1b` and `c546ec0` preserve earlier diagnostic
 implementations. `sourceCommitMap` binds local evidence commits to identical
 published trees; worker hashes bind measured uncommitted diagnostic bytes. No
 large Catalog payload is committed.
+
+### Fresh source-pinned comparison
+
+All three fresh runs used the same new report and unchanged diagnostic code at
+`c18acc70`. The external budget remains 60 seconds, 1,536 MiB RSS and 1,024 MiB V8
+heap per run, including input decoding and validation.
+
+| Mode | Observed result | Derivation | External peak RSS |
+| --- | --- | ---: | ---: |
+| Limited | Exact baseline parity: 10,000 rows, 7 consumers, 6,384 sites; row cap | 909.91 ms | 655.5 MiB |
+| Unrestricted | **Incomplete at 60 seconds**; at least 392,379 emission attempts; 132/255 consumer iterations finished | No terminal derivation time | 657.0 MiB |
+| Owner relations with focused queries | 28,812 relations; all 255 iterations finished; static coverage remains partial | 213.68 ms | 688.8 MiB including validation and focused oracles |
+
+The fresh limited run again covers only 3 consumers with named-binding rows,
+9,438 consumer/site pairs and 330 paths, with 562 additional path rows. It reaches
+the row ceiling at 21,474 work steps and 44 hops. Identity/deduplication takes
+863.60 ms (95% of derivation); graph construction takes 6.93 ms, traversal self
+time 3.10 ms, expansion self time 16.63 ms and sorting 15.19 ms. Input validation
+takes 14.15 s, normalization 1.46 s, raw encoding 182 ms, normalized encoding
+879 ms, stringification 35 ms and initial viewer-model construction 51 ms.
+
+The fresh unrestricted run observes 516,533 work steps, 72-hop witnesses and no
+duplicate IDs before its last progress event. Time, not RSS, stops it. Emission
+attempts are a lower bound; full unique-row count and full materialized size are
+still unknown. This meets the investigation's explicit watchdog stop condition.
+Different progress totals between runs are not a capacity or speed comparison
+on this shared host.
+
+The fresh relationship joins again predict 983,012 pre-deduplication expansion
+attempts. Three selected consumers match their entire focused canonical oracle
+row lists, including IDs, paths, lanes and uncertainty:
+
+| Consumer | Relations | Rows | Raw traversal | Projection | Focused oracle |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Highest expansion middleware | 212 | 6,843 | 8.84 ms | 912.48 ms | 667.29 ms |
+| Median route | 54 | 2,328 | 4.89 ms | 355.38 ms | 450.40 ms |
+| Error registration | 1 | 14 | 3.02 ms | 1.22 ms | 4.32 ms |
+
+Projection is not consistently faster than a focused canonical derivation; the
+benefit under investigation is avoiding eager expansion across every consumer.
+All 10 binding-inventory queries take 3.25 ms after a 37.42 ms index build; 9
+bindings have authored sites. The same partial-evidence caveats apply.
+
+The fresh truncated report is 40,728,001 raw / 7,111,986 normalized bytes. Its raw
+analytics facts excluding rows are 5,618,861 bytes; facts plus all owner relations
+are 44,186,789 raw / 4,470,853 normalized bytes. The owner table alone remains
+38,567,905 raw / 2,060,366 normalized bytes. These shapes have different coverage
+and contents; they are not a same-coverage savings comparison. Sampled heap peaks
+are 471.0 MiB for limited mode and 351.8 MiB for focused relations; external RSS
+includes input validation, retained report data and later queries.
+
+### Historical capture and fixture results
 
 | Input / mode | Observed result | Derivation | External peak RSS |
 | --- | --- | ---: | ---: |
@@ -206,10 +306,9 @@ oracle that can be evaluated in bounded consumer partitions. Per-consumer oracle
 execution avoids retaining the entire Cartesian expansion and is the next
 measured approach; it is not claimed as implemented here.
 
-The fresh Catalog source SHA/build remains a separate acceptance blocker. Obtain
-authorized access to `nw/catalog`, pin its exact source and recipe, regenerate
-the production baseline, and repeat these measurements before treating the
-historical findings as current-application qualification.
+The fresh source/build comparison now confirms this discovery recommendation.
+It closes the source-access blocker, not whole-Catalog equivalence or application
+qualification. VIS-07 still owns the semantic and compatibility work above.
 
 ## Validation
 
@@ -222,4 +321,5 @@ historical findings as current-application qualification.
 - The diagnostic is directly selectable and deliberately excluded from normal
   functional/release profiles. No new heavyweight gate is added.
 - Full qualification, browser/layout gates, installed acceptance and release
-  seal are deferred. Fresh Catalog source qualification is blocked, not passed.
+  seal are deferred. Fresh Catalog source-build comparison completed with exact
+  limited parity, an explicit unrestricted timeout and selected-consumer parity.
