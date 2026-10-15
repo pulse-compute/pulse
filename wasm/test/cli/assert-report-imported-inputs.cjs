@@ -50,7 +50,10 @@ try {
   const artifact = report.collectArtifactReport(built.files.manifest);
   assert.equal(current.currentSnapshotMatched, true);
   assert.deepEqual(current.capsule.analytics, artifact.capsule.analytics);
-  assert.ok(artifact.capsule.analytics.associations.length > 0);
+  assert.equal(artifact.capsule.analytics.version, 'pulse.report-analytics.v2');
+  assert.equal(Object.hasOwn(artifact.capsule.analytics, 'associations'), false);
+  const queries = require(path.join(cli, 'internal/report/relationship-queries')).create(artifact.capsule.analytics);
+  assert.ok(artifact.capsule.analytics.registrations.some(row => queries.route(row.id).rows.length > 0));
   // Current mode admits only the bounded configuration parser, never a source
   // compiler/provider; artifact mode admits no compiler at all.
   const script = `const M=require('node:module'),load=M._load;M._load=function(name,...args){if((/compiler/.test(name)&&!(process.argv[2]==='current'&&name==='@pulse-compute/wasm-compiler/project-config-compiler'))||(name==='typescript'&&process.argv[2]!=='current')||/provider-|project-config$|project-execution|child_process|^(node:)?(http|https|net)$/.test(name))throw Error('Unexpected work: '+name);return load.call(this,name,...args);};const fs=require('node:fs');for(const key of ['writeFileSync','appendFileSync','unlinkSync','renameSync','mkdirSync','rmSync'])fs[key]=()=>{throw Error('Unexpected write: '+key)};const r=require(${JSON.stringify(path.join(cli, 'internal/report/retained'))});process.stdout.write(JSON.stringify((process.argv[2]==='current'?r.collectProjectReport({cwd:process.argv[1]}):r.collectArtifactReport(process.argv[1])).capsule.analytics));`;
@@ -96,7 +99,7 @@ try {
   const oversized = structuredClone(recorded.records); oversized.find(r => r.kind === 'source').bytes = 256 * 1024 * 1024 + 1;
   assert.throws(() => readSources(directory, oversized, workspace), { code: 'REPORT_LIMIT' });
   const inventoryFile = path.join(built.outDir, report.INVENTORY_FILE), inventory = fs.readFileSync(inventoryFile);
-  const tampered = structuredClone(require(path.join(cli, 'internal/report/capsule')).parseCapsule(inventory)); tampered.analytics.associations[0].useSiteId = 'missing';
+  const tampered = structuredClone(require(path.join(cli, 'internal/report/capsule')).parseCapsule(inventory)); tampered.analytics.useSites[0].ownerId = 'missing';
   fs.writeFileSync(inventoryFile, JSON.stringify(tampered)); reject(() => report.collectArtifactReport(built.files.manifest));
   fs.writeFileSync(inventoryFile, inventory);
   fs.renameSync(file, file + '.saved'); reject(() => report.collectProjectReport({ cwd: directory })); fs.renameSync(file + '.saved', file);

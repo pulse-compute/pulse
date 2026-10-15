@@ -8,7 +8,7 @@ const { renderReport } = require('../../packages/cli/src/internal/report/viewer'
 const { serializeCapsule, parseCapsule } = require('../../packages/cli/src/internal/report/capsule');
 const { projectHandlerTopology } = require('../../packages/cli/src/internal/report/handler-topology');
 const { setup } = require('../support/report-analytics-fixture.cjs');
-function fixture(variant='http', optimization='default', edit) {
+function fixture(variant='http', optimization='default', edit, graph=false) {
   const root=path.resolve(__dirname,'../../.test-results');fs.mkdirSync(root,{recursive:true});
   const directory=fs.mkdtempSync(path.join(root,'an9-05-viewer-'));
   try {
@@ -18,7 +18,8 @@ function fixture(variant='http', optimization='default', edit) {
     const prepared=require('../../packages/cli/src/project-execution').compileNativeProjectInMemory(project,{emitWat:false,nativeOptimization:optimization==='default'?undefined:optimization});
     const wasm=prepared.native.manifest.wasm;
     const artifact={id:'artifact:'+wasm.sha256,...wasm,stage:'final',target:'portable-native-wasm'};
-    return require('../../packages/cli/src/internal/report/inventory').collectInventory(project,prepared,[artifact],artifact.id,optimization);
+    const value=require('../../packages/cli/src/internal/report/inventory').collectInventory(project,prepared,[artifact],artifact.id,optimization);
+    return graph?value:f.createCapsule({...value,analytics:require('../support/report-legacy-analytics.cjs')(value.analytics)});
   } finally { fs.rmSync(directory,{recursive:true,force:true}); }
 }
 module.exports = ({renderedTree}) => {
@@ -146,3 +147,5 @@ module.exports = ({renderedTree}) => {
 };
 
 module.exports.fixture = fixture;
+
+module.exports.graphFixture=(variant,optimization,edit)=>fixture(variant,optimization,edit,true);

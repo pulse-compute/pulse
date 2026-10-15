@@ -35,7 +35,10 @@ function project(value, schema, document = schema) {
   schema = resolve(schema, document);
   if (schema.anyOf) return value === null ? null : project(value, schema.anyOf.find(s => s.type !== 'null'), document);
   if (schema.oneOf) {
-    const branch = schema.oneOf.find(s => s.properties?.kind?.const === value?.kind || s.properties?.kind?.enum?.includes(value?.kind));
+    const branch = schema.oneOf.map(s => resolve(s, document)).find(s =>
+      s.properties?.kind?.const === value?.kind && value?.kind !== undefined
+      || s.properties?.kind?.enum?.includes(value?.kind)
+      || s.properties?.version?.const === value?.version && value?.version !== undefined);
     if (!branch) fail('REPORT_SCHEMA');
     return project(value, branch, document);
   }

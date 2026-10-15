@@ -2826,6 +2826,16 @@
       "additionalProperties": false
     },
     "Analytics": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/AnalyticsV1"
+        },
+        {
+          "$ref": "#/$defs/AnalyticsV2"
+        }
+      ]
+    },
+    "AnalyticsV1": {
       "type": "object",
       "properties": {
         "version": {
@@ -3846,6 +3856,75 @@
         "conditional",
         "coverage",
         "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "AnalyticsV2": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "pulse.report-analytics.v2"
+        },
+        "handlers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnalyticsHandler"
+          },
+          "maxItems": 100000
+        },
+        "registrations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnalyticsRegistration"
+          },
+          "maxItems": 100000
+        },
+        "useSites": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnalyticsUseSite"
+          },
+          "maxItems": 100000
+        },
+        "helperCalls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnalyticsHelperCall"
+          },
+          "maxItems": 100000
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "handlers": {
+              "$ref": "#/$defs/Coverage"
+            },
+            "registrations": {
+              "$ref": "#/$defs/Coverage"
+            },
+            "useSites": {
+              "$ref": "#/$defs/Coverage"
+            },
+            "helperCalls": {
+              "$ref": "#/$defs/Coverage"
+            }
+          },
+          "required": [
+            "handlers",
+            "registrations",
+            "useSites",
+            "helperCalls"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "version",
+        "handlers",
+        "registrations",
+        "useSites",
+        "helperCalls",
+        "coverage"
       ],
       "additionalProperties": false
     }

@@ -33,7 +33,7 @@ function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,
     }
     consumers.forEach((g,i)=>node(24,60+i*96,consumerName(g),g.mount?m.registrationLabel(m.registrationById.get(g.mount)):'Application root',g.registrations.length+' instances · '+g.rows.length+' association rows',{kind:'consumer',key:g.key}));
     node(365,middle-38,projection.binding.name,projection.binding.kind+' · '+projection.binding.resolution,projection.sites.length+' use sites · '+projection.consumerCount+' consumers',{kind:'binding',key:projection.binding.id});
-    ops.forEach((g,i)=>node(700,60+i*96,g.name,g.sites.length+' distinct authored use sites',g.rows.length+' retained association rows',{kind:'operation',key:g.name}));
+    ops.forEach((g,i)=>node(700,60+i*96,g.name,g.sites.length+' distinct authored use sites',g.rows.length+' association rows',{kind:'operation',key:g.name}));
     highlight(local.pin);
     viewport=el('div',{id:'binding-viewport',class:'atlas-viewport',tabindex:0,'aria-label':'Scrollable binding graph. Drag empty space to pan.'},graph);
     let drag;viewport.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0||e.target.closest('.atlas-node'))return;drag={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};viewport.setPointerCapture(e.pointerId);});
@@ -47,9 +47,9 @@ function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,
     const pageCount=Math.max(1,Math.ceil(rows.length/20));local.evidencePage=Math.min(local.evidencePage,pageCount-1);
     const prev=button('Previous evidence',()=>{local.evidencePage--;render(host);host.querySelector('#binding-evidence-page').focus();}),next=button('Next evidence',()=>{local.evidencePage++;render(host);host.querySelector('#binding-evidence-page').focus();});prev.disabled=local.evidencePage===0;next.disabled=local.evidencePage+1>=pageCount;
     return el('aside',{class:'atlas-selection surface panel-pad',id:'binding-inspector'},el('div',{class:'eyebrow'},'CONNECTION EVIDENCE'),el('h3',{id:'binding-inspector-title',tabindex:-1,class:'record-text'},title),
-      el('p',{class:'small-note'},'Static associations, not execution or effective permissions. Counts are retained rows and distinct use sites, not request counts.'),
+      el('p',{class:'small-note'},'Static associations, not execution or effective permissions. Counts are projected rows and distinct use sites, not request counts.'),
       c?el('div',{},el('h4',{},'Exact registration instances'),...c.registrations.map(r=>el('p',{},button('Reveal '+m.registrationLabel(r),()=>onRouting(r.id),'text-button record-text'),registrationLink(r.id)))):null,
-      el('p',{class:'small-note'},rows.length+' retained association rows · '+sites.length+' distinct use sites'),
+      el('p',{class:'small-note'},rows.length+' association rows · '+sites.length+' distinct use sites'),
       el('details',{class:'details-block'},el('summary',{},'Authored operations and sources'),...sites.slice(0,20).map(s=>el('p',{class:'record-text'},useSiteLink(s.id),' · '+s.operation+' · '+m.authoredSource(s.source))),sites.length>20?el('p',{class:'small-note'},'First 20 sites shown here. All associated sites are linked from the paged evidence below; the binding inventory lists all authored sites.'):null),
       projection?el('a',{href:'#bindings/'+[...m.bindings.keys()].indexOf(projection.binding.id)},'Open full binding inventory'):null,
       ...rows.slice(local.evidencePage*20,(local.evidencePage+1)*20).map(associationDetail),
@@ -63,11 +63,11 @@ function createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,
     const search=el('input',{id:'binding-search',type:'search',value:local.query,placeholder:'Find a binding…','aria-label':'Find a binding',on:{input:e=>{local.query=e.target.value;const caret=e.target.selectionStart;render(host);const input=host.querySelector('#binding-search');input.focus();input.setSelectionRange(caret,caret);}}});
     const picker=el('div',{class:'binding-picker','aria-label':'Logical bindings'},inventory.filter(b=>(b.name+' '+b.kind).toLowerCase().includes(local.query.toLowerCase())).map(b=>{const btt=button(b.name+' · '+b.kind,()=>{local.binding=b.id;local.pin=null;local.page=0;local.evidencePage=0;render(host);host.querySelector('#binding-summary').focus();});btt.setAttribute('aria-pressed',String(local.binding===b.id));btt.setAttribute('data-binding-id',b.id);return btt;}));
     const select=el('select',{id:'binding-select','aria-label':'Logical binding',on:{change:e=>{local.binding=e.target.value;local.pin=null;local.page=0;local.evidencePage=0;render(host);host.querySelector('#binding-select').focus();}}},inventory.map(b=>el('option',{value:b.id,selected:local.binding===b.id},b.name+' · '+b.kind)));
-    const coverage=m.analyticsCoverage('associations'),scope=m.registrationById.get(local.scope);
-    const coverageNote=el('p',{id:'binding-coverage',class:'binding-coverage'},el('strong',{},coverage.status==='complete'?'Retained association data':coverage.status==='partial'?'Partial association data':'Association data unavailable'),' · '+m.coverageText(coverage));
+    const coverage=projection?.coverage||m.analyticsCoverage('associations'),scope=m.registrationById.get(local.scope);
+    const coverageNote=el('p',{id:'binding-coverage',class:'binding-coverage'},el('strong',{},coverage.status==='complete'?'Static association data':coverage.status==='partial'?'Partial association data':'Association data unavailable'),' · '+m.coverageText(coverage));
     const main=el('div',{class:'atlas-main surface panel-pad'},el('div',{class:'binding-desktop-picker'},el('label',{class:'search-box'},search),picker),el('label',{class:'binding-mobile-picker'},'Binding',select),
       el('div',{class:'atlas-crumbs'},el('span',{},scope?'Scope: '+m.registrationLabel(scope):'Scope: Application'),scope?button('All consumers',()=>{local.scope=null;local.pin=null;local.page=0;local.evidencePage=0;render(host);}):null),
-      el('p',{id:'binding-summary',tabindex:-1,class:'small-note'},projection?projection.consumerCount+' distinct consumers · '+projection.sites.length+' distinct authored use sites · '+projection.rows.length+' retained association rows':'No logical bindings recorded.'),
+      el('p',{id:'binding-summary',tabindex:-1,class:'small-note'},projection?projection.consumerCount+' distinct consumers · '+projection.sites.length+' distinct authored use sites · '+projection.rows.length+' association rows':'No logical bindings recorded.'),
       el('details',{class:'binding-reading-note'},el('summary',{},'Coverage and unresolved sites'),el('p',{class:'small-note'},'Use-site coverage: '+m.coverageText(m.analyticsCoverage('useSites'))+' · '+m.useSites.filter(s=>!s.binding.bindingId&&s.binding.state!=='not-applicable').length+' sites have unresolved binding identity; they cannot be drawn as named resources.')));
     if(projection){
       if(!projection.rows.length)main.append(el('p',{class:'small-note'},'No recorded association in this scope. Missing evidence does not mean no dependencies.'));

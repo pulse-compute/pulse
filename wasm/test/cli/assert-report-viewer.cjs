@@ -120,6 +120,7 @@ const tree=renderedTree(richCapsule);
 require('./report-comparison-viewer-cases.cjs')();
 require('./report-identity-viewer-cases.cjs')({renderedTree});
 require('./report-handler-viewer-cases.cjs')({renderedTree});
+require('./report-relationship-viewer-cases.cjs')({renderedTree});
 require('./report-layout-viewer-cases.cjs')({renderedTree});
 require('./report-build-cases.cjs').viewerCases({renderedTree});
 require('./report-helper-viewer-cases.cjs')({renderedTree});

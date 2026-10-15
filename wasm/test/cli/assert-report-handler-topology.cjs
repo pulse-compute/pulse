@@ -43,10 +43,11 @@ function report(project, prepared, optimization = 'default') {
 }
 function assertTopology(value, { event = false, error = false } = {}) {
   const a = value.analytics, registrations = a.registrations;
-  assert.equal(a.version, 'pulse.report-analytics.v1');
+  assert.equal(a.version, 'pulse.report-analytics.v2');
+  assert.equal(Object.hasOwn(a, 'associations'), false);
   assert.equal(a.coverage.handlers.status, 'complete');
   assert.equal(a.coverage.registrations.expected, value.entries.length);
-  require('./assert-report-handler-associations.cjs').assertFixture(a, { event, error });
+  require('./assert-report-handler-associations.cjs').assertFixture(require('../support/report-legacy-analytics.cjs')(a), { event, error });
   assert.equal(a.coverage.useSites.status, 'complete');
   assert.equal(a.coverage.helperCalls.status, 'complete');
   const helper = a.handlers.find(h => h.kind === 'helper');
@@ -98,6 +99,7 @@ function assertTopology(value, { event = false, error = false } = {}) {
   assert.ok(Object.isFrozen(a.handlers[0].source));
 }
 function negativeCases(value) {
+  value = capsule.createCapsule({...value, analytics:require('../support/report-legacy-analytics.cjs')(value.analytics)});
   let cases = 0;
   const reject = edit => { const copy = structuredClone(value); edit(copy); assert.throws(() => capsule.createCapsule(copy)); cases++; };
   reject(v => v.analytics.handlers.push(v.analytics.handlers[0]));
@@ -281,6 +283,7 @@ async function main() {
         if (!negative) {
           negative = negativeCases(value);
           const old = structuredClone(value);
+          old.analytics = require('../support/report-legacy-analytics.cjs')(old.analytics);
           for (const row of old.analytics.registrations) delete row.control;
           old.analytics.associations = []; old.analytics.coverage.associations = { status: 'unavailable', observed: 0, expected: null, reason: 'not-recorded' };
           const an902 = capsule.serializeCapsule(capsule.createCapsule(old));
@@ -320,7 +323,7 @@ async function main() {
     assert.equal(leafCall.length, 1, 'one authored call survives mount expansion');
     assert.deepEqual(leafCall[0].registrationIds, leaves.map(r => r.id).sort());
     for (const leaf of leaves) {
-      const helperRows = nestedReport.analytics.associations.filter(r => r.consumerRegistrationId === leaf.id && r.via.at(-1).id === leafCall[0].id);
+      const helperRows = [...require('../../packages/cli/src/internal/report/relationship-queries').create(nestedReport.analytics).route(leaf.id).rows].filter(r => r.via.at(-1).id === leafCall[0].id);
       assert.ok(helperRows.length > 0);
       assert.ok(helperRows.every(r => JSON.stringify(r.via) === JSON.stringify([
         ...leaf.mountPath.map(id => ({ kind: 'mount', id })), { kind: 'direct', id: leaf.id }, { kind: 'helper', id: leafCall[0].id }

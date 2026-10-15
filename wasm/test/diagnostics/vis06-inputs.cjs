@@ -27,7 +27,7 @@ export default app;
     bindings.push({ id, name: ref.canonicalId, kind: ref.bindingKind });
     references.push({ ...ref, id: 'reference:' + sha256(`${ref.bindingKind}:${ref.canonicalId}`), targetId: id });
   }
-  const analytics = projectHandlerTopology(topology, references);
+  const analytics = require('../support/report-legacy-analytics.cjs')(projectHandlerTopology(topology, references));
   const entries = analytics.registrations.map(r => ({ id: r.id, canonicalId: r.canonicalId,
     order: r.order, handlerId: r.handlerId, kind: r.kind === 'mount' ? 'other' : r.kind,
     name: r.match.value.eventType, flow: { nextEntryId: r.flow.next, childEntryId: r.flow.child,
