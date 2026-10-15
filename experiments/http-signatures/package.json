@@ -1,1 +1,11 @@
-The requested file reference is not currently visible. Use files.search or files.list to rediscover the file, then retry with a returned ref_id or file_id.
+{
+  "name": "@pulse-compute/http-signatures",
+  "version": "0.0.0-development",
+  "private": true,
+  "type": "module",
+  "description": "Experimental bounded RFC 9421 HTTP Message Signatures protocol package (JS reference)",
+  "exports": { ".": "./src/index.js" },
+  "scripts": { "test": "node --test test/*.test.js" },
+  "license": "Apache-2.0",
+  "engines": { "node": ">=22" }
+}
