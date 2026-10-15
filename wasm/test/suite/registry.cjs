@@ -52,6 +52,9 @@ const tasks = Object.freeze({
   'cli-report-handler-associations': nodeTask('test/cli/assert-report-handler-associations.cjs', {
     timeoutMs: 60000, description: 'AN9-03 bounded contextual associations, scope, explicit continuations, lanes and unknowns'
   }),
+  'vis06-association-diagnostic': nodeTask('test/diagnostics/assert-vis06-associations.cjs', {
+    timeoutMs: 60000, description: 'VIS-06 isolated association instrumentation, query parity and failed watchdog receipts'
+  }),
   'cli-report-handler-topology': nodeTask('test/cli/assert-report-handler-topology.cjs', {
     evidence: 'native', scheduling: { compiler: true }, timeoutMs: 180000,
     description: 'AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison'
