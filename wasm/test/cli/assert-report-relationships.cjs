@@ -39,6 +39,21 @@ try {
     const partial=structuredClone(a);delete partial.registrations[0].control;
     for(const r of a.registrations)assert.deepEqual(sorted(create(partial).route(r.id).rows),instrument({unrestricted:true,focus:r.id}).derive(partial).rows);
   }
+  // Reader-admissible graph cardinality can still exhaust traversal work.
+  // Scope the reverse query to one entry so this checks the bound, not brute force.
+  {
+    const count=90000, complete=n=>({status:'complete',observed:n,expected:n,reason:null});
+    const large={handlers:[{id:'handler'}],useSites:[],helperCalls:[],
+      coverage:{handlers:complete(1),registrations:{status:'partial',observed:count,expected:null,reason:'not-recorded'},useSites:complete(0),helperCalls:complete(0)},
+      registrations:Array.from({length:count},(_,i)=>({id:'entry-'+i,handlerId:'handler',kind:'middleware',mountPath:[],
+        control:{state:'available',value:{pattern:null,normal:true,error:false,terminal:false,eligibility:false}},
+        match:{state:'available',value:{method:null}},flow:{next:i+1<count?'entry-'+(i+1):null,child:null}}))};
+    const bounded=create(large),result=bounded.entry('entry-0');
+    assert.equal(result.coverage.status,'partial');assert.equal(result.coverage.reason,'graph-budget-exhausted');
+    assert.equal(bounded.binding('unused',r=>r.id==='entry-0').coverage.reason,'graph-budget-exhausted','exhaustion takes precedence over upstream partial');
+    assert.equal(bounded.route('unknown').coverage.status,'unavailable');
+    assert.equal(bounded.route(undefined).coverage.status,'unavailable');
+  }
   const graph=graphFixture(),a=graph.analytics,q=create(a),model=createReportViewModel(graph);
   assert.equal(a.version,'pulse.report-analytics.v2');assert.ok(!('associations' in a));assert.ok(!('associations' in a.coverage));
   const saved=serializeCapsule(graph);assert.equal(serializeCapsule(parseCapsule(saved)),saved);

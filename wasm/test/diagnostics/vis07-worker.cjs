@@ -27,7 +27,8 @@ function run(input,send=()=>{}) {
   stage('validateInput',()=>isCapsule?capsule.validateCapsule(before):validateHandlerTopology(before));
   result.context=before.context||null;result.provenance=before.provenance;
   result.baseline={rawBytes:bytes.length,analyticsRawBytes:Buffer.byteLength(JSON.stringify(before.analytics)),
-    normalizedBytes:stage('baselineEncoding',()=>Buffer.byteLength(encoding.store(before))),coverage:before.analytics.coverage};
+    storedBytes:stage('baselineEncoding',()=>Buffer.byteLength(encoding.store(before))),
+    normalizedCandidateBytes:Buffer.byteLength(encoding.stringify(encoding.encode(before))),coverage:before.analytics.coverage};
   const compact=stage('factorFacts',()=>{
     const {associations,...facts}=before.analytics,{associations:associationCoverage,...coverage}=facts.coverage;
     return {...before,analytics:{...facts,version:'pulse.report-analytics.v2',coverage}};
@@ -36,8 +37,9 @@ function run(input,send=()=>{}) {
   // facts. Never mutate/rewrite the input capsule or reuse its evidence hash.
   const after=stage('createAndValidate',()=>isCapsule?capsule.createCapsule(compact):(validateHandlerTopology(compact),compact));
   const encoded=stage('compactEncoding',()=>encoding.store(after));
-  result.compact={rawBytes:Buffer.byteLength(JSON.stringify(after)),normalizedBytes:Buffer.byteLength(encoded),
-    analyticsRawBytes:Buffer.byteLength(JSON.stringify(after.analytics)),analyticsNormalizedBytes:Buffer.byteLength(encoding.store(after.analytics)),
+  result.compact={rawBytes:Buffer.byteLength(JSON.stringify(after)),storedBytes:Buffer.byteLength(encoded),storedRepresentation:JSON.parse(encoded).kind,
+    normalizedCandidateBytes:Buffer.byteLength(encoding.stringify(encoding.encode(after))),
+    analyticsRawBytes:Buffer.byteLength(JSON.stringify(after.analytics)),analyticsNormalizedBytes:Buffer.byteLength(encoding.stringify(encoding.encode(after.analytics))),
     evidenceHash:after.evidenceHash||null,coverage:after.analytics.coverage};
   if(isCapsule){
     stage('replay',()=>assert.equal(capsule.serializeCapsule(capsule.parseCapsule(encoded)),capsule.serializeCapsule(after)));

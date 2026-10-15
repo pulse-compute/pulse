@@ -1492,7 +1492,8 @@ The `cli-report-viewer` task covers this renderer alongside the single-capsule v
 
 ## Report handler topology
 
-The optional `analytics` block (`pulse.report-analytics.v1`) retains first-class
+The optional `analytics` block (new capture: `pulse.report-analytics.v2`; historical
+materialized reports: `pulse.report-analytics.v1`) retains first-class
 handler and linked-helper definitions plus distinct router registration/mount
 instances. AN9-01 projects these from the live canonical router topology after
 emission; no plan, executable source, runtime ID, recipe or Wasm bytes change.
@@ -1558,7 +1559,7 @@ transitive dependency internals are outside this explicit-control association
 basis. A terminal response therefore does not acquire an error-handler
 association merely because an operation might fail at runtime. Complete coverage
 means complete within this static basis, never complete request execution.
-Derivation is deterministic and bounded to 250,000 work steps, 10,000 rows and
+Historical v1 derivation is deterministic and bounded to 250,000 work steps, 10,000 rows and
 64 explanation hops; exhaustion preserves observed rows with partial
 `graph-budget-exhausted` coverage. It never interprets missing evidence as zero.
 
@@ -1568,6 +1569,33 @@ lane, conditionality, references or coverage even if an attacker recomputes a
 row ID. The optional control field and unavailable association table preserve
 AN9-01/02 capsule round trips. The older `routes.composition` rollup remains a
 bounded candidate view; it does not gain this association table's scope proof.
+
+VIS-07 captures only canonical facts in analytics v2: definitions, registration
+instances with control and mount/continuation links, authored sites and validated
+helper calls. It stores neither expanded associations nor an owner expansion
+table. The shared Node/offline-HTML relationship query engine derives entry,
+binding, exact-site and upstream-admission projections. Upstream admission does
+not depend on the existence or availability of operation sites, so middleware
+with no binding operation remains inspectable. Paths retain the same deterministic
+static witness semantics, not all runtime paths. Queried association IDs retain
+the v1 identity formula.
+
+Queries index facts and compiled patterns, share lazy continuation witness tails,
+and cache only the last entry result (plus one viewer binding projection).
+They retain the existing 250,000-work safety budget per entry query, with explicit
+partial exhaustion. V2 has no global materialized-row or 64-hop cutoff. Requested
+pages are bounded by the existing reader record bound; HTML displays 20 rows per
+page without changing query coverage. Missing evidence never becomes complete
+zero. The reader's other security bounds are unchanged. JSON exports retain the
+exact compact capsule independently of query/navigation state.
+
+V1 validation/replay, IDs, hashes, retained rows and exports remain unchanged.
+No replay silently upgrades old data. Semantic comparison compares v2 canonical
+facts and links, and separately records representation changes in metadata.
+Its retained association inventory is unavailable for v2; a v1-to-v2 row gap is
+unresolved, never a semantic deletion. Control and binding changes remain visible
+in registration and site comparisons. The internal query contract and pinned
+full-oracle performance evidence are in `docs/internal/vis-07/README.md`.
 
 The schema/projection/graph validator and retained inventory admit this block
 together; passive artifact replay does not load the compiler or provider. Older

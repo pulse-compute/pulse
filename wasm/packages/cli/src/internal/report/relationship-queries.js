@@ -46,7 +46,7 @@ const reportRelationships = (() => {
         if (x[i].kind === 'literal' && y[i].kind !== 'literal') contains = false;
       }
       return contains ? 'always' : 'sometimes';
-};
+    };
     let lastId, lastResult;
     function entry(id) {
       if (lastResult && lastId === id) return lastResult;
@@ -182,7 +182,7 @@ const reportRelationships = (() => {
       if (!available || !sitesAvailable) return {blocks:[],consumerIds:[],rows:sequence([]),coverage:unavailable()};
       for(const consumer of registrations) {
         if(!accept(consumer))continue;
-        const e=entry(consumer.id);reason ||= e.coverage.reason;
+        const e=entry(consumer.id);reason=e.coverage.reason==='graph-budget-exhausted'?e.coverage.reason:reason||e.coverage.reason;
         if(!e.relations.some(r=>owners.has(byId.get(r.owner).handlerId)||(calls.get(r.owner)||[]).some(c=>owners.has(c.calleeId))))continue;
         const b=blocks(consumer.id,s=>s.binding.bindingId===id,selectedByOwner).blocks;
         if(b.length){consumers.push(consumer.id);result.push(...b);}
@@ -193,7 +193,7 @@ const reportRelationships = (() => {
     function site(id) {
       const selectedByOwner=new Map(),result=[];let reason=upstreamPartial?'upstream-partial':null;
       if(!available||!sitesAvailable)return {rows:sequence([]),coverage:unavailable()};
-      for(const consumer of registrations){const b=blocks(consumer.id,s=>s.id===id,selectedByOwner);result.push(...b.blocks);reason ||= b.coverage.reason;}
+      for(const consumer of registrations){const b=blocks(consumer.id,s=>s.id===id,selectedByOwner);result.push(...b.blocks);reason=b.coverage.reason==='graph-budget-exhausted'?b.coverage.reason:reason||b.coverage.reason;}
       const rows=sequence(result);return {rows,coverage:coverage(rows.length,reason)};
     }
     return {entry,upstream,route,binding,site,blocks,sequence,registrationById:byId,
