@@ -279,10 +279,10 @@ function normalizeContribution(entry, definition) {
     || contribution.resourceLimits.macDataBytesMaximum !== 1024 * 1024
     || contribution.resourceLimits.hs256TagBytes !== 32
     || contribution.resourceLimits.byteOperationKeyBytesMaximum !== 8192
-    || contribution.resourceLimits.byteOperationDataBytesMaximum !== 32768
+    || contribution.resourceLimits.byteOperationDataBytesMaximum !== 65536
     || contribution.resourceLimits.digestDataBytesMaximum !== 2097152
     || contribution.resourceLimits.byteOperationOutputBytes !== 32
-    || contribution.resourceLimits.byteOperationFrameBytes !== 40992
+    || contribution.resourceLimits.byteOperationFrameBytes !== 73760
     || contribution.resourceLimits.digestFrameBytes !== 2097184
     || !contribution.resultCodes
     || contribution.resultCodes.valid !== 1
