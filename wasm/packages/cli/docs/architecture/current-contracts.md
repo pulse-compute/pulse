@@ -1591,7 +1591,8 @@ The `cli-report-viewer` task covers this renderer alongside the single-capsule v
 
 ## Report handler topology
 
-The optional `analytics` block (`pulse.report-analytics.v1`) retains first-class
+The optional `analytics` block (new capture: `pulse.report-analytics.v2`; historical
+materialized reports: `pulse.report-analytics.v1`) retains first-class
 handler and linked-helper definitions plus distinct router registration/mount
 instances. AN9-01 projects these from the live canonical router topology after
 emission; no plan, executable source, runtime ID, recipe or Wasm bytes change.
@@ -1657,7 +1658,7 @@ transitive dependency internals are outside this explicit-control association
 basis. A terminal response therefore does not acquire an error-handler
 association merely because an operation might fail at runtime. Complete coverage
 means complete within this static basis, never complete request execution.
-Derivation is deterministic and bounded to 250,000 work steps, 10,000 rows and
+Historical v1 derivation is deterministic and bounded to 250,000 work steps, 10,000 rows and
 64 explanation hops; exhaustion preserves observed rows with partial
 `graph-budget-exhausted` coverage. It never interprets missing evidence as zero.
 
@@ -1667,6 +1668,33 @@ lane, conditionality, references or coverage even if an attacker recomputes a
 row ID. The optional control field and unavailable association table preserve
 AN9-01/02 capsule round trips. The older `routes.composition` rollup remains a
 bounded candidate view; it does not gain this association table's scope proof.
+
+VIS-07 captures only canonical facts in analytics v2: definitions, registration
+instances with control and mount/continuation links, authored sites and validated
+helper calls. It stores neither expanded associations nor an owner expansion
+table. The shared Node/offline-HTML relationship query engine derives entry,
+binding, exact-site and upstream-admission projections. Upstream admission does
+not depend on the existence or availability of operation sites, so middleware
+with no binding operation remains inspectable. Paths retain the same deterministic
+static witness semantics, not all runtime paths. Queried association IDs retain
+the v1 identity formula.
+
+Queries index facts and compiled patterns, share lazy continuation witness tails,
+and cache only the last entry result (plus one viewer binding projection).
+They retain the existing 250,000-work safety budget per entry query, with explicit
+partial exhaustion. V2 has no global materialized-row or 64-hop cutoff. Requested
+pages are bounded by the existing reader record bound; HTML displays 20 rows per
+page without changing query coverage. Missing evidence never becomes complete
+zero. The reader's other security bounds are unchanged. JSON exports retain the
+exact compact capsule independently of query/navigation state.
+
+V1 validation/replay, IDs, hashes, retained rows and exports remain unchanged.
+No replay silently upgrades old data. Semantic comparison compares v2 canonical
+facts and links, and separately records representation changes in metadata.
+Its retained association inventory is unavailable for v2; a v1-to-v2 row gap is
+unresolved, never a semantic deletion. Control and binding changes remain visible
+in registration and site comparisons. The internal query contract and pinned
+full-oracle performance evidence are in `docs/internal/vis-07/README.md`.
 
 The schema/projection/graph validator and retained inventory admit this block
 together; passive artifact replay does not load the compiler or provider. Older
@@ -1732,6 +1760,68 @@ renders unavailable, not an empty or zero-use claim. Route, entry and binding vi
 link into authored analytics using capsule-local navigation. There is no new
 physical-size attribution. Semantic comparison is owned by AN9-06 below the
 report comparison contract.
+
+VIS-08 makes **Entry Points** and **Bindings** the two primary execution
+inventories in offline HTML. Entry Points combines exact HTTP route and event
+registration instances with explicit type labels and method/event filters; it
+is a view taxonomy, not a compiler schema change. Historical route and event
+entry records remain discoverable when authored analytics are unavailable.
+Bindings shows possible entry-point consumers, authored operations and their
+coverage, separately from retained inventory references. Dynamic/unknown binding
+sites remain accessible without being promoted to invented named bindings.
+HTTP size analysis, assets and sizes, evidence, authored records, all entry
+records and compiled helpers remain under **More report sections**. VIS-10
+promotes Schemas to primary navigation alongside Entry Points and Bindings. Simple
+inventory questions do not require opening the Explorer.
+
+Contextual **Explore execution** and **Explore consumers** actions open the
+Execution Explorer. Exact details and **Back to Explorer** preserve its live
+selection, scope, expanded set, mode, zoom, pan, and focus within the open report.
+A new explicit exploration replaces that return context; page reload recreates
+the focused context rather than persisting camera state. New entry-point, binding,
+authored-definition, registration, use-site and Explorer links use percent-encoded
+full capsule IDs. Historical numeric route, binding, entry, authored-record and
+atlas hashes continue resolving by their original capsule-local indices.
+Anonymous labels use retained source file:line and registration type/order/mount
+context, never a fabricated name or a display label as identity. No navigation
+change modifies the embedded capsule, evidence hash, exact export or comparison.
+
+VIS-09 opens the Explorer as a fixed, full-window surface inside the offline
+report, including on narrow screens. Compact controls leave the canvas available;
+no native fullscreen API is used. Selection inspects an exact registration;
+a separate **+** / **−** mount control reveals or collapses one neighborhood
+without changing selection. Center explicitly reveals selected ancestry; ordinary
+collapse does not reopen it. Containment curves and dashed binding-candidate
+curves retain their distinct static meanings. Route paths and event types lead
+compact labels; exact identities and source ranges remain in advanced details.
+
+One dismissible inspector shows type, relationship and coverage, with links to
+Entry Point, Binding and authored details. Table/help and scope/evidence panels
+replace that inspector while open. The routing table remains an optional paged
+alternative reaching every registration beyond the graph's 300-node display cap;
+binding graph and exact evidence pages retain all consumers and associations.
+Zoom never shrinks text below 65%; fit can therefore require scrolling. Search,
+keyboard node navigation, focus containment, Escape dismissal, close-to-origin
+focus restoration, pointer panning and modifier-wheel zoom work without network
+access. Browser evidence for Catalog and small/mixed capsules is recorded under
+`docs/internal/vis-09/`; these are presentation changes, with the strict CSP and
+complete exported capsule unchanged.
+
+VIS-10 adds a **Table | Explore** view switch to Entry Points and Bindings.
+Compact HTTP/event rows share verb colors and columns with binding consumer
+lists. Inventory search, type/method filters and table pagination remain in
+memory; switching back to an unchanged exploration resumes the live canvas.
+Contextual exploration remains available in record details. Exact recorded
+schema and binding references are distinct from possible binding associations;
+missing references never establish non-use.
+
+**Assets & sizes** groups embedded assets and response payloads with recorded
+entry/route associations by resource kind and media type. Group source-byte
+sums count recorded construction sites and may include duplicate payloads;
+unmeasured inputs remain explicit. These totals never imply retained Wasm size,
+exclusive route ownership or deletion savings. Unassociated text, schema and
+other technical resource records remain in a lazily rendered Advanced census.
+The physical artifact ledger, complete capsule and JSON export are unchanged.
 
 ## Providers, targets, and eligibility
 
