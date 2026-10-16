@@ -94,7 +94,7 @@ Resolved synchronous logging threshold after the flat profile override is applie
 
 ## Cryptographic requirements
 
-Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.8 package set.
+Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.9 package set.
 
 ### `pulse.crypto`
 

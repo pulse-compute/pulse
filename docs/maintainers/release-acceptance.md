@@ -8,7 +8,7 @@ pulse-doc-meta:end -->
 # Release packages and clean-consumer acceptance
 
 The current Beta candidate contains twenty publishable packages
-synchronized at version `1.0.0-beta.8`. The product-facing packages are:
+synchronized at version `1.0.0-beta.9`. The product-facing packages are:
 
 ```text
 @pulse-compute/pulse

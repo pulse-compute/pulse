@@ -1,6 +1,6 @@
 # Static Router authoring
 
-Use `Router` when an application has several method/path entry points or needs compile-time middleware. It is a static authoring marker from `@pulse-compute/runtime`, not a JavaScript runtime dispatcher. The shared async/static restrictions are defined in [Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.8/reference/handler-authoring/); target claims live in the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.8/reference/compatibility-matrix/).
+Use `Router` when an application has several method/path entry points or needs compile-time middleware. It is a static authoring marker from `@pulse-compute/runtime`, not a JavaScript runtime dispatcher. The shared async/static restrictions are defined in [Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.9/reference/handler-authoring/); target claims live in the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.9/reference/compatibility-matrix/).
 
 <!-- pulse-doc-source: examples/09-router-lowering/src/index.ts -->
 ```ts
@@ -210,7 +210,7 @@ A per-fetch `timeoutMs` header deadline enters the same error lane as
 `PULSE_FETCH_TIMEOUT`, with an explicit 504 when no error handler is registered.
 The whole-request `maxDurationMs` cutoff remains terminal. Invalid timeout options
 fail before dispatch with HTTP 400. See [fetch deadline semantics and resource
-ownership](https://pulsecompute.io/v1.0.0-beta.8/concepts/effects-and-continuations/#timeouts-have-two-scopes).
+ownership](https://pulsecompute.io/v1.0.0-beta.9/concepts/effects-and-continuations/#timeouts-have-two-scopes).
 These Fastly-specific recoveries do not change other targets' recovery catalogs.
 
 Recovery moves forward in registration order, including through mounted

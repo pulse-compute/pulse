@@ -31,7 +31,7 @@ change is implied. The option does not control JavaScript-target packaging.
 ## Install
 
 ```bash
-npm install @pulse-compute/provider-fastly@1.0.0-beta.8
+npm install @pulse-compute/provider-fastly@1.0.0-beta.9
 ```
 
 ## Configure a project
