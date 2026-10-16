@@ -408,23 +408,40 @@ async function runTask(name, task, options = {}) {
 
   options.onPhase?.('cleanup');
   let cleanupOutput = '';
+  let cleanupDiagnostic = '';
+  let workerCleanup = null;
   const cleanupCommand = options.cleanupCommand || {
     command: process.execPath,
     args: ['-e', `const { cleanupTaskOutputs } = require(process.argv[1]);
       const result = cleanupTaskOutputs(...JSON.parse(process.argv[2]));
+      const binding = JSON.parse(process.argv[3]);
+      if (binding) result.worker = require(process.argv[4]).cleanupWorker(binding);
       process.stdout.write(JSON.stringify(result));`, __filename,
-    JSON.stringify([taskTempRoot, diagnosticsDir, !childPassed && Boolean(options.runDir)])]
+    JSON.stringify([taskTempRoot, diagnosticsDir, !childPassed && Boolean(options.runDir)]),
+    JSON.stringify(options.workerCleanup || null), path.resolve(wasmRoot, '../scripts/release-parallel.cjs')]
   };
   const cleaned = await runCommand(cleanupCommand.command, cleanupCommand.args, {
     timeoutMs: options.cleanupTimeoutMs || 30000,
     ...(options.cleanupGraceMs === undefined ? {} : { termGraceMs: options.cleanupGraceMs, killGraceMs: options.cleanupGraceMs }),
-    onOutput(name, chunk) { if (name === 'stdout') cleanupOutput += chunk; }
+    onOutput(name, chunk) {
+      if (name === 'stdout') cleanupOutput += chunk;
+      else cleanupDiagnostic = (cleanupDiagnostic + chunk).slice(-16000);
+    }
   });
   if (cleaned.status !== 0 || cleaned.error || cleaned.timedOut) {
-    cleanupError = new Error(`cleanup failed or exceeded its deadline; retained task root: ${taskTempRoot}`);
+    cleanupError = new Error(`cleanup failed or exceeded its deadline; task root: ${taskTempRoot}${options.workerCleanup ? `; worker: ${options.workerCleanup.directory}` : ''}`);
+    if (cleanupDiagnostic) writeLine(`[pulsewasm] ${name}: cleanup diagnostic: ${cleanupDiagnostic.trim()}`);
   } else {
     try {
       const result = JSON.parse(cleanupOutput);
+      workerCleanup = result.worker || null;
+      if (options.workerCleanup) {
+        assert.equal(workerCleanup?.status, 'passed', 'Missing worker cleanup proof');
+        // Reconcile from the controller after the cleanup process exits. Its
+        // receipt alone cannot prove that no output reappeared at that boundary.
+        const finalCleanup = require('../../scripts/release-parallel.cjs').cleanupWorker(options.workerCleanup);
+        workerCleanup = { ...finalCleanup, removed: [...new Set([...workerCleanup.removed, ...finalCleanup.removed])].sort() };
+      }
       failureArtifacts = result.failureArtifacts;
       if (result.failureEvidenceError) failureEvidenceError = new Error(result.failureEvidenceError);
       if (failureArtifacts.length) writeLine(`[pulsewasm] ${name}: copied ${failureArtifacts.length} task-owned failure log(s) into the durable run report`);
@@ -455,7 +472,7 @@ async function runTask(name, task, options = {}) {
         ? 0
         : (typeof completed.code === 'number' ? completed.code || 1 : 1);
   const error = cleanupError
-    ? `temporary test root cleanup failed: ${cleanupError.message || cleanupError}`
+    ? `task cleanup failed: ${cleanupError.message || cleanupError}`
     : failureEvidenceError
       ? `failure evidence copy failed: ${failureEvidenceError.message || failureEvidenceError}`
       : spawnError
@@ -480,9 +497,12 @@ async function runTask(name, task, options = {}) {
     timedOut,
     interruptedBy,
     error,
-    cleanup: Object.freeze({ status: cleanupError ? 'failed' : 'passed' }),
+    cleanup: Object.freeze({ status: cleanupError ? 'failed' : 'passed',
+      ...(options.workerCleanup ? { worker: cleanupError
+        ? { ...workerCleanup, status: 'failed', retainedPath: options.workerCleanup.directory }
+        : workerCleanup } : {}) }),
     logPath: relativeToWasm(logPath),
-    retainedTaskRoot: cleanupError ? taskTempRoot : null,
+    retainedTaskRoot: cleanupError && fs.existsSync(taskTempRoot) ? taskTempRoot : null,
     diagnosticReports: Object.freeze(diagnosticReports),
     failureArtifacts: Object.freeze(failureArtifacts),
     processTree: Object.freeze(processTree),
@@ -607,6 +627,13 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
     running.set(name, { workspace, phase: store ? 'checkpoint' : 'execution' });
     refresh();
     await verifyInputs();
+    const context = recoveryConfig?.context;
+    const workerCleanup = workspace && context?.schemaVersion === 'pulse.release-recovery.v1' && context.scheduling ? {
+      root: context.candidate.repoRoot, candidate: context.candidate, directory: workspace.directory,
+      layoutFile: path.join(path.dirname(workspace.directory), 'layout.json'),
+      inputs: context.scheduling.workspaces.find(item => item.id === workspace.id)?.inputs
+    } : null;
+    if (workerCleanup) require('../../scripts/release-parallel.cjs').verifyWorker(workerCleanup);
     const reuse = store && (allowReuse(name, task) ? store.tryReuse(spec) : { reused: false, reason: 'task requires fresh development execution' });
     let result;
     if (reuse?.reused) {
@@ -620,7 +647,7 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       running.get(name).phase = 'execution';
       refresh();
       result = await runTask(name, task, {
-        ...taskRunOptions, runDir: state.runDir, sourceEnv: state.sourceEnv,
+        ...taskRunOptions, runDir: state.runDir, sourceEnv: state.sourceEnv, workerCleanup,
         taskEnv: { ...overrides.env, ...(workspace && recoveryConfig?.context.scheduling ? {
           PULSEWASM_SEAL_WORKER_LAYOUT: path.join(path.dirname(workspace.directory), 'layout.json')
         } : {}) }, signal: control.signal,

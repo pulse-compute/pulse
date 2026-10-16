@@ -282,10 +282,37 @@ each task to its worker. Failure or interruption cancels all active workers;
 successfully cleaned passed tasks retain their recovery proofs. Resuming requires
 the same worker/compiler/budget options and freshly recreated identical worker inputs.
 Changing the options invalidates reuse. Worker source and executable inputs are
-rechecked before terminal cleanup, then disposable checkouts are removed while
+checked before each task, during its supervised cleanup, and by the controller
+after the cleanup process exits. The controller reconciles any remaining untracked
+output and records the combined removed paths; a receipt alone cannot authorize a pass. Each scheduler
+slot owns its worker until cleanup finishes. The controller removes task-created,
+untracked files from that disposable checkout, then verifies a clean source tree
+and unchanged dependency/build bytes before recording a reusable pass. Cleanup
+receipts list removed paths. Tracked changes, modified executable inputs, foreign
+worktrees and cleanup failures remain failures; cleanup never resets source or
+touches a sibling task's outputs. Ignored dependency/build inputs are preserved.
+
+Worker source and executable inputs are also rechecked before terminal cleanup,
+then disposable checkouts are removed while
 attempt-local logs, receipts and artifacts remain. Foreign checkouts, remote
 workers and independently assembled reports are not eligible for this aggregate.
 Parallel execution requires reports and cannot use `--no-report`.
+
+A retry can remove ordinary output residue left in a controller-owned worker
+directory after Git has removed its registration. An unrelated repository, live
+or foreign Git marker, symlinked worker path or mismatched owner is rejected.
+On Linux, seal locks bind the owner process instance and procfs view as well as
+its PID, so PID reuse cannot masquerade as the prior controller. Unverifiable
+process views and outstanding child records from another PID namespace still
+require inspection; the lock is retained.
+
+Resume reports identify added, removed and changed environment **keys**, with
+values redacted, before expensive setup begins. Unknown and changed environment inputs still invalidate reuse;
+the diagnostics do not broaden the existing shell-variable exclusions. Older
+reports without per-key fingerprints can report only the category change.
+Proxy configuration remains bound: a managed runner that changes transport
+endpoints between invocations requires fresh proofs. Use a stable execution
+environment when planning to resume a long qualification.
 
 `--no-report` disables recovery recording and cannot resume an attempt. To remove
 expired terminal attempts without touching active work, run:

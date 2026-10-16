@@ -5,7 +5,8 @@ const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const { runSelectedTasks, runTask } = require('../../scripts/run-wasm-tests.cjs');
-const { workerCount, compilerCount, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker, scheduling } = require('../../../scripts/release-parallel.cjs');
+const { workerCount, compilerCount, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker, cleanupWorker, verifyWorker, scheduling } = require('../../../scripts/release-parallel.cjs');
+const recovery = require('../../../scripts/release-recovery.cjs');
 const { candidateIdentity } = require('../../../scripts/release-feature-acceptance.cjs');
 const { copySharedPack, recordPack, sharedPackEnv } = require('../../../scripts/release-shared-pack.cjs');
 
@@ -72,10 +73,109 @@ async function verifyParallel() {
     // A retry rebuilds private inputs at the same bound paths.
     prepareWorkspaces(candidateRoot, candidate, 2, 1536);
     assert.equal(fs.readFileSync(path.join(worker.directory, 'node_modules/external/index.js'), 'utf8'), 'dependency');
+    const binding = { root: candidateRoot, candidate, directory: worker.directory, layoutFile, inputs: recovery.inputIdentity(worker.directory) };
+    put(path.join(worker.directory, 'generated/retained.lock'), 'task residue');
+    put(path.join(sibling, 'active-sibling'), 'sibling output');
+    assert.throws(() => verifyWorker(binding), /clean candidate/);
+    const cleaned = cleanupWorker(binding);
+    assert.deepEqual(cleaned, { status: 'passed', removed: ['generated/retained.lock'] });
+    assert(fs.existsSync(path.join(sibling, 'active-sibling')), 'Never clean a sibling task');
+    assert.deepEqual(candidateIdentity(worker.directory), candidate);
+    fs.rmSync(path.join(sibling, 'active-sibling'));
+    assert.throws(() => cleanupWorker({ ...binding, directory: candidateRoot }), /Unowned/);
+    put(path.join(worker.directory, 'packages/one/source.js'), 'tracked mutation');
+    put(path.join(worker.directory, 'retain-on-failure'), 'evidence');
+    assert.throws(() => cleanupWorker(binding), /Worker candidate differs/);
+    assert(fs.existsSync(path.join(worker.directory, 'retain-on-failure')));
+    put(path.join(worker.directory, 'packages/one/source.js'), 'source');
+    put(path.join(worker.directory, 'node_modules/external/index.js'), 'changed dependency');
+    assert.throws(() => cleanupWorker(binding), /dependency\/build inputs changed/);
+    put(path.join(worker.directory, 'node_modules/external/index.js'), 'dependency');
+    cleanupWorker(binding);
+    const outside = path.join(root, 'outside-evidence'); put(outside, 'preserve');
+    fs.symlinkSync(outside, path.join(worker.directory, 'generated-link'));
+    cleanupWorker(binding);
+    assert.equal(fs.readFileSync(outside, 'utf8'), 'preserve');
+
+    // Exercise the production worker/checkpoint integration with lightweight
+    // subprocess fixtures, never real qualification claims or a sliced seal.
+    const names = require('../../../scripts/release-feature-acceptance.cjs').REQUIRED_TASKS;
+    const failureFlag = path.join(root, 'worker-late-failure');
+    const context = { schemaVersion: recovery.SCHEMA, candidate: { ...candidate, repoRoot: candidateRoot },
+      selections: { features: names }, scheduling: { ...layout,
+        workspaces: layout.workspaces.map(item => ({ ...item, inputs: recovery.inputIdentity(item.directory) })) } };
+    const fixtureTasks = Object.fromEntries(names.map((name, index) => [name, {
+      command: process.execPath, args: ['-e', `
+        const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process');
+        if(cp.execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim()) throw Error('Prior task leaked worker output');
+        fs.writeFileSync('generated.lock','owned residue');
+        if(${index === names.length - 1} && fs.existsSync(${JSON.stringify(failureFlag)})) process.exit(9);
+        fs.mkdirSync(process.env.PULSE_RELEASE_FEATURE_REPORT_DIR,{recursive:true});
+        fs.writeFileSync(path.join(process.env.PULSE_RELEASE_FEATURE_REPORT_DIR,${JSON.stringify(name + '.json')}),'fixture report');
+      `], evidence: 'unit', description: 'worker cleanup recovery fixture', timeoutMs: 5000,
+      scheduling: index === names.length - 1 ? { after: names.slice(0, -1) } : {}
+    }]));
+    async function managedAttempt(label, previous) {
+      const directory = path.join(root, label), artifacts = recovery.artifactPaths(directory);
+      const config = recovery.recoveryConfig({ directory, previousDirectory: previous?.directory,
+        context, artifacts, sharedPack: { proofId: 'fixture-pack' } }, 'features', names);
+      const state = { results: [], runDir: path.join(directory, 'runs'), sourceEnv: {} };
+      fs.mkdirSync(path.join(state.runDir, 'tasks'), { recursive: true });
+      await runSelectedTasks({ state, selection: { selected: names, requested: names }, recoveryConfig: config,
+        taskMap: fixtureTasks, workspaces: layout.workspaces });
+      return { state, directory };
+    }
+    put(failureFlag, 'fail');
+    const leaked = await managedAttempt('managed-failed');
+    assert.equal(leaked.state.results.filter(item => item.status === 'passed').length, names.length - 1);
+    assert.equal(leaked.state.results.at(-1).status, 'failed');
+    assert(leaked.state.results.every(item => item.cleanup.worker?.status === 'passed'));
+    assert(leaked.state.results.every(item => item.cleanup.worker.removed.includes('wasm/generated.lock')));
+    fs.rmSync(failureFlag);
+    const recovered = await managedAttempt('managed-resumed', leaked);
+    assert(recovered.state.results.every(item => item.status === 'passed'));
+    assert.equal(recovered.state.results.filter(item => item.execution === 'reused').length, names.length - 1);
+    assert.equal(recovered.state.results.at(-1).execution, 'executed');
+    assert.deepEqual(candidateIdentity(worker.directory), candidate);
+
+    // Reconcile residue still visible to the controller after a cleanup receipt.
+    const temporaryRootRecord = path.join(root, 'cleanup-fixture-root');
+    const falseReceipt = await runTask('worker-false-cleanup', { command: process.execPath,
+      args: ['-e', `const fs=require('node:fs'); fs.writeFileSync('late-output','residue');
+        fs.writeFileSync(${JSON.stringify(temporaryRootRecord)},process.env.PULSEWASM_TEST_TMP_ROOT);`],
+      evidence: 'unit', description: 'cleanup receipt verification fixture', timeoutMs: 5000 },
+    { cwd: path.join(worker.directory, 'wasm'), workerCleanup: binding,
+      cleanupCommand: { command: process.execPath, args: ['-e',
+        `const fs=require('node:fs'); fs.rmSync(fs.readFileSync(${JSON.stringify(temporaryRootRecord)},'utf8'),{recursive:true,force:true});
+        process.stdout.write(JSON.stringify({worker:{status:'passed',removed:[]},failureArtifacts:[]}));`] } });
+    assert.equal(falseReceipt.status, 'passed');
+    assert.equal(falseReceipt.cleanup.worker.status, 'passed');
+    assert.deepEqual(falseReceipt.cleanup.worker.removed, ['wasm/late-output']);
+    verifyWorker(binding);
+
+    // A failed cleanup is not recorded as a reusable task pass.
+    const changed = await runTask('worker-input-mutation', { command: process.execPath,
+      args: ['-e', "require('node:fs').writeFileSync('../packages/one/source.js','changed')"],
+      evidence: 'unit', description: 'tracked mutation fixture', timeoutMs: 5000 },
+    { cwd: path.join(worker.directory, 'wasm'), workerCleanup: binding });
+    assert.equal(changed.status, 'failed'); assert.equal(changed.cleanup.status, 'failed');
+    put(path.join(worker.directory, 'packages/one/source.js'), 'source');
     cleanupWorkspaces(candidateRoot, candidate.sourceTree, 2);
     assert(!fs.existsSync(worker.directory));
     assert.equal(git(['worktree', 'list', '--porcelain']).toString().match(/^worktree /gm).length, 1);
     assert.deepEqual(candidateIdentity(candidateRoot), candidate);
+    // Interrupted removal can leave ordinary files after Git registration is gone.
+    const parent = path.dirname(worker.directory);
+    put(path.join(parent, 'owner.json'), JSON.stringify({ root: candidateRoot, tree: candidate.sourceTree }));
+    put(path.join(worker.directory, 'orphan.lock'), 'orphan');
+    prepareWorkspaces(candidateRoot, candidate, 2, 1536);
+    assert.deepEqual(candidateIdentity(worker.directory), candidate);
+    cleanupWorkspaces(candidateRoot, candidate.sourceTree, 2);
+    put(path.join(parent, 'owner.json'), JSON.stringify({ root: candidateRoot, tree: candidate.sourceTree }));
+    put(path.join(worker.directory, '.git'), `gitdir: ${path.join(candidateRoot, '.git')}\n`);
+    assert.throws(() => cleanupWorkspaces(candidateRoot, candidate.sourceTree, 2), /live or foreign Git marker/);
+    fs.rmSync(path.join(worker.directory, '.git'));
+    cleanupWorkspaces(candidateRoot, candidate.sourceTree, 2);
 
     const workspaces = [1, 2].map(index => ({ id: `worker-${index}`, directory: path.join(root, `executor-${index}`) }));
     workspaces.forEach(item => fs.mkdirSync(path.join(item.directory, 'wasm'), { recursive: true }));
