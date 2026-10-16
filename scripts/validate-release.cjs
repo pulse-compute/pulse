@@ -421,7 +421,8 @@ async function main(argv = process.argv.slice(2)) {
       'node',
       ['wasm/scripts/run-wasm-tests.cjs', '--profile', 'release', '--report', artifactFiles?.taskReport || '.test-results/release-tasks.json',
         ...(releaseConfigFile ? ['--recovery-config', releaseConfigFile] : [])],
-      { timeoutMs: 60 * 60 * 1000, env: consumerEnv }
+      // Individual tasks remain bounded; the aggregate uses the configured seal budget.
+      { timeoutMs: deadline.remaining(), env: consumerEnv }
     );
 
     await runStep(
