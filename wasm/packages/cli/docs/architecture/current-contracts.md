@@ -213,11 +213,14 @@ files and package manifests enter watch inputs. `static-source` package status
 means source admission, not lowerer trust or proof that every function compiles.
 Explicit JavaScript planning retains its existing opaque dependency graph.
 
-Compiler discovery reads executable manifests only for the reviewed
-`TRUSTED_LOWERER_PACKAGES` list in the shared library contract, at the synchronized
-toolchain version and canonical contained manifest path. An npm namespace,
-source export or package-supplied `pulse`/`pulsewasm` field cannot add an owner to
-that list. First-party package effects retain their existing realization path.
+Ordinary source imports grant no lowerer trust. A package that advertises a
+`pulsewasm` manifest opts into the versioned trusted build-dependency contract
+described under [Package-owned capabilities](#package-owned-capabilities). Its canonical
+contained manifest, protocol versions and package ownership must validate;
+malformed declarations are rejected rather than ignored. Package names and
+versions need not match a first-party list or Pulse's release version.
+Undeclared compiler files remain inert; declared `pulse.contract` product
+metadata must be static JSON.
 `npm-source-imports` covers resolver admission and rejection in repository
 fixtures. `npm-source-installed-workflow` packs the candidate toolchain and an
 independent dependency, installs exact versions outside the checkout, and tests
@@ -226,7 +229,8 @@ The installed cases combine fetch suspension with trusted Crypto digest effects,
 check authored source attribution and executable Wasm identity, and repeat after
 a pinned dependency update without copying or changing application source.
 An unsupported dependency update or undeclared crypto capability must fail
-explicitly. Third-party executable metadata grants no compiler authority.
+explicitly. An installed malformed lowerer declaration must also fail before
+its executable file is loaded.
 Fastly execution uses the fixture ABI;
 this qualification does not claim a deployed provider test.
 

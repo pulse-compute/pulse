@@ -71,12 +71,12 @@ app.get('/lookup',async(ctx)=>{const value=await lookup(ctx,ctx.req.header('x-in
 export default app;
 `;
 
-async function packFixture(version, pulseVersion, unsupported = false) {
+async function packFixture(version, pulseVersion, unsupported = false, invalidLowerer = false) {
   const root = path.join(temporary, 'authored-' + version);
   write(root, 'package.json', JSON.stringify({ name, version, type: 'module',
     files: ['*.js', '*.ts', 'compiler.cjs'], exports: { './worker': './worker.js', './helper': './helper.ts' },
     dependencies: { '@pulse-compute/crypto': pulseVersion },
-    pulsewasm: { manifest: './compiler.cjs' }, pulse: { contract: './compiler.cjs' }
+    ...(invalidLowerer ? { pulsewasm: { manifest: './compiler.cjs' }, pulse: { contract: './compiler.cjs' } } : {})
   }));
   write(root, 'worker.js', `export {tickHandler,middleware} from './handlers.js';`);
   write(root, 'handlers.js', `import {crypto} from '@pulse-compute/crypto';
@@ -100,7 +100,7 @@ export async function lookup(ctx,input:string){
  if(second.status!=='ok')return 'digest failed';
  return '${version}:'+second.sha256;
 }`);
-  // Executable third-party metadata must not run during compilation.
+  // Undeclared compiler files are inert; malformed lowerer declarations fail before loading them.
   write(root, 'compiler.cjs', "require('node:fs').writeFileSync('plugin-executed','bad');throw new Error('third-party compiler executed');");
   const packed = JSON.parse((await run('npm', ['pack', '--ignore-scripts', '--json'], { cwd: root })).stdout);
   return path.join(root, packed[0].filename);
@@ -131,9 +131,9 @@ async function main() {
     console.log('IMP9-02: pack candidate and independent dependency versions');
     const packed = packRelease({ repoRoot: repo, outDir: packages });
     report.packages = packed.manifest.packages.map(({ name, version, sha256 }) => ({ name, version, sha256 }));
-    const versions = ['1.0.0', '1.0.1', '1.0.2'];
+    const versions = ['1.0.0', '1.0.1', '1.0.2', '1.0.3'];
     const fixtures = [];
-    for (const version of versions) fixtures.push(await packFixture(version, packed.manifest.releaseVersion, version === '1.0.2'));
+    for (const version of versions) fixtures.push(await packFixture(version, packed.manifest.releaseVersion, version === '1.0.2', version === '1.0.3'));
     const catalog = catalogFromTarballs([...packed.manifest.packages.map(row => path.join(packages, row.tarball)), ...fixtures]);
     registry = createReadOnlyRegistry(catalog);
     await new Promise((resolve, reject) => { registry.server.once('error', reject); registry.server.listen(0, '127.0.0.1', resolve); });
@@ -157,6 +157,15 @@ async function main() {
       else await run('npm', ['install', '--save-exact', '--ignore-scripts', '--no-audit', '--no-fund', name + '@' + version], { timeout: 180000 });
       verifyClosure(consumer, packages, packed.manifest);
       const dependency = verifyFixture(fixtures[index], version, catalog);
+      if (index === 3) {
+        for (const host of ['node', 'fastly']) {
+          const failure = await pulse(['build', '--profile', host], 1);
+          assert.equal(failure.error.name, 'TypeError');
+          assert.equal(failure.error.message, `Trusted lowerer ${name} must use its canonical manifest.`);
+          report.cells.push({ version, host, status: 'rejected', reason: 'invalid-lowerer-manifest' });
+        }
+        break;
+      }
       if (index === 2) {
         for (const host of ['node', 'fastly']) {
           const failure = await pulse(['build', '--profile', host], 3);
@@ -164,7 +173,7 @@ async function main() {
           assert.match(JSON.stringify(failure), /handlers\.js/);
           report.cells.push({ version, host, status: 'rejected', code: 'PULSE_NATIVE_IMPORT_UNSUPPORTED' });
         }
-        break;
+        continue;
       }
       const prefix = hash('middleware');
       const cases = [{ name: 'imported-route', request: { method: 'POST', path: '/tick' }, expect: { status: 202, text: `${version}:${prefix}:${hash('route')}` } }];
@@ -212,11 +221,11 @@ async function main() {
     assert.equal(fs.existsSync(path.join(consumer, 'plugin-executed')), false);
     verifyClosure(consumer, packages, packed.manifest);
     assert.equal(report.cells.filter(row => row.status === 'passed').length, 4);
-    assert.equal(report.cells.filter(row => row.status === 'rejected').length, 4);
+    assert.equal(report.cells.filter(row => row.status === 'rejected').length, 6);
     assert.equal(registry.requests.missing, 0); assert.equal(registry.requests.rejected, 0);
     report.registry = registry.requests;
     report.status = 'passed';
-    console.log('ok - exact installed dependency pin/update, 12 Native executions, attribution and four explicit rejections');
+    console.log('ok - exact installed dependency pin/update, 12 Native executions, attribution and six explicit rejections');
   } catch (error) {
     report.status = 'failed'; report.error = clean(error.stack || String(error)); throw error;
   } finally {
