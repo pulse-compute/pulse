@@ -36,12 +36,13 @@ const reportingTargetCapability = Object.freeze({
 function genericProviderConfig(value) {
   const input = value && typeof value === 'object' ? value : {};
   const bindings = input.bindings || {};
-  if (Object.keys(bindings).some((key) => key !== 's3')) throw new TypeError('Unknown Node binding field.');
+  if (Object.keys(bindings).some((key) => !['s3', 'packages'].includes(key))) throw new TypeError('Unknown Node binding field.');
+  if (bindings.packages && Object.keys(bindings.packages).length && (value.bodyForwarding || value.bodyTransform)) throw new TypeError('Package HTTP snapshots require bounded buffered content.');
   const maxDurationMs = require('@pulse-compute/runtime/host').normalizeRequestDuration(input.maxDurationMs);
   const bodyForwarding = require('./javascript/incoming-body.js').normalizeBodyForwarding(input.bodyForwarding, maxDurationMs);
   const generatedOutput = require('./runtime/generated-output.js').normalizeGeneratedOutput(input.generatedOutput, maxDurationMs);
   const bodyTransform = require('./runtime/body-transform.js').normalizeBodyTransform(input.bodyTransform, { generatedOutput, maxDurationMs, bodyForwarding });
-  return Object.freeze({ ...(bodyTransform ? { bodyTransform } : {}), kind: 'node', maxDurationMs, ...(generatedOutput ? { generatedOutput } : {}), ...(bodyForwarding ? { bodyForwarding } : {}), bindings: Object.freeze({ s3: require('./config/s3.js').normalizeNodeS3(bindings.s3) }), local: Object.freeze({}) });
+  return Object.freeze({ ...(bodyTransform ? { bodyTransform } : {}), kind: 'node', maxDurationMs, ...(generatedOutput ? { generatedOutput } : {}), ...(bodyForwarding ? { bodyForwarding } : {}), bindings: Object.freeze({ ...(bindings.packages ? { packages: require('./runtime/package-operations.js').normalizePackageBindings(bindings.packages) } : {}), s3: require('./config/s3.js').normalizeNodeS3(bindings.s3) }), local: Object.freeze({}) });
 }
 
 function nodeRealization(nativeArtifact) {
@@ -152,15 +153,16 @@ function createDriver() {
     normalizeConfig: genericProviderConfig,
     configReference: Object.freeze({
       sections: [{ id: 'node', title: 'Node provider options', description: 'Provider-owned Node profile configuration.' }],
-      fields: [{ section:'node', path:'node.bodyTransform', type:'boolean', default:'omitted', scope:'Experimental Node UTF-8 transforms', description:'Opt-in finite request text chunks. Requires generatedOutput and maxDurationMs; incompatible with bodyForwarding. Input 65536 bytes, output 262144 bytes, at most 4 times delivered input bytes. Strict UTF-8, one reader/writer, EOF required before output.close().' }, { section:'node', path:'node.generatedOutput', type:'boolean', default:'omitted', scope:'Experimental Node generated output', description:'Opt-in finite UTF-8 output. Requires node.maxDurationMs. Each write is at most 16384 bytes; at most 64 writes and 1048576 bytes total. Use STR-03B for exact-candidate installed qualification.' }, { section:'node', path:'node.bodyForwarding', type:'{ maxBytes: number }', default:'omitted', scope:'Node incoming forwarding', description:'Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.' }, { section:'node', path:'node.maxDurationMs', type:'integer', allowed:'1–30000', default:'omitted', scope:'HTTP request execution', description:'One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.' }, { section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
+      fields: [{ section:'node', path:'node.bindings.packages', type:'Readonly<Record<string, PackageRuntimeBinding>>', default:'omitted', scope:'Trusted package Wasm on Node', description:'Explicit package, contractId, artifact, operations, secret reference, keyId, keyVersion, trustDomain and HTTPS origin. Captures exact HTTP bytes up to 65536 body bytes; incompatible with bodyForwarding/bodyTransform. See the package runtime binding contract.' }, { section:'node', path:'node.bodyTransform', type:'boolean', default:'omitted', scope:'Experimental Node UTF-8 transforms', description:'Opt-in finite request text chunks. Requires generatedOutput and maxDurationMs; incompatible with bodyForwarding. Input 65536 bytes, output 262144 bytes, at most 4 times delivered input bytes. Strict UTF-8, one reader/writer, EOF required before output.close().' }, { section:'node', path:'node.generatedOutput', type:'boolean', default:'omitted', scope:'Experimental Node generated output', description:'Opt-in finite UTF-8 output. Requires node.maxDurationMs. Each write is at most 16384 bytes; at most 64 writes and 1048576 bytes total. Use STR-03B for exact-candidate installed qualification.' }, { section:'node', path:'node.bodyForwarding', type:'{ maxBytes: number }', default:'omitted', scope:'Node incoming forwarding', description:'Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.' }, { section:'node', path:'node.maxDurationMs', type:'integer', allowed:'1–30000', default:'omitted', scope:'HTTP request execution', description:'One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.' }, { section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
         description: 'Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).',
         security: 'Only named credential references are configuration. Runtime keys cannot override authority.' }]
     }),
     defaultLocalNetworkFetch: true,
-    projectConfigDocument(config) { return (Object.keys(config.bindings.s3).length || config.maxDurationMs !== undefined) ? config : undefined; },
+    projectConfigDocument(config) { return (Object.keys(config.bindings.s3).length || Object.keys(config.bindings.packages || {}).length || config.maxDurationMs !== undefined) ? config : undefined; },
     initTemplate() {
       return Object.freeze({ profileFragment: '', dependencies: Object.freeze({}) });
     },
+    capturePackageRequest: require('./runtime/package-operations.js').capturePackageRequest,
     executionOptions(config, values) {
       return Object.freeze({
         ...values,
@@ -169,6 +171,7 @@ function createDriver() {
         bodyTransform: config.bodyTransform,
         bodyForwarding: config.bodyForwarding,
         s3: config.bindings.s3,
+        packageBindings: config.bindings.packages,
         s3FetchImplementation: values.s3FetchImplementation || require('./javascript/fetch-adapter.js').createNodeJavascriptFixtureFetch(
           values.fetches || {}, values.fetchImplementation || (values.liveFetch === true ? globalThis.fetch : undefined),
           { rawResponse: true }
@@ -193,7 +196,8 @@ function createDriver() {
           plan: invocation.applicationPlan,
           projectRoot: invocation.project.root,
           outDir: invocation.project.outDir,
-          schemaBundle: invocation.javascript.schemaBundle
+          schemaBundle: invocation.javascript.schemaBundle,
+          packageArtifacts: invocation.javascript.packageArtifacts
         }), { provider: 'node' });
       },
       describeSourcePackage(sourcePackage) {
@@ -244,6 +248,7 @@ function createDriver() {
         if (!config.bodyForwarding) throw new portableForwardingError('PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'Configure node.bodyForwarding and node.maxDurationMs.');
       }
       require('./config/s3.js').validateNodeS3Operations(metadata, config.bindings || {});
+      require('./runtime/package-operations.js').validatePackageOperations(metadata, config.bindings);
       return canonicalProvider.createProviderLoweringPlan(metadata, nodeRuntime.NODE_PROVIDER_DESCRIPTOR, {
         grip: 'node-reference-broadcaster'
       });

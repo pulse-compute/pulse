@@ -336,6 +336,10 @@ function canonicalRealizationArtifact(artifact, record) {
       { id, version, kind, mediaType, contractId, package: packageName }
     );
   }
+  if (kind === 'package-runtime-wasm') {
+    try { return require('@pulse-compute/wasm-contracts/package/runtime-binding').validateRuntimeBinding(value).artifact; }
+    catch { throw new PackageOperationSeamError('PULSE_PACKAGE_REALIZATION_ARTIFACT_INVALID', 'Package runtime Wasm must match the supported bounded ABI.', { id }); }
+  }
   return deepFreeze(value);
 }
 
@@ -642,6 +646,7 @@ function recognizeProjectPackageOperations(entryFile, options = {}) {
     // This source-aware step is package recognition and validation. The later
     // package-lowering phase receives only the canonical operations below.
     const result = buildPackageOwnedLoweringPlan({
+      typescript: ts,
       cwd: rootDir,
       workspaceRoot: options.workspaceRoot,
     packageDirs: options.packageDirs,
@@ -671,8 +676,12 @@ function recognizeProjectPackageOperations(entryFile, options = {}) {
       .map(canonicalPackageSchemaReference)
       .map((reference) => schemaReferenceWithSourceFile(reference, sourceName));
     schemaReferences.push(...recognizedSchemaReferences);
-    realizationArtifacts.push(...(contributions.realizationArtifacts || [])
-      .map((artifact) => canonicalRealizationArtifact(artifact, record)));
+    const runtimeArtifacts = (contributions.realizationArtifacts || []).map(artifact => canonicalRealizationArtifact(artifact, record));
+    for (const effect of canonicalEffects.filter(effect => effect.kind === 'package.invoke')) {
+      try { require('@pulse-compute/wasm-contracts/package/runtime-binding').validateRuntimeInvocation(effect, runtimeArtifacts); }
+      catch { throw new PackageOperationSeamError('PULSE_PACKAGE_REALIZATION_ARTIFACT_INVALID', 'Package invocation requires an exact declared static runtime binding.', { contractId: record.manifest.contractId }); }
+    }
+    realizationArtifacts.push(...runtimeArtifacts);
     inspectionArtifacts.push(...(contributions.inspectionArtifacts || [])
       .map((artifact) => canonicalInspectionArtifact(artifact, record)));
     managedHandlers.push(...(contributions.managedHandlers || [])

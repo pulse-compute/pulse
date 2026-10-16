@@ -538,6 +538,7 @@ function createNodeProviderAdapter(baseOptions = {}) {
     },
     dispatchFetch,
     async dispatchEffect(effect, executionOptions = {}) {
+      if (effect.kind === 'package.invoke') return require('./package-operations.js').executePackageOperation(effect, { ...baseOptions, ...executionOptions, cryptoTarget: 'native' }, name => bindingValue(executionOptions, 'secrets', name));
       if (effect.kind === 'crypto.digestText') return require('@pulse-compute/crypto/provider').executeTextDigest(effect, executionOptions);
       if (effect.kind === 'time.now') return portableRuntimeHost.readWallTime(baseOptions.wallClock === undefined ? () => Date.now() : baseOptions.wallClock);
       if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind)) {

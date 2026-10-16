@@ -34,7 +34,14 @@ function loadBuild(options) {
     }
     const application = assertNodeJavascriptApplication(require(file(manifest.package.entry)));
     const schemaCodecs = manifest.schemas.active ? require(file(manifest.package.schemaCodecs)) : undefined;
-    return { application, schemaCodecs, identity: build.application.planHash };
+    let packageArtifacts = [];
+    if (manifest.packageRuntime) {
+      const record = manifest.packageRuntime;
+      const bytes = fs.readFileSync(file(record.file));
+      if (record.version !== 'pulse.package-runtime-artifacts.v1' || bytes.length !== record.bytes || sha256(bytes) !== record.sha256) throw new TypeError('Node JavaScript package artifact hash mismatch.');
+      packageArtifacts = JSON.parse(bytes);
+    }
+    return { application, schemaCodecs, packageArtifacts, identity: build.application.planHash };
   }
   const portable = build.portable;
   const plan = json(portable.plan);

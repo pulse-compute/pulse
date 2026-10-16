@@ -36,6 +36,15 @@ function createNodeJavascriptPackageEffectCapabilities(options = {}) {
   return Object.freeze({
     version: NODE_JAVASCRIPT_PACKAGE_EFFECTS_VERSION,
     async effect(effect, execution) {
+      if (effect?.kind === 'package.invoke') {
+        let selected;
+        try { selected = require('@pulse-compute/crypto/provider').bindJavascriptDigestMac(['SHA-256', 'HMAC-SHA256'], options.digestSubtle); }
+        catch { throw new PulseNodeJavascriptPackageEffectError('PULSE_PACKAGE_CAPABILITY_UNAVAILABLE', 'Package operation could not complete.'); }
+        return require('../runtime/package-operations.js').executePackageOperation(effect, {
+          ...options, ...execution, cryptoTarget: 'javascript', cryptoVerifier: selected,
+          cryptoRealization: selected.realization,
+        }, options.secretLookup);
+      }
       if (effect && effect.contractId === 'pulse.s3') {
         if (typeof s3 !== 'function') return unavailable(effect);
         return s3(effect, execution);
@@ -65,7 +74,8 @@ function withNodePackageEffectCapabilities(capabilities, options = {}) {
     ...base,
     effect(effect, execution) {
       if (effect && (
-        effect.contractId === 'pulse.crypto'
+        effect.kind === 'package.invoke'
+        || effect.contractId === 'pulse.crypto'
         || effect.contractId === 'pulse.assets'
         || effect.contractId === 'pulse.grip'
         || effect.contractId === 'pulse.jwt'

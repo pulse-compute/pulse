@@ -349,6 +349,7 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'declared npm source exports, containment, attribution and Native handler/helper execution'
   }),
+  'package-runtime': nodeTask('test/contracts/assert-package-runtime.cjs', { description: 'Generic trusted package Wasm ABI, host grants, private memory and cancellation' }),
   'external-lowerers': nodeTask('test/contracts/assert-external-lowerers.cjs', { evidence: 'native', timeoutMs: 180000, description: 'trusted external contracts, independent package versions, nested resolution and Native/JavaScript parity' }),
   'package-reachability': nodeTask('test/contracts/assert-package-reachability.cjs', {
     evidence: 'unit',
@@ -1389,6 +1390,7 @@ const profiles = Object.freeze({
     'project-modules',
     'package-reachability',
     'external-lowerers',
+    'package-runtime',
     'provider-toolchain',
     'schema-registry',
     'continuation-registry',

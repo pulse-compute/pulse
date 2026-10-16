@@ -265,7 +265,33 @@ describe('@pulse-compute/runtime trusted package bridge', () => {
     }))
   })
 
-  it('keeps registration first-party and request-bound', async () => {
+  it('admits independent packages only through the versioned generic invocation and a live context', async () => {
+    const definition = { version: 'pulse.package-runtime-definition.v1', package: '@independent/operation',
+      contractId: 'independent.operation', providerKind: 'package',
+      operations: { invoke: { kind: 'package.invoke', capability: 'package.invoke', result: 'string' } } }
+    const adapter = packageRuntime.createPackageRuntime(definition)
+    expect(() => adapter.effect({}, 'invoke', {})).toThrowError(expect.objectContaining({ code: 'PULSE_RUNTIME_PACKAGE_CONTEXT_REQUIRED' }))
+    for (const changed of [{ ...definition, version: 'future' }, { ...definition, operations: { invoke: { kind: 'secret.get', capability: 'secret.get', result: 'string' } } }]) {
+      expect(() => packageRuntime.createPackageRuntime(changed)).toThrow()
+    }
+    const app = new Router()
+    let context: any
+    const observations: any[] = []
+    app.get('/', async (ctx: any) => {
+      context = ctx
+      const result = await adapter.effect(ctx, 'invoke', { artifact: 'id', binding: 'host', operation: 'run', configuration: 'private-input' })
+      return ctx.text(result)
+    })
+    const response = await runtime.executeRouter(app, new Request('https://example.test/'), {
+      capabilities: { effect: async (effect: any) => { expect(effect.package).toBe('@independent/operation'); return 'private-result' } },
+      onEffectObservation: (event: any) => observations.push(event),
+    })
+    expect(await response.text()).toBe('private-result')
+    expect(JSON.stringify(observations)).not.toMatch(/private-input|private-result/)
+    expect(() => adapter.effect(context, 'invoke', {})).toThrowError(expect.objectContaining({ code: 'PULSE_RUNTIME_EFFECT_EXECUTION_CLOSED' }))
+  })
+
+  it('keeps legacy operation registration closed and request-bound', async () => {
     expect(packageRuntime.PACKAGE_RUNTIME_BRIDGE_VERSION).toBe('pulse.package-runtime-bridge.v1')
     expect(Object.isFrozen(packageRuntime.TRUSTED_PACKAGE_EFFECT_CATALOG)).toBe(true)
     expect(() => packageRuntime.createPackageRuntime({

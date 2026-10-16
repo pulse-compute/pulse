@@ -418,3 +418,172 @@ guest-unit and provider-realization contracts keep their own restrictions.
 - [Add a first-party package-owned lowerer](./adding-first-party-lowerer.md)
 - [Package support policy](../packages/README.md)
 - [Implementation packages](../packages/implementation-packages.md)
+
+
+## Trusted package runtime bindings
+
+A reachable trusted lowerer can contribute a private `package-runtime-wasm`
+realization artifact and canonical `package.invoke` effects. This is an additive
+runtime contract, independent of the static prebuilt guest-link contract and
+npm release versions. No package-name registration is required. The initial
+provider is Node, for explicitly selected Native and JavaScript targets;
+Fastly does not implement this capability.
+
+The package owns its facade, protocol, policy, literal configuration, Wasm and
+fixtures. The provider owns HTTP capture, time, secret lookup and cryptography.
+Applications trust the package's executable build dependency and runtime Wasm;
+this mechanism is not an untrusted-code sandbox or CPU preemption boundary.
+Existing first-party runtime definitions remain valid and unchanged.
+
+### Definition and artifact
+
+`@pulse-compute/runtime/package` accepts a definition with exact version
+`pulse.package-runtime-definition.v1`, a scoped `package`, `contractId`,
+`providerKind: 'package'`, and exactly one operation:
+
+```js
+operations: {
+  invoke: { kind: 'package.invoke', capability: 'package.invoke', result: 'string' }
+}
+```
+
+`effect(ctx, 'invoke', payload)` still requires the actual live managed context.
+The exact payload is `{ artifact, binding, operation, configuration }`; all are
+static strings. The compiler rejects dynamic runtime inputs and requires the
+same package/contract's artifact, declared operation and configuration. The
+result is a UTF-8 string of at most 65,536 bytes; the package defines its format.
+Request execution, effect limits, continuation settlement and cancellation are
+shared with existing effects. No ambient registration or current request exists.
+
+A realization artifact has exactly these fields:
+
+```js
+{
+  version: 'pulse.package-runtime-binding.v1',
+  id: 'vendor.protocol:profile',
+  package: '@vendor/protocol',
+  contractId: 'vendor.protocol',
+  kind: 'package-runtime-wasm',
+  mediaType: 'application/wasm',
+  data: {
+    abi: 'pulse.package-wasm.v1',
+    wasm: 'CANONICAL_BASE64',
+    sha256: 'LOWERCASE_HEX_SHA256',
+    operations: [{
+      name: 'verify', configuration: 'PACKAGE_DEFINED_STATIC_POLICY',
+      capabilities: ['http.snapshot', 'time.wall-clock', 'crypto.sha256', 'crypto.hmac-sha256']
+    }]
+  }
+}
+```
+
+The canonical validator lives in `@pulse-compute/wasm-contracts/package/runtime-binding`.
+It checks owner identity, supported versions, unique operations (1–16), known
+capabilities, configuration (8,192 characters maximum), canonical base64 and
+hash, actual Wasm imports/exports and memory declaration. Artifacts are at most
+1 MiB. There must be one defined, unshared 32-bit memory with an explicit maximum
+of at most 32 pages (2 MiB); imported memories and ambient host imports fail.
+Conflicting artifact IDs fail compilation. Wasm is a separate instance per
+operation; it is not linked into the application's guest memory.
+
+The package builder receives the compiler's TypeScript API as `input.typescript`
+for inspection of its provided source file. This adds no provider, key, project
+configuration, TypeScript program or language-service authority.
+Crypto requirements must also be emitted through the existing package-owned
+`cryptoRequirements` contribution. Native explicitly selects the existing
+Crypto guest-source byte primitives; JavaScript explicitly selects its
+runtime-builtin byte backend. Native never runs JavaScript protocol logic or
+falls back to JavaScript crypto.
+
+### Provider grant and HTTP authority
+
+`node.bindings.packages` maps up to 32 literal binding names to records:
+
+```js
+{
+  package: '@vendor/protocol', contractId: 'vendor.protocol',
+  artifact: 'vendor.protocol:profile', operations: ['verify'],
+  secret: 'PROTOCOL_KEY', keyId: 'local-key', keyVersion: '1',
+  trustDomain: 'tenant-a', origin: 'https://api.example.test'
+}
+```
+
+The provider checks package, contract, artifact, allowed operation and exact
+configuration before invoking Wasm. Wire metadata cannot select a secret name.
+Only the provider reads the named secret; UTF-8 key material is 32–4,096 bytes
+and never enters effect inputs or protocol memory. The host HMAC verification
+command uses constant-time comparison. This first version requires a named key
+and HTTP origin even for operations using fewer capabilities.
+
+`origin` is an explicit trusted HTTPS termination setting. The operator must
+ensure the transport serves that external origin; this setting is not inferred
+from `Host`, forwarded headers, a normalized URL, or a client assertion. The
+Node adapter retains original method, origin-form target, ordered field
+instances and exact buffered body before creating its Web Request. Limits are
+128 fields, 16,384 bytes per value and target, 131,072 combined name/value bytes,
+and 65,536 body bytes. Non-ASCII field bytes, absolute/authority/asterisk targets,
+fragments, backslashes and opaque/transforming bodies are refused.
+
+The optional provider-driver `capturePackageRequest` hook returns the versioned
+`pulse.provider-package-http.v1` envelope with host execution `options` and
+`close()`. Node uses branded, request-owned captures; passing an application
+record cannot mint one. CLI HTTP development and built Node launchers capture
+and close them automatically. Launcher operators supply `packageBindings`
+explicitly; project development settings and secret values are not imported
+into a production launcher. HTTP fixture tests that bypass transport must
+supply a capture through the host integration API. The low-level
+`@pulse-compute/provider-node/runtime/package-operations` export is host
+integration, not a portable application facade.
+
+Outbound signing is a host integration operation: the host freezes the exact
+intended message, captures it with direction `outbound`, invokes the package,
+and installs returned fields before sending. No generic send transaction or
+proof of a later send is provided. Inbound server captures cannot be relabeled
+by an application's payload. Hosts must close direct captures in `finally`.
+
+### Wasm ABI and lifetime
+
+The only allowed imports are `(i32) -> i32` `pulse_package.input_len`,
+`(i32, i32, i32) -> i32` `pulse_package.input_read` and optional `env.abort`.
+Input reads copy bytes into package memory and return a length, or `-1` when
+undeclared/unavailable. Input slots are:
+
+| Slot | Content | Required host capability |
+|---|---|---|
+| 0, 1, 2 | Configuration, operation, reserved `{}` | None |
+| 3–6 | Original method, origin target, scheme, authority | `http.snapshot` |
+| 7 | LE u32 field count, then LE u32 length + ASCII bytes for each name and value | `http.snapshot` |
+| 8 | Exact body bytes | `http.snapshot` |
+| 9 | One nonnegative integer epoch-seconds sample | `time.wall-clock` |
+| 10–12 | Key ID, key version, trust domain | `crypto.hmac-sha256` |
+| 13 | `inbound` or `outbound` | `http.snapshot` |
+
+Exports are `memory`, `start(): i32`, `resume(length: i32): i32`, and zero-argument
+i32 accessors `buffer`, `capacity`, `output_ptr`, `output_len`, `aux_ptr`,
+`aux_len`. Pointers are byte offsets in the private memory. Buffer capacity is
+65,536–262,144 bytes. `start`/`resume` return a command: 0 completes with UTF-8
+output, 1 hashes output with SHA-256, 2 signs output with HMAC-SHA256, 3 verifies
+output using the 32-byte tag at the auxiliary pointer. Commands 1/2 write 32
+result bytes at `buffer`; command 3 writes one byte (0 or 1). The host then calls
+`resume` with that length. At most four crypto commands run per operation and
+all output/crypto inputs are at most 65,536 bytes. Every pointer is bounds-checked.
+
+The host checks request activity and capture lifetime before and after async
+work and before resumption. Late values never resume or settle a cancelled
+request. Key staging, input/output copies, returned crypto bytes and the whole
+private Wasm memory are wiped on completion/failure once host work settles.
+Provider errors use fixed codes/messages. Native traces and JavaScript effect
+observations exclude payloads and results for these operations, regardless of
+package-supplied redaction declarations. Returned application responses remain
+application-owned output. This contract does not preempt a looping trusted Wasm
+function or promise transactional rollback.
+
+JavaScript source packages with runtime artifacts carry an optional hashed
+`pulse.package-runtime-artifacts.v1` record. Native artifacts retain the existing
+private realization artifact container. Node launchers validate stored hashes
+before execution; packages without these artifacts retain their prior layout.
+
+Focused evidence: `node wasm/scripts/run-wasm-tests.cjs --task package-runtime
+--task provider-toolchain --task external-lowerers --task package-exports` and
+`packages/runtime/test/package-runtime.test.ts`. Protocol-specific parity and
+host integration fixtures remain in the independent protocol package.

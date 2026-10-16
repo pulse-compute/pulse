@@ -220,3 +220,13 @@ JavaScript](../reference/handler-authoring.md), [Provider and target
 compatibility](../reference/compatibility-matrix.md), [Contracts and
 providers](../concepts/contracts-and-providers.md), and [Release
 acceptance](../maintainers/release-acceptance.md).
+
+### Trusted package runtime operations
+
+A build using `package.invoke` needs explicit `packageBindings` on its launcher.
+Each grant names the package, contract, artifact, allowed operations, secret
+reference, key ID/version, trust domain and trusted HTTPS origin. The launcher
+captures original HTTP fields/target and at most 64 KiB of exact body bytes;
+it closes captures with the request. Development bindings and secret values
+are not imported into the launcher. See the [versioned runtime binding contract](../contributing/package-lowerer-contract.md#trusted-package-runtime-bindings)
+for the exact record, supported targets, bounds and outbound integration.

@@ -531,6 +531,24 @@ function normalizePackageDefinition(input) {
   const packageName = String(input.package || '');
   const contractId = String(input.contractId || '');
   const providerKind = String(input.providerKind || '');
+  if (input.version === 'pulse.package-runtime-definition.v1') {
+    // Definition admits only a generic request-owned invocation. The provider
+    // must match it to a statically selected artifact and an explicit host grant.
+    if (!/^@[a-z0-9.-]+\/[a-z0-9._-]+$/.test(packageName)
+      || !/^[a-zA-Z0-9._:-]{1,256}$/.test(contractId) || providerKind !== 'package'
+      || Object.keys(input).some(key => !['version', 'package', 'contractId', 'providerKind', 'operations'].includes(key))) {
+      throw contractError('PULSE_RUNTIME_PACKAGE_EFFECT_DEFINITION_INVALID', 'Invalid package invocation definition.');
+    }
+    const entries = enumerableDataEntries(input.operations, 'package operations');
+    if (entries.length !== 1 || entries[0][0] !== 'invoke') throw contractError('PULSE_RUNTIME_PACKAGE_EFFECT_DEFINITION_INVALID', 'Generic package definitions declare invoke only.');
+    const operation = entries[0][1];
+    const fields = enumerableDataEntries(operation, 'package invocation');
+    if (fields.length !== 3 || operation.kind !== 'package.invoke' || operation.capability !== 'package.invoke' || operation.result !== 'string') {
+      throw contractError('PULSE_RUNTIME_PACKAGE_EFFECT_DEFINITION_INVALID', 'Invalid package invocation operation.');
+    }
+    return Object.freeze({ packageName, contractId, providerKind,
+      operations: Object.freeze({ invoke: Object.freeze({ kind: 'package.invoke', capability: 'package.invoke', result: 'string' }) }) });
+  }
   const catalog = TRUSTED_PACKAGE_EFFECT_CATALOG[packageName];
   if (!catalog || catalog.contractId !== contractId || catalog.providerKind !== providerKind) {
     throw contractError(

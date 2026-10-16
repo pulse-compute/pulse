@@ -67,6 +67,11 @@ function nodeJavascriptProviderCapabilities(options) {
   const capabilities = withNodePackageEffectCapabilities(
     withNodeFetchCapability(bindingCapabilities, { fetchImplementation: options.fetchImplementation }),
     {
+      packageBindings: options.packageBindings,
+      packageArtifacts: options.packageArtifacts,
+      packageHttp: options.packageHttp,
+      packageWallClock: options.packageWallClock,
+      secretLookup: bindingCapabilities.secret,
       assetsLookup: configuredAssetsLookup,
       gripBroadcast: configuredGripBroadcast,
       jwtVerify: configuredJwtVerify,

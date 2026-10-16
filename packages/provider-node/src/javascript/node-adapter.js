@@ -101,13 +101,18 @@ async function nodeRequestToWebRequest(request, options = {}) {
   const headers = new Headers();
   for (const [name, value] of headerPairs) headers.append(name, value);
   const init = { method, headers };
-  if (bodyAllowed(method)) {
+  const packageBindings = options.packageBindings || options.bindings?.packages;
+  const capturePackages = packageBindings && Object.keys(packageBindings).length > 0;
+  if (capturePackages && (options.bodyForwarding || options.bodyTransform)) throw new TypeError('Package snapshots cannot consume opaque bodies.');
+  let capturedBody = new Uint8Array();
+  if (bodyAllowed(method) || capturePackages) {
     if (options.bodyForwarding || options.bodyTransform) {
       init.body = require('./incoming-body.js').nodeIncomingStream(request);
       init.duplex = 'half';
     } else {
-      const body = await readNodeRequestBody(request, options.maxRequestBodyBytes ?? options.maxBodyBytes, options.signal);
-      if (body.byteLength > 0) {
+      const body = await readNodeRequestBody(request, capturePackages ? Math.min(options.maxRequestBodyBytes ?? options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES, 65536) : options.maxRequestBodyBytes ?? options.maxBodyBytes, options.signal);
+      capturedBody = body;
+      if (body.byteLength > 0 && bodyAllowed(method)) {
         init.body = body;
         init.duplex = 'half';
       }
@@ -115,6 +120,7 @@ async function nodeRequestToWebRequest(request, options = {}) {
   }
   return Object.freeze({
     request: new Request(requestUrl(request, options), init),
+    ...(capturePackages ? { packageCapture: require('../runtime/package-operations.js').capturePackageRequest(request, capturedBody, { packageBindings, signal: options.signal }) } : {}),
     headerPairs,
     method
   });
@@ -256,6 +262,10 @@ function createNodeJavascriptHandler(application, options = {}) {
       outputExecution = require('../runtime/generated-output.js').createGeneratedOutput(response, { ...options, requestBudget: budget, requestMethod: adapted.method });
       const webResponse = await executeNodeJavascriptApplication(activeApplication, adapted.request, {
         outputExecution,
+        packageBindings: options.packageBindings || options.bindings?.packages,
+        packageArtifacts: await resolve(options.packageArtifacts),
+        packageHttp: adapted.packageCapture?.options.packageHttp,
+        packageWallClock: options.packageWallClock,
         incomingBody,
         capabilities,
         effectAdapter,
@@ -312,6 +322,7 @@ function createNodeJavascriptHandler(application, options = {}) {
       }
       return webResponse;
     } finally {
+      adapted?.packageCapture?.close();
       outputExecution?.dispose();
       await incomingBody?.close();
       if ((options.bodyForwarding || options.bodyTransform) && !incomingBody && adapted?.request.body && !adapted.request.body.locked) {
