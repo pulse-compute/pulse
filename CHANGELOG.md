@@ -4,6 +4,40 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+## 1.0.0-beta.9 — Beta (2026-10-15)
+
+- Expand Native reports with authored handlers, source-bound analytics,
+  contextual helper and resource associations, and explicit identity coverage
+  in comparisons. Retained evidence continues to distinguish proven facts from
+  unavailable attribution and does not imply exclusive byte ownership.
+- Add the full-window Execution Explorer and binding views to offline HTML
+  reports, compact relationship facts, and raise default report budgets for
+  larger applications.
+- Reduce scalar and handle retention on eligible Native paths with bounded
+  numeric regions and compiler-proven lifetime checks. Preserve loop budgets,
+  effect boundaries, and conservative exclusions; measurements remain specific
+  to their recorded workloads and providers.
+- Support bounded Fastly Native forwarding and retain paired Rust/Pulse
+  forwarding and memory evidence without turning fixture results into general
+  performance guarantees.
+- Resolve bounded npm source exports for Native and admit trusted external
+  package lowering contracts, including declared Wasm runtime bindings on Node.
+  Contracts and provider capabilities remain validated; package lowerers execute
+  as trusted build dependencies, without a sandbox guarantee.
+- Increase bounded HMAC signing input support to 64 KiB.
+- Fix Fastly Native logging through stdout and preserve HTTP error boundaries
+  in applications that also declare event entries.
+- Add checkout-bound development task recovery, balance Native CI shards, and
+  reuse validated documentation builds. Harden release-worker cleanup, orphan
+  recovery, process-instance locks, and environment-change diagnostics while
+  retaining exact-input and complete-coverage requirements.
+
+Conditional KV/CAS still requires dedicated evidence or an explicit disposition
+for the final beta.9 candidate. The known local Viceroy discrepancy retains its
+raw failure and existing non-blocking disposition; deployed Pulse cross-location
+acceptance remains separate. This preparation does not claim a release seal,
+publication, deployment, or validation of downstream applications.
+
 ## 1.0.0-beta.8 — Beta (2026-10-12)
 
 - Expand Native reports with entry and implementation identities, helper and

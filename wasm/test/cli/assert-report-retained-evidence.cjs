@@ -110,7 +110,7 @@ export default app;`;
     for (const destination of ['.pulse/reports/pulse-report.html', 'reviews/custom.html']) {
       html(destination); html(destination);
       const file=path.join(directory,destination), original=fs.readFileSync(file,'utf8');
-      assert.deepEqual(JSON.parse(original.match(/<script id="pulse-report-data" type="application\/json">([\s\S]*?)<\/script>/)[1]), c);
+      assert.deepEqual(capsule.parseCapsule(original.match(/<script id="pulse-report-data" type="application\/json">([\s\S]*?)<\/script>/)[1]), c);
       assert.deepEqual(json([]),c,'generated HTML does not stale current report');
       fs.appendFileSync(file,'edited'); rejects(()=>report.collectProjectReport({cwd:directory}),'REPORT_STALE_INPUTS');
       fs.writeFileSync(file,original);

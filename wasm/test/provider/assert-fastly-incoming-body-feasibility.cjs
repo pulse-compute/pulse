@@ -12,9 +12,17 @@ const {resolveAsc}=require('../../packages/build-support/src/assemblyscript-comp
 const {inspectFastlyComputeLauncher,renderFastlyLocalConfig,startFastlyComputeServe}=require('../../../packages/provider-fastly/src/testing/fastly-cli.js');
 const root=path.resolve(__dirname,'../../..');
 const source=path.join(__dirname,'fixtures/str02c/hostcalls.as.ts');
+// Source-reviewed versions only. A passing probe never promotes target support.
+// FWD9-01 records the 0.21.1 review and the still-missing completion receipt.
+const reviewedEngines=Object.freeze({
+  '0.20.1':'e9132256a2c061af9ef9e6e12f56e8c42c4576e2',
+  '0.21.1':'ba6fb78c02b2f40b70f8c65ab86fa86c66f0641f'
+});
 const digest=b=>createHash('sha256').update(b).digest('hex');
 function deferred(){let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};}
 async function bounded(promise,label){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(label+' timed out')),5000);})]);}finally{clearTimeout(timer);}}
+// FWD9-02 adds an explicit Native opt-in; this fixture verifies the default
+// remains closed and JavaScript remains ineligible.
 function assertAdmission(){
   const project=fs.mkdtempSync(path.join(os.tmpdir(),'pulse-str02c-admission-'));
   try{
@@ -32,11 +40,14 @@ function assertAdmission(){
 async function main(){
   assertAdmission();
   const launcher=inspectFastlyComputeLauncher({viceroyBinary:process.env.PULSE_VICEROY_BIN,required:true});
-  assert.equal(launcher.inspection.version,'0.20.1','This observation is pinned to Viceroy 0.20.1; review newer engines separately.');
+  const engineSource=reviewedEngines[launcher.inspection.version];
+  assert.ok(engineSource,'Unreviewed Viceroy version; review ABI and lifecycle sources before extending reviewedEngines.');
   const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'pulse-str02c-'));
   fs.mkdirSync(path.join(root,'wasm/.test-results'),{recursive:true});
   const reportDir=fs.mkdtempSync(path.join(root,'wasm/.test-results/str02c-'));
-  const report={version:'pulse.str02c-feasibility.v1',status:'running',source:spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).stdout.trim(),tree:spawnSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).stdout.trim(),workingTree:spawnSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).stdout.trim(),applicationIntegration:false,livePlatform:false,engine:launcher.inspection.version,engineSha256:digest(fs.readFileSync(launcher.inspection.binary)),probeSourceSha256:digest(fs.readFileSync(source)),runnerSha256:digest(fs.readFileSync(__filename)),admission:{native:'blocked',javascript:'blocked'},cases:{}};
+  const report={version:'pulse.str02c-feasibility.v1',status:'running',source:spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).stdout.trim(),tree:spawnSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).stdout.trim(),workingTree:spawnSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).stdout.trim(),applicationIntegration:false,livePlatform:false,engine:launcher.inspection.version,engineSha256:digest(fs.readFileSync(launcher.inspection.binary)),probeSourceSha256:digest(fs.readFileSync(source)),runnerSha256:digest(fs.readFileSync(__filename)),admission:{nativeWithoutOptIn:'blocked',javascript:'blocked'},cases:{}};
+  report.reviewedEngineSource=engineSource;
+  report.nodeVersion=process.version;
   let server,first=deferred();const receipts=new Map(),receiptReady=new Map(['direct','close','abandon'].map(mode=>[mode,deferred()]));
   const origin=http.createServer((req,res)=>{
     req.on('error',()=>{});
@@ -57,6 +68,7 @@ async function main(){
   try{
     origin.listen(0,'127.0.0.1');await once(origin,'listening');
     const asc=resolveAsc(path.join(root,'wasm'));assert.ok(asc,'AssemblyScript is required');
+    report.assemblyScriptVersion=JSON.parse(fs.readFileSync(path.join(asc.packageRoot,'package.json'),'utf8')).version;
     const wasmFile=path.join(temporary,'probe.wasm'),manifestFile=path.join(temporary,'fastly.toml');
     const compile=spawnSync(asc.executable,[asc.script,source,'--outFile',wasmFile,'--runtime','stub','--use','abort=','--optimize','--noAssert'],{cwd:root,encoding:'utf8',timeout:30000});
     assert.equal(compile.status,0,compile.stderr);

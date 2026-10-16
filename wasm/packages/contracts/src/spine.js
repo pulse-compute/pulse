@@ -141,7 +141,7 @@ const COMPILER_SPINE_POLICY = Object.freeze({
   sourceAstMutation: false,
   canonicalIrPaths: 1,
   packageLoweringInput: 'canonical-package-operation-only',
-  packageLowererTrust: 'manifest-declared-first-party',
+  packageLowererTrust: 'trusted-build-dependency',
   providerRealizationInput: 'provider-neutral-native-plan',
   behaviorChangeInContractFreeze: false
 });

@@ -1,0 +1,255 @@
+{
+  "schemaVersion": "pulse.ci9-03-projection.v1",
+  "purpose": "historical planning projection, not hosted performance evidence",
+  "input": {
+    "file": "mem9-02-regression.json",
+    "sha256": "34b47ac9ed204f8b5023a5f91d8b83d9c42577b2445e84ab334f2df8b09f3d9d",
+    "sourceRevision": "864d1d17bad6dd610fcdd5b28e997e1411b04801",
+    "statusAsRecorded": "running"
+  },
+  "method": "One-time longest-processing-time greedy assignment; descending observed duration, lexical task tie-break, lighter group first (A on equal sums). Review the static B assignment; preserve registry order; new Native tasks enter A.",
+  "beforeNativeMs": 776477,
+  "nativeGroups": {
+    "native-a": {
+      "observedTaskMs": 388378,
+      "tasks": [
+        {
+          "name": "pure-string-index",
+          "durationMs": 6314
+        },
+        {
+          "name": "pure-record-helpers",
+          "durationMs": 21248
+        },
+        {
+          "name": "pure-argument-helpers",
+          "durationMs": 25464
+        },
+        {
+          "name": "canonical-api-lowering",
+          "durationMs": 2100
+        },
+        {
+          "name": "shared-stage-o19",
+          "durationMs": 7034
+        },
+        {
+          "name": "fastly-incoming-body-forwarding",
+          "durationMs": 10449
+        },
+        {
+          "name": "str03c-bounded-transforms",
+          "durationMs": 14812
+        },
+        {
+          "name": "logging-lowering",
+          "durationMs": 3283
+        },
+        {
+          "name": "canonical-router-lowering",
+          "durationMs": 13309
+        },
+        {
+          "name": "canonical-router-terminal-middleware",
+          "durationMs": 10368
+        },
+        {
+          "name": "router-selected-groups",
+          "durationMs": 6039
+        },
+        {
+          "name": "json-as-compatibility",
+          "durationMs": 3976
+        },
+        {
+          "name": "entities-managed-handler",
+          "durationMs": 556
+        },
+        {
+          "name": "entities-managed-handler-effects",
+          "durationMs": 1494
+        },
+        {
+          "name": "entities-native-runtime",
+          "durationMs": 7808
+        },
+        {
+          "name": "entities-hardening",
+          "durationMs": 41835
+        },
+        {
+          "name": "fastly-entities-native-workflow",
+          "durationMs": 95356
+        },
+        {
+          "name": "guest-link-package",
+          "durationMs": 7497
+        },
+        {
+          "name": "guest-link-materialization-stage",
+          "durationMs": 33384
+        },
+        {
+          "name": "guest-link-audit-diagnostics",
+          "durationMs": 18091
+        },
+        {
+          "name": "assets-lowering-plan",
+          "durationMs": 715
+        },
+        {
+          "name": "assets-package-owned-lowering",
+          "durationMs": 376
+        },
+        {
+          "name": "grip-package-owned-lowering",
+          "durationMs": 418
+        },
+        {
+          "name": "canonical-api-runtime",
+          "durationMs": 1619
+        },
+        {
+          "name": "canonical-native-wasm",
+          "durationMs": 54833
+        }
+      ]
+    },
+    "native-b": {
+      "observedTaskMs": 388099,
+      "tasks": [
+        {
+          "name": "fastly-numeric-regions",
+          "durationMs": 13108
+        },
+        {
+          "name": "pure-helper-vocabulary",
+          "durationMs": 4892
+        },
+        {
+          "name": "pure-field-projection",
+          "durationMs": 15728
+        },
+        {
+          "name": "pure-guarded-arguments",
+          "durationMs": 52643
+        },
+        {
+          "name": "pure-source-helpers",
+          "durationMs": 11605
+        },
+        {
+          "name": "pure-loop-helpers",
+          "durationMs": 8189
+        },
+        {
+          "name": "fastly-driver-behavior-o09",
+          "durationMs": 37254
+        },
+        {
+          "name": "kv-native-abi-feasibility",
+          "durationMs": 1336
+        },
+        {
+          "name": "s3-native-read",
+          "durationMs": 22182
+        },
+        {
+          "name": "s3-body-read",
+          "durationMs": 8604
+        },
+        {
+          "name": "s3-node-transport",
+          "durationMs": 413
+        },
+        {
+          "name": "canonical-native-plan",
+          "durationMs": 6858
+        },
+        {
+          "name": "str02b-node-native",
+          "durationMs": 7532
+        },
+        {
+          "name": "str03a-generated-output",
+          "durationMs": 19924
+        },
+        {
+          "name": "bounded-app-logic",
+          "durationMs": 56752
+        },
+        {
+          "name": "bounded-read-loops",
+          "durationMs": 55235
+        },
+        {
+          "name": "bounded-loop-helpers",
+          "durationMs": 7268
+        },
+        {
+          "name": "entities-envelope-feasibility",
+          "durationMs": 2681
+        },
+        {
+          "name": "entities-node-native-workflow",
+          "durationMs": 29040
+        },
+        {
+          "name": "crypto-native-guest-source",
+          "durationMs": 4892
+        },
+        {
+          "name": "assets-native-embedded",
+          "durationMs": 16386
+        },
+        {
+          "name": "jwt-package-owned-lowering",
+          "durationMs": 663
+        },
+        {
+          "name": "canonical-opaque-node-emission",
+          "durationMs": 1836
+        },
+        {
+          "name": "grip-package-runtime",
+          "durationMs": 829
+        },
+        {
+          "name": "package-root-native",
+          "durationMs": 2249
+        }
+      ]
+    }
+  },
+  "portable": {
+    "unit": {
+      "tasks": 59,
+      "observedTaskMs": 259073
+    },
+    "native-a": {
+      "tasks": 25,
+      "observedTaskMs": 388378
+    },
+    "native-b": {
+      "tasks": 25,
+      "observedTaskMs": 388099
+    },
+    "javascript": {
+      "tasks": 7,
+      "observedTaskMs": 33781
+    },
+    "conformance-rsa": {
+      "tasks": 1,
+      "observedTaskMs": 434171
+    },
+    "conformance-schema": {
+      "tasks": 2,
+      "observedTaskMs": 169223
+    },
+    "conformance-rest": {
+      "tasks": 26,
+      "observedTaskMs": 405306
+    }
+  },
+  "limits": "No change to assertions or total task work. Excludes extra setup/build cost, queueing, concurrency limits and contention. The original report remains running; no aggregate pass or fresh CI speedup is inferred."
+}

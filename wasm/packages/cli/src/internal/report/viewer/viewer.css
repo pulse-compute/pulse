@@ -726,3 +726,58 @@ body.overlay-open{overflow:hidden}
 .build-summary .small-note{margin:12px 0 0}
 @media(max-width:1100px){.build-summary{margin-left:25px;margin-right:25px}}
 @media(max-width:640px){.build-summary>.kv-list{grid-template-columns:repeat(2,minmax(0,1fr))}.build-summary{margin-left:16px;margin-right:16px;padding:14px}}
+
+/* Authored analytics remains a single-column drill-down on narrow screens. */
+.analytics-links{padding-left:20px;display:grid;gap:12px;overflow-wrap:anywhere}
+.analytics-filters{display:flex;flex-wrap:wrap;gap:16px}
+.analytics-filters label{display:grid;gap:6px;font-size:12px;min-width:0}
+.analytics-filters select{max-width:100%}
+#view-handlers .details-block{padding:12px 0;overflow-wrap:anywhere}
+#view-handlers .details-block>summary{cursor:pointer}
+#view-handlers .step-list .details-block{min-width:0}
+
+/* Secondary report sections stay available without competing execution catalogs. */
+.report-sections { margin-top: 12px; }
+.report-sections > summary { cursor: pointer; padding: 10px 12px; font-size: 12px; color: var(--muted); }
+#explorer-return:not(:empty) { margin-bottom: 16px; }
+#entry-point-list .evidence-label { margin-right: 10px; }
+#entry-point-list li { padding: 10px 0; }
+@media (max-width: 760px) { .mobile-nav .report-sections { margin: 0; flex: 0 0 auto; } }
+
+/* VIS-10: shared inventory controls and dense, scan-friendly records. */
+.inventory-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.view-switch{display:inline-flex;flex-shrink:0;gap:3px;border:1px solid var(--line);padding:3px;border-radius:99px;background:var(--bg)}
+.view-switch .view-mode{padding:7px 16px;border-radius:99px;font-size:12px;min-height:32px;color:var(--muted)}
+.view-switch .view-mode.active{background:var(--surface3);color:var(--text);box-shadow:0 0 0 1px var(--line)}
+.inventory-toolbar{display:flex;align-items:flex-end;gap:16px;padding:16px;flex-wrap:wrap}
+.inventory-toolbar>.search-box{flex:1;min-width:220px;max-width:none}
+.inventory-toolbar .analytics-filters{gap:12px}
+.analytics-filters select{min-height:36px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);padding:6px 30px 6px 10px;font:inherit}
+.inventory-pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px 12px;flex-wrap:wrap}
+.inventory-pagination p{margin:0}
+.compact-route-table{min-width:780px}
+.compact-route-table th{padding:10px 12px;white-space:nowrap}
+.compact-route-table td{padding:8px 12px;height:39px;vertical-align:middle}
+.compact-route-table tr:hover td{background:var(--row-hover)}
+.compact-route-table tr.selected td{background:var(--row-selected)}
+.compact-route-table td:nth-child(2){min-width:200px;max-width:430px;font-family:Consolas,monospace}
+.compact-route-table .route-source{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:11px}
+.compact-route-table .method{font-size:10px}
+.binding-inventory-table{min-width:540px}
+.method-PUT{color:var(--violet);background:var(--violet-bg)}
+.method-OPTIONS,.method-HEAD{color:var(--muted);background:var(--surface3)}
+.asset-groups{display:grid;gap:12px;margin:16px 0}
+.asset-group{border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.asset-group>summary{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px;cursor:pointer}
+.asset-group summary strong{font-size:13px}.asset-group summary span{color:var(--muted);font-size:12px}
+.asset-overview{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:11px;color:var(--muted)}
+.asset-overview a{border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+@media(max-width:700px){.inventory-heading{gap:0;margin-bottom:16px}.inventory-heading .section-heading{margin-bottom:12px}.inventory-toolbar>.search-box{flex-basis:100%;min-width:0}.inventory-toolbar .analytics-filters{width:100%}.inventory-toolbar .analytics-filters label{flex:1}.inventory-pagination{align-items:flex-start}.inventory-pagination .atlas-controls{gap:6px}}
+
+.compact-route-table td:nth-child(2){min-width:340px}.compact-route-table td:nth-child(2) a{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:480px}
+@media(max-width:760px){#view-atlas .view-switch .view-mode{font-size:11px;padding:6px 10px;min-height:28px}}
+
+.asset-group>summary::before{content:'▸';color:var(--muted)}.asset-group[open]>summary::before{content:'▾'}.asset-group>summary strong{flex:1}
+
+.compact-route-table{table-layout:fixed;min-width:1000px}.compact-route-table th:nth-child(1){width:90px}.compact-route-table th:nth-child(2){width:38%}.compact-route-table th:nth-child(3){width:24%}.compact-route-table th:nth-child(4){width:75px}.compact-route-table th:nth-child(5){width:115px}.compact-route-table th:nth-child(6){width:100px}.compact-route-table td:nth-child(2) a{max-width:100%}
+.binding-inventory-table{table-layout:auto;min-width:540px}.binding-inventory-table th:nth-child(n){width:auto}.binding-inventory-table td:nth-child(2){min-width:0;max-width:none;font-family:inherit}

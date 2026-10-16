@@ -91,10 +91,15 @@ const SHARD_DEFINITIONS = Object.freeze([
       'canonical-api-lowering',
       'canonical-native-plan',
       'pure-helper-vocabulary',
+      'fastly-numeric-regions',
+      'fastly-numeric-budgets',
+      'fastly-handle-ownership',
+      'fastly-handle-frames',
       'pure-string-index',
       'pure-field-projection',
       'pure-guarded-arguments',
       'pure-source-helpers',
+      'npm-source-imports',
       'pure-record-helpers',
       'pure-argument-helpers',
       'pure-loop-helpers',
@@ -152,6 +157,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-driver-behavior-o09',
       'fastly-request-headers',
       'fastly-native-platform-capabilities',
+      'fastly-incoming-body-forwarding',
       'fastly-conditional-kv',
       'clean-machine-acceptance' // installed conditional-KV adversarial corpus
     ])
@@ -170,6 +176,8 @@ const SHARD_DEFINITIONS = Object.freeze([
     title: 'Package effects',
     tasks: Object.freeze([
       'package-reachability',
+      'external-lowerers',
+      'package-runtime',
       'crypto-digest-text-contract',
       'crypto-digest-text-conformance',
       'crypto-digest-storage-conformance',
@@ -231,7 +239,7 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'clean-machine-consumers',
     title: 'Clean-machine consumers',
-    tasks: Object.freeze(['clean-machine-acceptance', 'cli-entities-installed-workflow'])
+    tasks: Object.freeze(['clean-machine-acceptance', 'cli-entities-installed-workflow', 'npm-source-installed-workflow'])
   }),
   Object.freeze({
     id: 'deployment-candidates',

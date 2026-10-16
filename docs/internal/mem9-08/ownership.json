@@ -1,0 +1,175 @@
+{
+  "schemaVersion": "pulse.mem9-08.ownership-inventory.v1",
+  "status": "proposal-source-inventory-not-runtime-contract",
+  "sourceCommit": "0ec9023d5ac0b267e10d8a2ecfbc7033188763f3",
+  "sourceTree": "93423e51b4f12f71b28f9424a72d020436b1729c",
+  "sources": [
+    {
+      "id": "canonical-slots",
+      "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js",
+      "sha256": "d90e4078d33e49c997e200ceafb800530fd1029aa03948eda329fbc77f154a81",
+      "anchors": [
+        "__pulse_local_",
+        "__pulse_state_keys",
+        "__pulse_state_values",
+        "__pulse_result",
+        "__pulse_event_payload_handle",
+        "__pulse_helper_result",
+        "__pulse_effect_result_",
+        "function __pulse_drop(value: i32): void {}",
+        "export function pulse_resume()"
+      ],
+      "ownership": "Value roots: all current local/state/result/event/helper/effect-result slots. Ready/pending flags and program counters are control state. Drop is not a release."
+    },
+    {
+      "id": "control-transfers",
+      "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-control.js",
+      "sha256": "dcb817a364c8df7be633cea9373e1fdc0330bd78506e2d4d6dcb083420271547",
+      "anchors": [
+        "function resumeAction",
+        "function pureLines",
+        "function compileSequence",
+        "host_value_truthy",
+        "__pulse_helper_result = 0"
+      ],
+      "ownership": "Statement/loop/dispatch boundaries need empty-temporary proofs. Transfers must precede owner clearing."
+    },
+    {
+      "id": "expression-borrows",
+      "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-expressions.js",
+      "sha256": "1d7fcca1730042340656bd24f22be83bf3fad94a31f42a192fd08de5f39adb34",
+      "anchors": [
+        "case 'pure-helper-call'",
+        "function renderPureHelper",
+        "const result =",
+        "arg_${i}: i32"
+      ],
+      "ownership": "Expression returns can borrow. Caller operands and helper native arguments may remain live outside global slots; no inner checkpoint without explicit roots."
+    },
+    {
+      "id": "shared-stage-results",
+      "path": "wasm/packages/runtime-core-as/src/compiler/shared-stage-accessors.js",
+      "sha256": "943aea0195a056991129fa633c8db639bb366ad8eaea19a94896c3a008e6623a",
+      "anchors": [
+        "['prepare'",
+        "['clear'",
+        "['result'",
+        "__pulse_effect_result_"
+      ],
+      "ownership": "Result handles survive flag clearing. This owner family is excluded from first-slice eligibility."
+    },
+    {
+      "id": "fastly-value-graph",
+      "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "sha256": "8571420454af4e2498706c639bd6c089eeda200ff547781fa7e59a239e2ca528",
+      "anchors": [
+        "class __PulseFastlyValue",
+        "valuesStorage",
+        "__pulse_fastly_values",
+        "__pulse_fastly_scalar_handles",
+        "__pulse_fastly_integer_handles",
+        "__pulse_fastly_character_handles",
+        "__pulse_fastly_literal_handles",
+        "__pulse_fastly_payloads",
+        "__pulse_fastly_ready",
+        "__pulse_fastly_pending",
+        "responseHandle: i32",
+        "bodyHandle: i32",
+        "schemaCodecsActive ? 'incremental' : 'stub'"
+      ],
+      "ownership": "Strong table, cache/payload/ready roots and child handle edges. Pending IDs, responseHandle/bodyHandle fields are provider resources. Lazy edge access must not allocate during tracing. Runtime selection is explicit."
+    },
+    {
+      "id": "fastly-ropes",
+      "path": "packages/provider-fastly/src/build/native-string-values.js",
+      "sha256": "640ef6f811045fa0f6b83d6bf67d41aeaec3a3af3235625ea1615761c1804a39",
+      "anchors": [
+        "textLeft: __PulseFastlyValue | null",
+        "textRight: __PulseFastlyValue | null",
+        "get text(): string",
+        "value.textLeft = left"
+      ],
+      "ownership": "Direct managed object edges coexist with handle edges. Trace without flattening or requiring a child handle mapping."
+    },
+    {
+      "id": "header-snapshot",
+      "path": "packages/provider-fastly/src/build/native-request-headers.js",
+      "sha256": "6e39c6b22ee313db845e5cd60b96821f7ab2f66977bf9457ed6cc58a40b149dc",
+      "anchors": [
+        "__pulse_request_headers_snapshot",
+        "__pulse_request_headers_snapshot = output"
+      ],
+      "ownership": "Persistent value handle root; byte counters are not handles."
+    },
+    {
+      "id": "application-errors",
+      "path": "packages/provider-fastly/src/build/native-application-errors.js",
+      "sha256": "e755e6f7ea68643f8e53ad0a3abbf0886d0991cb3431c61854d65ef0abc7367d",
+      "anchors": [
+        "__pulse_application_schema",
+        "__pulse_application_failed_schema",
+        "host_router_error_take",
+        "__pulse_application_settle_effect"
+      ],
+      "ownership": "Schema fields are modes, not handle roots. Constructed error/results are synchronous temporary handles until accepted by canonical storage; no checkpoint within construction/settlement."
+    },
+    {
+      "id": "opaque-forwarding",
+      "path": "packages/provider-fastly/src/build/native-body-forwarding.as.ts",
+      "sha256": "5ff2786e10772a20b544fefb7131c645159cb4bed454b0cf87f3e73bc061aa40",
+      "anchors": [
+        "let __fwd_result: i32",
+        "let __fwd_marker: i32",
+        "__fwd_result = __pulse_fastly_put(value)",
+        "__fwd_marker = __pulse_fastly_put(marker)"
+      ],
+      "ownership": "Marker and result are value handles. Other forwarding fields require resource/control classification; exclude this capability from first slice."
+    },
+    {
+      "id": "invocation-identity",
+      "path": "packages/provider-fastly/src/build/effect-invocations.js",
+      "sha256": "3dca1866f1cb17f2e701a60406f2b360649c81b6e6fc7d3c078d1b7936f319fe",
+      "anchors": [
+        "__pulse_invocation_tickets",
+        "function __pulse_invocation_settle",
+        "pulse_set_effect_result(index, result)"
+      ],
+      "ownership": "Tickets/counts are control identities, not value handles. Result argument is a temporary handle transferred through authenticated settlement."
+    },
+    {
+      "id": "node-host-heap",
+      "path": "wasm/packages/host-runtime/src/runtime/canonical-native-host.js",
+      "sha256": "62a6325b0837759cee113641364ee6299d14f8620d22ea7b9e1773fe5ecdaea3",
+      "anchors": [
+        "class ValueHeap",
+        "this.values = new Map()",
+        "this.scalars = budget ? new Map()",
+        "this.identities = budget ? new WeakMap()",
+        "this.values.set(handle, value)"
+      ],
+      "ownership": "Strong host JS values, scalar and weak identity caches. Collections hold JS values; requires independent root transport/cache invalidation design."
+    },
+    {
+      "id": "canonical-abi-and-budget",
+      "path": "wasm/packages/contracts/src/handler/canonical-native-runtime.js",
+      "sha256": "5ead1d36c6f4a32a12379ef221a1c48e512073004d85f65b73520d77dfd1cfe7",
+      "anchors": [
+        "CANONICAL_NATIVE_ABI_VERSION = 2",
+        "reclamation: 'retain-until-terminal'",
+        "CANONICAL_NATIVE_IMPORTS"
+      ],
+      "ownership": "Existing integer-handle ABI and execution-wide budget contract. General budgeted reclamation and any new host-root transport need explicit review."
+    },
+    {
+      "id": "fastly-budget",
+      "path": "packages/provider-fastly/src/build/native-value-budget.js",
+      "sha256": "cd26ef52e91444feb986582ccb5fac0a1ac7db0b5626a1f3d587a6169a8c7cba",
+      "anchors": [
+        "__pulse_memory_charge",
+        "__pulse_numeric_charge_number",
+        "__pulse_numeric_charge_boolean"
+      ],
+      "ownership": "Cumulative logical charges and MEM9-07 virtual accounting remain unchanged. Physical reclamation is not implicitly authorized."
+    }
+  ]
+}

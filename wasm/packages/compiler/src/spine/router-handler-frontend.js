@@ -7,6 +7,7 @@ const {
   staticString,
   recognizeManagedHandlerWrapper,
   recognizeHandlerSurface,
+  capabilityForHandlerSurface,
   sourceModelForRouterRecognition
 } = require('./handler-surface-authority.js');
 const { normalizeManagedHandler } = require('./async-surface-normalizer.js');
@@ -130,17 +131,9 @@ function analysisForSurfaceFacts(surfaceFacts) {
   const capabilities = new Set();
   let fetchCount = 0;
   for (const fact of facts) {
-    if (fact.surfaceId === 'ctx.req.body') { capabilities.add('request.body.forward'); continue; }
-    if (fact.surfaceId.startsWith('ctx.fetch.')) { capabilities.add('fetch'); fetchCount += 1; continue; }
-    if (fact.surfaceId.startsWith('ctx.req.')) capabilities.add(fact.surfaceId.slice('ctx.'.length));
-    else if (fact.surfaceId.startsWith('ctx.config.')) capabilities.add('config.get');
-    else if (fact.surfaceId.startsWith('ctx.secret.')) capabilities.add('secret.get');
-    else if (fact.surfaceId.startsWith('ctx.kv.')) capabilities.add(fact.surfaceId.slice('ctx.'.length));
-    else if (fact.surfaceId.startsWith('ctx.state.')) capabilities.add(fact.surfaceId.slice('ctx.'.length));
-    else if (fact.surfaceId === 'ctx.emit') capabilities.add('event.emit');
-    else if (fact.surfaceId.startsWith('ctx.log.')) capabilities.add('logging');
-    else if (['ctx.json', 'ctx.text', 'ctx.response'].includes(fact.surfaceId)) capabilities.add(`response.${fact.surfaceId.slice('ctx.'.length)}`);
-    else if (fact.surfaceId === 'ctx.param') capabilities.add('route.param');
+    const capability = capabilityForHandlerSurface(fact);
+    if (capability) capabilities.add(capability);
+    if (fact.surfaceId.startsWith('ctx.fetch.')) fetchCount += 1;
   }
   return Object.freeze({
     capabilities: Object.freeze([...capabilities].sort()),
@@ -283,7 +276,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
             || node.arguments.length !== helper.functionNode.parameters.length || !['route', 'middleware'].includes(role)) {
             diagnostics.push(diagnostic(sourceFile, original, 'PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED',
               'Pure helpers require a static unshadowed synchronous pure call in an HTTP handler.'));
-          }
+          } else sourceModelForRouterRecognition(recognition)?.retainValidatedCall(entry, helper, original, sourceFile);
           return ts.factory.updateCallExpression(node, ts.factory.createIdentifier(helper.name), undefined,
             node.arguments.map(arg => ts.visitNode(arg, visit)));
         }
@@ -292,7 +285,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
           || !ts.isIdentifier(node.arguments[0]) || node.arguments[0].text !== ctxName
           || !['route', 'middleware'].includes(role)) {
           diagnostics.push(diagnostic(sourceFile, original, 'PULSE_NATIVE_HELPER_CALL_UNSUPPORTED', 'A source helper requires an unshadowed, directly awaited local binding and the current request context in an HTTP handler.'));
-        }
+        } else sourceModelForRouterRecognition(recognition)?.retainValidatedCall(entry, helper, original, sourceFile);
         return ts.factory.updateCallExpression(node, ts.factory.createIdentifier(helper.name), undefined, node.arguments.slice(1));
       }
       if (errorName && ts.isShorthandPropertyAssignment(node) && node.name.text === errorName) {

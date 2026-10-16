@@ -23,12 +23,14 @@ function nativeHandler(build, options) {
   const providerAdapter = createNodeProviderAdapter(options);
   return async (request, response, signal) => {
     const budget = createRequestBudget({ ...options, signal });
+    let packageCapture;
     try {
       const adapted = await budget.race(nodeRequestToWebRequest(request, { ...options, signal: budget.signal }));
+      packageCapture = adapted.packageCapture;
       const input = { method: adapted.method, url: adapted.request.url, headers: adapted.headerPairs,
         body: adapted.request.body ? Buffer.from(await budget.race(adapted.request.arrayBuffer())) : undefined };
       const execution = await executeCanonicalNativeModule(build.native, {
-        ...options, providerAdapter, request: input, requestBudget: budget, signal: budget.signal,
+        ...options, ...packageCapture?.options, providerAdapter, request: input, requestBudget: budget, signal: budget.signal,
         maxBodyBytes: options.maxRequestBodyBytes
       });
       const result = execution.response;
@@ -41,7 +43,7 @@ function nativeHandler(build, options) {
       if (body && typeof body.pipe === 'function') body = Readable.toWeb(body);
       const webResponse = new Response(suppressed ? null : body, { status: result.status, headers: result.headers });
       await writeWebResponseToNode(webResponse, response, { requestMethod: adapted.method, requestBudget: budget, signal: budget.signal });
-    } finally { budget.close(); }
+    } finally { packageCapture?.close(); budget.close(); }
   };
 }
 
@@ -68,7 +70,7 @@ function createNodeLauncher(input) {
     const active = new Set(), sockets = new Set();
     const execution = { ...options, kvReference: createNodeKvReference({ kv: structuredClone(options.kv || {}) }),
       fetchImplementation: options.networkFetch ? globalThis.fetch : undefined,
-      liveFetch: options.networkFetch, schemaCodecs: build.schemaCodecs };
+      liveFetch: options.networkFetch, schemaCodecs: build.schemaCodecs, packageArtifacts: build.packageArtifacts };
     const javascript = options.target === 'javascript' ? createNodeJavascriptHandler(build.application, execution) : null;
     const native = options.target === 'native' ? nativeHandler(build, execution) : null;
     const current = { active, sockets, server: null, onIdle: null };

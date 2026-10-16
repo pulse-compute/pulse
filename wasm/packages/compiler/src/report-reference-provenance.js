@@ -1,5 +1,6 @@
 'use strict';
 
+const { bindingOwnership } = require('./spine/binding-ownership');
 const { packageOperationRecognitionForCompiled } = require('./spine/package-operation-seam');
 
 // Build-time projection of compiler facts. This record never enters the Native
@@ -65,9 +66,8 @@ function collectCanonicalReportReferences(compiled, plan) {
         : input(effect, kind === 'kv' ? 'store' : 'name');
       const resolved = literal(expression);
       const name = resolved ?? (effect.resource?.kind === 'literal' && typeof effect.resource.value === 'string' ? effect.resource.value : null);
-      add('binding', name, kind, consumers, effect.id, {
-        dynamic: effect.resource?.kind === 'dynamic' || Boolean(expression && expression.kind !== 'literal')
-      });
+      const binding = bindingOwnership(kind, name, effect.resource?.kind === 'dynamic' || Boolean(expression && expression.kind !== 'literal'));
+      add('binding', binding.canonicalId, binding.kind, consumers, effect.id, { dynamic: binding.state === 'dynamic' });
     }
     if (effect.kind === 'event.emit') {
       const schema = literal(field(input(effect, 'emission'), 'schema'));
@@ -110,7 +110,9 @@ function collectCanonicalReportReferences(compiled, plan) {
   // Only compact allowlisted data crosses into Report. No provider metadata,
   // effect payloads, binding values, resource bodies or expression text survives.
   const routeBehaviors = require('./report-route-behavior').routeBehaviorForMetadata(compiled.metadata.router);
+  const topology = require('./report-handler-topology').collectHandlerTopology(compiled);
   return Object.freeze({ version: 'pulse.compiler-report-references.v1',
+    ...(topology ? { topology } : {}),
     ...(routeBehaviors ? { routeBehaviors } : {}),
     responsePayloads: require('./report-response-payloads').collectResponsePayloads(plan, entries, helpers),
     references: Object.freeze([...rows.values()].map(row => Object.freeze({ ...row, entryIds: Object.freeze(unique(row.entryIds)),

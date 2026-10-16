@@ -22,6 +22,7 @@ const {
 } = loadContractsLibraryContracts();
 const {
   LOWERABLE_LIBRARY_MANIFEST_VERSION,
+  isTrustedLowerer,
   validateLowerableLibraryManifest
 } = loadContractsLibraryManifest();
 const {
@@ -217,18 +218,29 @@ function makeLowerableBuilderDiagnostic(code, message, hint, details) {
   });
 }
 
+function resolveLowerablePackageFile(packageDir, reference) {
+  if (typeof reference !== 'string' || !reference.startsWith('./')) throw new TypeError('Lowerer paths must be package-relative ./ paths.');
+  const root = fs.realpathSync(packageDir);
+  const file = fs.realpathSync(path.resolve(root, reference));
+  const relative = path.relative(root, file);
+  if (relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative) || !fs.statSync(file).isFile()) {
+    throw new TypeError(`Lowerer file must remain inside its package: ${reference}.`);
+  }
+  return file;
+}
+
 function resolveLowerableCompilerBuilder(record) {
   const manifest = record && record.manifest ? record.manifest : {};
   const compiler = manifest.compiler && typeof manifest.compiler === 'object' ? manifest.compiler : {};
   const entry = compiler.entry;
   const exportName = compiler.export;
-  const diagnostics = [];
+  const diagnostics = [...validateLowerableLibraryManifest(manifest).diagnostics];
 
-  if (compiler.trust !== 'first-party') {
+  if (!isTrustedLowerer(compiler.trust)) {
     diagnostics.push(makeLowerableBuilderDiagnostic(
       'PULSEWASM_LOWERABLE_COMPILER_BUILDER_TRUST_REQUIRED',
-      `Lowerable compiler builder for ${manifest.contractId || '<unknown>'} must declare trust "first-party".`,
-      'Pass 46 only executes first-party package-owned builders; arbitrary third-party lowerers remain disabled.',
+      `Lowerable compiler builder for ${manifest.contractId || '<unknown>'} must declare trust "build-dependency" (or "first-party").`,
+      'Package-owned builders run as trusted build dependencies, without isolation.',
       { contractId: manifest.contractId, trust: compiler.trust }
     ));
   }
@@ -251,13 +263,24 @@ function resolveLowerableCompilerBuilder(record) {
     ));
   }
 
+  let resolvedEntry;
+  if (diagnostics.length === 0) {
+    try {
+      if (record.packageName && manifest.npmPackage !== record.packageName) throw new TypeError('Lowerer identity must match package.json name.');
+      resolvedEntry = resolveLowerablePackageFile(record.packageDir, entry);
+      resolveLowerablePackageFile(record.packageDir, manifest.modes.wasm.sidecar);
+    } catch (error) {
+      diagnostics.push(makeLowerableBuilderDiagnostic('PULSEWASM_LOWERABLE_COMPILER_BUILDER_PATH_INVALID', error.message,
+        'Ship the builder and sidecar inside the owning package.', { entry }));
+    }
+  }
   return {
     status: diagnostics.length === 0 ? 'ok' : 'error',
     packageDir: record && record.packageDir,
     packageName: record && record.packageName,
     manifest,
     compiler,
-    entry: entry && record && record.packageDir ? path.resolve(record.packageDir, entry) : undefined,
+    entry: resolvedEntry,
     exportName,
     diagnostics
   };
@@ -348,7 +371,7 @@ function discoverLowerableLibraryManifests(inputs = {}) {
   const nodeModuleDirs = inputs.scanNodeModules === false ? [] : packageDirsFromNodeModules(root, cwd);
   const packageDirs = [];
   const seenDirs = new Set();
-  for (const packageDir of workspaceDirs.concat(nodeModuleDirs)) {
+  for (const packageDir of inputs.packageDirs || workspaceDirs.concat(nodeModuleDirs)) {
     const resolved = path.resolve(packageDir);
     const identity = fs.existsSync(resolved) ? fs.realpathSync.native(resolved) : resolved;
     if (seenDirs.has(identity)) continue;
@@ -363,12 +386,21 @@ function discoverLowerableLibraryManifests(inputs = {}) {
     const packageJson = readJsonIfExists(packageJsonPath);
     const manifestRef = packageManifestPath(packageJson);
     if (!manifestRef) continue;
+    if (manifestRef !== './pulsewasm.manifest.cjs') throw new TypeError(`Trusted lowerer ${packageJson.name} must use its canonical manifest.`);
     const manifestFile = path.resolve(packageDir, manifestRef);
+    const relativeManifest = path.relative(fs.realpathSync(packageDir), fs.realpathSync(manifestFile));
+    if (relativeManifest !== 'pulsewasm.manifest.cjs') throw new TypeError(`Trusted lowerer ${packageJson.name} manifest must remain in its package.`);
     const manifestKey = manifestFile;
     if (seenManifests.has(manifestKey)) continue;
     seenManifests.add(manifestKey);
     const manifest = loadManifestFile(manifestFile);
+    if (manifest.npmPackage !== packageJson.name) throw new TypeError(`Lowerer identity must match package.json name ${packageJson.name}.`);
     const validation = validateLowerableLibraryManifest(manifest);
+    if (validation.status !== 'ok') {
+      const error = new TypeError(validation.diagnostics.map(entry => entry.message).join(' '));
+      error.diagnostics = validation.diagnostics;
+      throw error;
+    }
     manifests.push({
       packageDir,
       packageName: packageJson.name,
@@ -379,6 +411,13 @@ function discoverLowerableLibraryManifests(inputs = {}) {
     });
   }
 
+  const owners = new Map();
+  for (const record of manifests) {
+    for (const identity of [record.manifest.contractId, record.manifest.lowerableSubpath, ...(record.manifest.publicApi?.compatibilitySubpaths || [])]) {
+      if (owners.has(identity) && owners.get(identity) !== record) throw new TypeError(`Duplicate lowerer identity ${identity}.`);
+      owners.set(identity, record);
+    }
+  }
   manifests.sort((a, b) => String(a.manifest.contractId || a.packageName).localeCompare(String(b.manifest.contractId || b.packageName)));
   return manifests;
 }
@@ -418,7 +457,7 @@ function lowerableManifestRecordToLibraryContract(record) {
 
 function resolveDefaultLibraryContracts(inputs = {}) {
   const byPackage = new Map(defaultLibraryContracts().map((contract) => [contract.package, { ...contract, fixture: true }]));
-  for (const record of discoverLowerableLibraryManifests(inputs)) {
+  for (const record of inputs.manifestRecords || discoverLowerableLibraryManifests(inputs)) {
     const contract = lowerableManifestRecordToLibraryContract(record);
     byPackage.set(contract.package, {
       ...contract,
@@ -432,7 +471,7 @@ function resolveDefaultLibraryContracts(inputs = {}) {
 function findLowerableManifestRecord(inputs = {}) {
   const manifestRecords = Array.isArray(inputs.manifestRecords) && inputs.manifestRecords.length > 0
     ? inputs.manifestRecords
-    : discoverLowerableLibraryManifests({ cwd: inputs.cwd || process.cwd(), workspaceRoot: inputs.workspaceRoot, scanNodeModules: inputs.scanNodeModules });
+    : discoverLowerableLibraryManifests({ cwd: inputs.cwd || process.cwd(), workspaceRoot: inputs.workspaceRoot, scanNodeModules: inputs.scanNodeModules, packageDirs: inputs.packageDirs });
   const explicitManifest = inputs.manifest;
   if (explicitManifest) {
     const record = manifestRecords.find((entry) => entry.manifest === explicitManifest || (
@@ -468,7 +507,7 @@ function buildPackageOwnedLoweringPlan(inputs = {}) {
   const loaded = loadLowerableCompilerBuilder(record);
   const libraryContracts = Array.isArray(inputs.libraryContracts) && inputs.libraryContracts.length > 0
     ? inputs.libraryContracts
-    : resolveDefaultLibraryContracts({ cwd, workspaceRoot: inputs.workspaceRoot, scanNodeModules: inputs.scanNodeModules });
+    : resolveDefaultLibraryContracts({ cwd, manifestRecords, workspaceRoot: inputs.workspaceRoot, scanNodeModules: inputs.scanNodeModules, packageDirs: inputs.packageDirs });
   return invokeLowerableCompilerBuilder(loaded, record, libraryContracts, inputs);
 }
 

@@ -41,7 +41,40 @@ const REASONS = ['missing-evidence', 'unsupported-mapping', 'incomplete-mapping'
 const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 'dispatcher-carrier'];
 const ENTRY_ROLES = ['route', 'middleware', 'fallback', 'error', 'event', 'startup', 'export', 'other'];
 const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support', 'canonical-text-responses'];
+const analyticsFact = value => object({ state: en('available', 'unavailable', 'not-applicable'),
+  value: nullable(value), reason: nullable(en('not-recorded', 'not-applicable')) });
 const defs = {
+  AnalyticsPosition: object({ offset: uint, line: { ...uint, minimum: 1 }, column: { ...uint, minimum: 1 } }),
+  AnalyticsSpan: object({ file: text, sha256: hash, start: ref('AnalyticsPosition'), end: ref('AnalyticsPosition') }),
+  AnalyticsEvidence: object({ basis: en('handler-table', 'router-topology', 'authored-recognition', 'validated-helper-call', 'derived-association'),
+    producer: en('canonical-router-handler-table', 'canonical-router-linked-helper', 'canonical-router-execution-topology', 'canonical-handler-surface-authority', 'canonical-router-handler-validation', 'canonical-report-associations') }),
+  AnalyticsHandler: object({ id, canonicalId: text, kind: en('handler', 'helper'), name: nullable(text),
+    source: analyticsFact(ref('AnalyticsSpan')),
+    package: analyticsFact(object({ name: text, version: text, sourceIdentity: text })), evidence: array(ref('AnalyticsEvidence')) }),
+  AnalyticsRegistration: object({ id, canonicalId: text, handlerId: nullable(id),
+    kind: en('route', 'middleware', 'mount', 'error', 'event', 'fallback'), authored: bool,
+    source: analyticsFact(ref('AnalyticsSpan')), routerId: text, routerPath: array(text), mountPath: ids, order: uint,
+    match: analyticsFact(object({ method: nullable(text), path: nullable(str), eventType: nullable(text) })),
+    control: analyticsFact(object({ pattern: nullable(text), eligibility: bool, normal: bool, error: bool, terminal: bool, basis: fixed('canonical-router-control') })),
+    flow: object({ next: nullable(id), child: nullable(id), parentContinue: nullable(id) }), evidence: array(ref('AnalyticsEvidence')) }, ['control']),
+  AnalyticsUseSite: object({ id, ownerId: id, surfaceId: text, operation: text,
+    capability: analyticsFact(text), source: analyticsFact(ref('AnalyticsSpan')), evidence: array(ref('AnalyticsEvidence')),
+    binding: object({ state: en('resolved', 'dynamic', 'unknown', 'not-applicable'), kind: nullable(text),
+      referenceId: nullable(id), bindingId: nullable(id), reason: nullable(en('no-named-binding', 'dynamic-reference', 'unresolved-reference')) }) }),
+  AnalyticsHelperCall: object({ id, canonicalId: nullable(text), callerId: id, calleeId: id,
+    registrationIds: ids, source: analyticsFact(ref('AnalyticsSpan')), evidence: array(ref('AnalyticsEvidence')) }),
+  AnalyticsAssociation: object({ id, consumerRegistrationId: id, useSiteId: id,
+    via: array(object({ kind: en('direct', 'middleware', 'mount', 'helper', 'error'), id })),
+    lane: en('normal', 'error', 'event'), conditional: nullable(bool), coverage: ref('Coverage'), evidence: array(ref('AnalyticsEvidence')) }),
+  AnalyticsV1: object({ version: fixed('pulse.report-analytics.v1'), handlers: array(ref('AnalyticsHandler')),
+    registrations: array(ref('AnalyticsRegistration')), useSites: array(ref('AnalyticsUseSite')),
+    helperCalls: array(ref('AnalyticsHelperCall')), associations: array(ref('AnalyticsAssociation')),
+    coverage: object(Object.fromEntries(['handlers', 'registrations', 'useSites', 'helperCalls', 'associations'].map(key => [key, ref('Coverage')]))) }),
+  AnalyticsV2: object({ version: fixed('pulse.report-analytics.v2'), handlers: array(ref('AnalyticsHandler')),
+    registrations: array(ref('AnalyticsRegistration')), useSites: array(ref('AnalyticsUseSite')),
+    helperCalls: array(ref('AnalyticsHelperCall')),
+    coverage: object(Object.fromEntries(['handlers', 'registrations', 'useSites', 'helperCalls'].map(key => [key, ref('Coverage')]))) }),
+  Analytics: { oneOf: [ref('AnalyticsV1'), ref('AnalyticsV2')] },
   BuildCompiler: object({ phase: en('portable', 'provider'), artifactId: id, compilerVersion: text,
     durationMs: uint, timeoutMs: nullable(uint), flags: array(object({ name: text, value: nullable(text) })), flagsComplete: bool,
     optimization: object({ optimizeLevel: nullable(uint), shrinkLevel: nullable(uint), converge: bool }),
@@ -144,13 +177,13 @@ const capsule = object({ kind: fixed('pulse.application-report'), reportVersion:
   resourceProducers: array(ref('ResourceProducer')),
   implementations: array(ref('Implementation')),
   rootSets: array(ref('RootSet')), measurements: array(ref('Measurement')), observations: array(ref('Observation')),
-  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) }, ['references', 'resourceProducers', 'implementations', 'build']);
+  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }), analytics: ref('Analytics') }, ['references', 'resourceProducers', 'implementations', 'build', 'analytics']);
 const completion = object({ kind: fixed('pulse.report-completion'), completionVersion: fixed(1), status: fixed('complete'),
   operation: en('compile', 'native-build'), manifestVersion: fixed('pulse.project-execution.v10'), context: ref('Context'),
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),
   artifacts: array(object({ ...defs.File.properties, id, stage: en('final', 'prelink') })),
   sidecars: array({ oneOf: [
-    object({ ...defs.File.properties, kind: fixed('inventory'), version: fixed(1), required: bool }),
+    object({ ...defs.File.properties, kind: fixed('inventory'), version: en(1, 2), required: bool }),
     object({ ...defs.File.properties, kind: fixed('attribution'), version: en(1, 2), required: bool })
   ] }) });
 const attribution = object({ kind: fixed('pulse.report-attribution'), attributionVersion: fixed(1),

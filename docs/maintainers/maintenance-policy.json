@@ -1,7 +1,7 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
   "policyVersion": 13,
-  "releaseVersion": "1.0.0-beta.8",
+  "releaseVersion": "1.0.0-beta.9",
   "reviewedAt": "2026-10-09",
   "maintainerModel": {
     "residentMaintainer": "Codex",
@@ -263,7 +263,7 @@
     {
       "id": "lowerer-trust",
       "label": "Lowerer trust boundary",
-      "summary": "Discovery and execution of package-owned lowerers and the first-party trust restriction.",
+      "summary": "Discovery and execution of package-owned lowerers as trusted build dependencies, including protocol and ownership validation.",
       "decisionKind": "architecture",
       "contractUpdateRequired": true
     },

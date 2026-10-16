@@ -7,15 +7,15 @@
 > **Supported entry points:** `@pulse-compute/crypto`<br>
 > **Stability:** The package root supports bounded verification and request-owned exact-text digests; provider, manifest/compiler and Native integration subpaths remain toolchain-only.<br>
 > **npm:** [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.8/packages/crypto/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.9/packages/crypto/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.8` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.9` package policy.
 <!-- pulse-package-status:end -->
 
 Provider-neutral verification and bounded exact-text SHA-256 for Pulse.
 
 This package and `@pulse-compute/jwt` are members of the synchronized
-`1.0.0-beta.8` release catalog.
+`1.0.0-beta.9` release catalog.
 
 ## Exact-text SHA-256
 
@@ -38,7 +38,7 @@ the invocation. The named `digestText` export has the same contract.
 Node/Fastly Native reuse the selected Crypto SHA-256 guest source. Node/Fastly
 JavaScript use selected Web Crypto. Neither falls back. This bound matches
 current S3 text capacity and leaves larger Catalog envelopes for capacity work.
-See the [exact-text digest contract](https://pulsecompute.io/v1.0.0-beta.8/packages/crypto/#exact-text-digest).
+See the [exact-text digest contract](https://pulsecompute.io/v1.0.0-beta.9/packages/crypto/#exact-text-digest).
 
 ## Verification contract
 
@@ -155,7 +155,7 @@ deployment.
 S3 uses Crypto-owned SHA-256 and HMAC-SHA256 byte outputs. Native composes the
 existing guest-source unit; Node JavaScript explicitly binds Web Crypto through
 `@pulse-compute/crypto/provider`. The trusted seam snapshots Uint8Array input,
-allows at most 2097152 SHA-256 data bytes, 32768 HMAC data bytes and 8192 HMAC
+allows at most 2097152 SHA-256 data bytes, 65536 HMAC data bytes and 8192 HMAC
 key bytes, returns exactly 32 bytes,
 and wipes input staging on success or failure. It rejects unavailable selected
 primitives and does not fall back. Empty HMAC keys use the equivalent padded
@@ -164,7 +164,8 @@ zero-length import restriction. This provider seam does not add an author-facing
 signing API or change JWT key limits.
 
 Large hashes use a separate lazy 2,097,184-byte Native staging frame; small
-hashes and HMAC keep the 40,992-byte frame. Primary-memory Native digest/S3
+hashes up to 64 KiB and HMAC use the 73,760-byte frame (8 KiB key, 64 KiB data,
+32-byte output). Primary-memory Native digest/S3
 modules have a 256 MiB Wasm maximum. Fixed-memory linked guests retain their
 separate ABI and do not establish the 2 MiB text capacity profile.
 

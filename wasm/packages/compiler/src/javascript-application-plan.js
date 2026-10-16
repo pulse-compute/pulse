@@ -112,6 +112,7 @@ function buildJavascriptApplicationPlan(entryFile, options = {}) {
   let graphBuild;
   try {
     graphBuild = buildReachableProjectGraph(absoluteEntry, {
+      target: 'javascript',
       rootDir: options.rootDir,
       workspaceRoot: options.workspaceRoot,
       configFile: options.configFile,

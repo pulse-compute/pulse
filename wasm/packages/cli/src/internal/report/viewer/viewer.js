@@ -2,7 +2,7 @@
 (() => {
   const $ = (selector, root=document) => root.querySelector(selector);
   const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
-  const P = JSON.parse($('#pulse-report-data').textContent);
+  const P = reportEncoding.decode(JSON.parse($('#pulse-report-data').textContent));
   const glyphs = {
     routes:['M4 6h7M4 12h11M4 18h7','m15 3 4 3-4 3','m19 9 4 3-4 3','m15 15 4 3-4 3'],
     box:['m12 3 9 5-9 5-9-5 9-5Z','m3 8 0 9 9 5 9-5V8','M12 13v9','m7 5 9 5'],
@@ -65,12 +65,16 @@
     if(value<1048576)return (value/1024).toFixed(precision).replace(/\.0$/,'')+' KiB';
     return (value/1048576).toFixed(precision).replace(/\.0$/,'')+' MiB';
   }
-  const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
-    entries,entryIndex,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers} = createReportViewModel(P);
+  const model = createReportViewModel(P);
+  const {analytics,definitions,registrations,useSites,definitionById,registrationById,useSiteById,callById,definitionIndex,registrationIndex,useSiteIndex,definitionRegistrations,definitionSites,helperCallers,helperCallees,registrationAssociations,siteAssociations,bindingSites,analyticsCoverage,coverageText,authoredFact,authoredSource,definitionLabel,registrationLabel,filteredDefinitions,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
+    entries,entryIndex,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers} = model;
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
-  const navigation = [['routes','Routes','routes'],['entries','Entries','code'],['helpers','Helpers','chip'],['resources','Resources','box'],['schemas','Schemas','layers'],['bindings','Bindings','link'],['evidence','Evidence','evidence']];
+  const navigation = [['entry-points','Entry Points','routes'],['bindings','Bindings','link'],['schemas','Schemas','layers']];
+  const secondaryNavigation = [['routes','HTTP size analysis','routes'],['resources','Assets & sizes','box'],['evidence','Evidence','evidence'],['handlers','Authored records','code'],['entries','All entry records','code'],['helpers','Compiled helpers','chip']];
+  const viewIds = [...navigation,...secondaryNavigation,['atlas']].map(([id])=>id);
+  let explorerReturn=null,activeHash='',explorerOrigin=null,restoreOrigin=false,inventorySession=null;
   const button = (label, fn, cls='button subtle') => el('button',{type:'button',class:cls,on:{click:fn}},label);
   const note = text => el('div',{class:'plain-note'},icon('info'),el('p',{},text));
   const kv = entries => el('dl',{class:'kv-list'},entries.map(([key,value]) => el('div',{class:'kv-row'},el('dt',{},key),el('dd',{class:'record-text'},value))));
@@ -94,12 +98,15 @@
   const entryLinks = ids => el('div',{class:'entry-links'},ids.map(id=>el('div',{class:'helper-entry'},entryLink(id))));
   function toast(text) { $('#toast').textContent = text; $('#toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => {$('#toast').hidden = true;}, 3000); }
   function downloadCapsule() {
-    const url = URL.createObjectURL(new Blob([canonicalJson],{type:'application/json;charset=utf-8'}));
+    const url = URL.createObjectURL(new Blob([model.canonicalJson],{type:'application/json;charset=utf-8'}));
     const a = el('a',{href:url,download:'pulse-report.json'}); document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url),1500); toast('Complete capsule exported. View filters do not change evidence.');
   }
   function buildNavigation() {
-    for (const root of [$('#desktop-nav'),$('#mobile-nav')]) replace(root,navigation.map(([id,label,glyph]) => el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,id === 'evidence' ? null : el('span',{class:'nav-count'},id==='helpers'?(helperState==='recorded'?helpers.length:'—'):P[id].length))));
+    const item=([id,label,glyph])=>el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,
+      id==='entry-points'?el('span',{class:'nav-count'},model.entryPoints.length):id==='bindings'?el('span',{class:'nav-count'},P.bindings.length):null);
+    for(const root of [$('#desktop-nav'),$('#mobile-nav')])replace(root,navigation.map(item),
+      el('details',{class:'report-sections'},el('summary',{},'More report sections'),secondaryNavigation.map(item)));
   }
   function ledger(artifact, large=false) {
     const parts=composition(artifact);
@@ -145,13 +152,13 @@
     $('#snapshot-label').textContent = mode === 'current' ? 'Retained completed build · current inputs matched.' : mode === 'artifact' ? 'Completed artifact verified · current project not checked.' : 'Historical capsule replay · current project and original artifact bytes not checked.';
     $('#revision-label').textContent = 'Revision: ' + (P.provenance.revision ?? 'unknown') + ' · dirty: ' + (P.provenance.dirty === null ? 'unknown' : P.provenance.dirty ? 'yes' : 'no');
     $('#hash-button').textContent = P.evidenceHash.value.slice(0,12); $('#hash-button').title = 'SHA-256 ' + P.evidenceHash.value;
-    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Route registrations',inventoryCount('routes'),P.coverage.routes.status+' inventory · '+(routeCounts.distinctMethodPaths??'unknown')+' distinct method/path pairs','routes'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),P.coverage.resources.status+' inventory · input and retained bytes differ','resources']];
+    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Entry Points',String(model.entryPoints.length),model.entryPoints.filter(p=>p.type==='http').length+' HTTP · '+model.entryPoints.filter(p=>p.type==='event').length+' events · observed inventory','entry-points'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Assets & payloads',String(model.assetResources.length),'Recorded assets and associated responses · source bytes','resources']];
     replace($('#summary-strip'),items.map(([label,value,sub,view],i)=>el('a',{class:'summary-item clickable',href:'#'+view},el('div',{class:'summary-top'},label,icon(view === 'routes' ? 'routes' : 'box')),i===0?byteDisplay(A.bytes,'summary-value'):el('div',{class:'summary-value'+(value==='Unavailable'?' small':'')},value),el('div',{class:'summary-sub'},sub))));
     $('#route-total').textContent = P.routes.length;
-    $('#route-behavior-summary').textContent = `${routeCounts.terminal} terminal · ${routeCounts.continuing} continuing · ${routeCounts.unknown} behavior not recorded. Continuing means a handler can transfer control, including errors; it may also respond early.`;
+    $('#route-behavior-summary').textContent = `${routeCounts.distinctMethodPaths??'Unknown'} distinct method/path pairs · ${routeCounts.terminal} terminal · ${routeCounts.continuing} continuing · ${routeCounts.unknown} behavior not recorded. Continuing means a handler can transfer control, including errors; it may also respond early.`;
     const mapped = P.routes.filter(r=>factValue(measurement(r,'handler-body')?.fact)!==null).length;
     $('#mapping-label').textContent = `${mapped} / ${P.routes.length} handler mappings · ${A.stage}`;
-    replace($('#compact-ledger'),ledger(A));
+    replace($('#compact-ledger'),ledger(A),el('div',{class:'asset-overview'},model.assetGroups().map(g=>el('a',{href:'#resources'},g.label+' · '+bytes(g.input)+' known source bytes'+(g.known<g.resources.length?' · '+(g.resources.length-g.known)+' unmeasured':'')))));
     const tests=P.evidence.filter(e=>e.kind==='test'&&e.artifactIds.includes(A.id));
     replace($('#compact-coverage'),[['handler-body','Handler mappings'],['reachable','Reachability roots']].map(([metric,label])=>{
       const c=mappingCoverage(metric);
@@ -233,6 +240,7 @@
     tabs.addEventListener('keydown',e=>{let i=ids.indexOf(state.drawerTab);if(e.key==='ArrowRight')i=(i+1)%3;else if(e.key==='ArrowLeft')i=(i+2)%3;else if(e.key==='Home')i=0;else if(e.key==='End')i=2;else return;e.preventDefault();state.drawerTab=ids[i];renderDrawer();$('#drawer-tab-'+ids[i]).focus();});
     const panel=el('div',{id:'drawer-panel',role:'tabpanel','aria-labelledby':'drawer-tab-'+state.drawerTab,tabindex:0});
     if(state.drawerTab==='facts') panel.append(el('div',{class:'drawer-facts-grid'},
+      detailSection('Authored handler and associations',el('p',{},el('a',{href:model.detailHash('entry-points',model.entryPointById.has(r.entryId)?r.entryId:r.id)},'Open Entry Point')),definitionById.has(r.handlerId)?definitionLink(r.handlerId):el('p',{},'Handler definition unavailable'),registrationById.has(r.entryId)?registrationLink(r.entryId):analyticsCoverageNote('registrations')),
       detailSection('Registration behavior',el('p',{},routeBehavior(r)),note(r.behavior ? 'Compiler handler IR · continuing includes conditional next() and error transfers. This is not a complete endpoint execution chain.' : 'Compiler behavior evidence was not retained. Router nesting, source names and dispatcher membership do not establish behavior.')),
       detailSection('Handler attribution',el('strong',{},handlerAttribution(r).label),el('p',{},handlerAttribution(r).detail)),
       detailSection('Declarations',el('p',{},declarationLabels[declarationState(r)]),...r.declarationIds.map(id=>{const d=declarations.get(id);return el('p',{},d.kind+': '+d.name);}),note('Recorded declarations are not proof of effective permissions.')),
@@ -258,7 +266,7 @@
           resolution.variants.length?resolution.variants.map(m=>el('section',{class:'measurement-record'},byteDisplay(factValue(m.fact)),kv([['Exact bytes',exact(factValue(m.fact))],['Evidence',qualifier(m.fact)],['Method',m.method],['Mapped chunks',`${m.mappedChunks} / ${m.expectedChunks??'unknown'}`],['Physical artifact',A.id+' · '+A.stage],['Root set',m.rootSetId??'Not applicable'],['Root',m.rootId??'Not applicable'],['Body identities',m.bodyIds.join(', ')||'Not recorded'],['Measurement records',m.recordIds.join(', ')]]),...evidenceCards(m.fact.evidenceIds))):el('p',{class:'small-note'},'No measurement record was retained for this metric.')));
       }
     } else panel.append(...evidenceCards(r.evidenceIds),detailSection('Traceability',kv([['Source',sourceText(r.source)],['Registration → handler',r.id+' → '+r.handlerId],['Capsule SHA-256',P.evidenceHash.value]])),el('details',{class:'details-block'},el('summary',{},'Raw route record'),el('pre',{class:'record-text'},JSON.stringify(r,null,2))));
-    replace($('#drawer-content'),el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},entryLink(r.entryId)),tabs,panel);
+    replace($('#drawer-content'),explorerReturn?el('a',{href:explorerReturn.hash,class:'button subtle'},'Back to Explorer'):null,el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},entryLink(r.entryId)),tabs,panel);
   }
   function dispatcherDetails(route) {
     const view=routeDispatchers(route);
@@ -386,18 +394,18 @@
   function renderResources() {
     const sectionNames={0:'Custom',1:'Type',2:'Import',3:'Function',4:'Table',5:'Memory',6:'Global',7:'Export',8:'Start',9:'Element',10:'Code',11:'Data',12:'Data count',13:'Tag'};
     const factCell=f=>el('td',{class:'numeric'},el('div',{class:'metric-value'},factText(f)),el('div',{class:'secondary'},f.state==='available'?f.basis+' · '+f.coverage:f.reason??f.state));
-    const resourceRows=[];
-    sortedResources().forEach(r=>{
+    function resourceRows(resources){const rows=[];
+    resources.forEach(r=>{
       const i=resourceIndex.get(r.id),g=r.generator;
       const open=state.expandedResources.has(r.id);
       const expand=button((open?'▾ ':'▸ ')+r.name,()=>{open?state.expandedResources.delete(r.id):state.expandedResources.add(r.id);renderResources();$('#resource-expand-'+i).focus({preventScroll:true});},'resource-expand mono');
       expand.id='resource-expand-'+i;expand.setAttribute('aria-expanded',String(open));expand.setAttribute('aria-controls','resource-detail-'+i);
       const firstRoute=routes.get(r.routeIds[0]);
-      resourceRows.push(el('tr',{'data-resource-index':i},el('td',{},expand,r.kind==='response-payload'?el('div',{class:'secondary record-text'},
+      rows.push(el('tr',{'data-resource-index':i},el('td',{},expand,r.kind==='response-payload'?el('div',{class:'secondary record-text'},
         (r.mediaType??'Media type unresolved')+' · '+(firstRoute?firstRoute.method+' '+firstRoute.path:'Entry association unavailable')):null),el('td',{},r.kind),factCell(r.inputBytes),
         el('td',{class:'numeric'},el('div',{class:'metric-value'},factText(g?.representationBytes)),el('div',{class:'secondary'},g?representationLabels[g.representation]:'Not recorded')),
         factCell(r.retainedPayloadBytes),el('td',{},r.routeIds.length+' recorded routes')));
-      resourceRows.push(el('tr',{hidden:!open},el('td',{colspan:6},el('div',{id:'resource-detail-'+i,class:'resource-detail'},...(open?[
+      rows.push(el('tr',{hidden:!open},el('td',{colspan:6},el('div',{id:'resource-detail-'+i,class:'resource-detail'},...(open?[
         el('div',{},el('h3',{},'Resource facts'),kv([[r.kind==='response-payload'?'UTF-8 response payload bytes':'Source input bytes',factText(r.inputBytes)],['Input evidence',qualifier(r.inputBytes)],
           ['Representation',g?representationLabels[g.representation]:'Not recorded'],['Representation bytes',factText(g?.representationBytes)],['Representation evidence',qualifier(g?.representationBytes)],
           ['Producer',g?g.producer.name+' · '+g.producer.version:'Not recorded'],['Entry coverage',g?`${g.entryCoverage.status} · ${g.entryCoverage.observed} / ${g.entryCoverage.expected??'unknown'}${g.entryCoverage.reason?' · '+g.entryCoverage.reason:''}`:'Not recorded'],
@@ -405,6 +413,7 @@
           g?.schemaId?button('View schema structure',()=>openSchema(g.schemaId)):null,routeChips(r.routeIds),entryLinks(r.entryIds)),
         el('div',{},el('h3',{},'Evidence'),...evidenceCards(r.evidenceIds))]:[])))));
     });
+    return rows;}
     const artifactPanels=P.artifacts.map(a=>{
       const rows=[{name:'Header',bytes:8},...a.sections.map(s=>({name:sectionNames[s.id]||'Section '+s.id,bytes:s.bytes}))]
         .map(s=>el('tr',{},el('td',{},s.name),el('td',{},bytes(s.bytes)),el('td',{},exact(s.bytes))));
@@ -425,23 +434,23 @@
       },'schema-sort-button');control.id='resource-sort-'+key;
       return el('th',{'aria-sort':state.resourceSort===key?(state.resourceDir==='asc'?'ascending':'descending'):'none'},control);
     };
-    const resourceTable=el('table',{class:'inventory-table resource-table'},
+    const resourceTable=(rows,sortable=false)=>el('table',{class:'inventory-table resource-table'},
       el('caption',{class:'sr-only'},'Resource input and retained sizes'),
-      el('thead',{},el('tr',{},sortHead('name','Resource'),el('th',{},'Category'),sortHead('input','Input bytes'),sortHead('representation','Representation bytes'),sortHead('retained','Retained payload'),el('th',{},'References'))),
-      el('tbody',{},resourceRows));
+      el('thead',{},el('tr',{},sortable?sortHead('name','Resource'):el('th',{},'Resource'),el('th',{},'Category'),sortable?sortHead('input','Input bytes'):el('th',{},'Source bytes'),sortable?sortHead('representation','Representation bytes'):el('th',{},'Representation bytes'),sortable?sortHead('retained','Retained payload'):el('th',{},'Retained payload'),el('th',{},'References'))),el('tbody',{},resourceRows(rows)));
+    const groups=model.assetGroups();
+    const advanced=el('details',{id:'resource-advanced',class:'details-block',open:!!state.resourceAdvanced,on:{toggle:e=>{state.resourceAdvanced=e.target.open;if(e.target.open&&!advanced.querySelector('table'))advanced.append(el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'All resource evidence'},resourceTable(sortedResources().filter(r=>model.technicalResources.includes(r)),true)));}}},
+      el('summary',{},'Advanced resource evidence · '+model.technicalResources.length+' records'),
+      note('Packed base64 text is input encoding, not Wasm data size. Normalized descriptor bytes describe schema structure, not generated code. Dynamic expressions are unresolved, not zero. Includes unassociated text construction sites, schema descriptors and generated support. These are evidence records, not distinct assets. Equal payloads at different sites remain separate.'),
+      P.resourceProducers?el('div',{},el('h3',{},'Producer coverage'),P.resourceProducers.map(row=>el('p',{class:'small-note'},resourceScopes[row.scope]+' · '+coverageText(row.coverage)))):note('Producer coverage was not recorded in this historical capsule.'),
+      state.resourceAdvanced?el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'All resource evidence'},resourceTable(sortedResources().filter(r=>model.technicalResources.includes(r)),true)):null);
     replace($('#view-resources'),
-      sectionHeading('Resources & artifact sizes','Exact physical ledgers, separate from resource inputs and attribution.',P.resources.length),
-      note('Do not add route sizes or resource input sizes to artifact bytes. Shared data is counted once physically.'),artifactPanels,
-      el('div',{class:'subsection'},sectionHeading('Resource inventory','Source input, packed representation and final retained payload are separate facts.',P.resources.length),
-        note('Packed base64 text is the build input encoding, not Wasm data size. Text-response input bytes measure the resolved string encoded as UTF-8; Native string storage and retained Wasm bytes remain unmapped. Normalized descriptor bytes describe schema structure, not generated validator code.'),
-        note('Text responses are canonical construction sites, not distinct physical assets or execution counts. Equal payloads at different sites remain separate. Dynamic expressions are unresolved, not zero. Only literal strings and directly bound const strings are measured; custom/JSON responses and arbitrary expression evaluation are outside this scope.'),
-        P.resourceProducers?el('div',{class:'surface panel-pad'},el('h3',{},'Producer coverage'),P.resourceProducers.map(row=>el('div',{class:'coverage-line'},
-          el('div',{},resourceScopes[row.scope]+' · '+row.coverage.status),el('p',{},`${row.coverage.observed} recorded / ${row.coverage.expected??'unknown'} expected${row.coverage.reason?' · '+row.coverage.reason:''}`))),
-          el('p',{class:'small-note'},'Selected assets cover resolved lookups, not unused manifest files. Text-response producer coverage counts observed sites including dynamic sites, not resolved sizes or complete consumers. Generated dispatcher responses may have no known entry. Package realization records are counted without retaining private contents. Other generated support is not enumerated.'),
-          P.resourceProducers.some(row=>row.scope==='canonical-text-responses')?null:el('p',{class:'small-note'},'Text-response coverage was not recorded in this capsule; no payload census can be inferred.'))
-          :note('Producer coverage was not recorded in this historical capsule.'),
-        P.resources.length?el('div',{class:'surface table-surface'},el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'Scrollable resource inventory'},resourceTable))
-          :note('No resource records. Inventory coverage: '+P.coverage.resources.status+'.')));
+      sectionHeading('Assets & sizes','Embedded assets and associated response payloads, grouped by type.',model.assetResources.length),
+      note('Source-byte totals describe recorded inputs and response construction sites. They are not deduplicated physical bytes or deletion savings. Retained Wasm size remains separate.'),
+      el('div',{class:'asset-groups'},groups.length?groups.map(g=>el('details',{class:'asset-group',open:state.assetGroups?.has(g.label),on:{toggle:e=>{state.assetGroups??=new Set();e.target.open?state.assetGroups.add(g.label):state.assetGroups.delete(g.label);}}},
+        el('summary',{},el('strong',{},g.label),el('span',{},g.resources.length+' records · '+bytes(g.input)+' known source bytes'+(g.known<g.resources.length?' · '+(g.resources.length-g.known)+' unmeasured':''))),
+        el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':g.label},resourceTable(g.resources)))):note('No embedded assets or associated response payloads recorded. This does not establish that the application has none.')),
+      el('p',{class:'small-note'},model.technicalResources.length+' technical or unassociated records are available in Advanced resource evidence. Schemas are also available in the Schemas inventory.'),
+      sectionHeading('Physical artifact sizes','Exact file accounting. Resource input sizes must not be added to these totals.'),artifactPanels,advanced);
   }
 
   function schemaSortHead(key,label) {return el('th',{'data-schema-sort':key,'aria-sort':state.schemaSort===key?(state.schemaDir==='asc'?'ascending':'descending'):'none'},button(label+' ↕',()=>{state.schemaDir=state.schemaSort===key?(state.schemaDir==='asc'?'desc':'asc'):(key==='name'?'asc':'desc');state.schemaSort=key;renderSchemaRows();},'schema-sort-button'));}
@@ -470,6 +479,148 @@
     replace($('#schema-body'),rows);$('#schema-count').textContent=`${list.length} of ${P.schemas.length} schemas · ${P.coverage.schemas.status} inventory`;
     for(const th of $$('[data-schema-sort]'))th.setAttribute('aria-sort',th.dataset.schemaSort===key?(state.schemaDir==='asc'?'ascending':'descending'):'none');
   }
+  // Local ordinals navigate this capsule; canonical IDs remain in record details.
+  const definitionLink = id => el('a',{href:model.detailHash('handlers',id),class:'record-text'},definitionLabel(definitionById.get(id)));
+  const registrationLink = id => el('a',{href:model.detailHash('registrations',id),class:'record-text'},registrationLabel(registrationById.get(id)));
+  const useSiteLink = id => { const row=useSiteById.get(id); return el('a',{href:model.detailHash('use-sites',id),class:'record-text'},row.surfaceId+' · site '+(useSiteIndex.get(id)+1)); };
+  const analyticsEvidence = row => el('details',{class:'details-block'},el('summary',{},'Retained record and producer evidence'),el('pre',{class:'record-text'},JSON.stringify(row,null,2)));
+  const analyticsCoverageNote = key => el('p',{class:'small-note'},'Coverage: '+coverageText(analyticsCoverage(key)));
+  const registrationLinks = rows => el('ul',{class:'analytics-links'},rows.map(row=>el('li',{},registrationLink(row.id))));
+  const definitionLinks = rows => el('ul',{class:'analytics-links'},rows.map(row=>el('li',{},definitionLink(row.id),
+    el('p',{class:'small-note record-text'},row.kind+' · '+(row.source.state==='available'?row.source.value.file+':'+row.source.value.start.line+':'+row.source.value.start.column:authoredFact(row.source))),
+    el('p',{class:'small-note'},definitionRegistrations(row.id).length+' observed registrations · '+definitionSites(row.id).length+' owned use sites',
+      definitionRegistrations(row.id).length?' · '+[...new Set(definitionRegistrations(row.id).map(r=>r.kind))].join(', '):null))));
+  function callDetail(call) {
+    return el('details',{class:'details-block'},el('summary',{class:'record-text'},definitionLabel(definitionById.get(call.callerId))+' → '+definitionLabel(definitionById.get(call.calleeId))),
+      kv([['Caller',definitionLink(call.callerId)],['Linked helper',definitionLink(call.calleeId)],['Authored call source',authoredSource(call.source)]]),
+      registrationLinks(call.registrationIds.map(id=>registrationById.get(id))),analyticsEvidence(call));
+  }
+  function associationDetail(row) {
+    const condition = row.conditional === false ? 'Direct ownership · not execution' : row.conditional === true ? 'Conditional static candidate' : 'Conditionality unknown';
+    return el('details',{class:'details-block'},el('summary',{class:'record-text'},useSiteById.get(row.useSiteId).surfaceId+' · '+row.lane+' · '+condition+' · '+registrationLabel(registrationById.get(row.consumerRegistrationId))),
+      kv([['Consumer',registrationLink(row.consumerRegistrationId)],['Use site',useSiteLink(row.useSiteId)],['Coverage',coverageText(row.coverage)]]),
+      el('ol',{class:'step-list'},row.via.map(hop=>el('li',{},hop.kind+' · ',hop.kind==='helper'?callDetail(callById.get(hop.id)):registrationLink(hop.id)))),analyticsEvidence(row));
+  }
+  function associationList(rows, coverage) {
+    const host=el('div');let page=0;
+    function draw(){
+      const pages=Math.max(1,Math.ceil(rows.length/20));
+      const previous=button('Previous associations',()=>{page--;draw();host.querySelector('.association-page-status').focus();});
+      const next=button('Next associations',()=>{page++;draw();host.querySelector('.association-page-status').focus();});
+      previous.disabled=page===0;next.disabled=page+1>=pages;
+      host.replaceChildren(el('p',{class:'small-note'},'Coverage: '+coverageText(coverage)),
+        ...rows.slice(page*20,(page+1)*20).map(associationDetail),
+        el('div',{class:'atlas-controls'},previous,el('span',{class:'association-page-status',tabindex:-1,role:'status'},rows.length+' associations · page '+(page+1)+' / '+pages),next),
+        ...(!rows.length?[el('p',{},'No observed associations. Missing evidence does not establish absence.')]:[]));
+    }
+    draw();return host;
+  }
+  function upstreamDetail(id) {
+    if(!model.queries)return note('Upstream admission independent of use sites was not recorded by this historical representation.');
+    const result=model.queries.upstream(id);
+    return detailSection('Upstream admission candidates',el('p',{class:'small-note'},coverageText(result.coverage)),
+      registrationLinks(result.relations.map(r=>registrationById.get(r.owner))),
+      note('Includes predecessors with no binding operations. These are static candidates, not observed execution.'));
+  }
+  function siteDetail(row, focused=false) {
+    const binding = bindings.get(row.binding.bindingId);
+    const associations = model.queries?.site(row.id) || {rows:siteAssociations(row.id),coverage:analyticsCoverage('associations')};
+    return el('article',{class:'surface panel-pad subsection'},el('h3',{id:focused?'use-site-title':undefined,tabindex:focused?-1:undefined,class:'record-text'},row.surfaceId+' · site '+(useSiteIndex.get(row.id)+1)),
+      kv([['Definition owner',definitionLink(row.ownerId)],['Capability',authoredFact(row.capability)],['Operation',row.operation],['Binding state',[row.binding.state,row.binding.kind,row.binding.reason].filter(Boolean).join(' · ')],
+        ['Logical binding',binding?el('a',{href:model.detailHash('bindings',binding.id)},binding.name+' · '+binding.resolution):'No resolved binding'],['Reference ID',row.binding.referenceId??'Not recorded'],['Authored use source',authoredSource(row.source)]]),
+      analyticsCoverageNote('useSites'),detailSection('Contextual consumers',associationList(associations.rows,associations.coverage)),analyticsEvidence(row));
+  }
+  const pointLink = id => model.entryPointById.has(id)
+    ? el('a',{href:model.detailHash('entry-points',id),class:'record-text'},'Open Entry Point · '+model.entryPointById.get(id).label) : registrationLink(id);
+  const bindingLink = id => el('a',{href:model.detailHash('bindings',id),class:'record-text'},'Open Binding · '+bindings.get(id).name);
+  const atlas=createReportAtlas({onClose:mode=>{restoreOrigin=true;location.hash=explorerOrigin?.hash||(mode==='bindings'?'#bindings':'#entry-points');},onTable:mode=>{
+    if(inventorySession){
+      const kind=mode==='bindings'?'bindings':'entry-points';if(inventorySession.kind!==kind){inventorySession.kind=kind;explorerOrigin.hash='#'+kind;}
+      inventorySession.hash=activeHash;inventorySession.selected=state.selectedRegistration;inventorySession.focus=document.activeElement;
+      const selection=atlas.inventorySelection();
+      if(inventorySession.kind==='entry-points'&&model.entryPointById.has(selection)){
+        const index=model.filteredEntryPoints().findIndex(p=>p.id===selection);
+        if(index>=0){explorerOrigin.hash=model.detailHash('entry-points',selection);state.entryPointPage=Math.floor(index/50);}
+      }else if(inventorySession.kind==='bindings'&&bindings.has(selection))explorerOrigin.hash=model.detailHash('bindings',selection);
+    }
+    restoreOrigin=true;location.hash=explorerOrigin?.hash||'#entry-points';
+  },model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,pointLink,bindingLink,select:id=>{
+    const hash=model.detailHash('explorer/entry',id);
+    if(location.hash===hash)atlas.center(id,true);else {atlasFocus=true;location.hash=hash;}
+  }});
+  function rememberExplorerOrigin(){const focused=document.activeElement,label=focused?.textContent;explorerOrigin={hash:location.hash||'#entry-points',label,index:$$('button').filter(n=>n.textContent===label).indexOf(focused)};}
+  function exploreEntry(id){inventorySession=null;rememberExplorerOrigin();explorerReturn=null;atlas.focusEntry(id);atlasFocus=true;const hash=model.detailHash('explorer/entry',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  function exploreBinding(id){inventorySession=null;rememberExplorerOrigin();explorerReturn=null;atlasFocus=true;atlas.bindings({binding:id});const hash=model.detailHash('explorer/binding',id);if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  function inventorySignature(kind){return JSON.stringify(kind==='bindings'?[kind,state.bindingSearch,state.selectedBinding]:[kind,state.entryPointSearch,state.entryPointType,state.entryPointMethod,state.entryPointEvent,state.selectedEntryPoint]);}
+  function exploreInventory(kind) {
+    const signature=inventorySignature(kind);
+    rememberExplorerOrigin();
+    if(inventorySession?.signature===signature&&inventorySession.hash){
+      explorerReturn={hash:inventorySession.hash,selected:inventorySession.selected,focus:inventorySession.focus};location.hash=inventorySession.hash;return;
+    }
+    explorerReturn=null;inventorySession={signature,kind};
+    if(kind==='bindings'){
+      const matching=[...bindings.values()].filter(b=>(b.name+' '+b.kind+' '+b.resolution).toLowerCase().includes(state.bindingSearch));
+      const id=matching.find(b=>b.id===state.selectedBinding)?.id||matching[0]?.id||null;
+      atlas.bindings({binding:id,query:state.bindingSearch,inventory:true});
+      location.hash='#explorer/inventory/bindings';
+    }else{
+      const matching=model.filteredEntryPoints(),id=matching.find(p=>p.id===state.selectedEntryPoint)?.registration?.id||null;
+      atlas.focusInventory(id);state.selectedRegistration=id;location.hash='#explorer/inventory/entry-points';
+    }
+  }
+  let atlasFocus=false;
+  function renderAtlas(){atlas.open($('#view-atlas'));}
+  const inventories=createReportInventories({model,el,button,replace,heading:sectionHeading,note,kv,tag,definitionLink,registrationLink,useSiteLink,entryLink,evidenceCards,exploreEntry,exploreBinding,exploreInventory,methodTag,bytes});
+  function renderEntryPoints(){inventories.renderEntryPoints($('#view-entry-points'));}
+  function registrationDetail(row) {
+    const associations = model.queries?.route(row.id) || {rows:registrationAssociations(row.id),coverage:analyticsCoverage('associations')};
+    return el('article',{class:'surface panel-pad subsection'},el('h3',{id:'registration-title',tabindex:-1,class:'record-text'},registrationLabel(row)),
+      el('p',{},button('Explore execution',()=>exploreEntry(row.id))),
+      kv([['Definition',row.handlerId?definitionLink(row.handlerId):'No authored definition'],['Authored',String(row.authored)],['Registration source',authoredSource(row.source)],
+        ['Router',row.routerId],['Router path',row.routerPath.join(' → ')],['Entry',entryLink(row.id)]]),
+      detailSection('Ordered mount instances',row.mountPath.length?el('ol',{class:'step-list'},row.mountPath.map(id=>el('li',{},registrationLink(id)))):el('p',{},'No enclosing mounts recorded.')),
+      detailSection('Static continuation links',kv(Object.entries(row.flow).map(([key,id])=>[key,id?registrationLink(id):'No retained link'])),
+        note('Links and associations explain static dependencies. They are not a request execution trace.')),
+      upstreamDetail(row.id),
+      detailSection('Capability and binding associations',associationList(associations.rows,associations.coverage)),analyticsCoverageNote('registrations'),analyticsEvidence(row));
+  }
+  function definitionDetail(row) {
+    const ownSites=definitionSites(row.id), callers=helperCallers(row.id), callees=helperCallees(row.id);
+    return el('article',{class:'surface panel-pad subsection'},el('h3',{id:'definition-title',tabindex:-1,class:'record-text'},definitionLabel(row)),
+      kv([['Definition kind',row.kind],['Definition ID',row.id],['Canonical ID',row.canonicalId],['Definition source',authoredSource(row.source)],
+        ['Package',row.package.state==='available'?[row.package.value.name,row.package.value.version,row.package.value.sourceIdentity].join(' · '):authoredFact(row.package)]]),
+      detailSection('Registration instances',analyticsCoverageNote('registrations'),registrationLinks(definitionRegistrations(row.id)),
+        definitionRegistrations(row.id).length?null:el('p',{},'No direct registration observed. Linked helpers are reached through callers.')),
+      detailSection('Authored capability and binding use sites',analyticsCoverageNote('useSites'),el('ul',{class:'analytics-links'},ownSites.map(site=>el('li',{},useSiteLink(site.id),
+        el('p',{class:'small-note record-text'},authoredFact(site.capability)+' · '+(bindings.get(site.binding.bindingId)?.name??site.binding.state))))),
+        ownSites.length?null:el('p',{},'No observed use sites.')),
+      detailSection('Helper callers',analyticsCoverageNote('helperCalls'),...callers.map(callDetail),callers.length?null:el('p',{},'No observed helper callers.')),
+      detailSection('Linked helper calls',analyticsCoverageNote('helperCalls'),...callees.map(callDetail),callees.length?null:el('p',{},'No observed helper calls.')),analyticsEvidence(row));
+  }
+  function renderHandlers() {
+    const selected=definitionById.get(state.selectedDefinition), registration=registrationById.get(state.selectedRegistration), site=useSiteById.get(state.selectedUseSite);
+    const search=el('input',{id:'handler-search',type:'search',value:state.definitionSearch,placeholder:'Search definitions, capabilities or bindings','aria-label':'Search handler definitions',on:{input:e=>{state.definitionSearch=e.target.value.toLowerCase();renderDefinitionList();}}});
+    const filter=(id,label,value,values,change)=>el('label',{},label,el('select',{id,'aria-label':label,value,on:{change:e=>{change(e.target.value);renderDefinitionList();}}},values.map(([key,text])=>el('option',{value:key,selected:key===value},text))));
+    function renderDefinitionList() {
+      const shown=filteredDefinitions();
+      replace($('#handler-list'),shown.length?definitionLinks(shown):el('p',{},analyticsCoverage('handlers').status==='unavailable'?'Handler definitions unavailable · '+analyticsCoverage('handlers').reason:'No matching definitions.'));
+      $('#handler-count').textContent=shown.length+' shown / '+definitions.length+' observed definitions';
+    }
+    replace($('#view-handlers'),sectionHeading('Handlers','Authored handlers and linked helpers. Roles belong to registration instances.',analyticsCoverage('handlers').status==='unavailable'?'Unavailable':definitions.length),
+      note('Static capability and binding associations describe recognized usage, not effective permissions or runtime execution. Missing evidence is not zero. Compiled helpers and byte attribution remain separate.'),
+      el('details',{class:'details-block'},el('summary',{},'Analytics coverage'),kv((model.queries?['handlers','registrations','useSites','helperCalls']:['handlers','registrations','useSites','helperCalls','associations']).map(key=>[key,coverageText(analyticsCoverage(key))]))),
+      selected?definitionDetail(selected):null,registration?registrationDetail(registration):null,site?siteDetail(site,true):null,
+      el('details',{class:'surface panel-pad subsection',open:!selected&&!registration&&!site},el('summary',{},'Search authored records'),el('label',{class:'search-box inventory-search'},icon('search'),search),
+        el('div',{class:'analytics-filters'},filter('handler-kind','Definition kind',state.definitionKind,[['all','All definitions'],['handler','Handlers'],['helper','Linked helpers']],v=>state.definitionKind=v),
+          filter('handler-role','Registration role',state.definitionRole,[['all','All roles'],...['route','middleware','error','event','fallback'].map(v=>[v,v])],v=>state.definitionRole=v)),
+        el('p',{id:'handler-count',class:'small-note','aria-live':'polite'}),el('div',{id:'handler-list'})),
+      el('p',{},el('a',{href:'#entry-points'},'Browse Entry Points')),
+      el('details',{class:'surface panel-pad'},el('summary',{},'All registration instances · '+(analyticsCoverage('registrations').status==='unavailable'?'Unavailable':registrations.length)),
+        analyticsCoverageNote('registrations'),registrationLinks([...registrations].sort((a,b)=>a.order-b.order))));
+    renderDefinitionList();
+  }
+
   function renderEntries() {
     const selected = entries.get(state.selectedEntry);
     const search = el('input',{id:'entry-search',type:'search',placeholder:'Search names, IDs or source files',
@@ -485,6 +636,7 @@
     replace($('#view-entries'),sectionHeading('Entry inventory','Recorded identities and static references. Links do not establish execution order.',P.entries.length),
       selected ? el('article',{class:'surface panel-pad subsection'},el('h3',{id:'entry-title',tabindex:-1,class:'record-text'},entryLabel(selected)),
         kv([['Kind',selected.kind],['Recorded name',selected.name??'Not recorded'],['Source',sourceText(selected.source)],['Entry ID',selected.id],['Canonical ID',selected.canonicalId],['Handler ID',selected.handlerId??'Not recorded']]),
+        detailSection('Authored analytics',definitionById.has(selected.handlerId)?definitionLink(selected.handlerId):el('p',{},'Handler definition unavailable'),registrationById.has(selected.id)?registrationLink(selected.id):analyticsCoverageNote('registrations')),
         detailSection('Recorded flow references',selected.flow ? kv([
           ['Next',selected.flow.nextEntryId?entryLink(selected.flow.nextEntryId):'Not recorded'],
           ['Child',selected.flow.childEntryId?entryLink(selected.flow.childEntryId):'Not recorded'],
@@ -495,11 +647,7 @@
       el('div',{class:'surface panel-pad'},el('label',{class:'search-box inventory-search'},icon('search'),search),el('div',{id:'entry-list'})));
     renderEntryList();
   }
-  function renderBindings() {
-    replace($('#view-bindings'),sectionHeading('Binding inventory','Logical names and retained resolution state; no secret values or inferred grants.',P.bindings.length),note('A reference describes usage. Bound does not establish per-route authority or current deployment health.'),
-      ...P.bindings.map(b=>el('article',{class:'surface panel-pad subsection'},el('h3',{},b.name),kv([['Kind',b.kind],['Declared',String(b.declared)],['Referenced',String(b.referenced)],['Resolution',b.resolution]]),routeChips(b.routeIds),entryLinks(b.entryIds),el('details',{class:'details-block'},el('summary',{},'Binding evidence'),...evidenceCards(b.evidenceIds)))),
-      P.bindings.length?null:note('No binding records. Inventory coverage: '+P.coverage.bindings.status+'.'));
-  }
+  function renderBindings(){inventories.renderBindings($('#view-bindings'));}
   function renderEvidence() {
     replace($('#view-evidence'),sectionHeading('Evidence & provenance','Recorded scope, availability and producer identity. No security grade or inferred pass.'),
       el('div',{class:'two-column'},el('div',{class:'surface panel-pad'},el('h3',{},'Capsule identity'),kv([['SHA-256',P.evidenceHash.value],['Profile / host',P.context.profile+' / '+P.context.host],['Recipe',P.provenance.recipe.name+' '+P.provenance.recipe.version],['Optimization',P.provenance.recipe.optimization],['Revision',P.provenance.revision??'Unknown'],['Dirty',P.provenance.dirty===null?'Unknown':String(P.provenance.dirty)]]),note('This digest identifies evidence; it is not a signature or security attestation.')),
@@ -517,19 +665,55 @@
     if($('#route-drawer').hidden)lastDrawerFocus=document.activeElement;
     state.selected=r.id;renderDrawer();$('#route-drawer').hidden=false;$('#drawer-backdrop').hidden=false;setPageInert(true);document.body.classList.add('overlay-open');$('#drawer-close').focus({preventScroll:true});
   }
-  function showView(view) {
-    state.view=view;for(const [id] of navigation)$('#view-'+id).hidden=id!==view;
+  function showView(view,restore=false) {
+    if(view!=='atlas')atlas.leave();
+    state.view=view;for(const id of viewIds)$('#view-'+id).hidden=id!==view;
     for(const a of $$('[data-view]')){a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}
-    if(view==='routes')renderRoutes();else if(view==='entries')renderEntries();else if(view==='helpers')renderHelpers();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
+    replace($('#explorer-return'),explorerReturn&&view!=='atlas'?el('a',{href:explorerReturn.hash,class:'button subtle'},'Back to Explorer'):null);
+    if(restore){atlas.resume();explorerReturn.focus?.focus({preventScroll:true});return;}
+    if(view==='entry-points')renderEntryPoints();else if(view==='routes')renderRoutes();else if(view==='atlas')renderAtlas();else if(view==='handlers')renderHandlers();else if(view==='entries')renderEntries();else if(view==='helpers')renderHelpers();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
   }
   function onHash() {
     if(location.hash==='#main')return;
-    const match=/^#(routes|entries|helpers|resources|schemas|bindings|evidence)(?:\/(\d+))?$/.exec(location.hash),view=match?.[1]??'routes',index=match?.[2]===undefined?null:Number(match[2]);
-    closeModal();closeDrawer(false);state.selectedEntry=view==='entries'&&index!==null?P.entries[index]?.id:null;showView(view);
+    const parts=location.hash.slice(1).split('/'),kind=parts[0];let token;
+    try{token=parts[1]===undefined?null:decodeURIComponent(parts[1]);}catch{token=null;}
+    const resolve=(rows,key=token)=>key===null?null:/^\d+$/.test(key)?rows[Number(key)]?.id||null:rows.find(r=>r.id===key)?.id||null;
+    let view=[...viewIds,'registrations','use-sites'].includes(kind)?kind:'entry-points';
+    let explorerId=null,explorerKind=null;
+    const inventoryExplorer=kind==='explorer'&&parts[1]==='inventory'&&['entry-points','bindings'].includes(parts[2]);
+    if(inventoryExplorer)view='atlas';
+    if(kind==='explorer'&&['entry','binding'].includes(parts[1])){view='atlas';explorerKind=parts[1];try{explorerId=decodeURIComponent(parts.slice(2).join('/'));}catch{explorerId=null;}}
+    let invalidExplorer=false;
+    if(explorerKind&&!(explorerKind==='entry'?registrationById:bindings).has(explorerId)){invalidExplorer=true;view=explorerKind==='entry'?'entry-points':'bindings';}
+    const restore=view==='atlas'&&explorerReturn?.hash===location.hash;
+    if(state.view==='atlas'&&view!=='atlas')explorerReturn={hash:activeHash,selected:state.selectedRegistration,focus:document.activeElement};
+    closeModal();closeDrawer(false);
+    state.selectedEntryPoint=view==='entry-points'?resolve(model.entryPoints):null;
+    state.selectedBinding=view==='bindings'?resolve(P.bindings):null;
+    state.selectedEntry=view==='entries'?resolve(P.entries):null;
+    state.selectedDefinition=view==='handlers'?resolve(definitions):null;
+    state.selectedRegistration=restore?explorerReturn.selected:inventoryExplorer?state.selectedRegistration:explorerKind==='entry'?(registrationById.has(explorerId)?explorerId:null):['registrations','atlas'].includes(view)?resolve(registrations):null;
+    state.selectedUseSite=view==='use-sites'?resolve(useSites):null;
+    $('#navigation-status').textContent=invalidExplorer?'Requested Explorer record is unavailable in this capsule.':'';
+    if(view==='atlas'&&!restore&&!inventoryExplorer){
+      if(explorerKind==='binding')atlas.bindings({binding:bindings.has(explorerId)?explorerId:null});
+      else {atlas.routing();if(explorerKind==='entry'&&state.view!=='atlas')atlas.focusEntry(state.selectedRegistration);}
+    }
+    if(inventoryExplorer&&!inventorySession){if(parts[2]==='bindings')atlas.bindings({inventory:true});else atlas.focusInventory(null);}
+    showView(['registrations','use-sites'].includes(view)?'handlers':view,restore);
+    activeHash=location.hash;
+    if(restore)return;
+    if(restoreOrigin){restoreOrigin=false;const origin=explorerOrigin;if(inventorySession)inventorySession.signature=inventorySignature(inventorySession.kind);if(!inventorySession)explorerReturn=null;replace($('#explorer-return'));const target=inventorySession?$('#'+inventorySession.kind+'-explore'):$$('button').filter(n=>n.textContent===origin?.label)[origin?.index];(target||(state.view==='bindings'?$('#binding-inventory-search'):$('#entry-point-title')||$('#entry-point-search')))?.focus({preventScroll:true});return;}
+    if(state.selectedEntryPoint)$('#entry-point-title')?.focus();
+    if(state.selectedDefinition)$('#definition-title').focus();
+    if(state.selectedRegistration&&view==='registrations')$('#registration-title').focus();
+    if(view==='atlas'&&atlasFocus){if(explorerKind==='binding')$('#binding-summary')?.focus({preventScroll:true});else atlas.center(state.selectedRegistration,true);atlasFocus=false;}
+    if(state.selectedUseSite)$('#use-site-title').focus();
+    if(state.selectedBinding)$('#binding-title-'+P.bindings.findIndex(b=>b.id===state.selectedBinding)).focus();
     if(state.selectedEntry)$('#entry-title').focus();
-    if(view==='routes'&&index!==null&&P.routes[index])displayDrawer(P.routes[index]);
-    if(view==='schemas'&&index!==null&&P.schemas[index]){const s=P.schemas[index];state.expandedSchemas.add(s.id);state.schemaSearch=s.schemaId.toLowerCase();renderSchemas();$('#schema-expand-'+index).focus();}
-    if(view==='helpers'&&index!==null&&helpers[index]){state.helperSearch='';state.helperRole='all';state.helperOrigin='all';state.expandedHelpers.add(helpers[index].id);renderHelpers();$('#helper-expand-'+index).focus();}
+    if(view==='routes'){const id=resolve(P.routes);if(id)displayDrawer(routes.get(id));}
+    if(view==='schemas'){const id=resolve(P.schemas);if(id){const s=schemas.get(id);state.expandedSchemas.add(id);state.schemaSearch=s.schemaId.toLowerCase();renderSchemas();$('#schema-expand-'+schemaIndex.get(id)).focus();}}
+    if(view==='helpers'){const id=resolve(helpers);if(id){state.helperSearch='';state.helperRole='all';state.helperOrigin='all';state.expandedHelpers.add(id);renderHelpers();$('#helper-expand-'+helperIndex.get(id)).focus();}}
   }
   function openModal(title,content) {
     lastModalFocus=document.activeElement;$('#modal-title').textContent=title;replace($('#modal-content'),content);$('#modal').hidden=false;$('#modal-backdrop').hidden=false;setPageInert(true);$('#route-drawer').inert=true;document.body.classList.add('overlay-open');$('#modal-close').focus();
@@ -537,7 +721,7 @@
   function closeModal() {
     if($('#modal').hidden)return;$('#modal').hidden=true;$('#modal-backdrop').hidden=true;$('#route-drawer').inert=false;const open=!$('#route-drawer').hidden;setPageInert(open);document.body.classList.toggle('overlay-open',open);if(lastModalFocus?.isConnected)lastModalFocus.focus({preventScroll:true});
   }
-  function openRaw() {openModal('The complete evidence capsule',[el('p',{},'One authoritative payload. Search, filters and theme never change these records.'),button('Export JSON',downloadCapsule),el('pre',{class:'raw-json',tabindex:0,'aria-label':'Complete capsule JSON'},canonicalJson)]);}
+  function openRaw() {openModal('The complete evidence capsule',[el('p',{},'One authoritative payload. Search, filters and theme never change these records.'),button('Export JSON',downloadCapsule),el('pre',{class:'raw-json',tabindex:0,'aria-label':'Complete capsule JSON'},model.canonicalJson)]);}
   function about() {openModal('Reading this report',[note('Build-review metadata can be operationally sensitive. Review it before public sharing.'),el('p',{},'This offline viewer consumes the embedded Report v1 capsule. The snapshot label distinguishes current matching, verified manifest replay and historical replay. No network requests, tests or live checks run here.'),el('p',{},'Declarations describe retained metadata, not effective permissions. Unavailable evidence is not zero or a pass. Normalized schema descriptor sizes are separate from generated code sizes.')]);}
   function sizeHelp() {openModal('One artifact. Different size views.',Object.entries(metrics).map(([metric,label])=>el('section',{class:'detail-section'},el('h3',{},label),el('p',{},({'handler-body':'Final mapped handler code bodies only. Embedded CSS, JavaScript and other data payloads are excluded. A small handler body does not mean a small asset. Shared implementations may appear in several rows.',own:'Reachable bodies exclusive to one root, only when the root universe and graph are complete.',reachable:'Distinct bodies reachable under the recorded static call-graph method, including shared code.',shared:'Reachable bodies shared with other roots. Values across routes are nonadditive.'})[metric]))).concat(note('Numeric sorting uses raw bytes, keeps unavailable values last in both directions, and shows evidence coverage. No size is a guarantee of deletion savings.')));}
   function applyTheme(theme) {document.documentElement.dataset.theme=theme;replace($('#theme-button'),icon(theme==='dark'?'sun':'moon'));$('#theme-button').setAttribute('aria-label','Switch to '+(theme==='dark'?'light':'dark')+' theme');}
@@ -555,10 +739,11 @@
   for(const [id,offset] of [['drawer-previous',-1],['drawer-next',1]])$('#'+id).addEventListener('click',()=>{const r=visibleRoutes[visibleRoutes.findIndex(r=>r.id===state.selected)+offset];if(r)location.hash='routes/'+routeIndex.get(r.id);});
   $('#modal-close').addEventListener('click',closeModal);$('#modal-backdrop').addEventListener('click',closeModal);
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else if(!$('#route-drawer').hidden)closeDrawer();}
-    const active=!$('#modal').hidden?$('#modal'):!$('#route-drawer').hidden?$('#route-drawer'):null;
+    if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else if(!$('#route-drawer').hidden)closeDrawer();else if(state.view==='atlas'&&atlas.escape())e.preventDefault();}
+    const active=!$('#modal').hidden?$('#modal'):!$('#route-drawer').hidden?$('#route-drawer'):state.view==='atlas'?$('#view-atlas'):null;
     if(e.key==='Tab'&&active){const nodes=$$('button:not([disabled]),a[href],input,select,summary,[tabindex="0"]',active).filter(n=>!n.hidden&&n.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&(document.activeElement===first||!active.contains(document.activeElement))){e.preventDefault();last?.focus();}else if(!e.shiftKey&&(document.activeElement===last||!active.contains(document.activeElement))){e.preventDefault();first?.focus();}}
-    if(e.key==='/'&&!active&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();if(state.view!=='routes'){location.hash='routes';setTimeout(()=>$('#route-search').focus(),0);}else $('#route-search').focus();}
+    if(e.key==='/'&&state.view==='atlas'&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();($('#atlas-search')||$('#binding-search'))?.focus();}
+    if(e.key==='/'&&state.view!=='atlas'&&!active&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();const target=state.view==='bindings'?'#binding-inventory-search':state.view==='routes'?'#route-search':'#entry-point-search';if(!['bindings','routes','entry-points'].includes(state.view)){location.hash='entry-points';setTimeout(()=>$('#entry-point-search').focus(),0);}else $(target)?.focus();}
   });
   window.addEventListener('hashchange',onHash);onHash();
 })();

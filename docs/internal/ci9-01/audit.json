@@ -1,0 +1,475 @@
+{
+  "schemaVersion": "pulse.qualification-audit.v1",
+  "purpose": "planning-only",
+  "qualificationDecision": "not-evaluated",
+  "inventorySource": {
+    "revision": "7cb9588d41d3d0982ff5734518aec31f1eec104b",
+    "tree": "cd7b2d32120b4f4fab9c82ffd653a9e7299144c8",
+    "dirty": false,
+    "ownerHashes": {
+      "wasm/test/suite/registry.cjs": "0c332f5ca222b5f8ec95e2654990293ec4e8dbd8f0a27e2e83a8202f9fccb88e",
+      "wasm/scripts/run-wasm-tests.cjs": "34d84309875aa0a0b130aa44437e6b9e7377fa8ddd7d5a651d759c3116928d77",
+      "scripts/maintainer-portable-validation.cjs": "fc7d52d168b38f4ab92955f3f52fc90fe766dbd4d8b90212d45fc6eeb2f3fc22",
+      "scripts/maintainer-fast-validation.cjs": "2403a99ea647859d8bf6a46b3b7774ea6b26c5806383d70cccc0f1e66423d4be",
+      "scripts/maintainer-validation-routing.cjs": "f99a3e3d12f36a46ff1ee5ae723896acec3759f9e4ab5644723453e9f69c6a04",
+      "scripts/validate-release.cjs": "d77e93402fcd5481dd764c669d6020c4359740f18ec6119b5602de628bfcde99",
+      "scripts/release-feature-acceptance.cjs": "a253ddc5243b0a28b0389f02120de1f2659605e6b57d317ad22e41813a2a504c",
+      "scripts/release-parallel.cjs": "f8561feb70164b8ad374073d696f33c78843d60bd474bbca27d4359588083659",
+      "scripts/release-recovery.cjs": "63ea67841e78054bc2a01ccddb50accb1fde6177290f704380f94c53563647f3",
+      "scripts/release-checkpoints.cjs": "f1ff6034b409b851fce63b0deebc9d8e42de83a56088e92ec19e004caecc48d4",
+      "scripts/release-shared-pack.cjs": "62151bb16fbff10e8ebef4e03e205cda0138d0892914fbca952233778c47d336",
+      "scripts/release-source-checks.cjs": "59069c14c7eec9c0da31cb9bc328fe8acc66a8833f5736078e91333efa925018",
+      "scripts/release-seal-measure.cjs": "97ffb8c29de98959f32bf59ae8ec8822651b562a464c116eccfda88b33b9e331",
+      "scripts/pack-release.cjs": "24c92b62fb85d021f01f0243a6d38d1a71da07c9efa9a5ef1163362f06b038f8",
+      "scripts/documentation-release.cjs": "0d927fa07741eab37282d7731f3a11b5d761dfe5ac69ae086cddcd6d6c24eacb",
+      "release/maintenance-policy.json": "a241809a215f00848c54fda5a0a06a677744924ce24b324cca3845cd63b6409f",
+      ".github/workflows/validate.yml": "f68af747e01917d4432a3e89ff97dd9ceaab1a85dd45c47bc134a682d868ede5",
+      ".github/workflows/release-qualify.yml": "aae80f37376cea1295caefc1e8f0611f0b026221c1adb8b55b1ac7c0485c5f15",
+      ".github/workflows/documentation.yml": "dea2c0641cd1760dac18bd17ccd2166baf99080ea47f9dd32954f39069f70006"
+    }
+  },
+  "counts": {
+    "registered": 280,
+    "profiles": {
+      "unit": 59,
+      "native": 50,
+      "javascript": 7,
+      "conformance": 29,
+      "cli": 34,
+      "providers": 12,
+      "release": 179
+    },
+    "portable": 145,
+    "installed": 11,
+    "portableReleaseOverlap": 139,
+    "portableOutsideRelease": 6
+  },
+  "portableShards": {
+    "unit": 59,
+    "native": 50,
+    "javascript": 7,
+    "conformance-rsa": 1,
+    "conformance-schema": 2,
+    "conformance-rest": 26
+  },
+  "installedGates": [
+    "str02b-installed",
+    "node01-installed",
+    "arc01-installed",
+    "jwt-installed-workflow",
+    "str02-installed",
+    "str03b-installed",
+    "ast01-installed",
+    "ast02b-installed",
+    "ast02d-installed",
+    "mcp-installed",
+    "s3-body-installed"
+  ],
+  "separateGates": [
+    {
+      "task": "str03c-bounded-transforms",
+      "classification": "experimental",
+      "disposition": "Workspace evidence only; installed transform qualification pending"
+    },
+    {
+      "task": "kv-conditional-acceptance",
+      "classification": "external-required",
+      "disposition": "Separate local K4 execution; documented Viceroy 0.21.0/0.21.1 missing-key CAS discrepancy is non-blocking by human direction (2026-10-04). Other failures and deployed Pulse cross-location acceptance remain required; B6-05"
+    }
+  ],
+  "installedCorpusOwners": {
+    "s3-native-read": "s3",
+    "s3-write-conformance": "s3",
+    "request-budget-transport": "request-deadline",
+    "multifile-source-identity": "multifile",
+    "http-input-outcomes": "http-input",
+    "kv-conditional-adversarial": "kv"
+  },
+  "conservativeFastTemplate": [
+    "api-surface",
+    "canonical-api-lowering",
+    "cli-command-spec",
+    "cli-project-guards",
+    "continuation-registry",
+    "javascript-effect-adapter",
+    "node-cross-target-conformance",
+    "package-exports",
+    "schema-codecs-smoke",
+    "schema-registry",
+    "target-support"
+  ],
+  "fastTemplateNote": "Selection uses trusted-base path policy; schema-codecs replaces schema-codecs-smoke when full coverage is required.",
+  "duplicateInvocations": [],
+  "overlapNote": "Same task IDs across independent gates are not redundant proof. Workspace, installed, runtime-version and candidate identities remain distinct.",
+  "observations": [
+    {
+      "file": "mem9-02-regression.json",
+      "sha256": "34b47ac9ed204f8b5023a5f91d8b83d9c42577b2445e84ab334f2df8b09f3d9d",
+      "statusAsRecorded": "running",
+      "runId": "2026-10-13T06-47-55-010Z--62",
+      "sourceRevision": "864d1d17bad6dd610fcdd5b28e997e1411b04801",
+      "sourceIdentityKind": "git-commit",
+      "sourceDigestSha256": null,
+      "sourceNote": "Reported identity only; this observer does not attest source bytes, environment, cleanup, exit of the parent process, or current-source equivalence.",
+      "requestedTasks": 150,
+      "selectedTasks": 150,
+      "completedTasks": 149,
+      "selectionIsWholeRequest": true,
+      "missingTasks": [
+        "fastly-native-platform-capabilities"
+      ],
+      "statusCounts": {
+        "passed": 149,
+        "failed": 0,
+        "timeout": 0,
+        "interrupted": 0
+      },
+      "recordedElapsedMs": 2210800,
+      "executedTaskMs": 2120179,
+      "successfulExecutedTaskMs": 2120179,
+      "failedOrInterruptedTaskMs": 0,
+      "reusedTasks": 0,
+      "reusedHistoricalTaskMs": 0,
+      "slowestExecutedTasks": [
+        {
+          "name": "jwt-rs256",
+          "status": "passed",
+          "durationMs": 434171
+        },
+        {
+          "name": "schema-codecs",
+          "status": "passed",
+          "durationMs": 152114
+        },
+        {
+          "name": "fastly-entities-native-workflow",
+          "status": "passed",
+          "durationMs": 95356
+        },
+        {
+          "name": "bounded-app-logic",
+          "status": "passed",
+          "durationMs": 56752
+        },
+        {
+          "name": "bounded-read-loops",
+          "status": "passed",
+          "durationMs": 55235
+        },
+        {
+          "name": "canonical-native-wasm",
+          "status": "passed",
+          "durationMs": 54833
+        },
+        {
+          "name": "pure-guarded-arguments",
+          "status": "passed",
+          "durationMs": 52643
+        },
+        {
+          "name": "four-mode-conformance",
+          "status": "passed",
+          "durationMs": 50589
+        },
+        {
+          "name": "jwt-es256-signing",
+          "status": "passed",
+          "durationMs": 44200
+        },
+        {
+          "name": "cli-report-entry-proof",
+          "status": "passed",
+          "durationMs": 41954
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "durationMs": 41920
+        },
+        {
+          "name": "entities-hardening",
+          "status": "passed",
+          "durationMs": 41835
+        }
+      ],
+      "portableShardObservations": [
+        {
+          "name": "unit",
+          "expectedTasks": 59,
+          "observedTasks": 59,
+          "observedTaskMs": 259073,
+          "missingTasks": []
+        },
+        {
+          "name": "native",
+          "expectedTasks": 50,
+          "observedTasks": 50,
+          "observedTaskMs": 776477,
+          "missingTasks": []
+        },
+        {
+          "name": "javascript",
+          "expectedTasks": 7,
+          "observedTasks": 7,
+          "observedTaskMs": 33781,
+          "missingTasks": []
+        },
+        {
+          "name": "conformance-rsa",
+          "expectedTasks": 1,
+          "observedTasks": 1,
+          "observedTaskMs": 434171,
+          "missingTasks": []
+        },
+        {
+          "name": "conformance-schema",
+          "expectedTasks": 2,
+          "observedTasks": 2,
+          "observedTaskMs": 169223,
+          "missingTasks": []
+        },
+        {
+          "name": "conformance-rest",
+          "expectedTasks": 26,
+          "observedTasks": 26,
+          "observedTaskMs": 405306,
+          "missingTasks": []
+        }
+      ],
+      "idealizedPortableTaskFloorMs": 776477,
+      "timingNote": "Durations are elapsed task occupancy, not CPU. Shard sums project this one sample onto the current plan; they exclude setup, queueing and contention. The idealized floor is not a CI wall-time prediction."
+    },
+    {
+      "file": "mem9-02-recovery.json",
+      "sha256": "33d13b9f3ac219fdb48d25ca034e996f965ce85a85ab56a87df547117cf84087",
+      "statusAsRecorded": "passed",
+      "runId": "2026-10-13T18-59-45-137Z--5",
+      "sourceRevision": "864d1d17bad6dd610fcdd5b28e997e1411b04801",
+      "sourceIdentityKind": "git-commit",
+      "sourceDigestSha256": null,
+      "sourceNote": "Reported identity only; this observer does not attest source bytes, environment, cleanup, exit of the parent process, or current-source equivalence.",
+      "requestedTasks": 1,
+      "selectedTasks": 1,
+      "completedTasks": 1,
+      "selectionIsWholeRequest": true,
+      "missingTasks": [],
+      "statusCounts": {
+        "passed": 1,
+        "failed": 0,
+        "timeout": 0,
+        "interrupted": 0
+      },
+      "recordedElapsedMs": 116913,
+      "executedTaskMs": 116903,
+      "successfulExecutedTaskMs": 116903,
+      "failedOrInterruptedTaskMs": 0,
+      "reusedTasks": 0,
+      "reusedHistoricalTaskMs": 0,
+      "slowestExecutedTasks": [
+        {
+          "name": "fastly-native-platform-capabilities",
+          "status": "passed",
+          "durationMs": 116903
+        }
+      ],
+      "portableShardObservations": [
+        {
+          "name": "unit",
+          "expectedTasks": 59,
+          "observedTasks": 0,
+          "observedTaskMs": 0,
+          "missingTasks": [
+            "report-capsule-contract",
+            "cli-report-workflow",
+            "cli-report-viewer",
+            "cli-report-retained-evidence",
+            "cli-report-size-evidence",
+            "cli-report-capture-proof",
+            "cli-report-entry-proof",
+            "cli-report-reference-provenance",
+            "cli-report-resource-inventory",
+            "cli-report-graph-diagnostics",
+            "multifile-source-indexes",
+            "guest-json-roundtrip",
+            "pure-helper-contract",
+            "suite-shape",
+            "test-orchestration",
+            "package-exports",
+            "boundaries",
+            "workspace-hygiene",
+            "hidden-contracts",
+            "release-feature-acceptance",
+            "release-runtime-policy",
+            "release-seal-lifecycle",
+            "release-checkpoints",
+            "release-recovery-runner",
+            "release-recovery",
+            "release-tag",
+            "api-surface",
+            "logging-contract",
+            "s3-design-contract",
+            "kv-design-contract",
+            "kv-conditional-runtime",
+            "kv-conditional-gates",
+            "s3-read-contract",
+            "s3-write-contract",
+            "crypto-config-planning",
+            "crypto-es256-signing",
+            "crypto-rs256",
+            "crypto-digest-text-contract",
+            "reachable-graph",
+            "project-modules",
+            "package-reachability",
+            "provider-toolchain",
+            "schema-registry",
+            "continuation-registry",
+            "entities-contracts",
+            "entities-schema-bridge",
+            "entities-javascript-runtime",
+            "entities-json-rpc-corpus",
+            "mcp-http",
+            "pulse-context-corpus",
+            "pulse-context-application",
+            "pulse-context-host",
+            "mcp-compatibility",
+            "mcp-tools",
+            "mcp-authorization",
+            "entities-package-owned-lowering",
+            "entities-catalog",
+            "entities-inspection",
+            "entities-orchestration-demo"
+          ]
+        },
+        {
+          "name": "native",
+          "expectedTasks": 50,
+          "observedTasks": 0,
+          "observedTaskMs": 0,
+          "missingTasks": [
+            "fastly-numeric-regions",
+            "pure-helper-vocabulary",
+            "pure-string-index",
+            "pure-field-projection",
+            "pure-guarded-arguments",
+            "pure-source-helpers",
+            "pure-record-helpers",
+            "pure-argument-helpers",
+            "pure-loop-helpers",
+            "fastly-driver-behavior-o09",
+            "kv-native-abi-feasibility",
+            "s3-native-read",
+            "s3-body-read",
+            "s3-node-transport",
+            "canonical-api-lowering",
+            "canonical-native-plan",
+            "shared-stage-o19",
+            "str02b-node-native",
+            "fastly-incoming-body-forwarding",
+            "str03a-generated-output",
+            "str03c-bounded-transforms",
+            "bounded-app-logic",
+            "bounded-read-loops",
+            "bounded-loop-helpers",
+            "logging-lowering",
+            "canonical-router-lowering",
+            "canonical-router-terminal-middleware",
+            "router-selected-groups",
+            "json-as-compatibility",
+            "entities-envelope-feasibility",
+            "entities-managed-handler",
+            "entities-managed-handler-effects",
+            "entities-native-runtime",
+            "entities-hardening",
+            "entities-node-native-workflow",
+            "fastly-entities-native-workflow",
+            "crypto-native-guest-source",
+            "guest-link-package",
+            "guest-link-materialization-stage",
+            "guest-link-audit-diagnostics",
+            "assets-lowering-plan",
+            "assets-package-owned-lowering",
+            "assets-native-embedded",
+            "grip-package-owned-lowering",
+            "jwt-package-owned-lowering",
+            "canonical-api-runtime",
+            "canonical-opaque-node-emission",
+            "grip-package-runtime",
+            "package-root-native",
+            "canonical-native-wasm"
+          ]
+        },
+        {
+          "name": "javascript",
+          "expectedTasks": 7,
+          "observedTasks": 0,
+          "observedTaskMs": 0,
+          "missingTasks": [
+            "cli-javascript-target-compilation",
+            "target-support",
+            "jwt-javascript-admission",
+            "crypto-runtime-builtin",
+            "javascript-effect-adapter",
+            "logging-runtime",
+            "assets-javascript-runtime"
+          ]
+        },
+        {
+          "name": "conformance-rsa",
+          "expectedTasks": 1,
+          "observedTasks": 0,
+          "observedTaskMs": 0,
+          "missingTasks": [
+            "jwt-rs256"
+          ]
+        },
+        {
+          "name": "conformance-schema",
+          "expectedTasks": 2,
+          "observedTasks": 0,
+          "observedTaskMs": 0,
+          "missingTasks": [
+            "schema-codecs",
+            "schema-kv-parity"
+          ]
+        },
+        {
+          "name": "conformance-rest",
+          "expectedTasks": 26,
+          "observedTasks": 0,
+          "observedTaskMs": 0,
+          "missingTasks": [
+            "jwt-signing",
+            "jwt-es256-signing",
+            "s3-write-conformance",
+            "crypto-cross-target-conformance",
+            "crypto-digest-text-conformance",
+            "crypto-digest-storage-conformance",
+            "multifile-source-identity",
+            "text-capacity-conformance",
+            "events-conformance",
+            "node-router-context-parity",
+            "catalog-router-parity",
+            "fetch-projections-request-bodies",
+            "config-secrets-kv-redaction",
+            "kv-conditional-conformance",
+            "kv-conditional-adversarial",
+            "fastly-conditional-kv",
+            "time-conformance",
+            "time-consumer",
+            "request-budget-transport",
+            "node-launcher",
+            "http-input-outcomes",
+            "application-errors",
+            "application-error-boundaries",
+            "node-cross-target-conformance",
+            "grip-cross-target-conformance",
+            "four-mode-conformance"
+          ]
+        }
+      ],
+      "idealizedPortableTaskFloorMs": null,
+      "timingNote": "Durations are elapsed task occupancy, not CPU. Shard sums project this one sample onto the current plan; they exclude setup, queueing and contention. The idealized floor is not a CI wall-time prediction."
+    }
+  ],
+  "observationPolicy": "Each report remains independent. Reports are never pooled into qualification or cache proofs; absent observations remain unknown."
+}

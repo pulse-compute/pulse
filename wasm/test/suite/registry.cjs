@@ -45,6 +45,23 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 120000,
     description: 'RPT8-01 production entry/stage/helper attribution and byte-preserving capture'
   }),
+  'cli-report-imported-inputs': nodeTask('test/cli/assert-report-imported-inputs.cjs', {
+    evidence: 'native', scheduling: { compiler: true }, timeoutMs: 120000,
+    description: 'AN9-04 exact imported source receipts, passive replay, package links and freshness'
+  }),
+  'cli-report-handler-associations': nodeTask('test/cli/assert-report-handler-associations.cjs', {
+    timeoutMs: 60000, description: 'AN9-03 bounded contextual associations, scope, explicit continuations, lanes and unknowns'
+  }),
+  'cli-report-relationships': nodeTask('test/cli/assert-report-relationships.cjs', {
+    timeoutMs: 60000, description: 'VIS-07 compact graph, oracle parity, admission, offline queries and historical compatibility'
+  }),
+  'vis06-association-diagnostic': nodeTask('test/diagnostics/assert-vis06-associations.cjs', {
+    timeoutMs: 60000, description: 'VIS-06 isolated association instrumentation, query parity and failed watchdog receipts'
+  }),
+  'cli-report-handler-topology': nodeTask('test/cli/assert-report-handler-topology.cjs', {
+    evidence: 'native', scheduling: { compiler: true }, timeoutMs: 180000,
+    description: 'AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison'
+  }),
   'cli-report-reference-provenance': nodeTask('test/cli/assert-report-reference-provenance.cjs', {
     evidence: 'native', timeoutMs: 120000,
     description: 'RPT8-02 resolved reference identities, shared consumers, unknowns, privacy and byte-preserving capture'
@@ -238,6 +255,22 @@ const tasks = Object.freeze({
     args:['--native'], timeoutMs:300000, evidence:'external',
     description:'STR-02B exact installed Node Native forwarding, emitted Wasm identity and real incremental HTTP'
   }),
+  'fastly-incoming-body-forwarding': nodeTask('test/provider/assert-fastly-incoming-body-forwarding.cjs', {
+    timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
+    description: 'FWD9-03 normal Native build, adversarial ABI matrix and optional pinned Viceroy wire qualification'
+  }),
+  'perf9-01b-measurements': nodeTask('test/performance/perf9/measure.cjs', {
+    timeoutMs: 900000, evidence: 'external',
+    description: 'PERF9-01B qualified Viceroy CPU/RSS, paired latency/throughput and bounded backpressure campaign'
+  }),
+  'perf9-01a-parity': nodeTask('test/performance/perf9/qualify.cjs', {
+    timeoutMs: 300000, evidence: 'external',
+    description: 'PERF9-01A pinned Rust/Pulse Fastly forwarding semantic parity; required Viceroy, no performance claim'
+  }),
+  'fwd9-03-installed': nodeTask('test/runtime/fwd9-03-installed.cjs', {
+    timeoutMs: 600000, evidence: 'external',
+    description: 'FWD9-03 exact packed Fastly Native workflow, independent limits, deadlines and required pinned Viceroy'
+  }),
   'str02c-fastly-feasibility': nodeTask('test/provider/assert-fastly-incoming-body-feasibility.cjs', {
     timeoutMs: 90000, evidence: 'external',
     description: 'STR-02C pinned Viceroy ABI observations; not Pulse forwarding integration or live platform qualification'
@@ -311,6 +344,13 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'recursive modules, handlers, Routers, cycles, and diagnostics'
   }),
+  'npm-source-imports': nodeTask('test/contracts/assert-npm-source-imports.cjs', {
+    evidence: 'native',
+    timeoutMs: 180000,
+    description: 'declared npm source exports, containment, attribution and Native handler/helper execution'
+  }),
+  'package-runtime': nodeTask('test/contracts/assert-package-runtime.cjs', { description: 'Generic trusted package Wasm ABI, host grants, private memory and cancellation' }),
+  'external-lowerers': nodeTask('test/contracts/assert-external-lowerers.cjs', { evidence: 'native', timeoutMs: 180000, description: 'trusted external contracts, independent package versions, nested resolution and Native/JavaScript parity' }),
   'package-reachability': nodeTask('test/contracts/assert-package-reachability.cjs', {
     evidence: 'unit',
     timeoutMs: 240000,
@@ -1061,6 +1101,22 @@ const tasks = Object.freeze({
     evidence: 'providers', timeoutMs: 180000,
     description: 'Fastly Native bounded request-header snapshots, duplicates and fail-closed enumeration'
   }),
+  'fastly-numeric-regions': nodeTask('test/provider/assert-fastly-numeric-regions.cjs', {
+    evidence: 'native', timeoutMs: 180000, scheduling: { compiler: true },
+    description: 'MEM9-02 numeric-region proof, scalar aliases, IEEE values, control and effect parity'
+  }),
+  'fastly-numeric-budgets': nodeTask('test/provider/assert-fastly-numeric-budgets.cjs', {
+    evidence: 'native', timeoutMs: 180000, scheduling: { compiler: true },
+    description: 'MEM9-07 read-loop numeric regions, exact cumulative charges, cache parity and terminal exhaustion'
+  }),
+  'fastly-handle-ownership': nodeTask('test/provider/assert-fastly-handle-ownership.cjs', {
+    evidence: 'native', timeoutMs: 300000, scheduling: { compiler: true },
+    description: 'MEM9-09 safe-point ownership, alias/cycle lifetime, sparse storage bounds and excluded runtime policies'
+  }),
+  'fastly-handle-frames': nodeTask('test/provider/assert-fastly-handle-frames.cjs', {
+    evidence: 'native', timeoutMs: 300000, scheduling: { compiler: true },
+    description: 'MEM9-09B helper/stage roots, effect transfer, Router recovery and pinned resource lifetime'
+  }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',
     timeoutMs: 300000,
@@ -1175,6 +1231,10 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 180000,
     description: 'MCP-02 real pinned official client against the private first-party HTTP adapter'
   }),
+  'npm-source-installed-workflow': nodeTask('test/cli/assert-npm-source-installed-workflow.cjs', {
+    evidence: 'release', timeoutMs: 600000,
+    description: 'IMP9-02 independent npm pin/update, imported handlers/helpers and trusted effects on Node/Fastly Native'
+  }),
   'cli-entities-installed-workflow': nodeTask('test/cli/assert-cli-entities-installed-workflow.cjs', {
     evidence: 'release', timeoutMs: 600000,
     description: 'example 10 exact packed install and four-mode doctor/inspect/test/dev/build/artifact acceptance'
@@ -1225,6 +1285,10 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'repository-bound guest-unit contracts, ownership, and pipeline design'
   }),
+  'fastly-stdio-installed': nodeTask('test/provider/assert-fastly-stdio-installed.cjs', {
+    evidence: 'external', timeoutMs: 600000,
+    description: 'exact installed Native stdout, strict ABI failures and real Viceroy delivery'
+  }),
   'provider-fastly-compute-reality': nodeTask('test/provider/assert-fastly-compute-reality.cjs', {
     evidence: 'external',
     timeoutMs: 300000,
@@ -1249,7 +1313,7 @@ const tasks = Object.freeze({
     description: 'Same-candidate receipt integrity, output retention and dependency invalidation'
   }),
   'release-recovery-runner': nodeTask('test/release/assert-release-recovery-runner.cjs', {
-    timeoutMs: 30000,
+    timeoutMs: 90000,
     description: 'Real subprocess late-failure recovery and fail-closed reruns'
   }),
   'release-recovery': nodeTask('test/release/assert-release-recovery.cjs', {
@@ -1288,6 +1352,10 @@ const profiles = Object.freeze({
     'cli-report-capture-proof',
     'cli-report-entry-proof',
     'cli-report-reference-provenance',
+    'cli-report-handler-topology',
+    'cli-report-handler-associations',
+    'cli-report-relationships',
+    'cli-report-imported-inputs',
     'cli-report-resource-inventory',
     'cli-report-graph-diagnostics',
     'multifile-source-indexes',
@@ -1321,6 +1389,8 @@ const profiles = Object.freeze({
     'reachable-graph',
     'project-modules',
     'package-reachability',
+    'external-lowerers',
+    'package-runtime',
     'provider-toolchain',
     'schema-registry',
     'continuation-registry',
@@ -1341,6 +1411,11 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'npm-source-imports',
+    'fastly-numeric-regions',
+    'fastly-numeric-budgets',
+    'fastly-handle-ownership',
+    'fastly-handle-frames',
     'pure-helper-vocabulary',
     'pure-string-index',
     'pure-field-projection',
@@ -1358,6 +1433,7 @@ const profiles = Object.freeze({
     'canonical-native-plan',
     'shared-stage-o19',
     'str02b-node-native',
+    'fastly-incoming-body-forwarding',
     'str03a-generated-output',
     'str03c-bounded-transforms',
     'bounded-app-logic',
@@ -1439,6 +1515,10 @@ const profiles = Object.freeze({
     'cli-report-capture-proof',
     'cli-report-entry-proof',
     'cli-report-reference-provenance',
+    'cli-report-handler-topology',
+    'cli-report-handler-associations',
+    'cli-report-relationships',
+    'cli-report-imported-inputs',
     'cli-report-resource-inventory',
     'cli-report-graph-diagnostics',
     'cli-command-spec',
@@ -1491,6 +1571,7 @@ const profiles = Object.freeze({
     'release-artifact-determinism',
     'clean-machine-acceptance',
     'cli-entities-installed-workflow',
+    'npm-source-installed-workflow',
     'release-evidence-authority',
     'deployment-candidates'
   ])

@@ -904,10 +904,14 @@ function validatePluginReadiness(repoRoot) {
     if (!isDeepEqual(readJson(path.join(repoRoot, copy)), readiness)) fail(`${copy} is not an exact plugin-readiness copy`);
   }
   const generated = fs.readFileSync(path.join(repoRoot, 'docs/maintainers/plugin-readiness.md'), 'utf8').toLowerCase();
-  if (!generated.includes('deferred') || !generated.includes('public plugin api') || !generated.includes('first-party')) fail('plugin readiness documentation must explicitly defer the public API and state the first-party boundary');
+  if (!generated.includes('deferred') || !generated.includes('public plugin api') || !generated.includes('trusted external lowerers')) fail('plugin readiness documentation must explicitly defer the public API and state the trusted external lowerer boundary');
   const manifestContract = fs.readFileSync(path.join(repoRoot, 'wasm/packages/contracts/src/library/manifest.js'), 'utf8');
   const compilerContracts = fs.readFileSync(path.join(repoRoot, 'wasm/packages/library-kit/src/compiler/handler-library-contracts.js'), 'utf8');
-  if (!manifestContract.includes("compiler.trust !== 'first-party'") || !compilerContracts.includes("compiler.trust !== 'first-party'") || !compilerContracts.includes('publicPluginApi: false')) fail('first-party lowerer trust enforcement is missing');
+  const compilerTrust = fs.readFileSync(path.join(repoRoot, 'wasm/packages/contracts/src/library/compiler-trust.js'), 'utf8');
+  if (!compilerTrust.includes("'build-dependency'") || !manifestContract.includes('isTrustedLowerer(compiler.trust)') || !compilerContracts.includes('isTrustedLowerer(compiler.trust)')
+    || compilerContracts.includes('TRUSTED_LOWERER_PACKAGES') || compilerContracts.includes('TOOLCHAIN_VERSION')) fail('trusted contract-based lowerer admission is missing');
+  if (readiness.trustedPackageLowerers?.available !== true || readiness.trustedPackageLowerers?.sandboxed !== false
+    || readiness.trustedPackageLowerers?.packageAllowlist !== false || readiness.trustedPackageLowerers?.requiresCompilerReleaseVersion !== false) fail('trusted external lowerer readiness must match the implemented contract');
   const providers = fs.readFileSync(path.join(repoRoot, 'wasm/packages/compiler/src/provider-toolchain.js'), 'utf8');
   for (const required of ['PROVIDER_PACKAGE_SCOPE', 'PROVIDER_PACKAGE_PREFIX', 'BUILTIN_PROVIDER_IDS', '`${packageName}/toolchain`', 'resolveProviderToolchain']) {
     if (!providers.includes(required)) fail(`deterministic provider package bootstrap is missing ${required}`);
@@ -988,11 +992,11 @@ function validateDocumentationLayers(repoRoot) {
     workflowAction('actions/checkout'),
     workflowAction('actions/setup-node'),
     workflowAction('actions/upload-artifact'),
-    'documentation-deployment.cjs seal',
-    'docs:site',
+    'node scripts/documentation-preview.cjs',
     'include-hidden-files: true'
   ];
   for (const requiredText of workflowRequirements) if (!workflowText.includes(requiredText)) fail(`documentation workflow is missing ${requiredText}`);
+  require('./documentation-preview.cjs').validatePreviewWorkflow(workflowText);
   for (const forbidden of ['configure-pages', 'upload-pages-artifact', 'deploy-pages', 'pages: write', 'github-pages']) if (workflowText.includes(forbidden)) fail(`documentation validation workflow must not deploy through ${forbidden}`);
   const npmWorkflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/npm-publish.yml'), 'utf8');
   for (const requiredText of ['workflow_dispatch:', 'environment: npm-publish', 'id-token: write', 'publish-release.cjs publish', 'verify-npm-release.cjs']) if (!npmWorkflow.includes(requiredText)) fail(`npm publication workflow is missing ${requiredText}`);
@@ -1111,7 +1115,7 @@ function validateDocumentationLayers(repoRoot) {
   }
   const lowererContract = fs.readFileSync(path.join(repoRoot, 'docs/contributing/package-lowerer-contract.md'), 'utf8');
   for (const requiredText of [
-    '## Application promise versus internal protocol',
+    '## Application support and protocol compatibility',
     '## Canonical owner map',
     '## Contract pipeline',
     'wasm/packages/contracts/src/library/manifest.js',

@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "pulse.mem9-04.receipt.v1",
+  "status": "focused-qualification-passed-unit-baseline-blocked",
+  "measuredSource": {
+    "sourceRevision": "e865712633126b2ae630c28984ea9c07dbce0695",
+    "sourceTree": "26470454defc87db98cdf86c6d3d8c799332487e",
+    "workingTree": ""
+  },
+  "domain": "injected Fastly ABI; two invocations per request; no timing or deployed claim",
+  "cells": 12,
+  "executions": 48,
+  "archive": {
+    "file": "pulse-mem9-04-evidence.tar.gz",
+    "sha256": "d33e6fec0ab7068d344c4b3759741c80b0f617593e274d4e38aa6edc1b24e0ae"
+  },
+  "reportSha256": "dba2c08e55838ec2c0a011ed07549c8e77f16681e1aada00d5eb6dc22cadc21b",
+  "results": [
+    {
+      "owner": "helper",
+      "arena": "default",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 23,
+      "numericHandles": 23,
+      "boxedManagedBytes": 1577424,
+      "numericManagedBytes": 1577424
+    },
+    {
+      "owner": "helper",
+      "arena": "default",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 215,
+      "numericHandles": 24,
+      "boxedManagedBytes": 1599824,
+      "numericManagedBytes": 1577536
+    },
+    {
+      "owner": "helper",
+      "arena": "default",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 791,
+      "numericHandles": 24,
+      "boxedManagedBytes": 1667408,
+      "numericManagedBytes": 1577536
+    },
+    {
+      "owner": "helper",
+      "arena": "elided",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 23,
+      "numericHandles": 23,
+      "boxedManagedBytes": 528848,
+      "numericManagedBytes": 528848
+    },
+    {
+      "owner": "helper",
+      "arena": "elided",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 215,
+      "numericHandles": 24,
+      "boxedManagedBytes": 551248,
+      "numericManagedBytes": 528960
+    },
+    {
+      "owner": "helper",
+      "arena": "elided",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 791,
+      "numericHandles": 24,
+      "boxedManagedBytes": 618832,
+      "numericManagedBytes": 528960
+    },
+    {
+      "owner": "stage",
+      "arena": "default",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 48,
+      "numericHandles": 48,
+      "boxedManagedBytes": 1582176,
+      "numericManagedBytes": 1582176
+    },
+    {
+      "owner": "stage",
+      "arena": "default",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 238,
+      "numericHandles": 49,
+      "boxedManagedBytes": 1604224,
+      "numericManagedBytes": 1582288
+    },
+    {
+      "owner": "stage",
+      "arena": "default",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 814,
+      "numericHandles": 49,
+      "boxedManagedBytes": 1671808,
+      "numericManagedBytes": 1582288
+    },
+    {
+      "owner": "stage",
+      "arena": "elided",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 48,
+      "numericHandles": 48,
+      "boxedManagedBytes": 533600,
+      "numericManagedBytes": 533600
+    },
+    {
+      "owner": "stage",
+      "arena": "elided",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 238,
+      "numericHandles": 49,
+      "boxedManagedBytes": 555648,
+      "numericManagedBytes": 533712
+    },
+    {
+      "owner": "stage",
+      "arena": "elided",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 814,
+      "numericHandles": 49,
+      "boxedManagedBytes": 623232,
+      "numericManagedBytes": 533712
+    }
+  ],
+  "focusedTasks": [
+    {
+      "name": "fastly-numeric-regions",
+      "status": "passed",
+      "durationMs": 25621
+    },
+    {
+      "name": "pure-source-helpers",
+      "status": "passed",
+      "durationMs": 18233
+    },
+    {
+      "name": "pure-loop-helpers",
+      "status": "passed",
+      "durationMs": 8830
+    },
+    {
+      "name": "pure-argument-helpers",
+      "status": "passed",
+      "durationMs": 26817
+    },
+    {
+      "name": "shared-stage-o19",
+      "status": "passed",
+      "durationMs": 5371
+    },
+    {
+      "name": "canonical-native-wasm",
+      "status": "passed",
+      "durationMs": 42407
+    },
+    {
+      "name": "bounded-read-loops",
+      "status": "passed",
+      "durationMs": 42925
+    }
+  ],
+  "unit": {
+    "passed": 2,
+    "failed": 1,
+    "unrun": 59,
+    "blocker": "Existing CLI report snapshot.js import of @pulse-compute/wasm-compiler/canonical-project-compiler fails boundaries",
+    "reproducedOnBase": "2497084d1d2e000f0d70ef2a0874af6a0dba116c"
+  },
+  "additionalChecks": [
+    "default/Node emission byte-identical to base for both measurement plans",
+    "six incomplete/tampered report mutations rejected",
+    "maintainer:sync",
+    "docs:sync",
+    "maintainer:check",
+    "docs:check",
+    "documentation-release",
+    "git diff --check"
+  ],
+  "deferred": "Full release and installed-consumer qualification at sprint boundary; #289 remains open"
+}

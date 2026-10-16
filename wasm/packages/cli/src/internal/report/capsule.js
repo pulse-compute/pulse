@@ -17,7 +17,7 @@ function stableReportId(kind, canonicalId) {
 }
 function normalize(input) {
   const value = copyData(input);
-  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'artifactIds', 'subjectIds', 'bodyIds', 'resourceIds', 'cases', 'targets', 'externalPackages', 'roles']);
+  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'registrationIds', 'artifactIds', 'subjectIds', 'bodyIds', 'resourceIds', 'cases', 'targets', 'externalPackages', 'roles']);
   function walk(item, key) {
     if (Array.isArray(item)) {
       if (sets.has(key)) { ensure(new Set(item).size === item.length, 'REPORT_DUPLICATE'); item.sort(compare); }
@@ -26,6 +26,7 @@ function normalize(input) {
   }
   walk(value, '');
   for (const name of collections.filter(name => !['routes', 'entries'].includes(name))) value[name]?.sort((a, b) => compare(a.id, b.id));
+  for (const key of ['handlers', 'useSites', 'helperCalls', 'associations']) value.analytics?.[key]?.sort((a, b) => compare(a.id, b.id));
   value.provenance?.toolchain?.sort((a, b) => compare(a.name, b.name) || compare(a.version, b.version));
   value.resourceProducers?.sort((a, b) => compare(a.scope, b.scope));
   for (const schema of value.schemas || []) if (schema.structure?.state === 'available') {
@@ -306,6 +307,7 @@ function check(capsule) {
     }
     ensure(capsule.coverage.resources.status === 'partial' && capsule.coverage.resources.expected === null, 'REPORT_COVERAGE');
   }
+  require('./handler-topology').validateHandlerTopology(capsule);
   return capsule;
 }
 function evidenceDigest(capsule) { const { evidenceHash, ...payload } = capsule; return sha256(canonicalJson(payload)); }
@@ -329,11 +331,13 @@ function validateCapsule(input) {
   ensure(capsule.evidenceHash.value === evidenceDigest(capsule), 'REPORT_HASH');
   return freeze(capsule);
 }
-const parseCapsule = input => validateCapsule(parseJson(input));
+const encoding = require('./encoding');
+const parseCapsule = input => validateCapsule(encoding.decode(parseJson(input)));
+const serializeStoredCapsule = input => encoding.store(validateCapsule(input));
 const serializeCapsule = input => canonicalJson(validateCapsule(input)) + '\n';
-const htmlPayload = input => serializeCapsule(input).replace(/[<>&\u2028\u2029]/g,
+const htmlPayload = input => serializeStoredCapsule(input).replace(/[<>&\u2028\u2029]/g,
   value => '\\u' + value.charCodeAt(0).toString(16).padStart(4, '0'));
 const terminalText = input => String(input).replace(/[\x00-\x1f\x7f-\x9f\u2028\u2029]/g,
   value => '\\u' + value.charCodeAt(0).toString(16).padStart(4, '0'));
-module.exports = { createCapsule, validateCapsule, parseCapsule, serializeCapsule, htmlPayload, terminalText,
+module.exports = { createCapsule, validateCapsule, parseCapsule, serializeCapsule, serializeStoredCapsule, htmlPayload, terminalText,
   stableReportId, artifactId, bodyId, evidenceDigest };

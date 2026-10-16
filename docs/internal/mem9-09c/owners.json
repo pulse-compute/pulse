@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "pulse.mem9-09c.owner-audit.v1",
+  "sourceCommit": "99bdf3e595c2b63e16db924125850d90c97efb3d",
+  "note": "Read-only production/dependency owner inventory; no production enablement. Proposals and tests added afterward.",
+  "owners": [
+    {
+      "path": "wasm/packages/host-runtime/src/runtime/canonical-native-host.js",
+      "role": "Node ValueHeap, host references, ABI validation, settlement and result handoff",
+      "sha256": "62a6325b0837759cee113641364ee6299d14f8620d22ea7b9e1773fe5ecdaea3",
+      "bytes": 74438
+    },
+    {
+      "path": "wasm/packages/host-runtime/src/runtime/native-value-budget.js",
+      "role": "Node cumulative counters, weak graph accounting and failure latching",
+      "sha256": "c7066afdbf070942c331433b14eb40195a4f7ef397b0a33d1256061aea8b0411",
+      "bytes": 2571
+    },
+    {
+      "path": "wasm/packages/contracts/src/handler/canonical-native-runtime.js",
+      "role": "Canonical ABI and retain-until-terminal v1 contract",
+      "sha256": "5ead1d36c6f4a32a12379ef221a1c48e512073004d85f65b73520d77dfd1cfe7",
+      "bytes": 9710
+    },
+    {
+      "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js",
+      "role": "Guest root declarations and result/ready transfer order",
+      "sha256": "7ebfb350b8178949a34ab0a57fd0d5e89077dc3479848a9c4f3bf15b3876a53a",
+      "bytes": 9769
+    },
+    {
+      "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-control.js",
+      "role": "Canonical safe-point placement",
+      "sha256": "ff651ea94d56517df199c8d1055b744d7be933529f532138d82a21c38a0374f4",
+      "bytes": 26573
+    },
+    {
+      "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-ownership.js",
+      "role": "Current whole-plan exclusions",
+      "sha256": "158396d15534227555a0d06a6d617acc94f17bbb0a9775bcefa96e633279444a",
+      "bytes": 4775
+    },
+    {
+      "path": "wasm/packages/compiler/src/canonical-native-compiler.js",
+      "role": "Node realization and final ABI/runtime selection",
+      "sha256": "45ed554522a171287e32b0abbe7a59cf0363480103c6c49a4cfcad2dcac62302",
+      "bytes": 21248
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "role": "Final Fastly runtime, guest linking and ownership selection",
+      "sha256": "f339ef2cb2ce6a6bb1a052b47212bfccbe933f888adb2e5cbf9c8e81294608d7",
+      "bytes": 196407
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-handle-ownership.js",
+      "role": "Current map/tracer and provider roots",
+      "sha256": "cea9ac2e50d24c8f3297c565ebad9bcff0dce8f3b34e82a0aaad4be18ecf56a6",
+      "bytes": 6639
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-value-budget.js",
+      "role": "Fastly original charges and numeric precharging",
+      "sha256": "cd26ef52e91444feb986582ccb5fac0a1ac7db0b5626a1f3d587a6169a8c7cba",
+      "bytes": 4425
+    },
+    {
+      "path": "packages/provider-fastly/src/build/fixed-memory-runtime.as.ts",
+      "role": "Fixed primary allocator, coalescing and itcms",
+      "sha256": "3a658c16eb806406106ff6f1c3783f4f8ad2e895a070f6556e61c5c2692f297d",
+      "bytes": 4516
+    },
+    {
+      "path": "wasm/packages/wasm-guest-link/src/constants.js",
+      "role": "Versioned fixed-memory and invocation-frame layout",
+      "sha256": "bafb7234f2d7db364bc948d5d44a45406755d76e4aed3bb5aadce7025e1d7c91",
+      "bytes": 5978
+    },
+    {
+      "path": "wasm/packages/wasm-guest-link/src/pipeline.js",
+      "role": "Final linked artifact composition and audit",
+      "sha256": "91a3060e80731b65bdcdf2d5f2da8b451dca0fca29e8edda7a6690aa28f0c3c9",
+      "bytes": 26699
+    },
+    {
+      "path": "wasm/node_modules/assemblyscript/std/assembly/rt/stub.ts",
+      "role": "Pinned stub allocator/collection behavior",
+      "sha256": "958e9ebb92e9cc70068e6eb60be8ee4945a60184c3059bcf4494871c137ba9c0",
+      "bytes": 4119
+    },
+    {
+      "path": "wasm/node_modules/assemblyscript/std/assembly/rt/itcms.ts",
+      "role": "Pinned managed collector implementation",
+      "sha256": "7ef783af8bc200fa9cd4acda183b8642166f0549ff82da1078ed612b7f1f6dea",
+      "bytes": 15641
+    }
+  ]
+}

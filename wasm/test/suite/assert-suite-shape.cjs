@@ -55,6 +55,8 @@ for (const name of Object.keys(profiles)) {
 
 const release = expandProfile('release');
 const externalTasks = new Set([
+  // Source-bound VIS discovery is explicitly selected, not a permanent release gate.
+  'vis06-association-diagnostic',
   // Rejected dependency optimization: explicit experiment, never a release gate.
   'schema-cache-arena',
   // Pre-snapshot upgrade and measurements are explicit qualification, not fast CI or a seal.
@@ -71,6 +73,10 @@ const externalTasks = new Set([
   'jwt-installed-workflow',
   'str02-installed',
   'str02b-installed',
+  'fwd9-03-installed',
+  'fastly-stdio-installed',
+  // Beta.9 comparison preflight is explicitly selected, never a release gate.
+  'perf9-01a-parity', 'perf9-01b-measurements',
   'str03b-installed', 'node01-installed', 'arc01-installed',
   'ast01-installed', 'ast02b-installed', 'ast02d-installed', 's3-body-installed',
   'str02c-fastly-feasibility',

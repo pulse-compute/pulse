@@ -1,0 +1,80 @@
+{
+  "task": "MEM9-09A",
+  "base": "5476571935083ba8c6c03eda56bf9fbc3aae81db",
+  "recoveredBranch": "codex/mem9-09-handle-tracing",
+  "implementationCommit": "f02293d",
+  "historicalEvidence": [
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/initial.log",
+      "sha256": "e53a93180247dea21e3ab81b75e24d25202021309bce092bf0044516a445086a",
+      "bytes": 992
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/initial-build.log",
+      "sha256": "368890c870b7d2abfb3da22e961e276df814ff0b0eb21f6bc41d520ff4a37ca3",
+      "bytes": 36
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/initial-retry.log",
+      "sha256": "ffabcc1b7c22c6aeeee4b278fc87a467238e74f856b78d9324056a3a966e158a",
+      "bytes": 1177
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/lifetime-1.log",
+      "sha256": "0f42fc69afb4e92ac63bbf7113caa2fa93c8f638d9bc08064b99af4891baf877",
+      "bytes": 1678
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/lifetime-2.log",
+      "sha256": "04f4167fb8d3e9afc26ca4d9f4c00fcb10e087978b0995e5756fff7dd5759926",
+      "bytes": 658
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/lifetime-3.log",
+      "sha256": "81175da96c7dba5be3dc5ba727c9471c51d2e723c2fc84e9a4840e5a3de639c1",
+      "bytes": 741
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/lifetime-4.log",
+      "sha256": "81e013b22de738da0abc86a8cbe583c4b27e07a71a815d383e5ebed4b28b68ca",
+      "bytes": 744
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/recovered-lifetime.log",
+      "sha256": "43025b8e7aa221f7529a81d91a1c7a6da08d92655b6f4ee42159403150039dbf",
+      "bytes": 1184
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/campaign/results.json",
+      "sha256": "81fac79e14af601d555ee243dbaac0ccf5ef7bb7b618e7d68b679e36892d41b0",
+      "bytes": 64863
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/compact-cache-campaign/results.json",
+      "sha256": "c2f73e0b8e866eb60f0e026e3fbdf07bd71cc44d7d4d5ad6d08b3a6f13b22abd",
+      "bytes": 64779
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/recovered-campaign/results.json",
+      "sha256": "c411fe7772484dab95624a967cb4f60f1c38b822b6b8baa7b17a0226100bccbc",
+      "bytes": 244468
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/build.log",
+      "sha256": "6b3090f973f060c91f9afdd3b061a0fc00b30d9b5aa655a390d826f41dbb7cb4",
+      "bytes": 2185
+    },
+    {
+      "path": "/workspace/scratch/15e65af8d25e/mem9-09-evidence/build-pinned.log",
+      "sha256": "abe5c9d719903afbe4be884aeca81c6125d3ca5107edf9276efdd63fc98e34df",
+      "bytes": 33
+    }
+  ],
+  "notes": [
+    "Recovered uncommitted first-slice implementation; no prior MEM9-09 PR.",
+    "Original cache-capacity scanning cost experiment superseded by occupied-slot index.",
+    "Historical records have incomplete source fingerprints and are not final candidate qualification.",
+    "After the final cost campaign, retained HTTP admission helpers and sparse diagnostic readers were repaired. All four timed production artifacts were rebuilt byte-identically at ccb0f6c.",
+    "Initial pnpm build attempt failed engine admission (ambient pnpm 11.25.0); pinned pnpm 12.4.2 build passed."
+  ]
+}

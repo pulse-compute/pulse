@@ -38,7 +38,7 @@ GRIP uses the same split. `isWebSocket`, `subscribe`, and `handoff` are pure HTT
 
 ## Provider selection
 
-Pulse `1.0.0-beta.8` has three provider driver identifiers:
+Pulse `1.0.0-beta.9` has three provider driver identifiers:
 
 | Provider | Local execution | Deployable build | Purpose |
 |---|---:|---:|---|
@@ -96,7 +96,7 @@ For Fastly, `pulse build` additionally emits a real Compute target. The explicit
 
 ## Current extension boundary
 
-There is no automatic provider plugin registry in `1.0.0-beta.8`. Configuration
+There is no automatic provider plugin registry in `1.0.0-beta.9`. Configuration
 selects a bare host ID, internal `none`, or an exact scoped project-installed
 package name. Bare IDs resolve by the `@pulse-compute/provider-<id>` convention.
 A package is loadable only when selected and when it exports the versioned
@@ -113,8 +113,9 @@ Contributor workflows:
 - [Add a core provider](../contributing/adding-core-provider.md)
 
 The provider toolchain page defines only its narrow, explicit bootstrap
-contract. It does not define general plugin discovery or widen the
-first-party-only lowerer compatibility promise.
+contract. Trusted external lowerers have their own versioned
+[package-lowerer contract](../contributing/package-lowerer-contract.md); neither
+seam defines general compiler hooks or untrusted-code isolation.
 
 ## Toolchain and target boundary
 

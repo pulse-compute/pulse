@@ -1,5 +1,11 @@
 # STR-02C — Fastly incoming-forwarding feasibility
 
+Follow-up: [FWD9-01](FWD9-01-fastly-forwarding-feasibility.md) rechecks the
+ownership boundary against Pulse beta.8 and Viceroy 0.21.1, records a fresh
+local replay, and proposes the bounded beta.9 implementation contract. The
+runner now also accepts that explicitly source-reviewed engine version; the
+historical 0.20.1 observations below remain unchanged.
+
 Decision card, 29 September 2026. Human direction: “Implement STR-02C”. Base:
 `beta` at `30c4ee72ab7a74b0b33cb3e24d8f0a39269dd54e`, including STR-02B.
 Entry point: `provider-fastly`; this change is evidence and admission regression

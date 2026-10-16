@@ -1,11 +1,11 @@
 # Package-owned lowering
 
-Package-owned lowering lets a synchronized Pulse package extend the canonical compiler with narrow, statically recognized operations while keeping domain rules out of compiler core.
+Package-owned lowering lets a trusted Pulse-aware package extend the canonical compiler with narrow, statically recognized operations while keeping domain rules out of compiler core.
 
-The synchronized `1.0.0-beta.8` release uses this pattern for Assets, GRIP,
+The synchronized `1.0.0-beta.9` release uses this pattern for Assets, GRIP,
 JWT, Entities, S3, and Crypto exact-text digests.
-It is a **trusted first-party synchronization mechanism**, not a public
-registry that executes arbitrary npm compiler plugins.
+External packages may implement the same versioned contract as trusted build
+dependencies. They need no monorepo allowlist or matching Pulse release version.
 
 ## One package API, two execution paths
 
@@ -47,7 +47,7 @@ as/index.as.ts               optional compiled-Wasm sidecar ABI
 README.md                    current product and compatibility boundary
 ```
 
-`pulse.package.json` is static metadata. It cannot register or execute compiler code. `pulsewasm.manifest.cjs` identifies the trusted first-party compiler builder. Product metadata and executable compiler authority remain separate.
+`pulse.package.json` is static metadata. It cannot register or execute compiler code. `pulsewasm.manifest.cjs` identifies the trusted package compiler builder. Product metadata and executable compiler authority remain separate.
 
 ## Discovery and trust
 
@@ -55,16 +55,20 @@ The canonical project compiler:
 
 1. builds the reachable module graph;
 2. attributes package imports from that graph rather than source substrings;
-3. loads synchronized package product contracts;
+3. loads product contracts from the package resolved at each import;
 4. selects a trusted package compiler only for a reachable supported Native operation;
 5. invokes it through the exact immutable shared builder envelope;
 6. normalizes its artifact and contributions before compiler orchestration;
 7. combines canonical package effects with core effects and continuations;
 8. validates the complete provider capability envelope.
 
-A package manifest must declare first-party trust and ownership matching the
-package. Dynamic third-party compiler registration is not part of the Beta
-contract.
+A package manifest declares `build-dependency` trust and ownership matching the
+package; `first-party` remains a compatible alias. The compiler validates the
+manifest and builder protocol versions independently of npm package versions.
+Declarations and builders execute trusted Node code with the compiler process's
+authority. There is no sandbox. Graph compilation does not evaluate unrelated
+installed manifests; explicit inventory tools may enumerate declared packages.
+Dynamic compiler hooks remain outside this contract.
 
 Caller option bags do not cross this boundary. In particular, provider target
 descriptors, drivers, runtime objects, raw CLI configuration, compiler caches,

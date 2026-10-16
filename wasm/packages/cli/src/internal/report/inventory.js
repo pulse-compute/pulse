@@ -181,6 +181,7 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization,
   observe('REPORT_GENERATED_RESOURCE_INVENTORY_PARTIAL');
   observe('REPORT_AUTHORIZATION_NOT_INFERRED'); observe('REPORT_ATTRIBUTION_NOT_RECORDED'); observe('REPORT_TESTS_NOT_RECORDED');
   if (registry?.version && registry.version !== 'pulse.schema-registry-ir.v5') observe('REPORT_SCHEMA_ADAPTER_UNAVAILABLE');
+  if (references) capsule.analytics = require('./handler-topology').projectHandlerTopology(references.topology, capsule.references);
   return createCapsule(capsule);
 }
 module.exports = { collectInventory };

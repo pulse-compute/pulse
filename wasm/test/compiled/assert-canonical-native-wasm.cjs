@@ -68,6 +68,7 @@ function assertPortableModule(name, compiled) {
 }
 
 async function main() {
+  await require('./native-numeric-regions.cjs').main();
   await require('../runtime/conditional-kv-normalization.cjs').main();
   await require('./native-expression-sharing.cjs').main();
   await require('./native-dispatcher-partitions.cjs').main();

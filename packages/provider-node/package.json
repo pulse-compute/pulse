@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/provider-node",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -43,7 +43,8 @@
     "./server": {
       "types": "./src/server/index.d.ts",
       "default": "./src/server/index.js"
-    }
+    },
+    "./runtime/package-operations": "./src/runtime/package-operations.js"
   },
   "dependencies": {
     "@pulse-compute/crypto": "workspace:*",
@@ -66,7 +67,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/provider-node"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.8/packages/implementation-packages/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.9/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

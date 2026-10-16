@@ -3,6 +3,8 @@
 const { normalizeDiagnostic } = require('../diagnostics.js');
 
 const LOWERABLE_LIBRARY_MANIFEST_VERSION = 'pulsewasm.lowerable-library-manifest.v2';
+const { LOWERABLE_COMPILER_BUILDER_VERSION, LOWERABLE_COMPILER_TRUST, isTrustedLowerer } = require('./compiler-trust.js');
+
 const LOWERABLE_LIBRARY_MANIFEST_KIND = 'pulsewasm.lowerable-library-manifest';
 
 const LOWERABLE_LIBRARY_PAYLOAD_MODE_STATUSES = Object.freeze([
@@ -38,9 +40,12 @@ const LOWERABLE_LIBRARY_MANIFEST_POLICY = Object.freeze({
   contractsOwnPayloadStatusVocabulary: true,
   compilerMayValidateButNotDefinePackageRules: true,
   packageOwnsCompilerBuilder: true,
-  genericLoaderMayExecuteTrustedFirstPartyBuilders: true,
+  genericLoaderMayExecuteTrustedBuildDependencies: true,
   thirdPartyManifestsRequireCorePr: false
 });
+
+// Declaring a lowerer opts an installed dependency into trusted build-time
+// execution. Protocol compatibility, not publisher identity, grants admission.
 
 function clone(value) {
   if (Array.isArray(value)) return value.map(clone);
@@ -149,6 +154,13 @@ function validateLowerableLibraryManifest(manifest) {
     ));
   }
 
+  const ownedImports = [normalized.lowerableSubpath, ...(Array.isArray(normalized.publicApi.compatibilitySubpaths) ? normalized.publicApi.compatibilitySubpaths : [])];
+  if (ownedImports.some(specifier => typeof specifier !== 'string' || !(specifier === normalized.npmPackage || specifier.startsWith(`${normalized.npmPackage}/`)))) {
+    diagnostics.push(makeDiagnostic('PULSEWASM_LOWERABLE_LIBRARY_IMPORT_OWNER_MISMATCH',
+      'Lowerable and compatibility imports must belong to npmPackage.',
+      'Declare only the owning package root and subpaths.', { npmPackage: normalized.npmPackage, imports: ownedImports }));
+  }
+
   if (!isNonEmptyString(normalized.facade.namespace)) {
     diagnostics.push(makeDiagnostic(
       'PULSEWASM_LOWERABLE_LIBRARY_NAMESPACE_REQUIRED',
@@ -223,10 +235,10 @@ function validateLowerableLibraryManifest(manifest) {
     }
   }
 
-  if (!isNonEmptyString(compiler.version)) {
+  if (compiler.version !== LOWERABLE_COMPILER_BUILDER_VERSION) {
     diagnostics.push(makeDiagnostic(
-      'PULSEWASM_LOWERABLE_LIBRARY_COMPILER_VERSION_REQUIRED',
-      `Lowerable library manifest ${normalized.contractId || '<unknown>'} must declare compiler.version.`,
+      'PULSEWASM_LOWERABLE_LIBRARY_COMPILER_VERSION_UNSUPPORTED',
+      `Lowerable library manifest ${normalized.contractId || '<unknown>'} must use ${LOWERABLE_COMPILER_BUILDER_VERSION}.`,
       'Declare the package-owned compiler builder protocol version, for example pulsewasm.lowerable-compiler-builder.v1.',
       { compiler }
     ));
@@ -273,16 +285,16 @@ function validateLowerableLibraryManifest(manifest) {
     diagnostics.push(makeDiagnostic(
       'PULSEWASM_LOWERABLE_LIBRARY_COMPILER_EXPORT_REQUIRED',
       'Native application builders must name a static compiler export.',
-      'Set compiler.nativeApplicationExport to an exported first-party builder function name.',
+      'Set compiler.nativeApplicationExport to an exported trusted builder function name.',
       { nativeApplicationExport: compiler.nativeApplicationExport }
     ));
   }
 
-  if (compiler.trust !== 'first-party') {
+  if (!isTrustedLowerer(compiler.trust)) {
     diagnostics.push(makeDiagnostic(
       'PULSEWASM_LOWERABLE_LIBRARY_COMPILER_TRUST_REQUIRED',
-      `Lowerable library manifest ${normalized.contractId || '<unknown>'} compiler.trust must be "first-party" in this track.`,
-      'Arbitrary third-party lowerer execution is not enabled; first-party package builders must opt in explicitly.',
+      `Lowerable library manifest ${normalized.contractId || '<unknown>'} compiler.trust must be "build-dependency" (or the legacy "first-party" alias).`,
+      'Lowerers execute as trusted build dependencies without sandboxing; declare that trust explicitly.',
       { trust: compiler.trust }
     ));
   }
@@ -316,6 +328,9 @@ function validateLowerableLibraryManifest(manifest) {
 }
 
 module.exports = {
+  LOWERABLE_COMPILER_BUILDER_VERSION,
+  LOWERABLE_COMPILER_TRUST,
+  isTrustedLowerer,
   LOWERABLE_LIBRARY_MANIFEST_VERSION,
   LOWERABLE_LIBRARY_MANIFEST_KIND,
   LOWERABLE_LIBRARY_PAYLOAD_MODE_STATUSES,

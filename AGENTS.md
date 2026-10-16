@@ -12,7 +12,7 @@ Preserve these invariants:
 - Keep host authority outside the guest. Pulse-provided network, secrets, stores, persistence, and other consequential operations remain explicit effects or provider bindings.
 - Keep effect and continuation boundaries observable and bounded.
 - Keep canonical handlers provider-neutral. Do not expose provider SDKs through `ctx`.
-- Package lowerers remain trusted first-party release components until explicit human direction and an update to the current architecture contracts change discovery, isolation, negotiation, and trust.
+- Package lowerers execute as trusted build dependencies admitted through the versioned package contract. Keep package ownership, protocol validation, reachable-import selection, and provider capability checks; do not add a publisher allowlist, compiler-release version equality, or a sandbox claim.
 - Provider selection is explicit: bare host IDs resolve by the `@pulse-compute/provider-<id>` convention, while scoped package names resolve exactly; both load only a versioned `./toolchain` export. Never add scanning, self-registration, or fallback discovery without explicit human direction and a current contract update.
 - Structured bodies remain bounded; opaque and streaming bodies must not be decoded or mutated implicitly.
 - Public support is defined by the release manifest and package status blocks, not by every resolvable internal module.
@@ -22,8 +22,8 @@ An explicit JavaScript target retains resolved static imports and ordinary
 awaited calls in its original source graph. Canonical topology, graph containment,
 schemas and Pulse effect-await rules still apply. JavaScript inspection describes
 recognized Pulse behavior; it neither proves dependency internals nor supplies a
-sandbox guarantee for ordinary JavaScript. Runtime imports grant no compiler or
-lowerer trust. Native eligibility is checked independently; `pulse compile`
+sandbox guarantee for ordinary JavaScript. Ordinary runtime imports without a lowerer declaration grant no compiler or
+lowerer trust. Declared lowerers execute as trusted build dependencies. Native eligibility is checked independently; `pulse compile`
 still requires Native-compatible source. Keep these contracts aligned with
 `docs/architecture/current-contracts.md`.
 

@@ -8,7 +8,7 @@ const PACKAGE_BINDING_OWNERSHIP_VERSION = 'pulse.package-binding-ownership.v1';
 const APPLICATION_ENTRY_SAFETY_VERSION = 'pulse.application-entry-safety.v1';
 const NATIVE_ELIGIBILITY_PROJECTION_VERSION = 'pulse.native-eligibility-projection.v1';
 
-const PACKAGE_NATIVE_STATUSES = Object.freeze(['core-authoring', 'trusted-lowerable', 'unsupported']);
+const PACKAGE_NATIVE_STATUSES = Object.freeze(['core-authoring', 'trusted-lowerable', 'static-source', 'unsupported']);
 const PACKAGE_BINDING_VIA = Object.freeze(['direct-import', 'direct-re-export', 'project-import', 'project-re-export']);
 const ELIGIBILITY_BLOCKER_KINDS = Object.freeze([
   'unsupported-package',
@@ -146,7 +146,7 @@ function normalizePackageReachabilityProjection(input) {
       packageUseFromResolvedReachabilityOnly: true,
       typeOnlyImportsActivateContracts: false,
       substringSelection: false,
-      firstPartyLowerersOnly: true,
+      trustedBuildDependencies: true,
       publicPluginApi: false
     })
   });

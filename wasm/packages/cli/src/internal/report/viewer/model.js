@@ -4,14 +4,155 @@ function createReportViewModel(P) {
   const canonical = value => value === null || typeof value !== 'object' ? JSON.stringify(value)
     : Array.isArray(value) ? '[' + value.map(canonical).join(',') + ']'
       : '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}';
-  const canonicalJson = canonical(P) + '\n';
+  let canonicalJson;
   const A = P.artifacts.find(a => a.id === P.context.primaryArtifactId);
   const byId = rows => new Map(rows.map(row => [row.id, row]));
   const routes = byId(P.routes), schemas = byId(P.schemas), bindings = byId(P.bindings), evidence = byId(P.evidence), declarations = byId(P.declarations);
+  // Authored definitions and their registration instances are independent of
+  // compiled helper bodies and the physical-size recipe.
+  const analytics = P.analytics;
+  const queries = analytics?.version === 'pulse.report-analytics.v2'
+    ? (typeof module === 'object' && module.exports ? require('../relationship-queries') : reportRelationships).create(analytics) : null;
+  const definitions = analytics?.handlers || [], registrations = analytics?.registrations || [], useSites = analytics?.useSites || [];
+  const definitionById = byId(definitions), registrationById = byId(registrations), useSiteById = byId(useSites);
+  const callById = byId(analytics?.helperCalls || []);
+  const ordinal = rows => new Map(rows.map((row, index) => [row.id, index]));
+  const definitionIndex = ordinal(definitions), registrationIndex = ordinal(registrations), useSiteIndex = ordinal(useSites);
+  function group(rows, key) {
+    const result = new Map();
+    for (const row of rows) { const id = row[key]; if (!result.has(id)) result.set(id, []); result.get(id).push(row); }
+    return id => result.get(id) || [];
+  }
+  const definitionRegistrations = group(registrations, 'handlerId'), definitionSites = group(useSites, 'ownerId');
+  const helperCallers = group(analytics?.helperCalls || [], 'calleeId'), helperCallees = group(analytics?.helperCalls || [], 'callerId');
+  const registrationAssociations = queries ? id=>queries.route(id).rows : group(analytics?.associations || [], 'consumerRegistrationId');
+  const siteAssociations = queries ? id=>queries.site(id).rows : group(analytics?.associations || [], 'useSiteId');
+  const bindingSites = group(useSites.filter(row => row.binding.bindingId).map(row => ({...row, bindingId:row.binding.bindingId})), 'bindingId');
+  const analyticsCoverage = key => analytics?.coverage[key] || {status:'unavailable',observed:0,expected:null,reason:'not-recorded'};
+  const coverageText = c => `${c.status} · ${c.observed} observed / ${c.expected ?? 'unknown'} expected${c.reason ? ' · '+c.reason : ''}`;
+  const authoredFact = fact => fact?.state === 'available' ? String(fact.value) : [fact?.state || 'unavailable',fact?.reason || 'not-recorded'].join(' · ');
+  const authoredSource = fact => fact?.state === 'available'
+    ? `${fact.value.file}:${fact.value.start.line}:${fact.value.start.column}–${fact.value.end.line}:${fact.value.end.column} · UTF-16 [${fact.value.start.offset}, ${fact.value.end.offset}) · SHA-256 ${fact.value.sha256}`
+    : authoredFact(fact);
+  const sourceLocation = fact => fact?.state === 'available' ? `${fact.value.file}:${fact.value.start.line}` : 'Source unavailable';
+  const definitionLabel = row => row ? row.name || `Anonymous ${row.kind} · ${sourceLocation(row.source)}` : 'Definition unavailable';
+  const registrationLabel = row => row ? `${row.handlerId ? definitionLabel(definitionById.get(row.handlerId))+' · ' : ''}${row.kind} ${row.order+1} · ${row.match.state === 'available' ? [row.match.value.method,row.match.value.path,row.match.value.eventType].filter(Boolean).join(' ') || 'No match constraint' : authoredFact(row.match)}${row.handlerId&&!definitionById.get(row.handlerId)?.name ? ' · '+(row.mountPath.length?'mount '+row.mountPath.map(id=>registrationById.get(id)?.order+1).join(' / '):'application root') : ''}` : 'Registration unavailable';
+  const registrationChildren = group([...registrations].sort((a,b)=>a.order-b.order).map(r=>({...r,parent:r.mountPath.at(-1)||null})), 'parent');
+  const atlasMatch = (r,query) => [registrationLabel(r),r.id,r.routerId,authoredSource(r.source),
+    definitionLabel(definitionById.get(r.handlerId)),authoredSource(definitionById.get(r.handlerId)?.source)].join(' ').toLowerCase().includes(query.toLowerCase());
+  function atlasLayout({scope=null,query='',expanded=new Set(),allowedIds=null}={}) {
+    const root=registrationById.get(scope), inScope=r=>!root||r.id===root.id||r.mountPath.includes(root.id);
+    const scoped=registrations.filter(inScope).sort((a,b)=>a.order-b.order), matches=scoped.filter(r=>(!allowedIds||allowedIds.has(r.id))&&atlasMatch(r,query));
+    const included=new Set(), open=new Set(expanded);
+    if(query||allowedIds)for(const r of matches){included.add(r.id);for(const id of r.mountPath){included.add(id);if(query)open.add(id);}}
+    const points=[],edges=[];let leaf=0,maxDepth=0,truncated=false;
+    function visit(r,depth,parent) {
+      if(points.length>=300){truncated=true;return null;}
+      const p={id:r?.id||null,r,x:24+depth*300,y:0,depth,children:registrationChildren(r?.id||null)};points.push(p);maxDepth=Math.max(maxDepth,depth);
+      const children=(!r||r.id===root?.id||open.has(r.id))?p.children.filter(c=>(!query&&!allowedIds)||included.has(c.id)):[];
+      const drawn=[];for(const child of children){const next=visit(registrationById.get(child.id),depth+1,p);if(next)drawn.push(next);else break;}
+      p.y=drawn.length?(drawn[0].y+drawn.at(-1).y)/2:30+leaf++*94;
+      if(parent)edges.push([parent,p]);return p;
+    }
+    if((!query&&!allowedIds)||matches.length)visit(root||null,0,null);
+    return {scoped,matches,points,edges,truncated,width:Math.max(600,(maxDepth+1)*300),height:Math.max(250,leaf*94+60)};
+  }
+  // Only retained associations establish contextual consumers. Owned sites remain
+  // distinct: an inventory reference never manufactures a consumer edge.
+  const bindingAssociations = group((analytics?.associations || []).map(row =>
+    ({...row,bindingId:useSiteById.get(row.useSiteId)?.binding.bindingId})), 'bindingId');
+  function bindingProjection(bindingId, scope=null, entryOnly=false) {
+    if(queries)return graphBindingProjection(bindingId,scope,entryOnly);
+    const root=registrationById.get(scope), inside=r=>r&&(!entryOnly||['route','event'].includes(r.kind))&&(!root||r.id===root.id||(root.kind==='mount'&&r.mountPath.includes(root.id)));
+    const rows=bindingAssociations(bindingId).filter(a=>inside(registrationById.get(a.consumerRegistrationId)));
+    const siteIds=new Set(rows.map(a=>a.useSiteId));
+    const sites=bindingSites(bindingId).filter(s=>!root||siteIds.has(s.id));
+    const consumers=new Map(), operations=new Map();
+    for(const a of rows){const r=registrationById.get(a.consumerRegistrationId),mount=r.mountPath.at(-1)||null;
+      const key=JSON.stringify([mount,r.handlerId||r.id]);
+      if(!consumers.has(key))consumers.set(key,{key,mount,handlerId:r.handlerId,registrations:[],rows:[]});
+      const g=consumers.get(key);if(!g.registrations.some(x=>x.id===r.id))g.registrations.push(r);g.rows.push(a);
+    }
+    for(const s of sites){if(!operations.has(s.operation))operations.set(s.operation,{name:s.operation,sites:[],rows:[]});operations.get(s.operation).sites.push(s);}
+    for(const a of rows)operations.get(useSiteById.get(a.useSiteId).operation)?.rows.push(a);
+    return {binding:bindings.get(bindingId),rows,sites,consumers:[...consumers.values()].sort((a,b)=>a.registrations[0].order-b.registrations[0].order),
+      operations:[...operations.values()].sort((a,b)=>a.name.localeCompare(b.name)),consumerCount:new Set(rows.map(a=>a.consumerRegistrationId)).size};
+  }
+  let bindingCache;
+  function graphBindingProjection(bindingId, scope, entryOnly) {
+    if(bindingCache?.id===bindingId&&bindingCache.scope===scope&&bindingCache.entryOnly===entryOnly)return bindingCache.value;
+    const root=registrationById.get(scope), inside=r=>(!entryOnly||['route','event'].includes(r.kind))&&(!root||r.id===root.id||(root.kind==='mount'&&r.mountPath.includes(root.id)));
+    const result=queries.binding(bindingId,inside), consumers=new Map(), operations=new Map(), siteIds=new Set();
+    for(const b of result.blocks){
+      const r=registrationById.get(b.relation.consumer),mount=r.mountPath.at(-1)||null,key=JSON.stringify([mount,r.handlerId||r.id]);
+      if(!consumers.has(key))consumers.set(key,{key,mount,handlerId:r.handlerId,registrations:[],blocks:[]});
+      const g=consumers.get(key);if(!g.registrations.includes(r))g.registrations.push(r);g.blocks.push(b);
+      const byOperation=new Map();
+      for(const site of b.sites){siteIds.add(site.id);if(!byOperation.has(site.operation))byOperation.set(site.operation,[]);byOperation.get(site.operation).push(site);}
+      for(const [name,sites] of byOperation){if(!operations.has(name))operations.set(name,{name,blocks:[]});operations.get(name).blocks.push({relation:b.relation,get via(){return b.via;},sites});}
+    }
+    const sites=bindingSites(bindingId).filter(s=>!root||siteIds.has(s.id));
+    for(const site of sites)if(!operations.has(site.operation))operations.set(site.operation,{name:site.operation,blocks:[]});
+    const value={binding:bindings.get(bindingId),rows:result.rows,sites,coverage:result.coverage,
+      consumers:[...consumers.values()].map(g=>({...g,rows:queries.sequence(g.blocks)})).sort((a,b)=>a.registrations[0].order-b.registrations[0].order),
+      operations:[...operations.values()].map(g=>({...g,sites:sites.filter(s=>s.operation===g.name),rows:queries.sequence(g.blocks)})).sort((a,b)=>a.name.localeCompare(b.name)),
+      consumerCount:result.consumerIds.length};
+    bindingCache={id:bindingId,scope,entryOnly,value};return value;
+  }
+  function filteredDefinitions() {
+    return definitions.filter(row => (state.definitionKind === 'all' || row.kind === state.definitionKind)
+      && (state.definitionRole === 'all' || definitionRegistrations(row.id).some(r => r.kind === state.definitionRole))
+      && [definitionLabel(row),row.id,row.canonicalId,authoredSource(row.source),
+        row.package.state === 'available' ? row.package.value.name : '',
+        ...definitionRegistrations(row.id).map(registrationLabel),
+        ...definitionSites(row.id).map(u => [u.surfaceId,u.operation,authoredFact(u.capability),bindings.get(u.binding.bindingId)?.name,u.binding.state].join(' '))]
+        .join(' ').toLowerCase().includes(state.definitionSearch));
+  }
   const routeIndex = new Map(P.routes.map((r, i) => [r.id, i]));
   const schemaIndex = new Map(P.schemas.map((s, i) => [s.id, i]));
+  const assetResources=P.resources.filter(r=>r.kind==='embedded-asset'||(r.kind==='response-payload'&&(r.entryIds.length||r.routeIds.length)));
+  const technicalResources=P.resources.filter(r=>!assetResources.includes(r));
+  function assetGroups() {
+    const groups=new Map();
+    for(const r of assetResources){const key=(r.kind==='embedded-asset'?'Embedded assets':'Response payloads')+' · '+(r.mediaType||'Unknown media type');
+      if(!groups.has(key))groups.set(key,{label:key,resources:[],input:0,known:0});const g=groups.get(key);g.resources.push(r);
+      if(r.inputBytes.state==='available'){g.input+=r.inputBytes.value;g.known++;}}
+    for(const g of groups.values())g.resources.sort((a,b)=>(b.inputBytes.value??-1)-(a.inputBytes.value??-1)||a.name.localeCompare(b.name));
+    return [...groups.values()].sort((a,b)=>b.input-a.input||a.label.localeCompare(b.label));
+  }
   const resourceIndex = new Map(P.resources.map((r, i) => [r.id, i]));
   const entries = byId(P.entries), bodies = byId(P.bodies);
+
+  // Presentation taxonomy only. Exact registration/entry identities join facts;
+  // names, method/path slots and presentation ordinals never establish identity.
+  const entryPoints = [], entryPointById = new Map();
+  const addEntryPoint = row => { if(!entryPointById.has(row.id)){entryPoints.push(row);entryPointById.set(row.id,row);} };
+  for(const r of registrations.filter(r=>['route','event'].includes(r.kind)).sort((a,b)=>a.order-b.order)) {
+    const route=P.routes.find(route=>route.entryId===r.id), entry=entries.get(r.id), match=r.match.state==='available'?r.match.value:{};
+    addEntryPoint({id:r.id,type:r.kind==='event'?'event':'http',registration:r,route,entry,order:r.order,
+      method:match.method||route?.method||null,path:match.path||route?.path||null,eventType:match.eventType||null,
+      label:registrationLabel(r),source:sourceLocation(r.source)});
+  }
+  for(const route of P.routes) if(!entryPointById.has(route.entryId))addEntryPoint({id:route.id,type:'http',route,entry:entries.get(route.entryId),order:route.order,
+    method:route.method,path:route.path,eventType:null,label:[route.method,route.path,route.handlerName].filter(Boolean).join(' · '),source:route.source?`${route.source.file}:${route.source.line}`:'Source unavailable'});
+  for(const entry of P.entries) if(entry.kind==='event'&&!entryPointById.has(entry.id))addEntryPoint({id:entry.id,type:'event',entry,order:null,
+    method:null,path:null,eventType:entry.flow?.eventType||null,label:entry.name||'Event · '+(entry.source?`${entry.source.file}:${entry.source.line}`:'Source unavailable'),source:entry.source?`${entry.source.file}:${entry.source.line}`:'Source unavailable'});
+  function entryPointContext(id) {
+    const point=entryPointById.get(id), registration=point?.registration;
+    if(!registration)return {sites:[],bindings:[],coverage:{status:'unavailable',observed:0,expected:null,reason:'not-recorded'},relations:[],admission:null};
+    const result=queries?.blocks(id), rows=queries?null:registrationAssociations(id);
+    const sites=[...new Map((result?result.blocks.flatMap(b=>b.sites):rows.map(a=>useSiteById.get(a.useSiteId))).map(s=>[s.id,s])).values()];
+    return {sites,bindings:[...new Set(sites.map(s=>s.binding.bindingId).filter(Boolean))].map(id=>bindings.get(id)),
+      coverage:result?.coverage||analyticsCoverage('associations'),relations:queries?.entry(id).relations||[],admission:queries?.upstream(id)||null};
+  }
+  function filteredEntryPoints() {
+    return entryPoints.filter(p=>(state.entryPointType==='all'||p.type===state.entryPointType)
+      &&(state.entryPointMethod==='all'||p.method===state.entryPointMethod)
+      &&(state.entryPointEvent==='all'||p.eventType===state.entryPointEvent)
+      &&[p.label,p.source,p.id,p.method,p.path,p.eventType].join(' ').toLowerCase().includes(state.entryPointSearch));
+  }
+  const detailHash = (kind,id) => '#'+kind+'/'+encodeURIComponent(id);
+
   const helpers = (P.implementations || []).filter(row => row.artifactId === A.id
     && ['authored-helper', 'consolidated-stage'].includes(row.origin));
   const helperIndex = new Map(helpers.map((row, i) => [row.id, i]));
@@ -173,7 +314,7 @@ function createReportViewModel(P) {
   const prefix = r => '/' + r.path.split('/').filter(Boolean).slice(0, 2).join('/');
   const declarationState = r => r.declarationIds.length ? 'recorded' : r.compositionCoverage === 'complete' ? 'not-declared' : 'unavailable';
   const declarationLabels = {recorded:'Declarations recorded', 'not-declared':'Not declared', unavailable:'Unavailable'};
-  const state = {view:'routes', entrySearch:'', selectedEntry:null, search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', resourceSort:'name', resourceDir:'asc', expandedSchemas:new Set(), expandedResources:new Set(),
+  const state = {view:'entry-points',entryPointSearch:'',entryPointType:'all',entryPointMethod:'all',entryPointEvent:'all',entryPointPage:0,selectedEntryPoint:null,selectedBinding:null,bindingSearch:'', definitionSearch:'', definitionKind:'all', definitionRole:'all', selectedDefinition:null, selectedRegistration:null, selectedUseSite:null, entrySearch:'', selectedEntry:null, search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', resourceSort:'name', resourceDir:'asc', expandedSchemas:new Set(), expandedResources:new Set(),
     helperSearch:'', helperOrigin:'all', helperRole:'all', helperSort:'name', helperDir:'asc', expandedHelpers:new Set()};
   function compareValues(a,b,direction) { if(a==null)return b==null?0:1;if(b==null)return -1;return (a===b?0:a<b?-1:1)*(direction==='asc'?1:-1); }
   function filteredRoutes() {
@@ -211,7 +352,7 @@ function createReportViewModel(P) {
     return parts;
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
-  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
+  return {assetResources,technicalResources,assetGroups,routeCoverage:P.coverage.routes,entryCoverage:P.coverage.entries,bindingCoverage:P.coverage.bindings,entryPoints,entryPointById,entryPointContext,filteredEntryPoints,detailHash,sourceLocation,queries,bindingProjection,atlasLayout,registrationChildren,analytics,definitions,registrations,useSites,definitionById,registrationById,useSiteById,callById,definitionIndex,registrationIndex,useSiteIndex,definitionRegistrations,definitionSites,helperCallers,helperCallees,registrationAssociations,siteAssociations,bindingSites,analyticsCoverage,coverageText,authoredFact,authoredSource,definitionLabel,registrationLabel,filteredDefinitions,get canonicalJson() { return canonicalJson ??= canonical(P) + '\n'; },A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
     entries,entryIndex,entryLabel,helpers,helperIndex,helperOrigins,helperState,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,
     routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers};
 }

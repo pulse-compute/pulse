@@ -32,7 +32,8 @@ async function main() {
       assert.equal(inspected.provider.targetSupport.project.status, 'eligible', JSON.stringify(inspected.provider.targetSupport));
     }
     const signingOnly = tc.compileFastly(projects['fastly-native']);
-    assert.equal(signingOnly.manifest.policy.wasi, 'clock_time_get only');
+    // The fixture logs the issued token to exercise stdout redaction.
+    assert.equal(signingOnly.manifest.policy.wasi, 'clock_time_get, fd_write only');
     assert.match(signingOnly.manifest.policy.jwt, /bounded issuance/);
     // A reader can authenticate its inbound token and mint a worker token in
     // the same artifact. Verification and issuance retain separate demands.

@@ -4,7 +4,7 @@
 verification and exact-text SHA-256 for Pulse applications and first-party capability packages.
 
 ```bash
-npm install @pulse-compute/crypto@1.0.0-beta.8
+npm install @pulse-compute/crypto@1.0.0-beta.9
 ```
 
 ## Exact-text digest
@@ -121,9 +121,9 @@ realization. Target probing and automatic fallback are prohibited.
 
 Native capability packages can also select `SHA-256` and `HMAC-SHA256` for
 internal byte output. Their exact `guest-source:pulse-hmac-as` realization uses
-32-byte output, at most 2 MiB of SHA-256 data, 32 KiB of HMAC data and 8 KiB of
-HMAC key material. Crypto owns reusable, wiped host staging frames. The original
-40,992-byte frame serves HMAC and small hashes; a separate 2,097,184-byte frame
+32-byte output, at most 2 MiB of SHA-256 data, 64 KiB of HMAC data and 8 KiB of
+HMAC key material. Crypto owns reusable, wiped host staging frames. A
+73,760-byte frame serves HMAC and hashes up to 64 KiB; a separate 2,097,184-byte frame
 is allocated lazily for larger host-staged hashes. These operations are separate from JWT's
 32-byte minimum HMAC verification key; the application verification API retains
 its existing limits. Node JavaScript also supports the trusted byte-output

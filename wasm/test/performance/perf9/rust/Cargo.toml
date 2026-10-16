@@ -1,0 +1,17 @@
+[package]
+name = "pulse-perf9-forwarding"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+path = "lib.rs"
+
+# No SDK, allocator, build script or external dependency. Explicit Fastly ABI.
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"

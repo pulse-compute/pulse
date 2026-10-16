@@ -142,7 +142,14 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
     source, sourceHash: sha256(source), manifest: Object.freeze({
       ...application.manifest, planVersion: plan.version, planHash: plan.planHash, sourceHash: sha256(source)
     })
-  }) : runtimeCore.generateCanonicalNativeAssemblyScript(plan, options);
+  }) : runtimeCore.generateCanonicalNativeAssemblyScript(plan, {
+    ...options,
+    // This compiler emits the pulse_host artifact consumed by Node Native.
+    // Provider writers own their final emission policies. Linked guests retain
+    // their existing path until separately qualified; budgeted plans are gated
+    // by the canonical numeric proof itself.
+    numericRegions: guestUnits.length === 0 ? 'host-numeric-regions-v1' : undefined
+  });
   const schemaCodecsActive = generated.manifest.schemaCodecs && generated.manifest.schemaCodecs.active === true;
   let jsonAs;
   if (schemaCodecsActive) {

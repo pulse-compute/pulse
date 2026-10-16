@@ -4,7 +4,7 @@ const crypto = require('node:crypto');
 const vm = require('node:vm');
 const path = require('node:path');
 const f = require('./report-fixtures.cjs');
-const { compareCapsules, serializeComparison } = require(path.join(f.reportRoot, 'comparison'));
+const { compareCapsules, serializeComparison, parseComparison } = require(path.join(f.reportRoot, 'comparison'));
 const { renderComparison } = require(path.join(f.reportRoot, 'viewer'));
 const payload = html => html.match(/<script id="pulse-comparison-data" type="application\/json">([\s\S]*?)<\/script>/)[1];
 function fixture(mode = 'changed') {
@@ -38,9 +38,8 @@ module.exports = function comparisonViewerCases() {
   for (const mode of ['changed', 'same', 'unknown', 'incompatible', 'missing', 'ambiguous', 'hostile']) {
     const comparison = fixture(mode), before = serializeComparison(comparison), html = renderComparison(comparison);
     assert.equal(html, renderComparison(comparison), 'deterministic HTML');
-    assert.equal(serializeComparison(JSON.parse(payload(html))), before, 'complete comparison survives HTML');
-    const raw = html.match(/<pre id="compare-json">([\s\S]*?)<\/pre>/)[1].replace(/&(amp|lt|gt|quot|#39);/g, (_, entity) => ({ amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" })[entity]);
-    assert.equal(raw, before, 'HTML text used by download preserves exact canonical bytes, including hostile text');
+    assert.equal(serializeComparison(parseComparison(payload(html))), before, 'complete comparison survives HTML');
+    assert.ok(!html.includes(before), 'no duplicate expanded JSON payload');
     assert.equal(serializeComparison(comparison), before, 'presentation never changes the result');
     assert.equal((html.match(/<script\b/g) || []).length, 2);
     assert.ok(!/[<>&\u2028\u2029]/.test(payload(html)), 'payload cannot escape its container');
@@ -60,7 +59,7 @@ module.exports = function comparisonViewerCases() {
     for (const name of ['routes', 'entries', 'schemas', 'resources']) if (!comparison.sections.some(row => row.collection === name)) assert.ok(!html.includes(`id="compare-${name}"`));
     // Report remains readable with script disabled: summary, provenance, values
     // and native disclosures are server rendered; only enhancement controls hide.
-    assert.match(html, /<details class="compare-json|<details class="surface compare-json/);
+    assert.match(html, /<details id="compare-json-disclosure" class="surface compare-json/);
     assert.ok(!html.includes('class="compare-record" open'));
   }
   const changed = renderComparison(fixture());
@@ -96,8 +95,8 @@ function interactionCases(comparison) {
     });
     node.querySelectorAll = () => node.records; node.matches = selector => selector.includes('[data-collection]'); return node;
   });
-  const controls = Object.fromEntries(['compare-search', 'compare-status', 'compare-json', 'compare-filter-status', 'compare-empty', 'compare-reset', 'compare-theme', 'compare-export', 'compare-toolbar'].map(id => ['#' + id, new Element()]));
-  controls['#compare-status'].value = 'all'; controls['#compare-json'].textContent = serializeComparison(comparison);
+  const controls = Object.fromEntries(['pulse-comparison-data', 'compare-json-disclosure', 'compare-search', 'compare-status', 'compare-json', 'compare-filter-status', 'compare-empty', 'compare-reset', 'compare-theme', 'compare-export', 'compare-toolbar'].map(id => ['#' + id, new Element()]));
+  controls['#compare-status'].value = 'all'; controls['#pulse-comparison-data'].textContent = payload(renderComparison(comparison));
   controls['.compare-nav'] = new Element();
   let download, link;
   const document = { activeElement: null, documentElement: new Element(), body: new Element(), querySelector: selector => controls[selector], querySelectorAll: () => sections,
@@ -105,19 +104,23 @@ function interactionCases(comparison) {
   const window = new Element(), location = { hash: '' };
   const html = renderComparison(comparison), script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
   vm.runInNewContext(script, { document, window, location, Blob: class { constructor(parts) { download = parts.join(''); } }, URL: { createObjectURL: () => 'blob:test', revokeObjectURL() {} }, setTimeout: fn => fn() });
+  controls['#compare-json-disclosure'].open = true; controls['#compare-json-disclosure'].events.toggle();
+  assert.equal(controls['#compare-json'].textContent, serializeComparison(comparison));
   const records = sections.flatMap(row => row.records), shown = () => records.filter(row => !row.hidden);
   const search = controls['#compare-search'], status = controls['#compare-status'];
   assert.equal(shown().length, records.length);
   search.value = 'no-such-change'; search.events.input(); assert.equal(shown().length, 0); assert.equal(controls['#compare-empty'].hidden, false);
   controls['#compare-export'].events.click(); assert.equal(download, serializeComparison(comparison)); assert.equal(link.download, 'pulse-report-comparison.json'); assert.equal(link.clicked, true);
   controls['.compare-nav'].events.click({ target: { closest: () => ({}) } }); assert.equal(shown().length, records.length, 'same-anchor click clears filters');
-  status.value = 'removed'; status.events.change(); assert.ok(shown().length); assert.ok(shown().every(row => row.dataset.status === 'removed'));
+  status.value = records.some(row=>row.dataset.status==='removed') ? 'removed' : records[0].dataset.status; status.events.change(); assert.ok(shown().length); assert.ok(shown().every(row => row.dataset.status === status.value));
   controls['#compare-reset'].events.click(); assert.equal(document.activeElement, search); assert.equal(shown().length, records.length);
   search.value = '/api/status'; search.events.input(); assert.ok(shown().every(row => row.textContent.toLowerCase().includes('/api/status')));
-  location.hash = '#' + records[0].id; window.events.hashchange(); assert.equal(records[0].open, true); assert.equal(shown().length, records.length);
+  const target=records.find(row=>row.id.includes('-useSites-')) || records[0];
+  location.hash = '#' + target.id; window.events.hashchange(); assert.equal(target.open, true); assert.equal(shown().length, records.length);
   controls['#compare-theme'].events.click(); assert.equal(document.documentElement.dataset.theme, 'light');
   controls['#compare-theme'].events.click(); assert.equal(document.documentElement.dataset.theme, 'dark');
   assert.equal(controls['#compare-toolbar'].hidden, false);
 }
 module.exports.fixture = fixture;
+module.exports.interactionCases = interactionCases;
 if (require.main === module) module.exports();

@@ -30,6 +30,7 @@ export interface PulsePackageEffectOperation<Result = unknown> {
 export interface PulsePackageRuntimeDefinition<
   Operations extends Readonly<Record<string, PulsePackageEffectOperation<unknown>>>
 > {
+  readonly version?: 'pulse.package-runtime-definition.v1';
   readonly package: string;
   readonly contractId: string;
   readonly providerKind: string;

@@ -12,13 +12,14 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
   deployable: true,
   localExecution: true,
   capabilities: [
-    'request', 'response.json', 'response.text', 'response.custom', 'fetch',
+    'request', 'request.body.forward', 'response.json', 'response.text', 'response.custom', 'fetch',
     'time.wall-clock', 'crypto.digestText', 'config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'assets.lookup',
     'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify', 'jwt.sign',
     'opaque.pass-through', 's3.head', 's3.getText', 's3.putText', 's3.getBody'
   ],
   lowering: {
     request: 'fastly.compute.request',
+    'request.body.forward': 'fastly.native.body-forwarding',
     'response.json': 'fastly.compute.response.json',
     'response.text': 'fastly.compute.response.text',
     'response.custom': 'fastly.compute.response.custom',
@@ -62,10 +63,12 @@ function validateStaticBackendBindings(metadata = {}, bindings = {}) {
   }
 }
 
-function createFastlyLoweringPlan(metadata, bindings = {}) {
+function createFastlyLoweringPlan(metadata, bindings = {}, options = {}) {
+  const forwarding = require('./toolchain/body-forwarding.js').normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs);
+  const descriptor = forwarding ? FASTLY_PROVIDER_DESCRIPTOR : {...FASTLY_PROVIDER_DESCRIPTOR, capabilities: FASTLY_PROVIDER_DESCRIPTOR.capabilities.filter(id => id !== 'request.body.forward')};
   require('./toolchain/s3.js').resolveFastlyS3(metadata.providerOperations || [], bindings.s3);
   validateStaticBackendBindings(metadata, bindings);
-  return canonical.createProviderLoweringPlan(metadata, FASTLY_PROVIDER_DESCRIPTOR, {
+  return canonical.createProviderLoweringPlan(metadata, descriptor, {
     ...bindings,
     grip: bindings.grip || 'fastly-fanout'
   });

@@ -11,7 +11,7 @@ function findLowerableManifestRecord(inputs = {}) {
   const cwd = inputs.cwd || process.cwd();
   const manifestRecords = Array.isArray(inputs.manifestRecords) && inputs.manifestRecords.length > 0
     ? inputs.manifestRecords
-    : discoverLowerableLibraryManifests({ cwd, workspaceRoot: inputs.workspaceRoot, scanNodeModules: inputs.scanNodeModules });
+    : discoverLowerableLibraryManifests({ cwd, workspaceRoot: inputs.workspaceRoot, scanNodeModules: inputs.scanNodeModules, packageDirs: inputs.packageDirs });
   const contractId = inputs.contractId;
   const npmPackage = inputs.npmPackage;
   const lowerableSubpath = inputs.lowerableSubpath;
@@ -37,7 +37,7 @@ function buildPackageOwnedLoweringPlan(inputs = {}) {
   const loaded = loadLowerableCompilerBuilder(record);
   const libraryContracts = Array.isArray(inputs.libraryContracts) && inputs.libraryContracts.length > 0
     ? inputs.libraryContracts
-    : resolveDefaultLibraryContracts({ cwd, workspaceRoot: inputs.workspaceRoot });
+    : resolveDefaultLibraryContracts({ cwd, manifestRecords, workspaceRoot: inputs.workspaceRoot });
   return invokeLowerableCompilerBuilder(loaded, record, libraryContracts, inputs);
 }
 

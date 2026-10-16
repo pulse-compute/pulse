@@ -142,6 +142,12 @@ adapter around this entry for direct JavaScript/Native parity. It is not a
 public listener, process-global bus, or production transport; Fastly, browser,
 and ESP32 event realizations remain unclaimed.
 
+Mixed Native applications may combine HTTP application-error handlers with
+event entries. Compiler-owned HTTP cursor boundaries protect the HTTP error
+lane; event records in the shared routing inventory are not HTTP cursor entries.
+An event effect failure remains an event execution failure and cannot enter
+HTTP middleware or application-error handlers.
+
 Each JavaScript or Native event invocation owns its state, effects,
 cancellation, redaction, logging, completion, and disposal. HTTP and event
 handlers may await the shared one-way `ctx.emit(type, { schema, payload? })`
@@ -177,6 +183,57 @@ JavaScript during Native compilation.
 See [Compilation and lowering](../concepts/compilation-and-lowering.md) and the
 [architecture overview](./overview.md).
 
+## Declared npm source exports (IMP9-01)
+
+Native compilation can link installed, versioned npm exports into the same
+static source graph as local handlers/helpers. Exact root or subpath `exports`
+entries select one `.ts`, `.mts`, `.js` or `.mjs` source file. Conditional objects
+use declaration order with `pulse`, `import` and `default` active; `types` and
+unselected conditions confer no runtime eligibility. There is no `main`/`module`,
+wildcard, array, directory or extension-substitution fallback. Explicit CommonJS
+sources and declaration-only runtime exports are rejected.
+
+Package-relative links must name exact files within the real package root;
+package-root symlinks are supported, escaping source symlinks are not. Bare
+imports resolve from the dependency's installation, including self-references
+through its exports. Application tsconfig aliases do not redirect dependency
+imports. Distinct physical roots with the same package identity are rejected
+rather than silently conflated. Top-level source is limited to static imports,
+re-exports, types and function declarations or immutable function bindings.
+Module initialization, captured constants, factories, dynamic imports and
+CommonJS loading remain unsupported. Existing Native syntax, helper, effect and
+capability checks still apply; no source code is evaluated to obtain a handler.
+
+Graph package nodes retain the imported export subpath and package/version/
+manifest hash. Their explicit source edges point to attributed source nodes,
+whose `packageSubpath` is the authored package-relative filename. Portable
+`npm/<name>@<version>/<manifest-hash>/<file>` paths identify those source nodes
+and diagnostics; source content hashes and edges enter the graph hash. Source
+files and package manifests enter watch inputs. `static-source` package status
+means source admission, not lowerer trust or proof that every function compiles.
+Explicit JavaScript planning retains its existing opaque dependency graph.
+
+Ordinary source imports grant no lowerer trust. A package that advertises a
+`pulsewasm` manifest opts into the versioned trusted build-dependency contract
+described under [Package-owned capabilities](#package-owned-capabilities). Its canonical
+contained manifest, protocol versions and package ownership must validate;
+malformed declarations are rejected rather than ignored. Package names and
+versions need not match a first-party list or Pulse's release version.
+Undeclared compiler files remain inert; declared `pulse.contract` product
+metadata must be static JSON.
+`npm-source-imports` covers resolver admission and rejection in repository
+fixtures. `npm-source-installed-workflow` packs the candidate toolchain and an
+independent dependency, installs exact versions outside the checkout, and tests
+Node/Fastly Native handlers, middleware and directly awaited scalar helpers.
+The installed cases combine fetch suspension with trusted Crypto digest effects,
+check authored source attribution and executable Wasm identity, and repeat after
+a pinned dependency update without copying or changing application source.
+An unsupported dependency update or undeclared crypto capability must fail
+explicitly. An installed malformed lowerer declaration must also fail before
+its executable file is loaded.
+Fastly execution uses the fixture ABI;
+this qualification does not claim a deployed provider test.
+
 ## Native diagnostic artifacts
 
 Executable Native Wasm and its verification do not depend on optional compiler
@@ -186,6 +243,125 @@ omission from an emitted artifact, and writers remove stale compiler-owned text
 on reuse. Required guest-link disassembly audits remain mandatory. This changes
 artifact policy, not handler admission, the effect ABI, optimizer posture, or
 provider authority. See [optional Native text artifacts](../concepts/compilation-and-lowering.md#optional-native-text-artifacts).
+
+## Native numeric loop regions
+
+Non-guest-linked Fastly Native builds select a private canonical numeric-region
+policy for both schema/incremental and schema-inactive/stub runtimes. Builds with
+the selected linked crypto guest use a narrower policy that requires inactive
+schema codecs. Schema-active linked builds retain boxed emission, including when
+JSON cache arena elision is requested. Other linked guests are not opted in.
+The provider-neutral `pulse_host` compiler used by Node Native selects its
+separately qualified host policy for schema and stub builds without linked guests.
+Provider writers retain authority over final emission; caller options or a
+portable intermediate cannot bypass the Fastly runtime gate.
+The canonical emitter proves numeric initialization and
+all reaching writes around bounded pure loops, using stable local IDs rather
+than type hints. Eligible regions use private f64 slots and box written values
+into the existing local handles before generic consumers or effects. Boxes
+already held by aliases, collections and state remain immutable. Zero-trip and
+conditional writes preserve untouched handles. Arithmetic order, IEEE values,
+loop caps, control-state IDs and guard weights remain unchanged.
+
+The same proof applies to synchronous pure helper bodies and shared HTTP stages.
+Helper parameters remain unknown live-ins regardless of their type annotations;
+only independently initialized numeric regions are selected. Helper slots still
+reset on each call and clear at returns. A helper loop containing an early return
+keeps its existing emission. Shared-stage regions box before effects, transfers
+or generic consumers, preserving invocation frames and continuation ownership.
+Region write flags reset on every entry, including repeated calls/registrations.
+
+Unlinked Fastly read-loop plans also admit these proven regions. Each eliminated
+uncached numeric allocation pays the existing value/byte charge at its original
+evaluation point, in evaluation order. Integer and boolean cache admissions use
+the original host value operations, preserving cache state for later boxed code.
+Region exits materialize already-charged numbers without a second charge. This
+does not refund the cumulative budget or defer failures to the region boundary;
+exhaustion still closes the invocation and traps. Charge and materialization
+helpers check the latched failure even for cached values. The accounting policy,
+effect cap, loop caps and linear-memory ceiling are unchanged. These private
+Fastly helpers add no host import or public option. Manifests identify this path
+with `accounting: fastly-read-loop-v1`.
+
+Unknown live-ins, coercive operations, nested assignment results, generic calls
+and collection writes decline this optimization. Effectful helper bodies,
+package-owned application emitters, Node linked guests, Fastly schema-active
+linked builds, Node budgeted plans, linked-guest budgeted plans, and entire
+output/body-transform plans retain existing emission. Node's rotating scalar
+cache needs separate accounting qualification; this Fastly realization does not
+extend the `pulse_host` ABI. JavaScript is unchanged. Node collections
+continue to store JavaScript values directly; numeric region exits allocate normal
+host handles without mutating, releasing or reusing existing entries. Node host
+handle counts, guest linear-memory capacity and process heap/RSS are distinct
+measurement domains. Eliminating host entries is not a guest-byte or RSS claim.
+Fastly stub allocation avoidance requires no collector. The selected linked
+runtime retains its fixed 32-page memory, disjoint Rust/static/invocation-frame
+ranges and unchanged allocator. Final-link audits remain mandatory; allocation
+avoidance does not make a previously failing schema/guest combination eligible.
+The numeric policy adds no host ABI, allocation ceiling, cache default, GC policy,
+or reclamation protocol. Generic handle retention outside the separately qualified
+ownership slice below remains; deliberately retained snapshots still require
+storage. Generator manifests record the policy, selected regions
+and declined loop reasons, and source hashes bind the emitted strategy.
+
+## Fastly Native handle ownership
+
+Unlinked, schema-enabled Fastly Native plans using the incremental managed runtime
+select the private `fastly-handle-tracing-v1` policy only when their entire plan
+passes the complete owner audit. The policy admits ordinary expressions,
+pure loops, terminal HTTP handlers, request metadata/text/JSON, schema codecs,
+responses, request state and logging, audited pure/async helpers, shared stages,
+Router error lanes and the explicit Fastly effect allowlist. Events, package-owned
+application emitters, unknown frames/expressions/statements/capabilities/effects
+and all allocation-budgeted plans are excluded. Stub and linked runtimes, Node Native and JavaScript keep their existing
+lifetime behavior. No public configuration or host ABI is added.
+
+Compiler root descriptors enumerate the result, helper return, every declared
+local and effect-result slot, and both request-state arrays from their declarations.
+Effect results remain roots independently of ready/pending flags. The provider
+validates that descriptor and adds its request-header snapshot, occupied caches,
+all payload/ready slots, opaque-resource pins and forwarding marker/result when present.
+Completed expressions and loop control boundaries may collect only after values
+are rooted or discarded and no unregistered handle temporary remains. Numeric
+regions checkpoint only after boxing their outputs. A latched error suppresses
+collection. Parsers, codecs, host operations and expression evaluation never
+invoke the tracer internally.
+
+Pure helper calls defer collection until the complete caller expression returns;
+earlier arguments and borrowed returns can remain on the native stack. Async helper
+and shared-stage slots are global roots with their existing reset/transfer ordering.
+Additional checkpoints follow rooted helper returns, stage exits, complete sibling
+dispatch and resume result transfer. No collection occurs during payload construction,
+provider settlement or between a borrowed result and guest acceptance. Router recovery
+constructs and roots its error before collection can resume. Invocation tickets,
+deadlines, pending resource IDs and mode flags are not value handles.
+
+Fetch and opaque-body wrappers are pinned until invocation end. Existing provider
+cleanup remains responsible for closing bodies and retiring/reaping requests;
+tracing adds no destructor, cancellation, retry or resource reuse. This conservative
+policy does not bound wrapper churn independently of the existing invocation limits.
+Request-duration and fetch deadlines remain usable; allocation budgets retain their
+separate retain-until-terminal behavior.
+
+Eligible plans use a sparse map with monotonically increasing positive IDs.
+Tracing follows collection handle edges and direct rope object edges independently,
+using iterative worklists without flattening strings or allocating lazy backing
+stores. A complete survivor map replaces the old table; invalid edges fail before
+publication. IDs are never recycled; exhaustion fails through the existing value
+error at stage 1 before wrapping. `__pulse_drop` remains a no-op. The existing
+managed collector reclaims objects after their last strong reference disappears.
+
+The initial private trigger is `max(1024, live mappings after the previous pass)`
+new handles between safe points. Cache entries remain pinned and an occupied-slot
+index avoids scanning empty cache capacity. Table and tracing storage track the
+reachable graph plus allocations since a safe point, with old and survivor tables
+coexisting during a pass. All local slots remain conservative roots, even after
+their source scope ends. Live snapshots, caches and unflattened rope graphs still
+require storage; a long operation without a checkpoint can allocate substantially.
+Wasm memory need not shrink. This does not change cumulative budget accounting or
+qualify general reclamation for excluded runtimes. See the measured first slice
+and residuals in [MEM9-09](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/mem9-09/README.md) and the
+[frame/effect extension](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/mem9-09b/README.md).
 
 ## Native internal helper sharing
 
@@ -605,7 +781,7 @@ entering the guest. The ticket is consumed before injection. Completion, failure
 explicit close and cancellation invalidate pending tickets. An incomplete resume
 still preserves the current pending result set for a valid retry.
 
-Terminal first-party Native package applications can use the optional
+Terminal trusted Native package applications can use the optional
 `pulse_host.value_json(handle)` data-copy import. The canonical Node host checks
 a 1 MiB UTF-8 JSON limit before allocating a guest managed string. This adds no
 effect authority and leaves opaque/streaming bodies outside this bridge. For a
@@ -875,14 +1051,50 @@ suspension group, before any provider dispatch. Native test/dev execute the
 emitted Wasm for this capability. Native forwarding applications reject
 structured request-read surfaces because those host calls remain synchronous.
 
-STR-02C leaves both Fastly targets ineligible. Local Viceroy ABI probes support
-incremental transfer, early origin responses and unsuccessful stream termination,
-but a successful streaming-body close relinquishes the handle and may hand
-queued completion to the host. That is not a drain receipt or retained
-cancellation authority. Fastly incoming forwarding requires a reviewed
-completion/handoff contract and a metered provider pump before admission; raw
-handle transfer alone does not enforce measured byte limits. Fastly JavaScript
-also retains its separate total-request-deadline restriction.
+FWD9-02 admits an experimental Fastly Native metered forwarding path with
+`fastly.bodyForwarding: { requestMaxBytes, responseMaxBytes }` and
+`fastly.maxDurationMs`. Both byte limits are explicit integers from 1 to
+1,048,576; the total deadline is 1–30,000 ms. The application may contain one
+terminal opaque POST fetch with inline `ctx.req.body()`, a static backend and
+optional literal request headers. Effect groups, additional effects, body
+inspection, transforms, duplicate consumers and dynamic backends are rejected.
+Existing Native structured-read exclusion applies. Fastly JavaScript remains
+ineligible, including its separate total-request-deadline restriction.
+
+The provider reserves the marker before dispatch, creates a streaming upload,
+and meters actual bytes through one reusable 16 KiB raw scratch buffer across
+sequential upload and response phases. No payload chunk becomes an application
+value. Reads follow writable demand; a partial write finishes before another
+read. Pending origin headers participate in upload waits and are polled first;
+early response closes incoming reads and abandons unfinished upload. Each cap
+requires EOF, with a one-byte sentinel read that is never forwarded on overflow.
+Declared oversize is rejected before transfer; declared length is not proof of
+actual length. Outbound request headers are explicit and bounded. Response
+header enumeration uses a 16 KiB raw arena with at most 64 pairs; hop-by-hop,
+framing and Connection-nominated fields are removed. Encoded payload bytes are
+preserved without automatic decompression or redirect following.
+
+The cooperative request deadline and any earlier fetch `timeoutMs` continue
+through response pumping and the final pre-close check. Successful streaming
+close relinquishes the writable handle and hands queued completion to Fastly;
+**it is not a drain receipt, client delivery guarantee, or retained cancellation
+authority**. This explicitly accepts the FWD9-01 host-handoff alternative.
+No pending-request cancellation ABI exists: cleanup polls once, discards late
+handles and leaves unresolved host work to invocation teardown, without retries
+or rollback claims. Before downstream commitment, upload overflow attempts 413,
+deadline expiry 504, and origin/protocol/response-limit failure 502. After
+commitment, failure abandons the stream and never sends a second response.
+FWD9-03 qualifies normal builds and exact installed candidate packages with an
+adversarial injected-ABI matrix and pinned Viceroy 0.21.1 HTTP replay. The
+`fwd9-03-installed` task checks doctor/inspect/test/build/report, artifact identity,
+independent byte caps, operation/total deadlines and repeated invocations. The
+local wire cases include incremental input/output, early rejection, unknown
+lengths, overflow, bodyless responses and post-header aborts. Injected faults
+separately cover partial/failed writes, malformed ABI outputs and late results.
+Payload storage uses one 16 KiB scratch buffer; guest linear memory stays flat
+across tested payload sizes. Host queues and live Fastly resource accounting are
+not bounded by that observation. Deployed Fastly qualification remains separate;
+local and installed passes do not establish client receipt or live acceptance.
 
 `node.bodyForwarding.maxBytes` and `node.maxDurationMs` are both required for
 this path. Node adapts incoming HTTP lazily and keeps one provider read and one
@@ -1166,6 +1378,62 @@ group records by kind and exact producer identity without merging claims or
 turning mixed record results into an overall pass. Full identities and scopes
 remain available on expansion and in the unchanged capsule export.
 
+The offline execution atlas projects retained registration order and mount
+ancestry. Its edges mean immediate mount containment, never runtime sequencing.
+Search includes matching registrations and their ancestors; scope follows exact
+mount instances. Rendering is capped at 300 graph nodes, while 50-row table pages
+retain all matches. Binding exploration groups consumers by enclosing mount and
+authored definition, preserving each exact registration and association in the
+details. Only retained associations establish consumer edges; authored use sites
+may establish binding/operation references independently. No inventory declaration
+manufactures a consumer or permission. Binding graphs page 12 consumer groups and
+12 operations at a time, with association evidence in 20-row pages. Coverage and
+unresolved binding identities remain explicit. Expansion, selection, filtering
+and pagination change view state only, without changing the capsule or its export.
+
+
+## Report storage normalization
+
+AN9-09 adds the internal `pulse.report-data` envelope (`encodingVersion: 1`)
+for retained inventory and offline report/comparison HTML. The semantic capsule
+and comparison remain v1. `serializeCapsule`, `serializeComparison`, CLI `--json`
+and offline JSON downloads retain the original expanded canonical format and
+hashes. Readers accept both representations. Older readers reject the new
+storage envelope; export canonical JSON when exchanging with an older reader,
+subject to that reader's size and work limits.
+
+The envelope has exactly `kind`, `encodingVersion`, `shapes`, `nodes`, and `root`.
+Shapes are unique, sorted arrays of object keys. Nodes are JSON scalars,
+`[0, ...childIndexes]` arrays, or `[1, shapeIndex, ...childIndexes]` objects.
+Indexes are nonnegative safe integers; children precede their parent, the root
+is last, and every node and shape must be used. Object keys cannot repeat or
+contain prototype-sensitive names. Producers traverse sorted object keys and
+preserve array order, interning exact values and subtrees. They emit the envelope
+only when its complete UTF-8 representation is smaller and within wire limits.
+Compact references are storage-local, never logical IDs or matching keys.
+
+The shared Node/browser codec bounds both encoded data and expanded bytes,
+nodes, depth, strings and records with report limits of 64 MiB for both input
+and expanded data, 2,000,000 nodes, depth 64, 1 MiB strings and 100,000 array
+records. These budgets admit Catalog-sized reports. Expanded costs
+are checked before following references into a materialized tree; shared objects
+remain immutable in the browser. Node admission then performs the existing
+semantic schema, identity, graph and hash validation. Normalization neither
+removes evidence nor makes an oversized semantic capsule admissible.
+
+Completion inventory sidecar version 1 binds canonical JSON; version 2 binds the
+normalized envelope. Admission checks the declared version against the bytes.
+Completion file lengths and hashes cover the actual stored bytes; capsule and
+comparison evidence hashes still cover canonical expanded semantics. Attribution
+and source-input sidecars retain their existing encodings. The completion marker
+itself remains v1, with an explicitly widened inventory-version enumeration.
+
+Standalone HTML embeds one payload and the shared offline decoder under its CSP
+hash. JSON export strings and comparison raw-data disclosures are generated on
+demand. Search, filtering and navigation use the decoded model and cannot narrow
+exports. Comparison summary/details remain readable without JavaScript; its full
+JSON disclosure and download require JavaScript. No compiler, provider or network
+activity is needed to decode or replay retained evidence.
 
 ## Retained build metadata
 
@@ -1257,6 +1525,50 @@ primary final measurement. Whole containing-body measurements remain non-additiv
 the comparison does not sum route/helper deltas into an artifact total or infer
 performance regressions from one build duration.
 
+AN9-06 extends comparison to retained authored analytics. When either input has
+an analytics block, `pulse.report-matching.v2` adds handlers, registrations, use
+sites, helper calls and associations to the summary and changed sections. Each
+semantic inventory has separate before/after `identityCoverage`: resolved
+comparison keys out of observed records. This does not certify a complete source
+inventory or prove unchanged implementation. Missing analytics keeps unavailable
+coverage and cannot establish additions/removals. Comparing two legacy capsules
+still emits the original matching-v1 result; existing v1 comparison bytes remain
+readable and hash-preserving. V2 results require a reader that supports this policy.
+
+| Authored inventory | Comparison policy after exact retained-ID matching |
+| --- | --- |
+| Definitions | Unique kind plus authored file and exact UTF-16 start/end offset slot. Names and similar bodies never establish a match. |
+| Registrations | Authored source slot, kind, router path, resolved definition and ordered enclosing mount instances. Parent mounts match before children. |
+| Use sites | Resolved definition owner and authored source slot; repeated operations stay distinct. Capability, operation and binding are compared values, not identity guesses. |
+| Helper calls | Resolved caller/callee definitions and authored call slot; consumer registrations use resolved keys. |
+| Associations | Resolved consumer, use site and ordered typed explanation hops. Lane, conditionality and coverage remain compared facts. |
+
+`retained-identity`, `authored-source-slot` and `semantic-links` matching bases are
+explicit in changed records. Source-slot matching is an exact location comparison,
+not a claim that the same code survives an edit. Original source ranges/hashes and
+package provenance remain visible as values. Ambiguous locations and missing
+prerequisite identities remain unresolved. Bilateral unmatched source records
+are conservatively unresolved, including moves/renames that cannot be connected;
+they are not guessed deletion/addition pairs. One-sided records require complete
+opposite inventory coverage before claiming an addition/removal. Association path
+changes require resolved reference keys. Unavailable dependencies retain explicit
+partial link coverage rather than acquiring identity from artifact bytes.
+
+These semantic projections contain no byte measurements, execution counts or
+inferred grants. Default/bounded-size recipe changes can affect the physical
+artifact and build compatibility without changing authored capability/binding
+inventories. A source hash change is provenance, not by itself a capability change.
+Dynamic/unknown binding state, unavailable source/capability and lost control or
+association coverage remain qualified evidence changes. Ordered mount and helper
+paths, normal/error/event lanes and direct-versus-conditional ownership survive
+comparison. Legacy physical entry and authored registration keys live in separate
+namespaces so one cannot overwrite the other.
+
+The offline comparison HTML adds authored inventory summaries, identity coverage,
+matching bases and semantic changed fields. Existing search, local links, native
+disclosures and complete JSON export include the new sections. It remains passive
+and self-contained; command/MCP integration and graph visualization are separate.
+
 The canonical schema and generated TypeScript declaration share the report fixture
 writer. The report-capsule-contract task includes comparison regressions for
 identity churn, ambiguity, coverage loss/gain, settings/provenance, exact and
@@ -1286,6 +1598,240 @@ original capsule. Rendering escapes all retained text, admits a bounded validate
 comparison, uses hash-bound inline assets and makes no network requests. Mobile
 before/after fields stack in the same explicit order as the desktop columns.
 The `cli-report-viewer` task covers this renderer alongside the single-capsule view.
+
+## Report handler topology
+
+The optional `analytics` block (new capture: `pulse.report-analytics.v2`; historical
+materialized reports: `pulse.report-analytics.v1`) retains first-class
+handler and linked-helper definitions plus distinct router registration/mount
+instances. AN9-01 projects these from the live canonical router topology after
+emission; no plan, executable source, runtime ID, recipe or Wasm bytes change.
+Definitions reuse compiler identity (and existing report handler IDs); helpers
+use a separate report ID derived from their canonical linker identity. Roles
+belong to registrations, so one handler reused twice remains one definition with
+two entries. Shared Native stages and dispatcher bodies are not authored handlers.
+
+Definition and registration spans are separate, hash-bound authored file ranges
+with UTF-16 offsets `[start,end)` and one-based line/column. They come from retained
+source nodes/locations, never generated effect offsets. Imported source package
+provenance joins exact reachable-graph module identities, without granting lowerer
+trust. Missing source remains unavailable. Synthetic routing nodes have no
+handler identity; implicit HTTP fallthrough does not invent an authored 404
+handler. Unsupported/non-router topology remains unavailable rather than claiming
+an empty definition universe.
+
+Registration order is the canonical execution index. Ordered mount paths retain
+instance identity through compiler child/parent-return boundaries, including a
+router mounted more than once and nested mounts. Next/child/parent-return links
+join existing report entries; HTTP termination never becomes an event entry.
+Existing entry flow retains scope/conditional candidate facts. These are static
+topology facts, not request traces or proof that every candidate middleware runs.
+AN9-02 retains recognized operation nodes before normalization, including linked
+helpers. Each authored use site belongs to one definition and carries the shared
+compiler capability projection, canonical operation and original source span.
+Repeated reads remain separate sites even when they share one binding. Resolved
+binding uses join existing reference/binding identities by kind and canonical
+name. Dynamic names remain unresolved; missing evidence is unknown. Synchronous
+operations without named resources have not-applicable binding state.
+
+Helper-call edges come from accepted frontend calls, with caller/callee identities
+and all consumer registrations of that authored call. A shared helper owns its
+own capability sites; each caller reaches them through its validated edge.
+Calls expanded by reuse or mounting remain one authored call with distinct
+registrations. Missing authored call locations never borrow generated offsets.
+These observations live outside serialized recognition summaries and executable
+metadata. Default and bounded-size recipes retain the same semantic inventory.
+AN9-03 derives contextual use-site associations from those accepted calls and
+canonical router control. Each registration can retain an optional control fact:
+its normalized match pattern, whether a mount has an eligibility gate, and the
+possible normal continuation, explicit error transfer and terminal outcomes.
+These outcomes come from accepted canonical operations, not source text or a
+report-owned control-flow parser. Eligibility values and branch predicates are
+never serialized. Missing or unsupported control evidence remains unavailable.
+
+Direct associations describe definition ownership, including shadowed entries;
+`conditional: false` is an ownership fact, not a claim that a use executed.
+Inherited associations are conditional candidates through explicit `next()` or
+`next(error)` continuation and child/parent-return links. Disjoint scopes and
+methods are excluded, terminal outcomes do not create a continuation, and error
+recovery can resume normal dispatch. An explanation that traverses an error
+handler retains the error lane even after recovery. Events retain only their
+own definition/helper associations and never inherit the HTTP graph. Ordered
+`via` hops preserve mount instances, registrations and accepted helper calls;
+they explain dependencies rather than recording a runtime trace.
+
+Pattern overlap is checked against the canonical sealed path grammar. Ambiguous
+overlap is conservative and carries partial `unsupported-mapping` coverage;
+missing control gives partial `not-recorded` coverage and unknown inherited
+conditionality. Branch-predicate feasibility, implicit runtime failures and
+transitive dependency internals are outside this explicit-control association
+basis. A terminal response therefore does not acquire an error-handler
+association merely because an operation might fail at runtime. Complete coverage
+means complete within this static basis, never complete request execution.
+Historical v1 derivation is deterministic and bounded to 250,000 work steps, 10,000 rows and
+64 explanation hops; exhaustion preserves observed rows with partial
+`graph-budget-exhausted` coverage. It never interprets missing evidence as zero.
+
+Association identities bind consumer, use site, ordered explanation and lane.
+Validation rederives the table from retained facts and rejects altered scope,
+lane, conditionality, references or coverage even if an attacker recomputes a
+row ID. The optional control field and unavailable association table preserve
+AN9-01/02 capsule round trips. The older `routes.composition` rollup remains a
+bounded candidate view; it does not gain this association table's scope proof.
+
+VIS-07 captures only canonical facts in analytics v2: definitions, registration
+instances with control and mount/continuation links, authored sites and validated
+helper calls. It stores neither expanded associations nor an owner expansion
+table. The shared Node/offline-HTML relationship query engine derives entry,
+binding, exact-site and upstream-admission projections. Upstream admission does
+not depend on the existence or availability of operation sites, so middleware
+with no binding operation remains inspectable. Paths retain the same deterministic
+static witness semantics, not all runtime paths. Queried association IDs retain
+the v1 identity formula.
+
+Queries index facts and compiled patterns, share lazy continuation witness tails,
+and cache only the last entry result (plus one viewer binding projection).
+They retain the existing 250,000-work safety budget per entry query, with explicit
+partial exhaustion. V2 has no global materialized-row or 64-hop cutoff. Requested
+pages are bounded by the existing reader record bound; HTML displays 20 rows per
+page without changing query coverage. Missing evidence never becomes complete
+zero. The reader's other security bounds are unchanged. JSON exports retain the
+exact compact capsule independently of query/navigation state.
+
+V1 validation/replay, IDs, hashes, retained rows and exports remain unchanged.
+No replay silently upgrades old data. Semantic comparison compares v2 canonical
+facts and links, and separately records representation changes in metadata.
+Its retained association inventory is unavailable for v2; a v1-to-v2 row gap is
+unresolved, never a semantic deletion. Control and binding changes remain visible
+in registration and site comparisons. The internal query contract and pinned
+full-oracle performance evidence are in `docs/internal/vis-07/README.md`.
+
+The schema/projection/graph validator and retained inventory admit this block
+together; passive artifact replay does not load the compiler or provider. Older
+capsules without analytics retain their exact bytes and evidence hashes, and
+absence means unavailable analytics. Older strict readers cannot consume the new
+block. AN9-04 admits exact npm source inputs consumed by the canonical linker to
+completion snapshots. A private read receipt binds each consumed manifest and
+source to its content hash, physical target and file identity. The linker also
+records missing nearer package manifests and source-link resolution; installing
+a nearer package or retargeting a package/source symlink invalidates a current
+report even when the old target's bytes remain unchanged. These observational
+receipts never enter executable metadata, graph IDs, plans or Wasm.
+
+The input sidecar stores only bounded relative locations within the existing
+workspace boundary, source identities, sizes and hashes, with an optional digest
+in the recorded recipe. It never stores source bodies or grants package/lowerer
+trust. Only consumed files and resolution probes are bound; unrelated package
+files are not scanned. Sources outside the workspace remain unavailable for
+completion rather than expanding report read authority. Capture is bounded to
+20,000 read/probe records and 256 MiB of observed source text; replay enforces
+corresponding input bounds. Changed/restored file identities during a build
+withhold completion. Every publication rechecks inputs before the final marker.
+
+Artifact replay needs neither source files nor installed packages and loads no
+compiler, provider or TypeScript. Current-project collection retains the existing
+bounded configuration parser, then checks source receipts as data without source
+compilation, provider execution or filesystem writes. Both modes validate the
+same optional analytics graph and completion hashes. Old input sidecars without
+source receipts retain their existing recipe hash and replay behavior. Missing
+analytics remains unavailable and legacy capsules still render/export unchanged.
+AN9-05 presents the retained graph in the offline report's **Handlers** view.
+Authored definitions appear once, independently of registration roles and the
+**Compiled helpers** physical-body view. Search covers definition/source identity,
+owned capabilities and binding names; kind and registration-role filters do not
+change the capsule or its full export. Definition details link each registration,
+owned use site, validated helper caller and linked-helper call. Separate
+registration details retain ordered mount instances, router paths, continuation
+links and contextual associations, including middleware and error explanations.
+Synthetic mounts remain registration records without invented handler definitions.
+
+AN9-08 retains the first nonempty compiler handler name in `localName`,
+`exportName`, `inlineName` order. Linked helpers keep their original source name;
+import aliases and internal linker symbols do not replace a declaration's local
+name. Inline names can be compiler-generated context labels, not authored function
+names. The existing capsule `name` field carries the selected value through
+completion, passive replay and comparison without a schema change. Missing names
+remain null; readers do not reconstruct them from source or generated code.
+The viewer leads with the retained name, shows source/kind separately, and includes
+the name in registration links. Duplicate names remain separate definitions with
+separate source locations and navigation targets. Names never establish identity
+or comparison matches, and this display policy does not change executable output.
+
+Use-site details show the authored owner, canonical operation/capability, binding
+resolution state, logical binding and reference identity, and contextual consumers.
+Source displays retain the file, exact range and hash; unavailable source is never
+reconstructed from another record or fetched from disk/network. Imported package
+provenance remains distinct from the caller's registration source. Coverage and
+producer evidence accompany the drill-downs. Direct ownership, conditional static
+candidates and unknown conditionality have distinct labels; normal/error/event
+lanes stay explicit. These are static dependency explanations, not request traces,
+effective grants or evidence of execution. Missing analytics in older capsules
+renders unavailable, not an empty or zero-use claim. Route, entry and binding views
+link into authored analytics using capsule-local navigation. There is no new
+physical-size attribution. Semantic comparison is owned by AN9-06 below the
+report comparison contract.
+
+VIS-08 makes **Entry Points** and **Bindings** the two primary execution
+inventories in offline HTML. Entry Points combines exact HTTP route and event
+registration instances with explicit type labels and method/event filters; it
+is a view taxonomy, not a compiler schema change. Historical route and event
+entry records remain discoverable when authored analytics are unavailable.
+Bindings shows possible entry-point consumers, authored operations and their
+coverage, separately from retained inventory references. Dynamic/unknown binding
+sites remain accessible without being promoted to invented named bindings.
+HTTP size analysis, assets and sizes, evidence, authored records, all entry
+records and compiled helpers remain under **More report sections**. VIS-10
+promotes Schemas to primary navigation alongside Entry Points and Bindings. Simple
+inventory questions do not require opening the Explorer.
+
+Contextual **Explore execution** and **Explore consumers** actions open the
+Execution Explorer. Exact details and **Back to Explorer** preserve its live
+selection, scope, expanded set, mode, zoom, pan, and focus within the open report.
+A new explicit exploration replaces that return context; page reload recreates
+the focused context rather than persisting camera state. New entry-point, binding,
+authored-definition, registration, use-site and Explorer links use percent-encoded
+full capsule IDs. Historical numeric route, binding, entry, authored-record and
+atlas hashes continue resolving by their original capsule-local indices.
+Anonymous labels use retained source file:line and registration type/order/mount
+context, never a fabricated name or a display label as identity. No navigation
+change modifies the embedded capsule, evidence hash, exact export or comparison.
+
+VIS-09 opens the Explorer as a fixed, full-window surface inside the offline
+report, including on narrow screens. Compact controls leave the canvas available;
+no native fullscreen API is used. Selection inspects an exact registration;
+a separate **+** / **−** mount control reveals or collapses one neighborhood
+without changing selection. Center explicitly reveals selected ancestry; ordinary
+collapse does not reopen it. Containment curves and dashed binding-candidate
+curves retain their distinct static meanings. Route paths and event types lead
+compact labels; exact identities and source ranges remain in advanced details.
+
+One dismissible inspector shows type, relationship and coverage, with links to
+Entry Point, Binding and authored details. Table/help and scope/evidence panels
+replace that inspector while open. The routing table remains an optional paged
+alternative reaching every registration beyond the graph's 300-node display cap;
+binding graph and exact evidence pages retain all consumers and associations.
+Zoom never shrinks text below 65%; fit can therefore require scrolling. Search,
+keyboard node navigation, focus containment, Escape dismissal, close-to-origin
+focus restoration, pointer panning and modifier-wheel zoom work without network
+access. Browser evidence for Catalog and small/mixed capsules is recorded under
+`docs/internal/vis-09/`; these are presentation changes, with the strict CSP and
+complete exported capsule unchanged.
+
+VIS-10 adds a **Table | Explore** view switch to Entry Points and Bindings.
+Compact HTTP/event rows share verb colors and columns with binding consumer
+lists. Inventory search, type/method filters and table pagination remain in
+memory; switching back to an unchanged exploration resumes the live canvas.
+Contextual exploration remains available in record details. Exact recorded
+schema and binding references are distinct from possible binding associations;
+missing references never establish non-use.
+
+**Assets & sizes** groups embedded assets and response payloads with recorded
+entry/route associations by resource kind and media type. Group source-byte
+sums count recorded construction sites and may include duplicate payloads;
+unmeasured inputs remain explicit. These totals never imply retained Wasm size,
+exclusive route ownership or deletion savings. Unassociated text, schema and
+other technical resource records remain in a lazily rendered Advanced census.
+The physical artifact ledger, complete capsule and JSON export are unchanged.
 
 ## Providers, targets, and eligibility
 
@@ -1683,17 +2229,57 @@ Package effects require an explicit `PulseContext` and use the same
 request-owned bridge as core effects. There is no ambient current request,
 mutable global registration, or package-specific scheduler.
 
-The Beta executes lowerers only from synchronized first-party
-packages. Explicit provider toolchains are the narrow exception that may load a
-selected project package; they do not enable dependency scanning or plugin
-self-registration and do not widen lowerer trust. A general plugin API remains
-unavailable until the machine-readable readiness gates for provenance,
-discovery, negotiation, security, compatibility, and isolated loading are
-implemented and release gated.
+Package lowerers are trusted build dependencies. A resolved workspace or npm
+package may declare static `pulse.package.json` product metadata and the
+versioned `pulsewasm.manifest.cjs` compiler contract. Admission depends on
+matching supported protocol versions and package ownership, not a package-name
+allowlist, a monorepo registration, or equality with Pulse's release version.
+Use `compiler.trust: 'build-dependency'` and matching `lowering.trust`;
+`first-party` remains a compatible alias with the same execution authority.
+
+The project graph discovers declarations from the package resolved at each
+import, including nested dependencies. Unrelated installed manifests are not
+executed by graph compilation. Explicit catalog inspection may enumerate
+workspace and installed declarations. Recognition runs only for graph-selected
+package contracts. Conflicting contract/import ownership fails closed.
+Manifest, builder, sidecar, and product metadata paths must stay inside their
+package after realpath resolution; package-root links such as pnpm's are valid.
+
+Manifests and builders run ordinary CommonJS in the compiler process with its
+filesystem, environment, and Node authority. This is an explicit trust model,
+not sandboxing, signature verification, resource isolation, or failure
+containment. Applications choose and maintain their build dependencies.
+Protocol validation occurs after loading the trusted manifest and before
+loading its builder. Unknown protocol versions are rejected, not guessed from
+npm semver. Builder results, canonical operations, and provider requirements
+still pass their existing versioned validators. Package admission does not
+create a host capability or expand the separate prebuilt-guest contract.
+A general compiler-plugin hook API remains deferred; the scoped external
+lowerer contract is available independently of that readiness gate.
 
 See [Package-owned lowering](../concepts/package-owned-lowering.md), the
 [package lowerer contract](../contributing/package-lowerer-contract.md), and
 [plugin readiness](../maintainers/plugin-readiness.md).
+
+## Trusted package runtime Wasm
+
+A reachable package may contribute a versioned private runtime Wasm artifact
+and `package.invoke` effects without a monorepo registration. The managed
+runtime accepts only the generic versioned definition, bounded string payload
+and live request context. The compiler validates static artifact ownership,
+operation/configuration, Wasm ABI and declared memory maximum. This is separate
+from the internal prebuilt guest-link contract below.
+
+Node implements the generic host binding for Native and JavaScript: explicit
+package/operation grants, authoritative pre-normalization HTTP captures,
+trusted time and provider-only named key lookup. Cryptography uses the existing
+explicitly selected Crypto byte realization. Native protocol logic runs only
+in package Wasm. Fastly has no implementation and fails capability planning.
+Memory, input/output, crypto commands and request lifetime are bounded; trusted
+code is not sandboxed or forcibly CPU-preempted. Package results and sensitive
+HTTP/key data are excluded from effect traces. Applications and operators own
+build dependency trust and the truth of their configured HTTPS termination
+origin. See the exact [runtime binding contract](../contributing/package-lowerer-contract.md#trusted-package-runtime-bindings).
 
 ## Internal prebuilt guest units
 
@@ -1746,7 +2332,7 @@ without moving package semantics into the compiler or widening the trust model.
 
 ## JWT verification
 
-The synchronized `1.0.0-beta.8` JWT/crypto packages compose
+The synchronized `1.0.0-beta.9` JWT/crypto packages compose
 `@pulse-compute/jwt` over the lower-level, provider-neutral verification
 contract owned by `@pulse-compute/crypto`. The executable algorithm set is
 HS256 and ES256. Crypto verifies a MAC or signature over caller-supplied bytes
@@ -1797,7 +2383,7 @@ S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects
 Crypto's `runtime-builtin` Web Crypto byte realization through the trusted
 `@pulse-compute/crypto/provider` export. Both return 32-byte results, cap SHA-256
-data at 2 MiB, HMAC data at 32 KiB and HMAC keys at 8 KiB, and snapshot and wipe
+data at 2 MiB, HMAC data at 64 KiB and HMAC keys at 8 KiB, and snapshot and wipe
 staging inputs. Large host-staged hashes use a separate lazy digest frame. Native
 also checks guest memory ranges. JWT verification retains its separate limits.
 No target probes or falls back to a different realization.
@@ -1871,7 +2457,7 @@ publish, promote, deploy, or activate the release.
 
 ## Support, release, and authority
 
-Pulse `1.0.0-beta.8` is a Beta intended for the `beta` channel.
+Pulse `1.0.0-beta.9` is a Beta intended for the `beta` channel.
 Documented, evidence-backed behavior is intentional, but public surfaces may
 change deliberately before a compatibility-bearing release. Unsupported
 behavior fails explicitly, historical and implementation subpaths gain no

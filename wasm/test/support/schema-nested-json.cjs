@@ -39,9 +39,9 @@ let __test_serializations: i32 = 0
 export function probe_string_id(): i32 { return idof<string>() }
 export function probe_parse(text: string): i32 {
   const schema = __pulse_fastly_string_value('app.Small')
-  const before = __pulse_fastly_values.length
+  const before = __pulse_fastly_value_count()
   __pulse_fastly_schema_parse_json(text, schema)
-  __test_handles = __pulse_fastly_values.length - before
+  __test_handles = __pulse_fastly_value_count() - before
   return __pulse_fastly_last_error
 }
 export function probe_stat(serializations: bool): i32 { return serializations ? __test_serializations : __test_handles }

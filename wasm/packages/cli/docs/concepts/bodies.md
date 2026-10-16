@@ -290,7 +290,28 @@ this capability on both targets.
 
 ## Current transport limits
 
-Both Fastly targets reject incoming forwarding. Node Native forwarding uses
+Fastly Native has an experimental opt-in forwarding path. Configure
+`fastly.bodyForwarding: { requestMaxBytes: 1048576, responseMaxBytes: 1048576 }`
+and `fastly.maxDurationMs` (1–30,000). Each independent byte limit is required
+and may be 1–1,048,576. The initial application shape contains one terminal
+`return ctx.fetch(url, { method: 'POST', body: ctx.req.body() })` with a literal
+URL mapped to a static backend. Optional literal headers and `timeoutMs` are
+accepted. Additional effects, groups, duplicate consumers, dynamic backends,
+body decoding and transforms are outside this initial path.
+
+The provider meters actual bytes through fixed 16 KiB raw scratch, handles
+partial writes and early origin responses, and filters response framing and
+hop-by-hop headers within 64 pairs/16 KiB. Omitted limits never mean unbounded.
+The request deadline and any earlier fetch timeout cover both pumps until the
+final pre-close check. Fastly accepts queued delivery when close succeeds;
+Pulse cannot then await a drain receipt, cancel delivery, or guarantee client
+receipt. Failures after headers abandon the stream. This is a provider-specific
+host-handoff contract. FWD9-03 checks exact installed packages and Viceroy 0.21.1
+with binary, limit, deadline, framing and abort cases. A fixed guest scratch
+buffer does not establish a bound on host queues. Deployed Fastly qualification
+remains separate. Fastly JavaScript still rejects incoming forwarding.
+
+Node Native forwarding uses
 the emitted Wasm, with no JavaScript fallback. Its request text/JSON host calls
 are synchronous, so a Native forwarding application cannot also declare
 structured request reads; use a separate application for those endpoints.

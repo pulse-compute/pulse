@@ -150,8 +150,9 @@ async function main() {
     const wasmImports = WebAssembly.Module.imports(wasmModule);
     const wasmExports = WebAssembly.Module.exports(wasmModule);
     assert.equal(wasmImports.some((entry) => entry.module === 'env' || /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, 'real Fastly module must not import env.abort, pulse_host, or a JavaScript runtime');
-    assert.deepEqual(wasmImports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
-      ['wasi_snapshot_preview1:clock_time_get'], 'fetch deadlines require only the monotonic WASI clock');
+    assert.deepEqual(wasmImports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`).sort(),
+      ['wasi_snapshot_preview1:clock_time_get', 'wasi_snapshot_preview1:fd_write'], 'only deadline clock and stdout writer are permitted');
+    assert.equal(wasmImports.some(entry => entry.module === 'fastly_log'), false);
     assert.ok(wasmExports.some((entry) => entry.name === '_start' && entry.kind === 'function'));
     assert.ok(wasmExports.some((entry) => entry.name === 'pulse_crypto_hs256_verify' && entry.kind === 'function'));
     assert.ok(wasmExports.some((entry) => entry.name === 'pulse_crypto_sha256_digest' && entry.kind === 'function'));
@@ -247,6 +248,10 @@ async function main() {
       id: 'reality-1'
     }]);
 
+    // Wait for process pipes to drain before asserting positive stdio delivery.
+    await server.stop();
+    assert.ok(server.logs.stdout.includes('[pulse:info] reality.arrival token=<redacted>'), 'arrival must reach stdout with guest redaction');
+    assert.ok(server.logs.stdout.includes('[pulse:warn] reality.outcome authenticated'), 'outcome must reach stdout');
     const serialized = JSON.stringify({
       logs: server.logs,
       structured: jsonBody(structured),
@@ -322,6 +327,8 @@ async function main() {
         configStore: true,
         secretStore: true,
         secretRedaction: true,
+        stdoutArrivalAndOutcome: true,
+        namedLoggingEndpointAbsent: true,
         kvPersistence: true,
         namedBackendFetch: true,
         opaqueBytes: true,

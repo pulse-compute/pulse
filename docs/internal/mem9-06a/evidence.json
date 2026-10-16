@@ -1,0 +1,268 @@
+{
+  "schemaVersion": "pulse.mem9-06a.receipt.v1",
+  "recordedAt": "2026-10-14",
+  "source": {
+    "sourceRevision": "930951874b43746593087065e43baefb260afd28",
+    "sourceTree": "888986c47bee4190e5c997772df1eef04c8f21a3",
+    "workingTree": ""
+  },
+  "sourceAfter": {
+    "sourceRevision": "930951874b43746593087065e43baefb260afd28",
+    "sourceTree": "888986c47bee4190e5c997772df1eef04c8f21a3",
+    "workingTree": ""
+  },
+  "prerequisiteHead": "4033518822e99008820527ccfcc3fe019afe0799",
+  "classification": "evidence-only; no production changes",
+  "campaign": {
+    "status": "passed",
+    "cells": 8,
+    "builds": 32,
+    "successfulExecutions": 84,
+    "expectedExecutionTraps": 4,
+    "negativeValidatorChecks": 3,
+    "reportSha256": "293017ecf6b9996f89a3047d19ab799250342c0c5560a4e5775cf2f0448b1cd8"
+  },
+  "archive": {
+    "file": "pulse-mem9-06a-evidence.zip",
+    "sha256": "d9d6360c127320ed7d5ed51ec29a9ef89305a7229686fb9a08f0e72309598ba2",
+    "bytes": 32011224,
+    "report": "campaign/report.json"
+  },
+  "rows": [
+    {
+      "runtime": "stub",
+      "iterations": 0,
+      "arena": "default",
+      "disposition": "eligible-for-follow-up",
+      "production": {
+        "capacityBytes": 1310720,
+        "handles": 637,
+        "numbers": 566,
+        "allocatorSpanBytes": 1149584,
+        "managedAfterFullGc": null,
+        "responseSha256": "61689e81c4e50ffe09633b79ced95a5ad4c7ad2ca78598a18c74452f07d65327"
+      },
+      "prototype": {
+        "capacityBytes": 1310720,
+        "handles": 619,
+        "numbers": 548,
+        "allocatorSpanBytes": 1147568,
+        "managedAfterFullGc": null,
+        "responseSha256": "61689e81c4e50ffe09633b79ced95a5ad4c7ad2ca78598a18c74452f07d65327"
+      }
+    },
+    {
+      "runtime": "stub",
+      "iterations": 256,
+      "arena": "default",
+      "disposition": "eligible-for-follow-up",
+      "production": {
+        "capacityBytes": 2621440,
+        "handles": 1917,
+        "numbers": 1846,
+        "allocatorSpanBytes": 1309328,
+        "managedAfterFullGc": null,
+        "responseSha256": "abbed5b91e2e09414ac62583c7316e62a90182e1b55f2b13b9b236fd153380e0"
+      },
+      "prototype": {
+        "capacityBytes": 1310720,
+        "handles": 619,
+        "numbers": 548,
+        "allocatorSpanBytes": 1147568,
+        "managedAfterFullGc": null,
+        "responseSha256": "abbed5b91e2e09414ac62583c7316e62a90182e1b55f2b13b9b236fd153380e0"
+      }
+    },
+    {
+      "runtime": "ES256",
+      "iterations": 0,
+      "arena": "default",
+      "disposition": "eligible-for-follow-up",
+      "production": {
+        "capacityBytes": 2097152,
+        "handles": 706,
+        "numbers": 570,
+        "allocatorSpanBytes": 1085072,
+        "managedAfterFullGc": 620480,
+        "responseSha256": "1993817fa98aedfbb620e471e00bcac3a260ff7925e9c9e6ba2f76a0ffb7174d"
+      },
+      "prototype": {
+        "capacityBytes": 2097152,
+        "handles": 688,
+        "numbers": 552,
+        "allocatorSpanBytes": 1083024,
+        "managedAfterFullGc": 618464,
+        "responseSha256": "1993817fa98aedfbb620e471e00bcac3a260ff7925e9c9e6ba2f76a0ffb7174d"
+      }
+    },
+    {
+      "runtime": "ES256",
+      "iterations": 256,
+      "arena": "default",
+      "disposition": "eligible-for-follow-up",
+      "production": {
+        "capacityBytes": 2097152,
+        "handles": 1986,
+        "numbers": 1850,
+        "allocatorSpanBytes": 1233248,
+        "managedAfterFullGc": 767936,
+        "responseSha256": "0ce2bc5760992d421993a3e7c62a395bf6448d3b408e6aac4dabe02a8ce0a2c9"
+      },
+      "prototype": {
+        "capacityBytes": 2097152,
+        "handles": 688,
+        "numbers": 552,
+        "allocatorSpanBytes": 1083024,
+        "managedAfterFullGc": 618464,
+        "responseSha256": "0ce2bc5760992d421993a3e7c62a395bf6448d3b408e6aac4dabe02a8ce0a2c9"
+      }
+    },
+    {
+      "runtime": "RS256",
+      "iterations": 0,
+      "arena": "default",
+      "disposition": "eligible-for-follow-up",
+      "production": {
+        "capacityBytes": 2097152,
+        "handles": 719,
+        "numbers": 570,
+        "allocatorSpanBytes": 1330496,
+        "managedAfterFullGc": 634064,
+        "responseSha256": "837470654f7304c6a671da638ea15a6bfcbb5a0a9773e93edddc8260ac2f1770"
+      },
+      "prototype": {
+        "capacityBytes": 2097152,
+        "handles": 701,
+        "numbers": 552,
+        "allocatorSpanBytes": 1330480,
+        "managedAfterFullGc": 632048,
+        "responseSha256": "837470654f7304c6a671da638ea15a6bfcbb5a0a9773e93edddc8260ac2f1770"
+      }
+    },
+    {
+      "runtime": "RS256",
+      "iterations": 256,
+      "arena": "default",
+      "disposition": "eligible-for-follow-up",
+      "production": {
+        "capacityBytes": 2097152,
+        "handles": 1999,
+        "numbers": 1850,
+        "allocatorSpanBytes": 1249136,
+        "managedAfterFullGc": 781520,
+        "responseSha256": "abc974a2e841d99c160ed41c151f6f231524d83b3bd6552228134993ae3773af"
+      },
+      "prototype": {
+        "capacityBytes": 2097152,
+        "handles": 701,
+        "numbers": 552,
+        "allocatorSpanBytes": 1330704,
+        "managedAfterFullGc": 632048,
+        "responseSha256": "abc974a2e841d99c160ed41c151f6f231524d83b3bd6552228134993ae3773af"
+      }
+    },
+    {
+      "runtime": "schema-linked",
+      "iterations": 256,
+      "arena": "default",
+      "disposition": "blocked-existing-schema-runtime"
+    },
+    {
+      "runtime": "schema-linked",
+      "iterations": 256,
+      "arena": "elided",
+      "disposition": "eligible-for-follow-up",
+      "production": {
+        "capacityBytes": 2097152,
+        "handles": 1993,
+        "numbers": 1852,
+        "allocatorSpanBytes": 1235232,
+        "managedAfterFullGc": 769728,
+        "responseSha256": "0ce2bc5760992d421993a3e7c62a395bf6448d3b408e6aac4dabe02a8ce0a2c9"
+      },
+      "prototype": {
+        "capacityBytes": 2097152,
+        "handles": 695,
+        "numbers": 554,
+        "allocatorSpanBytes": 1218128,
+        "managedAfterFullGc": 620256,
+        "responseSha256": "0ce2bc5760992d421993a3e7c62a395bf6448d3b408e6aac4dabe02a8ce0a2c9"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "command": "pnpm install --frozen-lockfile --ignore-scripts",
+      "status": "passed",
+      "log": "mem9-06a-install.log",
+      "logSha256": "3bfb5916339cab536431d5b3b6ce160d6c4eb1c1ab9e078a33448547a95563c5"
+    },
+    {
+      "command": "pnpm build",
+      "status": "passed",
+      "log": "mem9-06a-build.log",
+      "logSha256": "abe5c9d719903afbe4be884aeca81c6125d3ca5107edf9276efdd63fc98e34df"
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task fastly-numeric-regions --task guest-link-audit-diagnostics --no-report",
+      "status": "passed",
+      "log": "mem9-06a-focused.log",
+      "logSha256": "b8faca457cfc6e74b27ebe1e7e69b7f6dc96eb73d5099899683553d072aa3013"
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --no-report",
+      "status": "failed-existing-boundary",
+      "log": "mem9-06a-unit.log",
+      "logSha256": "a25973c2c18291853bed747073fc0843092e69af5bd2aee6dd754d25bba434ad"
+    },
+    {
+      "command": "node wasm/test/assert-boundaries.cjs",
+      "status": "failed-existing-boundary",
+      "log": "mem9-06a-boundaries.log",
+      "logSha256": "f5b429359c8e83cf76c9cec142f22d41cdfea8a0432af65a21d0bdc14fa93c2b"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "log": "mem9-06a-maintainer.log",
+      "logSha256": "29950389946494af3858f362b70af5c7b5f6fb80d0ead3121f400beab98e5536"
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --base 4033518822e99008820527ccfcc3fe019afe0799 --head HEAD --declaration-file <pr-body> --check",
+      "status": "passed",
+      "log": "mem9-06a-scope.log",
+      "logSha256": "704c0624b00927922d62c89ca3ec701f1e3c4c2680aee410c45ff26cc62fb87a"
+    }
+  ],
+  "focusedSource": "54c3e38c853fdc83b4274fea162a4a1a7c27b04d",
+  "sourceDeltaAfterFocused": "Only stronger budget exclusion assertion in test-only worker; no generated/product behavior changes.",
+  "unitFailure": "snapshot.js imports canonical-project-compiler outside the approved list; 2 tasks passed, boundaries failed, remaining selection unrun. Both files unchanged from latest 2497084.",
+  "finalRepositoryChecks": [
+    {
+      "command": "npm run maintainer:sync",
+      "status": "passed"
+    },
+    {
+      "command": "npm run docs:sync",
+      "status": "passed"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed"
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed"
+    }
+  ],
+  "archiveValidation": "Extracted campaign independently passes --check with relocated paths",
+  "linkedAuditValidation": "All 24 final linked artifacts pass all production audit checks and have zero memory.grow instructions"
+}

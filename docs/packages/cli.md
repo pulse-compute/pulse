@@ -35,6 +35,16 @@ pulse build
 - `doctor` validates project, provider, dependencies, and external toolchain readiness.
 - `report` reviews retained evidence from a successful Native build: a compact overview by default, or one complete capsule with `--json`. `--artifact` replays a supported manifest or historical capsule without loading project code. `--html` writes a self-contained offline viewer with expandable schemas and full JSON export. It never opens a browser. `--out file.html` selects a contained destination; generated-output receipts beside the file preserve repeatable project matching. Reports contain build-review metadata; review before sharing.
 
+  Retained inventory and HTML data use lossless normalized storage when smaller.
+  Reports retain all identities, evidence and coverage. CLI `--json` and viewer
+  downloads still emit canonical Report v1 JSON, compatible with older readers
+  within their size limits;
+  new readers also accept normalized inventory files with `--artifact`. Older
+  readers reject normalized storage. Both stored and expanded data allow up to
+  64 MiB, with a two-million-value work budget. Comparison HTML keeps one data payload; its full
+  JSON disclosure and export require JavaScript, while summary/details remain
+  readable without it.
+
   Route counts distinguish registrations from distinct method/path pairs. Fresh
   compiler evidence labels registrations **terminal** or **continuing**: continuing
   handlers can call `next()`, including conditional and error transfers, and may
@@ -55,6 +65,19 @@ pulse build
   Desktop route details use a wider panel; phones retain a full-width drawer and
   scrollable table. Evidence is collapsed by kind and exact producer version,
   with individual result counts visible and full record scopes available inside.
+
+  **Execution atlas** explores retained handler registrations, middleware and
+  subrouter mounts. Choose **Show graph** on narrow screens, search or focus a
+  subrouter, and follow an exact instance to its authored definition and source.
+  Graph curves show mount containment, not observed requests. The graph draws
+  at most 300 nodes; the paged routing table retains every matching registration.
+  **Bindings** in the atlas connects retained contextual consumers to logical
+  bindings and authored operations. Select a node for association evidence and
+  exact registration links; graph and evidence pages preserve larger inventories.
+  Missing or partial analytics remain explicit and never imply no dependencies
+  or effective permissions. **Expand workspace** gives the graph more room, with
+  optional details and width controls; Escape exits the expanded view. These
+  views use the same offline payload and leave full JSON exports unchanged.
 
   The report's **Build** summary retains elapsed time through inventory capture,
   AssemblyScript compilation time, target/profile, Pulse/compiler versions and

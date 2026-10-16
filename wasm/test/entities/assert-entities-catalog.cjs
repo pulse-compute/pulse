@@ -100,7 +100,7 @@ assert.equal(entry.productContract.targets.javascript.status, 'supported');
 assert.equal(entry.productContract.targets.native.reasonCode, 'PULSE_ENTITIES_NATIVE_PROVIDER_INTEGRATION_REQUIRED');
 assert.equal(entry.productContract.targets.javascript.reasonCode, null);
 assert.equal(entry.productContract.conformance.status, 'target-overlap');
-assert.equal(packageCatalog.policy.trustedFirstPartyOnly, true);
+assert.equal(packageCatalog.policy.trustedBuildDependencies, true);
 assert.equal(packageCatalog.policy.publicRegistration, false);
 
 const packageJson = JSON.parse(fs.readFileSync(path.join(repoRoot, 'packages/entities/package.json'), 'utf8'));

@@ -142,10 +142,27 @@ tokens, and known Secret Store values retain substring redaction. Keep operation
 observations separate from private payloads: redacting a payload does not preserve
 its schema or distinguish fields that collapse to the same redacted name.
 
-Logging uses the provider-owned `stdout` endpoint on a best-effort basis. An
-unavailable or rejected endpoint is a separate sink failure; proving correct
-emitted log bytes with an injected Fastly ABI host does not prove that Viceroy or
-a deployed service accepts that endpoint.
+Fastly Native `ctx.log` writes redacted, newline-terminated messages to standard
+output through WASI `fd_write` (descriptor 1). Each enabled statement makes one
+best-effort write; errors and partial writes do not retry, change the HTTP result,
+or disable later statements. It does not open a named logging endpoint: `stdout`
+and `stderr` are reserved names. No logging binding is required.
+
+This corrects the beta.8 Native logger's reserved-endpoint lookup. Local Viceroy
+qualification requires positive arrival/outcome output as well as secret absence.
+After deploying a corrected candidate, verify delivery with
+`fastly log-tail --stream stdout` before relying on live cadence reporting.
+Local and injected-host checks do not establish deployed log-tail delivery.
+
+The opt-in `fastly-stdio-installed` task packs and installs exact candidates outside
+the checkout with lifecycle scripts disabled. It checks installed bytes before
+and after compilation, replays the emitted Wasm with failing writes, and requires
+an authenticated probe's arrival/outcome logs from Viceroy:
+
+```bash
+PULSE_VICEROY_BIN=/path/to/viceroy \
+node wasm/scripts/run-wasm-tests.cjs --task fastly-stdio-installed --no-report
+```
 
 For `target: 'native'`, `pulse build` compiles the generated Compute package to
 direct-host-ABI `bin/main.wasm`. For `target: 'javascript'`, it emits the
@@ -164,3 +181,40 @@ or `fastly compute serve --file` selected with `PULSE_FASTLY_BIN`. The gate
 sends real HTTP requests through the Native module. It remains separate from
 portable and offline JavaScript-candidate validation and does not deploy a
 service.
+
+## Experimental Native binary forwarding
+
+Opt in with `fastly.bodyForwarding: { requestMaxBytes: 1048576,
+responseMaxBytes: 1048576 }` and `fastly.maxDurationMs: 2000`. In a Native
+application with one fetch effect, return
+`ctx.fetch('https://origin.example/upload', { method: 'POST', body: ctx.req.body() })`
+from the handler and map that origin to a named backend. Both byte bounds are
+required, independent, and limited to 1 MiB. Request headers must be literal,
+explicit and fit 64 pairs/16 KiB; incoming credentials are not copied implicitly.
+
+Pulse pumps opaque bytes, watches for early origin responses and enforces the
+request deadline plus any earlier fetch `timeoutMs` through response pumping.
+Successful final close hands queued delivery to Fastly; it provides no client
+receipt or post-handoff cancellation. Fastly JavaScript remains ineligible.
+See [body transport limits](../concepts/bodies.md#current-transport-limits)
+for the initial shape restrictions and qualification boundary.
+
+`fastly-incoming-body-forwarding` checks the normal Native build and adversarial
+host ABI cases. Set `PULSE_VICEROY_BIN` to the reviewed Viceroy 0.21.1 executable
+to also check real HTTP byte identity, caps, incremental upload/output, early
+responses, header filtering, bodyless statuses, disconnects and post-header
+aborts. The separate installed task requires that executable:
+
+```bash
+PULSE_VICEROY_BIN=/path/to/viceroy \
+node wasm/scripts/run-wasm-tests.cjs --task fwd9-03-installed --no-report
+```
+
+It packs exact candidates, installs outside the checkout with lifecycle scripts
+disabled, verifies installed bytes before and after the CLI workflows, and
+replays the emitted Wasm under both the ABI fixture and Viceroy. Its report binds
+package, Wasm, runner and engine identities. Additional builds exercise unequal
+request/response caps and an earlier total deadline. These are local and
+installed qualification results; deployed Fastly remains unqualified. Fixed
+guest storage and loopback timing samples do not prove a host queue bound,
+zero-copy forwarding or a Pulse-versus-Rust performance result.

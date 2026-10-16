@@ -55,10 +55,10 @@ function pulseHmacAssemblyScriptSource(algorithm = 'HS256') {
       macDataBytesMaximum: 1024 * 1024,
       hs256TagBytes: 32,
       byteOperationKeyBytesMaximum: 8192,
-      byteOperationDataBytesMaximum: 32768,
+      byteOperationDataBytesMaximum: 65536,
       digestDataBytesMaximum: 2097152,
       byteOperationOutputBytes: 32,
-      byteOperationFrameBytes: 40992,
+      byteOperationFrameBytes: 73760,
       digestFrameBytes: 2097184
     }),
     resultCodes: Object.freeze({
@@ -84,12 +84,12 @@ function bindNativeDigestMac(moduleExports) {
     throw new TypeError('Native Crypto digest/MAC exports are unavailable.');
   }
   function run(data, key) {
-    if (!(data instanceof Uint8Array) || data.length > (key === undefined ? 2097152 : 32768)
+    if (!(data instanceof Uint8Array) || data.length > (key === undefined ? 2097152 : 65536)
       || (key !== undefined && (!(key instanceof Uint8Array) || key.length > 8192))) {
       throw new TypeError('Native Crypto digest/MAC input exceeds its byte contract.');
     }
-    const largeDigest = key === undefined && data.length > 32768;
-    const dataBytes = largeDigest ? 2097152 : 32768;
+    const largeDigest = key === undefined && data.length > 65536;
+    const dataBytes = largeDigest ? 2097152 : 65536;
     const keyBytes = largeDigest ? 0 : 8192;
     const frameBytes = keyBytes + dataBytes + 32;
     const pointer = (largeDigest ? moduleExports.pulse_crypto_digest_frame_v1() : moduleExports.pulse_crypto_bytes_frame_v1()) >>> 0;

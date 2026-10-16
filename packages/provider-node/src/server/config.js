@@ -11,7 +11,7 @@ const defaults = Object.freeze({
 
 function normalizeOptions(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new TypeError('Node launcher options are required.');
-  const allowed = new Set([...Object.keys(defaults), 'target', 'buildDir', 'config', 'secrets', 'kv']);
+  const allowed = new Set([...Object.keys(defaults), 'target', 'buildDir', 'config', 'secrets', 'kv', 'packageBindings']);
   for (const key of Reflect.ownKeys(input)) {
     if (!allowed.has(key)) throw new TypeError('Unknown Node launcher option.');
     if (!Object.hasOwn(Object.getOwnPropertyDescriptor(input, key), 'value')) throw new TypeError('Node launcher options must be data properties.');
@@ -42,6 +42,7 @@ function normalizeOptions(input) {
     }
     options[key] = Object.freeze(Object.fromEntries(entries));
   }
+  options.packageBindings = require('../runtime/package-operations.js').normalizePackageBindings(input.packageBindings);
   // JSON seed data is process-local reference KV, never a durable store.
   if (options.kv !== undefined) {
     if (!options.kv || typeof options.kv !== 'object' || Array.isArray(options.kv)) throw new TypeError('Node launcher kv must be an object.');

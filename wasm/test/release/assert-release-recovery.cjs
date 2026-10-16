@@ -80,10 +80,30 @@ async function main() {
     assert(recovery.resumeDiagnostics(root, directory, candidate, options).reasons.includes('checkout-changed'));
     writeReport(report);
     assert.deepEqual(recovery.resumeContextChanges(directory, context), []);
+    const changedEnvironment = recovery.createContext(root, candidate, options, {}, { ADDED: 'secret-added', TOKEN: 'secret-changed' });
+    assert.deepEqual(recovery.resumeEnvironmentChanges(directory, changedEnvironment), {
+      added: ['ADDED'], removed: [], changed: ['TOKEN']
+    });
+    const removedEnvironment = recovery.createContext(root, candidate, options, {}, {});
+    assert.deepEqual(recovery.resumeEnvironmentChanges(directory, removedEnvironment), {
+      added: [], removed: ['TOKEN'], changed: []
+    });
+    assert(recovery.resumeContextChanges(directory, changedEnvironment).includes('environmentSha256'));
+    const earlyEnvironment = recovery.resumeDiagnostics(root, directory, candidate, options, changedEnvironment);
+    assert(earlyEnvironment.reasons.includes('environment-changed'));
+    assert.equal(earlyEnvironment.tasks.release.potentiallyReusable, 0);
+    assert.deepEqual(earlyEnvironment.environment, { added: ['ADDED'], removed: [], changed: ['TOKEN'] });
+    let redacted = '';
+    recovery.printResumeDiagnostics(earlyEnvironment, text => { redacted += text; });
+    assert.match(redacted, /Environment key changes/);
+    assert(!redacted.includes('secret-'));
+    assert(!JSON.stringify(changedEnvironment).includes('secret-added'));
+    assert(!JSON.stringify(changedEnvironment).includes('secret-changed'));
     for (const field of ['candidate', 'lockfileSha256', 'toolchain', 'environmentSha256', 'options', 'selections', 'inputs', 'scheduling']) {
       assert.deepEqual(recovery.resumeContextChanges(directory, { ...context, [field]: 'changed' }), [field]);
     }
     writeReport({ ...report, recovery: undefined });
+    assert.equal(recovery.resumeEnvironmentChanges(directory, context), null);
     assert.deepEqual(recovery.resumeDiagnostics(root, directory, candidate, options).reasons, ['missing-or-invalid-context']);
     assert.deepEqual(recovery.resumeContextChanges(directory, context), ['missing-or-invalid-context']);
     put(path.join(directory, 'report.json'), '{invalid');
@@ -252,6 +272,27 @@ async function main() {
     put(file, JSON.stringify({ pid: 2147483647, childPid: null, hostname: `${os.hostname()}-other`, token: 'foreign', directory: null }));
     assert.throws(() => recovery.acquireSealLock(root), /another host/);
     assert.equal(JSON.parse(fs.readFileSync(file, 'utf8')).token, 'foreign');
+  });
+
+  await fixture(root => {
+    if (process.platform !== 'linux') return;
+    const identity = recovery.processIdentity();
+    const file = path.join(root, '.pulse-seal/active.json');
+    const owner = { pid: process.pid, childPid: null, hostname: os.hostname(), token: 'instance', directory: null, processIdentity: identity };
+    put(file, JSON.stringify(owner));
+    assert.throws(() => recovery.acquireSealLock(root), /still active/);
+    // A reused namespace PID is not the old controller process instance.
+    put(file, JSON.stringify({ ...owner, processIdentity: { ...identity, startTime: '0' } }));
+    recovery.acquireSealLock(root).release();
+    assert(!fs.existsSync(file));
+    put(file, JSON.stringify({ ...owner, processIdentity: { ...identity, startTime: '0', view: 'proc:0:0' } }));
+    assert.throws(() => recovery.acquireSealLock(root), /another process view/);
+    put(file, JSON.stringify({ ...owner, childPid: process.pid, processIdentity: { ...identity, startTime: '0', namespace: 'pid:[0]' } }));
+    assert.throws(() => recovery.acquireSealLock(root), /another PID namespace/);
+    const directory = path.join(root, '.pulse-seal/attempts/orphan');
+    put(path.join(directory, 'artifacts/release-tasks.json'), JSON.stringify({ activeChildPids: [process.pid] }));
+    put(file, JSON.stringify({ ...owner, directory, processIdentity: { ...identity, startTime: '0', namespace: 'pid:[0]' } }));
+    assert.throws(() => recovery.acquireSealLock(root), /another PID namespace/);
   });
 
   await fixture(async root => {

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-14T22-30-22-372Z--5",
+  "sourceRevision": "99bdf3e595c2b63e16db924125850d90c97efb3d",
+  "sourceIdentity": {
+    "sourceRevision": "99bdf3e595c2b63e16db924125850d90c97efb3d",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-14T22:30:22.378Z",
+  "updatedAt": "2026-10-14T22:30:38.063Z",
+  "finishedAt": "2026-10-14T22:30:38.063Z",
+  "durationMs": 15685,
+  "profiles": [],
+  "requestedTasks": [
+    "mem9-runtime-boundaries"
+  ],
+  "selectedTasks": [
+    "mem9-runtime-boundaries"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "mem9-runtime-boundaries",
+      "evidence": "native",
+      "description": "MEM9-09C proposal evidence: Node root transport, budget cache hazards and allocator boundaries; no production enablement",
+      "commandSignature": "9dc1ccde931e9248fba29dc80026bc62b46fcd4682eb89c3acab4a1a49111c96",
+      "timeoutMs": 180000,
+      "durationMs": 15675,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/15e65af8d25e/mem9-09c-evidence/runs/2026-10-14T22-30-22-372Z--5/tasks/mem9-runtime-boundaries.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/15e65af8d25e/mem9-09c-evidence/runs/2026-10-14T22-30-22-372Z--5"
+}

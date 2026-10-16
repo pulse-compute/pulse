@@ -1,5 +1,7 @@
 'use strict';
 
+const { retainSourceInputs, sourceInputsForCompiled } = require('./report-source-inputs');
+
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
@@ -395,6 +397,7 @@ function prepareReachableProjectPackageOperations(graphBuild, options = {}) {
       // identity checkout-independent. Absolute paths remain private graph
       // facts and must not feed project or native-plan hashes.
       ...(preserveSingleFilePublicEnvelope ? { publicSourceName: module.path } : {}),
+      packageDirs: context.packageContractCatalog.contracts.map(entry => entry.packageDir),
       selectedContracts: [...selectedContracts].sort()
     }));
   }
@@ -995,6 +998,7 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   try {
     graphBuild = buildReachableProjectGraph(absoluteEntry, {
       rootDir,
+      target: options.target,
       workspaceRoot: options.workspaceRoot,
       tsconfigFile: options.tsconfigFile,
       resolver: options.moduleResolver,
@@ -1230,10 +1234,12 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
     ...(applicationEnvelope ? { application: applicationEnvelope } : {}),
     watchFiles: Object.freeze([...new Set([
       ...graphBuild.projectFiles,
+      ...graphBuild.packageSourceManifests,
       ...schema.dependencies,
       ...(packageOperationRecognition.dependencies || [])
     ].map((file) => path.resolve(file)))])
   });
+  retainSourceInputs(project, projectGraphContext(graphBuild));
   attachPackageOperationRecognition(project, packageOperationRecognition);
   if (terminalPackageApplication) attachTerminalPackageNative(project, {
     application: terminalPackageApplication, recognition: packageOperationRecognition,
@@ -1261,5 +1267,6 @@ module.exports = Object.freeze({
   compileProjectSchemas,
   compileProjectPackageExtensions,
   compileCanonicalProject,
-  packageRealizationArtifactsForCompiled
+  packageRealizationArtifactsForCompiled,
+  sourceInputsForCompiled
 });

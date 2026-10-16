@@ -20,7 +20,7 @@ handler source
 
 ## Whole-project compiler
 
-The project compiler analyzes the handler, compiles explicitly declared JSON schemas, invokes trusted first-party package-owned lowerers such as GRIP and assets, links literal references, and emits one canonical program. It does not run arbitrary user JavaScript. See [Compilation and lowering](../concepts/compilation-and-lowering.md).
+The project compiler analyzes the handler, compiles explicitly declared JSON schemas, invokes trusted package-owned lowerers such as GRIP and assets, links literal references, and emits one canonical program. It does not run arbitrary user JavaScript. See [Compilation and lowering](../concepts/compilation-and-lowering.md).
 
 ## Lifecycle
 
@@ -73,8 +73,10 @@ Domain packages own their narrow package-root facade-to-contract mapping and
 compiler builder. Shared contracts own payload/status semantics. Compiler core
 owns trusted discovery and orchestration; providers own realization.
 
-The current release accepts only first-party builders and does not expose an
-external plugin API. Older `/pulsewasm` imports are isolated in the
+The current release accepts first-party and third-party builders as trusted
+build dependencies through the versioned contract, without monorepo registration
+or matching release versions. It does not sandbox builders or expose arbitrary
+compiler hooks. Older `/pulsewasm` imports are isolated in the
 [compatibility migration guide](../guides/compatibility-imports.md). See
 [First-party package-owned lowerer workflow](../contributing/adding-first-party-lowerer.md).
 
@@ -88,6 +90,6 @@ external plugin API. Older `/pulsewasm` imports are isolated in the
 The current compilation, effect, provider, and trusted-lowerer boundaries are
 documented in the [current architecture contracts](./current-contracts.md) and
 the linked concept pages. The generated [public plugin API readiness
-record](../maintainers/plugin-readiness.md) keeps third-party plugin design deferred until
+record](../maintainers/plugin-readiness.md) keeps general compiler hooks and untrusted plugin isolation deferred until
 trust, discovery, negotiation, security, compatibility, and isolated loading
 are implemented and release-gated.

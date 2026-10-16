@@ -53,7 +53,12 @@ function workspaceControls(root) {
     }
     // This is the existing workspace boundary, read as data only. Record absent
     // ancestors too by rescanning, so insertion of a nearer owner is detected.
-    if (workspace || manifest?.workspaces || path.dirname(directory) === directory) return { records, tokens };
+    if (workspace || manifest?.workspaces || path.dirname(directory) === directory) {
+      // Without a package-manager workspace, imported read authority stops at
+      // the project. Ancestor controls are still bound exactly as before.
+      const bounded = workspace || manifest?.workspaces;
+      return { records, tokens, root: bounded ? directory : path.resolve(root), depth: bounded ? depth : 0 };
+    }
     directory = path.dirname(directory);
   }
   fail('REPORT_LIMIT');
@@ -166,9 +171,14 @@ function finishSnapshot(project, attempt, compiled) {
     const after = scan(root, { packageFiles: true }); sameSnapshot(snapshot, after);
     for (const row of after.records) files.set(path.join(root, row.file), row);
   }
+  const { sourceInputsForCompiled } = require('@pulse-compute/wasm-compiler/canonical-project-compiler');
+  const imported = require('./source-inputs').captureSources(project.root, sourceInputsForCompiled(compiled), attempt.workspace);
+  for (const [file, row] of imported.files) files.set(file, row);
   for (const file of compiled.watchFiles || []) if (!files.has(fs.realpathSync(file))) fail('REPORT_INPUT_UNBOUND');
+  const sourceRecords = new Map(imported.records.filter(row => row.kind === 'source').map(row => [row.identity, row]));
   for (const module of compiled.reachableGraph?.modules || []) if (module.kind === 'project') {
-    const row = files.get(path.resolve(project.root, module.path));
+    const row = module.packageName ? sourceRecords.get(module.path)
+      : files.get(path.resolve(project.root, module.path));
     if (!row || row.sha256 !== module.contentHash) fail('REPORT_STALE_INPUTS');
   }
   const inputs = { kind: 'pulse.report-inputs', inputVersion: 1, excluded: attempt.excluded.map(file => {
@@ -176,6 +186,10 @@ function finishSnapshot(project, attempt, compiled) {
   }).sort(), files: current.records, workspace: attempt.workspace.records, dependencies: dependencyRecords(attempt.dependencies.groups) };
   const recipe = { elideJsonCacheArena: attempt.elideJsonCacheArena, optimization: attempt.optimization, node: process.versions.node,
     dependencies: attempt.dependencies.groups.map(({ key, records }) => ({ key, sha256: digest(records) })) };
+  if (imported.records.length) {
+    inputs.sourceInputs = imported.records;
+    recipe.sourceInputsSha256 = digest(imported.records);
+  }
   inputs.recipe = recipe;
   return { inputs, recipe, snapshot: { inputsSha256: digest(inputs), profileSha256: attempt.profileSha256, recipeSha256: digest(recipe) } };
 }

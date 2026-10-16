@@ -1,3 +1,4 @@
+const { normalizeBodyForwarding } = require('../src/toolchain/body-forwarding.js') as { normalizeBodyForwarding(value: PulseFastlyBodyForwardingOptions | undefined, maxDurationMs?: number): PulseFastlyBodyForwardingOptions | undefined };
 const { normalizeFastlyMaxWasmBytes } = require('../src/build/wasm-budget.js') as { normalizeFastlyMaxWasmBytes(value?: number): number };
 const { normalizeRequestDuration } = require('@pulse-compute/runtime/host') as { normalizeRequestDuration(value?: number): number | undefined };
 import FASTLY_CONFIG_SCHEMA from './config-schema.json';
@@ -24,10 +25,17 @@ export interface PulseFastlyLocalOptions {
   readonly networkFetch?: boolean;
 }
 
+export interface PulseFastlyBodyForwardingOptions {
+  readonly requestMaxBytes: number;
+  readonly responseMaxBytes: number;
+}
+
 export interface PulseFastlyProviderOptions {
   /** Inclusive final Native Wasm byte budget; default 4 MiB. */
   readonly maxWasmBytes?: number;
   readonly maxDurationMs?: number;
+  /** Experimental Native metered pump; final close hands delivery to Fastly. */
+  readonly bodyForwarding?: PulseFastlyBodyForwardingOptions;
   readonly configStore?: string;
   readonly secretStore?: string;
   readonly kv?: Readonly<Record<string, string>>;
@@ -42,6 +50,8 @@ export interface PulseFastlyProviderOptions {
 
 export interface PulseFastlyProviderConfig {
   readonly maxDurationMs?: number;
+  /** Experimental Native metered pump; final close hands delivery to Fastly. */
+  readonly bodyForwarding?: PulseFastlyBodyForwardingOptions;
   readonly kind: 'fastly';
   readonly version: typeof FASTLY_PROVIDER_API_VERSION;
   readonly bindings: {
@@ -105,6 +115,7 @@ export function fastly(options: PulseFastlyProviderOptions = {}): PulseFastlyPro
   return Object.freeze({
     kind: 'fastly',
     maxDurationMs: normalizeRequestDuration(options.maxDurationMs),
+    bodyForwarding: normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs),
     version: FASTLY_PROVIDER_API_VERSION,
     bindings: Object.freeze({
       configStore: String(options.configStore ?? fastlyDefaults['fastly.configStore']),

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.project-config-schema-bundle.v1",
-  "releaseVersion": "1.0.0-beta.8",
+  "releaseVersion": "1.0.0-beta.9",
   "project": {
     "schemaVersion": "pulse.project-config-schema.v1",
     "discovery": [
@@ -23,7 +23,7 @@
       {
         "id": "crypto",
         "title": "Cryptographic requirements",
-        "description": "Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.8 package set."
+        "description": "Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.9 package set."
       },
       {
         "id": "schemas",
@@ -342,6 +342,19 @@
         "precedence": "Configuration value.",
         "security": "No special handling.",
         "diagnostics": [],
+        "description": "Explicit package, contractId, artifact, operations, secret reference, keyId, keyVersion, trustDomain and HTTPS origin. Captures exact HTTP bytes up to 65536 body bytes; incompatible with bodyForwarding/bodyTransform. See the package runtime binding contract.",
+        "path": "node.bindings.packages",
+        "scope": "Trusted package Wasm on Node",
+        "section": "node",
+        "type": "Readonly<Record<string, PackageRuntimeBinding>>"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
         "description": "Opt-in finite request text chunks. Requires generatedOutput and maxDurationMs; incompatible with bodyForwarding. Input 65536 bytes, output 262144 bytes, at most 4 times delivered input bytes. Strict UTF-8, one reader/writer, EOF required before output.close().",
         "path": "node.bodyTransform",
         "scope": "Experimental Node UTF-8 transforms",
@@ -399,6 +412,47 @@
         "scope": "Node Native and JavaScript S3",
         "section": "node",
         "type": "Readonly<Record<string, S3Binding>>"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_BODY_FORWARDING_INVALID"
+        ],
+        "description": "Opt in to one terminal opaque POST with inline req.body() and a static backend. Requires maxDurationMs and both byte limits. Final close hands queued delivery to Fastly; it is not a client receipt.",
+        "path": "fastly.bodyForwarding",
+        "scope": "experimental Fastly Native forwarding",
+        "section": "fastly",
+        "type": "object"
+      },
+      {
+        "required": false,
+        "default": "required with bodyForwarding",
+        "allowed": "1–1048576",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.",
+        "path": "fastly.bodyForwarding.requestMaxBytes",
+        "scope": "experimental Fastly Native forwarding",
+        "section": "fastly",
+        "type": "integer"
+      },
+      {
+        "required": false,
+        "default": "required with bodyForwarding",
+        "allowed": "1–1048576",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.",
+        "path": "fastly.bodyForwarding.responseMaxBytes",
+        "scope": "experimental Fastly Native forwarding",
+        "section": "fastly",
+        "type": "integer"
       },
       {
         "required": false,
@@ -1094,6 +1148,19 @@
         },
         "fastly.maxWasmBytes": {
           "kind": "positive-safe-integer"
+        },
+        "fastly.bodyForwarding": {
+          "kind": "object"
+        },
+        "fastly.bodyForwarding.requestMaxBytes": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "fastly.bodyForwarding.responseMaxBytes": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 1048576
         }
       }
     }

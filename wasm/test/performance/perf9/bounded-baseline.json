@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "pulse.perf9-02-baseline.v1",
+  "archive": "Pulse-PERF9-02-evidence.zip",
+  "archiveSha256": "ca063d3e9268aa7ed98b1f30041bb5d136c864393c8beaec75938bd390c449af",
+  "manifestSha256": "daa886a03679b0ba530e5744530dad1d2a754e1a0351b4cb3451515dc3766560",
+  "measurement": "attempts/perf9-02-EA2j5v/bounded.json",
+  "measurementSha256": "ecc8216bd8da79c8955c711ab2ca7121ad427ce8cfb9a60aa36f8d3ee4665bd2",
+  "source": {
+    "sourceRevision": "28d89fea2e76d03097888ce7b663eaee5501c3d5",
+    "sourceTree": "e102a0cc5a603afc18913ef11564f1130ee2590e",
+    "workingTree": ""
+  }
+}

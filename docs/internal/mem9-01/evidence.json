@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "pulse.mem9-01-evidence.v1",
+  "archive": "Pulse-MEM9-01-evidence.zip",
+  "archiveSha256": "83810babe4dffcc646146f074fe29f761fe9cf467bbb342eac770e534570d4d5",
+  "manifestSha256": "87922bb4813735fc9f02583c4b834cd0cac0ba2a59e18b553b810ead51a56fe7",
+  "report": "mem9-01-attempt3/report.json",
+  "reportSha256": "9bf6633748d09240d1860f1ce89ad044e243e26f09f4cf5458673934572b79dc",
+  "source": {
+    "sourceRevision": "4fab25702ecd3b6c72e8f268fbb7903f6038db4c",
+    "sourceTree": "9bc1aa5bde15cc62d426e83f5a0559096f98477c",
+    "workingTree": ""
+  },
+  "status": "passed diagnostic; default allocation gate passed; elided allocation gate failed (known reproduced defect)",
+  "cases": 22,
+  "files": 44
+}

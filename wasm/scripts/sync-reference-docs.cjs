@@ -422,9 +422,9 @@ function renderPluginReadiness() {
 
 ${GENERATED_NOTICE}
 
-> **Decision:** ${readiness.publicPluginApi ? 'Available.' : 'Deferred. No public third-party plugin API is available in this release.'}
+> **Decision:** ${readiness.publicPluginApi ? 'Available.' : 'Deferred for general compiler hooks and isolated untrusted plugins. Trusted external lowerers are available.'}
 
-Pulse ${RELEASE_VERSION} keeps general plugin discovery and package lowering inside the synchronized trusted release. Provider bootstrap is explicit and exact. The current boundaries are:
+Pulse ${RELEASE_VERSION} supports versioned trusted package lowerers independently of npm package versions. Provider bootstrap is explicit and exact. The current boundaries are:
 
 - **Lowerers:** ${readiness.currentExtensionBoundary.lowerers}.
 - **Providers:** ${readiness.currentExtensionBoundary.providers}.
@@ -438,10 +438,9 @@ ${rows.join('\n')}
 ${readiness.designRule}
 
 The machine-readable readiness record and release validation enforce this
-boundary. Contributor guides explain how to add a [first-party
-lowerer](../contributing/adding-first-party-lowerer.md) or [provider
-toolchain](../contributing/adding-core-provider.md); neither process uses
-package scanning or self-registration.
+boundary. See the [trusted package-lowerer contract](../contributing/package-lowerer-contract.md)
+and [provider toolchain](../contributing/adding-core-provider.md). Lowerers run
+ordinary Node code without a sandbox; providers use explicit selection.
 
 Machine-readable status is published as [\`plugin-readiness.json\`](./plugin-readiness.json).
 `);

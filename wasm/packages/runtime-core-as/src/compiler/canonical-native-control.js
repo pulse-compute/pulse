@@ -8,7 +8,7 @@ const RUN_SYMBOL = '__pulse_run';
 function buildNativeControl({
   plan, stages, stageBindings, stageSites, effectIndex, continuationIndex,
   applicationErrors, helpers, handlers, routerLocal, routerCursor,
-  exprName, localName, stringHandle, fail
+  exprName, localName, stringHandle, fail, numeric, ownership
 }) {
   const stageEntries = new Map();
   const blocks = [];
@@ -91,7 +91,10 @@ function buildNativeControl({
     for (const statement of statements || []) {
       if (statement.kind === 'local') lines.push(`${localName(statement.localId)} = ${exprName(statement.value)}()`);
       else if (statement.kind === 'expression') lines.push(`__pulse_drop(${exprName(statement.expression)}())`);
-      else if (statement.kind === 'break' || statement.kind === 'continue') lines.push(statement.kind);
+      else if (statement.kind === 'break' || statement.kind === 'continue') {
+        if (ownership.enabled) lines.push(ownership.checkpoint);
+        lines.push(statement.kind);
+      }
       else if (statement.kind === 'if') {
         lines.push(`if (host_value_truthy(${exprName(statement.test)}()) != 0) {`, ...pureLines(statement.then).map(line => `  ${line}`), '} else {', ...pureLines(statement.else).map(line => `  ${line}`), '}');
       } else if (statement.kind === 'pure-loop') {
@@ -99,8 +102,10 @@ function buildNativeControl({
         lines.push(`for (let ${counter}: i32 = 0; ${counter} < ${statement.maxIterations}; ${counter} += 1) {`,
           `  ${localName(statement.localId)} = host_value_number(<f64>${counter})`,
           `  if (host_value_truthy(${exprName(statement.test)}()) == 0) break`,
+          ...(ownership.enabled ? [`  ${ownership.checkpoint}`] : []),
           ...pureLines(statement.body).map(line => `  ${line}`), '}');
       } else fail('Pure loop contains an unsupported statement.', { kind: statement.kind });
+      if (ownership.enabled && !['break', 'continue'].includes(statement.kind)) lines.push(ownership.checkpoint);
     }
     return lines;
   }
@@ -109,9 +114,17 @@ function buildNativeControl({
     const previousBoundary = activeBoundary;
     activeBoundary = boundary;
     let next = nextBlock;
+    // Stage regions box before suspension/transfer just like entry regions.
+    // Effectful helpers remain excluded; their invocation contract is separate.
+    const numericStatements = !helpers.has(activeHandler)
+      ? numeric.select(statements || []) : new Map();
     for (let index = (statements || []).length - 1; index >= 0; index -= 1) {
       const statement = statements[index];
-      if (statement.kind === 'helper-call') {
+      const numericRegion = numericStatements.get(statement);
+      if (numericRegion) {
+        next = block('action', { lines: numeric.render(statement, numericRegion, () => `__pulse_iteration_${pureLoopIndex++}`), next,
+          ...(ownership.enabled ? { ownershipCheckpoint: numericRegion.box } : {}) });
+      } else if (statement.kind === 'helper-call') {
         const helper = helpers.get(statement.helperId);
         // callerEntryId is already checked by the canonical plan validator.
         if (!helperConsumers.has(helper.id)) helperConsumers.set(helper.id, new Set());
@@ -212,8 +225,10 @@ function buildNativeControl({
     activeHandler = undefined;
   }
   const entryBlock = compileSequence(plan.entry.body || [], fallthroughBlock);
+  // Event records share the routing inventory, but enter through event.runtime-id,
+  // not the HTTP cursor. Only HTTP entries participate in application-error routing.
   if (applicationErrors && (!routerCursor || !routerLocal('mode') || !routerLocal('error')
-    || plan.routing.entries.some(entry => !protectedEntries.has(entry.index)))) {
+    || plan.routing.entries.some(entry => entry.kind !== 'event' && !protectedEntries.has(entry.index)))) {
     fail('Router application errors require explicit compiler-owned entry boundaries.');
   }
   const resumeRequirements = new Map();
@@ -224,7 +239,7 @@ function buildNativeControl({
 
 function layoutNativeControl({
   blocks, stages, helpers, handlers, applicationErrors,
-  routerLocal, routerCursor, localName, fail
+  routerLocal, routerCursor, localName, fail, ownership
 }) {
   // Resolve Router locals through this plan, never fixed slots. The private
   // result is 0 = no error, 2 = routed, -1 = terminal host failure.
@@ -310,26 +325,31 @@ function layoutNativeControl({
     };
     checkError();
     if (item.kind === 'stage-exit') {
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit('__pulse_pc = __pulse_stage_return');
       emit(advance);
     } else if (item.kind === 'action') {
       for (const line of item.lines) emit(line);
       checkError();
+      if (ownership.enabled && item.ownershipCheckpoint !== false) emit(ownership.checkpoint);
       emit(`__pulse_pc = ${item.next}`);
       emit(advance);
     } else if (item.kind === 'branch') {
       emit(`const matched = host_value_truthy(${item.test}())`);
       checkError();
       emit(`__pulse_pc = matched != 0 ? ${item.thenBlock} : ${item.elseBlock}`);
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit(advance);
     } else if (item.kind === 'helper-return') {
       emit(`__pulse_helper_result = ${item.expression}()`);
       checkError();
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit('__pulse_pc = __pulse_helper_return');
       emit(advance);
     } else if (item.kind === 'return') {
       emit(`__pulse_result = ${item.expression}()`);
       checkError();
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit('__pulse_pending = 0');
       emit(`return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE}`);
     } else if (item.kind === 'suspend') {
@@ -339,11 +359,17 @@ function layoutNativeControl({
       emit(`__pulse_state = ${item.continuationState}`);
       emit(`__pulse_pc = ${item.resumeBlock}`);
       emit(`__pulse_pending = ${item.pendingCount}`);
+      // Every sibling payload now belongs to the provider; no payload-building
+      // or helper-argument temporary crosses this checkpoint.
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit(`return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.SUSPENDED}`);
     } else if (item.kind === 'resume' || item.kind === 'resume-return') {
       for (const line of item.lines) emit(line);
       emit('__pulse_pending = 0');
       emit('__pulse_state = 0');
+      // Ready flags were cleared before this state, but the result slots remain
+      // roots independently until their existing lifecycle resets them.
+      if (ownership.enabled) emit(ownership.checkpoint);
       if (item.kind === 'resume-return') emit(`return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE}`);
       else {
         emit(`__pulse_pc = ${item.next}`);

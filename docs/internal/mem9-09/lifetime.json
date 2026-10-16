@@ -1,0 +1,112 @@
+{
+  "task": "MEM9-09A",
+  "status": "passed",
+  "providerReality": false,
+  "rows": [
+    {
+      "elideJsonCacheArena": false,
+      "cells": [
+        {
+          "iterations": 1,
+          "live": 158,
+          "pins": 139,
+          "capacity": 170,
+          "peakCapacity": 1365,
+          "peakScratchPayloadBytes": 5000,
+          "sweeps": 1,
+          "allocated": 1043,
+          "retained": 1043,
+          "memoryBytes": 2621440
+        },
+        {
+          "iterations": 8,
+          "live": 277,
+          "pins": 139,
+          "capacity": 341,
+          "peakCapacity": 1365,
+          "peakScratchPayloadBytes": 5000,
+          "sweeps": 7,
+          "allocated": 7315,
+          "retained": 7315,
+          "memoryBytes": 5242880
+        },
+        {
+          "iterations": 32,
+          "live": 243,
+          "pins": 139,
+          "capacity": 341,
+          "peakCapacity": 1365,
+          "peakScratchPayloadBytes": 5000,
+          "sweeps": 28,
+          "allocated": 28819,
+          "retained": 28819,
+          "memoryBytes": 5242880
+        }
+      ]
+    },
+    {
+      "elideJsonCacheArena": true,
+      "cells": [
+        {
+          "iterations": 1,
+          "live": 158,
+          "pins": 139,
+          "capacity": 170,
+          "peakCapacity": 1365,
+          "peakScratchPayloadBytes": 5000,
+          "sweeps": 1,
+          "allocated": 1043,
+          "retained": 1043,
+          "memoryBytes": 1835008
+        },
+        {
+          "iterations": 8,
+          "live": 277,
+          "pins": 139,
+          "capacity": 341,
+          "peakCapacity": 1365,
+          "peakScratchPayloadBytes": 5000,
+          "sweeps": 7,
+          "allocated": 7315,
+          "retained": 7315,
+          "memoryBytes": 1835008
+        },
+        {
+          "iterations": 32,
+          "live": 243,
+          "pins": 139,
+          "capacity": 341,
+          "peakCapacity": 1365,
+          "peakScratchPayloadBytes": 5000,
+          "sweeps": 28,
+          "allocated": 28819,
+          "retained": 28819,
+          "memoryBytes": 1835008
+        }
+      ]
+    }
+  ],
+  "liveSnapshots": [
+    {
+      "snapshots": 128,
+      "live": 394,
+      "pins": 134,
+      "capacity": 682,
+      "peakScratchPayloadBytes": 16776
+    },
+    {
+      "snapshots": 256,
+      "live": 777,
+      "pins": 261,
+      "capacity": 1365,
+      "peakScratchPayloadBytes": 33508
+    },
+    {
+      "snapshots": 512,
+      "live": 1545,
+      "pins": 517,
+      "capacity": 2730,
+      "peakScratchPayloadBytes": 66952
+    }
+  ]
+}

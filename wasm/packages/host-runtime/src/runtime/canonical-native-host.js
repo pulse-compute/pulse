@@ -1170,7 +1170,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         }
         const rawEffect = { ...nativeEffect(entry.effect, entry.payload), ...entry.kvAdmission };
         const conditional = portableKv.isConditionalKv(rawEffect.kind);
-        const privateEffect = rawEffect.kind.startsWith('output.') || conditional || ((controller.plan.packages && controller.plan.packages.effects) || []).some((item) =>
+        const privateEffect = rawEffect.kind === 'package.invoke' || rawEffect.kind.startsWith('output.') || conditional || ((controller.plan.packages && controller.plan.packages.effects) || []).some((item) =>
           item.package === entry.effect.package && item.contractId === entry.effect.contractId && item.operation === entry.effect.operation
           && item.redaction && Object.keys(item.redaction).length > 0);
         const normalized = canonicalRuntime.normalizeProviderEffect(rawEffect, controller.schemaCodecs, {

@@ -451,7 +451,28 @@ The compiler does **not** make network requests, read deployment secrets, or inv
 
 ## Canonical lowering and package-owned lowering
 
-Pulse has two related lowering paths.
+Pulse has two lowering paths, with bounded source imports feeding the canonical
+handler path.
+
+### Static npm handlers and helpers
+
+Native can consume a handler directly from an installed dependency's exact
+declared `exports` entry, for example `@example/worker/handler`. The export must
+select ESM source in `.ts`, `.mts`, `.js` or `.mjs`, with a concrete package
+version. Direct route/middleware handlers and directly awaited, ctx-first scalar
+helpers use the same bounded authoring rules as local source. Effectful helper
+inputs still need explicit scalar types, so publish TypeScript source for that
+shape.
+
+Package-relative imports/re-exports must name exact files, including extensions,
+inside the package. Native does not use `main`, guess an extension, expand export
+wildcards, evaluate a factory or run module initialization. Top-level captured
+values and arbitrary library awaits remain unsupported. Diagnostics retain the
+package name, version and source filename; changing dependency source changes
+the graph hash. Importing source grants no compiler-plugin or host authority.
+
+See the [declared npm source contract](../architecture/current-contracts.md#declared-npm-source-exports-imp9-01)
+for conditional exports, containment and qualification limits.
 
 ### Canonical handler lowering
 
@@ -468,7 +489,7 @@ generic loader handles reachable-graph discovery and trusted invocation. Older
 `/pulsewasm` imports are isolated in the
 [compatibility migration guide](../guides/compatibility-imports.md).
 
-In Pulse `1.0.0-beta.8`, package-owned builders must declare `compiler.trust: 'first-party'` and ship in the synchronized release set. This is an internal contributor mechanism, not a general third-party plugin API. See [Add a first-party package-owned lowerer](../contributing/adding-first-party-lowerer.md).
+In Pulse `1.0.0-beta.9`, package-owned builders must declare `compiler.trust: 'first-party'` and ship in the synchronized release set. This is an internal contributor mechanism, not a general third-party plugin API. See [Add a first-party package-owned lowerer](../contributing/adding-first-party-lowerer.md).
 
 ## Provider lowering is a second contract
 

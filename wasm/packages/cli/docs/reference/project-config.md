@@ -94,7 +94,7 @@ Resolved synchronous logging threshold after the flat profile override is applie
 
 ## Cryptographic requirements
 
-Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.8 package set.
+Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.9 package set.
 
 ### `pulse.crypto`
 
@@ -288,6 +288,18 @@ Deterministic fetch fixtures resolved before optional live network fetch.
 
 Provider-owned Node profile configuration.
 
+### `node.bindings.packages`
+
+Explicit package, contractId, artifact, operations, secret reference, keyId, keyVersion, trustDomain and HTTPS origin. Captures exact HTTP bytes up to 65536 body bytes; incompatible with bodyForwarding/bodyTransform. See the package runtime binding contract.
+
+- **Type:** Readonly<Record<string, PackageRuntimeBinding>>
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Trusted package Wasm on Node
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
 ### `node.bodyTransform`
 
 Opt-in finite request text chunks. Requires generatedOutput and maxDurationMs; incompatible with bodyForwarding. Input 65536 bytes, output 262144 bytes, at most 4 times delivered input bytes. Strict UTF-8, one reader/writer, EOF required before output.close().
@@ -351,6 +363,42 @@ Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdS
 ## Fastly provider options
 
 Options passed to fastly(...) from @pulse-compute/provider-fastly.
+
+### `fastly.bodyForwarding`
+
+Opt in to one terminal opaque POST with inline req.body() and a static backend. Requires maxDurationMs and both byte limits. Final close hands queued delivery to Fastly; it is not a client receipt.
+
+- **Type:** object
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** experimental Fastly Native forwarding
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** `PULSE_FASTLY_BODY_FORWARDING_INVALID` (family fallback; reference root)
+
+### `fastly.bodyForwarding.requestMaxBytes`
+
+Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.
+
+- **Type:** integer
+- **Required/default:** Optional; default required with bodyForwarding.
+- **Allowed values or constraints:** 1–1048576
+- **Scope:** experimental Fastly Native forwarding
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
+### `fastly.bodyForwarding.responseMaxBytes`
+
+Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.
+
+- **Type:** integer
+- **Required/default:** Optional; default required with bodyForwarding.
+- **Allowed values or constraints:** 1–1048576
+- **Scope:** experimental Fastly Native forwarding
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
 
 ### `fastly.maxWasmBytes`
 

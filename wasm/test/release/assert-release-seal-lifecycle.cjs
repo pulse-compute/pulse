@@ -183,6 +183,37 @@ async function verifyBootstrap(root) {
   assert.equal(calls.length, 1, 'no new step may start after the parent deadline');
   assert.equal(timeout.cleanup.status, 'passed');
 
+  const minute = 60 * 1000;
+  const aggregate = await attempt(['--skip-install', '--no-report', '--timeout-minutes', '90'], () => {
+    const epoch = original.now();
+    Date.now = () => epoch;
+    const coldLoad = Module._load;
+    Module._load = function(request, ...rest) {
+      if (request === './release-shared-pack.cjs') return { sharedPackEnv: () => ({}) };
+      return coldLoad.call(this, request, ...rest);
+    };
+    supervisor.runCommand = async (command, argv, options) => {
+      if (argv[0] === '-e') return original.run(command, argv, options);
+      calls.push({ argv, timeoutMs: options.timeoutMs });
+      if (argv.includes('scripts/release-source-checks.cjs')) {
+        fs.writeFileSync(argv[argv.indexOf('--out') + 1], '{}');
+        Date.now = () => epoch + 5 * minute;
+      }
+      if (argv.includes('--profile') && argv.includes('release')) {
+        Date.now = () => epoch + 75 * minute; // A progressing aggregate can exceed one hour.
+      }
+      // Stop before evidence validation: simulated work is never accepted proof.
+      return { status: argv.includes('scripts/release-feature-acceptance.cjs') ? 23 : 0, signal: null };
+    };
+  });
+  const aggregateCall = calls.find(call => call.argv.includes('--profile') && call.argv.includes('release'));
+  assert.equal(aggregateCall.timeoutMs, 85 * minute, 'release aggregate receives the remaining configured budget, without a hidden hour cap');
+  const featureCall = calls.find(call => call.argv.includes('scripts/release-feature-acceptance.cjs'));
+  assert.equal(featureCall.timeoutMs, 15 * minute, 'later work cannot restart the overall deadline');
+  assert.equal(calls.find(call => call.argv.includes('build')).timeoutMs, 10 * minute, 'bounded setup stages retain their own limits');
+  assert.equal(aggregate.status, 'failed', 'simulated feature failure must remain failed');
+  assert.equal(aggregate.cleanup.status, 'passed');
+
   const changed = await attempt(['--skip-install'], () => {
     supervisor.runCommand = async (command, argv, options) => {
       if (argv[0] === '-e') return original.run(command, argv, options);

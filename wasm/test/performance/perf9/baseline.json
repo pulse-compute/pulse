@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "pulse.perf9-01c-baseline.v1",
+  "archive": "Pulse-PERF9-01B-evidence.zip",
+  "archiveSha256": "8775a8f0f6551cb2ff70be8a533636052601423ba572f0c5bff1bc4ebb06c392",
+  "manifestSha256": "3e239894584f438faa8087eb7e7c8124475aeb002b4c137fe80e4076e5bbaaa3",
+  "measurement": "pulse/wasm/.test-results/perf9-01b-EMEss3/measurements.json",
+  "measurementSha256": "45c1728e43c0da98cbb90e0872ac6949ea73c8656c79da40b581cc46ef0cf2f4",
+  "qualification": "pulse/wasm/.test-results/perf9-01a-FEs3er/parity.json",
+  "qualificationSha256": "ed6e2ec17c7883cc4b2d984c138998f7bb232ccff2765600cb894e65968d2ad5",
+  "testedCommit": "2670f2ad6a2d3495cc0ac08c67978a195edbaa9c",
+  "githubCommit": "34ccb914b8e52de6f91afa2ea42266a4a64de0d3",
+  "mergedCommit": "11587c0f2f2b8afc70431ad18900fb0b182773df",
+  "sourceTree": "01f2a7186c04aa9c7786f66c89f5daba567d544e"
+}

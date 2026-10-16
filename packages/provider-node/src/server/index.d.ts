@@ -27,6 +27,11 @@ export interface NodeLauncherOptions {
   networkFetch?: boolean;
   /** Strict structured JSON policy; default true. Development profile values are not loaded. */
   strict?: boolean;
+  /** Explicit host grants; HTTPS origin is a trusted termination setting, never inferred from forwarding headers. */
+  packageBindings?: Readonly<Record<string, {
+    package: string; contractId: string; artifact: string; operations: readonly string[];
+    secret: string; keyId: string; keyVersion: string; trustDomain: string; origin: string;
+  }>>;
   config?: Readonly<Record<string, string>>;
   secrets?: Readonly<Record<string, string>>;
   /** In-memory reference KV seed. Reset on restart; no durability promise. */

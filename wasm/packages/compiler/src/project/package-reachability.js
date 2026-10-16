@@ -337,7 +337,7 @@ function packageRelationsForModule(context, targetKey) {
   for (const module of context.projectModules.values()) {
     for (const relation of [...module.imports, ...module.reExports]) {
       const resolution = module.resolutions.find((entry) => entry.relation === relation);
-      if (!resolution || resolution.targetKey !== targetKey) continue;
+      if (!resolution || (resolution.packageKey || resolution.targetKey) !== targetKey) continue;
       records.push(Object.freeze({ module, relation }));
     }
   }
@@ -505,6 +505,7 @@ function derivePackageReachabilityProjection(context, manifest, states) {
     const reExportSources = relations.filter((entry) => entry.relation.kind === 're-export' && entry.relation.typeOnly !== true).map((entry) => entry.relation.source);
     let nativeStatus = 'unsupported';
     if (module.coreAuthoring) nativeStatus = 'core-authoring';
+    else if (module.sourceModule) nativeStatus = 'static-source';
     else if (module.packageContract && module.contract && module.contract.targetSupport.native === true) nativeStatus = 'trusted-lowerable';
     if (module.runtime && nativeStatus === 'trusted-lowerable') selectedContracts.add(module.packageContract);
     packages.push({

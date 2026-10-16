@@ -49,6 +49,19 @@ installed feature gates and provider-proof boundaries. Select focused task IDs
 from the registry for diagnosis; a focused result does not qualify a release.
 The [events guide](../guides/events.md) owns mixed HTTP/event harness syntax.
 
+For declared npm source exports, run the independent installed-consumer check:
+
+```bash
+node wasm/scripts/run-wasm-tests.cjs --task npm-source-installed-workflow
+```
+
+This release-profile task packs the current candidate and a separate source
+dependency, pins and updates it through a local read-only registry, and verifies
+Node/Fastly Native execution, trusted effects, source attribution and rejected
+unsupported updates. It records a terminal acceptance report under
+`wasm/.test-results/`. Ordinary third-party toolchain dependencies still require
+npm access. The Fastly fixture ABI is development evidence, not live deployment.
+
 Maintainers may bound a diagnostic rerun:
 
 ```bash
@@ -57,6 +70,36 @@ node wasm/scripts/run-wasm-tests.cjs --profile cli --through docs-example-03-fet
 ```
 
 `--from` and `--through` aid investigation. A release claim requires the complete release profile.
+
+## Compiler analytics qualification
+
+Run the focused AN9 boundary selection on one immutable candidate:
+
+```bash
+node wasm/scripts/run-wasm-tests.cjs --task suite-shape --task cli-report-handler-topology --task cli-report-handler-associations --task cli-report-imported-inputs --task report-capsule-contract --task cli-report-viewer --task cli-report-retained-evidence --task cli-report-workflow --task cli-report-capture-proof --task cli-report-entry-proof --no-report
+```
+
+`cli-report-handler-topology` uses the product-owned
+`wasm/test/fixtures/projects/report-analytics` fixture. HTTP/error and HTTP/event
+variants each run under default and `experimental-native-bounded-size` recipes.
+The same cells qualify authored definitions, mount/registration instances, repeated
+use sites, helper calls and bounded associations through retained completion,
+source-free passive replay, offline HTML and semantic comparison. Observation on/off
+must preserve the Native plan, generated source, Wasm and optimization metadata;
+112 executions check selected responses/statuses and dispatched binding order.
+Changing physical bytes/recipe must not produce semantic capability/binding changes.
+Static association candidates are not evidence that an operation executed.
+
+The selection also checks imported receipt freshness/admission, missing data and older capsules,
+malformed graphs, UI navigation/filter/export behavior, and existing physical capture
+noninterference. The combined HTTP error-handler/event Native-generation defect is
+isolated in [issue #329](https://github.com/pulse-compute/pulse/issues/329); that cell
+is excluded, not counted as passing. The retired AN9-00 investigation executable
+and its expected-gap assertions are no longer test requirements.
+
+This focused selection does not replace complete functional profiles, browser visual
+qualification, installed acceptance or the release seal. Keep those statuses separate
+and retain the tested source identity, terminal task summary and failed attempts.
 
 ## Installed feature gates
 
@@ -239,10 +282,37 @@ each task to its worker. Failure or interruption cancels all active workers;
 successfully cleaned passed tasks retain their recovery proofs. Resuming requires
 the same worker/compiler/budget options and freshly recreated identical worker inputs.
 Changing the options invalidates reuse. Worker source and executable inputs are
-rechecked before terminal cleanup, then disposable checkouts are removed while
+checked before each task, during its supervised cleanup, and by the controller
+after the cleanup process exits. The controller reconciles any remaining untracked
+output and records the combined removed paths; a receipt alone cannot authorize a pass. Each scheduler
+slot owns its worker until cleanup finishes. The controller removes task-created,
+untracked files from that disposable checkout, then verifies a clean source tree
+and unchanged dependency/build bytes before recording a reusable pass. Cleanup
+receipts list removed paths. Tracked changes, modified executable inputs, foreign
+worktrees and cleanup failures remain failures; cleanup never resets source or
+touches a sibling task's outputs. Ignored dependency/build inputs are preserved.
+
+Worker source and executable inputs are also rechecked before terminal cleanup,
+then disposable checkouts are removed while
 attempt-local logs, receipts and artifacts remain. Foreign checkouts, remote
 workers and independently assembled reports are not eligible for this aggregate.
 Parallel execution requires reports and cannot use `--no-report`.
+
+A retry can remove ordinary output residue left in a controller-owned worker
+directory after Git has removed its registration. An unrelated repository, live
+or foreign Git marker, symlinked worker path or mismatched owner is rejected.
+On Linux, seal locks bind the owner process instance and procfs view as well as
+its PID, so PID reuse cannot masquerade as the prior controller. Unverifiable
+process views and outstanding child records from another PID namespace still
+require inspection; the lock is retained.
+
+Resume reports identify added, removed and changed environment **keys**, with
+values redacted, before expensive setup begins. Unknown and changed environment inputs still invalidate reuse;
+the diagnostics do not broaden the existing shell-variable exclusions. Older
+reports without per-key fingerprints can report only the category change.
+Proxy configuration remains bound: a managed runner that changes transport
+endpoints between invocations requires fresh proofs. Use a stable execution
+environment when planning to resume a long qualification.
 
 `--no-report` disables recovery recording and cannot resume an attempt. To remove
 expired terminal attempts without touching active work, run:
@@ -337,11 +407,15 @@ node wasm/scripts/run-wasm-tests.cjs --task deployment-candidates --no-report
 
 ## Runner evidence
 
-The full `Repository validation / full portable` gate aggregates six independent
-jobs: `unit`, `native`, `javascript`, `conformance-rsa`, `conformance-schema`,
+The full `Repository validation / full portable` gate aggregates seven independent
+jobs: `unit`, `native-a`, `native-b`, `javascript`, `conformance-rsa`, `conformance-schema`,
 and `conformance-rest`. The plan in
 `scripts/maintainer-portable-validation.cjs` expands the four existing portable
-profiles from the task registry. RSA isolates `jwt-rs256`; schema isolates
+profiles from the task registry. Native uses a reviewed assignment of 25 tasks
+to each group, based on the CI9-01 timing sample. It preserves registry order
+within each group; newly registered Native tasks enter `native-a`, while removal
+of a named `native-b` anchor requires updating the plan. CI never repartitions
+tasks using cached or live timings. RSA isolates `jwt-rs256`; schema isolates
 `schema-codecs` and `schema-kv-parity`; the remaining conformance tasks stay in
 registry order. Every registered portable task occurs exactly once.
 
@@ -354,7 +428,10 @@ same tested SHA and workflow run. Missing, failed, cancelled, incomplete,
 duplicate or mismatched evidence fails the gate. On a job retry it selects the
 latest attempt for each shard in that run; a newer failed attempt cannot fall
 back to an older passing report. The aggregate artifact records task counts,
-attempts, durations and tested SHA. This remains portable CI evidence; the
+attempts, durations and tested SHA. `taskElapsedSumMs` sums shard task durations;
+`taskWallTimeMs` spans their first start to last finish. Both exclude dependency
+setup and build steps. Compare hosted job start/end times and total worker time
+on the same candidate before claiming a CI speedup from the split. This remains portable CI evidence; the
 separate release seal still requires its complete candidate replay.
 
 ## Branch validation tiers
@@ -446,6 +523,54 @@ development runs do not substitute for the complete clean-candidate release
 replay or permit combining reports from different source trees. Only the release
 controller's verified same-candidate recovery described above can reuse task
 proofs in authoritative evidence.
+
+### Recoverable development runs
+
+CI9-02 adds an opt-in, checkout-local diagnostic command:
+
+```bash
+node scripts/development-recovery.cjs --profile unit --profile native
+node scripts/development-recovery.cjs --resume /absolute/path/to/checkout/.pulse-development/attempts/ATTEMPT
+```
+
+Commit the tested source and install/build dependencies before starting. A fresh
+run requires explicit `--profile` and/or `--task` selections. Resume accepts only
+the printed attempt directory; it preserves that selection and creates a new
+attempt. It never edits the earlier manifest, report, receipts or logs, even if
+the old progress report is missing or truncated. Each report records executed
+and reused tasks separately. Read the final status, selected/completed counts,
+task outcomes and process exit before claiming a recovered development pass.
+
+The manifest binds the clean revision/tree, actual tracked source bytes, checkout
+path, installed dependency and built output bytes, Node and discovered tool
+binaries, environment digest, selection and task definitions. Environment values
+are not written into the manifest. Full input checks run before every task/reuse,
+after executed-task cleanup and before terminal completion; `inputCheckMs`
+reports their overhead. Changed inputs reject resume: start a fresh run after
+source edits, dependency/tool updates or environment changes. This first version
+does not support dirty trees or restore arbitrary task outputs. It restores
+verified task logs and reuses diagnostic pass results only.
+
+Passed tasks with successful cleanup can be reused for seven days; reuse does not
+extend expiry. Missing, corrupt or expired receipts/logs rerun their task.
+Provider, external, release and measurement/exclusive tasks always execute fresh.
+Failed, interrupted and timed-out tasks also execute again. Input drift fails
+the attempt and prevents a new reusable pass. A test leaving untracked source
+residue can therefore stop the run; inspect and clear that residue before retrying.
+The controller shares the seal's checkout lock. A live previous controller or
+child process group blocks takeover; an unverifiable stale lock needs inspection.
+The command does not coordinate unrelated editors or ordinary test processes:
+keep this checkout idle while it runs.
+
+Attempts live under ignored `.pulse-development/attempts`, outside the ordinary
+test-result directory removed by `npm run clean`. There is no implicit lookup,
+automatic pruning, remote cache or foreign-checkout reuse. Retain attempts needed
+for diagnosis; remove unneeded attempts only when no controller is active.
+Reports use `pulse.development-run.v1`, explicitly mark `qualification: false`,
+and are rejected by the normal CI runner-report validator. A recovered development
+run cannot replace fresh performance measurements, hosted CI or a release seal.
+The `release-recovery-runner` unit task includes the development recovery probes,
+including 149 completed passes followed by one-task recovery.
 
 On an interruption or handoff, record the branch, base/head, uncommitted work,
 report/artifact paths, completed and running checks, blockers and the next action.

@@ -6,7 +6,7 @@ Pulse uses a machine-readable maintenance policy so repository automation and Co
 
 - **Policy schema:** `pulse.maintenance-policy.v2`
 - **Policy version:** `13`
-- **Release:** `1.0.0-beta.8`
+- **Release:** `1.0.0-beta.9`
 - **Reviewed:** `2026-10-09`
 - **Resident maintainer:** Codex
 - **Merge authority:** human-only
@@ -45,7 +45,7 @@ A normal human code review is still required for every merge. “Separate human 
 | `public-authoring-api` | Public authoring API | architecture | Required | The provider-neutral TypeScript handler and exported application types. |
 | `effect-capability-model` | Effect and capability model | architecture | Required | The explicit operations a guest can request and the authority a host can realize. |
 | `continuation-runtime` | Continuation runtime | architecture | Required | Suspension, resumption, timeout, identity, and lifecycle semantics between effects. |
-| `lowerer-trust` | Lowerer trust boundary | architecture | Required | Discovery and execution of package-owned lowerers and the first-party trust restriction. |
+| `lowerer-trust` | Lowerer trust boundary | architecture | Required | Discovery and execution of package-owned lowerers as trusted build dependencies, including protocol and ownership validation. |
 | `provider-registry` | Provider registry | architecture | Required | Provider namespace resolution, exact scoped-package bootstrap, provider contracts, host bindings, and target realization. |
 | `configuration-contract` | Configuration contract | architecture | When affected | Public project configuration fields, defaults, precedence, and runtime constraints. |
 | `runtime-target-fluidity` | Runtime target fluidity | architecture | Required | The stable runtime authoring contract and the explicit boundary between native, JavaScript, and future sidecar execution targets. |
