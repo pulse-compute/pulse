@@ -264,7 +264,7 @@ async function main(argv = process.argv.slice(2)) {
     progress.claimLatest();
     const previousDirectory = options.resume ? recoveryTools.previousAttempt(repoRoot, options.resume) : null;
     if (previousDirectory) {
-      const diagnostics = recoveryTools.resumeDiagnostics(repoRoot, previousDirectory, candidate, options);
+      const diagnostics = recoveryTools.resumeDiagnostics(repoRoot, previousDirectory, candidate, options, recoveryTools.environmentIdentity());
       progress.persist({ resumeDiagnostics: diagnostics });
       recoveryTools.printResumeDiagnostics(diagnostics);
     }
@@ -368,8 +368,10 @@ async function main(argv = process.argv.slice(2)) {
       const context = recoveryTools.createContext(repoRoot, candidate, options, availability);
       if (previousDirectory) {
         const changed = recoveryTools.resumeContextChanges(previousDirectory, context);
-        progress.persist({ resumeContext: { stage: 'after-fresh-setup', changed, taskVerification: 'pending' } });
+        const environment = recoveryTools.resumeEnvironmentChanges(previousDirectory, context);
+        progress.persist({ resumeContext: { stage: 'after-fresh-setup', changed, environment, taskVerification: 'pending' } });
         process.stdout.write(`[pulse:release] Resume context: ${changed.length ? `changed (${changed.join(', ')}); checkpoints will be revalidated and work rerun` : 'matched; each task still requires full proof/output verification'}.\n`);
+        if (changed.includes('environmentSha256')) process.stdout.write(`[pulse:release] Environment key changes (values redacted): ${JSON.stringify(environment || 'unavailable in prior report')}.\n`);
       }
       if (qualifiedFastlyInput) assert.equal(context.toolchain.fastlySha256, qualifiedFastlyInput.binarySha256,
         'Fastly executable changed after early reality evidence');

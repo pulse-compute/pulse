@@ -104,11 +104,15 @@ function inputIdentity(root) {
   });
   return { dependenciesSha256: fingerprint(rows), dependencyFiles: seen.size, buildSha256: fingerprint(build), build };
 }
+function environmentIdentity(env = process.env) {
+  const environment = Object.fromEntries(Object.entries(env).filter(([key]) => !['_', 'SHLVL', 'PWD', 'OLDPWD'].includes(key)).sort(([a], [b]) => a.localeCompare(b)));
+  return { environmentSha256: fingerprint(environment),
+    environmentKeys: Object.fromEntries(Object.entries(environment).map(([key, value]) => [key, fingerprint([key, value])])) };
+}
 function createContext(root, candidate, options, externalFastly, env = process.env) {
   const { PUBLICATION } = require('./package-support.cjs');
   const pnpm = require('./pnpm-toolchain.cjs').binaryPath(root);
   assert(fs.existsSync(pnpm), 'Release pnpm executable must exist before checkpointing');
-  const environment = Object.fromEntries(Object.entries(env).filter(([key]) => !['_', 'SHLVL', 'PWD', 'OLDPWD'].includes(key)).sort(([a], [b]) => a.localeCompare(b)));
   const layout = options.workers > 1
     ? require('./release-parallel.cjs').readLayout(root, candidate, options.workers, options.memoryBudgetMiB, options.compilerWorkers) : null;
   return {
@@ -119,7 +123,8 @@ function createContext(root, candidate, options, externalFastly, env = process.e
       osRelease: os.release(), nodeSha256: fileHash(process.execPath), pnpmVersion: PUBLICATION.pnpmVersion,
       pnpmSha256: fileHash(pnpm), fastly: externalFastly,
       fastlySha256: externalFastly.fastlyCli?.binary ? fileHash(externalFastly.fastlyCli.binary) : null },
-    environmentSha256: fingerprint(environment),
+    // Diagnose a rejected resume without persisting or printing environment values.
+    ...environmentIdentity(env),
     options: { requireFastly: options.requireFastly, install: options.install,
       workers: options.workers || 1, memoryBudgetMiB: options.memoryBudgetMiB || 4096, compilerWorkers: options.compilerWorkers || 2,
       dependencyBundleSha256: options.dependencyBundle ? fileHash(options.dependencyBundle) : null },
@@ -185,7 +190,7 @@ function previousAttempt(root, directory) {
   return resolved;
 }
 
-function resumeDiagnostics(root, directory, candidate, options) {
+function resumeDiagnostics(root, directory, candidate, options, environment = null) {
   // Only fixed paths inside a validated local attempt are read. Report-supplied
   // artifact paths and environment values are never followed or printed.
   const previousDirectory = previousAttempt(root, directory);
@@ -200,6 +205,7 @@ function resumeDiagnostics(root, directory, candidate, options) {
     const currentOptions = { requireFastly: options.requireFastly, install: options.install,
       workers: options.workers || 1, memoryBudgetMiB: options.memoryBudgetMiB || 4096, compilerWorkers: options.compilerWorkers || 2 };
     for (const [key, value] of Object.entries(currentOptions)) if (context.options?.[key] !== value) reasons.push(`option-changed:${key}`);
+    if (environment && context.environmentSha256 !== environment.environmentSha256) reasons.push('environment-changed');
   }
   const selections = { release: require('../wasm/test/suite/registry.cjs').expandProfile('release'),
     features: require('./release-feature-acceptance.cjs').REQUIRED_TASKS };
@@ -214,6 +220,7 @@ function resumeDiagnostics(root, directory, candidate, options) {
         .map(reason => [reason, checkpoints.filter(item => item.reason === reason).length])) };
   };
   return { stage: 'preliminary', previousDirectory, reasons,
+    ...(environment ? { environment: resumeEnvironmentChanges(previousDirectory, environment) } : {}),
     pack: inspect('pack', ['shared-pack']),
     tasks: Object.fromEntries(Object.entries(selections).map(([kind, names]) => [kind, inspect(kind, names.map(name => `task:${name}`))])),
     verification: 'pending: complete context, task definitions, prerequisite proofs, artifact bytes and cleanup' };
@@ -231,10 +238,23 @@ function resumeContextChanges(previousDirectory, context) {
     return changed;
   } catch (_) { return ['unreadable-context']; }
 }
+function resumeEnvironmentChanges(previousDirectory, context) {
+  try {
+    const previous = JSON.parse(fs.readFileSync(ordinaryPath(path.join(previousDirectory, 'report.json')), 'utf8')).recovery?.context?.environmentKeys;
+    const current = context.environmentKeys;
+    if (!previous || !current) return null;
+    return {
+      added: Object.keys(current).filter(key => !Object.hasOwn(previous, key)).sort(),
+      removed: Object.keys(previous).filter(key => !Object.hasOwn(current, key)).sort(),
+      changed: Object.keys(current).filter(key => Object.hasOwn(previous, key) && current[key] !== previous[key]).sort()
+    };
+  } catch (_) { return null; }
+}
 
 function printResumeDiagnostics(diagnostics, output = text => process.stdout.write(text)) {
   output(`[pulse:release] Resume from ${JSON.stringify(diagnostics.previousDirectory)} (preliminary; no outputs verified).\n`);
   if (diagnostics.reasons.length) output(`[pulse:release] Resume incompatibilities: ${diagnostics.reasons.join(', ')}. Affected work will execute again.\n`);
+  if (diagnostics.reasons.includes('environment-changed')) output(`[pulse:release] Environment key changes (values redacted): ${JSON.stringify(diagnostics.environment || 'unavailable in prior report')}.\n`);
   for (const [kind, summary] of Object.entries({ pack: diagnostics.pack, ...diagnostics.tasks })) {
     output(`[pulse:release] ${kind}: ${summary.completed}/${summary.selected} prior completions, ${summary.passed} passed, ${summary.potentiallyReusable} potentially reusable; metadata: ${JSON.stringify(summary.reasons)}.\n`);
   }
@@ -245,13 +265,46 @@ function alive(pid, group = false) {
   try { process.kill(group && process.platform !== 'win32' ? -pid : pid, 0); return true; }
   catch (error) { return error.code !== 'ESRCH'; }
 }
+function processIdentity(proc = 'self') {
+  if (process.platform !== 'linux') return null;
+  const stat = fs.readFileSync(`/proc/${proc}/stat`, 'utf8');
+  const fields = stat.slice(stat.lastIndexOf(')') + 2).trim().split(/\s+/);
+  // A procfs superblock is bound to a PID namespace. Its device/inode also
+  // works when this container cannot inspect the host's PID 1 namespace link.
+  const view = fs.statSync('/proc');
+  return {
+    procPid: Number(stat.slice(0, stat.indexOf(' '))), startTime: fields[19],
+    boot: fs.readFileSync('/proc/sys/kernel/random/boot_id', 'utf8').trim(),
+    view: `proc:${view.dev}:${view.ino}`, namespace: fs.readlinkSync(`/proc/${proc}/ns/pid`)
+  };
+}
+function ownerAlive(prior, currentIdentity) {
+  if (!prior.processIdentity) return alive(prior.pid);
+  const identity = prior.processIdentity;
+  assert(currentIdentity, 'Cannot inspect the prior seal process identity; retain its lock');
+  assert(Number.isSafeInteger(identity.procPid) && identity.procPid > 0 && /^\d+$/.test(identity.startTime), 'Invalid seal process identity');
+  assert(/^[a-f0-9-]{36}$/.test(identity.boot) && /^proc:\d+:\d+$/.test(identity.view)
+    && /^pid:\[\d+\]$/.test(identity.namespace), 'Invalid seal process namespace identity');
+  if (identity.boot !== currentIdentity.boot) return false;
+  assert.equal(identity.view, currentIdentity.view, 'Seal lock belongs to another process view; verify its processes before removing it');
+  try {
+    const observed = processIdentity(identity.procPid);
+    return observed.startTime === identity.startTime && observed.namespace === identity.namespace;
+  } catch (error) {
+    if (error.code === 'ENOENT' || error.code === 'ESRCH') return false;
+    throw error;
+  }
+}
 function acquireSealLock(root, directory = null) {
   const parent = ordinaryPath(path.join(root, '.pulse-seal'));
   fs.mkdirSync(parent, { recursive: true });
   const file = path.join(parent, 'active.json');
   ordinaryPath(file);
   const guard = path.join(parent, 'lock-claim');
-  const owner = { pid: process.pid, hostname: os.hostname(), token: crypto.randomUUID(), directory, childPid: null };
+  let identity = null;
+  try { identity = processIdentity(); } catch (_) { /* Portable fallback remains conservative. */ }
+  const owner = { pid: process.pid, hostname: os.hostname(), token: crypto.randomUUID(), directory, childPid: null,
+    ...(identity ? { processIdentity: identity } : {}) };
   // Serialize stale takeover as well as fresh acquisition. A second contender
   // must never unlink the first contender's newly acquired lock.
   try { fs.mkdirSync(guard); } catch (error) {
@@ -262,13 +315,23 @@ function acquireSealLock(root, directory = null) {
     if (fs.existsSync(file)) {
       const prior = JSON.parse(fs.readFileSync(file, 'utf8'));
       assert.equal(prior.hostname, owner.hostname, 'Seal lock belongs to another host; verify its processes before removing it');
-      assert(!alive(prior.pid) && !alive(prior.childPid, true), 'Another seal or its child process is still active');
+      assert(!ownerAlive(prior, identity), 'Another seal or its child process is still active');
+      const childAlive = pid => {
+        if (!Number.isSafeInteger(pid) || pid <= 0) return false;
+        if (prior.processIdentity && identity) {
+          if (prior.processIdentity.boot !== identity.boot) return false;
+          assert.equal(prior.processIdentity.namespace, identity.namespace,
+            'Prior seal has child processes in another PID namespace; verify them before removing its lock');
+        }
+        return alive(pid, true);
+      };
+      assert(!childAlive(prior.childPid), 'Another seal or its child process is still active');
       if (prior.directory) {
         for (const name of ['release-tasks.json', 'feature-tasks.json']) {
           const reportFile = path.join(prior.directory, 'artifacts', name);
           if (!fs.existsSync(reportFile)) continue;
           const report = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
-          assert(![report.activeChildPid, ...(report.activeChildPids || [])].some(pid => alive(pid, true)), 'A prior seal task process group is still active');
+          assert(![report.activeChildPid, ...(report.activeChildPids || [])].some(childAlive), 'A prior seal task process group is still active');
         }
       }
       assert.equal(JSON.parse(fs.readFileSync(file, 'utf8')).token, prior.token, 'Seal lock owner changed during acquisition');
@@ -316,4 +379,4 @@ function pruneRecovery(root, now = Date.now()) {
 
 module.exports = { SCHEMA, RETENTION_MS, atomicJson, describeArtifact, inputIdentity, createContext, artifactPaths,
   recoveryTaskOptions, sharedPackDefinition, recoveryConfig, previousAttempt, resumeDiagnostics, resumeContextChanges,
-  printResumeDiagnostics, acquireSealLock, pruneRecovery };
+  printResumeDiagnostics, environmentIdentity, resumeEnvironmentChanges, processIdentity, acquireSealLock, pruneRecovery };
