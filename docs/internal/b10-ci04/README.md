@@ -123,3 +123,58 @@ The first new admission-test assertion incorrectly assumed which overlapping
 subprocess would log its start first. The retained failed development run led to
 an interval-overlap assertion; the production scheduler did not change. The
 corrected regression and maintainer/docs checks passed before measurement.
+
+## Fresh qualification attempt and final disposition
+
+**Retain 2/1; the complete concurrency comparison remains open in #373.**
+The fresh 2/1 attempt on published candidate
+[`3d3ce18f307e6db4367caa63b9b28b74e88f544a`](https://github.com/pulse-compute/pulse/commit/3d3ce18f307e6db4367caa63b9b28b74e88f544a)
+(tree `9c3d65a7cd35a649327208b217771ccf5db27bf4`) failed worker admission after
+66 passing release tasks. The remaining 124 release tasks and all 11 installed
+gates did not run. No 2/2 trial was launched: a successful same-candidate control
+was not available. [qualification.json](qualification.json) binds each separate
+attempt, terminal report, selected coverage, logs, cleanup and sampled resources.
+These are failed qualification attempts, not a successful partial seal.
+
+| Attempt | Result | Meaning |
+| --- | --- | --- |
+| `2026-10-18T17-19-27-006Z-aFNy9s` / `b10-ci04-c1` | 25 passed, 1 failed, 1 interrupted, 163 not run | Incorrect local Fastly discovery environment; never pooled |
+| `2026-10-18T17-26-02-813Z-ThOgDa` / `b10-ci04-c1-fresh` | Blocked before steps; measurement invalid | Prior lock required process-identity verification across executor namespaces |
+| `2026-10-18T17-26-53-165Z-bH5y2d` / `b10-ci04-c1-r2` | 66 passed; next admission failed | Unresolved worker output cleanliness; comparison deferred |
+
+The first attempt put Fastly on PATH. `kv-conditional-gates` deliberately supplies
+an absent `PULSE_FASTLY_BIN`, but discovery fell back to the real CLI on PATH;
+its subprocess did not return the expected exit code before the fixture deadline.
+The hosted workflow supplies only `PULSE_FASTLY_BIN`. Matching that setup passed
+the unchanged focused gate and the later full attempt's gate. No test or provider
+discovery rule was changed. The first failed attempt's lock remained despite its
+terminal cleanup pass. Before archiving it, all 1,170 observed PID/start-time
+identities, including the controller, were verified absent; its bytes and the
+verification record are retained. The restart used no checkpoints.
+
+In the latest attempt, `fastly-native-platform-capabilities` reported passed
+cleanup and listed `.fetch-deadline-proof-cdWM3l/.pulse/config.ts` and
+`.fetch-deadline-proof-cdWM3l/src/index.ts` among removed outputs. A subsequent
+worker admission still observed those same untracked paths and correctly failed.
+The owning fixture is `wasm/test/provider/assert-fastly-fetch-deadlines.cjs`,
+invoked by that task. The evidence does not establish whether a writer, filesystem
+visibility or another cleanup mechanism caused the discrepancy. Final controller
+cleanup passed, the worker layout and active lock were absent, the source stayed
+clean, and no observed workload descendants remained. This does not waive the
+admission failure or make prior task passes a qualification.
+
+That latest failed attempt ran for 966.328 s, with the release stage lasting
+912.355 s **until failure**. Sampled process CPU was 1,859.74 s, simultaneous
+summed RSS peaked at 2,133,184 KiB, with 4,818 samples, maximum gap 325 ms and no
+read errors. These truncated-workload figures establish neither complete benefit
+nor a safe higher setting. Its source/build/Fastly reality, production audit,
+workspace unit, worker preparation and shared package stages passed; installed
+acceptance did not run.
+
+For #382, explicitly carry **#373 incomplete, 2/1 retained**. The next bounded
+investigation should reproduce the worker cleanup/admission discrepancy, preserving
+full input checks and failure evidence, then restart complete fresh paired trials
+on an exact repaired candidate. Do not turn repeated partial passes into proof,
+raise concurrency to hide the corrected hints' cost, or claim a full-release
+projection from the ten-task experiment. Original B10-00 failures remain failed.
+The issue's valid no-increase disposition applies; no workflow change is made.
