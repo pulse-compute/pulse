@@ -21,6 +21,18 @@ const ENVIRONMENT_CATEGORIES = Object.freeze({
 
 const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
+    name: 'PULSEWASM_TEST_PHASE_DIR',
+    category: 'contributor',
+    value: 'Existing diagnostic output directory',
+    default: 'Unset; phase observation is disabled.',
+    precedence: 'The operator supplies a fresh directory to the test-only preload.',
+    consumer: 'Bounded B10-01 phase attribution, including the copied installed JWT helper.',
+    secretSafety: 'Not a secret. Records timing, counters and artifact digests; no argument, source or environment contents.',
+    stability: 'Contributor/test-only; no qualification or cache authority.',
+    description: 'Enables optional compiler/test phase spans and nested filesystem/hash counters. Does not change task coverage or authorize reuse.',
+    sourceFiles: ['wasm/test/support/phase-observer.cjs', 'wasm/test/jwt/assert-jwt-installed-workflow.cjs']
+  }),
+  entry({
     name: 'PULSEWASM_SEAL_WORKER_LAYOUT',
     category: 'contributor',
     value: 'Absolute controller-owned layout path',
