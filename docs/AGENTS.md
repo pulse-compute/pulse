@@ -10,11 +10,11 @@ These instructions extend the repository root guidance for `docs/`.
 - Do not describe dependency-bound validation as complete unless the dependency bundle was restored and the commands actually passed.
 - Add contributor and maintainer pages to `scripts/documentation-ownership.cjs`
   and keep their review dates honest.
-- Update `release/documentation-site.json` when a new public page needs navigation order or a named route.
+- Update `release/documentation-sources.json` for public source routes and aliases; website presentation lives in `pulse-compute/website`. Preserve the supported CLI compatibility export.
 - Edit generated references through their source catalogs. Run `npm run maintainer:sync`, `npm run docs:sync`, `npm run docs:check`, and `node scripts/documentation-release.cjs`.
 - For npm publishing or documentation deployment changes, also run `npm run publication:check`; do not describe local simulation as a production deployment.
 
-Review links, anchors, installed CLI copies, exact-version hosted routes, and mobile/no-JavaScript behavior as release surfaces rather than cosmetic details.
+Review source links, anchors, installed CLI copies and exact-version hosted routes as release surfaces. Website-owned checks cover mobile/no-JavaScript presentation.
 
 ## Pulse entry points
 
@@ -34,7 +34,6 @@ searched, installed, or classified as current documentation.
 - `release/documentation-site.json`
 - `scripts/documentation-ownership.cjs`
 - `scripts/documentation-system.cjs`
-- `scripts/build-docs-site.cjs`
 - `scripts/documentation-release.cjs`
 
 **Write**
@@ -52,14 +51,11 @@ searched, installed, or classified as current documentation.
 - `wasm/examples/**/README.md`
 - `wasm/packages/*/README.md`
 - `release/documentation-site.json`
-- `scripts/build-docs-site.cjs`
 - `scripts/documentation-*.cjs`
 - `scripts/environment-reference.cjs`
-- `scripts/documentation-site/**`
 - `wasm/scripts/sync-reference-docs.cjs`
 - `wasm/test/docs/**`
 - `wasm/packages/cli/docs/**`
-- `.pulse-docs-site/**`
 
 **Derived**
 
@@ -67,7 +63,6 @@ searched, installed, or classified as current documentation.
 - generated pages and machine artifacts under `docs/maintainers/**`
 - `wasm/packages/cli/docs/**`
 - generated package README status blocks
-- `.pulse-docs-site/**`
 
 **Read**
 

@@ -2,7 +2,6 @@
 'use strict';
 
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { URL } = require('node:url');
@@ -24,22 +23,15 @@ const {
   parseDocumentationUrl,
   documentationUrl,
   routeToSource,
-  sourceToRoute,
-  cleanBasePath
+  sourceToRoute
 } = require('./documentation-system.cjs');
 const { validateDocumentationMetadata } = require('./documentation-ownership.cjs');
 const { MAINTENANCE_POLICY, synchronizeMaintenancePolicy } = require('./maintenance-policy.cjs');
 const { validateMaintainerControlPlane } = require('./validate-maintainer-control-plane.cjs');
 const { ENVIRONMENT_VARIABLES } = require('./environment-reference.cjs');
 const { SOURCE_CONTRACT, publicPageSources } = require('./documentation-sources.cjs');
-const {
-  PUBLIC_SITE_SCHEMA,
-  PUBLIC_SITE_MANIFEST_FILE,
-  PUBLIC_SITE_MANIFEST,
-  HOMEPAGE_SECTION_TYPES,
-  classifyPublicPage,
-  visibleNavigationSections
-} = require('./documentation-site-config.cjs');
+// Supported CLI compatibility export; not active website presentation.
+const { PUBLIC_SITE_MANIFEST } = require('./documentation-site-config.cjs');
 const { synchronizeReferenceDocs } = require('../wasm/scripts/sync-reference-docs.cjs');
 const {
   PUBLIC_COMMAND_ORDER,
@@ -139,18 +131,6 @@ const CHANGELOG_DOCS = Object.freeze([
   'CHANGELOG.md'
 ]);
 
-const SITE_SOURCES = Object.freeze([
-  'release/documentation-site.json',
-  'scripts/documentation-site-config.cjs',
-  'scripts/documentation-site/tokens.css',
-  'scripts/documentation-site/site.css',
-  'scripts/documentation-site/boot.js',
-  'scripts/documentation-site/redirect.js',
-  'scripts/documentation-site/site.js',
-  'scripts/documentation-site/network-field.js',
-  'scripts/documentation-site/favicon.svg'
-]);
-
 const GOVERNANCE_DOCUMENTS = Object.freeze([
   'docs/maintainers/README.md',
   'docs/maintainers/maintainer-charter.md',
@@ -213,13 +193,6 @@ const ROUTING_DOCUMENTS = Object.freeze([
 
 const MIDDLEWARE_DOCUMENTS = Object.freeze([
   'docs/guides/migrating-from-express.md'
-]);
-
-
-const SITE_BUILD_SOURCES = Object.freeze([
-  'scripts/highlight-code-blocks.mjs',
-  'scripts/preview-docs-site.cjs',
-  'scripts/documentation-site/syntax-dark.css'
 ]);
 
 
@@ -524,10 +497,10 @@ function validateReleaseManifest(repoRoot) {
 
 function validateDocumentationSourceContract(repoRoot) {
   if (SOURCE_CONTRACT.schemaVersion !== 'pulse.documentation-sources.v1') fail('unsupported documentation source contract');
-  if (!isDeepEqual(SOURCE_CONTRACT.sourceAliases, PUBLIC_SITE_MANIFEST.sourceAliases)) fail('documentation source aliases differ from the renderer');
+  if (!isDeepEqual(SOURCE_CONTRACT.sourceAliases, PUBLIC_SITE_MANIFEST.sourceAliases)) fail('documentation source aliases differ from the CLI compatibility export');
   const routeAliases = Object.fromEntries(Object.entries(PUBLIC_SITE_MANIFEST.routeAliases)
     .map(([route, id]) => [`${route}/`, sourceToRoute(PUBLIC_SITE_MANIFEST.documents[id].source)]));
-  if (!isDeepEqual(SOURCE_CONTRACT.routeAliases, routeAliases)) fail('documentation route aliases differ from the renderer');
+  if (!isDeepEqual(SOURCE_CONTRACT.routeAliases, routeAliases)) fail('documentation route aliases differ from the CLI compatibility export');
   for (const [source, route] of Object.entries(SOURCE_CONTRACT.rootRoutes)) {
     if (sourceToRoute(source) !== route) fail(`documentation source contract route differs for ${source}`);
   }
@@ -543,113 +516,6 @@ function validateDocumentationSourceContract(repoRoot) {
     if (routes.has(alias) || !routes.has(target)) fail(`invalid source route alias ${alias}`);
   }
   return Object.freeze({ status: 'ok', pages: sources.size, routeAliases: Object.keys(SOURCE_CONTRACT.routeAliases).length });
-}
-
-function validatePublicSiteSystem(repoRoot) {
-  validateDocumentationSourceContract(repoRoot);
-  const sourceManifest = readJson(path.join(repoRoot, 'release/documentation-site.json'));
-  if (!isDeepEqual(sourceManifest, PUBLIC_SITE_MANIFEST)) fail('loaded public-site manifest does not match release/documentation-site.json');
-  if (PUBLIC_SITE_MANIFEST.schemaVersion !== PUBLIC_SITE_SCHEMA) fail(`unsupported public-site schema ${PUBLIC_SITE_MANIFEST.schemaVersion}`);
-  if (PUBLIC_SITE_MANIFEST.releaseVersion !== RELEASE_VERSION) fail('public-site release version is stale');
-  if (path.resolve(repoRoot, 'release/documentation-site.json') !== PUBLIC_SITE_MANIFEST_FILE) fail('public-site validation currently requires the repository containing the loaded manifest');
-
-  const sectionIds = PUBLIC_SITE_MANIFEST.navigation.sections.map((entry) => entry.id);
-  if (!isDeepEqual(sectionIds, [
-    'start',
-    'examples',
-    'guides',
-    'concepts',
-    'packages',
-    'reference',
-    'authors',
-    'maintainers'
-  ])) {
-    fail(`public navigation section order is stale: ${sectionIds.join(', ')}`);
-  }
-  const homepageTypes = PUBLIC_SITE_MANIFEST.homepage.sections.map((entry) => entry.type);
-  if (!isDeepEqual(homepageTypes, HOMEPAGE_SECTION_TYPES)) fail(`homepage section order is stale: ${homepageTypes.join(', ')}`);
-  const example = PUBLIC_SITE_MANIFEST.homepage.sections.find((entry) => entry.type === 'example');
-  if (!example || example.code.length < 8 || !example.code.some((line) => line.includes('new Router()')) || !example.code.some((line) => line.includes('return next()'))) fail('homepage Router example is incomplete');
-  const journey = PUBLIC_SITE_MANIFEST.homepage.sections.find((entry) => entry.type === 'journey');
-  if (!journey || journey.stages.length < 4) fail('homepage progressive-constraining journey is incomplete');
-  const inspect = PUBLIC_SITE_MANIFEST.homepage.sections.find((entry) => entry.type === 'inspect');
-  if (!inspect || !fs.existsSync(path.join(repoRoot, inspect.fixture))) fail('homepage inspect fixture is missing');
-  const fixture = readJson(path.join(repoRoot, inspect.fixture));
-  if (!fixture || !fixture.project?.provider || !fixture.compiler?.capabilities || !fixture.compiler?.effects || !fixture.compiler?.continuations || !fixture.compiler?.providerLowering) fail('homepage inspect fixture must expose capabilities, effects, continuations, and provider data');
-
-  const namedSources = new Set(Object.values(PUBLIC_SITE_MANIFEST.documents).map((entry) => entry.source));
-  for (const source of namedSources) if (!fs.existsSync(path.join(repoRoot, source))) fail(`public-site named document is missing ${source}`);
-  if (PUBLIC_SITE_MANIFEST.documents.reference?.source !== 'docs/reference/README.md') fail('public-site manifest must expose the reference overview as a named document');
-  if (PUBLIC_SITE_MANIFEST.documents.maintainers?.source !== 'docs/maintainers/README.md') fail('public-site manifest must expose the maintainer index as a named document');
-  const maintainerSection = PUBLIC_SITE_MANIFEST.navigation.sections.find((entry) => entry.id === 'maintainers');
-  if (!maintainerSection || maintainerSection.hiddenInNavigation !== true || maintainerSection.hiddenInSearch !== true) fail('maintainer documentation must remain outside primary navigation and general search');
-  const referenceOverview = fs.readFileSync(path.join(repoRoot, 'docs/reference/README.md'), 'utf8');
-  if (!referenceOverview.includes('[maintainer documentation](../maintainers/)')) fail('reference overview must provide the maintainer discovery gate');
-  for (const relativeFile of SITE_SOURCES) {
-    const file = path.join(repoRoot, relativeFile);
-    if (!fs.existsSync(file) || !fs.statSync(file).isFile()) fail(`public-site source is missing ${relativeFile}`);
-  }
-  const tokens = fs.readFileSync(path.join(repoRoot, 'scripts/documentation-site/tokens.css'), 'utf8');
-  const syntaxCss = fs.readFileSync(path.join(repoRoot, 'scripts/documentation-site/syntax-dark.css'), 'utf8');
-  const css = fs.readFileSync(path.join(repoRoot, 'scripts/documentation-site/site.css'), 'utf8');
-  const javascript = fs.readFileSync(path.join(repoRoot, 'scripts/documentation-site/site.js'), 'utf8');
-  const networkField = fs.readFileSync(path.join(repoRoot, 'scripts/documentation-site/network-field.js'), 'utf8');
-  for (const token of ['--canvas:', '--accent:', '--docs-width:', '--duration-fast:']) if (!tokens.includes(token)) fail(`site tokens are missing ${token}`);
-  for (const marker of ['@import url("./tokens.css")', '@import url("./syntax-dark.css")', '.hero-card', '.hero-network', '.hero-motion-toggle', '.home-example', '.journey-list', '.quick-start', '.docs-shell', '.docs-toc', '@media (prefers-reduced-motion: reduce)', 'body[data-nav-open="true"]']) if (!css.includes(marker)) fail(`shared site CSS is missing ${marker}`);
-  for (const marker of ['initNavigation', 'initSearch', 'initVersionSelect', 'drawer.inert', 'focusableElements']) if (!javascript.includes(marker)) fail(`shared site JavaScript is missing ${marker}`);
-  for (const marker of ['DOMContentLoaded', 'networkField', 'NetworkField', 'visibilitychange', 'prefers-reduced-motion: reduce', 'data-hero-motion-toggle', 'IntersectionObserver', 'pause()', 'resume()']) if (!networkField.includes(marker)) fail(`network-field.js is missing ${marker}`);
-  if (/https?:\/\//.test(tokens) || /https?:\/\//.test(syntaxCss) || /https?:\/\//.test(css) || /https?:\/\//.test(javascript) || /https?:\/\//.test(networkField)) fail('shared site assets must not depend on external runtime resources');
-  if (!syntaxCss.includes('--color-prettylights-syntax-keyword') || !syntaxCss.includes('.pl-k')) fail('vendored Starry Night dark theme is incomplete');
-  const rootPackage = readJson(path.join(repoRoot, 'package.json'));
-  if (rootPackage.devDependencies?.['@wooorm/starry-night'] !== '3.10.0') fail('documentation site must pin @wooorm/starry-night 3.10.0');
-  if (RUNTIME_TARGETS.length !== 3) fail(`release catalog requires three release-owned runtime targets; found ${RUNTIME_TARGETS.length}`);
-  for (const target of RUNTIME_TARGETS) if (!['execute', 'execute-and-build', 'compile'].includes(target.mode)) fail(`runtime target ${target.id} uses unsupported release mode ${target.mode}`);
-
-  const publicSources = publicPageSources();
-  if (publicSources.some((source) => path.basename(source) === 'AGENTS.md')) fail('AGENTS.md files must not be hosted as public documentation');
-  if (publicSources.some((source) => source.startsWith('docs/architecture/decisions/'))) fail('obsolete numbered decision chronology must not be hosted as public documentation');
-  if (fs.existsSync(path.join(repoRoot, 'docs/architecture/decisions'))) fail('obsolete numbered decision chronology must not remain in the canonical documentation tree');
-  const publicSourceSet = new Set(publicSources);
-  for (const section of PUBLIC_SITE_MANIFEST.navigation.sections) {
-    for (const source of section.sources || []) if (!publicSourceSet.has(source)) fail(`public navigation section ${section.id} references non-hosted source ${source}`);
-  }
-  for (const source of Object.keys(PUBLIC_SITE_MANIFEST.navigation.overrides)) if (!publicSourceSet.has(source)) fail(`public navigation override references non-hosted source ${source}`);
-  for (const [source, target] of Object.entries(PUBLIC_SITE_MANIFEST.sourceAliases)) {
-    if (publicSourceSet.has(source)) fail(`public-site source alias ${source} must not also be hosted directly`);
-    if (!publicSourceSet.has(target)) fail(`public-site source alias ${source} targets non-hosted source ${target}`);
-  }
-  if (PUBLIC_SITE_MANIFEST.routeAliases?.['alpha-scope'] !== 'preview-scope') fail('the renamed preview scope must retain the intentional alpha-scope route alias');
-  const hiddenSearchSources = Object.entries(PUBLIC_SITE_MANIFEST.navigation.overrides)
-    .filter(([, override]) => override.hiddenInSearch === true)
-    .map(([source]) => source)
-    .sort();
-  const expectedHiddenSearchSources = [];
-  if (!isDeepEqual(hiddenSearchSources, expectedHiddenSearchSources)) {
-    fail('canonical examples must remain discoverable inside the Examples section');
-  }
-  const classified = new Map();
-  for (const source of publicSources) {
-    const section = classifyPublicPage(source);
-    const override = PUBLIC_SITE_MANIFEST.navigation.overrides[source] || {};
-    const hidden = SOURCE_CONTRACT.hiddenPrefixes.some((prefix) => source.startsWith(prefix));
-    if (hidden !== (section?.hiddenInNavigation === true || override.hiddenInNavigation === true)
-      || hidden !== (section?.hiddenInSearch === true || override.hiddenInSearch === true)) {
-      fail(`documentation source contract visibility differs for ${source}`);
-    }
-    if (!section) fail(`public documentation page is not classified for hosted navigation: ${source}`);
-    classified.set(source, section.id);
-  }
-  return Object.freeze({
-    schemaVersion: PUBLIC_SITE_MANIFEST.schemaVersion,
-    namedDocuments: namedSources.size,
-    sourceAliases: Object.keys(PUBLIC_SITE_MANIFEST.sourceAliases).length,
-    navigationSections: sectionIds.length,
-    homepageSections: homepageTypes.length,
-    quickStartCommands: PUBLIC_SITE_MANIFEST.homepage.hero.terminal.length,
-    runtimeTargets: RUNTIME_TARGETS.length,
-    publicPages: classified.size,
-    sharedAssets: SITE_SOURCES.length - 2 + SITE_BUILD_SOURCES.filter((entry) => entry.startsWith('scripts/documentation-site/')).length
-  });
 }
 
 function validateDiagnostics(repoRoot) {
@@ -968,8 +834,8 @@ function validatePluginReadiness(repoRoot) {
   return Object.freeze({ publicPluginApi: false, decision: readiness.decision, requirements: PUBLIC_PLUGIN_REQUIREMENTS.length, satisfied: 0, providers: 3 });
 }
 
-function validateDocumentationLayers(repoRoot, { presentation = true } = {}) {
-  const required = [...PRODUCT_DOCUMENTS, ...ARCHITECTURE_DOCUMENTS, ...SITE_DOCUMENTS, ...GOVERNANCE_DOCUMENTS, ...DELIVERY_DOCUMENTS, ...ROUTING_DOCUMENTS, ...MIDDLEWARE_DOCUMENTS, ...REFERENCE_ARTIFACTS, ...GOVERNANCE_ARTIFACTS, ...PUBLIC_FIXTURES, ...CHANGELOG_DOCS, ...(presentation ? [...SITE_SOURCES, ...SITE_BUILD_SOURCES] : []), ...MAINTENANCE_SOURCES, ...DELIVERY_SOURCES];
+function validateDocumentationLayers(repoRoot) {
+  const required = [...PRODUCT_DOCUMENTS, ...ARCHITECTURE_DOCUMENTS, ...SITE_DOCUMENTS, ...GOVERNANCE_DOCUMENTS, ...DELIVERY_DOCUMENTS, ...ROUTING_DOCUMENTS, ...MIDDLEWARE_DOCUMENTS, ...REFERENCE_ARTIFACTS, ...GOVERNANCE_ARTIFACTS, ...PUBLIC_FIXTURES, ...CHANGELOG_DOCS, ...MAINTENANCE_SOURCES, ...DELIVERY_SOURCES];
   for (const relativeFile of required) {
     const file = path.join(repoRoot, relativeFile);
     if (!fs.existsSync(file) || !fs.statSync(file).isFile()) fail(`public documentation payload is missing ${relativeFile}`);
@@ -989,8 +855,7 @@ function validateDocumentationLayers(repoRoot, { presentation = true } = {}) {
   }
   const docsIndex = fs.readFileSync(path.join(repoRoot, 'docs/README.md'), 'utf8');
   const indexRequired = [...PRODUCT_DOCUMENTS, ...ARCHITECTURE_DOCUMENTS, ...SITE_DOCUMENTS, ...GOVERNANCE_DOCUMENTS, ...DELIVERY_DOCUMENTS, ...ROUTING_DOCUMENTS, ...MIDDLEWARE_DOCUMENTS]
-    .filter((relativeFile) => presentation ? classifyPublicPage(relativeFile)?.hiddenInNavigation !== true
-      : !SOURCE_CONTRACT.hiddenPrefixes.some((prefix) => relativeFile.startsWith(prefix)));
+    .filter((relativeFile) => !SOURCE_CONTRACT.hiddenPrefixes.some((prefix) => relativeFile.startsWith(prefix)));
   for (const relativeFile of indexRequired) {
     if (relativeFile.endsWith('/README.md')) continue;
     const target = `./${relativeFile.slice('docs/'.length)}`;
@@ -1006,40 +871,6 @@ function validateDocumentationLayers(repoRoot, { presentation = true } = {}) {
   const architecture = fs.readFileSync(path.join(repoRoot, 'docs/architecture/overview.md'), 'utf8');
   if (!architecture.includes('./current-contracts.md')) fail('architecture overview must link current architecture contracts');
   if (!architecture.includes('../maintainers/plugin-readiness.md')) fail('architecture overview must link plugin readiness');
-  if (presentation) {
-    const archivePolicy = path.join(repoRoot, 'release/documentation-site-archives/README.md');
-    if (!fs.existsSync(archivePolicy)) fail('immutable documentation archive policy is missing');
-    const rootScripts = readJson(path.join(repoRoot, 'package.json')).scripts || {};
-    if (rootScripts['docs:site'] !== 'node scripts/build-docs-site.cjs --out .pulse-docs-site') fail('documentation site command is missing or stale');
-    if (rootScripts['docs:preview'] !== 'node scripts/preview-docs-site.cjs') fail('documentation preview command is missing or stale');
-    const versioningReference = fs.readFileSync(path.join(repoRoot, 'docs/maintainers/documentation-versioning.md'), 'utf8');
-    if (!versioningReference.includes('pnpm docs:site -- --snapshot') || !versioningReference.includes('documentation-site-archives') || !versioningReference.includes('Public product homepage') || !versioningReference.includes('release/documentation-site.json')) fail('documentation versioning reference must explain the generated homepage and immutable release snapshots');
-    const workflow = path.join(repoRoot, '.github/workflows/documentation.yml');
-    if (!fs.existsSync(workflow)) fail('versioned documentation validation workflow is missing');
-    const workflowText = fs.readFileSync(workflow, 'utf8');
-    const workflowAction = (name) => {
-      const pin = MAINTENANCE_POLICY.github.actionPins[name];
-      if (!pin) fail(`maintenance policy is missing documentation workflow action pin ${name}`);
-      return `${name}@${pin.sha} # ${pin.version}`;
-    };
-    const workflowRequirements = [
-      'workflow_dispatch:',
-      'pull_request:',
-      "branches: ['**']",
-      workflowAction('actions/checkout'),
-      workflowAction('actions/setup-node'),
-      workflowAction('actions/upload-artifact'),
-      'node scripts/documentation-preview.cjs',
-      'include-hidden-files: true'
-    ];
-    for (const requiredText of workflowRequirements) if (!workflowText.includes(requiredText)) fail(`documentation workflow is missing ${requiredText}`);
-    require('./documentation-preview.cjs').validatePreviewWorkflow(workflowText);
-    for (const forbidden of ['configure-pages', 'upload-pages-artifact', 'deploy-pages', 'pages: write', 'github-pages']) if (workflowText.includes(forbidden)) fail(`documentation validation workflow must not deploy through ${forbidden}`);
-    const npmWorkflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/npm-publish.yml'), 'utf8');
-    for (const requiredText of ['workflow_dispatch:', 'environment: npm-publish', 'id-token: write', 'publish-release.cjs publish', 'verify-npm-release.cjs']) if (!npmWorkflow.includes(requiredText)) fail(`npm publication workflow is missing ${requiredText}`);
-    const deploymentWorkflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/documentation-deploy.yml'), 'utf8');
-    for (const requiredText of ['workflow_dispatch:', 'environment: documentation-production', '--phase immutable', '--phase promote', '--npm-verification npm-release-availability.json', 'documentation-deployment.cjs verify-public']) if (!deploymentWorkflow.includes(requiredText)) fail(`documentation deployment workflow is missing ${requiredText}`);
-  }
   const conceptText = PRODUCT_DOCUMENTS.filter((name) => name.startsWith('docs/concepts/')).map((name) => fs.readFileSync(path.join(repoRoot, name), 'utf8')).join('\n');
   const sourceBindings = (conceptText.match(/<!-- pulse-doc-source:/g) || []).length;
   const runBindings = (conceptText.match(/<!-- pulse-doc-run /g) || []).length;
@@ -1196,8 +1027,6 @@ function validateDocumentationLayers(repoRoot, { presentation = true } = {}) {
     governanceDocuments: GOVERNANCE_DOCUMENTS.length,
     deliveryDocuments: DELIVERY_DOCUMENTS.length,
     changelogDocuments: CHANGELOG_DOCS.length,
-    siteSources: presentation ? SITE_SOURCES.length : 0,
-    siteBuildSources: presentation ? SITE_BUILD_SOURCES.length : 0,
     maintenanceSources: MAINTENANCE_SOURCES.length,
     deliverySources: DELIVERY_SOURCES.length,
     machineArtifacts: REFERENCE_ARTIFACTS.length + GOVERNANCE_ARTIFACTS.length,
@@ -1207,115 +1036,15 @@ function validateDocumentationLayers(repoRoot, { presentation = true } = {}) {
   });
 }
 
-function validateDocumentationSiteBuild(repoRoot, onValidatedSite) {
-  const { buildDocumentationSite } = require('./build-docs-site.cjs');
-  if (repoRoot !== defaultRepoRoot) fail('documentation site validation currently requires the repository containing this release script');
-  const output = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-docsite-validation-'));
-  try {
-    const result = buildDocumentationSite({ output, clean: true });
-    const sources = publicPageSources();
-    const expectedPages = sources.length;
-    const expectedHiddenSearchPages = sources.filter((source) => {
-      const section = classifyPublicPage(source);
-      const override = PUBLIC_SITE_MANIFEST.navigation.overrides[source] || {};
-      return section?.hiddenInSearch === true || override.hiddenInSearch === true;
-    }).length;
-    if (result.pages !== expectedPages || result.searchEntries !== result.pages - expectedHiddenSearchPages) fail('generated public site does not match the active documentation source model');
-    const expectedHiddenNavigationPages = sources.filter((source) => {
-      const section = classifyPublicPage(source);
-      const override = PUBLIC_SITE_MANIFEST.navigation.overrides[source] || {};
-      return section?.hiddenInNavigation === true || override.hiddenInNavigation === true;
-    }).length;
-    if (result.homepage !== 1 || result.heroCanvas !== true || result.navigationSections !== visibleNavigationSections().length || result.siteAssets !== 8 || result.tocEntries === 0 || result.syntaxHighlightedBlocks === 0 || result.hiddenNavigationPages !== expectedHiddenNavigationPages || result.hiddenSearchPages !== expectedHiddenSearchPages || result.routeAliases !== Object.keys(PUBLIC_SITE_MANIFEST.routeAliases).length) fail('generated homepage or documentation shell is incomplete');
-    if (result.versions !== DOCUMENTATION_VERSIONS.versions.length || result.archivedVersions !== DOCUMENTATION_VERSIONS.versions.length - 1) fail('versioned documentation site did not include every declared release');
-
-    const exactAssets = [
-      'assets/tokens.css',
-      'assets/syntax-dark.css',
-      'assets/site.css',
-      'assets/boot.js',
-      'assets/redirect.js',
-      'assets/site.js',
-      'assets/network-field.js',
-      'assets/favicon.svg',
-      'public-site-manifest.json',
-      'site-version-manifest.json'
-    ];
-    for (const asset of exactAssets) if (!fs.existsSync(path.join(output, DOCUMENTATION.version, asset))) fail(`exact documentation subtree is missing ${asset}`);
-    for (const mutable of ['tokens.css', 'syntax-dark.css', 'site.css', 'boot.js', 'redirect.js', 'site.js', 'network-field.js', 'favicon.svg']) if (fs.existsSync(path.join(output, 'assets', mutable))) fail(`exact release pages must not depend on mutable root asset assets/${mutable}`);
-
-    const homepageFile = path.join(output, 'index.html');
-    const homepage = fs.readFileSync(homepageFile, 'utf8');
-    for (const marker of [
-      'data-page-kind="home"',
-      'class="hero-card"',
-      'id="networkField"',
-      'class="home-example"',
-      'class="quick-start"',
-      'data-hero-motion-toggle',
-      'Show compiler details',
-      'id="site-navigation-drawer"',
-      'aria-hidden="true" inert',
-      PUBLIC_SITE_MANIFEST.product.eyebrow,
-      PUBLIC_SITE_MANIFEST.product.headline,
-      PUBLIC_SITE_MANIFEST.homepage.sections.find((entry) => entry.type === 'example').title,
-      PUBLIC_SITE_MANIFEST.homepage.sections.find((entry) => entry.type === 'inspect').title,
-      DISPLAY.candidateName,
-      `${cleanBasePath(DOCUMENTATION.basePath)}/${DOCUMENTATION.version}/assets/tokens.css`,
-      `${cleanBasePath(DOCUMENTATION.basePath)}/${DOCUMENTATION.version}/assets/site.js`,
-      `${cleanBasePath(DOCUMENTATION.basePath)}/${DOCUMENTATION.version}/assets/network-field.js`
-    ]) if (!homepage.includes(marker)) fail(`public product homepage is missing ${marker}`);
-    if (/http-equiv="refresh"/i.test(homepage)) fail('public product homepage must not be a redirect');
-    for (const staleClaim of ['small runtime for realtime flows', 'falls back to TS/JS', 'Pulse-aware plugins can provide']) if (homepage.includes(staleClaim)) fail(`public product homepage contains obsolete claim ${staleClaim}`);
-    for (const marker of ['@pulse-compute/runtime', 'Router example', '/users/:id', DISPLAY.candidateLabel]) if (!homepage.includes(marker)) fail(`public product homepage is missing ${marker}`);
-
-    const docsPage = fs.readFileSync(path.join(output, DOCUMENTATION.version, 'getting-started', 'index.html'), 'utf8');
-    for (const marker of ['id="search-input"', 'id="version-select"', 'id="documentation-drawer"', 'aria-hidden="true" inert', 'data-nav-drawer', 'class="breadcrumbs"', 'class="docs-toc"', 'class="docs-pagination"', 'class="mobile-nav-fallback"']) {
-      if (!docsPage.includes(marker)) fail(`documentation shell is missing ${marker}`);
-    }
-    if (docsPage.indexOf('<article class="docs-article">') > docsPage.indexOf('class="mobile-nav-fallback"')) fail('no-JavaScript mobile navigation must follow the document body');
-    if (!docsPage.includes('href="#content"') || !docsPage.includes('class="skip-link"')) fail('documentation shell is missing its keyboard skip link');
-
-    const tokens = fs.readFileSync(path.join(output, DOCUMENTATION.version, 'assets', 'tokens.css'), 'utf8');
-    const css = fs.readFileSync(path.join(output, DOCUMENTATION.version, 'assets', 'site.css'), 'utf8');
-    const syntaxTheme = fs.readFileSync(path.join(output, DOCUMENTATION.version, 'assets', 'syntax-dark.css'), 'utf8');
-    const javascript = fs.readFileSync(path.join(output, DOCUMENTATION.version, 'assets', 'site.js'), 'utf8');
-    const networkField = fs.readFileSync(path.join(output, DOCUMENTATION.version, 'assets', 'network-field.js'), 'utf8');
-    if (!tokens.includes('--accent:') || !syntaxTheme.includes('--color-prettylights-syntax-keyword') || !css.includes('@media (prefers-reduced-motion: reduce)') || !networkField.includes('networkField') || !networkField.includes('visibilitychange') || !javascript.includes('drawer.inert') || !javascript.includes('focusableElements')) fail('generated site assets are missing shared design, syntax, motion, or navigation contracts');
-    const publicSiteCopy = readJson(path.join(output, 'public-site-manifest.json'));
-    if (!isDeepEqual(publicSiteCopy, PUBLIC_SITE_MANIFEST)) fail('generated root public-site manifest is stale');
-
-    if (onValidatedSite) onValidatedSite(output);
-    return Object.freeze({
-      pages: result.pages,
-      assets: result.assets,
-      siteAssets: result.siteAssets,
-      searchEntries: result.searchEntries,
-      tocEntries: result.tocEntries,
-      localLinks: result.localLinks,
-      generatedFiles: result.generatedFiles,
-      versionSegment: result.versionSegment,
-      versions: result.versions,
-      archivedVersions: result.archivedVersions,
-      homepage: result.homepage,
-      heroCanvas: result.heroCanvas,
-      navigationSections: result.navigationSections
-    });
-  } finally {
-    fs.rmSync(output, { recursive: true, force: true });
-  }
-}
-
 function validateDocumentationSource(options = {}) {
+  if (options.onValidatedSite || options.site === true) fail('Pulse no longer renders documentation; use the website owner');
   const repoRoot = path.resolve(options.repoRoot || defaultRepoRoot);
   synchronizeMaintenancePolicy({ repoRoot, write: false });
   synchronizeReferenceDocs({ write: false });
   const maintenance = validateMaintainerControlPlane();
   const packagePolicy = validatePackagePolicy(repoRoot);
   const releaseManifest = validateReleaseManifest(repoRoot);
-  const packageSource = options.validationKind === 'package-source';
-  const sourceContract = packageSource ? validateDocumentationSourceContract(repoRoot) : undefined;
-  const publicSite = packageSource ? undefined : validatePublicSiteSystem(repoRoot);
+  const sourceContract = validateDocumentationSourceContract(repoRoot);
   const links = validateSourceMarkdownLinks(repoRoot);
   const diagnostics = validateDiagnostics(repoRoot);
   const cli = validateCliParity(repoRoot);
@@ -1323,9 +1052,8 @@ function validateDocumentationSource(options = {}) {
   const environment = validateEnvironmentReference(repoRoot);
   const pluginReadiness = validatePluginReadiness(repoRoot);
   const metadata = validateDocumentationMetadata({ repoRoot, today: options.today });
-  const layers = validateDocumentationLayers(repoRoot, { presentation: !packageSource });
-  const site = packageSource || options.site === false ? undefined : validateDocumentationSiteBuild(repoRoot, options.onValidatedSite);
-  return Object.freeze({ status: 'ok', validationKind: packageSource ? 'package-source' : 'site', releaseVersion: RELEASE_VERSION, maintenance, packagePolicy, releaseManifest, links, diagnostics, cli, config, environment, pluginReadiness, metadata, layers, ...(packageSource ? { sourceContract } : { publicSite, site }) });
+  const layers = validateDocumentationLayers(repoRoot);
+  return Object.freeze({ status: 'ok', validationKind: 'package-source', releaseVersion: RELEASE_VERSION, maintenance, packagePolicy, releaseManifest, links, diagnostics, cli, config, environment, pluginReadiness, metadata, layers, sourceContract });
 }
 
 // Package gates validate canonical and installed documentation without rendering.
@@ -1473,7 +1201,6 @@ module.exports = Object.freeze({
   validateDocumentationLayers,
   validatePluginReadiness,
   validateReleaseManifest,
-  validatePublicSiteSystem,
   PRODUCT_DOCUMENTS,
   ARCHITECTURE_DOCUMENTS,
   SITE_DOCUMENTS,
@@ -1482,8 +1209,6 @@ module.exports = Object.freeze({
   ROUTING_DOCUMENTS,
   MIDDLEWARE_DOCUMENTS,
   CHANGELOG_DOCS,
-  SITE_SOURCES,
-  SITE_BUILD_SOURCES,
   MAINTENANCE_SOURCES,
   DELIVERY_SOURCES,
   REFERENCE_ARTIFACTS,
