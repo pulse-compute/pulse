@@ -487,6 +487,10 @@ function validateReleaseManifest(repoRoot) {
   if (!current || current.status !== 'current' || current.segment !== DOCUMENTATION.version || current.sourceManifest !== relative(repoRoot, RELEASE_MANIFEST_FILE)) fail('documentation version entry is not bound to the current release manifest');
   for (const entry of DOCUMENTATION_VERSIONS.versions) {
     if (entry.version === RELEASE_VERSION) continue;
+    if (entry.deliveryOwner === 'website') {
+      require('./release-pr-check.cjs').validateWebsiteHistory(entry, name => fs.readFileSync(path.join(repoRoot, name), 'utf8'));
+      continue;
+    }
     const expectedManifest = `release/documentation-site-archives/${entry.segment}/release-manifest.json`;
     if (entry.status !== 'archived' || entry.sourceManifest !== expectedManifest) fail(`historical documentation ${entry.version} must be archived at ${expectedManifest}`);
     if (!fs.existsSync(path.join(repoRoot, expectedManifest))) fail(`historical documentation archive is missing ${expectedManifest}`);

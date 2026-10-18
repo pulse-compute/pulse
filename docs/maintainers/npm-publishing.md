@@ -33,16 +33,17 @@ history choice, prepares the version metadata, validates
 the result, and opens a draft release PR into `main`.
 
 ```bash
-gh workflow run release-prepare.yml --ref main -f version="$NEXT_VERSION" -f documentation_history=archive-current
+gh workflow run release-prepare.yml --ref main -f version="$NEXT_VERSION" -f documentation_history=website-managed
 ```
 
 Set `NEXT_VERSION` to the release you intend to prepare and write its notes in
 `CHANGELOG.md` under `Unreleased` first. Preparation moves those notes into the
 new version section and preserves published changelog history. Existing
-archives are compared with the tagged source and never silently overwritten.
+archives remain unchanged; new historical HTML is owned by website delivery.
 
-The default `archive-current` rebuilds the previous documentation snapshot from
-its exact tag. For the reviewed npm-published release whose hosted docs are not
+The default `website-managed` retains the previous release manifest from its
+exact tag, with source identity and a digest; it never installs or renders that
+release. For the reviewed npm-published release whose hosted docs are not
 a recovery target, deliberately select `documentation_history=replace-unpublished-docs`.
 That choice skips snapshot construction and checks the preserved tag commit
 against `readiness.versionPreparation.unpublishedDocumentationReleases` in the
@@ -263,10 +264,12 @@ from different tags or run attempts into one passing record.
 For local preparation, the underlying command remains available:
 
 ```bash
-node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --archive-current
+node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --website-managed
 ```
 
-`--archive-current` requires the committed immutable documentation snapshot.
+`--website-managed` requires the previous release tag and retains product metadata
+without generating HTML. Legacy `--archive-current` only accepts an existing
+committed snapshot; it is no longer the workflow default.
 Use `--replace-unpublished` only when replacing a candidate that has not shipped.
 For the reviewed hosted-docs exception, use `--replace-unpublished-docs` instead:
 the old release shipped on npm and its changelog must be preserved. See

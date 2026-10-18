@@ -71,6 +71,18 @@ const archivePlan = planRelease(
   parsePreparationArgs(['9.9.9-beta.1', '--archive-current', '--date', '2026-09-14']),
   assertManifestConsistency(releaseManifest, documentationVersions)
 );
+const websitePlan = planRelease(releaseManifest, documentationVersions,
+  parsePreparationArgs(['9.9.9-beta.1', '--website-managed', '--date', '2026-09-14']),
+  assertManifestConsistency(releaseManifest, documentationVersions),
+  () => ({ sourceTag: `v${releaseManifest.releaseVersion}`, tag: 'a'.repeat(40), manifest: releaseManifest }));
+const websiteHistory = websitePlan.nextDocumentationVersions.versions.find(entry => entry.version === releaseManifest.releaseVersion);
+assert.equal(websiteHistory.deliveryOwner, 'website');
+assert.equal(websiteHistory.sourceTag, `v${releaseManifest.releaseVersion}`);
+assert.equal(websiteHistory.sourceCommit, 'a'.repeat(40));
+assert.deepEqual(JSON.parse(websitePlan.writes.get(path.join(repoRoot, websiteHistory.sourceManifest))), releaseManifest);
+assert.equal([...websitePlan.writes.keys()].some(file => file.includes('documentation-site-archives')), false);
+assert.equal(websitePlan.nextRelease.releaseVersion, '9.9.9-beta.1');
+assert.deepEqual(websitePlan.nextDocumentationVersions.versions.slice(2), documentationVersions.versions.slice(1));
 const previewManifest = structuredClone(releaseManifest);
 previewManifest.publication.distTag = 'beta';
 assert.equal(planRelease(previewManifest, documentationVersions,

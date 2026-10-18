@@ -47,26 +47,35 @@ Every published release has its own generated `search-index.json`. Navigation gr
 
 ## Adding a documentation version
 
-The **Release preparation** workflow defaults to `documentation_history=archive-current`: it rebuilds and snapshots the previous
-version from its exact release tag before changing the release manifest. This
-prevents newer integration-branch documentation from being archived as an old
-release. For manual preparation, run the following in a checkout of the
-published tag:
+The **Release preparation** workflow defaults to `documentation_history=website-managed`.
+It reads the previous release manifest from its exact Git tag and retains that
+metadata under `release/documentation-release-history/`, bound to the tag commit
+and a content digest. It never installs the prior release, builds its website,
+or creates a new historical HTML archive. Local preparation uses
+`release:prepare -- <version> --channel beta --website-managed`.
 
-```bash
-pnpm docs:site -- --snapshot
-```
+Product versions, package ranges, changelog history, CLI metadata and generated
+references still advance together. Historical catalog entries keep their exact
+version URLs and `archived` status for the website importer, with an explicit
+`deliveryOwner: website`. This is product history, not proof of hosted availability.
+Website delivery receipts and the existing owner-managed recovery remain the
+authority for actual published bytes and metadata. No new backup is required.
 
-This writes `release/documentation-site-archives/v<current-version>/`. Copy
-that directory unchanged into the preparation branch and commit it. Then use
-`release:prepare` with `--archive-current` to:
+The seven existing trees under `release/documentation-site-archives/` remain
+unchanged for legacy rendering, historical receipt verification and the website's
+pinned beta.9 baseline audit. Old `--archive-current` preparation still accepts
+an already committed snapshot; it does not build one. The legacy renderer's
+`pnpm docs:site -- --snapshot` command remains for historical tooling, outside
+release preparation. The retained preview copies and verifies local legacy
+archives only; it excludes website-owned history from its local version selector
+and never manufactures or redirects those exact trees. Its version metadata
+still retains the full catalog. The website's normal importer and recovery read
+version metadata and retained delivery artifacts without executing this renderer.
+The developer-only legacy baseline capture remains for pinned historical sources;
+a future baseline for website-owned history must use website delivery evidence.
 
-1. add the new release to `release/documentation-versions.json` and leave the old entry in place;
-2. update `release/pulse-release-manifest.json` with the new version and exact segment;
-3. run the generated-documentation and site gates;
-4. prepare the combined site artifact for separately authorized deployment.
-
-The builder copies every non-current version from `release/documentation-site-archives/` and validates its version manifest, release manifest, public-site manifest, search index, pages, and versioned assets before deployment. The moving root homepage is regenerated for the current release; the archived exact subtree preserves the old release’s presentation and routes. A version bump therefore fails rather than silently dropping or rebuilding an older exact release. Existing archive directories are never overwritten unless the snapshot command is given `--force` deliberately.
+This step retains `release/documentation-site.json` and the Public product homepage
+preview while later retirement removes their remaining ownership.
 
 The release gate also rejects a current release that is missing from the versions manifest or whose version segment does not match the release manifest.
 

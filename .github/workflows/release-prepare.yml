@@ -8,12 +8,12 @@ on:
         required: true
         type: string
       documentation_history:
-        description: Archive hosted docs, or omit only reviewed unpublished hosted docs while preserving npm history
+        description: Preserve tagged product history under website ownership, or omit reviewed unpublished docs
         required: true
-        default: archive-current
+        default: website-managed
         type: choice
         options:
-          - archive-current
+          - website-managed
           - replace-unpublished-docs
 
 permissions:

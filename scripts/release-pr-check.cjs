@@ -53,7 +53,21 @@ function unpublishedDocumentationReleases(manifest) {
   return entries;
 }
 
-function checkReleasePr({ baseManifest, headManifest, changedFiles, readHead }) {
+function validateWebsiteHistory(entry, read) {
+  versionParts(entry.version);
+  if (entry.status !== 'archived' || entry.deliveryOwner !== 'website'
+    || entry.segment !== `v${entry.version}` || entry.sourceTag !== entry.segment
+    || !/^[a-f0-9]{40}$/.test(entry.sourceCommit || '')
+    || entry.sourceManifest !== `release/documentation-release-history/${entry.segment}.json`) fail('invalid website-owned release history');
+  const bytes = read(entry.sourceManifest);
+  if (!/^[a-f0-9]{64}$/.test(entry.sourceManifestSha256 || '')
+    || require('node:crypto').createHash('sha256').update(bytes).digest('hex') !== entry.sourceManifestSha256) fail('historical release metadata digest differs');
+  const manifest = JSON.parse(bytes);
+  if (manifest.releaseVersion !== entry.version || manifest.documentation?.version !== entry.segment) fail('historical release identity is stale');
+  return manifest;
+}
+
+function checkReleasePr({ baseManifest, headManifest, changedFiles, readHead, readHistoricalSource }) {
   const unpublishedReleases = unpublishedDocumentationReleases(headManifest);
   const previous = baseManifest.releaseVersion, next = headManifest.releaseVersion;
   const order = compareVersions(next, previous);
@@ -73,7 +87,13 @@ function checkReleasePr({ baseManifest, headManifest, changedFiles, readHead }) 
   if (order > 0) {
     const archive = versions.versions.find((entry) => entry.version === previous && entry.status === 'archived');
     const unpublished = unpublishedReleases.find((entry) => entry.version === previous);
-    if (archive) {
+    if (archive?.deliveryOwner === 'website') {
+      const historical = validateWebsiteHistory(archive, readHead);
+      if (typeof readHistoricalSource !== 'function') fail('website history requires tagged source verification');
+      const source = readHistoricalSource(archive.sourceTag);
+      if (source.commit !== archive.sourceCommit || JSON.stringify(source.manifest) !== JSON.stringify(historical)) fail('historical metadata differs from its tagged source');
+    } else if (archive) {
+      if (archive.deliveryOwner !== undefined) fail('unsupported historical delivery owner');
       if (archive.sourceManifest !== `release/documentation-site-archives/v${previous}/release-manifest.json`) fail('invalid previous documentation archive');
       const archived = JSON.parse(readHead(archive.sourceManifest));
       if (archived.releaseVersion !== previous) fail('archived release identity is stale');
@@ -88,6 +108,12 @@ function checkReleasePr({ baseManifest, headManifest, changedFiles, readHead }) 
 
 function git(args, cwd = process.cwd()) { return execFileSync('git', args, { cwd, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }); }
 
+function historicalSource(root, tag) {
+  if (!/^v[0-9A-Za-z.-]+$/.test(tag)) fail('invalid historical tag');
+  const commit = git(['rev-parse', '--verify', `refs/tags/${tag}^{commit}`], root).trim();
+  return { commit, manifest: JSON.parse(git(['show', `${commit}:release/pulse-release-manifest.json`], root)) };
+}
+
 function main(argv = process.argv.slice(2)) {
   if (argv.length !== 4 || argv[0] !== '--base' || argv[2] !== '--head') fail('usage: node scripts/release-pr-check.cjs --base <ref> --head <ref>');
   const resolve = (ref) => git(['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`]).trim();
@@ -97,12 +123,13 @@ function main(argv = process.argv.slice(2)) {
     baseManifest: JSON.parse(read(base, 'release/pulse-release-manifest.json')),
     headManifest: JSON.parse(read(head, 'release/pulse-release-manifest.json')),
     changedFiles: git(['diff', '--name-only', '-z', base, head]).split('\0').filter(Boolean),
+    readHistoricalSource: tag => historicalSource(process.cwd(), tag),
     readHead: (file) => read(head, file)
   });
   process.stdout.write(`${JSON.stringify({ ...report, base, head }, null, 2)}\n`);
 }
 
-module.exports = { versionParts, compareVersions, requiresVersionChange, unpublishedDocumentationReleases, checkReleasePr, main };
+module.exports = { versionParts, compareVersions, requiresVersionChange, validateWebsiteHistory, historicalSource, unpublishedDocumentationReleases, checkReleasePr, main };
 if (require.main === module) {
   try { main(); } catch (error) { process.stderr.write(`${error.message}\n`); process.exitCode = 1; }
 }
