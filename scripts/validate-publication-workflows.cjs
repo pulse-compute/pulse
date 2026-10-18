@@ -484,7 +484,7 @@ function validateWorkflows() {
   includes(candidate, 'runs-on: ubuntu-24.04', 'npm candidate runner');
   includes(candidate, "SEAL_WORKERS: '2'", 'bounded candidate workers');
   includes(candidate, "SEAL_MEMORY_MIB: '6144'", 'bounded candidate memory');
-  includes(candidate, "SEAL_COMPILER_WORKERS: '1'", 'bounded compiler admission');
+  includes(candidate, "SEAL_COMPILER_WORKERS: '2'", 'bounded compiler admission');
   for (const flag of ['--workers "$SEAL_WORKERS"', '--memory-budget-mib "$SEAL_MEMORY_MIB"', '--compiler-workers "$SEAL_COMPILER_WORKERS"']) includes(candidate, flag, 'seal admission');
   for (const pin of ['v16.1.0/fastly_v16.1.0_linux-amd64.tar.gz', '48e8b1dcf9fbe44c21fac06e32c3f9f670c1e9c611776199bfe61990e6dbe7ad', 'sha256sum --check', 'PULSE_FASTLY_BIN=$PWD/.validation-tools/fastly/fastly']) includes(candidate, pin, 'release Fastly toolchain');
   includes(candidate, '            .pulse-seal\n', 'durable seal evidence upload');

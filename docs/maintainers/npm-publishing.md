@@ -210,7 +210,7 @@ reviewed bundle; publication rechecks live registry state before uploading.
 A missing name or integrity/dist-tag conflict blocks approval. Owner-reviewed
 trusted-publisher and protected-environment setup remains a prerequisite.
 
-Qualification uses Ubuntu 24.04, two isolated workers, one compiler slot and a
+Qualification uses Ubuntu 24.04, two isolated workers, two compiler slots and a
 6,144 MiB admission budget. Its work deadline is 90 minutes, with additional
 step/job time for supervised cleanup and evidence upload. This budget permits
 completion; it is not a performance improvement. Same-checkout recovery rules
