@@ -1,0 +1,14 @@
+{
+  "source": "e0eae55f5f5bfc2f7cd39c8659c4217e9d729478",
+  "inputSha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+  "probeSha256": "f81f786958e2ea883462516dc8f6c80b69860999196e128434923a4e25758feb",
+  "status": "passed",
+  "factsSha256": "d01cdb26f4b70c43ab85f7a73bf97a8503ca86909a9631223461e725ab989728",
+  "calls": [
+    "successful",
+    "PULSE_GUEST_UNIT_FEATURE_MISMATCH",
+    "successful-after-removing-output-obstruction"
+  ],
+  "finding": "Identical guest bytes and label can fail at a distinct output directory. Returning prior facts without preserving output/error behavior would hide that failure.",
+  "cleaned": true
+}
