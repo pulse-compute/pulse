@@ -92,20 +92,23 @@ function ensureQualifiedHead(root, head) {
 
 // Run after download, and again after protected approval. The pinned selection
 // must still be the current eligible run/attempt/artifact before any side effect.
-async function consume({ github, context, releaseTag, selection, directory, root = process.cwd(), bindingFile }) {
+async function consume({ github, context, releaseTag, selection, directory, root = process.cwd(), bindingFile, kind = 'publication' }) {
   const current = await resolveQualification({ github, context, releaseTag });
   assert.deepEqual(current, selection, 'Qualification was superseded or changed after selection');
   const parents = git(root, ['show', '-s', '--format=%P', selection.commit]).split(' ');
   const qualifiedBase = read(path.join(directory, 'qualification.json')).base;
   if (parents.length === 1 && parents[0] !== qualifiedBase) ensureQualifiedHead(root, selection.pullRequest.head.sha);
-  const binding = verifyConsumption({ root, directory, selection });
+  const binding = verifyConsumption({ root, directory, selection, kind });
   fs.writeFileSync(bindingFile, `${JSON.stringify(binding, null, 2)}\n`, { flag: 'wx' });
   return binding;
 }
 
-function verifyConsumption({ root, directory, selection }) {
+function verifyConsumption({ root, directory, selection, kind = 'publication' }) {
+  assert(['publication', 'documentation'].includes(kind), 'Invalid qualification consumer');
   assert.equal(selection.schemaVersion, SCHEMA);
   const receipt = read(path.join(directory, 'qualification.json'));
+  if (kind === 'documentation') assert.equal(receipt.schemaVersion, producer.LEGACY_SCHEMA,
+    'Source-only qualification cannot authorize documentation deployment; use the website owner');
   assert.equal(receipt.runId, selection.runId, 'Receipt run differs');
   assert.equal(receipt.attempt, selection.attempt, 'Receipt attempt differs');
   assert.equal(receipt.artifact, selection.artifactName, 'Receipt artifact differs');
@@ -123,12 +126,24 @@ function verifyConsumption({ root, directory, selection }) {
   assert.equal(hash(fs.readFileSync(path.join(root, 'pnpm-lock.yaml'))), seal.recovery.context.lockfileSha256, 'Qualified dependency lock differs');
   assert.deepEqual(seal.featureAcceptance.separateGates, receipt.separateGates, 'Separate feature dispositions differ');
   assert.equal(hash(fs.readFileSync(path.join(directory, 'publication/pulse-publication-manifest.json'))), receipt.bundleManifestSha256, 'Package manifest digest differs');
-  assert.equal(hash(fs.readFileSync(path.join(directory, 'documentation/documentation-deployment-manifest.json'))), receipt.documentationManifestSha256, 'Docs manifest digest differs');
   const publication = require('./release-publication.cjs').verifyPublicationBundle({ repoRoot: root, bundleDir: path.join(directory, 'publication') });
-  const documentation = require('./documentation-deployment.cjs').verifyDocumentationCandidate({ repoRoot: root, candidateDir: path.join(directory, 'documentation') });
   const source = { commit: receipt.candidate.sourceRevision, ref: receipt.sourceRef };
   assert.deepEqual(publication.source, source, 'Package source differs');
-  assert.deepEqual(documentation.source, source, 'Docs source differs');
+  if (receipt.schemaVersion === producer.LEGACY_SCHEMA) {
+    assert.equal(hash(fs.readFileSync(path.join(directory, 'documentation/documentation-deployment-manifest.json'))), receipt.documentationManifestSha256, 'Docs manifest digest differs');
+    const documentation = require('./documentation-deployment.cjs').verifyDocumentationCandidate({ repoRoot: root, candidateDir: path.join(directory, 'documentation') });
+    assert.deepEqual(documentation.source, source, 'Docs source differs');
+  } else {
+    assert.equal(receipt.schemaVersion, producer.SCHEMA, 'Unsupported qualification schema');
+    const bytes = fs.readFileSync(path.join(directory, 'source-checks.json'));
+    assert.equal(hash(bytes), receipt.sourceChecksSha256, 'Source-check digest differs');
+    assert.equal(receipt.sourceChecksSha256, seal.sourceChecks?.sha256, 'Seal source-check digest differs');
+    const checked = JSON.parse(bytes);
+    require('./release-source-checks.cjs').assertPackageSourceChecks(checked);
+    assert.deepEqual(checked.candidate, receipt.candidate, 'Package source checks differ');
+    assert.equal(checked.repoRoot, qualifiedRoot, 'Package source checks belong to another qualified checkout');
+    assert(!fs.existsSync(path.join(directory, 'documentation')), 'v2 qualification cannot contain documentation artifacts');
+  }
   const merge = producer.verifyMergeBinding({ root, receipt, pullRequest: selection.pullRequest, repository: selection.repository, tag: selection.tag });
   assert.equal(merge.commit, selection.commit);
   assert.equal(git(root, ['rev-parse', 'HEAD']), selection.commit, 'Checkout differs from dispatch');
@@ -152,6 +167,7 @@ function validateBoundSource({ root, bindingFile, manifestFile, source, kind, en
   assert.deepEqual(producer.verifyMergeBinding({ root, receipt, pullRequest: selection.pullRequest, repository: selection.repository, tag: selection.tag }), merge);
   assert.equal(merge.commit, selection.commit);
   assert.deepEqual(source, { commit: merge.qualifiedSource, ref: receipt.sourceRef });
+  if (kind === 'documentation') assert.equal(receipt.schemaVersion, producer.LEGACY_SCHEMA, 'Source-only qualification cannot authorize documentation deployment; use the website owner');
   const expected = kind === 'publication' ? receipt.bundleManifestSha256 : receipt.documentationManifestSha256;
   assert.equal(hash(fs.readFileSync(manifestFile)), expected, 'Bound manifest changed');
   return binding;

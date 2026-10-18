@@ -31,7 +31,6 @@ const { validateDocumentationMetadata } = require('./documentation-ownership.cjs
 const { MAINTENANCE_POLICY, synchronizeMaintenancePolicy } = require('./maintenance-policy.cjs');
 const { validateMaintainerControlPlane } = require('./validate-maintainer-control-plane.cjs');
 const { ENVIRONMENT_VARIABLES } = require('./environment-reference.cjs');
-const { buildDocumentationSite } = require('./build-docs-site.cjs');
 const { SOURCE_CONTRACT, publicPageSources } = require('./documentation-sources.cjs');
 const {
   PUBLIC_SITE_SCHEMA,
@@ -519,7 +518,7 @@ function validateReleaseManifest(repoRoot) {
   return Object.freeze({ schemaVersion: RELEASE_MANIFEST.schemaVersion, releaseVersion: RELEASE_VERSION, versions: DOCUMENTATION_VERSIONS.versions.length, runtimeTargets: RUNTIME_TARGETS.length, packages: PACKAGE_SET.length });
 }
 
-function validatePublicSiteSystem(repoRoot) {
+function validateDocumentationSourceContract(repoRoot) {
   if (SOURCE_CONTRACT.schemaVersion !== 'pulse.documentation-sources.v1') fail('unsupported documentation source contract');
   if (!isDeepEqual(SOURCE_CONTRACT.sourceAliases, PUBLIC_SITE_MANIFEST.sourceAliases)) fail('documentation source aliases differ from the renderer');
   const routeAliases = Object.fromEntries(Object.entries(PUBLIC_SITE_MANIFEST.routeAliases)
@@ -528,6 +527,22 @@ function validatePublicSiteSystem(repoRoot) {
   for (const [source, route] of Object.entries(SOURCE_CONTRACT.rootRoutes)) {
     if (sourceToRoute(source) !== route) fail(`documentation source contract route differs for ${source}`);
   }
+  const sources = new Set(publicPageSources(repoRoot));
+  for (const source of Object.keys(SOURCE_CONTRACT.rootRoutes)) {
+    if (!sources.has(source)) fail(`source contract root is missing ${source}`);
+  }
+  for (const [alias, target] of Object.entries(SOURCE_CONTRACT.sourceAliases)) {
+    if (!fs.existsSync(path.join(repoRoot, alias)) || !sources.has(target) || sources.has(alias)) fail(`invalid source alias ${alias}`);
+  }
+  const routes = new Set([...sources].map(sourceToRoute));
+  for (const [alias, target] of Object.entries(SOURCE_CONTRACT.routeAliases)) {
+    if (routes.has(alias) || !routes.has(target)) fail(`invalid source route alias ${alias}`);
+  }
+  return Object.freeze({ status: 'ok', pages: sources.size, routeAliases: Object.keys(SOURCE_CONTRACT.routeAliases).length });
+}
+
+function validatePublicSiteSystem(repoRoot) {
+  validateDocumentationSourceContract(repoRoot);
   const sourceManifest = readJson(path.join(repoRoot, 'release/documentation-site.json'));
   if (!isDeepEqual(sourceManifest, PUBLIC_SITE_MANIFEST)) fail('loaded public-site manifest does not match release/documentation-site.json');
   if (PUBLIC_SITE_MANIFEST.schemaVersion !== PUBLIC_SITE_SCHEMA) fail(`unsupported public-site schema ${PUBLIC_SITE_MANIFEST.schemaVersion}`);
@@ -949,8 +964,8 @@ function validatePluginReadiness(repoRoot) {
   return Object.freeze({ publicPluginApi: false, decision: readiness.decision, requirements: PUBLIC_PLUGIN_REQUIREMENTS.length, satisfied: 0, providers: 3 });
 }
 
-function validateDocumentationLayers(repoRoot) {
-  const required = [...PRODUCT_DOCUMENTS, ...ARCHITECTURE_DOCUMENTS, ...SITE_DOCUMENTS, ...GOVERNANCE_DOCUMENTS, ...DELIVERY_DOCUMENTS, ...ROUTING_DOCUMENTS, ...MIDDLEWARE_DOCUMENTS, ...REFERENCE_ARTIFACTS, ...GOVERNANCE_ARTIFACTS, ...PUBLIC_FIXTURES, ...CHANGELOG_DOCS, ...SITE_SOURCES, ...SITE_BUILD_SOURCES, ...MAINTENANCE_SOURCES, ...DELIVERY_SOURCES];
+function validateDocumentationLayers(repoRoot, { presentation = true } = {}) {
+  const required = [...PRODUCT_DOCUMENTS, ...ARCHITECTURE_DOCUMENTS, ...SITE_DOCUMENTS, ...GOVERNANCE_DOCUMENTS, ...DELIVERY_DOCUMENTS, ...ROUTING_DOCUMENTS, ...MIDDLEWARE_DOCUMENTS, ...REFERENCE_ARTIFACTS, ...GOVERNANCE_ARTIFACTS, ...PUBLIC_FIXTURES, ...CHANGELOG_DOCS, ...(presentation ? [...SITE_SOURCES, ...SITE_BUILD_SOURCES] : []), ...MAINTENANCE_SOURCES, ...DELIVERY_SOURCES];
   for (const relativeFile of required) {
     const file = path.join(repoRoot, relativeFile);
     if (!fs.existsSync(file) || !fs.statSync(file).isFile()) fail(`public documentation payload is missing ${relativeFile}`);
@@ -970,7 +985,8 @@ function validateDocumentationLayers(repoRoot) {
   }
   const docsIndex = fs.readFileSync(path.join(repoRoot, 'docs/README.md'), 'utf8');
   const indexRequired = [...PRODUCT_DOCUMENTS, ...ARCHITECTURE_DOCUMENTS, ...SITE_DOCUMENTS, ...GOVERNANCE_DOCUMENTS, ...DELIVERY_DOCUMENTS, ...ROUTING_DOCUMENTS, ...MIDDLEWARE_DOCUMENTS]
-    .filter((relativeFile) => classifyPublicPage(relativeFile)?.hiddenInNavigation !== true);
+    .filter((relativeFile) => presentation ? classifyPublicPage(relativeFile)?.hiddenInNavigation !== true
+      : !SOURCE_CONTRACT.hiddenPrefixes.some((prefix) => relativeFile.startsWith(prefix)));
   for (const relativeFile of indexRequired) {
     if (relativeFile.endsWith('/README.md')) continue;
     const target = `./${relativeFile.slice('docs/'.length)}`;
@@ -986,38 +1002,40 @@ function validateDocumentationLayers(repoRoot) {
   const architecture = fs.readFileSync(path.join(repoRoot, 'docs/architecture/overview.md'), 'utf8');
   if (!architecture.includes('./current-contracts.md')) fail('architecture overview must link current architecture contracts');
   if (!architecture.includes('../maintainers/plugin-readiness.md')) fail('architecture overview must link plugin readiness');
-  const archivePolicy = path.join(repoRoot, 'release/documentation-site-archives/README.md');
-  if (!fs.existsSync(archivePolicy)) fail('immutable documentation archive policy is missing');
-  const rootScripts = readJson(path.join(repoRoot, 'package.json')).scripts || {};
-  if (rootScripts['docs:site'] !== 'node scripts/build-docs-site.cjs --out .pulse-docs-site') fail('documentation site command is missing or stale');
-  if (rootScripts['docs:preview'] !== 'node scripts/preview-docs-site.cjs') fail('documentation preview command is missing or stale');
-  const versioningReference = fs.readFileSync(path.join(repoRoot, 'docs/maintainers/documentation-versioning.md'), 'utf8');
-  if (!versioningReference.includes('pnpm docs:site -- --snapshot') || !versioningReference.includes('documentation-site-archives') || !versioningReference.includes('Public product homepage') || !versioningReference.includes('release/documentation-site.json')) fail('documentation versioning reference must explain the generated homepage and immutable release snapshots');
-  const workflow = path.join(repoRoot, '.github/workflows/documentation.yml');
-  if (!fs.existsSync(workflow)) fail('versioned documentation validation workflow is missing');
-  const workflowText = fs.readFileSync(workflow, 'utf8');
-  const workflowAction = (name) => {
-    const pin = MAINTENANCE_POLICY.github.actionPins[name];
-    if (!pin) fail(`maintenance policy is missing documentation workflow action pin ${name}`);
-    return `${name}@${pin.sha} # ${pin.version}`;
-  };
-  const workflowRequirements = [
-    'workflow_dispatch:',
-    'pull_request:',
-    "branches: ['**']",
-    workflowAction('actions/checkout'),
-    workflowAction('actions/setup-node'),
-    workflowAction('actions/upload-artifact'),
-    'node scripts/documentation-preview.cjs',
-    'include-hidden-files: true'
-  ];
-  for (const requiredText of workflowRequirements) if (!workflowText.includes(requiredText)) fail(`documentation workflow is missing ${requiredText}`);
-  require('./documentation-preview.cjs').validatePreviewWorkflow(workflowText);
-  for (const forbidden of ['configure-pages', 'upload-pages-artifact', 'deploy-pages', 'pages: write', 'github-pages']) if (workflowText.includes(forbidden)) fail(`documentation validation workflow must not deploy through ${forbidden}`);
-  const npmWorkflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/npm-publish.yml'), 'utf8');
-  for (const requiredText of ['workflow_dispatch:', 'environment: npm-publish', 'id-token: write', 'publish-release.cjs publish', 'verify-npm-release.cjs']) if (!npmWorkflow.includes(requiredText)) fail(`npm publication workflow is missing ${requiredText}`);
-  const deploymentWorkflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/documentation-deploy.yml'), 'utf8');
-  for (const requiredText of ['workflow_dispatch:', 'environment: documentation-production', '--phase immutable', '--phase promote', '--npm-verification npm-release-availability.json', 'documentation-deployment.cjs verify-public']) if (!deploymentWorkflow.includes(requiredText)) fail(`documentation deployment workflow is missing ${requiredText}`);
+  if (presentation) {
+    const archivePolicy = path.join(repoRoot, 'release/documentation-site-archives/README.md');
+    if (!fs.existsSync(archivePolicy)) fail('immutable documentation archive policy is missing');
+    const rootScripts = readJson(path.join(repoRoot, 'package.json')).scripts || {};
+    if (rootScripts['docs:site'] !== 'node scripts/build-docs-site.cjs --out .pulse-docs-site') fail('documentation site command is missing or stale');
+    if (rootScripts['docs:preview'] !== 'node scripts/preview-docs-site.cjs') fail('documentation preview command is missing or stale');
+    const versioningReference = fs.readFileSync(path.join(repoRoot, 'docs/maintainers/documentation-versioning.md'), 'utf8');
+    if (!versioningReference.includes('pnpm docs:site -- --snapshot') || !versioningReference.includes('documentation-site-archives') || !versioningReference.includes('Public product homepage') || !versioningReference.includes('release/documentation-site.json')) fail('documentation versioning reference must explain the generated homepage and immutable release snapshots');
+    const workflow = path.join(repoRoot, '.github/workflows/documentation.yml');
+    if (!fs.existsSync(workflow)) fail('versioned documentation validation workflow is missing');
+    const workflowText = fs.readFileSync(workflow, 'utf8');
+    const workflowAction = (name) => {
+      const pin = MAINTENANCE_POLICY.github.actionPins[name];
+      if (!pin) fail(`maintenance policy is missing documentation workflow action pin ${name}`);
+      return `${name}@${pin.sha} # ${pin.version}`;
+    };
+    const workflowRequirements = [
+      'workflow_dispatch:',
+      'pull_request:',
+      "branches: ['**']",
+      workflowAction('actions/checkout'),
+      workflowAction('actions/setup-node'),
+      workflowAction('actions/upload-artifact'),
+      'node scripts/documentation-preview.cjs',
+      'include-hidden-files: true'
+    ];
+    for (const requiredText of workflowRequirements) if (!workflowText.includes(requiredText)) fail(`documentation workflow is missing ${requiredText}`);
+    require('./documentation-preview.cjs').validatePreviewWorkflow(workflowText);
+    for (const forbidden of ['configure-pages', 'upload-pages-artifact', 'deploy-pages', 'pages: write', 'github-pages']) if (workflowText.includes(forbidden)) fail(`documentation validation workflow must not deploy through ${forbidden}`);
+    const npmWorkflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/npm-publish.yml'), 'utf8');
+    for (const requiredText of ['workflow_dispatch:', 'environment: npm-publish', 'id-token: write', 'publish-release.cjs publish', 'verify-npm-release.cjs']) if (!npmWorkflow.includes(requiredText)) fail(`npm publication workflow is missing ${requiredText}`);
+    const deploymentWorkflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/documentation-deploy.yml'), 'utf8');
+    for (const requiredText of ['workflow_dispatch:', 'environment: documentation-production', '--phase immutable', '--phase promote', '--npm-verification npm-release-availability.json', 'documentation-deployment.cjs verify-public']) if (!deploymentWorkflow.includes(requiredText)) fail(`documentation deployment workflow is missing ${requiredText}`);
+  }
   const conceptText = PRODUCT_DOCUMENTS.filter((name) => name.startsWith('docs/concepts/')).map((name) => fs.readFileSync(path.join(repoRoot, name), 'utf8')).join('\n');
   const sourceBindings = (conceptText.match(/<!-- pulse-doc-source:/g) || []).length;
   const runBindings = (conceptText.match(/<!-- pulse-doc-run /g) || []).length;
@@ -1174,8 +1192,8 @@ function validateDocumentationLayers(repoRoot) {
     governanceDocuments: GOVERNANCE_DOCUMENTS.length,
     deliveryDocuments: DELIVERY_DOCUMENTS.length,
     changelogDocuments: CHANGELOG_DOCS.length,
-    siteSources: SITE_SOURCES.length,
-    siteBuildSources: SITE_BUILD_SOURCES.length,
+    siteSources: presentation ? SITE_SOURCES.length : 0,
+    siteBuildSources: presentation ? SITE_BUILD_SOURCES.length : 0,
     maintenanceSources: MAINTENANCE_SOURCES.length,
     deliverySources: DELIVERY_SOURCES.length,
     machineArtifacts: REFERENCE_ARTIFACTS.length + GOVERNANCE_ARTIFACTS.length,
@@ -1186,6 +1204,7 @@ function validateDocumentationLayers(repoRoot) {
 }
 
 function validateDocumentationSiteBuild(repoRoot, onValidatedSite) {
+  const { buildDocumentationSite } = require('./build-docs-site.cjs');
   if (repoRoot !== defaultRepoRoot) fail('documentation site validation currently requires the repository containing this release script');
   const output = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-docsite-validation-'));
   try {
@@ -1290,7 +1309,9 @@ function validateDocumentationSource(options = {}) {
   const maintenance = validateMaintainerControlPlane();
   const packagePolicy = validatePackagePolicy(repoRoot);
   const releaseManifest = validateReleaseManifest(repoRoot);
-  const publicSite = validatePublicSiteSystem(repoRoot);
+  const packageSource = options.validationKind === 'package-source';
+  const sourceContract = packageSource ? validateDocumentationSourceContract(repoRoot) : undefined;
+  const publicSite = packageSource ? undefined : validatePublicSiteSystem(repoRoot);
   const links = validateSourceMarkdownLinks(repoRoot);
   const diagnostics = validateDiagnostics(repoRoot);
   const cli = validateCliParity(repoRoot);
@@ -1298,9 +1319,14 @@ function validateDocumentationSource(options = {}) {
   const environment = validateEnvironmentReference(repoRoot);
   const pluginReadiness = validatePluginReadiness(repoRoot);
   const metadata = validateDocumentationMetadata({ repoRoot, today: options.today });
-  const layers = validateDocumentationLayers(repoRoot);
-  const site = options.site === false ? undefined : validateDocumentationSiteBuild(repoRoot, options.onValidatedSite);
-  return Object.freeze({ status: 'ok', releaseVersion: RELEASE_VERSION, maintenance, packagePolicy, releaseManifest, publicSite, links, diagnostics, cli, config, environment, pluginReadiness, metadata, layers, site });
+  const layers = validateDocumentationLayers(repoRoot, { presentation: !packageSource });
+  const site = packageSource || options.site === false ? undefined : validateDocumentationSiteBuild(repoRoot, options.onValidatedSite);
+  return Object.freeze({ status: 'ok', validationKind: packageSource ? 'package-source' : 'site', releaseVersion: RELEASE_VERSION, maintenance, packagePolicy, releaseManifest, links, diagnostics, cli, config, environment, pluginReadiness, metadata, layers, ...(packageSource ? { sourceContract } : { publicSite, site }) });
+}
+
+// Package gates validate canonical and installed documentation without rendering.
+function validatePackageDocumentation(options = {}) {
+  return validateDocumentationSource({ ...options, validationKind: 'package-source' });
 }
 
 function packedFile(entries, name) {
@@ -1434,6 +1460,7 @@ module.exports = Object.freeze({
   markdownAnchors,
   pulseUnpkgTarget,
   validateDocumentationSource,
+  validatePackageDocumentation,
   validatePackedDocumentationSet,
   validateConfigParity,
   validateCliParity,

@@ -326,8 +326,10 @@ A human release authority must approve `npm-publish`. Codex may diagnose or prep
 ## Versioned documentation artifact
 
 The [documentation update loop](./documentation-system.md#update-loop) owns
-source and hosted-site checks. Qualification retains the validated versioned
-site alongside the exact package candidate. The
+source and hosted-site checks. New v2 package qualification retains source-only
+documentation evidence alongside the exact package candidate; it does not build
+or retain a website. Historical v1 qualification still requires its original
+validated site and rejects missing or changed bytes. The
 [deployment runbook](./documentation-deployment.md) owns immutable Object Storage
 uploads, registry gating, promotion and public URL verification. The
 [versioning procedure](./documentation-versioning.md) owns preserved history.
