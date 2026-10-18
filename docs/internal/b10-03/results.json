@@ -1,0 +1,304 @@
+{
+  "schema": "pulse.b10-03.context-routing.v1",
+  "base": "ded107a894d8c0d8fdb45b5d11f940d424fa9ddc",
+  "baseTree": "cab0cfaa785b35d30d82e160cc94973215d9c4cf",
+  "date": "2026-10-18",
+  "classification": "hardening",
+  "scope": "Exact generated context data mirror; no generator, workflow, registry or release changes",
+  "cases": [
+    {
+      "files": [
+        "docs/architecture/current-contracts.md"
+      ],
+      "before": {
+        "selectedTasks": [
+          "api-surface",
+          "node-cross-target-conformance",
+          "package-exports",
+          "schema-codecs-smoke",
+          "target-support"
+        ],
+        "schemaCoverage": {
+          "task": "schema-codecs-smoke",
+          "fullReasons": [],
+          "extendedCoverage": "deferred-to-main-and-release"
+        },
+        "selectionMode": "focused"
+      },
+      "after": {
+        "status": "selected",
+        "selectionMode": "focused",
+        "selectedTasks": [
+          "api-surface",
+          "node-cross-target-conformance",
+          "package-exports",
+          "schema-codecs-smoke",
+          "target-support"
+        ],
+        "decisions": [
+          {
+            "file": "docs/architecture/current-contracts.md",
+            "rules": [
+              "documentation"
+            ],
+            "boundaries": [],
+            "tasks": []
+          }
+        ],
+        "blockers": [],
+        "schemaCoverage": {
+          "task": "schema-codecs-smoke",
+          "fullReasons": [],
+          "extendedCoverage": "deferred-to-main-and-release"
+        },
+        "fullCoverage": "deferred-to-main"
+      }
+    },
+    {
+      "files": [
+        "examples/12-pulse-context-mcp/context-corpus.ts"
+      ],
+      "before": {
+        "selectedTasks": [
+          "api-surface",
+          "node-cross-target-conformance",
+          "package-exports",
+          "schema-codecs-smoke",
+          "target-support"
+        ],
+        "schemaCoverage": {
+          "task": "schema-codecs-smoke",
+          "fullReasons": [],
+          "extendedCoverage": "deferred-to-main-and-release"
+        },
+        "selectionMode": "focused"
+      },
+      "after": {
+        "status": "selected",
+        "selectionMode": "focused",
+        "selectedTasks": [
+          "api-surface",
+          "node-cross-target-conformance",
+          "package-exports",
+          "schema-codecs-smoke",
+          "target-support"
+        ],
+        "decisions": [
+          {
+            "file": "examples/12-pulse-context-mcp/context-corpus.ts",
+            "rules": [
+              "documentation"
+            ],
+            "boundaries": [],
+            "tasks": []
+          }
+        ],
+        "blockers": [],
+        "schemaCoverage": {
+          "task": "schema-codecs-smoke",
+          "fullReasons": [],
+          "extendedCoverage": "deferred-to-main-and-release"
+        },
+        "fullCoverage": "deferred-to-main"
+      }
+    },
+    {
+      "files": [
+        "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts"
+      ],
+      "before": {
+        "selectedTasks": [
+          "api-surface",
+          "cli-command-spec",
+          "cli-project-guards",
+          "node-cross-target-conformance",
+          "package-exports",
+          "schema-codecs",
+          "schema-registry",
+          "target-support"
+        ],
+        "schemaCoverage": {
+          "task": "schema-codecs",
+          "fullReasons": [
+            "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts: shared schema dependency (cli-and-diagnostics)"
+          ],
+          "extendedCoverage": "included"
+        },
+        "selectionMode": "focused"
+      },
+      "after": {
+        "status": "selected",
+        "selectionMode": "focused",
+        "selectedTasks": [
+          "api-surface",
+          "cli-command-spec",
+          "cli-project-guards",
+          "node-cross-target-conformance",
+          "package-exports",
+          "schema-codecs-smoke",
+          "target-support"
+        ],
+        "decisions": [
+          {
+            "file": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+            "rules": [
+              "cli-and-diagnostics"
+            ],
+            "boundaries": [],
+            "tasks": [
+              "cli-command-spec",
+              "cli-project-guards"
+            ]
+          }
+        ],
+        "blockers": [],
+        "schemaCoverage": {
+          "task": "schema-codecs-smoke",
+          "fullReasons": [],
+          "extendedCoverage": "deferred-to-main-and-release"
+        },
+        "fullCoverage": "deferred-to-main"
+      }
+    },
+    {
+      "files": [
+        "docs/architecture/current-contracts.md",
+        "examples/12-pulse-context-mcp/context-corpus.ts",
+        "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts"
+      ],
+      "before": {
+        "selectedTasks": [
+          "api-surface",
+          "cli-command-spec",
+          "cli-project-guards",
+          "node-cross-target-conformance",
+          "package-exports",
+          "schema-codecs",
+          "schema-registry",
+          "target-support"
+        ],
+        "schemaCoverage": {
+          "task": "schema-codecs",
+          "fullReasons": [
+            "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts: shared schema dependency (cli-and-diagnostics)"
+          ],
+          "extendedCoverage": "included"
+        },
+        "selectionMode": "focused"
+      },
+      "after": {
+        "status": "selected",
+        "selectionMode": "focused",
+        "selectedTasks": [
+          "api-surface",
+          "cli-command-spec",
+          "cli-project-guards",
+          "node-cross-target-conformance",
+          "package-exports",
+          "schema-codecs-smoke",
+          "target-support"
+        ],
+        "decisions": [
+          {
+            "file": "docs/architecture/current-contracts.md",
+            "rules": [
+              "documentation"
+            ],
+            "boundaries": [],
+            "tasks": []
+          },
+          {
+            "file": "examples/12-pulse-context-mcp/context-corpus.ts",
+            "rules": [
+              "documentation"
+            ],
+            "boundaries": [],
+            "tasks": []
+          },
+          {
+            "file": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+            "rules": [
+              "cli-and-diagnostics"
+            ],
+            "boundaries": [],
+            "tasks": [
+              "cli-command-spec",
+              "cli-project-guards"
+            ]
+          }
+        ],
+        "blockers": [],
+        "schemaCoverage": {
+          "task": "schema-codecs-smoke",
+          "fullReasons": [],
+          "extendedCoverage": "deferred-to-main-and-release"
+        },
+        "fullCoverage": "deferred-to-main"
+      }
+    }
+  ],
+  "context": {
+    "records": 235,
+    "sourceCount": 38,
+    "sourcePaths": [
+      "docs/architecture/current-contracts.md",
+      "docs/concepts/bodies.md",
+      "docs/concepts/effects-and-continuations.md",
+      "docs/concepts/targets-and-hosts.md",
+      "docs/getting-started.md",
+      "docs/guides/deploying-node.md",
+      "docs/guides/json-schemas.md",
+      "docs/guides/project-lifecycle.md",
+      "docs/packages/pulse.md",
+      "docs/reference/compatibility-matrix.md",
+      "examples/01-hello-json/.pulse/config.ts",
+      "examples/01-hello-json/README.md",
+      "examples/01-hello-json/package.json",
+      "examples/01-hello-json/src/index.ts",
+      "examples/01-hello-json/tests/pulse.harness.ts",
+      "examples/01-hello-json/tsconfig.json",
+      "examples/02-request-schema/.pulse/config.ts",
+      "examples/02-request-schema/README.md",
+      "examples/02-request-schema/package.json",
+      "examples/02-request-schema/src/index.ts",
+      "examples/02-request-schema/src/schemas.ts",
+      "examples/02-request-schema/tests/pulse.harness.ts",
+      "examples/02-request-schema/tsconfig.json",
+      "examples/03-fetch-composition/.pulse/config.ts",
+      "examples/03-fetch-composition/README.md",
+      "examples/03-fetch-composition/package.json",
+      "examples/03-fetch-composition/src/index.ts",
+      "examples/03-fetch-composition/tests/pulse.harness.ts",
+      "examples/03-fetch-composition/tsconfig.json",
+      "examples/09-router-lowering/.pulse/config.ts",
+      "examples/09-router-lowering/README.md",
+      "examples/09-router-lowering/package.json",
+      "examples/09-router-lowering/src/index.ts",
+      "examples/09-router-lowering/tests/pulse.harness.ts",
+      "examples/09-router-lowering/tsconfig.json",
+      "release/pulse-release-manifest.json",
+      "wasm/packages/cli/src/command-spec.js",
+      "wasm/packages/cli/src/diagnostics.js"
+    ],
+    "canonicalOutput": "examples/12-pulse-context-mcp/context-corpus.ts",
+    "installedMirror": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+    "fastTasksContainApplication": false,
+    "fastTasksContainHost": false
+  },
+  "unchangedOwners": {
+    "scripts/pulse-context-corpus.cjs": "90a4518763348257458df31c5cd23d6f356b1d3bd64d7f9547c8c7838f4638ad",
+    "scripts/pulse-context-inputs.json": "187222c8efdd9d455f39e6de73fa9e4fbae9121305dd39dacd7b60e4c4cf0a87",
+    "wasm/scripts/sync-doc-snippets.cjs": "0cb8202f3462114fca603f32dc60a0932cc800e3290761415ec18abf4bce74b7",
+    "wasm/scripts/sync-reference-docs.cjs": "404e336f56f46e8dc450a8dace1acdc51ff7dd1a3f3cdef2e91885281de1ae5a",
+    "scripts/documentation-preview.cjs": "ce7147b8b3f18360ab45a74d7fe737a146360c617e6b33bd8579c710c6dd9aa5",
+    ".github/workflows/documentation.yml": "e8e3a37127a43cfd25a64638741d05379ed8e595f066eb3df11a324842ed770f",
+    ".github/workflows/validate.yml": "6f5e57456d9cdb19049dcb977849d7cfa52c393bf1c5707a8d69e3214535c84b",
+    "wasm/test/suite/registry.cjs": "450636500765bf468305fdcbdbec658fe620904c54ca4382bed4bafb2c264a54",
+    "scripts/release-feature-acceptance.cjs": "a253ddc5243b0a28b0389f02120de1f2659605e6b57d317ad22e41813a2a504c",
+    "release/maintenance-policy.json": "e44ff8b48784d35021afe18511c7a8ace72272352087c03f4c37d913e435cb6b"
+  },
+  "performance": {
+    "hostedPairedRuntimeComparison": null,
+    "claim": "Routing correctness only; no hosted speedup claimed. Whole-diff owners may still require full schema. Full and smoke durations from unrelated candidates are not subtracted."
+  }
+}

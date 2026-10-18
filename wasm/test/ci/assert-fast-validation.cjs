@@ -103,4 +103,82 @@ withTrustedPolicy(base, (trusted, match) => {
   assert.equal(match('docs/maintainers/testing.md', 'docs/**'), true);
   assert.equal(select(trusted, ['README.md'], tasks, match).status, 'selected');
 });
+
+// Only the generated context data mirror may avoid the CLI schema dependency.
+// Canonical source + generated output changes still take the union of owners.
+const contextSource = 'examples/12-pulse-context-mcp/context-corpus.ts';
+const contextMirror = `wasm/packages/cli/${contextSource}`;
+const contextDocument = 'docs/architecture/current-contracts.md';
+const contextChanges = [contextDocument, contextSource, contextMirror];
+for (const files of [[contextSource], [contextMirror], contextChanges]) {
+  const result = select(policy, files);
+  assert.equal(result.schemaCoverage.task, 'schema-codecs-smoke');
+  assert.deepEqual(result.schemaCoverage.fullReasons, []);
+  assert(!result.selectedTasks.includes('schema-codecs'));
+  assert.equal(result.fullCoverage, 'deferred-to-main');
+}
+for (const file of [
+  'wasm/packages/cli/examples/12-pulse-context-mcp/src/handlers.ts',
+  'wasm/packages/cli/examples/12-pulse-context-mcp/corpus-version.ts',
+  'wasm/packages/cli/examples/12-pulse-context-mcp/host/prepare.cjs',
+  'wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.js',
+  'wasm/packages/cli/examples/other/context-corpus.ts',
+  'wasm/packages/cli/src/project-execution.js',
+  'wasm/packages/compiler/src/codegen/unrelated.js',
+  'packages/provider-fastly/src/toolchain/native-execution.js',
+  'wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js',
+  'scripts/pulse-context-corpus.cjs', 'scripts/pulse-context-inputs.json',
+  'unrecognized-directory/new-code.js'
+]) {
+  const result = select(policy, [...contextChanges, file]);
+  assert.equal(result.schemaCoverage.task, 'schema-codecs', file);
+  assert(!result.selectedTasks.includes('schema-codecs-smoke'), file);
+  assert(result.schemaCoverage.fullReasons.some(reason => reason.startsWith(file)), file);
+}
+withTrustedPolicy(base, (trusted, match) => {
+  assert.equal(select(trusted, contextChanges, tasks, match).schemaCoverage.task, 'schema-codecs-smoke');
+  assert.equal(select(trusted, [contextMirror], tasks, () => false).schemaCoverage.task, 'schema-codecs');
+  const stricter = { ...trusted, pathRules: [...trusted.pathRules, {
+    id: 'compiler-default', patterns: [contextMirror], boundaries: []
+  }] };
+  assert.equal(select(stricter, [contextMirror], tasks, match).schemaCoverage.task, 'schema-codecs',
+    'An additional trusted-base owner cannot be bypassed by the exact-path exception');
+});
+
+// Selection is not a provenance receipt. Exercise the actual check-mode owners
+// with changed read bytes, without editing this checkout or running examples.
+// The preview orchestration contract separately requires these checks on PRs.
+const fs = require('node:fs');
+const root = path.resolve(__dirname, '../../..');
+const { buildCorpus, render, synchronizeContextCorpus } = require('../../../scripts/pulse-context-corpus.cjs');
+const { buildExpectedFiles, synchronizeReferenceDocs } = require('../../scripts/sync-reference-docs.cjs');
+const originalRead = fs.readFileSync;
+const originalDocument = originalRead(path.join(root, contextDocument), 'utf8');
+const originalCorpus = originalRead(path.join(root, contextSource), 'utf8');
+const changedReads = new Map();
+try {
+  fs.readFileSync = function(file, options) {
+    if (!changedReads.has(file)) return originalRead.apply(this, arguments);
+    const override = changedReads.get(file);
+    const encoding = typeof options === 'string' ? options : options?.encoding;
+    return encoding ? Buffer.from(override).toString(encoding) : Buffer.from(override);
+  };
+  const change = (file, content) => changedReads.set(path.join(root, file), content);
+  change(contextDocument, originalDocument + '\nContext routing regression fixture.\n');
+  const installedDocument = `wasm/packages/cli/${contextDocument}`;
+  change(installedDocument, buildExpectedFiles().get(installedDocument));
+  assert.throws(() => synchronizeContextCorpus(), /Stale context corpus/, 'canonical changes require regeneration');
+  const regenerated = render(buildCorpus());
+  assert.notEqual(regenerated, originalCorpus, 'whole-source provenance changes even outside selected sections');
+  change(contextSource, regenerated);
+  assert.equal(synchronizeContextCorpus().status, 'ok');
+  assert.throws(() => synchronizeReferenceDocs(), /context-corpus\.ts/, 'stale installed mirror cannot pass');
+  change(contextMirror, regenerated);
+  assert.equal(synchronizeReferenceDocs().status, 'ok', 'legitimate synchronized source/corpus/mirror passes');
+  changedReads.clear();
+  change(contextMirror, originalCorpus + '\nthrow new Error("manual mirror edit");\n');
+  assert.throws(() => synchronizeReferenceDocs(), /context-corpus\.ts/, 'manual mirror code cannot pass');
+  change(contextSource, changedReads.get(path.join(root, contextMirror)));
+  assert.throws(() => synchronizeContextCorpus(), /Stale context corpus/, 'editing both copies cannot forge generated data');
+} finally { fs.readFileSync = originalRead; }
 console.log('Fast validation selection contract passed');
