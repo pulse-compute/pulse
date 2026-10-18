@@ -12,6 +12,24 @@ until a complete hosted 2/2 qualification and human adoption review. This issue
 changes no workflow, scheduler, coverage, timeout, recovery or release authority.
 The local comparison is complete; hosted adoption remains a separate gate.
 
+## Hosted follow-up
+
+The `Seal checkpoint` workflow runs a fresh 2/2 seal when a ready, same-repository
+PR into `latest` changes `.github/workflows/seal-checkpoint.yml`. It checks out
+the exact PR merge SHA and uses the existing measurement wrapper with process-tree
+observation, 6144 MiB admission, a fresh lifecycle-disabled dependency install,
+and the pinned Fastly CLI. All release and installed gates run without recovery
+or reused results. The 90-minute controller deadline accommodates hosted variance;
+it is not a performance target. Every terminal attempt and measurement is uploaded.
+
+Manual dispatch retains its existing worker choice and interrupted-recovery
+experiment. Both modes have read-only repository permissions and no production
+credentials. This is diagnostic qualification, not the `main` release gate or an
+accepted publication artifact. The hosted 2/1 release default remains unchanged.
+Review the complete terminal coverage, resource samples, cleanup and timing on
+the actual candidate before proposing adoption. A passing local pair alone does
+not establish a hosted result.
+
 ## Measured result
 
 | Observation | 2 workers / 1 compiler | 2 workers / 2 compilers |

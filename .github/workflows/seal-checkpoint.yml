@@ -1,6 +1,10 @@
 name: Seal checkpoint
 
 on:
+  pull_request:
+    branches: [latest]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths: ['.github/workflows/seal-checkpoint.yml']
   workflow_dispatch:
     inputs:
       workers:
@@ -18,11 +22,13 @@ concurrency:
 
 jobs:
   qualify:
-    # Run deliberately on the selected ref; qualification is not a PR gate.
+    # PR edits opt into fresh hosted 2/2 evidence; dispatch retains recovery proof.
+    # Neither mode replaces the main release-qualification gate.
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    timeout-minutes: ${{ github.event_name == 'pull_request' && 105 || 75 }}
     env:
-      SEAL_WORKERS: ${{ inputs.workers || '1' }}
+      SEAL_WORKERS: ${{ github.event_name == 'pull_request' && '2' || inputs.workers || '1' }}
       SEAL_MEMORY_MIB: '6144'
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -64,18 +70,29 @@ jobs:
           pnpm run build
           node wasm/test/release/assert-release-seal-measure.cjs
           node wasm/scripts/run-wasm-tests.cjs --task provider-fastly-compute-reality --no-report
-      - name: Measure fresh seal and interrupted same-candidate recovery
-        timeout-minutes: 62
+      - name: Measure complete seal (plus recovery on manual dispatch)
+        timeout-minutes: ${{ github.event_name == 'pull_request' && 92 || 62 }}
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p .pulse-seal/measurements
+          if [ "$GITHUB_EVENT_NAME" = 'pull_request' ]; then
+            seal_minutes=90
+            outer_minutes=91
+            measurement=hosted-two-compilers
+            observation=(--process-tree)
+          else
+            seal_minutes=50
+            outer_minutes=60
+            measurement=ps06-qualified
+            observation=(--verify-resume)
+          fi
           /usr/bin/time -v -o .pulse-seal/measurements/worker-resources.txt \
-            timeout --signal=TERM --kill-after=45s 60m \
-            node scripts/release-seal-measure.cjs --skip-install --timeout-minutes 50 \
+            timeout --signal=TERM --kill-after=45s "${outer_minutes}m" \
+            node scripts/release-seal-measure.cjs --skip-install --timeout-minutes "$seal_minutes" \
               --workers "$SEAL_WORKERS" --memory-budget-mib "$SEAL_MEMORY_MIB" \
               --compiler-workers 2 \
-              --out .pulse-seal/measurements/ps06-qualified --verify-resume
+              --out ".pulse-seal/measurements/$measurement" "${observation[@]}"
       - name: Preserve every terminal attempt and measurement
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
