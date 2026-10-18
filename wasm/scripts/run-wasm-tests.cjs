@@ -479,9 +479,14 @@ async function runTask(name, task, options = {}) {
       workerCleanup = result.worker || null;
       if (options.workerCleanup) {
         assert.equal(workerCleanup?.status, 'passed', 'Missing worker cleanup proof');
-        // Reconcile from the controller after the cleanup process exits. Its
-        // receipt alone cannot prove that no output reappeared at that boundary.
-        const finalCleanup = require('../../scripts/release-parallel.cjs').cleanupWorker(options.workerCleanup);
+        // Independently reconcile after the first cleanup process exits. Keep
+        // this worker reserved through both full scans and actual removal.
+        // Cleanup still runs after cancellation, under its own bounded deadline.
+        const finalCleanup = await require('../../scripts/release-parallel.cjs').cleanupWorkerAsync(options.workerCleanup, {
+          timeoutMs: options.cleanupTimeoutMs || 30000,
+          ...(options.cleanupGraceMs === undefined ? {} : { termGraceMs: options.cleanupGraceMs, killGraceMs: options.cleanupGraceMs }),
+          onChild: options.onChild
+        });
         workerCleanup = { ...finalCleanup, removed: [...new Set([...workerCleanup.removed, ...finalCleanup.removed])].sort() };
       }
       failureArtifacts = result.failureArtifacts;
@@ -675,7 +680,18 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       layoutFile: path.join(path.dirname(workspace.directory), 'layout.json'),
       inputs: context.scheduling.workspaces.find(item => item.id === workspace.id)?.inputs
     } : null;
-    if (workerCleanup) require('../../scripts/release-parallel.cjs').verifyWorker(workerCleanup);
+    if (workerCleanup) {
+      running.get(name).phase = 'verification';
+      refresh();
+      await require('../../scripts/release-parallel.cjs').verifyWorkerAsync(workerCleanup, {
+        timeoutMs: taskRunOptions.cleanupTimeoutMs || 30000,
+        ...(taskRunOptions.cleanupGraceMs === undefined ? {} : { termGraceMs: taskRunOptions.cleanupGraceMs, killGraceMs: taskRunOptions.cleanupGraceMs }),
+        signal: control.signal, onChild(child) { onChild?.(child, name); }
+      });
+    }
+    // Cancellation may arrive while a verifier's terminal result is delivered.
+    // Neither execution nor checkpoint replay may cross that admission boundary.
+    assert(!control.signal.aborted, `Worker admission interrupted: ${control.signal.reason}`);
     const reuse = store && (allowReuse(name, task) ? store.tryReuse(spec) : { reused: false, reason: 'task requires fresh development execution' });
     let result;
     if (reuse?.reused) {
@@ -761,7 +777,7 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
                 control.abort('sibling-failure');
               }
             }).catch(error => {
-              state.error = { code: error.code || null, message: error.message };
+              state.error ||= { code: error.code || null, message: error.message };
               control.abort('sibling-failure');
             }).finally(() => {
               item.resources.forEach(resource => held.delete(resource));
@@ -902,14 +918,21 @@ async function main() {
     }
     let workspaces = null;
     if (recoveryConfig?.context.scheduling) {
-      const { readLayout } = require('../../scripts/release-parallel.cjs');
+      const { readLayout, verifyWorkerAsync } = require('../../scripts/release-parallel.cjs');
       const root = path.resolve(wasmRoot, '..'), options = recoveryConfig.context.options;
       const layout = readLayout(root, recoveryConfig.context.candidate, options.workers, options.memoryBudgetMiB, options.compilerWorkers);
       workspaces = layout.workspaces;
       for (const workspace of workspaces) {
-        const input = require('../../scripts/release-recovery.cjs').inputIdentity(workspace.directory);
-        assert.deepEqual(input, recoveryConfig.context.scheduling.workspaces.find(item => item.id === workspace.id).inputs,
-          'Worker dependency/build inputs changed before execution');
+        await verifyWorkerAsync({ root, candidate: recoveryConfig.context.candidate, directory: workspace.directory,
+          layoutFile: path.join(path.dirname(workspace.directory), 'layout.json'),
+          inputs: recoveryConfig.context.scheduling.workspaces.find(item => item.id === workspace.id).inputs }, {
+          signal: controller.signal,
+          onChild(child) {
+            if (child) activeChildren.set(workspace.id, child); else activeChildren.delete(workspace.id);
+            state.activeChildPids = [...activeChildren.values()].map(value => value.pid);
+            state.activeChildPid = state.activeChildPids[0] || null; persist();
+          }
+        });
       }
     }
     await runSelectedTasks({ state, selection, recoveryConfig, persist, signal: controller.signal, workspaces,

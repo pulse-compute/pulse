@@ -96,6 +96,7 @@ async function verifyParallel() {
     fs.symlinkSync(outside, path.join(worker.directory, 'generated-link'));
     cleanupWorker(binding);
     assert.equal(fs.readFileSync(outside, 'utf8'), 'preserve');
+    await require('./assert-worker-verification.cjs').verifyWorkerVerification({ root, binding });
 
     // Exercise the production worker/checkpoint integration with lightweight
     // subprocess fixtures, never real qualification claims or a sliced seal.
@@ -115,14 +116,15 @@ async function verifyParallel() {
       `], evidence: 'unit', description: 'worker cleanup recovery fixture', timeoutMs: 5000,
       scheduling: index === names.length - 1 ? { after: names.slice(0, -1) } : {}
     }]));
-    async function managedAttempt(label, previous) {
+    async function managedAttempt(label, previous, options = {}) {
       const directory = path.join(root, label), artifacts = recovery.artifactPaths(directory);
       const config = recovery.recoveryConfig({ directory, previousDirectory: previous?.directory,
         context, artifacts, sharedPack: { proofId: 'fixture-pack' } }, 'features', names);
       const state = { results: [], runDir: path.join(directory, 'runs'), sourceEnv: {} };
       fs.mkdirSync(path.join(state.runDir, 'tasks'), { recursive: true });
       await runSelectedTasks({ state, selection: { selected: names, requested: names }, recoveryConfig: config,
-        taskMap: fixtureTasks, workspaces: layout.workspaces });
+        taskMap: fixtureTasks, workspaces: layout.workspaces, ...options,
+        persist() { options.persist?.(state); } });
       return { state, directory };
     }
     put(failureFlag, 'fail');
@@ -138,6 +140,48 @@ async function verifyParallel() {
     assert.equal(recovered.state.results.at(-1).execution, 'executed');
     assert.deepEqual(candidateIdentity(worker.directory), candidate);
 
+    // Delayed owned operations hold both worker slots, including the interval
+    // before their result is consumed. No checkpoint or next task may sneak in.
+    const parallelModule = require('../../../scripts/release-parallel.cjs');
+    for (const operation of ['verifyWorkerAsync', 'cleanupWorkerAsync']) {
+      const original = parallelModule[operation];
+      let release, ready, count = 0, snapshot, pendingState;
+      const gate = new Promise(resolve => { release = resolve; });
+      const waiting = new Promise(resolve => { ready = resolve; });
+      parallelModule[operation] = async (...args) => {
+        const result = await original(...args);
+        // str02b-installed is the priority barrier; hold the following pair.
+        if (++count === 2 || count === 3) { if (count === 3) ready(); await gate; }
+        return result;
+      };
+      let attempt;
+      try {
+        attempt = managedAttempt(`held-${operation}`, null, { persist(state) { pendingState = state; },
+          onChild(child, name) { if (child) (snapshot ||= new Set()).add(name); } });
+        await waiting;
+        assert.equal(snapshot.size, 3, 'a verifying worker must remain exclusive after the priority task');
+        assert.equal(pendingState.results.length, 1);
+        const checkpoints = pendingState.recovery.directory;
+        if (fs.existsSync(checkpoints)) assert.equal(fs.readdirSync(checkpoints).filter(name => name.endsWith('.json')).length, 1,
+          'pending verification must not produce a checkpoint');
+      } finally { release(); parallelModule[operation] = original; }
+      const held = await attempt;
+      assert(held.state.results.every(item => item.status === 'passed'));
+    }
+    // A previous valid checkpoint cannot bypass current worker verification.
+    put(path.join(worker.directory, 'node_modules/external/index.js'), 'changed before replay');
+    const rejectedReplay = await managedAttempt('managed-mutated-replay', recovered);
+    assert.equal(rejectedReplay.state.results.length, 0);
+    assert.match(rejectedReplay.state.error.message, /dependency\/build inputs changed/);
+    put(path.join(worker.directory, 'node_modules/external/index.js'), 'dependency');
+    const admissionAbort = new AbortController();
+    const cancelledAdmission = await managedAttempt('managed-aborted-admission', recovered, {
+      signal: admissionAbort.signal, taskRunOptions: { cleanupGraceMs: 25 },
+      onChild(child) { if (child) admissionAbort.abort('SIGTERM'); }
+    });
+    assert.equal(cancelledAdmission.state.results.length, 0, 'interrupted verification must not replay a checkpoint');
+    assert.deepEqual(cancelledAdmission.state.currentTasks, []);
+
     // Reconcile residue still visible to the controller after a cleanup receipt.
     const temporaryRootRecord = path.join(root, 'cleanup-fixture-root');
     const falseReceipt = await runTask('worker-false-cleanup', { command: process.execPath,
@@ -152,6 +196,19 @@ async function verifyParallel() {
     assert.equal(falseReceipt.cleanup.worker.status, 'passed');
     assert.deepEqual(falseReceipt.cleanup.worker.removed, ['wasm/late-output']);
     verifyWorker(binding);
+
+    const falseInputReceipt = await runTask('worker-false-input-cleanup', { command: process.execPath,
+      args: ['-e', `require('node:fs').writeFileSync(${JSON.stringify(temporaryRootRecord)},process.env.PULSEWASM_TEST_TMP_ROOT);`],
+      evidence: 'unit', description: 'late input mutation receipt fixture', timeoutMs: 5000 },
+    { cwd: path.join(worker.directory, 'wasm'), workerCleanup: binding,
+      cleanupCommand: { command: process.execPath, args: ['-e', `const fs=require('node:fs');
+        fs.rmSync(fs.readFileSync(${JSON.stringify(temporaryRootRecord)},'utf8'),{recursive:true,force:true});
+        fs.writeFileSync(${JSON.stringify(path.join(worker.directory, 'node_modules/external/index.js'))},'late mutation');
+        process.stdout.write(JSON.stringify({worker:{status:'passed',removed:[]},failureArtifacts:[]}));`] } });
+    assert.equal(falseInputReceipt.status, 'failed');
+    assert.equal(falseInputReceipt.cleanup.worker.status, 'failed');
+    assert.equal(falseInputReceipt.cleanup.worker.retainedPath, worker.directory);
+    put(path.join(worker.directory, 'node_modules/external/index.js'), 'dependency');
 
     // A failed cleanup is not recorded as a reusable task pass.
     const changed = await runTask('worker-input-mutation', { command: process.execPath,

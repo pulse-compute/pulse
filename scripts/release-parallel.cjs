@@ -171,14 +171,50 @@ function cleanupWorker(binding) {
     assert.equal(fs.realpathSync(path.dirname(target)), path.dirname(target), 'Worker output traverses a symlink');
     const stat = fs.lstatSync(target);
     assert(stat.isFile() || stat.isSymbolicLink(), 'Worker output is not an ordinary file or symlink');
-    // Delete in this process, not through a child Git process. The controller
-    // must observe the actual removal before accepting the cleanup receipt.
+    // Delete and observe removal in the verifying process, not through Git.
+    // Its owner must await successful terminal reconciliation before reuse.
     fs.rmSync(target, { force: true });
     assert(!fs.existsSync(target), 'Worker output remains after removal');
   }
   verifyWorker(binding);
   return { status: 'passed', removed };
 }
+async function runWorkerVerification(operation, binding, options = {}) {
+  // A fresh, supervised invocation, never a cached proof. The caller continues
+  // owning the scheduler slot until this promise settles, including escalation.
+  const request = { id: require('node:crypto').randomUUID(), operation, binding };
+  const output = [];
+  let outputBytes = 0, diagnostic = '';
+  const completed = await require('./release-process.cjs').runCommand(process.execPath, ['-e', `
+    const request = JSON.parse(process.argv[2]);
+    const worker = require(process.argv[1]);
+    const result = request.operation === 'verify'
+      ? (worker.verifyWorker(request.binding), { status: 'passed', removed: [] })
+      : worker.cleanupWorker(request.binding);
+    process.stdout.write(JSON.stringify({ request, result }));
+  `, __filename, JSON.stringify(request)], {
+    timeoutMs: 30000, ...options,
+    onOutput(name, chunk) {
+      if (name === 'stdout') {
+        outputBytes += chunk.length;
+        assert(outputBytes <= 1024 * 1024, 'Worker verification output exceeds its bound');
+        output.push(chunk);
+      } else diagnostic = (diagnostic + chunk).slice(-16000);
+    }
+  });
+  assert(completed.status === 0 && !completed.error && !completed.timedOut &&
+    !completed.interruptedBy && !completed.forcedCompletion,
+  `Worker ${operation} did not complete: ${completed.error?.message || completed.interruptedBy ||
+    (completed.timedOut ? 'timeout' : completed.signal || completed.status)}${diagnostic ? `; ${diagnostic.trim()}` : ''}`);
+  const receipt = JSON.parse(Buffer.concat(output).toString('utf8'));
+  assert.deepEqual(receipt.request, request, 'Foreign or stale worker verification result');
+  assert.equal(receipt.result?.status, 'passed', 'Missing worker verification result');
+  assert(Array.isArray(receipt.result.removed) && receipt.result.removed.every(item => typeof item === 'string'),
+    'Invalid worker cleanup result');
+  return receipt.result;
+}
+const verifyWorkerAsync = (binding, options) => runWorkerVerification('verify', binding, options);
+const cleanupWorkerAsync = (binding, options) => runWorkerVerification('cleanup', binding, options);
 function assertManagedWorker(directory, owner, candidate, layoutFile) {
   assert(typeof layoutFile === 'string' && path.isAbsolute(layoutFile), 'Shared pack belongs to another checkout');
   const supplied = JSON.parse(fs.readFileSync(layoutFile, 'utf8'));
@@ -206,7 +242,7 @@ function scheduling(name, task) {
 }
 
 module.exports = { workerCount, compilerCount, workspaceRoot, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker,
-  verifyWorker, cleanupWorker, scheduling, WORKER_MIB };
+  verifyWorker, cleanupWorker, verifyWorkerAsync, cleanupWorkerAsync, scheduling, WORKER_MIB };
 if (require.main === module) {
   const [root, requested, memory, compilers = '2'] = process.argv.slice(2);
   const layout = prepareWorkspaces(root, candidateIdentity(root), Number(requested), Number(memory), Number(compilers));
