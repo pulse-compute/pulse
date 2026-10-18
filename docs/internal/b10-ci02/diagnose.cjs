@@ -10,7 +10,8 @@ const { createHash, randomUUID } = require('node:crypto');
 const { performance, monitorEventLoopDelay } = require('node:perf_hooks');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 function metrics() {
-  const directory = process.env.PULSE_CI02_DIAGNOSTIC_METRICS;
+  const phaseDirectory = process.env.PULSEWASM_TEST_PHASE_DIR;
+  const directory = phaseDirectory && path.join(path.dirname(phaseDirectory), 'metrics');
   if (directory) process.once('exit', code => fs.writeFileSync(path.join(directory, `${process.pid}-${randomUUID()}.json`),
     JSON.stringify({ pid: process.pid, code, usage: process.resourceUsage() })));
 }
@@ -23,7 +24,6 @@ if (git('status', '--porcelain')) throw Error('Diagnostic requires a clean candi
 fs.mkdirSync(out);
 for (const name of ['phases', 'metrics']) fs.mkdirSync(path.join(out, name));
 process.env.PULSEWASM_TEST_PHASE_DIR = path.join(out, 'phases');
-process.env.PULSE_CI02_DIAGNOSTIC_METRICS = path.join(out, 'metrics');
 const phaseFile = path.join(root, 'wasm/test/support/phase-observer.cjs');
 process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ''} --require=${phaseFile} --require=${__filename}`.trim();
 metrics();
