@@ -8,7 +8,8 @@ const { execFileSync } = require('node:child_process');
 const { checkReleasePr } = require('./release-pr-check.cjs');
 const { candidateIdentity } = require('./release-feature-acceptance.cjs');
 const { atomicJson } = require('./release-recovery.cjs');
-const SCHEMA = 'pulse.release-pr-qualification.v1';
+const SCHEMA = 'pulse.release-pr-qualification.v2';
+const LEGACY_SCHEMA = 'pulse.release-pr-qualification.v1';
 const WORKFLOW = '.github/workflows/release-qualify.yml';
 const ARTIFACT = 'pulse-pr-release-qualification';
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
@@ -115,18 +116,15 @@ function capture(root, identity, output) {
   const sealBytes = fs.readFileSync(sealFile), seal = JSON.parse(sealBytes);
   assertSeal(seal, identity);
   require('./release-evidence-bundle.cjs').validateRecoveryEvidence(seal);
-  assert.equal(hash(fs.readFileSync(seal.sourceChecks.file)), seal.sourceChecks.sha256, 'Source-check receipt changed');
-  const checked = JSON.parse(fs.readFileSync(seal.sourceChecks.file));
+  const checkedBytes = fs.readFileSync(seal.sourceChecks.file);
+  assert.equal(hash(checkedBytes), seal.sourceChecks.sha256, 'Source-check receipt changed');
+  const checked = JSON.parse(checkedBytes);
   assert.deepEqual(checked.candidate, identity.candidate, 'Docs source checks differ');
-  const docs = checked.documentationCandidate;
-  assert(docs, 'Qualification has no prebuilt documentation candidate');
-  assert.deepEqual(require('./release-recovery.cjs').describeArtifact(docs.directory),
-    { kind: docs.kind, sha256: docs.sha256 }, 'Validated documentation changed');
-  const documentationDir = path.join(output, 'documentation');
-  assert(!fs.existsSync(documentationDir), 'Capture output already contains documentation');
-  fs.cpSync(docs.directory, documentationDir, { recursive: true, errorOnExist: true });
-  const documentation = require('./documentation-deployment.cjs').verifyDocumentationCandidate({ repoRoot: root, candidateDir: documentationDir });
-  assert.deepEqual(documentation.source, { commit: identity.candidate.sourceRevision, ref: identity.sourceRef });
+  assert.equal(identity.schemaVersion, SCHEMA, 'New capture requires v2 identity');
+  require('./release-source-checks.cjs').assertPackageSourceChecks(checked);
+  assert(!fs.existsSync(output), 'Capture output already exists');
+  fs.mkdirSync(output, { recursive: true });
+  fs.writeFileSync(path.join(output, 'source-checks.json'), checkedBytes, { flag: 'wx' });
   // Never rebuild or relabel accepted bytes. The publication consumer
   // must verify the merge binding separately and retain this original source.
   const pack = path.join(root, '.pulse-release');
@@ -141,7 +139,7 @@ function capture(root, identity, output) {
   fs.writeFileSync(path.join(output, 'release-seal.json'), sealBytes);
   const receipt = { ...identity, status: 'passed', completedAt: new Date().toISOString(),
     artifact: `${ARTIFACT}-${identity.runId}-${identity.attempt}`,
-    documentationManifestSha256: hash(fs.readFileSync(path.join(documentationDir, 'documentation-deployment-manifest.json'))),
+    documentationMode: 'source-only', sourceChecksSha256: seal.sourceChecks.sha256,
     sealSha256: hash(sealBytes), bundleManifestSha256: hash(fs.readFileSync(path.join(bundleDir, 'pulse-publication-manifest.json'))),
     // Contains only hashes/tool identities/options; environment values stay private.
     qualificationContextSha256: seal.recovery.contextSha256,
@@ -174,7 +172,11 @@ function linearCommits(root, base, tip) {
 // and verifying the bundle and receipt hashes. It creates a separate binding,
 // never mutates the qualified source identity or any published bytes.
 function verifyMergeBinding({ root, receipt, pullRequest, repository, tag }) {
-  assert.equal(receipt.schemaVersion, SCHEMA);
+  assert([SCHEMA, LEGACY_SCHEMA].includes(receipt.schemaVersion), 'Unsupported qualification schema');
+  if (receipt.schemaVersion === SCHEMA) {
+    assert.equal(receipt.documentationMode, 'source-only', 'Invalid v2 documentation mode');
+    assert(!Object.hasOwn(receipt, 'documentationManifestSha256'), 'v2 cannot authenticate documentation artifacts');
+  }
   assert.equal(receipt.status, 'passed');
   assert.equal(receipt.required, true);
   assert.equal(receipt.repository, repository);
@@ -215,7 +217,7 @@ function verifyMergeBinding({ root, receipt, pullRequest, repository, tag }) {
     strategy, ...(rebase ? { rebase } : {}) };
 }
 
-module.exports = { SCHEMA, WORKFLOW, ARTIFACT, validateWorkflow, identify, assertCurrent, assertSeal, capture, verifyMergeBinding };
+module.exports = { SCHEMA, LEGACY_SCHEMA, WORKFLOW, ARTIFACT, validateWorkflow, identify, assertCurrent, assertSeal, capture, verifyMergeBinding };
 if (require.main === module) {
   try {
     const [command, file, output] = process.argv.slice(2);

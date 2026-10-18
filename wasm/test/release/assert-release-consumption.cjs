@@ -75,7 +75,7 @@ async function main() {
   const files = { seal: path.join(directory, 'release-seal.json'), pub: path.join(directory, 'publication/pulse-publication-manifest.json'),
     docs: path.join(directory, 'documentation/documentation-deployment-manifest.json'), receipt: path.join(directory, 'qualification.json') };
   write(files.seal, seal); write(files.pub, { source }); write(files.docs, { source });
-  const receipt = { schemaVersion: producer.SCHEMA, status: 'passed', required: true, repository, workflow: producer.WORKFLOW,
+  const receipt = { schemaVersion: producer.LEGACY_SCHEMA, status: 'passed', required: true, repository, workflow: producer.WORKFLOW,
     releaseTag: tag, runId: 123, attempt: 2, artifact: selection.artifactName, pullRequest: 17, base, head, sourceRef: source.ref, candidate,
     completedAt: '2026-10-09T03:00:00Z', sealSha256: hash(fs.readFileSync(files.seal)), bundleManifestSha256: hash(fs.readFileSync(files.pub)),
     documentationManifestSha256: hash(fs.readFileSync(files.docs)), qualificationContextSha256: seal.recovery.contextSha256, separateGates: [] };
@@ -92,6 +92,7 @@ async function main() {
   };
   try {
     const consume = () => owner.consume({ github: good.github, context, releaseTag: tag, selection, directory, root: repo, bindingFile });
+    owner.verifyConsumption({ root: repo, directory, selection, kind: 'documentation' });
     const binding = await consume(); assert.equal(binding.merge.strategy, 'squash'); assert.equal(binding.merge.qualifiedSource, qualified);
     const env = { GITHUB_REPOSITORY: repository, GITHUB_REF: context.ref, GITHUB_SHA: merged };
     const bound = () => owner.validateBoundSource({ root: repo, bindingFile, manifestFile: files.pub, source, kind: 'publication', env });
@@ -109,6 +110,52 @@ async function main() {
       const bytes = fs.readFileSync(file); fs.appendFileSync(file, ' ');
       assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection })); fs.writeFileSync(file, bytes);
     }
+    const legacyDocs = fs.readFileSync(files.docs);
+    fs.unlinkSync(files.docs);
+    assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection }), /ENOENT/);
+    fs.writeFileSync(files.docs, legacyDocs);
+
+    // v2 authenticates package source checks instead of a rendered candidate.
+    const checked = { schemaVersion: 'pulse.release-source-checks.v2', status: 'passed', candidate, repoRoot: repo,
+      snippets: { status: 'ok' }, documentation: { status: 'ok', validationKind: 'package-source',
+        maintenance: { status: 'ok', publication: { status: 'ok' } } } };
+    const checksFile = path.join(directory, 'source-checks.json'); write(checksFile, checked);
+    const checksHash = hash(fs.readFileSync(checksFile));
+    const packageSeal = { ...seal, sourceChecks: { sha256: checksHash } };
+    write(files.seal, packageSeal);
+    const packageReceipt = { ...receipt, schemaVersion: producer.SCHEMA, documentationMode: 'source-only',
+      sourceChecksSha256: checksHash, sealSha256: hash(fs.readFileSync(files.seal)) };
+    delete packageReceipt.documentationManifestSha256;
+    write(files.receipt, packageReceipt);
+    fs.rmSync(path.dirname(files.docs), { recursive: true });
+    const packageBinding = owner.verifyConsumption({ root: repo, directory, selection });
+    assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection, kind: 'documentation' }), /cannot authorize documentation deployment/);
+    assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection, kind: 'other' }), /Invalid qualification consumer/);
+    write(bindingFile, packageBinding); bound();
+    assert.throws(() => owner.validateBoundSource({ root: repo, bindingFile, manifestFile: files.pub,
+      source, kind: 'documentation', env }), /cannot authorize documentation deployment/);
+    for (const file of [checksFile, files.pub, files.seal]) {
+      const bytes = fs.readFileSync(file); fs.appendFileSync(file, ' ');
+      assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection })); fs.writeFileSync(file, bytes);
+    }
+    const checkedBytes = fs.readFileSync(checksFile); fs.unlinkSync(checksFile);
+    assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection }), /ENOENT/);
+    fs.writeFileSync(checksFile, checkedBytes);
+    for (const change of [r => { r.schemaVersion = 'unknown'; }, r => { r.documentationMode = 'site'; },
+      r => { r.documentationManifestSha256 = 'a'.repeat(64); }, r => { r.sourceChecksSha256 = 'a'.repeat(64); }]) {
+      const bad = structuredClone(packageReceipt); change(bad); write(files.receipt, bad);
+      assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection }));
+    }
+    const wrongSourceChecks = structuredClone(checked); wrongSourceChecks.candidate.sourceRevision = base;
+    write(checksFile, wrongSourceChecks);
+    const wrongHash = hash(fs.readFileSync(checksFile));
+    write(files.seal, { ...packageSeal, sourceChecks: { sha256: wrongHash } });
+    write(files.receipt, { ...packageReceipt, sourceChecksSha256: wrongHash, sealSha256: hash(fs.readFileSync(files.seal)) });
+    assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection }), /Package source checks differ/);
+    write(checksFile, checked); write(files.seal, packageSeal);
+    write(files.receipt, packageReceipt); write(files.docs, { source });
+    assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection }), /cannot contain documentation/);
+    write(files.receipt, receipt); write(files.seal, seal);
     fs.unlinkSync(bindingFile); good.run.run_attempt = 3;
     await assert.rejects(consume); assert(!fs.existsSync(bindingFile)); good.run.run_attempt = 2;
     good.artifacts[0].id = 457; await assert.rejects(consume, /superseded/); good.artifacts[0].id = 456;

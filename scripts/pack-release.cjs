@@ -20,7 +20,7 @@ const {
   PUBLICATION
 } = require('./package-support.cjs');
 const {
-  validateDocumentationSource,
+  validatePackageDocumentation,
   validatePackedDocumentationSet
 } = require('./documentation-release.cjs');
 
@@ -243,7 +243,7 @@ function packRelease(options = {}) {
     progress('Checking documentation source');
     if (options.sourceChecks) {
       require('./release-source-checks.cjs').verify(repoRoot, options.sourceChecks.file, options.sourceChecks.sha256);
-    } else validateDocumentationSource({ repoRoot });
+    } else validatePackageDocumentation({ repoRoot });
     const legalBytes = new Map();
     for (const legalFile of LEGAL.packageFiles) {
       const source = path.join(repoRoot, legalFile);

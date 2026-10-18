@@ -527,6 +527,7 @@ function validateWorkflows() {
   ]) includes(publicationScript, marker, 'npm publication implementation');
 
   const deploy = read(required[1]);
+  if ((deploy.match(/kind: 'documentation'/g) || []).length !== 2) fail('both legacy documentation consumption phases must reject source-only qualification');
   const deploymentCli = read('scripts/documentation-deployment.cjs');
   excludes(deploymentCli, '--allow-non-github', 'documentation deployment CLI');
   includes(deploy, 'name: Documentation deployment', 'documentation deployment workflow');

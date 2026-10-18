@@ -1166,10 +1166,10 @@ const tasks = Object.freeze({
     description: 'publishable package manifests and tarballs'
   }),
   'release-artifact-determinism': nodeTask('test/release/assert-artifact-determinism.cjs', {
-    scheduling: { compiler: false }, // Independent packing/site builds use existing compiled outputs.
+    scheduling: { compiler: false }, // Independent package builds use existing compiled outputs.
     evidence: 'release',
     timeoutMs: 600000,
-    description: 'byte-identical package and documentation artifacts'
+    description: 'byte-identical package artifacts'
   }),
   'mcp-package': nodeTask('test/mcp/assert-mcp-package.cjs', {
     evidence: 'external', timeoutMs: 180000,

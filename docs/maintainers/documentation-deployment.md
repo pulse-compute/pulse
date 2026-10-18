@@ -22,6 +22,12 @@ release PR qualification
 
 The machine-readable deployment contract is `release/documentation-deployment.json`. The production workflow is `.github/workflows/documentation-deploy.yml`. Reviewed VCL templates and the operating guide live under `infra/fastly/documentation/`.
 
+This runbook describes the retained legacy v1 deployment path. New v2 package
+qualifications contain source-only documentation evidence and cannot authorize
+this deployer. Their website delivery belongs to `pulse-compute/website`; no
+rendered candidate is reconstructed from a v2 qualification. Historical v1
+candidates remain mandatory and hash-verified in both consumption phases.
+
 ## Validation and production are separate
 
 The **Documentation** workflow runs for pull requests and branch pushes. It validates generated documentation, builds the exact-version site, seals a preview object manifest, and uploads a short-lived Actions artifact. It has no storage secret and no deployment job.

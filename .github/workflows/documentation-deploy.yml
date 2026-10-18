@@ -74,7 +74,7 @@ jobs:
         with:
           script: |
             await require('./scripts/release-qualification.cjs').consume({
-              github, context, releaseTag: process.env.REQUESTED_TAG,
+              github, context, releaseTag: process.env.REQUESTED_TAG, kind: 'documentation',
               selection: JSON.parse(process.env.QUALIFICATION_SELECTION),
               directory: '.pulse-qualified', bindingFile: 'qualification-binding.json'
             });
@@ -121,7 +121,7 @@ jobs:
         with:
           script: |
             await require('./scripts/release-qualification.cjs').consume({
-              github, context, releaseTag: process.env.REQUESTED_TAG,
+              github, context, releaseTag: process.env.REQUESTED_TAG, kind: 'documentation',
               selection: JSON.parse(process.env.QUALIFICATION_SELECTION),
               directory: '.pulse-qualified', bindingFile: 'qualification-binding.json'
             });

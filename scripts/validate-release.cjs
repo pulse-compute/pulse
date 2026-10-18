@@ -310,7 +310,7 @@ async function main(argv = process.argv.slice(2)) {
     }
 
     const sourceChecksFile = path.join(progress.directory || packageManagerCache, 'source-checks.json');
-    await runStep(steps, 'source-checks', 'Validate control planes, catalog, generated docs and site before compilation',
+    await runStep(steps, 'source-checks', 'Validate control planes, catalog, source and installed docs before compilation',
       process.execPath, ['scripts/release-source-checks.cjs', '--out', sourceChecksFile],
       { timeoutMs: 10 * 60 * 1000, env: packageManagerEnv });
     assertCandidateSource(sourceIdentity);
