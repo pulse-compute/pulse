@@ -41,7 +41,7 @@ function analyze(directory) {
       const own=duration-unionMs(children);
       const row=byLabel[span.label] ||= {calls:0,threw:0,inclusiveMs:0,exclusiveMs:0};
       row.calls++; row.threw+=span.status==='threw'?1:0; row.inclusiveMs+=duration; row.exclusiveMs+=own;
-      const identity={trace:name,span:span.id,parent:span.parent,label:span.label,durationMs:duration,status:span.status};
+      const identity={trace:name,pid:header.pid,ppid:header.ppid,span:span.id,parent:span.parent,label:span.label,durationMs:duration,status:span.status,absoluteStart:header.origin+span.start,absoluteEnd:header.origin+span.end};
       if(span.label==='preparation.asc') compiles.push({...identity,...span.metadata,...span.artifact});
       else if(span.artifact?.wasmSha256) artifacts.push({...identity,...span.artifact});
     }
@@ -57,8 +57,31 @@ function analyze(directory) {
       openSpans:spans.size-ends.size,dropped:terminal?.dropped ?? null,observationErrors:terminal?.observationErrors ?? null,
       phases:byLabel,nestedCounters:terminal?.counts || {}});
   }
+  // asc may relaunch Node with --enable-source-maps. Exclude a child launch
+  // only when observed ancestry, containment and all recorded input/output
+  // fingerprints agree. Keep raw intervals and the exclusion relationship.
+  const sameCompile=(a,b)=>['sourceSha256','optionsSha256','ascSha256','wasmSha256','exitCode']
+    .every(key=>a[key]!==undefined && a[key]===b[key]);
+  const ancestor=(parent,child)=>{
+    let pid=child.ppid; const seen=new Set();
+    while(pid && !seen.has(pid)) {
+      if(pid===parent.pid)return true;
+      seen.add(pid);
+      const process=processes.find(p=>p.pid===pid && p.origin+p.begin<=child.absoluteStart
+        && (p.observedMs===null || p.origin+p.begin+p.observedMs>=child.absoluteEnd));
+      pid=process?.ppid;
+    }
+    return false;
+  };
+  const nestedCompilerLaunches=[],outerCompilerLaunches=[];
+  for(const child of compiles) {
+    const parent=compiles.find(p=>p.trace!==child.trace && p.absoluteStart<=child.absoluteStart
+      && p.absoluteEnd>=child.absoluteEnd && sameCompile(p,child) && ancestor(p,child));
+    if(parent)nestedCompilerLaunches.push({...child,nestedIn:{trace:parent.trace,span:parent.span}});
+    else outerCompilerLaunches.push(child);
+  }
   const groups=new Map();
-  for(const item of compiles.filter(c=>c.exitCode===0 && c.wasmSha256)) {
+  for(const item of outerCompilerLaunches.filter(c=>c.exitCode===0 && c.wasmSha256)) {
     const key=[item.sourceSha256,item.optionsSha256,item.ascSha256,item.wasmSha256].join(':');
     const group=groups.get(key)||[];group.push(item);groups.set(key,group);
   }
@@ -67,7 +90,7 @@ function analyze(directory) {
     'Inclusive/exclusive sums across processes overlap and are NOT wall-clock savings or CPU. Async siblings can overlap.',
     'Nested fs/hash/assert counters are subsets of spans; never add them to phase totals. Direct assert() calls, ESM loading and internal lexical calls may remain unattributed.',
     'Repeated groups match entry bytes, normalized argv, asc script and output bytes only. Transitive inputs/environment equality and permission to reuse are not established.'
-  ],warnings,processes,totals,compiles,artifacts,repeatedAscGroups:[...groups.values()].filter(g=>g.length>1)};
+  ],warnings,processes,totals,compiles,outerCompilerLaunches,nestedCompilerLaunches,artifacts,repeatedAscGroups:[...groups.values()].filter(g=>g.length>1)};
 }
 module.exports={analyze,unionMs};
 if(require.main===module) {

@@ -16,5 +16,17 @@ try {
  rows.pop();put();assert.equal(analyze(root).processes[0].observedMs,null);assert.equal(analyze(root).warnings.length,1);
  fs.appendFileSync(file,'{');assert(analyze(root).warnings.some(w=>w.includes('invalid JSON')));
  fs.unlinkSync(file);fs.symlinkSync(__filename,file);assert.throws(()=>analyze(root),/ordinary file/);
- console.log('ok - phase analysis unions overlapping children and preserves incomplete/invalid evidence');
+ fs.unlinkSync(file);
+ const metadata={sourceSha256:'source',optionsSha256:'options',ascSha256:'compiler'};
+ const trace=(pid,ppid,start,end)=>[
+  {event:'process',schema:'pulse.test-phase-observation.v1',pid,ppid,origin:1000,begin:0},
+  {event:'start',id:1,parent:null,label:'preparation.asc',start,metadata},
+  {event:'end',id:1,end,status:'returned',artifact:{exitCode:0,wasmSha256:'wasm'}},
+  {event:'exit',end:30,exitCode:0,dropped:0,observationErrors:0,counts:{}}];
+ for(const [name,pid,ppid,start,end] of [['parent',1,0,1,20],['child',2,1,2,19],['independent',3,0,2,19]]) {
+  fs.writeFileSync(path.join(root,name+'.jsonl'),trace(pid,ppid,start,end).map(JSON.stringify).join('\n')+'\n');
+ }
+ const nested=analyze(root);assert.equal(nested.compiles.length,3);assert.equal(nested.outerCompilerLaunches.length,2);
+ assert.equal(nested.nestedCompilerLaunches.length,1);assert.equal(nested.repeatedAscGroups[0].length,2);
+ console.log('ok - phase analysis unions overlap, preserves incomplete evidence, and distinguishes nested compiler relaunches from independent repetitions');
 } finally{fs.rmSync(root,{recursive:true,force:true});}

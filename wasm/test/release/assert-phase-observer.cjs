@@ -22,6 +22,7 @@ const secret='DO-NOT-RETAIN-THIS';
  const bytes=Buffer.from('0061736d01000000','hex');const m=new WebAssembly.Module(bytes);assert(m instanceof WebAssembly.Module);
  new WebAssembly.Instance(m);await WebAssembly.instantiate(bytes);
  fs.readFileSync(__filename);require('node:crypto').createHash('sha256').update(secret).digest('hex');
+ fs.closeSync=()=>{throw new Error('close guard')};
 })();`);
   const child = spawnSync(process.execPath, ['--require', helper, fixture], { env: { ...process.env, PULSEWASM_TEST_PHASE_DIR: root }, encoding: 'utf8' });
   assert.equal(child.status, 0, child.stderr);
@@ -39,5 +40,10 @@ const secret='DO-NOT-RETAIN-THIS';
   for (const label of ['execution.WebAssembly.Module','execution.WebAssembly.Instance','execution.WebAssembly.instantiate']) assert(starts.some(row=>row.label===label));
   const exit=rows.at(-1); assert.equal(exit.event,'exit'); assert.equal(exit.observationErrors,0); assert.equal(exit.dropped,0);
   assert(Object.keys(exit.counts).some(key=>key.endsWith(':hash.update')));
+  const capped=path.join(root,'capped');fs.mkdirSync(capped);
+  const stress=spawnSync(process.execPath,['-e',`const p=require(${JSON.stringify(helper)});let count=0;for(let i=0;i<100002;i++)p.measure('bounded',()=>count++);if(count!==100002)process.exitCode=2;`],{env:{...process.env,PULSEWASM_TEST_PHASE_DIR:capped},encoding:'utf8',timeout:30000});
+  assert.equal(stress.status,0,stress.stderr);
+  const last=JSON.parse(fs.readFileSync(path.join(capped,fs.readdirSync(capped)[0]),'utf8').trim().split('\n').at(-1));
+  assert.equal(last.event,'exit');assert(last.dropped>0);assert.equal(last.observationErrors,0);
   console.log('ok - opt-in phase observation preserves sync/async errors, receivers, Wasm construction and guarded writes; records bounded redacted traces');
 } finally { fs.rmSync(root,{recursive:true,force:true}); }

@@ -13,6 +13,7 @@ const directory = process.env.PULSEWASM_TEST_PHASE_DIR;
 const originalHash = crypto.createHash;
 const originalRead = fs.readFileSync;
 const write = fs.writeSync;
+const close = fs.closeSync;
 const context = new AsyncLocalStorage();
 const begin = performance.now();
 const origin = performance.timeOrigin;
@@ -26,7 +27,7 @@ if (directory) {
 }
 function emit(value) {
   if (fd === undefined) return;
-  if (sequence > 100000) { dropped++; return; }
+  if (sequence > 100000 && value.event !== 'exit') { dropped++; return; }
   try { write(fd, JSON.stringify(value) + '\n'); } catch { observationErrors++; }
 }
 function safe(observe) {
@@ -181,7 +182,7 @@ function install() {
   };
   process.on('exit', code => {
     emit({ event: 'exit', end: performance.now(), exitCode: code, counts, dropped, observationErrors });
-    fs.closeSync(fd);
+    close(fd);
   });
 }
 module.exports = { measure, wrap, install };
