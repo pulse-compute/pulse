@@ -1,5 +1,11 @@
 # B10-CI04 — compiler admission audit
 
+**Phase B follow-up:** [#373's complete local comparison](../b10-00-comparison/README.md)
+passed both fresh 190+11 seals and measured a 40.7% release-stage reduction at 2/2.
+Recommend 2/2 for the next hosted qualification; retain the hosted 2/1 default
+until that full qualification and human adoption review. The incomplete-comparison
+disposition below records the earlier attempts and is superseded by that report.
+
 Issue [#390](https://github.com/pulse-compute/pulse/issues/390). Target `latest`.
 Class: hardening. Review baseline `9dd16775642ea3ac16fb355d7d459e8735625521`,
 tree `ccdd499d9bb08aa909fff0e1fbd589e2b0d12229`, clean after #387, #388 and
