@@ -1,0 +1,2643 @@
+{
+  "limits": "Single sequential local pair; sampled lower bounds; peak sampled CPU cores uses subsecond deltas and is noisy. Compiler-limited state can coincide with no available workers. No historical pass pooling.",
+  "trials": [
+    {
+      "name": "/tmp/pulse-b10-trials/.pulse-seal/measurements/b10-00-c1-fresh",
+      "measurementStatus": "passed",
+      "qualified": true,
+      "candidate": {
+        "sourceRevision": "74bf891ffe54865cca4869bf7c45d86ff172f34f",
+        "sourceTree": "c79155d6e115d58f13c362d4784a081248dd2df7",
+        "workingTree": ""
+      },
+      "controllerMs": 3611842,
+      "wallMs": 3612310,
+      "coverage": {
+        "taskReport": {
+          "status": "passed",
+          "selected": 190,
+          "recorded": 190,
+          "orderedComplete": true,
+          "passed": 190,
+          "reused": 0,
+          "cleanupPassed": true
+        },
+        "featureTasks": {
+          "status": "passed",
+          "selected": 11,
+          "recorded": 11,
+          "orderedComplete": true,
+          "passed": 11,
+          "reused": 0,
+          "cleanupPassed": true
+        }
+      },
+      "controllerCleanup": {
+        "status": "passed",
+        "timedOut": false,
+        "retainedPath": null
+      },
+      "stages": {
+        "source-checks": {
+          "status": "passed",
+          "elapsedMs": 12150,
+          "exitCode": 0
+        },
+        "build": {
+          "status": "passed",
+          "elapsedMs": 190,
+          "exitCode": 0
+        },
+        "fastly-reality": {
+          "status": "passed",
+          "elapsedMs": 13719,
+          "exitCode": 0
+        },
+        "production-dependency-audit": {
+          "status": "passed",
+          "elapsedMs": 3229,
+          "exitCode": 0
+        },
+        "workspace-unit": {
+          "status": "passed",
+          "elapsedMs": 1751,
+          "exitCode": 0
+        },
+        "workspaces": {
+          "status": "passed",
+          "elapsedMs": 2209,
+          "exitCode": 0
+        },
+        "shared-pack": {
+          "status": "passed",
+          "elapsedMs": 3322,
+          "exitCode": 0
+        },
+        "release": {
+          "status": "passed",
+          "elapsedMs": 2972147,
+          "exitCode": 0
+        },
+        "installed-features": {
+          "status": "passed",
+          "elapsedMs": 586423,
+          "exitCode": 0
+        }
+      },
+      "metrics": {
+        "wallMs": 3612302,
+        "controllerMs": 3611842,
+        "workerOccupancyMs": 3943788,
+        "workerTimeDefinition": "Serial executed task elapsed time, including waits and cleanup; not CPU time or bootstrap steps",
+        "tasks": {
+          "completed": 201,
+          "passed": 201,
+          "executed": 201,
+          "reused": 0
+        },
+        "avoidedTaskOccupancyMs": 0,
+        "candidatePackages": 20,
+        "observedLaunches": {
+          "asc": 1712,
+          "pack": 45,
+          "install": 27
+        },
+        "observationScope": "Node child_process launches under inherited preload; lower bounds. Shell launches, native custom-promisified calls and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.",
+        "workerCpuMs": null,
+        "peakProcessTreeRSSKiB": null,
+        "resourceLimit": "Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer",
+        "observedNodeCpuMs": 4889352.358,
+        "peakObservedNodeRSSKiB": 631888,
+        "processTree": {
+          "schemaVersion": "pulse.seal-process-observation.v1",
+          "status": "observed",
+          "error": null,
+          "rootProcess": "51537:1806170",
+          "controllerNamespacePid": 22,
+          "intervalMs": 200,
+          "samples": 18020,
+          "maxGapMs": 210,
+          "readErrors": 0,
+          "sampledCpuMs": 5567800,
+          "peakSimultaneousProcessRSSKiB": 2274096,
+          "peakProcessCount": 12,
+          "remainingObservedProcesses": [],
+          "elapsedMs": 3612217,
+          "scope": "Linux /proc snapshots of controller and observed descendants, including detached children and known surviving identities; sampler excluded",
+          "limits": "Sampled lower bounds: short-lived processes, exit CPU tails and unseen reparenting can be missed. RSS sums include shared pages in each process; not unique physical or cgroup memory. Idle/wait states are sampled report observations, not compiler CPU or precise admission events."
+        },
+        "observedCompilerElapsedMs": 3029212.198460004
+      },
+      "sampledStages": {
+        "prerequisites": {
+          "samples": 16,
+          "peakRSSKiB": 96468,
+          "sampledMs": 3002,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 3002
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 50,
+          "peakSampledCpuCores": 0.19801980198019803
+        },
+        "source-checks": {
+          "samples": 60,
+          "peakRSSKiB": 555736,
+          "sampledMs": 11821,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 11821
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 9960,
+          "peakSampledCpuCores": 1.85
+        },
+        "build": {
+          "samples": 1,
+          "peakRSSKiB": 121980,
+          "sampledMs": 0,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {},
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 0,
+          "peakSampledCpuCores": 0
+        },
+        "fastly-reality": {
+          "samples": 68,
+          "peakRSSKiB": 892340,
+          "sampledMs": 13421,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 7012,
+            "2": 6409
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 12490,
+          "peakSampledCpuCores": 3.45
+        },
+        "production-dependency-audit": {
+          "samples": 17,
+          "peakRSSKiB": 216396,
+          "sampledMs": 3207,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 3207
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 190,
+          "peakSampledCpuCores": 0.55
+        },
+        "workspace-unit": {
+          "samples": 8,
+          "peakRSSKiB": 975668,
+          "sampledMs": 1408,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 1408
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 5230,
+          "peakSampledCpuCores": 5.27363184079602
+        },
+        "workspaces": {
+          "samples": 11,
+          "peakRSSKiB": 181432,
+          "sampledMs": 2001,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 2001
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 1820,
+          "peakSampledCpuCores": 1.05
+        },
+        "shared-pack": {
+          "samples": 17,
+          "peakRSSKiB": 509516,
+          "sampledMs": 3211,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 3211
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 2250,
+          "peakSampledCpuCores": 1.6
+        },
+        "release": {
+          "samples": 14825,
+          "peakRSSKiB": 2274096,
+          "sampledMs": 2972039,
+          "compilerActiveMs": {
+            "0": 25244,
+            "1": 2946795
+          },
+          "ascProcessCountMs": {
+            "0": 1391678,
+            "2": 1505892,
+            "1": 51568,
+            "4": 21490,
+            "3": 1411
+          },
+          "compilerLimitedMs": 2923944,
+          "compilerLimitedWithFreeWorkerMs": 2372572,
+          "idleWorkerSlotMs": 2403234,
+          "sampledCpuMs": 4913860,
+          "peakSampledCpuCores": 8.0
+        },
+        "installed-features": {
+          "samples": 2926,
+          "peakRSSKiB": 1452276,
+          "sampledMs": 586219,
+          "compilerActiveMs": {
+            "0": 2002,
+            "1": 584217
+          },
+          "ascProcessCountMs": {
+            "0": 469259,
+            "1": 6213,
+            "2": 110747
+          },
+          "compilerLimitedMs": 527112,
+          "compilerLimitedWithFreeWorkerMs": 527112,
+          "idleWorkerSlotMs": 588221,
+          "sampledCpuMs": 612600,
+          "peakSampledCpuCores": 5.0
+        },
+        "final-validation": {
+          "samples": 36,
+          "peakRSSKiB": 296080,
+          "sampledMs": 7013,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 7013
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 4630,
+          "peakSampledCpuCores": 1.492537313432836
+        },
+        "cleanup": {
+          "samples": 2,
+          "peakRSSKiB": 296308,
+          "sampledMs": 201,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 201
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 100,
+          "peakSampledCpuCores": 0.4975124378109453
+        }
+      },
+      "attemptDirectory": "/tmp/pulse-b10-trials/.pulse-seal/attempts/2026-10-18T04-49-50-564Z-G7pCEX",
+      "sharedPackFiles": [
+        {
+          "name": "pulse-compute-assets-1.0.0-beta.9.tgz",
+          "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+        },
+        {
+          "name": "pulse-compute-cli-1.0.0-beta.9.tgz",
+          "sha256": "d5c4c306d3e1866c53d9c63eb3a8ca2cf3aada27b58383d3aa1a7b1d0cdb5030"
+        },
+        {
+          "name": "pulse-compute-crypto-1.0.0-beta.9.tgz",
+          "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+        },
+        {
+          "name": "pulse-compute-entities-1.0.0-beta.9.tgz",
+          "sha256": "dbab4994a8314525ae601d018fede8a183ba6abaa7057eaa19fa108125fac9bb"
+        },
+        {
+          "name": "pulse-compute-grip-1.0.0-beta.9.tgz",
+          "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+        },
+        {
+          "name": "pulse-compute-jwt-1.0.0-beta.9.tgz",
+          "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+        },
+        {
+          "name": "pulse-compute-mcp-1.0.0-beta.9.tgz",
+          "sha256": "e30d935b5c04fdcd3b2d5ef5fae8a0acc64d133eb12ffc750026f8d59198e3e7"
+        },
+        {
+          "name": "pulse-compute-provider-fastly-1.0.0-beta.9.tgz",
+          "sha256": "97b26c43f261be87c9768b375d08cefa44e19a3e8f025927173420dd51c1fe51"
+        },
+        {
+          "name": "pulse-compute-provider-node-1.0.0-beta.9.tgz",
+          "sha256": "f9a3cfc50051798a6c99c9bdb9a9dbb1d51ffd7632dbfa3369fc9282f91c3d1e"
+        },
+        {
+          "name": "pulse-compute-pulse-1.0.0-beta.9.tgz",
+          "sha256": "6bd70212b52d4613aa65352d7e83ae5d335f106f9eb273df0ab8c2e21c6157fb"
+        },
+        {
+          "name": "pulse-compute-runtime-1.0.0-beta.9.tgz",
+          "sha256": "c7a9cc9b14c60f02e9dc33464a33334ae1ca4103a544f84cac2d5770ad6fc471"
+        },
+        {
+          "name": "pulse-compute-s3-1.0.0-beta.9.tgz",
+          "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+        },
+        {
+          "name": "pulse-compute-wasm-build-support-1.0.0-beta.9.tgz",
+          "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+        },
+        {
+          "name": "pulse-compute-wasm-compiler-1.0.0-beta.9.tgz",
+          "sha256": "6ed69ec7c8894cae0f3252cd2fbe12577b7c09932c81f1173d16a28aacfc2ef6"
+        },
+        {
+          "name": "pulse-compute-wasm-contracts-1.0.0-beta.9.tgz",
+          "sha256": "8fbcfe76bcc26b7640cf329a4e997548077d5ce5cb9255cd7b7d38257b9161f3"
+        },
+        {
+          "name": "pulse-compute-wasm-guest-link-1.0.0-beta.9.tgz",
+          "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+        },
+        {
+          "name": "pulse-compute-wasm-host-runtime-1.0.0-beta.9.tgz",
+          "sha256": "e6431b32b468483dc64905cd09d7fdfc4ab6a592ef2666ad1a576400137b2417"
+        },
+        {
+          "name": "pulse-compute-wasm-library-kit-1.0.0-beta.9.tgz",
+          "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+        },
+        {
+          "name": "pulse-compute-wasm-runtime-core-as-1.0.0-beta.9.tgz",
+          "sha256": "5727840e18bc7208d9c9074f1a76db6938f96229acbdbe7f627988c1200e0dfc"
+        },
+        {
+          "name": "pulse-compute-wasm-schema-json-1.0.0-beta.9.tgz",
+          "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+        },
+        {
+          "name": "pulse-release-manifest.json",
+          "sha256": "f8eeffb943d190e7de522851f0aaf5c2dc67365c353b3a2aa0db00d3da31df77"
+        },
+        {
+          "name": "pulse-source-release-catalog.json",
+          "sha256": "b0375c179d283499d00667a7126aa10bb91e73d97946940d382bf614b7469378"
+        }
+      ],
+      "taskOccupancyMs": {
+        "taskReport": {
+          "compilerDesignated": 2838997,
+          "other": 530291
+        },
+        "featureTasks": {
+          "compilerDesignated": 574500,
+          "other": 0
+        }
+      }
+    },
+    {
+      "name": "/tmp/pulse-b10-trials/.pulse-seal/measurements/b10-00-c2-fresh",
+      "measurementStatus": "failed",
+      "qualified": false,
+      "candidate": {
+        "sourceRevision": "74bf891ffe54865cca4869bf7c45d86ff172f34f",
+        "sourceTree": "c79155d6e115d58f13c362d4784a081248dd2df7",
+        "workingTree": ""
+      },
+      "controllerMs": 1793434,
+      "wallMs": 1793544,
+      "coverage": {
+        "taskReport": {
+          "status": "failed",
+          "selected": 190,
+          "recorded": 168,
+          "orderedComplete": false,
+          "passed": 167,
+          "reused": 0,
+          "cleanupPassed": false
+        }
+      },
+      "controllerCleanup": {
+        "status": "passed",
+        "timedOut": false,
+        "retainedPath": null
+      },
+      "stages": {
+        "source-checks": {
+          "status": "passed",
+          "elapsedMs": 13586,
+          "exitCode": 0
+        },
+        "build": {
+          "status": "passed",
+          "elapsedMs": 193,
+          "exitCode": 0
+        },
+        "fastly-reality": {
+          "status": "passed",
+          "elapsedMs": 14607,
+          "exitCode": 0
+        },
+        "production-dependency-audit": {
+          "status": "passed",
+          "elapsedMs": 4391,
+          "exitCode": 0
+        },
+        "workspace-unit": {
+          "status": "passed",
+          "elapsedMs": 1864,
+          "exitCode": 0
+        },
+        "workspaces": {
+          "status": "passed",
+          "elapsedMs": 11855,
+          "exitCode": 0
+        },
+        "shared-pack": {
+          "status": "passed",
+          "elapsedMs": 4033,
+          "exitCode": 0
+        },
+        "release": {
+          "status": "failed",
+          "elapsedMs": 1732085,
+          "exitCode": 1
+        }
+      },
+      "metrics": {
+        "wallMs": 1793539,
+        "controllerMs": 1793434,
+        "workerOccupancyMs": 3304627,
+        "workerTimeDefinition": "Serial executed task elapsed time, including waits and cleanup; not CPU time or bootstrap steps",
+        "tasks": {
+          "completed": 168,
+          "passed": 167,
+          "executed": 168,
+          "reused": 0
+        },
+        "avoidedTaskOccupancyMs": 0,
+        "candidatePackages": 20,
+        "observedLaunches": {
+          "asc": 1580,
+          "pack": 41,
+          "install": 9
+        },
+        "observationScope": "Node child_process launches under inherited preload; lower bounds. Shell launches, native custom-promisified calls and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.",
+        "workerCpuMs": null,
+        "peakProcessTreeRSSKiB": null,
+        "resourceLimit": "Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer",
+        "observedNodeCpuMs": 4526076.362,
+        "peakObservedNodeRSSKiB": 631500,
+        "processTree": {
+          "schemaVersion": "pulse.seal-process-observation.v1",
+          "status": "observed",
+          "error": null,
+          "rootProcess": "127970:2177438",
+          "controllerNamespacePid": 22,
+          "intervalMs": 200,
+          "samples": 8940,
+          "maxGapMs": 214,
+          "readErrors": 0,
+          "sampledCpuMs": 4641980,
+          "peakSimultaneousProcessRSSKiB": 2371276,
+          "peakProcessCount": 13,
+          "remainingObservedProcesses": [],
+          "elapsedMs": 1793467,
+          "scope": "Linux /proc snapshots of controller and observed descendants, including detached children and known surviving identities; sampler excluded",
+          "limits": "Sampled lower bounds: short-lived processes, exit CPU tails and unseen reparenting can be missed. RSS sums include shared pages in each process; not unique physical or cgroup memory. Idle/wait states are sampled report observations, not compiler CPU or precise admission events."
+        },
+        "observedCompilerElapsedMs": 2967599.6381890024
+      },
+      "sampledStages": {
+        "prerequisites": {
+          "samples": 20,
+          "peakRSSKiB": 96372,
+          "sampledMs": 3809,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 3809
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 20,
+          "peakSampledCpuCores": 0.05
+        },
+        "source-checks": {
+          "samples": 67,
+          "peakRSSKiB": 558296,
+          "sampledMs": 13222,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 13222
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 11590,
+          "peakSampledCpuCores": 1.8
+        },
+        "build": {
+          "samples": 1,
+          "peakRSSKiB": 236268,
+          "sampledMs": 0,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {},
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 0,
+          "peakSampledCpuCores": 0
+        },
+        "fastly-reality": {
+          "samples": 73,
+          "peakRSSKiB": 903088,
+          "sampledMs": 14433,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 8021,
+            "2": 6412
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 13350,
+          "peakSampledCpuCores": 4.17910447761194
+        },
+        "production-dependency-audit": {
+          "samples": 22,
+          "peakRSSKiB": 216936,
+          "sampledMs": 4207,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 4207
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 100,
+          "peakSampledCpuCores": 0.3
+        },
+        "workspace-unit": {
+          "samples": 9,
+          "peakRSSKiB": 981212,
+          "sampledMs": 1612,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 1612
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 6040,
+          "peakSampledCpuCores": 5.82089552238806
+        },
+        "workspaces": {
+          "samples": 59,
+          "peakRSSKiB": 176824,
+          "sampledMs": 11623,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 11623
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 11280,
+          "peakSampledCpuCores": 1.05
+        },
+        "shared-pack": {
+          "samples": 20,
+          "peakRSSKiB": 404340,
+          "sampledMs": 3813,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 3813
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 3070,
+          "peakSampledCpuCores": 1.35
+        },
+        "release": {
+          "samples": 8632,
+          "peakRSSKiB": 2371276,
+          "sampledMs": 1731898,
+          "compilerActiveMs": {
+            "0": 272013,
+            "1": 120763,
+            "2": 1338922
+          },
+          "ascProcessCountMs": {
+            "0": 615944,
+            "2": 647541,
+            "1": 25879,
+            "4": 417443,
+            "3": 25091
+          },
+          "compilerLimitedMs": 1338922,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 6808,
+          "sampledCpuMs": 4591740,
+          "peakSampledCpuCores": 8.217821782178218
+        },
+        "cleanup": {
+          "samples": 2,
+          "peakRSSKiB": 205360,
+          "sampledMs": 200,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 200
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 200,
+          "peakSampledCpuCores": 1.0
+        }
+      },
+      "attemptDirectory": "/tmp/pulse-b10-trials/.pulse-seal/attempts/2026-10-18T05-51-43-232Z-xvi6Jv",
+      "sharedPackFiles": [
+        {
+          "name": "pulse-compute-assets-1.0.0-beta.9.tgz",
+          "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+        },
+        {
+          "name": "pulse-compute-cli-1.0.0-beta.9.tgz",
+          "sha256": "d5c4c306d3e1866c53d9c63eb3a8ca2cf3aada27b58383d3aa1a7b1d0cdb5030"
+        },
+        {
+          "name": "pulse-compute-crypto-1.0.0-beta.9.tgz",
+          "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+        },
+        {
+          "name": "pulse-compute-entities-1.0.0-beta.9.tgz",
+          "sha256": "dbab4994a8314525ae601d018fede8a183ba6abaa7057eaa19fa108125fac9bb"
+        },
+        {
+          "name": "pulse-compute-grip-1.0.0-beta.9.tgz",
+          "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+        },
+        {
+          "name": "pulse-compute-jwt-1.0.0-beta.9.tgz",
+          "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+        },
+        {
+          "name": "pulse-compute-mcp-1.0.0-beta.9.tgz",
+          "sha256": "e30d935b5c04fdcd3b2d5ef5fae8a0acc64d133eb12ffc750026f8d59198e3e7"
+        },
+        {
+          "name": "pulse-compute-provider-fastly-1.0.0-beta.9.tgz",
+          "sha256": "97b26c43f261be87c9768b375d08cefa44e19a3e8f025927173420dd51c1fe51"
+        },
+        {
+          "name": "pulse-compute-provider-node-1.0.0-beta.9.tgz",
+          "sha256": "f9a3cfc50051798a6c99c9bdb9a9dbb1d51ffd7632dbfa3369fc9282f91c3d1e"
+        },
+        {
+          "name": "pulse-compute-pulse-1.0.0-beta.9.tgz",
+          "sha256": "6bd70212b52d4613aa65352d7e83ae5d335f106f9eb273df0ab8c2e21c6157fb"
+        },
+        {
+          "name": "pulse-compute-runtime-1.0.0-beta.9.tgz",
+          "sha256": "c7a9cc9b14c60f02e9dc33464a33334ae1ca4103a544f84cac2d5770ad6fc471"
+        },
+        {
+          "name": "pulse-compute-s3-1.0.0-beta.9.tgz",
+          "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+        },
+        {
+          "name": "pulse-compute-wasm-build-support-1.0.0-beta.9.tgz",
+          "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+        },
+        {
+          "name": "pulse-compute-wasm-compiler-1.0.0-beta.9.tgz",
+          "sha256": "6ed69ec7c8894cae0f3252cd2fbe12577b7c09932c81f1173d16a28aacfc2ef6"
+        },
+        {
+          "name": "pulse-compute-wasm-contracts-1.0.0-beta.9.tgz",
+          "sha256": "8fbcfe76bcc26b7640cf329a4e997548077d5ce5cb9255cd7b7d38257b9161f3"
+        },
+        {
+          "name": "pulse-compute-wasm-guest-link-1.0.0-beta.9.tgz",
+          "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+        },
+        {
+          "name": "pulse-compute-wasm-host-runtime-1.0.0-beta.9.tgz",
+          "sha256": "e6431b32b468483dc64905cd09d7fdfc4ab6a592ef2666ad1a576400137b2417"
+        },
+        {
+          "name": "pulse-compute-wasm-library-kit-1.0.0-beta.9.tgz",
+          "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+        },
+        {
+          "name": "pulse-compute-wasm-runtime-core-as-1.0.0-beta.9.tgz",
+          "sha256": "5727840e18bc7208d9c9074f1a76db6938f96229acbdbe7f627988c1200e0dfc"
+        },
+        {
+          "name": "pulse-compute-wasm-schema-json-1.0.0-beta.9.tgz",
+          "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+        },
+        {
+          "name": "pulse-release-manifest.json",
+          "sha256": "f8eeffb943d190e7de522851f0aaf5c2dc67365c353b3a2aa0db00d3da31df77"
+        },
+        {
+          "name": "pulse-source-release-catalog.json",
+          "sha256": "b0375c179d283499d00667a7126aa10bb91e73d97946940d382bf614b7469378"
+        }
+      ],
+      "taskOccupancyMs": {
+        "taskReport": {
+          "compilerDesignated": 2709991,
+          "other": 594636
+        }
+      }
+    }
+  ],
+  "sameInputs": {
+    "candidate": true,
+    "lockfileSha256": true,
+    "toolchain": true,
+    "selections": true,
+    "inputs": true
+  },
+  "sameSharedPackFiles": true,
+  "sameWorkerInputs": [
+    true,
+    true
+  ],
+  "environmentIdentityEqual": false,
+  "environmentNote": "Full digests differ, including the fresh NODE_OPTIONS preload path. Normalized inherited-environment equality could not be established; no claim that this was the only difference.",
+  "taskComparison": [
+    {
+      "stage": "taskReport",
+      "name": "cli-entities-installed-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 90766,
+      "c2Ms": 100903,
+      "deltaMs": 10137,
+      "ratio": 1.1116827887094287,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "schema-codecs",
+      "compilerDesignated": true,
+      "c1Ms": 108734,
+      "c2Ms": 116005,
+      "deltaMs": 7271,
+      "ratio": 1.0668696084021556,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-native-platform-capabilities",
+      "compilerDesignated": true,
+      "c1Ms": 110411,
+      "c2Ms": 116891,
+      "deltaMs": 6480,
+      "ratio": 1.0586898044578892,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-rs256",
+      "compilerDesignated": true,
+      "c1Ms": 303092,
+      "c2Ms": 309209,
+      "deltaMs": 6117,
+      "ratio": 1.0201819909466432,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-handle-frames",
+      "compilerDesignated": true,
+      "c1Ms": 79709,
+      "c2Ms": 85036,
+      "deltaMs": 5327,
+      "ratio": 1.0668305962940194,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-driver-behavior-o09",
+      "compilerDesignated": true,
+      "c1Ms": 31630,
+      "c2Ms": 36706,
+      "deltaMs": 5076,
+      "ratio": 1.1604805564337655,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "four-mode-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 35887,
+      "c2Ms": 40671,
+      "deltaMs": 4784,
+      "ratio": 1.1333073257725639,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-numeric-regions",
+      "compilerDesignated": true,
+      "c1Ms": 56332,
+      "c2Ms": 60907,
+      "deltaMs": 4575,
+      "ratio": 1.0812149399985798,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "guest-link-materialization-stage",
+      "compilerDesignated": true,
+      "c1Ms": 26667,
+      "c2Ms": 30821,
+      "deltaMs": 4154,
+      "ratio": 1.1557730528368395,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "events-cli-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 51261,
+      "c2Ms": 54989,
+      "deltaMs": 3728,
+      "ratio": 1.0727258539630518,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "clean-machine-acceptance",
+      "compilerDesignated": true,
+      "c1Ms": 241024,
+      "c2Ms": 244653,
+      "deltaMs": 3629,
+      "ratio": 1.0150565918746681,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-schema-json-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 62022,
+      "c2Ms": 65598,
+      "deltaMs": 3576,
+      "ratio": 1.0576569604333945,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "catalog-router-parity",
+      "compilerDesignated": true,
+      "c1Ms": 22678,
+      "c2Ms": 26054,
+      "deltaMs": 3376,
+      "ratio": 1.1488667430990387,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "assets-package-owned-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 3792,
+      "c2Ms": 7083,
+      "deltaMs": 3291,
+      "ratio": 1.8678797468354431,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-numeric-budgets",
+      "compilerDesignated": true,
+      "c1Ms": 39376,
+      "c2Ms": 42581,
+      "deltaMs": 3205,
+      "ratio": 1.0813947582283625,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "time-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 9665,
+      "c2Ms": 12625,
+      "deltaMs": 2960,
+      "ratio": 1.306259699948267,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-entities-native-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 72365,
+      "c2Ms": 75265,
+      "deltaMs": 2900,
+      "ratio": 1.04007462170939,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-project-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 69137,
+      "c2Ms": 72008,
+      "deltaMs": 2871,
+      "ratio": 1.0415262449918279,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-handle-ownership",
+      "compilerDesignated": true,
+      "c1Ms": 38598,
+      "c2Ms": 41453,
+      "deltaMs": 2855,
+      "ratio": 1.0739675630861703,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "guest-json-roundtrip",
+      "compilerDesignated": false,
+      "c1Ms": 3686,
+      "c2Ms": 6473,
+      "deltaMs": 2787,
+      "ratio": 1.7561041779706998,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-handler-topology",
+      "compilerDesignated": true,
+      "c1Ms": 49423,
+      "c2Ms": 52179,
+      "deltaMs": 2756,
+      "ratio": 1.0557635109159702,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-native-wasm",
+      "compilerDesignated": true,
+      "c1Ms": 57247,
+      "c2Ms": 59990,
+      "deltaMs": 2743,
+      "ratio": 1.0479151745943018,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-03-fetch-composition",
+      "compilerDesignated": true,
+      "c1Ms": 12130,
+      "c2Ms": 14867,
+      "deltaMs": 2737,
+      "ratio": 1.225638911788953,
+      "status1": "passed",
+      "status2": "failed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "logging-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 3849,
+      "c2Ms": 6538,
+      "deltaMs": 2689,
+      "ratio": 1.6986230189659652,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "assets-native-embedded",
+      "compilerDesignated": true,
+      "c1Ms": 14627,
+      "c2Ms": 17241,
+      "deltaMs": 2614,
+      "ratio": 1.1787106036781294,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-router-terminal-middleware",
+      "compilerDesignated": true,
+      "c1Ms": 10658,
+      "c2Ms": 13242,
+      "deltaMs": 2584,
+      "ratio": 1.2424469881778946,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-es256-signing",
+      "compilerDesignated": false,
+      "c1Ms": 3652,
+      "c2Ms": 6232,
+      "deltaMs": 2580,
+      "ratio": 1.706462212486309,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-envelope-feasibility",
+      "compilerDesignated": true,
+      "c1Ms": 5677,
+      "c2Ms": 8218,
+      "deltaMs": 2541,
+      "ratio": 1.4475955610357583,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "multifile-source-indexes",
+      "compilerDesignated": false,
+      "c1Ms": 3972,
+      "c2Ms": 6509,
+      "deltaMs": 2537,
+      "ratio": 1.6387210473313192,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "mcp-compatibility",
+      "compilerDesignated": false,
+      "c1Ms": 3834,
+      "c2Ms": 6344,
+      "deltaMs": 2510,
+      "ratio": 1.6546687532603026,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-contracts",
+      "compilerDesignated": false,
+      "c1Ms": 3842,
+      "c2Ms": 6278,
+      "deltaMs": 2436,
+      "ratio": 1.6340447683498178,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-conditional-kv",
+      "compilerDesignated": true,
+      "c1Ms": 26933,
+      "c2Ms": 29326,
+      "deltaMs": 2393,
+      "ratio": 1.0888501095310585,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "provider-toolchain",
+      "compilerDesignated": false,
+      "c1Ms": 3935,
+      "c2Ms": 6309,
+      "deltaMs": 2374,
+      "ratio": 1.6033036848792885,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-schema-bridge",
+      "compilerDesignated": false,
+      "c1Ms": 4007,
+      "c2Ms": 6369,
+      "deltaMs": 2362,
+      "ratio": 1.5894684302470676,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-01-hello-json",
+      "compilerDesignated": true,
+      "c1Ms": 11494,
+      "c2Ms": 13837,
+      "deltaMs": 2343,
+      "ratio": 1.2038454846006612,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-digest-text-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 11708,
+      "c2Ms": 14046,
+      "deltaMs": 2338,
+      "ratio": 1.1996925179364537,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "continuation-registry",
+      "compilerDesignated": false,
+      "c1Ms": 3974,
+      "c2Ms": 6298,
+      "deltaMs": 2324,
+      "ratio": 1.5848012078510316,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "reachable-graph",
+      "compilerDesignated": false,
+      "c1Ms": 3833,
+      "c2Ms": 6155,
+      "deltaMs": 2322,
+      "ratio": 1.605791807983303,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-hardening",
+      "compilerDesignated": true,
+      "c1Ms": 32511,
+      "c2Ms": 34823,
+      "deltaMs": 2312,
+      "ratio": 1.0711143920519208,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-catalog",
+      "compilerDesignated": false,
+      "c1Ms": 4049,
+      "c2Ms": 6347,
+      "deltaMs": 2298,
+      "ratio": 1.5675475426031118,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-package-owned-lowering",
+      "compilerDesignated": false,
+      "c1Ms": 4112,
+      "c2Ms": 6407,
+      "deltaMs": 2295,
+      "ratio": 1.5581225680933852,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-managed-handler",
+      "compilerDesignated": true,
+      "c1Ms": 3980,
+      "c2Ms": 6267,
+      "deltaMs": 2287,
+      "ratio": 1.5746231155778894,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-json-rpc-corpus",
+      "compilerDesignated": false,
+      "c1Ms": 4038,
+      "c2Ms": 6322,
+      "deltaMs": 2284,
+      "ratio": 1.5656265477959386,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "javascript-effect-adapter",
+      "compilerDesignated": false,
+      "c1Ms": 4154,
+      "c2Ms": 6423,
+      "deltaMs": 2269,
+      "ratio": 1.5462205103514686,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-checkpoints",
+      "compilerDesignated": false,
+      "c1Ms": 3971,
+      "c2Ms": 6223,
+      "deltaMs": 2252,
+      "ratio": 1.5671115588013096,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "mcp-tools",
+      "compilerDesignated": false,
+      "c1Ms": 4131,
+      "c2Ms": 6381,
+      "deltaMs": 2250,
+      "ratio": 1.5446623093681917,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-executable-contracts",
+      "compilerDesignated": true,
+      "c1Ms": 28462,
+      "c2Ms": 30692,
+      "deltaMs": 2230,
+      "ratio": 1.0783500808095003,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "grip-package-runtime",
+      "compilerDesignated": true,
+      "c1Ms": 4128,
+      "c2Ms": 6357,
+      "deltaMs": 2229,
+      "ratio": 1.5399709302325582,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-runtime-builtin",
+      "compilerDesignated": false,
+      "c1Ms": 4258,
+      "c2Ms": 6485,
+      "deltaMs": 2227,
+      "ratio": 1.523015500234852,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-write-contract",
+      "compilerDesignated": false,
+      "c1Ms": 4039,
+      "c2Ms": 6260,
+      "deltaMs": 2221,
+      "ratio": 1.5498885862837335,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "bounded-app-logic",
+      "compilerDesignated": true,
+      "c1Ms": 39518,
+      "c2Ms": 41691,
+      "deltaMs": 2173,
+      "ratio": 1.0549876005870742,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "package-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 4165,
+      "c2Ms": 6260,
+      "deltaMs": 2095,
+      "ratio": 1.503001200480192,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-inspection",
+      "compilerDesignated": false,
+      "c1Ms": 15609,
+      "c2Ms": 17703,
+      "deltaMs": 2094,
+      "ratio": 1.1341533730540072,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-digest-text-contract",
+      "compilerDesignated": false,
+      "c1Ms": 4058,
+      "c2Ms": 6149,
+      "deltaMs": 2091,
+      "ratio": 1.515278462296698,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-managed-handler-effects",
+      "compilerDesignated": true,
+      "c1Ms": 4354,
+      "c2Ms": 6371,
+      "deltaMs": 2017,
+      "ratio": 1.4632521819016995,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "mcp-http",
+      "compilerDesignated": false,
+      "c1Ms": 4392,
+      "c2Ms": 6377,
+      "deltaMs": 1985,
+      "ratio": 1.4519581056466302,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-guarded-arguments",
+      "compilerDesignated": true,
+      "c1Ms": 40575,
+      "c2Ms": 42496,
+      "deltaMs": 1921,
+      "ratio": 1.0473444239063463,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "events-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 6403,
+      "c2Ms": 8322,
+      "deltaMs": 1919,
+      "ratio": 1.2997032640949555,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "json-as-compatibility",
+      "compilerDesignated": true,
+      "c1Ms": 6404,
+      "c2Ms": 8316,
+      "deltaMs": 1912,
+      "ratio": 1.2985633978763274,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "project-modules",
+      "compilerDesignated": false,
+      "c1Ms": 4619,
+      "c2Ms": 6489,
+      "deltaMs": 1870,
+      "ratio": 1.404849534531284,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "bounded-read-loops",
+      "compilerDesignated": true,
+      "c1Ms": 41653,
+      "c2Ms": 43494,
+      "deltaMs": 1841,
+      "ratio": 1.044198497107051,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "report-capsule-contract",
+      "compilerDesignated": false,
+      "c1Ms": 19198,
+      "c2Ms": 20993,
+      "deltaMs": 1795,
+      "ratio": 1.0934993228461298,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-02-request-schema",
+      "compilerDesignated": true,
+      "c1Ms": 15869,
+      "c2Ms": 17626,
+      "deltaMs": 1757,
+      "ratio": 1.1107190119100132,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-api-runtime",
+      "compilerDesignated": true,
+      "c1Ms": 4668,
+      "c2Ms": 6415,
+      "deltaMs": 1747,
+      "ratio": 1.3742502142245072,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-argument-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 21160,
+      "c2Ms": 22898,
+      "deltaMs": 1738,
+      "ratio": 1.0821361058601133,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "schema-registry",
+      "compilerDesignated": false,
+      "c1Ms": 4581,
+      "c2Ms": 6318,
+      "deltaMs": 1737,
+      "ratio": 1.3791748526522594,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-es256-signing",
+      "compilerDesignated": true,
+      "c1Ms": 33290,
+      "c2Ms": 35008,
+      "deltaMs": 1718,
+      "ratio": 1.0516070892159808,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "str03c-bounded-transforms",
+      "compilerDesignated": true,
+      "c1Ms": 14315,
+      "c2Ms": 16025,
+      "deltaMs": 1710,
+      "ratio": 1.1194551170101292,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-helper-contract",
+      "compilerDesignated": false,
+      "c1Ms": 4724,
+      "c2Ms": 6376,
+      "deltaMs": 1652,
+      "ratio": 1.3497036409822185,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "schema-kv-parity",
+      "compilerDesignated": true,
+      "c1Ms": 14098,
+      "c2Ms": 15708,
+      "deltaMs": 1610,
+      "ratio": 1.1142005958291956,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "str03a-generated-output",
+      "compilerDesignated": true,
+      "c1Ms": 16829,
+      "c2Ms": 18385,
+      "deltaMs": 1556,
+      "ratio": 1.092459445005645,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-resource-inventory",
+      "compilerDesignated": false,
+      "c1Ms": 9555,
+      "c2Ms": 11094,
+      "deltaMs": 1539,
+      "ratio": 1.1610675039246467,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-javascript-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 4895,
+      "c2Ms": 6422,
+      "deltaMs": 1527,
+      "ratio": 1.3119509703779366,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-init-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 23754,
+      "c2Ms": 25253,
+      "deltaMs": 1499,
+      "ratio": 1.0631051612360023,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-node-native-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 22581,
+      "c2Ms": 24072,
+      "deltaMs": 1491,
+      "ratio": 1.0660289624020194,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-opaque-node-emission",
+      "compilerDesignated": true,
+      "c1Ms": 5043,
+      "c2Ms": 6531,
+      "deltaMs": 1488,
+      "ratio": 1.2950624628197502,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "package-reachability",
+      "compilerDesignated": false,
+      "c1Ms": 5027,
+      "c2Ms": 6464,
+      "deltaMs": 1437,
+      "ratio": 1.2858563755719117,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-project-guards",
+      "compilerDesignated": true,
+      "c1Ms": 11666,
+      "c2Ms": 13089,
+      "deltaMs": 1423,
+      "ratio": 1.1219783987656438,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-native-guest-source",
+      "compilerDesignated": true,
+      "c1Ms": 7300,
+      "c2Ms": 8712,
+      "deltaMs": 1412,
+      "ratio": 1.1934246575342466,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "external-lowerers",
+      "compilerDesignated": true,
+      "c1Ms": 4898,
+      "c2Ms": 6275,
+      "deltaMs": 1377,
+      "ratio": 1.2811351572070233,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-entry-proof",
+      "compilerDesignated": true,
+      "c1Ms": 33702,
+      "c2Ms": 35054,
+      "deltaMs": 1352,
+      "ratio": 1.040116313571895,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-dev-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 14044,
+      "c2Ms": 15337,
+      "deltaMs": 1293,
+      "ratio": 1.0920677869552835,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pulse-context-corpus",
+      "compilerDesignated": false,
+      "c1Ms": 5019,
+      "c2Ms": 6250,
+      "deltaMs": 1231,
+      "ratio": 1.2452679816696552,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-signing",
+      "compilerDesignated": true,
+      "c1Ms": 14825,
+      "c2Ms": 16024,
+      "deltaMs": 1199,
+      "ratio": 1.080876897133221,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "package-root-native",
+      "compilerDesignated": true,
+      "c1Ms": 5204,
+      "c2Ms": 6384,
+      "deltaMs": 1180,
+      "ratio": 1.2267486548808608,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-reference-provenance",
+      "compilerDesignated": true,
+      "c1Ms": 14571,
+      "c2Ms": 15703,
+      "deltaMs": 1132,
+      "ratio": 1.0776885594674352,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-native-plan",
+      "compilerDesignated": true,
+      "c1Ms": 7985,
+      "c2Ms": 9115,
+      "deltaMs": 1130,
+      "ratio": 1.1415153412648715,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-expansion-doctor",
+      "compilerDesignated": true,
+      "c1Ms": 12248,
+      "c2Ms": 13304,
+      "deltaMs": 1056,
+      "ratio": 1.086218158066623,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-read-contract",
+      "compilerDesignated": false,
+      "c1Ms": 5469,
+      "c2Ms": 6496,
+      "deltaMs": 1027,
+      "ratio": 1.1877857012250868,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-executable-init-dev",
+      "compilerDesignated": true,
+      "c1Ms": 10170,
+      "c2Ms": 11142,
+      "deltaMs": 972,
+      "ratio": 1.095575221238938,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "npm-source-imports",
+      "compilerDesignated": true,
+      "c1Ms": 7268,
+      "c2Ms": 8202,
+      "deltaMs": 934,
+      "ratio": 1.1285085305448541,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-seal-lifecycle",
+      "compilerDesignated": false,
+      "c1Ms": 7234,
+      "c2Ms": 8146,
+      "deltaMs": 912,
+      "ratio": 1.126071329831352,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-imported-inputs",
+      "compilerDesignated": true,
+      "c1Ms": 15704,
+      "c2Ms": 16600,
+      "deltaMs": 896,
+      "ratio": 1.0570555272542028,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-artifact-determinism",
+      "compilerDesignated": false,
+      "c1Ms": 24289,
+      "c2Ms": 25179,
+      "deltaMs": 890,
+      "ratio": 1.0366421013627567,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "node-cross-target-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 8691,
+      "c2Ms": 9546,
+      "deltaMs": 855,
+      "ratio": 1.0983776320331378,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "node-router-context-parity",
+      "compilerDesignated": true,
+      "c1Ms": 6501,
+      "c2Ms": 7345,
+      "deltaMs": 844,
+      "ratio": 1.129826180587602,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-javascript-target-compilation",
+      "compilerDesignated": false,
+      "c1Ms": 20227,
+      "c2Ms": 21034,
+      "deltaMs": 807,
+      "ratio": 1.0398971671528154,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "time-consumer",
+      "compilerDesignated": true,
+      "c1Ms": 20947,
+      "c2Ms": 21746,
+      "deltaMs": 799,
+      "ratio": 1.0381438869527857,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-router-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 10336,
+      "c2Ms": 11094,
+      "deltaMs": 758,
+      "ratio": 1.0733359133126934,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "router-selected-groups",
+      "compilerDesignated": true,
+      "c1Ms": 7683,
+      "c2Ms": 8414,
+      "deltaMs": 731,
+      "ratio": 1.0951451256019784,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-digest-storage-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 14071,
+      "c2Ms": 14792,
+      "deltaMs": 721,
+      "ratio": 1.0512401392935826,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-rs256",
+      "compilerDesignated": false,
+      "c1Ms": 5557,
+      "c2Ms": 6264,
+      "deltaMs": 707,
+      "ratio": 1.12722692100054,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-source-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 11173,
+      "c2Ms": 11810,
+      "deltaMs": 637,
+      "ratio": 1.0570124407052717,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "guest-link-package",
+      "compilerDesignated": true,
+      "c1Ms": 9191,
+      "c2Ms": 9805,
+      "deltaMs": 614,
+      "ratio": 1.0668044826460668,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-cross-target-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 7952,
+      "c2Ms": 8559,
+      "deltaMs": 607,
+      "ratio": 1.0763329979879275,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-incoming-body-forwarding",
+      "compilerDesignated": true,
+      "c1Ms": 11007,
+      "c2Ms": 11603,
+      "deltaMs": 596,
+      "ratio": 1.0541473607704188,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pulse-context-host",
+      "compilerDesignated": false,
+      "c1Ms": 6760,
+      "c2Ms": 7348,
+      "deltaMs": 588,
+      "ratio": 1.0869822485207101,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-record-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 18835,
+      "c2Ms": 19411,
+      "deltaMs": 576,
+      "ratio": 1.0305813644810193,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-api-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 4557,
+      "c2Ms": 5123,
+      "deltaMs": 566,
+      "ratio": 1.1242045205178846,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "test-orchestration",
+      "compilerDesignated": false,
+      "c1Ms": 11021,
+      "c2Ms": 11577,
+      "deltaMs": 556,
+      "ratio": 1.0504491425460485,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-loop-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 8849,
+      "c2Ms": 9401,
+      "deltaMs": 552,
+      "ratio": 1.0623799299355858,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "text-capacity-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 17823,
+      "c2Ms": 18330,
+      "deltaMs": 507,
+      "ratio": 1.0284463894967177,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "logging-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 5506,
+      "c2Ms": 5993,
+      "deltaMs": 487,
+      "ratio": 1.08844896476571,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "assets-lowering-plan",
+      "compilerDesignated": true,
+      "c1Ms": 4076,
+      "c2Ms": 4505,
+      "deltaMs": 429,
+      "ratio": 1.1052502453385673,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-conditional-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 7037,
+      "c2Ms": 7460,
+      "deltaMs": 423,
+      "ratio": 1.0601108426886456,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-native-runtime",
+      "compilerDesignated": true,
+      "c1Ms": 9256,
+      "c2Ms": 9674,
+      "deltaMs": 418,
+      "ratio": 1.0451598962834918,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "node-launcher",
+      "compilerDesignated": true,
+      "c1Ms": 9848,
+      "c2Ms": 10262,
+      "deltaMs": 414,
+      "ratio": 1.042038992688871,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "grip-cross-target-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 9426,
+      "c2Ms": 9825,
+      "deltaMs": 399,
+      "ratio": 1.042329726288988,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "bounded-loop-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 8144,
+      "c2Ms": 8543,
+      "deltaMs": 399,
+      "ratio": 1.0489931237721022,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-field-projection",
+      "compilerDesignated": true,
+      "c1Ms": 14427,
+      "c2Ms": 14817,
+      "deltaMs": 390,
+      "ratio": 1.0270326471199833,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "grip-package-owned-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 3892,
+      "c2Ms": 4263,
+      "deltaMs": 371,
+      "ratio": 1.0953237410071943,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-body-read",
+      "compilerDesignated": false,
+      "c1Ms": 10256,
+      "c2Ms": 10620,
+      "deltaMs": 364,
+      "ratio": 1.0354914196567864,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-migration-schema-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 3588,
+      "c2Ms": 3920,
+      "deltaMs": 332,
+      "ratio": 1.0925306577480491,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "hidden-contracts",
+      "compilerDesignated": false,
+      "c1Ms": 3999,
+      "c2Ms": 4322,
+      "deltaMs": 323,
+      "ratio": 1.080770192548137,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "guest-link-audit-diagnostics",
+      "compilerDesignated": true,
+      "c1Ms": 16231,
+      "c2Ms": 16550,
+      "deltaMs": 319,
+      "ratio": 1.0196537489988293,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-diagnostics",
+      "compilerDesignated": true,
+      "c1Ms": 7820,
+      "c2Ms": 8081,
+      "deltaMs": 261,
+      "ratio": 1.033375959079284,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-native-abi-feasibility",
+      "compilerDesignated": true,
+      "c1Ms": 4285,
+      "c2Ms": 4545,
+      "deltaMs": 260,
+      "ratio": 1.060676779463244,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-relationships",
+      "compilerDesignated": false,
+      "c1Ms": 8552,
+      "c2Ms": 8783,
+      "deltaMs": 231,
+      "ratio": 1.0270112254443404,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-package-owned-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 4021,
+      "c2Ms": 4246,
+      "deltaMs": 225,
+      "ratio": 1.0559562297935836,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "str02b-node-native",
+      "compilerDesignated": true,
+      "c1Ms": 9399,
+      "c2Ms": 9597,
+      "deltaMs": 198,
+      "ratio": 1.021066070858602,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-helper-vocabulary",
+      "compilerDesignated": true,
+      "c1Ms": 6106,
+      "c2Ms": 6298,
+      "deltaMs": 192,
+      "ratio": 1.0314444808385195,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-string-index",
+      "compilerDesignated": true,
+      "c1Ms": 7545,
+      "c2Ms": 7731,
+      "deltaMs": 186,
+      "ratio": 1.024652087475149,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "workspace-hygiene",
+      "compilerDesignated": false,
+      "c1Ms": 6161,
+      "c2Ms": 6344,
+      "deltaMs": 183,
+      "ratio": 1.0297029702970297,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "config-secrets-kv-redaction",
+      "compilerDesignated": true,
+      "c1Ms": 4117,
+      "c2Ms": 4289,
+      "deltaMs": 172,
+      "ratio": 1.0417779936847218,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "boundaries",
+      "compilerDesignated": false,
+      "c1Ms": 6096,
+      "c2Ms": 6259,
+      "deltaMs": 163,
+      "ratio": 1.0267388451443569,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "application-error-boundaries",
+      "compilerDesignated": true,
+      "c1Ms": 7115,
+      "c2Ms": 7271,
+      "deltaMs": 156,
+      "ratio": 1.0219255094869992,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fetch-projections-request-bodies",
+      "compilerDesignated": true,
+      "c1Ms": 4229,
+      "c2Ms": 4358,
+      "deltaMs": 129,
+      "ratio": 1.0305036651690707,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "target-support",
+      "compilerDesignated": false,
+      "c1Ms": 4038,
+      "c2Ms": 4143,
+      "deltaMs": 105,
+      "ratio": 1.026002971768202,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "package-exports",
+      "compilerDesignated": false,
+      "c1Ms": 6145,
+      "c2Ms": 6237,
+      "deltaMs": 92,
+      "ratio": 1.0149715215622457,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "application-errors",
+      "compilerDesignated": true,
+      "c1Ms": 21635,
+      "c2Ms": 21723,
+      "deltaMs": 88,
+      "ratio": 1.0040674832447423,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-runtime-policy",
+      "compilerDesignated": false,
+      "c1Ms": 7160,
+      "c2Ms": 7236,
+      "deltaMs": 76,
+      "ratio": 1.0106145251396648,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-conditional-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 4873,
+      "c2Ms": 4908,
+      "deltaMs": 35,
+      "ratio": 1.0071824338190027,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-handler-associations",
+      "compilerDesignated": false,
+      "c1Ms": 4540,
+      "c2Ms": 4573,
+      "deltaMs": 33,
+      "ratio": 1.0072687224669603,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "assets-javascript-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 6582,
+      "c2Ms": 6604,
+      "deltaMs": 22,
+      "ratio": 1.003342449103616,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-feature-acceptance",
+      "compilerDesignated": false,
+      "c1Ms": 6379,
+      "c2Ms": 6377,
+      "deltaMs": -2,
+      "ratio": 0.9996864712337357,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-design-contract",
+      "compilerDesignated": false,
+      "c1Ms": 5002,
+      "c2Ms": 4983,
+      "deltaMs": -19,
+      "ratio": 0.9962015193922431,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "logging-contract",
+      "compilerDesignated": false,
+      "c1Ms": 3861,
+      "c2Ms": 3831,
+      "deltaMs": -30,
+      "ratio": 0.9922299922299922,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-size-evidence",
+      "compilerDesignated": false,
+      "c1Ms": 4382,
+      "c2Ms": 4350,
+      "deltaMs": -32,
+      "ratio": 0.9926973984481972,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-graph-diagnostics",
+      "compilerDesignated": false,
+      "c1Ms": 8502,
+      "c2Ms": 8454,
+      "deltaMs": -48,
+      "ratio": 0.9943542695836274,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-conditional-gates",
+      "compilerDesignated": false,
+      "c1Ms": 4115,
+      "c2Ms": 4026,
+      "deltaMs": -89,
+      "ratio": 0.9783718104495748,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "shared-stage-o19",
+      "compilerDesignated": false,
+      "c1Ms": 9133,
+      "c2Ms": 9026,
+      "deltaMs": -107,
+      "ratio": 0.9882842439505092,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "suite-shape",
+      "compilerDesignated": false,
+      "c1Ms": 4572,
+      "c2Ms": 4454,
+      "deltaMs": -118,
+      "ratio": 0.9741907261592301,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-command-spec",
+      "compilerDesignated": true,
+      "c1Ms": 3918,
+      "c2Ms": 3796,
+      "deltaMs": -122,
+      "ratio": 0.968861664114344,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-workflow",
+      "compilerDesignated": false,
+      "c1Ms": 6130,
+      "c2Ms": 6006,
+      "deltaMs": -124,
+      "ratio": 0.9797716150081566,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-node-transport",
+      "compilerDesignated": false,
+      "c1Ms": 4128,
+      "c2Ms": 3980,
+      "deltaMs": -148,
+      "ratio": 0.9641472868217055,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-javascript-admission",
+      "compilerDesignated": false,
+      "c1Ms": 10747,
+      "c2Ms": 10561,
+      "deltaMs": -186,
+      "ratio": 0.9826928445147483,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-orchestration-demo",
+      "compilerDesignated": false,
+      "c1Ms": 10288,
+      "c2Ms": 10073,
+      "deltaMs": -215,
+      "ratio": 0.9791018662519441,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-design-contract",
+      "compilerDesignated": false,
+      "c1Ms": 5140,
+      "c2Ms": 4902,
+      "deltaMs": -238,
+      "ratio": 0.9536964980544748,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-config-planning",
+      "compilerDesignated": false,
+      "c1Ms": 6518,
+      "c2Ms": 6264,
+      "deltaMs": -254,
+      "ratio": 0.9610309911015649,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "mcp-authorization",
+      "compilerDesignated": false,
+      "c1Ms": 6811,
+      "c2Ms": 6514,
+      "deltaMs": -297,
+      "ratio": 0.9563940684187344,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "api-surface",
+      "compilerDesignated": false,
+      "c1Ms": 4885,
+      "c2Ms": 4503,
+      "deltaMs": -382,
+      "ratio": 0.9218014329580348,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-tag",
+      "compilerDesignated": false,
+      "c1Ms": 4551,
+      "c2Ms": 4164,
+      "deltaMs": -387,
+      "ratio": 0.914963744232037,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pulse-context-application",
+      "compilerDesignated": false,
+      "c1Ms": 9635,
+      "c2Ms": 9240,
+      "deltaMs": -395,
+      "ratio": 0.9590036325895174,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-recovery",
+      "compilerDesignated": false,
+      "c1Ms": 6603,
+      "c2Ms": 6149,
+      "deltaMs": -454,
+      "ratio": 0.9312433742238376,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-viewer",
+      "compilerDesignated": false,
+      "c1Ms": 14219,
+      "c2Ms": 13715,
+      "deltaMs": -504,
+      "ratio": 0.9645544693719671,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-retained-evidence",
+      "compilerDesignated": false,
+      "c1Ms": 35060,
+      "c2Ms": 34479,
+      "deltaMs": -581,
+      "ratio": 0.9834284084426697,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-capture-proof",
+      "compilerDesignated": true,
+      "c1Ms": 12195,
+      "c2Ms": 11170,
+      "deltaMs": -1025,
+      "ratio": 0.9159491594915949,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-recovery-runner",
+      "compilerDesignated": false,
+      "c1Ms": 53493,
+      "c2Ms": 51264,
+      "deltaMs": -2229,
+      "ratio": 0.9583309965789917,
+      "status1": "passed",
+      "status2": "passed"
+    }
+  ],
+  "passedTaskMedianRatio": 1.0739675630861703,
+  "passedTaskAggregateRatio": 1.077968003313437,
+  "recommendation": "Retain 2 workers / 1 compiler; the failed two-slot attempt is not a speedup or complete qualification.",
+  "compilerIntervalLimit": "Raw asc launches include nested CLI relaunches. Summed intervals overlap and are not logical compilation count, serial occupancy or CPU time."
+}
