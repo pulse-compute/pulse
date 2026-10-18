@@ -120,6 +120,8 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['fetch_json', ['i32', 'i32'], ['i32']],
   ['fetch_text', ['i32'], ['i32']],
   ['fetch_header', ['i32', 'i32'], ['i32']],
+  // Optional v1 collection admission: older hosts reject the required import.
+  ['effect_collection_count', ['i32', 'i32', 'i32'], ['i32']],
   ['effect_begin', ['i32', 'i32'], []]
 ]);
 

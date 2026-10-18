@@ -615,6 +615,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     return Object.freeze(headers.map((pair) => Object.freeze(pair)));
   }
 
+  let collectionAdmission;
   const pulseHost = {
     value_json(handle) {
       const text = JSON.stringify(value(handle) ?? null);
@@ -630,6 +631,15 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     value_boolean(input) { return put(Number(input) !== 0); },
     value_number(input) { return put(Number(input)); },
     value_string(pointer, length) { return put(decodeAssemblyScriptString(memory(), pointer, length)); },
+    effect_collection_count(handle, max, stateIndex) {
+      const continuation = plan.continuations.find(c => c.stateIndex === stateIndex);
+      if (collectionAdmission || continuation?.kind !== "effect-collection-v1" || continuation.effectIds.length !== max) throw new CanonicalNativeHostError("Invalid collection admission identity.", "PULSE_CANONICAL_NATIVE_CONTINUATION_MISMATCH");
+      const input = value(handle);
+      if (!Array.isArray(input) || !Number.isInteger(max) || max < 1 || max > 32) throw new portableKv.PulseRuntimeContractError('PULSE_EFFECT_COLLECTION_CAPACITY', 'Collection requires a bounded array and capacity 1–32.');
+      if (input.length > max) throw new portableKv.PulseRuntimeContractError('PULSE_EFFECT_COLLECTION_OVERFLOW', 'Collection capacity exceeded.');
+      if (input.length) collectionAdmission = { stateIndex, count: input.length };
+      return input.length;
+    },
     value_array() { return put([]); },
     value_array_push(arrayHandle, valueHandle) {
       const target = value(arrayHandle);
@@ -833,9 +843,9 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const payload = value(payloadHandle);
       // Admission happens while the guest builds its suspension group. A bad
       // later member throws before the host dispatch loop starts any member.
-      if (effect.kind === 'fetch' && options.incomingBody) {
+      if (effect.kind === 'fetch' && (options.incomingBody || plan.continuations.find(c => c.id === effect.continuationId)?.kind === 'effect-collection-v1')) {
         const admitted = canonicalRuntime.normalizeProviderEffect(nativeEffect(effect, payload), schemaCodecs, { ...options, strict, target: 'native', provider: adapter.id });
-        if (admitted.init.bodyMode === 'incoming-request-v1') options.incomingBody.claim(admitted.init.body, admitted.init);
+        if (admitted.init.bodyMode === 'incoming-request-v1') options.incomingBody?.claim(admitted.init.body, admitted.init);
       }
       const kvAdmission = portableKv.isConditionalKv(effect.kind) ? portableKv.admitConditionalKv(nativeEffect(effect, payload), options) : undefined;
       if (kvAdmission) portableKv.registerKvRedactions(kvAdmission, (value) => sensitiveValues.add(value));
@@ -1043,6 +1053,10 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     pendingEffects: takePending,
     prepareEffectResult,
     captureApplicationError,
+    consumeCollectionAdmission(stateIndex, count) {
+      if (!collectionAdmission || collectionAdmission.stateIndex !== stateIndex || collectionAdmission.count !== count) throw new CanonicalNativeHostError('Collection active count differs from admitted input.', 'PULSE_CANONICAL_NATIVE_CONTINUATION_MISMATCH');
+      collectionAdmission = undefined;
+    },
     setEffectResult,
     setEffectFailure,
     resultValue,
@@ -1136,8 +1150,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       const continuationState = controller.continuationState();
       const continuation = controller.plan.continuations.find((entry) => Number(entry.stateIndex) === Number(continuationState));
       if (!continuation) throw new CanonicalNativeHostError('Native suspension references an unknown continuation state.', 'PULSE_CANONICAL_NATIVE_CONTINUATION_MISMATCH', { continuationState });
+      if (continuation.kind === 'effect-collection-v1') controller.consumeCollectionAdmission(continuationState, pending.length);
       const pendingEffectIds = pending.map((entry) => entry.effect.id);
-      if (JSON.stringify(pendingEffectIds) !== JSON.stringify(continuation.effectIds)) {
+      if (JSON.stringify(pendingEffectIds) !== JSON.stringify(continuation.kind === 'effect-collection-v1' && pendingEffectIds.length > 0 ? continuation.effectIds.slice(0, pendingEffectIds.length) : continuation.effectIds)) {
         throw new CanonicalNativeHostError('Native pending effects do not match the continuation contract.', 'PULSE_CANONICAL_NATIVE_CONTINUATION_MISMATCH', { continuationId: continuation.id, expected: continuation.effectIds, actual: pendingEffectIds });
       }
       activeContinuation = {
@@ -1226,6 +1241,20 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       if (!eventMode && options.signal?.aborted) throw nativeRequestCancelled(options.signal);
       const failures = settled.filter(entry => entry.status === 'rejected');
       const failed = failures.find(entry => !portableKv.isApplicationError(entry.reason)) || failures[0];
+      if (failed && continuation.kind === 'effect-collection-v1') {
+        const evidence = Object.freeze(settled.flatMap((item, index) => item.status === 'rejected' ? [Object.freeze({
+          key: String(index), index, effectId: pending[index].effect.id, kind: pending[index].effect.kind,
+          name: typeof item.reason?.name === 'string' ? item.reason.name : typeof item.reason,
+          code: typeof item.reason?.code === 'string' ? item.reason.code : undefined
+        })] : []));
+        let primary = failed.reason instanceof Error ? failed.reason : new Error(String(failed.reason));
+        try { Object.defineProperty(primary, 'effectFailures', { configurable: true, value: evidence }); }
+        catch (_) {
+          primary = new portableKv.PulseRuntimeContractError('PULSE_RUNTIME_PARALLEL_FAILED', 'One or more ctx.parallel effects failed.', { cause: primary });
+          Object.defineProperty(primary, 'effectFailures', { value: evidence });
+        }
+        failed.reason = primary;
+      }
       const packageFailure = controller.plan.packages?.application?.effectFailure === 'package-completion';
       if (failed && !packageFailure && (!failures.every(entry => portableKv.isApplicationError(entry.reason))
         || !controller.captureApplicationError(failed.reason))) {

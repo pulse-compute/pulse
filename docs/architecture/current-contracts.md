@@ -60,6 +60,28 @@ behavior, schema semantics, GC policy and provider authority remain unchanged.
 The setting propagates from portable compilation to provider realization and is
 bound into retained report recipes; it is independent of scalar handle lifetime.
 
+## Bounded effect collections (B10-06)
+
+`ctx.effects<T>({ max })`, inline `add`, and awaited `ctx.parallel(collection)`
+form one execution-owned, single-use collection contract. Literal capacity 1–32,
+straight-line build/flush source admission, argument capture, ordered results,
+whole-cohort effect-budget admission and cancellation are defined in
+[effects and continuations](../concepts/effects-and-continuations.md#bounded-dynamic-collections).
+This adds no arbitrary Promise scheduler, callback admission or target fallback.
+
+JavaScript privately claims queued roots before provider dispatch. Native plan
+v10 records `effect-collection` v1 with a fixed bank of unique slots and an active
+prefix. The optional `effect_collection_count` host import binds input length,
+capacity and continuation identity; old hosts reject that required import/plan.
+Static groups keep exact-list validation. Empty collections do not suspend.
+The same invocation-ticket owners authenticate completion and retire terminal
+work. Code and slot metadata grow linearly with the declared maximum.
+
+The CLI uses exact Native execution for collection plans in `test` and `dev`.
+The registered collection corpora cover source/runtime and provider contracts;
+clean-machine acceptance reuses its independently installed candidate packages
+for the public example. Full release qualification remains a separate gate.
+
 ## One application contract and one compiler spine
 
 `@pulse-compute/runtime` owns the low-level portable handler, context, effect,

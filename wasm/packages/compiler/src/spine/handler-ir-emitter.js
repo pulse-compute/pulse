@@ -321,6 +321,19 @@ function emitCanonicalHandlerGenerator(ir) {
         });
         return [groupDeclaration, ...declarations];
       }
+      case 'effect-collection': {
+        const { candidate, sites, continuation } = entry;
+        const factories = sites.map((site, index) => factory.createArrowFunction(undefined, undefined, [], undefined,
+          factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), parallelMemberEffectExpression(factory, sourceFile, site, candidate.members[index], rewritePackageIntrinsics)));
+        const decoders = candidate.members.map(member => factory.createArrayLiteralExpression(member.kind === 'fetch' && member.chain.decoder
+          ? [factory.createStringLiteral(member.chain.decoder), ...member.chain.decoderArgs] : []));
+        const yielded = factory.createYieldExpression(undefined, callPulse(factory, 'collection', [
+          factory.createArrayLiteralExpression(factories), stringLiteral(factory, continuation.id), candidate.input,
+          factory.createNumericLiteral(candidate.max), factory.createArrayLiteralExpression(decoders)]));
+        return factory.createVariableStatement(undefined, factory.createVariableDeclarationList([
+          factory.createVariableDeclaration(candidate.result.name, undefined, undefined, yielded)
+        ], ts.NodeFlags.Const));
+      }
       case 'parallel-group': {
         const { candidate, sites, continuation } = entry;
         const temporaryNames = sites.map((site) => factory.createIdentifier(`__pulse_parallel_${site.id.replace(/[^a-z0-9_]/gi, '_')}`));

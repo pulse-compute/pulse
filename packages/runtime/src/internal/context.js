@@ -222,6 +222,7 @@ function createContext(frame) {
         return effects.dispatch({ kind: 'time.now', providerKind: 'time', operation: 'now', capability: 'time.wall-clock' });
       }
     }),
+    effects(options) { return effects.effects(options); },
     parallel(record) { return effects.parallel(record); },
     config: Object.freeze({
       get(name) {

@@ -168,6 +168,52 @@ The compiler can issue those fetches as one effect group because none depends on
 Grouping provides concurrency without linking a general Promise runtime into Native artifacts. Source declaration order remains deterministic for identities and result binding, but providers may perform independent operations concurrently.
 
 
+## Bounded dynamic collections
+
+Use a collection when the number of requests is known only at runtime:
+
+```ts
+const input = await ctx.req.json<ProbeInput>('probe.Input')
+const effects = ctx.effects<ProbeResult>({ max: 32 })
+for (const endpoint of input.endpoints) {
+  effects.add(ctx.fetch(endpoint).json<ProbeResult>('probe.Result'))
+}
+const results = await ctx.parallel(effects)
+return ctx.json({ results }, { schema: 'probe.Output' })
+```
+
+The [dynamic probe example](https://github.com/pulse-compute/pulse/tree/latest/examples/03-fetch-composition/dynamic-probes)
+includes the bounded input/output schemas and four explicit target profiles.
+
+`max` is a literal integer from 1 through 32. The portable build region is one
+local `const` collection, one direct `for...of` over an available array local or
+property, and one immediately following awaited flush bound to a `const` result.
+Each iteration contains one inline `add` of the same recognized effect template.
+No awaits, filtering, nested loops, mutations, helper calls or escaping collection
+handles are admitted inside that region. A homogeneous generic result type is
+optional; the default element type is `unknown`.
+
+Adding captures fresh effects owned by this execution without dispatching them.
+The explicit flush seals membership and releases the group. Results preserve
+insertion order even when completion order differs. An empty input returns `[]`
+without external effects or Native suspension. Overflow fails before dispatch;
+there is no truncation. Collection capacity does not replace request, schema,
+response-byte or cumulative effect limits. Roots count once against the existing
+1,024-effect default. A second flush, duplicate root, foreign member or add after
+flush fails. A nonempty unflushed collection fails at handler completion.
+
+Ordinary failures settle the group before continuation; no partial result array
+is delivered. Terminal failures take priority over application failures, then
+insertion order selects the primary failure. Cancellation invalidates outstanding
+work and suppresses continuation, including late completions. A per-fetch timeout
+starts at flush dispatch; the request deadline also includes construction time.
+Fastly Native retires pending handles but cannot promise remote wire cancellation.
+
+Node and Fastly retain their existing provider capability restrictions. In
+particular, runtime URLs on Fastly Native require its existing explicit single
+backend binding; a collection does not add multi-backend selection or undeclared
+origin authority. Static keyed `ctx.parallel({ ... })` remains available.
+
 ## Explicit portable groups with `ctx.parallel`
 
 Native Pulse may discover independent adjacent effects and place them in one group

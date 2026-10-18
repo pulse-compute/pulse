@@ -5,6 +5,7 @@ export type {
   PulseEffect,
   PulseTimeResult,
   PulseParallelEffect,
+  PulseEffects,
   PulseEffectResult,
   PulseParallelResult,
   PulseRequest,

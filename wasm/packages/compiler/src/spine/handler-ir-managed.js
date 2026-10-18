@@ -1195,6 +1195,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     return Object.freeze({
       operation: createOperation('parallel', {
         strategy,
+        ...(operation.kind === "effect-collection" ? { collection: { version: "pulse.effect-collection.v1", max: operation.candidate.max, result: "ordered-array" } } : {}),
         effects: operation.sites,
         continuation: operation.continuation,
         bindings: parallelBindings(operation.candidate, scope),
@@ -1292,6 +1293,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
       });
     }
     if (operation.kind === 'fetch-group') return compileParallel(operation, scope, 'implicit-independent-fetch-group');
+    if (operation.kind === 'effect-collection') return compileParallel(operation, scope, 'bounded-collection-v1');
     if (operation.kind === 'parallel-group') return compileParallel(operation, scope, 'explicit-keyed');
     if (operation.kind === 'opaque-fetch-return') {
       fail(operation.statement, 'PULSE_MANAGED_HANDLER_RESPONSE_RESULT_UNSUPPORTED', 'Managed schema operations cannot return an opaque fetch Response; the adapter owns completion framing.');

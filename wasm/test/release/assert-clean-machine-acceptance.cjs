@@ -846,6 +846,23 @@ async function main() {
     assert.equal(packageRootSmoke.stdout, 'ok');
     assert.equal(run(toolCli, ['--version'], { cwd: toolRoot }).stdout.trim(), RELEASE_VERSION);
 
+    console.log('acceptance - bounded collections through installed public CLI on four targets');
+    const collectionRoot = path.join(toolRoot, 'effect-collections');
+    copyTree(path.join(repoRoot, 'examples/03-fetch-composition/dynamic-probes'), collectionRoot);
+    for (const profile of ['node-native', 'node-javascript', 'fastly-native', 'fastly-javascript']) {
+      const tested = runPulse(toolCli, collectionRoot, ['test', '--profile', profile]);
+      assert.equal(tested.status, 'passed');
+      assert.equal(tested.summary.passed, 3);
+      assert.equal(tested.summary.failed, 0);
+      if (profile.endsWith('-native')) {
+        assert(tested.cases.every(item => item.executionEvidence?.wasmSha256), 'installed Native cases require exact Wasm evidence');
+      }
+    }
+    const collectionBuilt = runPulse(toolCli, collectionRoot, ['compile', '--profile', 'node-native']);
+    assert.equal(collectionBuilt.status, 'compiled');
+    corpusReport.effectCollections = { status: 'passed', targets: 4, casesPerTarget: 3, publicApi: true, independentInstalledConsumer: true };
+    saveCorpusReport();
+
     console.log('acceptance - replay S3 read/write failure corpus from exact installed tarballs');
     const s3 = replayCorpus('s3', 'wasm/test/s3/assert-packed-consumer.cjs', toolRoot, s3 => {
       assert.equal(s3.status, 'passed');

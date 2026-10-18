@@ -1,6 +1,6 @@
 'use strict';
 
-const { PulseRuntimeContractError } = require('./errors.js');
+const { PulseRuntimeContractError, isApplicationError } = require('./errors.js');
 const {
   cloneKvValue,
   normalizeBindingName,
@@ -23,6 +23,7 @@ const JAVASCRIPT_EFFECT_OBSERVATION_VERSION = 'pulse.javascript-effect-observati
 const DEFAULT_MAX_EFFECTS = 1024;
 
 const EFFECT_DATA = new WeakMap();
+const COLLECTION_DATA = new WeakMap();
 
 function requireObject(label, value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -521,6 +522,7 @@ function createJavascriptEffectExecution(options = {}) {
   let parallelCount = 0;
   let resolutionIndex = 0;
   let closed = false;
+  let openCollection;
 
   function observe(event) {
     const observation = Object.freeze(redaction.redactValue({
@@ -551,6 +553,13 @@ function createJavascriptEffectExecution(options = {}) {
     options.requestBudget?.check();
   }
 
+  function collectionError(code, message) {
+    const error = new PulseRuntimeContractError(`PULSE_EFFECT_COLLECTION_${code}`, message);
+    if (openCollection) openCollection.state = "failed";
+    execution.invalidateAdmission(error);
+    return error;
+  }
+
   function trackEffect(effect, data) {
     pendingEffects.set(effect, data);
     effect.then(
@@ -568,10 +577,9 @@ function createJavascriptEffectExecution(options = {}) {
       assertOpen();
       requireObject('effect descriptor', input);
       if (totalEffects + localEffects >= maxEffects) {
-        throw new PulseRuntimeContractError(
-          'PULSE_RUNTIME_EFFECT_LIMIT_EXCEEDED',
-          limitMessage
-        );
+        const error = new PulseRuntimeContractError('PULSE_RUNTIME_EFFECT_LIMIT_EXCEEDED', limitMessage);
+        if (openCollection) execution.invalidateAdmission(error);
+        throw error;
       }
       options.outputExecution?.assertEffect();
       const normalizedInput = normalizeEffectDescriptor(input, limits);
@@ -601,40 +609,46 @@ function createJavascriptEffectExecution(options = {}) {
       totalEffects += 1;
       if (conditionalKv.isConditionalKv(kind)) conditionalKv.registerKvRedactions(descriptor, (value) => redaction.add(value));
       const publicDescriptor = publicEffectDescriptor(descriptor, redaction);
-      observe({ type: 'effect-dispatched', effect: publicDescriptor });
-
-      const operationSignal = createEffectSignal(lifecycleController.signal, descriptor);
-      const operationExecution = Object.freeze({ ...externalExecution, signal: operationSignal.signal });
-      const raw = raceWithSignal(Promise.resolve().then(() => {
-        options.requestBudget?.check();
-        if (operationSignal.signal.aborted) throw abortedEffectError(operationSignal.signal.reason);
-        options.outputExecution?.assertEffect();
-        if (kind.startsWith('output.')) {
-          if (!options.outputExecution) throw new PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires a Node HTTP writer.');
-          return options.outputExecution.dispatch(descriptor);
-        }
-        if (conditionalKv.isConditionalKv(kind)) return conditionalKv.executeConditionalKv(descriptor,
-          adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatch(descriptor, kvExecution)),
-          { ...operationExecution, onKvObservation: observe }, limits);
-        return Promise.resolve(adapter.dispatch(descriptor, operationExecution)).then(value => {
-          if (value instanceof Response && value.body) {
-            if (closed || operationSignal.signal.aborted) cancelResponseBody(value, operationSignal.signal.reason);
-            else {
-              ownedResponses.add(value);
-              retainFetchResponseForBudget(value, options.requestBudget, () => ownedResponses.delete(value));
+      const root = { started: false, claimed: false, release: undefined };
+      const ready = new Promise(resolve => { root.release = resolve; });
+      const raw = raceWithSignal(Promise.resolve().then(async () => {
+        // Inline add claims before this microtask; unrelated effects stay eager.
+        if (root.claimed) await raceWithSignal(ready, lifecycleController.signal);
+        assertOpen();
+        root.started = true;
+        observe({ type: 'effect-dispatched', effect: publicDescriptor });
+        const operationSignal = createEffectSignal(lifecycleController.signal, descriptor);
+        const operationExecution = Object.freeze({ ...externalExecution, signal: operationSignal.signal });
+        try {
+          const pending = (() => {
+            options.requestBudget?.check();
+            if (operationSignal.signal.aborted) throw abortedEffectError(operationSignal.signal.reason);
+            options.outputExecution?.assertEffect();
+            if (kind.startsWith('output.')) {
+              if (!options.outputExecution) throw new PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires a Node HTTP writer.');
+              return options.outputExecution.dispatch(descriptor);
             }
-          }
-          return value;
-        });
-      }), operationSignal.signal).then(
-        (value) => {
+            if (conditionalKv.isConditionalKv(kind)) return conditionalKv.executeConditionalKv(descriptor,
+              adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatch(descriptor, kvExecution)),
+              { ...operationExecution, onKvObservation: observe }, limits);
+            return Promise.resolve(adapter.dispatch(descriptor, operationExecution)).then(value => {
+              if (value instanceof Response && value.body) {
+                if (closed || operationSignal.signal.aborted) cancelResponseBody(value, operationSignal.signal.reason);
+                else {
+                  ownedResponses.add(value);
+                  retainFetchResponseForBudget(value, options.requestBudget, () => ownedResponses.delete(value));
+                }
+              }
+              return value;
+            });
+          })();
+          const value = await raceWithSignal(pending, operationSignal.signal);
           options.requestBudget?.check();
           const normalized = normalizeEffectResult(descriptor, value, limits);
           if (descriptor.kind === 'secret.get' && typeof normalized === 'string') redaction.add(normalized);
           return normalized;
-        },
-        (error) => { throw redaction.redactError(error); }
-      ).finally(operationSignal.dispose);
+        } finally { operationSignal.dispose(); }
+      }), lifecycleController.signal).catch(error => { throw redaction.redactError(error); });
       const projected = (typeof projector === 'function' ? raw.then(value => { options.requestBudget?.check(); return projector(value); }).then(value => { options.requestBudget?.check(); return value; }) : raw).catch((error) => {
         throw redaction.redactError(error);
       });
@@ -642,6 +656,7 @@ function createJavascriptEffectExecution(options = {}) {
         execution,
         id: descriptor.id,
         rootId: descriptor.id,
+        root,
         kind: descriptor.kind,
         descriptor,
         projection: null,
@@ -747,10 +762,46 @@ function createJavascriptEffectExecution(options = {}) {
       return trackEffect(defineEffect(projected, effectData), effectData);
     },
 
+    effects(options) {
+      assertOpen();
+      if (lifecycleController.signal.aborted) throw abortedEffectError(lifecycleController.signal.reason);
+      const max = options?.max;
+      if (!Number.isSafeInteger(max) || max < 1 || max > 32) throw collectionError('CAPACITY', 'Collection max must be an integer from 1 to 32.');
+      if (openCollection?.state === 'open') throw collectionError('OWNER', 'Only one open collection is allowed per execution.');
+      const data = { execution, max, state: 'open', entries: [] };
+      const collection = Object.freeze({ add(effect) {
+        assertOpen();
+        if (lifecycleController.signal.aborted) throw abortedEffectError(lifecycleController.signal.reason);
+        if (data.state !== 'open') throw collectionError('SEALED', 'Collection membership is sealed.');
+        const member = dataForEffect(effect);
+        if (!member?.parallelEligible || !member.root || member.descriptor?.init?.bodyMode === 'incoming-request-v1') throw collectionError('MEMBER', 'Collection members must be fresh parallel-eligible Pulse effects.');
+        if (member.execution !== execution) throw collectionError('OWNER', 'Collection member belongs to another execution.');
+        if (member.root.started || member.root.claimed || claimedParallelRootIds.has(member.rootId)) throw collectionError('CLAIMED', 'Collection member root is started or already claimed.');
+        if (data.entries.length >= max) throw collectionError('OVERFLOW', 'Collection capacity exceeded.');
+        member.root.claimed = true;
+        claimedParallelRootIds.add(member.rootId);
+        data.entries.push({ key: String(data.entries.length), effect, data: member });
+      } });
+      COLLECTION_DATA.set(collection, data);
+      openCollection = data;
+      return collection;
+    },
+
     parallel(record) {
       assertOpen();
+      const collection = COLLECTION_DATA.get(record);
       let entries;
-      try { entries = validateParallelRecord(record, execution, claimedParallelRootIds); }
+      try {
+        if (collection) {
+          if (lifecycleController.signal.aborted) throw abortedEffectError(lifecycleController.signal.reason);
+          if (collection.execution !== execution) throw collectionError('OWNER', 'Collection belongs to another execution.');
+          if (collection.state !== 'open') throw collectionError('SEALED', 'Collection has already been flushed or failed.');
+          collection.state = 'sealed';
+          openCollection = undefined;
+          entries = collection.entries;
+          for (const entry of entries) entry.data.root.release();
+        } else entries = validateParallelRecord(record, execution, claimedParallelRootIds);
+      }
       catch (error) {
         if (record && Object.values(Object.getOwnPropertyDescriptors(record)).some(field => dataForEffect(field.value)?.kind?.startsWith('output.'))) execution.invalidateAdmission(error);
         throw error;
@@ -771,7 +822,7 @@ function createJavascriptEffectExecution(options = {}) {
         const failures = [];
         // Native lowering reconstructs an ordinary object literal. Keep the direct
         // JavaScript realization observably aligned rather than returning a map.
-        const output = {};
+        const output = collection ? [] : {};
         for (let index = 0; index < settled.length; index += 1) {
           const result = settled[index];
           const entry = entries[index];
@@ -796,7 +847,12 @@ function createJavascriptEffectExecution(options = {}) {
           // Re-apply redaction after every group member has settled. A secret resolved
           // by another member may not have been registered when an earlier failure
           // first crossed the adapter boundary.
-          throw redaction.redactError(attachGroupFailure(failures[0].error, failures, redaction));
+          throw redaction.redactError(attachGroupFailure((collection ? failures.find(entry => !isApplicationError(entry.error)) || failures[0] : failures[0]).error, failures, redaction));
+        }
+        assertOpen();
+        if (collection) {
+          if (lifecycleController.signal.aborted) throw abortedEffectError(lifecycleController.signal.reason);
+          collection.state = "completed";
         }
         return output;
       });
@@ -828,6 +884,12 @@ function createJavascriptEffectExecution(options = {}) {
     },
 
     async assertIdle() {
+      if (openCollection?.state === 'open' && openCollection.entries.length) {
+        const error = collectionError('UNFLUSHED', 'Nonempty effect collections must be explicitly flushed before handler completion.');
+        await Promise.allSettled(Array.from(pendingEffects.keys()));
+        throw error;
+      }
+      if (openCollection?.state === 'open') { openCollection.state = 'closed'; openCollection = undefined; }
       if (pendingEffects.size === 0) return;
       const snapshot = Array.from(pendingEffects.entries());
       const active = Object.freeze(snapshot.map(([, data]) => Object.freeze({

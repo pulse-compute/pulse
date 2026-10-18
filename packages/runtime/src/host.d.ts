@@ -2,6 +2,7 @@ import type {
   Handler,
   PulseTimeResult,
   PulseEffect,
+  PulseEffects,
   PulseKvGeneration, PulseKvVersionedResult, PulseKvConditionalResult,
   PulseFetchResponse,
   PulseParallelEffect,
@@ -193,6 +194,8 @@ export interface PulseJavascriptEffectExecution {
     projection: string,
     projector: (value: T) => U | PromiseLike<U>
   ): PulseParallelEffect<U>;
+  effects<T = unknown>(options: { readonly max: number }): PulseEffects<T>;
+  parallel<T>(effects: PulseEffects<T>): PulseEffect<readonly T[]>;
   parallel<T extends Readonly<Record<string, PulseParallelEffect<unknown>>>>(
     effects: T
   ): PulseEffect<PulseParallelResult<T>>;

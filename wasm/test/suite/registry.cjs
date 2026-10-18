@@ -509,6 +509,12 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'Catalog original verb probe and 14 mutation routes across Node/Fastly Native/JavaScript'
   }),
+  'effect-collection-providers': nodeTask('test/runtime/assert-effect-collection-providers.cjs', {
+    evidence: 'conformance', timeoutMs: 180000, description: 'schema-bound bounded collection parity on four explicit targets'
+  }),
+  'effect-collections': nodeTask('test/runtime/assert-effect-collections.cjs', {
+    evidence: 'conformance', timeoutMs: 180000, description: 'bounded dynamic collection ownership and JS/Native parity'
+  }),
   'javascript-effect-adapter': nodeTask('test/contracts/assert-javascript-effect-adapter.cjs', {
     evidence: 'javascript',
     timeoutMs: 180000,
@@ -1476,6 +1482,8 @@ const profiles = Object.freeze({
     'assets-javascript-runtime'
   ]),
   conformance: Object.freeze([
+    'effect-collections',
+    'effect-collection-providers',
     'jwt-signing',
     'jwt-es256-signing',
     'jwt-rs256',
