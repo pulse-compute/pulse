@@ -1,0 +1,109 @@
+{
+  "status": "passed",
+  "sourceRevision": "7c2d9a69234ec8404d260253be4ffcbe2c58c2ad",
+  "workingTree": "?? docs/internal/b10-05/\n",
+  "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+  "proofSha256": "5801980001f5038742629e5113d5d8382fe1b96475ae07f64409152ce5a9c0cf",
+  "expandedSourceSha256": "dbc665c59c3745ca5a3174e8fbe003293312d700e09db3ce6e812cec52da6845",
+  "node": "v24.18.0",
+  "maximumProvedNativeMembers": 4,
+  "native": {
+    "wasmSha256": "39fad3aecea60204abdf2b7db9f2039f300b58891a7c93a8a2d41931bde434dc",
+    "bytes": 5271,
+    "planHash": "735de1d56716e9815cac949e3ea8be25adc2eb6975a0269532cd3a60a0e1d3f0",
+    "importModules": [
+      "pulse_host"
+    ]
+  },
+  "cases": [
+    {
+      "name": "descriptor model: capacity, ownership, duplicate, overflow, one shot, forgotten flush",
+      "status": "passed"
+    },
+    {
+      "name": "current JS dispatch is eager before any explicit group",
+      "status": "passed"
+    },
+    {
+      "name": "proposed authoring syntax is not yet admitted by the production compiler",
+      "status": "passed"
+    },
+    {
+      "name": "javascript: runtime membership 0, reverse completion, ordered reconstruction",
+      "status": "passed"
+    },
+    {
+      "name": "javascript: runtime membership 1, reverse completion, ordered reconstruction",
+      "status": "passed"
+    },
+    {
+      "name": "javascript: runtime membership 3, reverse completion, ordered reconstruction",
+      "status": "passed"
+    },
+    {
+      "name": "javascript: runtime membership 4, reverse completion, ordered reconstruction",
+      "status": "passed"
+    },
+    {
+      "name": "javascript: overflow dispatches nothing",
+      "status": "passed"
+    },
+    {
+      "name": "javascript: first insertion failure wins after all members settle",
+      "status": "passed"
+    },
+    {
+      "name": "javascript: cancel in flight fences continuation and late completion",
+      "status": "passed"
+    },
+    {
+      "name": "javascript: cancel before entry with 0 members dispatches nothing",
+      "status": "passed"
+    },
+    {
+      "name": "javascript: cancel before entry with 1 members dispatches nothing",
+      "status": "passed"
+    },
+    {
+      "name": "native: runtime membership 0, reverse completion, ordered reconstruction",
+      "status": "passed"
+    },
+    {
+      "name": "native: runtime membership 1, reverse completion, ordered reconstruction",
+      "status": "passed"
+    },
+    {
+      "name": "native: runtime membership 3, reverse completion, ordered reconstruction",
+      "status": "passed"
+    },
+    {
+      "name": "native: runtime membership 4, reverse completion, ordered reconstruction",
+      "status": "passed"
+    },
+    {
+      "name": "native: overflow dispatches nothing",
+      "status": "passed"
+    },
+    {
+      "name": "native: first insertion failure wins after all members settle",
+      "status": "passed"
+    },
+    {
+      "name": "native: cancel in flight fences continuation and late completion",
+      "status": "passed"
+    },
+    {
+      "name": "native: cancel before entry with 0 members dispatches nothing",
+      "status": "passed"
+    },
+    {
+      "name": "native: cancel before entry with 1 members dispatches nothing",
+      "status": "passed"
+    }
+  ],
+  "limits": [
+    "private descriptor-level JS model; public capture syntax not implemented",
+    "Native bounded static-cardinality expansion, not dynamic-group lowering",
+    "deterministic injected adapters; no deployed host, network, installed-package or 32-member proof"
+  ]
+}
