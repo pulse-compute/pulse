@@ -205,7 +205,7 @@ const DELIVERY_SOURCES = Object.freeze([
   'scripts/documentation-deployment.cjs',
   'scripts/validate-publication-workflows.cjs',
   '.github/workflows/npm-publish.yml',
-  '.github/workflows/documentation-deploy.yml',
+  'release/documentation-writer-retirement.json',
   'infra/fastly/documentation/README.md',
   'infra/fastly/documentation/routing.vcl',
   'infra/fastly/documentation/origin-signing.vcl',

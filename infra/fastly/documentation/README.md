@@ -2,7 +2,15 @@
 
 These files describe the reviewed delivery layer for the generated Pulse documentation site. They are not activated automatically and do not provide an automated Fastly service activation mechanism.
 
-The production flow is:
+These are retained historical infrastructure templates, not the current writer.
+The human Fastly infrastructure operator owns origin signing; website delivery
+still uses the existing private-origin mechanism. The website repository does
+not yet own an equivalent origin-signing template. Retain this template and its
+context until that consumer transfer is reviewed. Removing the Pulse writer
+must not remove origin access needed to serve existing or website-written bytes.
+No service configuration, credential or archived object changes here.
+
+The historical production flow was:
 
 ```text
 Git tag

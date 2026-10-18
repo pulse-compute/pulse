@@ -7,34 +7,41 @@ pulse-doc-meta:end -->
 
 # Documentation deployment
 
-Pulse documentation is generated static output. It is not deployed as a Pulse Compute application. The production path stores exact-version and moving-alias objects in Fastly Object Storage, then serves them through a small VCL delivery layer.
+Website rendering and production delivery now belong to
+[`pulse-compute/website`](https://github.com/pulse-compute/website). This checkout
+has no deployment workflow, storage adapter, candidate sealer or public-delivery
+command. Package publication controls and historical v1 candidate authentication
+remain in Pulse. The **Documentation** workflow checks sources and installed
+copies; it does not render, seal or upload a website.
 
-```text
-release PR qualification
-→ validated site and sealed object manifest
-→ automatic artifact discovery and merge binding at the release tag
-→ immutable exact-version upload
-→ matching npm release verification
-→ root/latest promotion
-→ documentation CDN hard purge
-→ public verification through Fastly
-```
+## Writer retirement boundary
 
-The machine-readable deployment contract is `release/documentation-deployment.json`. The production workflow is `.github/workflows/documentation-deploy.yml`. Reviewed VCL templates and the operating guide live under `infra/fastly/documentation/`.
+`release/documentation-writer-retirement.json` records source retirement on
+`latest` and the historical workflow identity **328773030**, established by
+[its retained run](https://github.com/pulse-compute/pulse/actions/runs/37858976410).
+That run is identity evidence, not proof of current disabled state or an idle
+queue. Nathan reports the workflow disabled; this change makes no live-state
+claim and changes no settings or credentials.
 
-This runbook describes the retained legacy v1 deployment path. New v2 package
-qualifications contain source-only documentation evidence and cannot authorize
-this deployer. Their website delivery belongs to `pulse-compute/website`; no
-rendered candidate is reconstructed from a v2 qualification. Historical v1
-candidates remain mandatory and hash-verified in both consumption phases.
+Merge the website compatibility PR first. Its guard uses that numeric identity,
+requires a live disabled workflow and no queued, requested, pending, waiting or
+in-progress runs before writes, and rejects unknown state, identity mismatch,
+HTTP 404 or API failure. Deleting a file on `latest` does not retire the writer
+on `main`, tags or historical refs, or drain existing runs. Keep the old workflow
+disabled. Full removal of the live identity requires a separately reviewed
+credential/authority retirement and drain mechanism; absence is never evidence.
+The website retains its existing handoff state transitions and protected gate.
 
-## Validation and production are separate
+The retained `release/documentation-deployment.json` describes historical v1
+receipts. `scripts/documentation-deployment.cjs` is now a read-only verifier.
+New v2 source-only qualifications cannot satisfy a historical v1 documentation
+candidate requirement; missing or tampered retained candidates still fail.
 
-The **Documentation** workflow runs for pull requests and branch pushes. It validates generated documentation, builds the exact-version site, seals a preview object manifest, and uploads a short-lived Actions artifact. It has no storage secret and no deployment job.
-
-The **Documentation deployment** workflow is dispatched **from the exact release tag**, and its `release_tag` input must name the same tag. Its credential-free candidate job discovers the merged PR qualification and verifies the retained docs and package candidates. It never installs workspace dependencies, builds or seals the site. The protected `deploy` job uses the same pinned artifact ID and selection, rechecks eligibility after human approval, and verifies the separate merge binding before receiving step-scoped storage credentials. The artifact's PR merge source remains unchanged; release authority belongs to the tagged commit. See [npm publishing](npm-publishing.md#pre-main-qualification) for eligibility and supported merge strategies.
-
-GitHub Pages deployment is no longer part of the repository workflow. The release catalog's current public origin must be changed to the final Fastly-served hostname before production activation; the deployment verifier rejects an environment-provided public origin that differs from `release/pulse-release-manifest.json`.
+The sections below document historical object, credential and delivery behavior
+for recovery and receipt interpretation. They are not current dispatch
+instructions. The complete prior implementation is retained at
+[the beta.9 source](https://github.com/pulse-compute/pulse/tree/fda16de1b3520c65cc62574878727e753ade850c).
+Never re-enable that writer as part of routine website delivery.
 
 ## Object classes
 
@@ -83,16 +90,13 @@ npm run docs:deployment:verify
 
 `.pulse-documentation-deployment/documentation-deployment-manifest.json` records every object key, local source, byte length, SHA-256, content type, cache class, mutability, source commit, public documentation route, and independent storage prefix. Its deterministic deployment receipt records the complete generated-site digest and the exact-version object inventory and tree digest for `deployments/v1.0.0-beta.9.json`. Candidate verification checks the full sealed inventory, including historical preview files, before any storage operation and rejects any root or site file outside that inventory. Sealing also rejects paths outside the approved object classes.
 
-A local adapter exercised by `npm run publication:check` proves:
+`npm run publication:check` now exercises the historical reader with synthetic
+v1 fixtures: missing or altered bytes, unexpected site/root files, incomplete
+checksums, invalid source identity and receipt digest tampering must fail.
+Storage-write simulations belong to the website's delivery tests. The synthetic
+fixture producer is test support, not a production sealer or release artifact.
 
-- upload and idempotent retry of only the current exact-version tree and receipt;
-- preservation of historical storage bytes and metadata, even when preview copies differ;
-- rejection of altered historical candidate files and unexpected paths;
-- rejection of current immutable object, metadata, and receipt conflicts;
-- npm-gated mutable promotion, interrupted upload recovery and final alias commit order; and
-- preservation of unrelated objects without any delete operation.
-
-## Object Storage credentials
+## Historical Object Storage credentials
 
 Use separate bucket-limited credentials:
 
@@ -140,11 +144,17 @@ The VCL service owns delivery concerns, not content generation:
 - content and security headers; and
 - removal of storage-specific response headers.
 
+Origin signing remains owned by the human Fastly infrastructure operator. The
+website still uses the existing private-origin mechanism; no equivalent signing
+template has been transferred. Retain `infra/fastly/documentation/origin-signing.vcl`
+and its surrounding historical templates until that consumer is migrated and
+reviewed. Repo archives and recovery metadata remain untouched.
+
 The checked-in snippets contain protected credential placeholders and are not activated automatically. A human infrastructure/release owner must create and configure the Fastly service, test a non-production service version, and activate it.
 
-## Promotion and public verification
+## Historical promotion and public verification
 
-The production workflow performs these steps in order:
+The historical workflow performed these steps in order:
 
 1. verify the downloaded documentation candidate and its exact release-tag identity;
 2. upload or verify only the current release's immutable exact-version objects and deployment receipt;

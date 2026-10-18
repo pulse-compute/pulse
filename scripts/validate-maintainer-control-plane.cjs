@@ -282,7 +282,6 @@ function validateWorkflowSecurity() {
     '.github/workflows/maintainer-labels.yml',
     '.github/workflows/documentation.yml',
     '.github/workflows/npm-publish.yml',
-    '.github/workflows/documentation-deploy.yml',
     '.github/workflows/release-prepare.yml'
   ];
   requireFiles(required, 'GitHub workflow set');
@@ -373,13 +372,7 @@ function validateWorkflowSecurity() {
   includes(npmPublication, 'publish-release.cjs publish', 'npm publication workflow');
   if (npmPublication.includes('NODE_AUTH_TOKEN') || npmPublication.includes('NPM_TOKEN')) fail('npm publication workflow must not use a long-lived registry token');
 
-  const documentationDeployment = read('.github/workflows/documentation-deploy.yml');
-  includes(documentationDeployment, 'name: Documentation deployment', 'documentation deployment workflow');
-  includes(documentationDeployment, `environment: ${MAINTENANCE_POLICY.github.protectedEnvironments['documentation-production'] ? 'documentation-production' : '__missing__'}`, 'documentation deployment workflow');
-  includes(documentationDeployment, '--phase immutable', 'documentation deployment workflow');
-  includes(documentationDeployment, '--phase promote', 'documentation deployment workflow');
-  includes(documentationDeployment, 'documentation-deployment.cjs verify-public', 'documentation deployment workflow');
-  if (documentationDeployment.includes('--delete') || documentationDeployment.includes('delete-object')) fail('documentation deployment workflow must never delete Object Storage history');
+  require('./documentation-writer-retirement.cjs').validateWriterRetirement();
 
   const codex = read('.github/workflows/codex-maintainer-review.yml');
   includes(codex, 'name: Codex maintainer review', 'Codex workflow');

@@ -32,19 +32,7 @@ const {
   shasum,
   integrity
 } = require('./release-publication.cjs');
-const {
-  normalizeBasePath,
-  publicUrl,
-  loadDeploymentConfig,
-  sealDocumentationCandidate,
-  verifyDocumentationCandidate,
-  deployDocumentation,
-  verifyStorage,
-  verifyNpmPromotionEvidence,
-  assertProductionDeploymentEnvironment,
-  filesystemAdapter,
-  awsAdapter
-} = require('./documentation-deployment.cjs');
+const { normalizeBasePath, publicUrl, loadDeploymentConfig, verifyDocumentationCandidate } = require('./documentation-deployment.cjs');
 const { validatePreflight } = require('./release-preflight.cjs');
 
 const VALIDATION_SCHEMA = 'pulse.publication-control-plane-validation.v1';
@@ -186,58 +174,6 @@ function validateConfiguration() {
 function productionWorkflowIsManual(source, context) {
   includes(source, 'workflow_dispatch:', context);
   if (/^\s{2}(?:push|pull_request|pull_request_target|schedule|repository_dispatch):\s*$/mu.test(source)) fail(`${context} must remain manually dispatched`);
-}
-
-function validateCdnPurgeWorkflow(source) {
-  const start = source.indexOf('      - name: Purge the documentation CDN before public verification\n');
-  if (start < 0) fail('documentation workflow must purge the CDN before public verification');
-  const next = source.indexOf('\n      - name:', start + 1);
-  const step = source.slice(start, next < 0 ? source.length : next);
-  const purge = loadDeploymentConfig(repoRoot).config.cdnPurge;
-  includes(step, 'if: inputs.promote_latest', 'documentation CDN purge step');
-  includes(step, 'timeout-minutes: 2', 'documentation CDN purge step');
-  includes(step, `vars.${purge.serviceIdVariable}`, 'documentation CDN purge step');
-  includes(step, `secrets.${purge.tokenSecret}`, 'documentation CDN purge step');
-  for (const forbidden of ['continue-on-error', 'Fastly-Soft-Purge', 'curl --verbose', 'set -x', '--location']) excludes(step, forbidden, 'documentation CDN purge step');
-  const runAt = step.indexOf('        run: |\n');
-  if (runAt < 0) fail('documentation CDN purge step must have a shell body');
-  const script = step.slice(runAt + '        run: |\n'.length).split('\n').map((line) => line.replace(/^          /, '')).join('\n');
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-cdn-purge-check-'));
-  try {
-    const probe = path.join(directory, 'curl');
-    fs.writeFileSync(probe, `#!/usr/bin/env node\n'use strict';
-const fs = require('node:fs');
-const args = process.argv.slice(2);
-const value = (flag) => args[args.indexOf(flag) + 1];
-if (value('--request') !== 'POST' || args.at(-1) !== 'https://api.fastly.com/service/TestService123/purge_all') process.exit(90);
-if (!args.includes('Fastly-Key: test-purge-token') || !args.includes('Accept: application/json')) process.exit(91);
-if (!args.includes('--fail') || value('--connect-timeout') !== '10' || value('--max-time') !== '30' || value('--retry') !== '2') process.exit(92);
-fs.writeFileSync('curl-called', 'yes');
-if (process.env.PURGE_PROBE_FAILURE === 'http') process.exit(22);
-fs.writeFileSync(value('--output'), JSON.stringify({ status: process.env.PURGE_PROBE_FAILURE === 'api' ? 'error' : 'ok' }));
-`, { mode: 0o755 });
-    for (const scenario of ['success', 'http', 'api', 'missing-token', 'invalid-service']) {
-      const marker = path.join(directory, 'curl-called');
-      fs.rmSync(marker, { force: true });
-      const result = spawnSync('bash', ['-c', script], {
-        cwd: directory,
-        encoding: 'utf8',
-        timeout: 10000,
-        env: {
-          ...process.env,
-          PATH: `${directory}${path.delimiter}${process.env.PATH}`,
-          FASTLY_DOCUMENTATION_SERVICE_ID: scenario === 'invalid-service' ? '../other-service' : 'TestService123',
-          FASTLY_DOCUMENTATION_PURGE_TOKEN: scenario === 'missing-token' ? '' : 'test-purge-token',
-          PURGE_PROBE_FAILURE: scenario
-        }
-      });
-      if (result.error || (scenario === 'success' ? result.status !== 0 : result.status === 0)) fail(`documentation CDN purge ${scenario} probe failed`);
-      if (['missing-token', 'invalid-service'].includes(scenario) && fs.existsSync(marker)) fail(`documentation CDN purge ${scenario} issued a request`);
-      if (`${result.stdout}${result.stderr}`.includes('test-purge-token')) fail('documentation CDN purge printed its credential');
-    }
-  } finally {
-    fs.rmSync(directory, { recursive: true, force: true });
-  }
 }
 
 function workflowJob(source, name) {
@@ -440,7 +376,6 @@ process.exit(scenario === 'context-failure' ? 1 : 0);
 function validateWorkflows() {
   const required = [
     '.github/workflows/documentation.yml',
-    '.github/workflows/documentation-deploy.yml',
     '.github/workflows/npm-publish.yml',
     '.github/workflows/validate.yml'
   ];
@@ -457,7 +392,7 @@ function validateWorkflows() {
   excludes(docs, 'run: npm run docs:', 'documentation validation workflow');
   for (const forbidden of ['configure-pages', 'upload-pages-artifact', 'deploy-pages', 'pages: write', 'github-pages']) excludes(docs, forbidden, 'documentation validation workflow');
 
-  const npm = read(required[2]);
+  const npm = read(required[1]);
   includes(npm, 'name: npm publication', 'npm publication workflow');
   includes(npm, "node-version: '24.18.0'", 'npm publication workflow');
   excludes(npm, "node-version: '24'", 'npm publication workflow');
@@ -524,73 +459,9 @@ function validateWorkflows() {
     'NPM_CONFIG_USERCONFIG'
   ]) includes(publicationScript, marker, 'npm publication implementation');
 
-  const deploy = read(required[1]);
-  if ((deploy.match(/kind: 'documentation'/g) || []).length !== 2) fail('both legacy documentation consumption phases must reject source-only qualification');
-  const deploymentCli = read('scripts/documentation-deployment.cjs');
-  excludes(deploymentCli, '--allow-non-github', 'documentation deployment CLI');
-  includes(deploy, 'name: Documentation deployment', 'documentation deployment workflow');
-  includes(deploy, "node-version: '24.18.0'", 'documentation deployment workflow');
-  excludes(deploy, "node-version: '24'", 'documentation deployment workflow');
-  productionWorkflowIsManual(deploy, 'documentation deployment workflow');
-  includes(deploy, 'environment: documentation-production', 'documentation deployment workflow');
-  for (const variable of [
-    'FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID',
-    'FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY',
-    'FASTLY_OBJECT_STORAGE_ENDPOINT',
-    'FASTLY_OBJECT_STORAGE_BUCKET',
-    'FASTLY_OBJECT_STORAGE_REGION',
-    'PULSE_DOCUMENTATION_ORIGIN',
-    'PULSE_DOCUMENTATION_BASE_PATH'
-  ]) includes(deploy, variable, 'documentation deployment workflow');
-  includes(deploy, '--phase immutable', 'documentation deployment workflow');
-  includes(deploy, 'verify-npm-release.cjs', 'documentation deployment workflow');
-  includes(deploy, '--phase promote', 'documentation deployment workflow');
-  includes(deploy, '--npm-verification npm-release-availability.json', 'documentation deployment workflow');
-  includes(deploy, 'documentation-deployment.cjs verify-public', 'documentation deployment workflow');
-  const immutableAt = deploy.indexOf('--phase immutable');
-  const npmAt = deploy.indexOf('verify-npm-release.cjs');
-  const promotionAt = deploy.indexOf('--phase promote');
-  const purgeAt = deploy.indexOf('name: Purge the documentation CDN before public verification');
-  const publicAt = deploy.indexOf('documentation-deployment.cjs verify-public');
-  if (!(immutableAt >= 0 && npmAt > immutableAt && promotionAt > npmAt && purgeAt > promotionAt && publicAt > purgeAt)) fail('documentation deployment order must be immutable, npm verification, promotion, CDN purge, then public verification');
-  const storageVerificationAt = deploy.lastIndexOf('documentation-promotion-verification.json', purgeAt);
-  if (storageVerificationAt < promotionAt) fail('documentation CDN purge must follow mutable storage verification');
-  validateCdnPurgeWorkflow(deploy);
-  includes(deploy, 'documentation-cdn-purge.json', 'documentation deployment evidence');
-  includes(deploy, 'package-manager-cache: false', 'documentation deployment workflow');
-  excludes(deploy, '          npm run docs:', 'documentation deployment workflow');
-  excludes(deploy, 'github.ref_name == github.event.repository.default_branch', 'documentation deployment workflow');
-  for (const forbidden of ['pnpm install', 'pnpm run docs:', 'documentation-deployment.cjs seal', 'release:seal', 'pnpm build']) excludes(deploy, forbidden, 'prebuilt docs consumption');
-  for (const job of ['candidate', 'deploy'].map(name => workflowJob(deploy, name))) {
-    includes(job, 'actions: read', 'cross-run documentation access');
-    includes(job, 'pull-requests: read', 'merged PR lookup permission');
-    includes(job, 'merge-multiple: true', 'single artifact root layout');
-    includes(job, "require('./scripts/release-qualification.cjs').consume({", 'authenticated docs consumption');
-    excludes(job, 'continue-on-error:', 'blocking docs consumption');
-  }
-  includes(deploy, 'QUALIFICATION_SELECTION: ${{ needs.candidate.outputs.selection }}', 'docs selection pinned through approval');
-  includes(deploy, 'artifact-ids: ${{ needs.candidate.outputs.candidate_artifact_id }}', 'docs artifact pinned through approval');
-  includes(deploy, 'run-id: ${{ needs.candidate.outputs.qualification_run_id }}', 'docs run pinned through approval');
-  includes(deploy, '--qualification-binding qualification-binding.json', 'docs merge binding');
+  require('./documentation-writer-retirement.cjs').validateWriterRetirement();
 
-  const deployJobStart = deploy.indexOf('\n  deploy:');
-  const deployStepsStart = deploy.indexOf('\n    steps:', deployJobStart);
-  if (deployJobStart < 0 || deployStepsStart < 0) fail('documentation deployment workflow must contain a protected deploy job');
-  const deployJobHeader = deploy.slice(deployJobStart, deployStepsStart);
-  excludes(deployJobHeader, 'secrets.FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID', 'documentation deployment job-level environment');
-  excludes(deployJobHeader, 'secrets.FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY', 'documentation deployment job-level environment');
-  excludes(deployJobHeader, 'secrets.FASTLY_DOCUMENTATION_PURGE_TOKEN', 'documentation deployment job-level environment');
-  includes(deployJobHeader, 'AWS_REQUEST_CHECKSUM_CALCULATION: when_required', 'documentation deployment job-level environment');
-  includes(deployJobHeader, 'AWS_RESPONSE_CHECKSUM_VALIDATION: when_required', 'documentation deployment job-level environment');
-  const protectedConfigurationStep = deploy.indexOf('- name: Verify protected deployment configuration', deployStepsStart);
-  if (protectedConfigurationStep < 0) fail('documentation deployment workflow is missing protected configuration verification');
-  const preCredentialSteps = deploy.slice(deployStepsStart, protectedConfigurationStep);
-  excludes(preCredentialSteps, 'secrets.FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID', 'documentation deployment bootstrap steps');
-  excludes(preCredentialSteps, 'secrets.FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY', 'documentation deployment bootstrap steps');
-  excludes(preCredentialSteps, 'secrets.FASTLY_DOCUMENTATION_PURGE_TOKEN', 'documentation deployment bootstrap steps');
-  for (const forbidden of ['s3 sync', '--delete', 'delete-object', 'pages: write', 'deploy-pages']) excludes(deploy, forbidden, 'documentation deployment workflow');
-
-  const validation = read(required[3]);
+  const validation = read(required[2]);
   includes(validation, 'name: Repository validation', 'repository validation workflow');
   includes(validation, 'node-floor:', 'repository validation workflow');
   includes(validation, "node-version: '22.x'", 'repository validation workflow');
@@ -616,7 +487,7 @@ function validateWorkflows() {
   includes(cleanAcceptance, 'installed.version, RELEASE_VERSION', 'clean-machine acceptance');
   excludes(cleanAcceptance, 'packThirdPartyCandidates', 'clean-machine acceptance');
   excludes(cleanAcceptance, "['typescript', 'assemblyscript'", 'clean-machine acceptance');
-  return Object.freeze({ files: required.length, manualProductionWorkflows: 2, pagesDeploymentRemoved: true, immutableBeforeNpmBeforePromotion: true, oidcOnlyInPublishJob: true, deploymentSecretsStepScoped: true, nodeFloor: PUBLICATION.nodeMinimumVersion, releaseNodeRange: PUBLICATION.nodeReleaseRange, releaseNode: PUBLICATION.nodeVersion });
+  return Object.freeze({ files: required.length, manualProductionWorkflows: 1, pagesDeploymentRemoved: true, oidcOnlyInPublishJob: true, nodeFloor: PUBLICATION.nodeMinimumVersion, releaseNodeRange: PUBLICATION.nodeReleaseRange, releaseNode: PUBLICATION.nodeVersion });
 }
 
 function pulseDependenciesFor(entry, packageNames) {
@@ -959,337 +830,34 @@ function writeSyntheticSite(siteDir) {
   }
 }
 
-function npmVerificationReport() {
-  return {
-    schemaVersion: 'pulse.npm-publication-verification.v1',
-    status: 'ok',
-    releaseVersion: RELEASE_VERSION,
-    releaseTag: `v${RELEASE_VERSION}`,
-    channel: RELEASE_MANIFEST.channel,
-    distTag: PUBLICATION.distTag,
-    registry: PUBLICATION.registry,
-    source: { mode: 'release-catalog', file: 'release/pulse-release-manifest.json' },
-    packageCount: PACKAGE_SET.length,
-    packages: PACKAGE_SET.map((entry) => ({
-      name: entry.name,
-      version: RELEASE_VERSION,
-      distTag: PUBLICATION.distTag,
-      integrity: `sha512-${Buffer.from(entry.name).toString('base64')}`,
-      shasum: 'a'.repeat(40),
-      pulseDependencies: []
-    })),
-    failures: 0,
-    verificationMode: 'registry-catalog'
-  };
-}
-
-function validateAwsChecksumEnvironment(temp, loaded, sourceFile) {
-  const bin = path.join(temp, 'mock-aws-bin');
-  const logFile = path.join(temp, 'mock-aws-calls.jsonl');
-  ensureDirectory(bin);
-  const aws = path.join(bin, 'aws');
-  fs.writeFileSync(aws, `#!/usr/bin/env node
-'use strict';
-const fs = require('node:fs');
-const args = process.argv.slice(2);
-const record = {
-  args,
-  requestChecksumCalculation: process.env.AWS_REQUEST_CHECKSUM_CALCULATION,
-  responseChecksumValidation: process.env.AWS_RESPONSE_CHECKSUM_VALIDATION
-};
-fs.appendFileSync(process.env.AWS_CHECKSUM_PROBE_LOG, JSON.stringify(record) + '\\n');
-if (record.requestChecksumCalculation !== 'when_required' || record.responseChecksumValidation !== 'when_required') process.exit(91);
-if (args[0] === '--version') {
-  process.stderr.write('aws-cli/2.31.0 Python/3.13.0 Linux/6 botocore/2.0.0\\n');
-  process.exit(0);
-}
-if (args[0] === 's3api' && args[1] === 'head-object') {
-  process.stderr.write('Not Found\\n');
-  process.exit(254);
-}
-if (args[0] === 's3api' && args[1] === 'put-object') process.exit(0);
-process.exit(92);
-`);
-  fs.chmodSync(aws, 0o755);
-  const env = {
-    ...process.env,
-    PATH: `${bin}${path.delimiter}${process.env.PATH || ''}`,
-    AWS_CHECKSUM_PROBE_LOG: logFile,
-    [loaded.config.storage.bucketVariable]: 'pulse-docs-checksum-test',
-    [loaded.config.storage.regionVariable]: 'us-east',
-    [loaded.config.storage.endpointVariable]: 'https://us-east.object.fastlystorage.app',
-    [loaded.config.storage.accessKeySecret]: 'test-access-key',
-    [loaded.config.storage.secretKeySecret]: 'test-secret-key',
-    AWS_REQUEST_CHECKSUM_CALCULATION: 'when_supported',
-    AWS_RESPONSE_CHECKSUM_VALIDATION: 'when_supported'
-  };
-  const adapter = awsAdapter({ repoRoot, env });
-  const key = `${loaded.config.objectPrefix}/${DOCUMENTATION.version}/checksum-probe.txt`;
-  if (adapter.head(key) !== undefined) fail('mock Fastly Object Storage checksum probe unexpectedly found an object');
-  adapter.put(key, sourceFile, {
-    contentType: 'text/plain; charset=utf-8',
-    cacheControl: loaded.config.cacheClasses.immutable,
-    sha256: sha256(fs.readFileSync(sourceFile))
-  });
-  const calls = fs.readFileSync(logFile, 'utf8').trim().split('\n').map((line) => JSON.parse(line));
-  if (calls.length !== 3 || calls[0].args[0] !== '--version' || calls[1].args[1] !== 'head-object' || calls[2].args[1] !== 'put-object') {
-    fail('mock Fastly Object Storage checksum probe did not exercise AWS CLI version, head, and put operations');
-  }
-  if (calls.some((call) => call.requestChecksumCalculation !== 'when_required' || call.responseChecksumValidation !== 'when_required')) {
-    fail('Fastly Object Storage AWS operations did not receive required-only checksum settings');
-  }
-  return calls.length;
-}
-
 function validateDocumentationBundle() {
-  const loaded = loadDeploymentConfig(repoRoot);
-  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-documentation-deployment-validation-'));
+  const { syntheticLegacyCandidate } = require('../wasm/test/support/legacy-documentation-candidate.cjs');
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-legacy-reader-'));
   try {
-    const siteDir = path.join(temp, 'site');
+    const siteDir = path.join(temp, 'source');
     writeSyntheticSite(siteDir);
     const candidateDir = path.join(temp, 'candidate');
-    const source = { sourceCommit: 'b'.repeat(40), sourceRef: `refs/tags/v${RELEASE_VERSION}`, requireReleaseRef: true };
-    expectFailure(
-      () => sealDocumentationCandidate({ repoRoot, siteDir, outDir: siteDir, ...source }),
-      'PULSE_DOCUMENTATION_UNSAFE_OUTPUT',
-      'documentation source/output overlap'
-    );
-    const unsafeRepository = path.join(temp, 'unsafe-repository');
-    ensureDirectory(path.join(unsafeRepository, 'release'));
-    fs.copyFileSync(
-      path.join(repoRoot, 'release', 'documentation-deployment.json'),
-      path.join(unsafeRepository, 'release', 'documentation-deployment.json')
-    );
-    const unsafeRepositoryOutput = path.join(unsafeRepository, 'docs');
-    ensureDirectory(unsafeRepositoryOutput);
-    const repositorySentinel = path.join(unsafeRepositoryOutput, 'retain-me.txt');
-    fs.writeFileSync(repositorySentinel, 'retain me\n');
-    expectFailure(
-      () => sealDocumentationCandidate({ repoRoot: unsafeRepository, siteDir, outDir: unsafeRepositoryOutput, ...source }),
-      'PULSE_DOCUMENTATION_UNSAFE_OUTPUT',
-      'documentation repository output namespace'
-    );
-    if (!fs.existsSync(repositorySentinel)) fail('unsafe documentation output removed repository content');
-    const unrelatedOutput = path.join(temp, 'unrelated-documentation-output');
-    ensureDirectory(unrelatedOutput);
-    const unrelatedSentinel = path.join(unrelatedOutput, 'retain-me.txt');
-    fs.writeFileSync(unrelatedSentinel, 'retain me\n');
-    expectFailure(
-      () => sealDocumentationCandidate({ repoRoot, siteDir, outDir: unrelatedOutput, ...source }),
-      'PULSE_DOCUMENTATION_UNSAFE_OUTPUT',
-      'documentation unrelated output replacement'
-    );
-    if (!fs.existsSync(unrelatedSentinel)) fail('unsafe documentation output removed unrelated content');
-    const prepared = sealDocumentationCandidate({ repoRoot, siteDir, outDir: candidateDir, ...source });
-    const verified = verifyDocumentationCandidate({ repoRoot, candidateDir, requireReleaseRef: true });
-    if (!verified.immutableCount || !verified.mutableCount || verified.receipt.exactVersionObjectCount < 1) fail('documentation candidate does not contain all deployment classes and its receipt');
-    const unsealedCandidateFile = path.join(candidateDir, 'unsealed.txt');
-    fs.writeFileSync(unsealedCandidateFile, 'must be rejected\n');
-    expectFailure(() => verifyDocumentationCandidate({ repoRoot, candidateDir, requireReleaseRef: true }), undefined, 'unsealed documentation candidate file');
-    fs.rmSync(unsealedCandidateFile, { force: true });
-    const unexpectedSiteFile = path.join(siteDir, 'unexpected.txt');
-    fs.writeFileSync(unexpectedSiteFile, 'must be rejected\n');
-    expectFailure(() => sealDocumentationCandidate({ repoRoot, siteDir, outDir: path.join(temp, 'unexpected-candidate'), ...source }),
-      'PULSE_DOCUMENTATION_DEPLOYMENT_INVALID', 'unexpected documentation path during sealing');
-    fs.rmSync(unexpectedSiteFile);
-    const historical = verified.manifest.objects.filter((entry) => entry.phase === 'immutable'
-      && !entry.relativePath.startsWith(`${DOCUMENTATION.version}/`) && entry.relativePath !== loaded.config.deployment.receiptPath);
-    if (historical.length !== 3) fail('historical documentation fixtures are missing from the sealed candidate');
-    const historicalCandidateFile = path.join(candidateDir, 'site', historical[0].relativePath);
-    const historicalCandidateBytes = fs.readFileSync(historicalCandidateFile);
-    fs.appendFileSync(historicalCandidateFile, 'tamper');
-    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, adapter: { head() { fail('tampered candidate reached storage'); } }, phase: 'immutable' }),
-      'PULSE_DOCUMENTATION_DEPLOYMENT_INVALID', 'historical candidate integrity before storage selection');
-    fs.writeFileSync(historicalCandidateFile, historicalCandidateBytes);
-    verifyDocumentationCandidate({ repoRoot, candidateDir, requireReleaseRef: true });
-    const awsChecksumCalls = validateAwsChecksumEnvironment(temp, loaded, path.join(siteDir, 'index.html'));
-
-    const guardedVariables = [
-      'GITHUB_ACTIONS',
-      'RUNNER_ENVIRONMENT',
-      'GITHUB_REPOSITORY',
-      'GITHUB_WORKFLOW_REF',
-      'GITHUB_REF',
-      'GITHUB_REF_TYPE',
-      'GITHUB_SHA',
-      loaded.config.publicRoute.originVariable,
-      loaded.config.publicRoute.basePathVariable
+    const result = syntheticLegacyCandidate({ repoRoot, siteDir, outDir: candidateDir });
+    const failures = [
+      () => fs.appendFileSync(path.join(candidateDir, 'site', DOCUMENTATION.version, 'index.html'), 'tamper'),
+      () => fs.unlinkSync(path.join(candidateDir, 'site', DOCUMENTATION.version, 'index.html')),
+      () => fs.writeFileSync(path.join(candidateDir, 'unsealed.json'), '{}'),
+      () => fs.writeFileSync(path.join(candidateDir, 'site', 'extra.txt'), 'unexpected'),
+      () => fs.writeFileSync(path.join(candidateDir, 'sha256sums.txt'), ''),
+      () => { const file = path.join(candidateDir, 'documentation-deployment-manifest.json');
+        const m = JSON.parse(fs.readFileSync(file)); m.source.commit = 'invalid'; fs.writeFileSync(file, stableJson(m)); },
+      () => { const file = path.join(candidateDir, 'site', loadDeploymentConfig().config.deployment.receiptPath);
+        const r = JSON.parse(fs.readFileSync(file)); r.exactVersionTreeSha256 = '0'.repeat(64); fs.writeFileSync(file, stableJson(r)); }
     ];
-    const priorEnvironment = Object.fromEntries(guardedVariables.map((name) => [name, process.env[name]]));
-    try {
-      delete process.env.GITHUB_ACTIONS;
-      expectFailure(() => assertProductionDeploymentEnvironment(verified.manifest, { repoRoot }), undefined, 'local production documentation deployment');
-      process.env.GITHUB_ACTIONS = 'true';
-      process.env.RUNNER_ENVIRONMENT = 'github-hosted';
-      process.env.GITHUB_REPOSITORY = 'pulse-compute/pulse';
-      process.env.GITHUB_WORKFLOW_REF = `pulse-compute/pulse/.github/workflows/documentation-deploy.yml@refs/tags/v${RELEASE_VERSION}`;
-      process.env.GITHUB_REF = `refs/tags/v${RELEASE_VERSION}`;
-      process.env.GITHUB_REF_TYPE = 'tag';
-      process.env.GITHUB_SHA = verified.manifest.source.commit;
-      process.env[loaded.config.publicRoute.originVariable] = DOCUMENTATION.origin;
-      process.env[loaded.config.publicRoute.basePathVariable] = DOCUMENTATION.basePath;
-      if (DOCUMENTATION.origin === 'https://pulse-compute.github.io') {
-        expectFailure(
-          () => assertProductionDeploymentEnvironment(verified.manifest, { repoRoot }),
-          'PULSE_DOCUMENTATION_PRODUCTION_ORIGIN_PENDING',
-          'legacy Pages production origin'
-        );
-        assertProductionDeploymentEnvironment(verified.manifest, { repoRoot, allowPendingOrigin: true });
-      } else {
-        assertProductionDeploymentEnvironment(verified.manifest, { repoRoot });
-      }
-    } finally {
-      for (const [name, value] of Object.entries(priorEnvironment)) {
-        if (value === undefined) delete process.env[name]; else process.env[name] = value;
-      }
+    for (const mutate of failures) {
+      mutate(); let rejected = false;
+      try { verifyDocumentationCandidate({ repoRoot, candidateDir }); } catch { rejected = true; }
+      if (!rejected) fail('historical documentation reader accepted tampering');
+      fs.rmSync(candidateDir, { recursive: true, force: true });
+      syntheticLegacyCandidate({ repoRoot, siteDir, outDir: candidateDir });
     }
-
-    const npmFile = path.join(temp, 'npm-verification.json');
-    writeFixture(npmFile, npmVerificationReport());
-    verifyNpmPromotionEvidence(npmFile);
-    const incompleteNpmReport = npmVerificationReport();
-    delete incompleteNpmReport.packages[0].integrity;
-    const incompleteNpmFile = path.join(temp, 'npm-verification-incomplete.json');
-    writeFixture(incompleteNpmFile, incompleteNpmReport);
-    expectFailure(
-      () => verifyNpmPromotionEvidence(incompleteNpmFile),
-      'PULSE_DOCUMENTATION_NPM_VERIFICATION_INVALID',
-      'documentation promotion with incomplete npm identity evidence'
-    );
-
-    const bucketA = path.join(temp, 'bucket-a');
-    ensureDirectory(bucketA);
-    const first = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
-    const retry = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
-    const immutableStorage = verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
-    const currentImmutableCount = verified.receipt.exactVersionObjectCount + 1;
-    if (first.uploaded !== currentImmutableCount || retry.alreadyPresent !== currentImmutableCount || immutableStorage.objectCount !== currentImmutableCount) fail('current immutable documentation deployment is not idempotent');
-    for (const entry of historical) {
-      if (fs.existsSync(path.join(bucketA, entry.objectKey))) fail('historical preview object was uploaded to an empty bucket');
-    }
-    const exact = verified.manifest.objects.find((entry) => entry.phase === 'immutable' && entry.relativePath.startsWith(`${DOCUMENTATION.version}/`));
-    fs.appendFileSync(path.join(bucketA, ...exact.objectKey.split('/')), 'tamper');
-    const bytesConflict = expectFailure(
-      () => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'all', npmVerification: npmFile }),
-      'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT',
-      'immutable documentation overwrite'
-    );
-    if (bytesConflict.objectKey !== exact.objectKey || JSON.stringify(bytesConflict.details?.mismatch) !== '["bytes"]') fail('immutable conflict must identify its key and differing bytes');
-    const failureFile = path.join(temp, 'immutable-deployment-failure.json');
-    const runFailure = (command, jsonFile) => {
-      const result = spawnSync(process.execPath, [
-        'scripts/documentation-deployment.cjs', command, '--candidate-dir', candidateDir,
-        '--driver', 'filesystem', '--bucket-dir', bucketA, '--phase', 'immutable', '--json-out', jsonFile
-      ], { cwd: repoRoot, encoding: 'utf8' });
-      if (result.status !== 1) fail(`${command} conflict did not fail`);
-      return JSON.parse(fs.readFileSync(jsonFile, 'utf8'));
-    };
-    const failedDeploy = runFailure('deploy', failureFile);
-    if (failedDeploy.status !== 'failed' || failedDeploy.operation !== 'deploy'
-      || failedDeploy.failure.code !== 'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT'
-      || failedDeploy.failure.objectKey !== exact.objectKey
-      || JSON.stringify(failedDeploy.failure.mismatch) !== '["bytes"]') fail('immutable deployment failure evidence lacks the conflict identity');
-    const failedVerification = runFailure('verify-storage', path.join(temp, 'immutable-verification-failure.json'));
-    if (failedVerification.status !== 'failed' || failedVerification.operation !== 'verify-storage'
-      || failedVerification.failure.objectKey !== exact.objectKey || !failedVerification.failure.code) fail('storage verification failure evidence lacks the object identity');
-    if (fs.existsSync(path.join(bucketA, loaded.config.objectPrefix, 'index.html'))) fail('immutable conflict allowed alias promotion');
-    fs.copyFileSync(path.join(candidateDir, 'site', exact.relativePath), path.join(bucketA, exact.objectKey));
-    const metadataFile = path.join(bucketA, '.pulse-object-metadata', `${exact.objectKey}.json`);
-    const exactMetadata = fs.readFileSync(metadataFile);
-    const alteredMetadata = JSON.parse(exactMetadata);
-    alteredMetadata.cacheControl = 'no-store';
-    fs.writeFileSync(metadataFile, stableJson(alteredMetadata));
-    const metadataConflict = expectFailure(() => deployDocumentation({ repoRoot, candidateDir, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
-      'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT', 'current exact-version metadata conflict');
-    if (metadataConflict.objectKey !== exact.objectKey || JSON.stringify(metadataConflict.details?.mismatch) !== '["cache-control"]') fail('immutable metadata conflict must identify its key and differing metadata');
-    const failedMetadata = runFailure('deploy', failureFile);
-    if (failedMetadata.failure.objectKey !== exact.objectKey
-      || JSON.stringify(failedMetadata.failure.mismatch) !== '["cache-control"]') fail('metadata conflict report must replace earlier failure evidence with the current mismatch');
-    fs.writeFileSync(metadataFile, exactMetadata);
-    fs.appendFileSync(path.join(bucketA, loaded.config.objectPrefix, loaded.config.deployment.receiptPath), 'tamper');
-    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
-      'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT', 'current deployment receipt conflict');
-
-    const bucketB = path.join(temp, 'bucket-b');
-    ensureDirectory(bucketB);
-    fs.writeFileSync(path.join(bucketB, 'unrelated-object.txt'), 'retain me\n');
-    const historySource = path.join(temp, 'stored-history.txt');
-    fs.writeFileSync(historySource, 'original published historical bytes\n');
-    const filesystem = filesystemAdapter({ bucketDir: bucketB });
-    const historicalKeys = new Set(historical.map((entry) => entry.objectKey));
-    for (const key of historicalKeys) filesystem.put(key, historySource, { contentType: 'text/plain', cacheControl: 'no-store' });
-    const historicalMetadata = [...historicalKeys].map((key) => fs.readFileSync(path.join(bucketB, '.pulse-object-metadata', `${key}.json`), 'utf8'));
-    const adapter = { kind: filesystem.kind };
-    for (const operation of ['head', 'read', 'put']) {
-      adapter[operation] = (key, ...args) => {
-        if (historicalKeys.has(key)) fail(`deployment attempted ${operation} on historical storage`);
-        return filesystem[operation](key, ...args);
-      };
-    }
-    deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'immutable' });
-    expectFailure(
-      () => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'mutable' }),
-      'PULSE_DOCUMENTATION_NPM_VERIFICATION_REQUIRED',
-      'ungated documentation promotion'
-    );
-    let mutableWrites = 0;
-    const interrupted = { ...adapter, put(key, ...args) {
-      if (++mutableWrites === 2) throw Object.assign(new Error('fixture interrupted promotion'), { code: 'FIXTURE_PROMOTION_INTERRUPTED' });
-      return adapter.put(key, ...args);
-    } };
-    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter: interrupted,
-      phase: 'mutable', npmVerification: npmFile }), 'FIXTURE_PROMOTION_INTERRUPTED', 'partial mutable upload');
-    for (const relative of loaded.config.deployment.promotionCommitObjects) {
-      if (fs.existsSync(path.join(bucketB, loaded.config.objectPrefix, relative))) fail('interrupted upload committed an alias');
-    }
-    const promotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'mutable', npmVerification: npmFile });
-    const repeatPromotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'mutable', npmVerification: npmFile });
-    const allRetry = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'all', npmVerification: npmFile });
-    const storage = verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'all' });
-    if (allRetry.alreadyPresent !== currentImmutableCount + verified.mutableCount || storage.objectCount !== allRetry.objectCount || allRetry.deleted !== 0) fail('all-phase storage selection includes historical objects or deletes');
-    [...historicalKeys].forEach((key, index) => {
-      if (!filesystem.read(key).equals(fs.readFileSync(historySource))
-        || fs.readFileSync(path.join(bucketB, '.pulse-object-metadata', `${key}.json`), 'utf8') !== historicalMetadata[index]) fail('historical storage bytes or metadata changed');
-    });
-    if (promotion.uploaded + promotion.alreadyPresent !== verified.mutableCount || repeatPromotion.alreadyPresent !== verified.mutableCount || !fs.existsSync(path.join(bucketB, 'unrelated-object.txt'))) fail('mutable documentation promotion is not idempotent or retained unrelated data');
-    const promotionTail = promotion.objects.slice(-loaded.config.deployment.promotionCommitObjects.length).map((entry) => entry.key.replace(`${loaded.config.objectPrefix}/`, ''));
-    if (JSON.stringify(promotionTail) !== JSON.stringify(loaded.config.deployment.promotionCommitObjects)) fail('documentation promotion commit objects were not uploaded last in release-owned order');
-    return Object.freeze({
-      objectCount: verified.objectCount,
-      immutableObjects: verified.immutableCount,
-      currentImmutableObjects: currentImmutableCount,
-      historicalPreviewObjects: historical.length,
-      historicalStorageUntouched: true,
-      historicalCandidateIntegrityChecked: true,
-      unexpectedSitePathRejected: true,
-      mutableObjects: verified.mutableCount,
-      exactVersionReceiptObjects: verified.receipt.exactVersionObjectCount,
-      verifiedStorageObjects: storage.objectCount,
-      immutableRetryObjects: retry.alreadyPresent,
-      mutableRetryObjects: repeatPromotion.alreadyPresent,
-      immutabilityConflictRejected: true,
-      immutableMetadataConflictRejected: true,
-      immutableReceiptConflictRejected: true,
-      unsealedCandidateFileRejected: true,
-      npmPromotionGate: true,
-      incompleteNpmEvidenceRejected: true,
-      legacyPagesOriginRejected: true,
-      unrelatedObjectRetained: true,
-      unsafeOutputRejected: true,
-      sourceOutputOverlapRejected: true,
-      unrelatedOutputDirectoryRetained: true,
-      promotionCommitObjectsLast: true,
-      interruptedPromotionResumed: true,
-      promotionCommitOrder: Object.freeze([...loaded.config.deployment.promotionCommitObjects]),
-      awsChecksumCalculation: loaded.config.storage.requestChecksumCalculation,
-      awsChecksumValidation: loaded.config.storage.responseChecksumValidation,
-      awsChecksumCalls,
-      deleteOperations: 0,
-      candidateSource: prepared.source
-    });
-  } finally {
-    fs.rmSync(temp, { recursive: true, force: true });
-  }
+    return Object.freeze({ objectCount: result.objectCount, readerOnly: true, tamperingCases: failures.length });
+  } finally { fs.rmSync(temp, { recursive: true, force: true }); }
 }
 
 function validateFastlyVcl() {
@@ -1319,20 +887,6 @@ function validateFastlyVcl() {
   for (const source of [routing, signing, response]) {
     if (/AKIA[0-9A-Z]{16}/.test(source)) fail('Fastly VCL appears to contain a credential rather than a placeholder');
   }
-  const deploymentScript = read('scripts/documentation-deployment.cjs');
-  for (const marker of [
-    'assertProductionDeploymentEnvironment',
-    'expectedGitHubRepository',
-    'process.env.GITHUB_REPOSITORY',
-    'Fastly Object Storage deployment requires AWS CLI v${config.storage.awsCliMajor}',
-    "'AWS_WEB_IDENTITY_TOKEN_FILE'",
-    'AWS_CONFIG_FILE: os.devNull',
-    'AWS_SHARED_CREDENTIALS_FILE: os.devNull',
-    'AWS_REQUEST_CHECKSUM_CALCULATION: config.storage.requestChecksumCalculation',
-    'AWS_RESPONSE_CHECKSUM_VALIDATION: config.storage.responseChecksumValidation',
-    "AWS_PAGER: ''",
-    "AWS_CLI_AUTO_PROMPT: 'off'"
-  ]) includes(deploymentScript, marker, 'documentation deployment script');
   return Object.freeze({ files: required.length, methods: Object.freeze(['GET', 'HEAD']), privateOriginSigning: 'AWS SigV4', automaticActivation: false });
 }
 
