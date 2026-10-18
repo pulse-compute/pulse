@@ -1,0 +1,1434 @@
+{
+  "schema": "pulse.b10-02.timing-input.v1",
+  "candidate": "74bf891ffe54865cca4869bf7c45d86ff172f34f",
+  "tree": "c79155d6e115d58f13c362d4784a081248dd2df7",
+  "runId": "2026-10-18T04-49-50-564Z-G7pCEX",
+  "scope": "B10-00 complete passing 2-worker/1-compiler local run. Fixed durations are historical observations, not qualification of latest. No B10-01 or failed-run timings are pooled.",
+  "reports": [
+    {
+      "file": "release-tasks.json",
+      "sha256": "e1291c32220b93c80d631e5c1a56b1c53c89c33e337b6116717c9c8bf5aec23b",
+      "durationMs": 2972069,
+      "status": "passed",
+      "selectedTasks": [
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence",
+        "cli-report-size-evidence",
+        "cli-report-capture-proof",
+        "cli-report-entry-proof",
+        "cli-report-reference-provenance",
+        "cli-report-handler-topology",
+        "cli-report-handler-associations",
+        "cli-report-relationships",
+        "cli-report-imported-inputs",
+        "cli-report-resource-inventory",
+        "cli-report-graph-diagnostics",
+        "multifile-source-indexes",
+        "guest-json-roundtrip",
+        "pure-helper-contract",
+        "suite-shape",
+        "test-orchestration",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "hidden-contracts",
+        "release-feature-acceptance",
+        "release-runtime-policy",
+        "release-seal-lifecycle",
+        "release-checkpoints",
+        "release-recovery-runner",
+        "release-recovery",
+        "release-tag",
+        "api-surface",
+        "logging-contract",
+        "s3-design-contract",
+        "kv-design-contract",
+        "kv-conditional-runtime",
+        "kv-conditional-gates",
+        "s3-read-contract",
+        "s3-write-contract",
+        "crypto-config-planning",
+        "crypto-es256-signing",
+        "crypto-rs256",
+        "crypto-digest-text-contract",
+        "reachable-graph",
+        "project-modules",
+        "package-reachability",
+        "external-lowerers",
+        "package-runtime",
+        "provider-toolchain",
+        "schema-registry",
+        "continuation-registry",
+        "entities-contracts",
+        "entities-schema-bridge",
+        "entities-javascript-runtime",
+        "entities-json-rpc-corpus",
+        "mcp-http",
+        "pulse-context-corpus",
+        "pulse-context-application",
+        "pulse-context-host",
+        "mcp-compatibility",
+        "mcp-tools",
+        "mcp-authorization",
+        "entities-package-owned-lowering",
+        "entities-catalog",
+        "entities-inspection",
+        "entities-orchestration-demo",
+        "npm-source-imports",
+        "fastly-numeric-regions",
+        "fastly-numeric-budgets",
+        "fastly-handle-ownership",
+        "fastly-handle-frames",
+        "pure-helper-vocabulary",
+        "pure-string-index",
+        "pure-field-projection",
+        "pure-guarded-arguments",
+        "pure-source-helpers",
+        "pure-record-helpers",
+        "pure-argument-helpers",
+        "pure-loop-helpers",
+        "fastly-driver-behavior-o09",
+        "kv-native-abi-feasibility",
+        "s3-body-read",
+        "s3-node-transport",
+        "canonical-api-lowering",
+        "canonical-native-plan",
+        "shared-stage-o19",
+        "str02b-node-native",
+        "fastly-incoming-body-forwarding",
+        "str03a-generated-output",
+        "str03c-bounded-transforms",
+        "bounded-app-logic",
+        "bounded-read-loops",
+        "bounded-loop-helpers",
+        "logging-lowering",
+        "canonical-router-lowering",
+        "canonical-router-terminal-middleware",
+        "router-selected-groups",
+        "json-as-compatibility",
+        "entities-envelope-feasibility",
+        "entities-managed-handler",
+        "entities-managed-handler-effects",
+        "entities-native-runtime",
+        "entities-hardening",
+        "entities-node-native-workflow",
+        "fastly-entities-native-workflow",
+        "crypto-native-guest-source",
+        "guest-link-package",
+        "guest-link-materialization-stage",
+        "guest-link-audit-diagnostics",
+        "assets-lowering-plan",
+        "assets-package-owned-lowering",
+        "assets-native-embedded",
+        "grip-package-owned-lowering",
+        "jwt-package-owned-lowering",
+        "canonical-api-runtime",
+        "canonical-opaque-node-emission",
+        "grip-package-runtime",
+        "package-root-native",
+        "canonical-native-wasm",
+        "cli-javascript-target-compilation",
+        "target-support",
+        "jwt-javascript-admission",
+        "crypto-runtime-builtin",
+        "javascript-effect-adapter",
+        "logging-runtime",
+        "assets-javascript-runtime",
+        "jwt-signing",
+        "jwt-es256-signing",
+        "jwt-rs256",
+        "crypto-cross-target-conformance",
+        "crypto-digest-text-conformance",
+        "crypto-digest-storage-conformance",
+        "text-capacity-conformance",
+        "events-conformance",
+        "node-router-context-parity",
+        "catalog-router-parity",
+        "fetch-projections-request-bodies",
+        "config-secrets-kv-redaction",
+        "kv-conditional-conformance",
+        "fastly-conditional-kv",
+        "schema-codecs",
+        "schema-kv-parity",
+        "time-conformance",
+        "time-consumer",
+        "node-launcher",
+        "application-errors",
+        "application-error-boundaries",
+        "node-cross-target-conformance",
+        "grip-cross-target-conformance",
+        "four-mode-conformance",
+        "cli-command-spec",
+        "cli-init-workflow",
+        "cli-project-workflow",
+        "cli-expansion-doctor",
+        "cli-project-guards",
+        "cli-dev-workflow",
+        "cli-schema-json-workflow",
+        "events-cli-workflow",
+        "cli-diagnostics",
+        "docs-executable-contracts",
+        "docs-executable-init-dev",
+        "docs-migration-schema-lowering",
+        "docs-example-01-hello-json",
+        "docs-example-02-request-schema",
+        "docs-example-03-fetch-composition",
+        "docs-example-05-fastly-capabilities",
+        "docs-example-07-opaque-proxy",
+        "docs-example-09-router-lowering",
+        "docs-example-10-entities-tools",
+        "docs-example-11-events",
+        "docs-example-12-pulse-context-mcp",
+        "docs-example-13-jwt-es256",
+        "provider-packages",
+        "provider-fastly-package",
+        "provider-fastly-apps",
+        "canonical-grip-fastly",
+        "fastly-cli-gate-surface",
+        "fastly-javascript-packaging",
+        "fastly-javascript-runtime",
+        "fastly-javascript-tooling",
+        "fastly-native-http-shell",
+        "fastly-native-http-effects",
+        "fastly-native-platform-capabilities",
+        "fastly-request-headers",
+        "release-packages",
+        "release-artifact-determinism",
+        "clean-machine-acceptance",
+        "cli-entities-installed-workflow",
+        "npm-source-installed-workflow",
+        "release-evidence-authority",
+        "deployment-candidates"
+      ]
+    },
+    {
+      "file": "feature-tasks.json",
+      "sha256": "fff0270f51e0768a4c8ee8fe2738df1df4ca554de647c1451589c9f3ab3d9d74",
+      "durationMs": 586249,
+      "status": "passed",
+      "selectedTasks": [
+        "str02b-installed",
+        "node01-installed",
+        "arc01-installed",
+        "jwt-installed-workflow",
+        "str02-installed",
+        "str03b-installed",
+        "ast01-installed",
+        "ast02b-installed",
+        "ast02d-installed",
+        "mcp-installed",
+        "s3-body-installed"
+      ]
+    }
+  ],
+  "tasks": {
+    "report-capsule-contract": {
+      "durationMs": 19198,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "4c7a132942b6a56e05522e21f074683a3b113bcc81d550a2b046dd00e533de58"
+    },
+    "cli-report-workflow": {
+      "durationMs": 6130,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "7028d142c54080d2ffb699d0d06d0c6345ecb0355d8dff7ba25c2c97dc689568"
+    },
+    "cli-report-viewer": {
+      "durationMs": 14219,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "d2db1f2d3e53ac8f03b5863c36701fd93d47e732869a89f123d5e2738b076d3a"
+    },
+    "cli-report-retained-evidence": {
+      "durationMs": 35060,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "de3088e868939a981474a26be3def7e57843a34d1be39db634bf77d0da0276dc"
+    },
+    "cli-report-size-evidence": {
+      "durationMs": 4382,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "ed85e43f43e79893c5b8dcbbf73c914f795745911755d6f90b4c6bd1bb7713e5"
+    },
+    "cli-report-capture-proof": {
+      "durationMs": 12195,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "34ec8ef89124027ca8761730bee0cc37cb4430ab30828b795a36aead90b3cd86"
+    },
+    "cli-report-entry-proof": {
+      "durationMs": 33702,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "9e4a8539673c3c2dfa3e2b4621f28972bd2e9a167087e9ecfc455dfc57c6b82f"
+    },
+    "cli-report-reference-provenance": {
+      "durationMs": 14571,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "a2810d4df944e986bc82a23b38065d2925ccf8b4fc32a31947ef5d24d9be94e2"
+    },
+    "cli-report-handler-topology": {
+      "durationMs": 49423,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "754f76ade98047b00ba6f777221ac0b7dcc92aed47b772b94d4c359f6c903cc3"
+    },
+    "cli-report-handler-associations": {
+      "durationMs": 4540,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1de1e90348a05de541532522d421c735860d570ad3b7a2e66b89b06d0bd9cbd2"
+    },
+    "cli-report-relationships": {
+      "durationMs": 8552,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "5c4c0dcf076f1012e50743b9a41f45ae129a6d03b930a5f3e9b2c8f9cefbbe2c"
+    },
+    "cli-report-imported-inputs": {
+      "durationMs": 15704,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "7ad7185322f18072788a3847072e5d2bead501f575e90505f5645678a964d693"
+    },
+    "cli-report-resource-inventory": {
+      "durationMs": 9555,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "2d3041690e33f1bed1e7c8c471a41d61175d37e83acbafcc34979e529f404e5f"
+    },
+    "cli-report-graph-diagnostics": {
+      "durationMs": 8502,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "766d13174de6ea7e5b02f5a182bfbd849f46399b3c88fcd90329aee35bf2507d"
+    },
+    "multifile-source-indexes": {
+      "durationMs": 3972,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "aa9b6fa5454aae4a22a61c5eded0096912bacbcdacbff0cdfee98f66aa2e1a6b"
+    },
+    "guest-json-roundtrip": {
+      "durationMs": 3686,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "afdaa34116f2794128dbccff15ab85dd33f96f3a75481f897c7f7270e53fc28f"
+    },
+    "pure-helper-contract": {
+      "durationMs": 4724,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1101c7e8031bf377ee8f3fc1363a00217981e6a9a147b043d08bc5c051893d7b"
+    },
+    "suite-shape": {
+      "durationMs": 4572,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "9bc479de54dd904048c44b9937b9ed3b2062c1cd814d0212fac36e5f50599fd1"
+    },
+    "test-orchestration": {
+      "durationMs": 11021,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0c9c2c70c1ef28842789004f771f5de19d2296596a874770896868d5a1ac060b"
+    },
+    "package-exports": {
+      "durationMs": 6145,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "10472a9ae101d579cc0089f88a69d492c5312048e1be5abf3ae1ddd24b5dbfaa"
+    },
+    "boundaries": {
+      "durationMs": 6096,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1053cab533cc163e35b170d41a235da49628984d7cfd634d797a9c728798d7ae"
+    },
+    "workspace-hygiene": {
+      "durationMs": 6161,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "4638d9c7085a646549cf363af8f5c2197cd3a35b96e44e53bd305e8a61d13607"
+    },
+    "hidden-contracts": {
+      "durationMs": 3999,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "17b43dd9cfd44b9f8494e649896424c04e273ba23aacc4ffd19eb92dbabc57ae"
+    },
+    "release-feature-acceptance": {
+      "durationMs": 6379,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0328e8c07950c79277e9dd8ab5bd012762b5b5eeeee8f2cbdec0bfb37ca060fd"
+    },
+    "release-runtime-policy": {
+      "durationMs": 7160,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "055695c31f42cf44a256e95f1bdc6edbce56a35924d0515d77e7caed19bb3484"
+    },
+    "release-seal-lifecycle": {
+      "durationMs": 7234,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "d813f2fe5573c996ddf0bb0dd77aed244bd388425e46fb0670eb21af70af6a6e"
+    },
+    "release-checkpoints": {
+      "durationMs": 3971,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b17be9870a5d0c60317deed0bc541bfcd99da36c5cdb5883f7978f847a304bd7"
+    },
+    "release-recovery-runner": {
+      "durationMs": 53493,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1e7f2a8235012b31c225f4a06eb8dbb8dbd09d83fa32c52eb0ef8a1d38aa7dc8"
+    },
+    "release-recovery": {
+      "durationMs": 6603,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "954fdc3865e621156b410d1210da4739d704f9e02994a62916d13331180d4032"
+    },
+    "release-tag": {
+      "durationMs": 4551,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "ce9f79b166af8cdcc44d664065800ac4351b64956825365306ee5178ad56719f"
+    },
+    "api-surface": {
+      "durationMs": 4885,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "951f2ec0cbb2f217ba3a9dd30237fbffbcc95e8be4bb8c633655a307e3acbd24"
+    },
+    "logging-contract": {
+      "durationMs": 3861,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b4b90dfc40386e7f3d2b91114e0523805cd63df644ca305e734c8b14536ea8e5"
+    },
+    "s3-design-contract": {
+      "durationMs": 5002,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "a3b59f8e7142f5f961ba7f1205f7be53cfa6df31376eca0763ef788ae23bddbb"
+    },
+    "kv-design-contract": {
+      "durationMs": 5140,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "7e54873d35c1119ed4763f2cd6ed890c988dfbb057377f01e9c215d2b8192861"
+    },
+    "kv-conditional-runtime": {
+      "durationMs": 4873,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0c4184ccc7a24650d3879de8024b96ce5fcaea8b08aa7ce67cb3afcfcf8db003"
+    },
+    "kv-conditional-gates": {
+      "durationMs": 4115,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "816d7087d2c758dc8c50fee6a56e682de8a8c3acc477ea0e55c8d201ee0362d0"
+    },
+    "s3-read-contract": {
+      "durationMs": 5469,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "614693940600a0b63c9a490accd8a85690ed54b717733feb11b716a05f66a5b2"
+    },
+    "s3-write-contract": {
+      "durationMs": 4039,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "cfd00594af03c9e2855a0164f2b6338364c1eaa7d3e3ddc235c38d8f43cd13d3"
+    },
+    "crypto-config-planning": {
+      "durationMs": 6518,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0fca4df0d74ae34cc5e145efe4af3916600db0ba2a95d2f48fbf37331812bf30"
+    },
+    "crypto-es256-signing": {
+      "durationMs": 3652,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "a5f2e9bb36e81d3a5733fcca0f232f75dc1a5ccc1ccf4310357d08dcc6785b3e"
+    },
+    "crypto-rs256": {
+      "durationMs": 5557,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "77df9a366854cd5aba95fe8914193ace6cb8b323d1dc52b9ccf541ae338d6a2e"
+    },
+    "crypto-digest-text-contract": {
+      "durationMs": 4058,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "4e7a7327dc03d29967aea0308a69852d96cab93d44af931b9321f1f47a510042"
+    },
+    "reachable-graph": {
+      "durationMs": 3833,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "2cb1a281d5a7da3a0f7c4e08cf61b4ca7b72abc0d7e9227e3d80efdbf029070c"
+    },
+    "project-modules": {
+      "durationMs": 4619,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "bd733ceb156a1dfd8f8f73d5e5fe73942ee66311b5ea496a870e0f108f9add5a"
+    },
+    "package-reachability": {
+      "durationMs": 5027,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b569b2c7c4ddf78392683b81b1487526011b9b81026b293058ad3c4fa710fece"
+    },
+    "external-lowerers": {
+      "durationMs": 4898,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "834ed10f0e7e19aa82cc1615bbd535d0b2e575da60034cf6b62ac56dcd9501e4"
+    },
+    "package-runtime": {
+      "durationMs": 4165,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "09d804b2cb0f75eb11df2dbfb17a57dff6263465bfb4e18b8fd5819aac1e7c1c"
+    },
+    "provider-toolchain": {
+      "durationMs": 3935,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0e695a79a277cd2ca989bcdbea77e448aef7e4c25d43233276658a6719cffd9f"
+    },
+    "schema-registry": {
+      "durationMs": 4581,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "526cb68e2bd416247f521e1a432ff7a26518c514191366f32e0674f81cdf894a"
+    },
+    "continuation-registry": {
+      "durationMs": 3974,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "a5a127b7af7633206c44a2c9c4760fa308b0ef97d88248ed441677192bbaff2c"
+    },
+    "entities-contracts": {
+      "durationMs": 3842,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "209f172a6967480baff2cba295c13255a019ba480faf00dee93cd85f31e70427"
+    },
+    "entities-schema-bridge": {
+      "durationMs": 4007,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "a856e6ac9ef0fcea05b32ebe4577a9a2f7efe05e666d05f992b33c89c9335430"
+    },
+    "entities-javascript-runtime": {
+      "durationMs": 4895,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1ecd6cbdafd3d3856c5dacfd5f04c2d9bcfb2a6cb1e847cac1508cc819ae22d4"
+    },
+    "entities-json-rpc-corpus": {
+      "durationMs": 4038,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "6de69601d7fc01b499dfd9ff7a193c7bfdd1af6d99aac7e6ebca33fbc70c20ba"
+    },
+    "mcp-http": {
+      "durationMs": 4392,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b0ca086eea557b5d61bde183dce7608f40fa1ae83af7a97fcaface18f938ca9f"
+    },
+    "pulse-context-corpus": {
+      "durationMs": 5019,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "dbc178632eb92da8c17a3dcb07ebfc2bc93197df58979d5300599e88be44188f"
+    },
+    "pulse-context-application": {
+      "durationMs": 9635,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "341c1b0142bf285be14d5956a2b86c9190c1015a55a00669256645d624384b9c"
+    },
+    "pulse-context-host": {
+      "durationMs": 6760,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "7d88a19e82f46605347000b67aa0a4a78100b4d5a7fac4429658b4065ddfe70a"
+    },
+    "mcp-compatibility": {
+      "durationMs": 3834,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "28469e66beb5190d559be9df1b5ba03885d68f2d32e3904b28312f7995aee97d"
+    },
+    "mcp-tools": {
+      "durationMs": 4131,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1106bd601a8211b71423bf012bf3e5d1b6e12451b7df1ecc81571f7486c5524a"
+    },
+    "mcp-authorization": {
+      "durationMs": 6811,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "aa843cf35fef2fa2aa5697e65a2c0742e3f9b0eeba15561db70254100b0583d2"
+    },
+    "entities-package-owned-lowering": {
+      "durationMs": 4112,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "582c2a0eeee889dba370745544658bb19f5e107e9d3f2964a6e989436de262f2"
+    },
+    "entities-catalog": {
+      "durationMs": 4049,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "9c8551f0f12d858d7d715e6c1b47b1ee54d7fc7b020c473d59e619d0836153e9"
+    },
+    "entities-inspection": {
+      "durationMs": 15609,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "040b187074c87329ea95d1c14a2515b4cf4bf2c11cde72491ca96824a50aadec"
+    },
+    "entities-orchestration-demo": {
+      "durationMs": 10288,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "e31a4db08ca55483890134b7f4fbe1fd691067051ad06c3944b8a6c177591ed5"
+    },
+    "npm-source-imports": {
+      "durationMs": 7268,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "16e52bc1e720a2df74d0cc298a8d825e907f3adb5abe13631b06f5a9dd624e82"
+    },
+    "fastly-numeric-regions": {
+      "durationMs": 56332,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "07bc84bded43ec99baea672e4d61eb34b9d6001cffa0c9e891628183f86cd25e"
+    },
+    "fastly-numeric-budgets": {
+      "durationMs": 39376,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1232a06c6b86711d8d7b766e6e8a83918cb971338041c86fe70cd6c913a5ca6a"
+    },
+    "fastly-handle-ownership": {
+      "durationMs": 38598,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "f60154e2a59491c8d1805d4f66fe6e6f39eed1ef57c8559d49af4834257c5564"
+    },
+    "fastly-handle-frames": {
+      "durationMs": 79709,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "839d420d55e12457315f4e35c2f14b54ed056934ce6cfa28c57239d6c0b5e29a"
+    },
+    "pure-helper-vocabulary": {
+      "durationMs": 6106,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "bf9faa9015e9b1daf57d19a87c5678087bc572d4ca631666a9208f9d953f5d96"
+    },
+    "pure-string-index": {
+      "durationMs": 7545,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "7612218d4463c081a98e160100c866b872610d9404dfe803af93a1e82af559d7"
+    },
+    "pure-field-projection": {
+      "durationMs": 14427,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "56b526f0d2fe0c7307695aa436b42702acf2799e4e7690000c79de5afd2f7830"
+    },
+    "pure-guarded-arguments": {
+      "durationMs": 40575,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1fc6e294254628f677fc21cf4a2f2581e04bd184a62981845bf86d7013ec48b8"
+    },
+    "pure-source-helpers": {
+      "durationMs": 11173,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b4ebc20e219ae9a43114f187c575468fee4f321eae25f60b3a0b1f8a855382f5"
+    },
+    "pure-record-helpers": {
+      "durationMs": 18835,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "7ebe09bbd625f6c9c241c2aa7dd13297f66feb9808a972d78a83c9ab2a436bd9"
+    },
+    "pure-argument-helpers": {
+      "durationMs": 21160,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1127f5b17a028867bf113c3daee0b4b69bd07011d78b408921a9b404e8745f7a"
+    },
+    "pure-loop-helpers": {
+      "durationMs": 8849,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "e7d93e564a0a66d803c081aa900efb5bb10f01ce8196fef27d01881fd7f10882"
+    },
+    "fastly-driver-behavior-o09": {
+      "durationMs": 31630,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "6babe3b51358357fafa7b27b117c3470b5ebecefe2b73d938ca420a4de547476"
+    },
+    "kv-native-abi-feasibility": {
+      "durationMs": 4285,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "8990cb809aebc84c677ebb9e927e23949f784babb6b4ba9bccb3b821b63afd19"
+    },
+    "s3-body-read": {
+      "durationMs": 10256,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "f539e2aabfc8b919dc5ebfbd699c58c5cdb273f9e60a0409756326ad2839df93"
+    },
+    "s3-node-transport": {
+      "durationMs": 4128,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "340f169db8e7032fcde5aa6e320e8383101bd73f2e4f8f8b4e8cb91dafbd6ddc"
+    },
+    "canonical-api-lowering": {
+      "durationMs": 4557,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "2f5903d479f325890448cc94e90147a4d12e3b7f37ad3cf0bcfd125d0cb21914"
+    },
+    "canonical-native-plan": {
+      "durationMs": 7985,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b4b77c22b3f40cb1635a6ded38ea451179c2e4416f41d9425d7e448eda372a0a"
+    },
+    "shared-stage-o19": {
+      "durationMs": 9133,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "464da3ecca4403507234ae826f8b299446cd647ea965337cd4f4fb0d878ea684"
+    },
+    "str02b-node-native": {
+      "durationMs": 9399,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "96b1036c44af30916b33ffbcc86be05ffc00b3ce6df156fd5973a3f520c12340"
+    },
+    "fastly-incoming-body-forwarding": {
+      "durationMs": 11007,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b443a6890b62daa5e5b5c7d0735848a941e8ebad34e777307c23546f68b67675"
+    },
+    "str03a-generated-output": {
+      "durationMs": 16829,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "90555fca5f206d1e49c74de49c1506905fd4573858f4b7a999df91df2e7ce16e"
+    },
+    "str03c-bounded-transforms": {
+      "durationMs": 14315,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "88907cf0b2cd5b1dddf8d33aa205f6078f62d40ef01a03dacb1bca0aa188ac26"
+    },
+    "bounded-app-logic": {
+      "durationMs": 39518,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "74a2d3ed5526a77fe2cefc08e73af10ffefba3bfbfcc1cbbfa34317332981b10"
+    },
+    "bounded-read-loops": {
+      "durationMs": 41653,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "02707b1bba2a0203ecd69854bd4fcc0c133af89d782c167f7e8e63cd9efc1102"
+    },
+    "bounded-loop-helpers": {
+      "durationMs": 8144,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "08656c32592f340cbedc8b3e7260a3ce73c992089fd54fa34c6c16b4d1d9cd9f"
+    },
+    "logging-lowering": {
+      "durationMs": 5506,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "e3c30641636b856eb83d6fd720128b9a11a4944f1661917d39a78f0776d98c5d"
+    },
+    "canonical-router-lowering": {
+      "durationMs": 10336,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "f209f7e4d8942aaf9a13033470870cc098a3100da1f0047aa83ea828207a3c47"
+    },
+    "canonical-router-terminal-middleware": {
+      "durationMs": 10658,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0ed2e5a83442b16ab3bbe19d6bca73f405a55026e4ab2bb2afa8731e2413bb24"
+    },
+    "router-selected-groups": {
+      "durationMs": 7683,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "a11dd466b02ef03e4119c993f8d7c596496e1112fb460d2394f153d233ca8a10"
+    },
+    "json-as-compatibility": {
+      "durationMs": 6404,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1c0d01dee8ed2ab91397f1ffa2b90dcd45960f2c5c5d8cfd62f0e93a14e701a0"
+    },
+    "entities-envelope-feasibility": {
+      "durationMs": 5677,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "74247f631a0f7d7c82bccfdb47745f96d16efa520fb722c414e889e2902f61bb"
+    },
+    "entities-managed-handler": {
+      "durationMs": 3980,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "ccc532b8bc1ba0ae3658b45433e8668d2ebd2949b975b9e783c279f36026c027"
+    },
+    "entities-managed-handler-effects": {
+      "durationMs": 4354,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "56dba6df21bceea1d01b73e39379540d8c78e9ab665e8030c874dfcfdc5f9cf4"
+    },
+    "entities-native-runtime": {
+      "durationMs": 9256,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "e0e942cc619beb9969a5a8ff801eb9e5ed309a9316cff2e2d51f6760a268fea7"
+    },
+    "entities-hardening": {
+      "durationMs": 32511,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "8553b3f858ac4330c6e803523347419e8d82f13705c675a4e8a9cccf6f213a58"
+    },
+    "entities-node-native-workflow": {
+      "durationMs": 22581,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "f3d3cb2bca4ffa879b336a8d49f5b5941c90423d6508383569eaac445db4e5a6"
+    },
+    "fastly-entities-native-workflow": {
+      "durationMs": 72365,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "653e17a38317d9554e09b88cd9b485f64efa4a4fa21006de08f07a1e06648258"
+    },
+    "crypto-native-guest-source": {
+      "durationMs": 7300,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "23186bd90d73417a3a2d26ae9006e660768e552d057e81b78e4ead3a67143160"
+    },
+    "guest-link-package": {
+      "durationMs": 9191,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "79d17c493119f2baa396a5d3e92c339b0c2bab2654986e4a0d9408f8a6f3b1b7"
+    },
+    "guest-link-materialization-stage": {
+      "durationMs": 26667,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "125c40929bc953bc0c01a541d915cf5d29ce7fd19314df0600db8b4f0e17eb14"
+    },
+    "guest-link-audit-diagnostics": {
+      "durationMs": 16231,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0ecec11050da6706486f471896d91db21b3eba5aedd035f26cad732610528fee"
+    },
+    "assets-lowering-plan": {
+      "durationMs": 4076,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "ccb6b8b65a6ae7fda3045230933692369fe20f36c570272666b19ad4f4fa3a3c"
+    },
+    "assets-package-owned-lowering": {
+      "durationMs": 3792,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "6e1bbd763c9d9963c3ff735a728f13a879cd816790cbebd1cdd572b786fc6154"
+    },
+    "assets-native-embedded": {
+      "durationMs": 14627,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "50f807a3fd4f19d5c68dd7b21fbd9804ed76f4cf7eddde303a1739233b675f62"
+    },
+    "grip-package-owned-lowering": {
+      "durationMs": 3892,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "920d0443c7eaf4aea36579a1b905924e971b2be29f990b0f0731ea2a673c7280"
+    },
+    "jwt-package-owned-lowering": {
+      "durationMs": 4021,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "e9971a2887c892b81ed67bea9e6dcf3a305007190f947720dd497aa3c7674fd4"
+    },
+    "canonical-api-runtime": {
+      "durationMs": 4668,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "005e2569d0f0061e7e0f074a76e03de13a2e5c1b4f0f6a92bc64b86c03664593"
+    },
+    "canonical-opaque-node-emission": {
+      "durationMs": 5043,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "19d27b8623b9a2e4e6c0b3fab74940e8b20a95240ca7bcea3eb37a06d19910d7"
+    },
+    "grip-package-runtime": {
+      "durationMs": 4128,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "c937467b6350e366b633b5b8fced787a79723b54882dd30bd40396bdeb547564"
+    },
+    "package-root-native": {
+      "durationMs": 5204,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b9b42f082567c0c7d5c1b0c693a1e2af298181b67e1d0fd7f58358552084569a"
+    },
+    "canonical-native-wasm": {
+      "durationMs": 57247,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "3eab3ba2b0901bd82e46cb4e701239286f7bda2f848f547a8a039736c6a2d880"
+    },
+    "cli-javascript-target-compilation": {
+      "durationMs": 20227,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "515568e37205c2c5608f4c846c03d9355a1fb62ff8f9c87d83e8be0b2dd67d74"
+    },
+    "target-support": {
+      "durationMs": 4038,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "903e794ee1e8b46cf9fb8e1a2ac6d929cbbe3e58c9ee464a4f8e507b93ff0465"
+    },
+    "jwt-javascript-admission": {
+      "durationMs": 10747,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "2ebe3c40a6545457e2308e46c6b4c19e50d56db7b0a85c03df0d5eb2ceb46d0a"
+    },
+    "crypto-runtime-builtin": {
+      "durationMs": 4258,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "34e51529447c139ec99eaf62d385f281c7bfdfe480c439c971a286ea89c88b4d"
+    },
+    "javascript-effect-adapter": {
+      "durationMs": 4154,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "e31df86a72f12d28c452668fd77557eaa033a34983ae67539be9a24bc7d426a4"
+    },
+    "logging-runtime": {
+      "durationMs": 3849,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "c927de9be7998252b61870f12117630be5783d51248da2b111eb71e2371c857b"
+    },
+    "assets-javascript-runtime": {
+      "durationMs": 6582,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "8dbd8a7137b375e7a5edd533d4803e640426612b948052b4477f737735f70ac5"
+    },
+    "jwt-signing": {
+      "durationMs": 14825,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "4dff7237200eeaf0bc2922d325f46b08b955fcd62dff640b7bdd061d0d177390"
+    },
+    "jwt-es256-signing": {
+      "durationMs": 33290,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "34934586d89822b9c958071647bab407bc8388e0d3a72973cf7e4d5a1e36f775"
+    },
+    "jwt-rs256": {
+      "durationMs": 303092,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "63cb71e9d27975b370f6fdcb83a7368bfdd92a05a73737a88565ef2d501a0b64"
+    },
+    "crypto-cross-target-conformance": {
+      "durationMs": 7952,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "e9f8b5187e53121716a4bf1b0ed07cc347c81b984888ff910c22ef9b6b55721d"
+    },
+    "crypto-digest-text-conformance": {
+      "durationMs": 11708,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "ab700eab3498996500e6c25cfe30b0c16b1a0f67a08dcce3bbd3cd9d3577270c"
+    },
+    "crypto-digest-storage-conformance": {
+      "durationMs": 14071,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "72617f4ed712e177f8bfa1dd1d66e06b92bae1260479d6521f61e5847e006430"
+    },
+    "text-capacity-conformance": {
+      "durationMs": 17823,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "4cfdb90bef0e33b9307f50e5ea731392e95e08997a05d2e5d70f2115a386bb6e"
+    },
+    "events-conformance": {
+      "durationMs": 6403,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0aff053e32c8a60edf1c9565c482d004cd0ccb517a6adf15920fded5175e3b60"
+    },
+    "node-router-context-parity": {
+      "durationMs": 6501,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "5580e4b4a5a346ac97352ce7cd8ae0eddaad39df33eda9d1b95549738ad5d20f"
+    },
+    "catalog-router-parity": {
+      "durationMs": 22678,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "bed5469adb5c50de11215bc0d6de0ebdf4e6fb6eaf9eee3940be49fce51f49f2"
+    },
+    "fetch-projections-request-bodies": {
+      "durationMs": 4229,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "77051351a39e575fe1fee763be4bb29f21ec5bf2b06a7074ccf6709e6cce9379"
+    },
+    "config-secrets-kv-redaction": {
+      "durationMs": 4117,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "755dddffd1e7aa3d631979683ebdc48760f8a43587c0a0e93a535bcb169ada49"
+    },
+    "kv-conditional-conformance": {
+      "durationMs": 7037,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "e7340efd23870729cb554b3aa4fbe20d60e8e013f35581ae9b30963f1199f61d"
+    },
+    "fastly-conditional-kv": {
+      "durationMs": 26933,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "6bb2aacbe08978dd1cdd25ac8d19dee279bc4f8d27b3fc944790375ecc5fbd24"
+    },
+    "schema-codecs": {
+      "durationMs": 108734,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "a086c511c4852c1bee531f7763264634f39f50298d9beafeea40bcf34889ad06"
+    },
+    "schema-kv-parity": {
+      "durationMs": 14098,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b5caa8cfb25859f7bdb943a28d50d1a9c7ed6ba1d0e3bc988e61cf359bd4e3c7"
+    },
+    "time-conformance": {
+      "durationMs": 9665,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "f3684cbfa79b9e788c5056a2d738da90f68373bc92aeaafec4fe9eb9c45f3a50"
+    },
+    "time-consumer": {
+      "durationMs": 20947,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "752084606f5f07e036afe7140ae7da34a8f576c349b9fbf05c035e80bed556e9"
+    },
+    "node-launcher": {
+      "durationMs": 9848,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "034311e1e8161b0eab3d8ac6f9ed92e8169a9232bce720cc0c0da36053445161"
+    },
+    "application-errors": {
+      "durationMs": 21635,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "4529bdfd05f1065ef7b0fd8569f316aac9a28688e00c2bbf375389a1d574bb25"
+    },
+    "application-error-boundaries": {
+      "durationMs": 7115,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "05ee6e73c2e1cee74871f887476c7706d956c1145d66967d6e3417a9379daffc"
+    },
+    "node-cross-target-conformance": {
+      "durationMs": 8691,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "2ce8dfb4aafdcef1b52414622e141b0f8c0a606055583f5b5a28a0b50e9598b8"
+    },
+    "grip-cross-target-conformance": {
+      "durationMs": 9426,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "07687ae4e1c2839babdf12c09513017f5bc2c7bfc6cadaae137f2cd12fcc55c5"
+    },
+    "four-mode-conformance": {
+      "durationMs": 35887,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "70657a28547e0cae07fab182060a7a98556e0f439399e7a7a59b864310d5e2db"
+    },
+    "cli-command-spec": {
+      "durationMs": 3918,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "564e0c3e54946cf4440e1cc2eb718f3135765fac62ff45c97dd0916182f55134"
+    },
+    "cli-init-workflow": {
+      "durationMs": 23754,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "3f7387309291345c634debde9f7aea100962294be4426d0e2b811da5432f08da"
+    },
+    "cli-project-workflow": {
+      "durationMs": 69137,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "7746e46d9a1293d48218d7e8678da449296bc0f82f3fe08d799b42c4e4b2e569"
+    },
+    "cli-expansion-doctor": {
+      "durationMs": 12248,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "91be6c87e030eb5d13f0c74ab6375c92ce30b547f8dc1f70319c2c5fb541efa9"
+    },
+    "cli-project-guards": {
+      "durationMs": 11666,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "612835942ef96583d3bfd1f0914cb881cec089e78a0c4215bc9afae4e7fba454"
+    },
+    "cli-dev-workflow": {
+      "durationMs": 14044,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "8dcaf221b19e020847c0a580294f6c3597f391d1dec1f0bc90bfb800d23972df"
+    },
+    "cli-schema-json-workflow": {
+      "durationMs": 62022,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1209e81e45d6ba575c5b9a19d82eee0c145e1146117c414e3cb584b9dbdae23a"
+    },
+    "events-cli-workflow": {
+      "durationMs": 51261,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b63d930ecc8c01f55eb46792231e7961aae55397719d4e576a86b736ed3793d8"
+    },
+    "cli-diagnostics": {
+      "durationMs": 7820,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "708afc91fdfd59c131728c8876a4b6ac0af692b39a28f5c5fa2de0ea39b47481"
+    },
+    "docs-executable-contracts": {
+      "durationMs": 28462,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0cea10b1459ba12f52b099218788cf9d9dd065b06ae27d63535abc95d15634d1"
+    },
+    "docs-executable-init-dev": {
+      "durationMs": 10170,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "653cd2e4ea3911bebcd1f67ce7c03386c24bcea2966153e48c47aa4fd7039972"
+    },
+    "docs-migration-schema-lowering": {
+      "durationMs": 3588,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "394136d038407be3c36882710158df9b84e305e7af18c8828264c9f3f3d9cc0a"
+    },
+    "docs-example-01-hello-json": {
+      "durationMs": 11494,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "349a93a1c0f4e8614f2b35889629083825a15888b6ec178dce6aa65414f9e446"
+    },
+    "docs-example-02-request-schema": {
+      "durationMs": 15869,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "71f24fc0884a1a9e5809240521e1f49b1aa11e9fd2a75d6c27813c6e15dcda7d"
+    },
+    "docs-example-03-fetch-composition": {
+      "durationMs": 12130,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "96eebd6ddd46044a7c8130dd82863f9681470f469d0eb948f70d1419cc1b4949"
+    },
+    "docs-example-05-fastly-capabilities": {
+      "durationMs": 21787,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "c4cf4a367403d8cb99fcc416956865945d13b6950c48cf16e28354d84b36acb8"
+    },
+    "docs-example-07-opaque-proxy": {
+      "durationMs": 19719,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "170c645128819361011cbb81283c4116173561a87bb03e742497a9112386449b"
+    },
+    "docs-example-09-router-lowering": {
+      "durationMs": 13895,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "3f36bc8a3e53c4765f7ab07e6c11d8a39ed44858c608fe48d39b657f9f124d08"
+    },
+    "docs-example-10-entities-tools": {
+      "durationMs": 12028,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "0b698a57f651ce50317c14750e912b6345527b378ec11a509696df49fc146de7"
+    },
+    "docs-example-11-events": {
+      "durationMs": 18018,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "71f0044909e8d7497afd8455bc19f766f27be8f894fc35df1f88e1a80151fad4"
+    },
+    "docs-example-12-pulse-context-mcp": {
+      "durationMs": 7915,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b26f34f4b23b07278c009acee57d967b0e39d72d6992b91af81e33d9b30f7955"
+    },
+    "docs-example-13-jwt-es256": {
+      "durationMs": 28880,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "7d1fa2ec718bf4cbef86ebfad6bc23c87715e40ad735c735b7c7e4eeb528e2b9"
+    },
+    "provider-packages": {
+      "durationMs": 3920,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "208a1a751d41f9e57ca2a2ba2988c09012a1f9c083386ef5c346110b6f39f043"
+    },
+    "provider-fastly-package": {
+      "durationMs": 12487,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "39a988336cf25022c07de7afb22bf0c2e1e6e8cf53a1290bdf6b32f52e0e9719"
+    },
+    "provider-fastly-apps": {
+      "durationMs": 4169,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "aed26f8d128f5856d8fe6d5b7e0e592b41254038a6b9af807144e80e2db23fbf"
+    },
+    "canonical-grip-fastly": {
+      "durationMs": 14510,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "6184ff2f3597acdd1f43a0576f820ba1daf535b40493088941625d56f6db000e"
+    },
+    "fastly-cli-gate-surface": {
+      "durationMs": 4195,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "bee4af6a89d37e29c676e02f540279e6355b3936ba3ad9a652db538c8926f92b"
+    },
+    "fastly-javascript-packaging": {
+      "durationMs": 4442,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "3f6b0d22d52c123a2a12f7fe4221a03c155bea1df2f269947b76d9201a655eab"
+    },
+    "fastly-javascript-runtime": {
+      "durationMs": 3765,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "421b413722ff65701ad11682780b627ed2e38928848766ba0a515d1e75180fa7"
+    },
+    "fastly-javascript-tooling": {
+      "durationMs": 18971,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "5f09afcec695288e657cf84f7706ec394144925f5f7b2e5e445458ec72ead484"
+    },
+    "fastly-native-http-shell": {
+      "durationMs": 8881,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "cbf9aa91ae892a807e479db179bcab5662f048110c89f9535e026dfb29a9acb8"
+    },
+    "fastly-native-http-effects": {
+      "durationMs": 15361,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "fa151debe9732ac15a7ad9afb511fc7fe33b205ab8155a595e50389bb019903b"
+    },
+    "fastly-native-platform-capabilities": {
+      "durationMs": 110411,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "fe6bb4c1097181fcd6a66bc37b31a5c01851471472794f912a2d11fdec039eab"
+    },
+    "fastly-request-headers": {
+      "durationMs": 15891,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "310be12f4f0fa8627199d5e63ff77c4e8af41f6203633a4d5b40e6ee636c390b"
+    },
+    "release-packages": {
+      "durationMs": 4207,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "32b06e4a2aef5fc5eb980a20095143606631b7f3ff9270cfc958905bfac42155"
+    },
+    "release-artifact-determinism": {
+      "durationMs": 24289,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b9fb34d37098c8db223383c0981897ffd192bb63432e7d68d59f904a81f89aaa"
+    },
+    "clean-machine-acceptance": {
+      "durationMs": 241024,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "7adfb193cb764b38cb744b0ad10f5348563d43143a4f4e9e95e056c420abea06"
+    },
+    "cli-entities-installed-workflow": {
+      "durationMs": 90766,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "a880ba8d0e08a67f39a2f5de69867b6d670b9ae2a23891e50fc2c3fc25a02fb3"
+    },
+    "npm-source-installed-workflow": {
+      "durationMs": 45803,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "c779a955222b2c0c2d564fa2692961ea50f31194b6600042026a6e273d1beb23"
+    },
+    "release-evidence-authority": {
+      "durationMs": 4541,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "6660e3fbaac24748c24cd98e898d798b559e027600f0d5b35aff0580c449aeea"
+    },
+    "deployment-candidates": {
+      "durationMs": 21957,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "c798c14ffaa77f13ea05e16586b91ff09da9b284f941091a8c07cf34fedc0527"
+    },
+    "str02b-installed": {
+      "durationMs": 31662,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "74bdde8e5f8cfc95ff03112fe8ee3236dcd363874ab2d052654d0f20a586ba9f"
+    },
+    "node01-installed": {
+      "durationMs": 23992,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "c9fa6f16c511151547d8a7c2c84490ac4b60e973220b478def09936906df1889"
+    },
+    "arc01-installed": {
+      "durationMs": 51828,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "696350a0ab1768e037796e2af7c3451034ca99801a75ad33e7e6ae28f24a0b06"
+    },
+    "jwt-installed-workflow": {
+      "durationMs": 279104,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "03763ff52417d79a672b84f492c510873a257065ca88f0b6a48cbc59032b97ae"
+    },
+    "str02-installed": {
+      "durationMs": 29124,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "23fedd44f6a56323c8928441e7db1e71b1ed6266e619c0ab7896351610d57909"
+    },
+    "str03b-installed": {
+      "durationMs": 42338,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "24e03f9e5cea3137cce19ffa81bcde953c9c037dc9beafe3efe90981511e2ac0"
+    },
+    "ast01-installed": {
+      "durationMs": 5776,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "f942d44dba17a34bbccbfb3299a22d1070349d853fe0e2b605aeaf692c4bee87"
+    },
+    "ast02b-installed": {
+      "durationMs": 5612,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "b94d7cd3d6177b28412e2891cc18e6b25a1ad635ae84f6ab6d3faa80a9661e05"
+    },
+    "ast02d-installed": {
+      "durationMs": 26284,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "93556cf92f0f2b13e86d3748b7954456dbf67335e29c573c6c93b7bc2bed08e3"
+    },
+    "mcp-installed": {
+      "durationMs": 55009,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "dee5ba6bf49f3239aa42b7f8e0df340bf89755442d5438b5320b341bf0f8bdd6"
+    },
+    "s3-body-installed": {
+      "durationMs": 23771,
+      "status": "passed",
+      "cleanup": "passed",
+      "commandSignature": "1fa67d5f82b0e706aa2981170830940e71fc620f6ce8fc9d3dc4ff67ecd6c1a8"
+    }
+  }
+}

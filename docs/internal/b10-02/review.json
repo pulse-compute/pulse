@@ -1,0 +1,1632 @@
+{
+  "schema": "pulse.b10-02.review.v1",
+  "candidate": "b5aa67295fca1af35361b4cdcee50562290e8ebf",
+  "tasks": {
+    "report-capsule-contract": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "cli-report-workflow": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "cli-report-viewer": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "cli-report-retained-evidence": {
+      "targets": {
+        "node-native": "build",
+        "fastly-native": "build"
+      },
+      "notes": [
+        "Retained-report producer checks compile/build and byte-preserving replay; pure report readers cannot replace producer checks."
+      ]
+    },
+    "cli-report-size-evidence": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "cli-report-capture-proof": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Independent Native realizations and injected host/ABI assertions. Preserve paired outputs and compiler controls."
+      ]
+    },
+    "cli-report-entry-proof": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Independent Native realizations and injected host/ABI assertions. Preserve paired outputs and compiler controls."
+      ]
+    },
+    "cli-report-reference-provenance": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Real Wasm execution through Node host/fixture imports; no deployed-provider claim."
+      ]
+    },
+    "cli-report-handler-topology": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Real Wasm execution through Node host/fixture imports; no deployed-provider claim."
+      ]
+    },
+    "cli-report-handler-associations": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "cli-report-relationships": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "cli-report-imported-inputs": {
+      "targets": {
+        "node-native": "build"
+      },
+      "notes": [
+        "Native compilation/artifact inspection; not proof of network/provider execution."
+      ]
+    },
+    "cli-report-resource-inventory": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Real Wasm execution through Node host/fixture imports; no deployed-provider claim."
+      ]
+    },
+    "cli-report-graph-diagnostics": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "multifile-source-indexes": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution.",
+        "--indexes-only returns after source-index validation, before the full multi-target execution workflow."
+      ]
+    },
+    "guest-json-roundtrip": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "pure-helper-contract": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "suite-shape": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "test-orchestration": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "package-exports": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "boundaries": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "workspace-hygiene": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "hidden-contracts": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "release-feature-acceptance": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "release-runtime-policy": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution.",
+        "Invokes shared-pack and toolchain policy regression fixtures, not a release seal."
+      ]
+    },
+    "release-seal-lifecycle": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "release-checkpoints": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "release-recovery-runner": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "release-recovery": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "release-tag": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "api-surface": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "logging-contract": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "s3-design-contract": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "kv-design-contract": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "kv-conditional-runtime": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "kv-conditional-gates": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution.",
+        "Mutates/validates recorded K4 evidence, including deployed-evidence schema; does not run a deployed CAS experiment."
+      ]
+    },
+    "s3-read-contract": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "s3-write-contract": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "crypto-config-planning": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "crypto-es256-signing": {
+      "targets": {
+        "host-neutral-wasm": "wasm-unit"
+      },
+      "notes": [
+        "Guest/codec/linker Wasm with test imports or inspection. A Fastly ABI policy label does not establish Fastly engine execution."
+      ]
+    },
+    "crypto-rs256": {
+      "targets": {
+        "host-neutral-wasm": "wasm-unit"
+      },
+      "notes": [
+        "Guest/codec/linker Wasm with test imports or inspection. A Fastly ABI policy label does not establish Fastly engine execution."
+      ]
+    },
+    "crypto-digest-text-contract": {
+      "targets": {
+        "node-javascript": "in-process",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Digest runtime contracts use provider implementations with injected services."
+      ]
+    },
+    "reachable-graph": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "project-modules": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "package-reachability": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "external-lowerers": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "package-runtime": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "provider-toolchain": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "schema-registry": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "continuation-registry": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "entities-contracts": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "entities-schema-bridge": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "entities-javascript-runtime": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "entities-json-rpc-corpus": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "mcp-http": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "pulse-context-corpus": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "pulse-context-application": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "pulse-context-host": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "mcp-compatibility": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "mcp-tools": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "mcp-authorization": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "entities-package-owned-lowering": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "entities-catalog": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "entities-inspection": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution.",
+        "Inspects recorded package applicability/measurement declarations; recorded Viceroy version is not a fresh Viceroy invocation."
+      ]
+    },
+    "entities-orchestration-demo": {
+      "targets": {
+        "node-native": "build",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Orchestration executes the JS tool flow and independently builds equal Native outputs; Native module inspection is not execution."
+      ]
+    },
+    "npm-source-imports": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Independent Native realizations and injected host/ABI assertions. Preserve paired outputs and compiler controls."
+      ]
+    },
+    "fastly-numeric-regions": {
+      "targets": {
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well."
+      ]
+    },
+    "fastly-numeric-budgets": {
+      "targets": {
+        "fastly-native": "abi-fixture",
+        "node-native": "build"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well.",
+        "Numeric-budget fixture also constructs a Node Native control."
+      ]
+    },
+    "fastly-handle-ownership": {
+      "targets": {
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well."
+      ]
+    },
+    "fastly-handle-frames": {
+      "targets": {
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well."
+      ]
+    },
+    "pure-helper-vocabulary": {
+      "targets": {
+        "node-native": "build"
+      },
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution.",
+        "Includes independent Native compilation for vocabulary shape/size checks, not only planning."
+      ]
+    },
+    "pure-string-index": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "pure-field-projection": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "pure-guarded-arguments": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "pure-source-helpers": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "pure-record-helpers": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "pure-argument-helpers": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "pure-loop-helpers": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "fastly-driver-behavior-o09": {
+      "targets": {
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well."
+      ]
+    },
+    "kv-native-abi-feasibility": {
+      "targets": {
+        "host-neutral-wasm": "wasm-unit"
+      },
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution.",
+        "Guest/codec/linker Wasm with test imports or inspection. A Fastly ABI policy label does not establish Fastly engine execution."
+      ]
+    },
+    "s3-body-read": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "s3-node-transport": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "canonical-api-lowering": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "canonical-native-plan": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "shared-stage-o19": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Independent Native realizations and injected host/ABI assertions. Preserve paired outputs and compiler controls."
+      ]
+    },
+    "str02b-node-native": {
+      "targets": {
+        "node-native": "local-http"
+      },
+      "notes": [
+        "Real Node request-body/transport lifecycle plus Wasm execution."
+      ]
+    },
+    "fastly-incoming-body-forwarding": {
+      "targets": {
+        "fastly-native": "abi-fixture; optional-viceroy"
+      },
+      "notes": [
+        "Always runs bounded ABI forwarding qualification. Direct Viceroy wire proof runs only when PULSE_VICEROY_BIN is supplied; do not claim it ran from task success alone."
+      ]
+    },
+    "str03a-generated-output": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "str03c-bounded-transforms": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "bounded-app-logic": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "bounded-read-loops": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "bounded-loop-helpers": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "logging-lowering": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Real Wasm execution through Node host/fixture imports; no deployed-provider claim."
+      ]
+    },
+    "canonical-router-lowering": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "canonical-router-terminal-middleware": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "router-selected-groups": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "json-as-compatibility": {
+      "targets": {
+        "host-neutral-wasm": "wasm-unit"
+      },
+      "notes": [
+        "Guest/codec/linker Wasm with test imports or inspection. A Fastly ABI policy label does not establish Fastly engine execution."
+      ]
+    },
+    "entities-envelope-feasibility": {
+      "targets": {
+        "host-neutral-wasm": "wasm-unit"
+      },
+      "notes": [
+        "Guest/codec/linker Wasm with test imports or inspection. A Fastly ABI policy label does not establish Fastly engine execution."
+      ]
+    },
+    "entities-managed-handler": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "entities-managed-handler-effects": {
+      "targets": {
+        "node-native": "plan",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "The selected Vitest wrapper validates Native lowering descriptors and executes request-owned effects in Node-hosted JS handlers. This is not Native Wasm execution."
+      ]
+    },
+    "entities-native-runtime": {
+      "targets": {
+        "host-neutral-wasm": "wasm-unit"
+      },
+      "notes": [
+        "Guest/codec/linker Wasm with test imports or inspection. A Fastly ABI policy label does not establish Fastly engine execution."
+      ]
+    },
+    "entities-hardening": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default."
+      ]
+    },
+    "entities-node-native-workflow": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Real Wasm execution through Node host/fixture imports; no deployed-provider claim."
+      ]
+    },
+    "fastly-entities-native-workflow": {
+      "targets": {
+        "fastly-native": "viceroy"
+      },
+      "notes": [
+        "Explicit Fastly compute launcher/local engine request path; not deployed POP evidence."
+      ]
+    },
+    "crypto-native-guest-source": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Real Wasm execution through Node host/fixture imports; no deployed-provider claim."
+      ]
+    },
+    "guest-link-package": {
+      "targets": {
+        "host-neutral-wasm": "wasm-unit"
+      },
+      "notes": [
+        "Guest/codec/linker Wasm with test imports or inspection. A Fastly ABI policy label does not establish Fastly engine execution."
+      ]
+    },
+    "guest-link-materialization-stage": {
+      "targets": {
+        "host-neutral-wasm": "wasm-unit"
+      },
+      "notes": [
+        "Guest/codec/linker Wasm with test imports or inspection. A Fastly ABI policy label does not establish Fastly engine execution."
+      ]
+    },
+    "guest-link-audit-diagnostics": {
+      "targets": {
+        "host-neutral-wasm": "wasm-unit"
+      },
+      "notes": [
+        "Guest/codec/linker Wasm with test imports or inspection. A Fastly ABI policy label does not establish Fastly engine execution."
+      ]
+    },
+    "assets-lowering-plan": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "assets-package-owned-lowering": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "assets-native-embedded": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Independent Native realizations and injected host/ABI assertions. Preserve paired outputs and compiler controls."
+      ]
+    },
+    "grip-package-owned-lowering": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "jwt-package-owned-lowering": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "canonical-api-runtime": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "canonical-opaque-node-emission": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "grip-package-runtime": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "package-root-native": {
+      "targets": {
+        "node-native": "build"
+      },
+      "notes": [
+        "Native compilation/artifact inspection; not proof of network/provider execution."
+      ]
+    },
+    "canonical-native-wasm": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Real Wasm execution through Node host/fixture imports; no deployed-provider claim."
+      ]
+    },
+    "cli-javascript-target-compilation": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "target-support": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "jwt-javascript-admission": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "crypto-runtime-builtin": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "javascript-effect-adapter": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "logging-runtime": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof."
+      ]
+    },
+    "assets-javascript-runtime": {
+      "targets": {
+        "node-javascript": "in-process",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "JavaScript/runtime or Node HTTP behavior; the process running the test is not by itself a Native target proof.",
+        "The Vitest selection also includes JWT provider-runtime/sign and runtime package-bridge files; provider-runtime executes both Node and Fastly JS with injected APIs."
+      ]
+    },
+    "jwt-signing": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default."
+      ]
+    },
+    "jwt-es256-signing": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default."
+      ]
+    },
+    "jwt-rs256": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default."
+      ]
+    },
+    "crypto-cross-target-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "crypto-digest-text-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default."
+      ]
+    },
+    "crypto-digest-storage-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "text-capacity-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus."
+      ]
+    },
+    "events-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "node-router-context-parity": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "catalog-router-parity": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default."
+      ]
+    },
+    "fetch-projections-request-bodies": {
+      "targets": {
+        "node-native": "reference-interpreter",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Support helper owns the cross-target body/binding/redaction corpus; target details are checked in its execution helpers.",
+        "The helper calls native lowering plus the generator/reference interpreter, not compiled Wasm execution; retain that distinction."
+      ]
+    },
+    "config-secrets-kv-redaction": {
+      "targets": {
+        "node-native": "reference-interpreter",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Support helper owns the cross-target body/binding/redaction corpus; target details are checked in its execution helpers.",
+        "The helper calls native lowering plus the generator/reference interpreter, not compiled Wasm execution; retain that distinction."
+      ]
+    },
+    "kv-conditional-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "fastly-conditional-kv": {
+      "targets": {
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well."
+      ]
+    },
+    "schema-codecs": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Composed compiler/runtime fixture spans Node JS and both Native realizations; retain the single task and corpus.",
+        "Nested schema helpers include Node JS, Node Native, Fastly HTTP and platform Native generators. These are composed codec fixtures."
+      ]
+    },
+    "schema-kv-parity": {
+      "targets": {
+        "node-javascript": "in-process",
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "CLI test executes all three selected profiles; installed-style require then replays built Node JS. Native cells use local ABI drivers."
+      ]
+    },
+    "time-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default."
+      ]
+    },
+    "time-consumer": {
+      "targets": {
+        "node-javascript": "in-process",
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "CLI test executes all four profiles; built Node JS replays the public clock API and Native builds remain separate."
+      ]
+    },
+    "node-launcher": {
+      "targets": {
+        "node-native": "local-http",
+        "node-javascript": "local-http"
+      },
+      "notes": [
+        "Public Node launcher exercises production HTTP on both targets, not just a direct handler call."
+      ]
+    },
+    "application-errors": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default."
+      ]
+    },
+    "application-error-boundaries": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Real Wasm execution through Node host/fixture imports; no deployed-provider claim."
+      ]
+    },
+    "node-cross-target-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "grip-cross-target-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "build",
+        "fastly-javascript": "reference-interpreter"
+      },
+      "notes": [
+        "Support helper executes Node Native, JS effect adapter and Node/Fastly reference-adapter scenarios; independently compiles Fastly Native artifacts without executing them in a real engine."
+      ]
+    },
+    "four-mode-conformance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default.",
+        "Four-mode helper compares common semantic traces and additionally runs provider-specific Fastly Wasm through its ABI fixture; preserve both layers."
+      ]
+    },
+    "cli-command-spec": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "cli-init-workflow": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Initializes and verifies both Node and Fastly Native projects via test/build; Fastly local test is ABI-emulated, not deployed."
+      ]
+    },
+    "cli-project-workflow": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default."
+      ]
+    },
+    "cli-expansion-doctor": {
+      "targets": {
+        "node-native": "build"
+      },
+      "notes": [
+        "Native compilation/artifact inspection; not proof of network/provider execution."
+      ]
+    },
+    "cli-project-guards": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "cli-dev-workflow": {
+      "targets": {
+        "node-native": "local-http",
+        "node-javascript": "local-http",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default.",
+        "Real loopback dev sockets do not turn the Fastly provider fixture into Viceroy execution."
+      ]
+    },
+    "cli-schema-json-workflow": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "CLI schema workflow realizes both Native targets through their local test drivers."
+      ]
+    },
+    "events-cli-workflow": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Keep shared corpus, admission negatives, cancellation/failure and independent target oracles together."
+      ]
+    },
+    "cli-diagnostics": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "docs-executable-contracts": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "docs-executable-init-dev": {
+      "targets": {
+        "node-native": "local-http"
+      },
+      "notes": [
+        "Selected init/dev branch owns initialized projects and Node dev lifecycle; unselected example workflows are not attributed."
+      ]
+    },
+    "docs-migration-schema-lowering": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "docs-example-01-hello-json": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Only the named example is executed. Compile/test/build, source-bound docs, size and optional optimized artifacts stay together."
+      ]
+    },
+    "docs-example-02-request-schema": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Only the named example is executed. Compile/test/build, source-bound docs, size and optional optimized artifacts stay together."
+      ]
+    },
+    "docs-example-03-fetch-composition": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Only the named example is executed. Compile/test/build, source-bound docs, size and optional optimized artifacts stay together."
+      ]
+    },
+    "docs-example-05-fastly-capabilities": {
+      "targets": {
+        "fastly-native": "abi-fixture",
+        "node-native": "build"
+      },
+      "notes": [
+        "Named Fastly example includes portable guest construction and provider-specific build/test; no local Compute engine launch implied."
+      ]
+    },
+    "docs-example-07-opaque-proxy": {
+      "targets": {
+        "fastly-native": "abi-fixture",
+        "node-native": "build"
+      },
+      "notes": [
+        "Named Fastly example includes portable guest construction and provider-specific build/test; no local Compute engine launch implied."
+      ]
+    },
+    "docs-example-09-router-lowering": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Only the named example is executed. Compile/test/build, source-bound docs, size and optional optimized artifacts stay together."
+      ]
+    },
+    "docs-example-10-entities-tools": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Selected example metadata explicitly declares JavaScript and noApplicationWasm. Its Native companion workflows are separate registered tasks."
+      ]
+    },
+    "docs-example-11-events": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Only the named example is executed. Compile/test/build, source-bound docs, size and optional optimized artifacts stay together."
+      ]
+    },
+    "docs-example-12-pulse-context-mcp": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "The context MCP example is explicitly Node JavaScript; other example branches are unselected."
+      ]
+    },
+    "docs-example-13-jwt-es256": {
+      "targets": {
+        "node-native": "abi-fixture"
+      },
+      "notes": [
+        "Only the named example is executed. Compile/test/build, source-bound docs, size and optional optimized artifacts stay together."
+      ]
+    },
+    "provider-packages": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution."
+      ]
+    },
+    "provider-fastly-package": {
+      "targets": {
+        "fastly-native": "build"
+      },
+      "notes": [
+        "Provider packaging/GRIP artifacts and ABI imports are checked; injected reference behavior is not engine execution."
+      ]
+    },
+    "provider-fastly-apps": {
+      "targets": {
+        "node-javascript": "reference-interpreter",
+        "fastly-javascript": "reference-interpreter"
+      },
+      "notes": [
+        "Provider-neutral canonical program interpreter parity through Node/Fastly adapters; not JS Compute artifacts."
+      ]
+    },
+    "canonical-grip-fastly": {
+      "targets": {
+        "fastly-native": "build"
+      },
+      "notes": [
+        "Provider packaging/GRIP artifacts and ABI imports are checked; injected reference behavior is not engine execution."
+      ]
+    },
+    "fastly-cli-gate-surface": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution.",
+        "Creates fake Fastly/Viceroy executables to test launcher selection and CLI arguments. This is a subprocess contract fixture, not real-engine proof."
+      ]
+    },
+    "fastly-javascript-packaging": {
+      "targets": {
+        "fastly-javascript": "build"
+      },
+      "notes": [
+        "JavaScript source packaging and manifest checks; no Compute engine execution."
+      ]
+    },
+    "fastly-javascript-runtime": {
+      "targets": {
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Fastly JS lifecycle/test/dev tooling uses emulation with injected bindings; not Viceroy."
+      ]
+    },
+    "fastly-javascript-tooling": {
+      "targets": {
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Fastly JS lifecycle/test/dev tooling uses emulation with injected bindings; not Viceroy."
+      ]
+    },
+    "fastly-native-http-shell": {
+      "targets": {
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well."
+      ]
+    },
+    "fastly-native-http-effects": {
+      "targets": {
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well."
+      ]
+    },
+    "fastly-native-platform-capabilities": {
+      "targets": {
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well."
+      ]
+    },
+    "fastly-request-headers": {
+      "targets": {
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Fastly Wasm executes in injected test imports; inspect imported nested fixture responsibilities as well."
+      ]
+    },
+    "release-packages": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution.",
+        "Uses current shared pack through verified private copies when available; standalone pack path validates independently."
+      ]
+    },
+    "release-artifact-determinism": {
+      "targets": {},
+      "notes": [
+        "Compares the first verified package set with a second packRelease({fresh:true}) construction; the latter must stay independent. Deterministic docs outputs are compared too."
+      ]
+    },
+    "clean-machine-acceptance": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default.",
+        "Fresh private npm cache/loopback registry; initialized workflows plus seven installed corpora. No workspace pass substitutes for installed execution."
+      ]
+    },
+    "cli-entities-installed-workflow": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default.",
+        "Independent packed Entities consumer, all four CLI target profiles and installed-file integrity."
+      ]
+    },
+    "npm-source-installed-workflow": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Installed npm-source workflow replays qualified imported corpora and denied target cases independently."
+      ]
+    },
+    "release-evidence-authority": {
+      "targets": {},
+      "notes": [
+        "Contract/planning or control-plane assertions; target declarations and recorded fixtures are not live provider execution.",
+        "Synthetic malformed/missing/stale evidence regression fixtures; does not grant authority to a new release candidate."
+      ]
+    },
+    "deployment-candidates": {
+      "targets": {
+        "fastly-native": "build",
+        "fastly-javascript": "js-compute-build"
+      },
+      "notes": [
+        "Offline Fastly Native and JS Compute candidate builds and byte validation only. Calls esbuild and js-compute; Fastly CLI, provider reality, deployment and publication are explicitly not invoked."
+      ]
+    },
+    "str02b-installed": {
+      "targets": {
+        "node-native": "local-http",
+        "fastly-native": "rejection-only",
+        "fastly-javascript": "rejection-only"
+      },
+      "notes": [
+        "--native selects Node Native positive forwarding; both Fastly target cells must reject unsupported forwarding. Keep rejection cells."
+      ]
+    },
+    "node01-installed": {
+      "targets": {
+        "node-native": "local-http",
+        "node-javascript": "local-http"
+      },
+      "notes": [
+        "Public Node launcher exercises production HTTP on both targets, not just a direct handler call."
+      ]
+    },
+    "arc01-installed": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default.",
+        "Core-only, Node-only, Fastly-only and CLI installations test package absence/loader containment separately."
+      ]
+    },
+    "jwt-installed-workflow": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture",
+        "fastly-javascript": "injected"
+      },
+      "notes": [
+        "Multi-target workflow remains one proof boundary. CLI Fastly test uses provider emulation/ABI fixtures, not Viceroy by default.",
+        "All 12 algorithm/target cells and 120 cases; six Native cells compare independently compiled test/build Wasm hashes."
+      ]
+    },
+    "str02-installed": {
+      "targets": {
+        "node-javascript": "local-http",
+        "fastly-native": "rejection-only",
+        "fastly-javascript": "rejection-only"
+      },
+      "notes": [
+        "Default selects Node JS positive forwarding; both Fastly target cells must reject unsupported forwarding. Keep rejection cells."
+      ]
+    },
+    "str03b-installed": {
+      "targets": {
+        "node-native": "local-http",
+        "node-javascript": "local-http"
+      },
+      "notes": [
+        "Installed generated-output fixtures exercise both Node targets and negative eligibility boundaries."
+      ]
+    },
+    "ast01-installed": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Fresh packed consumer exercises package facade/runtime/types; independent installation/byte integrity remains required."
+      ]
+    },
+    "ast02b-installed": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Fresh packed consumer exercises package facade/runtime/types; independent installation/byte integrity remains required."
+      ]
+    },
+    "ast02d-installed": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Packed embedded Assets replays ordinary build and 40 cases; workspace ABI fixture receives only compiled bytes."
+      ]
+    },
+    "mcp-installed": {
+      "targets": {
+        "node-javascript": "in-process"
+      },
+      "notes": [
+        "Fresh packed consumer exercises package facade/runtime/types; independent installation/byte integrity remains required."
+      ]
+    },
+    "s3-body-installed": {
+      "targets": {
+        "node-native": "abi-fixture",
+        "node-javascript": "in-process",
+        "fastly-native": "abi-fixture"
+      },
+      "notes": [
+        "Packed opaque S3 body corpus uses installed compiler/providers; Fastly body cases use ABI fixtures."
+      ]
+    }
+  }
+}
