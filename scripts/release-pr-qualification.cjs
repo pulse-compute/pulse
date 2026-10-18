@@ -30,7 +30,7 @@ function validateWorkflow(source) {
     'contents: read', 'pull-requests: read', 'ref: ${{ github.sha }}', 'persist-credentials: false',
     'release-pr-qualification.cjs identify', 'release-pr-qualification.cjs capture',
     'release:seal --skip-install', '--require-fastly', "node-version: '24.18.0'",
-    "SEAL_WORKERS: '2'", "SEAL_MEMORY_MIB: '6144'", "SEAL_COMPILER_WORKERS: '1'",
+    "SEAL_WORKERS: '2'", "SEAL_MEMORY_MIB: '6144'", "SEAL_COMPILER_WORKERS: '2'",
     'timeout-minutes: 100', 'retention-days: 30', 'if-no-files-found: error',
     'pulse-pr-release-qualification-${{ github.run_id }}-${{ github.run_attempt }}',
     'if: always()', 'needs: candidate', 'name: qualification', 'test "$CANDIDATE_RESULT" = success'])

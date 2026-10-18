@@ -10,9 +10,54 @@ for the next hosted qualification.** Both local configurations passed the full
 seal; 2/2 saved 26m11s (40.5%) overall. Retain the existing hosted 2/1 setting
 until a complete hosted 2/2 qualification and human adoption review. This issue
 changes no workflow, scheduler, coverage, timeout, recovery or release authority.
-The local comparison is complete; hosted adoption remains a separate gate.
+The local comparison is complete. The hosted follow-up below passed and supports
+the proposed two-slot release default, subject to human merge review.
 
 ## Hosted follow-up
+
+**October 18 result: passed.** [Run 39164566431](https://github.com/pulse-compute/pulse/actions/runs/39164566431)
+qualified clean PR merge commit `095beb54f06201a5fac61ee441a66b7db79a6013`, tree
+`21df6f07ed88e65ab3a92597da287fddaefccc73`. This is the #398 candidate, not a
+qualification of subsequent `latest` changes. [hosted-results.json](hosted-results.json)
+retains ordered task results, stage timings, process observations and artifact hashes.
+
+| Hosted observation | Result |
+| --- | ---: |
+| Measured fresh seal | 58m15.060s |
+| Release stage | 49m55.927s |
+| Installed-feature stage | 7m31.509s |
+| Fresh passing coverage | 190 release + 11 installed |
+| Reused results | 0 |
+| Sampled simultaneous process RSS peak | 2.064 GiB |
+| Sampled process CPU | 9,074.69 CPU seconds |
+| Samples / largest gap / read errors | 17,402 / 213 ms / 0 |
+| Task and controller cleanup | Passed |
+| Remaining observed processes | 0 |
+
+The downloaded ZIP matches GitHub's SHA-256
+`599945d3ba7bd26e346e7c5d15878625f9a8c9b079f8b43606b49681bd459866`.
+All ten sealed artifact file/directory identities were independently checked
+against the downloaded bytes. Both task reports match their complete ordered
+selections; every task was executed, passed and cleaned with no remaining process
+tree. The existing measurement wrapper also completed full evidence validation on
+the runner. Raw artifact `12151931349` expires November 1 under its existing policy.
+
+Compared with the historical Beta.9 hosted baseline, release fell from 65m40s to
+49m56s (24.0%), and the measured seal from approximately 76m42s to 58m15s (24.1%).
+This is a cross-candidate historical comparison, not a controlled hosted 2/1 vs
+2/2 experiment. The roughly 59-minute workflow includes setup and upload outside
+the measured seal. Neither the local 38m31s result nor its 40.5% saving was a hosted
+forecast. Most of the hosted/local difference occurred inside release execution,
+not dependency setup. No precise hardware, cache or contention cause is established.
+
+Summed sampled RSS includes shared pages and is not cgroup headroom. No cgroup OOM
+counters were retained; this report does not claim zero memory-limit events.
+The workload completed without reported task crashes, timeout or cleanup failures.
+One successful hosted run supports bounded adoption, not a variance estimate or
+sub-30-minute guarantee. Keep two workers, 6144 MiB admission and existing deadlines;
+propose only changing the release workflow's compiler slots from one to two.
+Roll back that setting and its validation guard on repeatable memory, cleanup or
+reliability regressions. Future release candidates still require their own full seal.
 
 The `Seal checkpoint` workflow runs a fresh 2/2 seal when a ready, same-repository
 PR into `latest` changes `.github/workflows/seal-checkpoint.yml`. It checks out
@@ -25,10 +70,9 @@ it is not a performance target. Every terminal attempt and measurement is upload
 Manual dispatch retains its existing worker choice and interrupted-recovery
 experiment. Both modes have read-only repository permissions and no production
 credentials. This is diagnostic qualification, not the `main` release gate or an
-accepted publication artifact. The hosted 2/1 release default remains unchanged.
-Review the complete terminal coverage, resource samples, cleanup and timing on
-the actual candidate before proposing adoption. A passing local pair alone does
-not establish a hosted result.
+accepted publication artifact. The initial trial left the hosted 2/1 release
+default unchanged. The completed evidence above now supports the proposed 2/2
+default in `release-qualify.yml` and its matching workflow validation guard.
 
 ## Measured result
 
