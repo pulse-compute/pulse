@@ -14,11 +14,12 @@ const {
 } = require('./package-support.cjs');
 const {
   DOCUMENTATION_VERSIONS,
-  isPublicDocumentationSource,
   cleanBasePath,
   sourceToRoute,
   documentationUrl
 } = require('./documentation-system.cjs');
+
+const { publicPageSources, publicAssetSources } = require('./documentation-sources.cjs');
 
 const repoRoot = path.resolve(__dirname, '..');
 const defaultOutput = path.join(repoRoot, '.pulse-docs-site');
@@ -145,27 +146,6 @@ function filesUnder(root, predicate = () => true, out = []) {
     else if (entry.isFile() && predicate(file)) out.push(file);
   }
   return out;
-}
-
-function publicPageSources(sourceRoot = repoRoot) {
-  const pages = [
-    path.join(sourceRoot, 'README.md'),
-    path.join(sourceRoot, 'CHANGELOG.md'),
-    path.join(sourceRoot, 'API.md'),
-    ...filesUnder(path.join(sourceRoot, 'docs'), (file) => file.endsWith('.md')
-      && isPublicDocumentationSource(path.relative(sourceRoot, file))),
-    ...filesUnder(path.join(sourceRoot, 'examples'), (file) => path.basename(file) === 'README.md')
-  ];
-  return [...new Set(pages)]
-    .sort()
-    .map((file) => slash(path.relative(sourceRoot, file)))
-    .filter((sourcePath) => !HOSTED_SOURCE_ALIASES.has(sourcePath));
-}
-
-function publicAssetSources(sourceRoot = repoRoot) {
-  return filesUnder(path.join(sourceRoot, 'docs'), (file) => !file.endsWith('.md') && isPublicDocumentationSource(path.relative(sourceRoot, file)))
-    .sort()
-    .map((file) => slash(path.relative(sourceRoot, file)));
 }
 
 function sourceAssetRoute(sourcePath) {

@@ -24,13 +24,15 @@ const {
   parseDocumentationUrl,
   documentationUrl,
   routeToSource,
+  sourceToRoute,
   cleanBasePath
 } = require('./documentation-system.cjs');
 const { validateDocumentationMetadata } = require('./documentation-ownership.cjs');
 const { MAINTENANCE_POLICY, synchronizeMaintenancePolicy } = require('./maintenance-policy.cjs');
 const { validateMaintainerControlPlane } = require('./validate-maintainer-control-plane.cjs');
 const { ENVIRONMENT_VARIABLES } = require('./environment-reference.cjs');
-const { buildDocumentationSite, publicPageSources } = require('./build-docs-site.cjs');
+const { buildDocumentationSite } = require('./build-docs-site.cjs');
+const { SOURCE_CONTRACT, publicPageSources } = require('./documentation-sources.cjs');
 const {
   PUBLIC_SITE_SCHEMA,
   PUBLIC_SITE_MANIFEST_FILE,
@@ -518,6 +520,14 @@ function validateReleaseManifest(repoRoot) {
 }
 
 function validatePublicSiteSystem(repoRoot) {
+  if (SOURCE_CONTRACT.schemaVersion !== 'pulse.documentation-sources.v1') fail('unsupported documentation source contract');
+  if (!isDeepEqual(SOURCE_CONTRACT.sourceAliases, PUBLIC_SITE_MANIFEST.sourceAliases)) fail('documentation source aliases differ from the renderer');
+  const routeAliases = Object.fromEntries(Object.entries(PUBLIC_SITE_MANIFEST.routeAliases)
+    .map(([route, id]) => [`${route}/`, sourceToRoute(PUBLIC_SITE_MANIFEST.documents[id].source)]));
+  if (!isDeepEqual(SOURCE_CONTRACT.routeAliases, routeAliases)) fail('documentation route aliases differ from the renderer');
+  for (const [source, route] of Object.entries(SOURCE_CONTRACT.rootRoutes)) {
+    if (sourceToRoute(source) !== route) fail(`documentation source contract route differs for ${source}`);
+  }
   const sourceManifest = readJson(path.join(repoRoot, 'release/documentation-site.json'));
   if (!isDeepEqual(sourceManifest, PUBLIC_SITE_MANIFEST)) fail('loaded public-site manifest does not match release/documentation-site.json');
   if (PUBLIC_SITE_MANIFEST.schemaVersion !== PUBLIC_SITE_SCHEMA) fail(`unsupported public-site schema ${PUBLIC_SITE_MANIFEST.schemaVersion}`);
@@ -601,6 +611,12 @@ function validatePublicSiteSystem(repoRoot) {
   const classified = new Map();
   for (const source of publicSources) {
     const section = classifyPublicPage(source);
+    const override = PUBLIC_SITE_MANIFEST.navigation.overrides[source] || {};
+    const hidden = SOURCE_CONTRACT.hiddenPrefixes.some((prefix) => source.startsWith(prefix));
+    if (hidden !== (section?.hiddenInNavigation === true || override.hiddenInNavigation === true)
+      || hidden !== (section?.hiddenInSearch === true || override.hiddenInSearch === true)) {
+      fail(`documentation source contract visibility differs for ${source}`);
+    }
     if (!section) fail(`public documentation page is not classified for hosted navigation: ${source}`);
     classified.set(source, section.id);
   }
