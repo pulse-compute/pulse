@@ -10,6 +10,7 @@ Do not use these variables as a substitute for `ctx.config`, `ctx.secret`, or pr
 
 | Variable | Scope | Stability |
 |---|---|---|
+| [`PULSEWASM_TEST_PHASE_DIR`](#pulsewasm-test-phase-dir) | Contributor and test-only configuration | Contributor/test-only; no qualification or cache authority. |
 | [`PULSEWASM_SEAL_WORKER_LAYOUT`](#pulsewasm-seal-worker-layout) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
 | [`PULSE_RELEASE_SHARED_PACK`](#pulse-release-shared-pack) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
 | [`PULSE_RELEASE_SHARED_PACK_SHA256`](#pulse-release-shared-pack-sha256) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
@@ -94,6 +95,22 @@ Selects the flat Pulse project profile when no explicit `--profile` option is su
 ## Contributor and test-only configuration
 
 Repository harness controls. They are intentionally outside the application compatibility contract.
+
+<a id="pulsewasm-test-phase-dir"></a>
+
+### `PULSEWASM_TEST_PHASE_DIR`
+
+Enables optional compiler/test phase spans and nested filesystem/hash counters. Does not change task coverage or authorize reuse.
+
+| Property | Contract |
+|---|---|
+| Value | Existing diagnostic output directory |
+| Default | Unset; phase observation is disabled. |
+| Precedence | The operator supplies a fresh directory to the test-only preload. |
+| Consumer | Bounded B10-01 phase attribution, including the copied installed JWT helper. |
+| Secret safety | Not a secret. Records timing, counters and artifact digests; no argument, source or environment contents. |
+| Stability | Contributor/test-only; no qualification or cache authority. |
+| Source owners | `wasm/test/support/phase-observer.cjs`, `wasm/test/jwt/assert-jwt-installed-workflow.cjs` |
 
 <a id="pulsewasm-seal-worker-layout"></a>
 
