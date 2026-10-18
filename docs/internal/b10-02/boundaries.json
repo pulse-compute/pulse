@@ -1,0 +1,49 @@
+{
+  "schema": "pulse.b10-02.boundaries.v1",
+  "installedInsideRelease": ["clean-machine-acceptance", "cli-entities-installed-workflow", "npm-source-installed-workflow"],
+  "authorityTasks": ["suite-shape", "test-orchestration", "release-feature-acceptance", "release-runtime-policy", "release-seal-lifecycle", "release-checkpoints", "release-recovery-runner", "release-recovery", "release-tag", "release-evidence-authority", "release-packages", "release-artifact-determinism", "clean-machine-acceptance", "deployment-candidates", "kv-conditional-gates"],
+  "independentConstruction": ["release-artifact-determinism", "clean-machine-acceptance", "jwt-installed-workflow", "canonical-router-lowering", "four-mode-conformance", "grip-cross-target-conformance", "entities-orchestration-demo", "deployment-candidates", "npm-source-installed-workflow"],
+  "independenceNote": "Named explicit independent construction boundaries, not an exhaustive list of byte comparisons. No row permits reuse or deletion.",
+  "stageOrder": ["fresh-source-checks", "build", "fastly-reality", "dependency-audit", "workspace-unit", "owned-workspaces", "shared-pack", "release-190", "installed-11", "complete-evidence-validation", "final-cleanup"],
+  "stageOwner": "scripts/validate-release.cjs",
+  "stageOrderNote": "Conceptual barrier sequence; source-check receipt and shared-pack identity are verified. Final cleanup also runs on failures. Feature acceptance currently follows the entire release stage.",
+  "workerOwner": "scripts/release-parallel.cjs",
+  "runnerOwner": "wasm/scripts/run-wasm-tests.cjs",
+  "packageOwner": "scripts/release-shared-pack.cjs",
+  "acceptanceOwner": "scripts/release-feature-acceptance.cjs",
+  "evidenceOwner": "scripts/release-evidence-bundle.cjs",
+  "providerBoundarySources": [
+    "packages/provider-fastly/src/toolchain/native-execution.js",
+    "packages/provider-fastly/src/toolchain/index.js",
+    "packages/provider-fastly/src/javascript/test-runtime.js",
+    "packages/provider-fastly/src/testing/native-platform-capabilities-host.js",
+    "packages/provider-fastly/src/testing/fastly-cli.js",
+    "wasm/test/s3/acceptance-toolchain.cjs",
+    "wasm/test/support/four-mode-conformance.cjs",
+    "wasm/test/support/workspace-package-build.cjs",
+    "wasm/test/kv/K4.md"
+  ],
+  "extraSources": {
+    "clean-machine-acceptance": ["wasm/test/s3/assert-packed-consumer.cjs", "wasm/test/release/assert-request-deadline-packages.cjs", "wasm/test/release/assert-multifile-packages.cjs", "wasm/test/release/assert-http-input-packages.cjs", "wasm/test/release/assert-read-loop-packages.cjs", "wasm/test/runtime/reproduce-read-loop-adoption.cjs", "wasm/test/kv/assert-packed-consumer.cjs"],
+    "jwt-installed-workflow": ["wasm/test/jwt/installed-fixture.cjs", "wasm/test/jwt/installed-cleanup.mjs"],
+    "node01-installed": ["wasm/test/runtime/node01-fixture.cjs"],
+    "arc01-installed": ["wasm/test/provider/arc01-fixture.cjs"],
+    "str03b-installed": ["wasm/test/runtime/str03b-installed-fixture.cjs"],
+    "ast02d-installed": ["wasm/test/assets/assert-native-embedded.cjs"],
+    "s3-body-installed": ["wasm/test/s3/assert-body-read.cjs"],
+    "fastly-incoming-body-forwarding": ["wasm/test/support/fastly-forwarding-qualification.cjs", "wasm/test/support/fastly-forwarding-viceroy.cjs"]
+  },
+  "separateGates": [
+    {"id":"provider-fastly-compute-reality","boundary":"fresh pre-release stage","source":"scripts/validate-release.cjs","meaning":"Real local Fastly compute engine; no deployed POP proof."},
+    {"id":"kv-conditional-acceptance","boundary":"separate local K4 and deployed Pulse cross-location evidence","source":"wasm/test/kv/K4.md","meaning":"Local recorded exception is not a blanket pass or permanent waiver; deployed identity/authority requirements remain separate."},
+    {"id":"str03c-bounded-transforms","boundary":"experimental workspace scope","source":"scripts/release-feature-acceptance.cjs","meaning":"Included workspace task does not establish installed transform qualification."}
+  ],
+  "unresolved": [
+    "Static literal helper references are not a complete dynamic call graph; argv and environment can choose additional branches.",
+    "The current registry has no selected resource locks or after edges. This is not proof that filesystem, sockets, tools or environment are globally independent.",
+    "Separate workflow jobs cannot share controller-owned worktrees/checkpoint authority by copying reports. Candidate-bound aggregation, latest-attempt coverage, cleanup and package-byte identity would require an explicit design.",
+    "No new current-candidate full workload duration or resource measurement is claimed. B10-00 fixed-duration observations remain bound to their original candidate.",
+    "B10-00 two-compiler run failed task log cleanup; successful concurrency/reliability comparison remains outstanding.",
+    "B10-01 partial compilation fingerprints do not prove transitive input equality or permit caching."
+  ]
+}
