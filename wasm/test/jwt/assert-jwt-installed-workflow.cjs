@@ -2,6 +2,7 @@
 'use strict';
 const { installedAcceptanceReport } = require('../support/installed-acceptance-report.cjs');
 
+const phaseObserver = require('../support/phase-observer.cjs');
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
@@ -57,7 +58,7 @@ function run(command, args, { timeout = 120000, onOutput, allowFailure = false }
     const cli = command === process.execPath && path.basename(args[0]) === 'pulse.js';
     const metricsFile = path.join(temporary, `compile-${report.results.length}.json`);
     const preload = path.join(temporary, 'compile-preload.cjs');
-    if (cli) fs.writeFileSync(preload, `require(${JSON.stringify(path.join(consumer, 'compile-metrics.cjs'))}).writeOnExit(${JSON.stringify(metricsFile)});\n`);
+    if (cli) fs.writeFileSync(preload, `${process.env.PULSEWASM_TEST_PHASE_DIR ? `require(${JSON.stringify(path.join(consumer, 'phase-observer.cjs'))});` : ''}require(${JSON.stringify(path.join(consumer, 'compile-metrics.cjs'))}).writeOnExit(${JSON.stringify(metricsFile)});\n`);
     const child = spawn(command, cli ? ['--require', preload, ...args] : args, {
       cwd: consumer, env,
       stdio: ['ignore', 'pipe', 'pipe'], detached: process.platform !== 'win32'
@@ -119,6 +120,7 @@ function verifyInstalled(manifest) {
   return { packages, files: digests.length, sha256: hash(JSON.stringify(digests.sort())) };
 }
 
+verifyInstalled = phaseObserver.wrap('evidence.verifyInstalled', verifyInstalled);
 const { fixture } = require('./installed-fixture.cjs');
 
 async function main() {
@@ -141,6 +143,7 @@ async function main() {
     report.installed=verifyInstalled(packed.manifest);
     const cli=path.join(consumer,'node_modules/@pulse-compute/cli/bin/pulse.js');
     fs.copyFileSync(path.join(__dirname,'compile-metrics.cjs'),path.join(consumer,'compile-metrics.cjs'));
+    if (process.env.PULSEWASM_TEST_PHASE_DIR) fs.copyFileSync(path.join(__dirname, '../support/phase-observer.cjs'), path.join(consumer, 'phase-observer.cjs'));
     const pulse=async args=>JSON.parse((await run(process.execPath,[cli,...args,'--json'])).stdout);
     const config={pulse:{entry:'src/index.ts',tests:'tests/pulse.harness.ts',defaultProfile:'node-javascript',strict:false}};
     const s3={endpoint:'https://objects.example.invalid',bucket:'jwt-fixture',region:'us-east-1',accessKeyIdSecret:'ACCESS',secretAccessKeySecret:'SECRET'};

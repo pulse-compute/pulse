@@ -787,6 +787,18 @@ async function verifyGripProject(tarballs, packageNames) {
   assert.equal(build.manifest.providerTarget.compiledWasmPresent, true);
 }
 
+const phaseObserver = require('../support/phase-observer.cjs');
+// Test-owned boundaries; disabled observation returns each original function.
+snapshotFiles = phaseObserver.wrap('evidence.snapshotFiles', snapshotFiles);
+assertPackedInstallIsolated = phaseObserver.wrap('evidence.assertPackedInstallIsolated', assertPackedInstallIsolated);
+installPackedPackages = phaseObserver.wrap('preparation.installPackedPackages', installPackedPackages);
+replayCorpus = phaseObserver.wrap('execution.installedCorpus', replayCorpus);
+verifyInitializedProject = phaseObserver.wrap('workflow.initializedProject', verifyInitializedProject);
+verifyNodeJavascriptProject = phaseObserver.wrap('workflow.nodeJavascript', verifyNodeJavascriptProject);
+verifyFastlyJavascriptProject = phaseObserver.wrap('workflow.fastlyJavascript', verifyFastlyJavascriptProject);
+verifyRouterProject = phaseObserver.wrap('workflow.router', verifyRouterProject);
+verifyGripProject = phaseObserver.wrap('workflow.grip', verifyGripProject);
+
 async function main() {
   console.log('acceptance - pack release candidate');
   saveCorpusReport();
