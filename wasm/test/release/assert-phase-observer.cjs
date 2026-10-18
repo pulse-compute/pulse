@@ -40,6 +40,41 @@ const secret='DO-NOT-RETAIN-THIS';
   for (const label of ['execution.WebAssembly.Module','execution.WebAssembly.Instance','execution.WebAssembly.instantiate']) assert(starts.some(row=>row.label===label));
   const exit=rows.at(-1); assert.equal(exit.event,'exit'); assert.equal(exit.observationErrors,0); assert.equal(exit.dropped,0);
   assert(Object.keys(exit.counts).some(key=>key.endsWith(':hash.update')));
+  const inspections = path.join(root, 'inspections'); fs.mkdirSync(inspections);
+  const owner = path.join(root, 'packages/wasm-guest-link/src'); fs.mkdirSync(owner, { recursive: true });
+  const inspector = path.join(owner, 'inspect.js'), input = path.join(root, 'guest.wasm');
+  fs.writeFileSync(input, 'first');
+  fs.writeFileSync(inspector, `exports.inspectWasmFile=function(file,options){
+    if(options.fail)throw new Error('DO-NOT-RETAIN-THIS');
+    const b=require('node:fs').readFileSync(file);
+    return Object.freeze({sha256:require('node:crypto').createHash('sha256').update(b).digest('hex'),bytes:b.length});};`);
+  const probe = spawnSync(process.execPath, ['--require', helper, '-e', `
+    const p=require(${JSON.stringify(helper)}), fs=require('node:fs'), assert=require('node:assert/strict');
+    const {inspectWasmFile:inspect}=require(${JSON.stringify(inspector)}), file=${JSON.stringify(input)};
+    const options={label:'fixture-packaged',workDirectory:'DO-NOT-RETAIN-THIS'};
+    p.measure('command.first',()=>{inspect(file,options);inspect(file,options)});
+    p.measure('command.second',()=>{inspect(file,options);inspect(file,{...options,failureCode:'different'});
+      fs.writeFileSync(file,'second');inspect(file,options);
+      assert.throws(()=>inspect(file,{...options,fail:true}));});
+  `], { env: { ...process.env, PULSEWASM_TEST_PHASE_DIR: inspections }, encoding: 'utf8' });
+  assert.equal(probe.status, 0, probe.stderr);
+  const inspectionText = fs.readFileSync(path.join(inspections, fs.readdirSync(inspections)[0]), 'utf8');
+  assert(!inspectionText.includes('DO-NOT-RETAIN-THIS'));
+  const observations = inspectionText.trim().split('\n').map(JSON.parse);
+  const calls = observations.filter(row => row.label === 'guest.inspectWasmFile');
+  assert.equal(calls.length, 6);
+  assert.equal(calls[0].parent, calls[1].parent);
+  assert.notEqual(calls[1].parent, calls[2].parent);
+  assert.deepEqual(calls[0].metadata, calls[2].metadata);
+  assert.notEqual(calls[2].metadata.optionsSha256, calls[3].metadata.optionsSha256);
+  assert.notEqual(calls[3].metadata.inputSha256, calls[4].metadata.inputSha256);
+  for (const call of calls.slice(0, 5)) {
+    const end = observations.find(row => row.event === 'end' && row.id === call.id);
+    assert.equal(end.status, 'returned'); assert.equal(end.artifact.inputSha256, call.metadata.inputSha256);
+    assert.match(end.artifact.factsSha256, /^[a-f0-9]{64}$/);
+  }
+  assert.equal(observations.find(row => row.event === 'end' && row.id === calls[5].id).status, 'threw');
+  assert.equal(observations.at(-1).observationErrors, 0);
   const capped=path.join(root,'capped');fs.mkdirSync(capped);
   const stress=spawnSync(process.execPath,['-e',`const p=require(${JSON.stringify(helper)});let count=0;for(let i=0;i<100002;i++)p.measure('bounded',()=>count++);if(count!==100002)process.exitCode=2;`],{env:{...process.env,PULSEWASM_TEST_PHASE_DIR:capped},encoding:'utf8',timeout:30000});
   assert.equal(stress.status,0,stress.stderr);
