@@ -71,13 +71,15 @@ mixed compiler/provider/schema/CLI/generator/unknown paths; trusted matching
 and additional trusted-base ownership. Full selection continues to replace,
 rather than duplicate, schema smoke.
 
-The same test invokes the existing generator/reference check-mode functions
+`wasm/test/docs/assert-documentation-preview.cjs` invokes the existing
+generator/reference check-mode functions
 with scoped read overrides, restored in `finally`; it never edits checkout
 files. These fixtures establish that a changed canonical document invalidates
 the corpus even outside its selected sections, a regenerated corpus requires
 its installed mirror to be updated, synchronized outputs pass, a manual mirror
 code edit fails, and editing both copies cannot forge generated output. The
-existing preview orchestration regression separately requires the actual
+preview test runs after dependencies are installed; selection contract tests
+remain dependency-free. Its orchestration regression requires the actual
 generated-file check and rejects preview success after a generated check failure.
 
 Focused reproduction commands:
