@@ -17,7 +17,7 @@ Release files are protected human-authority surfaces.
 - One fresh `source-checks` stage owns maintainer/publication and documentation validation per seal attempt. Shared packing may verify that attempt's hash-pinned receipt against unchanged source, dependency, Node and environment inputs; standalone packing must still validate independently. This does not allow skipping fresh checks on a resumed attempt.
 
 - `pulse-release-manifest.json#publication` owns npm registry, channel tag, trusted-publisher identity, toolchain, and canonical smoke package.
-- `documentation-deployment.json` owns Object Storage prefixes, immutable and mutable classes, deployment receipts, cache classes, and public verification routes.
+- `documentation-deployment.json` retains the historical v1 receipt contract. `documentation-writer-retirement.json` records source retirement only; main/tags/historical refs still require live disabled-and-idle verification in the website guard. Never infer retirement from missing workflow files.
 - Exact npm tarballs and exact-version documentation objects are immutable release artifacts. Never replace an existing same-version artifact with different bytes.
 - Production publication and documentation promotion require the exact reviewed release tag plus human approval of the corresponding protected environment.
 
@@ -45,7 +45,7 @@ supply-chain evidence, and mandatory provider reality.
 - `package.json`
 - `.github/workflows/validate.yml`
 - `.github/workflows/npm-publish.yml`
-- `.github/workflows/documentation-deploy.yml`
+- `release/documentation-writer-retirement.json`
 
 **Write**
 
@@ -63,7 +63,7 @@ supply-chain evidence, and mandatory provider reality.
 - `.gitignore`
 - `.github/workflows/validate.yml`
 - `.github/workflows/npm-publish.yml`
-- `.github/workflows/documentation-deploy.yml`
+- `release/documentation-writer-retirement.json`
 - `.github/ISSUE_TEMPLATE/**`
 - `.github/PULL_REQUEST_TEMPLATE.md`
 - `.github/CODEOWNERS`

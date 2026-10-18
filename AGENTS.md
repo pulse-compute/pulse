@@ -332,7 +332,8 @@ Edit canonical owners, then synchronize:
 - `release/pulse-release-manifest.json`: release version, packages, support tiers, runtime targets, repository and hosted-doc facts;
 - `release/documentation-site.json`: supported CLI compatibility metadata;
 - `release/maintenance-policy.json`: maintainer authority, scope classes, path rules, labels, required checks, protected environments, and reviewed GitHub Action pins;
-- `release/documentation-deployment.json`: Object Storage object classes, immutable receipts, cache policy, public-route verification, and deployment credential names;
+- `release/documentation-deployment.json`: historical v1 Object Storage receipt interpretation;
+- `release/documentation-writer-retirement.json`: source retirement and retained live disabled/idle guard requirements;
 - `wasm/packages/cli/src/command-spec.js`: public CLI commands and options;
 - `wasm/packages/cli/src/project-config-schema.js`: project configuration contract;
 - diagnostic and environment catalogs: their generated references;

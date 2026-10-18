@@ -40,7 +40,7 @@ read-only validation of their manifests, links, anchors and assets.
 | Understand release coverage | [Release acceptance](./release-acceptance.md) |
 | Prepare, qualify and publish a release | [npm publishing](./npm-publishing.md) |
 | Preserve exact-version history | [Documentation versions](./documentation-versioning.md) |
-| Upload and promote hosted docs | [Documentation deployment](./documentation-deployment.md) |
+| Website delivery and historical receipt reading | [Writer retirement boundary](./documentation-deployment.md#writer-retirement-boundary) |
 
 Keep commands and recovery instructions with their owner; link to that page
 from other guides. Historical task packets and raw run evidence belong in Git

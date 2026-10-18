@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "pulse.documentation-writer-retirement.v1",
+  "repository": "pulse-compute/pulse",
+  "sourceRetirementBranch": "latest",
+  "previousWorkflow": {
+    "id": 328773030,
+    "path": ".github/workflows/documentation-deploy.yml",
+    "identityEvidence": "https://github.com/pulse-compute/pulse/actions/runs/37858976410"
+  },
+  "historicalRefs": "may-still-contain-writer",
+  "dispatchRequirement": "live-disabled-and-idle",
+  "absencePolicy": "reject",
+  "replacementRepository": "pulse-compute/website"
+}
