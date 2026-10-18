@@ -21,9 +21,19 @@ async function verifyParallel() {
     assert.equal(compilerCount(4, 2), 2);
     assert.throws(() => compilerCount(0, 2), /compiler-workers/);
     const registry = require('../suite/registry.cjs').tasks;
+    const correctedCompilers = ['report-capsule-contract', 'cli-report-viewer', 'cli-report-retained-evidence',
+      'cli-report-relationships', 'cli-report-resource-inventory', 'cli-report-graph-diagnostics',
+      'entities-orchestration-demo', 's3-body-read', 'shared-stage-o19'];
     for (const name of ['jwt-rs256', 'clean-machine-acceptance', 'schema-codecs', 'fastly-native-platform-capabilities',
-      'cli-report-capture-proof', 'node-launcher', 'node01-installed', 'ast02d-installed', 'assets-native-embedded', 's3-body-installed']) {
+      'cli-report-capture-proof', 'node-launcher', 'node01-installed', 'ast02d-installed', 'assets-native-embedded', 's3-body-installed',
+      ...correctedCompilers]) {
       assert.equal(scheduling(name, registry[name]).compiler, true, `${name} must consume a compiler slot`);
+    }
+    // Selected invocation matters: these inspect plans, build JavaScript, or run
+    // prebuilt Wasm. A helper import or Native-looking name is insufficient.
+    for (const name of ['multifile-source-indexes', 'pure-helper-contract', 's3-read-contract',
+      'crypto-es256-signing', 'crypto-rs256', 'cli-report-size-evidence', 'pulse-context-application']) {
+      assert.equal(scheduling(name, registry[name]).compiler, false, `${name} must retain its reviewed hint`);
     }
     assert.equal(scheduling('release-artifact-determinism', registry['release-artifact-determinism']).compiler, false);
     const candidateRoot = path.join(root, 'candidate');
@@ -275,6 +285,22 @@ async function verifyParallel() {
     // Use production names/hints with lightweight subprocesses: execution order
     // may change, but report order, coverage, recovery and slot limits must not.
     const hinted = name => task(name, { compiler: scheduling(name, registry[name]).compiler, ...registry[name].scheduling });
+    fs.writeFileSync(trace, '');
+    const corrected = await attempt('corrected-compiler-admission', Object.fromEntries(
+      [...correctedCompilers, 'api-surface'].map(name => [name, hinted(name)])));
+    assert.deepEqual(corrected.state.results.map(r => [r.name, r.status]),
+      [...correctedCompilers, 'api-surface'].map(name => [name, 'passed']));
+    const correctedRows = fs.readFileSync(trace, 'utf8').trim().split('\n').map(JSON.parse);
+    let admitted = 0;
+    for (const row of correctedRows) {
+      if (!correctedCompilers.includes(row.name)) continue;
+      admitted += row.event === 'start' ? 1 : -1;
+      assert(admitted >= 0 && admitted <= 1, 'corrected Native tasks must share the single compiler slot');
+    }
+    assert.equal(admitted, 0);
+    const correctedAt = (name, event) => correctedRows.find(r => r.name === name && r.event === event).at;
+    assert(correctedCompilers.some(name => correctedAt(name, 'start') < correctedAt('api-surface', 'end') &&
+      correctedAt('api-surface', 'start') < correctedAt(name, 'end')), 'non-compiler work must still use the other worker');
     const early = { 'jwt-rs256': hinted('jwt-rs256'), 'suite-shape': hinted('suite-shape'),
       'release-artifact-determinism': hinted('release-artifact-determinism'), 'boundaries': hinted('boundaries') };
     for (const parallel of [false, true]) {

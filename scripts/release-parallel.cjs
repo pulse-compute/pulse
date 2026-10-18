@@ -223,7 +223,7 @@ function assertManagedWorker(directory, owner, candidate, layoutFile) {
   assert(layout.workspaces.some(workspace => workspace.directory === fs.realpathSync(directory)), 'Unowned shared-pack consumer');
 }
 
-// Scheduling hints affect order only. The registry remains coverage authority.
+// Scheduling hints affect order and resource admission, never coverage authority.
 // Ordering weights are not deadlines or reported durations. Check independent
 // worker packaging early, before spending the compiler lane.
 const EARLY_CHECKS = new Set(['suite-shape', 'package-exports', 'boundaries', 'workspace-hygiene',
@@ -232,11 +232,20 @@ const ORDER_WEIGHT = { 'release-artifact-determinism': 1000, 'jwt-rs256': 284, '
   'schema-codecs': 95, 'fastly-native-platform-capabilities': 75, 'cli-entities-installed-workflow': 69,
   'fastly-entities-native-workflow': 57, 'cli-project-workflow': 50, 'cli-schema-json-workflow': 47,
   'events-cli-workflow': 42, 'canonical-native-wasm': 40, 'bounded-read-loops': 36, 'pure-guarded-arguments': 34 };
+// Evidence categories describe assertions, not transitive compiler demand.
+// These unit tasks construct Native artifacts through helpers, direct asc, or
+// in-process Binaryen. Reserve one token for the entire task, including cleanup;
+// this is not a count of asc processes. Audit: docs/internal/b10-ci04/ledger.json.
+const COMPILER_TASKS = new Set([
+  'report-capsule-contract', 'cli-report-viewer', 'cli-report-retained-evidence',
+  'cli-report-relationships', 'cli-report-resource-inventory', 'cli-report-graph-diagnostics',
+  'entities-orchestration-demo', 's3-body-read', 'shared-stage-o19'
+]);
 function scheduling(name, task) {
   const hints = task.scheduling || {};
   return { priority: EARLY_CHECKS.has(name) ? 2 : name === 'str02b-installed' ? 1 : 0,
     cost: hints.cost || ORDER_WEIGHT[name] || 10, resources: hints.resources || [],
-    compiler: hints.compiler === undefined ? !['unit', 'javascript'].includes(task.evidence) : hints.compiler,
+    compiler: hints.compiler === undefined ? COMPILER_TASKS.has(name) || !['unit', 'javascript'].includes(task.evidence) : hints.compiler,
     exclusive: hints.exclusive === true || /benchmark|measure|timing/i.test(`${name} ${task.description}`),
     after: hints.after || [] };
 }

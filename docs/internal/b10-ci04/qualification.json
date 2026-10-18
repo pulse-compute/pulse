@@ -1,0 +1,2072 @@
+{
+  "schema": "pulse.b10-ci04.qualification-disposition.v1",
+  "disposition": "retain-2-workers-1-compiler",
+  "measurementOwner": "https://github.com/pulse-compute/pulse/issues/373",
+  "qualificationGate": "https://github.com/pulse-compute/pulse/issues/382",
+  "comparisonComplete": false,
+  "twoCompilerTrial": "not-run: no successful same-candidate one-compiler control",
+  "limits": "Failed and preflight-blocked attempts are independent, never pooled; truncated wall times are not speedups. Process observations are sampled lower bounds, summed RSS counts shared pages. The latest worker admission failure remains unresolved; no waiver or default increase.",
+  "trials": [
+    {
+      "measurement": "b10-ci04-c1",
+      "measurementSha256": "d9fdad10b0e7bbbda4c8a13bd2a191dd83188ad07870978fc5d13693abb2e090",
+      "candidate": {
+        "sourceRevision": "3d3ce18f307e6db4367caa63b9b28b74e88f544a",
+        "sourceTree": "9c3d65a7cd35a649327208b217771ccf5db27bf4",
+        "workingTree": ""
+      },
+      "status": "failed",
+      "qualificationPassed": false,
+      "wallMsUntilTerminal": 327815,
+      "attemptId": "2026-10-18T17-19-27-006Z-aFNy9s",
+      "attemptReportSha256": "599a1ab829229e5426dfb9ec31e5d0d201827532a7097c5509a21375592b1290",
+      "controllerStatus": "failed",
+      "error": {
+        "code": "PULSE_PARALLEL_TASK_FAILED",
+        "message": "kv-conditional-gates failed; sibling workers cancelled"
+      },
+      "measurementError": {
+        "code": "PULSE_RELEASE_SEAL_STEP_FAILED",
+        "message": "Run native, JavaScript, conformance, provider, CLI, package, consumer, and determinism evidence failed (node wasm/scripts/run-wasm-tests.cjs --profile release --report /workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/attempts/2026-10-18T17-19-27-006Z-aFNy9s/artifacts/release-tasks.json --recovery-config /workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/attempts/2026-10-18T17-19-27-006Z-aFNy9s/release-recovery.json)"
+      },
+      "configuration": [
+        "--require-fastly",
+        "--skip-install",
+        "--timeout-minutes",
+        "100",
+        "--workers",
+        "2",
+        "--compiler-workers",
+        "1",
+        "--memory-budget-mib",
+        "6144"
+      ],
+      "cleanup": {
+        "status": "passed",
+        "timedOut": false,
+        "retainedPath": null
+      },
+      "steps": [
+        {
+          "id": "source-checks",
+          "status": "passed",
+          "elapsedMs": 12828
+        },
+        {
+          "id": "build",
+          "status": "passed",
+          "elapsedMs": 193
+        },
+        {
+          "id": "fastly-reality",
+          "status": "passed",
+          "elapsedMs": 14395
+        },
+        {
+          "id": "production-dependency-audit",
+          "status": "passed",
+          "elapsedMs": 3550
+        },
+        {
+          "id": "workspace-unit",
+          "status": "passed",
+          "elapsedMs": 2077
+        },
+        {
+          "id": "workspaces",
+          "status": "passed",
+          "elapsedMs": 3235
+        },
+        {
+          "id": "shared-pack",
+          "status": "passed",
+          "elapsedMs": 3829
+        },
+        {
+          "id": "release",
+          "status": "failed",
+          "elapsedMs": 275929
+        }
+      ],
+      "release": {
+        "reportSha256": "5c6cd78cfda04010b77bc2a29847ca045b026f5813a77ddc2081671ea7360335",
+        "selected": [
+          "report-capsule-contract",
+          "cli-report-workflow",
+          "cli-report-viewer",
+          "cli-report-retained-evidence",
+          "cli-report-size-evidence",
+          "cli-report-capture-proof",
+          "cli-report-entry-proof",
+          "cli-report-reference-provenance",
+          "cli-report-handler-topology",
+          "cli-report-handler-associations",
+          "cli-report-relationships",
+          "cli-report-imported-inputs",
+          "cli-report-resource-inventory",
+          "cli-report-graph-diagnostics",
+          "multifile-source-indexes",
+          "guest-json-roundtrip",
+          "pure-helper-contract",
+          "suite-shape",
+          "test-orchestration",
+          "package-exports",
+          "boundaries",
+          "workspace-hygiene",
+          "hidden-contracts",
+          "release-feature-acceptance",
+          "release-runtime-policy",
+          "release-seal-lifecycle",
+          "release-checkpoints",
+          "release-recovery-runner",
+          "release-recovery",
+          "release-tag",
+          "api-surface",
+          "logging-contract",
+          "s3-design-contract",
+          "kv-design-contract",
+          "kv-conditional-runtime",
+          "kv-conditional-gates",
+          "s3-read-contract",
+          "s3-write-contract",
+          "crypto-config-planning",
+          "crypto-es256-signing",
+          "crypto-rs256",
+          "crypto-digest-text-contract",
+          "reachable-graph",
+          "project-modules",
+          "package-reachability",
+          "external-lowerers",
+          "package-runtime",
+          "provider-toolchain",
+          "schema-registry",
+          "continuation-registry",
+          "entities-contracts",
+          "entities-schema-bridge",
+          "entities-javascript-runtime",
+          "entities-json-rpc-corpus",
+          "mcp-http",
+          "pulse-context-corpus",
+          "pulse-context-application",
+          "pulse-context-host",
+          "mcp-compatibility",
+          "mcp-tools",
+          "mcp-authorization",
+          "entities-package-owned-lowering",
+          "entities-catalog",
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "npm-source-imports",
+          "fastly-numeric-regions",
+          "fastly-numeric-budgets",
+          "fastly-handle-ownership",
+          "fastly-handle-frames",
+          "pure-helper-vocabulary",
+          "pure-string-index",
+          "pure-field-projection",
+          "pure-guarded-arguments",
+          "pure-source-helpers",
+          "pure-record-helpers",
+          "pure-argument-helpers",
+          "pure-loop-helpers",
+          "fastly-driver-behavior-o09",
+          "kv-native-abi-feasibility",
+          "s3-body-read",
+          "s3-node-transport",
+          "canonical-api-lowering",
+          "canonical-native-plan",
+          "shared-stage-o19",
+          "str02b-node-native",
+          "fastly-incoming-body-forwarding",
+          "str03a-generated-output",
+          "str03c-bounded-transforms",
+          "bounded-app-logic",
+          "bounded-read-loops",
+          "bounded-loop-helpers",
+          "logging-lowering",
+          "canonical-router-lowering",
+          "canonical-router-terminal-middleware",
+          "router-selected-groups",
+          "json-as-compatibility",
+          "entities-envelope-feasibility",
+          "entities-managed-handler",
+          "entities-managed-handler-effects",
+          "entities-native-runtime",
+          "entities-hardening",
+          "entities-node-native-workflow",
+          "fastly-entities-native-workflow",
+          "crypto-native-guest-source",
+          "guest-link-package",
+          "guest-link-materialization-stage",
+          "guest-link-audit-diagnostics",
+          "assets-lowering-plan",
+          "assets-package-owned-lowering",
+          "assets-native-embedded",
+          "grip-package-owned-lowering",
+          "jwt-package-owned-lowering",
+          "canonical-api-runtime",
+          "canonical-opaque-node-emission",
+          "grip-package-runtime",
+          "package-root-native",
+          "canonical-native-wasm",
+          "cli-javascript-target-compilation",
+          "target-support",
+          "jwt-javascript-admission",
+          "crypto-runtime-builtin",
+          "javascript-effect-adapter",
+          "logging-runtime",
+          "assets-javascript-runtime",
+          "jwt-signing",
+          "jwt-es256-signing",
+          "jwt-rs256",
+          "crypto-cross-target-conformance",
+          "crypto-digest-text-conformance",
+          "crypto-digest-storage-conformance",
+          "text-capacity-conformance",
+          "events-conformance",
+          "node-router-context-parity",
+          "catalog-router-parity",
+          "fetch-projections-request-bodies",
+          "config-secrets-kv-redaction",
+          "kv-conditional-conformance",
+          "fastly-conditional-kv",
+          "schema-codecs",
+          "schema-kv-parity",
+          "time-conformance",
+          "time-consumer",
+          "node-launcher",
+          "application-errors",
+          "application-error-boundaries",
+          "node-cross-target-conformance",
+          "grip-cross-target-conformance",
+          "four-mode-conformance",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256",
+          "provider-packages",
+          "provider-fastly-package",
+          "provider-fastly-apps",
+          "canonical-grip-fastly",
+          "fastly-cli-gate-surface",
+          "fastly-javascript-packaging",
+          "fastly-javascript-runtime",
+          "fastly-javascript-tooling",
+          "fastly-native-http-shell",
+          "fastly-native-http-effects",
+          "fastly-native-platform-capabilities",
+          "fastly-request-headers",
+          "release-packages",
+          "release-artifact-determinism",
+          "clean-machine-acceptance",
+          "cli-entities-installed-workflow",
+          "npm-source-installed-workflow",
+          "release-evidence-authority",
+          "deployment-candidates"
+        ],
+        "completed": 27,
+        "passed": 25,
+        "notRun": 163,
+        "results": [
+          {
+            "id": "cli-report-workflow",
+            "status": "passed",
+            "durationMs": 7271,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "b0719f302fe6ff0e24bb6a0557ce240b8545dce2e5cf286e8c8b7b3112a016aa"
+          },
+          {
+            "id": "cli-report-size-evidence",
+            "status": "passed",
+            "durationMs": 5352,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "7b49f2f74daaaae9d58d822a3c40997f7b765f781105346bb9bf52c371732b3f"
+          },
+          {
+            "id": "cli-report-handler-associations",
+            "status": "passed",
+            "durationMs": 5674,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "e8f5fb02974eb5e5d92dd66099967ce2bff71340df29dcdc66270e8025da42af"
+          },
+          {
+            "id": "multifile-source-indexes",
+            "status": "passed",
+            "durationMs": 4650,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "e59673e97fdeb90039a38f41e39f93d239a5062600be498e61405522df2664f1"
+          },
+          {
+            "id": "guest-json-roundtrip",
+            "status": "passed",
+            "durationMs": 4297,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "250c726913dde6e425f1f05a88a8892854c2b2f37f86dd00cc9fcde5ee45fc90"
+          },
+          {
+            "id": "pure-helper-contract",
+            "status": "passed",
+            "durationMs": 5672,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "51c6707c5f91a4387ad89381bfcff3caea77ae9685adf30c9f98a43ae6edef94"
+          },
+          {
+            "id": "suite-shape",
+            "status": "passed",
+            "durationMs": 4265,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "748f8cd988d28e16fb8b7de344d8453559e9cc07015bc7754aa8ad87fc20da03"
+          },
+          {
+            "id": "test-orchestration",
+            "status": "passed",
+            "durationMs": 20250,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "e309c518c21c3acb41288b5e5530254e6cc707e8300b5e4d1ab54d4589e04603"
+          },
+          {
+            "id": "package-exports",
+            "status": "passed",
+            "durationMs": 4222,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "620dabe7893a0e0a2a0083ac56a200b88765bda77895e98c47722b1bb11ffff4"
+          },
+          {
+            "id": "boundaries",
+            "status": "passed",
+            "durationMs": 4729,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "673b6201648909621106cfa1f3af2ecda959df7688c6a8390484bf6de6a97330"
+          },
+          {
+            "id": "workspace-hygiene",
+            "status": "passed",
+            "durationMs": 4691,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "14bf84a2cea12e92bce6ad28f772a73acb46a101d5255efdee9dc0e9c342c92c"
+          },
+          {
+            "id": "hidden-contracts",
+            "status": "passed",
+            "durationMs": 4624,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "b0d07a62f096a3c495eca8c334ebded93a1ddf95a496c07e3c43118bbe15fb7c"
+          },
+          {
+            "id": "release-feature-acceptance",
+            "status": "passed",
+            "durationMs": 4883,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "ce01fea429289694ab3d6db8a591e6e5842785c781ef04f8bb1be42f5d3bb243"
+          },
+          {
+            "id": "release-runtime-policy",
+            "status": "passed",
+            "durationMs": 6557,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "a370f3402c99c8972adfd54bb1bdcbb4554e9ee64805b9eb0d69659ae4653dc2"
+          },
+          {
+            "id": "release-seal-lifecycle",
+            "status": "passed",
+            "durationMs": 7856,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "a7ff38bfcf2fab00f53ddd6a787db695ab0838018f4ae94cee6c92965c1e127b"
+          },
+          {
+            "id": "release-checkpoints",
+            "status": "passed",
+            "durationMs": 4485,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "eb2390369e900e04bbf65712c722720a014a274129f56e2bb950cdc0c97c8b45"
+          },
+          {
+            "id": "release-recovery-runner",
+            "status": "passed",
+            "durationMs": 69134,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "a9057c3ae4a8e1bba63814ac0725c7420b10eafd9eecba52113b2e3b51c74043"
+          },
+          {
+            "id": "release-recovery",
+            "status": "passed",
+            "durationMs": 6835,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "e92cf5ff10d5baa89d6911b9dbd5e4928b0e474f4d86821e92cad0828ed2facc"
+          },
+          {
+            "id": "release-tag",
+            "status": "passed",
+            "durationMs": 4822,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "84813d71b96931d09502bf2d9a33a9ea9a23895a468d430cbdfd40e12af78f31"
+          },
+          {
+            "id": "api-surface",
+            "status": "passed",
+            "durationMs": 5165,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "72ae6e9145a6217b37175888a59fd6718937d174ee1e8c1009d32e361c2f1019"
+          },
+          {
+            "id": "logging-contract",
+            "status": "passed",
+            "durationMs": 4282,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "250ed2ef7d8e7c249c300b8eb44df6a36f8b7e8f545f4d0e9b1d90cfd989d15c"
+          },
+          {
+            "id": "s3-design-contract",
+            "status": "passed",
+            "durationMs": 5772,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "633798a97981a42f8eb4b4534a1a3b369d1eba4ffd504614b44c3e4eaea95c7e"
+          },
+          {
+            "id": "kv-design-contract",
+            "status": "passed",
+            "durationMs": 5455,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "460980145d170ca43f7b0c7af6f0a68fcd588e3c1068dd8acb5f7b6dee366337"
+          },
+          {
+            "id": "kv-conditional-runtime",
+            "status": "passed",
+            "durationMs": 5696,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "099993c1331c0b9ecc5861e1d6446589d5dd3dd6c725a0c2952ea11dd1e8405b"
+          },
+          {
+            "id": "kv-conditional-gates",
+            "status": "failed",
+            "durationMs": 14714,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "886dcc609631de9a1b1af028f98e50a6339a1bbedb7038ca24c0a708fbb40881"
+          },
+          {
+            "id": "jwt-rs256",
+            "status": "interrupted",
+            "durationMs": 253228,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": [
+                  "wasm/test/jwt/.rs-sign-F91rIU/.pulse/config.ts",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/application/src/index.js",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/bin/main.wasm",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/canonical-handler.cjs",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/canonical-native-manifest.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/canonical-native-plan.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/canonical-native.as.ts",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/canonical-native.wasm",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/canonical-program.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/fastly-build.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/fastly-entry.cjs",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/fastly-native-manifest.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/fastly-native-plan.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/fastly-provider.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/fastly.toml",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/final-wasm-audit.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/guest-link-report.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/guest-unit-plan.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/index.cjs",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/package-artifacts.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/package-realization-artifacts.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/package.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-build.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-esbuild.config.js",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-fastly-javascript-candidate.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-fastly-javascript-deployment.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-fastly-javascript-source-package.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-javascript-application-plan.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-javascript-source-package.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-report-completion.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-report-inputs.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/pulse-report-inventory.json",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/src/application.js",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/src/index.js",
+                  "wasm/test/jwt/.rs-sign-F91rIU/dist/src/main.as.ts",
+                  "wasm/test/jwt/.rs-sign-F91rIU/src/index.ts",
+                  "wasm/test/jwt/.rs-sign-F91rIU/tests/pulse.harness.ts",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/.pulse/config.ts",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/bin/main.wasm",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/canonical-handler.cjs",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/canonical-native-manifest.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/canonical-native-plan.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/canonical-native.as.ts",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/canonical-native.wasm",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/canonical-program.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/fastly-build.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/fastly-entry.cjs",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/fastly-native-manifest.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/fastly-native-plan.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/fastly-provider.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/fastly.toml",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/final-wasm-audit.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/guest-link-report.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/guest-unit-plan.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/package-artifacts.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/package.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/pulse-build.json",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/dist/src/main.as.ts",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/src/index.ts",
+                  "wasm/test/jwt/.rs-sign-QaPMd7/tests/pulse.harness.ts"
+                ]
+              }
+            },
+            "logSha256": "62bd1eea8b170c7edeb765268febafffc6fa149f464c5bfd9fe81589dfe432f8"
+          },
+          {
+            "id": "release-artifact-determinism",
+            "status": "passed",
+            "durationMs": 28892,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "6d2fbfa5e231c0a3013457ab4f187cb8a91a9d70c6232e833c530774b784d49d"
+          }
+        ]
+      },
+      "installed": "not-run",
+      "metrics": {
+        "wallMs": 327811,
+        "controllerMs": 327705,
+        "workerOccupancyMs": 503473,
+        "workerTimeDefinition": "Serial executed task elapsed time, including waits and cleanup; not CPU time or bootstrap steps",
+        "tasks": {
+          "completed": 27,
+          "passed": 25,
+          "executed": 27,
+          "reused": 0
+        },
+        "avoidedTaskOccupancyMs": 0,
+        "candidatePackages": 20,
+        "observedLaunches": {
+          "asc": 74,
+          "pack": 41,
+          "install": 0
+        },
+        "observationScope": "Node child_process launches under inherited preload; lower bounds. Shell launches, native custom-promisified calls and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.",
+        "workerCpuMs": null,
+        "peakProcessTreeRSSKiB": null,
+        "resourceLimit": "Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer",
+        "observedNodeCpuMs": 443401.725,
+        "peakObservedNodeRSSKiB": 491884,
+        "processTree": {
+          "schemaVersion": "pulse.seal-process-observation.v1",
+          "status": "observed",
+          "error": null,
+          "rootProcess": "346848:6303816",
+          "controllerNamespacePid": 30,
+          "intervalMs": 200,
+          "samples": 1634,
+          "maxGapMs": 333,
+          "readErrors": 0,
+          "sampledCpuMs": 604480,
+          "peakSimultaneousProcessRSSKiB": 1582956,
+          "peakProcessCount": 13,
+          "remainingObservedProcesses": [],
+          "elapsedMs": 327738,
+          "scope": "Linux /proc snapshots of controller and observed descendants, including detached children and known surviving identities; sampler excluded",
+          "limits": "Sampled lower bounds: short-lived processes, exit CPU tails and unseen reparenting can be missed. RSS sums include shared pages in each process; not unique physical or cgroup memory. Idle/wait states are sampled report observations, not compiler CPU or precise admission events."
+        },
+        "observedCompilerElapsedMs": 131768.708866
+      }
+    },
+    {
+      "measurement": "b10-ci04-c1-fresh",
+      "measurementSha256": "3e04e117f30f2a9bae48ac2221f1b77b056f7c341c51fcfc438fc6c8d0e49315",
+      "candidate": {
+        "sourceRevision": "3d3ce18f307e6db4367caa63b9b28b74e88f544a",
+        "sourceTree": "9c3d65a7cd35a649327208b217771ccf5db27bf4",
+        "workingTree": ""
+      },
+      "status": "invalid",
+      "qualificationPassed": false,
+      "wallMsUntilTerminal": 109,
+      "attemptId": "2026-10-18T17-26-02-813Z-ThOgDa",
+      "attemptReportSha256": "b9895a6ceef460c12dde6b36590d31aa94dcd9a16ecae03d1b3ed871f1e475ff",
+      "controllerStatus": "failed",
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Prior seal has child processes in another PID namespace; verify them before removing its lock\n+ actual - expected\n\n+ 'pid:[4026532277]'\n- 'pid:[4026532278]'\n                 ^\n"
+      },
+      "measurementError": "Measured candidate differs from clean source\n+ actual - expected\n\n+ undefined\n- {\n-   sourceRevision: '3d3ce18f307e6db4367caa63b9b28b74e88f544a',\n-   sourceTree: '9c3d65a7cd35a649327208b217771ccf5db27bf4',\n-   workingTree: ''\n- }\n",
+      "configuration": [
+        "--require-fastly",
+        "--skip-install",
+        "--timeout-minutes",
+        "100",
+        "--workers",
+        "2",
+        "--compiler-workers",
+        "1",
+        "--memory-budget-mib",
+        "6144"
+      ],
+      "cleanup": {
+        "status": "not-needed",
+        "retainedPath": null
+      },
+      "steps": [],
+      "release": null,
+      "installed": "not-run",
+      "metrics": null
+    },
+    {
+      "measurement": "b10-ci04-c1-r2",
+      "measurementSha256": "3f2316ab189e3b86b315e77a26a020ca41304f3224f326040943363c69570403",
+      "candidate": {
+        "sourceRevision": "3d3ce18f307e6db4367caa63b9b28b74e88f544a",
+        "sourceTree": "9c3d65a7cd35a649327208b217771ccf5db27bf4",
+        "workingTree": ""
+      },
+      "status": "failed",
+      "qualificationPassed": false,
+      "wallMsUntilTerminal": 966328,
+      "attemptId": "2026-10-18T17-26-53-165Z-bH5y2d",
+      "attemptReportSha256": "fcc48df9fb71cc00d4b2f22846d3ae8c41bfc22fd1b56a450d992dc91479d2fb",
+      "controllerStatus": "failed",
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Worker verify did not complete: 1; node:assert:152\n  throw new AssertionError(obj);\n  ^\n\nAssertionError [ERR_ASSERTION]: Feature acceptance requires a clean candidate checkout\n+ actual - expected\n\n+ '?? .fetch-deadline-proof-cdWM3l/.pulse/config.ts\\n' +\n+   '?? .fetch-deadline-proof-cdWM3l/src/index.ts'\n- ''\n\n    at candidateIdentity (/workspace/scratch/15c3ad7c5dc3/pulse/scripts/release-feature-acceptance.cjs:41:10)\n    at Object.verifyWorker (/workspace/scratch/15c3ad7c5dc3/pulse/scripts/release-parallel.cjs:158:31)\n    at [eval]:5:17\n    at runScriptInThisContext (node:internal/vm:219:10)\n    at node:internal/process/execution:451:12\n    at [eval]-wrapper:6:24\n    at runScriptInContext (node:internal/process/execution:449:60)\n    at evalFunction (node:internal/process/execution:283:30)\n    at evalTypeScript (node:internal/process/execution:295:3)\n    at node:internal/main/eval_string:71:3 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: '?? .fetch-deadline-proof-cdWM3l/.pulse/config.ts\\n' +\n    '?? .fetch-deadline-proof-cdWM3l/src/index.ts',\n  expected: '',\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.18.0"
+      },
+      "measurementError": {
+        "code": "PULSE_RELEASE_SEAL_STEP_FAILED",
+        "message": "Run native, JavaScript, conformance, provider, CLI, package, consumer, and determinism evidence failed (node wasm/scripts/run-wasm-tests.cjs --profile release --report /workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/attempts/2026-10-18T17-26-53-165Z-bH5y2d/artifacts/release-tasks.json --recovery-config /workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/attempts/2026-10-18T17-26-53-165Z-bH5y2d/release-recovery.json)"
+      },
+      "configuration": [
+        "--require-fastly",
+        "--skip-install",
+        "--timeout-minutes",
+        "100",
+        "--workers",
+        "2",
+        "--compiler-workers",
+        "1",
+        "--memory-budget-mib",
+        "6144"
+      ],
+      "cleanup": {
+        "status": "passed",
+        "timedOut": false,
+        "retainedPath": null
+      },
+      "steps": [
+        {
+          "id": "source-checks",
+          "status": "passed",
+          "elapsedMs": 12753
+        },
+        {
+          "id": "build",
+          "status": "passed",
+          "elapsedMs": 195
+        },
+        {
+          "id": "fastly-reality",
+          "status": "passed",
+          "elapsedMs": 15992
+        },
+        {
+          "id": "production-dependency-audit",
+          "status": "passed",
+          "elapsedMs": 3620
+        },
+        {
+          "id": "workspace-unit",
+          "status": "passed",
+          "elapsedMs": 2045
+        },
+        {
+          "id": "workspaces",
+          "status": "passed",
+          "elapsedMs": 4422
+        },
+        {
+          "id": "shared-pack",
+          "status": "passed",
+          "elapsedMs": 3675
+        },
+        {
+          "id": "release",
+          "status": "failed",
+          "elapsedMs": 912355
+        }
+      ],
+      "release": {
+        "reportSha256": "85a07ab748d6d8189aa01d9b490b0ac95ed6aa023b50a8adc77e6caaa46b530b",
+        "selected": [
+          "report-capsule-contract",
+          "cli-report-workflow",
+          "cli-report-viewer",
+          "cli-report-retained-evidence",
+          "cli-report-size-evidence",
+          "cli-report-capture-proof",
+          "cli-report-entry-proof",
+          "cli-report-reference-provenance",
+          "cli-report-handler-topology",
+          "cli-report-handler-associations",
+          "cli-report-relationships",
+          "cli-report-imported-inputs",
+          "cli-report-resource-inventory",
+          "cli-report-graph-diagnostics",
+          "multifile-source-indexes",
+          "guest-json-roundtrip",
+          "pure-helper-contract",
+          "suite-shape",
+          "test-orchestration",
+          "package-exports",
+          "boundaries",
+          "workspace-hygiene",
+          "hidden-contracts",
+          "release-feature-acceptance",
+          "release-runtime-policy",
+          "release-seal-lifecycle",
+          "release-checkpoints",
+          "release-recovery-runner",
+          "release-recovery",
+          "release-tag",
+          "api-surface",
+          "logging-contract",
+          "s3-design-contract",
+          "kv-design-contract",
+          "kv-conditional-runtime",
+          "kv-conditional-gates",
+          "s3-read-contract",
+          "s3-write-contract",
+          "crypto-config-planning",
+          "crypto-es256-signing",
+          "crypto-rs256",
+          "crypto-digest-text-contract",
+          "reachable-graph",
+          "project-modules",
+          "package-reachability",
+          "external-lowerers",
+          "package-runtime",
+          "provider-toolchain",
+          "schema-registry",
+          "continuation-registry",
+          "entities-contracts",
+          "entities-schema-bridge",
+          "entities-javascript-runtime",
+          "entities-json-rpc-corpus",
+          "mcp-http",
+          "pulse-context-corpus",
+          "pulse-context-application",
+          "pulse-context-host",
+          "mcp-compatibility",
+          "mcp-tools",
+          "mcp-authorization",
+          "entities-package-owned-lowering",
+          "entities-catalog",
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "npm-source-imports",
+          "fastly-numeric-regions",
+          "fastly-numeric-budgets",
+          "fastly-handle-ownership",
+          "fastly-handle-frames",
+          "pure-helper-vocabulary",
+          "pure-string-index",
+          "pure-field-projection",
+          "pure-guarded-arguments",
+          "pure-source-helpers",
+          "pure-record-helpers",
+          "pure-argument-helpers",
+          "pure-loop-helpers",
+          "fastly-driver-behavior-o09",
+          "kv-native-abi-feasibility",
+          "s3-body-read",
+          "s3-node-transport",
+          "canonical-api-lowering",
+          "canonical-native-plan",
+          "shared-stage-o19",
+          "str02b-node-native",
+          "fastly-incoming-body-forwarding",
+          "str03a-generated-output",
+          "str03c-bounded-transforms",
+          "bounded-app-logic",
+          "bounded-read-loops",
+          "bounded-loop-helpers",
+          "logging-lowering",
+          "canonical-router-lowering",
+          "canonical-router-terminal-middleware",
+          "router-selected-groups",
+          "json-as-compatibility",
+          "entities-envelope-feasibility",
+          "entities-managed-handler",
+          "entities-managed-handler-effects",
+          "entities-native-runtime",
+          "entities-hardening",
+          "entities-node-native-workflow",
+          "fastly-entities-native-workflow",
+          "crypto-native-guest-source",
+          "guest-link-package",
+          "guest-link-materialization-stage",
+          "guest-link-audit-diagnostics",
+          "assets-lowering-plan",
+          "assets-package-owned-lowering",
+          "assets-native-embedded",
+          "grip-package-owned-lowering",
+          "jwt-package-owned-lowering",
+          "canonical-api-runtime",
+          "canonical-opaque-node-emission",
+          "grip-package-runtime",
+          "package-root-native",
+          "canonical-native-wasm",
+          "cli-javascript-target-compilation",
+          "target-support",
+          "jwt-javascript-admission",
+          "crypto-runtime-builtin",
+          "javascript-effect-adapter",
+          "logging-runtime",
+          "assets-javascript-runtime",
+          "jwt-signing",
+          "jwt-es256-signing",
+          "jwt-rs256",
+          "crypto-cross-target-conformance",
+          "crypto-digest-text-conformance",
+          "crypto-digest-storage-conformance",
+          "text-capacity-conformance",
+          "events-conformance",
+          "node-router-context-parity",
+          "catalog-router-parity",
+          "fetch-projections-request-bodies",
+          "config-secrets-kv-redaction",
+          "kv-conditional-conformance",
+          "fastly-conditional-kv",
+          "schema-codecs",
+          "schema-kv-parity",
+          "time-conformance",
+          "time-consumer",
+          "node-launcher",
+          "application-errors",
+          "application-error-boundaries",
+          "node-cross-target-conformance",
+          "grip-cross-target-conformance",
+          "four-mode-conformance",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256",
+          "provider-packages",
+          "provider-fastly-package",
+          "provider-fastly-apps",
+          "canonical-grip-fastly",
+          "fastly-cli-gate-surface",
+          "fastly-javascript-packaging",
+          "fastly-javascript-runtime",
+          "fastly-javascript-tooling",
+          "fastly-native-http-shell",
+          "fastly-native-http-effects",
+          "fastly-native-platform-capabilities",
+          "fastly-request-headers",
+          "release-packages",
+          "release-artifact-determinism",
+          "clean-machine-acceptance",
+          "cli-entities-installed-workflow",
+          "npm-source-installed-workflow",
+          "release-evidence-authority",
+          "deployment-candidates"
+        ],
+        "completed": 66,
+        "passed": 66,
+        "notRun": 124,
+        "results": [
+          {
+            "id": "cli-report-workflow",
+            "status": "passed",
+            "durationMs": 6870,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "b0719f302fe6ff0e24bb6a0557ce240b8545dce2e5cf286e8c8b7b3112a016aa"
+          },
+          {
+            "id": "cli-report-size-evidence",
+            "status": "passed",
+            "durationMs": 5154,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "7b49f2f74daaaae9d58d822a3c40997f7b765f781105346bb9bf52c371732b3f"
+          },
+          {
+            "id": "cli-report-handler-associations",
+            "status": "passed",
+            "durationMs": 5436,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "e8f5fb02974eb5e5d92dd66099967ce2bff71340df29dcdc66270e8025da42af"
+          },
+          {
+            "id": "multifile-source-indexes",
+            "status": "passed",
+            "durationMs": 4707,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "e59673e97fdeb90039a38f41e39f93d239a5062600be498e61405522df2664f1"
+          },
+          {
+            "id": "guest-json-roundtrip",
+            "status": "passed",
+            "durationMs": 4422,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "250c726913dde6e425f1f05a88a8892854c2b2f37f86dd00cc9fcde5ee45fc90"
+          },
+          {
+            "id": "pure-helper-contract",
+            "status": "passed",
+            "durationMs": 5860,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "51c6707c5f91a4387ad89381bfcff3caea77ae9685adf30c9f98a43ae6edef94"
+          },
+          {
+            "id": "suite-shape",
+            "status": "passed",
+            "durationMs": 4548,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "748f8cd988d28e16fb8b7de344d8453559e9cc07015bc7754aa8ad87fc20da03"
+          },
+          {
+            "id": "test-orchestration",
+            "status": "passed",
+            "durationMs": 20109,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "8d314c74509e684192d753fe896e004158c5939a501f1258d9bd04a118303179"
+          },
+          {
+            "id": "package-exports",
+            "status": "passed",
+            "durationMs": 4659,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "620dabe7893a0e0a2a0083ac56a200b88765bda77895e98c47722b1bb11ffff4"
+          },
+          {
+            "id": "boundaries",
+            "status": "passed",
+            "durationMs": 4820,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "673b6201648909621106cfa1f3af2ecda959df7688c6a8390484bf6de6a97330"
+          },
+          {
+            "id": "workspace-hygiene",
+            "status": "passed",
+            "durationMs": 4590,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "14bf84a2cea12e92bce6ad28f772a73acb46a101d5255efdee9dc0e9c342c92c"
+          },
+          {
+            "id": "hidden-contracts",
+            "status": "passed",
+            "durationMs": 4715,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "b0d07a62f096a3c495eca8c334ebded93a1ddf95a496c07e3c43118bbe15fb7c"
+          },
+          {
+            "id": "release-feature-acceptance",
+            "status": "passed",
+            "durationMs": 4852,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "ce01fea429289694ab3d6db8a591e6e5842785c781ef04f8bb1be42f5d3bb243"
+          },
+          {
+            "id": "release-runtime-policy",
+            "status": "passed",
+            "durationMs": 6492,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "a370f3402c99c8972adfd54bb1bdcbb4554e9ee64805b9eb0d69659ae4653dc2"
+          },
+          {
+            "id": "release-seal-lifecycle",
+            "status": "passed",
+            "durationMs": 8183,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "b6ca344e152551c0504c570bc6d840873d6f6becd8fcd92c0421913017d6f415"
+          },
+          {
+            "id": "release-checkpoints",
+            "status": "passed",
+            "durationMs": 4506,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "eb2390369e900e04bbf65712c722720a014a274129f56e2bb950cdc0c97c8b45"
+          },
+          {
+            "id": "release-recovery-runner",
+            "status": "passed",
+            "durationMs": 68679,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "ff8cc854f7d9d065b7b5bb9320cd08d6e4c65545919c49a4eb399753c94c25ca"
+          },
+          {
+            "id": "release-recovery",
+            "status": "passed",
+            "durationMs": 6831,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "e92cf5ff10d5baa89d6911b9dbd5e4928b0e474f4d86821e92cad0828ed2facc"
+          },
+          {
+            "id": "release-tag",
+            "status": "passed",
+            "durationMs": 4959,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "84813d71b96931d09502bf2d9a33a9ea9a23895a468d430cbdfd40e12af78f31"
+          },
+          {
+            "id": "api-surface",
+            "status": "passed",
+            "durationMs": 5487,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "72ae6e9145a6217b37175888a59fd6718937d174ee1e8c1009d32e361c2f1019"
+          },
+          {
+            "id": "logging-contract",
+            "status": "passed",
+            "durationMs": 4636,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "250ed2ef7d8e7c249c300b8eb44df6a36f8b7e8f545f4d0e9b1d90cfd989d15c"
+          },
+          {
+            "id": "s3-design-contract",
+            "status": "passed",
+            "durationMs": 5614,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "633798a97981a42f8eb4b4534a1a3b369d1eba4ffd504614b44c3e4eaea95c7e"
+          },
+          {
+            "id": "kv-design-contract",
+            "status": "passed",
+            "durationMs": 5604,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "460980145d170ca43f7b0c7af6f0a68fcd588e3c1068dd8acb5f7b6dee366337"
+          },
+          {
+            "id": "kv-conditional-runtime",
+            "status": "passed",
+            "durationMs": 5397,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "099993c1331c0b9ecc5861e1d6446589d5dd3dd6c725a0c2952ea11dd1e8405b"
+          },
+          {
+            "id": "kv-conditional-gates",
+            "status": "passed",
+            "durationMs": 4906,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "7461acbf17df08cc70e925c1ba4d2936f95ba45b235b6894607a79e01e255281"
+          },
+          {
+            "id": "s3-read-contract",
+            "status": "passed",
+            "durationMs": 6377,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "64b705e071841d45de8195590c7145981ba9ab294bd667fcae85e3c5b661df11"
+          },
+          {
+            "id": "s3-write-contract",
+            "status": "passed",
+            "durationMs": 4648,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "c44352d10985250a8bd75caddd1dee5dcc11182cfe4e63113ad73a6fb095e63d"
+          },
+          {
+            "id": "crypto-config-planning",
+            "status": "passed",
+            "durationMs": 5277,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "f0bd6466c4cdaea4923a910011dc087181e0f2f8d8dd50ca1a543dc871c708d2"
+          },
+          {
+            "id": "crypto-es256-signing",
+            "status": "passed",
+            "durationMs": 4607,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "538fae1059c91b768501e644ca6b90945bdc662f1d68727f65d3410503dc8def"
+          },
+          {
+            "id": "crypto-rs256",
+            "status": "passed",
+            "durationMs": 7308,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "ae5711f57abce5f5386678b84b139b8cb9c48bcf5d96c2ce07d3748bc722c215"
+          },
+          {
+            "id": "crypto-digest-text-contract",
+            "status": "passed",
+            "durationMs": 4831,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "d38e6eb47a03fe6ceeef8ddd34138ea4920fb279937366783613b6c6391c6974"
+          },
+          {
+            "id": "reachable-graph",
+            "status": "passed",
+            "durationMs": 4683,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "dd9b8737febeb3712781f1949f26d882b159d27160cfce0a9cca5eaadaeb43ac"
+          },
+          {
+            "id": "project-modules",
+            "status": "passed",
+            "durationMs": 5219,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "d6b9875711b70aac9276a6d87706dec95cdac7a24f43f60d65e2c9714ab0a86a"
+          },
+          {
+            "id": "package-reachability",
+            "status": "passed",
+            "durationMs": 5436,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "cf2529ae95c9f13f9c65a246ee8d57465b3d40905aaaea42b9061a586fe97fdb"
+          },
+          {
+            "id": "package-runtime",
+            "status": "passed",
+            "durationMs": 4432,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "3b3da9e80f5577e2229b85edac2081accec08b4483618fb068cfe434c1eb34e7"
+          },
+          {
+            "id": "provider-toolchain",
+            "status": "passed",
+            "durationMs": 4663,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "7a3c6123c712abf97460b998e0dbb55a036187414c17dda9fd1cec5ddba02098"
+          },
+          {
+            "id": "schema-registry",
+            "status": "passed",
+            "durationMs": 5777,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "acd08c340e8d1f0027e7a25598fc759ae6e21728b79a9b96fb7e8c9d8045659a"
+          },
+          {
+            "id": "continuation-registry",
+            "status": "passed",
+            "durationMs": 4299,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "3c671433498470a7364bbe60b158b86b4599d6c6a877da06a84919ddeb4bc74d"
+          },
+          {
+            "id": "entities-contracts",
+            "status": "passed",
+            "durationMs": 4632,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "571a190fd447549e59eca2280512bf86277476a69408bc956e7c805eb0178cba"
+          },
+          {
+            "id": "entities-schema-bridge",
+            "status": "passed",
+            "durationMs": 4698,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "bd0953d88382715b73af8c6fba359d4e3274af5a76d63992132d324cf60c1331"
+          },
+          {
+            "id": "entities-javascript-runtime",
+            "status": "passed",
+            "durationMs": 5036,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "fc805e42880e2efb55326829accc2a3b2a103c1cc26e0f625d539acf6ee39574"
+          },
+          {
+            "id": "entities-json-rpc-corpus",
+            "status": "passed",
+            "durationMs": 4567,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "f970589887a2c27f2a692a5a0076b6dd2bad97d7310b4b67ceffdeb287389b6b"
+          },
+          {
+            "id": "mcp-http",
+            "status": "passed",
+            "durationMs": 4727,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "e368ef604eb1c7fd3b3e83a405f738379c071c601c18da2c11a7f50dc59c8819"
+          },
+          {
+            "id": "pulse-context-corpus",
+            "status": "passed",
+            "durationMs": 5257,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "5a54e6b9ac221ba9d383c6576cab8c814599311d7374b898cc0925aec3605495"
+          },
+          {
+            "id": "pulse-context-application",
+            "status": "passed",
+            "durationMs": 10918,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "c4abad81914326e17c258259a4f4c787fdff3d231c75e866dec914105a7ff7ca"
+          },
+          {
+            "id": "pulse-context-host",
+            "status": "passed",
+            "durationMs": 7760,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "fc21ae9c45845256af14bf53a274c61588051cc5c1bf5ca021ec7c6cab7006af"
+          },
+          {
+            "id": "mcp-compatibility",
+            "status": "passed",
+            "durationMs": 4634,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "2929b5e1d92ff222e8c94ea7149becb02893466ddb35a70ba6b30d556a216252"
+          },
+          {
+            "id": "mcp-tools",
+            "status": "passed",
+            "durationMs": 4642,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "3fd3ca4e1b669122a45d9859ca4f1413b8a9ff4e8fe023bc23301b9fe2896844"
+          },
+          {
+            "id": "mcp-authorization",
+            "status": "passed",
+            "durationMs": 7530,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "56521bde6d2604253511b6965db5ecc72be85d33453f01cc2db44892d55d5f4c"
+          },
+          {
+            "id": "entities-package-owned-lowering",
+            "status": "passed",
+            "durationMs": 4547,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "7e465d36b63d27cf66e44ba517fecd74e7506bc74c8e8bbdc83edecb21f10509"
+          },
+          {
+            "id": "entities-catalog",
+            "status": "passed",
+            "durationMs": 4625,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "ede80b3844e948f3b12da690d83f3ccbb633c6bcb6d75539cde584b218d3bea2"
+          },
+          {
+            "id": "entities-inspection",
+            "status": "passed",
+            "durationMs": 17068,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "3f0f464baecefd1869b43c513ed4ee78a40f38b2c52ba9fa496752743d8f28d7"
+          },
+          {
+            "id": "s3-node-transport",
+            "status": "passed",
+            "durationMs": 4498,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "eddb8440028f9447f8bd69ea3466a0d66eab55a7d7691775c33b4a253e994b3d"
+          },
+          {
+            "id": "cli-javascript-target-compilation",
+            "status": "passed",
+            "durationMs": 21430,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "574bd5d3e74b6517a90862bc882b21ba3eb7197359c8265db86d92c40175bd38"
+          },
+          {
+            "id": "target-support",
+            "status": "passed",
+            "durationMs": 4721,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "12c339576f6a9d7d31a95bfd5c15e20f6c3df0cd2ee53b954a851269abb41d10"
+          },
+          {
+            "id": "jwt-javascript-admission",
+            "status": "passed",
+            "durationMs": 11252,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "09ded27ad5ffc4117ce696a40e07b734ff260f2f40b145cbf5c7e75f990abc1f"
+          },
+          {
+            "id": "crypto-runtime-builtin",
+            "status": "passed",
+            "durationMs": 5103,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "ead5961144317a6b59c33ca8f46776b39c7b3ec56ffd8d4bc7fdf6a8bac79158"
+          },
+          {
+            "id": "javascript-effect-adapter",
+            "status": "passed",
+            "durationMs": 5030,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "1433c01a6f9b04748712bd2db9e8bfb30b3da7b88f2b2756f7cf1b2d6517892c"
+          },
+          {
+            "id": "logging-runtime",
+            "status": "passed",
+            "durationMs": 4576,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "1c22d6d93c4d048ecd2a5b1e633d9c1a90511181ea9c59a517567b4f82f6201a"
+          },
+          {
+            "id": "assets-javascript-runtime",
+            "status": "passed",
+            "durationMs": 5325,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "9521e7b38fc4a1e54b1b463928abbfc9859ec6f9095672b0e727c68ec2f6e770"
+          },
+          {
+            "id": "jwt-rs256",
+            "status": "passed",
+            "durationMs": 317204,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "dba4f304df6a157799b042a85a7c66dba9379e96fa6dbefcf62b003a6acffb9d"
+          },
+          {
+            "id": "schema-codecs",
+            "status": "passed",
+            "durationMs": 113000,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "370fbcb7248a23b21aac46ae93fb2f4b34f23cba14993dccff3c0fc9a5223d46"
+          },
+          {
+            "id": "fastly-native-platform-capabilities",
+            "status": "passed",
+            "durationMs": 116416,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": [
+                  ".fetch-deadline-proof-cdWM3l/.pulse/config.ts",
+                  ".fetch-deadline-proof-cdWM3l/src/index.ts"
+                ]
+              }
+            },
+            "logSha256": "a9652883aea511da04b719ca3c55670a5c2fb9663cdb4c9854e2a675687eb7b7"
+          },
+          {
+            "id": "release-artifact-determinism",
+            "status": "passed",
+            "durationMs": 26506,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "6d2fbfa5e231c0a3013457ab4f187cb8a91a9d70c6232e833c530774b784d49d"
+          },
+          {
+            "id": "clean-machine-acceptance",
+            "status": "passed",
+            "durationMs": 242149,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "e870aef750208ef221f010287124dbe06daa6d09b95228d2d2319320f4f7c4ef"
+          },
+          {
+            "id": "cli-entities-installed-workflow",
+            "status": "passed",
+            "durationMs": 95985,
+            "execution": "executed",
+            "cleanup": {
+              "status": "passed",
+              "worker": {
+                "status": "passed",
+                "removed": []
+              }
+            },
+            "logSha256": "1e248b8e76dea1bc0812103c37e4ecc29662a6fe0c2a54315360d5da418b1614"
+          }
+        ]
+      },
+      "installed": "not-run",
+      "metrics": {
+        "wallMs": 966323,
+        "controllerMs": 966217,
+        "workerOccupancyMs": 1343429,
+        "workerTimeDefinition": "Serial executed task elapsed time, including waits and cleanup; not CPU time or bootstrap steps",
+        "tasks": {
+          "completed": 66,
+          "passed": 66,
+          "executed": 66,
+          "reused": 0
+        },
+        "avoidedTaskOccupancyMs": 0,
+        "candidatePackages": 20,
+        "observedLaunches": {
+          "asc": 450,
+          "pack": 41,
+          "install": 9
+        },
+        "observationScope": "Node child_process launches under inherited preload; lower bounds. Shell launches, native custom-promisified calls and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.",
+        "workerCpuMs": null,
+        "peakProcessTreeRSSKiB": null,
+        "resourceLimit": "Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer",
+        "observedNodeCpuMs": 1651112.982,
+        "peakObservedNodeRSSKiB": 556200,
+        "processTree": {
+          "schemaVersion": "pulse.seal-process-observation.v1",
+          "status": "observed",
+          "error": null,
+          "rootProcess": "368366:6348431",
+          "controllerNamespacePid": 22,
+          "intervalMs": 200,
+          "samples": 4818,
+          "maxGapMs": 325,
+          "readErrors": 0,
+          "sampledCpuMs": 1859740,
+          "peakSimultaneousProcessRSSKiB": 2133184,
+          "peakProcessCount": 14,
+          "remainingObservedProcesses": [],
+          "elapsedMs": 966260,
+          "scope": "Linux /proc snapshots of controller and observed descendants, including detached children and known surviving identities; sampler excluded",
+          "limits": "Sampled lower bounds: short-lived processes, exit CPU tails and unseen reparenting can be missed. RSS sums include shared pages in each process; not unique physical or cgroup memory. Idle/wait states are sampled report observations, not compiler CPU or precise admission events."
+        },
+        "observedCompilerElapsedMs": 898991.4222069995
+      }
+    }
+  ]
+}
