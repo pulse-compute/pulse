@@ -195,6 +195,7 @@ async function verifyParallel() {
     const trace = path.join(root, 'trace');
     const source = `const fs=require('node:fs');const [name,trace,fail,delay]=process.argv.slice(1);
       fs.appendFileSync(trace,JSON.stringify({name,event:'start',at:Date.now(),cwd:process.cwd()})+'\\n');
+      process.stdout.write(name+': complete task log\\n');
       fs.writeFileSync('shared-output',name);
       setTimeout(()=>{fs.appendFileSync(trace,JSON.stringify({name,event:'end',at:Date.now()})+'\\n');process.exitCode=fs.existsSync(fail)?9:0;},Number(delay));`;
     function task(name, scheduling = {}, delay = 160) {
@@ -268,6 +269,42 @@ async function verifyParallel() {
     fs.writeFileSync(trace, '');
     const serial = await attempt('serial', tasks, null, false);
     assert.deepEqual(serial.state.results.map(item => [item.name, item.status]), parallel.state.results.map(item => [item.name, item.status]));
+    // Exercise actual task log streams under overlapping scheduler work. A
+    // finished writer's close notification must beat an overdue timer after a
+    // bounded controller stall; neither a deadline extension nor a fake close.
+    const createWriteStream = fs.createWriteStream;
+    const stalledStreams = [];
+    let stalled;
+    try {
+      fs.createWriteStream = function(file, ...args) {
+        const stream = createWriteStream.call(this, file, ...args);
+        if (String(file).startsWith(path.join(root, 'stalled-log-close', 'runs', 'tasks'))) {
+          stalledStreams.push(stream);
+          const end = stream.end;
+          stream.end = function(...endArgs) {
+            const result = end.apply(this, endArgs);
+            const until = performance.now() + 1200;
+            while (performance.now() < until) { /* synchronous controller verification stand-in */ }
+            return result;
+          };
+        }
+        return stream;
+      };
+      fs.writeFileSync(trace, '');
+      stalled = await attempt('stalled-log-close', { a: task('a'), b: task('b') });
+    } finally { fs.createWriteStream = createWriteStream; }
+    assert.equal(stalledStreams.length, 2);
+    assert(stalledStreams.every(stream => stream.writableFinished && stream.closed && !stream.errored));
+    assert.deepEqual(stalled.state.results.map(item => item.status), ['passed', 'passed']);
+    for (const result of stalled.state.results) {
+      assert.equal(result.cleanup.status, 'passed');
+      assert.deepEqual(result.remainingProcessTree, []);
+      assert.equal(fs.readFileSync(path.resolve(__dirname, '../..', result.logPath), 'utf8'), `${result.name}: complete task log\n`);
+      assert(result.checkpoint?.proofId, 'only complete closed logs may accompany a checkpoint pass');
+    }
+    const stalledEvents = fs.readFileSync(trace, 'utf8').trim().split('\n').map(JSON.parse);
+    assert(Math.max(...stalledEvents.filter(row => row.event === 'start').map(row => row.at)) <
+      Math.min(...stalledEvents.filter(row => row.event === 'end').map(row => row.at)), 'diagnostic must overlap two task executions');
     fs.writeFileSync(trace, '');
     const late = { a: task('a'), b: task('b'), late: task('late', { after: ['a', 'b'] }) };
     fs.writeFileSync(path.join(root, 'fail-late'), 'fail');
@@ -290,6 +327,10 @@ async function verifyParallel() {
     clearTimeout(timer);
     assert.equal(interrupted.state.results.length, 2);
     assert(interrupted.state.results.every(item => item.status === 'interrupted' && item.cleanup.status === 'passed'));
+    for (const result of interrupted.state.results) {
+      assert.deepEqual(result.remainingProcessTree, []);
+      assert.match(fs.readFileSync(path.resolve(__dirname, '../..', result.logPath), 'utf8'), /interrupted by SIGTERM/);
+    }
     assert.deepEqual(interrupted.state.currentTasks, []);
     const observer = await runTask('observer', task('observer', {}, 2000), {
       cwd: path.join(workspaces[0].directory, 'wasm'), terminationGraceMs: 25, killGraceMs: 25,
