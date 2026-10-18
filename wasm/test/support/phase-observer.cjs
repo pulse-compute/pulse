@@ -85,6 +85,20 @@ function role(file) {
   }
   return path.basename(p);
 }
+function inspectionMetadata(file, options, filename) {
+  const bytes = originalRead(file);
+  // Observation, not a cache key: output locations and diagnostic options stay
+  // in the identity. A byte-only repeat is merely an upper bound on safe reuse.
+  const implementation = fs.readdirSync(path.dirname(filename)).filter(name => name.endsWith('.js')).sort()
+    .map(name => [name, sha(originalRead(path.join(path.dirname(filename), name)))]);
+  const label = String(options?.label || 'module');
+  return { inputSha256: sha(bytes), inputBytes: bytes.length,
+    inputPathSha256: sha(path.resolve(file)),
+    optionsSha256: sha(JSON.stringify(Object.entries(options || {}).sort(([a], [b]) => a.localeCompare(b)))),
+    implementationSha256: sha(JSON.stringify(implementation)),
+    kind: label.endsWith('-packaged') ? 'packaged-guest'
+      : ['primary-input', 'memory-owner-input', 'composed-input', 'optimized-final'].includes(label) ? label : 'other' };
+}
 const names = new Set([
   'compileCanonicalSource', 'compileCanonicalFile', 'compileCanonicalProject', 'buildCanonicalNativePlan',
   'compileCanonicalNativePlan', 'buildReachableProjectGraph', 'linkProjectRouterModules', 'linkProjectPlainHandler',
@@ -96,6 +110,7 @@ const names = new Set([
   'executeFastlyNativePlatformCapabilities', 'packRelease', 'readTarEntries', 'copySharedPack',
   'inputIdentity', 'createContext', 'verifyWorker', 'cleanupWorker', 'prepareWorkspaces', 'cleanupWorkspaces',
   'cleanupTaskOutputs', 'cleanupRecordedWorkspacePackageBuilds',
+  'materializePackagePrebuilt', 'realizeGuestLinkPlan',
   'buildSchemaCodecProof', 'assertSchemaCodecProof', 'assertSchemaAdmission', 'assertSchemaValueEncoding',
   'assertSchemaTextDecoding', 'assertSchemaOptionalProperties', 'assertSchemaScalarRecords', 'assertSchemaNestedJson'
 ]);
@@ -106,7 +121,14 @@ function instrument(exports, filename) {
   let changed = false;
   for (const [name, descriptor] of Object.entries(descriptors)) {
     if (typeof descriptor.value !== 'function') continue;
-    if (name === 'definePhaseAdapter' && /\/compiler\/src\/spine\/pipeline\.js$|\/wasm-compiler\/src\/spine\/pipeline\.js$/.test(filename)) {
+    if (name === 'inspectWasmFile' && /\/wasm-guest-link\/src\/inspect\.js$/.test(filename)) {
+      const inspect = descriptor.value;
+      descriptor.value = function (file, options) {
+        const metadata = safe(() => inspectionMetadata(file, options, filename));
+        return measure('guest.inspectWasmFile', () => Reflect.apply(inspect, this, arguments), metadata,
+          value => value && { inputSha256: value.sha256, inputBytes: value.bytes, factsSha256: sha(JSON.stringify(value)) });
+      };
+    } else if (name === 'definePhaseAdapter' && /\/compiler\/src\/spine\/pipeline\.js$|\/wasm-compiler\/src\/spine\/pipeline\.js$/.test(filename)) {
       const define = descriptor.value;
       descriptor.value = function (definition) {
         return define({ ...definition, run: wrap(`spine.${definition.id}`, definition.run, artifact) });
@@ -161,8 +183,13 @@ function install() {
       return { sourceSha256: sha(originalRead(source)), optionsSha256: sha(JSON.stringify(normalized)),
         ascSha256: sha(originalRead(args[at])), output: outputIndex >= 0 ? path.resolve(cwd, args[outputIndex + 1]) : null };
     });
-    const metadata = inputs && { sourceSha256: inputs.sourceSha256, optionsSha256: inputs.optionsSha256, ascSha256: inputs.ascSha256,
+    let metadata = inputs && { sourceSha256: inputs.sourceSha256, optionsSha256: inputs.optionsSha256, ascSha256: inputs.ascSha256,
       scope: 'entry bytes and path-normalized argv only; transitive generated/imported inputs and environment not established' };
+    if (/^wasm-(opt|dis|merge|as)$/.test(path.basename(String(command)))) metadata = safe(() => ({
+      toolSha256: sha(originalRead(command)),
+      invocationSha256: sha(JSON.stringify({ args, options })),
+      environmentSha256: sha(JSON.stringify(Object.entries(options?.env || process.env).sort(([a], [b]) => a.localeCompare(b))))
+    }));
     return measure(asc ? 'preparation.asc' : `subprocess.${path.basename(String(command))}`,
       () => spawnSync.call(this, command, args, options), metadata, result => {
         const out = { exitCode: result?.status, signal: result?.signal || null };
