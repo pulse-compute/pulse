@@ -209,38 +209,11 @@ function loadPublicSiteManifest(file = PUBLIC_SITE_MANIFEST_FILE, options = {}) 
 
 const PUBLIC_SITE_MANIFEST = loadPublicSiteManifest();
 
-function classifyPublicPage(sourcePath, manifest = PUBLIC_SITE_MANIFEST) {
-  const source = String(sourcePath).replace(/\\/g, '/');
-  for (const section of [...manifest.navigation.sections].sort((left, right) => left.order - right.order)) {
-    if ((section.sources || []).includes(source)) return section;
-    if ((section.prefixes || []).some((prefix) => source.startsWith(prefix))) return section;
-  }
-  return undefined;
-}
-
-function visibleNavigationSections(manifest = PUBLIC_SITE_MANIFEST) {
-  return Object.freeze(manifest.navigation.sections.filter((section) => section.hiddenInNavigation !== true));
-}
-
-function documentById(id, manifest = PUBLIC_SITE_MANIFEST) {
-  const document = manifest.documents[id];
-  if (!document) fail(`unknown public-site document ${id}`);
-  return document;
-}
-
-function interpolateRelease(value) {
-  return String(value).replaceAll('{{releaseVersion}}', RELEASE_VERSION);
-}
-
 module.exports = Object.freeze({
   PUBLIC_SITE_SCHEMA,
   PUBLIC_SITE_MANIFEST_FILE,
   PUBLIC_SITE_MANIFEST,
   HOMEPAGE_SECTION_TYPES,
   loadPublicSiteManifest,
-  validatePublicSiteManifest,
-  classifyPublicPage,
-  visibleNavigationSections,
-  documentById,
-  interpolateRelease
+  validatePublicSiteManifest
 });

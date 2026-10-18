@@ -1,13 +1,14 @@
-# Immutable documentation site archives
+# Retained documentation site archives
 
-This directory stores exact hosted documentation subtrees for releases that are no longer current.
+These seven exact-release trees (beta.1–4 and beta.6–8) are immutable historical
+inputs. Do not regenerate, restyle or delete them during renderer retirement.
+The renderer and snapshot command are retired. Release preparation retains
+future product metadata separately under `../documentation-release-history/`.
 
-Before bumping `release/pulse-release-manifest.json`, run:
-
-```bash
-pnpm docs:site -- --snapshot
-```
-
-The command writes `release/documentation-site-archives/v<current-version>/` from the validated current site. Commit that directory without editing it, retain the old entry in `release/documentation-versions.json`, and then generate the new release.
-
-The site builder requires one valid archive for every non-current versions-manifest entry. Each archive is self-contained and includes its HTML, search index, public assets, release/version/editorial manifests, shared presentation assets, and `site-version-manifest.json`. The moving root product homepage is not archived as a root route; it is regenerated from the current release while using that release’s exact-version asset subtree. Existing archives are immutable release artifacts; `--force` is reserved for correcting an archive before it has been published.
+`scripts/documentation-archives.cjs` validates the existing v1/v2 manifests,
+version identities, local links, anchors and assets without building a site.
+Historical deployment receipts retain byte/digest authentication independently.
+Website delivery and the owner's existing backup retain recovery ownership.
+The website's pinned beta.9 source-baseline audit uses its historical checkout,
+not this current source tree. Archive deletion waits for remaining historical
+reader/recovery consumers to be retired or migrated; no new backup is required.

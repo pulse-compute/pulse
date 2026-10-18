@@ -62,20 +62,17 @@ Website delivery receipts and the existing owner-managed recovery remain the
 authority for actual published bytes and metadata. No new backup is required.
 
 The seven existing trees under `release/documentation-site-archives/` remain
-unchanged for legacy rendering, historical receipt verification and the website's
-pinned beta.9 baseline audit. Old `--archive-current` preparation still accepts
-an already committed snapshot; it does not build one. The legacy renderer's
-`pnpm docs:site -- --snapshot` command remains for historical tooling, outside
-release preparation. The retained preview copies and verifies local legacy
-archives only; it excludes website-owned history from its local version selector
-and never manufactures or redirects those exact trees. Its version metadata
-still retains the full catalog. The website's normal importer and recovery read
-version metadata and retained delivery artifacts without executing this renderer.
-The developer-only legacy baseline capture remains for pinned historical sources;
-a future baseline for website-owned history must use website delivery evidence.
+unchanged for historical verification and recovery. Old `--archive-current`
+preparation still accepts an already committed snapshot; it does not build one.
+The Pulse renderer and snapshot command are retired. A small read-only archive
+validator preserves the existing manifest/link/asset checks without rendering.
 
-This step retains `release/documentation-site.json` and the Public product homepage
-preview while later retirement removes their remaining ownership.
+The website's normal importer and recovery use version metadata and retained
+delivery artifacts. Its developer-only legacy baseline capture is frozen to
+pinned historical sources such as beta.9; current Pulse has no renderer for it
+to execute. New source inventories use `release/documentation-sources.json`,
+and future rendered baselines belong to the website. Existing recovery and
+backup ownership are unchanged. The supported CLI compatibility export remains.
 
 The release gate also rejects a current release that is missing from the versions manifest or whose version segment does not match the release manifest.
 

@@ -633,8 +633,6 @@
         "docs/**",
         "examples/**",
         "scripts/documentation-*.cjs",
-        "scripts/build-docs-site.cjs",
-        "scripts/documentation-site/**",
         "wasm/scripts/sync-*.cjs",
         "packages/*/README.md",
         "wasm/packages/*/README.md",

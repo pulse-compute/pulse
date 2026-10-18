@@ -450,9 +450,7 @@ function validateWorkflows() {
   includes(docs, 'name: Documentation', 'documentation validation workflow');
   includes(docs, 'pull_request:', 'documentation validation workflow');
   includes(docs, "branches: ['**']", 'documentation validation workflow');
-  includes(docs, 'Upload generated preview', 'documentation validation workflow');
-  require('./documentation-preview.cjs').validatePreviewWorkflow(docs);
-  includes(docs, 'include-hidden-files: true', 'documentation validation workflow');
+  require('./documentation-check.cjs').validateSourceWorkflow(docs);
   includes(docs, 'package-manager-cache: false', 'documentation validation workflow');
   includes(docs, 'publication.pnpmVersion', 'documentation validation workflow');
   includes(docs, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'documentation validation workflow');
@@ -1345,7 +1343,6 @@ function validatePackageScripts() {
     'release:preflight': 'node scripts/release-preflight.cjs --check',
     'release:candidate': 'node scripts/release-candidate.cjs prepare --pack-dir .pulse-release --out .pulse-publication',
     'release:verify-bundle': 'node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication',
-    'docs:deployment:prepare': 'node scripts/documentation-deployment.cjs seal --site-dir .pulse-docs-site --out .pulse-documentation-deployment',
     'docs:deployment:verify': 'node scripts/documentation-deployment.cjs verify-candidate --candidate-dir .pulse-documentation-deployment'
   };
   for (const [name, command] of Object.entries(expected)) if (!manifest.scripts || manifest.scripts[name] !== command) fail(`package.json script ${name} must be ${command}`);

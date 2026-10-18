@@ -153,7 +153,6 @@ documentation, and versioned site inputs.
 - `docs/reference/**`
 - `wasm/packages/cli/release-manifest.json`
 - `wasm/packages/cli/docs/**`
-- `.pulse-docs-site/**`
 
 **Derived**
 
@@ -161,7 +160,6 @@ documentation, and versioned site inputs.
 - `wasm/packages/cli/release-manifest.json`
 - `wasm/packages/cli/docs/**`
 - generated package README status blocks
-- `.pulse-docs-site/**`
 
 **Read**
 
@@ -210,7 +208,6 @@ evidence only.
 - `wasm/.test-results/**`
 - `.pulse-release/**`
 - `.pulse-seal/**`
-- `.pulse-docs-site/**`
 - `.pulse-publication/**`
 - `.pulse-documentation-deployment/**`
 - no tracked source by default; route fixes through the relevant implementation Entry Point

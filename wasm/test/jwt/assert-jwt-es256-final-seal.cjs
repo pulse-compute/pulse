@@ -677,7 +677,7 @@ function runAggregates(stages) {
   stages.push(runStage(
     'docs-site-check',
     process.execPath,
-    [path.join(repoRoot, 'scripts/build-docs-site.cjs'), '--check'],
+    [path.join(repoRoot, 'scripts/documentation-check.cjs')],
     { timeoutMs: 300_000 },
   ));
   stages.push(runStage(

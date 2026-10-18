@@ -194,7 +194,8 @@ function assertSnapshot(currentVersion, currentEntry, git) {
   if (status.stdout.trim()) fail(`documentation snapshot ${segment} must be committed before the version changes`, 'PULSE_RELEASE_SNAPSHOT_UNCOMMITTED');
   const tracked = run('git', ['ls-files', '--', relative(root)], { capture: true });
   if (!tracked.stdout.trim()) fail(`documentation snapshot ${segment} is not tracked by Git`, 'PULSE_RELEASE_SNAPSHOT_UNCOMMITTED');
-  return Object.freeze({ root, pages: site.pages.length });
+  const verified = require('./documentation-archives.cjs').validateVersionDirectory(root, { version: currentVersion, segment });
+  return Object.freeze({ root, pages: verified.pages });
 }
 
 function replaceReleaseIdentity(value, oldVersion, nextVersion) {

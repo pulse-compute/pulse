@@ -73,11 +73,11 @@ Mutable objects may be replaced during a deliberate promotion. Their cache lifet
 
 ## Sealed deployment candidate
 
-Build and inspect development evidence locally (production consumes the pre-main candidate):
+Historical v1 candidates remain readable. Pulse no longer builds or seals new
+website candidates; website delivery owns future rendered artifacts. To verify
+an already retained candidate locally:
 
 ```bash
-npm run docs:site
-npm run docs:deployment:prepare
 npm run docs:deployment:verify
 ```
 
