@@ -16,6 +16,7 @@ Pulse documentation and the public product site have three synchronized delivery
 ## Canonical owners
 
 - `release/pulse-release-manifest.json` owns the release version, hosted documentation route, runtime targets, package set, support tiers, and supported entry points.
+- `release/documentation-sources.json` owns the renderer-independent public source roots, exclusions, aliases, routes and hidden maintainer prefixes. `scripts/documentation-sources.cjs` enumerates pages and assets without loading presentation code. The website importer reads this data contract from the selected Git commit, including unreleased previews.
 - `release/documentation-site.json` owns editable homepage copy, named document destinations, public navigation grouping and order, and homepage composition.
 - `release/maintenance-policy.json` owns change classes, protected boundaries, validation selection, CODEOWNERS/label generation, and the resident-maintainer authority model.
 - `wasm/packages/cli/src/command-spec.js` owns public commands and options; it generates help, the CLI reference, and shell completions.
@@ -26,6 +27,8 @@ Pulse documentation and the public product site have three synchronized delivery
 - `scripts/documentation-site/` owns shared presentation tokens, the vendored Starry Night dark theme, components, browser behavior, the favicon, and the deterministic decorative Pulse field.
 
 Do not hand-edit generated copies under `wasm/packages/cli/docs`, `wasm/packages/cli/completions`, or `.pulse-docs-site`. Edit the editorial manifest, canonical catalogs, Markdown, or shared site assets instead. The site directory is an ignored build artifact, not a source tree. Prior exact releases are the exception: `release/documentation-site-archives/v<version>/` contains a byte-preserved site subtree created while that release is still current.
+
+The current renderer retains its enumeration exports for compatibility. Source-contract routes, aliases and visibility must agree with its editorial manifest while both consumers remain active. This extraction does not change release receipts, archive handling or installed CLI exports.
 
 ## Procedure owners
 
