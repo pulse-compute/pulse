@@ -103,4 +103,46 @@ withTrustedPolicy(base, (trusted, match) => {
   assert.equal(match('docs/maintainers/testing.md', 'docs/**'), true);
   assert.equal(select(trusted, ['README.md'], tasks, match).status, 'selected');
 });
+
+// Only the generated context data mirror may avoid the CLI schema dependency.
+// Canonical source + generated output changes still take the union of owners.
+const contextSource = 'examples/12-pulse-context-mcp/context-corpus.ts';
+const contextMirror = `wasm/packages/cli/${contextSource}`;
+const contextDocument = 'docs/architecture/current-contracts.md';
+const contextChanges = [contextDocument, contextSource, contextMirror];
+for (const files of [[contextSource], [contextMirror], contextChanges]) {
+  const result = select(policy, files);
+  assert.equal(result.schemaCoverage.task, 'schema-codecs-smoke');
+  assert.deepEqual(result.schemaCoverage.fullReasons, []);
+  assert(!result.selectedTasks.includes('schema-codecs'));
+  assert.equal(result.fullCoverage, 'deferred-to-main');
+}
+for (const file of [
+  'wasm/packages/cli/examples/12-pulse-context-mcp/src/handlers.ts',
+  'wasm/packages/cli/examples/12-pulse-context-mcp/corpus-version.ts',
+  'wasm/packages/cli/examples/12-pulse-context-mcp/host/prepare.cjs',
+  'wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.js',
+  'wasm/packages/cli/examples/other/context-corpus.ts',
+  'wasm/packages/cli/src/project-execution.js',
+  'wasm/packages/compiler/src/codegen/unrelated.js',
+  'packages/provider-fastly/src/toolchain/native-execution.js',
+  'wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js',
+  'scripts/pulse-context-corpus.cjs', 'scripts/pulse-context-inputs.json',
+  'unrecognized-directory/new-code.js'
+]) {
+  const result = select(policy, [...contextChanges, file]);
+  assert.equal(result.schemaCoverage.task, 'schema-codecs', file);
+  assert(!result.selectedTasks.includes('schema-codecs-smoke'), file);
+  assert(result.schemaCoverage.fullReasons.some(reason => reason.startsWith(file)), file);
+}
+withTrustedPolicy(base, (trusted, match) => {
+  assert.equal(select(trusted, contextChanges, tasks, match).schemaCoverage.task, 'schema-codecs-smoke');
+  assert.equal(select(trusted, [contextMirror], tasks, () => false).schemaCoverage.task, 'schema-codecs');
+  const stricter = { ...trusted, pathRules: [...trusted.pathRules, {
+    id: 'compiler-default', patterns: [contextMirror], boundaries: []
+  }] };
+  assert.equal(select(stricter, [contextMirror], tasks, match).schemaCoverage.task, 'schema-codecs',
+    'An additional trusted-base owner cannot be bypassed by the exact-path exception');
+});
+
 console.log('Fast validation selection contract passed');

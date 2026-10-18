@@ -63,6 +63,49 @@ function contract() {
   console.log('ok - preview requires generated/source/site validation and one fresh callback; failures cannot upload stale candidates');
 }
 
+function contextDataIntegrity() {
+  const contextSource = 'examples/12-pulse-context-mcp/context-corpus.ts';
+  const contextMirror = `wasm/packages/cli/${contextSource}`;
+  const contextDocument = 'docs/architecture/current-contracts.md';
+  // Selection is not a provenance receipt. Exercise the actual check-mode owners
+  // with changed read bytes, without editing this checkout or running examples.
+  // This preview test runs after dependency installation, unlike fast selection.
+  const fs = require('node:fs');
+  const root = path.resolve(__dirname, '../../..');
+  const { buildCorpus, render, synchronizeContextCorpus } = require('../../../scripts/pulse-context-corpus.cjs');
+  const { buildExpectedFiles, synchronizeReferenceDocs } = require('../../scripts/sync-reference-docs.cjs');
+  const originalRead = fs.readFileSync;
+  const originalDocument = originalRead(path.join(root, contextDocument), 'utf8');
+  const originalCorpus = originalRead(path.join(root, contextSource), 'utf8');
+  const changedReads = new Map();
+  try {
+    fs.readFileSync = function(file, options) {
+      if (!changedReads.has(file)) return originalRead.apply(this, arguments);
+      const override = changedReads.get(file);
+      const encoding = typeof options === 'string' ? options : options?.encoding;
+      return encoding ? Buffer.from(override).toString(encoding) : Buffer.from(override);
+    };
+    const change = (file, content) => changedReads.set(path.join(root, file), content);
+    change(contextDocument, originalDocument + '\nContext routing regression fixture.\n');
+    const installedDocument = `wasm/packages/cli/${contextDocument}`;
+    change(installedDocument, buildExpectedFiles().get(installedDocument));
+    assert.throws(() => synchronizeContextCorpus(), /Stale context corpus/, 'canonical changes require regeneration');
+    const regenerated = render(buildCorpus());
+    assert.notEqual(regenerated, originalCorpus, 'whole-source provenance changes even outside selected sections');
+    change(contextSource, regenerated);
+    assert.equal(synchronizeContextCorpus().status, 'ok');
+    assert.throws(() => synchronizeReferenceDocs(), /context-corpus\.ts/, 'stale installed mirror cannot pass');
+    change(contextMirror, regenerated);
+    assert.equal(synchronizeReferenceDocs().status, 'ok', 'legitimate synchronized source/corpus/mirror passes');
+    changedReads.clear();
+    change(contextMirror, originalCorpus + '\nthrow new Error("manual mirror edit");\n');
+    assert.throws(() => synchronizeReferenceDocs(), /context-corpus\.ts/, 'manual mirror code cannot pass');
+    change(contextSource, changedReads.get(path.join(root, contextMirror)));
+    assert.throws(() => synchronizeContextCorpus(), /Stale context corpus/, 'editing both copies cannot forge generated data');
+  } finally { fs.readFileSync = originalRead; }
+  console.log('ok - context data requires canonical regeneration and an exact installed mirror');
+}
+
 function integration() {
   const Module = require('node:module');
   const build = require('../../../scripts/build-docs-site.cjs').buildDocumentationSite;
@@ -102,4 +145,5 @@ function integration() {
 }
 
 contract();
+contextDataIntegrity();
 if (process.argv.includes('--integration')) integration();
