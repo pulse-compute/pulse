@@ -537,6 +537,7 @@
         "release/release-preflight.json",
         "release/documentation-inventory.json",
         "release/documentation-versions.json",
+        "release/documentation-release-history/**",
         "release/documentation-site.json",
         "package.json",
         "pnpm-lock.yaml",

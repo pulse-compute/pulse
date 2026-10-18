@@ -21,7 +21,7 @@ function prepareTag({ root = process.cwd(), version, write = false }) {
   const previous = versions.versions.find(entry => entry.status === 'archived');
   if (!previous) throw new Error('A previous archived release is required.');
   checkReleasePr({ baseManifest: { releaseVersion: previous.version }, headManifest: manifest,
-    changedFiles: ['package.json'], readHead });
+    changedFiles: ['package.json'], readHistoricalSource: tag => require('./release-pr-check.cjs').historicalSource(root, tag), readHead });
   const main = git(root, ['ls-remote', '--exit-code', 'origin', 'refs/heads/main']).split(/\s+/)[0];
   if (main !== commit) throw new Error('HEAD must equal remote origin/main. Merge the reviewed preparation into main and check out that commit first.');
   const tag = `v${version}`, ref = `refs/tags/${tag}`;

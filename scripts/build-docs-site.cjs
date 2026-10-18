@@ -473,7 +473,7 @@ function renderHeaderNavigation(context, options = {}) {
 }
 
 function renderVersionOptions(context) {
-  return DOCUMENTATION_VERSIONS.versions.map((entry) => {
+  return DOCUMENTATION_VERSIONS.versions.filter(entry => entry.deliveryOwner !== 'website').map((entry) => {
     const selected = entry.segment === context.versionSegment ? ' selected' : '';
     const label = entry.segment === DOCUMENTATION.version ? DISPLAY.candidateLabel : entry.channel;
     return `<option value="${escapeHtml(entry.segment)}"${selected}>${escapeHtml(entry.version)} · ${escapeHtml(label)}</option>`;
@@ -952,7 +952,7 @@ function buildDocumentationSite(options = {}) {
 
   const archivedVersions = [];
   for (const entry of DOCUMENTATION_VERSIONS.versions) {
-    if (entry.segment === DOCUMENTATION.version) continue;
+    if (entry.segment === DOCUMENTATION.version || entry.deliveryOwner === 'website') continue;
     const source = archivePathFor(entry, archiveRoot);
     validateVersionDirectory(source, entry);
     copyDirectory(source, path.join(output, entry.segment));
@@ -1192,7 +1192,7 @@ function validateDocumentationSite(output, manifest = readJson(path.join(output,
       fail(`${slash(path.relative(output, htmlFile))} contains an inline script; the production CSP permits external same-origin scripts only`);
     }
   }
-  const versionResults = DOCUMENTATION_VERSIONS.versions.map((entry) => validateVersionDirectory(path.join(output, entry.segment), entry));
+  const versionResults = DOCUMENTATION_VERSIONS.versions.filter(entry => entry.deliveryOwner !== 'website').map((entry) => validateVersionDirectory(path.join(output, entry.segment), entry));
   return Object.freeze({
     status: 'ok',
     releaseVersion: RELEASE_VERSION,

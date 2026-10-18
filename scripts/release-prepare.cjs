@@ -91,6 +91,9 @@ function parseArgs(argv) {
     } else if (token === '--replace-unpublished-docs') {
       if (options.historyMode) fail('choose exactly one documentation history mode');
       options.historyMode = 'replace-unpublished-docs';
+    } else if (token === '--website-managed') {
+      if (options.historyMode) fail('choose exactly one documentation history mode');
+      options.historyMode = 'website-managed';
     } else if (token === '--archive-current') {
       if (options.historyMode) fail('choose exactly one of --replace-unpublished or --archive-current');
       options.historyMode = 'archive-current';
@@ -106,12 +109,13 @@ function parseArgs(argv) {
 function usage() {
   return [
     'Usage:',
-    '  pnpm release:prepare -- <version> --channel <name> <--replace-unpublished|--replace-unpublished-docs|--archive-current> [options]',
+    '  pnpm release:prepare -- <version> --channel <name> <--replace-unpublished|--replace-unpublished-docs|--website-managed|--archive-current> [options]',
     '',
     'History mode:',
     '  --replace-unpublished  Replace the current candidate without creating release history',
     '  --replace-unpublished-docs  Omit only reviewed unpublished hosted docs; preserve npm history and changelog',
-    '  --archive-current      Require a committed documentation snapshot and archive the current release',
+    '  --website-managed    Preserve tagged product metadata; website owns historical HTML',
+    '  --archive-current      Legacy: require a committed documentation snapshot and archive the current release',
     '',
     'Options:',
     '  --date <date>  Release date in YYYY-MM-DD (default: today in UTC)',
@@ -265,9 +269,11 @@ function updatePulseDependencies(manifest, oldVersion, nextVersion) {
   return changes;
 }
 
-function planRelease(releaseManifest, documentationVersions, options, state) {
+function planRelease(releaseManifest, documentationVersions, options, state, resolvePreviousSource = require('./release-prepare-pr.cjs').previousReleaseSource) {
   const { currentVersion, currentEntry, policy } = state;
   const nextVersion = options.version;
+  const previousSource = options.historyMode === 'website-managed'
+    ? resolvePreviousSource(repoRoot, releaseManifest) : null;
   const unpublished = require('./release-pr-check.cjs').unpublishedDocumentationReleases(releaseManifest)
     .find((entry) => entry.version === currentVersion);
   if (options.historyMode === 'replace-unpublished-docs' && !unpublished) fail(`no reviewed unpublished-docs decision for ${currentVersion}`);
@@ -317,11 +323,18 @@ function planRelease(releaseManifest, documentationVersions, options, state) {
       }, ...documentationVersions.versions.map((entry) => entry.status === 'current' ? {
         ...entry,
         status: 'archived',
-        sourceManifest: `release/documentation-site-archives/${entry.segment}/release-manifest.json`
+        ...(previousSource ? { deliveryOwner: 'website', sourceTag: previousSource.sourceTag, sourceCommit: previousSource.tag, sourceManifestSha256: createHash('sha256').update(stableJson(previousSource.manifest)).digest('hex') } : {}),
+        sourceManifest: previousSource ? `release/documentation-release-history/${entry.segment}.json`
+          : `release/documentation-site-archives/${entry.segment}/release-manifest.json`
       } : entry)]
     };
   }
   putJson(documentationVersionsFile, nextDocumentationVersions);
+  if (previousSource) {
+    const historyFile = path.join(repoRoot, `release/documentation-release-history/v${currentVersion}.json`);
+    if (fs.existsSync(historyFile) && stableJson(readJson(historyFile)) !== stableJson(previousSource.manifest)) fail('Previous release metadata already exists with different bytes');
+    putJson(historyFile, previousSource.manifest);
+  }
 
   for (const name of policy.metadataOwners) {
     const file = path.join(repoRoot, name);
@@ -453,7 +466,10 @@ function writeTokenReport(oldVersion, nextVersion) {
 }
 
 function applyPlan(plan, state, options, git) {
-  for (const [file, content] of plan.writes) fs.writeFileSync(file, content);
+  for (const [file, content] of plan.writes) {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, content);
+  }
   const synchronized = synchronize(plan, options);
   let unexpected = [];
   if (git.available) {

@@ -69,6 +69,7 @@ function identify({ root, event, env = process.env }) {
     baseManifest: JSON.parse(read(base, 'release/pulse-release-manifest.json')),
     headManifest: JSON.parse(read(candidate.sourceRevision, 'release/pulse-release-manifest.json')),
     changedFiles: execFileSync('git', ['diff', '--name-only', '-z', base, candidate.sourceRevision], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean),
+    readHistoricalSource: tag => require('./release-pr-check.cjs').historicalSource(root, tag),
     readHead: file => read(candidate.sourceRevision, file)
   });
   const qualificationRequested = requestsQualification(pr.body);
