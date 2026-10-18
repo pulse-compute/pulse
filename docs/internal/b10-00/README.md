@@ -1,5 +1,10 @@
 # B10-00 — compiler concurrency measurement
 
+**Follow-up:** the [complete patched-candidate comparison](../b10-00-comparison/README.md)
+passed both fresh 190+11 seals on October 18. It supersedes the missing-comparison
+disposition below, while preserving these original attempts as historical evidence.
+The recommendation is 2/2 for hosted qualification; hosted adoption remains gated.
+
 Issue: #373. Target: `latest`. This diagnostic changes no release selection,
 scheduler admission, workflow default, checkpoint authority or product contract.
 

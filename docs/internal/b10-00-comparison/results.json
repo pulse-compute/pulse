@@ -1,0 +1,4529 @@
+{
+  "limits": "Single sequential local pair; sampled lower bounds; peak sampled CPU cores uses subsecond deltas and is noisy. Compiler-limited state can coincide with no available workers. No historical pass pooling.",
+  "trials": [
+    {
+      "name": "b10-373-c1",
+      "measurementStatus": "passed",
+      "qualified": true,
+      "candidate": {
+        "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+        "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+        "workingTree": ""
+      },
+      "controllerMs": 3881674,
+      "wallMs": 3882187,
+      "coverage": {
+        "taskReport": {
+          "status": "passed",
+          "selected": 190,
+          "recorded": 190,
+          "orderedComplete": true,
+          "passed": 190,
+          "executed": 190,
+          "reused": 0,
+          "cleanupPassed": true
+        },
+        "featureTasks": {
+          "status": "passed",
+          "selected": 11,
+          "recorded": 11,
+          "orderedComplete": true,
+          "passed": 11,
+          "executed": 11,
+          "reused": 0,
+          "cleanupPassed": true
+        }
+      },
+      "controllerCleanup": {
+        "status": "passed",
+        "timedOut": false,
+        "retainedPath": null
+      },
+      "stages": {
+        "source-checks": {
+          "status": "passed",
+          "elapsedMs": 11529,
+          "exitCode": 0
+        },
+        "build": {
+          "status": "passed",
+          "elapsedMs": 173,
+          "exitCode": 0
+        },
+        "fastly-reality": {
+          "status": "passed",
+          "elapsedMs": 14707,
+          "exitCode": 0
+        },
+        "production-dependency-audit": {
+          "status": "passed",
+          "elapsedMs": 4148,
+          "exitCode": 0
+        },
+        "workspace-unit": {
+          "status": "passed",
+          "elapsedMs": 1988,
+          "exitCode": 0
+        },
+        "workspaces": {
+          "status": "passed",
+          "elapsedMs": 2371,
+          "exitCode": 0
+        },
+        "shared-pack": {
+          "status": "passed",
+          "elapsedMs": 3686,
+          "exitCode": 0
+        },
+        "release": {
+          "status": "passed",
+          "elapsedMs": 3224824,
+          "exitCode": 0
+        },
+        "installed-features": {
+          "status": "passed",
+          "elapsedMs": 598441,
+          "exitCode": 0
+        }
+      },
+      "metrics": {
+        "wallMs": 3882183,
+        "controllerMs": 3881674,
+        "workerOccupancyMs": 4092182,
+        "workerTimeDefinition": "Serial executed task elapsed time, including waits and cleanup; not CPU time or bootstrap steps",
+        "tasks": {
+          "completed": 201,
+          "passed": 201,
+          "executed": 201,
+          "reused": 0
+        },
+        "avoidedTaskOccupancyMs": 0,
+        "candidatePackages": 20,
+        "observedLaunches": {
+          "asc": 1712,
+          "pack": 45,
+          "install": 27
+        },
+        "observationScope": "Node child_process launches under inherited preload; lower bounds. Shell launches, native custom-promisified calls and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.",
+        "workerCpuMs": null,
+        "peakProcessTreeRSSKiB": null,
+        "resourceLimit": "Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer",
+        "observedNodeCpuMs": 5212305.187,
+        "peakObservedNodeRSSKiB": 618660,
+        "processTree": {
+          "schemaVersion": "pulse.seal-process-observation.v1",
+          "status": "observed",
+          "error": null,
+          "rootProcess": "424082:6807197",
+          "controllerNamespacePid": 55,
+          "intervalMs": 200,
+          "samples": 19367,
+          "maxGapMs": 283,
+          "readErrors": 0,
+          "sampledCpuMs": 5874770,
+          "peakSimultaneousProcessRSSKiB": 2151712,
+          "peakProcessCount": 13,
+          "remainingObservedProcesses": [],
+          "elapsedMs": 3882112,
+          "scope": "Linux /proc snapshots of controller and observed descendants, including detached children and known surviving identities; sampler excluded",
+          "limits": "Sampled lower bounds: short-lived processes, exit CPU tails and unseen reparenting can be missed. RSS sums include shared pages in each process; not unique physical or cgroup memory. Idle/wait states are sampled report observations, not compiler CPU or precise admission events."
+        },
+        "observedCompilerElapsedMs": 3143049.0362039986
+      },
+      "sampledStages": {
+        "prerequisites": {
+          "samples": 21,
+          "peakRSSKiB": 96268,
+          "sampledMs": 4008,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 4008
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 10,
+          "peakSampledCpuCores": 0.05
+        },
+        "source-checks": {
+          "samples": 58,
+          "peakRSSKiB": 568316,
+          "sampledMs": 11413,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 11413
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 9700,
+          "peakSampledCpuCores": 1.8
+        },
+        "build": {
+          "samples": 1,
+          "peakRSSKiB": 232604,
+          "sampledMs": 0,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {},
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 0,
+          "peakSampledCpuCores": 0
+        },
+        "fastly-reality": {
+          "samples": 74,
+          "peakRSSKiB": 886104,
+          "sampledMs": 14629,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 7812,
+            "1": 400,
+            "2": 6417
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 12900,
+          "peakSampledCpuCores": 3.7313432835820897
+        },
+        "production-dependency-audit": {
+          "samples": 20,
+          "peakRSSKiB": 216960,
+          "sampledMs": 3807,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 3807
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 40,
+          "peakSampledCpuCores": 0.2
+        },
+        "workspace-unit": {
+          "samples": 10,
+          "peakRSSKiB": 977076,
+          "sampledMs": 1804,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 1804
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 6390,
+          "peakSampledCpuCores": 4.95
+        },
+        "workspaces": {
+          "samples": 12,
+          "peakRSSKiB": 172732,
+          "sampledMs": 2203,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 2203
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 1780,
+          "peakSampledCpuCores": 1.1
+        },
+        "shared-pack": {
+          "samples": 19,
+          "peakRSSKiB": 499868,
+          "sampledMs": 3606,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 3606
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 2640,
+          "peakSampledCpuCores": 1.5422885572139304
+        },
+        "release": {
+          "samples": 16086,
+          "peakRSSKiB": 2151712,
+          "sampledMs": 3224647,
+          "compilerActiveMs": {
+            "0": 20238,
+            "1": 3204409
+          },
+          "ascProcessCountMs": {
+            "0": 1571832,
+            "2": 1592638,
+            "1": 50933,
+            "3": 603,
+            "4": 8641
+          },
+          "compilerLimitedMs": 3179165,
+          "compilerLimitedWithFreeWorkerMs": 2704689,
+          "idleWorkerSlotMs": 2736943,
+          "sampledCpuMs": 5194510,
+          "peakSampledCpuCores": 8.1
+        },
+        "installed-features": {
+          "samples": 2986,
+          "peakRSSKiB": 1286024,
+          "sampledMs": 598292,
+          "compilerActiveMs": {
+            "0": 2404,
+            "1": 595687
+          },
+          "ascProcessCountMs": {
+            "0": 479409,
+            "1": 6413,
+            "2": 112470
+          },
+          "compilerLimitedMs": 536383,
+          "compilerLimitedWithFreeWorkerMs": 536383,
+          "idleWorkerSlotMs": 600495,
+          "sampledCpuMs": 638300,
+          "peakSampledCpuCores": 5.0
+        },
+        "final-validation": {
+          "samples": 38,
+          "peakRSSKiB": 251080,
+          "sampledMs": 7414,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 7414
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 3720,
+          "peakSampledCpuCores": 1.492537313432836
+        },
+        "cleanup": {
+          "samples": 3,
+          "peakRSSKiB": 299828,
+          "sampledMs": 402,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 402
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 390,
+          "peakSampledCpuCores": 1.144278606965174
+        }
+      },
+      "attemptDirectory": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/attempts/2026-10-18T18-43-20-827Z-AElqBE",
+      "context": {
+        "schemaVersion": "pulse.release-recovery.v1",
+        "candidate": {
+          "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+          "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+          "workingTree": "",
+          "repoRoot": "/tmp/pulse-b10-373-73fe1815"
+        },
+        "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+        "toolchain": {
+          "node": "v24.18.0",
+          "versions": {
+            "node": "24.18.0",
+            "acorn": "8.16.0",
+            "ada": "3.4.4",
+            "amaro": "1.1.9",
+            "ares": "1.34.6",
+            "brotli": "1.2.0",
+            "cldr": "48.0",
+            "icu": "78.3",
+            "llhttp": "9.4.2",
+            "merve": "1.2.2",
+            "modules": "137",
+            "napi": "10",
+            "nbytes": "0.1.4",
+            "ncrypto": "0.0.1",
+            "nghttp2": "1.69.0",
+            "nghttp3": "",
+            "ngtcp2": "",
+            "openssl": "3.5.7",
+            "simdjson": "4.6.4",
+            "simdutf": "6.4.0",
+            "sqlite": "3.53.1",
+            "tz": "2026b",
+            "undici": "7.28.0",
+            "unicode": "17.0",
+            "uv": "1.52.1",
+            "uvwasi": "0.0.23",
+            "v8": "13.6.233.17-node.50",
+            "zlib": "1.3.1-e00f703",
+            "zstd": "1.5.7"
+          },
+          "platform": "linux",
+          "arch": "x64",
+          "osRelease": "6.18.55",
+          "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+          "pnpmVersion": "12.4.2",
+          "pnpmSha256": "df602b81c2e2f75c72904664cf2ee2ce50e1394bef1cb2a153ed4c08d99bc6e4",
+          "fastly": {
+            "status": "available",
+            "fastlyCli": {
+              "binary": "/tmp/pulse-b10-373-73fe1815/.validation-tools/fastly/fastly",
+              "version": "16.1.0"
+            },
+            "localComputeEngine": {
+              "owner": "fastly-cli",
+              "selection": "managed"
+            }
+          },
+          "fastlySha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+        },
+        "environmentSha256": "146dd69f99340d449e3e89961a763dd5f07da64df4dad56e407e63ea6483b118",
+        "environmentKeys": {
+          "all_proxy": "61a590b5e4aa14f55450ac325dc373f1c0b4542071a8d7b8f793eeabe4017d1b",
+          "ALL_PROXY": "8d76d961c706b729b1e20b168433325bd2440e0a47960336f7b4e8e62ff65dac",
+          "BUNDLE_HTTP_PROXY": "e62ee56680d8747d263dedbac65c597c077f4a1de05888ebe6d4a865d187c7e9",
+          "BUNDLE_HTTPS_PROXY": "a3d62f58cf16d4d4b9687f5490c2159276bcb8cbc67b4c1654a1d5e64db06f02",
+          "BUNDLE_NO_PROXY": "aee424b86d3a6ea1a461216664e463a2a0cbc6da9c7340554ca22b7b6ca4ef4d",
+          "CAAS_IMAGE_GIT_COMMIT_SHA": "b46f7bd3b6540e24effa8e5f93b46bf97ef72a4510b3d2f800cc64d536daa1e2",
+          "CAAS_IMAGE_VERSION": "e3e7f0fdb81a8f75ffa5ed92c1dab9e460d3a018bfdcbabbba6add8d6e0f8905",
+          "CDP_PORT": "154c31ab571fa0c89750b88c0fa52cdd47bb23f4fd78281d823ebb68753c5d14",
+          "CODEX_APPLY_PATCH_PRESERVE_LINE_ENDINGS": "0babf436c4e506d0a6c08e62785da5bc5b32c7828ddde0d422237598e46bb946",
+          "CODEX_CI": "87c3116e1236fab45e24210986bd6dcfe72409015f0a932f3249bf7361a7ddcb",
+          "CODEX_ENVIRONMENT_ID": "bdc1edd9751e863780d88c29d66219f7257dde71faf0cdde634672c098fba0ce",
+          "CODEX_EXEC_SERVER_REMOTE_BASE_URL": "359c12e986daea6511715ce04dc597f764af7992537ac96d64173946fa7a9449",
+          "CODEX_FLORA_CCA_BOOTSTRAP_ATTEMPT_ID": "455cc6622f57ddc42e92fa85fdb93fac5eb5a7f6757e7e1970d586bd36743921",
+          "CODEX_FLORA_CCA_EXPECTED_EXECUTOR_PID": "d235b684dde2ccf72e46223d1829baa29ec4cc0f625459d67fbc0044864dfe3a",
+          "CODEX_FLORA_CCA_GATEWAY_HOST_ALIASES": "047db1c35333a03ad8939dc3c707afcfa01652740242a2b440369d0008534d93",
+          "CODEX_FLORA_CCA_GATEWAY_RESOLUTION_HOST": "336d78059e44838be1c5526ef272625a17eda97c9a10c170bef123104d2ea6f6",
+          "CODEX_FLORA_CCA_REUSE_EXECUTOR": "8ec7f118a189e7c8ae630adfaabb91c871c398034ea12b5b57b6c5b85a6a725e",
+          "CODEX_FLORA_CCA_WORKSPACE_CWD": "805abf39ef831fb20f9456f86080405d51df8763eaa0b2b60a7c823fc4e527f1",
+          "CODEX_HOME": "bb35f5d5a8f010673ee75baa769c03c5a7885f60ce558d51c6eafa8177f60fc6",
+          "CODEX_NETWORK_ALLOW_LOCAL_BINDING": "2cd6509a2384cdb5207bd60dbd52b91ce570d25f43e8ea292586c09ddf44c219",
+          "CODEX_NETWORK_PROXY_ACTIVE": "23b8246e6b37e4375b836b4d8d3c3b6e25a3e328fadbb2167c1c1a7d2449770b",
+          "CODEX_PRIMARY_RUNTIME": "f2e3ed8041989056b3a7b34841ebabd71ea6d3eede6728d19ff9ea1318b981ef",
+          "CODEX_PRIMARY_RUNTIME_BUNDLE_VERSION": "b5130c5b182c1e6fcd8cca03eb977fa715378abdca20c767ca65aeecd720dbc4",
+          "CODEX_PRIMARY_RUNTIME_NODE": "a8a5cba42207fd47cc5c55f0fc8eb1e2d6a5b3df28196bf2405cf95c9224dd85",
+          "CODEX_PRIMARY_RUNTIME_NODE_MODULES": "78853f0ae4bfd42148c219962e6bd5c0d4d3766fdf099d127fc0c353b4114381",
+          "CODEX_PRIMARY_RUNTIME_PYTHON": "758747974fb843b3a141da68a44c843fa4b1186f6948520fe84577b25ca409f0",
+          "CODEX_PRIMARY_RUNTIME_ROOT": "a4aa7ea53bd56be927b2888f630594329a868954a4fdab9779370cbdf65af45b",
+          "CODEX_PROXY_CERT": "fcb36d6f5087046da43743886f6f07bcb32282e51ca373b8111261c92d642a89",
+          "CODEX_SANDBOX_NETWORK_DISABLED": "e8265ce559574dadd78ab45a9d6581faafb4b2d39184d09aa7bed4039e37a752",
+          "CODEX_SESSION_ID": "656231cbab008bace60ff0f3d22a0caba73234da9536583c8eeb0f69305f12e2",
+          "CODEX_THREAD_ID": "5091f158f490e1f0872d6170637db6d25141a906d6f95ab44b5415eae655b739",
+          "CODEX_TOOL_CALL_ID": "86c9adc6cace9b61dfd8138acce5425acc4521624e23e5ec2ab6ba20f0febe54",
+          "CODEX_VERSION": "5bac15a0b4d1246537e331f22b73108456da4eb88966416521595ac92aba7161",
+          "COLORTERM": "698cd7fd58b3cc2c70c97bbbe3410e6c59a14440bf9da01f53e6dc7433079c36",
+          "DD_SERVICE": "e6879a329fa7c74ee752013f485dd2cd1da48f971bfa02de60b3759548d24c86",
+          "DEBIAN_FRONTEND": "1beeb8b477173e4a0f110eb7b1bbd263a1219a80996794ea357d1f48504ba13a",
+          "DOCKER_HTTP_PROXY": "1e1a1d7a56963c69b6acca8f9d6652dc0d53674c9941c0b3e55e9a4808fece1a",
+          "DOCKER_HTTPS_PROXY": "91dfe402dbfedb16504a6ce1e5ea67ba5940ea7d7c784dc4969b57bae10301c5",
+          "ELECTRON_GET_USE_PROXY": "d27c90e1ca0ed07a30a2bcb552e813dc7f5bc539bfe02fb016dd0bbe2c50bb11",
+          "ftp_proxy": "238dadcb9f1a09b1c04b4884d7638a6ff1aa177785f6e0fb3a630f5256c0c2bc",
+          "FTP_PROXY": "67ee0c2239d9847b9fac03f205650c0d954cf42263861c1aac87e507270c755a",
+          "GH_PAGER": "4b1ab13a478e7130da0100d314d651536c7165dba36a41b6c0909a4e3a51b738",
+          "GIT_PAGER": "b8f45e48733206cfe4258e1dd366b6dd5d44c576fb4873a294207186dccd855d",
+          "GRADLE_OPTS": "cf43b0c50ab649de32fddf61ada4a1a8f6f286aa0c3b452730d4f21cb831ac81",
+          "HOME": "d2ba7043b134f6cd56f9b79b237d476b77a1dad0cd4862ff36628ebc83173d82",
+          "http_proxy": "09bd8626401618d968b3e28f660f19f7f1a06e801a6fc8d9f6634a78fcfa9447",
+          "HTTP_PROXY": "5ab500dfe0593378c6de29f470362d937f2bf2b8f5959f9c98d556ba4071770b",
+          "https_proxy": "ef4bdb3bee63381f427b6146ff7720b8844caf7349c5f9454156536449cb9c3e",
+          "HTTPS_PROXY": "7373ce3a1450a44f07ff1aaa21f465b7426c9cd30550c99d8fcabb1bbc7a3044",
+          "LANG": "cd51059741df470ced36a4b9c4cd09acd04237f3ef96a986c78db8c2b60e1659",
+          "LC_ALL": "9ff1638e7ffc0de4b7537a3e0bfaafdb4aa2f7b6bca7f8b3694cee46e97406a3",
+          "LC_CTYPE": "56a0ba4505b0e0af1e86c6cc98a0406900a3e44d3c0cb4ead2a06aa2b387fe45",
+          "NETWORK": "1159c86efe54104859337d9f0a83f48c87d8bff57e867642752d013a7ccac5e7",
+          "NO_COLOR": "487b5b67060864952c3911b657dce76060d6fb34363dca8d3fe577c76a42373d",
+          "no_proxy": "6f6865c3983575b99fbca5737fa5bd025de2c863aa424a945bb669c88e186d5c",
+          "NO_PROXY": "78192d02b6061f670ecbb0d1e6d9e60262f768f44724503e668bfc968dd87add",
+          "NODE_EXTRA_CA_CERTS": "ecfcdac8864e0b93909fa31d76517f18bcd710d19a9c611219a3f3869df70f0f",
+          "NODE_OPTIONS": "a8125c27d52250db7ff3698951452cb5046b19c1659adf21387c34ab413cb9ca",
+          "NODE_PATH": "7f9c243d26c0574f2bb6bd5d1364d702fe6fa1d2156dae7856d7ac1a229ef0b8",
+          "NODE_USE_ENV_PROXY": "e9f1ad85441378cfd7a90d0f178b549893104ad49d90cd44112700588c6508fe",
+          "NPM_CONFIG_AUDIT": "d9c825fdf949b442857b3a78a5072e8c9d2919b5790b07178bd2528e318208c1",
+          "NPM_CONFIG_CACHE": "1f24549a1568eb02e774061462256af9d93d3e9a253d379586e7c32784d9e19d",
+          "NPM_CONFIG_FUND": "d37be70449dc254c08a26aa034c4b2d7bf10b0997f279a5e0181e98d5590f6c1",
+          "npm_config_http_proxy": "34235825f4cc7cb243c1a55c19e51bca829ecc53e27f2d933f93754790c81dac",
+          "NPM_CONFIG_HTTP_PROXY": "6a37ad34875998fd0aac4e33f76477415543188ea973a6f6f34d05f06715befc",
+          "npm_config_https_proxy": "9ec21583d31a93f6ed9afb20c122313a23212f96df340bd4028232f08b85df5a",
+          "NPM_CONFIG_HTTPS_PROXY": "269883a7c3e20a1ab7104eeb0e94e8b85723aaccc003a4a709542094407ca505",
+          "npm_config_noproxy": "180791f9d2c50594d36976478eb246df556fcc358edfaf9afefe736442e22d7b",
+          "NPM_CONFIG_NOPROXY": "df16cf5fefebe1dfba0e6888f3370eb2ffa58ec65d3ff4c0bacf6eac0bf4cb93",
+          "npm_config_proxy": "3cf5bcd4edfe1410ecfc7aff04256a889e4fe77324f9ee8c6e1b637a3f6bb5aa",
+          "NPM_CONFIG_PROXY": "57d88de05299a0ad68d7ffb45dd07e69b83f79c0b200190d431bd606b652d5bb",
+          "OPENAI_CLUSTER": "b6514f3502586075a1c1005ba447a8d41089ee5217165c5d50c290656d4dfec8",
+          "OTEL_RESOURCE_ATTRIBUTES": "eb0b6e19cba638060d629ed224b474a107a2319246fc076864489db5a4de8573",
+          "OTEL_TRACES_SAMPLER": "3e74a25ebf571f66534e75e1f634f2e8354b7f2f23ce23a0510d9074c8d558fe",
+          "OTEL_TRACES_SAMPLER_ARG": "990651e6aa0b02d9464894a19f1a0f55f10ad87d7ce528d229ff5e7d3bf9c498",
+          "PAGER": "52c51c665714966f720606d49f4acfa7e16a5c317ada18c93e14502d0874ac82",
+          "PATH": "429fac7f9cfffbaf5a1e5516cb1c61dcdbb4ce97c2c0d21c14bb5db02dde75f1",
+          "PIP_CERT": "ee8734d353b19b270c4cb6906acbe76944adde12bffdc984755e8f3e6e3c0b9c",
+          "PIP_PROXY": "21b2a6fae651ef11e401396e131d5baa1196b678fe858ddb2f30cc1343ba4357",
+          "PULSE_FASTLY_BIN": "f8e4ca4d3a3477fa454d0a9db03f95e7d49c01abbf6d6975c04a1ce6b6c9c988",
+          "REQUESTS_CA_BUNDLE": "e618d7ea5643ab0f3ed4a25f235c43536c830b55e4e0618c905e02c3500ac106",
+          "RSYNC_DELETE": "4b347f267bd7a12147f2061069478b0b620f174115f42066f6618c7acc8cb872",
+          "RSYNC_DIR": "65aceaa0bbf6b7e8d72246ca62fcb41b70e27de9b20410f2f9f1b3546231209e",
+          "RSYNC_HOST": "0f295a4d3805ea4366fe1ea3858d1c4b95919e6f7e36bd8a95095b62415df5a3",
+          "RSYNC_MODULE": "b7d7baffa268f1c37c887913a469f1c13777c5a80bcf0b9e38ba9eac85ad7bd8",
+          "RSYNC_PASSWORD": "3a45965010f51275fe622d4e0d554f3981bde863ad55848905881c0be322da32",
+          "SITES_MANAGED_LINUX_CONTAINER": "dabc166151e2dbec57350cf49aa819c1813743a32fcdc1f93c36ee5e07d092c3",
+          "SITES_NPM_CACHE_SEED": "9f6315caf101066b4b0fe8a8f3647a7fafd000d339b4c55c7be78be4c81f53b8",
+          "SITES_PNPM_BIN": "6d5f3acc89fbed443a9bc0b0ca675f2907b7ef65f21689484a58f6a3db39669f",
+          "SITES_PNPM_CACHE_SEED": "855da68209ef8bd17f8359871bd2211e5e6f2cae1e19989952fea229c8c23a09",
+          "SITES_PNPM_SHARED_STORE": "d07b87da8b9d8d8f08a9f39c74024a7fb51ce00d101ccbf991737582a5243b76",
+          "SITES_PNPM_VERSION": "826c1156d4a0ee56d44127b01556746cf953327e7a5d833594dc8a1f8065a43e",
+          "SSL_CERT_FILE": "8592f1e98b703ab910568dfc2ff79cb530b6ae0e2a249581a6765257c175be99",
+          "TERM": "6c93ab051f11e563692a22954b8dd6c2e6f26caa0c4b037936abf333ecec0b24",
+          "TZ": "3b01957bbdb931b5ae8de174f1b5a2ceebf694e3d96f31e30275c94ea16100e6",
+          "ws_proxy": "cf0c42e58627d7494b1106076f8038445a0eb893f00d8c554ec488e9974b11fe",
+          "WS_PROXY": "d23bede0074ac3d3d3adbc2303ad4e267a689350429a99de6f177d9b9d97c21e",
+          "wss_proxy": "9b57e90ac340186f0dda7e16a9261950540aba73ed92bac5ab1aa5a19a8b8602",
+          "WSS_PROXY": "3057b54091fe83eccc851109c7dd376715e3b9b1a2b5fe56d5a1cc74029137f9",
+          "YARN_HTTP_PROXY": "2b5d5524f9a7310200b6c936a61ed4fdf76bade45cfe87c520e3f130b1e3b1b4",
+          "YARN_HTTPS_PROXY": "e8b5122f3355b4928e8e1815d0e8d45ba8c7f5df16c2f47ec7fdc1b3796b1ad2"
+        },
+        "options": {
+          "requireFastly": true,
+          "install": false,
+          "workers": 2,
+          "memoryBudgetMiB": 6144,
+          "compilerWorkers": 1,
+          "dependencyBundleSha256": null
+        },
+        "selections": {
+          "release": [
+            "report-capsule-contract",
+            "cli-report-workflow",
+            "cli-report-viewer",
+            "cli-report-retained-evidence",
+            "cli-report-size-evidence",
+            "cli-report-capture-proof",
+            "cli-report-entry-proof",
+            "cli-report-reference-provenance",
+            "cli-report-handler-topology",
+            "cli-report-handler-associations",
+            "cli-report-relationships",
+            "cli-report-imported-inputs",
+            "cli-report-resource-inventory",
+            "cli-report-graph-diagnostics",
+            "multifile-source-indexes",
+            "guest-json-roundtrip",
+            "pure-helper-contract",
+            "suite-shape",
+            "test-orchestration",
+            "package-exports",
+            "boundaries",
+            "workspace-hygiene",
+            "hidden-contracts",
+            "release-feature-acceptance",
+            "release-runtime-policy",
+            "release-seal-lifecycle",
+            "release-checkpoints",
+            "release-recovery-runner",
+            "release-recovery",
+            "release-tag",
+            "api-surface",
+            "logging-contract",
+            "s3-design-contract",
+            "kv-design-contract",
+            "kv-conditional-runtime",
+            "kv-conditional-gates",
+            "s3-read-contract",
+            "s3-write-contract",
+            "crypto-config-planning",
+            "crypto-es256-signing",
+            "crypto-rs256",
+            "crypto-digest-text-contract",
+            "reachable-graph",
+            "project-modules",
+            "package-reachability",
+            "external-lowerers",
+            "package-runtime",
+            "provider-toolchain",
+            "schema-registry",
+            "continuation-registry",
+            "entities-contracts",
+            "entities-schema-bridge",
+            "entities-javascript-runtime",
+            "entities-json-rpc-corpus",
+            "mcp-http",
+            "pulse-context-corpus",
+            "pulse-context-application",
+            "pulse-context-host",
+            "mcp-compatibility",
+            "mcp-tools",
+            "mcp-authorization",
+            "entities-package-owned-lowering",
+            "entities-catalog",
+            "entities-inspection",
+            "entities-orchestration-demo",
+            "npm-source-imports",
+            "fastly-numeric-regions",
+            "fastly-numeric-budgets",
+            "fastly-handle-ownership",
+            "fastly-handle-frames",
+            "pure-helper-vocabulary",
+            "pure-string-index",
+            "pure-field-projection",
+            "pure-guarded-arguments",
+            "pure-source-helpers",
+            "pure-record-helpers",
+            "pure-argument-helpers",
+            "pure-loop-helpers",
+            "fastly-driver-behavior-o09",
+            "kv-native-abi-feasibility",
+            "s3-body-read",
+            "s3-node-transport",
+            "canonical-api-lowering",
+            "canonical-native-plan",
+            "shared-stage-o19",
+            "str02b-node-native",
+            "fastly-incoming-body-forwarding",
+            "str03a-generated-output",
+            "str03c-bounded-transforms",
+            "bounded-app-logic",
+            "bounded-read-loops",
+            "bounded-loop-helpers",
+            "logging-lowering",
+            "canonical-router-lowering",
+            "canonical-router-terminal-middleware",
+            "router-selected-groups",
+            "json-as-compatibility",
+            "entities-envelope-feasibility",
+            "entities-managed-handler",
+            "entities-managed-handler-effects",
+            "entities-native-runtime",
+            "entities-hardening",
+            "entities-node-native-workflow",
+            "fastly-entities-native-workflow",
+            "crypto-native-guest-source",
+            "guest-link-package",
+            "guest-link-materialization-stage",
+            "guest-link-audit-diagnostics",
+            "assets-lowering-plan",
+            "assets-package-owned-lowering",
+            "assets-native-embedded",
+            "grip-package-owned-lowering",
+            "jwt-package-owned-lowering",
+            "canonical-api-runtime",
+            "canonical-opaque-node-emission",
+            "grip-package-runtime",
+            "package-root-native",
+            "canonical-native-wasm",
+            "cli-javascript-target-compilation",
+            "target-support",
+            "jwt-javascript-admission",
+            "crypto-runtime-builtin",
+            "javascript-effect-adapter",
+            "logging-runtime",
+            "assets-javascript-runtime",
+            "jwt-signing",
+            "jwt-es256-signing",
+            "jwt-rs256",
+            "crypto-cross-target-conformance",
+            "crypto-digest-text-conformance",
+            "crypto-digest-storage-conformance",
+            "text-capacity-conformance",
+            "events-conformance",
+            "node-router-context-parity",
+            "catalog-router-parity",
+            "fetch-projections-request-bodies",
+            "config-secrets-kv-redaction",
+            "kv-conditional-conformance",
+            "fastly-conditional-kv",
+            "schema-codecs",
+            "schema-kv-parity",
+            "time-conformance",
+            "time-consumer",
+            "node-launcher",
+            "application-errors",
+            "application-error-boundaries",
+            "node-cross-target-conformance",
+            "grip-cross-target-conformance",
+            "four-mode-conformance",
+            "cli-command-spec",
+            "cli-init-workflow",
+            "cli-project-workflow",
+            "cli-expansion-doctor",
+            "cli-project-guards",
+            "cli-dev-workflow",
+            "cli-schema-json-workflow",
+            "events-cli-workflow",
+            "cli-diagnostics",
+            "docs-executable-contracts",
+            "docs-executable-init-dev",
+            "docs-migration-schema-lowering",
+            "docs-example-01-hello-json",
+            "docs-example-02-request-schema",
+            "docs-example-03-fetch-composition",
+            "docs-example-05-fastly-capabilities",
+            "docs-example-07-opaque-proxy",
+            "docs-example-09-router-lowering",
+            "docs-example-10-entities-tools",
+            "docs-example-11-events",
+            "docs-example-12-pulse-context-mcp",
+            "docs-example-13-jwt-es256",
+            "provider-packages",
+            "provider-fastly-package",
+            "provider-fastly-apps",
+            "canonical-grip-fastly",
+            "fastly-cli-gate-surface",
+            "fastly-javascript-packaging",
+            "fastly-javascript-runtime",
+            "fastly-javascript-tooling",
+            "fastly-native-http-shell",
+            "fastly-native-http-effects",
+            "fastly-native-platform-capabilities",
+            "fastly-request-headers",
+            "release-packages",
+            "release-artifact-determinism",
+            "clean-machine-acceptance",
+            "cli-entities-installed-workflow",
+            "npm-source-installed-workflow",
+            "release-evidence-authority",
+            "deployment-candidates"
+          ],
+          "features": [
+            "str02b-installed",
+            "node01-installed",
+            "arc01-installed",
+            "jwt-installed-workflow",
+            "str02-installed",
+            "str03b-installed",
+            "ast01-installed",
+            "ast02b-installed",
+            "ast02d-installed",
+            "mcp-installed",
+            "s3-body-installed"
+          ]
+        },
+        "inputs": {
+          "dependenciesSha256": "03824a6ae0788482bc7d16127ebe42385c163232bb172b1c94c8141a3c54f5df",
+          "dependencyFiles": 9496,
+          "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+          "build": [
+            {
+              "path": "packages/assets/dist",
+              "kind": "directory",
+              "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+            },
+            {
+              "path": "packages/crypto/dist",
+              "kind": "directory",
+              "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+            },
+            {
+              "path": "packages/entities/dist",
+              "kind": "directory",
+              "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+            },
+            {
+              "path": "packages/grip/dist",
+              "kind": "directory",
+              "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+            },
+            {
+              "path": "packages/jwt/dist",
+              "kind": "directory",
+              "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+            },
+            {
+              "path": "packages/provider-fastly/dist",
+              "kind": "directory",
+              "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+            }
+          ]
+        },
+        "scheduling": {
+          "schemaVersion": "pulse.seal-workers.v1",
+          "root": "/tmp/pulse-b10-373-73fe1815",
+          "candidate": {
+            "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+            "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+            "workingTree": ""
+          },
+          "workers": 2,
+          "memoryBudgetMiB": 6144,
+          "estimatedWorkerMiB": 768,
+          "compilerWorkers": 1,
+          "workspaces": [
+            {
+              "id": "worker-1",
+              "directory": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/workspaces/2fe181bb7cc55b57c39817b902e487277851df27-2/worker-1",
+              "inputs": {
+                "dependenciesSha256": "20a0b0dadde3ce612633f232d0567b52603078de8080e9b3c58e28a3d95d7785",
+                "dependencyFiles": 9496,
+                "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+                "build": [
+                  {
+                    "path": "packages/assets/dist",
+                    "kind": "directory",
+                    "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+                  },
+                  {
+                    "path": "packages/crypto/dist",
+                    "kind": "directory",
+                    "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+                  },
+                  {
+                    "path": "packages/entities/dist",
+                    "kind": "directory",
+                    "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+                  },
+                  {
+                    "path": "packages/grip/dist",
+                    "kind": "directory",
+                    "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+                  },
+                  {
+                    "path": "packages/jwt/dist",
+                    "kind": "directory",
+                    "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+                  },
+                  {
+                    "path": "packages/provider-fastly/dist",
+                    "kind": "directory",
+                    "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "worker-2",
+              "directory": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/workspaces/2fe181bb7cc55b57c39817b902e487277851df27-2/worker-2",
+              "inputs": {
+                "dependenciesSha256": "1d0e169877b0fa9a99867e08ef833efdd5b4100fd48c014a1d5ccbb946726c40",
+                "dependencyFiles": 9496,
+                "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+                "build": [
+                  {
+                    "path": "packages/assets/dist",
+                    "kind": "directory",
+                    "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+                  },
+                  {
+                    "path": "packages/crypto/dist",
+                    "kind": "directory",
+                    "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+                  },
+                  {
+                    "path": "packages/entities/dist",
+                    "kind": "directory",
+                    "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+                  },
+                  {
+                    "path": "packages/grip/dist",
+                    "kind": "directory",
+                    "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+                  },
+                  {
+                    "path": "packages/jwt/dist",
+                    "kind": "directory",
+                    "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+                  },
+                  {
+                    "path": "packages/provider-fastly/dist",
+                    "kind": "directory",
+                    "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sharedPackFiles": [
+        {
+          "name": "pulse-compute-assets-1.0.0-beta.9.tgz",
+          "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+        },
+        {
+          "name": "pulse-compute-cli-1.0.0-beta.9.tgz",
+          "sha256": "a3d53fe474c46f9371367dbab1056587cfb783608d513d49682dd9ea8318e016"
+        },
+        {
+          "name": "pulse-compute-crypto-1.0.0-beta.9.tgz",
+          "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+        },
+        {
+          "name": "pulse-compute-entities-1.0.0-beta.9.tgz",
+          "sha256": "dbab4994a8314525ae601d018fede8a183ba6abaa7057eaa19fa108125fac9bb"
+        },
+        {
+          "name": "pulse-compute-grip-1.0.0-beta.9.tgz",
+          "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+        },
+        {
+          "name": "pulse-compute-jwt-1.0.0-beta.9.tgz",
+          "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+        },
+        {
+          "name": "pulse-compute-mcp-1.0.0-beta.9.tgz",
+          "sha256": "e30d935b5c04fdcd3b2d5ef5fae8a0acc64d133eb12ffc750026f8d59198e3e7"
+        },
+        {
+          "name": "pulse-compute-provider-fastly-1.0.0-beta.9.tgz",
+          "sha256": "97b26c43f261be87c9768b375d08cefa44e19a3e8f025927173420dd51c1fe51"
+        },
+        {
+          "name": "pulse-compute-provider-node-1.0.0-beta.9.tgz",
+          "sha256": "f9a3cfc50051798a6c99c9bdb9a9dbb1d51ffd7632dbfa3369fc9282f91c3d1e"
+        },
+        {
+          "name": "pulse-compute-pulse-1.0.0-beta.9.tgz",
+          "sha256": "6bd70212b52d4613aa65352d7e83ae5d335f106f9eb273df0ab8c2e21c6157fb"
+        },
+        {
+          "name": "pulse-compute-runtime-1.0.0-beta.9.tgz",
+          "sha256": "c7a9cc9b14c60f02e9dc33464a33334ae1ca4103a544f84cac2d5770ad6fc471"
+        },
+        {
+          "name": "pulse-compute-s3-1.0.0-beta.9.tgz",
+          "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+        },
+        {
+          "name": "pulse-compute-wasm-build-support-1.0.0-beta.9.tgz",
+          "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+        },
+        {
+          "name": "pulse-compute-wasm-compiler-1.0.0-beta.9.tgz",
+          "sha256": "6ed69ec7c8894cae0f3252cd2fbe12577b7c09932c81f1173d16a28aacfc2ef6"
+        },
+        {
+          "name": "pulse-compute-wasm-contracts-1.0.0-beta.9.tgz",
+          "sha256": "8fbcfe76bcc26b7640cf329a4e997548077d5ce5cb9255cd7b7d38257b9161f3"
+        },
+        {
+          "name": "pulse-compute-wasm-guest-link-1.0.0-beta.9.tgz",
+          "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+        },
+        {
+          "name": "pulse-compute-wasm-host-runtime-1.0.0-beta.9.tgz",
+          "sha256": "e6431b32b468483dc64905cd09d7fdfc4ab6a592ef2666ad1a576400137b2417"
+        },
+        {
+          "name": "pulse-compute-wasm-library-kit-1.0.0-beta.9.tgz",
+          "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+        },
+        {
+          "name": "pulse-compute-wasm-runtime-core-as-1.0.0-beta.9.tgz",
+          "sha256": "5727840e18bc7208d9c9074f1a76db6938f96229acbdbe7f627988c1200e0dfc"
+        },
+        {
+          "name": "pulse-compute-wasm-schema-json-1.0.0-beta.9.tgz",
+          "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+        },
+        {
+          "name": "pulse-release-manifest.json",
+          "sha256": "a94ed6d41468477c733da402bdab67a400a7d90cf89020eeb699ec3ec768215c"
+        },
+        {
+          "name": "pulse-source-release-catalog.json",
+          "sha256": "b0375c179d283499d00667a7126aa10bb91e73d97946940d382bf614b7469378"
+        }
+      ],
+      "taskOccupancyMs": {
+        "taskReport": {
+          "compilerDesignated": 3068353,
+          "other": 439606
+        },
+        "featureTasks": {
+          "compilerDesignated": 584223,
+          "other": 0
+        }
+      }
+    },
+    {
+      "name": "b10-373-c2",
+      "measurementStatus": "passed",
+      "qualified": true,
+      "candidate": {
+        "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+        "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+        "workingTree": ""
+      },
+      "controllerMs": 2310193,
+      "wallMs": 2310660,
+      "coverage": {
+        "taskReport": {
+          "status": "passed",
+          "selected": 190,
+          "recorded": 190,
+          "orderedComplete": true,
+          "passed": 190,
+          "executed": 190,
+          "reused": 0,
+          "cleanupPassed": true
+        },
+        "featureTasks": {
+          "status": "passed",
+          "selected": 11,
+          "recorded": 11,
+          "orderedComplete": true,
+          "passed": 11,
+          "executed": 11,
+          "reused": 0,
+          "cleanupPassed": true
+        }
+      },
+      "controllerCleanup": {
+        "status": "passed",
+        "timedOut": false,
+        "retainedPath": null
+      },
+      "stages": {
+        "source-checks": {
+          "status": "passed",
+          "elapsedMs": 12622,
+          "exitCode": 0
+        },
+        "build": {
+          "status": "passed",
+          "elapsedMs": 181,
+          "exitCode": 0
+        },
+        "fastly-reality": {
+          "status": "passed",
+          "elapsedMs": 17070,
+          "exitCode": 0
+        },
+        "production-dependency-audit": {
+          "status": "passed",
+          "elapsedMs": 4558,
+          "exitCode": 0
+        },
+        "workspace-unit": {
+          "status": "passed",
+          "elapsedMs": 1781,
+          "exitCode": 0
+        },
+        "workspaces": {
+          "status": "passed",
+          "elapsedMs": 5083,
+          "exitCode": 0
+        },
+        "shared-pack": {
+          "status": "passed",
+          "elapsedMs": 3675,
+          "exitCode": 0
+        },
+        "release": {
+          "status": "passed",
+          "elapsedMs": 1913496,
+          "exitCode": 0
+        },
+        "installed-features": {
+          "status": "passed",
+          "elapsedMs": 332098,
+          "exitCode": 0
+        }
+      },
+      "metrics": {
+        "wallMs": 2310654,
+        "controllerMs": 2310193,
+        "workerOccupancyMs": 4201589,
+        "workerTimeDefinition": "Serial executed task elapsed time, including waits and cleanup; not CPU time or bootstrap steps",
+        "tasks": {
+          "completed": 201,
+          "passed": 201,
+          "executed": 201,
+          "reused": 0
+        },
+        "avoidedTaskOccupancyMs": 0,
+        "candidatePackages": 20,
+        "observedLaunches": {
+          "asc": 1712,
+          "pack": 45,
+          "install": 27
+        },
+        "observationScope": "Node child_process launches under inherited preload; lower bounds. Shell launches, native custom-promisified calls and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.",
+        "workerCpuMs": null,
+        "peakProcessTreeRSSKiB": null,
+        "resourceLimit": "Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer",
+        "observedNodeCpuMs": 5214048.97,
+        "peakObservedNodeRSSKiB": 632072,
+        "processTree": {
+          "schemaVersion": "pulse.seal-process-observation.v1",
+          "status": "observed",
+          "error": null,
+          "rootProcess": "505736:7198825",
+          "controllerNamespacePid": 22,
+          "intervalMs": 200,
+          "samples": 11518,
+          "maxGapMs": 242,
+          "readErrors": 0,
+          "sampledCpuMs": 5898590,
+          "peakSimultaneousProcessRSSKiB": 2129572,
+          "peakProcessCount": 13,
+          "remainingObservedProcesses": [],
+          "elapsedMs": 2310583,
+          "scope": "Linux /proc snapshots of controller and observed descendants, including detached children and known surviving identities; sampler excluded",
+          "limits": "Sampled lower bounds: short-lived processes, exit CPU tails and unseen reparenting can be missed. RSS sums include shared pages in each process; not unique physical or cgroup memory. Idle/wait states are sampled report observations, not compiler CPU or precise admission events."
+        },
+        "observedCompilerElapsedMs": 3238483.545374005
+      },
+      "sampledStages": {
+        "prerequisites": {
+          "samples": 21,
+          "peakRSSKiB": 97792,
+          "sampledMs": 4006,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 4006
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 0,
+          "peakSampledCpuCores": 0
+        },
+        "source-checks": {
+          "samples": 63,
+          "peakRSSKiB": 558504,
+          "sampledMs": 12432,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 12432
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 10560,
+          "peakSampledCpuCores": 1.8
+        },
+        "build": {
+          "samples": 1,
+          "peakRSSKiB": 231768,
+          "sampledMs": 0,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {},
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 0,
+          "peakSampledCpuCores": 0
+        },
+        "fastly-reality": {
+          "samples": 85,
+          "peakRSSKiB": 903684,
+          "sampledMs": 16830,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 10219,
+            "2": 6411,
+            "1": 200
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 12430,
+          "peakSampledCpuCores": 3.4
+        },
+        "production-dependency-audit": {
+          "samples": 23,
+          "peakRSSKiB": 217020,
+          "sampledMs": 4408,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 4408
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 80,
+          "peakSampledCpuCores": 0.2
+        },
+        "workspace-unit": {
+          "samples": 9,
+          "peakRSSKiB": 994060,
+          "sampledMs": 1610,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 1610
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 5620,
+          "peakSampledCpuCores": 5.721393034825871
+        },
+        "workspaces": {
+          "samples": 25,
+          "peakRSSKiB": 182512,
+          "sampledMs": 4803,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 4803
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 4540,
+          "peakSampledCpuCores": 1.05
+        },
+        "shared-pack": {
+          "samples": 18,
+          "peakRSSKiB": 522172,
+          "sampledMs": 3407,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 3407
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 2570,
+          "peakSampledCpuCores": 1.5
+        },
+        "release": {
+          "samples": 9536,
+          "peakRSSKiB": 2129572,
+          "sampledMs": 1913142,
+          "compilerActiveMs": {
+            "0": 207262,
+            "1": 94857,
+            "2": 1611023
+          },
+          "ascProcessCountMs": {
+            "0": 678330,
+            "2": 728256,
+            "1": 24865,
+            "4": 453206,
+            "3": 28485
+          },
+          "compilerLimitedMs": 1585116,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 22650,
+          "sampledCpuMs": 5211860,
+          "peakSampledCpuCores": 8.25870646766169
+        },
+        "installed-features": {
+          "samples": 1656,
+          "peakRSSKiB": 1987236,
+          "sampledMs": 331952,
+          "compilerActiveMs": {
+            "0": 2204,
+            "1": 43694,
+            "2": 285854
+          },
+          "ascProcessCountMs": {
+            "0": 219544,
+            "2": 96143,
+            "1": 5415,
+            "3": 1403,
+            "4": 9447
+          },
+          "compilerLimitedMs": 258384,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 48102,
+          "sampledCpuMs": 641770,
+          "peakSampledCpuCores": 7.192118226600985
+        },
+        "final-validation": {
+          "samples": 38,
+          "peakRSSKiB": 281740,
+          "sampledMs": 7414,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 7414
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 3990,
+          "peakSampledCpuCores": 1.5
+        },
+        "cleanup": {
+          "samples": 2,
+          "peakRSSKiB": 250692,
+          "sampledMs": 200,
+          "compilerActiveMs": {},
+          "ascProcessCountMs": {
+            "0": 200
+          },
+          "compilerLimitedMs": 0,
+          "compilerLimitedWithFreeWorkerMs": 0,
+          "idleWorkerSlotMs": 0,
+          "sampledCpuMs": 30,
+          "peakSampledCpuCores": 0.15
+        }
+      },
+      "attemptDirectory": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/attempts/2026-10-18T19-48-37-102Z-vSAzTr",
+      "context": {
+        "schemaVersion": "pulse.release-recovery.v1",
+        "candidate": {
+          "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+          "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+          "workingTree": "",
+          "repoRoot": "/tmp/pulse-b10-373-73fe1815"
+        },
+        "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+        "toolchain": {
+          "node": "v24.18.0",
+          "versions": {
+            "node": "24.18.0",
+            "acorn": "8.16.0",
+            "ada": "3.4.4",
+            "amaro": "1.1.9",
+            "ares": "1.34.6",
+            "brotli": "1.2.0",
+            "cldr": "48.0",
+            "icu": "78.3",
+            "llhttp": "9.4.2",
+            "merve": "1.2.2",
+            "modules": "137",
+            "napi": "10",
+            "nbytes": "0.1.4",
+            "ncrypto": "0.0.1",
+            "nghttp2": "1.69.0",
+            "nghttp3": "",
+            "ngtcp2": "",
+            "openssl": "3.5.7",
+            "simdjson": "4.6.4",
+            "simdutf": "6.4.0",
+            "sqlite": "3.53.1",
+            "tz": "2026b",
+            "undici": "7.28.0",
+            "unicode": "17.0",
+            "uv": "1.52.1",
+            "uvwasi": "0.0.23",
+            "v8": "13.6.233.17-node.50",
+            "zlib": "1.3.1-e00f703",
+            "zstd": "1.5.7"
+          },
+          "platform": "linux",
+          "arch": "x64",
+          "osRelease": "6.18.55",
+          "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+          "pnpmVersion": "12.4.2",
+          "pnpmSha256": "df602b81c2e2f75c72904664cf2ee2ce50e1394bef1cb2a153ed4c08d99bc6e4",
+          "fastly": {
+            "status": "available",
+            "fastlyCli": {
+              "binary": "/tmp/pulse-b10-373-73fe1815/.validation-tools/fastly/fastly",
+              "version": "16.1.0"
+            },
+            "localComputeEngine": {
+              "owner": "fastly-cli",
+              "selection": "managed"
+            }
+          },
+          "fastlySha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+        },
+        "environmentSha256": "31925a1cfc834dfa31cffd83d11812cd42e82bd73d758a437b6424db236c35f9",
+        "environmentKeys": {
+          "all_proxy": "26ff4b25929d9e29f838b4756360d9f14c4e9297d4eaa4dfb4f0cf6d178d3a00",
+          "ALL_PROXY": "54cfd01c8091cb51b4717b79b23943cdc62137858fe303a7e44315d293d35636",
+          "BUNDLE_HTTP_PROXY": "e6819cd9a6e68f67e8383c24ea12b74ed1161def167304eecc956e507c1bddd8",
+          "BUNDLE_HTTPS_PROXY": "1ac2da45c263f17a3a93dbe2fd19e3c9aa784ae6b5344704d8c6e783c0f019ce",
+          "BUNDLE_NO_PROXY": "aee424b86d3a6ea1a461216664e463a2a0cbc6da9c7340554ca22b7b6ca4ef4d",
+          "CAAS_IMAGE_GIT_COMMIT_SHA": "b46f7bd3b6540e24effa8e5f93b46bf97ef72a4510b3d2f800cc64d536daa1e2",
+          "CAAS_IMAGE_VERSION": "e3e7f0fdb81a8f75ffa5ed92c1dab9e460d3a018bfdcbabbba6add8d6e0f8905",
+          "CDP_PORT": "154c31ab571fa0c89750b88c0fa52cdd47bb23f4fd78281d823ebb68753c5d14",
+          "CODEX_APPLY_PATCH_PRESERVE_LINE_ENDINGS": "0babf436c4e506d0a6c08e62785da5bc5b32c7828ddde0d422237598e46bb946",
+          "CODEX_CI": "87c3116e1236fab45e24210986bd6dcfe72409015f0a932f3249bf7361a7ddcb",
+          "CODEX_ENVIRONMENT_ID": "bdc1edd9751e863780d88c29d66219f7257dde71faf0cdde634672c098fba0ce",
+          "CODEX_EXEC_SERVER_REMOTE_BASE_URL": "359c12e986daea6511715ce04dc597f764af7992537ac96d64173946fa7a9449",
+          "CODEX_FLORA_CCA_BOOTSTRAP_ATTEMPT_ID": "455cc6622f57ddc42e92fa85fdb93fac5eb5a7f6757e7e1970d586bd36743921",
+          "CODEX_FLORA_CCA_EXPECTED_EXECUTOR_PID": "d235b684dde2ccf72e46223d1829baa29ec4cc0f625459d67fbc0044864dfe3a",
+          "CODEX_FLORA_CCA_GATEWAY_HOST_ALIASES": "047db1c35333a03ad8939dc3c707afcfa01652740242a2b440369d0008534d93",
+          "CODEX_FLORA_CCA_GATEWAY_RESOLUTION_HOST": "336d78059e44838be1c5526ef272625a17eda97c9a10c170bef123104d2ea6f6",
+          "CODEX_FLORA_CCA_REUSE_EXECUTOR": "8ec7f118a189e7c8ae630adfaabb91c871c398034ea12b5b57b6c5b85a6a725e",
+          "CODEX_FLORA_CCA_WORKSPACE_CWD": "805abf39ef831fb20f9456f86080405d51df8763eaa0b2b60a7c823fc4e527f1",
+          "CODEX_HOME": "bb35f5d5a8f010673ee75baa769c03c5a7885f60ce558d51c6eafa8177f60fc6",
+          "CODEX_NETWORK_ALLOW_LOCAL_BINDING": "2cd6509a2384cdb5207bd60dbd52b91ce570d25f43e8ea292586c09ddf44c219",
+          "CODEX_NETWORK_PROXY_ACTIVE": "23b8246e6b37e4375b836b4d8d3c3b6e25a3e328fadbb2167c1c1a7d2449770b",
+          "CODEX_PRIMARY_RUNTIME": "f2e3ed8041989056b3a7b34841ebabd71ea6d3eede6728d19ff9ea1318b981ef",
+          "CODEX_PRIMARY_RUNTIME_BUNDLE_VERSION": "b5130c5b182c1e6fcd8cca03eb977fa715378abdca20c767ca65aeecd720dbc4",
+          "CODEX_PRIMARY_RUNTIME_NODE": "a8a5cba42207fd47cc5c55f0fc8eb1e2d6a5b3df28196bf2405cf95c9224dd85",
+          "CODEX_PRIMARY_RUNTIME_NODE_MODULES": "78853f0ae4bfd42148c219962e6bd5c0d4d3766fdf099d127fc0c353b4114381",
+          "CODEX_PRIMARY_RUNTIME_PYTHON": "758747974fb843b3a141da68a44c843fa4b1186f6948520fe84577b25ca409f0",
+          "CODEX_PRIMARY_RUNTIME_ROOT": "a4aa7ea53bd56be927b2888f630594329a868954a4fdab9779370cbdf65af45b",
+          "CODEX_PROXY_CERT": "fcb36d6f5087046da43743886f6f07bcb32282e51ca373b8111261c92d642a89",
+          "CODEX_SANDBOX_NETWORK_DISABLED": "e8265ce559574dadd78ab45a9d6581faafb4b2d39184d09aa7bed4039e37a752",
+          "CODEX_SESSION_ID": "656231cbab008bace60ff0f3d22a0caba73234da9536583c8eeb0f69305f12e2",
+          "CODEX_THREAD_ID": "5091f158f490e1f0872d6170637db6d25141a906d6f95ab44b5415eae655b739",
+          "CODEX_TOOL_CALL_ID": "63d8c647652f10e62a52208273e99fe0760d964b5a8da2e87e6fc5925a19a4d0",
+          "CODEX_VERSION": "5bac15a0b4d1246537e331f22b73108456da4eb88966416521595ac92aba7161",
+          "COLORTERM": "698cd7fd58b3cc2c70c97bbbe3410e6c59a14440bf9da01f53e6dc7433079c36",
+          "DD_SERVICE": "e6879a329fa7c74ee752013f485dd2cd1da48f971bfa02de60b3759548d24c86",
+          "DEBIAN_FRONTEND": "1beeb8b477173e4a0f110eb7b1bbd263a1219a80996794ea357d1f48504ba13a",
+          "DOCKER_HTTP_PROXY": "8e24ad44fa965360b5df97bd0b76ed085ffa02d395d3ad07b6ae7d1912669f09",
+          "DOCKER_HTTPS_PROXY": "71311c6aed6b216390ad0f67602f50ea45e88ce271f0570c7c8f6f3ea93220fa",
+          "ELECTRON_GET_USE_PROXY": "d27c90e1ca0ed07a30a2bcb552e813dc7f5bc539bfe02fb016dd0bbe2c50bb11",
+          "ftp_proxy": "4901c9637c725d59a4a734ebffdf4a86f5d41f8937253e9c947ca397f8f86621",
+          "FTP_PROXY": "26f0d14aa12889110c1954ee2e97ea888fef6453c15a986e800bba1edf31b774",
+          "GH_PAGER": "4b1ab13a478e7130da0100d314d651536c7165dba36a41b6c0909a4e3a51b738",
+          "GIT_PAGER": "b8f45e48733206cfe4258e1dd366b6dd5d44c576fb4873a294207186dccd855d",
+          "GRADLE_OPTS": "cf43b0c50ab649de32fddf61ada4a1a8f6f286aa0c3b452730d4f21cb831ac81",
+          "HOME": "d2ba7043b134f6cd56f9b79b237d476b77a1dad0cd4862ff36628ebc83173d82",
+          "http_proxy": "8a97f0b9ee0fba096a5fca6cf52c8b0eb04d8157960bd3dec0b34318b705fef3",
+          "HTTP_PROXY": "46370dde75394a7872d4c0591f4cc641a93b10ebc10b13937cbe7371ec670905",
+          "https_proxy": "66dd0ca344057988d4d295e60a49a8d8d614d42eade39afb21cf718c584d6aa5",
+          "HTTPS_PROXY": "be78372074a5917f03a4c89b39a2a138d187e9e24f30d82a4208b28aee17aa60",
+          "LANG": "cd51059741df470ced36a4b9c4cd09acd04237f3ef96a986c78db8c2b60e1659",
+          "LC_ALL": "9ff1638e7ffc0de4b7537a3e0bfaafdb4aa2f7b6bca7f8b3694cee46e97406a3",
+          "LC_CTYPE": "56a0ba4505b0e0af1e86c6cc98a0406900a3e44d3c0cb4ead2a06aa2b387fe45",
+          "NETWORK": "1159c86efe54104859337d9f0a83f48c87d8bff57e867642752d013a7ccac5e7",
+          "NO_COLOR": "487b5b67060864952c3911b657dce76060d6fb34363dca8d3fe577c76a42373d",
+          "no_proxy": "6f6865c3983575b99fbca5737fa5bd025de2c863aa424a945bb669c88e186d5c",
+          "NO_PROXY": "78192d02b6061f670ecbb0d1e6d9e60262f768f44724503e668bfc968dd87add",
+          "NODE_EXTRA_CA_CERTS": "ecfcdac8864e0b93909fa31d76517f18bcd710d19a9c611219a3f3869df70f0f",
+          "NODE_OPTIONS": "62def438a350a49ed4072e3339808b702046d6d821608311bf8a4ad09f863f20",
+          "NODE_PATH": "7f9c243d26c0574f2bb6bd5d1364d702fe6fa1d2156dae7856d7ac1a229ef0b8",
+          "NODE_USE_ENV_PROXY": "e9f1ad85441378cfd7a90d0f178b549893104ad49d90cd44112700588c6508fe",
+          "NPM_CONFIG_AUDIT": "d9c825fdf949b442857b3a78a5072e8c9d2919b5790b07178bd2528e318208c1",
+          "NPM_CONFIG_CACHE": "1f24549a1568eb02e774061462256af9d93d3e9a253d379586e7c32784d9e19d",
+          "NPM_CONFIG_FUND": "d37be70449dc254c08a26aa034c4b2d7bf10b0997f279a5e0181e98d5590f6c1",
+          "npm_config_http_proxy": "5d5d63b049ba75285daef2527586ff0647389e2a6e43a3f1bb888d99da871f5c",
+          "NPM_CONFIG_HTTP_PROXY": "50ecfb2bc64fa7a62d054fc2bc3a4e9940ad8bac1790d5f75919268735649e33",
+          "npm_config_https_proxy": "197bc588fb2fafd4fc1170392a2a82d65b3fc6b76b74aaf83a26bb9f0e78886d",
+          "NPM_CONFIG_HTTPS_PROXY": "4709234408b7198e6482416ee440539033164e714e48cdc018fbfee750b911c3",
+          "npm_config_noproxy": "180791f9d2c50594d36976478eb246df556fcc358edfaf9afefe736442e22d7b",
+          "NPM_CONFIG_NOPROXY": "df16cf5fefebe1dfba0e6888f3370eb2ffa58ec65d3ff4c0bacf6eac0bf4cb93",
+          "npm_config_proxy": "1cb9a287fb39912a2e413e17200ba07c447942f381caf0d7ba71081bc5dfeacf",
+          "NPM_CONFIG_PROXY": "d34ef3a9bc807815fdcf7b7f099ba3ca139cc8e854e89b18a4be105c6ed87d72",
+          "OPENAI_CLUSTER": "b6514f3502586075a1c1005ba447a8d41089ee5217165c5d50c290656d4dfec8",
+          "OTEL_RESOURCE_ATTRIBUTES": "eb0b6e19cba638060d629ed224b474a107a2319246fc076864489db5a4de8573",
+          "OTEL_TRACES_SAMPLER": "3e74a25ebf571f66534e75e1f634f2e8354b7f2f23ce23a0510d9074c8d558fe",
+          "OTEL_TRACES_SAMPLER_ARG": "990651e6aa0b02d9464894a19f1a0f55f10ad87d7ce528d229ff5e7d3bf9c498",
+          "PAGER": "52c51c665714966f720606d49f4acfa7e16a5c317ada18c93e14502d0874ac82",
+          "PATH": "429fac7f9cfffbaf5a1e5516cb1c61dcdbb4ce97c2c0d21c14bb5db02dde75f1",
+          "PIP_CERT": "ee8734d353b19b270c4cb6906acbe76944adde12bffdc984755e8f3e6e3c0b9c",
+          "PIP_PROXY": "4c20cb26126b91ee5dcb6c05cfd014c15a2191d860c2c4d019ff5cdf45a24b19",
+          "PULSE_FASTLY_BIN": "f8e4ca4d3a3477fa454d0a9db03f95e7d49c01abbf6d6975c04a1ce6b6c9c988",
+          "REQUESTS_CA_BUNDLE": "e618d7ea5643ab0f3ed4a25f235c43536c830b55e4e0618c905e02c3500ac106",
+          "RSYNC_DELETE": "4b347f267bd7a12147f2061069478b0b620f174115f42066f6618c7acc8cb872",
+          "RSYNC_DIR": "65aceaa0bbf6b7e8d72246ca62fcb41b70e27de9b20410f2f9f1b3546231209e",
+          "RSYNC_HOST": "0f295a4d3805ea4366fe1ea3858d1c4b95919e6f7e36bd8a95095b62415df5a3",
+          "RSYNC_MODULE": "b7d7baffa268f1c37c887913a469f1c13777c5a80bcf0b9e38ba9eac85ad7bd8",
+          "RSYNC_PASSWORD": "3a45965010f51275fe622d4e0d554f3981bde863ad55848905881c0be322da32",
+          "SITES_MANAGED_LINUX_CONTAINER": "dabc166151e2dbec57350cf49aa819c1813743a32fcdc1f93c36ee5e07d092c3",
+          "SITES_NPM_CACHE_SEED": "9f6315caf101066b4b0fe8a8f3647a7fafd000d339b4c55c7be78be4c81f53b8",
+          "SITES_PNPM_BIN": "6d5f3acc89fbed443a9bc0b0ca675f2907b7ef65f21689484a58f6a3db39669f",
+          "SITES_PNPM_CACHE_SEED": "855da68209ef8bd17f8359871bd2211e5e6f2cae1e19989952fea229c8c23a09",
+          "SITES_PNPM_SHARED_STORE": "d07b87da8b9d8d8f08a9f39c74024a7fb51ce00d101ccbf991737582a5243b76",
+          "SITES_PNPM_VERSION": "826c1156d4a0ee56d44127b01556746cf953327e7a5d833594dc8a1f8065a43e",
+          "SSL_CERT_FILE": "8592f1e98b703ab910568dfc2ff79cb530b6ae0e2a249581a6765257c175be99",
+          "TERM": "6c93ab051f11e563692a22954b8dd6c2e6f26caa0c4b037936abf333ecec0b24",
+          "TZ": "3b01957bbdb931b5ae8de174f1b5a2ceebf694e3d96f31e30275c94ea16100e6",
+          "ws_proxy": "d9cece9b002ee6444958f7d9b79edcd4f3ce2605bcad7cd4435161748424703c",
+          "WS_PROXY": "08947e69bdb7f18521d054dd53bf825ccdb6c2c3838b436947263262ef8eb98c",
+          "wss_proxy": "bf2db08dcf937af71515f08e7d110d6d37d879af26eae41915aac57952ebb59d",
+          "WSS_PROXY": "13d9b15ca61f1451251ad426430f1bd6b85efc815288436695523599c8b0079f",
+          "YARN_HTTP_PROXY": "313827c00e4a08f6697f226354429e42f33de59dd8c2ca45b13520a58a6f099f",
+          "YARN_HTTPS_PROXY": "9eb9785fa9f1832477171a7229072c6a86ae398a47b8af40e71252993fdeedeb"
+        },
+        "options": {
+          "requireFastly": true,
+          "install": false,
+          "workers": 2,
+          "memoryBudgetMiB": 6144,
+          "compilerWorkers": 2,
+          "dependencyBundleSha256": null
+        },
+        "selections": {
+          "release": [
+            "report-capsule-contract",
+            "cli-report-workflow",
+            "cli-report-viewer",
+            "cli-report-retained-evidence",
+            "cli-report-size-evidence",
+            "cli-report-capture-proof",
+            "cli-report-entry-proof",
+            "cli-report-reference-provenance",
+            "cli-report-handler-topology",
+            "cli-report-handler-associations",
+            "cli-report-relationships",
+            "cli-report-imported-inputs",
+            "cli-report-resource-inventory",
+            "cli-report-graph-diagnostics",
+            "multifile-source-indexes",
+            "guest-json-roundtrip",
+            "pure-helper-contract",
+            "suite-shape",
+            "test-orchestration",
+            "package-exports",
+            "boundaries",
+            "workspace-hygiene",
+            "hidden-contracts",
+            "release-feature-acceptance",
+            "release-runtime-policy",
+            "release-seal-lifecycle",
+            "release-checkpoints",
+            "release-recovery-runner",
+            "release-recovery",
+            "release-tag",
+            "api-surface",
+            "logging-contract",
+            "s3-design-contract",
+            "kv-design-contract",
+            "kv-conditional-runtime",
+            "kv-conditional-gates",
+            "s3-read-contract",
+            "s3-write-contract",
+            "crypto-config-planning",
+            "crypto-es256-signing",
+            "crypto-rs256",
+            "crypto-digest-text-contract",
+            "reachable-graph",
+            "project-modules",
+            "package-reachability",
+            "external-lowerers",
+            "package-runtime",
+            "provider-toolchain",
+            "schema-registry",
+            "continuation-registry",
+            "entities-contracts",
+            "entities-schema-bridge",
+            "entities-javascript-runtime",
+            "entities-json-rpc-corpus",
+            "mcp-http",
+            "pulse-context-corpus",
+            "pulse-context-application",
+            "pulse-context-host",
+            "mcp-compatibility",
+            "mcp-tools",
+            "mcp-authorization",
+            "entities-package-owned-lowering",
+            "entities-catalog",
+            "entities-inspection",
+            "entities-orchestration-demo",
+            "npm-source-imports",
+            "fastly-numeric-regions",
+            "fastly-numeric-budgets",
+            "fastly-handle-ownership",
+            "fastly-handle-frames",
+            "pure-helper-vocabulary",
+            "pure-string-index",
+            "pure-field-projection",
+            "pure-guarded-arguments",
+            "pure-source-helpers",
+            "pure-record-helpers",
+            "pure-argument-helpers",
+            "pure-loop-helpers",
+            "fastly-driver-behavior-o09",
+            "kv-native-abi-feasibility",
+            "s3-body-read",
+            "s3-node-transport",
+            "canonical-api-lowering",
+            "canonical-native-plan",
+            "shared-stage-o19",
+            "str02b-node-native",
+            "fastly-incoming-body-forwarding",
+            "str03a-generated-output",
+            "str03c-bounded-transforms",
+            "bounded-app-logic",
+            "bounded-read-loops",
+            "bounded-loop-helpers",
+            "logging-lowering",
+            "canonical-router-lowering",
+            "canonical-router-terminal-middleware",
+            "router-selected-groups",
+            "json-as-compatibility",
+            "entities-envelope-feasibility",
+            "entities-managed-handler",
+            "entities-managed-handler-effects",
+            "entities-native-runtime",
+            "entities-hardening",
+            "entities-node-native-workflow",
+            "fastly-entities-native-workflow",
+            "crypto-native-guest-source",
+            "guest-link-package",
+            "guest-link-materialization-stage",
+            "guest-link-audit-diagnostics",
+            "assets-lowering-plan",
+            "assets-package-owned-lowering",
+            "assets-native-embedded",
+            "grip-package-owned-lowering",
+            "jwt-package-owned-lowering",
+            "canonical-api-runtime",
+            "canonical-opaque-node-emission",
+            "grip-package-runtime",
+            "package-root-native",
+            "canonical-native-wasm",
+            "cli-javascript-target-compilation",
+            "target-support",
+            "jwt-javascript-admission",
+            "crypto-runtime-builtin",
+            "javascript-effect-adapter",
+            "logging-runtime",
+            "assets-javascript-runtime",
+            "jwt-signing",
+            "jwt-es256-signing",
+            "jwt-rs256",
+            "crypto-cross-target-conformance",
+            "crypto-digest-text-conformance",
+            "crypto-digest-storage-conformance",
+            "text-capacity-conformance",
+            "events-conformance",
+            "node-router-context-parity",
+            "catalog-router-parity",
+            "fetch-projections-request-bodies",
+            "config-secrets-kv-redaction",
+            "kv-conditional-conformance",
+            "fastly-conditional-kv",
+            "schema-codecs",
+            "schema-kv-parity",
+            "time-conformance",
+            "time-consumer",
+            "node-launcher",
+            "application-errors",
+            "application-error-boundaries",
+            "node-cross-target-conformance",
+            "grip-cross-target-conformance",
+            "four-mode-conformance",
+            "cli-command-spec",
+            "cli-init-workflow",
+            "cli-project-workflow",
+            "cli-expansion-doctor",
+            "cli-project-guards",
+            "cli-dev-workflow",
+            "cli-schema-json-workflow",
+            "events-cli-workflow",
+            "cli-diagnostics",
+            "docs-executable-contracts",
+            "docs-executable-init-dev",
+            "docs-migration-schema-lowering",
+            "docs-example-01-hello-json",
+            "docs-example-02-request-schema",
+            "docs-example-03-fetch-composition",
+            "docs-example-05-fastly-capabilities",
+            "docs-example-07-opaque-proxy",
+            "docs-example-09-router-lowering",
+            "docs-example-10-entities-tools",
+            "docs-example-11-events",
+            "docs-example-12-pulse-context-mcp",
+            "docs-example-13-jwt-es256",
+            "provider-packages",
+            "provider-fastly-package",
+            "provider-fastly-apps",
+            "canonical-grip-fastly",
+            "fastly-cli-gate-surface",
+            "fastly-javascript-packaging",
+            "fastly-javascript-runtime",
+            "fastly-javascript-tooling",
+            "fastly-native-http-shell",
+            "fastly-native-http-effects",
+            "fastly-native-platform-capabilities",
+            "fastly-request-headers",
+            "release-packages",
+            "release-artifact-determinism",
+            "clean-machine-acceptance",
+            "cli-entities-installed-workflow",
+            "npm-source-installed-workflow",
+            "release-evidence-authority",
+            "deployment-candidates"
+          ],
+          "features": [
+            "str02b-installed",
+            "node01-installed",
+            "arc01-installed",
+            "jwt-installed-workflow",
+            "str02-installed",
+            "str03b-installed",
+            "ast01-installed",
+            "ast02b-installed",
+            "ast02d-installed",
+            "mcp-installed",
+            "s3-body-installed"
+          ]
+        },
+        "inputs": {
+          "dependenciesSha256": "03824a6ae0788482bc7d16127ebe42385c163232bb172b1c94c8141a3c54f5df",
+          "dependencyFiles": 9496,
+          "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+          "build": [
+            {
+              "path": "packages/assets/dist",
+              "kind": "directory",
+              "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+            },
+            {
+              "path": "packages/crypto/dist",
+              "kind": "directory",
+              "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+            },
+            {
+              "path": "packages/entities/dist",
+              "kind": "directory",
+              "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+            },
+            {
+              "path": "packages/grip/dist",
+              "kind": "directory",
+              "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+            },
+            {
+              "path": "packages/jwt/dist",
+              "kind": "directory",
+              "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+            },
+            {
+              "path": "packages/provider-fastly/dist",
+              "kind": "directory",
+              "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+            }
+          ]
+        },
+        "scheduling": {
+          "schemaVersion": "pulse.seal-workers.v1",
+          "root": "/tmp/pulse-b10-373-73fe1815",
+          "candidate": {
+            "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+            "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+            "workingTree": ""
+          },
+          "workers": 2,
+          "memoryBudgetMiB": 6144,
+          "estimatedWorkerMiB": 768,
+          "compilerWorkers": 2,
+          "workspaces": [
+            {
+              "id": "worker-1",
+              "directory": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/workspaces/2fe181bb7cc55b57c39817b902e487277851df27-2/worker-1",
+              "inputs": {
+                "dependenciesSha256": "20a0b0dadde3ce612633f232d0567b52603078de8080e9b3c58e28a3d95d7785",
+                "dependencyFiles": 9496,
+                "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+                "build": [
+                  {
+                    "path": "packages/assets/dist",
+                    "kind": "directory",
+                    "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+                  },
+                  {
+                    "path": "packages/crypto/dist",
+                    "kind": "directory",
+                    "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+                  },
+                  {
+                    "path": "packages/entities/dist",
+                    "kind": "directory",
+                    "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+                  },
+                  {
+                    "path": "packages/grip/dist",
+                    "kind": "directory",
+                    "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+                  },
+                  {
+                    "path": "packages/jwt/dist",
+                    "kind": "directory",
+                    "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+                  },
+                  {
+                    "path": "packages/provider-fastly/dist",
+                    "kind": "directory",
+                    "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "worker-2",
+              "directory": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/workspaces/2fe181bb7cc55b57c39817b902e487277851df27-2/worker-2",
+              "inputs": {
+                "dependenciesSha256": "1d0e169877b0fa9a99867e08ef833efdd5b4100fd48c014a1d5ccbb946726c40",
+                "dependencyFiles": 9496,
+                "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+                "build": [
+                  {
+                    "path": "packages/assets/dist",
+                    "kind": "directory",
+                    "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+                  },
+                  {
+                    "path": "packages/crypto/dist",
+                    "kind": "directory",
+                    "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+                  },
+                  {
+                    "path": "packages/entities/dist",
+                    "kind": "directory",
+                    "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+                  },
+                  {
+                    "path": "packages/grip/dist",
+                    "kind": "directory",
+                    "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+                  },
+                  {
+                    "path": "packages/jwt/dist",
+                    "kind": "directory",
+                    "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+                  },
+                  {
+                    "path": "packages/provider-fastly/dist",
+                    "kind": "directory",
+                    "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "sharedPackFiles": [
+        {
+          "name": "pulse-compute-assets-1.0.0-beta.9.tgz",
+          "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+        },
+        {
+          "name": "pulse-compute-cli-1.0.0-beta.9.tgz",
+          "sha256": "a3d53fe474c46f9371367dbab1056587cfb783608d513d49682dd9ea8318e016"
+        },
+        {
+          "name": "pulse-compute-crypto-1.0.0-beta.9.tgz",
+          "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+        },
+        {
+          "name": "pulse-compute-entities-1.0.0-beta.9.tgz",
+          "sha256": "dbab4994a8314525ae601d018fede8a183ba6abaa7057eaa19fa108125fac9bb"
+        },
+        {
+          "name": "pulse-compute-grip-1.0.0-beta.9.tgz",
+          "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+        },
+        {
+          "name": "pulse-compute-jwt-1.0.0-beta.9.tgz",
+          "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+        },
+        {
+          "name": "pulse-compute-mcp-1.0.0-beta.9.tgz",
+          "sha256": "e30d935b5c04fdcd3b2d5ef5fae8a0acc64d133eb12ffc750026f8d59198e3e7"
+        },
+        {
+          "name": "pulse-compute-provider-fastly-1.0.0-beta.9.tgz",
+          "sha256": "97b26c43f261be87c9768b375d08cefa44e19a3e8f025927173420dd51c1fe51"
+        },
+        {
+          "name": "pulse-compute-provider-node-1.0.0-beta.9.tgz",
+          "sha256": "f9a3cfc50051798a6c99c9bdb9a9dbb1d51ffd7632dbfa3369fc9282f91c3d1e"
+        },
+        {
+          "name": "pulse-compute-pulse-1.0.0-beta.9.tgz",
+          "sha256": "6bd70212b52d4613aa65352d7e83ae5d335f106f9eb273df0ab8c2e21c6157fb"
+        },
+        {
+          "name": "pulse-compute-runtime-1.0.0-beta.9.tgz",
+          "sha256": "c7a9cc9b14c60f02e9dc33464a33334ae1ca4103a544f84cac2d5770ad6fc471"
+        },
+        {
+          "name": "pulse-compute-s3-1.0.0-beta.9.tgz",
+          "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+        },
+        {
+          "name": "pulse-compute-wasm-build-support-1.0.0-beta.9.tgz",
+          "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+        },
+        {
+          "name": "pulse-compute-wasm-compiler-1.0.0-beta.9.tgz",
+          "sha256": "6ed69ec7c8894cae0f3252cd2fbe12577b7c09932c81f1173d16a28aacfc2ef6"
+        },
+        {
+          "name": "pulse-compute-wasm-contracts-1.0.0-beta.9.tgz",
+          "sha256": "8fbcfe76bcc26b7640cf329a4e997548077d5ce5cb9255cd7b7d38257b9161f3"
+        },
+        {
+          "name": "pulse-compute-wasm-guest-link-1.0.0-beta.9.tgz",
+          "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+        },
+        {
+          "name": "pulse-compute-wasm-host-runtime-1.0.0-beta.9.tgz",
+          "sha256": "e6431b32b468483dc64905cd09d7fdfc4ab6a592ef2666ad1a576400137b2417"
+        },
+        {
+          "name": "pulse-compute-wasm-library-kit-1.0.0-beta.9.tgz",
+          "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+        },
+        {
+          "name": "pulse-compute-wasm-runtime-core-as-1.0.0-beta.9.tgz",
+          "sha256": "5727840e18bc7208d9c9074f1a76db6938f96229acbdbe7f627988c1200e0dfc"
+        },
+        {
+          "name": "pulse-compute-wasm-schema-json-1.0.0-beta.9.tgz",
+          "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+        },
+        {
+          "name": "pulse-release-manifest.json",
+          "sha256": "a94ed6d41468477c733da402bdab67a400a7d90cf89020eeb699ec3ec768215c"
+        },
+        {
+          "name": "pulse-source-release-catalog.json",
+          "sha256": "b0375c179d283499d00667a7126aa10bb91e73d97946940d382bf614b7469378"
+        }
+      ],
+      "taskOccupancyMs": {
+        "taskReport": {
+          "compilerDesignated": 3176456,
+          "other": 421423
+        },
+        "featureTasks": {
+          "compilerDesignated": 603710,
+          "other": 0
+        }
+      }
+    }
+  ],
+  "sameInputs": {
+    "candidate": true,
+    "lockfileSha256": true,
+    "toolchain": true,
+    "selections": true,
+    "inputs": true
+  },
+  "sameSharedPackFiles": true,
+  "sameWorkerInputs": [
+    true,
+    true
+  ],
+  "environmentIdentityEqual": false,
+  "changedEnvironmentKeys": [
+    "ALL_PROXY",
+    "BUNDLE_HTTPS_PROXY",
+    "BUNDLE_HTTP_PROXY",
+    "CODEX_TOOL_CALL_ID",
+    "DOCKER_HTTPS_PROXY",
+    "DOCKER_HTTP_PROXY",
+    "FTP_PROXY",
+    "HTTPS_PROXY",
+    "HTTP_PROXY",
+    "NODE_OPTIONS",
+    "NPM_CONFIG_HTTPS_PROXY",
+    "NPM_CONFIG_HTTP_PROXY",
+    "NPM_CONFIG_PROXY",
+    "PIP_PROXY",
+    "WSS_PROXY",
+    "WS_PROXY",
+    "YARN_HTTPS_PROXY",
+    "YARN_HTTP_PROXY",
+    "all_proxy",
+    "ftp_proxy",
+    "http_proxy",
+    "https_proxy",
+    "npm_config_http_proxy",
+    "npm_config_https_proxy",
+    "npm_config_proxy",
+    "ws_proxy",
+    "wss_proxy"
+  ],
+  "environmentNote": "Compare per-key hashes explicitly. Fresh NODE_OPTIONS preload paths and inherited executor/proxy values can differ; raw values were not retained. Matching source/tools/inputs does not establish complete inherited-environment equivalence. No checkpoint reuse.",
+  "taskComparison": [
+    {
+      "stage": "featureTasks",
+      "name": "jwt-installed-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 287900,
+      "c2Ms": 294238,
+      "deltaMs": 6338,
+      "ratio": 1.0220145883987495,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-schema-json-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 66050,
+      "c2Ms": 71290,
+      "deltaMs": 5240,
+      "ratio": 1.079333838001514,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-project-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 72716,
+      "c2Ms": 76956,
+      "deltaMs": 4240,
+      "ratio": 1.0583090379008746,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "node01-installed",
+      "compilerDesignated": true,
+      "c1Ms": 27625,
+      "c2Ms": 31264,
+      "deltaMs": 3639,
+      "ratio": 1.1317285067873304,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "schema-codecs",
+      "compilerDesignated": true,
+      "c1Ms": 114877,
+      "c2Ms": 118466,
+      "deltaMs": 3589,
+      "ratio": 1.0312421111275538,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-rs256",
+      "compilerDesignated": true,
+      "c1Ms": 312842,
+      "c2Ms": 315957,
+      "deltaMs": 3115,
+      "ratio": 1.0099571029465353,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-entities-installed-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 100292,
+      "c2Ms": 103405,
+      "deltaMs": 3113,
+      "ratio": 1.0310393650540421,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "four-mode-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 36397,
+      "c2Ms": 39243,
+      "deltaMs": 2846,
+      "ratio": 1.078193257686073,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-handler-topology",
+      "compilerDesignated": true,
+      "c1Ms": 52136,
+      "c2Ms": 54923,
+      "deltaMs": 2787,
+      "ratio": 1.0534563449439927,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "str03b-installed",
+      "compilerDesignated": true,
+      "c1Ms": 44898,
+      "c2Ms": 47681,
+      "deltaMs": 2783,
+      "ratio": 1.0619849436500512,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-handle-frames",
+      "compilerDesignated": true,
+      "c1Ms": 82316,
+      "c2Ms": 84904,
+      "deltaMs": 2588,
+      "ratio": 1.0314398172894699,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-02-request-schema",
+      "compilerDesignated": true,
+      "c1Ms": 15687,
+      "c2Ms": 18045,
+      "deltaMs": 2358,
+      "ratio": 1.1503155479059093,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "npm-source-installed-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 47041,
+      "c2Ms": 49325,
+      "deltaMs": 2284,
+      "ratio": 1.0485533895963095,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-conditional-kv",
+      "compilerDesignated": true,
+      "c1Ms": 27827,
+      "c2Ms": 30043,
+      "deltaMs": 2216,
+      "ratio": 1.079634886980271,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-07-opaque-proxy",
+      "compilerDesignated": true,
+      "c1Ms": 19362,
+      "c2Ms": 21492,
+      "deltaMs": 2130,
+      "ratio": 1.1100092965602728,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-es256-signing",
+      "compilerDesignated": true,
+      "c1Ms": 34566,
+      "c2Ms": 36670,
+      "deltaMs": 2104,
+      "ratio": 1.060869062084129,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-executable-contracts",
+      "compilerDesignated": true,
+      "c1Ms": 29335,
+      "c2Ms": 31364,
+      "deltaMs": 2029,
+      "ratio": 1.0691665246292825,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-native-platform-capabilities",
+      "compilerDesignated": true,
+      "c1Ms": 117505,
+      "c2Ms": 119514,
+      "deltaMs": 2009,
+      "ratio": 1.017097144802349,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-numeric-regions",
+      "compilerDesignated": true,
+      "c1Ms": 59065,
+      "c2Ms": 60965,
+      "deltaMs": 1900,
+      "ratio": 1.032167950562939,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-entities-native-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 74857,
+      "c2Ms": 76700,
+      "deltaMs": 1843,
+      "ratio": 1.024620275992893,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "events-cli-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 53692,
+      "c2Ms": 55377,
+      "deltaMs": 1685,
+      "ratio": 1.031382701333532,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-entry-proof",
+      "compilerDesignated": true,
+      "c1Ms": 33832,
+      "c2Ms": 35515,
+      "deltaMs": 1683,
+      "ratio": 1.0497458027902578,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-03-fetch-composition",
+      "compilerDesignated": true,
+      "c1Ms": 12213,
+      "c2Ms": 13839,
+      "deltaMs": 1626,
+      "ratio": 1.1331368214197985,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-init-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 23958,
+      "c2Ms": 25542,
+      "deltaMs": 1584,
+      "ratio": 1.0661157024793388,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "str03c-bounded-transforms",
+      "compilerDesignated": true,
+      "c1Ms": 13948,
+      "c2Ms": 15529,
+      "deltaMs": 1581,
+      "ratio": 1.1133495841697734,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-13-jwt-es256",
+      "compilerDesignated": true,
+      "c1Ms": 29631,
+      "c2Ms": 31184,
+      "deltaMs": 1553,
+      "ratio": 1.0524113259761736,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-05-fastly-capabilities",
+      "compilerDesignated": true,
+      "c1Ms": 21932,
+      "c2Ms": 23436,
+      "deltaMs": 1504,
+      "ratio": 1.0685755973007478,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-numeric-budgets",
+      "compilerDesignated": true,
+      "c1Ms": 41932,
+      "c2Ms": 43430,
+      "deltaMs": 1498,
+      "ratio": 1.035724506343604,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "schema-kv-parity",
+      "compilerDesignated": true,
+      "c1Ms": 14683,
+      "c2Ms": 16121,
+      "deltaMs": 1438,
+      "ratio": 1.0979363890213172,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-driver-behavior-o09",
+      "compilerDesignated": true,
+      "c1Ms": 31860,
+      "c2Ms": 33285,
+      "deltaMs": 1425,
+      "ratio": 1.0447269303201507,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-09-router-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 13547,
+      "c2Ms": 14946,
+      "deltaMs": 1399,
+      "ratio": 1.1032700967003766,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "bounded-read-loops",
+      "compilerDesignated": true,
+      "c1Ms": 42188,
+      "c2Ms": 43568,
+      "deltaMs": 1380,
+      "ratio": 1.0327107234284632,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "str03a-generated-output",
+      "compilerDesignated": true,
+      "c1Ms": 17721,
+      "c2Ms": 19066,
+      "deltaMs": 1345,
+      "ratio": 1.0758986513176458,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-argument-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 22189,
+      "c2Ms": 23520,
+      "deltaMs": 1331,
+      "ratio": 1.059984677092253,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "arc01-installed",
+      "compilerDesignated": true,
+      "c1Ms": 57383,
+      "c2Ms": 58707,
+      "deltaMs": 1324,
+      "ratio": 1.0230730355680253,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "s3-body-installed",
+      "compilerDesignated": true,
+      "c1Ms": 25092,
+      "c2Ms": 26412,
+      "deltaMs": 1320,
+      "ratio": 1.0526064084170252,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "mcp-installed",
+      "compilerDesignated": true,
+      "c1Ms": 37835,
+      "c2Ms": 39109,
+      "deltaMs": 1274,
+      "ratio": 1.033672525439408,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-handle-ownership",
+      "compilerDesignated": true,
+      "c1Ms": 41217,
+      "c2Ms": 42487,
+      "deltaMs": 1270,
+      "ratio": 1.0308125288109276,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-reference-provenance",
+      "compilerDesignated": true,
+      "c1Ms": 14962,
+      "c2Ms": 16207,
+      "deltaMs": 1245,
+      "ratio": 1.0832108006950942,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-01-hello-json",
+      "compilerDesignated": true,
+      "c1Ms": 11686,
+      "c2Ms": 12906,
+      "deltaMs": 1220,
+      "ratio": 1.1043984254663701,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-project-guards",
+      "compilerDesignated": true,
+      "c1Ms": 11828,
+      "c2Ms": 13007,
+      "deltaMs": 1179,
+      "ratio": 1.0996787284409875,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-10-entities-tools",
+      "compilerDesignated": true,
+      "c1Ms": 11859,
+      "c2Ms": 13006,
+      "deltaMs": 1147,
+      "ratio": 1.096719790876128,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "catalog-router-parity",
+      "compilerDesignated": true,
+      "c1Ms": 23450,
+      "c2Ms": 24584,
+      "deltaMs": 1134,
+      "ratio": 1.048358208955224,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "bounded-app-logic",
+      "compilerDesignated": true,
+      "c1Ms": 39709,
+      "c2Ms": 40833,
+      "deltaMs": 1124,
+      "ratio": 1.028305925608804,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-record-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 18845,
+      "c2Ms": 19965,
+      "deltaMs": 1120,
+      "ratio": 1.0594322101353144,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "str02b-installed",
+      "compilerDesignated": true,
+      "c1Ms": 32279,
+      "c2Ms": 33364,
+      "deltaMs": 1085,
+      "ratio": 1.0336131850429071,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-guarded-arguments",
+      "compilerDesignated": true,
+      "c1Ms": 41868,
+      "c2Ms": 42911,
+      "deltaMs": 1043,
+      "ratio": 1.024911627018248,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-expansion-doctor",
+      "compilerDesignated": true,
+      "c1Ms": 12524,
+      "c2Ms": 13550,
+      "deltaMs": 1026,
+      "ratio": 1.0819227083998721,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-retained-evidence",
+      "compilerDesignated": true,
+      "c1Ms": 33983,
+      "c2Ms": 34986,
+      "deltaMs": 1003,
+      "ratio": 1.0295147573786894,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-signing",
+      "compilerDesignated": true,
+      "c1Ms": 15290,
+      "c2Ms": 16261,
+      "deltaMs": 971,
+      "ratio": 1.0635055591890124,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "time-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 10060,
+      "c2Ms": 10954,
+      "deltaMs": 894,
+      "ratio": 1.0888667992047714,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-field-projection",
+      "compilerDesignated": true,
+      "c1Ms": 14373,
+      "c2Ms": 15253,
+      "deltaMs": 880,
+      "ratio": 1.061225909691783,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-hardening",
+      "compilerDesignated": true,
+      "c1Ms": 33764,
+      "c2Ms": 34633,
+      "deltaMs": 869,
+      "ratio": 1.0257374718635233,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-imported-inputs",
+      "compilerDesignated": true,
+      "c1Ms": 16833,
+      "c2Ms": 17680,
+      "deltaMs": 847,
+      "ratio": 1.0503178280758034,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-11-events",
+      "compilerDesignated": true,
+      "c1Ms": 18283,
+      "c2Ms": 19115,
+      "deltaMs": 832,
+      "ratio": 1.0455067549089319,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-node-native-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 23097,
+      "c2Ms": 23904,
+      "deltaMs": 807,
+      "ratio": 1.034939602545785,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "application-errors",
+      "compilerDesignated": true,
+      "c1Ms": 21381,
+      "c2Ms": 22181,
+      "deltaMs": 800,
+      "ratio": 1.037416397736308,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-native-wasm",
+      "compilerDesignated": true,
+      "c1Ms": 59936,
+      "c2Ms": 60736,
+      "deltaMs": 800,
+      "ratio": 1.013347570742125,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-graph-diagnostics",
+      "compilerDesignated": true,
+      "c1Ms": 8522,
+      "c2Ms": 9304,
+      "deltaMs": 782,
+      "ratio": 1.0917624970664164,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "str02-installed",
+      "compilerDesignated": true,
+      "c1Ms": 28371,
+      "c2Ms": 29151,
+      "deltaMs": 780,
+      "ratio": 1.027492862429946,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "provider-fastly-package",
+      "compilerDesignated": true,
+      "c1Ms": 13118,
+      "c2Ms": 13892,
+      "deltaMs": 774,
+      "ratio": 1.0590028967830463,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "str02b-node-native",
+      "compilerDesignated": true,
+      "c1Ms": 9295,
+      "c2Ms": 10039,
+      "deltaMs": 744,
+      "ratio": 1.0800430338891878,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-loop-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 9102,
+      "c2Ms": 9826,
+      "deltaMs": 724,
+      "ratio": 1.0795429575917381,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-javascript-tooling",
+      "compilerDesignated": true,
+      "c1Ms": 19277,
+      "c2Ms": 19998,
+      "deltaMs": 721,
+      "ratio": 1.0374020853867303,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-dev-workflow",
+      "compilerDesignated": true,
+      "c1Ms": 14308,
+      "c2Ms": 14996,
+      "deltaMs": 688,
+      "ratio": 1.0480849874196254,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-executable-init-dev",
+      "compilerDesignated": true,
+      "c1Ms": 10593,
+      "c2Ms": 11259,
+      "deltaMs": 666,
+      "ratio": 1.0628717077315208,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-cross-target-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 8422,
+      "c2Ms": 9058,
+      "deltaMs": 636,
+      "ratio": 1.0755165043932557,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-router-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 10422,
+      "c2Ms": 11047,
+      "deltaMs": 625,
+      "ratio": 1.059969295720591,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-resource-inventory",
+      "compilerDesignated": true,
+      "c1Ms": 9547,
+      "c2Ms": 10159,
+      "deltaMs": 612,
+      "ratio": 1.064103906986488,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-incoming-body-forwarding",
+      "compilerDesignated": true,
+      "c1Ms": 11162,
+      "c2Ms": 11773,
+      "deltaMs": 611,
+      "ratio": 1.0547392940333273,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-diagnostics",
+      "compilerDesignated": true,
+      "c1Ms": 8075,
+      "c2Ms": 8676,
+      "deltaMs": 601,
+      "ratio": 1.0744272445820433,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "time-consumer",
+      "compilerDesignated": true,
+      "c1Ms": 21087,
+      "c2Ms": 21676,
+      "deltaMs": 589,
+      "ratio": 1.0279319011713377,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-body-read",
+      "compilerDesignated": true,
+      "c1Ms": 10127,
+      "c2Ms": 10668,
+      "deltaMs": 541,
+      "ratio": 1.0534215463612127,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "grip-cross-target-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 9972,
+      "c2Ms": 10512,
+      "deltaMs": 540,
+      "ratio": 1.0541516245487366,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-digest-storage-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 14216,
+      "c2Ms": 14734,
+      "deltaMs": 518,
+      "ratio": 1.0364378165447383,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "assets-native-embedded",
+      "compilerDesignated": true,
+      "c1Ms": 15699,
+      "c2Ms": 16195,
+      "deltaMs": 496,
+      "ratio": 1.0315943690680935,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "deployment-candidates",
+      "compilerDesignated": true,
+      "c1Ms": 24185,
+      "c2Ms": 24666,
+      "deltaMs": 481,
+      "ratio": 1.0198883605540625,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-capture-proof",
+      "compilerDesignated": true,
+      "c1Ms": 11032,
+      "c2Ms": 11507,
+      "deltaMs": 475,
+      "ratio": 1.0430565627266135,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "node-launcher",
+      "compilerDesignated": true,
+      "c1Ms": 10035,
+      "c2Ms": 10491,
+      "deltaMs": 456,
+      "ratio": 1.0454409566517189,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "config-secrets-kv-redaction",
+      "compilerDesignated": true,
+      "c1Ms": 4331,
+      "c2Ms": 4777,
+      "deltaMs": 446,
+      "ratio": 1.1029785268990995,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-digest-text-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 12114,
+      "c2Ms": 12556,
+      "deltaMs": 442,
+      "ratio": 1.0364867095922075,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "ast02d-installed",
+      "compilerDesignated": true,
+      "c1Ms": 30664,
+      "c2Ms": 31088,
+      "deltaMs": 424,
+      "ratio": 1.0138272893295068,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "ast01-installed",
+      "compilerDesignated": true,
+      "c1Ms": 6019,
+      "c2Ms": 6428,
+      "deltaMs": 409,
+      "ratio": 1.0679514869579665,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-conditional-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 6995,
+      "c2Ms": 7392,
+      "deltaMs": 397,
+      "ratio": 1.0567548248749106,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "clean-machine-acceptance",
+      "compilerDesignated": true,
+      "c1Ms": 249390,
+      "c2Ms": 249781,
+      "deltaMs": 391,
+      "ratio": 1.0015678254942058,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "guest-link-materialization-stage",
+      "compilerDesignated": true,
+      "c1Ms": 27942,
+      "c2Ms": 28330,
+      "deltaMs": 388,
+      "ratio": 1.01388590652065,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "grip-package-owned-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 4183,
+      "c2Ms": 4569,
+      "deltaMs": 386,
+      "ratio": 1.0922782691847956,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-api-runtime",
+      "compilerDesignated": true,
+      "c1Ms": 4785,
+      "c2Ms": 5168,
+      "deltaMs": 383,
+      "ratio": 1.0800417972831766,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-api-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 4605,
+      "c2Ms": 4985,
+      "deltaMs": 380,
+      "ratio": 1.0825190010857764,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "guest-link-audit-diagnostics",
+      "compilerDesignated": true,
+      "c1Ms": 16510,
+      "c2Ms": 16880,
+      "deltaMs": 370,
+      "ratio": 1.0224106602059357,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-relationships",
+      "compilerDesignated": true,
+      "c1Ms": 8921,
+      "c2Ms": 9262,
+      "deltaMs": 341,
+      "ratio": 1.0382244143033292,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "multifile-source-indexes",
+      "compilerDesignated": false,
+      "c1Ms": 4151,
+      "c2Ms": 4478,
+      "deltaMs": 327,
+      "ratio": 1.078776198506384,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-native-abi-feasibility",
+      "compilerDesignated": true,
+      "c1Ms": 4454,
+      "c2Ms": 4777,
+      "deltaMs": 323,
+      "ratio": 1.0725190839694656,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-native-plan",
+      "compilerDesignated": true,
+      "c1Ms": 8368,
+      "c2Ms": 8681,
+      "deltaMs": 313,
+      "ratio": 1.037404397705545,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-orchestration-demo",
+      "compilerDesignated": true,
+      "c1Ms": 9877,
+      "c2Ms": 10181,
+      "deltaMs": 304,
+      "ratio": 1.0307785764908373,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "shared-stage-o19",
+      "compilerDesignated": true,
+      "c1Ms": 8640,
+      "c2Ms": 8926,
+      "deltaMs": 286,
+      "ratio": 1.0331018518518518,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "router-selected-groups",
+      "compilerDesignated": true,
+      "c1Ms": 8138,
+      "c2Ms": 8421,
+      "deltaMs": 283,
+      "ratio": 1.0347751290243303,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-request-headers",
+      "compilerDesignated": true,
+      "c1Ms": 15830,
+      "c2Ms": 16110,
+      "deltaMs": 280,
+      "ratio": 1.0176879343019583,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "provider-packages",
+      "compilerDesignated": true,
+      "c1Ms": 4034,
+      "c2Ms": 4310,
+      "deltaMs": 276,
+      "ratio": 1.0684184432325234,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "node-router-context-parity",
+      "compilerDesignated": true,
+      "c1Ms": 7000,
+      "c2Ms": 7274,
+      "deltaMs": 274,
+      "ratio": 1.0391428571428571,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-source-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 11744,
+      "c2Ms": 12006,
+      "deltaMs": 262,
+      "ratio": 1.0223092643051772,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-example-12-pulse-context-mcp",
+      "compilerDesignated": true,
+      "c1Ms": 8407,
+      "c2Ms": 8667,
+      "deltaMs": 260,
+      "ratio": 1.030926608778399,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "bounded-loop-helpers",
+      "compilerDesignated": true,
+      "c1Ms": 8321,
+      "c2Ms": 8574,
+      "deltaMs": 253,
+      "ratio": 1.0304049993991107,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "provider-fastly-apps",
+      "compilerDesignated": true,
+      "c1Ms": 4455,
+      "c2Ms": 4701,
+      "deltaMs": 246,
+      "ratio": 1.0552188552188553,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "guest-link-package",
+      "compilerDesignated": true,
+      "c1Ms": 9726,
+      "c2Ms": 9965,
+      "deltaMs": 239,
+      "ratio": 1.0245733086572075,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-cli-gate-surface",
+      "compilerDesignated": true,
+      "c1Ms": 4330,
+      "c2Ms": 4547,
+      "deltaMs": 217,
+      "ratio": 1.0501154734411084,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "json-as-compatibility",
+      "compilerDesignated": true,
+      "c1Ms": 6764,
+      "c2Ms": 6975,
+      "deltaMs": 211,
+      "ratio": 1.0311945594322887,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "api-surface",
+      "compilerDesignated": false,
+      "c1Ms": 4868,
+      "c2Ms": 5072,
+      "deltaMs": 204,
+      "ratio": 1.0419063270336895,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fetch-projections-request-bodies",
+      "compilerDesignated": true,
+      "c1Ms": 4524,
+      "c2Ms": 4722,
+      "deltaMs": 198,
+      "ratio": 1.0437665782493368,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-opaque-node-emission",
+      "compilerDesignated": true,
+      "c1Ms": 5205,
+      "c2Ms": 5394,
+      "deltaMs": 189,
+      "ratio": 1.0363112391930835,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-helper-vocabulary",
+      "compilerDesignated": true,
+      "c1Ms": 6405,
+      "c2Ms": 6567,
+      "deltaMs": 162,
+      "ratio": 1.0252927400468383,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-javascript-runtime",
+      "compilerDesignated": true,
+      "c1Ms": 3896,
+      "c2Ms": 4036,
+      "deltaMs": 140,
+      "ratio": 1.0359342915811087,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-packages",
+      "compilerDesignated": true,
+      "c1Ms": 4358,
+      "c2Ms": 4498,
+      "deltaMs": 140,
+      "ratio": 1.0321248279027078,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-package-owned-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 4280,
+      "c2Ms": 4412,
+      "deltaMs": 132,
+      "ratio": 1.030841121495327,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-feature-acceptance",
+      "compilerDesignated": false,
+      "c1Ms": 4246,
+      "c2Ms": 4358,
+      "deltaMs": 112,
+      "ratio": 1.0263777673104097,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "featureTasks",
+      "name": "ast02b-installed",
+      "compilerDesignated": true,
+      "c1Ms": 6157,
+      "c2Ms": 6268,
+      "deltaMs": 111,
+      "ratio": 1.0180282605164852,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "text-capacity-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 17855,
+      "c2Ms": 17966,
+      "deltaMs": 111,
+      "ratio": 1.006216746009521,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "logging-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 5758,
+      "c2Ms": 5861,
+      "deltaMs": 103,
+      "ratio": 1.0178881556095867,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-string-index",
+      "compilerDesignated": true,
+      "c1Ms": 7706,
+      "c2Ms": 7809,
+      "deltaMs": 103,
+      "ratio": 1.0133662081494939,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "assets-package-owned-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 4156,
+      "c2Ms": 4256,
+      "deltaMs": 100,
+      "ratio": 1.0240615976900866,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "test-orchestration",
+      "compilerDesignated": false,
+      "c1Ms": 19735,
+      "c2Ms": 19834,
+      "deltaMs": 99,
+      "ratio": 1.005016468203699,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "hidden-contracts",
+      "compilerDesignated": false,
+      "c1Ms": 4145,
+      "c2Ms": 4243,
+      "deltaMs": 98,
+      "ratio": 1.023642943305187,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "assets-lowering-plan",
+      "compilerDesignated": true,
+      "c1Ms": 4236,
+      "c2Ms": 4329,
+      "deltaMs": 93,
+      "ratio": 1.021954674220963,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "package-root-native",
+      "compilerDesignated": true,
+      "c1Ms": 5320,
+      "c2Ms": 5403,
+      "deltaMs": 83,
+      "ratio": 1.0156015037593984,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-command-spec",
+      "compilerDesignated": true,
+      "c1Ms": 3901,
+      "c2Ms": 3981,
+      "deltaMs": 80,
+      "ratio": 1.0205075621635478,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-checkpoints",
+      "compilerDesignated": false,
+      "c1Ms": 4275,
+      "c2Ms": 4347,
+      "deltaMs": 72,
+      "ratio": 1.016842105263158,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "schema-registry",
+      "compilerDesignated": false,
+      "c1Ms": 4809,
+      "c2Ms": 4872,
+      "deltaMs": 63,
+      "ratio": 1.0131004366812226,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-conditional-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 5248,
+      "c2Ms": 5306,
+      "deltaMs": 58,
+      "ratio": 1.0110518292682926,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-tag",
+      "compilerDesignated": false,
+      "c1Ms": 4541,
+      "c2Ms": 4595,
+      "deltaMs": 54,
+      "ratio": 1.0118916538207443,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "reachable-graph",
+      "compilerDesignated": false,
+      "c1Ms": 4014,
+      "c2Ms": 4053,
+      "deltaMs": 39,
+      "ratio": 1.0097159940209268,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "report-capsule-contract",
+      "compilerDesignated": true,
+      "c1Ms": 18860,
+      "c2Ms": 18897,
+      "deltaMs": 37,
+      "ratio": 1.0019618239660657,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-router-terminal-middleware",
+      "compilerDesignated": true,
+      "c1Ms": 11143,
+      "c2Ms": 11165,
+      "deltaMs": 22,
+      "ratio": 1.001974333662389,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "provider-toolchain",
+      "compilerDesignated": false,
+      "c1Ms": 3978,
+      "c2Ms": 3994,
+      "deltaMs": 16,
+      "ratio": 1.0040221216691805,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "boundaries",
+      "compilerDesignated": false,
+      "c1Ms": 4218,
+      "c2Ms": 4231,
+      "deltaMs": 13,
+      "ratio": 1.0030820293978189,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "docs-migration-schema-lowering",
+      "compilerDesignated": true,
+      "c1Ms": 4043,
+      "c2Ms": 4055,
+      "deltaMs": 12,
+      "ratio": 1.0029680930002474,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "workspace-hygiene",
+      "compilerDesignated": false,
+      "c1Ms": 4051,
+      "c2Ms": 4056,
+      "deltaMs": 5,
+      "ratio": 1.0012342631449025,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "npm-source-imports",
+      "compilerDesignated": true,
+      "c1Ms": 7969,
+      "c2Ms": 7966,
+      "deltaMs": -3,
+      "ratio": 0.9996235412222362,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-native-http-shell",
+      "compilerDesignated": true,
+      "c1Ms": 8603,
+      "c2Ms": 8592,
+      "deltaMs": -11,
+      "ratio": 0.998721376264094,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-catalog",
+      "compilerDesignated": false,
+      "c1Ms": 4140,
+      "c2Ms": 4118,
+      "deltaMs": -22,
+      "ratio": 0.9946859903381643,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-conditional-gates",
+      "compilerDesignated": false,
+      "c1Ms": 4444,
+      "c2Ms": 4421,
+      "deltaMs": -23,
+      "ratio": 0.9948244824482448,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "canonical-grip-fastly",
+      "compilerDesignated": true,
+      "c1Ms": 14709,
+      "c2Ms": 14677,
+      "deltaMs": -32,
+      "ratio": 0.9978244612142226,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-envelope-feasibility",
+      "compilerDesignated": true,
+      "c1Ms": 6139,
+      "c2Ms": 6106,
+      "deltaMs": -33,
+      "ratio": 0.9946245316826845,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "target-support",
+      "compilerDesignated": false,
+      "c1Ms": 4357,
+      "c2Ms": 4319,
+      "deltaMs": -38,
+      "ratio": 0.9912784025705761,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-native-guest-source",
+      "compilerDesignated": true,
+      "c1Ms": 7724,
+      "c2Ms": 7683,
+      "deltaMs": -41,
+      "ratio": 0.9946918694976696,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "events-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 6503,
+      "c2Ms": 6462,
+      "deltaMs": -41,
+      "ratio": 0.9936952175918806,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "grip-package-runtime",
+      "compilerDesignated": true,
+      "c1Ms": 4583,
+      "c2Ms": 4535,
+      "deltaMs": -48,
+      "ratio": 0.9895265110189831,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "guest-json-roundtrip",
+      "compilerDesignated": false,
+      "c1Ms": 4079,
+      "c2Ms": 4030,
+      "deltaMs": -49,
+      "ratio": 0.9879872517773964,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-runtime-policy",
+      "compilerDesignated": false,
+      "c1Ms": 5985,
+      "c2Ms": 5931,
+      "deltaMs": -54,
+      "ratio": 0.9909774436090225,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-viewer",
+      "compilerDesignated": true,
+      "c1Ms": 13969,
+      "c2Ms": 13914,
+      "deltaMs": -55,
+      "ratio": 0.9960627102870642,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "application-error-boundaries",
+      "compilerDesignated": true,
+      "c1Ms": 7573,
+      "c2Ms": 7505,
+      "deltaMs": -68,
+      "ratio": 0.9910207315462829,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-runtime-builtin",
+      "compilerDesignated": false,
+      "c1Ms": 4655,
+      "c2Ms": 4576,
+      "deltaMs": -79,
+      "ratio": 0.9830290010741138,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "package-exports",
+      "compilerDesignated": false,
+      "c1Ms": 4134,
+      "c2Ms": 4054,
+      "deltaMs": -80,
+      "ratio": 0.980648282535075,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "project-modules",
+      "compilerDesignated": false,
+      "c1Ms": 5053,
+      "c2Ms": 4973,
+      "deltaMs": -80,
+      "ratio": 0.9841678210963783,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-digest-text-contract",
+      "compilerDesignated": false,
+      "c1Ms": 4423,
+      "c2Ms": 4342,
+      "deltaMs": -81,
+      "ratio": 0.9816866380284874,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "mcp-http",
+      "compilerDesignated": false,
+      "c1Ms": 4309,
+      "c2Ms": 4225,
+      "deltaMs": -84,
+      "ratio": 0.9805059178463681,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "package-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 4090,
+      "c2Ms": 4001,
+      "deltaMs": -89,
+      "ratio": 0.978239608801956,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pure-helper-contract",
+      "compilerDesignated": false,
+      "c1Ms": 5138,
+      "c2Ms": 5045,
+      "deltaMs": -93,
+      "ratio": 0.9818995718178279,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-native-runtime",
+      "compilerDesignated": true,
+      "c1Ms": 9960,
+      "c2Ms": 9863,
+      "deltaMs": -97,
+      "ratio": 0.9902610441767068,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "external-lowerers",
+      "compilerDesignated": true,
+      "c1Ms": 5492,
+      "c2Ms": 5394,
+      "deltaMs": -98,
+      "ratio": 0.9821558630735615,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-read-contract",
+      "compilerDesignated": false,
+      "c1Ms": 5883,
+      "c2Ms": 5784,
+      "deltaMs": -99,
+      "ratio": 0.9831718510963794,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "node-cross-target-conformance",
+      "compilerDesignated": true,
+      "c1Ms": 9340,
+      "c2Ms": 9240,
+      "deltaMs": -100,
+      "ratio": 0.9892933618843683,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-javascript-packaging",
+      "compilerDesignated": true,
+      "c1Ms": 4825,
+      "c2Ms": 4716,
+      "deltaMs": -109,
+      "ratio": 0.9774093264248704,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-managed-handler",
+      "compilerDesignated": true,
+      "c1Ms": 4441,
+      "c2Ms": 4327,
+      "deltaMs": -114,
+      "ratio": 0.9743301058320198,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-contracts",
+      "compilerDesignated": false,
+      "c1Ms": 4184,
+      "c2Ms": 4057,
+      "deltaMs": -127,
+      "ratio": 0.9696462715105163,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-handler-associations",
+      "compilerDesignated": false,
+      "c1Ms": 5035,
+      "c2Ms": 4906,
+      "deltaMs": -129,
+      "ratio": 0.9743793445878848,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "suite-shape",
+      "compilerDesignated": false,
+      "c1Ms": 4126,
+      "c2Ms": 3953,
+      "deltaMs": -173,
+      "ratio": 0.9580707707222491,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-evidence-authority",
+      "compilerDesignated": true,
+      "c1Ms": 4946,
+      "c2Ms": 4758,
+      "deltaMs": -188,
+      "ratio": 0.9619894864537,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "package-reachability",
+      "compilerDesignated": false,
+      "c1Ms": 5129,
+      "c2Ms": 4940,
+      "deltaMs": -189,
+      "ratio": 0.9631507116396959,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-config-planning",
+      "compilerDesignated": false,
+      "c1Ms": 4720,
+      "c2Ms": 4517,
+      "deltaMs": -203,
+      "ratio": 0.9569915254237288,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "logging-contract",
+      "compilerDesignated": false,
+      "c1Ms": 4109,
+      "c2Ms": 3906,
+      "deltaMs": -203,
+      "ratio": 0.9505962521294719,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-es256-signing",
+      "compilerDesignated": false,
+      "c1Ms": 4233,
+      "c2Ms": 4026,
+      "deltaMs": -207,
+      "ratio": 0.9510985116938342,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-json-rpc-corpus",
+      "compilerDesignated": false,
+      "c1Ms": 4059,
+      "c2Ms": 3852,
+      "deltaMs": -207,
+      "ratio": 0.9490022172949002,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "fastly-native-http-effects",
+      "compilerDesignated": true,
+      "c1Ms": 15881,
+      "c2Ms": 15667,
+      "deltaMs": -214,
+      "ratio": 0.9865247780366476,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-managed-handler-effects",
+      "compilerDesignated": true,
+      "c1Ms": 4845,
+      "c2Ms": 4630,
+      "deltaMs": -215,
+      "ratio": 0.95562435500516,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-write-contract",
+      "compilerDesignated": false,
+      "c1Ms": 4467,
+      "c2Ms": 4236,
+      "deltaMs": -231,
+      "ratio": 0.9482874412357287,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-javascript-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 4834,
+      "c2Ms": 4600,
+      "deltaMs": -234,
+      "ratio": 0.9515928837401738,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-design-contract",
+      "compilerDesignated": false,
+      "c1Ms": 5293,
+      "c2Ms": 5059,
+      "deltaMs": -234,
+      "ratio": 0.9557906669185717,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-seal-lifecycle",
+      "compilerDesignated": false,
+      "c1Ms": 7718,
+      "c2Ms": 7476,
+      "deltaMs": -242,
+      "ratio": 0.9686447266131122,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "continuation-registry",
+      "compilerDesignated": false,
+      "c1Ms": 4118,
+      "c2Ms": 3871,
+      "deltaMs": -247,
+      "ratio": 0.9400194269062652,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pulse-context-application",
+      "compilerDesignated": false,
+      "c1Ms": 10043,
+      "c2Ms": 9792,
+      "deltaMs": -251,
+      "ratio": 0.9750074678880812,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pulse-context-corpus",
+      "compilerDesignated": false,
+      "c1Ms": 5073,
+      "c2Ms": 4780,
+      "deltaMs": -293,
+      "ratio": 0.9422432485708654,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "jwt-javascript-admission",
+      "compilerDesignated": false,
+      "c1Ms": 10941,
+      "c2Ms": 10644,
+      "deltaMs": -297,
+      "ratio": 0.9728544008774335,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-schema-bridge",
+      "compilerDesignated": false,
+      "c1Ms": 4474,
+      "c2Ms": 4170,
+      "deltaMs": -304,
+      "ratio": 0.9320518551631649,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-size-evidence",
+      "compilerDesignated": false,
+      "c1Ms": 4882,
+      "c2Ms": 4573,
+      "deltaMs": -309,
+      "ratio": 0.9367062679229824,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "mcp-tools",
+      "compilerDesignated": false,
+      "c1Ms": 4444,
+      "c2Ms": 4126,
+      "deltaMs": -318,
+      "ratio": 0.9284428442844285,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-package-owned-lowering",
+      "compilerDesignated": false,
+      "c1Ms": 4524,
+      "c2Ms": 4162,
+      "deltaMs": -362,
+      "ratio": 0.9199823165340407,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "s3-node-transport",
+      "compilerDesignated": false,
+      "c1Ms": 4836,
+      "c2Ms": 4468,
+      "deltaMs": -368,
+      "ratio": 0.923904052936311,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "kv-design-contract",
+      "compilerDesignated": false,
+      "c1Ms": 5448,
+      "c2Ms": 5030,
+      "deltaMs": -418,
+      "ratio": 0.9232745961820852,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "crypto-rs256",
+      "compilerDesignated": false,
+      "c1Ms": 6453,
+      "c2Ms": 5997,
+      "deltaMs": -456,
+      "ratio": 0.9293351929335193,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "mcp-compatibility",
+      "compilerDesignated": false,
+      "c1Ms": 4554,
+      "c2Ms": 4072,
+      "deltaMs": -482,
+      "ratio": 0.8941589811155028,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "mcp-authorization",
+      "compilerDesignated": false,
+      "c1Ms": 7321,
+      "c2Ms": 6836,
+      "deltaMs": -485,
+      "ratio": 0.9337522196421254,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "pulse-context-host",
+      "compilerDesignated": false,
+      "c1Ms": 7587,
+      "c2Ms": 7089,
+      "deltaMs": -498,
+      "ratio": 0.9343614076710162,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "assets-javascript-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 5179,
+      "c2Ms": 4678,
+      "deltaMs": -501,
+      "ratio": 0.9032631782197336,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "javascript-effect-adapter",
+      "compilerDesignated": false,
+      "c1Ms": 4883,
+      "c2Ms": 4377,
+      "deltaMs": -506,
+      "ratio": 0.8963751791931189,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-report-workflow",
+      "compilerDesignated": false,
+      "c1Ms": 6686,
+      "c2Ms": 6141,
+      "deltaMs": -545,
+      "ratio": 0.9184863894705354,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "logging-runtime",
+      "compilerDesignated": false,
+      "c1Ms": 4520,
+      "c2Ms": 3972,
+      "deltaMs": -548,
+      "ratio": 0.8787610619469026,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-recovery",
+      "compilerDesignated": false,
+      "c1Ms": 6868,
+      "c2Ms": 6312,
+      "deltaMs": -556,
+      "ratio": 0.9190448456610367,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-artifact-determinism",
+      "compilerDesignated": false,
+      "c1Ms": 26281,
+      "c2Ms": 25470,
+      "deltaMs": -811,
+      "ratio": 0.9691412046725771,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "cli-javascript-target-compilation",
+      "compilerDesignated": false,
+      "c1Ms": 21749,
+      "c2Ms": 20246,
+      "deltaMs": -1503,
+      "ratio": 0.9308933744080188,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "entities-inspection",
+      "compilerDesignated": false,
+      "c1Ms": 17658,
+      "c2Ms": 15265,
+      "deltaMs": -2393,
+      "ratio": 0.8644806886397101,
+      "status1": "passed",
+      "status2": "passed"
+    },
+    {
+      "stage": "taskReport",
+      "name": "release-recovery-runner",
+      "compilerDesignated": false,
+      "c1Ms": 70208,
+      "c2Ms": 66566,
+      "deltaMs": -3642,
+      "ratio": 0.9481255697356427,
+      "status1": "passed",
+      "status2": "passed"
+    }
+  ],
+  "passedTaskMedianRatio": 1.024911627018248,
+  "passedTaskAggregateRatio": 1.0267356143983821,
+  "schemaVersion": "pulse.b10-373-comparison.v1",
+  "setup": {
+    "candidate": {
+      "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+      "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+      "workingTree": ""
+    },
+    "checkout": "/tmp/pulse-b10-373-73fe1815",
+    "tools": {
+      "node": "24.18.0",
+      "npm": "11.15.0",
+      "pnpm": "12.4.2",
+      "fastly": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-10-19)\nViceroy version: viceroy 0.21.1\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 16.2.0\nRun `fastly update` to get the latest version."
+    },
+    "cpuMax": "800000 100000",
+    "memoryMax": "8589934592",
+    "graphProvenance": "Copied existing frozen-lockfile, ignore-scripts installation and build outputs from prior validated checkout; absolute workspace links rebound; same lockfile bytes verified; skip-install trials. Fresh workspace build before baseline.",
+    "hashes": {
+      "pnpm-lock.yaml": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+      "release/pulse-release-manifest.json": "b0375c179d283499d00667a7126aa10bb91e73d97946940d382bf614b7469378",
+      ".validation-tools/pnpm/bin/pnpm": "df602b81c2e2f75c72904664cf2ee2ce50e1394bef1cb2a153ed4c08d99bc6e4",
+      ".validation-tools/fastly/fastly": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1",
+      "/workspace/scratch/15c3ad7c5dc3/b10-tools/verified-node/node-v24.18.0-linux-x64/bin/node": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    }
+  },
+  "inputBarriers": {
+    "before-c1": {
+      "candidate": {
+        "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+        "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+        "workingTree": ""
+      },
+      "inputs": {
+        "dependenciesSha256": "03824a6ae0788482bc7d16127ebe42385c163232bb172b1c94c8141a3c54f5df",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      },
+      "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "pnpmSha256": "df602b81c2e2f75c72904664cf2ee2ce50e1394bef1cb2a153ed4c08d99bc6e4",
+      "fastlySha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1",
+      "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3"
+    },
+    "after-c1": {
+      "candidate": {
+        "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+        "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+        "workingTree": ""
+      },
+      "inputs": {
+        "dependenciesSha256": "03824a6ae0788482bc7d16127ebe42385c163232bb172b1c94c8141a3c54f5df",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      },
+      "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "pnpmSha256": "df602b81c2e2f75c72904664cf2ee2ce50e1394bef1cb2a153ed4c08d99bc6e4",
+      "fastlySha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1",
+      "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3"
+    },
+    "after-c2": {
+      "candidate": {
+        "sourceRevision": "73fe181525b1d466e2a4dc16be23607823799068",
+        "sourceTree": "2fe181bb7cc55b57c39817b902e487277851df27",
+        "workingTree": ""
+      },
+      "inputs": {
+        "dependenciesSha256": "03824a6ae0788482bc7d16127ebe42385c163232bb172b1c94c8141a3c54f5df",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      },
+      "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "pnpmSha256": "df602b81c2e2f75c72904664cf2ee2ce50e1394bef1cb2a153ed4c08d99bc6e4",
+      "fastlySha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1",
+      "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3"
+    }
+  },
+  "inputBarriersEqual": true,
+  "runnerCgroupSnapshots": {
+    "cgroup-c1-active": {
+      "capturedAt": "2026-10-18T19:13:58.273487+00:00",
+      "phase": "c1-active-about-1830s",
+      "scope": "Whole shared runner cgroup; cumulative counters include earlier work, not solely this trial",
+      "cgroup": {
+        "memory.events": "low 0\nhigh 0\nmax 38507\noom 0\noom_kill 0\noom_group_kill 0\n",
+        "memory.current": "7256879104\n",
+        "memory.peak": "8590524416\n",
+        "memory.max": "8589934592\n",
+        "cpu.max": "800000 100000\n",
+        "cpu.stat": "usage_usec 30623127319\nuser_usec 25683254529\nsystem_usec 4939872789\nnice_usec 0\nnr_periods 284864\nnr_throttled 262\nthrottled_usec 8373174\nnr_bursts 0\nburst_usec 0\n"
+      }
+    },
+    "cgroup-between": {
+      "capturedAt": "2026-10-18T19:48:29.926177+00:00",
+      "phase": "after-c1-before-c2",
+      "scope": "Whole shared runner cgroup; cumulative counters include earlier work, not solely this trial",
+      "cgroup": {
+        "memory.events": "low 0\nhigh 0\nmax 38507\noom 0\noom_kill 0\noom_group_kill 0\n",
+        "memory.current": "5461745664\n",
+        "memory.peak": "8590524416\n",
+        "memory.max": "8589934592\n",
+        "cpu.max": "800000 100000\n",
+        "cpu.stat": "usage_usec 33765795859\nuser_usec 28354076406\nsystem_usec 5411719453\nnice_usec 0\nnr_periods 305416\nnr_throttled 267\nthrottled_usec 8380394\nnr_bursts 0\nburst_usec 0\n"
+      }
+    },
+    "cgroup-after-c2": {
+      "capturedAt": "2026-10-18T20:27:40.745191+00:00",
+      "phase": "after-c2",
+      "scope": "Whole shared runner cgroup; cumulative counters include earlier work, not solely this trial",
+      "cgroup": {
+        "memory.events": "low 0\nhigh 0\nmax 49866\noom 0\noom_kill 0\noom_group_kill 0\n",
+        "memory.current": "5339312128\n",
+        "memory.peak": "8590524416\n",
+        "memory.max": "8589934592\n",
+        "cpu.max": "800000 100000\n",
+        "cpu.stat": "usage_usec 40641964219\nuser_usec 34254222123\nsystem_usec 6387742096\nnice_usec 0\nnr_periods 328625\nnr_throttled 328\nthrottled_usec 11357968\nnr_bursts 0\nburst_usec 0\n"
+      }
+    }
+  },
+  "decision": {
+    "measurement": "complete local same-candidate comparison; both fresh full seals passed",
+    "recommendedNextQualification": {
+      "workers": 2,
+      "compilerWorkers": 2,
+      "memoryBudgetMiB": 6144
+    },
+    "hostedDefault": "retain 2/1 until complete hosted 2/2 qualification and human adoption review",
+    "sub30MinuteReleaseStage": false,
+    "newRuntimeOrWorkflowChanges": false
+  },
+  "rawEvidenceFiles": [
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c1/measurement.json",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c1/measurement.json",
+      "bytes": 3577,
+      "sha256": "0fc0624918cfd0590e677b7a99ba2808d30f30ffd9fd908528a9f8e15d103013"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c1/fresh.json",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c1/fresh.json",
+      "bytes": 85946,
+      "sha256": "821f54736c27279187d00f22ae738c5adefcae48417607d635fe1fc45518ee6d"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c1/events.jsonl",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c1/events.jsonl",
+      "bytes": 564263,
+      "sha256": "1f5077905b6582cd8ddf5b9c5908438093172d369be73ea576280c7065967f8b"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c1/fresh-processes/process-summary.json",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c1/fresh-processes/process-summary.json",
+      "bytes": 850,
+      "sha256": "eddc9924c076ccf97a922db0739030177cb028e44c90185eb5afbf0dfe9fb096"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c1/fresh-processes/process-samples.jsonl",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c1/fresh-processes/process-samples.jsonl",
+      "bytes": 57625973,
+      "sha256": "c4dbd79e7cde90ca5f8d3e6c9bbb4d5ab98b03277f43fc8d3a5b329bd8e15bd1"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c1/fresh-processes/observer-result.json",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c1/fresh-processes/observer-result.json",
+      "bytes": 850,
+      "sha256": "eddc9924c076ccf97a922db0739030177cb028e44c90185eb5afbf0dfe9fb096"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/attempts/2026-10-18T18-43-20-827Z-AElqBE/report.json",
+      "archivePath": "evidence/.pulse-seal/attempts/2026-10-18T18-43-20-827Z-AElqBE/report.json",
+      "bytes": 80220,
+      "sha256": "583666676639a77cfb225ea61cbfb451cd3a6e76132f29b240a68c246216d0d0"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/attempts/2026-10-18T18-43-20-827Z-AElqBE/artifacts/release-tasks.json",
+      "archivePath": "evidence/.pulse-seal/attempts/2026-10-18T18-43-20-827Z-AElqBE/artifacts/release-tasks.json",
+      "bytes": 312359,
+      "sha256": "41926921b1773373687674e0e779eca05be145658a1afe28e45b1498a5134d50"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/attempts/2026-10-18T18-43-20-827Z-AElqBE/artifacts/feature-tasks.json",
+      "archivePath": "evidence/.pulse-seal/attempts/2026-10-18T18-43-20-827Z-AElqBE/artifacts/feature-tasks.json",
+      "bytes": 24940,
+      "sha256": "36008a61d4dcf996f4c6ad8baaef98aed5b4f142e34d62d29e061646be0a43eb"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c2/measurement.json",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c2/measurement.json",
+      "bytes": 3575,
+      "sha256": "65706ab22db511a80f96271ea1825915058fdb65e69952e5f756ea945b98c804"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c2/fresh.json",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c2/fresh.json",
+      "bytes": 85944,
+      "sha256": "be5f2d1bc73cf667f7d555c731ac9cac098e7db2e7c5abc9c3890455bd7f04b1"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c2/events.jsonl",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c2/events.jsonl",
+      "bytes": 563680,
+      "sha256": "5e1ae7affcfc397ac18047ac081ac62bf9bd9785b958fa86a07b65ba5290c451"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c2/fresh-processes/process-summary.json",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c2/fresh-processes/process-summary.json",
+      "bytes": 850,
+      "sha256": "ace755a9988af3bf9d17e82d2d6542839d651c0c8022ae2410bf5a54dbc56337"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c2/fresh-processes/process-samples.jsonl",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c2/fresh-processes/process-samples.jsonl",
+      "bytes": 34362044,
+      "sha256": "f73693f6ad3c8053fbded9e2d96cf310cbdab12bee86909e8041787650b3f6b8"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/measurements/b10-373-c2/fresh-processes/observer-result.json",
+      "archivePath": "evidence/.pulse-seal/measurements/b10-373-c2/fresh-processes/observer-result.json",
+      "bytes": 850,
+      "sha256": "ace755a9988af3bf9d17e82d2d6542839d651c0c8022ae2410bf5a54dbc56337"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/attempts/2026-10-18T19-48-37-102Z-vSAzTr/report.json",
+      "archivePath": "evidence/.pulse-seal/attempts/2026-10-18T19-48-37-102Z-vSAzTr/report.json",
+      "bytes": 80220,
+      "sha256": "534de5c490ca27944ab9ee5ccb2c2dc94025d5f0f6fffc3236781763d0f57cfe"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/attempts/2026-10-18T19-48-37-102Z-vSAzTr/artifacts/release-tasks.json",
+      "archivePath": "evidence/.pulse-seal/attempts/2026-10-18T19-48-37-102Z-vSAzTr/artifacts/release-tasks.json",
+      "bytes": 312362,
+      "sha256": "a731c2e316d0c5030cc78dc4124c15d3fb690c2e2005dd1647aae3dc54da646b"
+    },
+    {
+      "originalPath": "/tmp/pulse-b10-373-73fe1815/.pulse-seal/attempts/2026-10-18T19-48-37-102Z-vSAzTr/artifacts/feature-tasks.json",
+      "archivePath": "evidence/.pulse-seal/attempts/2026-10-18T19-48-37-102Z-vSAzTr/artifacts/feature-tasks.json",
+      "bytes": 24940,
+      "sha256": "1e54f72f8473a79764935e6c055ab5d79b53f85fa7bb12d8b42eb14bd8c720c4"
+    }
+  ],
+  "analysisFiles": [
+    {
+      "archivePath": "analysis/compare.py",
+      "sha256": "74c5b86e1392e53ac2147b4ef72e1fa943a710eafb845d33b29150a3bf49be88"
+    },
+    {
+      "archivePath": "analysis/task-hints.json",
+      "sha256": "aebacc90d835889317118bdf5d950553d7830796e6ca63df1d811a984b0f0473"
+    },
+    {
+      "archivePath": "analysis/capture-inputs.cjs",
+      "sha256": "10504eabffe377311d2f504dcc72676c9edb55bc1a54c7174cdec7dca6c16737"
+    }
+  ],
+  "benefit": {
+    "release": {
+      "c1Ms": 3224824,
+      "c2Ms": 1913496,
+      "savedMs": 1311328,
+      "reductionPercent": 40.663552491546824
+    },
+    "installedFeatures": {
+      "c1Ms": 598441,
+      "c2Ms": 332098,
+      "savedMs": 266343,
+      "reductionPercent": 44.50614179175558
+    },
+    "sealWall": {
+      "c1Ms": 3882187,
+      "c2Ms": 2310660,
+      "savedMs": 1571527,
+      "reductionPercent": 40.48045599039923
+    }
+  },
+  "terminalVerification": {
+    "bothCommandExitCodes": [
+      0,
+      0
+    ],
+    "activeLockAbsent": true,
+    "workerLayoutsAbsent": true,
+    "candidateClean": true,
+    "observedWorkloadProcessesRemaining": [
+      0,
+      0
+    ]
+  },
+  "observerPreloads": [
+    {
+      "measurement": "b10-373-c1",
+      "archivePath": "analysis/preloads/b10-373-c1.cjs",
+      "sha256": "3be03464502455ba86f685eaeccbfb11132756d0c1260ee41c6453136d60204b",
+      "normalizedSinkSha256": "c31cf31b68d1b4f46855eeefe6e6c685b913a39470c21899ccacb3bb984c3f21"
+    },
+    {
+      "measurement": "b10-373-c2",
+      "archivePath": "analysis/preloads/b10-373-c2.cjs",
+      "sha256": "797e97b94634b3bc5422b58566fb9bddde072e2363db5309b18aade31900cabc",
+      "normalizedSinkSha256": "c31cf31b68d1b4f46855eeefe6e6c685b913a39470c21899ccacb3bb984c3f21"
+    }
+  ],
+  "observerPreloadsDifferOnlyByEventSink": true,
+  "archive": {
+    "bytes": 54817701,
+    "sha256": "5f504fcd1c2a735c7d65f63e3716028c11b92bdcbb7d0a36c9f11314fd3f9f2f",
+    "files": 3394,
+    "filename": "Pulse-B10-373-concurrency-evidence.zip",
+    "verification": {
+      "archiveManifestVerified": 3394,
+      "offlineComparisonEqual": true
+    }
+  }
+}
