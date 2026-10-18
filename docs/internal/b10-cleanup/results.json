@@ -1,0 +1,865 @@
+{
+  "qualification": false,
+  "class": "evidence",
+  "candidate": {
+    "sourceRevision": "c8488990059e3e8834f35e1fcf9bd5d33786ddef",
+    "sourceTree": "ffa59287268aeec47709d0a24e64281f676b342e",
+    "workingTree": ""
+  },
+  "node": {
+    "version": "v24.18.0",
+    "path": "../b10-tools/bin/node",
+    "bytes": 123655872,
+    "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+  },
+  "disposition": "No production patch; isolated checkout workaround validated for the full failing task; retain 2/1 and keep #373 open.",
+  "originalSeal": {
+    "candidate": "3d3ce18f307e6db4367caa63b9b28b74e88f544a",
+    "reference": "../b10-ci04/qualification.json",
+    "attempt": "2026-10-18T17-26-53-165Z-bH5y2d",
+    "completedReleaseTasks": 66,
+    "releaseNotRun": 124,
+    "installedNotRun": 11,
+    "status": "failed"
+  },
+  "firstFullReplay": {
+    "candidate": {
+      "sourceRevision": "c8488990059e3e8834f35e1fcf9bd5d33786ddef",
+      "sourceTree": "ffa59287268aeec47709d0a24e64281f676b342e",
+      "workingTree": ""
+    },
+    "status": "failed",
+    "qualification": false,
+    "node": "v24.18.0",
+    "binding": {
+      "root": "/workspace/scratch/15c3ad7c5dc3/pulse",
+      "candidate": {
+        "sourceRevision": "c8488990059e3e8834f35e1fcf9bd5d33786ddef",
+        "sourceTree": "ffa59287268aeec47709d0a24e64281f676b342e",
+        "workingTree": ""
+      },
+      "directory": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1",
+      "layoutFile": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/layout.json",
+      "inputs": {
+        "dependenciesSha256": "6833f77220d5f40123ad530d9a3d6bf5ecb8afb257c20a74d1dd7957098596c6",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      }
+    },
+    "result": {
+      "name": "fastly-native-platform-capabilities",
+      "evidence": "providers",
+      "description": "Fastly Config, Secret, KV, and GRIP capabilities",
+      "commandSignature": "5d510283885d848804124f7482e89d828f507864fc83faec4a359ba92479759d",
+      "timeoutMs": 300000,
+      "durationMs": 116922,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": "task cleanup failed: ENOENT: no such file or directory, open '/workspace/scratch/15c3ad7c5dc3/b10-cleanup-tools/control/tasks/fastly-native-platform-capabilities.log'",
+      "cleanup": {
+        "status": "failed",
+        "worker": {
+          "status": "failed",
+          "removed": [
+            ".fetch-deadline-proof-WuUUiF/.pulse/config.ts",
+            ".fetch-deadline-proof-WuUUiF/src/index.ts",
+            ".transport-proof-Yux9lh/.pulse/config.ts",
+            ".transport-proof-Yux9lh/src/index.ts"
+          ],
+          "retainedPath": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1"
+        }
+      },
+      "logPath": "/workspace/scratch/15c3ad7c5dc3/b10-cleanup-tools/control/tasks/fastly-native-platform-capabilities.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    "afterTask": "",
+    "nextAdmission": {
+      "status": "passed",
+      "removed": []
+    },
+    "afterAdmission": "?? .fetch-deadline-proof-WuUUiF/.pulse/config.ts\n?? .fetch-deadline-proof-WuUUiF/src/index.ts\n?? .transport-proof-Yux9lh/.pulse/config.ts\n?? .transport-proof-Yux9lh/src/index.ts\n"
+  },
+  "deadlineOnlyReplay": {
+    "candidate": {
+      "sourceRevision": "c8488990059e3e8834f35e1fcf9bd5d33786ddef",
+      "sourceTree": "ffa59287268aeec47709d0a24e64281f676b342e",
+      "workingTree": ""
+    },
+    "status": "passed",
+    "qualification": false,
+    "node": "v24.18.0",
+    "binding": {
+      "root": "/workspace/scratch/15c3ad7c5dc3/pulse",
+      "candidate": {
+        "sourceRevision": "c8488990059e3e8834f35e1fcf9bd5d33786ddef",
+        "sourceTree": "ffa59287268aeec47709d0a24e64281f676b342e",
+        "workingTree": ""
+      },
+      "directory": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1",
+      "layoutFile": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/layout.json",
+      "inputs": {
+        "dependenciesSha256": "6833f77220d5f40123ad530d9a3d6bf5ecb8afb257c20a74d1dd7957098596c6",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      }
+    },
+    "result": {
+      "name": "fastly-native-platform-capabilities",
+      "evidence": "providers",
+      "description": "Fastly Config, Secret, KV, and GRIP capabilities",
+      "commandSignature": "68c2ca9176ae4d55e2aa0f57d81d3b639db2d5bb0266c3722268e656bdbb00d0",
+      "timeoutMs": 300000,
+      "durationMs": 16305,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed",
+        "worker": {
+          "status": "passed",
+          "removed": [
+            ".fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+            ".fetch-deadline-proof-hfPdjU/src/index.ts"
+          ]
+        }
+      },
+      "logPath": "/workspace/scratch/15c3ad7c5dc3/b10-cleanup-tools/traced/tasks/fastly-native-platform-capabilities.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    "afterTask": "",
+    "parentEntries": [
+      ".fetch-deadline-proof-hfPdjU"
+    ],
+    "parentFiles": [
+      {
+        "name": ".fetch-deadline-proof-hfPdjU",
+        "files": [
+          ".pulse",
+          "src"
+        ]
+      }
+    ],
+    "nextAdmission": {
+      "status": "passed",
+      "removed": []
+    },
+    "afterAdmission": "",
+    "parentEntriesAfter": [
+      ".fetch-deadline-proof-hfPdjU"
+    ],
+    "parentFilesAfter": [
+      {
+        "name": ".fetch-deadline-proof-hfPdjU",
+        "files": [
+          ".pulse",
+          "src"
+        ]
+      }
+    ]
+  },
+  "deadlineFileTrace": [
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347419511,
+      "op": "mkdirSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src",
+      "info": {
+        "error": "ENOENT"
+      },
+      "stack": [
+        "    at Object.main (/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/wasm/test/provider/assert-fastly-fetch-deadlines.cjs:31:8)",
+        "    at [eval]:1:62",
+        "    at runScriptInThisContext (node:internal/vm:219:10)"
+      ]
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347419511,
+      "op": "mkdirSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src",
+      "info": {
+        "dev": 27,
+        "ino": 1328705,
+        "size": 4096,
+        "mtimeMs": 1792347419505.9673
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347419512,
+      "op": "mkdirSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse",
+      "info": {
+        "error": "ENOENT"
+      },
+      "stack": [
+        "    at Object.main (/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/wasm/test/provider/assert-fastly-fetch-deadlines.cjs:31:44)",
+        "    at [eval]:1:62",
+        "    at runScriptInThisContext (node:internal/vm:219:10)"
+      ]
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347419512,
+      "op": "mkdirSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse",
+      "info": {
+        "dev": 27,
+        "ino": 1328706,
+        "size": 4096,
+        "mtimeMs": 1792347419505.9673
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347419512,
+      "op": "writeFileSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "error": "ENOENT"
+      },
+      "stack": [
+        "    at Object.main (/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/wasm/test/provider/assert-fastly-fetch-deadlines.cjs:33:10)",
+        "    at [eval]:1:62",
+        "    at runScriptInThisContext (node:internal/vm:219:10)"
+      ]
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347419512,
+      "op": "writeFileSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328707,
+        "size": 283,
+        "mtimeMs": 1792347419512.2163
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347419512,
+      "op": "writeFileSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "error": "ENOENT"
+      },
+      "stack": [
+        "    at Object.main (/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/wasm/test/provider/assert-fastly-fetch-deadlines.cjs:35:10)",
+        "    at [eval]:1:62",
+        "    at runScriptInThisContext (node:internal/vm:219:10)"
+      ]
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347419512,
+      "op": "writeFileSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328708,
+        "size": 4391,
+        "mtimeMs": 1792347419512.2163
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347423364,
+      "op": "writeFileSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328707,
+        "size": 283,
+        "mtimeMs": 1792347419512.2163
+      },
+      "stack": [
+        "    at Object.main (/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/wasm/test/provider/assert-fastly-fetch-deadlines.cjs:33:10)",
+        "    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      ]
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347423364,
+      "op": "writeFileSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328707,
+        "size": 283,
+        "mtimeMs": 1792347423358.1995
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347423365,
+      "op": "writeFileSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328708,
+        "size": 4391,
+        "mtimeMs": 1792347419512.2163
+      },
+      "stack": [
+        "    at Object.main (/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/wasm/test/provider/assert-fastly-fetch-deadlines.cjs:35:10)",
+        "    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      ]
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347423365,
+      "op": "writeFileSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328708,
+        "size": 4015,
+        "mtimeMs": 1792347423358.1995
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347426874,
+      "op": "writeFileSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328707,
+        "size": 283,
+        "mtimeMs": 1792347423358.1995
+      },
+      "stack": [
+        "    at Object.main (/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/wasm/test/provider/assert-fastly-fetch-deadlines.cjs:33:10)",
+        "    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      ]
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347426874,
+      "op": "writeFileSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328707,
+        "size": 301,
+        "mtimeMs": 1792347426870.403
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347426874,
+      "op": "writeFileSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328708,
+        "size": 4015,
+        "mtimeMs": 1792347423358.1995
+      },
+      "stack": [
+        "    at Object.main (/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/wasm/test/provider/assert-fastly-fetch-deadlines.cjs:35:10)",
+        "    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      ]
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347426875,
+      "op": "writeFileSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328708,
+        "size": 4391,
+        "mtimeMs": 1792347426870.403
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347430750,
+      "op": "rmSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU",
+      "info": {
+        "dev": 27,
+        "ino": 1328703,
+        "size": 4096,
+        "mtimeMs": 1792347419505.9673
+      },
+      "stack": [
+        "    at Object.main (/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/wasm/test/provider/assert-fastly-fetch-deadlines.cjs:123:17)",
+        "    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      ]
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347430750,
+      "op": "rmSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU",
+      "info": {
+        "error": "ENOENT"
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347430751,
+      "op": "exit",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src",
+      "info": {
+        "error": "ENOENT"
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347430751,
+      "op": "exit",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse",
+      "info": {
+        "error": "ENOENT"
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347430751,
+      "op": "exit",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "error": "ENOENT"
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347430751,
+      "op": "exit",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "error": "ENOENT"
+      }
+    },
+    {
+      "pid": 70,
+      "ppid": 6,
+      "time": 1792347430751,
+      "op": "exit",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU",
+      "info": {
+        "error": "ENOENT"
+      }
+    },
+    {
+      "pid": 202,
+      "ppid": 6,
+      "time": 1792347431909,
+      "op": "rmSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328712,
+        "size": 301,
+        "mtimeMs": 1792347426870.403
+      },
+      "stack": [
+        "    at Object.cleanupWorker (/workspace/scratch/15c3ad7c5dc3/pulse/scripts/release-parallel.cjs:176:8)",
+        "    at [eval]:4:61",
+        "    at runScriptInThisContext (node:internal/vm:219:10)"
+      ]
+    },
+    {
+      "pid": 202,
+      "ppid": 6,
+      "time": 1792347431909,
+      "op": "rmSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "error": "ENOENT"
+      }
+    },
+    {
+      "pid": 202,
+      "ppid": 6,
+      "time": 1792347431910,
+      "op": "rmSync",
+      "phase": "before",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "dev": 27,
+        "ino": 1328714,
+        "size": 4391,
+        "mtimeMs": 1792347426870.403
+      },
+      "stack": [
+        "    at Object.cleanupWorker (/workspace/scratch/15c3ad7c5dc3/pulse/scripts/release-parallel.cjs:176:8)",
+        "    at [eval]:4:61",
+        "    at runScriptInThisContext (node:internal/vm:219:10)"
+      ]
+    },
+    {
+      "pid": 202,
+      "ppid": 6,
+      "time": 1792347431910,
+      "op": "rmSync",
+      "phase": "after",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "error": "ENOENT"
+      }
+    },
+    {
+      "pid": 202,
+      "ppid": 6,
+      "time": 1792347432946,
+      "op": "exit",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/.pulse/config.ts",
+      "info": {
+        "error": "ENOENT"
+      }
+    },
+    {
+      "pid": 202,
+      "ppid": 6,
+      "time": 1792347432947,
+      "op": "exit",
+      "file": "/workspace/scratch/15c3ad7c5dc3/pulse/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1/.fetch-deadline-proof-hfPdjU/src/index.ts",
+      "info": {
+        "error": "ENOENT"
+      }
+    }
+  ],
+  "standaloneProbe": {
+    "stdout": "child false\n{\"dir\":\"/workspace/scratch/15c3ad7c5dc3/pulse/.cleanup-plain-yBjaLT\",\"exists\":false,\"status\":\"\"}\n",
+    "laterInspection": {
+      "path": ".cleanup-plain-yBjaLT/src/index.ts",
+      "content": "probe",
+      "sha256": "ba9c736f19e7f60b7f6764adb0b7908c0a2b394e09b6c09863528c7f2bc86095",
+      "ino": 1312131,
+      "mtime": 1792347676.4155993,
+      "ctime": 1792347681.1477177
+    },
+    "scope": "Node built-ins only; no Pulse module loaded"
+  },
+  "negativeControls": {
+    "tinyWorktrees": [
+      {
+        "base": "/tmp",
+        "detached": false,
+        "out": "child false\n",
+        "parentBeforeGit": false,
+        "git": "",
+        "parentAfterGit": false
+      },
+      {
+        "base": "/tmp",
+        "detached": true,
+        "out": "child false\n",
+        "parentBeforeGit": false,
+        "git": "",
+        "parentAfterGit": false
+      },
+      {
+        "base": "/workspace/scratch/15c3ad7c5dc3/b10-cleanup-tools",
+        "detached": false,
+        "out": "child false\n",
+        "parentBeforeGit": false,
+        "git": "",
+        "parentAfterGit": false
+      },
+      {
+        "base": "/workspace/scratch/15c3ad7c5dc3/b10-cleanup-tools",
+        "detached": true,
+        "out": "child false\n",
+        "parentBeforeGit": false,
+        "git": "",
+        "parentAfterGit": false
+      }
+    ],
+    "shortOriginalCheckoutObservation": {
+      "directory": "/workspace/scratch/15c3ad7c5dc3/pulse/.cleanup-observed-2XicyU",
+      "output": "{\"directory\":\"/workspace/scratch/15c3ad7c5dc3/pulse/.cleanup-observed-2XicyU\",\"childAbsent\":true}\n",
+      "rows": [
+        {
+          "phase": "child-close",
+          "time": 1792347763558,
+          "directoryExists": false,
+          "fileExists": false
+        },
+        {
+          "phase": "poll-0",
+          "time": 1792347764059,
+          "directoryExists": false,
+          "fileExists": false
+        },
+        {
+          "phase": "poll-1",
+          "time": 1792347764559,
+          "directoryExists": false,
+          "fileExists": false
+        },
+        {
+          "phase": "poll-2",
+          "time": 1792347765060,
+          "directoryExists": false,
+          "fileExists": false
+        },
+        {
+          "phase": "poll-3",
+          "time": 1792347765565,
+          "directoryExists": false,
+          "fileExists": false
+        },
+        {
+          "phase": "poll-4",
+          "time": 1792347766066,
+          "directoryExists": false,
+          "fileExists": false
+        },
+        {
+          "phase": "parent-remove",
+          "time": 1792347766066,
+          "directoryExists": false,
+          "fileExists": false
+        }
+      ]
+    }
+  },
+  "isolatedFullReplay": {
+    "candidate": {
+      "sourceRevision": "c8488990059e3e8834f35e1fcf9bd5d33786ddef",
+      "sourceTree": "ffa59287268aeec47709d0a24e64281f676b342e",
+      "workingTree": ""
+    },
+    "status": "passed",
+    "qualification": false,
+    "node": "v24.18.0",
+    "binding": {
+      "root": "/tmp/pulse-b10-cleanup-c8488990",
+      "candidate": {
+        "sourceRevision": "c8488990059e3e8834f35e1fcf9bd5d33786ddef",
+        "sourceTree": "ffa59287268aeec47709d0a24e64281f676b342e",
+        "workingTree": ""
+      },
+      "directory": "/tmp/pulse-b10-cleanup-c8488990/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/worker-1",
+      "layoutFile": "/tmp/pulse-b10-cleanup-c8488990/.pulse-seal/workspaces/ffa59287268aeec47709d0a24e64281f676b342e-1/layout.json",
+      "inputs": {
+        "dependenciesSha256": "79e86e06569e32225a8713435b10027132c6a965b92162677dd23be09f50008a",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      }
+    },
+    "result": {
+      "name": "fastly-native-platform-capabilities",
+      "evidence": "providers",
+      "description": "Fastly Config, Secret, KV, and GRIP capabilities",
+      "commandSignature": "a42aede3109b78e1b4dd104358fba1f2a130bafe22e591416080f3b25437da22",
+      "timeoutMs": 300000,
+      "durationMs": 116728,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed",
+        "worker": {
+          "status": "passed",
+          "removed": []
+        }
+      },
+      "logPath": "/workspace/scratch/15c3ad7c5dc3/b10-cleanup-tools/tmp-full/tasks/fastly-native-platform-capabilities.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    "afterTask": "",
+    "nextAdmission": {
+      "status": "passed",
+      "removed": []
+    },
+    "afterAdmission": ""
+  },
+  "isolatedPostInvocationGitStatus": "",
+  "syscallTrace": {
+    "status": "unavailable",
+    "diagnostic": "strace: test_ptrace_get_syscall_info: PTRACE_TRACEME: Operation not permitted\nstrace: ptrace(PTRACE_TRACEME, ...): Operation not permitted\nstrace: PTRACE_SETOPTIONS: Operation not permitted\nstrace: cleanup: waitpid(-1, __WALL): No child processes\n"
+  },
+  "retainedFiles": [
+    {
+      "path": "docs/internal/b10-cleanup/README.md",
+      "bytes": 6336,
+      "sha256": "d9b77bf9fb4b9ed29b38e12c7de574e371461f82ea10a8b2e4e17e5908a72266"
+    },
+    {
+      "path": "docs/internal/b10-cleanup/environment-probe.cjs",
+      "bytes": 790,
+      "sha256": "e2d4da179cc9aefea662a9abdd16189d2789631791aa59564f90595f27241475"
+    },
+    {
+      "path": "docs/internal/b10-cleanup/environment-probe.log",
+      "bytes": 109,
+      "sha256": "38e61065d1df991c0574c8ed5adfd9c6a6b68dfeeecea82ab43abb29e5ffd6a8"
+    },
+    {
+      "path": "docs/internal/b10-cleanup/isolated-fastly.log",
+      "bytes": 3432,
+      "sha256": "a9652883aea511da04b719ca3c55670a5c2fb9663cdb4c9854e2a675687eb7b7"
+    },
+    {
+      "path": "docs/internal/b10-cleanup/worker-probe.cjs",
+      "bytes": 1955,
+      "sha256": "c50361b2651797a31be5ce8d2bfe0a144b7a6e5d90eb238d5b1b5c21ea57bcfc"
+    }
+  ]
+}

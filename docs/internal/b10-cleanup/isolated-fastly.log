@@ -1,0 +1,55 @@
+ok - repeated config effect handoff preserves site identities, order, missing values, errors, and cancellation
+ok - Fastly Native shares a total request budget across KV operations and blocks the checkpoint
+ok - Fastly deadline preserves remote acceptance uncertainty
+ok - Fastly final response write is fenced; completed handoff is not withdrawn
+ok - Fastly body admission, invalid clocks, stale artifacts and JS rejection are bounded
+ok - Fastly budget starts at request entry, before ABI setup
+ok - Fastly outbound preparation cannot dispatch fetch after expiry
+ok - shared error-driver settlement preserves the fatal-return deadline fence and transport diagnostics
+ok - bounded Fastly concatenation preserves snapshots, UTF-16 and exact digest bytes; memory 8912896
+ok - scalar-heavy Fastly schema encoding preserves exact escaped bytes and independent collections; memory 28835840
+ok - Fastly scalar sharing preserves numeric bounds, distinct enums, nested projections, optionality, errors and generation isolation
+ok - Fastly structural code sharing: 86 semantic controls, fresh projections, alias isolation and frozen decoded values
+ok - MEM01 instrumentation is isolated, anchored and allocator accounting balances
+ok - explicit Fastly text encode preserves exact bytes, Unicode, projection, alias mutation, admission and pre-effect failures
+ok - O-05 101 parser cases preserve text, errors, scalar identity and owned storage
+ok - Fastly platform D2 value parity: UTF-16 ordering/indexing and exact numeric remainder
+{
+  "version": "pulse.fastly-native-platform-capabilities.v1",
+  "plans": [
+    {
+      "name": "fastly-capabilities",
+      "planHash": "6f71064fd34986e170ea3084bab0b20eea7f8e295799651ae15692445fe4c93c",
+      "bytes": 53833,
+      "sha256": "c627f31aa1b40459e863045c35740ca2d2689b9124e6e361d1e1cd725cdc0bcb"
+    }
+  ],
+  "assertions": {
+    "directFastlyImports": true,
+    "configStore": true,
+    "secretStore": true,
+    "secretTraceRedaction": true,
+    "kvGetPutAndMiss": true,
+    "pulseKvEnvelope": true,
+    "gripBroadcast": true,
+    "gripAuthenticationRedaction": true,
+    "structuredPublishReceipt": true,
+    "outboundRequestEvidence": true,
+    "nonSuccessPublisherRejected": true,
+    "deterministic": true,
+    "zeroValuedOpaqueHandles": true,
+    "javascriptRuntime": false,
+    "realFastlyExecution": false
+  }
+}
+ok - the consolidated Fastly capability example realizes native Config Store, Secret Store, KV Store, and authenticated GRIP broadcast without a JavaScript runtime
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+ok - Fastly transport recovery: 227 compiled ABI checks
+skip - fetch deadline HTTP replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - fetch deadline HTTP replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - fetch deadline HTTP replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+ok - Fastly fetch deadlines: 95 emitted-Wasm ABI cases
