@@ -97,6 +97,10 @@ function collectRegions(root, ctxName, options = {}) {
 function substituteItem(expression, item, input, index) {
   const transformed = ts.transform(expression, [context => root => {
     function visit(node) {
+      if (ts.isShorthandPropertyAssignment(node) && node.name.text === item) {
+        return ts.factory.createPropertyAssignment(node.name,
+          ts.factory.createElementAccessExpression(input, ts.factory.createNumericLiteral(index)));
+      }
       if (ts.isIdentifier(node) && node.text === item
         && !(ts.isPropertyAccessExpression(node.parent) && node.parent.name === node)
         && !(ts.isPropertyAssignment(node.parent) && node.parent.name === node)) {

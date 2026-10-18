@@ -80,6 +80,18 @@ async function main() {
     assert.throws(() => compileCanonicalSource(changed, { fileName: 'invalid-collection.ts', strict: false }), error => error.diagnostics.some(d => d.code === 'PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED'));
   });
 
+  await check('Native substitutes shorthand member arguments without changing property names', async () => {
+    const projected = source.replace('ctx.fetch(endpoint)', 'ctx.fetch(endpoint, { headers: { endpoint } })');
+    const plan = buildCanonicalNativePlan(compileCanonicalSource(projected, { fileName:'collection-shorthand.ts', strict:false }));
+    assert.equal(plan.effects.length, MAX);
+    for (const effect of plan.effects) {
+      const headers = effect.inputs.find(input => input.name === 'init').value.entries[0];
+      assert.equal(headers.key.value, 'headers');
+      const endpoint = headers.value.entries[0];
+      assert.equal(endpoint.key.value, 'endpoint');
+      assert.deepEqual(endpoint.value, effect.inputs.find(input => input.name === 'url').value);
+    }
+  });
   const compiled = compileCanonicalSource(source, { fileName: 'bounded-effects.ts', strict: false });
   const native = compileCanonicalNativePlan(buildCanonicalNativePlan(compiled), { cwd: root });
   assert.equal(native.manifest.policy.javascriptRuntime, false);
