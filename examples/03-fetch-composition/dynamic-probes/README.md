@@ -313,4 +313,4 @@ export default {
 
 ## Wasm size
 
-Measured application guest: **86,361 bytes** by default and **71,626 bytes** with `--experimental-native-size`. These are compiled artifact sizes, not transfer or runtime memory estimates.
+Measured application guest: **86,654 bytes** by default and **71,900 bytes** with `--experimental-native-size`, using the `node-native` profile and lockfile-pinned AssemblyScript 0.28.18. These are compiled artifact snapshots, not size budgets, transfer sizes or runtime memory estimates.

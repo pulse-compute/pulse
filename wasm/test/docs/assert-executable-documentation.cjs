@@ -20,8 +20,8 @@ const examples = Object.freeze([
   Object.freeze({
   "id": "03-fetch-composition/dynamic-probes",
   "provider": "node",
-  "guestWasmBytes": 86361,
-  "optimizedGuestWasmBytes": 71626,
+  "guestWasmBytes": 86654,
+  "optimizedGuestWasmBytes": 71900,
   "capabilities": [
     "fetch",
     "request.json",
