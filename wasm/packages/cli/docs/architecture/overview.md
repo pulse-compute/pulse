@@ -1,9 +1,9 @@
 # Architecture overview
 
 Pulse keeps the user model small by separating semantics from realization.
-The [current architecture contracts](./current-contracts.md) are the
-authoritative present-tense map of the ownership and invariants summarized
-below.
+
+> For detailed ownership rules and invariants, see the
+> [Architecture contracts](./current-contracts.md).
 
 ```text
 handler source
