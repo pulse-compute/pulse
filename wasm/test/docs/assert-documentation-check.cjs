@@ -142,22 +142,36 @@ contextDataIntegrity();
   const { resolveProject } = require('../../packages/cli/src/project-config.js');
   const explanation = `Opt in with \`${MARKER}\`.`;
   assert.equal(renderExampleTemplate(explanation, () => { throw Error('inline documentation'); }), explanation);
-  for (const id of ['01-hello-json', '02-request-schema']) {
+  const { markdownFiles } = require('../../scripts/sync-doc-snippets.cjs');
+  const exampleReadmes = markdownFiles().filter(file => file.includes('/examples/') && fs.existsSync(path.join(path.dirname(file), '.pulse/config.ts')));
+  assert.equal(exampleReadmes.length, 11);
+  for (const file of exampleReadmes)
+    assert(fs.readFileSync(file, 'utf8').split('\n').includes(MARKER), `missing shared template: ${file}`);
+  for (const id of exampleReadmes.map(file => path.relative(path.join(ROOT, 'examples'), path.dirname(file)))) {
     const source = fs.readFileSync(path.join(ROOT, 'examples', id, 'README.md'), 'utf8');
     const project = resolveProject({ cwd: path.join(ROOT, 'examples', id) });
     const input = source.includes(MARKER) ? source : source.replace('\n', `\n\n${MARKER}\n`);
     const rendered = renderExampleTemplate(input, () => project.tests);
     assert.equal(renderExampleTemplate(rendered, () => project.tests), rendered, 'template must be idempotent');
-    for (const heading of ['Handler', 'Project config', 'Test harness', 'Workflow', 'Wasm size']) assert(rendered.includes(` ${heading}\n`));
+    for (const heading of ['Project config', 'Test harness', 'Wasm size']) assert(rendered.includes(` ${heading}\n`));
     assert(rendered.indexOf('## Request and response') < rendered.indexOf('## Code'));
-    assert(rendered.indexOf('## Code') < rendered.indexOf('## Workflow'));
+    assert(rendered.indexOf('## Code') < rendered.indexOf('## Test harness'));
+    for (const heading of ['Inspect', 'Doctor']) assert(rendered.includes(`## ${heading}\n`));
+    assert.equal(rendered.includes('## Report\n'), id !== '12-pulse-context-mcp');
+    if (id === '12-pulse-context-mcp') {
+      assert(rendered.indexOf('## Doctor') < rendered.indexOf('## Install'));
+      assert(rendered.indexOf('## Install') < rendered.indexOf('## Workflow'));
+      assert(rendered.indexOf('## Walkthrough 1:') < rendered.indexOf('## Test harness'));
+    }
+    if (id === '10-entities-tools')
+      assert(rendered.indexOf('## JavaScript workflow') < rendered.indexOf('## Test result'));
     const blocks = text => [...text.matchAll(/```[^\n]*\n([\s\S]*?)\n```/g)].map(match => match[1]).sort();
     assert.deepEqual(blocks(rendered), blocks(input), 'all source and output fences must survive composition');
-    for (const item of project.tests) assert(rendered.includes(item.request.path));
+    for (const item of project.tests) assert(rendered.includes(item.kind === 'event' ? item.event.type : item.request.path));
     if (id === '02-request-schema') {
       assert(rendered.includes('PULSE_SCHEMA_DECODE'));
-      assert(!rendered.includes('## Inspect'), 'do not promise unavailable views');
-      assert.equal(renderExampleTemplate(source, () => { throw Error('unselected'); }), source);
+      const unselected = source.replace(MARKER, '');
+      assert.equal(renderExampleTemplate(unselected, () => { throw Error('unselected'); }), unselected);
     }
   }
   const fixture = `${MARKER}\n\n## Handler\n\n\`\`\`md\n## Inside code\n\`\`\`\n\n## Extra limitation\n\nKeep this.\n`;
@@ -166,5 +180,5 @@ contextDataIntegrity();
   assert(rendered.includes('## Inside code')); assert(rendered.includes('## Extra limitation\n\nKeep this.'));
   assert(rendered.includes('&#124;&lt;b&gt;')); assert(!rendered.includes('"status":200'));
   assert.throws(() => renderExampleTemplate(`${MARKER}\n\n## Report\n`, () => cases), /Empty example section/);
-  console.log('ok - shared example template preserves fences/anchors, handles two harnesses and leaves other examples unchanged');
+  console.log('ok - shared example template preserves fences/anchors, handles all eleven harnesses, HTTP/event cases and unavailable Report views');
 }

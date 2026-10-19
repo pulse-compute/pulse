@@ -142,12 +142,19 @@ function main() {
     const maintenance = synchronizeMaintenancePolicy({ repoRoot, write });
     const snippets = synchronizeDocSnippets({ write });
     const contextCorpus = synchronizeContextCorpus({ repoRoot, write });
+    // The context-app harness reads the generated corpus identity. Refresh its
+    // table after corpus inputs, then reject cycles instead of emitting drift.
+    const derivedSnippets = write ? synchronizeDocSnippets({ write: true }) : { changedFiles: 0 };
+    if (write) {
+      synchronizeDocSnippets({ write: false });
+      synchronizeContextCorpus({ repoRoot, write: false });
+    }
     const references = synchronizeReferenceDocs({ write });
     const ownership = validateDocumentationMetadata({ repoRoot, today: '2026-07-16' });
     const result = Object.freeze({ status: 'ok', metadata, maintenance, snippets, contextCorpus, references, ownership });
     if (args.has('--json')) console.log(JSON.stringify(result, null, 2));
     else {
-      const changed = metadata.changedFiles + maintenance.changedFiles + snippets.changedFiles + contextCorpus.changedFiles + references.changedFiles;
+      const changed = metadata.changedFiles + maintenance.changedFiles + snippets.changedFiles + derivedSnippets.changedFiles + contextCorpus.changedFiles + references.changedFiles;
       console.log(`ok - ${references.expectedFiles} generated documentation/package file(s), ${maintenance.expectedFiles} maintenance-policy output(s), ${snippets.blockCount} source block(s), and ${metadata.files} owned page(s) are synchronized${changed ? `; updated ${changed} file(s)` : ''}`);
     }
   } catch (error) {
