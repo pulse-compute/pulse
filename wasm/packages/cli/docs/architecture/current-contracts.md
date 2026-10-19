@@ -11,7 +11,7 @@ documentation system.
 
 ## Contract precedence
 
-The private, unreleased `packages/mcp` component owns MCP HTTP admission and
+The published `@pulse-compute/mcp` host package owns MCP HTTP admission and
 protocol framing outside Entities. With emitted catalog/schema artifacts and a
 fixed governed HTTP endpoint configured, its MCP-03 facade supports tools/list
 and tools/call, schema projection and finite tool results. Otherwise discovery
@@ -38,7 +38,7 @@ resource-directory consumer and the pinned official client, including controlled
 OAuth, real local HTTP effects and bounded failure/cancellation. Installed local
 acceptance does not establish deployed or Native/Fastly MCP support.
 A same-artifact Native binding requires a separate owner review; this component
-does not widen the released package set or the guest authoring API.
+does not add a Native MCP transport or widen the guest authoring API.
 
 When two surfaces appear to disagree, use this order:
 

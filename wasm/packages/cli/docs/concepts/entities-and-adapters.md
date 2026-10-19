@@ -58,7 +58,7 @@ these rules: static discovery comes from an emitted catalog, invocation crosses
 a governed adapter boundary, external protocol state stays outside runtime
 core, and MCP behavior never becomes a source of provider or schema authority.
 
-The repository's private `packages/mcp` candidate implements the MCP
+The published [`@pulse-compute/mcp` host package](../packages/mcp.md) implements the MCP
 2026-07-28 HTTP protocol shell and a catalog-backed tools facade. Tools are
 projected from one explicitly selected emitted router and its schema registry;
 each admitted call makes one request to a fixed governed Entities HTTP endpoint.
@@ -68,8 +68,8 @@ authorization uses an explicitly configured external OAuth issuer, resource
 metadata/challenges, bounded introspection and default-deny operation scopes.
 Tool catalogs are filtered per request; unauthorized calls never reach the
 governed endpoint. Separate backend credentials cannot be supplied by the MCP
-client. This candidate does not change the released package set or add an
-Entities adapter. Backend placement and matching build artifacts remain
+client. This host facade does not add an Entities adapter or a Native guest
+lowering contract. Backend placement and matching build artifacts remain
 application responsibilities. The private MCP resource-directory acceptance app
 packages search, retrieve and propose-update tools and verifies the installed Node
 JavaScript composition with the pinned official OAuth client. It measures real

@@ -365,7 +365,12 @@ fetch, response, strict-mode, and response-case forms.
 
 ## GRIP hold responses are opaque
 
-A package-owned `grip.hold(...)` operation returns an opaque response contract. The provider owns the hold/stream realization; canonical handler code may return it but may not inspect or transform its body. This is the same body boundary used by direct fetch pass-through.
+The older `grip.hold(...)` operation belongs to the `/pulsewasm`
+[compatibility facade](../guides/compatibility-imports.md#grip). Its response
+remains opaque: the provider owns realization, and a handler cannot inspect or
+transform the body. New applications use the package-root `grip.subscribe` and
+`grip.handoff` framing helpers; the external gateway owns the connection. See
+the [GRIP package guide](../packages/grip.md).
 
 ## Not supported in the Beta
 

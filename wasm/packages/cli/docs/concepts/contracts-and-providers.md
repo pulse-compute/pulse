@@ -38,7 +38,13 @@ GRIP uses the same split. `isWebSocket`, `subscribe`, and `handoff` are pure HTT
 
 ## Provider selection
 
-Pulse `1.0.0-beta.9` has three provider driver identifiers:
+A **provider** owns host realization; a **target** selects Native or JavaScript
+execution. The same provider can support both targets with different capability
+limits. **Target support** describes the lane; **project eligibility** checks the
+reachable application against it. See [Targets and host work](./targets-and-hosts.md)
+and the [compatibility matrix](../reference/compatibility-matrix.md).
+
+The synchronized release includes these provider selectors:
 
 | Provider | Local execution | Deployable build | Purpose |
 |---|---:|---:|---|
@@ -104,7 +110,11 @@ A package is loadable only when selected and when it exports the versioned
 another provider. Adding a host to the built-in support catalog requires a
 coordinated source, release, documentation, and acceptance change.
 
-Likewise, package-owned lowerer manifests are executable only when they are trusted first-party packages. External npm packages cannot self-register compiler code merely by shipping a manifest.
+Package-owned lowerers may come from external packages under the versioned
+contract. They execute as trusted build dependencies, not sandboxed plugins.
+Reachable imports, declared trust, package ownership and protocol validation
+govern admission; there is no publisher allowlist or release-version equality.
+See [Discovery and trust](./package-owned-lowering.md#discovery-and-trust).
 
 Contributor workflows:
 

@@ -7,7 +7,7 @@ Pulse documentation is organized in layers so you can stop when you have enough 
 1. [Getting started](./getting-started.md) — install and create a first project.
 2. [Project lifecycle](./guides/project-lifecycle.md) — the normal `init → doctor → test → dev → build` journey and the advanced `inspect`/`compile` branches.
 3. [Beta scope](./preview-scope.md) — what the release guarantees and deliberately excludes.
-4. [Canonical examples](./examples.md) — nine source-bound projects,
+4. [Canonical examples](./examples.md) — source-bound projects,
    including focused Entities, events, and MCP proxy shapes.
 
 ## 2. Follow a task-oriented guide
@@ -27,16 +27,18 @@ They are separate from current Express onboarding.
 
 ## 3. Understand the model
 
-- [Compilation and lowering](./concepts/compilation-and-lowering.md)
-- [Effects and continuations](./concepts/effects-and-continuations.md)
-- [Structured and opaque bodies](./concepts/bodies.md)
-- [Contracts and providers](./concepts/contracts-and-providers.md)
-- [Targets and host work](./concepts/targets-and-hosts.md)
-- [Package-owned lowering](./concepts/package-owned-lowering.md)
-- [Entity engine, adapters, and facades](./concepts/entities-and-adapters.md)
-- [Architecture overview](./architecture/overview.md)
-- [Current architecture contracts](./architecture/current-contracts.md)
-- [Architecture vision](./architecture/vision.md)
+1. [Architecture overview](./architecture/overview.md) — the application model and two execution paths.
+2. [Targets and host work](./concepts/targets-and-hosts.md) — choose a target and distinguish current support from future hosts.
+3. [Contracts and providers](./concepts/contracts-and-providers.md) — bindings, eligibility and host realization.
+4. [Effects and continuations](./concepts/effects-and-continuations.md) — execution ownership, concurrency and failure.
+5. [Structured and opaque bodies](./concepts/bodies.md) — data ownership and bounded reads.
+6. [Compilation and lowering](./concepts/compilation-and-lowering.md) — how eligible Native source becomes Wasm.
+7. [Entity engine, adapters, and facades](./concepts/entities-and-adapters.md) — protocol boundaries around governed operations.
+8. [Package-owned lowering](./concepts/package-owned-lowering.md) — advanced extension and trust details.
+
+For deeper implementation invariants, see the linked
+[Architecture contracts](./architecture/current-contracts.md). [Architecture vision](./architecture/vision.md) describes
+direction rather than release support.
 
 ## 4. Use a package directly
 
@@ -76,3 +78,20 @@ They are separate from current Express onboarding.
 - [Add a core provider](./contributing/adding-core-provider.md)
 - [Changelog](../CHANGELOG.md)
 - [Package support and extension boundaries](./packages/README.md)
+
+## Entry points for tools and agents
+
+For an application task, start with this index, the installed package guides and
+[project lifecycle](./guides/project-lifecycle.md). Pin the selected package
+version, project root and profile before interpreting commands. The CLI ships
+this documentation under its package's `docs/` directory, plus `API.md` and
+`cli-spec.json`; use `pulse --help` for the supported command list.
+
+For a change to Pulse itself, first read the repository's root and nearest
+`AGENTS.md`, then choose one named Entry Point and its canonical owners. Installed
+application documentation is not a substitute for repository maintenance policy.
+See the [contributor workflow](./contributing/README.md#contributor-workflow).
+
+[Diagnosing command results](./guides/troubleshooting.md#reading-command-results)
+explains JSON streams, evidence limits and recovery. A release number alone does
+not identify uncommitted source or prove that a local artifact matches it.

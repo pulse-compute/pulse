@@ -55,8 +55,9 @@ and target set. Human maintainers retain merge, settings and release authority.
 - [Architecture overview](../architecture/overview.md)
 - [Reference overview](../reference/README.md)
 
-The current release executes only trusted first-party lowerer builders. Built-in
-provider shorthand is release-owned, while an exact scoped project provider may
+Declared lowerer builders execute as trusted build dependencies, including
+external packages admitted through the versioned contract. This is not a sandbox.
+Built-in provider shorthand is release-owned, while an exact scoped project provider may
 export the versioned `./toolchain` contract without self-registration or
 dependency scanning. Changes that widen either executable trust boundary
 require an explicit security and compatibility design, not only another
