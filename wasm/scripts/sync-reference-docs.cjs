@@ -117,7 +117,7 @@ function renderPackagePolicy() {
   const implementation = PACKAGE_SET.filter(entry => entry.tier === 'implementation');
   const index = entries => `| Package | Purpose | When to use |\n|---|---|---|\n${entries.map(entry => {
     const manifest = packageManifest(entry);
-    return `| [${inlineCode(manifest.name)}](./${path.basename(entry.documentation)}) | ${tableCell(manifest.description)} | ${tableCell(entry.audience)} |`;
+    return `| [${inlineCode(manifest.name.replace('@pulse-compute/', ''))}](./${path.basename(entry.documentation)}) | ${tableCell(manifest.description)} | ${tableCell(entry.audience)} |`;
   }).join('\n')}`;
   const rows = [...core, ...capabilities, ...implementation].map(entry => {
     const manifest = packageManifest(entry), tier = SUPPORT_TIERS[entry.tier];
@@ -130,6 +130,8 @@ ${GENERATED_NOTICE}
 Pulse ${RELEASE_VERSION} publishes one synchronized ${PACKAGE_SET.length}-package release set. Publication does not make every package an application-author SDK: the support tier and listed entry points define the release promise.
 
 ## Core packages
+
+All short names below use the ${inlineCode('@pulse-compute/')} npm scope. Full names and installation guidance are retained in the support contracts below.
 
 ${index(core)}
 

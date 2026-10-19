@@ -123,8 +123,8 @@ contextDataIntegrity();
   const { PACKAGE_SET } = require('../../../scripts/package-support.cjs');
   const document = renderPackagePolicy();
   const core = document.slice(document.indexOf('## Core packages'), document.indexOf('## Capability packages'));
-  assert.deepEqual([...core.matchAll(/\| \[`(@pulse-compute\/[^`]+)`\]/g)].map(match => match[1]),
-    ['@pulse-compute/pulse', '@pulse-compute/runtime', '@pulse-compute/cli']);
+  assert.deepEqual([...core.matchAll(/\| \[`([^`]+)`\]/g)].map(match => match[1]),
+    ['pulse', 'runtime', 'cli']);
   assert(document.indexOf('## Implementation packages') > document.indexOf('## Capability packages'));
   for (const entry of PACKAGE_SET) {
     const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, entry.dir, 'package.json')));
