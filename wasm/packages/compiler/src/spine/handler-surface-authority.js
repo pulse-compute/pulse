@@ -270,6 +270,7 @@ function recognizeHandlerSurface(node, options = {}) {
     const target = expressionFor(current.expression, options);
     if (target && ts.isPropertyAccessExpression(target)) {
       const receiver = expressionFor(target.expression, options);
+      if (receiver && ts.isPropertyAccessExpression(receiver) && receiver.name.text === 'resources' && isIdentifierNamed(receiver.expression, ctxName, options) && target.name.text === 'map') return createRecognition('ctx.resources', current, {}, options);
       if (isIdentifierNamed(receiver, ctxName, options)) {
         const direct = Object.freeze({
           param: 'ctx.param',

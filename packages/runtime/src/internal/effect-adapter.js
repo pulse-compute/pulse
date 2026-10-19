@@ -573,6 +573,7 @@ function createJavascriptEffectExecution(options = {}) {
   }
 
   const execution = {
+    checkOpen() { assertOpen(); options.signal?.throwIfAborted(); },
     dispatch(input, projector) {
       assertOpen();
       requireObject('effect descriptor', input);

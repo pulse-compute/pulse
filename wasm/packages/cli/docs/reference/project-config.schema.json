@@ -49,6 +49,21 @@
     "fields": [
       {
         "required": false,
+        "default": "absent",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "All manifest records are integrity-checked before selection; views are immutable and execution-owned. HTTP Assets limits are unchanged.",
+        "diagnostics": [
+          "PULSE_BINARY_RESOURCE_INVALID"
+        ],
+        "section": "project",
+        "path": "pulse.binaryResources",
+        "type": "PulseBinaryResources",
+        "scope": "all targets",
+        "description": "Explicit canonical serialized manifest, logical bindings and mandatory nonnegative safe-integer budgets: files, fileBytes, totalBytes, serializedBytes and bindings. Build-time data hoisting; no runtime loading or read-byte quota."
+      },
+      {
+        "required": false,
         "default": "`./src/index.ts`",
         "allowed": "—",
         "precedence": "`pulse.entry` in `.pulse/config.ts`.",
@@ -852,6 +867,70 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "$id": "urn:pulse:project-config:v1",
       "title": "Pulse project configuration",
+      "$defs": {
+        "binaryResources": {
+          "description": "Reserved pulse.binaryResources in conventional configuration.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "manifest",
+            "bindings",
+            "budgets"
+          ],
+          "properties": {
+            "manifest": {
+              "type": "string"
+            },
+            "bindings": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "budgets": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "files",
+                "fileBytes",
+                "totalBytes",
+                "serializedBytes",
+                "bindings"
+              ],
+              "properties": {
+                "files": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "fileBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "totalBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "serializedBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "bindings": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              }
+            }
+          }
+        }
+      },
       "type": "object",
       "additionalProperties": false,
       "properties": {

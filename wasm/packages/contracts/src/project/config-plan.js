@@ -24,7 +24,7 @@ const PROFILE_PLAN_VERSION = 'pulse.profile-plan.v2';
 
 const PROFILE_SELECTION_SOURCES = Object.freeze(['cli', 'environment', 'default']);
 const EXECUTION_TARGETS = Object.freeze(['native', 'javascript']);
-const PULSE_RESERVED_KEYS = Object.freeze(['entry', 'schema', 'tests', 'defaultProfile', 'strict', 'reporting', 'crypto']);
+const PULSE_RESERVED_KEYS = Object.freeze(['entry', 'schema', 'tests', 'defaultProfile', 'strict', 'reporting', 'crypto', 'binaryResources']);
 const PROFILE_CORE_KEYS = Object.freeze(['host', 'target', 'reporting', 'crypto']);
 const DEFAULT_PROJECT_POINTERS = Object.freeze({
   entry: 'src/index.ts',
@@ -165,6 +165,18 @@ function bindingsForRefs(refs) {
   });
 }
 
+function normalizeBinaryResources(value) {
+  if (!isPlainObject(value) || Object.keys(value).some(key => !['manifest', 'bindings', 'budgets'].includes(key))
+    || typeof value.manifest !== 'string' || !isPlainObject(value.bindings)) {
+    throw contractError('PULSE_BINARY_RESOURCE_INVALID', 'pulse.binaryResources requires a serialized manifest, bindings and explicit budgets.');
+  }
+  const { admitResourceCatalogue } = require('../resources/embedded.js');
+  const declarations = Object.keys(value.bindings).sort().map(id => ({ id, path: value.bindings[id] }));
+  try { admitResourceCatalogue(value.manifest, declarations, value.budgets); }
+  catch { throw contractError('PULSE_BINARY_RESOURCE_INVALID', 'pulse.binaryResources failed bounded content admission.'); }
+  return deepFreeze({ manifest: value.manifest, bindings: { ...value.bindings }, budgets: { ...value.budgets } });
+}
+
 function normalizePulseObject(value = {}) {
   if (!isPlainObject(value)) throw contractError('PULSE_PROJECT_PULSE_OBJECT_REQUIRED', 'The reserved pulse key must contain a plain object.');
   for (const key of Object.keys(value)) {
@@ -188,7 +200,8 @@ function normalizePulseObject(value = {}) {
     defaultProfile,
     strict,
     reporting,
-    crypto
+    crypto,
+    ...(value.binaryResources === undefined ? {} : { binaryResources: normalizeBinaryResources(value.binaryResources) })
   });
 }
 

@@ -43,6 +43,7 @@ const CONFIG_SECTIONS = Object.freeze([
 ]);
 
 const CONFIG_FIELDS = Object.freeze([
+  field({ section: 'project', path: 'pulse.binaryResources', type: 'PulseBinaryResources', default: 'absent', scope: 'all targets', description: 'Explicit canonical serialized manifest, logical bindings and mandatory nonnegative safe-integer budgets: files, fileBytes, totalBytes, serializedBytes and bindings. Build-time data hoisting; no runtime loading or read-byte quota.', security: 'All manifest records are integrity-checked before selection; views are immutable and execution-owned. HTTP Assets limits are unchanged.', diagnostics: ['PULSE_BINARY_RESOURCE_INVALID'] }),
   field({ section: 'project', path: 'entry', type: 'string', default: '`./src/index.ts`', scope: 'all project commands', description: 'Project-relative TypeScript handler entry.', precedence: '`pulse.entry` in `.pulse/config.ts`.', security: 'Must resolve to an existing file.', diagnostics: ['PULSE_ENTRY_NOT_FOUND'] }),
   field({ section: 'project', path: 'provider', type: `${providerIdType} | provider configuration`, default: '`node`', allowed: `${providerIdList}, another bare host id, or an exact scoped package name`, scope: 'compile/build/dev/test', description: 'Selects provider validation, local conformance, and build realization through the provider package toolchain contract.', precedence: 'Bare host ids resolve to `@pulse-compute/provider-<id>`; scoped package names are loaded exactly from the project.', security: 'Package loading is explicit and limited to the selected package `./toolchain` export; there is no scanning or fallback discovery.', diagnostics: ['PULSE_PROVIDER_PACKAGE_NOT_FOUND', 'PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED', 'PULSE_PROVIDER_TOOLCHAIN_INVALID', 'PULSE_PROVIDER_UNSUPPORTED', 'PULSE_PROVIDER_COMPILE_ONLY', 'PULSE_TEST_PROVIDER_REQUIRED', 'PULSE_DEV_PROVIDER_UNSUPPORTED'] }),
   field({ section: 'project', path: 'outDir', type: 'string', default: '`./dist`', scope: 'compile/build', description: 'Project-relative artifact output directory.', precedence: '`--out` overrides this field for the current command.', security: 'Must remain a real child of the project root; absolute, parent-traversal, and symbolic-link traversal outside the project root is rejected.', diagnostics: ['PULSE_BUILD_OUT_UNSAFE'] }),
@@ -105,6 +106,18 @@ const PROJECT_CONFIG_JSON_SCHEMA = deepFreeze({
   $schema: 'https://json-schema.org/draft/2020-12/schema',
   $id: 'urn:pulse:project-config:v1',
   title: 'Pulse project configuration',
+  $defs: {
+    binaryResources: {
+      description: 'Reserved pulse.binaryResources in conventional configuration.',
+      type: 'object', additionalProperties: false, required: ['manifest', 'bindings', 'budgets'],
+      properties: {
+        manifest: { type: 'string' },
+        bindings: { type: 'object', propertyNames: { pattern: '^[a-z][a-z0-9.-]{0,63}$' }, additionalProperties: { type: 'string' } },
+        budgets: { type: 'object', additionalProperties: false, required: ['files', 'fileBytes', 'totalBytes', 'serializedBytes', 'bindings'],
+          properties: Object.fromEntries(['files', 'fileBytes', 'totalBytes', 'serializedBytes', 'bindings'].map(key => [key, { type: 'integer', minimum: 0, maximum: 9007199254740991 }])) }
+      }
+    }
+  },
   type: 'object',
   additionalProperties: false,
   properties: {

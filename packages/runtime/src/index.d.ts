@@ -153,7 +153,18 @@ export type PulseTimeResult =
   | { readonly status: 'failed'; readonly reason: 'unavailable' | 'invalid-clock' };
 
 /** Plane-neutral authority shared by one isolated HTTP request or event invocation. */
+declare const binaryResourceView: unique symbol;
+export interface PulseBinaryResourceView {
+  readonly [binaryResourceView]: true;
+  readonly byteLength: number;
+  readU8(offset: number): number;
+  readU32LE(offset: number): number;
+  readF32LE(offset: number): number;
+}
+
 export interface PulseExecutionContext {
+  /** Literal logical identity; the immutable view must not escape this execution. */
+  readonly resources: { map(id: string): PulseBinaryResourceView };
   /** Validate/project a value through a literal registered schema and return bounded JSON text. */
   encodeJson(value: unknown, schemaId: string): string;
   /** Decode bounded application-owned JSON text through a literal registered schema. */

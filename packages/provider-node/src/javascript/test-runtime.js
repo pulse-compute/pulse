@@ -77,6 +77,7 @@ async function executeNodeJavascriptTestCase(application, testCase, options = {}
     maxKvValueBytes: options.maxKvValueBytes,
     maxKvValueDepth: options.maxKvValueDepth,
     maxKvValueEntries: options.maxKvValueEntries,
+    binaryResources: options.binaryResources,
     schemaCodecs: options.schemaCodecs,
     strict: options.strict === true,
     provider: options.provider || 'node',

@@ -52,6 +52,9 @@ function collectExpressions(plan) {
     seen.add(expression);
     expressions.push(expression);
     switch (expression.kind) {
+      case 'resource-read':
+        if (expression.offset) add(expression.offset);
+        break;
       case 'array':
         for (const item of expression.items || []) add(item.kind === 'spread' ? item.value : item);
         break;

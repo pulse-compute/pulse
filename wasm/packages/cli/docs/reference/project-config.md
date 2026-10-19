@@ -44,6 +44,18 @@ Project commands accept one optional positional directory and otherwise start fr
 
 Select the canonical entry, provider, and build output.
 
+### `pulse.binaryResources`
+
+Explicit canonical serialized manifest, logical bindings and mandatory nonnegative safe-integer budgets: files, fileBytes, totalBytes, serializedBytes and bindings. Build-time data hoisting; no runtime loading or read-byte quota.
+
+- **Type:** PulseBinaryResources
+- **Required/default:** Optional; default absent.
+- **Allowed values or constraints:** —
+- **Scope:** all targets
+- **Precedence:** Configuration value.
+- **Security and safety:** All manifest records are integrity-checked before selection; views are immutable and execution-owned. HTTP Assets limits are unchanged.
+- **Related diagnostics:** [`PULSE_BINARY_RESOURCE_INVALID`](diagnostics.md#pulse-binary-resource-invalid)
+
 ### `entry`
 
 Project-relative TypeScript handler entry.

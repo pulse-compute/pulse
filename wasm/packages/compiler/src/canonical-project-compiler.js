@@ -1147,6 +1147,7 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   const applicationEnvelope = createApplicationEnvelope(router, options.applicationProjectMetadata);
   const compileOptions = {
     ...options,
+    resourceIds: options.binaryResources?.records.map(record => record.id) || [],
     rootDir,
     fileName: authoringFileName,
     schemaBundle: schema.bundle,
@@ -1204,6 +1205,7 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   const graphProjections = reachableProjectGraphProjections(graphBuild, reachableGraph);
   const project = Object.freeze({
     ...compiled,
+    ...(options.binaryResources ? { binaryResources: options.binaryResources } : {}),
     projectCompilerVersion: CANONICAL_PROJECT_COMPILER_VERSION,
     graphBuilderVersion: PROJECT_GRAPH_BUILDER_VERSION,
     reachableGraph,

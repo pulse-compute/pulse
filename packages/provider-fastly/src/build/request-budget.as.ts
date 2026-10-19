@@ -5,8 +5,9 @@ let __request_last_clock: i64 = -1;
 let __request_expired: bool = false;
 let __request_error_response: bool = false;
 export function pulse_fastly_request_expired(): i32 { return __request_expired ? 1 : 0; }
+const __request_clock_result = new StaticArray<i64>(1);
 function __request_clock(): i64 {
-  const out = new StaticArray<i64>(1);
+  const out = __request_clock_result;
   if (wasi_snapshot_preview1_clock_time_get(1, 1, changetype<usize>(out)) != 0 || out[0] < __request_last_clock) {
     __request_expired = true;
     return -1;

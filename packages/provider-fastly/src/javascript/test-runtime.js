@@ -331,6 +331,7 @@ async function executeFastlyJavascriptLocalRequest(application, request, options
     maxRequestBodyBytes: options.maxRequestBodyBytes ?? options.maxBodyBytes,
     maxFetchBodyBytes: options.maxFetchBodyBytes ?? options.maxBodyBytes,
     maxStructuredBodyBytes: options.maxStructuredBodyBytes,
+    binaryResources: options.binaryResources,
     schemaCodecs: options.schemaCodecs,
     strict: options.strict === true,
     reporting: options.reporting,

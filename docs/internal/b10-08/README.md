@@ -12,14 +12,10 @@ changes, as required by the parent issue's split rule:
 
 | Slice | Owner and outcome | Status |
 | --- | --- | --- |
-| [08A #410](https://github.com/pulse-compute/pulse/issues/410) | Internal build admission, manifest integrity, immutable catalogue and deterministic identity | Implemented in this change |
-| [08B #411](https://github.com/pulse-compute/pulse/issues/411) | Public configuration, JS views, Native plan/value contract, raw emission and execution limits | Pending |
+| [08A #410](https://github.com/pulse-compute/pulse/issues/410) | Internal build admission, manifest integrity, immutable catalogue and deterministic identity | Merged in #413 |
+| [08B #411](https://github.com/pulse-compute/pulse/issues/411) | Public configuration, JS views, Native plan/value contract, raw emission and execution limits | Implemented; evidence below |
 | [08C #412](https://github.com/pulse-compute/pulse/issues/412) | Real MCP fixture, installed/package closure, provider receipts, reports and canonical docs | Pending |
 
-Native currently has managed scalar/JSON handles, but no admitted opaque resource
-view or checked numeric-offset operation for raw guest reads. That integration
-needs its own plan validation, ownership and target parity evidence. Keep it
-separate from manifest admission. Do not substitute a generic byte-buffer ABI.
 The parent remains open until all three slices are qualified.
 
 ## 08A contract
@@ -87,3 +83,67 @@ in the current Pulse checkout or the scoped GitHub search. The operator's rough
 record exact provenance/hash/size and qualify its real access pattern and growth
 headroom. No read throughput, raw resource guest, new host support or installed
 resource acceptance is claimed by 08A.
+
+## 08B execution contract and evidence
+
+Base: `1f53a7fc06ab946ece2926b8a23127382a823c5c` (`latest`, merged 08A).
+The operator approved proceeding with 08B. Protected scope includes the public
+API/configuration, Native expression and optional host ABI, runtime lifecycle,
+provider realization and package/export transport. Human review/merge remains
+required. No deployment or release authority is exercised.
+
+The configured manifest is explicit serialized data in the static project
+configuration; arbitrary build-time calls, directory scanning and runtime I/O
+are not added. JavaScript stores private snapshots once and caches views within
+one execution. Native resolves views lexically, validates serialized catalogue
+bytes again, and emits raw data in little-endian u64 words (up to seven padding
+bytes), then performs checked unaligned scalar loads. No new pointer or buffer
+value can escape into state, effects or continuations. Per-file Native address
+checks use the actual signed-i32 byte-length boundary, not an HTTP payload cap.
+
+The optional ABI functions are `resource_offset_value(i32) -> f64` and
+`resource_check(f64, i32, i32) -> i32`. The first strictly extracts a numeric
+handle; the second checks lifecycle/deadline, integer/range and subtraction-based
+bounds before casting. Failed Fastly checks return a negative sentinel and latch
+the existing terminal failure path. Application-error instrumentation preserves
+that sentinel. Deadline clock storage is reused, avoiding a fresh clock-buffer
+allocation on each synchronous read.
+
+No general loop limit is increased. The compiled proof uses 256×256 bounded
+loops, including seventeen sequential scans in one execution (>4 MiB of scalar
+reads). Existing numeric-region proof avoids per-read handles for this shape.
+Other source shapes retain existing boxing and allocation behavior. A full
+1 MiB float32 scan contains 262,144 elements and exceeds one 65,536-iteration
+nested loop; actual MCP algorithm/windowing remains an explicit 08C question.
+
+`binary-resource-execution` covers four target realizations, generated nonzero
+1 MiB+1 payload, unaligned reads, unsigned range, negative zero, rejected nonfinite
+floats, invalid offsets, forged/foreign/stale/serialized views, source escapes,
+corrupt plans, zero-byte Native overhead for unused mappings, synchronous Node
+and Fastly deadlines, project configuration and source packaging, and composed
+schema text codecs/middleware/application-error handlers. Fastly evidence uses
+an injected ABI fixture, not Viceroy or a deployed service. The fixture is not
+the real MCP `vector.bin`. Package installation and full report work stay in #412.
+
+Reproduce with the registered `binary-resource-execution` task. Full profile and
+repository validation results are recorded in the implementing PR; these remain
+development evidence, not a release seal.
+
+### Measured development costs
+
+Generated dense pseudo-random input (seed 12345), with known scalar test cells:
+1,048,577 decoded bytes. Node Native Wasm is 1,050,020 bytes; Fastly Native Wasm
+is 1,079,398 bytes. The original mostly-zero probe was replaced because zero data
+elision would have understated ordinary payload growth. The 65,536-read numeric
+scan uses at most eight Node host value handles; seventeen sequential scans in
+one execution also pass, with at most forty handles. These are shape-specific
+allocation checks, not a general throughput or vector-search forecast.
+
+Native compilation of the same no-resource handler with and without an unused
+catalogue produces identical Wasm bytes. The common JavaScript runtime does gain
+helper code: bundling `packages/runtime/src/host.js` with esbuild 0.28.1,
+`bundle:true`, `platform:neutral`, `format:esm`, `target:es2022`, `minify:true`
+measured 122,975 → 125,453 bytes and gzip 35,129 → 35,998 bytes against the base.
+That is about 2.5 KB minified / 0.9 KB gzip in the shared runtime, with no binary
+payload added unless configured. This measures the runtime entry, not every
+provider's final packaging or a downstream Fastly JS runtime Wasm artifact.

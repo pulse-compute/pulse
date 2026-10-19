@@ -304,6 +304,7 @@ function compileProject(project, options = {}) {
     workspaceRoot: undefined,
     configFile: project.configFile,
     schemas: project.schemas,
+    ...(project.binaryResources ? { binaryResources: project.binaryResources } : {}),
     strict: project.strict !== false,
     emitJsonPolicy: true,
     handlerAuthoring,
@@ -469,6 +470,7 @@ function prepareJavascriptApplication(project, options = {}) {
               validateApplication: javascript.validateApplication,
               allowedPackages: options.allowedPackages
             });
+        if (project.binaryResources && loaded?.application) require('@pulse-compute/wasm-host-runtime/runtime/canonical-api-runtime').bindBinaryResourceCatalogue(project.binaryResources, loaded.application);
       } catch (error) {
         if (options.captureLoadError !== true) throw error;
         loadError = javascriptLoadFailure(error);
@@ -528,7 +530,7 @@ function providerExecutionOptions(project, values = {}) {
 function requiresExactNativeExecution(compiled) {
   const algorithms = compiled.cryptoRealizationPlan && compiled.cryptoRealizationPlan.algorithms || [];
   const operations = compiled.metadata && compiled.metadata.providerOperations || [];
-  return Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+  return Boolean(compiled.binaryResources) || Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
     || compiled.metadata?.continuationSites?.some(site => site.kind === 'effect-collection-v1')
     || compiled.metadata?.capabilities?.includes('package.invoke')
     || compiled.metadata?.capabilities?.includes('response.output')
@@ -807,6 +809,7 @@ function buildProjectWithReport(project, options, reportAttempt) {
         outDir,
         javascript: Object.freeze({
           schemaBundle: compiled.schema.bundle,
+          binaryResources: project.binaryResources,
           packageArtifacts: packageRealizationArtifactsForCompiled(compiled),
           reporting: project.reporting,
           strict: project.strict !== false,
