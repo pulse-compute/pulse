@@ -94,3 +94,26 @@ function contextDataIntegrity() {
 
 contract();
 contextDataIntegrity();
+
+// Compact indexes must derive facts from the same catalogs as full contracts.
+{
+  const { renderEnvironmentReference, renderDiagnosticsReference } = require('../../scripts/sync-reference-docs.cjs');
+  const { ENVIRONMENT_VARIABLES } = require('../../../scripts/environment-reference.cjs');
+  const { DIAGNOSTIC_CATALOG, describeDiagnostic, diagnosticAnchor } = require('../../packages/cli/src/diagnostics.js');
+  const env = renderEnvironmentReference(), diagnostics = renderDiagnosticsReference();
+  assert(env.indexOf('### `PULSE_PROFILE`') < env.indexOf('## Fastly and Viceroy tooling'));
+  assert(env.indexOf('### `PULSE_VICEROY_BIN`') < env.indexOf('## Contributor and test-only configuration'));
+  for (const entry of ENVIRONMENT_VARIABLES) {
+    assert(env.includes(`| Default | ${entry.default} |`));
+    assert(env.includes(entry.description));
+    assert.equal(env.split(`### \`${entry.name}\``).length, 2);
+  }
+  for (const code of Object.keys(DIAGNOSTIC_CATALOG)) {
+    const descriptor = describeDiagnostic(code);
+    assert(diagnostics.includes(`| [\`${code}\`](#${diagnosticAnchor(code)}) |`));
+    assert(diagnostics.includes(descriptor.summary));
+    for (const action of descriptor.remediation) assert(diagnostics.includes(action));
+    assert.equal(diagnostics.split(`<a id="${diagnosticAnchor(code)}"></a>`).length, 2);
+  }
+  console.log('ok - compact reference indexes retain catalog facts, remedies and unique stable anchors');
+}

@@ -172,18 +172,22 @@ function renderImplementationPackages() {
   );
 }
 
+function tableCell(value) {
+  return String(value).replace(/\|/g, '&#124;').replace(/\n/g, ' ');
+}
+
 function renderEnvironmentReference() {
-  const categoryOrder = ['tooling', 'contributor'];
-  const summaryRows = ENVIRONMENT_VARIABLES.map((entry) => {
-    const category = ENVIRONMENT_CATEGORIES[entry.category];
-    return `| [${inlineCode(entry.name)}](#${entry.name.toLowerCase().replace(/_/g, '-')}) | ${category.title} | ${entry.stability} |`;
-  });
-  const sections = categoryOrder.map((categoryId) => {
-    const category = ENVIRONMENT_CATEGORIES[categoryId];
-    const entries = ENVIRONMENT_VARIABLES.filter((entry) => entry.category === categoryId).map((entry) => `<a id="${entry.name.toLowerCase().replace(/_/g, '-')}"></a>\n\n### ${inlineCode(entry.name)}\n\n${entry.description}\n\n| Property | Contract |\n|---|---|\n| Value | ${entry.value} |\n| Default | ${entry.default} |\n| Precedence | ${entry.precedence} |\n| Consumer | ${entry.consumer} |\n| Secret safety | ${entry.secretSafety} |\n| Stability | ${entry.stability} |\n| Source owners | ${entry.sourceFiles.map(inlineCode).join(', ')} |`).join('\n\n');
-    return `## ${category.title}\n\n${category.summary}\n\n${entries}`;
+  const groups = [
+    { title: 'Supported tooling configuration', summary: 'Public Pulse project configuration. These inputs configure tools, not handler authority.', entries: ENVIRONMENT_VARIABLES.filter(e => e.category === 'tooling' && !['PULSE_FASTLY_BIN', 'PULSE_VICEROY_BIN'].includes(e.name)) },
+    { title: 'Fastly and Viceroy tooling', summary: 'Provider-specific executable overrides; separate from public Pulse project selection.', entries: ENVIRONMENT_VARIABLES.filter(e => e.category === 'tooling' && ['PULSE_FASTLY_BIN', 'PULSE_VICEROY_BIN'].includes(e.name)) },
+    { ...ENVIRONMENT_CATEGORIES.contributor, entries: ENVIRONMENT_VARIABLES.filter(e => e.category === 'contributor') },
+  ];
+  const sections = groups.map(group => {
+    const rows = group.entries.map(e => `| [${inlineCode(e.name)}](#${e.name.toLowerCase().replace(/_/g, '-')}) | ${tableCell(e.description)} | ${tableCell(e.default)} |`).join('\n');
+    const entries = group.entries.map(entry => `<a id="${entry.name.toLowerCase().replace(/_/g, '-')}"></a>\n\n### ${inlineCode(entry.name)}\n\n${entry.description}\n\n| Property | Contract |\n|---|---|\n| Value | ${entry.value} |\n| Default | ${entry.default} |\n| Precedence | ${entry.precedence} |\n| Consumer | ${entry.consumer} |\n| Secret safety | ${entry.secretSafety} |\n| Stability | ${entry.stability} |\n| Source owners | ${entry.sourceFiles.map(inlineCode).join(', ')} |`).join('\n\n');
+    return `## ${group.title}\n\n${group.summary}\n\n| Variable | Purpose | Default |\n|---|---|---|\n${rows}\n\n${entries}`;
   }).join('\n\n');
-  return stable(`# Environment-variable reference\n\n${GENERATED_NOTICE}\n\nPulse canonical handlers do not receive ambient process environment access. Handler authority comes only through the documented \`ctx\` capabilities and project/provider bindings. The variables here configure release tooling, compatibility helpers, or repository tests.\n\nDo not use these variables as a substitute for \`ctx.config\`, \`ctx.secret\`, or provider bindings. Secret-bearing compatibility URIs must be handled as credentials and must not be copied into diagnostics.\n\n## Index\n\n| Variable | Scope | Stability |\n|---|---|---|\n${summaryRows.join('\n')}\n\n${sections}\n\n## Standard process variables\n\nPulse also observes normal operating-system inputs such as \`PATH\` while locating external tools. Standard process variables are not renamed as Pulse configuration and are outside this catalog.\n`);
+  return stable(`# Environment-variable reference\n\n${GENERATED_NOTICE}\n\nPulse canonical handlers do not receive ambient process environment access. Handler authority comes only through the documented \`ctx\` capabilities and project/provider bindings. The variables here configure public Pulse project selection, provider tooling, or repository tests.\n\nDo not use these variables as a substitute for \`ctx.config\`, \`ctx.secret\`, or provider bindings. Secret-bearing compatibility URIs must be handled as credentials and must not be copied into diagnostics.\n\n## Index\n\n1. [Public Pulse project configuration](#supported-tooling-configuration)\n2. [Fastly and Viceroy tooling](#fastly-and-viceroy-tooling)\n3. [Contributor and test-only configuration](#contributor-and-test-only-configuration)\n\n${sections}\n\n## Standard process variables\n\nPulse also observes normal operating-system inputs such as \`PATH\` while locating external tools. Standard process variables are not renamed as Pulse configuration and are outside this catalog.\n`);
 }
 
 function renderOptions(options, command) {
@@ -590,7 +594,11 @@ function renderDiagnosticsReference() {
   const categories = [...new Set(Object.values(DIAGNOSTIC_CATALOG).map((entry) => entry.category))];
   const catalog = categories.map((category) => {
     const entries = Object.entries(DIAGNOSTIC_CATALOG).filter(([, entry]) => entry.category === category);
-    return `## ${category.charAt(0).toUpperCase() + category.slice(1)} diagnostics\n\n${entries.map(([code, entry]) => renderDiagnostic(code, entry)).join('\n\n')}`;
+    const rows = entries.map(([code]) => {
+      const descriptor = describeDiagnostic(code);
+      return `| [${inlineCode(code)}](#${diagnosticAnchor(code)}) | ${tableCell(descriptor.summary)} | ${descriptor.remediation.map(tableCell).join('<br>')} |`;
+    }).join('\n');
+    return `## ${category.charAt(0).toUpperCase() + category.slice(1)} diagnostics\n\n| Code | Meaning | Action |\n|---|---|---|\n${rows}\n\n${entries.map(([code, entry]) => renderDiagnostic(code, entry)).join('\n\n')}`;
   }).join('\n\n');
   const httpGroups = new Map();
   for (const [code, entry] of Object.entries(DIAGNOSTIC_CATALOG)) {

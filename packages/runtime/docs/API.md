@@ -19,23 +19,23 @@ explicitly selected targets over the same canonical runtime contract.
 `ctx` is the complete application authority. There is no ambient request,
 process, provider SDK, or global network surface behind it.
 
-| Surface | Available in | Purpose |
-|---|---|---|
-| [`ctx.req`](#ctxreq) | HTTP handlers and middleware | Method, URL, path, ordered headers, and bounded body reads. |
-| [`ctx.req.header(name)`](#request-metadata-and-headers) | HTTP handlers and middleware | Case-insensitive first-value header lookup. |
-| [`ctx.param(name)`](#ctxparam) | Matched route handlers | Named parameters from the static route pattern. |
-| [`ctx.state`](#ctxstate) | HTTP and event handlers | Invocation-local string state shared across one execution. |
-| [`ctx.time.now()`](#ctxtime) | HTTP and event handlers | Provider wall-clock sample with matching Unix milliseconds and UTC text. |
-| [`ctx.fetch`](#ctxfetch) | HTTP and event handlers | Explicit outbound HTTP effect and structured or opaque response ownership. |
-| [`ctx.parallel`](#ctxparallel) | HTTP and event handlers | Statically keyed concurrent Pulse effects. |
-| [`ctx.encodeJson`](#ctxencodejson) | HTTP and event handlers | Synchronous schema-bound, size-limited JSON text. |
-| [`ctx.decodeJson`](#ctxdecodejson) | HTTP and event handlers | Synchronous schema-bound decode of bounded application text. |
-| [`ctx.emit`](#ctxemit) | HTTP and event handlers | One-way, schema-bound event acceptance effect. |
-| [`ctx.log`](#ctxlog) | HTTP and event handlers | Synchronous thresholded logging. |
-| [`ctx.config`, `ctx.secret`](#config-and-secrets) | HTTP and event handlers | Explicit configured binding reads. |
-| [`ctx.kv(name)`](#kv) | HTTP and event handlers | Bound reads, writes, and conditional KV effects (Node reference). |
-| [`ctx.json`, `ctx.text`, `ctx.response`](#response-builders) | HTTP handlers and middleware | Synchronous response construction. |
-| `ctx.event` | Event handlers only | Exact event type and immutable validated payload. |
+| Member | Category | Available in | Purpose |
+|---|---|---|---|
+| [`ctx.req`](#ctxreq) | Context | HTTP handlers and middleware | Method, URL, path, ordered headers, and bounded body reads. |
+| [`ctx.req.header(name)`](#request-metadata-and-headers) | Context | HTTP handlers and middleware | Case-insensitive first-value header lookup. |
+| [`ctx.param(name)`](#ctxparam) | Context | Matched route handlers | Named parameters from the static route pattern. |
+| [`ctx.state`](#ctxstate) | Context | HTTP and event handlers | Invocation-local string state shared across one execution. |
+| [`ctx.time.now()`](#ctxtime) | Context | HTTP and event handlers | Provider wall-clock sample with matching Unix milliseconds and UTC text. |
+| [`ctx.fetch`](#ctxfetch) | Effects | HTTP and event handlers | Explicit outbound HTTP effect and structured or opaque response ownership. |
+| [`ctx.parallel`](#ctxparallel) | Effects | HTTP and event handlers | Statically keyed concurrent Pulse effects. |
+| [`ctx.encodeJson`](#ctxencodejson) | JSON codecs | HTTP and event handlers | Synchronous schema-bound, size-limited JSON text. |
+| [`ctx.decodeJson`](#ctxdecodejson) | JSON codecs | HTTP and event handlers | Synchronous schema-bound decode of bounded application text. |
+| [`ctx.emit`](#ctxemit) | Effects | HTTP and event handlers | One-way, schema-bound event acceptance effect. |
+| [`ctx.log`](#ctxlog) | Context | HTTP and event handlers | Synchronous thresholded logging. |
+| [`ctx.config`, `ctx.secret`](#config-and-secrets) | Bindings | HTTP and event handlers | Explicit configured binding reads. |
+| [`ctx.kv(name)`](#kv) | Effects | HTTP and event handlers | Bound reads, writes, and conditional KV effects (Node reference). |
+| [`ctx.json`, `ctx.text`, `ctx.response`](#response-builders) | Responses | HTTP handlers and middleware | Synchronous response construction. |
+| [`ctx.event`](#static-event-handlers) | Context | Event handlers only | Exact event type and immutable validated payload. |
 
 ## Handler
 
