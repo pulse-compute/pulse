@@ -3,6 +3,11 @@
 Compares one structured origin, sequential composition, and explicit portable
 concurrency in one project. Comments in the handler mark each form.
 
+## Dynamic endpoint lists
+
+See [dynamic-probes](dynamic-probes/README.md) for a runtime-sized endpoint list,
+a bounded effects collection, and explicit concurrent flush.
+
 ## Workflow
 
 ```bash

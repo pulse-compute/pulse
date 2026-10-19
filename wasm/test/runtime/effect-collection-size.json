@@ -1,0 +1,575 @@
+{
+  "schemaVersion": "pulse.effect-collection-size.v1",
+  "status": "passed",
+  "node": "v24.18.0",
+  "platform": "linux",
+  "arch": "x64",
+  "measurementSha256": "2b2a9fc75260340ef7f836bc1c450e3cec9738fe069261f45a822bb5ba59a824",
+  "baseline": {
+    "identity": {
+      "revision": "e3eabe23c8ea353f6631d8972e94f58fa930444c",
+      "tree": "2973d5e44220bbe71cb1cfe2032d0847c34d855b",
+      "workingTree": "",
+      "lockfileSha256": "f250e7b18d68b439e7b7ba765241f2443f4de71cf3b3fa4ff2ec7537aacdf00d"
+    },
+    "rows": [
+      {
+        "kind": "no-effects",
+        "capacity": 0,
+        "sourceSha256": "bed04a7885aea35eaeee6d3b596c6f387bad866ad4dfd585278eb0df39c67af3",
+        "core": {
+          "bytes": 808,
+          "gzipBytes": 520,
+          "sha256": "1a4789672eb613b6d3c059e6e28d2ef0fd8fcd0beaab6ed8e2e58d802b3c9e52",
+          "codeSha256": "af4ce4ed22532d2d2095efe70f4cc2f6e1947681e33f8c63d82c21311a8437e4",
+          "dataSha256": "e60f16563615bb9294df724c4360d4f16bab48caf7d1a26b770375f851b6f04d",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 27707,
+          "gzipBytes": 13834,
+          "sha256": "75890d019a2c6f7ba40a3c87b35c1e9a33b1a08a9b0b7f13a07e5199c91a4c80",
+          "codeSha256": "c8a7b6b8fc1d0465edbd43fc5200fa86aab546d856a0c4949fc353508dbaa385",
+          "dataSha256": "19d22eab7f3bdcc40aada1f81195b3d46ad44ed08b5357fc1a22ad44d3d96ddd"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 524917,
+          "gzipBytes": 100390,
+          "sha256": "78e41c889e392225a6a9dd262d4bdfb11ac6a49da7c2e721d571aa779b117bfa"
+        }
+      },
+      {
+        "kind": "single-fetch",
+        "capacity": 1,
+        "sourceSha256": "8780ed4b0d37c913914bdf1f0ad28bdb63a2dcd9f8dbc6e373e5f92ffdc5c034",
+        "core": {
+          "bytes": 1419,
+          "gzipBytes": 858,
+          "sha256": "b05950728fee4047160cd0c89cc947422b9709975bd69a5c716c779e13a59497",
+          "codeSha256": "3db032b20ce393c6cc1dddb4a46a030ab2c5a813374aef94b0c02855311261c2",
+          "dataSha256": "2220a4d8d2e71d75edbf1d5bd58d6318a1b63b841cd26b1424846a9e4cb2c8d8",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 37417,
+          "gzipBytes": 17485,
+          "sha256": "198d6ba98fcf741bc2278ba59fc32f35c0f29de0213aa2041aea88a29d912946",
+          "codeSha256": "fa12c81d1dce4f707e913cb17af9ce7fb0d79ab3565f615f2b939bc456338d7d",
+          "dataSha256": "dbdc513bb6840ad6a66a0002738288a73efd05246bee4676d400a45cae0efd10"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 524980,
+          "gzipBytes": 100423,
+          "sha256": "57afbfcf22b83a492297ff185dee5df83b442579c7034fe7a641a7129c82c8f6"
+        }
+      },
+      {
+        "kind": "static",
+        "capacity": 1,
+        "sourceSha256": "83d9f1640643791a708d38d3fdbb30390f2669211aa72c58aa814e87eb9364d7",
+        "core": {
+          "bytes": 1782,
+          "gzipBytes": 1003,
+          "sha256": "ab5601ee92f2727bac04e0f2efc47cce5efbca1f0f45cc83325f11237bfbef47",
+          "codeSha256": "47a90ef3daec2adaa1319f3ca514b177be6879247ca4ab97da05f9de18f68f07",
+          "dataSha256": "2227aa3fdab54ca255795a549c6bae967d422234018a57642d1525b99c53ac5e",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 43833,
+          "gzipBytes": 19324,
+          "sha256": "d90bccd6a4d50d678d5902074847e6f77babbdbf4f426f0866255c44ca63d927",
+          "codeSha256": "c088b80bd76a1d079bdd5d0ca2f940c07fefd62554ea54d4195f9772b64dd5f2",
+          "dataSha256": "aff3d530bbba27987344d6388dcb89d8b1a3ea34f5ce17816c0c02b20495291b"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 525039,
+          "gzipBytes": 100441,
+          "sha256": "2ce75814b6daed1ba03ab3c7d094f29766a2d32eec4927724f85d1ac82e16dc2"
+        }
+      },
+      {
+        "kind": "static",
+        "capacity": 4,
+        "sourceSha256": "7de9d6fa0184f3f32020e2420286867f25203d70f23b806b3bdd46b5d1db4128",
+        "core": {
+          "bytes": 2745,
+          "gzipBytes": 1199,
+          "sha256": "715bf72ef32fd4b8bf217f6cc96a75538fe7b13be4ff8fb8fd10c0c33e69ead3",
+          "codeSha256": "687e6728ef6c4b6129c58a12b43fa65f3b186bd615a2cfd15d4f02ca8988b054",
+          "dataSha256": "06b555efb389baf66ec5df08e8354d8b512a730a8068f93c267da658b95a634e",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 45684,
+          "gzipBytes": 19775,
+          "sha256": "a67324d996dbd1ba0daeb2bb549079f1c7ff6e78ae207093540df8f994dfc27e",
+          "codeSha256": "c71da2a463146b2da7f4adc1cd3700db1b36d8d18ec78a862db8a5aa5ffe51b9",
+          "dataSha256": "30f907c4985d3a9f972b589ce6d180d01731ef6ab506a064a1d1fe0610c53add"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 525201,
+          "gzipBytes": 100472,
+          "sha256": "ba2c57af49b3dab8bb65a1da67efa17509628ef8d98fc6b7b9944ac4465418a0"
+        }
+      },
+      {
+        "kind": "static",
+        "capacity": 16,
+        "sourceSha256": "ad05e8b465a4ca2355f7d70439ce6663ca7d70d82dd98376962413dd0ca84e0b",
+        "core": {
+          "bytes": 6575,
+          "gzipBytes": 1995,
+          "sha256": "8987e2833025e5e9cbc464f7153b42af021749bf8ad6a8d2ff3a8a5c4deffcc1",
+          "codeSha256": "f337e4c70cafaf30e683950ef696d772b8090b3e36edff60fe28632b6823cc2e",
+          "dataSha256": "d62230580c60b6b621cb569c73d188c21073feff58dc5aaafe321ed57510eff6",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 50487,
+          "gzipBytes": 20821,
+          "sha256": "6fd1c49f2a41d86e40e2782dd502b28d9cdd1553a5e7314cc54caeecc3dd8f44",
+          "codeSha256": "7f93c46037f58a83303d25eb86d7739543e3eee5a40d830524617c45ddaede5d",
+          "dataSha256": "65961cf7ca14bfd8e10c701e325e999474b6cd9c0b9ba9a3459ec786c158dce1"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 525867,
+          "gzipBytes": 100580,
+          "sha256": "abab092c8395974858127f6a0d8c9e9aeb3ac0401d7d87b92674150a28f6e0c9"
+        }
+      },
+      {
+        "kind": "static",
+        "capacity": 32,
+        "sourceSha256": "b2f33b6548372257e4e28d33425f9eb1c69b3778e7ee39c95fd21d4210b232c9",
+        "core": {
+          "bytes": 11712,
+          "gzipBytes": 3033,
+          "sha256": "393b2d82f55c157d5cb6403df5f15a2c337b29843e1030c7a7d94ff829a8fa7e",
+          "codeSha256": "a1e8c39d94e482d4a471cb5b33258ca0873abcae7d664004044044706b8e19d4",
+          "dataSha256": "228954c98695e7f5a1970e1591d929b85a6028055a771c1e60943124f4b92933",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 56174,
+          "gzipBytes": 22185,
+          "sha256": "f448faf68cf10178f1949f15b4c3ebccfb1803b4309918986d95c55c398e37d2",
+          "codeSha256": "742f958d43b78fb382685b2c1ac77e00161aa04db0b037971404aece08cff0ed",
+          "dataSha256": "638daeac8856aba1456bb2e341e7a0fdeb52469d316cbfebd73ce1e7f136df3e"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 526779,
+          "gzipBytes": 100729,
+          "sha256": "ce1fb51272588094227a8ff95d13ff6dabcfe70b70c5375714971495627d02eb"
+        }
+      }
+    ]
+  },
+  "candidate": {
+    "identity": {
+      "revision": "1663051cbacdf64439106e604b20abbc64271eef",
+      "tree": "4320b437e9690f4d20e76955bbfc890bdb3412fb",
+      "workingTree": "",
+      "lockfileSha256": "f250e7b18d68b439e7b7ba765241f2443f4de71cf3b3fa4ff2ec7537aacdf00d"
+    },
+    "rows": [
+      {
+        "kind": "no-effects",
+        "capacity": 0,
+        "sourceSha256": "bed04a7885aea35eaeee6d3b596c6f387bad866ad4dfd585278eb0df39c67af3",
+        "core": {
+          "bytes": 808,
+          "gzipBytes": 516,
+          "sha256": "2f78f0966ddc65511a27a3f6c118348fd327835b23d640a6e1f456edef0c5fd4",
+          "codeSha256": "af4ce4ed22532d2d2095efe70f4cc2f6e1947681e33f8c63d82c21311a8437e4",
+          "dataSha256": "50b74f79f06550dcdba7e678853290763311bb2079bb8725fceeb10a6beea0ee",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 27707,
+          "gzipBytes": 13827,
+          "sha256": "9a1added55c123afb4b1a0f56ee74f84169d3d71861792d0f685eccfe0d070a2",
+          "codeSha256": "c8a7b6b8fc1d0465edbd43fc5200fa86aab546d856a0c4949fc353508dbaa385",
+          "dataSha256": "a25ff64cac6d8dc488a62dbab85c9746412cefc3aed3e47b9c01b22dc40ba471"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 529427,
+          "gzipBytes": 101321,
+          "sha256": "241bdcdd013d1a19ade4b0dcc307bfff63b3b6db4a0b20c611bed03e2578b2bd"
+        }
+      },
+      {
+        "kind": "single-fetch",
+        "capacity": 1,
+        "sourceSha256": "8780ed4b0d37c913914bdf1f0ad28bdb63a2dcd9f8dbc6e373e5f92ffdc5c034",
+        "core": {
+          "bytes": 1419,
+          "gzipBytes": 859,
+          "sha256": "b0ac494b26b6e71a66b4e7316164766d819a6f1b87c80bf171974674eb559013",
+          "codeSha256": "3db032b20ce393c6cc1dddb4a46a030ab2c5a813374aef94b0c02855311261c2",
+          "dataSha256": "a2301f6d9ea0260278078b11da62c356790f84ed625dcd7db37867f67dcbc3cf",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 37417,
+          "gzipBytes": 17476,
+          "sha256": "87e8cbcfe3c6d681dc6cd7a2964f2e01834f6d6ad1f339d04610b68feac20dfd",
+          "codeSha256": "fa12c81d1dce4f707e913cb17af9ce7fb0d79ab3565f615f2b939bc456338d7d",
+          "dataSha256": "d73de59a3a0569a6ed4c4c3ef3e6718e3b0e91209be7b1d24872de562bd767f2"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 529490,
+          "gzipBytes": 101354,
+          "sha256": "74e0697268c79a53033aa5a0f4b2e2ddd64225c9f89620953e9f75a6ca34d4cc"
+        }
+      },
+      {
+        "kind": "static",
+        "capacity": 1,
+        "sourceSha256": "83d9f1640643791a708d38d3fdbb30390f2669211aa72c58aa814e87eb9364d7",
+        "core": {
+          "bytes": 1782,
+          "gzipBytes": 1007,
+          "sha256": "7760ed268905714f660328ebde08576bb1a4c110d87584d8cd74b3e44be62c00",
+          "codeSha256": "47a90ef3daec2adaa1319f3ca514b177be6879247ca4ab97da05f9de18f68f07",
+          "dataSha256": "e5dc461689840a751d6656415b88179cf2003eda2d4d5a9742c3d3a57e1d715e",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 43833,
+          "gzipBytes": 19318,
+          "sha256": "9071d0d06b86d02cb014cf4c4eadf85c500f79b52b42353b020b10dc4bbde152",
+          "codeSha256": "c088b80bd76a1d079bdd5d0ca2f940c07fefd62554ea54d4195f9772b64dd5f2",
+          "dataSha256": "9f4106d15d86556edd3ec61dc09ee394855f547b26294fc45dab0e48fef1645f"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 529549,
+          "gzipBytes": 101373,
+          "sha256": "91c052b9d54a4fae3558d0b279111e5b9850c251fbbb7417245e827baa91422c"
+        }
+      },
+      {
+        "kind": "static",
+        "capacity": 4,
+        "sourceSha256": "7de9d6fa0184f3f32020e2420286867f25203d70f23b806b3bdd46b5d1db4128",
+        "core": {
+          "bytes": 2745,
+          "gzipBytes": 1203,
+          "sha256": "4dd5a275f3fefca77f9b592098e7339ab94af6730aa3f67c6ac8bdee4973ed43",
+          "codeSha256": "687e6728ef6c4b6129c58a12b43fa65f3b186bd615a2cfd15d4f02ca8988b054",
+          "dataSha256": "b1f03fc3aec475d63dcdef081cd5b7f893f8b9b1f19379a7bcbbfbea227f4bd8",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 45684,
+          "gzipBytes": 19780,
+          "sha256": "a4dd5968c026dc42dc8c6e4a2e0d34c3550f98b497b93ccc0040d468650a1254",
+          "codeSha256": "c71da2a463146b2da7f4adc1cd3700db1b36d8d18ec78a862db8a5aa5ffe51b9",
+          "dataSha256": "45e4a97c7b54331480557c49b75046287566ca8f8cc6e97f35f3e40d8d41fb76"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 529711,
+          "gzipBytes": 101404,
+          "sha256": "4b7b3dc7938903b7a71aa0ba665c6978f239df839321befaf2cd6baece3d42b5"
+        }
+      },
+      {
+        "kind": "static",
+        "capacity": 16,
+        "sourceSha256": "ad05e8b465a4ca2355f7d70439ce6663ca7d70d82dd98376962413dd0ca84e0b",
+        "core": {
+          "bytes": 6575,
+          "gzipBytes": 1999,
+          "sha256": "3d326304eeb9d03e27b1a15118a3bd48d758c82144690c19297ce21341cc2999",
+          "codeSha256": "f337e4c70cafaf30e683950ef696d772b8090b3e36edff60fe28632b6823cc2e",
+          "dataSha256": "89d6b654e0944ad2b0015ff824ecb6d66daa5f3606264bb7c73236687f061d05",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 50487,
+          "gzipBytes": 20821,
+          "sha256": "e4176429d800c3ff11a095e3049918f56a0a0d1a2554954941b2818fd2715a1d",
+          "codeSha256": "7f93c46037f58a83303d25eb86d7739543e3eee5a40d830524617c45ddaede5d",
+          "dataSha256": "ea8dee46917bfb2ee0f22bfb733d54942e12af7e9761fcf8763d3e654a4803fc"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 530377,
+          "gzipBytes": 101514,
+          "sha256": "243840ff1cf77e24a96df84f4ef7a7a4b762c6a46863e2a83ecf2a192749fcf2"
+        }
+      },
+      {
+        "kind": "static",
+        "capacity": 32,
+        "sourceSha256": "b2f33b6548372257e4e28d33425f9eb1c69b3778e7ee39c95fd21d4210b232c9",
+        "core": {
+          "bytes": 11712,
+          "gzipBytes": 3033,
+          "sha256": "96bd17a5e7da31f7bbaf6930543d0d49855b14ed3071821c86c22f44bb06cbb8",
+          "codeSha256": "a1e8c39d94e482d4a471cb5b33258ca0873abcae7d664004044044706b8e19d4",
+          "dataSha256": "060e005e199e9234e948f6b077bb951bc290e12e8b628c192e3adff3750b271b",
+          "collectionImport": false
+        },
+        "fastlyNative": {
+          "bytes": 56174,
+          "gzipBytes": 22189,
+          "sha256": "629d1970cf42eb02bfb8753ed9512b7e03a92f93809e704e94774a6900b52fbd",
+          "codeSha256": "742f958d43b78fb382685b2c1ac77e00161aa04db0b037971404aece08cff0ed",
+          "dataSha256": "f47f6df2686b39a1cd2774824912f40a2215960022a641bd3e01a5af391f9545"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 531289,
+          "gzipBytes": 101667,
+          "sha256": "1f6455e2216fd161158465393894d2a01ff589eaacd0a30539b277f8470f98b9"
+        }
+      },
+      {
+        "kind": "dynamic",
+        "capacity": 1,
+        "sourceSha256": "de7e93099f48879b1d1b1036dbd06de9c077a37a143858f7ccc6bbfba585804b",
+        "core": {
+          "bytes": 1843,
+          "gzipBytes": 1033,
+          "sha256": "367bced6351aba898c9f2b47084ba268effcfed32103ae7822c852d2f26cd15f",
+          "codeSha256": "b0342910f92a4ce5ee0b72fdf95d30b9cbad4b6221852b1d79a9d12a2d182e87",
+          "dataSha256": "b8d49ba28a3ebefb9b89922e906e30cf02b77519a460253b29b96227473a5912",
+          "collectionImport": true
+        },
+        "fastlyNative": {
+          "bytes": 44127,
+          "gzipBytes": 19386,
+          "sha256": "f0b03acb23330bd137633866438f8a76667a37a45968459b20b256d41524bba3",
+          "codeSha256": "19b199098736e1202dfbdf8534b5bc8065f6b57ed3bec85edea505ba4d99fad4",
+          "dataSha256": "0139eac74ab28ddb246e31cb881675b26232e6907106dd0854ede9984c661ec6"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 529643,
+          "gzipBytes": 101399,
+          "sha256": "6b6066eb3d3c7f5ac1e12581c556273f397bb4a67ae5b49014719441854ef1c3"
+        }
+      },
+      {
+        "kind": "dynamic",
+        "capacity": 4,
+        "sourceSha256": "63a30d34f8d5f8177386c4840d8c38579453feaa7e44377abca179e44a865430",
+        "core": {
+          "bytes": 2796,
+          "gzipBytes": 1302,
+          "sha256": "35a3cf56f00ec2840d4e5d7fe5a762273c280466efc0b05663fb5089c3517dbc",
+          "codeSha256": "2ae45d348af58f93e3f2f39ccff7035ff8d0ecc7df7040a688509f8329fd93ff",
+          "dataSha256": "7d054b79df415d73c319bbaca078cae9c8b2f5ebd62d8bacc124ae0cbd815f7c",
+          "collectionImport": true
+        },
+        "fastlyNative": {
+          "bytes": 46004,
+          "gzipBytes": 19911,
+          "sha256": "8f6ceb02befc1370a77b26be7d2c4e2e023aa1292f2adb93ad5f8fe38d4649f5",
+          "codeSha256": "7a71c63a10deec78bad6a302d6ab0d5a49e412f911ddce92314c87a0f58f7b99",
+          "dataSha256": "250cb7f022975925fba94b2b74757892973b3a7104941b9bf411ff633a598edc"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 529643,
+          "gzipBytes": 101399,
+          "sha256": "3c4909298dc58724695be3f0edace3713b84fb51884ce7c13f0cc265063447cb"
+        }
+      },
+      {
+        "kind": "dynamic",
+        "capacity": 16,
+        "sourceSha256": "e8c476f2f104746ce6a3431c783c3e5ab1a932ce05b4576c9afa6eee02b12972",
+        "core": {
+          "bytes": 6601,
+          "gzipBytes": 2283,
+          "sha256": "345be0769340a65a9bee5d30c105773cae2b1ed606d9da9a124d33dedc05e03a",
+          "codeSha256": "aca48054209a3d98cd0d9338b0b2560973a9d753b27867ee946dbe204e6e24ca",
+          "dataSha256": "b6961fb9f033e62f4e1787ce7a1e82ffc0d5abbb7424c49781789e6345c0dc73",
+          "collectionImport": true
+        },
+        "fastlyNative": {
+          "bytes": 50850,
+          "gzipBytes": 21192,
+          "sha256": "652ad9ed2a99b03a770a6b6e6cd19ae03f7d190d0e9d40903ba6095814d395fe",
+          "codeSha256": "4fdc22095fad21a6b50ed39512bcd453d1a742c8b0099ab4a02aa1dcb5394165",
+          "dataSha256": "c00607a0e6277795a0c35a3134c3716eb3b2558e7a2e726f52ade9144b335d64"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 529644,
+          "gzipBytes": 101400,
+          "sha256": "8395ced7d7e89bda791b02c8ec554aa36f071c61bca75650e642bdfc941040a4"
+        }
+      },
+      {
+        "kind": "dynamic",
+        "capacity": 32,
+        "sourceSha256": "82b670cfca11bf43f1b27f5b6a9c02090b7a75a1628b24b1d9f6ad52fc5d3a21",
+        "core": {
+          "bytes": 11636,
+          "gzipBytes": 3487,
+          "sha256": "119c60f75762f7d6a36b5c3ed00c1c416e5ee9922aed07ea161f62d64ae742da",
+          "codeSha256": "38c4ebe9d69867cad8345b7806e43188eb43e440433748c307d220cb302e9459",
+          "dataSha256": "48b5295aaa26c93110e5049660949d4549da967492db5c0f8eae89c3c8a2446d",
+          "collectionImport": true
+        },
+        "fastlyNative": {
+          "bytes": 56614,
+          "gzipBytes": 22644,
+          "sha256": "6cbdcbcdcdbee8e2952f24ef670f5f196b5d2c4c4b93f3217abcce633f11b76f",
+          "codeSha256": "d6a468e7a835e0d870d841c82829233cb0b57033d91f63c726c139ca762ddb5d",
+          "dataSha256": "4f9207a2bacf4de0fadbdabc2111dc04be6e234957494343979c3a3985ea59f7"
+        },
+        "fastlyJavascriptSource": {
+          "bytes": 529644,
+          "gzipBytes": 101400,
+          "sha256": "bba994290c96fe38d60cf6ba8501c04b18b2c80268edbf46ede38b1510fb972b"
+        }
+      }
+    ]
+  },
+  "unchanged": [
+    {
+      "kind": "no-effects",
+      "capacity": 0,
+      "core": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": -4,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyNative": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": -7,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyJavascriptSource": {
+        "deltaBytes": 4510,
+        "deltaGzipBytes": 931,
+        "identical": false
+      }
+    },
+    {
+      "kind": "single-fetch",
+      "capacity": 1,
+      "core": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": 1,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyNative": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": -9,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyJavascriptSource": {
+        "deltaBytes": 4510,
+        "deltaGzipBytes": 931,
+        "identical": false
+      }
+    },
+    {
+      "kind": "static",
+      "capacity": 1,
+      "core": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": 4,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyNative": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": -6,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyJavascriptSource": {
+        "deltaBytes": 4510,
+        "deltaGzipBytes": 932,
+        "identical": false
+      }
+    },
+    {
+      "kind": "static",
+      "capacity": 4,
+      "core": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": 4,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyNative": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": 5,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyJavascriptSource": {
+        "deltaBytes": 4510,
+        "deltaGzipBytes": 932,
+        "identical": false
+      }
+    },
+    {
+      "kind": "static",
+      "capacity": 16,
+      "core": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": 4,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyNative": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": 0,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyJavascriptSource": {
+        "deltaBytes": 4510,
+        "deltaGzipBytes": 934,
+        "identical": false
+      }
+    },
+    {
+      "kind": "static",
+      "capacity": 32,
+      "core": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": 0,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyNative": {
+        "deltaBytes": 0,
+        "deltaGzipBytes": 4,
+        "identical": false,
+        "identicalCode": true,
+        "identicalData": false
+      },
+      "fastlyJavascriptSource": {
+        "deltaBytes": 4510,
+        "deltaGzipBytes": 938,
+        "identical": false
+      }
+    }
+  ],
+  "limits": [
+    "Small synthetic handlers; no general zero-overhead guarantee.",
+    "Fastly Native uses injected ABI acceptance, not a deployed service.",
+    "JavaScript measures the existing unminified application source bundler, not final js-compute Wasm.",
+    "gzip is a size diagnostic, not the Fastly deployed artifact quota.",
+    "No latency, GC, RSS, retained payload or package installation size measurement."
+  ]
+}

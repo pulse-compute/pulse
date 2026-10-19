@@ -2,6 +2,7 @@ export type HeaderPair = readonly [name: string, value: string];
 
 declare const pulseEffectBrand: unique symbol;
 declare const pulseParallelEffectBrand: unique symbol;
+declare const pulseEffectsBrand: unique symbol;
 declare const incomingBodyBrand: unique symbol;
 
 /** Single-use opaque marker, admitted only inline as a configured Node fetch body. */
@@ -14,6 +15,12 @@ export interface PulseEffect<T> extends Promise<T> {
 /** An externally dispatched Pulse effect that may be a member of ctx.parallel(). */
 export interface PulseParallelEffect<T> extends PulseEffect<T> {
   readonly [pulseParallelEffectBrand]: true;
+}
+
+/** Single-use execution-owned bounded collection. Add inline effects, then explicitly flush. */
+export interface PulseEffects<T> {
+  readonly [pulseEffectsBrand]: T;
+  add(effect: PulseParallelEffect<T>): void;
 }
 
 export type PulseEffectResult<T> = T extends PulseEffect<infer Result> ? Result : never;
@@ -156,6 +163,9 @@ export interface PulseExecutionContext {
   readonly state: PulseState;
   readonly log: PulseLogger;
   fetch(url: string, init?: PulseFetchInit): PulseFetchOperation;
+  /** Portable capacity is a literal integer from 1 to 32. */
+  effects<T = unknown>(options: { readonly max: number }): PulseEffects<T>;
+  parallel<T>(effects: PulseEffects<T>): PulseEffect<readonly T[]>;
   /** Dispatches a statically keyed group of independent Pulse effects and rejoins in property order. */
   parallel<const T extends Readonly<Record<string, PulseParallelEffect<unknown>>>>(effects: T): PulseEffect<PulseParallelResult<T>>;
   readonly config: { get(name: string): PulseParallelEffect<string | undefined> };

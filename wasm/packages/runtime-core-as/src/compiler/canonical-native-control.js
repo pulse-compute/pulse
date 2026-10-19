@@ -200,6 +200,26 @@ function buildNativeControl({
       } else if (statement.kind === 'break' || statement.kind === 'continue') {
         if (!loopTargets) fail('Loop transfer requires an enclosing read loop.', { kind: statement.kind });
         next = loopTargets[statement.kind];
+      } else if (statement.kind === 'effect-collection') {
+        if (stages.has(activeHandler)) fail('Collections cannot be shared stage templates.');
+        const indices = statement.effectIds.map(id => effectRecord(id).index);
+        const output = localName(statement.localId);
+        const resume = block('resume', { required: indices, collection: true, lines: [
+          `${output} = host_value_array()`,
+          ...indices.map((index, slot) => `if (__pulse_pending > ${slot}) host_value_array_push(${output}, __pulse_effect_result_${index})`)
+        ], next });
+        const payloadLines = [`const active = host_effect_collection_count(${exprName(statement.input)}(), ${statement.max}, ${continuationState(statement.continuationId)})`, `if (active < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.HOST_FAILURE}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED} }`];
+        const lines = [];
+        for (const [slot, id] of statement.effectIds.entries()) {
+          const { index, effect } = effectRecord(id);
+          payloadLines.push(`let payload_${index}: i32 = 0`, `if (active > ${slot}) {`, `  payload_${index} = host_value_object()`);
+          for (const input of effect.inputs) payloadLines.push(`  host_value_object_set(payload_${index}, ${stringHandle(input.name)}, ${exprName(input.value)}())`);
+          payloadLines.push('}');
+          lines.push(`__pulse_effect_pending_${index} = active > ${slot} ? 1 : 0`, `__pulse_effect_ready_${index} = 0`, `__pulse_effect_result_${index} = 0`,
+            `if (active > ${slot}) host_effect_begin(${index}, payload_${index})`);
+        }
+        next = block('suspend', { payloadLines, lines, continuationState: continuationState(statement.continuationId), resumeBlock: resume,
+          pendingCount: 'active', collection: true, emptyOutput: output, emptyNext: next });
       } else if (statement.kind === 'effect-group') {
         const resume = resumeAction(statement.effectIds || [], statement.results || [], next);
         next = suspendBlock(statement.effectIds || [], statement.continuationId, resume);
@@ -355,6 +375,9 @@ function layoutNativeControl({
     } else if (item.kind === 'suspend') {
       for (const line of item.payloadLines) emit(line);
       checkError();
+      if (item.collection) {
+        emit(`if (active == 0) { ${item.emptyOutput} = host_value_array(); __pulse_pc = ${item.emptyNext}; ${advance} }`);
+      }
       for (const line of item.lines) emit(line);
       emit(`__pulse_state = ${item.continuationState}`);
       emit(`__pulse_pc = ${item.resumeBlock}`);

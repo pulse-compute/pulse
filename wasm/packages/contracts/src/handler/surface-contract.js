@@ -317,15 +317,27 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     status: 'supported-when-nonstrict'
   }),
   surface({
+    id: 'ctx.effects',
+    class: 'sync',
+    canonicalOperation: 'effect.collection.create',
+    publicForms: ['ctx.effects<T>({ max: 32 })', 'effects.add(pulseEffect)'],
+    awaitPolicy: 'forbidden',
+    validPositions: ['bounded-collection-build-region'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'emit-bounded-slot-bank',
+    shapePolicy: 'single-local-const-direct-for-of-immediate-awaited-flush-v1',
+    status: 'supported'
+  }),
+  surface({
     id: 'ctx.parallel',
     class: 'effect',
     canonicalOperation: 'effect.group.parallel',
-    publicForms: ['ctx.parallel({ key: pulseEffect, ... })'],
+    publicForms: ['ctx.parallel({ key: pulseEffect, ... })', 'ctx.parallel(effects)'],
     awaitPolicy: 'required-when-consumed',
     validPositions: ['await-expression'],
     targetSupport: { javascript: true, native: true },
     nativeBehavior: 'emit-explicit-effect-group-and-continuation',
-    shapePolicy: 'static-nonempty-object-literal-with-fixed-non-index-string-keys-and-pulse-effect-values',
+    shapePolicy: 'static-keyed-record-or-single-use-bounded-effect-collection-v1',
     status: 'supported'
   }),
   surface({

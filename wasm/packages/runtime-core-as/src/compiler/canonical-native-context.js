@@ -113,6 +113,7 @@ function collectExpressions(plan) {
   function walkStatements(statements) {
     for (const statement of statements || []) {
       if (statement.kind === 'helper-call') for (const arg of statement.arguments) add(arg);
+      else if (statement.kind === 'effect-collection') add(statement.input);
       else if (statement.kind === 'local') add(statement.value);
       else if (statement.kind === 'expression') add(statement.expression);
       else if (statement.kind === 'return') add(statement.value);

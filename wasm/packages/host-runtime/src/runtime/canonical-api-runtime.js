@@ -1535,6 +1535,12 @@ function createCanonicalHostRuntime(options = {}) {
 
     const pulse = Object.freeze({
       effect(effect, continuationId) { return Object.freeze({ protocol: canonicalRuntimeContract.CANONICAL_RUNTIME_PROTOCOL_VERSION, kind: 'effect', continuationId: String(continuationId), effect }); },
+      collection(factories, continuationId, input, max, decoders) {
+        if (!Array.isArray(input) || !Number.isInteger(max) || max < 1 || max > 32) throw new portableKv.PulseRuntimeContractError('PULSE_EFFECT_COLLECTION_CAPACITY', 'Collection requires a bounded array.');
+        if (input.length > max) throw new portableKv.PulseRuntimeContractError('PULSE_EFFECT_COLLECTION_OVERFLOW', 'Collection capacity exceeded.');
+        return Object.freeze({ protocol: canonicalRuntimeContract.CANONICAL_RUNTIME_PROTOCOL_VERSION, kind: 'group', continuationId: String(continuationId),
+          effects: Object.freeze(factories.slice(0, input.length).map(factory => factory())), collectionDecoders: decoders.slice(0, input.length) });
+      },
       group(effects, continuationId) { return Object.freeze({ protocol: canonicalRuntimeContract.CANONICAL_RUNTIME_PROTOCOL_VERSION, kind: 'group', continuationId: String(continuationId), effects: Object.freeze([...effects]) }); }
     });
 
@@ -1548,6 +1554,7 @@ function createCanonicalHostRuntime(options = {}) {
       const marker = step.value;
       if (!marker || marker.protocol !== canonicalRuntimeContract.CANONICAL_RUNTIME_PROTOCOL_VERSION || !canonicalRuntimeContract.CANONICAL_EFFECT_MARKER_KINDS.includes(marker.kind)) throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_CANONICAL_EFFECT_PROTOCOL', 'Canonical handler yielded an unsupported runtime marker.', { marker });
       const effects = marker.kind === 'group' ? marker.effects : [marker.effect];
+      if (marker.collectionDecoders && !effects.length) { executionOptions.requestBudget.check(); step = generator.next([]); continue; }
       const continuationId = `${executionId}:${invocations.execution}:${marker.continuationId}:${continuationIds.length + 1}`;
       registry.create({ id: continuationId, branchPoint: marker.continuationId, effectIds: effects.map((effect) => effect.id), ttlMs: executionOptions.continuationTtlMs || options.continuationTtlMs });
       continuationIds.push(continuationId);
@@ -1561,6 +1568,7 @@ function createCanonicalHostRuntime(options = {}) {
             { effectCount: dispatchedEffects, pendingEffects: effects.length, maxEffects });
         }
         value = marker.kind === 'group' ? await dispatchGroup(effects) : await dispatchOne(effects[0]);
+        if (marker.collectionDecoders) value = value.map((result, index) => { const [kind, ...args] = marker.collectionDecoders[index]; return kind ? result[kind](...args) : result; });
         executionOptions.requestBudget.check();
         registry.resume(continuationId);
         recordTrace(Object.freeze({ type: 'continuation-resumed', provider: adapter.id, executionId, continuationId, branchPoint: marker.continuationId }));

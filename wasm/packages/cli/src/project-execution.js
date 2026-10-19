@@ -529,6 +529,7 @@ function requiresExactNativeExecution(compiled) {
   const algorithms = compiled.cryptoRealizationPlan && compiled.cryptoRealizationPlan.algorithms || [];
   const operations = compiled.metadata && compiled.metadata.providerOperations || [];
   return Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+    || compiled.metadata?.continuationSites?.some(site => site.kind === 'effect-collection-v1')
     || compiled.metadata?.capabilities?.includes('package.invoke')
     || compiled.metadata?.capabilities?.includes('response.output')
     || compiled.metadata?.capabilities?.includes('request.body.forward')

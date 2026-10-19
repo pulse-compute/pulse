@@ -1825,6 +1825,13 @@ function host_value_string(pointer: i32, length: i32): i32 {
   if (text.length > 1 && text.length <= 128 && __pulse_fastly_literal_handles.size < 1024) { __pulse_fastly_literal_handles.set(text, handle); ${options.handleTracing ? 'if (handle != 0) __pulse_handle_cache_roots.push(handle);' : ''} }
   return handle
 }
+function host_effect_collection_count(handle: i32, max: i32, stateIndex: i32): i32 {
+  const input = __pulse_fastly_value(handle)
+  if (__pulse_fastly_last_error != 0 || input.kind != PULSE_VALUE_ARRAY || max < 1 || max > 32) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 173, -1); return -1 }
+  if (input.values.length > max) { __pulse_fastly_fail(PULSE_ERROR_STATE, 172, -1); return -1 }
+  if (__pulse_invocation_count + input.values.length > PULSE_FASTLY_MAX_EFFECT_INVOCATIONS) { __pulse_fastly_fail(PULSE_ERROR_STATE, 170, -1); return -1 }
+  return input.values.length
+}
 function host_value_array(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_ARRAY; return __pulse_fastly_put(item) }
 function host_value_array_push(target: i32, value: i32): void { const item = __pulse_fastly_value(target); if (item.kind != PULSE_VALUE_ARRAY || item.immutable) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 30, -1); return } item.values.push(value) }
 function host_value_array_spread(target: i32, source: i32): void { const from = __pulse_fastly_value(source); if (from.kind != PULSE_VALUE_ARRAY) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 31, -1); return } for (let i = 0; i < from.values.length; i += 1) host_value_array_push(target, unchecked(from.values[i])) }

@@ -666,7 +666,7 @@ class NativePlanBuilder {
     if (!call || !ts.isCallExpression(call) || !ts.isPropertyAccessExpression(unwrap(call.expression))) return undefined;
     const target = unwrap(call.expression);
     if (!ts.isIdentifier(unwrap(target.expression)) || unwrap(target.expression).text !== PULSE_RUNTIME_PARAMETER) return undefined;
-    if (!['effect', 'group'].includes(target.name.text)) return undefined;
+    if (!['effect', 'group', 'collection'].includes(target.name.text)) return undefined;
     return Object.freeze({ mode: target.name.text, call, decoder });
   }
 
@@ -789,6 +789,39 @@ class NativePlanBuilder {
         continue;
       }
       const yielded = item.initializer ? this.pulseYield(item.initializer) : undefined;
+
+      if (yielded && yielded.mode === 'collection') {
+        const [factories, continuation, input, capacity, decoders] = yielded.call.arguments;
+        const max = capacity && ts.isNumericLiteral(capacity) && Number(capacity.text);
+        const continuationId = literalString(continuation);
+        if (!ts.isIdentifier(item.name) || !continuationId || !Number.isInteger(max) || max < 1 || max > 32
+          || !ts.isArrayLiteralExpression(factories) || factories.elements.length !== max
+          || !ts.isArrayLiteralExpression(decoders) || decoders.elements.length !== max) {
+          this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Invalid bounded collection marker.'); continue;
+        }
+        const inputValue = this.expression(input, scope);
+        const output = this.allocateLocal(item.name.text, 'array', itemPath, declaration);
+        const results = [], prepared = [];
+        for (let slot = 0; slot < max; slot++) {
+          const factory = factories.elements[slot], decode = decoders.elements[slot];
+          if (!ts.isArrowFunction(factory) || factory.parameters.length || !ts.isArrayLiteralExpression(decode)) {
+            this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Invalid collection template.'); continue;
+          }
+          const marker = unwrap(factory.body);
+          const effectId = literalString(this.markerFields(marker).get('id'));
+          const site = this.effectSites.get(effectId);
+          const decoder = decode.elements.length ? this.decoderPlan({ kind: literalString(decode.elements[0]), arguments: [...decode.elements].slice(1) }, scope) : undefined;
+          const local = this.allocateLocal(`${item.name.text}__slot${slot}`, resultKindForEffect(site || {}, decoder), itemPath, declaration);
+          const result = Object.freeze({ mode: 'bind', localId: local.id, localName: local.name, valueKind: local.valueKind, decoder });
+          prepared.push(this.prepareEffect(marker, continuationId, scope, itemPath, result, slot));
+          results.push(Object.freeze({ effectId, localId: local.id, localName: local.name, valueKind: local.valueKind }));
+        }
+        scope.set(output.name, output);
+        out.push(Object.freeze({ kind: 'effect-collection', version: 'pulse.effect-collection.v1', max,
+          input: inputValue, localId: output.id, continuationId, effectIds: Object.freeze(prepared.map(e => e.id)),
+          results: Object.freeze(results), statementPath: itemPath }));
+        continue;
+      }
 
       if (yielded && yielded.mode === 'group') {
         if (!ts.isArrayBindingPattern(item.name) || statement.declarationList.declarations.length !== 1) {
@@ -1342,6 +1375,7 @@ function walkStatements(statements, visitor) {
   for (const statement of statements || []) {
     visitor(statement);
     if (statement.kind === 'helper-call') for (const arg of statement.arguments || []) walkExpression(arg, visitor.expression);
+    else if (statement.kind === 'effect-collection') walkExpression(statement.input, visitor.expression);
     else if (statement.kind === 'local') walkExpression(statement.value, visitor.expression);
     else if (statement.kind === 'if') {
       walkExpression(statement.test, visitor.expression);
@@ -1401,7 +1435,7 @@ function summarizeNativePlan(body, locals, effects, continuations, handlers = []
         summary.expressionCount += countExpression(statement.expression);
       } else if (statement.kind === 'effect') {
         if (statement.result && statement.result.mode === 'return') summary.returnCount += 1;
-      } else if (statement.kind === 'effect-group') {
+      } else if (['effect-group', 'effect-collection'].includes(statement.kind)) {
         summary.effectGroupCount += 1;
       }
     }
@@ -1462,7 +1496,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
     validateHelperLoopProduct(helper, callerProduct, 'read loop helper');
     let sites = 0;
     const visit = statement => {
-      if (['read-loop', 'helper-call', 'handler-call', 'stage-call', 'effect-group'].includes(statement.kind)) fail('read loop helper cannot nest effect loops, calls or groups');
+      if (['read-loop', 'helper-call', 'handler-call', 'stage-call', 'effect-group', 'effect-collection'].includes(statement.kind)) fail('read loop helper cannot nest effect loops, calls or groups');
       if (statement.kind === 'effect') {
         const effect = effects.get(statement.effectId); sites++;
         if (!effect || !contract.CANONICAL_READ_LOOP_CONTRACT.effectKinds.includes(effect.kind)) fail('read loop helper effect kind is not admitted');
@@ -1581,7 +1615,16 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
       if (!continuationIds.has(statement.continuationId)) fail('effect statement references unknown continuation', { continuationId: statement.continuationId });
       validateResult(statement.result, fail, localIds, { effectId: statement.effectId });
     }
-    if (statement.kind === 'effect-group') {
+    if (statement.kind === 'effect-collection') {
+      const continuation = plan.continuations.find(c => c.id === statement.continuationId);
+      if (statement.version !== 'pulse.effect-collection.v1' || !Number.isInteger(statement.max) || statement.max < 1 || statement.max > 32
+        || statement.effectIds?.length !== statement.max || new Set(statement.effectIds).size !== statement.max
+        || statement.results?.length !== statement.max || !localIds.has(statement.localId)
+        || continuation?.kind !== 'effect-collection-v1' || stableStringify(continuation.effectIds) !== stableStringify(statement.effectIds)) fail('invalid collection slot bank');
+      const safeInput = node => node?.kind === 'local' || node?.kind === 'property' && safeInput(node.object);
+      if (!safeInput(statement.input)) fail('collection input must be a local array path');
+    }
+    if (['effect-group', 'effect-collection'].includes(statement.kind)) {
       if (!continuationIds.has(statement.continuationId)) fail('effect group references unknown continuation', { continuationId: statement.continuationId });
       for (const effectId of statement.effectIds || []) if (!effectIds.has(effectId)) fail('effect group references unknown effect', { effectId });
       for (const result of statement.results || []) if (!localIds.has(result.localId)) fail('effect group result references unknown local', { localId: result.localId });
@@ -1639,7 +1682,7 @@ function validateHandlerBodies(plan, fail) {
         calls.set(statement.handlerId, (calls.get(statement.handlerId) || 0) + 1);
       }
       if (statement.kind === 'effect') checkEffect(statement.effectId);
-      if (statement.kind === 'effect-group') for (const id of statement.effectIds || []) checkEffect(id);
+      if (['effect-group', 'effect-collection'].includes(statement.kind)) for (const id of statement.effectIds || []) checkEffect(id);
     };
     visitor.expression = expression => {
       if (expression.kind === 'local' && !owned.has(expression.id)) fail('expression crosses a lexical boundary', { localId: expression.id, owner });
@@ -1847,7 +1890,16 @@ function assertCanonicalNativePlan(plan) {
         if (record && stableStringify(statement.result) !== stableStringify(record.result)) fail('effect statement result differs from effect record', { effectId: statement.effectId });
         if (record && statement.continuationId !== record.continuationId) fail('effect statement continuation differs from effect record', { effectId: statement.effectId });
       }
-      if (statement.kind === 'effect-group') {
+      if (statement.kind === 'effect-collection') {
+        const resultIds = (statement.results || []).map(item => item.effectId);
+        if (stableStringify(resultIds) !== stableStringify(statement.effectIds)) fail('collection results must match the ordered slot bank');
+        if (new Set((statement.results || []).map(item => item.localId)).size !== statement.max) fail('collection result locals must be unique');
+        if (statement.results?.some(item => item.localId === statement.localId)) fail('collection output cannot alias a member result');
+        for (const id of statement.effectIds || []) {
+          if (effectById.get(id)?.continuationId !== statement.continuationId) fail('collection slot continuation differs from its owner', { effectId: id });
+        }
+      }
+      if (['effect-group', 'effect-collection'].includes(statement.kind)) {
         for (const item of statement.results || []) {
           const record = effectById.get(item.effectId);
           if (!record || !record.result || record.result.localId !== item.localId) fail('effect-group result differs from effect record', { effectId: item.effectId, localId: item.localId });
