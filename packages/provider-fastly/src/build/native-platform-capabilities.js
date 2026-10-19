@@ -2067,6 +2067,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       }
     );
   }
+  const packageDuration = plan.packages?.application?.requestLimits?.maxDurationMs;
+  if (packageDuration !== undefined) options = { ...options, maxDurationMs: Math.min(options.maxDurationMs ?? packageDuration, packageDuration) };
   const bindings = resolveCapabilityBindings(plan, options);
   // Keep final provider eligibility authoritative over the portable artifact
   // and caller options. Only the selected crypto guest uses the linked policy;
@@ -2121,6 +2123,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   if (packageApplication.enabled(plan)) source = packageApplication.instrument(source);
   source = effectInvocations.instrument(source);
   source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
+  source = packageApplication.terminalFailure(source, plan);
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {

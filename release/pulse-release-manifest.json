@@ -7,7 +7,7 @@
   "display": {
     "productName": "Pulse",
     "candidateLabel": "Beta",
-    "candidateName": "Pulse 1.0.0-beta.9 — Beta",
+    "candidateName": "Pulse 1.0.0-beta.9 \u2014 Beta",
     "activationStage": "documentation-release"
   },
   "legal": {
@@ -315,13 +315,14 @@
       "documentation": "docs/packages/mcp.md",
       "role": "public-extension",
       "tier": "supported-extension",
-      "audience": "Host applications exposing bounded MCP HTTP tools over a governed Entities endpoint.",
-      "directInstall": "Yes, when a host application exposes MCP HTTP; use outside Pulse guest handlers.",
+      "audience": "Host applications and Pulse handlers exposing bounded MCP HTTP tools.",
+      "directInstall": "Yes, for the host adapters or the static /pulse binding.",
       "entryPoints": [
         "@pulse-compute/mcp",
-        "@pulse-compute/mcp/node"
+        "@pulse-compute/mcp/node",
+        "@pulse-compute/mcp/pulse"
       ],
-      "stability": "The root Fetch handler and /node HTTP bridge are supported Beta host APIs with zero runtime dependencies. Implementation subpaths are private; no guest lowering, stdio, execution or workspace access is exposed."
+      "stability": "The root Fetch handler and /node HTTP bridge retain fixed-backend host behavior. /pulse supplies a static package-owned Native binding with local Entities dispatch, strict HTTP admission and no fallback. Protocol resources, prompts, sessions and stdio are unsupported."
     },
     {
       "dir": "packages/s3",

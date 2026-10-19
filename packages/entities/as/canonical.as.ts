@@ -52,15 +52,7 @@ function pulse_entities_host_log(level: i32, pointer: i32, length: i32): void {
 function __pulse_package_finish(status: i32): i32 {
   if (status == __PULSE_ENTITIES_RUN_SUSPENDED) return 1
   if (status != __PULSE_ENTITIES_RUN_COMPLETE) { __pulse_package_error = 5; return -1 }
-  const response = entity_host_object()
-  entity_host_set(response, __pulse_package_string('status'), entity_host_number(<f64>__pulse_entities_response_status))
-  entity_host_set(response, __pulse_package_string('body'), __pulse_package_string(__pulse_entities_response))
-  if (__pulse_entities_response_status != 204) {
-    const headers = entity_host_object()
-    entity_host_set(headers, __pulse_package_string('content-type'), __pulse_package_string('application/json; charset=utf-8'))
-    entity_host_set(response, __pulse_package_string('headers'), headers)
-  }
-  __pulse_package_result = entity_host_response(response)
+  __pulse_package_result = __pulse_transport_response()
   return 0
 }
 export function pulse_abi_version(): i32 { return 2 }
@@ -68,9 +60,7 @@ export function pulse_plan_hash_ptr(): i32 { return changetype<i32>(__pulse_appl
 export function pulse_plan_hash_length(): i32 { return __pulse_application_plan_hash.length }
 export function pulse_start(): i32 {
   if (__pulse_entities_started != 0) { __pulse_package_error = 1; return -1 }
-  const request = JSON.parse<string>(changetype<string>(entity_host_json(entity_host_request())))
-  pulse_entities_set_request(changetype<i32>(request))
-  return __pulse_package_finish(pulse_entities_start())
+  return __pulse_transport_start()
 }
 export function pulse_resume(): i32 {
   if (__pulse_entities_suspended == 0 || __pulse_entities_pending_count != 0) { __pulse_package_error = 2; return -2 }

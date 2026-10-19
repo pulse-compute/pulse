@@ -1204,6 +1204,10 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 300000,
     description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'
   }),
+  'mcp-native-binding': nodeTask('test/mcp/assert-mcp-native-binding.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'B10-MCP-04 static binding and Node JavaScript/Native/Fastly Native protocol parity with direct Entities dispatch'
+  }),
   'mcp-http': nodeTask('test/mcp/assert-mcp-http.cjs', {
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
@@ -1469,6 +1473,7 @@ const profiles = Object.freeze({
     'entities-native-runtime',
     'entities-hardening',
     'entities-node-native-workflow',
+    'mcp-native-binding',
     'fastly-entities-native-workflow',
     'crypto-native-guest-source',
     'guest-link-package',
@@ -1552,6 +1557,7 @@ const profiles = Object.freeze({
     'cli-dev-workflow',
     'cli-schema-json-workflow',
     'entities-node-native-workflow',
+    'mcp-native-binding',
     'fastly-entities-native-workflow',
     'events-cli-workflow',
     'cli-diagnostics',

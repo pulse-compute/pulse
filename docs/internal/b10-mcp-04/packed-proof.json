@@ -1,0 +1,207 @@
+{
+  "status": "passed",
+  "node": "v24.19.0",
+  "checks": [
+    "packed allowlist, legal notices, three author entry points, trusted lowerer and exact first-party dependency closure",
+    "installed CommonJS and ESM public imports; implementation subpaths blocked",
+    "strict NodeNext CommonJS and ESM declarations without source aliases or skipLibCheck",
+    "locked official client 2.2.0 repeated discovery against installed packed adapter"
+  ],
+  "source": "77b5e18c9219a2413e84cabeb27260dbcc4d2171",
+  "workingTree": "M docs/architecture/current-contracts.md\n M docs/contributing/package-lowerer-contract.md\n M docs/maintainers/release-manifest.md\n M docs/packages/README.md\n M docs/packages/mcp.md\n M docs/reference/diagnostics.md\n M docs/reference/release-manifest.json\n M examples/12-pulse-context-mcp/README.md\n M examples/12-pulse-context-mcp/context-corpus.ts\n M examples/12-pulse-context-mcp/context-data/context-manifest.json\n M examples/12-pulse-context-mcp/context-data/context-metadata.ts\n M examples/12-pulse-context-mcp/context-data/metadata.bin\n M examples/12-pulse-context-mcp/context-data/text.bin\n M examples/12-pulse-context-mcp/context-data/vector.bin\n M packages/entities/as/canonical.as.ts\n M packages/entities/package.json\n M packages/entities/pulsewasm.compiler.cjs\n M packages/entities/pulsewasm.native.cjs\n M packages/entities/src/entity-router.ts\n M packages/entities/src/internal/schema-codec-bridge.ts\n M packages/entities/test/schema-codec-bridge.test.ts\n M packages/mcp/README.md\n M packages/mcp/package.json\n M packages/mcp/src/catalog.js\n M packages/mcp/src/index.js\n M packages/provider-fastly/src/build/native-platform-capabilities.js\n M packages/provider-fastly/src/build/package-native-application.js\n M packages/provider-fastly/src/toolchain/index.js\n M packages/provider-node/src/javascript/target-support-policy.js\n M packages/provider-node/src/native/target.js\n M packages/runtime/src/host.d.ts\n M packages/runtime/src/internal/package-runtime.js\n M packages/runtime/src/internal/request-budget.js\n M packages/runtime/src/internal/router.js\n M packages/runtime/src/package.d.ts\n M packages/runtime/src/package.js\n M packages/runtime/test/request-budget.test.ts\n M pnpm-lock.yaml\n M release/pulse-release-manifest.json\n M scripts/release-evidence-bundle.cjs\n M wasm/packages/cli/docs/architecture/current-contracts.md\n M wasm/packages/cli/docs/contributing/package-lowerer-contract.md\n M wasm/packages/cli/docs/maintainers/release-manifest.md\n M wasm/packages/cli/docs/packages/README.md\n M wasm/packages/cli/docs/packages/mcp.md\n M wasm/packages/cli/docs/reference/diagnostics.md\n M wasm/packages/cli/docs/reference/release-manifest.json\n M wasm/packages/cli/examples/12-pulse-context-mcp/README.md\n M wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts\n M wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json\n M wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts\n M wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin\n M wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin\n M wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin\n M wasm/packages/cli/release-manifest.json\n M wasm/packages/cli/src/diagnostics.js\n M wasm/packages/compiler/src/canonical-native-plan.js\n M wasm/packages/compiler/src/spine/terminal-package-native.js\n M wasm/packages/contracts/src/handler/canonical-native-runtime.js\n M wasm/packages/host-runtime/src/runtime/canonical-native-host.js\n M wasm/test/contracts/assert-package-reachability.cjs\n M wasm/test/entities/assert-entities-schema-bridge.cjs\n M wasm/test/mcp/assert-mcp-http.cjs\n M wasm/test/mcp/assert-mcp-package.cjs\n M wasm/test/suite/registry.cjs\n?? packages/entities/as/transport-json-rpc.as.ts\n?? packages/mcp/as/\n?? packages/mcp/conformance/\n?? packages/mcp/pulse.package.json\n?? packages/mcp/pulsewasm.compiler.cjs\n?? packages/mcp/pulsewasm.manifest.cjs\n?? packages/mcp/pulsewasm.native.cjs\n?? packages/mcp/pulsewasm.plan.cjs\n?? packages/mcp/src/protocol.js\n?? packages/mcp/src/pulse-config.js\n?? packages/mcp/src/pulse.d.ts\n?? packages/mcp/src/pulse.js\n?? packages/runtime/src/internal/package-http-failure.js\n?? wasm/test/contracts/.external-lowerer-Dyto8v/\n?? wasm/test/fixtures/projects/mcp-native/\n?? wasm/test/mcp/assert-mcp-native-binding.cjs",
+  "tarball": {
+    "sha256": "9195db098f1e1f5e257c1015fa60d7698242d50952d31bfe39f40e76c9b05866",
+    "bytes": 40897,
+    "files": [
+      "package/LICENSE",
+      "package/NOTICE",
+      "package/README.md",
+      "package/as/mcp.as.ts",
+      "package/conformance/README.md",
+      "package/package.json",
+      "package/pulse.package.json",
+      "package/pulsewasm.compiler.cjs",
+      "package/pulsewasm.manifest.cjs",
+      "package/pulsewasm.native.cjs",
+      "package/pulsewasm.plan.cjs",
+      "package/src/authorization.js",
+      "package/src/bounded.js",
+      "package/src/catalog.js",
+      "package/src/index.d.ts",
+      "package/src/index.js",
+      "package/src/node.d.ts",
+      "package/src/node.js",
+      "package/src/protocol.js",
+      "package/src/pulse-config.js",
+      "package/src/pulse.d.ts",
+      "package/src/pulse.js",
+      "package/src/tools.js"
+    ]
+  },
+  "toolchain": {
+    "typescript": "5.9.3",
+    "nodeTypes": "24.13.3"
+  },
+  "wire": {
+    "status": "passed",
+    "client": "@modelcontextprotocol/client@2.2.0",
+    "productionAdapter": true,
+    "publishedPackage": false,
+    "authorizationValidated": false,
+    "wire": [
+      {
+        "request": {
+          "jsonrpc": "2.0",
+          "id": "server-discover-probe-1",
+          "method": "server/discover",
+          "params": {
+            "_meta": {
+              "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+              "io.modelcontextprotocol/clientInfo": {
+                "name": "pulse-mcp-02-independent-client",
+                "version": "0.0.0"
+              },
+              "io.modelcontextprotocol/clientCapabilities": {}
+            }
+          }
+        },
+        "requestHeaders": {
+          "accept": "application/json, text/event-stream",
+          "content-type": "application/json",
+          "mcp-method": "server/discover",
+          "mcp-protocol-version": "2026-07-28"
+        },
+        "status": 200,
+        "responseHeaders": {
+          "cache-control": "no-store",
+          "connection": "keep-alive",
+          "content-type": "application/json",
+          "date": "Mon, 19 Oct 2026 22:18:00 GMT",
+          "keep-alive": "timeout=5",
+          "transfer-encoding": "chunked"
+        },
+        "response": {
+          "jsonrpc": "2.0",
+          "id": "server-discover-probe-1",
+          "result": {
+            "resultType": "complete",
+            "_meta": {
+              "io.modelcontextprotocol/serverInfo": {
+                "name": "pulse-mcp",
+                "version": "0.0.0"
+              }
+            },
+            "supportedVersions": [
+              "2026-07-28"
+            ],
+            "capabilities": {},
+            "ttlMs": 0,
+            "cacheScope": "private"
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "server/discover",
+          "jsonrpc": "2.0",
+          "id": 0,
+          "params": {
+            "_meta": {
+              "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+              "io.modelcontextprotocol/clientInfo": {
+                "name": "pulse-mcp-02-independent-client",
+                "version": "0.0.0"
+              },
+              "io.modelcontextprotocol/clientCapabilities": {}
+            }
+          }
+        },
+        "requestHeaders": {
+          "accept": "application/json, text/event-stream",
+          "content-type": "application/json",
+          "mcp-method": "server/discover",
+          "mcp-protocol-version": "2026-07-28"
+        },
+        "status": 200,
+        "responseHeaders": {
+          "cache-control": "no-store",
+          "connection": "keep-alive",
+          "content-type": "application/json",
+          "date": "Mon, 19 Oct 2026 22:18:00 GMT",
+          "keep-alive": "timeout=5",
+          "transfer-encoding": "chunked"
+        },
+        "response": {
+          "jsonrpc": "2.0",
+          "id": 0,
+          "result": {
+            "resultType": "complete",
+            "_meta": {
+              "io.modelcontextprotocol/serverInfo": {
+                "name": "pulse-mcp",
+                "version": "0.0.0"
+              }
+            },
+            "supportedVersions": [
+              "2026-07-28"
+            ],
+            "capabilities": {},
+            "ttlMs": 0,
+            "cacheScope": "private"
+          }
+        }
+      },
+      {
+        "request": {
+          "method": "server/discover",
+          "jsonrpc": "2.0",
+          "id": 1,
+          "params": {
+            "_meta": {
+              "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+              "io.modelcontextprotocol/clientInfo": {
+                "name": "pulse-mcp-02-independent-client",
+                "version": "0.0.0"
+              },
+              "io.modelcontextprotocol/clientCapabilities": {}
+            }
+          }
+        },
+        "requestHeaders": {
+          "accept": "application/json, text/event-stream",
+          "content-type": "application/json",
+          "mcp-method": "server/discover",
+          "mcp-protocol-version": "2026-07-28"
+        },
+        "status": 200,
+        "responseHeaders": {
+          "cache-control": "no-store",
+          "connection": "keep-alive",
+          "content-type": "application/json",
+          "date": "Mon, 19 Oct 2026 22:18:00 GMT",
+          "keep-alive": "timeout=5",
+          "transfer-encoding": "chunked"
+        },
+        "response": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "result": {
+            "resultType": "complete",
+            "_meta": {
+              "io.modelcontextprotocol/serverInfo": {
+                "name": "pulse-mcp",
+                "version": "0.0.0"
+              }
+            },
+            "supportedVersions": [
+              "2026-07-28"
+            ],
+            "capabilities": {},
+            "ttlMs": 0,
+            "cacheScope": "private"
+          }
+        }
+      }
+    ]
+  }
+}

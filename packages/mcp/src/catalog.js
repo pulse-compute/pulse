@@ -13,13 +13,13 @@ function snapshot(value) {
   return JSON.parse(text);
 }
 
-function projectCatalog(options, limits) {
+function projectCatalog(options, limits, compiled = false) {
   const catalog = snapshot(options.catalog), registry = snapshot(options.schemas);
-  if (catalog.version !== 'pulse.entities-catalog.v1' || catalog.contractId !== 'pulse.entities'
+  if (!compiled && (catalog.version !== 'pulse.entities-catalog.v1' || catalog.contractId !== 'pulse.entities'
     || !/^[a-f0-9]{64}$/.test(catalog.catalogHash) || !Array.isArray(catalog.routers)
     || registry.version !== 'pulse.canonical-schema-registry.v4' || registry.registryIrVersion !== 'pulse.schema-registry-ir.v5'
     || !/^[a-f0-9]{64}$/.test(registry.registryHash) || !Array.isArray(registry.schemas)
-    || !['node-javascript', 'node-native', 'fastly-javascript', 'fastly-native'].includes(options.target)) fail();
+    || !['node-javascript', 'node-native', 'fastly-javascript', 'fastly-native'].includes(options.target))) fail();
   const schemas = new Map();
   for (const schema of registry.schemas) {
     if (!object(schema) || typeof schema.id !== 'string' || schemas.has(schema.id)) fail();
@@ -119,4 +119,7 @@ function matches(value, schema) {
   }
 }
 
-module.exports = { projectCatalog, matches };
+function projectLocalCatalog(catalog, schemas, routerId, target, limits) {
+  return projectCatalog({ catalog, schemas: { schemas }, routerId, target }, limits, true);
+}
+module.exports = { projectCatalog, projectLocalCatalog, matches };

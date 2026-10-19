@@ -795,7 +795,7 @@ executions with the same caller-supplied execution label. Node Native effect and
 continuation traces include invocation IDs while retaining static site IDs.
 Original-source JavaScript continues to use its per-call effect identities.
 
-The managed Native controller (`pulse.canonical-native-host.v5`) accepts a pending effect's opaque ticket in
+The managed Native controller (`pulse.canonical-native-host.v6`) accepts a pending effect's opaque ticket in
 `setEffectResult(ticket, result)`. Object identity authenticates the ticket;
 copied fields, foreign executions, old loop visits and duplicate settlement fail
 with `PULSE_EFFECT_INVOCATION_INVALID` before allocating a result handle or

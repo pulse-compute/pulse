@@ -8,6 +8,7 @@ const entitiesSchemaRuntime = packageRuntime.createPackageSchemaCodecRuntime({
 });
 
 export interface EntitySchemaCodecBridge<Input = unknown, Output = unknown> {
+  describe(): readonly { readonly id: string; readonly root: unknown }[];
   decodeEmbeddedJson(schemaId: string, packageOwnedText: string): DeepReadonly<Input>;
   encodeEmbeddedJson(schemaId: string, packageOwnedValue: Output): string;
 }

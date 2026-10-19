@@ -341,6 +341,7 @@ function bindPackageRuntimeContext(context, frame) {
   });
   const executionOptions = frame.executionOptions || {};
   PACKAGE_CONTEXTS.set(context, Object.freeze({
+    frame,
     effectExecution: frame.effectExecution,
     publicView,
     requestHeaders: frame.req && Array.isArray(frame.req.headers) ? frame.req.headers : Object.freeze([]),
@@ -491,6 +492,13 @@ function createPackageSchemaCodecRuntime(input) {
       if (declaration.input !== null) requireExplicitSchemaId(declaration.input, schemaOptions, 'request');
       if (declaration.output !== null) requireExplicitSchemaId(declaration.output, schemaOptions, 'application-response');
       return Object.freeze({
+        describe() {
+          assertPackageContextActive(data);
+          const ids = new Set([declaration.input, declaration.output].filter(Boolean));
+          const schemas = data.schemaCodecs?.registry?.schemas || [];
+          // Detached data only. Codec functions, context and unrelated schemas stay private.
+          return JSON.parse(JSON.stringify(schemas.filter(schema => ids.has(schema.id))));
+        },
         decodeEmbeddedJson(schemaId, packageOwnedText) {
           assertPackageContextActive(data);
           const id = assertDeclaredSchema('input', declaration.input, schemaId);
@@ -625,7 +633,22 @@ function createPackageRuntime(input) {
   });
 }
 
+function createPackageHttpRuntime(definition) {
+  if (definition?.version !== 'pulse.package-http-runtime.v1' || !/^@[a-z0-9.-]+\/[a-z0-9._-]+$/.test(definition.package)
+    || !/^[a-zA-Z0-9._:-]{1,256}$/.test(definition.contractId) || Object.keys(definition).some(key => !['version', 'package', 'contractId'].includes(key))) throw new TypeError('Invalid package HTTP definition');
+  return Object.freeze({ bind(context, options) {
+    const data = packageContextData(context);
+    assertPackageContextActive(data);
+    if (data.provider !== 'node') throw contractError('PULSE_REQUEST_DURATION_UNSUPPORTED', 'This JavaScript provider does not realize package HTTP deadlines. Select Native.');
+    if (!Number.isSafeInteger(options.maxDurationMs) || options.maxDurationMs < 1 || options.maxDurationMs > 30000 || typeof options.failure !== 'function' || data.frame.executionOptions.packageHttpState.failure) throw new TypeError('Invalid package HTTP binding');
+    data.frame.executionOptions.packageHttpState.failure = options.failure;
+    data.frame.executionOptions.requestBudget.limitDuration(options.maxDurationMs);
+    return data.publicView;
+  } });
+}
+
 module.exports = Object.freeze({
+  createPackageHttpRuntime,
   PACKAGE_RUNTIME_BRIDGE_VERSION,
   PACKAGE_SCHEMA_CODEC_BRIDGE_VERSION,
   TRUSTED_PACKAGE_EFFECT_CATALOG,

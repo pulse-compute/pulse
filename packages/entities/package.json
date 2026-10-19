@@ -25,6 +25,11 @@
     "./pulsewasm-native": {
       "require": "./pulsewasm.native.cjs",
       "default": "./pulsewasm.native.cjs"
+    },
+    "./internal/transport": {
+      "types": "./dist/entity-router.d.ts",
+      "import": "./dist/entity-router.js",
+      "default": "./dist/entity-router.js"
     }
   },
   "files": [

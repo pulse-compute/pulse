@@ -84,6 +84,7 @@ function classifyNodeJavascriptCapability(id, options = {}) {
 
 function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, options = {}) {
   const requirement = String(id);
+  if (requirement === 'request.deadline') return decision(requirement, 'eligible', 'node-provider-request-deadline', 'provider-node');
   if (requirement === 'request.body.transform') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'response.output') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'request.body.forward') return classifyNodeJavascriptCapability(requirement, options);

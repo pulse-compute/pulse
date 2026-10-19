@@ -29,7 +29,7 @@ function terminalPackageNativeForCompiled(compiled) {
     managedHandlerNativeBundle: compileManagedHandlerNativeBundle(managedHandlers),
     schemaBundle
   });
-  if (result.version !== 'pulse.package-native-application.v1' || result.contractId !== selected.contractId
+  if (!['pulse.package-native-application.v1', 'pulse.package-native-application.v2'].includes(result.version) || result.contractId !== selected.contractId
     || result.package !== selected.package || result.intrinsic !== application.intrinsic || result.automaticFallback !== false) {
     throw new TypeError('Trusted Native application result does not match its selected package.');
   }

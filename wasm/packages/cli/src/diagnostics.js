@@ -15,6 +15,7 @@ function entry(category, options = {}) {
 }
 
 const DIAGNOSTIC_DEFINITIONS = Object.freeze({
+  PULSE_MCP_STATIC_BINDING_REQUIRED: entry('compile', { exitCode: 3, remediation: ['Declare one module-level MCP binding with literal protocol options, one local EntityRouter and a direct terminal handle(ctx) return.'] }),
   PULSE_REPORT_INPUT_INVALID: entry('report', { exitCode: 3, remediation: ['Use an unmodified supported Report capsule or a completed-Wasm manifest with its matching local files.'] }),
   PULSE_REPORT_EVIDENCE_MISSING: entry('report', { exitCode: 3, remediation: ['Run pulse compile or pulse build with the selected Native profile, then retry report; report never builds automatically.'] }),
   PULSE_REPORT_STALE: entry('report', { exitCode: 3, remediation: ['Rebuild the selected Native profile after inputs settle, or replay a saved capsule explicitly as historical evidence.'] }),
@@ -190,6 +191,7 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
  });
 
 const DIAGNOSTIC_SUMMARIES = Object.freeze({
+  PULSE_MCP_STATIC_BINDING_REQUIRED: 'The MCP binding is dynamic, invalid or outside the supported static protocol and Entities composition contract.',
   PULSE_REPORT_INPUT_INVALID: 'Report evidence is malformed, unsafe, or fails integrity validation.',
   PULSE_REPORT_EVIDENCE_MISSING: 'A matching completed Wasm build and its required retained evidence are missing.',
   PULSE_REPORT_STALE: 'Retained Report evidence does not match the selected inputs or changed during collection.',
