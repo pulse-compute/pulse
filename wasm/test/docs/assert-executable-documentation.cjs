@@ -219,8 +219,13 @@ function assertExampleFormatting() {
   for (const file of files) {
     const relativeFile = slash(path.relative(repoRoot, file));
     // Generated snapshot strings preserve complete canonical document/file bytes.
-    // Determinism and content budgets are checked by pulse-context-corpus.
-    if (relativeFile === 'examples/12-pulse-context-mcp/context-corpus.ts') continue;
+    // Determinism and content budgets are checked by pulse-context-corpus
+    // and pulse-context-build; generated data is not an authored example.
+    if ([
+      'examples/12-pulse-context-mcp/context-corpus.ts',
+      'examples/12-pulse-context-mcp/context-data/context-manifest.json',
+      'examples/12-pulse-context-mcp/context-data/context-metadata.ts'
+    ].includes(relativeFile)) continue;
     const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
     for (let index = 0; index < lines.length; index += 1) {
       assert.ok(
