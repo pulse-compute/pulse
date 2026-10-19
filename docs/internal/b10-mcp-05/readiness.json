@@ -1,0 +1,200 @@
+{
+  "schemaVersion": "pulse.b10-mcp-05-readiness.v1",
+  "status": "reproduced-blocker",
+  "featureComplete": false,
+  "source": {
+    "head": "ed8e2bd4d8e1e367b254a62245ff5afad179411a",
+    "tree": "590e6ebe40b5c30d89f1c39e3b93fe934a6ee0b9",
+    "workingTree": [
+      "?? docs/internal/b10-mcp-05/"
+    ]
+  },
+  "node": "v24.19.0",
+  "results": [
+    {
+      "name": "scalar-control",
+      "sourceSha256": "3b46dd8766e01775fab2e0374f20deff20b51d4fb216e6966340d705e2d765c6",
+      "targets": {
+        "node-native": {
+          "status": "accepted",
+          "nativeEligibility": null
+        },
+        "fastly-native": {
+          "status": "accepted",
+          "nativeEligibility": null
+        },
+        "node-javascript": {
+          "status": "accepted",
+          "nativeEligibility": null
+        }
+      }
+    },
+    {
+      "name": "schema-encode",
+      "sourceSha256": "60bf9090f0fab6496416bfc4dc0da3677d7bbae68a2738123f3d9e47df059946",
+      "targets": {
+        "node-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_ESCAPE",
+            "PULSE_MANAGED_HANDLER_INPUT_ESCAPE"
+          ]
+        },
+        "fastly-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_ESCAPE",
+            "PULSE_MANAGED_HANDLER_INPUT_ESCAPE"
+          ]
+        },
+        "node-javascript": {
+          "status": "accepted",
+          "nativeEligibility": null
+        }
+      }
+    },
+    {
+      "name": "schema-decode",
+      "sourceSha256": "8cb7dd9fd4737f9c9aec9c868b07f40dddc67cc4675430f1b04c81313249c802",
+      "targets": {
+        "node-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_ESCAPE"
+          ]
+        },
+        "fastly-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_ESCAPE"
+          ]
+        },
+        "node-javascript": {
+          "status": "accepted",
+          "nativeEligibility": null
+        }
+      }
+    },
+    {
+      "name": "resource-read",
+      "sourceSha256": "523d93d7e2cbe51c9f71ddcbb5de202494ec19d41758f063a40bb77dcd2025d2",
+      "targets": {
+        "node-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_READ_UNSUPPORTED"
+          ]
+        },
+        "fastly-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_READ_UNSUPPORTED"
+          ]
+        },
+        "node-javascript": {
+          "status": "accepted",
+          "nativeEligibility": null
+        }
+      }
+    },
+    {
+      "name": "resource-utf8",
+      "sourceSha256": "2032b3f25902a4666899740c2321f0e42397d455231d503efeeab347771f761f",
+      "targets": {
+        "node-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_READ_UNSUPPORTED"
+          ]
+        },
+        "fastly-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_READ_UNSUPPORTED"
+          ]
+        },
+        "node-javascript": {
+          "status": "accepted",
+          "nativeEligibility": null
+        }
+      }
+    },
+    {
+      "name": "numeric-workspace",
+      "sourceSha256": "1b1627621480649ca86a6b0d0510ddda66ed73d5000daedf10d40d2d930cb046",
+      "targets": {
+        "node-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_READ_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_INPUT_ESCAPE",
+            "PULSE_MANAGED_HANDLER_STATEMENT_UNSUPPORTED"
+          ]
+        },
+        "fastly-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CALL_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_CONTEXT_READ_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_INPUT_ESCAPE",
+            "PULSE_MANAGED_HANDLER_STATEMENT_UNSUPPORTED"
+          ]
+        },
+        "node-javascript": {
+          "status": "accepted",
+          "nativeEligibility": null
+        }
+      }
+    },
+    {
+      "name": "bounded-loop",
+      "sourceSha256": "18065eeda9926220560412448c9b9f70225cd110effe8bffa9d1019a0fbff1ec",
+      "targets": {
+        "node-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CONTROL_FLOW_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_MUTATION_UNSUPPORTED"
+          ]
+        },
+        "fastly-native": {
+          "status": "rejected",
+          "code": "PULSE_MANAGED_HANDLER_COMPILE_FAILED",
+          "diagnostics": [
+            "PULSE_MANAGED_HANDLER_CONTROL_FLOW_UNSUPPORTED",
+            "PULSE_MANAGED_HANDLER_MUTATION_UNSUPPORTED"
+          ]
+        },
+        "node-javascript": {
+          "status": "accepted",
+          "nativeEligibility": null
+        }
+      }
+    }
+  ],
+  "ordinaryNativeControl": {
+    "status": "completed",
+    "body": "{\"value\":273}",
+    "wasmSha256": "14b317c5431945ecd6c301681b68b259a707faeac6d9cf1024e95d0e7cb0c14f"
+  }
+}
