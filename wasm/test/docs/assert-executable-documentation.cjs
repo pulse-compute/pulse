@@ -18,6 +18,26 @@ const OPTIMIZED_BUILD_DIR = '.pulse-docs-build-size';
 
 const examples = Object.freeze([
   Object.freeze({
+  "id": "03-fetch-composition/dynamic-probes",
+  "provider": "node",
+  "guestWasmBytes": 86361,
+  "optimizedGuestWasmBytes": 71626,
+  "capabilities": [
+    "fetch",
+    "request.json",
+    "response.json",
+    "response.text",
+    "schema.decode",
+    "schema.encode",
+    "state.set"
+  ],
+  "schemas": [
+    "probe.Input",
+    "probe.Result",
+    "probe.Output"
+  ]
+}),
+  Object.freeze({
     id: '01-hello-json',
     provider: 'node',
     guestWasmBytes: 2353,
@@ -309,7 +329,7 @@ function verifyRunBindings(bindings, selectedExample = null) {
       assert.ok(projectRoot.startsWith(`${repoRoot}${path.sep}`), `pulse-doc-run project escapes repository: ${config.project}`);
       assert.ok(fs.existsSync(projectRoot), `pulse-doc-run project is missing: ${config.project}`);
       cwd = projectRoot;
-      const example = config.project.match(/^examples\/([^/]+)$/)?.[1];
+      const example = config.project.startsWith('examples/') ? config.project.slice('examples/'.length) : null;
       if (example) exampleCoverage.add(example);
       if (config.args[0] === 'build' || config.prepare) {
         const dist = path.join(projectRoot, BUILD_DIR);
@@ -324,7 +344,8 @@ function verifyRunBindings(bindings, selectedExample = null) {
     try {
       if (config.prepare) {
         assert.equal(config.args[0], 'report', 'Only retained report evidence requires preparation');
-        assert.deepEqual(config.prepare, ['build', '--out', BUILD_DIR, '--json'], 'Report preparation stays in the documentation build directory');
+        const profileArgs = config.prepare.length === 6 ? ['--profile', config.prepare[2]] : [];
+        assert.deepEqual(config.prepare, ['build', ...profileArgs, '--out', BUILD_DIR, '--json'], 'Report preparation stays in the documentation build directory');
         const prepared = runJson(config.prepare, cwd);
         assert.equal(prepared.status, 'built');
       }
@@ -881,7 +902,7 @@ function verifySourceContracts() {
   console.log('docs - verify source-backed Markdown');
   const syncResult = synchronizeDocSnippets({ write: false });
   assert.ok(syncResult.blockCount >= 24, `expected at least 24 source-derived documentation blocks, found ${syncResult.blockCount}`);
-  const covered = new Set(syncResult.references.map((entry) => entry.source.match(/^examples\/([^/]+)\//)?.[1]).filter(Boolean));
+  const covered = new Set(syncResult.references.map((entry) => entry.markdown.match(/^examples\/(.+)\/README\.md$/)?.[1]).filter(Boolean));
   assert.deepEqual([...covered].sort(), examples.map((entry) => entry.id).sort(), 'every canonical example must supply exact source-derived documentation');
   return syncResult;
 }

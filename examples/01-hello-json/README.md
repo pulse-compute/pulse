@@ -6,13 +6,13 @@ The smallest canonical Pulse project: branch on the request path and return JSON
 
 ## Request and response
 
-Generated from the executable test harness below; these are tested cases, not an exhaustive route specification.
+Generated from the executable test harness below; these are tested requests or event frames, not an exhaustive application specification. Expected errors and emitted events are included; fixtures and provider setup remain in the harness.
 
 | Request | Expected response |
 |---|---|
-| `GET /health` | `{"status":200,"json":{"ok":true}}` |
-| `GET /hello` | `{"status":200,"json":{"message":"hello from Pulse"}}` |
-| `GET /missing` | `{"status":404,"text":"not found"}` |
+| health<br><code>GET /health</code> | <code>{"status":200,"json":{"ok":true}}</code> |
+| hello<br><code>GET /hello</code> | <code>{"status":200,"json":{"message":"hello from Pulse"}}</code> |
+| missing<br><code>GET /missing</code> | <code>{"status":404,"text":"not found"}</code> |
 
 <!-- pulse-example-view:code -->
 ## Code

@@ -1,5 +1,7 @@
 # Entities tools facade
 
+<!-- pulse-example-template:v1 -->
+
 This experimental example declares two schema-bound operations with
 `@pulse-compute/entities`, exposes them through the first-party JSON-RPC
 adapter, and projects their emitted static catalog into a dependency-free tools
@@ -11,6 +13,187 @@ The application contributes:
 - `system.status`, which accepts no input and completes with `null`;
 - `customer.lookup`, which validates named input and output and performs one
   governed `ctx.fetch` effect.
+
+## Request and response
+
+Generated from the executable test harness below; these are tested requests or event frames, not an exhaustive application specification. Expected errors and emitted events are included; fixtures and provider setup remain in the harness.
+
+| Request | Expected response |
+|---|---|
+| system-status<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","method":"system.status","id":"status-doc"}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","result":null,"id":"status-doc"}}</code> |
+| customer-lookup<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","method":"customer.lookup","params":{"email":"ada@example.test"},"id":"lookup-doc"}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","result":{"email":"ada@example.test","displayName":"Ada Lovelace"},"id":"lookup-doc"}}</code> |
+
+<!-- pulse-example-view:code -->
+## Code
+
+### Entity application
+
+<!-- pulse-doc-source: examples/10-entities-tools/src/index.ts -->
+```ts
+import { EntityRouter, jsonRpc } from '@pulse-compute/entities'
+import { lookupCustomer, systemStatus } from './handlers.js'
+
+const rpc = new EntityRouter({
+  adapter: jsonRpc({ namedParamsOnly: true, acceptEmptyObjectForNoInput: true }),
+})
+
+rpc.on('system.status', {
+  input: null,
+  output: null,
+  metadata: {
+    title: 'Check system status',
+    description: 'Checks that the governed entity request boundary is available.',
+    mcp: { readOnlyHint: true },
+  },
+}, systemStatus)
+
+rpc.on('customer.lookup', {
+  input: 'tools.CustomerLookupInput',
+  output: 'tools.CustomerLookupOutput',
+  metadata: {
+    title: 'Look up customer',
+    description: 'Looks up one customer through the configured directory backend.',
+    mcp: { readOnlyHint: true },
+  },
+}, lookupCustomer)
+
+export default async function handler(ctx: unknown) {
+  return rpc.handle(ctx as never)
+}
+```
+<!-- /pulse-doc-source -->
+
+### Project config
+
+<!-- pulse-doc-source: examples/10-entities-tools/.pulse/config.ts -->
+```ts
+import { defineConfig } from '@pulse-compute/pulse'
+
+export default defineConfig((_scope) => ({
+  pulse: {
+    entry: 'src/index.ts',
+    schema: 'src/schemas.ts',
+    tests: 'tests/pulse.harness.ts',
+    defaultProfile: 'node-javascript',
+    strict: true,
+  },
+  'node-javascript': {
+    host: 'node',
+    target: 'javascript',
+    outDir: 'dist-node-javascript',
+    dev: { networkFetch: false },
+  },
+  'node-native': {
+    host: 'node',
+    target: 'native',
+    outDir: 'dist-node-native',
+    dev: { networkFetch: false },
+  },
+  'fastly-javascript': {
+    host: 'fastly',
+    target: 'javascript',
+    outDir: 'dist-fastly-javascript',
+    dev: { networkFetch: false },
+    fastly: {
+      bindings: {
+        backends: { 'https://directory.example.test': 'directory_backend' },
+        dynamicBackends: false,
+      },
+    },
+  },
+  'fastly-native': {
+    host: 'fastly',
+    target: 'native',
+    outDir: 'dist-fastly-native',
+    dev: { networkFetch: false },
+    fastly: {
+      bindings: {
+        backends: { 'https://directory.example.test': 'directory_backend' },
+        dynamicBackends: false,
+      },
+    },
+  },
+}))
+```
+<!-- /pulse-doc-source -->
+
+## Inspect
+
+The selected profile is `node-javascript`; this checked excerpt identifies its target, provider and recognized capabilities. Paths, hashes and additional inspection fields are omitted.
+
+<!-- pulse-doc-run {"project":"examples/10-entities-tools","args":["inspect","--json"],"display":"npm run inspect -- --json"} -->
+```bash
+npm run inspect -- --json
+```
+```json
+{
+  "status": "ok",
+  "project": {
+    "target": "javascript"
+  },
+  "provider": {
+    "id": "node"
+  },
+  "compiler": {
+    "capabilities": [
+      "schema.decode",
+      "schema.encode"
+    ]
+  }
+}
+```
+
+## Doctor
+
+Check this project and its local toolchain before execution. This selected result is verified by the documentation gate; another machine may report different prerequisite checks.
+
+<!-- pulse-doc-run {"project":"examples/10-entities-tools","args":["doctor","--json"],"display":"npm run doctor -- --json"} -->
+```bash
+npm run doctor -- --json
+```
+```json
+{
+  "status": "passed",
+  "summary": {
+    "warnings": 0,
+    "failed": 0
+  }
+}
+```
+
+## Report
+
+Select `node-native` explicitly for this report; the default profile remains JavaScript. Build once into a separate directory, then replay the retained artifact without running or rebuilding the application. This checked excerpt accounts for registered handlers in the build evidence; it is not runtime request coverage.
+
+<!-- pulse-doc-run {"project":"examples/10-entities-tools","args":["report","--artifact",".pulse-docs-build/pulse-build.json","--json"],"prepare":["build","--profile","node-native","--out",".pulse-docs-build","--json"],"display":"npm run build -- --profile node-native --out .pulse-docs-build\nnpm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --json"} -->
+```bash
+npm run build -- --profile node-native --out .pulse-docs-build
+npm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --json
+```
+```json
+{
+  "kind": "pulse.application-report",
+  "reportVersion": 1,
+  "analytics": {
+    "coverage": {
+      "handlers": {
+        "expected": null,
+        "observed": 0,
+        "reason": "not-recorded",
+        "status": "unavailable"
+      }
+    }
+  }
+}
+```
+
+Optional offline HTML uses the same retained evidence:
+
+```bash
+npm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --html
+```
+
+Review reports before sharing. Missing, stale or incompatible evidence is an error; timings, paths and hashes are not presented as stable output.
 
 ## JavaScript workflow
 
@@ -42,13 +225,7 @@ Node JavaScript request boundary. The lookup fixture supplies plain text because
 its handler consumes `ctx.fetch(...).text()`; a `value` fixture would encode a
 JSON string, including quotes.
 
-<!-- pulse-doc-run {"project":"examples/10-entities-tools","args":["test","--json"]} -->
-```bash
-pulse test --json
-```
-```json
-{"status":"passed","provider":"node","target":"javascript","summary":{"total":2,"passed":2,"failed":0}}
-```
+
 
 During `pulse dev`, send a JSON-RPC `system.status` request to check the live
 boundary. The harness's lookup fixture applies only to `pulse test`;
@@ -117,6 +294,15 @@ and provider bundle under `dist-fastly-javascript`. Fastly `test` and `dev` use
 the provider's local fixture runtime. They do not constitute Viceroy replay or
 live deployment. Bind the real directory backend separately before deployment.
 
+## Facade boundary
+
+`tools-facade.cjs` is an orchestration example, not a complete MCP server. It
+does not add listeners, SSE, sessions, tasks, resources, prompts, sampling,
+authorization, transport negotiation, or protocol lifecycle state to Pulse
+runtime core. A future MCP or tools facade remains an adapter outside the
+entity engine, just as a future Worker/event adapter would bind a different
+request or event protocol without changing entity handler semantics.
+
 ## Clean installed acceptance
 
 From a source checkout with the pinned workspace dependencies restored:
@@ -143,103 +329,15 @@ This gate is required by the release profile and can be selected directly. It
 supplements the fast non-main workflow without adding package installation to
 every fast PR run. External Viceroy evidence and live deployment remain separate.
 
-## Wasm size
+## Test result
 
-The default `node-javascript` profile emits **no application Wasm artifact**.
-Select `node-native` to emit an application guest. `--experimental-native-size`
-is meaningful only on that Native profile; the default JavaScript build has
-no application guest to optimize.
-
-## Entity application
-
-<!-- pulse-doc-source: examples/10-entities-tools/src/index.ts -->
-```ts
-import { EntityRouter, jsonRpc } from '@pulse-compute/entities'
-import { lookupCustomer, systemStatus } from './handlers.js'
-
-const rpc = new EntityRouter({
-  adapter: jsonRpc({ namedParamsOnly: true, acceptEmptyObjectForNoInput: true }),
-})
-
-rpc.on('system.status', {
-  input: null,
-  output: null,
-  metadata: {
-    title: 'Check system status',
-    description: 'Checks that the governed entity request boundary is available.',
-    mcp: { readOnlyHint: true },
-  },
-}, systemStatus)
-
-rpc.on('customer.lookup', {
-  input: 'tools.CustomerLookupInput',
-  output: 'tools.CustomerLookupOutput',
-  metadata: {
-    title: 'Look up customer',
-    description: 'Looks up one customer through the configured directory backend.',
-    mcp: { readOnlyHint: true },
-  },
-}, lookupCustomer)
-
-export default async function handler(ctx: unknown) {
-  return rpc.handle(ctx as never)
-}
+<!-- pulse-doc-run {"project":"examples/10-entities-tools","args":["test","--json"]} -->
+```bash
+pulse test --json
 ```
-<!-- /pulse-doc-source -->
-
-## Project config
-
-<!-- pulse-doc-source: examples/10-entities-tools/.pulse/config.ts -->
-```ts
-import { defineConfig } from '@pulse-compute/pulse'
-
-export default defineConfig((_scope) => ({
-  pulse: {
-    entry: 'src/index.ts',
-    schema: 'src/schemas.ts',
-    tests: 'tests/pulse.harness.ts',
-    defaultProfile: 'node-javascript',
-    strict: true,
-  },
-  'node-javascript': {
-    host: 'node',
-    target: 'javascript',
-    outDir: 'dist-node-javascript',
-    dev: { networkFetch: false },
-  },
-  'node-native': {
-    host: 'node',
-    target: 'native',
-    outDir: 'dist-node-native',
-    dev: { networkFetch: false },
-  },
-  'fastly-javascript': {
-    host: 'fastly',
-    target: 'javascript',
-    outDir: 'dist-fastly-javascript',
-    dev: { networkFetch: false },
-    fastly: {
-      bindings: {
-        backends: { 'https://directory.example.test': 'directory_backend' },
-        dynamicBackends: false,
-      },
-    },
-  },
-  'fastly-native': {
-    host: 'fastly',
-    target: 'native',
-    outDir: 'dist-fastly-native',
-    dev: { networkFetch: false },
-    fastly: {
-      bindings: {
-        backends: { 'https://directory.example.test': 'directory_backend' },
-        dynamicBackends: false,
-      },
-    },
-  },
-}))
+```json
+{"status":"passed","provider":"node","target":"javascript","summary":{"total":2,"passed":2,"failed":0}}
 ```
-<!-- /pulse-doc-source -->
 
 ## Test harness
 
@@ -288,11 +386,9 @@ export default { cases: [
 ```
 <!-- /pulse-doc-source -->
 
-## Facade boundary
+## Wasm size
 
-`tools-facade.cjs` is an orchestration example, not a complete MCP server. It
-does not add listeners, SSE, sessions, tasks, resources, prompts, sampling,
-authorization, transport negotiation, or protocol lifecycle state to Pulse
-runtime core. A future MCP or tools facade remains an adapter outside the
-entity engine, just as a future Worker/event adapter would bind a different
-request or event protocol without changing entity handler semantics.
+The default `node-javascript` profile emits **no application Wasm artifact**.
+Select `node-native` to emit an application guest. `--experimental-native-size`
+is meaningful only on that Native profile; the default JavaScript build has
+no application guest to optimize.
