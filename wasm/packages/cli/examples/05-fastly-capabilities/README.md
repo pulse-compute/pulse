@@ -1,64 +1,27 @@
 # Fastly capabilities
 
+<!-- pulse-example-template:v1 -->
+
 Combines provider-neutral config, secrets, KV, a named backend, and a
 request-bound GRIP broadcast in one Fastly project. The handler imports GRIP
 from its supported package root; the compatibility-only `/pulsewasm` facade is
 not part of this example.
 
-## Workflow
+## Request and response
 
-```bash
-pulse doctor
-pulse inspect
-pulse test
-pulse dev
-pulse build
-```
+Generated from the executable test harness below; these are tested requests or event frames, not an exhaustive application specification. Expected errors and emitted events are included; fixtures and provider setup remain in the harness.
 
-The documented test result below is executed by the documentation gate.
+| Request | Expected response |
+|---|---|
+| configured-fetch<br><code>GET /users/7</code> | <code>{"status":200,"json":{"user":{"id":7,"name":"Ada"}}}</code> |
+| session-hit<br><code>GET /session</code> | <code>{"status":200,"json":{"session":{"userId":123}}}</code> |
+| session-miss<br><code>GET /session</code> | <code>{"status":404,"json":{"error":"not_found"}}</code> |
+| grip-broadcast<br><code>POST /publish</code> | <code>{"status":202,"json":{"accepted":true}}</code> |
 
-<!-- pulse-doc-run {"project":"examples/05-fastly-capabilities","args":["test","--json"]} -->
-```bash
-pulse test --json
-```
-```json
-{
-  "status": "passed",
-  "provider": "fastly",
-  "summary": {
-    "total": 4,
-    "passed": 4,
-    "failed": 0
-  },
-  "cases": [
-    {
-      "name": "configured-fetch",
-      "status": "passed",
-      "response": {
-        "status": 200
-      }
-    }
-  ]
-}
-```
+<!-- pulse-example-view:code -->
+## Code
 
-Fastly builds produce a verified `.pulse-docs-build/bin/main.wasm`. Configured
-tests execute through the local-conformance runtime; compiled-target execution
-remains in the explicit reality profile.
-
-## Wasm size
-
-| Artifact | Default build | `--experimental-native-size` | Reduction |
-|---|---:|---:|---:|
-| `canonical-native.wasm` | 5.6 KiB (5,695 bytes) | 5.1 KiB (5,181 bytes) | 9.0% |
-| `bin/main.wasm` | 52.6 KiB (53,833 bytes) | 41.8 KiB (42,780 bytes) | 20.5% |
-
-The executable documentation gate rebuilds and measures both variants from this
-checkout. The provider artifact includes the Fastly header, transport recovery,
-fetch deadline, and structured logging fixes. These are uncompressed on-disk
-sizes, not transfer sizes or platform limits.
-
-## Handler
+### Handler
 
 <!-- pulse-doc-source: examples/05-fastly-capabilities/src/index.ts -->
 ```ts
@@ -120,7 +83,7 @@ export default app
 ```
 <!-- /pulse-doc-source -->
 
-## Project config
+### Project config
 
 <!-- pulse-doc-source: examples/05-fastly-capabilities/.pulse/config.ts -->
 ```ts
@@ -183,6 +146,136 @@ export default defineConfig((scope) => ({
 }))
 ```
 <!-- /pulse-doc-source -->
+
+## Inspect
+
+The selected profile is `local`; this checked excerpt identifies its target, provider and recognized capabilities. Paths, hashes and additional inspection fields are omitted.
+
+<!-- pulse-doc-run {"project":"examples/05-fastly-capabilities","args":["inspect","--json"],"display":"npm run inspect -- --json"} -->
+```bash
+npm run inspect -- --json
+```
+```json
+{
+  "status": "ok",
+  "project": {
+    "target": "native"
+  },
+  "provider": {
+    "id": "fastly"
+  },
+  "compiler": {
+    "capabilities": [
+      "config.get",
+      "fetch",
+      "grip.broadcast",
+      "kv",
+      "kv.get",
+      "kv.put",
+      "response.json",
+      "response.text",
+      "secret.get"
+    ]
+  }
+}
+```
+
+## Doctor
+
+Check this project and its local toolchain before execution. This selected result is verified by the documentation gate; another machine may report different prerequisite checks.
+
+<!-- pulse-doc-run {"project":"examples/05-fastly-capabilities","args":["doctor","--json"],"display":"npm run doctor -- --json"} -->
+```bash
+npm run doctor -- --json
+```
+```json
+{
+  "status": "passed",
+  "summary": {
+    "warnings": 0,
+    "failed": 0
+  }
+}
+```
+
+## Report
+
+Build once into a separate directory, then replay the retained artifact without running or rebuilding the application. This checked excerpt accounts for registered handlers in the build evidence; it is not runtime request coverage.
+
+<!-- pulse-doc-run {"project":"examples/05-fastly-capabilities","args":["report","--artifact",".pulse-docs-build/pulse-build.json","--json"],"prepare":["build","--out",".pulse-docs-build","--json"],"display":"npm run build -- --out .pulse-docs-build\nnpm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --json"} -->
+```bash
+npm run build -- --out .pulse-docs-build
+npm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --json
+```
+```json
+{
+  "kind": "pulse.application-report",
+  "reportVersion": 1,
+  "analytics": {
+    "coverage": {
+      "handlers": {
+        "expected": 3,
+        "observed": 3,
+        "reason": null,
+        "status": "complete"
+      }
+    }
+  }
+}
+```
+
+Optional offline HTML uses the same retained evidence:
+
+```bash
+npm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --html
+```
+
+Review reports before sharing. Missing, stale or incompatible evidence is an error; timings, paths and hashes are not presented as stable output.
+
+## Workflow
+
+```bash
+pulse doctor
+pulse inspect
+pulse test
+pulse dev
+pulse build
+```
+
+The documented test result below is executed by the documentation gate.
+
+
+
+Fastly builds produce a verified `.pulse-docs-build/bin/main.wasm`. Configured
+tests execute through the local-conformance runtime; compiled-target execution
+remains in the explicit reality profile.
+
+## Test result
+
+<!-- pulse-doc-run {"project":"examples/05-fastly-capabilities","args":["test","--json"]} -->
+```bash
+pulse test --json
+```
+```json
+{
+  "status": "passed",
+  "provider": "fastly",
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0
+  },
+  "cases": [
+    {
+      "name": "configured-fetch",
+      "status": "passed",
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}
+```
 
 ## Test harness
 
@@ -256,3 +349,15 @@ export default {
 }
 ```
 <!-- /pulse-doc-source -->
+
+## Wasm size
+
+| Artifact | Default build | `--experimental-native-size` | Reduction |
+|---|---:|---:|---:|
+| `canonical-native.wasm` | 5.6 KiB (5,695 bytes) | 5.1 KiB (5,181 bytes) | 9.0% |
+| `bin/main.wasm` | 52.6 KiB (53,833 bytes) | 41.8 KiB (42,780 bytes) | 20.5% |
+
+The executable documentation gate rebuilds and measures both variants from this
+checkout. The provider artifact includes the Fastly header, transport recovery,
+fetch deadline, and structured logging fixes. These are uncompressed on-disk
+sizes, not transfer sizes or platform limits.

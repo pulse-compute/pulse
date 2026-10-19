@@ -34,3 +34,27 @@ bounded test/reference adapter rather than a public listener.
 server. Its `npm run build` prepares the standalone host, and `npm start` serves
 MCP discovery and five tools from that build. `pulse dev` serves the underlying
 JSON-RPC app for development. See its README for the candidate install status.
+
+## Example walkthroughs
+
+Every runnable example below uses the shared purpose and request/response-first
+layout. Code and checked Inspect/Doctor excerpts precede setup and test evidence.
+Report excerpts replay completed Native build evidence, not runtime traffic.
+
+| Example | Input | Report evidence |
+|---|---|---|
+| [Hello JSON](01-hello-json/README.md) | HTTP | Default Native profile |
+| [Request schema](02-request-schema/README.md) | HTTP and schema errors | Default Native profile |
+| [Fetch composition](03-fetch-composition/README.md) | HTTP with fetch fixtures | Default Native profile |
+| [Dynamic endpoint probes](03-fetch-composition/dynamic-probes/README.md) | Bounded HTTP endpoint lists | Default Native profile |
+| [Fastly capabilities](05-fastly-capabilities/README.md) | HTTP with provider fixtures | Default Native profile |
+| [Opaque binary proxy](07-opaque-proxy/README.md) | HTTP with opaque response bytes | Default Native profile |
+| [Router lowering](09-router-lowering/README.md) | HTTP routing and middleware | Default Native profile |
+| [Entities tools facade](10-entities-tools/README.md) | JSON-RPC | Explicit `node-native` profile |
+| [Static events](11-events/README.md) | HTTP and event frames | Default Native profile |
+| [Pulse context MCP](12-pulse-context-mcp/README.md) | JSON-RPC and MCP walkthroughs | JavaScript-only; no Wasm Report |
+| [ES256 bearer verification](13-jwt-es256/README.md) | HTTP bearer fixtures | Default Native profile |
+
+The internal `wasm/examples/assets-package-out` README describes a compiler/package
+fixture, not a public application lifecycle. It keeps its existing fixture-specific
+explanation.

@@ -1,94 +1,32 @@
 # Router lowering
 
+<!-- pulse-example-template:v1 -->
+
 Uses the static `Router` authoring surface to define terminal middleware, route
 fallthrough, error handling, mounts, parameters, wildcards, and method-specific
 routes. Pulse lowers the flat Router execution graph into the same canonical
 native plan used by single-handler applications.
 
-## Workflow
+## Request and response
 
-```bash
-pulse doctor
-pulse inspect
-pulse test
-pulse dev
-pulse compile
-pulse build
-```
+Generated from the executable test harness below; these are tested requests or event frames, not an exhaustive application specification. Expected errors and emitted events are included; fixtures and provider setup remain in the harness.
 
-The inspect result exposes Router execution entries and route/middleware
-ownership for effects and continuations. `return next()` terminates the current
-handler and advances dispatch; it never resumes.
+| Request | Expected response |
+|---|---|
+| mounted-health<br><code>GET /api/health</code> | <code>{"status":200,"json":{"ok":true,"handler":"primary"}}</code> |
+| middleware-short-circuit<br><code>GET /api/health</code><br>Headers: <code>[["x-pulse-deny","1"]]</code> | <code>{"status":401,"json":{"error":"denied by middleware"}}</code> |
+| scoped-middleware-short-circuit<br><code>GET /api/health</code><br>Headers: <code>[["x-api-state","closed"]]</code> | <code>{"status":503,"text":"api closed"}</code> |
+| route-fallthrough<br><code>GET /api/health</code><br>Headers: <code>[["x-health-handler","fallback"]]</code> | <code>{"status":200,"json":{"ok":true,"handler":"fallback"}}</code> |
+| error-middleware<br><code>GET /api/failure</code> | <code>{"status":418,"json":{"error":"handled"}}</code> |
+| parameter-and-fetch<br><code>GET /api/users/7</code> | <code>{"status":200,"json":{"route":"user","id":"7","user":{"id":7,"name":"Ada"}}}</code> |
+| method-specific-post<br><code>POST /api/users</code> | <code>{"status":201,"json":{"route":"create","method":"POST"}}</code> |
+| trailing-wildcard<br><code>GET /api/files/guides/start</code> | <code>{"status":200,"text":"/api/files/guides/start"}</code> |
+| default-not-found<br><code>GET /missing</code> | <code>{"status":404,"text":"Not Found"}</code> |
 
-<!-- pulse-doc-run {"project":"examples/09-router-lowering","args":["inspect","--json"]} -->
-```bash
-pulse inspect --json
-```
-```json
-{
-  "status": "ok",
-  "provider": {
-    "id": "node"
-  },
-  "compiler": {
-    "authoring": {
-      "kind": "router"
-    },
-    "routing": {
-      "version": "pulse.router-authoring.v2",
-      "routes": [
-        {
-          "method": "GET",
-          "path": "/api/health"
-        }
-      ]
-    },
-    "effectCount": 1,
-    "continuationCount": 1
-  }
-}
-```
+<!-- pulse-example-view:code -->
+## Code
 
-The documented test result below is also executed by the documentation gate.
-
-<!-- pulse-doc-run {"project":"examples/09-router-lowering","args":["test","--json"]} -->
-```bash
-pulse test --json
-```
-```json
-{
-  "status": "passed",
-  "provider": "node",
-  "summary": {
-    "total": 9,
-    "passed": 9,
-    "failed": 0
-  },
-  "cases": [
-    {
-      "name": "mounted-health",
-      "status": "passed",
-      "response": {
-        "status": 200
-      }
-    }
-  ]
-}
-```
-
-## Wasm size
-
-| Artifact | Default build | `--experimental-native-size` | Reduction |
-|---|---:|---:|---:|
-| `canonical-native.wasm` | 7.8 KiB (8,014 bytes) | 7.2 KiB (7,407 bytes) | 7.6% |
-
-The executable documentation gate rebuilds and measures both variants on
-`1.0.0-beta.9`. These are uncompressed on-disk sizes, not transfer sizes or
-platform limits.
-The artifact includes checks that transfer application data failures to the
-next error handler.
-
-## Router application
+### Router application
 
 <!-- pulse-doc-source: examples/09-router-lowering/src/index.ts -->
 ```ts
@@ -160,7 +98,7 @@ export default app
 ```
 <!-- /pulse-doc-source -->
 
-## Project config
+### Project config
 
 <!-- pulse-doc-source: examples/09-router-lowering/.pulse/config.ts -->
 ```ts
@@ -189,6 +127,157 @@ export default defineConfig((_scope) => ({
 ```
 <!-- /pulse-doc-source -->
 
+## Inspect
+
+The selected profile is `local`; this checked excerpt identifies its target, provider and recognized capabilities. Paths, hashes and additional inspection fields are omitted.
+
+<!-- pulse-doc-run {"project":"examples/09-router-lowering","args":["inspect","--json"],"display":"npm run inspect -- --json"} -->
+```bash
+npm run inspect -- --json
+```
+```json
+{
+  "status": "ok",
+  "project": {
+    "target": "native"
+  },
+  "provider": {
+    "id": "node"
+  },
+  "compiler": {
+    "capabilities": [
+      "fetch",
+      "response.json",
+      "response.text"
+    ]
+  }
+}
+```
+
+## Doctor
+
+Check this project and its local toolchain before execution. This selected result is verified by the documentation gate; another machine may report different prerequisite checks.
+
+<!-- pulse-doc-run {"project":"examples/09-router-lowering","args":["doctor","--json"],"display":"npm run doctor -- --json"} -->
+```bash
+npm run doctor -- --json
+```
+```json
+{
+  "status": "passed",
+  "summary": {
+    "warnings": 0,
+    "failed": 0
+  }
+}
+```
+
+## Report
+
+Build once into a separate directory, then replay the retained artifact without running or rebuilding the application. This checked excerpt accounts for registered handlers in the build evidence; it is not runtime request coverage.
+
+<!-- pulse-doc-run {"project":"examples/09-router-lowering","args":["report","--artifact",".pulse-docs-build/pulse-build.json","--json"],"prepare":["build","--out",".pulse-docs-build","--json"],"display":"npm run build -- --out .pulse-docs-build\nnpm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --json"} -->
+```bash
+npm run build -- --out .pulse-docs-build
+npm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --json
+```
+```json
+{
+  "kind": "pulse.application-report",
+  "reportVersion": 1,
+  "analytics": {
+    "coverage": {
+      "handlers": {
+        "expected": 10,
+        "observed": 10,
+        "reason": null,
+        "status": "complete"
+      }
+    }
+  }
+}
+```
+
+Optional offline HTML uses the same retained evidence:
+
+```bash
+npm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --html
+```
+
+Review reports before sharing. Missing, stale or incompatible evidence is an error; timings, paths and hashes are not presented as stable output.
+
+## Workflow
+
+```bash
+pulse doctor
+pulse inspect
+pulse test
+pulse dev
+pulse compile
+pulse build
+```
+
+The inspect result exposes Router execution entries and route/middleware
+ownership for effects and continuations. `return next()` terminates the current
+handler and advances dispatch; it never resumes.
+
+<!-- pulse-doc-run {"project":"examples/09-router-lowering","args":["inspect","--json"]} -->
+```bash
+pulse inspect --json
+```
+```json
+{
+  "status": "ok",
+  "provider": {
+    "id": "node"
+  },
+  "compiler": {
+    "authoring": {
+      "kind": "router"
+    },
+    "routing": {
+      "version": "pulse.router-authoring.v2",
+      "routes": [
+        {
+          "method": "GET",
+          "path": "/api/health"
+        }
+      ]
+    },
+    "effectCount": 1,
+    "continuationCount": 1
+  }
+}
+```
+
+The documented test result below is also executed by the documentation gate.
+
+## Test result
+
+<!-- pulse-doc-run {"project":"examples/09-router-lowering","args":["test","--json"]} -->
+```bash
+pulse test --json
+```
+```json
+{
+  "status": "passed",
+  "provider": "node",
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0
+  },
+  "cases": [
+    {
+      "name": "mounted-health",
+      "status": "passed",
+      "response": {
+        "status": 200
+      }
+    }
+  ]
+}
+```
 
 ## Test harness
 
@@ -287,3 +376,15 @@ export default {
 }
 ```
 <!-- /pulse-doc-source -->
+
+## Wasm size
+
+| Artifact | Default build | `--experimental-native-size` | Reduction |
+|---|---:|---:|---:|
+| `canonical-native.wasm` | 7.8 KiB (8,014 bytes) | 7.2 KiB (7,407 bytes) | 7.6% |
+
+The executable documentation gate rebuilds and measures both variants on
+`1.0.0-beta.9`. These are uncompressed on-disk sizes, not transfer sizes or
+platform limits.
+The artifact includes checks that transfer application data failures to the
+next error handler.

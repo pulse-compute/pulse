@@ -1150,6 +1150,7 @@ const tasks = Object.freeze({
   }),
   ...Object.fromEntries([
     ['01-hello-json', 180000],
+    ['03-fetch-composition/dynamic-probes', 240000],
     ['02-request-schema', 240000],
     ['03-fetch-composition', 180000],
     ['05-fastly-capabilities', 360000],
@@ -1160,7 +1161,7 @@ const tasks = Object.freeze({
     ['12-pulse-context-mcp', 240000],
     ['13-jwt-es256', 300000]
   ].map(([name, timeoutMs]) => [
-    `docs-example-${name}`,
+    `docs-example-${name.replaceAll('/', '-')}`,
     nodeTask('test/docs/assert-executable-documentation.cjs', {
       evidence: 'cli',
       timeoutMs,
@@ -1548,6 +1549,7 @@ const profiles = Object.freeze({
     'docs-executable-init-dev',
     'docs-migration-schema-lowering',
     'docs-example-01-hello-json',
+    'docs-example-03-fetch-composition-dynamic-probes',
     'docs-example-02-request-schema',
     'docs-example-03-fetch-composition',
     'docs-example-05-fastly-capabilities',

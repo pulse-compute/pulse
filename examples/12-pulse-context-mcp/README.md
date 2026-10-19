@@ -1,5 +1,7 @@
 # Pulse context MCP server
 
+<!-- pulse-example-template:v1 -->
+
 Start a Pulse project with cited contracts and maintained examples. This app
 serves five read-only tools from an immutable bundled snapshot: `pulse.start`,
 `pulse.search`, `pulse.read`, `pulse.example`, and `pulse.explain_diagnostic`.
@@ -7,26 +9,199 @@ The handlers are an ordinary schema-bound Entities application. The separate
 host uses `@pulse-compute/mcp/node` and the public Node launcher; every tool
 crosses the app's HTTP boundary.
 
-## Install
+## Request and response
 
-Use Node 22.14+ or Node 24. Copy this complete example from the matching CLI
-package's `examples/12-pulse-context-mcp/` directory into a new directory. The
-corpus, host and request helper are included; no repository checkout, upstream
-server, credentials or global Pulse installation is needed at runtime.
+Generated from the executable test harness below; these are tested requests or event frames, not an exhaustive application specification. Expected errors and emitted events are included; fixtures and provider setup remain in the harness.
 
-**Candidate status:** all Pulse dependencies, including MCP, use the exact
-`1.0.0-beta.9` synchronized candidate version. Registry installation becomes
-available after release-owner bootstrap, trusted-publisher setup and publication.
-Until then, use matching candidate packages through the candidate registry.
-PMCP-07 owns the installed context-app onboarding journey. The install command is:
+| Request | Expected response |
+|---|---|
+| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"db5f4ea2dfd0221ab7d199d1ba66e282a0c08ba788a2f860a0cd7339b4d45c8b","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
+| schema-admission<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":2,"method":"pulse.search","params":{"version":"1.0.0-beta.9","query":42}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Invalid params"}}}</code> |
 
+<!-- pulse-example-view:code -->
+## Code
+
+### Entity application
+
+<!-- pulse-doc-source: examples/12-pulse-context-mcp/src/index.ts -->
+```ts
+import { EntityRouter, jsonRpc } from '@pulse-compute/entities'
+import { start, search, read, example, explainDiagnostic } from './handlers.js'
+
+const rpc = new EntityRouter({ adapter: jsonRpc({ namedParamsOnly: true }) })
+rpc.on(
+  'pulse.start',
+  {
+    input: 'context.StartInput',
+    output: 'context.StartOutput',
+    metadata: {
+      title: 'Start a Pulse project',
+      description:
+        'Return a Node Native or JavaScript starter plan for this exact snapshot.',
+      mcp: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
+    },
+  },
+  start,
+)
+rpc.on(
+  'pulse.search',
+  {
+    input: 'context.SearchInput',
+    output: 'context.SearchOutput',
+    metadata: {
+      title: 'Search Pulse context',
+      description: 'Search bundled context with ranked excerpts and explicit pagination.',
+      mcp: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
+    },
+  },
+  search,
+)
+rpc.on(
+  'pulse.read',
+  {
+    input: 'context.ReadInput',
+    output: 'context.ReadOutput',
+    metadata: {
+      title: 'Read a Pulse contract',
+      description:
+        'Read one cited corpus ID; continue with the returned UTF-16 nextOffset.',
+      mcp: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
+    },
+  },
+  read,
+)
+rpc.on(
+  'pulse.example',
+  {
+    input: 'context.ExampleInput',
+    output: 'context.ExampleOutput',
+    metadata: {
+      title: 'Retrieve a Pulse example',
+      description:
+        'Retrieve maintained starter files by exact corpus ID, with pagination.',
+      mcp: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
+    },
+  },
+  example,
+)
+rpc.on(
+  'pulse.explain_diagnostic',
+  {
+    input: 'context.DiagnosticInput',
+    output: 'context.DiagnosticOutput',
+    metadata: {
+      title: 'Explain a Pulse diagnostic',
+      description:
+        'Explain an exact diagnostic with citations and suggested local checks.',
+      mcp: {
+        readOnlyHint: true,
+        idempotentHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
+    },
+  },
+  explainDiagnostic,
+)
+
+export default function handler(ctx: unknown) {
+  return rpc.handle(ctx as never)
+}
+```
+<!-- /pulse-doc-source -->
+
+### Project config
+
+<!-- pulse-doc-source: examples/12-pulse-context-mcp/.pulse/config.ts -->
+```ts
+import { defineConfig } from '@pulse-compute/pulse'
+
+export default defineConfig((_scope) => ({
+  pulse: {
+    entry: 'src/index.ts',
+    schema: 'src/schemas.ts',
+    tests: 'tests/pulse.harness.ts',
+    defaultProfile: 'node-javascript',
+    strict: true,
+  },
+  'node-javascript': {
+    host: 'node',
+    target: 'javascript',
+    outDir: 'dist-node-javascript',
+    schemas: { maxBytes: 65536 },
+    dev: { host: '127.0.0.1', networkFetch: false },
+  },
+}))
+```
+<!-- /pulse-doc-source -->
+
+## Inspect
+
+The selected profile is `node-javascript`; this checked excerpt identifies its target, provider and recognized capabilities. Paths, hashes and additional inspection fields are omitted.
+
+<!-- pulse-doc-run {"project":"examples/12-pulse-context-mcp","args":["inspect","--json"],"display":"npm run inspect -- --json"} -->
 ```bash
-npm install
+npm run inspect -- --json
+```
+```json
+{
+  "status": "ok",
+  "project": {
+    "target": "javascript"
+  },
+  "provider": {
+    "id": "node"
+  },
+  "compiler": {
+    "capabilities": [
+      "schema.decode",
+      "schema.encode"
+    ]
+  }
+}
 ```
 
-Do not substitute an older CLI or an unrelated MCP package. This README's
-context version is `1.0.0-beta.9` with snapshot status `candidate`; check the
-readiness response for the bundled version before calling tools.
+## Doctor
+
+Check this project and its local toolchain before execution. This selected result is verified by the documentation gate; another machine may report different prerequisite checks.
+
+<!-- pulse-doc-run {"project":"examples/12-pulse-context-mcp","args":["doctor","--json"],"display":"npm run doctor -- --json"} -->
+```bash
+npm run doctor -- --json
+```
+```json
+{
+  "status": "warning",
+  "summary": {
+    "warnings": 1,
+    "failed": 0
+  }
+}
+```
+
+The `canonical-native-plan` warning describes this JavaScript-only app’s Native eligibility; it does not select an automatic fallback.
+
+The selected JavaScript profile has no completed Wasm artifact for `pulse report`. No Report result is claimed; use the inspection above and the standalone-host readiness evidence below.
 
 ## Workflow
 
@@ -72,6 +247,8 @@ when using another port. These same tools can be used by an MCP client pointed a
 endpoint. Modern framing is the default, including the qualified Claude client.
 For the pinned Codex compatibility profile, start with `npm start -- --codex`.
 
+## Test result
+
 <!-- pulse-doc-run {"project":"examples/12-pulse-context-mcp","args":["test","--json"]} -->
 ```bash
 pulse test --json
@@ -79,6 +256,108 @@ pulse test --json
 ```json
 {"status":"passed","provider":"node","target":"javascript","summary":{"total":2,"passed":2,"failed":0}}
 ```
+
+## Test harness
+
+<!-- pulse-doc-source: examples/12-pulse-context-mcp/tests/pulse.harness.ts -->
+```ts
+import { contextCorpus } from '../context-corpus.ts'
+
+const meta = {
+  pulseVersion: contextCorpus.pulseVersion,
+  corpusSchemaVersion: contextCorpus.schemaVersion,
+  corpusHash: contextCorpus.corpusHash,
+  snapshotStatus: contextCorpus.status,
+  applicationVersion: 'pulse.context-application.v1',
+  requestedVersion: contextCorpus.pulseVersion,
+  maxReplyBytes: 24576,
+}
+
+export default {
+  cases: [
+    {
+      name: 'unknown-record',
+      request: {
+        method: 'POST',
+        path: '/',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'pulse.read',
+          params: { version: contextCorpus.pulseVersion, id: 'missing' },
+        }),
+      },
+      expect: {
+        status: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: 1,
+          result: {
+            meta,
+            status: 'unknown-id',
+            truncated: false,
+            error: {
+              code: 'unknown-id',
+              message: 'No bundled record has that exact ID.',
+            },
+          },
+        },
+      },
+    },
+    {
+      name: 'schema-admission',
+      request: {
+        method: 'POST',
+        path: '/',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'pulse.search',
+          params: { version: contextCorpus.pulseVersion, query: 42 },
+        }),
+      },
+      expect: {
+        status: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: 2,
+          error: { code: -32602, message: 'Invalid params' },
+        },
+      },
+    },
+  ],
+}
+```
+<!-- /pulse-doc-source -->
+
+## Wasm size
+
+This explicit Node JavaScript profile emits **no application Wasm artifact**.
+`--experimental-native-size` does not apply. Switching this app to Native fails
+eligibility rather than selecting JavaScript automatically.
+
+## Install
+
+Use Node 22.14+ or Node 24. Copy this complete example from the matching CLI
+package's `examples/12-pulse-context-mcp/` directory into a new directory. The
+corpus, host and request helper are included; no repository checkout, upstream
+server, credentials or global Pulse installation is needed at runtime.
+
+**Candidate status:** all Pulse dependencies, including MCP, use the exact
+`1.0.0-beta.9` synchronized candidate version. Registry installation becomes
+available after release-owner bootstrap, trusted-publisher setup and publication.
+Until then, use matching candidate packages through the candidate registry.
+PMCP-07 owns the installed context-app onboarding journey. The install command is:
+
+```bash
+npm install
+```
+
+Do not substitute an older CLI or an unrelated MCP package. This README's
+context version is `1.0.0-beta.9` with snapshot status `candidate`; check the
+readiness response for the bundled version before calling tools.
 
 ## Walkthrough 1: start a JSON API
 
@@ -189,221 +468,6 @@ then backend for one second each. Graceful shutdown exits zero; forced shutdown
 or startup failure exits one. Budgets revoke Pulse-owned asynchronous work and
 do not preempt synchronous JavaScript. Remote deployment and authentication
 require a separate deployment design.
-
-## Wasm size
-
-This explicit Node JavaScript profile emits **no application Wasm artifact**.
-`--experimental-native-size` does not apply. Switching this app to Native fails
-eligibility rather than selecting JavaScript automatically.
-
-## Entity application
-
-<!-- pulse-doc-source: examples/12-pulse-context-mcp/src/index.ts -->
-```ts
-import { EntityRouter, jsonRpc } from '@pulse-compute/entities'
-import { start, search, read, example, explainDiagnostic } from './handlers.js'
-
-const rpc = new EntityRouter({ adapter: jsonRpc({ namedParamsOnly: true }) })
-rpc.on(
-  'pulse.start',
-  {
-    input: 'context.StartInput',
-    output: 'context.StartOutput',
-    metadata: {
-      title: 'Start a Pulse project',
-      description:
-        'Return a Node Native or JavaScript starter plan for this exact snapshot.',
-      mcp: {
-        readOnlyHint: true,
-        idempotentHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-      },
-    },
-  },
-  start,
-)
-rpc.on(
-  'pulse.search',
-  {
-    input: 'context.SearchInput',
-    output: 'context.SearchOutput',
-    metadata: {
-      title: 'Search Pulse context',
-      description: 'Search bundled context with ranked excerpts and explicit pagination.',
-      mcp: {
-        readOnlyHint: true,
-        idempotentHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-      },
-    },
-  },
-  search,
-)
-rpc.on(
-  'pulse.read',
-  {
-    input: 'context.ReadInput',
-    output: 'context.ReadOutput',
-    metadata: {
-      title: 'Read a Pulse contract',
-      description:
-        'Read one cited corpus ID; continue with the returned UTF-16 nextOffset.',
-      mcp: {
-        readOnlyHint: true,
-        idempotentHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-      },
-    },
-  },
-  read,
-)
-rpc.on(
-  'pulse.example',
-  {
-    input: 'context.ExampleInput',
-    output: 'context.ExampleOutput',
-    metadata: {
-      title: 'Retrieve a Pulse example',
-      description:
-        'Retrieve maintained starter files by exact corpus ID, with pagination.',
-      mcp: {
-        readOnlyHint: true,
-        idempotentHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-      },
-    },
-  },
-  example,
-)
-rpc.on(
-  'pulse.explain_diagnostic',
-  {
-    input: 'context.DiagnosticInput',
-    output: 'context.DiagnosticOutput',
-    metadata: {
-      title: 'Explain a Pulse diagnostic',
-      description:
-        'Explain an exact diagnostic with citations and suggested local checks.',
-      mcp: {
-        readOnlyHint: true,
-        idempotentHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-      },
-    },
-  },
-  explainDiagnostic,
-)
-
-export default function handler(ctx: unknown) {
-  return rpc.handle(ctx as never)
-}
-```
-<!-- /pulse-doc-source -->
-
-## Project config
-
-<!-- pulse-doc-source: examples/12-pulse-context-mcp/.pulse/config.ts -->
-```ts
-import { defineConfig } from '@pulse-compute/pulse'
-
-export default defineConfig((_scope) => ({
-  pulse: {
-    entry: 'src/index.ts',
-    schema: 'src/schemas.ts',
-    tests: 'tests/pulse.harness.ts',
-    defaultProfile: 'node-javascript',
-    strict: true,
-  },
-  'node-javascript': {
-    host: 'node',
-    target: 'javascript',
-    outDir: 'dist-node-javascript',
-    schemas: { maxBytes: 65536 },
-    dev: { host: '127.0.0.1', networkFetch: false },
-  },
-}))
-```
-<!-- /pulse-doc-source -->
-
-## Test harness
-
-<!-- pulse-doc-source: examples/12-pulse-context-mcp/tests/pulse.harness.ts -->
-```ts
-import { contextCorpus } from '../context-corpus.ts'
-
-const meta = {
-  pulseVersion: contextCorpus.pulseVersion,
-  corpusSchemaVersion: contextCorpus.schemaVersion,
-  corpusHash: contextCorpus.corpusHash,
-  snapshotStatus: contextCorpus.status,
-  applicationVersion: 'pulse.context-application.v1',
-  requestedVersion: contextCorpus.pulseVersion,
-  maxReplyBytes: 24576,
-}
-
-export default {
-  cases: [
-    {
-      name: 'unknown-record',
-      request: {
-        method: 'POST',
-        path: '/',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'pulse.read',
-          params: { version: contextCorpus.pulseVersion, id: 'missing' },
-        }),
-      },
-      expect: {
-        status: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 1,
-          result: {
-            meta,
-            status: 'unknown-id',
-            truncated: false,
-            error: {
-              code: 'unknown-id',
-              message: 'No bundled record has that exact ID.',
-            },
-          },
-        },
-      },
-    },
-    {
-      name: 'schema-admission',
-      request: {
-        method: 'POST',
-        path: '/',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 2,
-          method: 'pulse.search',
-          params: { version: contextCorpus.pulseVersion, query: 42 },
-        }),
-      },
-      expect: {
-        status: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 2,
-          error: { code: -32602, message: 'Invalid params' },
-        },
-      },
-    },
-  ],
-}
-```
-<!-- /pulse-doc-source -->
 
 ## Maintaining the snapshot
 

@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "135921e63e4fa3e0faa3fcca1838c7d7e7d357724792eaa55c4e196fb7ed5167",
+  "corpusHash": "db5f4ea2dfd0221ab7d199d1ba66e282a0c08ba788a2f860a0cd7339b4d45c8b",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -8137,9 +8137,9 @@ export const contextCorpus = freeze({
         "endLine": 150,
         "path": "examples/01-hello-json/README.md",
         "selection": "heading:Workflow",
-        "sha256": "b2760a4d6ed87b54f35bf4a043fe6a4f9704e3f3d1164523bfdfc5c806f35309",
+        "sha256": "a39336a65f9afb18bea54f7f2e53e940017117771a2c61cef1ae10f180a970d8",
         "startLine": 134,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6f13b5fefba28229a2c2731a6ff70a76593f7ff4"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ae7ded8b4fcb9b0147fcde04e16402d15ea1d8be"
       },
       "status": "candidate",
       "tags": [
@@ -8307,17 +8307,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "example",
-      "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse build\n```\n\nThe documented test result below is executed by the documentation gate.\n\n<!-- pulse-doc-run {\"project\":\"examples/02-request-schema\",\"args\":[\"test\",\"--json\"]} -->\n```bash\npulse test --json\n```\n```json\n{\n  \"status\": \"passed\",\n  \"provider\": \"node\",\n  \"summary\": {\n    \"total\": 2,\n    \"passed\": 2,\n    \"failed\": 0\n  },\n  \"cases\": [\n    {\n      \"name\": \"create-user\",\n      \"status\": \"passed\",\n      \"response\": {\n        \"status\": 201\n      }\n    }\n  ]\n}\n```\n",
-      "contentSha256": "c2383d9ff31c7fecda0855fc9d7fc4309ab9413dbdd420d056e47dd090d17e8f",
+      "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse build\n```\n\nThe documented test result below is executed by the documentation gate.\n",
+      "contentSha256": "15a8175a42dbc4f0f0c6627952850119ea554d2cf571db473faf3ceebc6880af",
       "id": "example/02-request-schema/workflow",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
-        "endLine": 42,
+        "endLine": 161,
         "path": "examples/02-request-schema/README.md",
         "selection": "heading:Workflow",
-        "sha256": "f084d466f51d08c7184a360371ad70d5905c645e1220ba99a74903b84dadc0ba",
-        "startLine": 6,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9afd7bbcdc91fe6ddf0c7f461e0321f0936a127d"
+        "sha256": "423e861c3943025e44ca44b067122eb8b43d14183d5a3555b2c6ca2eeddb7133",
+        "startLine": 150,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ba46ada49807b050de29682a13a4bb7da7e648ac"
       },
       "status": "candidate",
       "tags": [
@@ -8460,17 +8460,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "example",
-      "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse build\n```\n\nThe documented test result below is executed by the documentation gate.\n\n<!-- pulse-doc-run {\"project\":\"examples/03-fetch-composition\",\"args\":[\"test\",\"--json\"]} -->\n```bash\npulse test --json\n```\n```json\n{\n  \"status\": \"passed\",\n  \"provider\": \"node\",\n  \"summary\": {\n    \"total\": 3,\n    \"passed\": 3,\n    \"failed\": 0\n  },\n  \"cases\": [\n    {\n      \"name\": \"single\",\n      \"status\": \"passed\",\n      \"response\": {\n        \"status\": 200\n      }\n    }\n  ]\n}\n```\n",
-      "contentSha256": "48176bedca60a38f22d73647471843b19e31a2abfd4bf37d396101fb426a332e",
+      "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse build\n```\n\nThe documented test result below is executed by the documentation gate.\n",
+      "contentSha256": "15a8175a42dbc4f0f0c6627952850119ea554d2cf571db473faf3ceebc6880af",
       "id": "example/03-fetch-composition/workflow",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
-        "endLine": 47,
+        "endLine": 216,
         "path": "examples/03-fetch-composition/README.md",
         "selection": "heading:Workflow",
-        "sha256": "795ac7e93fc859337f783df3974d790496a939b24c5ec6f754fa1684e17d31d3",
-        "startLine": 11,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ad0e333922c20e4aada5da8c9887c641698e2023"
+        "sha256": "0e81ad2e34bdc5adedf755a8f7bba18d2a87f7233e397ab94b204f19afae6c8c",
+        "startLine": 205,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/f25613bb42d97cf288a3b0d0980727c2ecd6d228"
       },
       "status": "candidate",
       "tags": [
@@ -8613,17 +8613,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "example",
-      "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse compile\npulse build\n```\n\nThe inspect result exposes Router execution entries and route/middleware\nownership for effects and continuations. `return next()` terminates the current\nhandler and advances dispatch; it never resumes.\n\n<!-- pulse-doc-run {\"project\":\"examples/09-router-lowering\",\"args\":[\"inspect\",\"--json\"]} -->\n```bash\npulse inspect --json\n```\n```json\n{\n  \"status\": \"ok\",\n  \"provider\": {\n    \"id\": \"node\"\n  },\n  \"compiler\": {\n    \"authoring\": {\n      \"kind\": \"router\"\n    },\n    \"routing\": {\n      \"version\": \"pulse.router-authoring.v2\",\n      \"routes\": [\n        {\n          \"method\": \"GET\",\n          \"path\": \"/api/health\"\n        }\n      ]\n    },\n    \"effectCount\": 1,\n    \"continuationCount\": 1\n  }\n}\n```\n\nThe documented test result below is also executed by the documentation gate.\n\n<!-- pulse-doc-run {\"project\":\"examples/09-router-lowering\",\"args\":[\"test\",\"--json\"]} -->\n```bash\npulse test --json\n```\n```json\n{\n  \"status\": \"passed\",\n  \"provider\": \"node\",\n  \"summary\": {\n    \"total\": 9,\n    \"passed\": 9,\n    \"failed\": 0\n  },\n  \"cases\": [\n    {\n      \"name\": \"mounted-health\",\n      \"status\": \"passed\",\n      \"response\": {\n        \"status\": 200\n      }\n    }\n  ]\n}\n```\n",
-      "contentSha256": "e38e81b76f2b5a73718e940a62b8e3b93e2482d271f23636dd76b885cb22e39c",
+      "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse compile\npulse build\n```\n\nThe inspect result exposes Router execution entries and route/middleware\nownership for effects and continuations. `return next()` terminates the current\nhandler and advances dispatch; it never resumes.\n\n<!-- pulse-doc-run {\"project\":\"examples/09-router-lowering\",\"args\":[\"inspect\",\"--json\"]} -->\n```bash\npulse inspect --json\n```\n```json\n{\n  \"status\": \"ok\",\n  \"provider\": {\n    \"id\": \"node\"\n  },\n  \"compiler\": {\n    \"authoring\": {\n      \"kind\": \"router\"\n    },\n    \"routing\": {\n      \"version\": \"pulse.router-authoring.v2\",\n      \"routes\": [\n        {\n          \"method\": \"GET\",\n          \"path\": \"/api/health\"\n        }\n      ]\n    },\n    \"effectCount\": 1,\n    \"continuationCount\": 1\n  }\n}\n```\n\nThe documented test result below is also executed by the documentation gate.\n",
+      "contentSha256": "cb39319a0c0eaa036041d2345d2d6bf247f9bd593585a0a6f0e16835c1232ad3",
       "id": "example/09-router-lowering/workflow",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
-        "endLine": 78,
+        "endLine": 254,
         "path": "examples/09-router-lowering/README.md",
         "selection": "heading:Workflow",
-        "sha256": "f90f63f946c76bc004152b9cb821e1962373c17a9a8ba98dee800dc6b579836a",
-        "startLine": 8,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/056320a3013878903c0c2369c3a4f3ae3a432178"
+        "sha256": "d1036524243026b2ace98f06a4e1369d500375a0310784f2c7a3c967b3f6ef5f",
+        "startLine": 209,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/7a6b0e91aa072bfc98a94bd918a6036915c9e8a9"
       },
       "status": "candidate",
       "tags": [
@@ -9743,8 +9743,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/01-hello-json/README.md",
-      "sha256": "b2760a4d6ed87b54f35bf4a043fe6a4f9704e3f3d1164523bfdfc5c806f35309",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6f13b5fefba28229a2c2731a6ff70a76593f7ff4"
+      "sha256": "a39336a65f9afb18bea54f7f2e53e940017117771a2c61cef1ae10f180a970d8",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ae7ded8b4fcb9b0147fcde04e16402d15ea1d8be"
     },
     {
       "path": "examples/01-hello-json/package.json",
@@ -9773,8 +9773,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/02-request-schema/README.md",
-      "sha256": "f084d466f51d08c7184a360371ad70d5905c645e1220ba99a74903b84dadc0ba",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9afd7bbcdc91fe6ddf0c7f461e0321f0936a127d"
+      "sha256": "423e861c3943025e44ca44b067122eb8b43d14183d5a3555b2c6ca2eeddb7133",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ba46ada49807b050de29682a13a4bb7da7e648ac"
     },
     {
       "path": "examples/02-request-schema/package.json",
@@ -9808,8 +9808,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/03-fetch-composition/README.md",
-      "sha256": "795ac7e93fc859337f783df3974d790496a939b24c5ec6f754fa1684e17d31d3",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ad0e333922c20e4aada5da8c9887c641698e2023"
+      "sha256": "0e81ad2e34bdc5adedf755a8f7bba18d2a87f7233e397ab94b204f19afae6c8c",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/f25613bb42d97cf288a3b0d0980727c2ecd6d228"
     },
     {
       "path": "examples/03-fetch-composition/package.json",
@@ -9838,8 +9838,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/09-router-lowering/README.md",
-      "sha256": "f90f63f946c76bc004152b9cb821e1962373c17a9a8ba98dee800dc6b579836a",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/056320a3013878903c0c2369c3a4f3ae3a432178"
+      "sha256": "d1036524243026b2ace98f06a4e1369d500375a0310784f2c7a3c967b3f6ef5f",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/7a6b0e91aa072bfc98a94bd918a6036915c9e8a9"
     },
     {
       "path": "examples/09-router-lowering/package.json",
