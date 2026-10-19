@@ -117,3 +117,22 @@ contextDataIntegrity();
   }
   console.log('ok - compact reference indexes retain catalog facts, remedies and unique stable anchors');
 }
+
+{
+  const { renderPackagePolicy } = require('../../scripts/sync-reference-docs.cjs');
+  const { PACKAGE_SET } = require('../../../scripts/package-support.cjs');
+  const document = renderPackagePolicy();
+  const core = document.slice(document.indexOf('## Core packages'), document.indexOf('## Capability packages'));
+  assert.deepEqual([...core.matchAll(/\| \[`([^`]+)`\]/g)].map(match => match[1]),
+    ['pulse', 'runtime', 'cli']);
+  assert(document.indexOf('## Implementation packages') > document.indexOf('## Capability packages'));
+  for (const entry of PACKAGE_SET) {
+    const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, entry.dir, 'package.json')));
+    assert(document.includes(manifest.description.replace(/\|/g, '&#124;').replace(/\n/g, ' ')));
+    assert(document.includes(entry.audience));
+    assert(document.includes(entry.directInstall));
+    assert(document.includes(entry.stability));
+    assert(document.includes(`https://www.npmjs.com/package/${entry.name}`));
+  }
+  console.log('ok - package index leads with core packages and retains every catalog support contract');
+}
