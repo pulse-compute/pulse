@@ -15,7 +15,7 @@ Generated from the executable test harness below; these are tested requests or e
 
 | Request | Expected response |
 |---|---|
-| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"ac7fcbafb15e0874cc7b179b63164ee4eedcb539a975582dce9517a2010cebc3","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
+| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"b4787f34f98f7b875e1faf0afdb3ae9d209dc6ce0d9fd15bda3038b52c6a2c46","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
 | schema-admission<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":2,"method":"pulse.search","params":{"version":"1.0.0-beta.9","query":42}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Invalid params"}}}</code> |
 
 <!-- pulse-example-view:code -->
@@ -471,18 +471,43 @@ eligibility rather than selecting JavaScript automatically.
 
 ## Maintaining the snapshot
 
-From a source checkout, regenerate only when canonical inputs change:
+From a source checkout, resolve source/version changes and synchronize documentation,
+then explicitly rebuild the immutable data with **Node 24.18.0** (the release-pinned
+producer). No model, network service or output cache participates:
 
 ```bash
-node scripts/pulse-context-corpus.cjs --write
-node scripts/pulse-context-corpus.cjs --check
-node wasm/scripts/run-wasm-tests.cjs --task pulse-context-corpus --task pulse-context-application --task pulse-context-host --no-report
+npm run docs:sync
+npm run context:build
+npm run docs:sync
+npm run context:check
+node wasm/scripts/run-wasm-tests.cjs --task pulse-context-build --task pulse-context-corpus --task pulse-context-application --task pulse-context-host --no-report
 ```
 
-`context-corpus.ts` is generated from `scripts/pulse-context-inputs.json`; edit
-those owners instead of the module or installed CLI copies. The generator checks
-selected headings, stable IDs, versions, applicability and bounded content.
-Run normal documentation synchronization to refresh packaged examples and docs.
-The host test builds once, copies the runtime outside the checkout with sources
-removed, and replays the exact client requests above. This is development evidence;
-exact tarball/client installation is the separate installed qualification.
+The corpus extractor remains `scripts/pulse-context-corpus.cjs`, with the explicit
+allowlist in `scripts/pulse-context-inputs.json`. `context:build` owns the generated
+`context-corpus.ts`, `context-data/` and their byte-identical installed CLI mirrors.
+Its `context-manifest.json` binds source selections, immutable citation blobs,
+producer/config/lockfile hashes, row IDs, vocabulary and every generated payload.
+The manifest's own SHA-256 belongs in the external check receipt, avoiding a
+self-reference. Edit canonical inputs, never the emitted files.
+
+The new `vector.bin` is **sparse lexical data**, not semantic embeddings or the
+unrecovered historical vector. It uses exact ASCII tokens and integer field
+presence weights. `text.bin` retains cited UTF-8 content; `metadata.bin` maps rows
+to their citations. Scalar filter/tool tables contain no full cited text. Limits
+are 512 records, 4,096 terms, 1,024 nonzeros per row, 24 KiB content per record and
+2 MiB canonical corpus, together with explicit raw and serialized resource byte
+budgets. Every limit applies simultaneously; overflow fails without truncation.
+
+`context:check` reconstructs in a fresh temporary directory and compares all 12
+outputs. It fails on missing, stale, corrupt, mixed or unexpected data and never
+repairs the checkout. The receipt names the actual verifier Node version;
+verification on another Node version proves only that invocation's byte equality.
+Generation requires the pinned producer. Repository `build` and `docs:check` run
+the read-only check. `docs:sync` may refresh the legacy corpus and copy emitted
+files, but never builds vectors; finish explicit generation before committing.
+
+The existing Node JavaScript host continues using its v1 corpus module. The new
+resource closure prepares the Native migration; it does not claim a Native MCP
+server, installed resource acceptance, or a candidate-bound seal receipt.
+B10-MCP-07/09 own installed qualification and seal/recovery integration.

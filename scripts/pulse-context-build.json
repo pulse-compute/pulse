@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "pulse.context-build-config.v1",
+  "producerNode": "24.18.0",
+  "applicationVersion": "pulse.context-application.v2",
+  "encoder": {
+    "id": "pulse.context-sparse-lexical.v1",
+    "tokenPattern": "[a-z0-9_]+",
+    "caseFold": "ASCII A-Z only",
+    "fieldPresenceWeights": {
+      "id": 8,
+      "title": 6,
+      "tags": 4,
+      "content": 1
+    },
+    "match": "all distinct query tokens",
+    "score": "integer dot product; binary query weights",
+    "tieBreak": "record ID ascending ASCII",
+    "model": null,
+    "semanticEmbedding": false
+  },
+  "limits": {
+    "records": 512,
+    "vocabulary": 4096,
+    "termsPerRecord": 1024,
+    "tokenBytes": 64,
+    "queryBytes": 256,
+    "queryTermsBeforeDeduplication": 8,
+    "results": 5,
+    "contentBytesPerRecord": 24576,
+    "metadataBytesPerRecord": 4096,
+    "canonicalCorpusBytes": 2097152,
+    "resourceFileBytes": 5242880,
+    "resourceTotalBytes": 8388608,
+    "resourceSerializedBytes": 16777216,
+    "resourceFiles": 3,
+    "resourceBindings": 3,
+    "requestBytes": 32768,
+    "requestDepth": 32,
+    "mcpResponseBytes": 131072,
+    "toolReplyBytes": 24576,
+    "readRawBytes": 12288,
+    "readEscapedBytes": 16384,
+    "excerptBytes": 384,
+    "deadlineMs": 5000
+  },
+  "protocols": {
+    "default": "2026-07-28",
+    "compatibility": "2025-06-18",
+    "compatibilityEnabled": false
+  }
+}

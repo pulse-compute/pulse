@@ -2692,6 +2692,25 @@ unchanged. Workspace-only artifacts also retain synchronous deadline checks.
 
 The isolated actual-corpus and capacity-bound query-to-citation proof is in
 [B10-MCP-02](../internal/b10-mcp-02/README.md). It uses injected Fastly ABI
-execution, not CLI/Viceroy or a completed MCP transport. Production resource
-reconstruction, installed closure, full reports, seal freshness and real
-Fastly/client qualification remain B10-MCP-03/07/08/09/10.
+execution, not CLI/Viceroy or a completed MCP transport.
+
+`scripts/pulse-context-build.cjs` owns explicit offline context resource generation
+and read-only reconstruction. It uses the existing corpus extractor/allowlist and
+writes the corpus module, three v1 binary resources, scalar metadata and canonical
+`pulse.context-build-manifest.v1`, with byte-identical installed CLI mirrors.
+Generation requires the release-pinned Node producer. The manifest binds source
+selections/citation blobs, finite producer source closure, config/lockfile,
+version/status, row/dictionary identities, outputs and simultaneous byte budgets.
+Its hash is external; no candidate tree, clock, cache or absolute path enters the
+tracked output. Checks reconstruct into a fresh temporary directory, compare all
+outputs, and reject drift without changing the checkout. The receipt identifies
+the verifier Node separately from the pinned producer.
+
+Repository build and documentation checks require fresh context outputs;
+documentation synchronization copies emitted resources but never generates the
+vectors. The focused PR test covers independent reconstruction and negative
+format/freshness cases. The existing JavaScript host retains its v1 corpus module;
+the new resources are the sparse lexical inputs for Native migration. See the
+[explicit build workflow](../../examples/12-pulse-context-mcp/README.md#maintaining-the-snapshot).
+Installed closure, full reports, candidate-bound seal/recovery receipts and real
+Fastly/client qualification remain B10-MCP-07/08/09/10.

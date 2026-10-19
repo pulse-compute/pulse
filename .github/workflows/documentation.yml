@@ -57,6 +57,8 @@ jobs:
           export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
           echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
           pnpm install --frozen-lockfile --ignore-scripts
+      - name: Check deterministic context resources
+        run: node wasm/test/mcp/assert-context-build.cjs
       - name: Check source validation contract
         run: node wasm/test/docs/assert-documentation-check.cjs
       - name: Check supplied historical artifact readers
