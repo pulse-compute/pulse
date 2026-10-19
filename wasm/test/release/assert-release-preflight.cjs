@@ -65,12 +65,7 @@ const inventory = JSON.parse(fs.readFileSync(path.join(repoRoot, INVENTORY_FILE)
 const releaseManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'release', 'pulse-release-manifest.json'), 'utf8'));
 const rootManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
 const documentationVersions = require('../../../release/documentation-versions.json');
-const archivePlan = planRelease(
-  releaseManifest,
-  documentationVersions,
-  parsePreparationArgs(['9.9.9-beta.1', '--archive-current', '--date', '2026-09-14']),
-  assertManifestConsistency(releaseManifest, documentationVersions)
-);
+assert.throws(() => parsePreparationArgs(['9.9.9-beta.1', '--archive-current']), /retired/);
 const websitePlan = planRelease(releaseManifest, documentationVersions,
   parsePreparationArgs(['9.9.9-beta.1', '--website-managed', '--date', '2026-09-14']),
   assertManifestConsistency(releaseManifest, documentationVersions),
@@ -86,16 +81,14 @@ assert.deepEqual(websitePlan.nextDocumentationVersions.versions.slice(2), docume
 const previewManifest = structuredClone(releaseManifest);
 previewManifest.publication.distTag = 'beta';
 assert.equal(planRelease(previewManifest, documentationVersions,
-  parsePreparationArgs(['9.9.9-beta.1', '--archive-current', '--date', '2026-09-14']),
-  assertManifestConsistency(previewManifest, documentationVersions)).nextRelease.publication.distTag, 'beta');
+  parsePreparationArgs(['9.9.9-beta.1', '--website-managed', '--date', '2026-09-14']),
+  assertManifestConsistency(previewManifest, documentationVersions),
+  () => ({ sourceTag: `v${previewManifest.releaseVersion}`, tag: 'a'.repeat(40), manifest: previewManifest })).nextRelease.publication.distTag, 'beta');
 previewManifest.publication.distTag = 'unreviewed-tag';
 assert.throws(() => assertManifestConsistency(previewManifest, documentationVersions), /explicitly configured latest/);
-const archivedCurrent = archivePlan.nextDocumentationVersions.versions.find((entry) => entry.version === releaseManifest.releaseVersion);
-assert.equal(archivedCurrent.status, 'archived');
-assert.equal(archivedCurrent.sourceManifest, `release/documentation-site-archives/v${releaseManifest.releaseVersion}/release-manifest.json`);
-assert.equal(archivePlan.nextDocumentationVersions.versions[0].sourceManifest, 'release/pulse-release-manifest.json');
-assert.equal(archivePlan.nextRelease.channel, 'beta');
-assert.equal(archivePlan.nextRelease.publication.distTag, 'latest');
+assert.equal(websitePlan.nextDocumentationVersions.versions[0].sourceManifest, 'release/pulse-release-manifest.json');
+assert.equal(websitePlan.nextRelease.channel, 'beta');
+assert.equal(websitePlan.nextRelease.publication.distTag, 'latest');
 const docsOptions = parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished-docs', '--date', '2026-09-26']);
 const docsManifest = structuredClone(releaseManifest);
 if (!docsManifest.readiness.versionPreparation.unpublishedDocumentationReleases.some(entry => entry.version === releaseManifest.releaseVersion)) {
@@ -119,27 +112,27 @@ assert.throws(() => planRelease(docsManifest, documentationVersions,
 const undecided = structuredClone(releaseManifest);
 delete undecided.readiness.versionPreparation.unpublishedDocumentationReleases;
 assert.throws(() => planRelease(undecided, documentationVersions, docsOptions, assertManifestConsistency(undecided, documentationVersions)), /no reviewed/);
-const nextPreflight = JSON.parse(archivePlan.writes.get(path.join(repoRoot, PREFLIGHT_FILE)));
+const nextPreflight = JSON.parse(websitePlan.writes.get(path.join(repoRoot, PREFLIGHT_FILE)));
 assert.equal(nextPreflight.releaseCandidate.publicationTag, 'latest');
 assert.equal(nextPreflight.releaseCandidate.latestTagAllowed, true);
 assert.equal(nextPreflight.releaseVocabulary.npmDistTag, 'latest');
 assert.equal(nextPreflight.npmBootstrap.releaseTag, 'latest');
 for (const entry of documentationVersions.versions.filter((entry) => entry.status === 'archived')) {
-  assert.deepEqual(archivePlan.nextDocumentationVersions.versions.find((candidate) => candidate.version === entry.version), entry);
+  assert.deepEqual(websitePlan.nextDocumentationVersions.versions.find((candidate) => candidate.version === entry.version), entry);
 }
 const guestFile = path.join(repoRoot, 'packages/crypto/guests/es256-rustcrypto/pulse.guest-unit.json');
 const currentGuest = JSON.parse(fs.readFileSync(guestFile, 'utf8'));
-const nextGuest = JSON.parse(archivePlan.writes.get(guestFile));
+const nextGuest = JSON.parse(websitePlan.writes.get(guestFile));
 const guestBuildFile = path.resolve(path.dirname(guestFile), currentGuest.provenance.buildScript);
 assert.equal(nextGuest.packageVersion, '9.9.9-beta.1');
 assert.equal(nextGuest.provenance.buildScriptSha256,
-  createHash('sha256').update(archivePlan.writes.get(guestBuildFile)).digest('hex'));
+  createHash('sha256').update(websitePlan.writes.get(guestBuildFile)).digest('hex'));
 assert.notEqual(nextGuest.provenance.buildScriptSha256, currentGuest.provenance.buildScriptSha256);
 assert.deepEqual(nextGuest.artifact, currentGuest.artifact);
 assert.deepEqual(nextGuest.source, currentGuest.source);
 const guestContractFile = path.join(repoRoot, 'wasm/packages/wasm-guest-link/src/constants.js');
 const plannedContract = { exports: {} };
-runInNewContext(archivePlan.writes.get(guestContractFile), { module: plannedContract });
+runInNewContext(websitePlan.writes.get(guestContractFile), { module: plannedContract });
 assert.equal(plannedContract.exports.es256GuestUnit.provenance.buildScriptSha256, nextGuest.provenance.buildScriptSha256);
 assert.equal(plannedContract.exports.es256GuestUnit.packageVersion, nextGuest.packageVersion);
 assert.equal(plannedContract.exports.es256GuestUnit.artifact.sha256, currentGuest.artifact.sha256);
@@ -151,7 +144,7 @@ assert.ok(require('../../../scripts/package-support.cjs').versionSatisfiesCaretR
   releaseManifest.publication.pnpmVersion, releaseManifest.publication.pnpmDevelopmentRange));
 assert.equal(releaseManifest.readiness.versionPreparation.gitTagging, 'separate-human-action-before-publication-seal');
 assert.equal(parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished']).historyMode, 'replace-unpublished');
-assert.throws(() => parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished', '--archive-current']), /choose exactly one/);
+assert.throws(() => parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished', '--archive-current']), /retired/);
 assert.equal(isAllowedChangedPath('docs/reference/release-manifest.json', new Set(), releaseManifest.readiness.versionPreparation), true);
 assert.equal(isAllowedChangedPath('packages/runtime/src/internal/body.js', new Set(), releaseManifest.readiness.versionPreparation), false);
 const actualReplacementMode = releaseManifest.readiness.versionPreparation.unpublishedDocumentationReleases.some(entry => entry.version === releaseManifest.releaseVersion) ? 'replace-unpublished-docs' : 'replace-unpublished';

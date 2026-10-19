@@ -40,6 +40,21 @@ function websiteFixture() {
   f.readHistoricalSource = () => ({ commit: 'a'.repeat(40), manifest });
   return f;
 }
+// Current metadata-only legacy history needs no current-tree HTML or tag claim.
+{
+  const f = websiteFixture();
+  const catalog = JSON.parse(f.files['release/documentation-versions.json']);
+  const entry = catalog.versions[1];
+  entry.deliveryOwner = 'legacy-pulse';
+  entry.archiveSource = { commit: 'b'.repeat(40), path: `release/documentation-site-archives/v${previous}/release-manifest.json` };
+  delete entry.sourceCommit; delete entry.sourceTag; delete f.readHistoricalSource;
+  f.files['release/documentation-versions.json'] = JSON.stringify(catalog);
+  assert.equal(checkReleasePr(f).preparedRelease, true);
+  f.files[entry.sourceManifest] += ' ';
+  assert.throws(() => checkReleasePr(f), /metadata digest/);
+  delete f.files[entry.sourceManifest];
+  assert.throws(() => checkReleasePr(f));
+}
 assert.equal(checkReleasePr(websiteFixture()).preparedRelease, true);
 for (const mutate of [
   f => { delete f.readHistoricalSource; },

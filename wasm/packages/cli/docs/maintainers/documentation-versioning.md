@@ -61,18 +61,39 @@ version URLs and `archived` status for the website importer, with an explicit
 Website delivery receipts and the existing owner-managed recovery remain the
 authority for actual published bytes and metadata. No new backup is required.
 
-The seven existing trees under `release/documentation-site-archives/` remain
-unchanged for historical verification and recovery. Old `--archive-current`
-preparation still accepts an already committed snapshot; it does not build one.
-The Pulse renderer and snapshot command are retired. A small read-only archive
-validator preserves the existing manifest/link/asset checks without rendering.
+Historical HTML is no longer checked into `latest`. The seven former trees'
+release manifests were moved byte-for-byte into `release/documentation-release-history/`.
+Their catalog entries retain `archived` status and exact URLs, with
+`deliveryOwner: legacy-pulse`, `sourceManifestSha256` and `archiveSource` pointing
+to the immutable Git commit/path from which those metadata bytes were retained.
+This identifies a historical repository input, not deployed bytes or a new
+release-tag assertion. Future website-managed entries keep their existing
+separate tag/SHA binding. The beta.1 capture JSON is retained unchanged alongside
+the manifests; its paths describe its historical artifact, not current files.
 
-The website's normal importer and recovery use version metadata and retained
-delivery artifacts. Its developer-only legacy baseline capture is frozen to
-pinned historical sources such as beta.9; current Pulse has no renderer for it
-to execute. New source inventories use `release/documentation-sources.json`,
-and future rendered baselines belong to the website. Existing recovery and
-backup ownership are unchanged. The supported CLI compatibility export remains.
+`--archive-current` is retired rather than requiring new committed HTML. Use
+`--website-managed` for release preparation. For local read-only validation of
+an old artifact supplied by the owner:
+
+```bash
+node scripts/documentation-archives.cjs --directory /path/to/old/site --version 1.0.0-beta.8
+```
+
+This structural check is not receipt authentication. The separate historical
+v1 candidate/receipt verifier still requires all sealed bytes and checksums.
+Neither reader falls back to missing repository copies or fabricates evidence.
+
+The website importer projects version, segment, channel, date and status; those
+fields are unchanged. Catalog bytes do change when metadata pointers move: a
+future reviewed released-source pin must refresh the website version-links
+`source.commit` and `source.sha256` provenance, even if version URLs are unchanged.
+The existing beta.9 website pin keeps its original catalog hash; do not substitute
+unreleased `latest` metadata under that pin. Its normal build and recovery do not read Pulse checkout
+archives. Its recovery plan and historical v1 baselines retain their original
+hashes and source identities. Historical capture uses the pinned beta.9 checkout,
+where those files still exist; native source-contract capture needs no archives.
+The owner's existing backup and Git history provide recovery. No storage, tags,
+released `main`, published versions or CLI compatibility export is changed.
 
 The release gate also rejects a current release that is missing from the versions manifest or whose version segment does not match the release manifest.
 

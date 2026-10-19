@@ -464,9 +464,7 @@ function validateReleaseManifest(repoRoot) {
       require('./release-pr-check.cjs').validateWebsiteHistory(entry, name => fs.readFileSync(path.join(repoRoot, name), 'utf8'));
       continue;
     }
-    const expectedManifest = `release/documentation-site-archives/${entry.segment}/release-manifest.json`;
-    if (entry.status !== 'archived' || entry.sourceManifest !== expectedManifest) fail(`historical documentation ${entry.version} must be archived at ${expectedManifest}`);
-    if (!fs.existsSync(path.join(repoRoot, expectedManifest))) fail(`historical documentation archive is missing ${expectedManifest}`);
+    require('./release-pr-check.cjs').validateRetainedArchiveHistory(entry, name => fs.readFileSync(path.join(repoRoot, name)));
   }
   for (const copy of ['docs/reference/release-manifest.json', 'wasm/packages/cli/release-manifest.json']) {
     if (!isDeepEqual(readJson(path.join(repoRoot, copy)), RELEASE_MANIFEST)) fail(`${copy} is not an exact release-manifest copy`);

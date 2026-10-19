@@ -67,6 +67,23 @@ function validateWebsiteHistory(entry, read) {
   return manifest;
 }
 
+// Minimal retained product metadata, copied byte-for-byte from the removed tree.
+// archiveSource identifies that historical Git input, not a deployed receipt.
+function validateRetainedArchiveHistory(entry, read) {
+  versionParts(entry.version);
+  if (entry.status !== 'archived' || entry.deliveryOwner !== 'legacy-pulse'
+      || entry.segment !== `v${entry.version}`
+      || entry.sourceManifest !== `release/documentation-release-history/${entry.segment}.json`
+      || !/^[a-f0-9]{40}$/.test(entry.archiveSource?.commit || '')
+      || entry.archiveSource.path !== `release/documentation-site-archives/${entry.segment}/release-manifest.json`) fail('invalid retained archive source identity');
+  const bytes = read(entry.sourceManifest);
+  if (!/^[a-f0-9]{64}$/.test(entry.sourceManifestSha256 || '')
+      || require('node:crypto').createHash('sha256').update(bytes).digest('hex') !== entry.sourceManifestSha256) fail('retained archive metadata digest differs');
+  const manifest = JSON.parse(bytes);
+  if (manifest.releaseVersion !== entry.version || manifest.documentation?.version !== entry.segment) fail('retained archive release identity is stale');
+  return manifest;
+}
+
 function checkReleasePr({ baseManifest, headManifest, changedFiles, readHead, readHistoricalSource }) {
   const unpublishedReleases = unpublishedDocumentationReleases(headManifest);
   const previous = baseManifest.releaseVersion, next = headManifest.releaseVersion;
@@ -92,6 +109,8 @@ function checkReleasePr({ baseManifest, headManifest, changedFiles, readHead, re
       if (typeof readHistoricalSource !== 'function') fail('website history requires tagged source verification');
       const source = readHistoricalSource(archive.sourceTag);
       if (source.commit !== archive.sourceCommit || JSON.stringify(source.manifest) !== JSON.stringify(historical)) fail('historical metadata differs from its tagged source');
+    } else if (archive?.deliveryOwner === 'legacy-pulse') {
+      validateRetainedArchiveHistory(archive, readHead);
     } else if (archive) {
       if (archive.deliveryOwner !== undefined) fail('unsupported historical delivery owner');
       if (archive.sourceManifest !== `release/documentation-site-archives/v${previous}/release-manifest.json`) fail('invalid previous documentation archive');
@@ -129,7 +148,7 @@ function main(argv = process.argv.slice(2)) {
   process.stdout.write(`${JSON.stringify({ ...report, base, head }, null, 2)}\n`);
 }
 
-module.exports = { versionParts, compareVersions, requiresVersionChange, validateWebsiteHistory, historicalSource, unpublishedDocumentationReleases, checkReleasePr, main };
+module.exports = { versionParts, compareVersions, requiresVersionChange, validateWebsiteHistory, validateRetainedArchiveHistory, historicalSource, unpublishedDocumentationReleases, checkReleasePr, main };
 if (require.main === module) {
   try { main(); } catch (error) { process.stderr.write(`${error.message}\n`); process.exitCode = 1; }
 }

@@ -39,13 +39,19 @@ No local Pulse command rebuilds historical HTML or seals a new website preview.
 
 ## Historical presentation and recovery
 
-The seven existing exact-release HTML trees are retained unchanged under
-`release/documentation-site-archives/`. A small read-only archive validator
-preserves their manifest, identity, path, anchor, asset and link checks.
-Historical receipt verification still authenticates retained candidate bytes.
-Website delivery and the owner's existing backup remain recovery authorities;
-this retirement does not modify storage, require a new backup or rewrite old
-presentation. See [documentation versioning](./documentation-versioning.md).
+The seven checked-in HTML archive trees have been removed from `latest`.
+Their exact release manifests remain under `release/documentation-release-history/`,
+with SHA-256 bindings and historical Git commit/path provenance in the version
+catalog. Exact version URLs, dates, channels and CLI version metadata are unchanged.
+The original beta.1 capture record remains there as historical recovery evidence.
+
+`scripts/documentation-archives.cjs` reads an explicitly supplied old site; its
+manifest, identity, path, anchor, asset and link checks use small synthetic test
+fixtures instead of repository site copies. Historical deployment receipt and
+candidate verification still authenticates supplied retained bytes and rejects
+missing or tampered artifacts. The owner's existing backup and Git history
+provide recovery; this change creates no new archive system or backup requirement
+and never deletes origin/CDN content. See [documentation versioning](./documentation-versioning.md).
 
 The website's legacy source-baseline audit is frozen to historical Pulse source
 that still contains the old renderer (its current baseline is beta.9). It is not
