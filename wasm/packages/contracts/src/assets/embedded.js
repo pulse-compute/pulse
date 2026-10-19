@@ -1,37 +1,11 @@
 'use strict';
 // Compile-time admission and host response policy for explicitly embedded bytes.
 const LIMITS = Object.freeze({ files:256, fileBytes:262144, totalBytes:1048576, pathBytes:1024, serializedBytes:2097152 });
-const VERSION = 'pulse.embedded-assets.v1';
 function fail() { throw new TypeError('Invalid or oversized embedded asset manifest.'); }
-function fields(value, names) {
-  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length !== names.length || names.some(name=>!Object.hasOwn(value,name))) fail();
-}
-function assetPath(value) {
-  if (typeof value !== 'string' || !value.isWellFormed() || !value.startsWith('/') || value === '/' || Buffer.byteLength(value)>LIMITS.pathBytes
-    || /[\\%?#\u0000-\u001f\u007f-\u009f]/u.test(value) || value.slice(1).split('/').some(p=>!p||p==='.'||p==='..')) fail();
-  return value;
-}
+const { assetPath, validateEmbeddedManifest } = require('./embedded-manifest.js');
 function selectEmbeddedAsset(serialized, key) {
-  if (typeof serialized !== 'string' || serialized.length > LIMITS.serializedBytes || Buffer.byteLength(serialized)>LIMITS.serializedBytes) fail();
-  let manifest; try { manifest=JSON.parse(serialized); } catch { fail(); }
-  // Canonical serialization rejects duplicate fields and ambiguous encodings.
-  if (JSON.stringify(manifest)!==serialized) fail();
-  fields(manifest,['version','id','byteLength','files']);
-  if (manifest.version!==VERSION || !Array.isArray(manifest.files) || manifest.files.length>LIMITS.files) fail();
-  const hash = value=>require('node:crypto').createHash('sha256').update(value).digest('hex');
-  let total=0,previous='';
-  for (const file of manifest.files) {
-    fields(file,['path','data','byteLength','sha256','contentType']);
-    const path=assetPath(file.path);
-    if (path<=previous || !Number.isInteger(file.byteLength) || file.byteLength<0 || file.byteLength>LIMITS.fileBytes
-      || typeof file.contentType!=='string' || !/^[\x20-\x7e]{1,128}$/.test(file.contentType) || file.contentType.trim()!==file.contentType
-      || typeof file.data!=='string' || file.data.length!==4*Math.ceil(file.byteLength/3)) fail();
-    previous=path; total+=file.byteLength; if(total>LIMITS.totalBytes) fail();
-    const bytes=Buffer.from(file.data,'base64');
-    if(bytes.length!==file.byteLength || bytes.toString('base64')!==file.data || hash(bytes)!==file.sha256) fail();
-  }
-  if(manifest.byteLength!==total || hash(JSON.stringify([VERSION,manifest.files.map(f=>[f.path,f.contentType,f.byteLength,f.sha256])]))!==manifest.id) fail();
-  assetPath(key);
+  const manifest = validateEmbeddedManifest(serialized, LIMITS, fail);
+  assetPath(key, LIMITS, fail);
   const file=manifest.files.find(f=>f.path===key);
   return Object.freeze({embeddedId:manifest.id,embeddedFound:!!file,embeddedData:file?.data??'',embeddedLength:file?.byteLength??0,embeddedType:file?.contentType??'',embeddedEtag:file?`"${file.sha256}"`:''});
 }

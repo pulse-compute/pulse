@@ -34,6 +34,9 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'binary-resource-admission': nodeTask('test/contracts/assert-binary-resource-admission.cjs', {
+    description: 'B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy'
+  }),
   'cli-report-viewer': nodeTask('test/cli/assert-report-viewer.cjs', { description: 'PRPT-05 offline encoding, view projections and generated-output receipts' }),
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-graph-diagnostics': nodeTask('test/cli/assert-report-graph-diagnostics.cjs', {
@@ -1350,6 +1353,7 @@ const installedCorpusOwners = Object.freeze({
 
 const profiles = Object.freeze({
   unit: Object.freeze([
+    'binary-resource-admission',
     'report-capsule-contract',
     'cli-report-workflow',
     'cli-report-viewer',
