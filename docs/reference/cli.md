@@ -4,6 +4,47 @@
 
 The `pulse` CLI in `@pulse-compute/cli@1.0.0-beta.9` is the supported project workflow. One command specification generates this page, installed help, and the shipped Bash, Zsh, and Fish completion scripts, so a public command or option cannot drift between those surfaces.
 
+## Quick start
+
+Use `pulse` to create, check, run and build a project. The general shape is:
+
+```text
+pulse <command> [directory] [options]
+```
+
+Project commands use the current directory when `[directory]` is
+omitted. Provider and target come from the selected profile in
+`.pulse/config.ts`; `--profile <name>` selects another profile.
+
+Common usage in an initialized project:
+
+```bash
+pulse doctor
+pulse test
+pulse dev
+# Stop the foreground server with Ctrl-C before building.
+pulse build
+```
+
+Use `pulse inspect` for project details and `pulse report`
+for retained Native build evidence. [Global options](#global-options) and each
+command's options below retain the complete flags, limits and exit behavior.
+
+## Command index
+
+| Command | Purpose |
+|---|---|
+| [`pulse init`](#pulse-init) | Create a conventional .pulse workspace with an async Pulse application and dedicated test harness. |
+| [`pulse doctor`](#pulse-doctor) | Audit project shape, compilation, schemas, provider bindings, output safety, and required tools. |
+| [`pulse inspect`](#pulse-inspect) | Report canonical compiler, schema, effect, continuation, capability, provider, and build-mode details. |
+| [`pulse test`](#pulse-test) | Run configured cases through the selected provider local-conformance runtime. |
+| [`pulse dev`](#pulse-dev) | Start the foreground local server with the selected provider conformance runtime. |
+| [`pulse compile`](#pulse-compile) | Compile the canonical project into provider-neutral Pulse-owned WebAssembly. |
+| [`pulse build`](#pulse-build) | Build the Native or JavaScript target for the deployment provider selected by the active project profile. |
+| [`pulse report`](#pulse-report) | Review retained evidence from a completed Native build without rebuilding or executing project code. |
+
+Use `build` for the configured target and provider. `compile` is advanced provider-neutral Native output, not a prerequisite for `build`. See [Provider restrictions and build products](#provider-restrictions-and-build-products) for target differences.
+
 ## Meta invocations
 
 - `pulse --help | pulse -h | pulse help` — Print public help.
@@ -365,7 +406,7 @@ pulse compile ./edge-app --experimental-native-bounded-size
 
 ## `pulse build`
 
-Compile the canonical project and realize the deployment provider selected by the active project profile.
+Build the Native or JavaScript target for the deployment provider selected by the active project profile.
 
 Syntax:
 
@@ -410,15 +451,15 @@ pulse build ./edge-app --experimental-native-bounded-size
 
 ### Output
 
-- Writes pulse-build.json, the provider-neutral native module, and the configured provider realization; Native --emit-wat builds also write diagnostic WAT.
-- Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.
+- Writes pulse-build.json and the configured provider realization. Native builds include the provider-neutral native module; JavaScript builds emit a deterministic source package. Native --emit-wat builds also write diagnostic WAT.
+- Fastly Native builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm without a JavaScript runtime image. Fastly JavaScript builds emit a source/deployment package with exact downstream compiler pins and deployment-candidate metadata.
 - Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.
-- With --json, emits one build result object containing exact portable and provider artifact paths.
+- With --json, emits one build result object containing exact artifact paths for the selected target and provider.
 
 ### Side effects
 
 - Cleans the output directory by default.
-- Invokes the native compiler and configured provider realization.
+- Native builds invoke the native compiler and configured provider realization. JavaScript builds validate and package the reachable application graph without invoking the Pulse Native compiler.
 - Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.
 
 ### Exit behavior
@@ -503,11 +544,21 @@ Raw configured secret values are not included in project JSON, diagnostics, or r
 
 ## Provider restrictions and build products
 
-| Provider | inspect/build | test/dev | Build result |
-|---|---:|---:|---|
-| `node` | Yes | Yes | Portable Pulse Wasm plus the configured Node-native realization and `pulse-build.json`. |
-| `fastly` | Yes | Yes, through local conformance | Portable Pulse Wasm plus generated AssemblyScript and compact direct-host-ABI `bin/main.wasm`. |
-| `none` | Compile only | No | `pulse compile` emits portable Pulse Wasm; `pulse build` rejects the missing deployment provider. |
+| Provider | Target | inspect | build | test/dev | Build result |
+|---|---|---|---|---|---|
+| `node` | Native | Yes | Yes | Node host | Portable Pulse Wasm, configured Node-native realization and `pulse-build.json`. |
+| `node` | JavaScript | Yes | Yes | Live JavaScript runtime | Deterministic reachable application source package and `pulse-build.json`; no Pulse Native compilation. |
+| `fastly` | Native | Yes | Yes | Local conformance | Portable Pulse Wasm, generated AssemblyScript, direct-host-ABI `bin/main.wasm` and `pulse-build.json`; no JavaScript runtime image. |
+| `fastly` | JavaScript | Yes | Yes | Provider emulation | Deterministic source/deployment package with exact downstream compiler pins, deployment-candidate metadata and `pulse-build.json`. |
+| `none` | Compile-only Native | Yes | No | No | `pulse compile` emits portable Pulse Wasm; `pulse build` rejects the missing deployment provider. |
+
+Target selection is explicit and never falls back automatically. Project eligibility
+and provider capability restrictions still apply; see [Provider and target compatibility](compatibility-matrix.md).
+`pulse compile` requires Native-compatible source regardless of the
+configured target. Diagnostic WAT is opt-in with `--emit-wat`; JavaScript
+builds reject that flag. Fastly JavaScript downstream runtime compilation and
+candidate validation are separate from source packaging; a build does not deploy
+or publish. See [Fastly deployment candidates](../guides/deploying-fastly.md).
 
 Build output is cleaned by default. `--no-clean` preserves the directory, but output safety still rejects absolute, parent-traversal, and symbolic-link traversal outside the project root.
 

@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "d858e925734361239580cd81cd78bd2f383b2e75547b9bfd2463b67fcc495316",
+  "corpusHash": "c0314e502df0fa9148d71de95ba8a36d00e9866690dd3f89975197022cc0fe89",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -44,15 +44,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "command",
-      "content": "{\n  \"diagnostics\": [\n    \"PULSE_BUILD_OUT_UNSAFE\",\n    \"PULSE_BUILD_PROVIDER_REQUIRED\",\n    \"PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED\",\n    \"PULSE_NATIVE_TEXT_UNSUPPORTED\",\n    \"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\"\n  ],\n  \"examples\": [\n    \"pulse build ./my-pulse-app\",\n    \"pulse build ./edge-app --out ./dist --json\",\n    \"pulse build ./edge-app --experimental-native-size\",\n    \"pulse build ./edge-app --experimental-native-bounded-size\"\n  ],\n  \"exit\": \"0 on success; 2–5 according to the emitted stable diagnostic.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"build\",\n  \"options\": [\n    {\n      \"description\": \"Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.\",\n      \"flags\": [\n        {\n          \"name\": \"--clean\",\n          \"value\": true\n        },\n        {\n          \"name\": \"--no-clean\",\n          \"value\": false\n        }\n      ],\n      \"id\": \"clean\",\n      \"key\": \"clean\",\n      \"kind\": \"boolean-value\"\n    },\n    {\n      \"description\": \"Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads.\",\n      \"flags\": [\n        {\n          \"name\": \"--elide-json-cache-arena\"\n        }\n      ],\n      \"id\": \"elide-json-cache-arena\",\n      \"key\": \"elideJsonCacheArena\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.\",\n      \"flags\": [\n        {\n          \"name\": \"--emit-wat\"\n        }\n      ],\n      \"id\": \"emit-wat\",\n      \"key\": \"emitWat\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-bounded-size\"\n        }\n      ],\n      \"id\": \"experimental-native-bounded-size\",\n      \"key\": \"experimentalNativeBoundedSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-size\"\n        }\n      ],\n      \"id\": \"experimental-native-size\",\n      \"key\": \"experimentalNativeSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    },\n    {\n      \"description\": \"Override the project-relative artifact output directory.\",\n      \"flags\": [\n        {\n          \"name\": \"--out\"\n        }\n      ],\n      \"id\": \"out\",\n      \"key\": \"outDir\",\n      \"kind\": \"value\",\n      \"valueName\": \"<dir>\"\n    }\n  ],\n  \"outputs\": [\n    \"Writes pulse-build.json, the provider-neutral native module, and the configured provider realization; Native --emit-wat builds also write diagnostic WAT.\",\n    \"Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.\",\n    \"Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.\",\n    \"With --json, emits one build result object containing exact portable and provider artifact paths.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Cleans the output directory by default.\",\n    \"Invokes the native compiler and configured provider realization.\",\n    \"Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.\"\n  ],\n  \"summary\": \"Compile the canonical project and realize the deployment provider selected by the active project profile.\",\n  \"usage\": [\n    \"pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]\"\n  ]\n}",
-      "contentSha256": "56dcdbdadc8d21c5acd816ede836f931f3a07937f6c891adaac713da9f3090b1",
+      "content": "{\n  \"diagnostics\": [\n    \"PULSE_BUILD_OUT_UNSAFE\",\n    \"PULSE_BUILD_PROVIDER_REQUIRED\",\n    \"PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED\",\n    \"PULSE_NATIVE_TEXT_UNSUPPORTED\",\n    \"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\"\n  ],\n  \"examples\": [\n    \"pulse build ./my-pulse-app\",\n    \"pulse build ./edge-app --out ./dist --json\",\n    \"pulse build ./edge-app --experimental-native-size\",\n    \"pulse build ./edge-app --experimental-native-bounded-size\"\n  ],\n  \"exit\": \"0 on success; 2–5 according to the emitted stable diagnostic.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"build\",\n  \"options\": [\n    {\n      \"description\": \"Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.\",\n      \"flags\": [\n        {\n          \"name\": \"--clean\",\n          \"value\": true\n        },\n        {\n          \"name\": \"--no-clean\",\n          \"value\": false\n        }\n      ],\n      \"id\": \"clean\",\n      \"key\": \"clean\",\n      \"kind\": \"boolean-value\"\n    },\n    {\n      \"description\": \"Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads.\",\n      \"flags\": [\n        {\n          \"name\": \"--elide-json-cache-arena\"\n        }\n      ],\n      \"id\": \"elide-json-cache-arena\",\n      \"key\": \"elideJsonCacheArena\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.\",\n      \"flags\": [\n        {\n          \"name\": \"--emit-wat\"\n        }\n      ],\n      \"id\": \"emit-wat\",\n      \"key\": \"emitWat\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-bounded-size\"\n        }\n      ],\n      \"id\": \"experimental-native-bounded-size\",\n      \"key\": \"experimentalNativeBoundedSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-size\"\n        }\n      ],\n      \"id\": \"experimental-native-size\",\n      \"key\": \"experimentalNativeSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    },\n    {\n      \"description\": \"Override the project-relative artifact output directory.\",\n      \"flags\": [\n        {\n          \"name\": \"--out\"\n        }\n      ],\n      \"id\": \"out\",\n      \"key\": \"outDir\",\n      \"kind\": \"value\",\n      \"valueName\": \"<dir>\"\n    }\n  ],\n  \"outputs\": [\n    \"Writes pulse-build.json and the configured provider realization. Native builds include the provider-neutral native module; JavaScript builds emit a deterministic source package. Native --emit-wat builds also write diagnostic WAT.\",\n    \"Fastly Native builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm without a JavaScript runtime image. Fastly JavaScript builds emit a source/deployment package with exact downstream compiler pins and deployment-candidate metadata.\",\n    \"Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.\",\n    \"With --json, emits one build result object containing exact artifact paths for the selected target and provider.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Cleans the output directory by default.\",\n    \"Native builds invoke the native compiler and configured provider realization. JavaScript builds validate and package the reachable application graph without invoking the Pulse Native compiler.\",\n    \"Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.\"\n  ],\n  \"summary\": \"Build the Native or JavaScript target for the deployment provider selected by the active project profile.\",\n  \"usage\": [\n    \"pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]\"\n  ]\n}",
+      "contentSha256": "a19e0f08e506d1105168178ac565713b661e16e46abfb33afa199ad611438627",
       "id": "command/build",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.build",
-        "sha256": "6458ddae8792e8a6c7fb1449d6298c7d64ea833dbcf511fea672b51a7ecf3daf",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c0e38291ad8ca65cf67a8fb0b3f1561721e69d2f"
+        "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
       },
       "status": "candidate",
       "tags": [
@@ -84,8 +84,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.compile",
-        "sha256": "6458ddae8792e8a6c7fb1449d6298c7d64ea833dbcf511fea672b51a7ecf3daf",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c0e38291ad8ca65cf67a8fb0b3f1561721e69d2f"
+        "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
       },
       "status": "candidate",
       "tags": [
@@ -125,8 +125,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.dev",
-        "sha256": "6458ddae8792e8a6c7fb1449d6298c7d64ea833dbcf511fea672b51a7ecf3daf",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c0e38291ad8ca65cf67a8fb0b3f1561721e69d2f"
+        "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
       },
       "status": "candidate",
       "tags": [
@@ -166,8 +166,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.doctor",
-        "sha256": "6458ddae8792e8a6c7fb1449d6298c7d64ea833dbcf511fea672b51a7ecf3daf",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c0e38291ad8ca65cf67a8fb0b3f1561721e69d2f"
+        "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
       },
       "status": "candidate",
       "tags": [
@@ -207,8 +207,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.init",
-        "sha256": "6458ddae8792e8a6c7fb1449d6298c7d64ea833dbcf511fea672b51a7ecf3daf",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c0e38291ad8ca65cf67a8fb0b3f1561721e69d2f"
+        "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
       },
       "status": "candidate",
       "tags": [
@@ -248,8 +248,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.inspect",
-        "sha256": "6458ddae8792e8a6c7fb1449d6298c7d64ea833dbcf511fea672b51a7ecf3daf",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c0e38291ad8ca65cf67a8fb0b3f1561721e69d2f"
+        "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
       },
       "status": "candidate",
       "tags": [
@@ -289,8 +289,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.report",
-        "sha256": "6458ddae8792e8a6c7fb1449d6298c7d64ea833dbcf511fea672b51a7ecf3daf",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c0e38291ad8ca65cf67a8fb0b3f1561721e69d2f"
+        "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
       },
       "status": "candidate",
       "tags": [
@@ -330,8 +330,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.test",
-        "sha256": "6458ddae8792e8a6c7fb1449d6298c7d64ea833dbcf511fea672b51a7ecf3daf",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c0e38291ad8ca65cf67a8fb0b3f1561721e69d2f"
+        "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
       },
       "status": "candidate",
       "tags": [
@@ -9910,8 +9910,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "wasm/packages/cli/src/command-spec.js",
-      "sha256": "6458ddae8792e8a6c7fb1449d6298c7d64ea833dbcf511fea672b51a7ecf3daf",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c0e38291ad8ca65cf67a8fb0b3f1561721e69d2f"
+      "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
     },
     {
       "path": "wasm/packages/cli/src/diagnostics.js",

@@ -141,14 +141,14 @@ const COMMAND_SPECS = Object.freeze({
   }),
   build: freezeCommand({
     name: 'build',
-    summary: 'Compile the canonical project and realize the deployment provider selected by the active project profile.',
+    summary: 'Build the Native or JavaScript target for the deployment provider selected by the active project profile.',
     usage: ['pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]'],
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
     optionIds: ['profile', 'out', 'clean', 'experimental-native-size', 'experimental-native-bounded-size', 'emit-wat', 'elide-json-cache-arena'],
     examples: ['pulse build ./my-pulse-app', 'pulse build ./edge-app --out ./dist --json', 'pulse build ./edge-app --experimental-native-size', 'pulse build ./edge-app --experimental-native-bounded-size'],
     diagnostics: ['PULSE_BUILD_OUT_UNSAFE', 'PULSE_BUILD_PROVIDER_REQUIRED', 'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED', 'PULSE_NATIVE_TEXT_UNSUPPORTED', 'PULSE_CANONICAL_NATIVE_COMPILE_FAILED'],
-    outputs: ['Writes pulse-build.json, the provider-neutral native module, and the configured provider realization; Native --emit-wat builds also write diagnostic WAT.', 'Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.', 'Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.', 'With --json, emits one build result object containing exact portable and provider artifact paths.'],
-    sideEffects: ['Cleans the output directory by default.', 'Invokes the native compiler and configured provider realization.', 'Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.'],
+    outputs: ['Writes pulse-build.json and the configured provider realization. Native builds include the provider-neutral native module; JavaScript builds emit a deterministic source package. Native --emit-wat builds also write diagnostic WAT.', 'Fastly Native builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm without a JavaScript runtime image. Fastly JavaScript builds emit a source/deployment package with exact downstream compiler pins and deployment-candidate metadata.', 'Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.', 'With --json, emits one build result object containing exact artifact paths for the selected target and provider.'],
+    sideEffects: ['Cleans the output directory by default.', 'Native builds invoke the native compiler and configured provider realization. JavaScript builds validate and package the reachable application graph without invoking the Pulse Native compiler.', 'Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.'],
     exit: '0 on success; 2–5 according to the emitted stable diagnostic.'
   })
 });

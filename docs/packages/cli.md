@@ -19,7 +19,7 @@ pulse doctor
 `Pulse` application root, a dedicated `tests/pulse.harness.ts`, strict
 TypeScript configuration, and exact source-candidate package versions. It does
 not run a package manager or perform hidden network work. Public npm
-availability is defined by the synchronized 18-package release manifest.
+availability is defined by the synchronized [release manifest](../maintainers/release-manifest.md).
 
 ## Daily workflow
 
@@ -28,75 +28,30 @@ pulse doctor
 pulse inspect
 pulse test
 pulse dev
-pulse compile
+# Stop the foreground server with Ctrl-C before building.
 pulse build
 ```
 
-- `doctor` validates project, provider, dependencies, and external toolchain readiness.
-- `report` reviews retained evidence from a successful Native build: a compact overview by default, or one complete capsule with `--json`. `--artifact` replays a supported manifest or historical capsule without loading project code. `--html` writes a self-contained offline viewer with expandable schemas and full JSON export. It never opens a browser. `--out file.html` selects a contained destination; generated-output receipts beside the file preserve repeatable project matching. Reports contain build-review metadata; review before sharing.
+`build` realizes the provider and target selected by the active profile. A separate
+`compile` step is not a prerequisite. Use the command overview to choose a task:
 
-  Retained inventory and HTML data use lossless normalized storage when smaller.
-  Reports retain all identities, evidence and coverage. CLI `--json` and viewer
-  downloads still emit canonical Report v1 JSON, compatible with older readers
-  within their size limits;
-  new readers also accept normalized inventory files with `--artifact`. Older
-  readers reject normalized storage. Both stored and expanded data allow up to
-  64 MiB, with a two-million-value work budget. Comparison HTML keeps one data payload; its full
-  JSON disclosure and export require JavaScript, while summary/details remain
-  readable without it.
+| Command | Use it to |
+|---|---|
+| [`init`](../reference/cli.md#pulse-init) | Create a conventional project without installing dependencies. |
+| [`doctor`](../reference/cli.md#pulse-doctor) | Validate project, provider, dependencies and external toolchain readiness. |
+| [`inspect`](../reference/cli.md#pulse-inspect) | Compile and report effects, continuations, schemas, event registrations/callsites, capabilities, target eligibility and provider lowering without executing cases. |
+| [`test`](../reference/cli.md#pulse-test) | Execute configured request and explicit `kind: 'event'` cases through the provider-owned local conformance runtime. |
+| [`dev`](../reference/cli.md#pulse-dev) | Run a foreground local server and watch the project by default. |
+| [`build`](../reference/cli.md#pulse-build) | Write the configured Native or JavaScript target realization. |
+| [`report`](../reference/cli.md#pulse-report) | Review retained Native build evidence; see [Reports](#reports). |
+| [`compile`](../reference/cli.md#pulse-compile) | Produce provider-neutral Native Wasm for advanced inspection or integration; see [Compile-only output](#compile-only-output). |
 
-  Route counts distinguish registrations from distinct method/path pairs. Fresh
-  compiler evidence labels registrations **terminal** or **continuing**: continuing
-  handlers can call `next()`, including conditional and error transfers, and may
-  also respond early. Older reports show **Behavior not recorded**. Attribution
-  details distinguish mixed dispatcher bodies from missing mappings; containing
-  dispatcher bytes are not isolated handler bytes or a complete endpoint size.
-  The registration drawer shows its own entry's containing bodies, known co-owner
-  registrations, and recorded helper/stage links. The route list shows containing
-  bytes separately and unions distinct physical bodies across the current filter;
-  overlapping route sizes must not be summed. Missing body mappings stay unknown.
-  Entry references use readable recorded names, kinds and method/path labels with
-  collision-safe shortened IDs. Follow a link to the searchable Entries view for
-  source locations, full canonical and handler IDs, recorded flow references and
-  related registrations. Missing names or source locations stay explicit; labels
-  and navigation never change the embedded capsule or exported JSON.
-  The compact route table separates handler measurements from containing-body
-  sizes and keeps coverage and non-additive qualifications beside those values.
-  Desktop route details use a wider panel; phones retain a full-width drawer and
-  scrollable table. Evidence is collapsed by kind and exact producer version,
-  with individual result counts visible and full record scopes available inside.
+Native builds emit provider Wasm; JavaScript builds emit deterministic source
+packages. Eligible event projects also emit `event-catalog.json` and
+`event-inspection.json` beside the target output. Fastly JavaScript packages carry
+exact downstream compiler pins and deployment-candidate metadata.
 
-  **Execution atlas** explores retained handler registrations, middleware and
-  subrouter mounts. Choose **Show graph** on narrow screens, search or focus a
-  subrouter, and follow an exact instance to its authored definition and source.
-  Graph curves show mount containment, not observed requests. The graph draws
-  at most 300 nodes; the paged routing table retains every matching registration.
-  **Bindings** in the atlas connects retained contextual consumers to logical
-  bindings and authored operations. Select a node for association evidence and
-  exact registration links; graph and evidence pages preserve larger inventories.
-  Missing or partial analytics remain explicit and never imply no dependencies
-  or effective permissions. **Expand workspace** gives the graph more room, with
-  optional details and width controls; Escape exits the expanded view. These
-  views use the same offline payload and leave full JSON exports unchanged.
-
-  The report's **Build** summary retains elapsed time through inventory capture,
-  AssemblyScript compilation time, target/profile, Pulse/compiler versions and
-  effective optimization settings. Expand **Build details** for stage timings,
-  compiler/toolchain versions and effective invocation flags. File arguments use
-  role placeholders; arbitrary environment values, secrets and provider binding
-  values are excluded. Compilation time sums the portable and provider asc
-  invocations, is included in stage timings, and excludes source planning and
-  guest linking. Total time excludes configuration resolution before build entry,
-  report serialization and final publication. These are observations from that
-  build, not benchmark results. Node's reuse of portable Wasm is recorded separately
-  from compiler cache reuse; unobserved caches and older metadata say **Not recorded**.
-  The optional metadata lives in the hash-bound inventory, never in executable Wasm.
-
-- `inspect` compiles and reports effects, continuations, schemas, event registrations/callsites, capabilities, target eligibility, and provider lowering without executing cases.
-- `test` executes configured request and explicit `kind: 'event'` cases through the provider-owned local conformance runtime.
-- `dev` runs a foreground local server and watches the project by default.
-- `compile` writes deterministic provider-neutral Pulse Wasm plus its native plan, generated AssemblyScript, WAT, and manifests.
-- `build` writes the configured target realization: Native profiles emit provider Wasm, while JavaScript profiles emit deterministic source packages. Eligible event projects also emit `event-catalog.json` and `event-inspection.json` beside the target output. Fastly JavaScript packages carry exact downstream compiler pins and deployment-candidate metadata.
+### Doctor observations
 
 Doctor's `native-expansion` check ranks repeated HTTP owners using existing Router
 body ranges and the Native plan already produced by doctor. It names source
@@ -127,6 +82,75 @@ adopting a generator rewrite for size.
 For Native builds, `--experimental-native-bounded-size` selects AssemblyScript O3/shrink2 without convergence. The existing `--experimental-native-size` flag retains O3/shrink2 with convergence. Both are opt-in and mutually exclusive; build manifests record the chosen recipe.
 
 See the generated [CLI reference](../reference/cli.md) for every option, positional form, output, side effect, and exit behavior.
+
+## Compile-only output
+
+`pulse compile` is an advanced provider-neutral Native compilation command, even
+when the selected profile uses JavaScript. It requires Native-compatible source
+and writes deterministic Pulse Wasm, its Native plan, generated AssemblyScript
+and manifests. Diagnostic WAT is opt-in with `--emit-wat`. Use `pulse build` for
+the ordinary lifecycle and configured provider realization.
+
+## Reports
+
+`report` reviews retained evidence from a successful Native build: a compact overview by default, or one complete capsule with `--json`. `--artifact` replays a supported manifest or historical capsule without loading project code. `--html` writes a self-contained offline viewer with expandable schemas and full JSON export. It never opens a browser. `--out file.html` selects a contained destination; generated-output receipts beside the file preserve repeatable project matching. Reports contain build-review metadata; review before sharing.
+
+Retained inventory and HTML data use lossless normalized storage when smaller.
+Reports retain all identities, evidence and coverage. CLI `--json` and viewer
+downloads still emit canonical Report v1 JSON, compatible with older readers
+within their size limits;
+new readers also accept normalized inventory files with `--artifact`. Older
+readers reject normalized storage. Both stored and expanded data allow up to
+64 MiB, with a two-million-value work budget. Comparison HTML keeps one data payload; its full
+JSON disclosure and export require JavaScript, while summary/details remain
+readable without it.
+
+Route counts distinguish registrations from distinct method/path pairs. Fresh
+compiler evidence labels registrations **terminal** or **continuing**: continuing
+handlers can call `next()`, including conditional and error transfers, and may
+also respond early. Older reports show **Behavior not recorded**. Attribution
+details distinguish mixed dispatcher bodies from missing mappings; containing
+dispatcher bytes are not isolated handler bytes or a complete endpoint size.
+The registration drawer shows its own entry's containing bodies, known co-owner
+registrations, and recorded helper/stage links. The route list shows containing
+bytes separately and unions distinct physical bodies across the current filter;
+overlapping route sizes must not be summed. Missing body mappings stay unknown.
+Entry references use readable recorded names, kinds and method/path labels with
+collision-safe shortened IDs. Follow a link to the searchable Entries view for
+source locations, full canonical and handler IDs, recorded flow references and
+related registrations. Missing names or source locations stay explicit; labels
+and navigation never change the embedded capsule or exported JSON.
+The compact route table separates handler measurements from containing-body
+sizes and keeps coverage and non-additive qualifications beside those values.
+Desktop route details use a wider panel; phones retain a full-width drawer and
+scrollable table. Evidence is collapsed by kind and exact producer version,
+with individual result counts visible and full record scopes available inside.
+
+**Execution atlas** explores retained handler registrations, middleware and
+subrouter mounts. Choose **Show graph** on narrow screens, search or focus a
+subrouter, and follow an exact instance to its authored definition and source.
+Graph curves show mount containment, not observed requests. The graph draws
+at most 300 nodes; the paged routing table retains every matching registration.
+**Bindings** in the atlas connects retained contextual consumers to logical
+bindings and authored operations. Select a node for association evidence and
+exact registration links; graph and evidence pages preserve larger inventories.
+Missing or partial analytics remain explicit and never imply no dependencies
+or effective permissions. **Expand workspace** gives the graph more room, with
+optional details and width controls; Escape exits the expanded view. These
+views use the same offline payload and leave full JSON exports unchanged.
+
+The report's **Build** summary retains elapsed time through inventory capture,
+AssemblyScript compilation time, target/profile, Pulse/compiler versions and
+effective optimization settings. Expand **Build details** for stage timings,
+compiler/toolchain versions and effective invocation flags. File arguments use
+role placeholders; arbitrary environment values, secrets and provider binding
+values are excluded. Compilation time sums the portable and provider asc
+invocations, is included in stage timings, and excludes source planning and
+guest linking. Total time excludes configuration resolution before build entry,
+report serialization and final publication. These are observations from that
+build, not benchmark results. Node's reuse of portable Wasm is recorded separately
+from compiler cache reuse; unobserved caches and older metadata say **Not recorded**.
+The optional metadata lives in the hash-bound inventory, never in executable Wasm.
 
 ## Project configuration
 
@@ -170,7 +194,7 @@ The installed package exposes release-owned machine interfaces for editors, auto
 | `pulse completion bash` | Bash completion generated from the public command specification. |
 | `pulse completion zsh` | Zsh completion generated from the same specification. |
 | `pulse completion fish` | Fish completion generated from the same specification. |
-| `@pulse-compute/cli/cli-spec.json` | Seven commands, public options, aliases, positional forms, provider restrictions, output modes, and completion metadata. |
+| `@pulse-compute/cli/cli-spec.json` | Public commands, options, aliases, positional forms, provider restrictions, output modes, and completion metadata. |
 | `@pulse-compute/cli/project-config.schema.json` | JSON Schema bundle plus discovery, precedence, defaults, runtime rules, and provider configuration schemas. |
 | `@pulse-compute/cli/release-manifest.json` | Exact release, hosted-documentation routes, package tiers, supported entry points, and publication policy. |
 | `@pulse-compute/cli/documentation-versions.json` | Available documentation versions and the current `latest` target. |
