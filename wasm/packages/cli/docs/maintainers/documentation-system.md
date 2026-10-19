@@ -82,7 +82,7 @@ are explicitly selected excerpts and must be verified by executable documentatio
 never add placeholder Inspect/Doctor/Report output. A report binding may prepare
 one build in `.pulse-docs-build`, then replay that retained artifact; it does not
 embed a report viewer in Markdown. Installed copies and the MCP corpus regenerate
-through the ordinary pipeline. All 11 public runnable examples use this layout, including nested Dynamic endpoint probes. The examples index and internal Assets package-out fixture are not application walkthroughs. Examples without the marker remain unchanged.
+through the ordinary pipeline. All 11 public runnable examples use this layout, including nested Dynamic endpoint probes. The examples index and the private Assets package-out and MCP authorization fixtures are not public application walkthroughs. Examples without the marker remain unchanged.
 
 Inspect and Doctor excerpts describe the selected default profile. Report requires completed Native evidence: Entities tools explicitly selects its `node-native` profile; the JavaScript-only context MCP example omits that view and retains its no-Wasm explanation. Event cases retain their input frames, expected errors and emitted events in the request/response table. The pipeline refreshes harness-derived tables after regenerating the context corpus, then checks both owners again to reject cyclic or stale output.
 

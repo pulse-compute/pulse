@@ -55,6 +55,8 @@ Report excerpts replay completed Native build evidence, not runtime traffic.
 | [Pulse context MCP](12-pulse-context-mcp/README.md) | JSON-RPC and MCP walkthroughs | JavaScript-only; no Wasm Report |
 | [ES256 bearer verification](13-jwt-es256/README.md) | HTTP bearer fixtures | Default Native profile |
 
-The internal `wasm/examples/assets-package-out` README describes a compiler/package
-fixture, not a public application lifecycle. It keeps its existing fixture-specific
-explanation.
+Two other example-named directories are explicitly private test support:
+`wasm/examples/assets-package-out` is a compiler/package fixture, and
+`packages/mcp/examples/resource-directory` is an authorization/write-negative
+fixture for `mcp-installed`. Their READMEs retain those boundaries; neither is a
+public application walkthrough.
