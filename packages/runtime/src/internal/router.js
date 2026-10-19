@@ -431,7 +431,7 @@ async function executeRouter(router, request, options = {}) {
   }
   const ownsBudget = options.requestBudget === undefined;
   const budget = createRequestBudget({ ...options, requestSignal: request.signal });
-  options = { ...options, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock };
+  options = { ...options, packageHttpState: {}, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock };
   const executionSignal = budget.signal;
   let effectExecution;
   let transferredResponse;
@@ -496,6 +496,14 @@ async function executeRouter(router, request, options = {}) {
       status: 404,
       headers: { 'content-type': 'text/plain; charset=utf-8' }
     });
+  } catch (error) {
+    const kind = require('./package-http-failure.js').failureKind(error, executionSignal);
+    if (kind && options.packageHttpState.failure) {
+      const response = options.packageHttpState.failure(kind);
+      if (!(response instanceof Response)) throw new TypeError('Invalid package terminal response');
+      return (transferredResponse = response);
+    }
+    throw error;
   } finally {
     try {
       await effectExecution?.close(transferredResponse);

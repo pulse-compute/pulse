@@ -100,13 +100,14 @@ assert.equal(projectionContract.policies.automaticTargetFallback, false);
 
 const catalog = discoverPackageContractCatalog({ cwd: fixtureRoot, workspaceRoot: repoRoot });
 assert.equal(catalog.version, PACKAGE_CONTRACT_CATALOG_VERSION);
-assert.deepEqual(catalog.contracts.map((entry) => entry.contractId), ['pulse.assets', 'pulse.crypto', 'pulse.entities', 'pulse.grip', 'pulse.jwt', 'pulse.s3']);
+assert.deepEqual(catalog.contracts.map((entry) => entry.contractId), ['pulse.assets', 'pulse.crypto', 'pulse.entities', 'pulse.grip', 'pulse.jwt', 'pulse.mcp', 'pulse.s3']);
 assert.deepEqual(catalog.contracts.map((entry) => entry.lowerableSubpath), [
   '@pulse-compute/assets',
   '@pulse-compute/crypto',
   '@pulse-compute/entities',
   '@pulse-compute/grip',
   '@pulse-compute/jwt',
+  '@pulse-compute/mcp/pulse',
   '@pulse-compute/s3'
 ]);
 assert.deepEqual(catalog.contracts.map((entry) => entry.compatibilitySubpaths), [
@@ -114,6 +115,7 @@ assert.deepEqual(catalog.contracts.map((entry) => entry.compatibilitySubpaths), 
   [],
   [],
   ['@pulse-compute/grip/pulsewasm'],
+  [],
   [],
   []
 ]);

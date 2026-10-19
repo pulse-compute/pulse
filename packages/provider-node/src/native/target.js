@@ -37,6 +37,13 @@ const NODE_NATIVE_TARGET_DESCRIPTOR = Object.freeze({
       implemented: true,
       automaticFallback: false
     }),
+          Object.freeze({
+      kind: 'package-native-application',
+      contractId: 'pulse.mcp',
+      implementation: 'pulse.package-native-application.v2',
+      implemented: true,
+      automaticFallback: false
+    }),
     Object.freeze({
       kind: 'crypto-composed',
       realization: 'guest-source:pulse-hmac-as',

@@ -369,6 +369,9 @@ function validateNativeModule(module, plan) {
   const missing = runtimeContract.CANONICAL_NATIVE_EXPORT_NAMES.filter((name) => !exportNames.has(name));
   if (missing.length > 0) throw new CanonicalNativeHostError('Native module is missing required ABI exports.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH', { missing });
   if (!plan || typeof plan !== 'object' || !plan.planHash) throw new TypeError('Native module execution requires its canonical native plan.');
+  if (plan.packages?.application?.terminalFailure === 'package-http-v1' && !exports.some(entry => entry.name === 'pulse_package_http_failure' && entry.kind === 'function')) {
+    throw new CanonicalNativeHostError('Package HTTP completion export is missing.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH');
+  }
   if (plan.packages?.application?.effectFailure === 'package-completion' && !exports.some(entry => entry.name === 'pulse_package_set_effect_failure' && entry.kind === 'function')) {
     throw new CanonicalNativeHostError('Native package application is missing its effect failure ABI.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH');
   }
@@ -760,6 +763,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     request_method() { requireHttpSurface('ctx.req.method'); return put(context.ctx.req.method); },
     request_url() { requireHttpSurface('ctx.req.url'); return put(context.ctx.req.url); },
     request_path() { requireHttpSurface('ctx.req.path'); return put(context.ctx.req.path); },
+    package_http_version() { return 1; },
     request_headers() { requireHttpSurface('ctx.req.headers'); return put(context.ctx.req.headers); },
     request_header(nameHandle) {
       requireHttpSurface('ctx.req.header');
@@ -1368,6 +1372,31 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       resolutionOrder: Object.freeze([...resolutionOrder]),
       continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) })))
     }) });
+    const kind = (options.signal?.aborted || ['PULSE_REQUEST_DEADLINE_EXCEEDED', 'PULSE_REQUEST_CLOCK_INVALID'].includes(error?.code) ? 1 : ['PULSE_BODY_TOO_LARGE', 'PULSE_REQUEST_BODY_TOO_LARGE'].includes(error?.code) ? 2 : error?.code === 'PULSE_REQUEST_BODY_INVALID_UTF8' ? 3 : 0);
+    if (!eventMode && kind && controller.plan.packages?.application?.terminalFailure === 'package-http-v1') {
+      const pointer = controller.exports.pulse_package_http_failure(kind);
+      const response = canonicalRuntime.finalResponse(JSON.parse(decodeManagedAssemblyScriptString(controller.exports.memory, pointer)), controller.context.ctx.req.method);
+      if (![400,408,413].includes(response.status) || typeof response.body !== 'string' || Buffer.byteLength(response.body) > 131072) throw new TypeError('Invalid package terminal response');
+      return Object.freeze({
+        status: 'completed',
+        version: runtimeContract.CANONICAL_NATIVE_HOST_VERSION,
+        abiVersion: runtimeContract.CANONICAL_NATIVE_ABI_VERSION,
+        provider: adapter.id,
+        providerVersion: adapter.version,
+        providerMetadata: adapter.resultMetadata({ ...options, executionId, metadata: controller.plan.canonical, plan: controller.plan }),
+        executionId,
+        planHash: controller.plan.planHash,
+        wasmSha256: controller.wasmSha256,
+        response,
+        effectCount,
+        ...((options.incomingBody || options.outputExecution) ? { guestMemoryBytes: controller.exports.memory.buffer.byteLength } : {}),
+        resolutionOrder: Object.freeze([...resolutionOrder]),
+        continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
+        trace: Object.freeze([...controller.trace]),
+        valueHandleCount: controller.heap.size(),
+        ...(controller.heap.budget ? { memory: controller.heap.budget.snapshot() } : {})
+      });
+    }
     throw executionFailure;
   } finally {
     invocationClosed = true;
@@ -1380,9 +1409,11 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
 }
 
 async function executeCanonicalNativeModule(compiled, options = {}) {
-  const budget = portableKv.createRequestBudget(options);
+  const duration = compiled?.plan?.packages?.application?.requestLimits?.maxDurationMs;
+  const budget = portableKv.createRequestBudget(duration === undefined ? options : { ...options, maxDurationMs: Math.min(options.maxDurationMs ?? duration, duration) });
+  if (duration !== undefined && !budget.signal.aborted) budget.limitDuration(duration);
   try {
-    budget.check();
+    if (compiled?.plan?.packages?.application?.terminalFailure !== 'package-http-v1') budget.check();
     return await executeCanonicalNativeInvocation(compiled, { ...options, responseSignal: options.signal, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock }, Object.freeze({ plane: 'http' }));
   } finally { if (!options.requestBudget) budget.close(); }
 }

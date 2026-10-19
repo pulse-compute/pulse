@@ -36,7 +36,8 @@ function createRequestBudget(options = {}) {
     last = value;
     return value;
   };
-  const deadline = duration === undefined ? undefined : read() + duration;
+  let started = duration === undefined ? undefined : read();
+  let deadline = started === undefined ? undefined : started + duration;
   const expire = () => controller.abort(new PulseRuntimeContractError('PULSE_REQUEST_DEADLINE_EXCEEDED', 'Pulse request exceeded its total execution deadline.'));
   const signals = [...new Set([options.signal, options.requestSignal].filter(Boolean))];
   const listeners = new Set(signals.map(signal => {
@@ -47,7 +48,19 @@ function createRequestBudget(options = {}) {
   }));
   const budget = Object.freeze({
     signal: controller.signal,
-    deadlineMonotonicMs: deadline,
+    get deadlineMonotonicMs() { return deadline; },
+    limitDuration(ms) {
+      normalizeRequestDuration(ms);
+      if (ms === undefined) throw new TypeError('A finite request duration is required.');
+      budget.check();
+      if (started === undefined) started = read();
+      const next = started + ms;
+      if (deadline !== undefined && next >= deadline) return;
+      deadline = next;
+      if (timer !== undefined) clock.clearTimeout(timer);
+      timer = clock.setTimeout(schedule, Math.max(0, deadline - read()));
+      budget.check();
+    },
     clock,
     check() {
       if (closed) throw new PulseRuntimeContractError('PULSE_REQUEST_EXECUTION_CLOSED', 'Pulse request execution is closed.');
@@ -87,14 +100,14 @@ function createRequestBudget(options = {}) {
       listeners.clear();
     }
   });
+  const schedule = () => {
+    try {
+      budget.check();
+      timer = clock.setTimeout(schedule, budget.remainingMs());
+    } catch (_) { /* check has already revoked execution authority */ }
+  };
   budgets.add(budget);
   if (deadline !== undefined && !controller.signal.aborted) {
-    const schedule = () => {
-      try {
-        budget.check();
-        timer = clock.setTimeout(schedule, budget.remainingMs());
-      } catch (_) { /* check has already revoked execution authority */ }
-    };
     timer = clock.setTimeout(schedule, duration);
   }
   return budget;

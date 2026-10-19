@@ -1907,7 +1907,14 @@ function assertCanonicalNativePlan(plan) {
     for (const handler of plan.handlers || []) walkStatements(handler.body, packageVisitor);
     if (application) {
       const terminal = plan.entry?.body?.[0];
-      if (application.version !== 'pulse.package-native-application.v1' || application.automaticFallback !== false
+      if (application.version === 'pulse.package-native-application.v2' && (application.terminalFailure !== 'package-http-v1' || !application.requestLimits)) fail('package application v2 requires bounded HTTP completion');
+      if (application.version === 'pulse.package-native-application.v1' && (application.terminalFailure !== undefined || application.requestLimits !== undefined)) fail('package HTTP completion requires application v2');
+      if (application.terminalFailure !== undefined && application.terminalFailure !== 'package-http-v1') fail('unsupported package terminal failure contract');
+      if (application.requestLimits !== undefined && (!application.requestLimits
+        || Object.keys(application.requestLimits).some(key => !['maxDurationMs', 'maxRequestBytes'].includes(key))
+        || !Number.isSafeInteger(application.requestLimits.maxDurationMs) || application.requestLimits.maxDurationMs < 1 || application.requestLimits.maxDurationMs > 30000
+        || !Number.isSafeInteger(application.requestLimits.maxRequestBytes) || application.requestLimits.maxRequestBytes < 1 || application.requestLimits.maxRequestBytes > 1048576)) fail('invalid package request limits');
+      if (!['pulse.package-native-application.v1', 'pulse.package-native-application.v2'].includes(application.version) || application.automaticFallback !== false
         || typeof application.contractId !== 'string' || !application.contractId
         || typeof application.package !== 'string' || !application.package
         || typeof application.intrinsic !== 'string' || !application.intrinsic

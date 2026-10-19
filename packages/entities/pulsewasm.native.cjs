@@ -794,7 +794,7 @@ function buildEntitiesNativeSource(input) {
   });
 }
 
-function buildEntitiesCanonicalNativeApplication(input) {
+function buildEntitiesNativeComponents(input) {
   const model = normalizeInputs(input);
   const artifact = buildEntitiesNativeSource(input);
   const effects = [];
@@ -867,7 +867,14 @@ ${effects.map((effect, index) => `    case ${index}: return ${continuations.find
   });
 }
 
+function buildEntitiesCanonicalNativeApplication(input) {
+  const components = buildEntitiesNativeComponents(input);
+  const source = components.source + '\n' + fs.readFileSync(path.join(__dirname, 'as/transport-json-rpc.as.ts'), 'utf8');
+  return deepFreeze({ ...components, source, sourceHash: sha256(source) });
+}
+
 module.exports = Object.freeze({
+  buildEntitiesNativeComponents,
   buildEntitiesCanonicalNativeApplication,
   ENTITIES_NATIVE_SOURCE_VERSION,
   MANAGED_NATIVE_BUNDLE_VERSION,

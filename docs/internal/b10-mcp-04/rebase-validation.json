@@ -1,0 +1,543 @@
+{
+  "schemaVersion": "pulse.b10-mcp-04.rebase-validation.v1",
+  "base": "b90433b8d9c3787b1ddfdaf4883a13b773c613fa",
+  "originalImplementationCommit": "b8a822dc5c57ad8338f528b7dd972a96fcfc6c63",
+  "reason": "Latest advanced with three documentation/test commits. Generated context conflicts resolved by pinned regeneration; MCP implementation and original focused tests unchanged. Corpus export expectation updated and retry passed.",
+  "sourceFiles": [
+    {
+      "path": "docs/architecture/current-contracts.md",
+      "sha256": "dcc40ac9476aa07981df8ee0e601cf7e7ddeb346e7293bfd660a02be73257163"
+    },
+    {
+      "path": "docs/contributing/package-lowerer-contract.md",
+      "sha256": "e45ba774559e226b601877b61164d08a13eed8f1dd0b135e2912994c2126d5b4"
+    },
+    {
+      "path": "docs/maintainers/release-manifest.md",
+      "sha256": "f3bb12a45623075e57291fad7d40b636cd3adbfd6be4ecd2346f49dc166326da"
+    },
+    {
+      "path": "docs/packages/README.md",
+      "sha256": "d1d7c3876203c3091a1968c87964d54419f71feaa0c512864e67176c9aa97770"
+    },
+    {
+      "path": "docs/packages/mcp.md",
+      "sha256": "d103cc5ec3cb7cf2ad935e36480f8caffac43b4de8968495db840a2ac760cbeb"
+    },
+    {
+      "path": "docs/reference/diagnostics.md",
+      "sha256": "8b8757d281c3145fba9c15b0862e3b2ce84236353c5e9248a7e938766387eda2"
+    },
+    {
+      "path": "docs/reference/release-manifest.json",
+      "sha256": "a336c8746653b332d111ee93d4fdf841d7242771a884585eac48b72db8125135"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/README.md",
+      "sha256": "7a932b1cbf9987a2cbc34450d8048bd3e732f11a2c3961318fc03319042943e7"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "eca9cc3e232b956cd48053db897084098887d8ecc3ee1c9a5ff10721410a39c5"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/context-manifest.json",
+      "sha256": "c9bfd161f1b508338dfd057f9293452dafb37cde2d09a7e5b65b3f4715ebc855"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+      "sha256": "ac82b88a35e024e63b544b671e6776dd396b595ebaba9c4c78f43b2195193974"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/metadata.bin",
+      "sha256": "00ee203ef124a38a87bee1e441fdee15eb4732b6792396a8dde8c67941b26df6"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/text.bin",
+      "sha256": "57f2a017781f7c9e948f47d00a38451394cc54a0e2b1d1b58af17da876427527"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/vector.bin",
+      "sha256": "1aa600ab94bfb9c1ce46578d2b3c80283fd00a5358275105ed82191b53eff515"
+    },
+    {
+      "path": "packages/entities/as/canonical.as.ts",
+      "sha256": "3a435fe06a0b03720332bb02db3e4e8bc667c92a20d944a2fe42febd3beed5a4"
+    },
+    {
+      "path": "packages/entities/as/transport-json-rpc.as.ts",
+      "sha256": "2cfabd9bb86c1e5e2afad93268dae99b793f5bb8b3c0912ff33575b03647bda5"
+    },
+    {
+      "path": "packages/entities/package.json",
+      "sha256": "bd118be90c539d6234b7dd974efff7601dc887311b250af511e84b206a3ed9e1"
+    },
+    {
+      "path": "packages/entities/pulsewasm.compiler.cjs",
+      "sha256": "bbcc5fcc4cf5d8abfede5eb6d3f5960f4524db0778cef786285318514ed29588"
+    },
+    {
+      "path": "packages/entities/pulsewasm.native.cjs",
+      "sha256": "20f0c70cbdab1aa91cf4d056a0c940a67ec21db4f5f336c36cc644ce9f22a189"
+    },
+    {
+      "path": "packages/entities/src/entity-router.ts",
+      "sha256": "397ed881661a14b12e923da92b799cb9b7f3f931cfbaf595051eb10a0a1fec8e"
+    },
+    {
+      "path": "packages/entities/src/internal/schema-codec-bridge.ts",
+      "sha256": "06f0e72e1d22ae98424dd00326acaabf09f04c403637d32bcbaa17011d1a232b"
+    },
+    {
+      "path": "packages/entities/test/schema-codec-bridge.test.ts",
+      "sha256": "80f0aa126bb29e71b6ee595a7b78fd27fae86c9f31f7c1ea1e616e7ad6715716"
+    },
+    {
+      "path": "packages/mcp/README.md",
+      "sha256": "ab778c0b6397c6d3861b255709e6a4f2a1e7e9e7a86a1926d19fd311b6d3316f"
+    },
+    {
+      "path": "packages/mcp/as/mcp.as.ts",
+      "sha256": "3d0df4bc65f6c955432329eb64de22c020dfb5d7b9d9f178fd31d70edbaddda8"
+    },
+    {
+      "path": "packages/mcp/conformance/README.md",
+      "sha256": "b5f53f0378846fe9049677c24369ea27cbb0543f4bc51333c5c406a800d82505"
+    },
+    {
+      "path": "packages/mcp/package.json",
+      "sha256": "575f8f42dc778f73f6034a0c6b28c75f4b13d12364af49a1cd1eec797965a332"
+    },
+    {
+      "path": "packages/mcp/pulse.package.json",
+      "sha256": "2deb3f8a399d6981859684b3708c850cc8b849af778988dc4e0f3b2592c00800"
+    },
+    {
+      "path": "packages/mcp/pulsewasm.compiler.cjs",
+      "sha256": "efdc4edf1579f8318934514a49ff79c01a83b0836890347192da02b1bc05866a"
+    },
+    {
+      "path": "packages/mcp/pulsewasm.manifest.cjs",
+      "sha256": "a9d2c72b41edd47cf073fce6ca80f28568804b49ede0d5eef7d0fb5a7bc271b3"
+    },
+    {
+      "path": "packages/mcp/pulsewasm.native.cjs",
+      "sha256": "2110a4decb13211a1dea07f53870de8fbf0418261aa987ef2726f80fb798fcaf"
+    },
+    {
+      "path": "packages/mcp/pulsewasm.plan.cjs",
+      "sha256": "d04ed18e4064948610e003dd62dfcdb59079c0f8f105b1fc8292a6d57cc6b00d"
+    },
+    {
+      "path": "packages/mcp/src/catalog.js",
+      "sha256": "71069c6629c2264a26fc8c81a44c21b8181dcd5d57e65e1966ade10c79808d50"
+    },
+    {
+      "path": "packages/mcp/src/index.js",
+      "sha256": "e33ffeec53177b0304540360c4ba1cea14450aa1a57691638d72bb28067100ab"
+    },
+    {
+      "path": "packages/mcp/src/protocol.js",
+      "sha256": "44f46f2d3d262528b5416dc8137b0298fa39e82a6b8ed83a2f4ed2d3bd35e1e9"
+    },
+    {
+      "path": "packages/mcp/src/pulse-config.js",
+      "sha256": "3764c5a2b8165cbd4e19a318d3f0822babceeb686c282daa041b2ff0430e7174"
+    },
+    {
+      "path": "packages/mcp/src/pulse.d.ts",
+      "sha256": "5b9ebc5410dce3bc0a2ec77fed08e1ea6f7499629c19f5b0b84d06e37150a8aa"
+    },
+    {
+      "path": "packages/mcp/src/pulse.js",
+      "sha256": "5f1b445c69a344c09066cf3377ddb27096c421d0983844f167726283820348ae"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "sha256": "c83297b5dca60e4b681834c73da1f9713c26c2692129a8970850cab88a9726af"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/package-native-application.js",
+      "sha256": "a0e7e35b4a4ebe3c5a91c393b3657519fdd5b27e856c99d723113c48ce8cbb22"
+    },
+    {
+      "path": "packages/provider-fastly/src/toolchain/index.js",
+      "sha256": "f87343874b4453e17059ba149f6370f4bd7dc5322c4f599f68f940e5c1cb05bf"
+    },
+    {
+      "path": "packages/provider-node/src/javascript/target-support-policy.js",
+      "sha256": "521672ba3b19080d6c912a99350c6bcf488af049ec4ded5978175fdbb9bccb74"
+    },
+    {
+      "path": "packages/provider-node/src/native/target.js",
+      "sha256": "4010948cc12072b30975378c830250009c9c2434834cbb42466fc36e209695ec"
+    },
+    {
+      "path": "packages/runtime/src/host.d.ts",
+      "sha256": "8ffa59f53d7f3f6bf1acfb1d025689ffac38687daa784f819caee4949fcffd11"
+    },
+    {
+      "path": "packages/runtime/src/internal/package-http-failure.js",
+      "sha256": "90bc07eadbdd55eff99c44e471ff009af1a3f68a3025802b227a7c8e5e3cb848"
+    },
+    {
+      "path": "packages/runtime/src/internal/package-runtime.js",
+      "sha256": "c92855275f92879e60d4a1d3bc53b0399fc646e3f667a20e4825c8fd2411b0ee"
+    },
+    {
+      "path": "packages/runtime/src/internal/request-budget.js",
+      "sha256": "987acc0755b36769c4fd9b8b1fc65ee6744285ea87ab63fde94e4a1fa32eb868"
+    },
+    {
+      "path": "packages/runtime/src/internal/router.js",
+      "sha256": "9668c223b3ecd980ff30062cad36253f4048a0ffeff3257e854d3a7a07a85fad"
+    },
+    {
+      "path": "packages/runtime/src/package.d.ts",
+      "sha256": "2a3554121d0e356df3c7f00f2b0a37238d0c7c54937653c891e2e828f4fc6fc4"
+    },
+    {
+      "path": "packages/runtime/src/package.js",
+      "sha256": "2db0257a81e2c9e0209ae177d9e7a230717e678c6d0115f21aa03191291eb29d"
+    },
+    {
+      "path": "packages/runtime/test/request-budget.test.ts",
+      "sha256": "40f0ff1594ca14662647908bbb1c387ec5a646f908bee9a6ec6d5f220f603ec0"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0"
+    },
+    {
+      "path": "release/pulse-release-manifest.json",
+      "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6"
+    },
+    {
+      "path": "scripts/release-evidence-bundle.cjs",
+      "sha256": "a3b8a1365f9034416cbfad8f08a080f71d8784be6debd3166e68e261c65447a1"
+    },
+    {
+      "path": "wasm/packages/cli/docs/architecture/current-contracts.md",
+      "sha256": "dcc40ac9476aa07981df8ee0e601cf7e7ddeb346e7293bfd660a02be73257163"
+    },
+    {
+      "path": "wasm/packages/cli/docs/contributing/package-lowerer-contract.md",
+      "sha256": "e45ba774559e226b601877b61164d08a13eed8f1dd0b135e2912994c2126d5b4"
+    },
+    {
+      "path": "wasm/packages/cli/docs/maintainers/release-manifest.md",
+      "sha256": "f3bb12a45623075e57291fad7d40b636cd3adbfd6be4ecd2346f49dc166326da"
+    },
+    {
+      "path": "wasm/packages/cli/docs/packages/README.md",
+      "sha256": "d1d7c3876203c3091a1968c87964d54419f71feaa0c512864e67176c9aa97770"
+    },
+    {
+      "path": "wasm/packages/cli/docs/packages/mcp.md",
+      "sha256": "d103cc5ec3cb7cf2ad935e36480f8caffac43b4de8968495db840a2ac760cbeb"
+    },
+    {
+      "path": "wasm/packages/cli/docs/reference/diagnostics.md",
+      "sha256": "8b8757d281c3145fba9c15b0862e3b2ce84236353c5e9248a7e938766387eda2"
+    },
+    {
+      "path": "wasm/packages/cli/docs/reference/release-manifest.json",
+      "sha256": "a336c8746653b332d111ee93d4fdf841d7242771a884585eac48b72db8125135"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/README.md",
+      "sha256": "7a932b1cbf9987a2cbc34450d8048bd3e732f11a2c3961318fc03319042943e7"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "eca9cc3e232b956cd48053db897084098887d8ecc3ee1c9a5ff10721410a39c5"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json",
+      "sha256": "c9bfd161f1b508338dfd057f9293452dafb37cde2d09a7e5b65b3f4715ebc855"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+      "sha256": "ac82b88a35e024e63b544b671e6776dd396b595ebaba9c4c78f43b2195193974"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin",
+      "sha256": "00ee203ef124a38a87bee1e441fdee15eb4732b6792396a8dde8c67941b26df6"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin",
+      "sha256": "57f2a017781f7c9e948f47d00a38451394cc54a0e2b1d1b58af17da876427527"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin",
+      "sha256": "1aa600ab94bfb9c1ce46578d2b3c80283fd00a5358275105ed82191b53eff515"
+    },
+    {
+      "path": "wasm/packages/cli/release-manifest.json",
+      "sha256": "a336c8746653b332d111ee93d4fdf841d7242771a884585eac48b72db8125135"
+    },
+    {
+      "path": "wasm/packages/cli/src/diagnostics.js",
+      "sha256": "db935bb3b02ead29b990d696ca73cba3ccf3ee5b2285f47be6f51856c5800048"
+    },
+    {
+      "path": "wasm/packages/compiler/src/canonical-native-plan.js",
+      "sha256": "9431c573d6f8a4382c7efa2df1177f564dd67a5bc0060f9d36dfe71824b320e1"
+    },
+    {
+      "path": "wasm/packages/compiler/src/spine/terminal-package-native.js",
+      "sha256": "8b1b50d7e672fc228513c9ff386271e53f64bbc4042a3f3567f3da84a94eb3a3"
+    },
+    {
+      "path": "wasm/packages/contracts/src/handler/canonical-native-runtime.js",
+      "sha256": "37432bd59ceaace374bef405a179d8e439e162f72b14061cb0eedb007ffa064d"
+    },
+    {
+      "path": "wasm/packages/host-runtime/src/runtime/canonical-native-host.js",
+      "sha256": "f2aaa27f239f7d0e8a8f4b56d02293ef07e2ef1c1082a7b0dd54a314e4116b7c"
+    },
+    {
+      "path": "wasm/test/contracts/assert-package-reachability.cjs",
+      "sha256": "3b1e79f4f4c0218028c5b193166bc7f6a2f4cff0b4cc5c043766dfe815098900"
+    },
+    {
+      "path": "wasm/test/entities/assert-entities-schema-bridge.cjs",
+      "sha256": "fab4454ac9ac9822d3b6479f2b3112a30b6fd12aff8fc721a1db8962123b7609"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/mcp-native/.gitignore",
+      "sha256": "66fd77fdd258f5110dc44521ab0a6e4505c0511219aebc5f6d3e31c416d2bb80"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/mcp-native/.pulse/.gitignore",
+      "sha256": "211595c517108ebbd6508e7c21416abd8e2c2eb9dcc9f717aa15f1dc0d6912fc"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/mcp-native/.pulse/config.ts",
+      "sha256": "cc361cb4aa86085fe9901b180c9d405094489c81fd4bfa5c75d5e52f2a208c6d"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/mcp-native/package.json",
+      "sha256": "956bb1179e856c5aac7236c113e2784ded4590abee1c3022bcae2d992e46bb2b"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/mcp-native/src/handlers.ts",
+      "sha256": "170af41550b0f975c504af27971d8f4547385eb449edd1088a519c1cc115cc1c"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/mcp-native/src/index.ts",
+      "sha256": "549f23b3a570f45b71cd07c6f8660785c994cc6b75b3c99b6288e86c029a927a"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/mcp-native/src/schemas.ts",
+      "sha256": "6d2fa437d63724cbbf8053fdae639a86199fac37de37efd2ac1957ab22ac1a20"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/mcp-native/tests/pulse.harness.ts",
+      "sha256": "f767eee39bc7bfea5f21e6a90f401f749cc25495e64de99a54bbb3f879c68ea0"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/mcp-native/tsconfig.json",
+      "sha256": "eb61a0677072afdc95bd50810cc0314f06a731cde7b4a2e2231de4910caa27dd"
+    },
+    {
+      "path": "wasm/test/mcp/assert-context-corpus.cjs",
+      "sha256": "1a2390405cd140558d81ddf8d2ea80bd12522162eaa583d2f34870fb399c81ab"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-http.cjs",
+      "sha256": "0a014f97f517c2a550922f928e9c2eaf10759d8ce330f70304ee6c5e3e9e1d13"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-native-binding.cjs",
+      "sha256": "6bbeea367c5f7ac4a4d1a1224e3a853863e879ab3028c0d0c826d9d5594fe5a6"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-package.cjs",
+      "sha256": "64be22e2d4dd826a73c2bfceeaeff26d206983cfaaa03bfe864a72b1c6cad207"
+    },
+    {
+      "path": "wasm/test/suite/registry.cjs",
+      "sha256": "3a544cc3e7fa508f9f0e7bc50108dd29aeda8b26156ab7fdc62f119e50b59651"
+    }
+  ],
+  "contextReceipt": {
+    "schemaVersion": "pulse.context-build-receipt.v1",
+    "status": "ok",
+    "mode": "write",
+    "executionNode": "24.18.0",
+    "pinnedProducerNode": "24.18.0",
+    "manifestSha256": "c9bfd161f1b508338dfd057f9293452dafb37cde2d09a7e5b65b3f4715ebc855",
+    "corpusHash": "8fe387adb9281724500ca08b2262e1a7e2925fc8477fc715b9f16f6cd52a8afc",
+    "dimensions": {
+      "rows": 246,
+      "dimension": 2462,
+      "nonzeros": 14476,
+      "dictionarySha256": "573672c9be4982d48874b6fe61d0b0150c2c7faeb1fb3f5505974e77eef3a5da",
+      "manifestId": "cb1d599203b2eb6dd56c8abb21d9168cc7830b7d5c66c5bb2020eb75553b63c7",
+      "catalogueIdentity": "d16593ffd42c2d6ae4107a9c54fbcfb5a205703882a21d77c80861f0882d29d8",
+      "rawBytes": 566352,
+      "serializedBytes": 755790,
+      "budgets": {
+        "files": 3,
+        "fileBytes": 5242880,
+        "totalBytes": 8388608,
+        "serializedBytes": 16777216,
+        "bindings": 3
+      }
+    },
+    "changedFiles": 10,
+    "comparedFiles": 12
+  },
+  "checks": [
+    {
+      "name": "rebase-sync",
+      "exitCode": 0,
+      "logSha256": "a304e32ce2862eaceca1be8b629978bebf3c370e82b3b13906fc829689177717",
+      "terminalTaskResults": [],
+      "terminalTail": [
+        "",
+        "ok - 248 generated documentation/package file(s), 5 maintenance-policy output(s), 59 source block(s), and 19 owned page(s) are synchronized; updated 4 file(s)",
+        "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.",
+        "",
+        "> docs:sync",
+        "> node wasm/scripts/sync-doc-snippets.cjs --write",
+        "",
+        "ok - 248 generated documentation/package file(s), 5 maintenance-policy output(s), 59 source block(s), and 19 owned page(s) are synchronized"
+      ]
+    },
+    {
+      "name": "rebase-context",
+      "exitCode": 0,
+      "logSha256": "a98bffd572e1e3e1e144a23abede7f262ed073b6256df0938d8adfa193bd7da2",
+      "terminalTaskResults": [],
+      "terminalTail": [
+        "{\"schemaVersion\":\"pulse.context-build-receipt.v1\",\"status\":\"ok\",\"mode\":\"write\",\"executionNode\":\"24.18.0\",\"pinnedProducerNode\":\"24.18.0\",\"manifestSha256\":\"c9bfd161f1b508338dfd057f9293452dafb37cde2d09a7e5b65b3f4715ebc855\",\"corpusHash\":\"8fe387adb9281724500ca08b2262e1a7e2925fc8477fc715b9f16f6cd52a8afc\",\"dimensions\":{\"rows\":246,\"dimension\":2462,\"nonzeros\":14476,\"dictionarySha256\":\"573672c9be4982d48874b6fe61d0b0150c2c7faeb1fb3f5505974e77eef3a5da\",\"manifestId\":\"cb1d599203b2eb6dd56c8abb21d9168cc7830b7d5c66c5bb2020eb75553b63c7\",\"catalogueIdentity\":\"d16593ffd42c2d6ae4107a9c54fbcfb5a205703882a21d77c80861f0882d29d8\",\"rawBytes\":566352,\"serializedBytes\":755790,\"budgets\":{\"files\":3,\"fileBytes\":5242880,\"totalBytes\":8388608,\"serializedBytes\":16777216,\"bindings\":3}},\"changedFiles\":10,\"comparedFiles\":12}"
+      ]
+    },
+    {
+      "name": "rebase-maintainer",
+      "exitCode": 0,
+      "logSha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2",
+      "terminalTaskResults": [],
+      "terminalTail": [
+        "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.",
+        "",
+        "> maintainer:check",
+        "> node scripts/validate-maintainer-control-plane.cjs",
+        "",
+        "ok - 7 change classes, 11 protected boundaries, 9 AGENTS files, 42 documented test commands, 9 workflows, 14 documentation deployment objects, and 17 scope cases validated"
+      ]
+    },
+    {
+      "name": "rebase-docs",
+      "exitCode": 0,
+      "logSha256": "96b10ba49ee6a7b050937552f47647d153a95462190d78bb1981929209aa7cd9",
+      "terminalTaskResults": [],
+      "terminalTail": [
+        "    },",
+        "    \"sourceContract\": {",
+        "      \"status\": \"ok\",",
+        "      \"pages\": 83,",
+        "      \"routeAliases\": 2",
+        "    }",
+        "  }",
+        "}"
+      ]
+    },
+    {
+      "name": "rebase-doc-release",
+      "exitCode": 0,
+      "logSha256": "13ac6bb9e5ba87befe509035e35def80c4bd5e9129810cea3a8cbd03bc2d3feb",
+      "terminalTaskResults": [],
+      "terminalTail": [
+        "    \"executableBindings\": 2",
+        "  },",
+        "  \"sourceContract\": {",
+        "    \"status\": \"ok\",",
+        "    \"pages\": 83,",
+        "    \"routeAliases\": 2",
+        "  }",
+        "}"
+      ]
+    },
+    {
+      "name": "rebase-publication",
+      "exitCode": 0,
+      "logSha256": "7e00c1ec950f80e9be01f62aa02b2c4ab66a133c9af67d41d428878fe2453543",
+      "terminalTaskResults": [],
+      "terminalTail": [
+        "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.",
+        "",
+        "> publication:check",
+        "> node scripts/validate-publication-workflows.cjs",
+        "",
+        "ok - 20 npm packages, 509 documentation sources, 14 documentation objects, 3 publication workflows, and 6 Fastly infrastructure files validated"
+      ]
+    },
+    {
+      "name": "rebase-build",
+      "exitCode": 0,
+      "logSha256": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95",
+      "terminalTaskResults": [],
+      "terminalTail": [
+        "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.",
+        "",
+        "> build",
+        "> node scripts/pulse-context-build.cjs --check && tsc -b tsconfig.workspace.json",
+        "",
+        "{\"schemaVersion\":\"pulse.context-build-receipt.v1\",\"status\":\"ok\",\"mode\":\"check\",\"executionNode\":\"24.19.0\",\"pinnedProducerNode\":\"24.18.0\",\"manifestSha256\":\"c9bfd161f1b508338dfd057f9293452dafb37cde2d09a7e5b65b3f4715ebc855\",\"corpusHash\":\"8fe387adb9281724500ca08b2262e1a7e2925fc8477fc715b9f16f6cd52a8afc\",\"dimensions\":{\"rows\":246,\"dimension\":2462,\"nonzeros\":14476,\"dictionarySha256\":\"573672c9be4982d48874b6fe61d0b0150c2c7faeb1fb3f5505974e77eef3a5da\",\"manifestId\":\"cb1d599203b2eb6dd56c8abb21d9168cc7830b7d5c66c5bb2020eb75553b63c7\",\"catalogueIdentity\":\"d16593ffd42c2d6ae4107a9c54fbcfb5a205703882a21d77c80861f0882d29d8\",\"rawBytes\":566352,\"serializedBytes\":755790,\"budgets\":{\"files\":3,\"fileBytes\":5242880,\"totalBytes\":8388608,\"serializedBytes\":16777216,\"bindings\":3}},\"changedFiles\":0,\"comparedFiles\":12}"
+      ]
+    },
+    {
+      "name": "rebase-tests",
+      "exitCode": 1,
+      "logSha256": "f7536d211bfd9e0e33eabee7782c55ecdc2360174968393f1da53debc123d86b",
+      "terminalTaskResults": [
+        [
+          "pulse-context-build",
+          "passed",
+          "21.09s"
+        ],
+        [
+          "pulse-context-corpus",
+          "failed",
+          "599ms"
+        ]
+      ],
+      "terminalTail": [
+        "  diff: 'simple'",
+        "}",
+        "[pulsewasm] pulse-context-corpus: failed in 599ms",
+        "",
+        "[pulsewasm] test summary",
+        "  passed        21.09s  pulse-context-build",
+        "  failed         599ms  pulse-context-corpus",
+        "  total        21.70s"
+      ]
+    },
+    {
+      "name": "rebase-corpus-retry",
+      "exitCode": 0,
+      "logSha256": "c7608827ad930c04cad11865011372ed90fc5659bdc8af9a75f036f1e7152725",
+      "terminalTaskResults": [
+        [
+          "pulse-context-corpus",
+          "passed",
+          "1.39s"
+        ]
+      ],
+      "terminalTail": [
+        "[pulsewasm:unit] pulse-context-corpus",
+        "[pulsewasm] PMCP-02 immutable bounded context snapshot, deterministic generation, source identity and version mismatch (timeout 30.00s)",
+        "ok - 246 versioned context records; immutable standalone data, deterministic/stale/missing/excluded source checks",
+        "[pulsewasm] pulse-context-corpus: passed in 1.39s",
+        "",
+        "[pulsewasm] test summary",
+        "  passed         1.39s  pulse-context-corpus",
+        "  total        1.40s"
+      ]
+    }
+  ],
+  "qualification": "development only; original broad-run limitations remain in VALIDATION.md"
+}

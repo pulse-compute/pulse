@@ -24,6 +24,8 @@ function run(command, args, cwd = temp, timeout = 30000) {
 }
 try {
   let tarball;
+  const closure = ['@pulse-compute/mcp','@pulse-compute/entities','@pulse-compute/runtime','@pulse-compute/wasm-contracts'];
+  let tarballs = [];
   if (process.argv.length > 2) {
     assert.equal(process.argv.length, 4, 'Usage: assert-mcp-package.cjs [--pack-dir <standard-release-pack>]');
     assert.equal(process.argv[2], '--pack-dir');
@@ -39,15 +41,27 @@ try {
     assert.equal(path.basename(matches[0].tarball), matches[0].tarball);
     tarball = path.join(directory, matches[0].tarball);
     assert.equal(crypto.createHash('sha256').update(fs.readFileSync(tarball)).digest('hex'), matches[0].sha256);
-    report.checks.push('selected exact MCP tarball from the standard release package set');
+    tarballs = closure.map(name => {
+      const item = packed.packages.find(entry => entry.name === name); assert.ok(item, name);
+      const file = path.join(directory, item.tarball);
+      assert.equal(crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'), item.sha256);
+      return file;
+    });
+    report.checks.push('selected exact MCP and declared dependency tarballs from the standard release package set');
   } else {
-    const [pack] = JSON.parse(run('npm', ['pack', '--json', '--ignore-scripts', '--pack-destination', temp], path.join(root, 'packages/mcp')));
-    tarball = path.join(temp, pack.filename);
+    const invocation = pnpmInvocation(root);
+    for (const dir of ['packages/mcp','packages/entities','packages/runtime','wasm/packages/contracts']) {
+      run(invocation.command, [...invocation.prefix, '--dir', path.join(root, dir), 'pack', '--pack-destination', temp], root, 180000);
+    }
+    tarballs = fs.readdirSync(temp).filter(file => file.endsWith('.tgz')).map(file => path.join(temp, file));
+    tarball = tarballs.find(file => path.basename(file).startsWith('pulse-compute-mcp-'));
   }
   const entries = readTarEntries(tarball);
   report.tarball = { sha256: crypto.createHash('sha256').update(fs.readFileSync(tarball)).digest('hex'),
     bytes: fs.statSync(tarball).size, files: [...entries.keys()].sort() };
-  const expected = ['package.json', 'README.md', 'LICENSE', 'NOTICE',
+  const expected = ['package.json', 'README.md', 'LICENSE', 'NOTICE', 'pulse.package.json',
+    ...fs.readdirSync(path.join(root, 'packages/mcp')).filter(file => /^pulsewasm.*\.cjs$/.test(file)),
+    ...['as','conformance'].flatMap(dir => fs.readdirSync(path.join(root, 'packages/mcp', dir)).map(file => `${dir}/${file}`)),
     ...fs.readdirSync(path.join(root, 'packages/mcp/src')).filter(file => /\.(js|d\.ts)$/.test(file)).map(file => `src/${file}`)];
   assert.deepEqual([...entries.keys()].sort(), expected.map(file => `package/${file}`).sort());
   for (const file of ['LICENSE', 'NOTICE']) assert.deepEqual(entries.get(`package/${file}`), fs.readFileSync(path.join(root, file)));
@@ -57,16 +71,17 @@ try {
   assert.notEqual(manifest.private, true);
   assert.equal(manifest.publishConfig.access, 'public');
   assert.equal(manifest.license, 'Apache-2.0');
-  assert.deepEqual(Object.keys(manifest.exports).sort(), ['.', './node']);
-  for (const key of ['dependencies', 'optionalDependencies', 'peerDependencies', 'bundledDependencies']) {
+  assert.deepEqual(Object.keys(manifest.exports).sort(), ['.', './node', './pulse', './pulsewasm/compiler', './pulsewasm/manifest']);
+  assert.deepEqual(manifest.dependencies, { '@pulse-compute/entities': RELEASE_VERSION, '@pulse-compute/runtime': RELEASE_VERSION });
+  for (const key of ['optionalDependencies', 'peerDependencies', 'bundledDependencies']) {
     assert.equal(Object.keys(manifest[key] || {}).length, 0, `${key} must remain empty`);
   }
-  report.checks.push('packed allowlist, root legal notices, two exports, zero runtime dependencies');
+  report.checks.push('packed allowlist, legal notices, three author entry points, trusted lowerer and exact first-party dependency closure');
 
   const consumer = path.join(temp, 'consumer');
   fs.mkdirSync(consumer);
   fs.writeFileSync(path.join(consumer, 'package.json'), JSON.stringify({ name: 'pulse-mcp-packed-consumer', private: true }));
-  run('npm', ['install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund', tarball], consumer);
+  run('npm', ['install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund', ...tarballs], consumer);
   const consumerRequire = createRequire(path.join(consumer, 'package.json'));
   assert.ok(!fs.lstatSync(path.join(consumer, 'node_modules/@pulse-compute/mcp')).isSymbolicLink());
   const assertions = `
@@ -76,12 +91,18 @@ assert.deepEqual(Object.keys(node).sort(), ['createMcpNodeHandler']);
 assert.ok(Object.isFrozen(DEFAULT_LIMITS));
 assert.equal(typeof createMcpHttpHandler().fetch, 'function');
 const server = createServer(createMcpNodeHandler()); server.close();
+assert.deepEqual(Object.keys(pulse).sort(), ['EntityRouter','jsonRpc','mcp']);
+const tools = new pulse.EntityRouter({ adapter: pulse.jsonRpc() });
+assert.equal(typeof pulse.mcp({router:tools}).handle, 'function');
 `;
   fs.writeFileSync(path.join(consumer, 'consumer.cjs'), `
 const assert = require('node:assert/strict');
 const { createServer } = require('node:http');
 const root = require('@pulse-compute/mcp');
 const node = require('@pulse-compute/mcp/node');
+const pulse = require('@pulse-compute/mcp/pulse');
+assert.equal(typeof require('@pulse-compute/mcp/pulsewasm/compiler').createMcpPackageCompilerBuilder, 'function');
+assert.equal(require('@pulse-compute/mcp/pulsewasm/manifest').contractId, 'pulse.mcp');
 const { createMcpHttpHandler, PROTOCOL_VERSION, DEFAULT_LIMITS } = root;
 const { createMcpNodeHandler } = node;
 ${assertions}
@@ -93,13 +114,14 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import root, { createMcpHttpHandler, PROTOCOL_VERSION, DEFAULT_LIMITS } from '@pulse-compute/mcp';
 import node, { createMcpNodeHandler } from '@pulse-compute/mcp/node';
+import pulse from '@pulse-compute/mcp/pulse';
 ${assertions}
 await assert.rejects(import('@pulse-compute/mcp/src/node.js'), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
 `);
   for (const file of ['consumer.cjs', 'consumer.mjs']) run(process.execPath, [file], consumer);
   report.checks.push('installed CommonJS and ESM public imports; implementation subpaths blocked');
 
-  // Consumer development types come from the restored lockfile; never add runtime dependencies.
+  // Consumer development types come from the restored lockfile; production packages came from exact tarballs.
   fs.mkdirSync(path.join(consumer, 'node_modules/@types'), { recursive: true });
   const nodeTypes = require.resolve('@types/node/package.json');
   fs.cpSync(path.dirname(nodeTypes), path.join(consumer, 'node_modules/@types/node'), { recursive: true });
@@ -110,6 +132,8 @@ import { createServer } from 'node:http';
 import { createMcpHttpHandler, PROTOCOL_VERSION, DEFAULT_LIMITS } from '@pulse-compute/mcp';
 import type { McpHttpOptions, McpHttpHandler, McpToolsOptions, McpAuthorizationOptions, McpLimits } from '@pulse-compute/mcp';
 import { createMcpNodeHandler } from '@pulse-compute/mcp/node';
+import { mcp, EntityRouter, jsonRpc } from '@pulse-compute/mcp/pulse';
+const binding = mcp({ router: new EntityRouter({ adapter: jsonRpc() }), serverInfo: { name: 'test', version: '1' } });
 const version: '2026-07-28' = PROTOCOL_VERSION;
 const limits: Readonly<McpLimits> = DEFAULT_LIMITS;
 const tools: McpToolsOptions = { catalog: {}, schemas: {}, routerId: 'rpc', target: 'node-javascript', endpoint: 'http://127.0.0.1:4000/' };

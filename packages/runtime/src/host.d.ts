@@ -209,6 +209,8 @@ export interface PulseJavascriptEffectExecution {
 }
 
 export interface PulseRequestBudget {
+  /** May only shorten the current host deadline. */
+  limitDuration(maxDurationMs: number): void;
   readonly signal: AbortSignal;
   readonly deadlineMonotonicMs?: number;
   readonly clock: PulseKvClock;

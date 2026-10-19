@@ -79,7 +79,14 @@ importers:
         specifier: workspace:*
         version: link:../../wasm/packages/contracts
 
-  packages/mcp: {}
+  packages/mcp:
+    dependencies:
+      '@pulse-compute/entities':
+        specifier: workspace:*
+        version: link:../entities
+      '@pulse-compute/runtime':
+        specifier: workspace:*
+        version: link:../runtime
 
   packages/provider-fastly:
     dependencies:

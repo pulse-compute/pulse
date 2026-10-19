@@ -271,7 +271,7 @@ function contractValue(sourceFile, node, diagnostics, fallbackCode, callback) {
   }
 }
 
-function collectFacadeBindings(ts, sourceFile, manifest, diagnostics) {
+function collectFacadeBindings(ts, sourceFile, manifest, diagnostics, composition) {
   const bindings = {
     routers: new Set(),
     adapters: new Set(),
@@ -308,7 +308,7 @@ function collectFacadeBindings(ts, sourceFile, manifest, diagnostics) {
         const local = specifier.name.text;
         if (imported === 'EntityRouter') bindings.routers.add(local);
         else if (imported === 'jsonRpc') bindings.adapters.add(local);
-        else diagnostics.push(makeDiagnostic(
+        else if (!composition?.symbols.includes(imported)) diagnostics.push(makeDiagnostic(
           sourceFile,
           specifier.name,
           entitiesContracts.ENTITIES_DIAGNOSTIC_CODES.REGISTRATION_UNSUPPORTED,
@@ -754,7 +754,7 @@ function parseBinding(ts, sourceFile, call, router, diagnostics) {
   }));
 }
 
-function collectRouterCalls(ts, sourceFile, routers, handlers, schemaState, diagnostics) {
+function collectRouterCalls(ts, sourceFile, routers, handlers, schemaState, diagnostics, composition) {
   const routersById = new Map(routers.map((router) => [router.id, router]));
   function visit(node) {
     if (ts.isCallExpression(node)) {
@@ -774,6 +774,11 @@ function collectRouterCalls(ts, sourceFile, routers, handlers, schemaState, diag
     ts.forEachChild(node, visit);
   }
   visit(sourceFile);
+  for (const binding of composition?.bindings || []) {
+    const router = routersById.get(binding.routerId);
+    if (!router) throw new TypeError("Composition requires a declared EntityRouter");
+    parseBinding(ts, sourceFile, binding.call, router, diagnostics);
+  }
   for (const router of routers) {
     if (router.registrations.length > router.adapter.limits.maxEntities) diagnostics.push(makeDiagnostic(
       sourceFile,
@@ -999,15 +1004,15 @@ function intrinsicForBinding(sourceFile, binding, plan) {
   });
 }
 
-function createEntitiesPackageCompilerBuilder(inputs = {}) {
+function buildEntitiesPackage(inputs = {}, composition) {
   const ts = loadTypeScript(inputs);
   const sourceFile = sourceFileFromInputs(ts, inputs);
   const manifest = inputs.manifest || require('./pulsewasm.manifest.cjs');
   const diagnostics = [];
-  const bindings = collectFacadeBindings(ts, sourceFile, manifest, diagnostics);
+  const bindings = collectFacadeBindings(ts, sourceFile, manifest, diagnostics, composition);
   const handlers = collectHandlerBindings(ts, sourceFile, inputs.cwd || process.cwd());
   const routers = collectRouters(ts, sourceFile, bindings, diagnostics);
-  collectRouterCalls(ts, sourceFile, routers, handlers, schemaSets(inputs.schemaBundle), diagnostics);
+  collectRouterCalls(ts, sourceFile, routers, handlers, schemaSets(inputs.schemaBundle), diagnostics, composition);
 
   const plan = planForRouters(sourceFile, routers, diagnostics);
   const catalog = catalogForPlan(plan, inputs.schemaBundle);
@@ -1144,7 +1149,16 @@ const entitiesLoweringBuilder = Object.freeze({
   build: createEntitiesPackageCompilerBuilder
 });
 
+function createEntitiesPackageCompilerBuilder(inputs = {}) { return buildEntitiesPackage(inputs); }
+
+// Trusted package-to-package build seam. AST nodes are from the original module;
+// normal registration, terminal binding, schema and handler validation still run.
+function composeEntityRouterBinding(inputs, composition) {
+  return buildEntitiesPackage(inputs, composition);
+}
+
 module.exports = Object.freeze({
+  composeEntityRouterBinding,
   createEntitiesPackageCompilerBuilder,
   buildEntitiesCanonicalNativeApplication(input) {
     return require('./pulsewasm.native.cjs').buildEntitiesCanonicalNativeApplication(input);

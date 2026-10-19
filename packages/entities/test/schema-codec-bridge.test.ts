@@ -66,7 +66,7 @@ describe('@pulse-compute/entities private schema codec bridge', () => {
     });
 
     expect(await response.text()).toBe('ok');
-    expect(publicKeys).toEqual(['decodeEmbeddedJson', 'encodeEmbeddedJson']);
+    expect(publicKeys).toEqual(['describe', 'decodeEmbeddedJson', 'encodeEmbeddedJson']);
     expect(decoded).toEqual({ name: 'Ada', nested: { enabled: true } });
     expect(Object.isFrozen(decoded)).toBe(true);
     expect(Object.isFrozen(decoded?.nested)).toBe(true);
