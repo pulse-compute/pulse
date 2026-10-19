@@ -100,6 +100,16 @@ pulse test examples/02-request-schema --case invalid-user --json
 
 ## Report diagnostics
 
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_REPORT_INPUT_INVALID`](#pulse-report-input-invalid) | Report evidence is malformed, unsafe, or fails integrity validation. | Use an unmodified supported Report capsule or a completed-Wasm manifest with its matching local files. |
+| [`PULSE_REPORT_EVIDENCE_MISSING`](#pulse-report-evidence-missing) | A matching completed Wasm build and its required retained evidence are missing. | Run pulse compile or pulse build with the selected Native profile, then retry report; report never builds automatically. |
+| [`PULSE_REPORT_STALE`](#pulse-report-stale) | Retained Report evidence does not match the selected inputs or changed during collection. | Rebuild the selected Native profile after inputs settle, or replay a saved capsule explicitly as historical evidence. |
+| [`PULSE_REPORT_INCOMPATIBLE`](#pulse-report-incompatible) | The Report input version or output representation is unsupported. | Use a supported Report v1 capsule or completed Native Wasm manifest; bare Wasm and JavaScript builds are not Report inputs. |
+| [`PULSE_REPORT_OUTPUT_UNSAFE`](#pulse-report-output-unsafe) | The HTML output path is not a contained regular .html file. | Choose a .html file within the selected project root or artifact JSON parent, without symbolic links or parent traversal. |
+| [`PULSE_REPORT_OUTPUT_FAILED`](#pulse-report-output-failed) | The HTML report could not be written atomically. | Check destination permissions and available disk space, then retry with a safe .html path. |
+| [`PULSE_REPORT_HTML_UNAVAILABLE`](#pulse-report-html-unavailable) | The offline Report HTML renderer is not available in this build. | Use the terminal overview or --json; HTML output requires a build with the offline viewer. |
+
 <a id="pulse-report-input-invalid"></a>
 ### `PULSE_REPORT_INPUT_INVALID` — Report Input Invalid
 
@@ -207,6 +217,14 @@ The offline Report HTML renderer is not available in this build.
 
 ## Usage diagnostics
 
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_COMMAND_UNKNOWN`](#pulse-command-unknown) | The requested pulse command is not part of the supported CLI. | Run `pulse --help` and choose one of the documented commands. |
+| [`PULSE_ARGUMENT_MISSING`](#pulse-argument-missing) | A command-line option that requires a value was supplied without one. | Provide the missing flag value and rerun the command.<br>Run `pulse --help` for the command signature. |
+| [`PULSE_ARGUMENT_UNEXPECTED`](#pulse-argument-unexpected) | The command received an option or positional argument it does not accept. | Remove the unsupported argument or use the documented flag.<br>Run `pulse --help` for the command signature. |
+| [`PULSE_PROVIDER_FLAG_REMOVED`](#pulse-provider-flag-removed) | Provider selection is project configuration, not a command-line override. | Select `host` and `target` in a `.pulse/config.ts` profile.<br>Use `pulse compile` for provider-neutral Wasm or `pulse build` for the configured deployment target. |
+| [`PULSE_SOURCE_ONLY_REMOVED`](#pulse-source-only-removed) | The former source-only JavaScript packaging mode is no longer part of native builds. | Run `pulse build`; native builds emit generated source and provider Wasm together. |
+
 <a id="pulse-command-unknown"></a>
 ### `PULSE_COMMAND_UNKNOWN` — Command Unknown
 
@@ -286,6 +304,27 @@ The former source-only JavaScript packaging mode is no longer part of native bui
 1. Run `pulse build`; native builds emit generated source and provider Wasm together.
 
 ## Project diagnostics
+
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_CONFIG_NOT_FOUND`](#pulse-config-not-found) | Project discovery did not find an explicit Pulse configuration file. | Run `pulse init` to create `.pulse/config.ts`.<br>Ensure the command runs inside the intended project directory. |
+| [`PULSE_PROFILE_SELECTION_REQUIRED`](#pulse-profile-selection-required) | No project profile was selected by CLI, environment, or default configuration. | Pass `--profile`, set `PULSE_PROFILE`, or configure `pulse.defaultProfile`. |
+| [`PULSE_PROFILE_UNKNOWN`](#pulse-profile-unknown) | The selected profile is absent from the project declaration. | Select one of the profiles declared next to the reserved `pulse` object. |
+| [`PULSE_CONFIG_PLAN_PARITY_FAILED`](#pulse-config-plan-parity-failed) | Static and runtime configuration normalization produced different canonical plans. | Keep the config factory within the sealed static grammar and report the divergent plan hashes. |
+| [`PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID`](#pulse-javascript-application-plan-invalid) | The JavaScript loader received a value outside the normalized application-plan contract. | Rebuild the JavaScript application plan from the configured entry and sealed reachable graph. |
+| [`PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID`](#pulse-javascript-application-entry-invalid) | The JavaScript plan entry is not a project-owned application module. | Default-export a Router, Pulse application, or managed handler from a project-owned entry module. |
+| [`PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID`](#pulse-javascript-application-export-invalid) | The JavaScript entry does not export a managed Pulse application. | Default-export a Router, Pulse application, or managed handler. |
+| [`PULSE_JAVASCRIPT_MODULE_NOT_FOUND`](#pulse-javascript-module-not-found) | A graph-owned project module is absent at JavaScript load time. | Restore the graph-owned project module or rebuild the plan after the source change. |
+| [`PULSE_RUNTIME_APPLICATION_EXPORT_INVALID`](#pulse-runtime-application-export-invalid) | The application value is not a Router, Pulse application, or managed handler. | Default-export a Router, Pulse application, or managed handler. |
+| [`PULSE_CONFIG_LOAD_FAILED`](#pulse-config-load-failed) | The selected project configuration threw or failed while being loaded. | Fix the config import or runtime error.<br>Use `pulse doctor --json` to inspect the underlying cause. |
+| [`PULSE_ENTRY_NOT_FOUND`](#pulse-entry-not-found) | The configured canonical handler entry file does not exist. | Create the configured entry file or correct `pulse.entry` in `.pulse/config.ts`. |
+| [`PULSE_PROJECT_ROOT_MISSING`](#pulse-project-root-missing) | The selected project directory does not exist. | Create or correct the positional project directory. |
+| [`PULSE_INIT_NOT_EMPTY`](#pulse-init-not-empty) | Project initialization would write into a non-empty directory without explicit force. | Choose an empty directory or pass `--force` only when overwriting is intentional. |
+| [`PULSE_INIT_FILE_EXISTS`](#pulse-init-file-exists) | Project initialization would replace an existing file that is not safe to overwrite. | Remove the conflicting file or choose another target directory. |
+| [`PULSE_CONFIG_IMPLICIT`](#pulse-config-implicit) | A command is relying on an implicit project shape instead of an explicit configuration. | Run `pulse init` or create `.pulse/config.ts` to make workspace ownership explicit. |
+| [`PULSE_REQUEST_DURATION_INVALID`](#pulse-request-duration-invalid) | The configured request duration is outside its supported range. | Set provider maxDurationMs to an integer from 1 through 30000, or omit it. |
+| [`PULSE_REQUEST_DURATION_UNSUPPORTED`](#pulse-request-duration-unsupported) | The selected target cannot enforce the configured request deadline. | Select Fastly Native for a provider-owned request deadline. |
+| [`PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH`](#pulse-request-duration-artifact-mismatch) | The Fastly artifact deadline differs from the selected profile. | Rebuild the Fastly Native artifact using the selected profile. |
 
 <a id="pulse-config-not-found"></a>
 ### `PULSE_CONFIG_NOT_FOUND` — Config Not Found
@@ -561,6 +600,13 @@ The Fastly artifact deadline differs from the selected profile.
 
 ## Test diagnostics
 
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_TEST_HARNESS_NOT_FOUND`](#pulse-test-harness-not-found) | The configured workspace-relative test harness does not exist. | Create the workspace-relative file configured by `pulse.tests`. |
+| [`PULSE_TEST_HARNESS_EXPORT_INVALID`](#pulse-test-harness-export-invalid) | The configured harness does not export the required ordered case collection. | Export an ordered case array or an object containing a `cases` array. |
+| [`PULSE_TEST_EXPECT_INVALID`](#pulse-test-expect-invalid) | A project test case uses an invalid expectation shape for its HTTP or event discriminant. | Use the documented expectation shape for the selected HTTP or event case.<br>Event emitted-frame expectations must be ordered arrays of canonical frames. |
+| [`PULSE_TEST_EVENT_INVALID`](#pulse-test-event-invalid) | A discriminated event test case is missing or violates the canonical bounded event-frame shape. | Use a discriminated `kind: "event"` case with one bounded type, schema or schemaId, and schema-dependent payload.<br>Inspect the event catalog with `pulse inspect --json`. |
+
 <a id="pulse-test-harness-not-found"></a>
 ### `PULSE_TEST_HARNESS_NOT_FOUND` — Test Harness Not Found
 
@@ -624,6 +670,26 @@ A discriminated event test case is missing or violates the canonical bounded eve
 2. Inspect the event catalog with `pulse inspect --json`.
 
 ## Capability diagnostics
+
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_TARGET_IMPLEMENTATION_PENDING`](#pulse-target-implementation-pending) | The selected execution target is explicit but not implemented for this command. | Select a native profile for build, test, or dev.<br>Use inspect or doctor to retain the JavaScript selection without fallback. |
+| [`PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE`](#pulse-javascript-application-unavailable) | The selected JavaScript application has one or more explicit target blockers. | Inspect the application-plan blockers and select only explicitly realized package and provider capabilities.<br>Pulse will not fall back to native or another target automatically. |
+| [`PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE`](#pulse-javascript-package-realization-unavailable) | A reachable Pulse-aware package has no JavaScript realization for the selected target. | Use a package with an explicit JavaScript realization or select a native target.<br>Inspect package target support with `pulse inspect --json`. |
+| [`PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED`](#pulse-package-javascript-realization-not-implemented) | A reachable Pulse-aware package explicitly declares that its JavaScript realization is not implemented. | Select the native target for this package or wait for its declared JavaScript realization.<br>No automatic fallback occurs. |
+| [`PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED`](#pulse-javascript-package-esm-unsupported) | The current graph-backed Node loader cannot require the selected ESM-only package entry. | Use a CommonJS-compatible package entry for the current Node loader or defer the package to a later JavaScript bundling contract. |
+| [`PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE`](#pulse-javascript-package-module-unavailable) | The graph-selected JavaScript package module cannot be loaded from the application workspace. | Install the exact package selected by the reachable graph in the application workspace. |
+| [`PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE`](#pulse-javascript-external-module-unavailable) | A declared external module is unavailable to the JavaScript application loader. | Install or explicitly declare the external module required by the JavaScript target. |
+| [`PULSE_NATIVE_TEXT_UNSUPPORTED`](#pulse-native-text-unsupported) | Diagnostic WebAssembly text is available only for Native compilation. | Select a Native build profile or use `pulse compile --emit-wat`.<br>Remove `--emit-wat` for JavaScript builds. |
+| [`PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED`](#pulse-experimental-native-size-unsupported) | The experimental Native size optimizer cannot be used for a JavaScript build target. | Select a profile with `target: "native"` or use `pulse compile`.<br>Remove `--experimental-native-size` for JavaScript build output. |
+| [`PULSE_PROVIDER_COMPILE_ONLY`](#pulse-provider-compile-only) | The none provider cannot execute development-server or project-test behavior. | Select an executable provider before running `pulse dev` or `pulse test`. |
+| [`PULSE_TEST_PROVIDER_REQUIRED`](#pulse-test-provider-required) | Project tests require an executable provider. | Select an executable provider for `pulse test`. |
+| [`PULSE_DEV_PROVIDER_UNSUPPORTED`](#pulse-dev-provider-unsupported) | The development server requires an executable provider. | Select an executable provider for `pulse dev`. |
+| [`PULSE_PROVIDER_CAPABILITY_MISSING`](#pulse-provider-capability-missing) | The selected provider lacks a binding required by the compiled application. | Configure the required provider binding or select a provider that implements the capability.<br>Run `pulse inspect --json` to view required capabilities and bindings. |
+| [`PULSE_PACKAGE_CAPABILITY_UNAVAILABLE`](#pulse-package-capability-unavailable) | The package invocation lacks its exact artifact, operation grant or selected host capability. | Supply the exact compiled package artifact and matching host operation grant, including the selected crypto realization.<br>Package declarations and wire metadata cannot grant host authority. |
+| [`PULSE_PROVIDER_CAPABILITY_UNSUPPORTED`](#pulse-provider-capability-unsupported) | The selected provider cannot realize a capability required by the application. | Remove the unsupported capability or select a compatible provider. |
+| [`PULSE_EVENT_TARGET_UNSUPPORTED`](#pulse-event-target-unsupported) | The selected provider target cannot realize or test the reachable event plane. | Select a target whose descriptor and provider event driver satisfy every reachable event requirement.<br>Use `pulse inspect --json` to review event target support; Pulse will not select another target automatically. |
+| [`PULSE_TRANSFORM_UNAVAILABLE`](#pulse-transform-unavailable) | [object Object] | Select Node and configure node.bodyTransform, node.generatedOutput and node.maxDurationMs. |
 
 <a id="pulse-target-implementation-pending"></a>
 ### `PULSE_TARGET_IMPLEMENTATION_PENDING` — Target Implementation Pending
@@ -890,6 +956,30 @@ The selected provider target cannot realize or test the reachable event plane.
 1. Select Node and configure node.bodyTransform, node.generatedOutput and node.maxDurationMs.
 
 ## Compile diagnostics
+
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED`](#pulse-javascript-application-graph-failed) | The sealed reachable graph could not be built for JavaScript application loading. | Fix the first reachable-graph diagnostic before loading the JavaScript application. |
+| [`PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH`](#pulse-javascript-import-not-in-graph) | Runtime evaluation requested an import absent from the sealed reachable graph. | Keep runtime imports within the sealed reachable graph and avoid evaluation-time dynamic loading. |
+| [`PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED`](#pulse-javascript-module-compile-failed) | A graph-owned TypeScript or JavaScript module could not be transpiled for the Node loader. | Fix the TypeScript or JavaScript syntax in the graph-owned project module. |
+| [`PULSE_NATIVE_EXPANSION_REPEATED`](#pulse-native-expansion-repeated) | A repeated HTTP owner has multiple Native plan body instances and at least 1,024 additional lowered-source bytes across registrations. | Inspect the named owners and registration counts in `pulse doctor --json`.<br>Compare their observed shapes with the current retained HTTP-stage contract before changing generated wiring.<br>Measure a full target build before claiming Wasm savings; preserve explicit inputs, outputs and continuation ownership. |
+| [`PULSE_HANDLER_ASYNC_REQUIRED`](#pulse-handler-async-required) | A managed handler in a conventional Pulse project is missing its required async wrapper. | Declare every managed handler, middleware function, and error handler with `async`.<br>Native lowering erases the wrapper; no Promise runtime or Asyncify support is added. |
+| [`PULSE_PROJECT_COMPILE_FAILED`](#pulse-project-compile-failed) | Whole-project compilation failed and contains one or more nested diagnostics. | Read the nested diagnostics and fix the first reported source or schema error.<br>Run `pulse inspect --json` or `pulse doctor --json` for structured diagnostics. |
+| [`PULSE_CANONICAL_COMPILE_FAILED`](#pulse-canonical-compile-failed) | The handler uses a source form outside the canonical Beta authoring subset. | Rewrite the handler using the documented canonical API subset.<br>Run `pulse inspect --json` to see unsupported source forms. |
+| [`PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED`](#pulse-canonical-pure-loop-unsupported) | The loop does not satisfy the bounded pure-value control-flow contract. | Use a let counter starting at zero, a literal cap first, and an increment of one.<br>Keep the body within bounded pure value operations and move context operations outside the loop.<br>Respect the documented per-loop and nested iteration limits. |
+| [`PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED`](#pulse-canonical-effect-collection-unsupported) | The source does not satisfy the bounded collection build/flush contract. | Use one local const collection with literal max 1–32, one direct for-of/add, then one awaited flush.<br>Keep helper calls, mutation, filtering, nesting and escaping handles outside the collection build region. |
+| [`PULSE_CANONICAL_READ_LOOP_UNSUPPORTED`](#pulse-canonical-read-loop-unsupported) | The loop does not satisfy the bounded sequential read control-flow contract. | Use a let counter starting at zero, a literal cap from 0 through 64 first, and an increment of one.<br>Use sequential s3.getText, kv.getVersioned or crypto.digestText calls directly bound to one local or discarded.<br>Keep nested loops pure; avoid parallel effects, writes, callbacks, counter mutation and labelled transfers. |
+| [`PULSE_CANONICAL_NATIVE_PLAN_FAILED`](#pulse-canonical-native-plan-failed) | The canonical handler could not be represented by the provider-neutral native execution-plan contract. | Inspect the native-plan diagnostics and rewrite unsupported canonical control flow.<br>Run `pulse inspect --json` to view the provider-neutral plan boundary. |
+| [`PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED`](#pulse-canonical-native-as-generation-failed) | The validated native plan could not be rendered into the bounded AssemblyScript state-machine source. | Inspect the generated-native diagnostic and rewrite unsupported canonical expressions.<br>Retain the plan hash and diagnostic detail when reporting a compiler defect. |
+| [`PULSE_PACKAGE_LOWERING_FAILED`](#pulse-package-lowering-failed) | A package-owned API call could not be lowered into its canonical effect contract. | Fix the package-owned API call shape reported in the nested diagnostic.<br>Keep package effects in the documented static positions. |
+| [`PULSE_NATIVE_IMPORT_UNSUPPORTED`](#pulse-native-import-unsupported) | A reachable runtime import has neither supported static source nor a trusted Pulse native contract. | Use an exact declared ESM source export in the bounded handler/helper subset, a trusted Pulse capability, or an explicit JavaScript target.<br>Pulse will not change targets automatically. |
+| [`PULSE_PACKAGE_SUBPATH_UNSUPPORTED`](#pulse-package-subpath-unsupported) | A Pulse-aware package was imported through a subpath that is not native-lowerable. | Import the package through its documented Pulse lowerable facade, or keep the package behind a JavaScript-only boundary.<br>Run `pulse inspect --json` to review package ownership and native eligibility. |
+| [`PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED`](#pulse-package-reexport-lowering-deferred) | A package-owned helper is graph-owned but reaches application code through a project re-export whose lowering remains deferred. | Import the package-owned facade directly until helper/re-export lowering is enabled by the package contract.<br>The graph records the owning package; no fallback occurs. |
+| [`PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT`](#pulse-application-entry-lifecycle-side-effect) | The configured application entry graph starts a known provider lifecycle during module evaluation. | Keep the configured application entry import-safe and move provider lifecycle startup to a separate runner.<br>Use the provider lifecycle through CLI delegation rather than starting infrastructure during application import. |
+| [`PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS`](#pulse-package-binding-ownership-ambiguous) | A project binding or re-export resolves to more than one package-owned symbol. | Remove the ambiguous re-export or give each package-owned helper one unambiguous source owner. |
+| [`PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED`](#pulse-package-contract-not-recognized) | The graph selected a trusted package contract that the package recognizer did not recover from its owning source module. | Verify the trusted package manifest and direct facade import, then retain the graph and package diagnostics when reporting the issue. |
+| [`PULSE_REQUEST_FORWARDING_UNAVAILABLE`](#pulse-request-forwarding-unavailable) | Incoming forwarding is not enabled on this target. | Select Node with node.bodyForwarding and node.maxDurationMs. |
+| [`PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED`](#pulse-request-forwarding-form-unsupported) | The incoming body marker appears outside its supported inline POST position. | Use body: ctx.req.body() directly in a literal outbound POST fetch. |
 
 <a id="pulse-javascript-application-graph-failed"></a>
 ### `PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED` — Javascript Application Graph Failed
@@ -1225,6 +1315,13 @@ The incoming body marker appears outside its supported inline POST position.
 
 ## Internal diagnostics
 
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING`](#pulse-javascript-package-plan-missing) | The graph selected a package module that is absent from the JavaScript application plan. | Rebuild the JavaScript plan and retain the graph and plan hashes when reporting the inconsistency. |
+| [`PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS`](#pulse-javascript-graph-edge-ambiguous) | The sealed JavaScript graph contains more than one runtime edge for the same import. | Retain the graph manifest and report the duplicate runtime edge. |
+| [`PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING`](#pulse-javascript-graph-module-missing) | A JavaScript graph edge or entry references a missing graph module. | Rebuild the JavaScript plan from the exact source tree and retain the graph manifest. |
+| [`PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED`](#pulse-javascript-module-kind-unsupported) | The JavaScript loader encountered a module kind outside its sealed contract. | Retain the application plan and report the unsupported module kind. |
+
 <a id="pulse-javascript-package-plan-missing"></a>
 ### `PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING` — Javascript Package Plan Missing
 
@@ -1287,6 +1384,12 @@ The JavaScript loader encountered a module kind outside its sealed contract.
 
 ## Safety diagnostics
 
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE`](#pulse-javascript-module-outside-workspace) | A graph-owned project module escapes the authoritative workspace. | Keep every graph-owned project module inside the authoritative Pulse workspace. |
+| [`PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED`](#pulse-javascript-module-source-changed) | A graph-owned project module changed after the JavaScript plan was created. | Rebuild the JavaScript application plan after changing a project module. |
+| [`PULSE_BUILD_OUT_UNSAFE`](#pulse-build-out-unsafe) | The resolved build output can escape or alias outside the project root. | Choose an output directory that is a real child of the project root.<br>Do not use `..`, external absolute paths, or symbolic-link traversal. |
+
 <a id="pulse-javascript-module-outside-workspace"></a>
 ### `PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE` — Javascript Module Outside Workspace
 
@@ -1334,6 +1437,21 @@ The resolved build output can escape or alias outside the project root.
 2. Do not use `..`, external absolute paths, or symbolic-link traversal.
 
 ## Provider diagnostics
+
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_PROVIDER_UNSUPPORTED`](#pulse-provider-unsupported) | The selected provider value is not a supported shorthand or package selection. | Select a bare provider id or an exact installed scoped provider package name. |
+| [`PULSE_PROVIDER_PACKAGE_NOT_FOUND`](#pulse-provider-package-not-found) | The exact configured provider package does not expose a resolvable toolchain entry. | Install the exact configured provider package in the project.<br>Confirm that its package manifest exports `./toolchain`. |
+| [`PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED`](#pulse-provider-toolchain-load-failed) | The selected provider package toolchain failed while loading. | Inspect the selected provider package and its dependency installation.<br>Treat provider toolchains as trusted project build code. |
+| [`PULSE_PROVIDER_TOOLCHAIN_INVALID`](#pulse-provider-toolchain-invalid) | The selected provider package does not satisfy the versioned toolchain contract. | Use a provider package implementing `pulse.provider-toolchain.v1` at `./toolchain`.<br>Confirm the declared package name, provider id, and driver shape. |
+| [`PULSE_BUILD_PROVIDER_REQUIRED`](#pulse-build-provider-required) | pulse build requires a configured deployment provider; provider-neutral output belongs to pulse compile. | Select an executable host in the active `.pulse/config.ts` profile.<br>Use `pulse compile` when only provider-neutral Wasm is required. |
+| [`PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED`](#pulse-fastly-event-ingress-unsupported) | Fastly does not expose the host-neutral event ingress required by the application. | Select Node JavaScript or Node Native for event execution, or use `none` for compile-only inspection.<br>Do not map event ingress through HTTP or GRIP. |
+| [`PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED`](#pulse-fastly-event-emit-unsupported) | Fastly does not expose the host-neutral event acceptance operation required by the application. | Remove the reachable event.emit requirement or select Node JavaScript or Node Native.<br>Pulse will not substitute logging, HTTP, GRIP, or another target. |
+| [`PULSE_FASTLY_BACKEND_REQUIRED`](#pulse-fastly-backend-required) | A static Fastly outbound origin has no configured backend and dynamic backends are disabled. | Declare a static Fastly backend binding for the requested origin, or explicitly enable dynamic backends. |
+| [`PULSE_FASTLY_BACKEND_BINDINGS_INVALID`](#pulse-fastly-backend-bindings-invalid) | The Fastly backend binding map is not a valid string-to-string mapping. | Correct the Fastly `backends` map in the active `.pulse/config.ts` profile. |
+| [`PULSE_FASTLY_KV_BINDINGS_INVALID`](#pulse-fastly-kv-bindings-invalid) | The Fastly KV binding map is not a valid string-to-string mapping. | Correct the Fastly `kv` binding map in the active `.pulse/config.ts` profile. |
+| [`PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED`](#pulse-fastly-grip-fanout-backend-required) | A GRIP hold operation requires a configured Fastly Fanout backend. | Configure the Fastly Fanout backend required by `grip.hold`. |
+| [`PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED`](#pulse-fastly-grip-publish-binding-required) | A GRIP publish operation requires configured Fastly publish URL and backend bindings. | Configure the Fastly GRIP publish backend and URL binding. |
 
 <a id="pulse-provider-unsupported"></a>
 ### `PULSE_PROVIDER_UNSUPPORTED` — Provider Unsupported
@@ -1523,6 +1641,19 @@ A GRIP publish operation requires configured Fastly publish URL and backend bind
 
 ## Toolchain diagnostics
 
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_NODE_VERSION_UNSUPPORTED`](#pulse-node-version-unsupported) | The active Node.js version is outside the supported release range. | Use a Node.js version matching `^22.14.0 &#124;&#124; ^24.0.0` and rerun `pulse doctor`. |
+| [`PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE`](#pulse-fetch-implementation-unavailable) | No supported local fetch implementation is available for the requested operation. | Use a Node.js version matching `^22.14.0 &#124;&#124; ^24.0.0`, or disable live network fetch and configure deterministic fetch fixtures. |
+| [`PULSE_CANONICAL_NATIVE_COMPILE_FAILED`](#pulse-canonical-native-compile-failed) | The provider-neutral native plan could not be compiled into Pulse-owned WebAssembly. | Restore the lockfile-pinned AssemblyScript dependency and rerun `pulse doctor`.<br>Retain the generated diagnostic detail if AssemblyScript rejects valid Pulse output. |
+| [`PULSE_FASTLY_CLI_UNAVAILABLE`](#pulse-fastly-cli-unavailable) | The Fastly executable required for local target execution is unavailable. | Install the Fastly CLI with Homebrew, a supported package manager, or an official release.<br>Ensure `fastly` is on PATH, or set `PULSE_FASTLY_BIN` in CI. |
+| [`PULSE_FASTLY_CLI_INSPECTION_FAILED`](#pulse-fastly-cli-inspection-failed) | Pulse could not inspect the installed Fastly CLI version. | Run `fastly version` directly and fix the Fastly CLI installation. |
+| [`PULSE_VICEROY_UNAVAILABLE`](#pulse-viceroy-unavailable) | The explicitly selected Viceroy override is unavailable. | Unset `PULSE_VICEROY_BIN` to let the Fastly CLI manage its local Compute engine.<br>If an override is required, point `PULSE_VICEROY_BIN` at an executable Viceroy binary. |
+| [`PULSE_VICEROY_INSPECTION_FAILED`](#pulse-viceroy-inspection-failed) | Pulse could not inspect the explicitly selected Viceroy override. | Inspect or replace the explicitly selected Viceroy override, or unset it to restore Fastly CLI ownership. |
+| [`PULSE_FASTLY_SERVE_START_FAILED`](#pulse-fastly-serve-start-failed) | The Fastly local Compute service failed before becoming ready. | Run `fastly compute serve` directly in the generated package and inspect its output. |
+| [`PULSE_FASTLY_SERVE_START_TIMEOUT`](#pulse-fastly-serve-start-timeout) | The Fastly local Compute service did not become ready before its startup timeout. | Inspect Fastly CLI output and local port availability, then retry. |
+| [`PULSE_FASTLY_REQUEST_TIMEOUT`](#pulse-fastly-request-timeout) | A request to the local Fastly Compute service exceeded its timeout. | Inspect the local Fastly Compute service and backend fixture before retrying. |
+
 <a id="pulse-node-version-unsupported"></a>
 ### `PULSE_NODE_VERSION_UNSUPPORTED` — Node Version Unsupported
 
@@ -1677,6 +1808,36 @@ A request to the local Fastly Compute service exceeded its timeout.
 1. Inspect the local Fastly Compute service and backend fixture before retrying.
 
 ## Runtime diagnostics
+
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_EFFECT_COLLECTION_CAPACITY`](#pulse-effect-collection-capacity) | Collection capacity must be an integer from 1 to 32. | Use fresh execution-owned effects within capacity and flush the collection exactly once. |
+| [`PULSE_EFFECT_COLLECTION_OVERFLOW`](#pulse-effect-collection-overflow) | Collection capacity was exceeded before dispatch. | Use fresh execution-owned effects within capacity and flush the collection exactly once. |
+| [`PULSE_EFFECT_COLLECTION_MEMBER`](#pulse-effect-collection-member) | A collection member is not a fresh parallel-eligible Pulse effect. | Use fresh execution-owned effects within capacity and flush the collection exactly once. |
+| [`PULSE_EFFECT_COLLECTION_OWNER`](#pulse-effect-collection-owner) | A collection or member belongs to another execution or overlaps an open collection. | Use fresh execution-owned effects within capacity and flush the collection exactly once. |
+| [`PULSE_EFFECT_COLLECTION_CLAIMED`](#pulse-effect-collection-claimed) | An effect root was already started or claimed. | Use fresh execution-owned effects within capacity and flush the collection exactly once. |
+| [`PULSE_EFFECT_COLLECTION_SEALED`](#pulse-effect-collection-sealed) | Collection membership is already sealed. | Use fresh execution-owned effects within capacity and flush the collection exactly once. |
+| [`PULSE_EFFECT_COLLECTION_UNFLUSHED`](#pulse-effect-collection-unflushed) | A nonempty collection reached handler completion without an explicit flush. | Use fresh execution-owned effects within capacity and flush the collection exactly once. |
+| [`PULSE_FETCH_SCHEMA_WITHOUT_JSON`](#pulse-fetch-schema-without-json) | An outbound fetch schema was supplied without a semantic JSON payload. | Use schema only together with the outbound fetch json field. |
+| [`PULSE_PACKAGE_SNAPSHOT_INVALID`](#pulse-package-snapshot-invalid) | The host cannot capture the supplied HTTP inputs within the supported representation and bounds. | Capture an original origin-form HTTP target, ordered ASCII fields and at most 65536 exact body bytes at the trusted host boundary. |
+| [`PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE`](#pulse-package-snapshot-unavailable) | A live authoritative HTTP capture for this package binding is unavailable. | Supply a live provider-owned HTTP capture for the configured trusted origin.<br>Do not reconstruct captures from normalized URLs or application records. |
+| [`PULSE_PACKAGE_OPERATION_FAILED`](#pulse-package-operation-failed) | The bounded package operation failed; private provider and protocol data are withheld. | Check the versioned package Wasm ABI, resource limits and named host key binding.<br>Keep keys, message bytes and backend failure details out of diagnostics. |
+| [`PULSE_TRANSFORM_CHUNK_INVALID`](#pulse-transform-chunk-invalid) | [object Object] | Use a provider source whose chunks and backing allocations are each at most 65536 bytes. |
+| [`PULSE_TRANSFORM_OUTPUT_LIMIT`](#pulse-transform-output-limit) | [object Object] | Keep output within 262144 bytes and four times the input bytes delivered so far. |
+| [`PULSE_TRANSFORM_READ_LIMIT`](#pulse-transform-read-limit) | [object Object] | Stop after the EOF result; at most 18 reads are admitted. |
+| [`PULSE_TRANSFORM_CLOSED`](#pulse-transform-closed) | [object Object] | Do not read after EOF, cancellation or request completion. |
+| [`PULSE_TRANSFORM_EOF_REQUIRED`](#pulse-transform-eof-required) | [object Object] | Read transform input through its EOF result before returning output.close(). |
+| [`PULSE_REQUEST_FORWARDING_CHUNK_INVALID`](#pulse-request-forwarding-chunk-invalid) | A provider body chunk exceeds the admitted host chunk bound. | Supply host chunks and backing allocations at most 65536 bytes; do not fall back to buffering. |
+| [`PULSE_REQUEST_FORWARDING_REDIRECT`](#pulse-request-forwarding-redirect) | A single-use body cannot be replayed on redirect. | Use the final authorized origin URL directly; automatic redirect replay is disabled. |
+| [`PULSE_BODY_UNAVAILABLE`](#pulse-body-unavailable) | A structured body was requested when the provider had not supplied one. | Ensure the provider supplied a structured body snapshot before decoding it. |
+| [`PULSE_OPAQUE_BODY_INSPECTION`](#pulse-opaque-body-inspection) | Application code attempted to inspect or transform an opaque host-owned body. | Return or proxy the opaque response directly; do not call JSON, text, bytes, or transform helpers. |
+| [`PULSE_RESPONSE_ENCODE`](#pulse-response-encode) | The selected response encoder cannot represent the returned value. | Return a value supported by the selected response or schema encoder. |
+| [`PULSE_SCHEMA_ENCODE`](#pulse-schema-encode) | The returned value does not satisfy its declared response schema. | Return a value that satisfies the declared response schema. |
+| [`PULSE_FETCH_TIMEOUT`](#pulse-fetch-timeout) | An outbound fetch did not complete before its timeout. | Check the origin and timeout policy, then retry.<br>Use a configured fetch fixture in tests for deterministic reproduction. |
+| [`PULSE_FETCH_NETWORK`](#pulse-fetch-network) | An outbound fetch failed because the origin or network was unavailable. | Check the origin URL, backend binding, and local network access. |
+| [`PULSE_FETCH_URL_INVALID`](#pulse-fetch-url-invalid) | An outbound fetch uses an invalid or unsupported URL. | Use an absolute supported URL or a correctly configured provider backend. |
+| [`PULSE_CONTINUATION_EXPIRED`](#pulse-continuation-expired) | A pending continuation exceeded its configured lifetime before resumption. | Increase the continuation TTL only if the provider operation is expected to take longer. |
+| [`PULSE_CONTINUATION_DOUBLE_RESUME`](#pulse-continuation-double-resume) | A provider attempted to resume the same continuation more than once. | Report this as a Pulse runtime/provider bug with the continuation trace. |
 
 <a id="pulse-effect-collection-capacity"></a>
 ### `PULSE_EFFECT_COLLECTION_CAPACITY` — Effect Collection Capacity
@@ -2088,6 +2249,28 @@ A provider attempted to resume the same continuation more than once.
 
 ## Schema diagnostics
 
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_SCHEMA_COMPILE_FAILED`](#pulse-schema-compile-failed) | An explicitly declared JSON schema could not be compiled. | Fix the declared schema source, exported type, or supported field shape.<br>Run `pulse doctor --json` to inspect schema diagnostics. |
+| [`PULSE_SCHEMA_JSON_LIMITS_INVALID`](#pulse-schema-json-limits-invalid) | A schema JSON admission policy contains an unknown limit or an invalid bounded integer. | Use only documented JSON limit names with positive safe-integer values.<br>Set maxDepth to at most 128 for a Native target. |
+| [`PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED`](#pulse-schema-json-limit-literal-required) | A schema JSON limit cannot be resolved from a static numeric literal. | Write JSON limits as numeric literals inside schema<T>({ json: { ... } }).<br>Remove computed values, spreads, and accessors from schema options. |
+| [`PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED`](#pulse-schema-json-depth-unsupported) | A schema depth limit exceeds the Native parser capacity of 128 container levels. | Set the schema maxDepth limit to at most 128 for Native compilation.<br>Pulse does not clamp limits or select another target automatically. |
+| [`PULSE_CANONICAL_SCHEMA_MISSING`](#pulse-canonical-schema-missing) | The handler references a schema ID that is absent from project configuration. | Declare the referenced schema ID in the default-exported registry selected by pulse.schema. |
+| [`PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED`](#pulse-schema-json-declarations-retired) | Legacy jsonSchemas declarations are no longer accepted as schema authority. | Move schema declarations into a default-exported defineSchemaRegistry(...) module.<br>Point pulse.schema at that workspace-relative module. |
+| [`PULSE_SCHEMA_CODEC_REALIZATION_PENDING`](#pulse-schema-codec-realization-pending) | The selected schema shape cannot be realized by every configured execution target. | Rebuild from the authoritative pulse.schema registry with a compiler that realizes the declared shape on both targets.<br>Pulse will not fall back to generic JSON automatically. |
+| [`PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED`](#pulse-canonical-schema-id-literal-required) | A schema operation uses a value that is not a static string literal ID. | Use a static string literal for the schema ID. |
+| [`PULSE_SCHEMA_ID_INVALID`](#pulse-schema-id-invalid) | A schema-bound operation received an invalid schema ID. | Use a non-empty schema ID declared by the authoritative pulse.schema registry. |
+| [`PULSE_SCHEMA_REQUIRED`](#pulse-schema-required) | Strict JSON operation omitted its required registered schema ID. | Supply a statically declared schema ID at every strict JSON boundary. |
+| [`PULSE_SCHEMA_REFERENCE`](#pulse-schema-reference) | A JSON operation references a schema absent from the compiled codec table. | Reference an ID declared by the authoritative pulse.schema registry. |
+| [`PULSE_SCHEMA_CODECS_UNAVAILABLE`](#pulse-schema-codecs-unavailable) | A schema-bound JSON operation has no compiled codec table. | Rebuild or redeploy the application with its generated schema codec table. |
+| [`PULSE_RESPONSE_CASE_MISSING`](#pulse-response-case-missing) | The handler references a response case absent from pulse.schema. | Declare the referenced response case in pulse.schema. |
+| [`PULSE_RESPONSE_CASE_REFERENCE`](#pulse-response-case-reference) | A runtime JSON response references an unknown compiled response case. | Use a response-case ID declared by pulse.schema. |
+| [`PULSE_RESPONSE_DESCRIPTOR_INVALID`](#pulse-response-descriptor-invalid) | A runtime JSON response received an invalid descriptor. | Pass an object descriptor or a registered response-case string to ctx.json. |
+| [`PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED`](#pulse-response-descriptor-literal-required) | A JSON response descriptor cannot be resolved statically. | Use an object literal or a registered response-case string literal as the ctx.json response descriptor. |
+| [`PULSE_SCHEMA_ID_DUPLICATE`](#pulse-schema-id-duplicate) | Two or more configured schema declarations use the same stable ID. | Give every declared schema a unique stable ID. |
+| [`PULSE_SCHEMA_SOURCE_REQUIRED`](#pulse-schema-source-required) | A schema declaration is missing its project-relative TypeScript source file. | Set the schema declaration `source` to a project-relative TypeScript file. |
+| [`PULSE_SCHEMA_TYPE_REQUIRED`](#pulse-schema-type-required) | A schema declaration is missing its exported TypeScript type name. | Set the schema declaration `type` to an exported TypeScript type name. |
+
 <a id="pulse-schema-compile-failed"></a>
 ### `PULSE_SCHEMA_COMPILE_FAILED` — Schema Compile Failed
 
@@ -2381,6 +2564,23 @@ A schema declaration is missing its exported TypeScript type name.
 
 ## Request diagnostics
 
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_SCHEMA_CONTENT_TYPE`](#pulse-schema-content-type) | A schema-bound JSON input uses a content type rejected by policy. | Send a JSON content type accepted by the configured schema policy. |
+| [`PULSE_SCHEMA_JSON_MALFORMED`](#pulse-schema-json-malformed) | A schema-bound JSON input is not syntactically valid JSON. | Send syntactically valid JSON before schema validation. |
+| [`PULSE_BODY_DECODE`](#pulse-body-decode) | A structured request body could not be decoded in the requested representation. | Send valid JSON or text matching the documented request shape. |
+| [`PULSE_REQUEST_BODY_INVALID_UTF8`](#pulse-request-body-invalid-utf8) | Request bytes are not well-formed UTF-8; no repaired text is exposed to the application. | Send well-formed UTF-8 request bytes; Pulse does not repair malformed input. |
+| [`PULSE_SCHEMA_DECODE`](#pulse-schema-decode) | JSON input did not satisfy the explicitly declared schema and content-type policy. | Send JSON with the required content type and schema fields.<br>Use `pulse test` with a failing case to reproduce the validation error locally. |
+| [`PULSE_BODY_TOO_LARGE`](#pulse-body-too-large) | A structured body exceeded the configured bounded-body limit. | Reduce the request payload or increase the configured structured-body limit deliberately. |
+| [`PULSE_REQUEST_DEADLINE_EXCEEDED`](#pulse-request-deadline-exceeded) | The provider-owned total request budget expired. | Split the work into bounded invocations or deliberately adjust the provider maxDurationMs profile. A timeout does not prove rollback of dispatched writes. |
+| [`PULSE_REQUEST_CLOCK_INVALID`](#pulse-request-clock-invalid) | The provider monotonic request clock failed or regressed. | Restore the provider monotonic clock before retrying. Reconcile any dispatched writes. |
+| [`PULSE_REQUEST_BODY_OWNERSHIP`](#pulse-request-body-ownership) | The incoming request body already belongs to another consumer. | Read or forward the incoming body once; never combine the two. |
+| [`PULSE_TRANSFORM_HEADERS_INVALID`](#pulse-transform-headers-invalid) | [object Object] | Send a valid non-negative Content-Length or omit it for chunked input. |
+| [`PULSE_TRANSFORM_INPUT_LIMIT`](#pulse-transform-input-limit) | [object Object] | Reduce transform input to at most 65536 UTF-8 bytes. |
+| [`PULSE_TRANSFORM_UTF8_INVALID`](#pulse-transform-utf8-invalid) | [object Object] | Send valid, complete UTF-8 text; use opaque forwarding for binary bodies. |
+| [`PULSE_REQUEST_FORWARDING_HEADERS_INVALID`](#pulse-request-forwarding-headers-invalid) | Forwarding headers contain invalid length or transport-owned framing. | Leave framing and hop-by-hop headers to the provider. |
+| [`PULSE_REQUEST_BODY_TOO_LARGE`](#pulse-request-body-too-large) | A request or forwarded body exceeded its configured byte limit. | Reduce the payload or deliberately adjust dev.maxBodyBytes for buffered input, or node.bodyForwarding.maxBytes for forwarding. |
+
 <a id="pulse-schema-content-type"></a>
 ### `PULSE_SCHEMA_CONTENT_TYPE` — Schema Content Type
 
@@ -2594,6 +2794,10 @@ A request or forwarded body exceeded its configured byte limit.
 
 ## Configuration diagnostics
 
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_PACKAGE_BINDING_INVALID`](#pulse-package-binding-invalid) | A package runtime host binding is not a valid explicit grant. | Correct the explicit package runtime host grant: package, contract, artifact, operations, named secret, key identity, trust domain and HTTPS origin. |
+
 <a id="pulse-package-binding-invalid"></a>
 ### `PULSE_PACKAGE_BINDING_INVALID` — Package Binding Invalid
 
@@ -2610,6 +2814,11 @@ A package runtime host binding is not a valid explicit grant.
 1. Correct the explicit package runtime host grant: package, contract, artifact, operations, named secret, key identity, trust domain and HTTPS origin.
 
 ## Config diagnostics
+
+| Code | Meaning | Action |
+|---|---|---|
+| [`PULSE_TRANSFORM_CONFIG_INVALID`](#pulse-transform-config-invalid) | [object Object] | Enable bodyTransform together with generatedOutput and maxDurationMs (1–30000); remove bodyForwarding. |
+| [`PULSE_REQUEST_FORWARDING_CONFIG_INVALID`](#pulse-request-forwarding-config-invalid) | Incoming forwarding configuration is invalid. | Set node.bodyForwarding.maxBytes to a positive safe integer and node.maxDurationMs to 1–30000. |
 
 <a id="pulse-transform-config-invalid"></a>
 ### `PULSE_TRANSFORM_CONFIG_INVALID` — Transform Config Invalid
