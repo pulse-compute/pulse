@@ -1,5 +1,7 @@
 # `@pulse-compute/grip`
 
+**npm:** [`@pulse-compute/grip`](https://www.npmjs.com/package/@pulse-compute/grip)
+
 `@pulse-compute/grip` provides stateless HTTP framing for an external GRIP/Fanout gateway. Pulse does not own WebSocket objects, connection registries, backpressure, reconnect behavior, or connection-length continuations. The gateway owns the open connection; Pulse classifies requests, returns subscription or handoff instructions, and emits outbound broadcast effects.
 
 ## Install

@@ -1,5 +1,7 @@
 # `@pulse-compute/crypto`
 
+**npm:** [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto)
+
 `@pulse-compute/crypto` provides bounded, provider-neutral cryptographic
 verification and exact-text SHA-256 for Pulse applications and first-party capability packages.
 

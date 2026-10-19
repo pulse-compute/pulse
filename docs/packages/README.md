@@ -10,9 +10,9 @@ All short names below use the `@pulse-compute/` npm scope. Full names and instal
 
 | Package | Purpose | When to use |
 |---|---|---|
-| [`pulse`](./pulse.md) | Project configuration, schema declarations, and the conventional Pulse application root. | Pulse application authors using the conventional project root, configuration factory, and schema declarations. |
-| [`runtime`](./runtime.md) | Portable Pulse authoring and execution contract for handlers, contexts, and static routers. | Pulse application authors and library authors who type portable handlers and static routers. |
-| [`cli`](./cli.md) | Pulse project CLI, configuration loader, and end-to-end workflow driver. | Pulse application authors, CI workflows, and tooling integrations. |
+| [`pulse`](./pulse.md) | Application root, config and schemas. | Start a Pulse project. |
+| [`cli`](./cli.md) | Project commands and build workflow. | Develop locally or run CI. |
+| [`runtime`](./runtime.md) | Portable handlers, contexts and routers. | Type handlers and libraries. |
 
 ## Capability packages
 
@@ -20,14 +20,14 @@ Choose a package for the capability you need; its guide owns supported targets a
 
 | Package | Purpose | When to use |
 |---|---|---|
-| [`assets`](./assets.md) | Package-owned asset lowering facade and compiler integration for Pulse. | Applications using JavaScript asset middleware or the package-owned lowerable asset lookup capability. |
-| [`crypto`](./crypto.md) | Provider-neutral cryptographic verification and bounded exact-text digests for Pulse. | Applications and first-party packages using provider-neutral verification and exact-text SHA-256. |
-| [`entities`](./entities.md) | Bounded, statically declared entity dispatch contracts for Pulse. | Applications declaring bounded schema-backed entity operations through the first-party JSON-RPC adapter. |
-| [`grip`](./grip.md) | Package-owned GRIP/Fanout lowering facade and compiler integration for Pulse. | Applications using stateless GRIP/Fanout HTTP framing and request-bound broadcast behavior. |
-| [`jwt`](./jwt.md) | Provider-neutral JWT verification for Pulse handlers. | Applications verifying JWT credentials and issuing bounded HS256/ES256/RS256 worker tokens through Pulse providers. |
-| [`mcp`](./mcp.md) | Bounded MCP HTTP adapter for Pulse host applications. | Host applications exposing bounded MCP HTTP tools over a governed Entities endpoint. |
-| [`provider-fastly`](./provider-fastly.md) | Fastly provider configuration, contract-driven lowering, local conformance runtime, and PulseWasm target builders. | Applications targeting Fastly Compute and Pulse provider maintainers. |
-| [`s3`](./s3.md) | Bounded exact-key S3 reads and writes through Pulse effects. | Applications using bounded exact-key object reads and writes through Pulse effects. |
+| [`assets`](./assets.md) | Asset lookup and response delivery. | Serve files, origins or buckets. |
+| [`crypto`](./crypto.md) | Signature verification and text digests. | Verify signatures or hash exact text. |
+| [`entities`](./entities.md) | Static, schema-backed entity dispatch. | Expose bounded JSON-RPC operations. |
+| [`grip`](./grip.md) | GRIP framing and broadcast effects. | Use an external Fanout gateway. |
+| [`jwt`](./jwt.md) | JWT verification and token issuance. | Verify credentials or issue worker tokens. |
+| [`mcp`](./mcp.md) | Bounded MCP HTTP host adapter. | Expose Entities tools to MCP clients. |
+| [`provider-fastly`](./provider-fastly.md) | Fastly configuration and target builds. | Run on Fastly Compute. |
+| [`s3`](./s3.md) | Exact-key object reads and writes. | Access S3 through bounded effects. |
 
 ## Implementation packages
 
@@ -35,15 +35,15 @@ These packages are mostly transitive implementation dependencies. Explicit suppo
 
 | Package | Purpose | When to use |
 |---|---|---|
-| [`wasm-build-support`](./implementation-packages.md) | Shared build-time helpers for PulseWasm package-owned builders. | Pulse release-set and compiler maintainers. |
-| [`wasm-compiler`](./implementation-packages.md) | PulseWasm compiler package inside the Pulse monorepo. | Pulse compiler and release maintainers. |
-| [`wasm-guest-link`](./implementation-packages.md) | Internal first-party guest-unit validation, materialization, core Wasm composition, optimization, and final audit for Pulse. | Pulse compiler, release, and first-party guest-unit maintainers. |
-| [`wasm-contracts`](./implementation-packages.md) | Shared PulseWasm contracts, diagnostics, IDs, config/provider symbolic contracts, route/path grammar, host ABI/payload contracts, library/sidecar contracts, schema-json contracts, host capability registry, artifact contract constants, and provider shape helpers. | Pulse compiler, runtime, provider, and package-lowering maintainers. |
-| [`wasm-host-runtime`](./implementation-packages.md) | Platform-neutral PulseWasm host runtime package-owned builders and runtime helpers. | Pulse host-runtime and provider maintainers. |
-| [`wasm-library-kit`](./implementation-packages.md) | PulseWasm package-owned library contract, sidecar, and host capability builders. | Pulse package-lowering and compiler maintainers. |
-| [`provider-node`](./implementation-packages.md) | Node-specific Pulse provider adapter, local runtime, and package-owned builders. | Node deployment integrators and Pulse provider maintainers. |
-| [`wasm-runtime-core-as`](./implementation-packages.md) | AssemblyScript runtime-core generation and compile/smoke helpers for PulseWasm. | Pulse AssemblyScript runtime-core and compiler maintainers. |
-| [`wasm-schema-json`](./implementation-packages.md) | PulseWasm schema JSON sidecar, compile, registry, and body-policy helpers. | Pulse schema compiler and runtime maintainers. |
+| [`wasm-build-support`](./implementation-packages.md) | Shared build helpers. | Maintain package-owned builders. |
+| [`wasm-compiler`](./implementation-packages.md) | Native compiler implementation. | Maintain the compiler. |
+| [`wasm-guest-link`](./implementation-packages.md) | Guest-unit validation and Wasm linking. | Maintain first-party guest composition. |
+| [`wasm-contracts`](./implementation-packages.md) | Shared compiler and provider contracts. | Build toolchains or maintain protocols. |
+| [`wasm-host-runtime`](./implementation-packages.md) | Host builders and runtime helpers. | Maintain host execution. |
+| [`wasm-library-kit`](./implementation-packages.md) | Package lowerer and sidecar builders. | Maintain package lowering. |
+| [`provider-node`](./implementation-packages.md) | Node provider and HTTP launcher. | Serve Node builds or maintain the provider. |
+| [`wasm-runtime-core-as`](./implementation-packages.md) | AssemblyScript runtime generation. | Maintain Native runtime code generation. |
+| [`wasm-schema-json`](./implementation-packages.md) | Schema registry and codec builders. | Maintain schema compilation. |
 
 <details>
 <summary>Full support contracts, installation guidance, and npm links</summary>
@@ -51,8 +51,8 @@ These packages are mostly transitive implementation dependencies. Explicit suppo
 | Package on npm | Guide | Support tier | Install directly | Release promise |
 |---|---|---|---|---|
 | [`@pulse-compute/pulse`](https://www.npmjs.com/package/@pulse-compute/pulse) | [Guide](./pulse.md) | Canonical application surface | Yes. Install it in every conventional Pulse project. | Supported conventional application, project-configuration, and schema-authoring contract. |
-| [`@pulse-compute/runtime`](https://www.npmjs.com/package/@pulse-compute/runtime) | [Guide](./runtime.md) | Canonical application surface | Yes. Install it in every Pulse application. | Supported application authoring and execution contract. |
 | [`@pulse-compute/cli`](https://www.npmjs.com/package/@pulse-compute/cli) | [Guide](./cli.md) | Canonical application surface | Yes. Install the package globally or as a project development dependency. | Supported Beta workflow and project-configuration contract. |
+| [`@pulse-compute/runtime`](https://www.npmjs.com/package/@pulse-compute/runtime) | [Guide](./runtime.md) | Canonical application surface | Yes. Install it in every Pulse application. | Supported application authoring and execution contract. |
 | [`@pulse-compute/assets`](https://www.npmjs.com/package/@pulse-compute/assets) | [Guide](./assets.md) | Supported provider/extension surface | Yes, only when the application uses the assets capability. | The package root is the supported JavaScript API and canonical Native authoring surface, including bounded embedded Assets bytes on their qualified targets. /pulsewasm remains a compatibility subpath; manifest/compiler subpaths are toolchain integration. No application binary inspection is exposed. |
 | [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto) | [Guide](./crypto.md) | Supported provider/extension surface | Yes, when an application uses verification or digestText directly; JWT applications receive it transitively. | The package root supports bounded verification and request-owned exact-text digests; provider, manifest/compiler and Native integration subpaths remain toolchain-only. |
 | [`@pulse-compute/entities`](https://www.npmjs.com/package/@pulse-compute/entities) | [Guide](./entities.md) | Supported provider/extension surface | Yes, when an application declares entity operations. | The package root and first-party JSON-RPC adapter are supported Beta contracts; compiler integration subpaths remain toolchain-only. |
@@ -93,14 +93,11 @@ Every packed README begins with a generated status block covering audience, dire
 
 ## Extension and provider boundary in 1.0.0-beta.9
 
-Pulse supports the documented package-owned assets and GRIP facades and the documented Fastly provider entry points. Their implementation demonstrates the internal contract, but `1.0.0-beta.9` does **not** expose a general third-party plugin registry:
+Package roots are the application APIs. Older Assets and GRIP `/pulsewasm` imports remain bounded [migration surfaces](../guides/compatibility-imports.md).
 
-- lowerer manifests are accepted only from trusted first-party release packages;
-- arbitrary external lowerer discovery and execution are not supported;
-- provider selection is limited to `node`, `fastly`, and compile-only `none`;
-- adding a new lowerer or provider currently means changing and testing the synchronized Pulse release set.
+[Package-owned lowerers](../concepts/package-owned-lowering.md) may come from external packages under the versioned contract. They execute as trusted build dependencies with the compiler process's authority, without a sandbox. Reachable imports select declared lowerers; package ownership, protocol validation and provider capability checks still apply. No publisher allowlist or matching compiler release version is required.
 
-Documentation may explain lowering and the internal contract, but it must not promise that an external npm package can self-register a lowerer or provider. A future public plugin API requires an explicit trust model, discovery, version negotiation, security policy, and compatibility contract.
+Providers are explicitly selected by a bare host ID or exact scoped package name and must export the versioned `./toolchain` contract. Bare IDs use the `@pulse-compute/provider-<id>` convention; `none` is compile-only. There is no scanning, self-registration or fallback. See the [current provider contract](../architecture/current-contracts.md).
 
 ## Installed documentation
 

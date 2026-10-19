@@ -110,14 +110,41 @@ function withStatusBlock(source, entry, manifest) {
   return stable(`${match[0]}\n${block}\n\n${source.slice(match[0].length).replace(/^\s+/, '')}`);
 }
 
+// Editorial chooser text; release support promises remain in PACKAGE_SET below.
+const PACKAGE_SUMMARIES = Object.freeze({
+  pulse: ['Application root, config and schemas.', 'Start a Pulse project.'],
+  cli: ['Project commands and build workflow.', 'Develop locally or run CI.'],
+  runtime: ['Portable handlers, contexts and routers.', 'Type handlers and libraries.'],
+  assets: ['Asset lookup and response delivery.', 'Serve files, origins or buckets.'],
+  crypto: ['Signature verification and text digests.', 'Verify signatures or hash exact text.'],
+  entities: ['Static, schema-backed entity dispatch.', 'Expose bounded JSON-RPC operations.'],
+  grip: ['GRIP framing and broadcast effects.', 'Use an external Fanout gateway.'],
+  jwt: ['JWT verification and token issuance.', 'Verify credentials or issue worker tokens.'],
+  mcp: ['Bounded MCP HTTP host adapter.', 'Expose Entities tools to MCP clients.'],
+  'provider-fastly': ['Fastly configuration and target builds.', 'Run on Fastly Compute.'],
+  s3: ['Exact-key object reads and writes.', 'Access S3 through bounded effects.'],
+  'wasm-build-support': ['Shared build helpers.', 'Maintain package-owned builders.'],
+  'wasm-compiler': ['Native compiler implementation.', 'Maintain the compiler.'],
+  'wasm-guest-link': ['Guest-unit validation and Wasm linking.', 'Maintain first-party guest composition.'],
+  'wasm-contracts': ['Shared compiler and provider contracts.', 'Build toolchains or maintain protocols.'],
+  'wasm-host-runtime': ['Host builders and runtime helpers.', 'Maintain host execution.'],
+  'wasm-library-kit': ['Package lowerer and sidecar builders.', 'Maintain package lowering.'],
+  'provider-node': ['Node provider and HTTP launcher.', 'Serve Node builds or maintain the provider.'],
+  'wasm-runtime-core-as': ['AssemblyScript runtime generation.', 'Maintain Native runtime code generation.'],
+  'wasm-schema-json': ['Schema registry and codec builders.', 'Maintain schema compilation.'],
+});
+
 function renderPackagePolicy() {
-  const coreNames = ['@pulse-compute/pulse', '@pulse-compute/runtime', '@pulse-compute/cli'];
+  const coreNames = ['@pulse-compute/pulse', '@pulse-compute/cli', '@pulse-compute/runtime'];
   const core = coreNames.map(name => PACKAGE_SET.find(entry => entry.name === name));
   const capabilities = PACKAGE_SET.filter(entry => entry.tier === 'supported-extension').sort((a, b) => a.name.localeCompare(b.name));
   const implementation = PACKAGE_SET.filter(entry => entry.tier === 'implementation');
   const index = entries => `| Package | Purpose | When to use |\n|---|---|---|\n${entries.map(entry => {
     const manifest = packageManifest(entry);
-    return `| [${inlineCode(manifest.name.replace('@pulse-compute/', ''))}](./${path.basename(entry.documentation)}) | ${tableCell(manifest.description)} | ${tableCell(entry.audience)} |`;
+    const name = manifest.name.replace('@pulse-compute/', '');
+    const summary = PACKAGE_SUMMARIES[name];
+    if (!summary) throw new Error(`Missing package chooser summary: ${manifest.name}`);
+    return `| [${inlineCode(name)}](./${path.basename(entry.documentation)}) | ${tableCell(summary[0])} | ${tableCell(summary[1])} |`;
   }).join('\n')}`;
   const rows = [...core, ...capabilities, ...implementation].map(entry => {
     const manifest = packageManifest(entry), tier = SUPPORT_TIERS[entry.tier];
@@ -166,14 +193,11 @@ Every packed README begins with a generated status block covering audience, dire
 
 ## Extension and provider boundary in ${RELEASE_VERSION}
 
-Pulse supports the documented package-owned assets and GRIP facades and the documented Fastly provider entry points. Their implementation demonstrates the internal contract, but ${inlineCode(RELEASE_VERSION)} does **not** expose a general third-party plugin registry:
+Package roots are the application APIs. Older Assets and GRIP ${inlineCode('/pulsewasm')} imports remain bounded [migration surfaces](../guides/compatibility-imports.md).
 
-- lowerer manifests are accepted only from trusted first-party release packages;
-- arbitrary external lowerer discovery and execution are not supported;
-- provider selection is limited to ${inlineCode('node')}, ${inlineCode('fastly')}, and compile-only ${inlineCode('none')};
-- adding a new lowerer or provider currently means changing and testing the synchronized Pulse release set.
+[Package-owned lowerers](../concepts/package-owned-lowering.md) may come from external packages under the versioned contract. They execute as trusted build dependencies with the compiler process's authority, without a sandbox. Reachable imports select declared lowerers; package ownership, protocol validation and provider capability checks still apply. No publisher allowlist or matching compiler release version is required.
 
-Documentation may explain lowering and the internal contract, but it must not promise that an external npm package can self-register a lowerer or provider. A future public plugin API requires an explicit trust model, discovery, version negotiation, security policy, and compatibility contract.
+Providers are explicitly selected by a bare host ID or exact scoped package name and must export the versioned ${inlineCode('./toolchain')} contract. Bare IDs use the ${inlineCode('@pulse-compute/provider-<id>')} convention; ${inlineCode('none')} is compile-only. There is no scanning, self-registration or fallback. See the [current provider contract](../architecture/current-contracts.md).
 
 ## Installed documentation
 
@@ -1058,6 +1082,7 @@ module.exports = Object.freeze({
   repoRoot,
   renderStatusBlock,
   renderPackagePolicy,
+  PACKAGE_SUMMARIES,
   renderImplementationPackages,
   renderEnvironmentReference,
   renderCliReference,

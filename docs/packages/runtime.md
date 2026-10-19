@@ -1,5 +1,7 @@
 # `@pulse-compute/runtime`
 
+**npm:** [`@pulse-compute/runtime`](https://www.npmjs.com/package/@pulse-compute/runtime)
+
 `@pulse-compute/runtime` is the canonical, provider-neutral TypeScript authoring surface for Pulse applications. Install it in every canonical project and import handler types or the static `Router` marker from the package root.
 
 ## Install

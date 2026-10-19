@@ -1,16 +1,16 @@
 # `@pulse-compute/mcp`
 
+**npm:** [`@pulse-compute/mcp`](https://www.npmjs.com/package/@pulse-compute/mcp)
+
 `@pulse-compute/mcp` is a supported Beta host extension for bounded MCP HTTP
-integration. Its synchronized candidate version is `1.0.0-beta.9`; registry
-publication awaits the [release-owner handoff](../maintainers/npm-publishing.md#mcp-package-handoff).
+integration, published as `1.0.0-beta.9` in the synchronized release set.
 It has zero runtime dependencies and does not depend on the Pulse CLI or corpus.
 
 ```bash
 npm install @pulse-compute/mcp@1.0.0-beta.9
 ```
 
-Use this command once the candidate has been published. Before publication, use
-the matching candidate registry and exact candidate versions.
+Use matching exact versions of Pulse packages.
 
 ## Supported host imports
 

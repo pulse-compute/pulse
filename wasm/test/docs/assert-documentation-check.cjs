@@ -135,21 +135,30 @@ contextDataIntegrity();
 }
 
 {
-  const { renderPackagePolicy } = require('../../scripts/sync-reference-docs.cjs');
+  const { renderPackagePolicy, PACKAGE_SUMMARIES } = require('../../scripts/sync-reference-docs.cjs');
   const { PACKAGE_SET } = require('../../../scripts/package-support.cjs');
   const document = renderPackagePolicy();
   const core = document.slice(document.indexOf('## Core packages'), document.indexOf('## Capability packages'));
   assert.deepEqual([...core.matchAll(/\| \[`([^`]+)`\]/g)].map(match => match[1]),
-    ['pulse', 'runtime', 'cli']);
+    ['pulse', 'cli', 'runtime']);
   assert(document.indexOf('## Implementation packages') > document.indexOf('## Capability packages'));
   for (const entry of PACKAGE_SET) {
     const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, entry.dir, 'package.json')));
-    assert(document.includes(manifest.description.replace(/\|/g, '&#124;').replace(/\n/g, ' ')));
-    assert(document.includes(entry.audience));
+    const summary = PACKAGE_SUMMARIES[manifest.name.replace('@pulse-compute/', '')];
+    assert.equal(summary.length, 2);
+    for (const text of summary) {
+      assert(text.length <= 60, `chooser text too long: ${manifest.name}`);
+      assert(document.includes(text));
+    }
+    const guide = fs.readFileSync(path.join(ROOT, entry.documentation), 'utf8');
+    assert(guide.includes(`https://www.npmjs.com/package/${entry.name}`));
     assert(document.includes(entry.directInstall));
     assert(document.includes(entry.stability));
     assert(document.includes(`https://www.npmjs.com/package/${entry.name}`));
   }
+  assert(!document.includes('lowerer manifests are accepted only from trusted first-party'));
+  assert(document.includes('without a sandbox'));
+  assert(document.includes('No publisher allowlist'));
   console.log('ok - package index leads with core packages and retains every catalog support contract');
 }
 

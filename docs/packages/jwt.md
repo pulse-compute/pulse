@@ -1,5 +1,7 @@
 # `@pulse-compute/jwt`
 
+**npm:** [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt)
+
 `@pulse-compute/jwt` provides bounded, provider-neutral JWT verification and signing for
 Pulse handlers.
 

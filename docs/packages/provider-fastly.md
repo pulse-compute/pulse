@@ -1,5 +1,7 @@
 # `@pulse-compute/provider-fastly`
 
+**npm:** [`@pulse-compute/provider-fastly`](https://www.npmjs.com/package/@pulse-compute/provider-fastly)
+
 `@pulse-compute/provider-fastly` supplies typed Fastly project configuration,
 canonical capability lowering, direct JavaScript execution, local conformance
 runtimes, Native and JavaScript Compute target generation, and an explicit
