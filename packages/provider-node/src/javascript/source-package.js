@@ -326,6 +326,7 @@ function writeNodeJavascriptSourcePackage(options = {}) {
   const baseDependencies = reachableDependencies(plan, projectRoot);
   const dependencies = Object.freeze({
     ...baseDependencies,
+    ...(options.binaryResources ? { '@pulse-compute/runtime': normalizeDependencyVersion(projectRoot, projectPackageManifest(projectRoot), '@pulse-compute/runtime') } : {}),
     ...(schemaActive
       ? {
           '@pulse-compute/wasm-contracts': normalizeDependencyVersion(
@@ -345,7 +346,8 @@ function writeNodeJavascriptSourcePackage(options = {}) {
     dependencies
   });
   const packageRecord = writeFile(outDir, 'package.json', stableJson(packageJson));
-  const entryRecord = writeFile(outDir, 'index.cjs', defaultExportLoader(entryOutput));
+  const resourceSource = options.binaryResources ? require('@pulse-compute/wasm-host-runtime/compiler/binary-resources').resourceJavascriptSource(options.binaryResources, 'module.exports') : '';
+  const entryRecord = writeFile(outDir, 'index.cjs', defaultExportLoader(entryOutput) + resourceSource);
   const planRecord = writeFile(outDir, 'pulse-javascript-application-plan.json', stableJson(plan));
   const schemaRegistryRecord = schemaActive
     ? writeFile(outDir, 'schema-json-registry.json', stableJson(schemaBundle.registry))

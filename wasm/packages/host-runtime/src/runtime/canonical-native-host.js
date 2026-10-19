@@ -630,6 +630,19 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     value_null() { return put(null); },
     value_boolean(input) { return put(Number(input) !== 0); },
     value_number(input) { return put(Number(input)); },
+    resource_offset_value(handle) {
+      const input = value(handle);
+      if (typeof input !== 'number') throw new portableKv.PulseRuntimeContractError('PULSE_BINARY_RESOURCE_INVALID', 'Binary resource offset requires a number.');
+      return input;
+    },
+    resource_check(offset, length, width) {
+      options.requestBudget?.check();
+      options.signal?.throwIfAborted();
+      if (!Number.isSafeInteger(offset) || offset < 0 || length < 0 || width < 0 || offset > length || width > length - offset) {
+        throw new portableKv.PulseRuntimeContractError('PULSE_BINARY_RESOURCE_INVALID', 'Binary resource read is invalid.');
+      }
+      return offset;
+    },
     value_string(pointer, length) { return put(decodeAssemblyScriptString(memory(), pointer, length)); },
     effect_collection_count(handle, max, stateIndex) {
       const continuation = plan.continuations.find(c => c.stateIndex === stateIndex);

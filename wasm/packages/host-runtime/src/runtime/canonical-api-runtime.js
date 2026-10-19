@@ -1634,6 +1634,7 @@ async function executeCanonicalProgram(programModule, options = {}) {
 }
 
 module.exports = {
+  bindBinaryResourceCatalogue: require('./binary-resources.js').bindBinaryResourceCatalogue,
   CANONICAL_HOST_RUNTIME_VERSION,
   CANONICAL_RUNTIME_PROTOCOL_VERSION: canonicalRuntimeContract.CANONICAL_RUNTIME_PROTOCOL_VERSION,
   CANONICAL_EFFECT_PROTOCOL_VERSION: canonicalRuntimeContract.CANONICAL_RUNTIME_PROTOCOL_VERSION,

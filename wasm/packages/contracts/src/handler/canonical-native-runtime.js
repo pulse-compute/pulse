@@ -75,6 +75,9 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['value_null', [], ['i32']],
   ['value_boolean', ['i32'], ['i32']],
   ['value_number', ['f64'], ['i32']],
+  // Optional binary-resource-read.v1: numeric extraction and checked byte offsets.
+  ['resource_offset_value', ['i32'], ['f64']],
+  ['resource_check', ['f64', 'i32', 'i32'], ['i32']],
   ['value_string', ['i32', 'i32'], ['i32']],
   ['value_array', [], ['i32']],
   ['value_array_push', ['i32', 'i32'], []],

@@ -27,6 +27,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     localIndex, effectIndex, continuationIndex, expressions, expressionIndex,
     stateEnabled, binaryIndex, unaryIndex, fail, localName, stringHandle
   } = prepareNativePlan(plan);
+  const resources = require('./canonical-native-resources.js').prepareNativeResources(plan);
   const nativeSchemaCodecs = nativeSchemaCodecSource(plan);
   const nativeCrypto = buildNativeCryptoGuestSources(plan);
   const { eventEntries, eventReachable } = prepareNativeEmissionInputs(plan);
@@ -35,12 +36,12 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const ownership = prepareHandleOwnership({ plan, policy: options.handleOwnership,
     schemaActive: nativeSchemaCodecs.active, budgeted: readLoopBudget || streamBudget,
     expressions, eventReachable });
-  const numeric = prepareNumericRegions({ plan, policy: options.numericRegions,
+  const numeric = prepareNumericRegions({ plan, resources, policy: options.numericRegions,
     schemaActive: nativeSchemaCodecs.active,
     budgeted: readLoopBudget || streamBudget, readLoopBudget: readLoopBudget && !streamBudget, localName });
   const expressionEmitter = prepareNativeExpressions({
     expressions, expressionIndex, pureHelpers, localIndex, binaryIndex, unaryIndex,
-    fail, localName, stringHandle, numeric
+    fail, localName, stringHandle, numeric, resources
   });
   const { applicationErrors, helpers, handlers, routerLocal, routerCursor } = prepareNativeFlow(plan, pureHelpers);
   const control = buildNativeControl({
@@ -61,7 +62,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     plan, blocks: control.blocks, handlers, helpers, stages, fail
   });
   const source = assembleNativeSource({
-    plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership,
+    plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership, resources,
     stages, stageSites, stateEnabled, binaryIndex, eventReachable,
     entryBlock: control.entryBlock, layout, guardStateCount
   });
@@ -74,7 +75,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
 }
 
 function assembleNativeSource({
-  plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership,
+  plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership, resources,
   stages, stageSites, stateEnabled, binaryIndex, eventReachable,
   entryBlock, layout, guardStateCount
 }) {
@@ -91,6 +92,7 @@ function assembleNativeSource({
     ...support.executionGlobals,
     ...support.globals,
     ...numeric.globals,
+    ...resources.source,
     ...(ownership.enabled ? [
       'function __pulse_handle_guest_roots(): void {',
       ...support.valueRoots.map(name => `  __pulse_handle_mark(${name})`),

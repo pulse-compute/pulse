@@ -4,7 +4,7 @@
 // declaration rendering remains deferred until final source assembly.
 function prepareNativeExpressions({
   expressions, expressionIndex, pureHelpers, localIndex, binaryIndex, unaryIndex,
-  fail, localName, stringHandle, numeric
+  fail, localName, stringHandle, numeric, resources
 }) {
   const expressionAlias = new Map();
   const retainedExpressions = new Set();
@@ -54,6 +54,9 @@ function prepareNativeExpressions({
     const lines = [];
     const emit = (line) => lines.push(`  ${line}`);
     switch (expression.kind) {
+      case 'resource-read':
+        emit(`return host_value_number(${resources.read(expression, expression.offset ? `host_resource_offset_value(${exprName(expression.offset)}())` : '0.0')})`);
+        break;
       case 'literal':
         if (expression.value === null) emit('return host_value_null()');
         else if (typeof expression.value === 'boolean') emit(`return host_value_boolean(${expression.value ? 1 : 0})`);

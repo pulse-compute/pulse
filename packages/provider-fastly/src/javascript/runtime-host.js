@@ -80,6 +80,7 @@ async function executeFastlyJavascriptApplication(application, request, options 
     maxKvValueBytes: options.maxKvValueBytes,
     maxKvValueDepth: options.maxKvValueDepth,
     maxKvValueEntries: options.maxKvValueEntries,
+    binaryResources: options.binaryResources,
     schemaCodecs: options.schemaCodecs,
     strict: options.strict === true,
     target: 'javascript',

@@ -440,6 +440,10 @@ function scalarArgumentKind(e, locals, fail, bound = false, projectionType) {
   const child = v => scalarArgumentKind(v, locals, fail, bound, projectionType);
   let kind = 'unknown';
   if (e.kind === 'literal' && values.scalar(typeof e.value)) kind = typeof e.value;
+  else if (e.kind === 'resource-read' && e.version === 'pulse.binary-resource-read.v1' && ['byteLength', 'readU8', 'readU32LE', 'readF32LE'].includes(e.operation)) {
+    if (e.offset && child(e.offset) !== 'number') fail('resource helper input requires a numeric offset');
+    kind = 'number';
+  }
   else if (e.kind === 'local') {
     kind = locals.get(e.id)?.valueKind;
     if (kind === 'string-or-undefined' && e.valueKind === 'string' && projectionType?.(e) === 'string') kind = 'string';

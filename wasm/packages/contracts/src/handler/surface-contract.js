@@ -317,6 +317,18 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     status: 'supported-when-nonstrict'
   }),
   surface({
+    id: 'ctx.resources',
+    class: 'sync',
+    canonicalOperation: 'resource.map-and-read',
+    publicForms: ["const view = ctx.resources.map('logical-id')", 'view.byteLength', 'view.readU8(offset)', 'view.readU32LE(offset)', 'view.readF32LE(offset)'],
+    awaitPolicy: 'forbidden',
+    validPositions: ['const-view-and-direct-scalar-read'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'immutable-raw-data-and-checked-scalar-load',
+    shapePolicy: 'pulse.binary-resource-read.v1',
+    status: 'supported',
+  }),
+  surface({
     id: 'ctx.effects',
     class: 'sync',
     canonicalOperation: 'effect.collection.create',

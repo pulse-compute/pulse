@@ -111,7 +111,8 @@
     "./project/javascript-core-capabilities": "./src/project/javascript-core-capabilities.js",
     "./project/native-optimization": "./src/project/native-optimization.js",
     "./s3/contracts": "./src/s3/contracts.js",
-    "./package/runtime-binding": "./src/package/runtime-binding.js"
+    "./package/runtime-binding": "./src/package/runtime-binding.js",
+    "./resources/embedded": "./src/resources/embedded.js"
   },
   "publishConfig": {
     "access": "public"

@@ -45,6 +45,7 @@ const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
 ]);
 
 const CANONICAL_NATIVE_EXPRESSION_KINDS = Object.freeze([
+  'resource-read',
   'pure-helper-call',
   'literal',
   'undefined',

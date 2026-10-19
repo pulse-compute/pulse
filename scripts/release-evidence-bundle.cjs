@@ -213,6 +213,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'schema-kv-parity',
       'text-capacity-conformance',
       'entities-schema-bridge',
+      'binary-resource-execution',
       'effect-collections',
       'effect-collection-providers',
       'fetch-projections-request-bodies',

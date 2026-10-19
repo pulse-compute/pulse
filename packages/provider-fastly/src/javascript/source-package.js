@@ -332,6 +332,7 @@ function bundleFastlyJavascriptApplication(plan, projectRoot, schemaBundle, opti
         ]
       : ['const schemaCodecs = null;']),
     'const { createFastlyJavascriptHandler } = fastlyRuntime;',
+    ...(options.binaryResources ? [require('@pulse-compute/wasm-host-runtime/compiler/binary-resources').resourceJavascriptSource(options.binaryResources, 'application', 'resourceHost'), "import resourceHost from '@pulse-compute/runtime/host';"] : []),
     'export { application, createFastlyJavascriptHandler, schemaCodecs };',
     'export default application;',
     ''
@@ -501,7 +502,7 @@ function writeFastlyJavascriptSourcePackage(options = {}) {
   });
   const schemaBundle = options.schemaBundle;
   const schemaActive = Boolean(schemaBundle && schemaBundle.active);
-  const bundle = bundleFastlyJavascriptApplication(plan, projectRoot, schemaBundle);
+  const bundle = bundleFastlyJavascriptApplication(plan, projectRoot, schemaBundle, { binaryResources: options.binaryResources });
   const providerConfig = options.providerConfig || {};
   const providerBindings = providerConfig.bindings && typeof providerConfig.bindings === 'object'
     ? providerConfig.bindings

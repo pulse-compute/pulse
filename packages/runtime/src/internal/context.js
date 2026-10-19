@@ -185,6 +185,7 @@ function createContext(frame) {
     },
     ...(eventContext ? {} : { req }),
     state,
+    get resources() { return require('./resources.js').createResourceContext(options.binaryResources, effects); },
     log,
     fetch(url, init) {
       const fetchSequence = (fetchSequences.get(effects) || 0) + 1;

@@ -4,7 +4,7 @@
 const HANDLE_OWNERSHIP_POLICY = 'fastly-handle-tracing-v1';
 const { CANONICAL_NATIVE_PURE_HELPER_VERSION,
   CANONICAL_NATIVE_STAGE_CONTRACT } = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
-const expressionKinds = new Set(['literal', 'undefined', 'local', 'context-read', 'array',
+const expressionKinds = new Set(['resource-read', 'literal', 'undefined', 'local', 'context-read', 'array',
   'object', 'template', 'binary', 'unary', 'conditional', 'property', 'element',
   'assignment', 'update', 'intrinsic', 'method-call', 'pure-helper-call']);
 const intrinsics = new Set(['request.header', 'request.text', 'request.json', 'response.json',

@@ -25,7 +25,8 @@
     "./runtime/kv-provider": "./src/runtime/kv-provider.js",
     "./runtime/continuation-registry": "./src/runtime/continuation-registry.js",
     "./runtime/canonical-api-runtime": "./src/runtime/canonical-api-runtime.js",
-    "./runtime/canonical-native-host": "./src/runtime/canonical-native-host.js"
+    "./runtime/canonical-native-host": "./src/runtime/canonical-native-host.js",
+    "./compiler/binary-resources": "./src/compiler/binary-resources.js"
   },
   "dependencies": {
     "@pulse-compute/wasm-build-support": "workspace:*",

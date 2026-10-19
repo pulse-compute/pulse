@@ -134,5 +134,60 @@ function resourceCatalogueSummary(catalogue) {
     records: catalogue.records.map(({ id, byteLength, sha256, blobId }) => ({ id, byteLength, sha256, blobId })) });
 }
 
+// Serialized plans are untrusted. Recheck bytes and the selected logical graph;
+// the source counters describe the original fully admitted manifest.
+function validateResourceCatalogue(catalogue) {
+  record(catalogue, ['version', 'identity', 'manifestId', 'budgets', 'records', 'blobs', 'source', 'backingBytes']);
+  if (catalogue.version !== RESOURCE_CATALOGUE_VERSION || !/^[a-f0-9]{64}$/.test(catalogue.manifestId)) fail('catalogue');
+  const budgets = normalizeResourceBudgets(catalogue.budgets);
+  denseArray(catalogue.records, budgets.bindings, 'binding-count');
+  denseArray(catalogue.blobs, Math.min(budgets.bindings, budgets.files), 'file-count');
+  const blobs = new Map();
+  let backingBytes = 0, previous = '';
+  for (const blob of catalogue.blobs) {
+    record(blob, ['id', 'byteLength', 'sha256', 'data']);
+    if (!Number.isSafeInteger(blob.byteLength) || blob.byteLength < 0 || blob.byteLength > budgets.fileBytes
+      || blob.byteLength > budgets.totalBytes - backingBytes || blob.byteLength > 0x7fffffff
+      || typeof blob.data !== 'string' || blob.data.length !== 4 * Math.ceil(blob.byteLength / 3)
+      || blob.id !== `${blob.sha256}:${blob.byteLength}` || blob.id <= previous) fail('catalogue');
+    const bytes = Buffer.from(blob.data, 'base64');
+    if (bytes.length !== blob.byteLength || bytes.toString('base64') !== blob.data || hash(bytes) !== blob.sha256) fail('catalogue');
+    previous = blob.id; blobs.set(blob.id, blob); backingBytes += blob.byteLength;
+  }
+  previous = '';
+  const used = new Set();
+  for (const entry of catalogue.records) {
+    record(entry, ['id', 'path', 'byteLength', 'sha256', 'blobId']);
+    validId(entry.id); assetPath(entry.path, { pathBytes: PATH_BYTES }, () => fail('path'));
+    const blob = blobs.get(entry.blobId);
+    if (entry.id <= previous || !blob || blob.sha256 !== entry.sha256 || blob.byteLength !== entry.byteLength) fail('catalogue');
+    previous = entry.id; used.add(entry.blobId);
+  }
+  record(catalogue.source, ['recordCount', 'decodedBytes', 'serializedBytes']);
+  for (const [key, limit] of [['recordCount', budgets.files], ['decodedBytes', budgets.totalBytes], ['serializedBytes', budgets.serializedBytes]]) {
+    if (!Number.isSafeInteger(catalogue.source[key]) || catalogue.source[key] < 0 || catalogue.source[key] > limit) fail('catalogue');
+  }
+  if (used.size !== blobs.size || backingBytes !== catalogue.backingBytes || backingBytes > catalogue.source.decodedBytes
+    || catalogue.blobs.reduce((sum, blob) => sum + blob.data.length, 0) > catalogue.source.serializedBytes
+    || blobs.size > catalogue.source.recordCount || catalogue.identity !== hash(JSON.stringify([RESOURCE_CATALOGUE_VERSION, catalogue.manifestId,
+      catalogue.records.map(entry => [entry.id, entry.path, entry.byteLength, entry.sha256])]))) fail('catalogue');
+  return catalogue;
+}
+
+function selectResourceCatalogue(catalogue, ids) {
+  validateResourceCatalogue(catalogue);
+  const selected = new Set(ids);
+  const records = catalogue.records.filter(entry => selected.has(entry.id));
+  if (records.length !== selected.size) fail('missing');
+  const used = new Set(records.map(entry => entry.blobId));
+  const blobs = catalogue.blobs.filter(blob => used.has(blob.id));
+  const result = freeze({ ...catalogue, records, blobs,
+    identity: hash(JSON.stringify([RESOURCE_CATALOGUE_VERSION, catalogue.manifestId,
+      records.map(entry => [entry.id, entry.path, entry.byteLength, entry.sha256])])),
+    backingBytes: blobs.reduce((sum, blob) => sum + blob.byteLength, 0) });
+  admittedCatalogues.add(result);
+  return result;
+}
+
 module.exports = { RESOURCE_CATALOGUE_VERSION, normalizeResourceBudgets,
-  createResourceManifest, admitResourceCatalogue, resourceCatalogueSummary };
+  createResourceManifest, admitResourceCatalogue, resourceCatalogueSummary, validateResourceCatalogue, selectResourceCatalogue };

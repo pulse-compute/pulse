@@ -25,6 +25,7 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.req.header(name)`](#request-metadata-and-headers) | Context | HTTP handlers and middleware | Case-insensitive first-value header lookup. |
 | [`ctx.param(name)`](#ctxparam) | Context | Matched route handlers | Named parameters from the static route pattern. |
 | [`ctx.state`](#ctxstate) | Context | HTTP and event handlers | Invocation-local string state shared across one execution. |
+| [`ctx.resources`](#ctxresources) | Context | HTTP and event handlers | Execution-owned views over explicitly embedded immutable binary data. |
 | [`ctx.time.now()`](#ctxtime) | Context | HTTP and event handlers | Provider wall-clock sample with matching Unix milliseconds and UTC text. |
 | [`ctx.fetch`](#ctxfetch) | Effects | HTTP and event handlers | Explicit outbound HTTP effect and structured or opaque response ownership. |
 | [`ctx.parallel`](#ctxparallel) | Effects | HTTP and event handlers | Statically keyed concurrent Pulse effects. |
@@ -247,6 +248,48 @@ return ctx.json({ found: true, user })
 
 Consecutive independent fetches may lower into a deterministic effect group. Results are presented in declaration order, not host completion order.
 
+
+## `ctx.resources`
+
+Configure `pulse.binaryResources` in `.pulse/config.ts` with a canonical serialized
+embedded `manifest`, a `bindings` record mapping logical IDs to manifest paths,
+and explicit `budgets`: `files`, `fileBytes`, `totalBytes`, `serializedBytes`, and
+`bindings`. Each budget is a nonnegative safe integer. These are build admission
+budgets, independent of HTTP Assets limits. All manifest records are checked
+before selection. No file or network loading occurs during execution.
+
+```ts
+const vectors = ctx.resources.map('vectors')
+const bytes = vectors.byteLength
+const component = vectors.readF32LE(12)
+```
+
+A mapping requires one declared literal ID and a local `const` binding. Views
+expose only `byteLength`, `readU8(offset)`, `readU32LE(offset)`, and
+`readF32LE(offset)`. Offsets are nonnegative safe integers measured in bytes;
+unaligned little-endian reads are supported. The entire scalar must fit before
+any address conversion. Float reads preserve signed zero and reject NaN and
+infinity; use `readU32LE` to inspect those bit patterns. Invalid declarations,
+views or reads fail with `PULSE_BINARY_RESOURCE_INVALID` (a terminal provider
+failure in Fastly Native).
+
+Views cannot be aliased, returned, stored, serialized, passed to helpers, or
+captured by another function in canonical source. Pass scalar results to helpers
+instead. Runtime views are branded and become unusable when their owning
+execution closes or aborts. JavaScript dependency execution remains ordinary
+JavaScript, not a sandbox guarantee. Reads are synchronous local operations,
+with no effect dispatch, implicit flush, or cumulative read-byte quota.
+Configured request deadlines are checked on each read; Fastly JavaScript retains
+its existing unsupported-deadline diagnostic.
+
+Native emits selected immutable raw bytes and checked scalar loads, without a
+public pointer or general byte-buffer ABI. Unused Native resources emit no bytes.
+JavaScript snapshots the configured binding backing once per application store;
+repeated mappings in an execution reuse views. Existing loop and helper work
+bounds still apply: 1,024 iterations per pure loop and 65,536 combined nested
+iterations. Admitting a large vector file does not authorize a larger loop.
+Numeric regions avoid per-read boxing when their existing proof succeeds;
+other expressions retain the ordinary target value-allocation rules.
 
 ## `ctx.parallel`
 

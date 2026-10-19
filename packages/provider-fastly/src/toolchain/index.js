@@ -124,6 +124,7 @@ function createDriver() {
           projectRoot: invocation.project.root,
           outDir: invocation.project.outDir,
           schemaBundle: invocation.javascript.schemaBundle,
+          binaryResources: invocation.javascript.binaryResources,
           providerConfig: invocation.providerConfig,
           reporting: invocation.javascript.reporting,
           strict: invocation.javascript.strict,

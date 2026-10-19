@@ -2659,3 +2659,23 @@ process. Deployment owners wire signals and retain supervisor/release authority.
 Reference KV resets for each host generation and is not durable production KV.
 The core finite-response contract is separate from stream/blob launcher extensions.
 See [Node build and execution](../guides/deploying-node.md) for defaults and limits.
+
+## Embedded binary resource reads
+
+`pulse.binaryResources` owns explicit build-time admission of an immutable
+manifest and logical bindings, using mandatory finite application budgets.
+The resource catalogue reuses embedded-manifest integrity validation without
+changing HTTP Assets admission. `ctx.resources.map` creates an execution-owned
+view with checked byte/scalar reads; it does not grant filesystem or network
+authority. The [runtime contract](../../API.md#ctxresources) defines the source
+subset, lifecycle, numeric rules and unchanged loop bounds.
+
+Native plans carry `pulse.binary-resource-read.v1` expressions and a validated
+`pulse.binary-resource-catalogue.v1` selection. An optional host extension checks
+numeric offsets and execution deadlines before any i32 conversion. Wasm owns
+raw immutable data and little-endian loads. No resource view is stored in a
+continuation or exported as a general byte buffer. JavaScript uses private
+snapshot backing and execution-branded views. Same-candidate artifact identity
+includes the selected bytes; passing historical results never substitutes for
+execution qualification. Actual MCP vector data, installed-consumer closure and
+full report attribution remain B10-08C qualification work.

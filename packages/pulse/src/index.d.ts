@@ -28,6 +28,7 @@ export type {
   PulseKvNotStoredReason,
   PulseEmitEvent,
   PulseExecutionContext,
+  PulseBinaryResourceView,
   PulseContext,
   PulseRouteContext,
   PulseEvent,
@@ -86,7 +87,15 @@ export interface PulseConfigScope {
   secret<const Name extends string>(name: Name): PulseSecretReference<Name>;
 }
 
+export interface PulseBinaryResources {
+  /** Canonical serialized embedded manifest, supplied explicitly at build time. */
+  readonly manifest: string;
+  readonly bindings: Readonly<Record<string, string>>;
+  readonly budgets: Readonly<{ files: number; fileBytes: number; totalBytes: number; serializedBytes: number; bindings: number }>;
+}
+
 export interface PulseProjectOptions {
+  readonly binaryResources?: PulseBinaryResources;
   /** Workspace-relative application entry. Defaults to src/index.ts. */
   readonly entry?: string;
   /** Optional workspace-relative schema pointer. */

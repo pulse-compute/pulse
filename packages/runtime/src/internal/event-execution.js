@@ -352,6 +352,8 @@ function observeLoggingConfiguration(options) {
 }
 
 async function executeEvent(application, inputFrame, options = {}) {
+  const binaryResources = options.binaryResources || require('./resources.js').applicationResources(application);
+  if (binaryResources) options = { ...options, binaryResources };
   const initialRedaction = createRedactionState(options.redactionValues);
   const initialCompletion = createEventCompletion(initialRedaction);
   let frame;

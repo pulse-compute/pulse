@@ -591,6 +591,8 @@ function loadConventionalProject(workspace, options = {}) {
     bindings: plan.bindings,
     fragments: plan.fragments,
     crypto: plan.crypto,
+    ...(plan.pulse.binaryResources ? { binaryResources: require('@pulse-compute/wasm-contracts/resources/embedded').admitResourceCatalogue(
+      plan.pulse.binaryResources.manifest, Object.entries(plan.pulse.binaryResources.bindings).map(([id, path]) => ({ id, path })), plan.pulse.binaryResources.budgets) } : {}),
     schemaFile,
     testsFile,
     tests

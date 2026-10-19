@@ -239,7 +239,15 @@ export interface PulseGeneratedOutputExecution {
   cancel(reason?: unknown): void;
   dispose(): void;
 }
+declare const binaryResourceStore: unique symbol;
+export interface PulseBinaryResourceStore { readonly [binaryResourceStore]: true }
+/** Trusted build/host bytes, copied once. No filesystem or network loading. */
+export declare function createBinaryResourceStore(entries: readonly { readonly id: string; readonly bytes: Uint8Array }[]): PulseBinaryResourceStore;
+
+export declare function bindBinaryResources<T extends object>(application: T, store: PulseBinaryResourceStore): T;
+
 export interface PulseRuntimeExecutionOptions {
+  readonly binaryResources?: PulseBinaryResourceStore;
   /** Provider-owned output authority; unavailable to application code. */
   readonly outputExecution?: PulseGeneratedOutputExecution;
   /** Provider-owned incoming stream controller; never an application capability. */

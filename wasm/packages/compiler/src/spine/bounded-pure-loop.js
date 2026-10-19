@@ -58,6 +58,11 @@ function inspectBoundedPureLoop(statement, options = {}) {
     }
     if (ts.isCallExpression(node)) {
       const target = unwrap(node.expression);
+      if (options.resourceReadForCall?.(node)) {
+        if (node.arguments.length !== 1 || node.questionDotToken || target.questionDotToken || node.typeArguments?.length) fail(node, 'Resource reads require one numeric offset.');
+        for (const argument of node.arguments) expression(argument, counters, false);
+        return;
+      }
       const pure = !checkingHeader && options.pureHelperForCall?.(node);
       if (pure) {
         if (activeProduct * (pure.maxIterationProduct || 1) > CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail(node, 'Pure helper exceeds the combined caller/callee iteration bound.');

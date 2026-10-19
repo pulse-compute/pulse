@@ -197,6 +197,7 @@ function createDriver() {
           projectRoot: invocation.project.root,
           outDir: invocation.project.outDir,
           schemaBundle: invocation.javascript.schemaBundle,
+          binaryResources: invocation.javascript.binaryResources,
           packageArtifacts: invocation.javascript.packageArtifacts
         }), { provider: 'node' });
       },
