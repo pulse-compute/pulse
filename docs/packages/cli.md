@@ -1,5 +1,7 @@
 # `@pulse-compute/cli`
 
+**npm:** [`@pulse-compute/cli`](https://www.npmjs.com/package/@pulse-compute/cli)
+
 `@pulse-compute/cli` owns the supported `pulse` command, project configuration types, project discovery, compilation workflow, local execution, and target builds.
 
 ## Install and initialize
