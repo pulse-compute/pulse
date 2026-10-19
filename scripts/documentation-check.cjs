@@ -8,11 +8,12 @@ const ROOT = path.resolve(__dirname, '..');
 
 function checkDocumentation() {
   execFileSync(process.execPath, ['wasm/scripts/sync-doc-snippets.cjs', '--check'], { cwd: ROOT, stdio: 'inherit' });
+  const context = require('./pulse-context-build.cjs').run();
   const documentation = require('./documentation-release.cjs').validatePackageDocumentation();
   assert.equal(documentation.status, 'ok');
   assert.equal(documentation.validationKind, 'package-source');
   assert(!Object.hasOwn(documentation, 'site'), 'Source validation cannot return a rendered site');
-  return { status: 'ok', documentation };
+  return { status: 'ok', context, documentation };
 }
 
 function validateSourceWorkflow(source) {

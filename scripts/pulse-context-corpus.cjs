@@ -9,7 +9,7 @@ const ROOT = path.resolve(__dirname, '..');
 const INPUTS = 'scripts/pulse-context-inputs.json';
 const OUTPUT = 'examples/12-pulse-context-mcp/context-corpus.ts';
 const SCHEMA_VERSION = 'pulse.context-corpus.v1';
-const LIMITS = Object.freeze({ maxRecords: 256, maxContentBytes: 24576, maxSnapshotBytes: 524288 });
+const LIMITS = Object.freeze({ maxRecords: 512, maxContentBytes: 24576, maxSnapshotBytes: 2097152 });
 const MANIFEST = 'release/pulse-release-manifest.json';
 const COMMANDS = 'wasm/packages/cli/src/command-spec.js';
 const DIAGNOSTICS = 'wasm/packages/cli/src/diagnostics.js';
@@ -109,7 +109,7 @@ function buildCorpus(root = ROOT) {
   }
   // Only these trusted first-party build-time catalogs are evaluated. No app callback is loaded.
   read(COMMANDS); read(DIAGNOSTICS);
-  for (const file of [COMMANDS, DIAGNOSTICS]) delete require.cache[require.resolve(path.join(root, file))];
+  for (const file of [COMMANDS, DIAGNOSTICS, 'wasm/packages/cli/src/documentation.js']) delete require.cache[require.resolve(path.join(root, file))];
   const commands = require(path.join(root, COMMANDS)).publicCommandSpecDocument({ version: manifest.releaseVersion });
   const diagnostics = require(path.join(root, DIAGNOSTICS));
   for (const command of commands.commands) {

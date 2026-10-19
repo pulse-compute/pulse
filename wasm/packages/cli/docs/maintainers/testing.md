@@ -615,3 +615,19 @@ for the currently unresolved gates.
 - Keep compiler goldens, runtime traces, provider results, CLI subprocess output, build manifests, and executable docs at their owning boundary.
 - Do not derive expected constants from the implementation being tested.
 - Remove a weaker fixture when a stronger oracle covers the same claim.
+
+## Context resource reconstruction
+
+`npm run context:build` is an explicit author operation using Node 24.18.0,
+matching the release producer. `npm run context:check` independently reconstructs
+and compares the committed corpus/vector/text/metadata closure and installed
+mirrors without repair. Repository build and documentation validation run this
+check. Documentation PR CI also runs `pulse-context-build`'s owned test script:
+independent clean roots, reordered enumeration, locale/timezone variation,
+strict binary admission and non-mutating source/output drift rejection.
+
+These are development checks. They do not issue the candidate-bound seal or
+installed-closure receipts assigned to B10-MCP-09/07, and do not replace the
+full release selection. `docs:sync` copies emitted resource files but never
+regenerates vectors; after changing canonical inputs, run explicit generation
+and finish with the read-only check.

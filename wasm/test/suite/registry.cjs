@@ -1208,6 +1208,9 @@ const tasks = Object.freeze({
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
   }),
+  'pulse-context-build': nodeTask('test/mcp/assert-context-build.cjs', {
+    evidence: 'unit', timeoutMs: 60000, description: 'B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection'
+  }),
   'pulse-context-corpus': nodeTask('test/mcp/assert-context-corpus.cjs', {
     evidence: 'unit', timeoutMs: 30000,
     description: 'PMCP-02 immutable bounded context snapshot, deterministic generation, source identity and version mismatch'
@@ -1414,6 +1417,7 @@ const profiles = Object.freeze({
     'entities-json-rpc-corpus',
     'mcp-http',
     'pulse-context-corpus',
+    'pulse-context-build',
     'pulse-context-application',
     'pulse-context-host',
     'mcp-compatibility',

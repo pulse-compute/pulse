@@ -27,6 +27,9 @@ function contract() {
           assert.deepEqual(args, ['wasm/scripts/sync-doc-snippets.cjs', '--check']);
           if (scenario === 'generated-failure') throw new Error('drift');
         } };
+        if (request === './pulse-context-build.cjs') return { run() {
+          calls.push('context'); if (scenario === 'context-failure') throw new Error('stale vector'); return { status: 'ok' };
+        } };
         if (request === './documentation-release.cjs') return { validatePackageDocumentation() {
           calls.push('validate');
           if (scenario === 'validation-failure') throw new Error('source failure');
@@ -40,9 +43,9 @@ function contract() {
     let error;
     try { require('./scripts/documentation-check.cjs').checkDocumentation(); } catch (caught) { error = caught; }
     assert.equal(Boolean(error), scenario !== 'success');
-    assert.deepEqual(calls, scenario === 'generated-failure' ? ['generated'] : ['generated', 'validate']);
+    assert.deepEqual(calls, scenario === 'generated-failure' ? ['generated'] : scenario === 'context-failure' ? ['generated', 'context'] : ['generated', 'context', 'validate']);
   `;
-  for (const scenario of ['success', 'generated-failure', 'validation-failure', 'bad-status', 'wrong-kind', 'site-output']) {
+  for (const scenario of ['success', 'generated-failure', 'context-failure', 'validation-failure', 'bad-status', 'wrong-kind', 'site-output']) {
     const child = spawnSync(process.execPath, ['-e', script, scenario], { cwd: ROOT, encoding: 'utf8' });
     assert.equal(child.status, 0, child.stderr);
   }

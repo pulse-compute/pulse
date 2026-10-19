@@ -13,7 +13,7 @@
     "wasm/packages/*"
   ],
   "scripts": {
-    "build": "tsc -b tsconfig.workspace.json",
+    "build": "node scripts/pulse-context-build.cjs --check && tsc -b tsconfig.workspace.json",
     "test": "vitest run",
     "test:packages": "vitest run",
     "test:all": "pnpm run release:seal",
@@ -45,7 +45,9 @@
     "release:candidate": "node scripts/release-candidate.cjs prepare --pack-dir .pulse-release --out .pulse-publication",
     "release:verify-bundle": "node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication",
     "release:prepare": "node scripts/release-prepare.cjs",
-    "release:tag": "node scripts/release-tag.cjs"
+    "release:tag": "node scripts/release-tag.cjs",
+    "context:build": "node scripts/pulse-context-build.cjs --write",
+    "context:check": "node scripts/pulse-context-build.cjs --check"
   },
   "devDependencies": {
     "@types/node": "^24.0.15",
