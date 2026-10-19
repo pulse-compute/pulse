@@ -210,12 +210,25 @@ function renderEnvironmentReference() {
     { title: 'Fastly and Viceroy tooling', summary: 'Provider-specific executable overrides; separate from public Pulse project selection.', entries: ENVIRONMENT_VARIABLES.filter(e => e.category === 'tooling' && ['PULSE_FASTLY_BIN', 'PULSE_VICEROY_BIN'].includes(e.name)) },
     { ...ENVIRONMENT_CATEGORIES.contributor, entries: ENVIRONMENT_VARIABLES.filter(e => e.category === 'contributor') },
   ];
+  const groupAnchor = title => title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const renderEntries = (entries, level = '###') => {
+    const rows = entries.map(e => `| [${inlineCode(e.name)}](#${e.name.toLowerCase().replace(/_/g, '-')}) | ${tableCell(e.description)} | ${tableCell(e.default)} |`).join('\n');
+    const details = entries.map(entry => `<a id="${entry.name.toLowerCase().replace(/_/g, '-')}"></a>\n\n${level} ${inlineCode(entry.name)}\n\n${entry.description}\n\n| Property | Contract |\n|---|---|\n| Value | ${entry.value} |\n| Default | ${entry.default} |\n| Precedence | ${entry.precedence} |\n| Consumer | ${entry.consumer} |\n| Secret safety | ${entry.secretSafety} |\n| Stability | ${entry.stability} |\n| Source owners | ${entry.sourceFiles.map(inlineCode).join(', ')} |`).join('\n\n');
+    return `| Variable | Purpose | Default |\n|---|---|---|\n${rows}\n\n${details}`;
+  };
   const sections = groups.map(group => {
-    const rows = group.entries.map(e => `| [${inlineCode(e.name)}](#${e.name.toLowerCase().replace(/_/g, '-')}) | ${tableCell(e.description)} | ${tableCell(e.default)} |`).join('\n');
-    const entries = group.entries.map(entry => `<a id="${entry.name.toLowerCase().replace(/_/g, '-')}"></a>\n\n### ${inlineCode(entry.name)}\n\n${entry.description}\n\n| Property | Contract |\n|---|---|\n| Value | ${entry.value} |\n| Default | ${entry.default} |\n| Precedence | ${entry.precedence} |\n| Consumer | ${entry.consumer} |\n| Secret safety | ${entry.secretSafety} |\n| Stability | ${entry.stability} |\n| Source owners | ${entry.sourceFiles.map(inlineCode).join(', ')} |`).join('\n\n');
-    return `## ${group.title}\n\n${group.summary}\n\n| Variable | Purpose | Default |\n|---|---|---|\n${rows}\n\n${entries}`;
+    let content;
+    if (group.entries.some(entry => entry.category === 'contributor')) {
+      const titles = [...new Set(group.entries.map(entry => entry.group))];
+      if (titles.some(title => !title)) throw new Error('Every contributor environment input needs a lookup group');
+      const index = titles.map(title => `- [${title}](#${groupAnchor(title)})`).join('\n');
+      content = index + '\n\n' + titles.map(title => `### ${title}\n\n${renderEntries(group.entries.filter(entry => entry.group === title), '####')}`).join('\n\n');
+    } else {
+      content = renderEntries(group.entries);
+    }
+    return `## ${group.title}\n\n${group.summary}\n\n${content}`;
   }).join('\n\n');
-  return stable(`# Environment-variable reference\n\n${GENERATED_NOTICE}\n\nPulse canonical handlers do not receive ambient process environment access. Handler authority comes only through the documented \`ctx\` capabilities and project/provider bindings. The variables here configure public Pulse project selection, provider tooling, or repository tests.\n\nDo not use these variables as a substitute for \`ctx.config\`, \`ctx.secret\`, or provider bindings. Secret-bearing compatibility URIs must be handled as credentials and must not be copied into diagnostics.\n\n## Index\n\n1. [Public Pulse project configuration](#supported-tooling-configuration)\n2. [Fastly and Viceroy tooling](#fastly-and-viceroy-tooling)\n3. [Contributor and test-only configuration](#contributor-and-test-only-configuration)\n\n${sections}\n\n## Standard process variables\n\nPulse also observes normal operating-system inputs such as \`PATH\` while locating external tools. Standard process variables are not renamed as Pulse configuration and are outside this catalog.\n`);
+  return stable(`# Environment-variable reference\n\n${GENERATED_NOTICE}\n\nPulse canonical handlers do not receive ambient process environment access. Handler authority comes only through the documented \`ctx\` capabilities and project/provider bindings. The variables here configure public Pulse project selection, provider tooling, or repository tests.\n\nDo not use these variables as a substitute for \`ctx.config\`, \`ctx.secret\`, or provider bindings. Secret-bearing compatibility URIs must be handled as credentials and must not be copied into diagnostics.\n\n## Choose a project profile\n\nSet \`PULSE_PROFILE\` to a profile declared in \`.pulse/config.ts\`, or use \`--profile\` for one command:\n\n\`\`\`sh\nPULSE_PROFILE=local pulse doctor\npulse doctor --profile local\n\`\`\`\n\nThese examples assume a profile named \`local\`. An explicit \`--profile\` wins over \`PULSE_PROFILE\`; otherwise the configured \`pulse.defaultProfile\` is used. See [profile selection](project-config.md#conventional-pulseconfigts) for the full selection rules. Handler configuration and secrets still come through [explicit bindings](../../API.md#config-and-secrets), not ambient environment reads.\n\n## Index\n\n1. [Public Pulse project configuration](#supported-tooling-configuration)\n2. [Fastly and Viceroy tooling](#fastly-and-viceroy-tooling)\n3. [Contributor and test-only configuration](#contributor-and-test-only-configuration)\n\n${sections}\n\n## Standard process variables\n\nPulse also observes normal operating-system inputs such as \`PATH\` while locating external tools. Standard process variables are not renamed as Pulse configuration and are outside this catalog.\n`);
 }
 
 function renderOptions(options, command) {
@@ -628,6 +641,7 @@ Deployment resource names configure provider bindings; local ${inlineCode('dev.c
 }
 
 const CATEGORY_RELATED = Object.freeze({
+  report: '[Retained build reports](cli.md#pulse-report)',
   usage: '[CLI reference](cli.md)',
   project: '[Project configuration](project-config.md)',
   safety: '[CLI build behavior](cli.md#pulse-build)',
@@ -668,10 +682,15 @@ function renderDiagnosticsReference() {
     const entries = Object.entries(DIAGNOSTIC_CATALOG).filter(([, entry]) => entry.category === category);
     const rows = entries.map(([code]) => {
       const descriptor = describeDiagnostic(code);
-      return `| [${inlineCode(code)}](#${diagnosticAnchor(code)}) | ${tableCell(descriptor.summary)} | ${descriptor.remediation.map(tableCell).join('<br>')} |`;
+      return `| [${inlineCode(code)}](#${diagnosticAnchor(code)}) | ${tableCell(descriptor.summary)} | ${inlineCode(descriptor.exitCode)} |`;
     }).join('\n');
-    return `## ${category.charAt(0).toUpperCase() + category.slice(1)} diagnostics\n\n| Code | Meaning | Action |\n|---|---|---|\n${rows}\n\n${entries.map(([code, entry]) => renderDiagnostic(code, entry)).join('\n\n')}`;
+    return `## ${category.charAt(0).toUpperCase() + category.slice(1)} diagnostics\n\n| Code | Meaning | CLI exit |\n|---|---|---|\n${rows}\n\n${entries.map(([code, entry]) => renderDiagnostic(code, entry)).join('\n\n')}`;
   }).join('\n\n');
+  const categoryIndex = categories.map(category => {
+    const title = `${category.charAt(0).toUpperCase() + category.slice(1)} diagnostics`;
+    const count = Object.values(DIAGNOSTIC_CATALOG).filter(entry => entry.category === category).length;
+    return `| [${title}](#${category}-diagnostics) | ${count} | ${CATEGORY_RELATED[category] || CATEGORY_RELATED.internal} |`;
+  }).join('\n');
   const httpGroups = new Map();
   for (const [code, entry] of Object.entries(DIAGNOSTIC_CATALOG)) {
     if (entry.httpStatus === undefined) continue;
@@ -680,7 +699,7 @@ function renderDiagnosticsReference() {
   }
   const httpRows = [...httpGroups.entries()]
     .sort(([left], [right]) => left - right)
-    .map(([status, codes]) => `| ${inlineCode(status)} | ${codes.map((code) => inlineCode(code)).join(', ')} |`)
+    .map(([status, codes]) => `| ${inlineCode(status)} | ${codes.map((code) => `[${inlineCode(code)}](#${diagnosticAnchor(code)})`).join(', ')} |`)
     .join('\n');
   const exampleDocs = `${DIAGNOSTICS_REFERENCE}#pulse-build-out-unsafe`;
   const schemaDocs = `${DIAGNOSTICS_REFERENCE}#pulse-schema-decode`;
@@ -702,6 +721,24 @@ shape, Router terminal transfer, and body ownership are centralized in
 target claims are centralized in [Provider and target
 compatibility](compatibility-matrix.md).
 A Native eligibility diagnostic never authorizes automatic JavaScript fallback.
+
+## Find a diagnostic
+
+Start with the exact ${inlineCode('error.code')} from CLI JSON or the terminal
+message. Follow its link for remediation and limits; a code identifies the
+failure, while its category groups related problems. CLI exit classes and HTTP
+response statuses are separate contracts.
+
+1. Find the code below or choose a category in the index.
+2. Apply its full remediation steps, retaining the selected provider/target.
+3. Use [CLI JSON output](cli.md#json-and-stream-contracts) for automation and
+   [Router recovery](../guides/routing.md#next-is-a-terminal-transfer) for
+   application error handling. A diagnostic HTTP mapping alone does not promise
+   application recovery, retry or rollback.
+
+| Category | Codes | Related guidance |
+|---|---:|---|
+${categoryIndex}
 
 ## JSON failure envelope
 
@@ -777,6 +814,9 @@ pulse test examples/02-request-schema --case invalid-user --json
 \`\`\`
 
 ## Complete public catalog
+
+The compact rows identify codes and CLI exit classes. Each linked entry below
+retains every remediation step, HTTP mapping, stability and scope qualification.
 
 ${catalog}
 `);

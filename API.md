@@ -1,5 +1,19 @@
 # Pulse runtime contract
 
+Write an async handler, read its invocation-owned context, await explicit effects,
+and return a response. Choose the Native or JavaScript target in project
+configuration; the provider realizes that choice.
+
+## Read this reference
+
+| Task | Start here |
+|---|---|
+| Understand the application shape | [Handler](#handler), [Router](#static-router), [events](#static-event-handlers) |
+| Find a context member | [Context at a glance](#context-at-a-glance) |
+| Read inputs and return outputs | [Request](#ctxreq), [fetch](#ctxfetch), [responses](#response-builders) |
+| Coordinate work and bindings | [Parallel effects](#ctxparallel), [config and secrets](#config-and-secrets), [KV](#kv) |
+| Validate or inspect a project | [Project workflow](#project-workflow) |
+
 For source eligibility, use [Managed handler TypeScript and
 JavaScript](./docs/reference/handler-authoring.md). For provider and target
 differences, use the [compatibility
@@ -11,7 +25,7 @@ This document describes the provider-neutral TypeScript application contract com
 
 `@pulse-compute/runtime` is the low-level portable application surface and
 `@pulse-compute/pulse` is the conventional project surface. Both belong to the
-19-package public release catalog. Native and JavaScript execution remain
+[public release catalog](./docs/maintainers/release-manifest.md). Native and JavaScript execution remain
 explicitly selected targets over the same canonical runtime contract.
 
 ## Context at a glance
@@ -28,7 +42,8 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.resources`](#ctxresources) | Context | HTTP and event handlers | Execution-owned views over explicitly embedded immutable binary data. |
 | [`ctx.time.now()`](#ctxtime) | Context | HTTP and event handlers | Provider wall-clock sample with matching Unix milliseconds and UTC text. |
 | [`ctx.fetch`](#ctxfetch) | Effects | HTTP and event handlers | Explicit outbound HTTP effect and structured or opaque response ownership. |
-| [`ctx.parallel`](#ctxparallel) | Effects | HTTP and event handlers | Statically keyed concurrent Pulse effects. |
+| [`ctx.parallel`](#ctxparallel) | Effects | HTTP and event handlers | Join keyed effects or a bounded collection. |
+| [`ctx.effects({ max })`](#bounded-effect-collections) | Effects | HTTP and event handlers | Collect a bounded runtime number of effects before one explicit flush. |
 | [`ctx.encodeJson`](#ctxencodejson) | JSON codecs | HTTP and event handlers | Synchronous schema-bound, size-limited JSON text. |
 | [`ctx.decodeJson`](#ctxdecodejson) | JSON codecs | HTTP and event handlers | Synchronous schema-bound decode of bounded application text. |
 | [`ctx.emit`](#ctxemit) | Effects | HTTP and event handlers | One-way, schema-bound event acceptance effect. |
@@ -36,6 +51,7 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.config`, `ctx.secret`](#config-and-secrets) | Bindings | HTTP and event handlers | Explicit configured binding reads. |
 | [`ctx.kv(name)`](#kv) | Effects | HTTP and event handlers | Bound reads, writes, and conditional KV effects (Node reference). |
 | [`ctx.json`, `ctx.text`, `ctx.response`](#response-builders) | Responses | HTTP handlers and middleware | Synchronous response construction. |
+| [`ctx.output`](#experimental-generated-output) | Responses | Opted-in Node HTTP handlers | Finite incremental UTF-8 output; experimental and deadline-bound. |
 | [`ctx.event`](#static-event-handlers) | Context | Event handlers only | Exact event type and immutable validated payload. |
 
 ## Handler
@@ -228,18 +244,31 @@ durable storage and does not cross an invocation boundary.
 ## `ctx.fetch`
 
 ```ts
-interface PulseFetchInit {
+interface PulseFetchInitBase {
   readonly method?: 'GET' | 'HEAD' | 'POST'
   readonly headers?: Readonly<Record<string, string>> | readonly [string, string][]
-  readonly body?: string
-  readonly json?: unknown
   readonly timeoutMs?: number
 }
+
+type PulseFetchInit = PulseFetchInitBase & (
+  | { readonly body?: never; readonly json?: never; readonly schema?: never }
+  | { readonly body: string | PulseIncomingBody; readonly json?: never; readonly schema?: never }
+  | { readonly body?: never; readonly json: unknown; readonly schema?: string }
+)
 
 ctx.fetch(url: string, init?: PulseFetchInit): PulseFetchOperation
 ```
 
+Choose text/opaque `body` or `json`, never both. `schema` describes a JSON
+request body; it is invalid without `json`. `PulseIncomingBody` is the opaque
+request-forwarding handle under the explicit Node opt-in, not an arbitrary
+stream or buffer. See [incoming forwarding](./docs/concepts/bodies.md#incoming-forwarding-on-node).
+
 HTTP status is response data. Network and timeout failures are runtime failures.
+The [Router recovery contract](./docs/guides/routing.md#next-is-a-terminal-transfer)
+owns which failures enter application error handling; the
+[deadline contract](./docs/concepts/effects-and-continuations.md#timeouts-have-two-scopes)
+distinguishes per-fetch timeouts from terminal request deadlines.
 
 ```ts
 const user = await ctx.fetch('https://api.example.test/user').json<User>('app.User')
@@ -321,6 +350,19 @@ effect adapter. Native lowering erases the call into one canonical effect group
 and reconstructs an ordinary keyed object after one continuation. Separate awaits
 remain sequential in direct JavaScript execution; the Native compiler may still
 implicitly group adjacent eligible effects as a performance optimization.
+
+### Bounded effect collections
+
+`ctx.effects<T>({ max })` collects effects for `await ctx.parallel(collection)`.
+The literal capacity is 1–32. Adding captures a fresh execution-owned effect;
+only the single flush dispatches it. Results preserve insertion order, overflow
+fails before dispatch, and an empty collection returns an empty array. Collection
+capacity does not replace schema, request or cumulative-effect limits.
+
+The portable source shape is deliberately bounded: one local collection, one
+direct `for...of` with one inline `add`, then one awaited flush. Keep the full
+[collection grammar, ownership and failure rules](./docs/concepts/effects-and-continuations.md#bounded-dynamic-collections)
+with their owner rather than treating this as an arbitrary Promise collection.
 
 ## `ctx.emit`
 
@@ -438,6 +480,19 @@ return ctx.json(output, {
 })
 ```
 
+### Experimental generated output
+
+On an explicitly opted-in Node HTTP profile, `ctx.output.start(options)` and
+`ctx.output.write(text)` are awaited effects; return `ctx.output.close()` directly.
+This is finite UTF-8 output with a required request deadline, not a general stream
+API. Writes cannot join `ctx.parallel`; Fastly output and Native output with linked
+guests remain unsupported. After start commits headers, failures terminate the
+transport rather than sending a second response.
+
+The [generated-output contract](./docs/concepts/bodies.md#experimental-generated-output-on-node)
+owns opt-ins, byte/write limits, lifecycle and qualification. The separate input
+transform has its own [experimental boundary](./docs/concepts/bodies.md#experimental-bounded-utf-8-transforms-on-node).
+
 ## `ctx.time`
 
 `await ctx.time.now()` returns one provider-owned wall-clock sample. On success,
@@ -475,6 +530,8 @@ cycles, class instances, nonfinite numbers, and nested `undefined` are rejected.
 and cross-request lifetime remain provider capabilities rather than properties
 of the common API.
 
+### Conditional operations
+
 The Node reference on JavaScript and Native, and the Fastly Native adapter,
 realize these operations through direct await or keyed `ctx.parallel`:
 
@@ -491,6 +548,8 @@ CAS conflicts. A read may be stale, but its value and token describe the same
 observation. Tokens are bounded opaque strings, never JavaScript numbers or
 application revision counters.
 
+### KV limits and ownership
+
 Namespaces must be literal bindings; keys, generations, and candidates are runtime
 data. Candidates are snapshotted at admission. Keys are exact Unicode scalar
 strings of 1–1,024 UTF-8 bytes without C0/C1 controls; tokens are 1–256 visible
@@ -499,6 +558,8 @@ The host owns the ten-second operation deadline, shortened by a request deadline
 Timeouts before dispatch are `not-stored`; unconfirmed writes after dispatch are
 `unknown`. Request cancellation follows the existing managed lifecycle and
 never implies rollback.
+
+### Provider realization
 
 The Node realization is an explicit in-memory reference instance, not a durable
 storage guarantee. Fastly Native uses lossless 64-bit generation metadata and
