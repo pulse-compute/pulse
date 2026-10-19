@@ -1,6 +1,28 @@
 # Static Router authoring
 
-Use `Router` when an application has several method/path entry points or needs compile-time middleware. It is a static authoring marker from `@pulse-compute/runtime`, not a JavaScript runtime dispatcher. The shared async/static restrictions are defined in [Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.9/reference/handler-authoring/); target claims live in the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.9/reference/compatibility-matrix/).
+Register methods and paths, attach middleware, and return a response from the
+matching handler. Use `Router` from `@pulse-compute/runtime` to compose static
+route groups; `Pulse` exposes the same registration methods in a conventional
+project. Route registration is static authoring, not a JavaScript runtime dispatcher.
+
+Read the example from the outside in: `app` mounts `/api`, `api` mounts `/users`,
+and the child route reads its matched `:id`. Middleware either returns a response
+or ends with `return next()` so the next registered handler can run.
+
+| Build up the application | Read next |
+|---|---|
+| Match a method/path and read parameters | [Supported route surface](#supported-v2-surface) |
+| Add checks before a route | [Middleware scope and effects](#middleware-scope-and-effects) |
+| Fall through or handle an admitted error | [Terminal transfer and recovery](#next-is-a-terminal-transfer) |
+| Select a mounted group from request state | [Selected groups](#selected-groups) |
+| Inspect the resulting route graph | [Inspect the lowering](#inspect-the-lowering) |
+
+Keep [managed handler restrictions](https://pulsecompute.io/v1.0.0-beta.9/reference/handler-authoring/) and
+[provider/target limits](https://pulsecompute.io/v1.0.0-beta.9/reference/compatibility-matrix/) alongside these
+routing rules. [Express migration](./migrating-from-express.md) explains the
+behavior changes for an existing service.
+
+## Follow a routed request
 
 <!-- pulse-doc-source: examples/09-router-lowering/src/index.ts -->
 ```ts
@@ -105,42 +127,30 @@ acceptance only; they do not implement Catalog persistence or authorization.
 node wasm/scripts/run-wasm-tests.cjs --task catalog-router-parity --no-report
 ```
 
-## Selected groups
+## Middleware scope and effects
 
-Mount a group once after earlier selectors have set request-local state:
+A path-scoped `use('/api', handler)` applies only to that subtree. Middleware declared on a mounted child Router is naturally limited to the mounted subtree.
+
+Middleware may request normal canonical effects before transferring control:
 
 ```ts
-app.mount('/api', collection, { state: 'read-family', equals: 'collection' })
+app.use(async (ctx, next) => {
+  const access = await ctx.fetch('https://auth.example.test/check').json<{ allowed: boolean }>()
+  if (!access.allowed) return ctx.text('denied', { status: 403 })
+  return next()
+})
 ```
 
-The optional third argument is an inline object containing exactly `state` and
-`equals`, both string literals. At this mount's ordered position, the request
-path must match and `ctx.state.get('read-family') === 'collection'` must hold.
-An absent or unequal value skips every child owner and effect directly to the
-parent continuation. Selection is not authorization; keep authorization in its
-existing owner.
+Pulse owns suspension and resumption for the effect. `pulse inspect` attributes the effect and continuation to the middleware entry and then resumes the same flat Router execution graph.
 
-A match enters the child once. Child `next()` still advances to the next sibling,
-and exhaustion joins the parent continuation once. Terminal responses and ordered
-local/parent error handling keep their existing semantics. A suspended effect
-resumes inside the child; changing selection state there does not reevaluate the
-mount. Method, path and parameter scoping are unchanged. An empty selected child
-continues immediately.
 
-This form is supported by live JavaScript and canonical Native compilation.
-Eligibility does not accept callbacks, calls, getters, spreads, computed keys,
-descriptor references or dynamic values. Unsupported source receives
-`PULSEWASM_UNSUPPORTED_MOUNT_ELIGIBILITY`; historical table/harness emitters also
-reject selected mounts rather than ignoring them. Two-argument mounts are
-unchanged. The group remains one placement with one existing parent continuation.
+Use `ctx.parallel({ ... })` inside any managed route or middleware when named
+operations must begin together on both JavaScript and Native targets. Its fixed
+object-literal property order owns effect identity and result reconstruction, and
+the group settles completely before Router execution continues. Separate awaits
+retain ordinary sequential JavaScript behavior; Native may additionally group
+adjacent eligible effects as an optimization.
 
-The `router-selected-groups` task checks exclusion, suspension after a state
-change, terminal/error paths, nested parameters and one common tail on live
-JavaScript and compiled Node/Fastly Native (Fastly uses its local ABI mock host).
-
-```sh
-node wasm/scripts/run-wasm-tests.cjs --task router-selected-groups --no-report
-```
 
 ## `next()` is a terminal transfer
 
@@ -230,30 +240,42 @@ do not acquire recovery or rollback guarantees. Native authoring still does not
 admit arbitrary `throw` or `try`/`catch`. JavaScript retains its existing
 `PulseUnhandledError` containment for unexpected handler failures.
 
-## Middleware scope and effects
+## Selected groups
 
-A path-scoped `use('/api', handler)` applies only to that subtree. Middleware declared on a mounted child Router is naturally limited to the mounted subtree.
-
-Middleware may request normal canonical effects before transferring control:
+Mount a group once after earlier selectors have set request-local state:
 
 ```ts
-app.use(async (ctx, next) => {
-  const access = await ctx.fetch('https://auth.example.test/check').json<{ allowed: boolean }>()
-  if (!access.allowed) return ctx.text('denied', { status: 403 })
-  return next()
-})
+app.mount('/api', collection, { state: 'read-family', equals: 'collection' })
 ```
 
-Pulse owns suspension and resumption for the effect. `pulse inspect` attributes the effect and continuation to the middleware entry and then resumes the same flat Router execution graph.
+The optional third argument is an inline object containing exactly `state` and
+`equals`, both string literals. At this mount's ordered position, the request
+path must match and `ctx.state.get('read-family') === 'collection'` must hold.
+An absent or unequal value skips every child owner and effect directly to the
+parent continuation. Selection is not authorization; keep authorization in its
+existing owner.
 
+A match enters the child once. Child `next()` still advances to the next sibling,
+and exhaustion joins the parent continuation once. Terminal responses and ordered
+local/parent error handling keep their existing semantics. A suspended effect
+resumes inside the child; changing selection state there does not reevaluate the
+mount. Method, path and parameter scoping are unchanged. An empty selected child
+continues immediately.
 
-Use `ctx.parallel({ ... })` inside any managed route or middleware when named
-operations must begin together on both JavaScript and Native targets. Its fixed
-object-literal property order owns effect identity and result reconstruction, and
-the group settles completely before Router execution continues. Separate awaits
-retain ordinary sequential JavaScript behavior; Native may additionally group
-adjacent eligible effects as an optimization.
+This form is supported by live JavaScript and canonical Native compilation.
+Eligibility does not accept callbacks, calls, getters, spreads, computed keys,
+descriptor references or dynamic values. Unsupported source receives
+`PULSEWASM_UNSUPPORTED_MOUNT_ELIGIBILITY`; historical table/harness emitters also
+reject selected mounts rather than ignoring them. Two-argument mounts are
+unchanged. The group remains one placement with one existing parent continuation.
 
+The `router-selected-groups` task checks exclusion, suspension after a state
+change, terminal/error paths, nested parameters and one common tail on live
+JavaScript and compiled Node/Fastly Native (Fastly uses its local ABI mock host).
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task router-selected-groups --no-report
+```
 
 ## Deliberately outside v2
 

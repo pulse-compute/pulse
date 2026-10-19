@@ -7,6 +7,17 @@ deployment, and service activation are different proof levels.
 This guide does not claim that a local simulation or offline build is a
 production deployment.
 
+## Choose the supporting guide
+
+| Configure or implement | Guide |
+|---|---|
+| Config Store, Secret Store, KV and backend bindings | [Fastly config, secrets, and KV](./fastly-capabilities.md) |
+| Gateway-held connections and outbound broadcast | [GRIP and Fanout](./grip.md) |
+| Exact supported provider options | [Fastly provider reference](../packages/provider-fastly.md) |
+
+These guides keep their detailed contracts and examples. Start here to connect
+that application behavior to local validation, candidate builds and deployment.
+
 ## Configure bindings and target
 
 The config/secret example is source-bound to a Fastly Native profile:
