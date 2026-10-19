@@ -71,6 +71,7 @@ const {
   OPTION_SPECS,
   META_INVOCATIONS,
   publicCommandSpecDocument,
+  publicOptionsForCommand,
   optionDisplay,
   optionDescription
 } = require(commandSpecPath);
@@ -136,24 +137,44 @@ function valueFor(option) {
   if (option.id === 'artifact') return { source: 'artifact.json', expected: 'artifact.json' };
   if (option.id === 'case') return { source: 'smoke', expected: 'smoke' };
   if (option.id === 'name') return { source: '@example/pulse-app', expected: '@example/pulse-app' };
+  if (option.id === 'out') return { source: 'report.html', expected: 'report.html' };
   return { source: 'sample-value', expected: 'sample-value' };
 }
 
-for (const option of publicOptions) {
-  const command = option.commands === 'all' ? 'build' : option.commands[0];
-  for (const flag of option.flags) {
-    let token = flag.name;
-    let expected = true;
-    if (option.kind === 'boolean-value') expected = flag.value;
-    if (option.kind === 'value') {
-      const value = valueFor(option);
-      token = `${flag.name}=${value.source}`;
-      expected = value.expected;
+// Audit every command/flag pair, including aliases, negative booleans and both
+// value syntaxes. Scope-specific option descriptions must reach help and docs.
+const globalIds = new Set(['help', 'json', 'dry-run']);
+const globalReference = reference.split('## Global options\n')[1].split('\n## ')[0];
+for (const command of PUBLIC_COMMAND_ORDER) {
+  const section = reference.split(`## \x60pulse ${command}\x60\n`)[1].split('\n## ')[0];
+  const declared = publicOptions.filter(option => option.commands === 'all' || option.commands.includes(command));
+  assert.deepEqual(publicOptionsForCommand(command).map(option => option.id), declared.map(option => option.id),
+    `${command} must expose every parser-allowed option in its public catalog`);
+  for (const option of publicOptions) {
+    const allowed = declared.includes(option);
+    for (const flag of option.flags) {
+      const value = option.kind === 'value' ? valueFor(option) : null;
+      const forms = value ? [[flag.name, value.source], [`${flag.name}=${value.source}`]] : [[flag.name]];
+      for (const form of forms) {
+        // --out on report is intentionally valid only together with --html.
+        const argv = [command, ...form, ...(command === 'report' && option.id === 'out' ? ['--html'] : [])];
+        if (!allowed) {
+          assert.throws(() => parseCommandRequest(argv), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED',
+            `${command} must reject ${flag.name}`);
+          continue;
+        }
+        const expected = value ? value.expected : option.kind === 'boolean-value' ? flag.value : true;
+        assert.equal(parseCommandRequest(argv)[option.key], expected, `${command} ${form.join(' ')} must parse`);
+      }
     }
-    const parsed = parseCommandRequest([command, token]);
-    assert.equal(parsed[option.key], expected, `${flag.name} must parse into ${option.key}`);
-    assert.ok(help.includes(flag.name), `public help is missing ${flag.name}`);
-    assert.ok(reference.includes(flag.name), `CLI reference is missing ${flag.name}`);
+    if (allowed) {
+      const display = optionDisplay(option, command);
+      const description = optionDescription(option, command);
+      assert.ok(help.includes(display), `public help is missing ${command} ${display}`);
+      assert.ok(help.includes(description), `public help is missing ${command} option limits: ${option.id}`);
+      assert.ok((globalIds.has(option.id) ? globalReference : section).includes(`| \x60${display}\x60 | ${description} |`),
+        `reference must retain ${command} ${option.id} flags, value form and full description`);
+    }
   }
 }
 

@@ -275,6 +275,32 @@ ${GENERATED_NOTICE}
 
 The ${inlineCode('pulse')} CLI in ${inlineCode('@pulse-compute/cli@' + RELEASE_VERSION)} is the supported project workflow. One command specification generates this page, installed help, and the shipped Bash, Zsh, and Fish completion scripts, so a public command or option cannot drift between those surfaces.
 
+## Quick start
+
+Use ${inlineCode('pulse')} to create, check, run and build a project. The general shape is:
+
+\`\`\`text
+pulse <command> [directory] [options]
+\`\`\`
+
+Project commands use the current directory when ${inlineCode('[directory]')} is
+omitted. Provider and target come from the selected profile in
+${inlineCode('.pulse/config.ts')}; ${inlineCode('--profile <name>')} selects another profile.
+
+Common usage in an initialized project:
+
+\`\`\`bash
+pulse doctor
+pulse test
+pulse dev
+# Stop the foreground server with Ctrl-C before building.
+pulse build
+\`\`\`
+
+Use ${inlineCode('pulse inspect')} for project details and ${inlineCode('pulse report')}
+for retained Native build evidence. [Global options](#global-options) and each
+command's options below retain the complete flags, limits and exit behavior.
+
 ## Command index
 
 | Command | Purpose |
@@ -387,7 +413,7 @@ ${rows.join('\n')}
 - **Zsh:** copy \`completions/_pulse\` into a directory on \`$fpath\`, then run \`compinit\`.
 - **Fish:** copy \`completions/pulse.fish\` into \`~/.config/fish/completions/\`.
 
-Completion candidates include the public project commands, help/version/completion invocations, public flags, provider values, and completion shell names. The machine-readable owner is [\`cli-spec.json\`](./cli-spec.json).
+Completion candidates include the public project commands, help/version/completion invocations, public flags, and completion shell names. The machine-readable owner is [\`cli-spec.json\`](./cli-spec.json).
 `);
 }
 

@@ -4,6 +4,32 @@
 
 The `pulse` CLI in `@pulse-compute/cli@1.0.0-beta.9` is the supported project workflow. One command specification generates this page, installed help, and the shipped Bash, Zsh, and Fish completion scripts, so a public command or option cannot drift between those surfaces.
 
+## Quick start
+
+Use `pulse` to create, check, run and build a project. The general shape is:
+
+```text
+pulse <command> [directory] [options]
+```
+
+Project commands use the current directory when `[directory]` is
+omitted. Provider and target come from the selected profile in
+`.pulse/config.ts`; `--profile <name>` selects another profile.
+
+Common usage in an initialized project:
+
+```bash
+pulse doctor
+pulse test
+pulse dev
+# Stop the foreground server with Ctrl-C before building.
+pulse build
+```
+
+Use `pulse inspect` for project details and `pulse report`
+for retained Native build evidence. [Global options](#global-options) and each
+command's options below retain the complete flags, limits and exit behavior.
+
 ## Command index
 
 | Command | Purpose |
