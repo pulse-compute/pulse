@@ -15,7 +15,7 @@ Generated from the executable test harness below; these are tested requests or e
 
 | Request | Expected response |
 |---|---|
-| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"db5f4ea2dfd0221ab7d199d1ba66e282a0c08ba788a2f860a0cd7339b4d45c8b","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
+| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"0d9284f6dbcd58c129600dd3fe67c623712528aca4c3b2f71b9529babddc4eb0","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
 | schema-admission<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":2,"method":"pulse.search","params":{"version":"1.0.0-beta.9","query":42}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Invalid params"}}}</code> |
 
 <!-- pulse-example-view:code -->
@@ -203,6 +203,27 @@ The `canonical-native-plan` warning describes this JavaScript-only app’s Nativ
 
 The selected JavaScript profile has no completed Wasm artifact for `pulse report`. No Report result is claimed; use the inspection above and the standalone-host readiness evidence below.
 
+## Install
+
+Use Node 22.14+ or Node 24. Copy this complete example from the matching CLI
+package's `examples/12-pulse-context-mcp/` directory into a new directory. The
+corpus, host and request helper are included; no repository checkout, upstream
+server, credentials or global Pulse installation is needed at runtime.
+
+**Candidate status:** all Pulse dependencies, including MCP, use the exact
+`1.0.0-beta.9` synchronized candidate version. Registry installation becomes
+available after release-owner bootstrap, trusted-publisher setup and publication.
+Until then, use matching candidate packages through the candidate registry.
+PMCP-07 owns the installed context-app onboarding journey. The install command is:
+
+```bash
+npm install
+```
+
+Do not substitute an older CLI or an unrelated MCP package. This README's
+context version is `1.0.0-beta.9` with snapshot status `candidate`; check the
+readiness response for the bundled version before calling tools.
+
 ## Workflow
 
 Run the example's local CLI scripts:
@@ -246,118 +267,6 @@ content. Pass `--url URL` before the operation to use the endpoint printed by re
 when using another port. These same tools can be used by an MCP client pointed at the local HTTP
 endpoint. Modern framing is the default, including the qualified Claude client.
 For the pinned Codex compatibility profile, start with `npm start -- --codex`.
-
-## Test result
-
-<!-- pulse-doc-run {"project":"examples/12-pulse-context-mcp","args":["test","--json"]} -->
-```bash
-pulse test --json
-```
-```json
-{"status":"passed","provider":"node","target":"javascript","summary":{"total":2,"passed":2,"failed":0}}
-```
-
-## Test harness
-
-<!-- pulse-doc-source: examples/12-pulse-context-mcp/tests/pulse.harness.ts -->
-```ts
-import { contextCorpus } from '../context-corpus.ts'
-
-const meta = {
-  pulseVersion: contextCorpus.pulseVersion,
-  corpusSchemaVersion: contextCorpus.schemaVersion,
-  corpusHash: contextCorpus.corpusHash,
-  snapshotStatus: contextCorpus.status,
-  applicationVersion: 'pulse.context-application.v1',
-  requestedVersion: contextCorpus.pulseVersion,
-  maxReplyBytes: 24576,
-}
-
-export default {
-  cases: [
-    {
-      name: 'unknown-record',
-      request: {
-        method: 'POST',
-        path: '/',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'pulse.read',
-          params: { version: contextCorpus.pulseVersion, id: 'missing' },
-        }),
-      },
-      expect: {
-        status: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 1,
-          result: {
-            meta,
-            status: 'unknown-id',
-            truncated: false,
-            error: {
-              code: 'unknown-id',
-              message: 'No bundled record has that exact ID.',
-            },
-          },
-        },
-      },
-    },
-    {
-      name: 'schema-admission',
-      request: {
-        method: 'POST',
-        path: '/',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 2,
-          method: 'pulse.search',
-          params: { version: contextCorpus.pulseVersion, query: 42 },
-        }),
-      },
-      expect: {
-        status: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 2,
-          error: { code: -32602, message: 'Invalid params' },
-        },
-      },
-    },
-  ],
-}
-```
-<!-- /pulse-doc-source -->
-
-## Wasm size
-
-This explicit Node JavaScript profile emits **no application Wasm artifact**.
-`--experimental-native-size` does not apply. Switching this app to Native fails
-eligibility rather than selecting JavaScript automatically.
-
-## Install
-
-Use Node 22.14+ or Node 24. Copy this complete example from the matching CLI
-package's `examples/12-pulse-context-mcp/` directory into a new directory. The
-corpus, host and request helper are included; no repository checkout, upstream
-server, credentials or global Pulse installation is needed at runtime.
-
-**Candidate status:** all Pulse dependencies, including MCP, use the exact
-`1.0.0-beta.9` synchronized candidate version. Registry installation becomes
-available after release-owner bootstrap, trusted-publisher setup and publication.
-Until then, use matching candidate packages through the candidate registry.
-PMCP-07 owns the installed context-app onboarding journey. The install command is:
-
-```bash
-npm install
-```
-
-Do not substitute an older CLI or an unrelated MCP package. This README's
-context version is `1.0.0-beta.9` with snapshot status `candidate`; check the
-readiness response for the bundled version before calling tools.
 
 ## Walkthrough 1: start a JSON API
 
@@ -468,6 +377,97 @@ then backend for one second each. Graceful shutdown exits zero; forced shutdown
 or startup failure exits one. Budgets revoke Pulse-owned asynchronous work and
 do not preempt synchronous JavaScript. Remote deployment and authentication
 require a separate deployment design.
+
+## Test result
+
+<!-- pulse-doc-run {"project":"examples/12-pulse-context-mcp","args":["test","--json"]} -->
+```bash
+pulse test --json
+```
+```json
+{"status":"passed","provider":"node","target":"javascript","summary":{"total":2,"passed":2,"failed":0}}
+```
+
+## Test harness
+
+<!-- pulse-doc-source: examples/12-pulse-context-mcp/tests/pulse.harness.ts -->
+```ts
+import { contextCorpus } from '../context-corpus.ts'
+
+const meta = {
+  pulseVersion: contextCorpus.pulseVersion,
+  corpusSchemaVersion: contextCorpus.schemaVersion,
+  corpusHash: contextCorpus.corpusHash,
+  snapshotStatus: contextCorpus.status,
+  applicationVersion: 'pulse.context-application.v1',
+  requestedVersion: contextCorpus.pulseVersion,
+  maxReplyBytes: 24576,
+}
+
+export default {
+  cases: [
+    {
+      name: 'unknown-record',
+      request: {
+        method: 'POST',
+        path: '/',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'pulse.read',
+          params: { version: contextCorpus.pulseVersion, id: 'missing' },
+        }),
+      },
+      expect: {
+        status: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: 1,
+          result: {
+            meta,
+            status: 'unknown-id',
+            truncated: false,
+            error: {
+              code: 'unknown-id',
+              message: 'No bundled record has that exact ID.',
+            },
+          },
+        },
+      },
+    },
+    {
+      name: 'schema-admission',
+      request: {
+        method: 'POST',
+        path: '/',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'pulse.search',
+          params: { version: contextCorpus.pulseVersion, query: 42 },
+        }),
+      },
+      expect: {
+        status: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: 2,
+          error: { code: -32602, message: 'Invalid params' },
+        },
+      },
+    },
+  ],
+}
+```
+<!-- /pulse-doc-source -->
+
+## Wasm size
+
+This explicit Node JavaScript profile emits **no application Wasm artifact**.
+`--experimental-native-size` does not apply. Switching this app to Native fails
+eligibility rather than selecting JavaScript automatically.
 
 ## Maintaining the snapshot
 

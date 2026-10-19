@@ -195,70 +195,6 @@ npm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --html
 
 Review reports before sharing. Missing, stale or incompatible evidence is an error; timings, paths and hashes are not presented as stable output.
 
-## Test result
-
-<!-- pulse-doc-run {"project":"examples/10-entities-tools","args":["test","--json"]} -->
-```bash
-pulse test --json
-```
-```json
-{"status":"passed","provider":"node","target":"javascript","summary":{"total":2,"passed":2,"failed":0}}
-```
-
-## Test harness
-
-<!-- pulse-doc-source: examples/10-entities-tools/tests/pulse.harness.ts -->
-```ts
-export default { cases: [
-  {
-    name: 'system-status',
-    request: {
-      method: 'POST',
-      path: '/',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', method: 'system.status', id: 'status-doc' }),
-    },
-    expect: {
-      status: 200,
-      json: { jsonrpc: '2.0', result: null, id: 'status-doc' },
-    },
-  },
-  {
-    name: 'customer-lookup',
-    request: {
-      method: 'POST',
-      path: '/',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'customer.lookup',
-        params: { email: 'ada@example.test' },
-        id: 'lookup-doc',
-      }),
-    },
-    fetches: {
-      'https://directory.example.test/customers/ada@example.test': { text: 'Ada Lovelace' },
-    },
-    expect: {
-      status: 200,
-      json: {
-        jsonrpc: '2.0',
-        result: { email: 'ada@example.test', displayName: 'Ada Lovelace' },
-        id: 'lookup-doc',
-      },
-    },
-  },
-] }
-```
-<!-- /pulse-doc-source -->
-
-## Wasm size
-
-The default `node-javascript` profile emits **no application Wasm artifact**.
-Select `node-native` to emit an application guest. `--experimental-native-size`
-is meaningful only on that Native profile; the default JavaScript build has
-no application guest to optimize.
-
 ## JavaScript workflow
 
 Install the example's declared dependencies, then run its local CLI scripts.
@@ -358,6 +294,15 @@ and provider bundle under `dist-fastly-javascript`. Fastly `test` and `dev` use
 the provider's local fixture runtime. They do not constitute Viceroy replay or
 live deployment. Bind the real directory backend separately before deployment.
 
+## Facade boundary
+
+`tools-facade.cjs` is an orchestration example, not a complete MCP server. It
+does not add listeners, SSE, sessions, tasks, resources, prompts, sampling,
+authorization, transport negotiation, or protocol lifecycle state to Pulse
+runtime core. A future MCP or tools facade remains an adapter outside the
+entity engine, just as a future Worker/event adapter would bind a different
+request or event protocol without changing entity handler semantics.
+
 ## Clean installed acceptance
 
 From a source checkout with the pinned workspace dependencies restored:
@@ -384,11 +329,66 @@ This gate is required by the release profile and can be selected directly. It
 supplements the fast non-main workflow without adding package installation to
 every fast PR run. External Viceroy evidence and live deployment remain separate.
 
-## Facade boundary
+## Test result
 
-`tools-facade.cjs` is an orchestration example, not a complete MCP server. It
-does not add listeners, SSE, sessions, tasks, resources, prompts, sampling,
-authorization, transport negotiation, or protocol lifecycle state to Pulse
-runtime core. A future MCP or tools facade remains an adapter outside the
-entity engine, just as a future Worker/event adapter would bind a different
-request or event protocol without changing entity handler semantics.
+<!-- pulse-doc-run {"project":"examples/10-entities-tools","args":["test","--json"]} -->
+```bash
+pulse test --json
+```
+```json
+{"status":"passed","provider":"node","target":"javascript","summary":{"total":2,"passed":2,"failed":0}}
+```
+
+## Test harness
+
+<!-- pulse-doc-source: examples/10-entities-tools/tests/pulse.harness.ts -->
+```ts
+export default { cases: [
+  {
+    name: 'system-status',
+    request: {
+      method: 'POST',
+      path: '/',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'system.status', id: 'status-doc' }),
+    },
+    expect: {
+      status: 200,
+      json: { jsonrpc: '2.0', result: null, id: 'status-doc' },
+    },
+  },
+  {
+    name: 'customer-lookup',
+    request: {
+      method: 'POST',
+      path: '/',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'customer.lookup',
+        params: { email: 'ada@example.test' },
+        id: 'lookup-doc',
+      }),
+    },
+    fetches: {
+      'https://directory.example.test/customers/ada@example.test': { text: 'Ada Lovelace' },
+    },
+    expect: {
+      status: 200,
+      json: {
+        jsonrpc: '2.0',
+        result: { email: 'ada@example.test', displayName: 'Ada Lovelace' },
+        id: 'lookup-doc',
+      },
+    },
+  },
+] }
+```
+<!-- /pulse-doc-source -->
+
+## Wasm size
+
+The default `node-javascript` profile emits **no application Wasm artifact**.
+Select `node-native` to emit an application guest. `--experimental-native-size`
+is meaningful only on that Native profile; the default JavaScript build has
+no application guest to optimize.

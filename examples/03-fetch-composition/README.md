@@ -214,6 +214,11 @@ pulse build
 
 The documented test result below is executed by the documentation gate.
 
+## Dynamic endpoint lists
+
+See [dynamic-probes](dynamic-probes/README.md) for a runtime-sized endpoint list,
+a bounded effects collection, and explicit concurrent flush.
+
 ## Test result
 
 <!-- pulse-doc-run {"project":"examples/03-fetch-composition","args":["test","--json"]} -->
@@ -304,8 +309,3 @@ export default {
 The executable documentation gate rebuilds and measures both variants on
 `1.0.0-beta.9`. These are uncompressed on-disk sizes, not transfer sizes or
 platform limits.
-
-## Dynamic endpoint lists
-
-See [dynamic-probes](dynamic-probes/README.md) for a runtime-sized endpoint list,
-a bounded effects collection, and explicit concurrent flush.

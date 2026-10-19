@@ -158,6 +158,13 @@ contextDataIntegrity();
     assert(rendered.indexOf('## Code') < rendered.indexOf('## Test harness'));
     for (const heading of ['Inspect', 'Doctor']) assert(rendered.includes(`## ${heading}\n`));
     assert.equal(rendered.includes('## Report\n'), id !== '12-pulse-context-mcp');
+    if (id === '12-pulse-context-mcp') {
+      assert(rendered.indexOf('## Doctor') < rendered.indexOf('## Install'));
+      assert(rendered.indexOf('## Install') < rendered.indexOf('## Workflow'));
+      assert(rendered.indexOf('## Walkthrough 1:') < rendered.indexOf('## Test harness'));
+    }
+    if (id === '10-entities-tools')
+      assert(rendered.indexOf('## JavaScript workflow') < rendered.indexOf('## Test result'));
     const blocks = text => [...text.matchAll(/```[^\n]*\n([\s\S]*?)\n```/g)].map(match => match[1]).sort();
     assert.deepEqual(blocks(rendered), blocks(input), 'all source and output fences must survive composition');
     for (const item of project.tests) assert(rendered.includes(item.kind === 'event' ? item.event.type : item.request.path));

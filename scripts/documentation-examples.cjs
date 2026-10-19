@@ -4,7 +4,8 @@
 // section prose; snippets and command-result bindings keep their existing owners.
 const MARKER = '<!-- pulse-example-template:v1 -->';
 const CODE = ['Handler', 'Application', 'Router application', 'Entity application', 'Project config', 'Schemas'];
-const LOWER = ['Workflow', 'Test result', 'Test harness', 'Wasm size'];
+const WORKFLOW = ['Install', 'Workflow', 'JavaScript workflow', 'Node Native workflow', 'Fastly profiles'];
+const EVIDENCE = ['Clean installed acceptance', 'Test result', 'Test harness', 'Wasm size', 'Maintaining the snapshot'];
 const escape = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '&#124;').replace(/`/g, '&#96;').replace(/\r?\n/g, '\\n');
 // HTML code spans decode escaped table delimiters/entities without changing values.
 const code = value => '<code>' + escape(typeof value === 'string' ? value : JSON.stringify(value)) + '</code>';
@@ -53,9 +54,11 @@ function renderExampleTemplate(markdown, loadCases) {
     output.push('<!-- pulse-example-view:code -->\n## Code');
     CODE.forEach(name => emit(name, 3));
   }
-  for (const name of ['Inspect', 'Doctor', 'Report', ...LOWER]) emit(name);
-  // Preserve additional example-specific setup, walkthroughs and limitations.
-  for (const name of [...sections.keys()]) emit(name);
+  for (const name of ['Inspect', 'Doctor', 'Report', ...WORKFLOW]) emit(name);
+  // Keep walkthroughs and limits ahead of repetitive evidence, without a
+  // per-example template. Installation always precedes executable workflows.
+  for (const name of [...sections.keys()].filter(name => !EVIDENCE.includes(name))) emit(name);
+  for (const name of EVIDENCE) emit(name);
   return output.join('\n\n') + '\n';
 }
 module.exports = { MARKER, requestTable, renderExampleTemplate };
