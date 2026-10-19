@@ -9,6 +9,9 @@ pulse-doc-meta:end -->
 
 These pages describe changes to the synchronized Pulse repository. They are not application-author extension APIs.
 
+> Before changing a shared boundary, consult the
+> [Architecture contracts](../architecture/current-contracts.md) for ownership rules and invariants.
+
 ## Contributor workflow
 
 1. Choose the owning contract and read the root and nearest `AGENTS.md`.
@@ -50,7 +53,6 @@ and target set. Human maintainers retain merge, settings and release authority.
 
 - [Package support policy](../packages/README.md)
 - [Architecture overview](../architecture/overview.md)
-- [Current architecture contracts](../architecture/current-contracts.md)
 - [Reference overview](../reference/README.md)
 
 The current release executes only trusted first-party lowerer builders. Built-in
