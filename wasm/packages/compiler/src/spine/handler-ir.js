@@ -193,6 +193,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
   const resourceViews = require('./resource-views.js').inspectResourceViews(handler, ctxName);
   if (options.resourceIds) for (const id of resourceViews.identities) if (!options.resourceIds.includes(id)) diagnostics.push(diagnostic(sourceFile, handler, 'PULSE_BINARY_RESOURCE_INVALID', 'Resource identity is not declared in project configuration.'));
   for (const error of resourceViews.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_BINARY_RESOURCE_INVALID', error.message));
+  for (const error of require('./numeric-workspaces.js').inspectNumericWorkspaces(handler, ctxName)) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_NUMERIC_WORKSPACE_INVALID', error.message));
   const effectSites = [];
   const continuationSites = [];
   const effectCounters = new Map();

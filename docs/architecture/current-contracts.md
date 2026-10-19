@@ -432,7 +432,7 @@ not a hard limit on the number of parameters or on the size of every function.
 ## Synchronous pure source helpers (PF-02/PF-03/PF-04/PF-06)
 
 The integrated Native plan compiler identity is
-`pulse.canonical-native-plan-compiler.v10`. It combines the existing helper
+`pulse.canonical-native-plan-compiler.v11`. It combines the existing helper
 lowering with terminal package applications and the bounded Node body/output
 extensions. The plan schema, helper contracts and host ABI retain their own
 versions; this compiler identity does not widen their admission rules.
@@ -795,7 +795,7 @@ executions with the same caller-supplied execution label. Node Native effect and
 continuation traces include invocation IDs while retaining static site IDs.
 Original-source JavaScript continues to use its per-call effect identities.
 
-The managed Native controller (`pulse.canonical-native-host.v4`) accepts a pending effect's opaque ticket in
+The managed Native controller (`pulse.canonical-native-host.v5`) accepts a pending effect's opaque ticket in
 `setEffectResult(ticket, result)`. Object identity authenticates the ticket;
 copied fields, foreign executions, old loop visits and duplicate settlement fail
 with `PULSE_EFFECT_INVOCATION_INVALID` before allocating a result handle or
@@ -2677,5 +2677,21 @@ raw immutable data and little-endian loads. No resource view is stored in a
 continuation or exported as a general byte buffer. JavaScript uses private
 snapshot backing and execution-branded views. Same-candidate artifact identity
 includes the selected bytes; passing historical results never substitutes for
-execution qualification. Actual MCP vector data, installed-consumer closure and
-full report attribution remain B10-08C qualification work.
+execution qualification. B10-MCP-02 adds strict bounded `readUtf8` expressions
+(`pulse.binary-resource-utf8.v1`) and fixed-capacity request-local numeric
+workspaces (`pulse.numeric-workspace.v1`). Plan/compiler v11 and AS generator
+v10 invalidate earlier generated artifacts; guest ABI 2 has optional workspace
+number/check imports. Node host v5 and Fastly Native implement those checks.
+The independent plan validator proves allocation identity, initialization
+ownership and checked operation shape. Each Native allocation uses raw f64
+storage, zeroed on entry; no pointer or workspace handle escapes into effects.
+JavaScript uses private zeroed numeric backing and execution-checked views.
+The public bounds and source restrictions are in
+[`ctx.workspace`](../../API.md#ctxworkspace). Existing pure-loop limits remain
+unchanged. Workspace-only artifacts also retain synchronous deadline checks.
+
+The isolated actual-corpus and capacity-bound query-to-citation proof is in
+[B10-MCP-02](../internal/b10-mcp-02/README.md). It uses injected Fastly ABI
+execution, not CLI/Viceroy or a completed MCP transport. Production resource
+reconstruction, installed closure, full reports, seal freshness and real
+Fastly/client qualification remain B10-MCP-03/07/08/09/10.

@@ -121,7 +121,7 @@ function instrument(source) {
   // failure suppression on all imports so a failed expression has no effects.
   source = source.replace(/function (host_\w+)\(([^)]*)\): (i32|void) \{/g,
     (declaration, name, _args, result) => name === 'host_router_error_take' ? declaration
-      : `${declaration} if (__pulse_fastly_last_error != 0) return${result === 'void' ? '' : name === 'host_resource_check' ? ' -1' : ' 0'};`);
+      : `${declaration} if (__pulse_fastly_last_error != 0) return${result === 'void' ? '' : ['host_resource_check', 'host_workspace_check'].includes(name) ? ' -1' : ' 0'};`);
   const wrappers = [
     ['host_request_json', 'schema: i32', 'schema', '1'],
     ['host_schema_decode', 'text: i32, schema: i32', 'text, schema', '1'],

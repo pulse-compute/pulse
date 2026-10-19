@@ -2,9 +2,9 @@
 
 const CANONICAL_NATIVE_WASM_VERSION = 'pulse.canonical-native-wasm.v2';
 const CANONICAL_NATIVE_ABI_VERSION = 2;
-const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v9';
+const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v10';
 const CANONICAL_NATIVE_COMPILER_VERSION = 'pulse.canonical-native-wasm-compiler.v3';
-const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v4';
+const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v5';
 
 // Execution-wide containment for plans with bounded storage-read loops. These
 // are accounting limits, not a JavaScript process/RSS limit. Native providers
@@ -78,6 +78,8 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   // Optional binary-resource-read.v1: numeric extraction and checked byte offsets.
   ['resource_offset_value', ['i32'], ['f64']],
   ['resource_check', ['f64', 'i32', 'i32'], ['i32']],
+  ['workspace_number_value', ['i32'], ['f64']],
+  ['workspace_check', ['f64', 'i32', 'f64'], ['i32']],
   ['value_string', ['i32', 'i32'], ['i32']],
   ['value_array', [], ['i32']],
   ['value_array_push', ['i32', 'i32'], []],

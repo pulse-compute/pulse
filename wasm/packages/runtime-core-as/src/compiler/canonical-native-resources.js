@@ -26,11 +26,41 @@ function prepareNativeResources(plan) {
   if (!isFinite(value)) { host_resource_check(NaN, 0, 0); return 0; }
   return value;
 }`);
-  return { source, read(expression, offset = '0.0') {
+  source.push(`function __pulse_resource_utf8(base: usize, size: i32, offset: f64, length: f64): i32 {
+  const width = host_resource_check(length, 12288, 0);
+  if (width < 0) return 0;
+  const start = host_resource_check(offset, size, width);
+  if (start < 0) return 0;
+  if (start < size && (load<u8>(base + <usize>start) & 192) == 128) { host_resource_check(NaN, 0, 0); return 0; }
+  const end = start + width;
+  let at = start;
+  while (at < end) {
+    if (host_resource_check(at, size, 1) < 0) return 0;
+    const a = <i32>load<u8>(base + <usize>(at++));
+    if (a < 128) continue;
+    const count = a >= 194 && a <= 223 ? 1 : a >= 224 && a <= 239 ? 2 : a >= 240 && a <= 244 ? 3 : 0;
+    if (count == 0 || count > end - at) { host_resource_check(NaN, 0, 0); return 0; }
+    const b = <i32>load<u8>(base + <usize>at);
+    if (a == 224 && b < 160 || a == 237 && b >= 160 || a == 240 && b < 144 || a == 244 && b >= 144) { host_resource_check(NaN, 0, 0); return 0; }
+    for (let n = 0; n < count; n++) {
+      if ((load<u8>(base + <usize>(at++)) & 192) != 128) { host_resource_check(NaN, 0, 0); return 0; }
+    }
+  }
+  if (host_resource_check(offset, size, width) < 0) return 0;
+  const text = String.UTF8.decodeUnsafe(base + <usize>start, width);
+  return host_value_string(changetype<usize>(text), text.length);
+}`);
+  function location(expression) {
     const record = catalogue.records.find(entry => entry.id === expression.resourceId);
-    const index = catalogue.blobs.findIndex(blob => blob.id === record.blobId);
+    return { record, index: catalogue.blobs.findIndex(blob => blob.id === record.blobId) };
+  }
+  return { source, read(expression, offset = '0.0') {
+    const { record, index } = location(expression);
     const operation = ['byteLength', 'readU8', 'readU32LE', 'readF32LE'].indexOf(expression.operation);
     return `__pulse_resource_read(__pulse_resource_${index}, ${record.byteLength}, ${offset}, ${operation})`;
+  }, utf8(expression, offset, length) {
+    const { record, index } = location(expression);
+    return `__pulse_resource_utf8(__pulse_resource_${index}, ${record.byteLength}, ${offset}, ${length})`;
   } };
 }
 module.exports = { prepareNativeResources };

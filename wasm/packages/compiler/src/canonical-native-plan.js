@@ -19,7 +19,7 @@ const loggingContract = require('@pulse-compute/wasm-contracts/logging');
 const cryptoContract = require('@pulse-compute/wasm-contracts/crypto/contracts');
 const eventContract = require('@pulse-compute/wasm-contracts/events');
 const pureValues = require('./pure-helper-values');
-const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v10';
+const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v11';
 const { lowerSharedStages, validateSharedStages } = require('./shared-stage-plan');
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';
@@ -293,6 +293,7 @@ class NativePlanBuilder {
     this.resources = options.binaryResources || compiled.binaryResources;
     if (this.resources) require('@pulse-compute/wasm-contracts/resources/embedded').validateResourceCatalogue(this.resources);
     this.usedResources = new Set();
+    this.numericWorkspaces = [];
     this.pureTypes = new Map();
     this.pureTypes.schemas = compiled.metadata.schemaRegistry;
     this.helperBodies = new Map((this.metadata.router?.helpers || []).map(helper => [helper.name, helper]));
@@ -367,9 +368,24 @@ class NativePlanBuilder {
     }
     if (current.kind === ts.SyntaxKind.NullKeyword) return Object.freeze({ kind: 'literal', value: null, valueKind: 'null' });
 
+    const workspace = node => ts.isIdentifier(node) && scope.get(node.text)?.workspaceId;
+    if (ts.isPropertyAccessExpression(current) && workspace(current.expression)) {
+      if (current.name.text !== 'length') this.fail(current, 'PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace property is unsupported.');
+      return Object.freeze({ kind: 'workspace-read', version: 'pulse.numeric-workspace.v1', workspaceId: workspace(current.expression), valueKind: 'number' });
+    }
+    if (ts.isElementAccessExpression(current) && workspace(current.expression)) return Object.freeze({
+      kind: 'workspace-read', version: 'pulse.numeric-workspace.v1', workspaceId: workspace(current.expression), offset: this.expression(current.argumentExpression, scope), valueKind: 'number'
+    });
+    if (ts.isBinaryExpression(current) && ts.isElementAccessExpression(current.left) && workspace(current.left.expression)
+      && current.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && current.operatorToken.kind <= ts.SyntaxKind.LastAssignment) {
+      if (current.operatorToken.kind !== ts.SyntaxKind.EqualsToken) this.fail(current, 'PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace writes require simple assignment.');
+      return Object.freeze({ kind: 'workspace-write', version: 'pulse.numeric-workspace.v1', workspaceId: workspace(current.left.expression),
+        offset: this.expression(current.left.argumentExpression, scope), value: this.expression(current.right, scope), valueKind: 'number' });
+    }
     if (ts.isIdentifier(current)) {
       if (current.text === 'undefined') return Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
       if (current.text === this.ctxName) return Object.freeze({ kind: 'context-read', path: Object.freeze([]), valueKind: 'unknown' });
+      if (scope.get(current.text)?.workspaceId) this.fail(current, 'PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace cannot escape.');
       const local = scope.get(current.text);
       if (!local) {
         this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.LOCAL_UNRESOLVED, `Generated canonical expression references unresolved local ${current.text}.`, { local: current.text });
@@ -551,11 +567,12 @@ class NativePlanBuilder {
     const target = unwrap(call.expression);
     const resource = ts.isPropertyAccessExpression(target) && ts.isIdentifier(target.expression) && scope.get(target.expression.text)?.resourceId;
     if (resource) {
-      if (!['readU8', 'readU32LE', 'readF32LE'].includes(target.name.text) || call.arguments.length !== 1 || target.questionDotToken || call.typeArguments?.length) {
-        this.fail(call, 'PULSE_BINARY_RESOURCE_INVALID', 'Resource reads require one numeric byte offset.');
+      const utf8 = target.name.text === 'readUtf8';
+      if (!['readU8', 'readU32LE', 'readF32LE', 'readUtf8'].includes(target.name.text) || call.arguments.length !== (utf8 ? 2 : 1) || target.questionDotToken || call.typeArguments?.length) {
+        this.fail(call, 'PULSE_BINARY_RESOURCE_INVALID', 'Resource reads require numeric byte offset/length arguments.');
       }
-      return Object.freeze({ kind: 'resource-read', version: 'pulse.binary-resource-read.v1', resourceId: resource, operation: target.name.text,
-        offset: this.expression(call.arguments[0], scope), valueKind: 'number' });
+      return Object.freeze({ kind: 'resource-read', version: utf8 ? 'pulse.binary-resource-utf8.v1' : 'pulse.binary-resource-read.v1', resourceId: resource, operation: target.name.text,
+        offset: this.expression(call.arguments[0], scope), ...(utf8 ? { length: this.expression(call.arguments[1], scope) } : {}), valueKind: utf8 ? 'string' : 'number' });
     }
     const helper = ts.isIdentifier(target) && this.helperBodies.get(target.text);
     if (helper?.pure) {
@@ -798,6 +815,19 @@ class NativePlanBuilder {
         }
         this.usedResources.add(id);
         scope.set(item.name.text, Object.freeze({ name: item.name.text, resourceId: id, declaration: 'const' }));
+        continue;
+      }
+      if (initializer && ts.isCallExpression(initializer) && contextPath(initializer.expression, this.ctxName)?.join('.') === 'workspace.numbers') {
+        const arg = initializer.arguments[0], capacity = arg && ts.isNumericLiteral(arg) ? Number(arg.text) : 0;
+        if (declaration !== 'const' || !ts.isIdentifier(item.name) || initializer.arguments.length !== 1 || this.activeHelper
+          || this.pureLoopDepth || this.readLoopDepth || !Number.isInteger(capacity) || capacity < 1 || capacity > 1024
+          || this.numericWorkspaces.length >= 4 || initializer.typeArguments?.length || initializer.questionDotToken) {
+          this.fail(item, 'PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace requires a literal capacity 1..1024, outside loops/helpers, at most four per plan.'); continue;
+        }
+        const workspaceId = 'workspace-' + this.numericWorkspaces.length;
+        this.numericWorkspaces.push(Object.freeze({ id: workspaceId, capacity }));
+        scope.set(item.name.text, Object.freeze({ name: item.name.text, workspaceId, declaration: 'const' }));
+        out.push(Object.freeze({ kind: 'expression', expression: Object.freeze({ kind: 'workspace-init', version: 'pulse.numeric-workspace.v1', workspaceId, valueKind: 'undefined' }), statementPath: itemPath }));
         continue;
       }
       const helperYield = item.initializer && unwrap(item.initializer);
@@ -1054,7 +1084,7 @@ class NativePlanBuilder {
       const readLoop = containsYield(statement);
       const loop = readLoop
         ? inspectBoundedReadLoop(statement, { ctxName: this.ctxName, headerOnly: true })
-        : inspectBoundedPureLoop(statement, { resourceReadForCall: call => ts.isPropertyAccessExpression(call.expression) && ts.isIdentifier(call.expression.expression) && scope.get(call.expression.expression.text)?.resourceId && ['readU8', 'readU32LE', 'readF32LE'].includes(call.expression.name.text), ctxName: this.ctxName, pureHelper: this.activeHelper?.pure === true,
+        : inspectBoundedPureLoop(statement, { resourceReadForCall: call => ts.isPropertyAccessExpression(call.expression) && ts.isIdentifier(call.expression.expression) && scope.get(call.expression.expression.text)?.resourceId && ['readU8', 'readU32LE', 'readF32LE', 'readUtf8'].includes(call.expression.name.text), ctxName: this.ctxName, pureHelper: this.activeHelper?.pure === true,
           pureHelperForCall: call => ts.isIdentifier(call.expression) && this.helperBodies.get(call.expression.text)?.pure });
       for (const error of loop.errors) this.fail(error.node, readLoop ? 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED' : 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
       if (loop.errors.length) return [];
@@ -1250,6 +1280,7 @@ class NativePlanBuilder {
 
     let unsigned = {
       version: contract.CANONICAL_NATIVE_PLAN_VERSION,
+      ...(this.numericWorkspaces.length ? { numericWorkspaces: Object.freeze(this.numericWorkspaces) } : {}),
       ...(this.resources && this.usedResources.size ? { binaryResources: require('@pulse-compute/wasm-contracts/resources/embedded').selectResourceCatalogue(this.resources, [...this.usedResources]) } : {}),
       compilerVersion: CANONICAL_NATIVE_PLAN_COMPILER_VERSION,
       hashAlgorithm: contract.CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,
@@ -1344,8 +1375,12 @@ function walkExpression(expression, visit) {
   if (!expression || typeof expression !== 'object') return;
   visit(expression);
   switch (expression.kind) {
+    case 'workspace-write':
+      walkExpression(expression.value, visit);
+    case 'workspace-read':
     case 'resource-read':
       if (expression.offset) walkExpression(expression.offset, visit);
+      if (expression.length) walkExpression(expression.length, visit);
       break;
     case 'array':
       for (const item of expression.items || []) walkExpression(item, visit);
@@ -1513,9 +1548,11 @@ function validateResourceReads(plan, fail) {
   const resourceVisitor = () => {};
   resourceVisitor.expression = node => {
     if (node.kind !== 'resource-read') return;
-    if (node.version !== 'pulse.binary-resource-read.v1' || node.valueKind !== 'number'
+    const utf8 = node.operation === 'readUtf8';
+    if (node.version !== (utf8 ? 'pulse.binary-resource-utf8.v1' : 'pulse.binary-resource-read.v1') || node.valueKind !== (utf8 ? 'string' : 'number')
       || !(Array.isArray(plan.binaryResources?.records) && plan.binaryResources.records.some(record => record.id === node.resourceId))
-      || !['byteLength', 'readU8', 'readU32LE', 'readF32LE'].includes(node.operation)
+      || !['byteLength', 'readU8', 'readU32LE', 'readF32LE', 'readUtf8'].includes(node.operation)
+      || (utf8 ? !node.length : node.length !== undefined)
       || (node.operation === 'byteLength' ? node.offset !== undefined : !node.offset)) fail('resource read contract is invalid');
   };
   for (const body of [plan.entry?.body, ...(plan.handlers || []).map(x => x.body), ...(plan.helpers || []).map(x => x.body), ...(plan.stages || []).map(x => x.body)]) walkStatements(body, resourceVisitor);
@@ -1571,7 +1608,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
       const helper = helpers.get(node.helperId);
       if (helper?.version !== contract.CANONICAL_NATIVE_PURE_HELPER_VERSION) { fail('pure loop call requires a pure helper'); return; }
       for (const argument of node.arguments || []) walkExpression(argument, child => {
-        if (['assignment', 'update'].includes(child.kind)) fail('pure loop call inputs must be read-only');
+        if (['assignment', 'update', 'workspace-write', 'workspace-init'].includes(child.kind)) fail('pure loop call inputs must be read-only');
       });
       validateHelperLoopProduct(helper, product, 'pure loop helper');
     });
@@ -1647,7 +1684,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
   }
   function checkPureExpression(expression, counters, test = false) {
     walkExpression(expression, node => {
-      if (node.kind === 'intrinsic' || node.kind === 'context-read' || (node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length))) fail('pure loop contains a non-value call or context read');
+      if (node.kind === 'workspace-init' || test && node.kind === 'workspace-write' || node.kind === 'intrinsic' || node.kind === 'context-read' || (node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length))) fail('pure loop contains a non-value call or context read');
       if (['assignment', 'update'].includes(node.kind) && (test || (node.target?.kind === 'local' && counters.has(node.target.id)))) fail('pure loop test or counter mutation is invalid');
     });
   }
@@ -1655,7 +1692,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
     walkExpression(expression, node => {
       if (node.kind === 'context-read' || node.kind === 'intrinsic' && !contract.CANONICAL_READ_LOOP_CONTRACT.valueIntrinsics.includes(node.name)
         || node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length)) fail('read loop contains an unsupported value operation');
-      if (['assignment', 'update'].includes(node.kind) && (readonly || node.target?.kind === 'local' && counters.has(node.target.id))) fail('read loop counter or effect input mutation is invalid');
+      if (['assignment', 'update', 'workspace-write'].includes(node.kind) && (readonly || node.target?.kind === 'local' && counters.has(node.target.id))) fail('read loop counter or effect input mutation is invalid');
     });
   }
   for (const body of [plan.entry && plan.entry.body, ...[...(plan.handlers || []), ...(plan.stages || [])].map(handler => handler.body)]) validateLoops(body);
@@ -1924,6 +1961,7 @@ function assertCanonicalNativePlan(plan) {
     if (Array.isArray(plan.handlers)) validateHandlerBodies(plan, fail);
     validateSharedStages(plan, fail, walkStatements, walkExpression, stableStringify);
     validateResourceReads(plan, fail);
+    require('./numeric-workspace-plan').validateNumericWorkspaces(plan, fail, walkExpression);
     require("./source-helper-plan").validateHelpers(plan, fail, walkStatements, walkExpression);
 
     const states = Array.isArray(plan.states) ? plan.states : [];

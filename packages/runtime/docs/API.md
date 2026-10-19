@@ -39,6 +39,7 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.req.header(name)`](#request-metadata-and-headers) | Context | HTTP handlers and middleware | Case-insensitive first-value header lookup. |
 | [`ctx.param(name)`](#ctxparam) | Context | Matched route handlers | Named parameters from the static route pattern. |
 | [`ctx.state`](#ctxstate) | Context | HTTP and event handlers | Invocation-local string state shared across one execution. |
+| [`ctx.workspace`](#ctxworkspace) | Context | HTTP and event handlers | Fixed-capacity execution-owned numeric scratch cells. |
 | [`ctx.resources`](#ctxresources) | Context | HTTP and event handlers | Execution-owned views over explicitly embedded immutable binary data. |
 | [`ctx.time.now()`](#ctxtime) | Context | HTTP and event handlers | Provider wall-clock sample with matching Unix milliseconds and UTC text. |
 | [`ctx.fetch`](#ctxfetch) | Effects | HTTP and event handlers | Explicit outbound HTTP effect and structured or opaque response ownership. |
@@ -295,7 +296,7 @@ const component = vectors.readF32LE(12)
 
 A mapping requires one declared literal ID and a local `const` binding. Views
 expose only `byteLength`, `readU8(offset)`, `readU32LE(offset)`, and
-`readF32LE(offset)`. Offsets are nonnegative safe integers measured in bytes;
+`readF32LE(offset)`, and `readUtf8(offset, byteLength)`. Offsets are nonnegative safe integers measured in bytes;
 unaligned little-endian reads are supported. The entire scalar must fit before
 any address conversion. Float reads preserve signed zero and reject NaN and
 infinity; use `readU32LE` to inspect those bit patterns. Invalid declarations,
@@ -319,6 +320,37 @@ bounds still apply: 1,024 iterations per pure loop and 65,536 combined nested
 iterations. Admitting a large vector file does not authorize a larger loop.
 Numeric regions avoid per-read boxing when their existing proof succeeds;
 other expressions retain the ordinary target value-allocation rules.
+
+`readUtf8` returns at most 12,288 bytes of strictly validated UTF-8 per call.
+Both arguments must be nonnegative safe integers. The slice must start and end
+at scalar boundaries, including zero-length slices. Malformed, overlong,
+surrogate and out-of-range encodings fail without replacement decoding. BOM,
+NUL and supplementary characters are preserved. Validation checks the owning
+execution and deadline at every scalar.
+
+## `ctx.workspace`
+
+```ts
+const scores = ctx.workspace.numbers(512)
+scores[0] = 42
+const score = scores[0]
+const capacity = scores.length
+```
+
+Create a local `const` with a literal capacity from 1 through 1,024 outside
+loops. At most four workspaces are admitted per Native plan and per JavaScript
+execution. Cells start at zero; indexed reads and simple indexed assignments
+require in-range integer numeric indices and finite numeric values, preserving
+signed zero. Length is read-only. Every access checks execution ownership and
+its deadline. Invalid construction/access fails with
+`PULSE_NUMERIC_WORKSPACE_INVALID` (terminal provider failure on Fastly Native).
+
+Workspaces cannot be aliased, captured, returned, serialized, passed to helpers,
+or stored in ordinary objects. Pass scalar reads to helpers instead. Compound
+assignments and increment/decrement are unsupported; use a simple indexed
+assignment. Native owns bounded raw f64 cells; this does not enable general
+array mutation. Ordinary JavaScript dependency execution remains outside the
+canonical source proof. Existing 1,024/65,536 loop bounds still apply.
 
 ## `ctx.parallel`
 

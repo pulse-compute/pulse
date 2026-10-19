@@ -605,7 +605,7 @@ function __pulse_fastly_fetch_body(value: __PulseFastlyValue): string { if (valu
 function host_value_undefined(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_UNDEFINED; return __pulse_fastly_put(item) }
 function host_value_null(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_NULL; return __pulse_fastly_put(item) }
 function host_value_boolean(value: i32): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_BOOLEAN; item.boolean = value != 0 ? 1 : 0; return __pulse_fastly_put(item) }
-${plan.binaryResources ? require('./native-binary-resources.js').source() : ''}
+${plan.binaryResources || plan.numericWorkspaces?.length ? require('./native-binary-resources.js').source() : ''}
 function host_value_number(value: f64): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_NUMBER; item.number = value; return __pulse_fastly_put(item) }
 function host_value_string(pointer: i32, length: i32): i32 { return __pulse_fastly_string_value(changetype<string>(pointer)) }
 function host_effect_collection_count(handle: i32, max: i32, stateIndex: i32): i32 {

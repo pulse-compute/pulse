@@ -630,6 +630,18 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     value_null() { return put(null); },
     value_boolean(input) { return put(Number(input) !== 0); },
     value_number(input) { return put(Number(input)); },
+    workspace_number_value(handle) {
+      const input = value(handle);
+      if (typeof input !== 'number') throw new portableKv.PulseRuntimeContractError('PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace cell/index must be numeric.');
+      return input;
+    },
+    workspace_check(offset, capacity, input) {
+      options.requestBudget?.check(); options.signal?.throwIfAborted();
+      if (!Number.isInteger(offset) || offset < 0 || offset >= capacity || capacity < 1 || capacity > 1024 || !Number.isFinite(input)) {
+        throw new portableKv.PulseRuntimeContractError('PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace index/value is invalid.');
+      }
+      return offset;
+    },
     resource_offset_value(handle) {
       const input = value(handle);
       if (typeof input !== 'number') throw new portableKv.PulseRuntimeContractError('PULSE_BINARY_RESOURCE_INVALID', 'Binary resource offset requires a number.');

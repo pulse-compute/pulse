@@ -160,9 +160,18 @@ export interface PulseBinaryResourceView {
   readU8(offset: number): number;
   readU32LE(offset: number): number;
   readF32LE(offset: number): number;
+  /** Strict UTF-8 scalar slice, at most 12,288 bytes, owned by this execution. */
+  readUtf8(offset: number, byteLength: number): string;
+}
+
+export interface PulseNumericWorkspace {
+  readonly length: number;
+  [index: number]: number;
 }
 
 export interface PulseExecutionContext {
+  /** Fresh zero-initialized cells; literal capacity 1..1024, at most four per execution. */
+  readonly workspace: { numbers(capacity: number): PulseNumericWorkspace };
   /** Literal logical identity; the immutable view must not escape this execution. */
   readonly resources: { map(id: string): PulseBinaryResourceView };
   /** Validate/project a value through a literal registered schema and return bounded JSON text. */

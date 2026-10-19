@@ -185,6 +185,7 @@ function createContext(frame) {
     },
     ...(eventContext ? {} : { req }),
     state,
+    get workspace() { return require('./workspace.js').createNumericWorkspaceContext(effects); },
     get resources() { return require('./resources.js').createResourceContext(options.binaryResources, effects); },
     log,
     fetch(url, init) {
