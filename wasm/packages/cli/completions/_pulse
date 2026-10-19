@@ -8,7 +8,7 @@ commands=(
     'test:Run configured cases through the selected provider local-conformance runtime.'
     'dev:Start the foreground local server with the selected provider conformance runtime.'
     'compile:Compile the canonical project into provider-neutral Pulse-owned WebAssembly.'
-    'build:Compile the canonical project and realize the deployment provider selected by the active project profile.'
+    'build:Build the Native or JavaScript target for the deployment provider selected by the active project profile.'
     'report:Review retained evidence from a completed Native build without rebuilding or executing project code.'
     'completion:Print a generated shell completion script'
     'help:Print public help'

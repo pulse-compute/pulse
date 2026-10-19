@@ -98,6 +98,37 @@ for (const command of PUBLIC_COMMAND_ORDER) {
     assert.ok(reference.includes(`diagnostics.md#${code.toLowerCase().replace(/_/g, '-')}`), `CLI reference is missing ${command} diagnostic: ${code}`);
   }
 }
+// Every catalog command has exactly one index link and an existing detail anchor.
+const commandIndex = reference.split('## Command index\n')[1]?.split('\n## Meta invocations')[0];
+assert.ok(commandIndex, 'CLI reference must have a compact command index before the detail sections');
+assert.deepEqual([...commandIndex.matchAll(/\[\x60pulse (\w+)\x60\]\(#pulse-(\w+)\)/g)].map((match) => {
+  assert.equal(match[1], match[2], 'command index links must resolve to their command headings');
+  assert.ok(reference.includes(`## \x60pulse ${match[1]}\x60\n`));
+  return match[1];
+}), [...PUBLIC_COMMAND_ORDER]);
+for (const name of PUBLIC_COMMAND_ORDER) {
+  const section = reference.split(`## \x60pulse ${name}\x60\n`)[1].split('\n## ')[0];
+  for (const detail of [...COMMAND_SPECS[name].outputs, ...COMMAND_SPECS[name].sideEffects, COMMAND_SPECS[name].exit]) {
+    assert.ok(section.includes(detail), `${name} must retain its output, side-effect and exit contracts`);
+  }
+}
+const buildDescription = COMMAND_SPECS.build.outputs.join(' ') + ' ' + COMMAND_SPECS.build.sideEffects.join(' ');
+assert.match(buildDescription, /Native builds include the provider-neutral native module/);
+assert.match(buildDescription, /JavaScript builds emit a deterministic source package/);
+assert.match(buildDescription, /Fastly Native builds.*without a JavaScript runtime image/);
+assert.match(buildDescription, /Fastly JavaScript builds.*downstream compiler pins/);
+assert.match(buildDescription, /JavaScript builds.*without invoking the Pulse Native compiler/);
+const providerTable = reference.split('## Provider restrictions and build products')[1].split('## Exit classes')[0];
+for (const provider of ['node', 'fastly']) {
+  for (const target of ['Native', 'JavaScript']) {
+    assert.ok(providerTable.includes(`| \x60${provider}\x60 | ${target} | Yes | Yes |`), `${provider} ${target} needs its own build row`);
+  }
+}
+assert.ok(providerTable.includes('| `none` | Compile-only Native | Yes | No | No |'));
+assert.match(providerTable, /Diagnostic WAT is opt-in/);
+assert.match(COMMAND_SPECS.compile.outputs.join(' '), /--emit-wat adds diagnostic WAT/);
+assert.equal(parseCommandRequest(['compile']).emitWat, undefined, 'WAT remains opt-in');
+
 for (const invocation of META_INVOCATIONS) assert.ok(help.includes(invocation.syntax), `public help is missing meta invocation: ${invocation.syntax}`);
 
 function valueFor(option) {

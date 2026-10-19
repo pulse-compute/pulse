@@ -31,7 +31,7 @@ npm run build
 `pulse init` writes exact package versions but does not perform network
 installation. Packed-package acceptance installs the synchronized release set
 and verifies this path without workspace links. Published package availability
-remains defined by the 19-package release manifest.
+remains defined by the release manifest.
 
 This is the normal application lifecycle. Use `pulse inspect` when you need to
 examine the compiler/provider plan, and use the advanced provider-neutral

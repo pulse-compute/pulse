@@ -275,6 +275,14 @@ ${GENERATED_NOTICE}
 
 The ${inlineCode('pulse')} CLI in ${inlineCode('@pulse-compute/cli@' + RELEASE_VERSION)} is the supported project workflow. One command specification generates this page, installed help, and the shipped Bash, Zsh, and Fish completion scripts, so a public command or option cannot drift between those surfaces.
 
+## Command index
+
+| Command | Purpose |
+|---|---|
+${PUBLIC_COMMAND_ORDER.map((name) => `| [${inlineCode(`pulse ${name}`)}](#pulse-${name}) | ${COMMAND_SPECS[name].summary} |`).join('\n')}
+
+Use ${inlineCode('build')} for the configured target and provider. ${inlineCode('compile')} is advanced provider-neutral Native output, not a prerequisite for ${inlineCode('build')}. See [Provider restrictions and build products](#provider-restrictions-and-build-products) for target differences.
+
 ## Meta invocations
 
 ${META_INVOCATIONS.map((entry) => `- ${inlineCode(entry.syntax)} — ${entry.description}`).join('\n')}
@@ -315,11 +323,21 @@ Raw configured secret values are not included in project JSON, diagnostics, or r
 
 ## Provider restrictions and build products
 
-| Provider | inspect/build | test/dev | Build result |
-|---|---:|---:|---|
-| ${inlineCode('node')} | Yes | Yes | Portable Pulse Wasm plus the configured Node-native realization and ${inlineCode('pulse-build.json')}. |
-| ${inlineCode('fastly')} | Yes | Yes, through local conformance | Portable Pulse Wasm plus generated AssemblyScript and compact direct-host-ABI ${inlineCode('bin/main.wasm')}. |
-| ${inlineCode('none')} | Compile only | No | ${inlineCode('pulse compile')} emits portable Pulse Wasm; ${inlineCode('pulse build')} rejects the missing deployment provider. |
+| Provider | Target | inspect | build | test/dev | Build result |
+|---|---|---|---|---|---|
+| ${inlineCode('node')} | Native | Yes | Yes | Node host | Portable Pulse Wasm, configured Node-native realization and ${inlineCode('pulse-build.json')}. |
+| ${inlineCode('node')} | JavaScript | Yes | Yes | Live JavaScript runtime | Deterministic reachable application source package and ${inlineCode('pulse-build.json')}; no Pulse Native compilation. |
+| ${inlineCode('fastly')} | Native | Yes | Yes | Local conformance | Portable Pulse Wasm, generated AssemblyScript, direct-host-ABI ${inlineCode('bin/main.wasm')} and ${inlineCode('pulse-build.json')}; no JavaScript runtime image. |
+| ${inlineCode('fastly')} | JavaScript | Yes | Yes | Provider emulation | Deterministic source/deployment package with exact downstream compiler pins, deployment-candidate metadata and ${inlineCode('pulse-build.json')}. |
+| ${inlineCode('none')} | Compile-only Native | Yes | No | No | ${inlineCode('pulse compile')} emits portable Pulse Wasm; ${inlineCode('pulse build')} rejects the missing deployment provider. |
+
+Target selection is explicit and never falls back automatically. Project eligibility
+and provider capability restrictions still apply; see [Provider and target compatibility](compatibility-matrix.md).
+${inlineCode('pulse compile')} requires Native-compatible source regardless of the
+configured target. Diagnostic WAT is opt-in with ${inlineCode('--emit-wat')}; JavaScript
+builds reject that flag. Fastly JavaScript downstream runtime compilation and
+candidate validation are separate from source packaging; a build does not deploy
+or publish. See [Fastly deployment candidates](../guides/deploying-fastly.md).
 
 Build output is cleaned by default. ${inlineCode('--no-clean')} preserves the directory, but output safety still rejects absolute, parent-traversal, and symbolic-link traversal outside the project root.
 
@@ -369,7 +387,7 @@ ${rows.join('\n')}
 - **Zsh:** copy \`completions/_pulse\` into a directory on \`$fpath\`, then run \`compinit\`.
 - **Fish:** copy \`completions/pulse.fish\` into \`~/.config/fish/completions/\`.
 
-Completion candidates include the seven project commands, help/version/completion invocations, public flags, provider values, and completion shell names. The machine-readable owner is [\`cli-spec.json\`](./cli-spec.json).
+Completion candidates include the public project commands, help/version/completion invocations, public flags, provider values, and completion shell names. The machine-readable owner is [\`cli-spec.json\`](./cli-spec.json).
 `);
 }
 

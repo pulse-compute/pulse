@@ -7,7 +7,7 @@ complete -c pulse -n '__fish_use_subcommand' -a 'inspect' -d 'Report canonical c
 complete -c pulse -n '__fish_use_subcommand' -a 'test' -d 'Run configured cases through the selected provider local-conformance runtime.'
 complete -c pulse -n '__fish_use_subcommand' -a 'dev' -d 'Start the foreground local server with the selected provider conformance runtime.'
 complete -c pulse -n '__fish_use_subcommand' -a 'compile' -d 'Compile the canonical project into provider-neutral Pulse-owned WebAssembly.'
-complete -c pulse -n '__fish_use_subcommand' -a 'build' -d 'Compile the canonical project and realize the deployment provider selected by the active project profile.'
+complete -c pulse -n '__fish_use_subcommand' -a 'build' -d 'Build the Native or JavaScript target for the deployment provider selected by the active project profile.'
 complete -c pulse -n '__fish_use_subcommand' -a 'report' -d 'Review retained evidence from a completed Native build without rebuilding or executing project code.'
 complete -c pulse -n '__fish_use_subcommand' -a 'completion' -d 'Print a generated shell completion script'
 complete -c pulse -n '__fish_seen_subcommand_from completion' -a 'bash zsh fish'
