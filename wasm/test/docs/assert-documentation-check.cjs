@@ -108,6 +108,22 @@ contextDataIntegrity();
     assert(env.includes(entry.description));
     assert.equal(env.split(`### \`${entry.name}\``).length, 2);
   }
+  for (const entry of ENVIRONMENT_VARIABLES) {
+    for (const field of ['value', 'default', 'precedence', 'consumer', 'secretSafety', 'stability']) {
+      assert(env.includes(entry[field]), `${entry.name}: retain ${field}`);
+    }
+    if (entry.category === 'contributor') {
+      assert(entry.group, `${entry.name}: contributor lookup group`);
+      const groupStart = env.indexOf(`### ${entry.group}`);
+      const nextGroup = env.indexOf('\n### ', groupStart + 1);
+      const section = env.slice(groupStart, nextGroup < 0 ? undefined : nextGroup);
+      assert(section.includes(`#### \`${entry.name}\``));
+    }
+  }
+  for (const category of new Set(Object.values(DIAGNOSTIC_CATALOG).map(entry => entry.category))) {
+    const count = Object.values(DIAGNOSTIC_CATALOG).filter(entry => entry.category === category).length;
+    assert(diagnostics.includes(`](#${category}-diagnostics) | ${count} |`));
+  }
   for (const code of Object.keys(DIAGNOSTIC_CATALOG)) {
     const descriptor = describeDiagnostic(code);
     assert(diagnostics.includes(`| [\`${code}\`](#${diagnosticAnchor(code)}) |`));

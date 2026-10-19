@@ -6,6 +6,17 @@ Pulse canonical handlers do not receive ambient process environment access. Hand
 
 Do not use these variables as a substitute for `ctx.config`, `ctx.secret`, or provider bindings. Secret-bearing compatibility URIs must be handled as credentials and must not be copied into diagnostics.
 
+## Choose a project profile
+
+Set `PULSE_PROFILE` to a profile declared in `.pulse/config.ts`, or use `--profile` for one command:
+
+```sh
+PULSE_PROFILE=local pulse doctor
+pulse doctor --profile local
+```
+
+These examples assume a profile named `local`. An explicit `--profile` wins over `PULSE_PROFILE`; otherwise the configured `pulse.defaultProfile` is used. See [profile selection](project-config.md#conventional-pulseconfigts) for the full selection rules. Handler configuration and secrets still come through [explicit bindings](../../API.md#config-and-secrets), not ambient environment reads.
+
 ## Index
 
 1. [Public Pulse project configuration](#supported-tooling-configuration)
@@ -81,38 +92,23 @@ Selects an inspected Viceroy executable for direct local Compute execution when 
 
 Repository harness controls. They are intentionally outside the application compatibility contract.
 
+- [Test execution and output](#test-execution-and-output)
+- [Release evidence and source identity](#release-evidence-and-source-identity)
+- [Manual proof reproduction](#manual-proof-reproduction)
+- [Provider test evidence and fixtures](#provider-test-evidence-and-fixtures)
+
+### Test execution and output
+
 | Variable | Purpose | Default |
 |---|---|---|
 | [`PULSEWASM_TEST_PHASE_DIR`](#pulsewasm-test-phase-dir) | Enables optional compiler/test phase spans and nested filesystem/hash counters. Does not change task coverage or authorize reuse. | Unset; phase observation is disabled. |
-| [`PULSEWASM_SEAL_WORKER_LAYOUT`](#pulsewasm-seal-worker-layout) | Allows exact shared-package consumption by registered local children of one controller; foreign checkouts and remote proof pooling remain rejected. | Unset; shared packages belong only to their original checkout. |
-| [`PULSE_RELEASE_SHARED_PACK`](#pulse-release-shared-pack) | Reuses one clean-source package set through verified private copies; independent determinism construction bypasses reuse. | Unset; packing constructs fresh packages. |
-| [`PULSE_RELEASE_SHARED_PACK_SHA256`](#pulse-release-shared-pack-sha256) | Rejects receipt changes before validating source identity and every shared package file. | Unset; required when a shared package directory is supplied. |
-| [`PULSE_RELEASE_FEATURE_REPORT_DIR`](#pulse-release-feature-report-dir) | Routes each installed proof into a task-specific report for the candidate release decision. | Unset; focused installed tests use their own report directories. |
 | [`PULSEWASM_SUITE_TASK`](#pulsewasm-suite-task) | Identifies the current registered test task so forwarding target proofs have distinct reports. | Assigned by the test runner for each task. |
-| [`PULSE_B02_BASELINE_ROOT`](#pulse-b02-baseline-root) | Identifies a restored pre-B02 checkout for alternating baseline/candidate compiler measurements. | Unset; the manual B02 benchmark requires an explicit baseline checkout. |
-| [`PULSE_B02_USAGE_DIR`](#pulse-b02-usage-dir) | Passes the isolated measurement directory to the temporary compiler preload collector. | Created separately for each sample by the B02 benchmark harness. |
-| [`PULSE_B03_USAGE_DIR`](#pulse-b03-usage-dir) | Keeps compiler-process RSS separate from the planning worker and cold execution measurements. | Created separately for each sample by the B03 benchmark harness. |
-| [`PULSE_RELEASE_REF`](#pulse-release-ref) | Carries the sealed candidate release ref into the protected publish process for an equality check against GitHub's native identity. | Unset; the protected npm workflow derives it from the sealed candidate. |
-| [`PULSE_RELEASE_SHA`](#pulse-release-sha) | Carries the sealed candidate source commit into the protected publish process for an equality check against GitHub's native identity. | Unset; the protected npm workflow derives it from the sealed candidate. |
 | [`PULSEWASM_ARTIFACTS_DIR`](#pulsewasm-artifacts-dir) | Redirects generated build and test artifacts away from the default repository directory. | `wasm/artifacts`. |
 | [`PULSEWASM_TEST_TMP_ROOT`](#pulsewasm-test-tmp-root) | Pins test workspaces beneath a caller-managed temporary root. | A suite-specific temporary directory. |
-| [`PULSE_FASTLY_REALITY_EVIDENCE`](#pulse-fastly-reality-evidence) | Selects the output path for the real Fastly host evidence report. | Unset; the reality gate prints its normal test result without retaining a proof file. |
-| [`PULSE_FOUR_MODE_EVIDENCE`](#pulse-four-mode-evidence) | Selects the output path for the four-mode conformance evidence report. | `wasm/.test-results/four-mode-conformance.json`. |
-| [`PULSE_SOURCE_REVISION`](#pulse-source-revision) | Propagates one source identity through an aggregate release replay so independently written evidence cannot drift. | Current Git commit, or a deterministic archive-tree identity outside a Git checkout. |
-| [`PULSE_SOURCE_IDENTITY_KIND`](#pulse-source-identity-kind) | Labels the provenance class of the propagated source identity. | `git-commit` in a checkout or `archive-tree-sha256-160` for an extracted source tree. |
-| [`PULSE_SOURCE_DIGEST_SHA256`](#pulse-source-digest-sha256) | Preserves the full archive-tree digest behind the compatibility-width source revision field. | Unset for Git commits; the full archive-tree digest outside a Git checkout. |
-| [`PULSE_SOURCE_FILE_COUNT`](#pulse-source-file-count) | Carries the source-file count associated with an archive-tree digest for audit clarity. | Unset for Git commits; the deterministic archive-tree inventory count otherwise. |
-| [`PULSE_FAKE_FASTLY_CAPTURE`](#pulse-fake-fastly-capture) | Tells the fake Fastly CLI where to write its captured invocation. | Unset. |
-| [`PULSE_FAKE_VICEROY_CAPTURE`](#pulse-fake-viceroy-capture) | Tells the fake Viceroy launcher where to write its captured invocation. | Unset. |
-| [`PULSE_ES256_REPRODUCTION_ROOT`](#pulse-es256-reproduction-root) | Adds an independent source-identical raw guest artifact and Rust metadata comparison to G5. | Unset; the G5 seal still performs its required local maintainer reconstruction. |
-| [`PULSE_ES256_REPRODUCTION_ARCHIVE`](#pulse-es256-reproduction-archive) | Records the byte size and hash of the independently supplied ES256 reproduction archive. | Unset; no external archive identity is recorded. |
-| [`PULSE_RUST_CARGO`](#pulse-rust-cargo) | Selects the Cargo executable used to reproduce the sealed first-party Rust guest proof. | No explicit path; discover `cargo` on `PATH`. |
-| [`PULSE_RUSTC`](#pulse-rustc) | Selects the Rust compiler used to reproduce the sealed first-party Rust guest proof. | No explicit path; discover `rustc` on `PATH`. |
-| [`PULSEWASM_MEM03_BASE`](#pulsewasm-mem03-base) | Selects an explicit baseline generator revision for paired semantic and allocator measurements. | Merged GEN01 commit `8a6f2ff`. |
 
 <a id="pulsewasm-test-phase-dir"></a>
 
-### `PULSEWASM_TEST_PHASE_DIR`
+#### `PULSEWASM_TEST_PHASE_DIR`
 
 Enables optional compiler/test phase spans and nested filesystem/hash counters. Does not change task coverage or authorize reuse.
 
@@ -126,73 +122,9 @@ Enables optional compiler/test phase spans and nested filesystem/hash counters. 
 | Stability | Contributor/test-only; no qualification or cache authority. |
 | Source owners | `wasm/test/support/phase-observer.cjs`, `wasm/test/jwt/assert-jwt-installed-workflow.cjs` |
 
-<a id="pulsewasm-seal-worker-layout"></a>
-
-### `PULSEWASM_SEAL_WORKER_LAYOUT`
-
-Allows exact shared-package consumption by registered local children of one controller; foreign checkouts and remote proof pooling remain rejected.
-
-| Property | Contract |
-|---|---|
-| Value | Absolute controller-owned layout path |
-| Default | Unset; shared packages belong only to their original checkout. |
-| Precedence | The release controller supplies the registered layout to each isolated worker. |
-| Consumer | Shared package verification in local seal workers. |
-| Secret safety | Not a secret. Identifies private worktrees and their clean candidate. |
-| Stability | Harness-internal; outside the application compatibility contract. |
-| Source owners | `scripts/release-shared-pack.cjs`, `wasm/scripts/run-wasm-tests.cjs` |
-
-<a id="pulse-release-shared-pack"></a>
-
-### `PULSE_RELEASE_SHARED_PACK`
-
-Reuses one clean-source package set through verified private copies; independent determinism construction bypasses reuse.
-
-| Property | Contract |
-|---|---|
-| Value | Directory path |
-| Default | Unset; packing constructs fresh packages. |
-| Precedence | The seal supplies its own attempt-local directory to consumer tasks. |
-| Consumer | Release package construction and installed acceptance. |
-| Secret safety | Not a secret. Contains verified candidate tarballs and their receipt. |
-| Stability | Harness-internal; outside the application compatibility contract. |
-| Source owners | `scripts/pack-release.cjs`, `scripts/release-shared-pack.cjs` |
-
-<a id="pulse-release-shared-pack-sha256"></a>
-
-### `PULSE_RELEASE_SHARED_PACK_SHA256`
-
-Rejects receipt changes before validating source identity and every shared package file.
-
-| Property | Contract |
-|---|---|
-| Value | SHA-256 digest |
-| Default | Unset; required when a shared package directory is supplied. |
-| Precedence | The seal pins the receipt digest before launching consumer tasks. |
-| Consumer | Shared release package receipt verification. |
-| Secret safety | Not a secret. Identifies source-bound package evidence. |
-| Stability | Harness-internal; outside the application compatibility contract. |
-| Source owners | `scripts/release-shared-pack.cjs` |
-
-<a id="pulse-release-feature-report-dir"></a>
-
-### `PULSE_RELEASE_FEATURE_REPORT_DIR`
-
-Routes each installed proof into a task-specific report for the candidate release decision.
-
-| Property | Contract |
-|---|---|
-| Value | Directory path |
-| Default | Unset; focused installed tests use their own report directories. |
-| Precedence | The complete feature replay assigns a fresh directory to its child runner. |
-| Consumer | Installed feature acceptance report routing. |
-| Secret safety | Not a secret. Contains source, package and acceptance evidence only. |
-| Stability | Harness-internal; outside the application compatibility contract. |
-| Source owners | `wasm/test/support/installed-acceptance-report.cjs` |
-
 <a id="pulsewasm-suite-task"></a>
 
-### `PULSEWASM_SUITE_TASK`
+#### `PULSEWASM_SUITE_TASK`
 
 Identifies the current registered test task so forwarding target proofs have distinct reports.
 
@@ -206,89 +138,9 @@ Identifies the current registered test task so forwarding target proofs have dis
 | Stability | Harness-internal; not a user or application setting. |
 | Source owners | `wasm/test/support/installed-acceptance-report.cjs` |
 
-<a id="pulse-b02-baseline-root"></a>
-
-### `PULSE_B02_BASELINE_ROOT`
-
-Identifies a restored pre-B02 checkout for alternating baseline/candidate compiler measurements.
-
-| Property | Contract |
-|---|---|
-| Value | Directory path |
-| Default | Unset; the manual B02 benchmark requires an explicit baseline checkout. |
-| Precedence | Selects the baseline; the candidate is the checkout containing the harness. |
-| Consumer | Manual B02 terminal Router body cost proof. |
-| Secret safety | Not a secret. The harness executes compiler code from this checkout; use trusted source. |
-| Stability | Contributor/test-only; outside the application compatibility contract. |
-| Source owners | `wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs` |
-
-<a id="pulse-b02-usage-dir"></a>
-
-### `PULSE_B02_USAGE_DIR`
-
-Passes the isolated measurement directory to the temporary compiler preload collector.
-
-| Property | Contract |
-|---|---|
-| Value | Directory path |
-| Default | Created separately for each sample by the B02 benchmark harness. |
-| Precedence | The harness supplies and overrides this value in each child process. |
-| Consumer | B02 AssemblyScript child-process RSS collector. |
-| Secret safety | Not a secret. Contains temporary process IDs and peak RSS measurements. |
-| Stability | Harness-internal test control; not a user or application setting. |
-| Source owners | `wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs` |
-
-<a id="pulse-b03-usage-dir"></a>
-
-### `PULSE_B03_USAGE_DIR`
-
-Keeps compiler-process RSS separate from the planning worker and cold execution measurements.
-
-| Property | Contract |
-|---|---|
-| Value | Directory path |
-| Default | Created separately for each sample by the B03 benchmark harness. |
-| Precedence | The harness supplies and overrides this value in each compiler child process. |
-| Consumer | B03 AssemblyScript child-process RSS collector. |
-| Secret safety | Not a secret. Contains temporary process IDs and peak RSS measurements. |
-| Stability | Harness-internal test control; not a user or application setting. |
-| Source owners | `wasm/test/runtime/compiler-efficiency/b03-handler-functions.cjs` |
-
-<a id="pulse-release-ref"></a>
-
-### `PULSE_RELEASE_REF`
-
-Carries the sealed candidate release ref into the protected publish process for an equality check against GitHub's native identity.
-
-| Property | Contract |
-|---|---|
-| Value | Full Git ref (`refs/tags/v<version>`) |
-| Default | Unset; the protected npm workflow derives it from the sealed candidate. |
-| Precedence | When set by the workflow, it must exactly equal GitHub's native release-tag ref. |
-| Consumer | Protected npm publication identity binding. |
-| Secret safety | Not a secret. It is validated rather than trusted as independent authority. |
-| Stability | Repository release-workflow internal; not an application setting. |
-| Source owners | `scripts/release-publication.cjs` |
-
-<a id="pulse-release-sha"></a>
-
-### `PULSE_RELEASE_SHA`
-
-Carries the sealed candidate source commit into the protected publish process for an equality check against GitHub's native identity.
-
-| Property | Contract |
-|---|---|
-| Value | Full lowercase 40-character Git commit SHA |
-| Default | Unset; the protected npm workflow derives it from the sealed candidate. |
-| Precedence | When set by the workflow, it must exactly equal GitHub's native release-tag commit. |
-| Consumer | Protected npm publication identity binding. |
-| Secret safety | Not a secret. It is validated rather than trusted as independent authority. |
-| Stability | Repository release-workflow internal; not an application setting. |
-| Source owners | `scripts/release-publication.cjs` |
-
 <a id="pulsewasm-artifacts-dir"></a>
 
-### `PULSEWASM_ARTIFACTS_DIR`
+#### `PULSEWASM_ARTIFACTS_DIR`
 
 Redirects generated build and test artifacts away from the default repository directory.
 
@@ -304,7 +156,7 @@ Redirects generated build and test artifacts away from the default repository di
 
 <a id="pulsewasm-test-tmp-root"></a>
 
-### `PULSEWASM_TEST_TMP_ROOT`
+#### `PULSEWASM_TEST_TMP_ROOT`
 
 Pins test workspaces beneath a caller-managed temporary root.
 
@@ -318,41 +170,120 @@ Pins test workspaces beneath a caller-managed temporary root.
 | Stability | Contributor/test-only; may change with test-runner updates. |
 | Source owners | `wasm/test/docs/assert-executable-documentation.cjs`, `wasm/test/release/assert-release-packages.cjs` |
 
-<a id="pulse-fastly-reality-evidence"></a>
+### Release evidence and source identity
 
-### `PULSE_FASTLY_REALITY_EVIDENCE`
+| Variable | Purpose | Default |
+|---|---|---|
+| [`PULSEWASM_SEAL_WORKER_LAYOUT`](#pulsewasm-seal-worker-layout) | Allows exact shared-package consumption by registered local children of one controller; foreign checkouts and remote proof pooling remain rejected. | Unset; shared packages belong only to their original checkout. |
+| [`PULSE_RELEASE_SHARED_PACK`](#pulse-release-shared-pack) | Reuses one clean-source package set through verified private copies; independent determinism construction bypasses reuse. | Unset; packing constructs fresh packages. |
+| [`PULSE_RELEASE_SHARED_PACK_SHA256`](#pulse-release-shared-pack-sha256) | Rejects receipt changes before validating source identity and every shared package file. | Unset; required when a shared package directory is supplied. |
+| [`PULSE_RELEASE_FEATURE_REPORT_DIR`](#pulse-release-feature-report-dir) | Routes each installed proof into a task-specific report for the candidate release decision. | Unset; focused installed tests use their own report directories. |
+| [`PULSE_RELEASE_REF`](#pulse-release-ref) | Carries the sealed candidate release ref into the protected publish process for an equality check against GitHub's native identity. | Unset; the protected npm workflow derives it from the sealed candidate. |
+| [`PULSE_RELEASE_SHA`](#pulse-release-sha) | Carries the sealed candidate source commit into the protected publish process for an equality check against GitHub's native identity. | Unset; the protected npm workflow derives it from the sealed candidate. |
+| [`PULSE_SOURCE_REVISION`](#pulse-source-revision) | Propagates one source identity through an aggregate release replay so independently written evidence cannot drift. | Current Git commit, or a deterministic archive-tree identity outside a Git checkout. |
+| [`PULSE_SOURCE_IDENTITY_KIND`](#pulse-source-identity-kind) | Labels the provenance class of the propagated source identity. | `git-commit` in a checkout or `archive-tree-sha256-160` for an extracted source tree. |
+| [`PULSE_SOURCE_DIGEST_SHA256`](#pulse-source-digest-sha256) | Preserves the full archive-tree digest behind the compatibility-width source revision field. | Unset for Git commits; the full archive-tree digest outside a Git checkout. |
+| [`PULSE_SOURCE_FILE_COUNT`](#pulse-source-file-count) | Carries the source-file count associated with an archive-tree digest for audit clarity. | Unset for Git commits; the deterministic archive-tree inventory count otherwise. |
 
-Selects the output path for the real Fastly host evidence report.
+<a id="pulsewasm-seal-worker-layout"></a>
+
+#### `PULSEWASM_SEAL_WORKER_LAYOUT`
+
+Allows exact shared-package consumption by registered local children of one controller; foreign checkouts and remote proof pooling remain rejected.
 
 | Property | Contract |
 |---|---|
-| Value | File path |
-| Default | Unset; the reality gate prints its normal test result without retaining a proof file. |
-| Precedence | When set, the real-host gate writes its redacted machine-readable proof to this path. |
-| Consumer | Fastly CLI-managed or direct-Viceroy local Compute reality gate. |
-| Secret safety | Not a secret. The proof intentionally excludes secret values and authorization plaintext. |
-| Stability | Contributor/release tooling override. |
-| Source owners | `wasm/test/provider/assert-fastly-compute-reality.cjs` |
+| Value | Absolute controller-owned layout path |
+| Default | Unset; shared packages belong only to their original checkout. |
+| Precedence | The release controller supplies the registered layout to each isolated worker. |
+| Consumer | Shared package verification in local seal workers. |
+| Secret safety | Not a secret. Identifies private worktrees and their clean candidate. |
+| Stability | Harness-internal; outside the application compatibility contract. |
+| Source owners | `scripts/release-shared-pack.cjs`, `wasm/scripts/run-wasm-tests.cjs` |
 
-<a id="pulse-four-mode-evidence"></a>
+<a id="pulse-release-shared-pack"></a>
 
-### `PULSE_FOUR_MODE_EVIDENCE`
+#### `PULSE_RELEASE_SHARED_PACK`
 
-Selects the output path for the four-mode conformance evidence report.
+Reuses one clean-source package set through verified private copies; independent determinism construction bypasses reuse.
 
 | Property | Contract |
 |---|---|
-| Value | File path |
-| Default | `wasm/.test-results/four-mode-conformance.json`. |
-| Precedence | When set, the four-mode conformance suite writes its revision-bound proof to this path. |
-| Consumer | Node/Fastly Native/JavaScript conformance evidence. |
-| Secret safety | Not a secret. The proof records target identities, support hashes, and test outcomes without application secrets. |
-| Stability | Contributor/release tooling override. |
-| Source owners | `wasm/test/contracts/assert-four-mode-conformance.cjs` |
+| Value | Directory path |
+| Default | Unset; packing constructs fresh packages. |
+| Precedence | The seal supplies its own attempt-local directory to consumer tasks. |
+| Consumer | Release package construction and installed acceptance. |
+| Secret safety | Not a secret. Contains verified candidate tarballs and their receipt. |
+| Stability | Harness-internal; outside the application compatibility contract. |
+| Source owners | `scripts/pack-release.cjs`, `scripts/release-shared-pack.cjs` |
+
+<a id="pulse-release-shared-pack-sha256"></a>
+
+#### `PULSE_RELEASE_SHARED_PACK_SHA256`
+
+Rejects receipt changes before validating source identity and every shared package file.
+
+| Property | Contract |
+|---|---|
+| Value | SHA-256 digest |
+| Default | Unset; required when a shared package directory is supplied. |
+| Precedence | The seal pins the receipt digest before launching consumer tasks. |
+| Consumer | Shared release package receipt verification. |
+| Secret safety | Not a secret. Identifies source-bound package evidence. |
+| Stability | Harness-internal; outside the application compatibility contract. |
+| Source owners | `scripts/release-shared-pack.cjs` |
+
+<a id="pulse-release-feature-report-dir"></a>
+
+#### `PULSE_RELEASE_FEATURE_REPORT_DIR`
+
+Routes each installed proof into a task-specific report for the candidate release decision.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Unset; focused installed tests use their own report directories. |
+| Precedence | The complete feature replay assigns a fresh directory to its child runner. |
+| Consumer | Installed feature acceptance report routing. |
+| Secret safety | Not a secret. Contains source, package and acceptance evidence only. |
+| Stability | Harness-internal; outside the application compatibility contract. |
+| Source owners | `wasm/test/support/installed-acceptance-report.cjs` |
+
+<a id="pulse-release-ref"></a>
+
+#### `PULSE_RELEASE_REF`
+
+Carries the sealed candidate release ref into the protected publish process for an equality check against GitHub's native identity.
+
+| Property | Contract |
+|---|---|
+| Value | Full Git ref (`refs/tags/v<version>`) |
+| Default | Unset; the protected npm workflow derives it from the sealed candidate. |
+| Precedence | When set by the workflow, it must exactly equal GitHub's native release-tag ref. |
+| Consumer | Protected npm publication identity binding. |
+| Secret safety | Not a secret. It is validated rather than trusted as independent authority. |
+| Stability | Repository release-workflow internal; not an application setting. |
+| Source owners | `scripts/release-publication.cjs` |
+
+<a id="pulse-release-sha"></a>
+
+#### `PULSE_RELEASE_SHA`
+
+Carries the sealed candidate source commit into the protected publish process for an equality check against GitHub's native identity.
+
+| Property | Contract |
+|---|---|
+| Value | Full lowercase 40-character Git commit SHA |
+| Default | Unset; the protected npm workflow derives it from the sealed candidate. |
+| Precedence | When set by the workflow, it must exactly equal GitHub's native release-tag commit. |
+| Consumer | Protected npm publication identity binding. |
+| Secret safety | Not a secret. It is validated rather than trusted as independent authority. |
+| Stability | Repository release-workflow internal; not an application setting. |
+| Source owners | `scripts/release-publication.cjs` |
 
 <a id="pulse-source-revision"></a>
 
-### `PULSE_SOURCE_REVISION`
+#### `PULSE_SOURCE_REVISION`
 
 Propagates one source identity through an aggregate release replay so independently written evidence cannot drift.
 
@@ -368,7 +299,7 @@ Propagates one source identity through an aggregate release replay so independen
 
 <a id="pulse-source-identity-kind"></a>
 
-### `PULSE_SOURCE_IDENTITY_KIND`
+#### `PULSE_SOURCE_IDENTITY_KIND`
 
 Labels the provenance class of the propagated source identity.
 
@@ -384,7 +315,7 @@ Labels the provenance class of the propagated source identity.
 
 <a id="pulse-source-digest-sha256"></a>
 
-### `PULSE_SOURCE_DIGEST_SHA256`
+#### `PULSE_SOURCE_DIGEST_SHA256`
 
 Preserves the full archive-tree digest behind the compatibility-width source revision field.
 
@@ -400,7 +331,7 @@ Preserves the full archive-tree digest behind the compatibility-width source rev
 
 <a id="pulse-source-file-count"></a>
 
-### `PULSE_SOURCE_FILE_COUNT`
+#### `PULSE_SOURCE_FILE_COUNT`
 
 Carries the source-file count associated with an archive-tree digest for audit clarity.
 
@@ -414,41 +345,70 @@ Carries the source-file count associated with an archive-tree digest for audit c
 | Stability | Repository release-evidence internal; not an application setting. |
 | Source owners | `scripts/source-identity.cjs` |
 
-<a id="pulse-fake-fastly-capture"></a>
+### Manual proof reproduction
 
-### `PULSE_FAKE_FASTLY_CAPTURE`
+| Variable | Purpose | Default |
+|---|---|---|
+| [`PULSE_B02_BASELINE_ROOT`](#pulse-b02-baseline-root) | Identifies a restored pre-B02 checkout for alternating baseline/candidate compiler measurements. | Unset; the manual B02 benchmark requires an explicit baseline checkout. |
+| [`PULSE_B02_USAGE_DIR`](#pulse-b02-usage-dir) | Passes the isolated measurement directory to the temporary compiler preload collector. | Created separately for each sample by the B02 benchmark harness. |
+| [`PULSE_B03_USAGE_DIR`](#pulse-b03-usage-dir) | Keeps compiler-process RSS separate from the planning worker and cold execution measurements. | Created separately for each sample by the B03 benchmark harness. |
+| [`PULSE_ES256_REPRODUCTION_ROOT`](#pulse-es256-reproduction-root) | Adds an independent source-identical raw guest artifact and Rust metadata comparison to G5. | Unset; the G5 seal still performs its required local maintainer reconstruction. |
+| [`PULSE_ES256_REPRODUCTION_ARCHIVE`](#pulse-es256-reproduction-archive) | Records the byte size and hash of the independently supplied ES256 reproduction archive. | Unset; no external archive identity is recorded. |
+| [`PULSE_RUST_CARGO`](#pulse-rust-cargo) | Selects the Cargo executable used to reproduce the sealed first-party Rust guest proof. | No explicit path; discover `cargo` on `PATH`. |
+| [`PULSE_RUSTC`](#pulse-rustc) | Selects the Rust compiler used to reproduce the sealed first-party Rust guest proof. | No explicit path; discover `rustc` on `PATH`. |
+| [`PULSEWASM_MEM03_BASE`](#pulsewasm-mem03-base) | Selects an explicit baseline generator revision for paired semantic and allocator measurements. | Merged GEN01 commit `8a6f2ff`. |
 
-Tells the fake Fastly CLI where to write its captured invocation.
+<a id="pulse-b02-baseline-root"></a>
 
-| Property | Contract |
-|---|---|
-| Value | File path |
-| Default | Unset. |
-| Precedence | Used only by the fake Fastly CLI fixture when present. |
-| Consumer | Fastly CLI surface test fixture. |
-| Secret safety | Not a secret. The file records test arguments and paths. |
-| Stability | Fixture-only; not a public tooling setting. |
-| Source owners | `wasm/test/provider/assert-fastly-cli-gate-surface.cjs` |
+#### `PULSE_B02_BASELINE_ROOT`
 
-<a id="pulse-fake-viceroy-capture"></a>
-
-### `PULSE_FAKE_VICEROY_CAPTURE`
-
-Tells the fake Viceroy launcher where to write its captured invocation.
+Identifies a restored pre-B02 checkout for alternating baseline/candidate compiler measurements.
 
 | Property | Contract |
 |---|---|
-| Value | File path |
-| Default | Unset. |
-| Precedence | Used only by the fake direct-Viceroy fixture when present. |
-| Consumer | Fastly local-engine surface test fixture. |
-| Secret safety | Not a secret. The file records test arguments and paths. |
-| Stability | Fixture-only; not a public tooling setting. |
-| Source owners | `wasm/test/provider/assert-fastly-cli-gate-surface.cjs` |
+| Value | Directory path |
+| Default | Unset; the manual B02 benchmark requires an explicit baseline checkout. |
+| Precedence | Selects the baseline; the candidate is the checkout containing the harness. |
+| Consumer | Manual B02 terminal Router body cost proof. |
+| Secret safety | Not a secret. The harness executes compiler code from this checkout; use trusted source. |
+| Stability | Contributor/test-only; outside the application compatibility contract. |
+| Source owners | `wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs` |
+
+<a id="pulse-b02-usage-dir"></a>
+
+#### `PULSE_B02_USAGE_DIR`
+
+Passes the isolated measurement directory to the temporary compiler preload collector.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Created separately for each sample by the B02 benchmark harness. |
+| Precedence | The harness supplies and overrides this value in each child process. |
+| Consumer | B02 AssemblyScript child-process RSS collector. |
+| Secret safety | Not a secret. Contains temporary process IDs and peak RSS measurements. |
+| Stability | Harness-internal test control; not a user or application setting. |
+| Source owners | `wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs` |
+
+<a id="pulse-b03-usage-dir"></a>
+
+#### `PULSE_B03_USAGE_DIR`
+
+Keeps compiler-process RSS separate from the planning worker and cold execution measurements.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Created separately for each sample by the B03 benchmark harness. |
+| Precedence | The harness supplies and overrides this value in each compiler child process. |
+| Consumer | B03 AssemblyScript child-process RSS collector. |
+| Secret safety | Not a secret. Contains temporary process IDs and peak RSS measurements. |
+| Stability | Harness-internal test control; not a user or application setting. |
+| Source owners | `wasm/test/runtime/compiler-efficiency/b03-handler-functions.cjs` |
 
 <a id="pulse-es256-reproduction-root"></a>
 
-### `PULSE_ES256_REPRODUCTION_ROOT`
+#### `PULSE_ES256_REPRODUCTION_ROOT`
 
 Adds an independent source-identical raw guest artifact and Rust metadata comparison to G5.
 
@@ -464,7 +424,7 @@ Adds an independent source-identical raw guest artifact and Rust metadata compar
 
 <a id="pulse-es256-reproduction-archive"></a>
 
-### `PULSE_ES256_REPRODUCTION_ARCHIVE`
+#### `PULSE_ES256_REPRODUCTION_ARCHIVE`
 
 Records the byte size and hash of the independently supplied ES256 reproduction archive.
 
@@ -480,7 +440,7 @@ Records the byte size and hash of the independently supplied ES256 reproduction 
 
 <a id="pulse-rust-cargo"></a>
 
-### `PULSE_RUST_CARGO`
+#### `PULSE_RUST_CARGO`
 
 Selects the Cargo executable used to reproduce the sealed first-party Rust guest proof.
 
@@ -496,7 +456,7 @@ Selects the Cargo executable used to reproduce the sealed first-party Rust guest
 
 <a id="pulse-rustc"></a>
 
-### `PULSE_RUSTC`
+#### `PULSE_RUSTC`
 
 Selects the Rust compiler used to reproduce the sealed first-party Rust guest proof.
 
@@ -512,7 +472,7 @@ Selects the Rust compiler used to reproduce the sealed first-party Rust guest pr
 
 <a id="pulsewasm-mem03-base"></a>
 
-### `PULSEWASM_MEM03_BASE`
+#### `PULSEWASM_MEM03_BASE`
 
 Selects an explicit baseline generator revision for paired semantic and allocator measurements.
 
@@ -525,6 +485,79 @@ Selects an explicit baseline generator revision for paired semantic and allocato
 | Secret safety | Not a secret. Use only a trusted baseline generator revision for the proof. |
 | Stability | Contributor/test-only proof reproduction control. |
 | Source owners | `wasm/test/runtime/compiler-efficiency/mem03-encode-materialization.cjs` |
+
+### Provider test evidence and fixtures
+
+| Variable | Purpose | Default |
+|---|---|---|
+| [`PULSE_FASTLY_REALITY_EVIDENCE`](#pulse-fastly-reality-evidence) | Selects the output path for the real Fastly host evidence report. | Unset; the reality gate prints its normal test result without retaining a proof file. |
+| [`PULSE_FOUR_MODE_EVIDENCE`](#pulse-four-mode-evidence) | Selects the output path for the four-mode conformance evidence report. | `wasm/.test-results/four-mode-conformance.json`. |
+| [`PULSE_FAKE_FASTLY_CAPTURE`](#pulse-fake-fastly-capture) | Tells the fake Fastly CLI where to write its captured invocation. | Unset. |
+| [`PULSE_FAKE_VICEROY_CAPTURE`](#pulse-fake-viceroy-capture) | Tells the fake Viceroy launcher where to write its captured invocation. | Unset. |
+
+<a id="pulse-fastly-reality-evidence"></a>
+
+#### `PULSE_FASTLY_REALITY_EVIDENCE`
+
+Selects the output path for the real Fastly host evidence report.
+
+| Property | Contract |
+|---|---|
+| Value | File path |
+| Default | Unset; the reality gate prints its normal test result without retaining a proof file. |
+| Precedence | When set, the real-host gate writes its redacted machine-readable proof to this path. |
+| Consumer | Fastly CLI-managed or direct-Viceroy local Compute reality gate. |
+| Secret safety | Not a secret. The proof intentionally excludes secret values and authorization plaintext. |
+| Stability | Contributor/release tooling override. |
+| Source owners | `wasm/test/provider/assert-fastly-compute-reality.cjs` |
+
+<a id="pulse-four-mode-evidence"></a>
+
+#### `PULSE_FOUR_MODE_EVIDENCE`
+
+Selects the output path for the four-mode conformance evidence report.
+
+| Property | Contract |
+|---|---|
+| Value | File path |
+| Default | `wasm/.test-results/four-mode-conformance.json`. |
+| Precedence | When set, the four-mode conformance suite writes its revision-bound proof to this path. |
+| Consumer | Node/Fastly Native/JavaScript conformance evidence. |
+| Secret safety | Not a secret. The proof records target identities, support hashes, and test outcomes without application secrets. |
+| Stability | Contributor/release tooling override. |
+| Source owners | `wasm/test/contracts/assert-four-mode-conformance.cjs` |
+
+<a id="pulse-fake-fastly-capture"></a>
+
+#### `PULSE_FAKE_FASTLY_CAPTURE`
+
+Tells the fake Fastly CLI where to write its captured invocation.
+
+| Property | Contract |
+|---|---|
+| Value | File path |
+| Default | Unset. |
+| Precedence | Used only by the fake Fastly CLI fixture when present. |
+| Consumer | Fastly CLI surface test fixture. |
+| Secret safety | Not a secret. The file records test arguments and paths. |
+| Stability | Fixture-only; not a public tooling setting. |
+| Source owners | `wasm/test/provider/assert-fastly-cli-gate-surface.cjs` |
+
+<a id="pulse-fake-viceroy-capture"></a>
+
+#### `PULSE_FAKE_VICEROY_CAPTURE`
+
+Tells the fake Viceroy launcher where to write its captured invocation.
+
+| Property | Contract |
+|---|---|
+| Value | File path |
+| Default | Unset. |
+| Precedence | Used only by the fake direct-Viceroy fixture when present. |
+| Consumer | Fastly local-engine surface test fixture. |
+| Secret safety | Not a secret. The file records test arguments and paths. |
+| Stability | Fixture-only; not a public tooling setting. |
+| Source owners | `wasm/test/provider/assert-fastly-cli-gate-surface.cjs` |
 
 ## Standard process variables
 
