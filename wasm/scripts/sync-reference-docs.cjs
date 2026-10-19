@@ -111,12 +111,17 @@ function withStatusBlock(source, entry, manifest) {
 }
 
 function renderPackagePolicy() {
-  const rows = PACKAGE_SET.map((entry) => {
+  const coreNames = ['@pulse-compute/pulse', '@pulse-compute/runtime', '@pulse-compute/cli'];
+  const core = coreNames.map(name => PACKAGE_SET.find(entry => entry.name === name));
+  const capabilities = PACKAGE_SET.filter(entry => entry.tier === 'supported-extension').sort((a, b) => a.name.localeCompare(b.name));
+  const implementation = PACKAGE_SET.filter(entry => entry.tier === 'implementation');
+  const index = entries => `| Package | Purpose | When to use |\n|---|---|---|\n${entries.map(entry => {
     const manifest = packageManifest(entry);
-    const tier = SUPPORT_TIERS[entry.tier];
-    const direct = entry.directInstall.startsWith('Yes') ? 'Yes' : 'No';
-    const guide = `./${path.basename(entry.documentation)}`;
-    return `| [${inlineCode(manifest.name)}](${npmPackageUrl(manifest.name)}) | [Guide](${guide}) | ${tier.label} | ${direct} | ${entry.stability} |`;
+    return `| [${inlineCode(manifest.name)}](./${path.basename(entry.documentation)}) | ${tableCell(manifest.description)} | ${tableCell(entry.audience)} |`;
+  }).join('\n')}`;
+  const rows = [...core, ...capabilities, ...implementation].map(entry => {
+    const manifest = packageManifest(entry), tier = SUPPORT_TIERS[entry.tier];
+    return `| [${inlineCode(manifest.name)}](${npmPackageUrl(manifest.name)}) | [Guide](./${path.basename(entry.documentation)}) | ${tier.label} | ${entry.directInstall} | ${entry.stability} |`;
   });
   return stable(`# Package support policy
 
@@ -124,9 +129,30 @@ ${GENERATED_NOTICE}
 
 Pulse ${RELEASE_VERSION} publishes one synchronized ${PACKAGE_SET.length}-package release set. Publication does not make every package an application-author SDK: the support tier and listed entry points define the release promise.
 
+## Core packages
+
+${index(core)}
+
+## Capability packages
+
+Choose a package for the capability you need; its guide owns supported targets and limitations.
+
+${index(capabilities)}
+
+## Implementation packages
+
+These packages are mostly transitive implementation dependencies. Explicit supported entry points, including the Node provider's server entry, retain their documented exceptions; consult the [implementation guide](./implementation-packages.md).
+
+${index(implementation)}
+
+<details>
+<summary>Full support contracts, installation guidance, and npm links</summary>
+
 | Package on npm | Guide | Support tier | Install directly | Release promise |
-|---|---|---|---:|---|
+|---|---|---|---|---|
 ${rows.join('\n')}
+
+</details>
 
 ## Tier definitions
 
