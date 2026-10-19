@@ -110,8 +110,11 @@ function loadDocumentationVersions(file = VERSIONS_FILE) {
     if (segments.has(entry.segment)) fail(`duplicate documentation segment ${entry.segment}`);
     if (entry.segment !== `v${entry.version}`) fail(`documentation segment ${entry.segment} must match version ${entry.version}`);
     if (!['current', 'archived'].includes(entry.status)) fail(`documentation version ${entry.version} uses unsupported status ${entry.status}`);
-    if (entry.deliveryOwner !== undefined) require('./release-pr-check.cjs').validateWebsiteHistory(entry,
-      name => fs.readFileSync(path.resolve(__dirname, '..', name), 'utf8'));
+    if (entry.deliveryOwner !== undefined) {
+      const checks = require('./release-pr-check.cjs');
+      (entry.deliveryOwner === 'legacy-pulse' ? checks.validateRetainedArchiveHistory : checks.validateWebsiteHistory)(entry,
+        name => fs.readFileSync(path.resolve(__dirname, '..', name), 'utf8'));
+    }
     if (entry.status === 'current') currentEntries += 1;
     versions.add(entry.version);
     segments.add(entry.segment);

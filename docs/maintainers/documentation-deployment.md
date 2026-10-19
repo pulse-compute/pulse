@@ -148,7 +148,9 @@ Origin signing remains owned by the human Fastly infrastructure operator. The
 website still uses the existing private-origin mechanism; no equivalent signing
 template has been transferred. Retain `infra/fastly/documentation/origin-signing.vcl`
 and its surrounding historical templates until that consumer is migrated and
-reviewed. Repo archives and recovery metadata remain untouched.
+reviewed. Historical HTML copies are removed from `latest`; their small product
+metadata and the original beta.1 capture record remain in
+`release/documentation-release-history/`. Historical readers use supplied artifacts.
 
 The checked-in snippets contain protected credential placeholders and are not activated automatically. A human infrastructure/release owner must create and configure the Fastly service, test a non-production service version, and activate it.
 

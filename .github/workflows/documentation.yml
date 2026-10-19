@@ -59,7 +59,7 @@ jobs:
           pnpm install --frozen-lockfile --ignore-scripts
       - name: Check source validation contract
         run: node wasm/test/docs/assert-documentation-check.cjs
-      - name: Check retained archive readers
+      - name: Check supplied historical artifact readers
         run: node wasm/test/docs/assert-documentation-archives.cjs
       - name: Validate source and installed documentation
         run: node scripts/documentation-check.cjs

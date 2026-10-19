@@ -268,8 +268,8 @@ node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --website-manage
 ```
 
 `--website-managed` requires the previous release tag and retains product metadata
-without generating HTML. Legacy `--archive-current` only accepts an existing
-committed snapshot; it is no longer the workflow default.
+without generating HTML. `--archive-current` is retired; historical readers
+accept supplied old artifacts without requiring checked-in HTML snapshots.
 Use `--replace-unpublished` only when replacing a candidate that has not shipped.
 For the reviewed hosted-docs exception, use `--replace-unpublished-docs` instead:
 the old release shipped on npm and its changelog must be preserved. See

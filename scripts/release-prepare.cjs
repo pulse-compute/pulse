@@ -11,7 +11,6 @@ const repoRoot = path.resolve(__dirname, '..');
 const releaseManifestFile = path.join(repoRoot, 'release', 'pulse-release-manifest.json');
 const documentationVersionsFile = path.join(repoRoot, 'release', 'documentation-versions.json');
 const documentationInventoryFile = path.join(repoRoot, 'release', 'documentation-inventory.json');
-const documentationArchiveRoot = path.join(repoRoot, 'release', 'documentation-site-archives');
 const tokenReportFile = path.join(repoRoot, '.pulse-release-preparation', 'version-token-report.json');
 const dependencySections = Object.freeze(['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']);
 const semverPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
@@ -86,7 +85,7 @@ function parseArgs(argv) {
       options.releasedAt = input.shift();
     } else if (token.startsWith('--date=')) options.releasedAt = token.slice('--date='.length);
     else if (token === '--replace-unpublished') {
-      if (options.historyMode) fail('choose exactly one of --replace-unpublished or --archive-current');
+      if (options.historyMode) fail('choose exactly one documentation history mode');
       options.historyMode = 'replace-unpublished';
     } else if (token === '--replace-unpublished-docs') {
       if (options.historyMode) fail('choose exactly one documentation history mode');
@@ -95,8 +94,7 @@ function parseArgs(argv) {
       if (options.historyMode) fail('choose exactly one documentation history mode');
       options.historyMode = 'website-managed';
     } else if (token === '--archive-current') {
-      if (options.historyMode) fail('choose exactly one of --replace-unpublished or --archive-current');
-      options.historyMode = 'archive-current';
+      fail('--archive-current is retired; use --website-managed. Validate supplied historical artifacts with documentation-archives.cjs.');
     } else if (token === '--dry-run') options.dryRun = true;
     else if (token === '--no-sync') options.noSync = true;
     else if (token === '--allow-dirty') options.allowDirty = true;
@@ -109,13 +107,12 @@ function parseArgs(argv) {
 function usage() {
   return [
     'Usage:',
-    '  pnpm release:prepare -- <version> --channel <name> <--replace-unpublished|--replace-unpublished-docs|--website-managed|--archive-current> [options]',
+    '  pnpm release:prepare -- <version> --channel <name> <--replace-unpublished|--replace-unpublished-docs|--website-managed> [options]',
     '',
     'History mode:',
     '  --replace-unpublished  Replace the current candidate without creating release history',
     '  --replace-unpublished-docs  Omit only reviewed unpublished hosted docs; preserve npm history and changelog',
     '  --website-managed    Preserve tagged product metadata; website owns historical HTML',
-    '  --archive-current      Legacy: require a committed documentation snapshot and archive the current release',
     '',
     'Options:',
     '  --date <date>  Release date in YYYY-MM-DD (default: today in UTC)',
@@ -174,28 +171,6 @@ function assertManifestConsistency(releaseManifest, documentationVersions) {
   const policy = releaseManifest.readiness?.versionPreparation;
   if (!policy || policy.schemaVersion !== 'pulse.release-version-preparation.v1') fail('release manifest version preparation policy is missing or unsupported');
   return Object.freeze({ currentVersion, currentEntry: current[0], policy });
-}
-
-function assertSnapshot(currentVersion, currentEntry, git) {
-  if (!git.available) fail('--archive-current requires a Git worktree');
-  const segment = `v${currentVersion}`;
-  const root = path.join(documentationArchiveRoot, segment);
-  if (!fs.existsSync(root) || !fs.statSync(root).isDirectory()) fail(`missing immutable documentation snapshot: ${relative(root)}/`, 'PULSE_RELEASE_SNAPSHOT_REQUIRED');
-  for (const entry of ['index.html', 'search-index.json', 'release-manifest.json', 'documentation-versions.json', 'site-version-manifest.json', 'assets/site.css', 'assets/site.js']) {
-    const file = path.join(root, entry);
-    if (!fs.existsSync(file) || !fs.statSync(file).isFile()) fail(`documentation snapshot ${segment} is incomplete; missing ${entry}`, 'PULSE_RELEASE_SNAPSHOT_INVALID');
-  }
-  const site = readJson(path.join(root, 'site-version-manifest.json'));
-  if (site.releaseVersion !== currentVersion || site.versionSegment !== segment || !Array.isArray(site.pages) || site.pages.length === 0) {
-    fail(`documentation snapshot ${segment} has stale or incomplete metadata`, 'PULSE_RELEASE_SNAPSHOT_INVALID');
-  }
-  if (currentEntry.version !== currentVersion || currentEntry.segment !== segment) fail(`documentation snapshot ${segment} does not match the current versions entry`, 'PULSE_RELEASE_SNAPSHOT_INVALID');
-  const status = run('git', ['status', '--porcelain=v1', '--', relative(root)], { capture: true });
-  if (status.stdout.trim()) fail(`documentation snapshot ${segment} must be committed before the version changes`, 'PULSE_RELEASE_SNAPSHOT_UNCOMMITTED');
-  const tracked = run('git', ['ls-files', '--', relative(root)], { capture: true });
-  if (!tracked.stdout.trim()) fail(`documentation snapshot ${segment} is not tracked by Git`, 'PULSE_RELEASE_SNAPSHOT_UNCOMMITTED');
-  const verified = require('./documentation-archives.cjs').validateVersionDirectory(root, { version: currentVersion, segment });
-  return Object.freeze({ root, pages: verified.pages });
 }
 
 function replaceReleaseIdentity(value, oldVersion, nextVersion) {
@@ -271,6 +246,7 @@ function updatePulseDependencies(manifest, oldVersion, nextVersion) {
 }
 
 function planRelease(releaseManifest, documentationVersions, options, state, resolvePreviousSource = require('./release-prepare-pr.cjs').previousReleaseSource) {
+  if (!['website-managed', 'replace-unpublished', 'replace-unpublished-docs'].includes(options.historyMode)) fail('Unsupported release history mode');
   const { currentVersion, currentEntry, policy } = state;
   const nextVersion = options.version;
   const previousSource = options.historyMode === 'website-managed'
@@ -325,8 +301,7 @@ function planRelease(releaseManifest, documentationVersions, options, state, res
         ...entry,
         status: 'archived',
         ...(previousSource ? { deliveryOwner: 'website', sourceTag: previousSource.sourceTag, sourceCommit: previousSource.tag, sourceManifestSha256: createHash('sha256').update(stableJson(previousSource.manifest)).digest('hex') } : {}),
-        sourceManifest: previousSource ? `release/documentation-release-history/${entry.segment}.json`
-          : `release/documentation-site-archives/${entry.segment}/release-manifest.json`
+        sourceManifest: `release/documentation-release-history/${entry.segment}.json`
       } : entry)]
     };
   }
@@ -500,8 +475,6 @@ function main(argv = process.argv.slice(2)) {
   const state = assertManifestConsistency(releaseManifest, documentationVersions);
   if (options.version === state.currentVersion) fail(`requested version ${options.version} is already current`);
   const git = gitState(options);
-  let snapshot = null;
-  if (options.historyMode === 'archive-current') snapshot = assertSnapshot(state.currentVersion, state.currentEntry, git);
   const plan = planRelease(releaseManifest, documentationVersions, options, state);
 
   if (options.dryRun) {
@@ -531,7 +504,6 @@ function main(argv = process.argv.slice(2)) {
     `  files:    ${plan.writes.size}`,
     `  packages: ${plan.nextRelease.packages.length}`,
     `  exact Pulse dependency updates: ${plan.dependencyUpdates}`,
-    snapshot ? `  archived snapshot: ${relative(snapshot.root)} (${snapshot.pages} pages)` : '',
     applied.synchronized.length ? `  synchronized: ${applied.synchronized.join(', ')}` : '  synchronization: skipped',
     `  stale-token report: ${relative(tokenReportFile)} (${applied.tokens.files} files, ${applied.tokens.occurrences} occurrences)`,
     '  Git tag: not created; tag the final reviewed commit, then publication seals its exact artifacts.',

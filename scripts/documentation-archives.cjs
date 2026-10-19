@@ -121,3 +121,12 @@ function validateVersionDirectory(versionRoot, expected) {
 }
 
 module.exports = { validateVersionDirectory };
+
+// Explicit, local, read-only artifact inspection; no implicit checkout archive.
+if (require.main === module) {
+  try {
+    const { values } = require('node:util').parseArgs({ options: { directory: { type: 'string' }, version: { type: 'string' } } });
+    if (!values.directory || !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(values.version || '')) fail('Use --directory <supplied-artifact> --version <version>');
+    console.log(JSON.stringify(validateVersionDirectory(path.resolve(values.directory), { version: values.version, segment: `v${values.version}` })));
+  } catch (error) { console.error(error.message); process.exitCode = 1; }
+}
