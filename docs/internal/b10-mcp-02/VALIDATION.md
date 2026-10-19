@@ -61,7 +61,11 @@ Fastly deployment limits or an installed-consumer memory qualification.
 - The 35-task unit selection from `api-surface` through the end of the profile
   passed on the preceding base with the same product implementation.
 - Native numeric regions, budgets, handle ownership/frames, helper/projection
-  and loop checks passed in the broader development run. That run is continuing.
+  and loop checks passed in the broader development run. The supplementary continuation was deliberately interrupted after 66 terminal
+  passing task receipts, including the remaining Native selection, all seven
+  JavaScript tasks, and the resource/effect-collection/HS256/ES256 conformance
+  tasks reached. It exited 130 while the RS256 task was closing; no terminal
+  task or aggregate pass is claimed for that task or the unexecuted remainder.
 - Focused schema presence/optional-property parity passed. The complete owned
   schema codec script also passed under `timeout 600s node
   wasm/test/contracts/assert-schema-codecs.cjs` (exit 0); this is diagnostic
@@ -70,6 +74,13 @@ Fastly deployment limits or an installed-consumer memory qualification.
 - All six selected Fastly package/application/JavaScript/Native-shell/effect/
   platform tasks passed in one final-checkout run. Optional transport replay
   still reports its explicit Viceroy skip; these are injected-ABI claims.
+
+Exact terminal task rows, log digests and failure/interruption tails are retained
+in [validation-results.json](./validation-results.json). There are 153 distinct
+registered tasks with passing receipts across these separate development runs;
+this count is not a same-candidate aggregate claim. No validation process remains
+running. The full Native/JavaScript/conformance/CLI/release gates still require
+an uninterrupted passing run in the qualification environment.
 
 ## Retained failures and incomplete gates
 
@@ -86,6 +97,7 @@ runs are separate evidence and are not pooled into a clean-candidate seal.
 | `release-seal-lifecycle` | First run missed its subprocess PID fixture; unchanged-base run and changed-tree retry both passed |
 | `release-recovery-runner` | Registered 90-second task timed out; no passing claim |
 | `docs-executable-contracts` | Registered 240-second task timed out after multiple passing example commands; the task remains incomplete |
+| Supplementary Native/JavaScript/conformance continuation | Deliberately interrupted after the focused schema/provider proof completed; 66 terminal passes retained, remainder unqualified |
 | `schema-codecs` | Registered 180-second task timed out after passing JSON-admission, text-decoding and ScalarRecord groups; the same owned script passed separately under a 600-second diagnostic deadline, without changing the registered gate |
 
 Early focused harness failures (BOM-stripping `Response.text`, an oracle that
