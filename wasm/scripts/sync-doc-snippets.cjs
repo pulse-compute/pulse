@@ -3,6 +3,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { renderExampleTemplate } = require('../../scripts/documentation-examples.cjs');
 const { synchronizeReferenceDocs } = require('./sync-reference-docs.cjs');
 const { synchronizeContextCorpus } = require('../../scripts/pulse-context-corpus.cjs');
 const { synchronizeDocumentationMetadata, validateDocumentationMetadata } = require('../../scripts/documentation-ownership.cjs');
@@ -66,13 +67,19 @@ function synchronizeDocSnippets(options = {}) {
   const write = options.write === true;
   const mismatches = [];
   const references = [];
+  const layoutMismatches = [];
   let blockCount = 0;
   let changedFiles = 0;
 
   for (const markdownFile of markdownFiles()) {
     const original = fs.readFileSync(markdownFile, 'utf8');
     let markerCount = 0;
-    const updated = original.replace(BLOCK_PATTERN, (whole, rawReference, actualLanguage, actualBody) => {
+    const templated = renderExampleTemplate(original, () => {
+      if (!slash(path.relative(repoRoot, markdownFile)).startsWith('examples/')) throw new Error('Example template must belong to an example README');
+      return require('../packages/cli/src/project-config.js').resolveProject({ cwd: path.dirname(markdownFile) }).tests;
+    });
+    if (templated !== original) layoutMismatches.push(slash(path.relative(repoRoot, markdownFile)));
+    const updated = templated.replace(BLOCK_PATTERN, (whole, rawReference, actualLanguage, actualBody) => {
       markerCount += 1;
       blockCount += 1;
       const resolved = resolveSource(rawReference, markdownFile);
@@ -105,6 +112,8 @@ function synchronizeDocSnippets(options = {}) {
       changedFiles += 1;
     }
   }
+
+  if (!write && layoutMismatches.length) throw new Error(`example layouts are stale: ${layoutMismatches.join(', ')}. Run npm run docs:sync`);
 
   if (!write && mismatches.length > 0) {
     const details = mismatches.map((entry) => `${entry.markdown} <- ${entry.source}`).join(', ');

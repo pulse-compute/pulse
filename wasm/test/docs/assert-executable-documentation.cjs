@@ -291,8 +291,9 @@ function parseRunBindings() {
   return bindings;
 }
 
-function verifyRunBindings(bindings) {
-  assert.ok(bindings.length >= 10, `expected at least 10 executable command/result bindings, found ${bindings.length}`);
+function verifyRunBindings(bindings, selectedExample = null) {
+  const minimum = selectedExample ? 1 : 10;
+  assert.ok(bindings.length >= minimum, `expected at least ${minimum} executable command/result bindings, found ${bindings.length}`);
   const exampleCoverage = new Set();
   for (const binding of bindings) {
     const { config } = binding;
@@ -310,7 +311,7 @@ function verifyRunBindings(bindings) {
       cwd = projectRoot;
       const example = config.project.match(/^examples\/([^/]+)$/)?.[1];
       if (example) exampleCoverage.add(example);
-      if (config.args[0] === 'build') {
+      if (config.args[0] === 'build' || config.prepare) {
         const dist = path.join(projectRoot, BUILD_DIR);
         fs.rmSync(dist, { recursive: true, force: true });
         cleanup = () => fs.rmSync(dist, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
@@ -321,6 +322,12 @@ function verifyRunBindings(bindings) {
     }
 
     try {
+      if (config.prepare) {
+        assert.equal(config.args[0], 'report', 'Only retained report evidence requires preparation');
+        assert.deepEqual(config.prepare, ['build', '--out', BUILD_DIR, '--json'], 'Report preparation stays in the documentation build directory');
+        const prepared = runJson(config.prepare, cwd);
+        assert.equal(prepared.status, 'built');
+      }
       const value = runJson(config.args, cwd, {
         timeoutMs: config.timeoutMs || 300000,
         expectedStatus: config.expectedStatus ?? 0,
@@ -331,7 +338,7 @@ function verifyRunBindings(bindings) {
       if (cleanup) cleanup();
     }
   }
-  const lifecycleExamples = examples.map((entry) => entry.id).sort();
+  const lifecycleExamples = selectedExample ? [selectedExample] : examples.map((entry) => entry.id).sort();
   assert.deepEqual([...exampleCoverage].sort(), lifecycleExamples, 'every lifecycle example must have a documented executable command/result pair');
 }
 
@@ -892,6 +899,7 @@ async function main() {
     if (options.example) {
       const syncResult = verifySourceContracts();
       const example = examples.find((entry) => entry.id === options.example);
+      verifyRunBindings(parseRunBindings().filter(binding => binding.config.project === `examples/${example.id}`), example.id);
       const summary = verifyExampleWorkflow(example, syncResult);
       if (summary.provider === 'fastly') assert.ok(summary.wasmBytes > 1024 && summary.wasmBytes < 1024 * 1024, `${summary.id} must produce compact native provider Wasm`);
       console.log(`ok - docs example ${summary.id}: provider=${summary.provider} tests=${summary.tests} capabilities=${summary.capabilities}${summary.schemas ? ` schemas=${summary.schemas}` : ''}${summary.wasmBytes ? ` wasm=${summary.wasmBytes}` : ''}`);

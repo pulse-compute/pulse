@@ -67,6 +67,23 @@ consumers. Source-link validation includes contributor and PR-template links.
 All 13 executable documentation tasks remain registered and run through the
 normal task runner; source checks do not replace their execution evidence.
 
+## Shared example layout
+
+An example README opts into the shared layout with
+`<!-- pulse-example-template:v1 -->`. `docs:sync` keeps its purpose first,
+regenerates the request/response table from resolved HTTP harness cases, and
+orders the authored Code, Inspect, Doctor and Report material before workflow,
+test evidence and size measurements. Only present, nonempty views are emitted.
+Handler, project-config, harness, workflow and size headings retain their anchors.
+
+Edit the authored section prose and the existing `pulse-doc-source` / `pulse-doc-run`
+bindings. The request/response table and Code grouping are generated. JSON results
+are explicitly selected excerpts and must be verified by executable documentation;
+never add placeholder Inspect/Doctor/Report output. A report binding may prepare
+one build in `.pulse-docs-build`, then replay that retained artifact; it does not
+embed a report viewer in Markdown. Installed copies and the MCP corpus regenerate
+through the ordinary pipeline. Examples without the marker remain unchanged.
+
 ## Delivery boundaries
 
 Repository-only material under `docs/internal/`, retired architecture decisions,

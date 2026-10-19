@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "32b37a30833b2ac5259603e4f40dc4eb32e9ba8400cdbad81710716f4ca7eb81",
+  "corpusHash": "135921e63e4fa3e0faa3fcca1838c7d7e7d357724792eaa55c4e196fb7ed5167",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -8129,17 +8129,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "example",
-      "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse build\n```\n\nThe documented test result below is executed by the documentation gate.\n\n<!-- pulse-doc-run {\"project\":\"examples/01-hello-json\",\"args\":[\"test\",\"--json\"]} -->\n```bash\npulse test --json\n```\n```json\n{\n  \"status\": \"passed\",\n  \"provider\": \"node\",\n  \"summary\": {\n    \"total\": 3,\n    \"passed\": 3,\n    \"failed\": 0\n  },\n  \"cases\": [\n    {\n      \"name\": \"health\",\n      \"status\": \"passed\",\n      \"response\": {\n        \"status\": 200\n      }\n    }\n  ]\n}\n```\n",
-      "contentSha256": "426c98ac6225f6124de7f39b1c405002354b852d38291a272bc2e4b6470e3601",
+      "content": "## Workflow\n\nRun commands from this example directory after installing the repository dependencies.\nThe npm scripts use the project-local CLI; Inspect and Doctor commands are shown with their results above.\n\n```bash\nnpm test\nnpm run dev\n```\n\nWhile the foreground server is running, request `http://127.0.0.1:8787/health`\nor `/hello`. Stop it with **Ctrl+C** before building:\n\n```bash\nnpm run build\n```\n",
+      "contentSha256": "0908ca90c1b70b9a5bc35f5d234fbb855f3f1405df58fb9d0a18ebce2646b2a6",
       "id": "example/01-hello-json/workflow",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
-        "endLine": 41,
+        "endLine": 150,
         "path": "examples/01-hello-json/README.md",
         "selection": "heading:Workflow",
-        "sha256": "b72811320a7d7e17d7cc04573fc41d4dabaf1909ad86a8117f12854c340c964b",
-        "startLine": 5,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b4818fc60d4e3f0515cf4ba33b59c0134456cf09"
+        "sha256": "b2760a4d6ed87b54f35bf4a043fe6a4f9704e3f3d1164523bfdfc5c806f35309",
+        "startLine": 134,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6f13b5fefba28229a2c2731a6ff70a76593f7ff4"
       },
       "status": "candidate",
       "tags": [
@@ -9743,8 +9743,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/01-hello-json/README.md",
-      "sha256": "b72811320a7d7e17d7cc04573fc41d4dabaf1909ad86a8117f12854c340c964b",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b4818fc60d4e3f0515cf4ba33b59c0134456cf09"
+      "sha256": "b2760a4d6ed87b54f35bf4a043fe6a4f9704e3f3d1164523bfdfc5c806f35309",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6f13b5fefba28229a2c2731a6ff70a76593f7ff4"
     },
     {
       "path": "examples/01-hello-json/package.json",
