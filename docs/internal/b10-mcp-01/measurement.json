@@ -1,0 +1,225 @@
+{
+  "schemaVersion": "pulse.context-native-design-measurement.v1",
+  "sourceRevision": "0b2a861c20f427cae0bfcaaca5549c90d201fa04",
+  "corpusHash": "3476598caee665b829e1b5a32c1263716e84cc2fa8ac4dc36137c07a264d2165",
+  "source": {
+    "path": "examples/12-pulse-context-mcp/context-corpus.ts",
+    "sha256": "8dbd2cba000e682dfc82f6b87c90915bacfe1286fbbb2916a1d765d9a2950a15"
+  },
+  "encoder": "pulse.context-sparse-lexical.v1",
+  "counts": {
+    "records": 244,
+    "vocabulary": 2453,
+    "nonzeroEntries": 14361,
+    "maxTermsPerRecord": 938,
+    "maxTokenBytes": 52,
+    "maxContentBytes": 24475,
+    "maxMetadataBytes": 924,
+    "dictionaryBytes": 21593,
+    "textBytes": 205539,
+    "metadataBytes": 193600,
+    "vectorBytes": 158121,
+    "textResourceBytes": 208531,
+    "metadataResourceBytes": 195616,
+    "totalResourceBytes": 562268
+  },
+  "oracleComparisons": {
+    "vocabularySingles": 2453,
+    "multiTerm": 8,
+    "filtered": 8
+  },
+  "queries": [
+    {
+      "query": "compile",
+      "terms": [
+        "compile"
+      ],
+      "expectedRelevantId": "command/compile",
+      "totalMatches": 41,
+      "top5": [
+        {
+          "id": "command/compile",
+          "score": 19
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "score": 11
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "score": 11
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+          "score": 11
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+          "score": 7
+        }
+      ]
+    },
+    {
+      "query": "schema declarations",
+      "terms": [
+        "declarations",
+        "schema"
+      ],
+      "expectedRelevantId": "contract/schema-declarations",
+      "totalMatches": 9,
+      "top5": [
+        {
+          "id": "contract/schema-declarations",
+          "score": 34
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
+          "score": 18
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_DUPLICATE",
+          "score": 12
+        },
+        {
+          "id": "contract/application",
+          "score": 2
+        },
+        {
+          "id": "contract/eligibility",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "query": "parallel",
+      "terms": [
+        "parallel"
+      ],
+      "expectedRelevantId": "contract/parallel",
+      "totalMatches": 8,
+      "top5": [
+        {
+          "id": "contract/parallel",
+          "score": 19
+        },
+        {
+          "id": "contract/application",
+          "score": 1
+        },
+        {
+          "id": "contract/provider-compatibility",
+          "score": 1
+        },
+        {
+          "id": "contract/source-compatibility",
+          "score": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
+          "score": 1
+        }
+      ]
+    },
+    {
+      "query": "PULSE_BINARY_RESOURCE_INVALID",
+      "terms": [
+        "pulse_binary_resource_invalid"
+      ],
+      "expectedRelevantId": "diagnostic/PULSE_BINARY_RESOURCE_INVALID",
+      "totalMatches": 1,
+      "top5": [
+        {
+          "id": "diagnostic/PULSE_BINARY_RESOURCE_INVALID",
+          "score": 13
+        }
+      ]
+    },
+    {
+      "query": "PULSE_FETCH_TIMEOUT",
+      "terms": [
+        "pulse_fetch_timeout"
+      ],
+      "expectedRelevantId": "diagnostic/PULSE_FETCH_TIMEOUT",
+      "totalMatches": 1,
+      "top5": [
+        {
+          "id": "diagnostic/PULSE_FETCH_TIMEOUT",
+          "score": 13
+        }
+      ]
+    },
+    {
+      "query": "fetch json",
+      "terms": [
+        "fetch",
+        "json"
+      ],
+      "expectedRelevantId": "contract/fetch-json",
+      "totalMatches": 17,
+      "top5": [
+        {
+          "id": "example/03-fetch-composition/package.json",
+          "score": 33
+        },
+        {
+          "id": "contract/fetch-json",
+          "score": 32
+        },
+        {
+          "id": "example/03-fetch-composition/tsconfig.json",
+          "score": 32
+        },
+        {
+          "id": "example/03-fetch-composition/src/index.ts",
+          "score": 20
+        },
+        {
+          "id": "example/03-fetch-composition/tests/pulse.harness.ts",
+          "score": 19
+        }
+      ]
+    },
+    {
+      "query": "current beta targets",
+      "terms": [
+        "beta",
+        "current",
+        "targets"
+      ],
+      "expectedRelevantId": "contract/targets",
+      "totalMatches": 1,
+      "top5": [
+        {
+          "id": "contract/targets",
+          "score": 29
+        }
+      ]
+    },
+    {
+      "query": "providers targets eligibility",
+      "terms": [
+        "eligibility",
+        "providers",
+        "targets"
+      ],
+      "expectedRelevantId": "contract/eligibility",
+      "totalMatches": 2,
+      "top5": [
+        {
+          "id": "contract/eligibility",
+          "score": 33
+        },
+        {
+          "id": "contract/package-authority",
+          "score": 3
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Node design calculator only",
+    "No serialized-resource parser or corruption proof",
+    "No Native compilation, deadline, allocation or Fastly measurement",
+    "Eight relevance cases are smoke evidence; the held-out 06 quality gate remains open"
+  ]
+}
