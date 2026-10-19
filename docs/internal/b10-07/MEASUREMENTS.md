@@ -2,6 +2,14 @@
 
 Recorded investigation result: **28 cases passed; 72 isolated memory samples passed**.
 
+**Scope of these measurements:** the initial proof retains inherited Assets size
+ceilings and an experimental 4 MiB read quota. The reviewed contract in
+[README.md](README.md) supersedes those as production recommendations with
+application-configured admission budgets and no fixed read-byte quota. These
+results establish representation behavior only over the recorded 0–256 KiB
+sweep; they do not qualify the actual MCP `vector.bin`, larger inputs or production
+execution-limit enforcement. B10-08 owns those acceptance measurements.
+
 Production baseline `f393e238a529212c8e8217a4ccd41d1646fd4f6b`, tree `c8f56081c5b8af956d750751f34a7c2619e7f6c0`.
 Node v24.18.0, AssemblyScript 0.28.18, linux/x64.
 The working tree contained only the new investigation directory; all four executable

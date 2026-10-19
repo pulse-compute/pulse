@@ -6,6 +6,12 @@ This is a **proposed contract and private executable proof**, not a shipped API.
 Production implementation belongs to [B10-08 #381](https://github.com/pulse-compute/pulse/issues/381).
 No compiler, runtime, provider, package export or release setting changes here.
 
+**Reviewed direction:** embedded data is intentional data hoisting, with payload
+growth paid by the application. Use explicit application-configured build budgets
+and actual host limits, not inherited HTTP Assets size ceilings. Do not introduce
+a fixed cumulative read-byte quota. The initial proof below retains its original
+limits as historical experiment conditions, not the selected production contract.
+
 **Result:** 28 private contract/proof cases and 72 fresh-process memory samples
 passed. The existing four Assets runtime/lowering/Native tasks also passed.
 The recommendation is raw embedding; the local Fastly-server check has no
@@ -14,9 +20,10 @@ terminal receipt, and deployed qualification is not claimed.
 ## Recommendation
 
 Start with **declared, immutable, embedded resources and bounded scalar reads**.
-Reuse the existing embedded Assets manifest for byte admission and content
-identity; add a small core mapping contract for application access. Emit decoded
-raw bytes into Native data segments instead of retaining base64 as guest strings.
+Reuse the existing embedded Assets manifest integrity and identity machinery,
+with resource-specific admission budgets; add a small core mapping contract for
+application access. Emit decoded raw bytes into Native data segments instead of
+retaining base64 as guest strings.
 On JavaScript, decode and verify a private immutable backing store during
 application initialization. Map only execution-owned opaque views to handlers.
 
@@ -36,8 +43,8 @@ unavailable embedded resource.
 
 | Existing owner | Established behavior | Implication |
 | --- | --- | --- |
-| `packages/assets/src/embedded.ts` | Explicit input-byte snapshots, canonical base64, SHA-256, deterministic manifest identity, full admission and copy-on-response | Reuse its build-time manifest constructor; no new directory scanner or remote loader |
-| `wasm/packages/contracts/src/assets/embedded.js` | Canonical serialized-manifest admission, all-file integrity/bounds validation, selected-entry metadata | Share this authority; do not weaken unselected-file validation or reinterpret HTTP paths as arbitrary filesystem paths |
+| `packages/assets/src/embedded.ts` | Explicit input-byte snapshots, canonical base64, SHA-256, deterministic manifest identity, full admission and copy-on-response | Factor/reuse its build-time integrity and identity machinery with separate resource budgets; no new directory scanner or remote loader |
+| `wasm/packages/contracts/src/assets/embedded.js` | Canonical serialized-manifest admission, all-file integrity/bounds validation, selected-entry metadata | Share integrity validation while separating resource budget policy from HTTP Assets defaults; do not weaken unselected-file validation or reinterpret paths as arbitrary filesystem paths |
 | Assets package lowerer and `embedded.as.ts` | Selected embedded blob becomes an opaque HTTP response, including range/ETag handling | Existing transport does not expose application-readable bytes; adapting HTTP range lookups into scalar reads would be the wrong abstraction |
 | Native value/handler contracts | Managed scalar/JSON handles; existing binary response ownership; older binary-buffer guest ABI remains reserved | `value_binary` is the binary-expression operator, not a public byte-buffer interface. A new bounded view contract must be declared and versioned |
 | Package-owned lowerers/guest units | Trusted, explicitly admitted build dependencies | Keep existing trust and reachability rules. Mapping must not grant arbitrary Wasm memory or package discovery authority |
@@ -52,7 +59,8 @@ and the source owners above. Existing asset response behavior remains unchanged.
 Illustrative configuration (requires B10-08; not accepted today):
 
 ```ts
-// The manifest is produced by the existing createEmbeddedManifest build helper.
+// Resource admission reuses manifest integrity/identity machinery with explicit
+// application build budgets; the existing Assets helper alone retains its limits.
 // Serialized canonical manifest bytes are resolved during the ordinary build.
 pulse: {
   binaryResources: {
@@ -81,9 +89,10 @@ interface BinaryResourceView {
 
 `map` and scalar reads are synchronous local operations over already admitted
 bytes. They do not dispatch an external effect or suspend the continuation.
-They remain observable to resource accounting and cannot be memoized or hoisted
-across execution lifetime/budget checks. Future loading from a host or network
-must use separately declared asynchronous admission; it must not hide I/O in map.
+They remain subject to bounds and execution-lifetime checks; optimization must
+preserve those checks and inherited execution-limit semantics. Future loading
+from a host or network must use separately declared asynchronous admission;
+it must not hide I/O in map.
 
 `ctx.resources` belongs to core execution context because a handler needs the
 same local bounded access on all applicable targets. Assets continues to own the
@@ -99,7 +108,7 @@ allow arbitrary `DataView` construction in canonical source.
 | Declaration | One canonical embedded manifest and a bounded ID-to-manifest-path binding table; validate every manifest record before selecting reachable bindings |
 | Identity | Preserve manifest v1 identity, per-file SHA-256 and exact decoded length. Catalogue identity is SHA-256 over a versioned, ID-sorted tuple of logical ID, path, length, content hash and manifest identity. Reordering declarations changes nothing; renaming, rebinding or changing bytes changes identity |
 | Integrity | Checksums detect corruption and mismatch, not publisher authenticity. Candidate/package/artifact authority stays with the existing build and release contracts |
-| Bounds | Reuse 256 records, 256 KiB/file, 1 MiB aggregate decoded manifest bytes, 2 MiB serialized manifest and existing path/media-type limits. At most 256 logical bindings. Count unique backing bytes once, track alias/consumer counts separately |
+| Admission budgets | Explicit finite application-configured build budgets for per-resource bytes, aggregate bytes, serialized input and record/binding counts; validate numeric ranges before allocation. Select defaults from the MCP workload and host evidence, not HTTP Assets defaults. Preserve applicable target/address-space/artifact/memory limits and existing path/media-type validation. Count unique backing bytes once, track alias/consumer counts separately |
 | Build ownership | Build scripts may supply explicit bytes through existing manifest construction. B10-08 adds no implicit filesystem traversal, network fetch or directory scan. The normal build snapshots the validated manifest and embeds selected bytes; source files are not needed at invocation |
 | Reachability | Every mapped logical ID is literal and declared. Include reachable bindings only; deduplicate equal immutable backing blobs by content identity and length inside the same artifact. Record unused declarations honestly |
 | Availability | Embedded resources are present before handler entry; missing/corrupt declarations fail build or application initialization, before any application work. No best-effort empty resource, lazy remote fallback or silent truncation |
@@ -109,21 +118,29 @@ allow arbitrary `DataView` construction in canonical source.
 | Empty/end boundary | Empty resources are valid. Scalar reads at EOF fail. A future zero-length range may use `(byteLength, 0)`; this is range arithmetic, not a promised slice API |
 | Byte order/alignment | U32 and F32 reads are explicitly little-endian and allow unaligned offsets. They never depend on host byte order. `readU8` preserves all byte values, including NUL and invalid UTF-8 |
 | Float behavior | Decode IEEE-754 binary32 and return the corresponding JS/Native numeric value. Preserve signed zero; reject NaN/infinity with a deterministic nonfinite-value error. `readU32LE` remains available to inspect arbitrary raw bits |
-| Budgets | Charge 1 or 4 bytes per admitted scalar read against a proposed 4 MiB cumulative resource-read budget per execution; no reset by remapping or creating an alias. Budget exhaustion invalidates access. Bound source/loops with existing language rules and preserve inherited deadlines |
+| Execution limits | No fixed cumulative resource-read quota. Repeated reads of immutable backing do not consume additional backing storage. Bound source/loops with existing language rules and preserve inherited execution limits, deadlines and cancellation; prove their actual enforcement during synchronous work on each claimed target |
 | Memory accounting | Reserve unique decoded backing length at application/instance admission, not per alias. Track execution views and any copies separately. Existing host/guest memory policies remain in force; the resource cap does not bound the whole process |
 | Composition | Reads must work in existing proven bounded loops and applicable helper/handler paths, with schema validation, middleware and application error handling. Do not widen general loop, callback, Promise or pointer semantics to make a vector example compile |
-| Errors | Proposed stable families: declaration, integrity, missing, length, bounds, owner/lifetime, read-limit, unsupported-realization and nonfinite-value. Distinguish build admission from execution failure. Error payloads contain logical ID and bounded numeric metadata, never payload bytes or arbitrary host paths |
+| Errors | Proposed stable families: declaration, integrity, missing, length, bounds, owner/lifetime, admission-limit, unsupported-realization and nonfinite-value. Distinguish build admission from execution failure. Error payloads contain logical ID and bounded numeric metadata, never payload bytes or arbitrary host paths |
 
-The 4 MiB read budget is a conservative proposal, not a measured optimum or a
-network/response budget. The private proof enforces it; B10-08 must integrate it
-with terminal failure/cancellation and the existing request budget owner.
-An implementation may choose internal handles differently from the experiment,
-but must preserve ownership, non-escape and failure behavior.
+The initial private proof uses the existing Assets ceilings (256 KiB/file,
+1 MiB aggregate, 2 MiB serialized input, 256 records/bindings) and an experimental
+4 MiB read quota. Those conditions remain in its source and recorded results for
+reproducibility. They are superseded as production recommendations. Existing
+HTTP Assets admission behavior must stay unchanged when reusable validation is
+factored for resources; a larger resource budget must not relax HTTP Assets.
 
-For vector scale, a 256 KiB resource holds at most 65,536 float32 values before
-format overhead: roughly 512 vectors of 128 dimensions. The 1 MiB manifest cap
-allows a small explicitly partitioned corpus, not an unbounded vector database.
-Do not raise these limits silently to fit a larger dataset.
+The first acceptance workload is the real MCP `vector.bin`. The operator recalls
+roughly 700 KiB–1 MiB; this is an estimate, not a measured fixture size. B10-08
+must record its exact identity, size and access pattern, exercise useful repeated
+scans, and qualify measured growth headroom before choosing defaults. Do not
+split or shrink it merely to fit the original proof. Include a generic binary
+payload example so this remains a data-hoisting substrate, not a search engine.
+
+Embedding intentionally adds payload bytes to the artifact. Report that cost
+and all decoding/copy/instance memory separately; size growth by itself is not a
+reason for a small universal ceiling. Application budgets detect accidental
+input growth while actual host limits remain enforceable constraints.
 
 ## Realizations and target capability matrix
 
@@ -204,9 +221,10 @@ records must not multiply physical bytes; equal source bytes alone do not prove
 deduplication. Unknown physical mapping stays unavailable, not zero.
 
 Expose declared/selected/embedded/unused counts and producer completeness.
-Report finite read-budget configuration; observed read counts are optional runtime
-telemetry, not a compiler estimate. Never include binary content, base64, absolute
-source paths or host binding values. This embedded contract is not a secret store;
+Report configured admission budgets and applicable target limits; observed read
+counts are optional runtime telemetry, not a compiler estimate or read quota.
+Never include binary content, base64, absolute source paths or host binding values.
+This embedded contract is not a secret store;
 its bytes ship in the application. Resource hashes identify declared build inputs,
 not authenticity or confidentiality guarantees.
 
@@ -214,9 +232,9 @@ not authenticity or confidentiality guarantees.
 
 | Owner | Bounded implementation responsibility |
 | --- | --- |
-| Assets manifest builder and `wasm-contracts/assets/embedded.js` | Reuse canonical byte admission and limits; factor shared validation only if necessary, preserving existing HTTP semantics |
+| Assets manifest builder and `wasm-contracts/assets/embedded.js` | Reuse integrity/identity validation with resource-specific admission budgets; preserve existing HTTP Assets limits and semantics |
 | Core contracts and project configuration | Versioned resource catalogue, literal bindings, normalized identity and explicit target requirement; public configuration/types/diagnostics |
-| Runtime context and lifecycle owners | Private JS backing, execution-branded views, bounds/endian/float checks, read budget, cancellation and non-escape |
+| Runtime context and lifecycle owners | Private JS backing, execution-branded views, bounds/endian/float checks, inherited execution limits, cancellation and non-escape |
 | Compiler spine and Native plan validator | Recognize only declared literal mapping and bounded scalar reads; verify ownership/provenance independently, diagnose unsupported uses, preserve proven loops and helpers |
 | Runtime-core Native generator | Reachable raw data emission, deduplication, checked reads and accounting; no raw pointer or general byte-buffer fallback |
 | Node/Fastly providers | Applicable initialization/memory limits and execution lifetime; explicit unsupported targets/realizations, real provider fixtures |
@@ -226,14 +244,21 @@ not authenticity or confidentiality guarantees.
 Required acceptance extends this proof: canonical source execution on every
 claimed target; zero/last/unaligned/overflow reads; corrupt and unselected records;
 wrong identity; repeated aliases; stale/foreign/forged/escaped views; repeated
-maps without budget refunds; timeout/cancellation before and during computation;
+maps without duplicate backing accounting; configured admission-budget rejection;
+repeated scans exceeding the old 4 MiB read quota without quota failure;
+timeout/cancellation before and during computation;
 composition with schemas/middleware/error handling; independent installed
 consumer; deterministic artifacts; unused-resource elimination and no-resource
-artifact overhead. Confirm only the intended new capability/version is admitted.
+artifact overhead. Qualify the actual MCP `vector.bin`, measured growth headroom
+and a generic payload through the declared build/install/host paths. Record exact
+fixture hashes and byte sizes; the original 256 KiB sweep does not qualify larger
+inputs. Confirm only the intended new capability/version is admitted.
 
 ## Decisions and residual risks
 
-- Recommend the embedded realization and limits above for B10-08. Public naming
+- The operator selected embedded data hoisting with application-configured
+  admission budgets and no fixed read-byte quota. Default budget values await
+  real MCP fixture and host measurements in B10-08. Public naming
   (`pulse.binaryResources` / `ctx.resources`) and exact diagnostic suffixes remain
   review decisions; the substantive ownership/bounds contract is concrete.
 - The proof shows byte access and representation economics, not canonical
@@ -246,7 +271,7 @@ artifact overhead. Confirm only the intended new capability/version is admitted.
   adapter must enforce cross-instance ownership and never expose it as a user-
   forgeable integer. The JS model's private view test is not proof of that adapter.
 - Snapshots and per-instance data can multiply under concurrent requests/isolates.
-  A 1 MiB declaration limit is not a process/cgroup/POP memory guarantee. Measure
-  real provider concurrency before raising limits or promising sharing.
-- Human review of this proposal authorizes the B10-08 contract selection. This
-  evidence PR neither implements that feature nor authorizes merge or release.
+  An application declaration budget is not a process/cgroup/POP memory guarantee.
+  Measure real provider concurrency before promising sharing or capacity.
+- This revision records the operator's contract direction. Production implementation
+  remains B10-08; this evidence PR does not authorize merge or release.
