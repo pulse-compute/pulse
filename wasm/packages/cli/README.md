@@ -22,8 +22,8 @@ cd ./my-app
 npm install
 pulse doctor
 pulse test
-pulse inspect
 pulse dev
+# Stop the foreground server with Ctrl-C before building.
 pulse build
 ```
 
@@ -51,8 +51,10 @@ and `pulse dev` execute only when the reachable application, capabilities,
 provider requirements, and packages are eligible. Fastly identifies this local
 mode as provider emulation; it is not Node-provider fallback.
 
-`pulse compile` remains provider-neutral while recording the configured
-JavaScript target and static eligibility evidence in `pulse-compile.json`.
+Use `pulse inspect` for detailed plan and eligibility evidence when needed.
+`pulse compile` requires Native-compatible source even for a JavaScript profile;
+it emits provider-neutral Wasm and records the configured target separately in
+`pulse-compile.json`.
 `pulse build` emits a deterministic Node or Fastly source package. Fastly output
 also carries exact downstream compiler pins and deployment-candidate metadata;
 the release gate compiles that closure to a runtime Wasm without deploying or

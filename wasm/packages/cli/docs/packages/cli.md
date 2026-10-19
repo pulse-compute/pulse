@@ -223,7 +223,12 @@ Other files present in the tarball are not automatically public APIs.
 
 Completed commands emit one JSON object with a trailing newline when `--json` is used. `pulse dev --json` emits newline-delimited event objects instead of one enclosing document. Supported events include `compiled`, `ready`, `reloaded`, `request`, `compile-error`, and `request-error`.
 
-Stable failures include a public diagnostic code, remediation, exit class, and exact-version documentation URL. See [Diagnostics and remediation](../reference/diagnostics.md).
+Completed results normally use stdout; command-level diagnostic failures use
+stderr and a nonzero exit status. Capture both streams separately. A completed
+doctor audit can report failed checks on stdout and exit 1. Stable failures
+include a public diagnostic code, remediation, exit class and exact-version
+documentation URL. See [Reading command results](../guides/troubleshooting.md#reading-command-results)
+and [Diagnostics and remediation](../reference/diagnostics.md).
 
 ## Provider behavior
 

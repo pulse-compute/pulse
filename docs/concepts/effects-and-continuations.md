@@ -13,10 +13,12 @@ An effect is an explicit request for host authority. Each effect has an identity
 - sampling provider-owned wall time through `ctx.time.now()`;
 - getting or putting a KV value;
 - accepting one outbound event through `ctx.emit`;
-- declaring a GRIP channel;
-- holding or publishing through GRIP.
+- broadcasting through `grip.broadcast(ctx, message)`.
 
-Pure value construction, branching, property reads, and arithmetic are not effects.
+Pure value construction, branching, property reads and arithmetic are not effects.
+Neither are synchronous logging or the GRIP root framing helpers (`isWebSocket`,
+`subscribe` and `handoff`). Older channel/hold/publish forms belong to the
+[compatibility facade](../guides/compatibility-imports.md#grip).
 
 ## Continuation
 
@@ -72,9 +74,11 @@ to 1,024; canonical Fastly Native fixes that ceiling at 1,024. An inherited requ
 deadline covers the whole traversal. See the
 [PS2 lifecycle contract](../architecture/current-contracts.md#read-loop-invocation-lifecycle-ps2).
 
-A bound limits iteration count, not retained memory. PS3 memory containment and
-PS4 production qualification remain open. Compiler and fixture parity do not
-constitute production acceptance, and a chain that reaches its cap is incomplete.
+A loop bound limits iteration count, not retained memory. Native read-loop plans
+also activate [PS3 retention and linear-memory ceilings](../architecture/current-contracts.md#native-read-loop-memory-containment-ps3).
+Those counters do not bound process RSS or ordinary JavaScript dependency memory.
+PS4 still owns packed-consumer and production qualification. Compiler/fixture
+parity is not production acceptance; a chain that reaches its cap is incomplete.
 
 ## Bounded HTTP deadline work
 
