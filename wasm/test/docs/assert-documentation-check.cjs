@@ -136,3 +136,35 @@ contextDataIntegrity();
   }
   console.log('ok - package index leads with core packages and retains every catalog support contract');
 }
+
+{
+  const { MARKER, renderExampleTemplate } = require('../../../scripts/documentation-examples.cjs');
+  const { resolveProject } = require('../../packages/cli/src/project-config.js');
+  const explanation = `Opt in with \`${MARKER}\`.`;
+  assert.equal(renderExampleTemplate(explanation, () => { throw Error('inline documentation'); }), explanation);
+  for (const id of ['01-hello-json', '02-request-schema']) {
+    const source = fs.readFileSync(path.join(ROOT, 'examples', id, 'README.md'), 'utf8');
+    const project = resolveProject({ cwd: path.join(ROOT, 'examples', id) });
+    const input = source.includes(MARKER) ? source : source.replace('\n', `\n\n${MARKER}\n`);
+    const rendered = renderExampleTemplate(input, () => project.tests);
+    assert.equal(renderExampleTemplate(rendered, () => project.tests), rendered, 'template must be idempotent');
+    for (const heading of ['Handler', 'Project config', 'Test harness', 'Workflow', 'Wasm size']) assert(rendered.includes(` ${heading}\n`));
+    assert(rendered.indexOf('## Request and response') < rendered.indexOf('## Code'));
+    assert(rendered.indexOf('## Code') < rendered.indexOf('## Workflow'));
+    const blocks = text => [...text.matchAll(/```[^\n]*\n([\s\S]*?)\n```/g)].map(match => match[1]).sort();
+    assert.deepEqual(blocks(rendered), blocks(input), 'all source and output fences must survive composition');
+    for (const item of project.tests) assert(rendered.includes(item.request.path));
+    if (id === '02-request-schema') {
+      assert(rendered.includes('PULSE_SCHEMA_DECODE'));
+      assert(!rendered.includes('## Inspect'), 'do not promise unavailable views');
+      assert.equal(renderExampleTemplate(source, () => { throw Error('unselected'); }), source);
+    }
+  }
+  const fixture = `${MARKER}\n\n## Handler\n\n\`\`\`md\n## Inside code\n\`\`\`\n\n## Extra limitation\n\nKeep this.\n`;
+  const cases = [{kind:'http',request:{method:'GET',path:'/a|<b>'},expect:{error:{code:'X'}}}];
+  const rendered = renderExampleTemplate(fixture, () => cases);
+  assert(rendered.includes('## Inside code')); assert(rendered.includes('## Extra limitation\n\nKeep this.'));
+  assert(rendered.includes('&#124;&lt;b&gt;')); assert(!rendered.includes('"status":200'));
+  assert.throws(() => renderExampleTemplate(`${MARKER}\n\n## Report\n`, () => cases), /Empty example section/);
+  console.log('ok - shared example template preserves fences/anchors, handles two harnesses and leaves other examples unchanged');
+}
