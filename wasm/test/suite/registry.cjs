@@ -515,6 +515,8 @@ const tasks = Object.freeze({
   'effect-collection-providers': nodeTask('test/runtime/assert-effect-collection-providers.cjs', {
     evidence: 'conformance', timeoutMs: 180000, description: 'schema-bound bounded collection parity on four explicit targets'
   }),
+  'native-context-primitives': nodeTask('test/runtime/assert-native-context-primitives.cjs', { evidence: 'conformance', timeoutMs: 300000, description: 'bounded UTF-8 and execution-owned numeric workspace parity and rejection' }),
+  'context-native-proof': nodeTask('test/runtime/assert-context-native-proof.cjs', { evidence: 'native', timeoutMs: 300000, description: 'actual and capacity-bound context query-to-citation Native proof' }),
   'binary-resource-execution': nodeTask('test/runtime/assert-binary-resource-execution.cjs', { evidence: 'conformance', timeoutMs: 300000, description: 'execution-owned binary views and raw-byte Native parity' }),
   'effect-collections': nodeTask('test/runtime/assert-effect-collections.cjs', {
     evidence: 'conformance', timeoutMs: 180000, description: 'bounded dynamic collection ownership and JS/Native parity'
@@ -1423,6 +1425,7 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'context-native-proof',
     'npm-source-imports',
     'fastly-numeric-regions',
     'fastly-numeric-budgets',
@@ -1488,6 +1491,7 @@ const profiles = Object.freeze({
     'assets-javascript-runtime'
   ]),
   conformance: Object.freeze([
+    'native-context-primitives',
     'binary-resource-execution',
     'effect-collections',
     'effect-collection-providers',

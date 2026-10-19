@@ -23,6 +23,7 @@ function prepareNumericRegions({ plan, resources, policy, schemaActive, budgeted
   const localIds = new Set((plan.locals || []).map(x => x.id));
   function proveExpression(e, definite) {
     if (!e) return null;
+    if (e.kind === 'workspace-read') return resources?.workspaces && e.version === 'pulse.numeric-workspace.v1' && plan.numericWorkspaces?.some(r => r.id === e.workspaceId) && (!e.offset || proveExpression(e.offset, definite) === 'number') ? 'number' : null;
     if (e.kind === 'resource-read') return resources && e.version === 'pulse.binary-resource-read.v1'
       && plan.binaryResources?.records.some(record => record.id === e.resourceId)
       && ['byteLength', 'readU8', 'readU32LE', 'readF32LE'].includes(e.operation)
@@ -45,6 +46,7 @@ function prepareNumericRegions({ plan, resources, policy, schemaActive, budgeted
     if (s.kind === 'local') return proveExpression(s.value, definite) === 'number' && write(s.localId);
     if (s.kind === 'expression') {
       const e = s.expression, target = e?.target;
+      if (e?.kind === 'workspace-write') return proveExpression(e.offset, definite) === 'number' && proveExpression(e.value, definite) === 'number';
       if (target?.kind !== 'local') return false;
       if (e.kind === 'assignment' && (e.operator === '=' || arithmetic.has(e.operator.slice(0, -1)) && e.operator.endsWith('=') && definite.has(target.id))) {
         return proveExpression(e.value, definite) === 'number' && write(target.id);
@@ -99,6 +101,7 @@ function prepareNumericRegions({ plan, resources, policy, schemaActive, budgeted
       ? expression(e) : accounting ? `__pulse_numeric_truthy(${expression(e)})`
         : `(${expression(e)} != 0.0 && !isNaN(${expression(e)}))`;
     function expression(e) {
+      if (e.kind === 'workspace-read') return number(resources.workspaces.read(e, e.offset ? expression(e.offset) : '0.0'));
       if (e.kind === 'resource-read') return number(resources.read(e, e.offset ? expression(e.offset) : '0.0'));
       if (e.kind === 'literal') return number(Object.is(e.value, -0) ? '(-0.0)' : `(<f64>${e.value})`);
       if (e.kind === 'local') return name(e.id);
@@ -117,7 +120,9 @@ function prepareNumericRegions({ plan, resources, policy, schemaActive, budgeted
       const set = (id, value) => [`${name(id)} = ${value}`, `${name(id)}_written = true`];
       if (s.kind === 'local') return set(s.localId, expression(s.value));
       if (s.kind === 'expression') {
-        const e = s.expression, id = e.target.id;
+        const e = s.expression;
+        if (e.kind === 'workspace-write') return [resources.workspaces.write(e, expression(e.offset), expression(e.value))];
+        const id = e.target.id;
         if (e.kind === 'update') {
           const value = `${name(id)} ${e.operator === '++' ? '+' : '-'} ${number('1.0')}`;
           return set(id, accounting ? number(`(${value})`) : value);

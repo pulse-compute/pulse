@@ -28,6 +28,9 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     stateEnabled, binaryIndex, unaryIndex, fail, localName, stringHandle
   } = prepareNativePlan(plan);
   const resources = require('./canonical-native-resources.js').prepareNativeResources(plan);
+  const workspaces = require('./canonical-native-workspaces.js').prepareNativeWorkspaces(plan);
+  resources.source.push(...workspaces.source);
+  resources.workspaces = workspaces;
   const nativeSchemaCodecs = nativeSchemaCodecSource(plan);
   const nativeCrypto = buildNativeCryptoGuestSources(plan);
   const { eventEntries, eventReachable } = prepareNativeEmissionInputs(plan);

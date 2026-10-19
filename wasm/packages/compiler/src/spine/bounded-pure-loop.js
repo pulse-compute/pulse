@@ -59,7 +59,7 @@ function inspectBoundedPureLoop(statement, options = {}) {
     if (ts.isCallExpression(node)) {
       const target = unwrap(node.expression);
       if (options.resourceReadForCall?.(node)) {
-        if (node.arguments.length !== 1 || node.questionDotToken || target.questionDotToken || node.typeArguments?.length) fail(node, 'Resource reads require one numeric offset.');
+        if (node.arguments.length !== (target.name?.text === 'readUtf8' ? 2 : 1) || node.questionDotToken || target.questionDotToken || node.typeArguments?.length) fail(node, 'Resource reads require numeric offset/length arguments.');
         for (const argument of node.arguments) expression(argument, counters, false);
         return;
       }

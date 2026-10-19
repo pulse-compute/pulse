@@ -95,6 +95,8 @@ function effectType(effect, registry) {
 function readType(e, types, optionalStringIndex = false) {
   if (!e) return;
   const read = value => readType(value, types, optionalStringIndex);
+  if (['workspace-read', 'workspace-write'].includes(e.kind) && e.version === 'pulse.numeric-workspace.v1') return 'number';
+  if (e.kind === 'resource-read' && e.version === 'pulse.binary-resource-utf8.v1' && e.operation === 'readUtf8') return 'string';
   if (e.kind === 'resource-read' && e.version === 'pulse.binary-resource-read.v1' && ['byteLength', 'readU8', 'readU32LE', 'readF32LE'].includes(e.operation)) return 'number';
   if (e.kind === 'local') return types?.get(e.id);
   if (e.kind === 'literal' && scalar(typeof e.value)) return typeof e.value;

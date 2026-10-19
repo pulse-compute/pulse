@@ -29,6 +29,7 @@ export type {
   PulseEmitEvent,
   PulseExecutionContext,
   PulseBinaryResourceView,
+  PulseNumericWorkspace,
   PulseContext,
   PulseRouteContext,
   PulseEvent,

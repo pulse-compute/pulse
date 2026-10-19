@@ -214,6 +214,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'text-capacity-conformance',
       'entities-schema-bridge',
       'binary-resource-execution',
+      'native-context-primitives',
+      'context-native-proof',
       'effect-collections',
       'effect-collection-providers',
       'fetch-projections-request-bodies',

@@ -1,6 +1,6 @@
 'use strict';
 const ts = require('typescript');
-const reads = new Set(['readU8', 'readU32LE', 'readF32LE']);
+const reads = new Set(['readU8', 'readU32LE', 'readF32LE', 'readUtf8']);
 
 // Lexical view admission shared by original-source JS and generated Native.
 // Views are not values in the portable authoring model: only their direct reads
@@ -38,6 +38,8 @@ function inspectResourceViews(handler, ctxName) {
     if (ts.isPropertyAccessExpression(node) && node.name.text === 'resources' && ts.isIdentifier(node.expression)
       && node.expression.text === ctxName && !scope.has(ctxName)) fail(node);
     if (ts.isIdentifier(node)) {
+      if (ts.isPropertyAccessExpression(node.parent) && node.parent.name === node
+        || ts.isPropertyAssignment(node.parent) && node.parent.name === node && !ts.isComputedPropertyName(node.parent.name)) return;
       const binding = scope.get(node.text);
       if (binding?.resource && node !== binding.declaration.name) {
         const property = node.parent, call = property?.parent;
@@ -46,7 +48,7 @@ function inspectResourceViews(handler, ctxName) {
           if (ts.isBinaryExpression(call) && call.left === property && call.operatorToken.kind >= ts.SyntaxKind.FirstAssignment
             && call.operatorToken.kind <= ts.SyntaxKind.LastAssignment || (ts.isPrefixUnaryExpression(call) || ts.isPostfixUnaryExpression(call)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(call.operator)) fail(node);
         } else if (reads.has(property.name.text) && ts.isCallExpression(call) && call.expression === property
-          && call.arguments.length === 1 && !call.questionDotToken && !call.typeArguments?.length) calls.add(call);
+          && call.arguments.length === (property.name.text === 'readUtf8' ? 2 : 1) && !call.questionDotToken && !call.typeArguments?.length) calls.add(call);
         else fail(node);
       }
     }
