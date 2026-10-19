@@ -1,5 +1,10 @@
 # Compatibility imports and migration
 
+These notes serve older package fixtures that still use compatibility subpaths.
+New applications should use package roots. This is separate from the current
+[Express migration guide](./migrating-from-express.md), which covers routing,
+body ownership and execution-target differences for an existing service.
+
 Current application code imports Assets and GRIP from their package roots:
 
 ```ts

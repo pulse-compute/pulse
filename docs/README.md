@@ -12,17 +12,18 @@ Pulse documentation is organized in layers so you can stop when you have enough 
 
 ## 2. Follow a task-oriented guide
 
-- [Migrate an Express service](./guides/migrating-from-express.md)
-- [Fetching and composing data](./guides/fetching-and-composition.md)
-- [Explicit JSON schemas](./guides/json-schemas.md)
-- [Static events and outbound emission](./guides/events.md)
-- [Fastly config, secrets, and KV](./guides/fastly-capabilities.md)
-- [GRIP and Fanout](./guides/grip.md)
-- [Compatibility imports and migration](./guides/compatibility-imports.md)
 - [Static Router authoring](./guides/routing.md)
+- [Explicit JSON schemas](./guides/json-schemas.md)
+- [Fetching and composing data](./guides/fetching-and-composition.md)
+- [Project lifecycle](./guides/project-lifecycle.md)
+- [Static events and outbound emission](./guides/events.md)
+- [Migrate an Express service](./guides/migrating-from-express.md)
 - [Node build and execution](./guides/deploying-node.md)
-- [Fastly deployment candidates](./guides/deploying-fastly.md)
+- [Fastly deployment candidates](./guides/deploying-fastly.md) — including links to bindings and GRIP/Fanout.
 - [Troubleshooting](./guides/troubleshooting.md)
+
+Older package fixtures can use the retained [compatibility import notes](./guides/compatibility-imports.md).
+They are separate from current Express onboarding.
 
 ## 3. Understand the model
 

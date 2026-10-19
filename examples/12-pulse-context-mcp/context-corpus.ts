@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "f187bdb6aa2741b60c3fce6d2850f239a1f506470586a72e5d1e1898919d3ee9",
+  "corpusHash": "3476598caee665b829e1b5a32c1263716e84cc2fa8ac4dc36137c07a264d2165",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -9366,12 +9366,12 @@ export const contextCorpus = freeze({
       "id": "schema/boundaries",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
-        "endLine": 390,
+        "endLine": 152,
         "path": "docs/guides/json-schemas.md",
         "selection": "heading:Bind every JSON boundary",
-        "sha256": "1a388ab0b1c1c653f95585c0b56203bf17ac83db2799aac6ea7cfcb278095ee9",
-        "startLine": 345,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/86429d9d987e6c10d49fa16b8aacf7e40272ca3b"
+        "sha256": "f47f6e76ddae327051a45e4d536f5b29855be7a2ea08403aae10f2c310b2b308",
+        "startLine": 107,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/cf1c861ad9b90f166ee23ca7523c8f6c93bae309"
       },
       "status": "candidate",
       "tags": [
@@ -9410,12 +9410,12 @@ export const contextCorpus = freeze({
       "id": "schema/registry",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
-        "endLine": 50,
+        "endLine": 66,
         "path": "docs/guides/json-schemas.md",
         "selection": "heading:Declare the registry",
-        "sha256": "1a388ab0b1c1c653f95585c0b56203bf17ac83db2799aac6ea7cfcb278095ee9",
-        "startLine": 7,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/86429d9d987e6c10d49fa16b8aacf7e40272ca3b"
+        "sha256": "f47f6e76ddae327051a45e4d536f5b29855be7a2ea08403aae10f2c310b2b308",
+        "startLine": 23,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/cf1c861ad9b90f166ee23ca7523c8f6c93bae309"
       },
       "status": "candidate",
       "tags": [
@@ -9453,12 +9453,12 @@ export const contextCorpus = freeze({
       "id": "schema/strict",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
-        "endLine": 479,
+        "endLine": 169,
         "path": "docs/guides/json-schemas.md",
         "selection": "heading:Understand strict mode",
-        "sha256": "1a388ab0b1c1c653f95585c0b56203bf17ac83db2799aac6ea7cfcb278095ee9",
-        "startLine": 463,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/86429d9d987e6c10d49fa16b8aacf7e40272ca3b"
+        "sha256": "f47f6e76ddae327051a45e4d536f5b29855be7a2ea08403aae10f2c310b2b308",
+        "startLine": 153,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/cf1c861ad9b90f166ee23ca7523c8f6c93bae309"
       },
       "status": "candidate",
       "tags": [
@@ -9760,8 +9760,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/guides/json-schemas.md",
-      "sha256": "1a388ab0b1c1c653f95585c0b56203bf17ac83db2799aac6ea7cfcb278095ee9",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/86429d9d987e6c10d49fa16b8aacf7e40272ca3b"
+      "sha256": "f47f6e76ddae327051a45e4d536f5b29855be7a2ea08403aae10f2c310b2b308",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/cf1c861ad9b90f166ee23ca7523c8f6c93bae309"
     },
     {
       "path": "docs/guides/project-lifecycle.md",
