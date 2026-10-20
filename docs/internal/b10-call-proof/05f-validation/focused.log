@@ -1,0 +1,86 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 309 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 169ms
+
+[pulsewasm:native] callable-lifetime
+[pulsewasm] 05F callable failure, fresh-request recovery, cumulative deadlines and allocation evidence (timeout 300.00s)
+[pulsewasm] Running callable-lifetime (execution); elapsed 10.00s
+[pulsewasm] Running callable-lifetime (execution); elapsed 20.01s
+[pulsewasm] Running callable-lifetime (execution); elapsed 30.01s
+[pulsewasm] Running callable-lifetime (execution); elapsed 40.02s
+[pulsewasm] Running callable-lifetime (execution); elapsed 50.02s
+{"status":"passed","requests":114,"faults":18,"artifacts":8}
+[pulsewasm] callable-lifetime: passed in 55.95s
+
+[pulsewasm:native] callable-authored-javascript
+[pulsewasm] 05D static Node JavaScript calls, packaged source, Native parity and request-owned boundary rejection (timeout 180.00s)
+[pulsewasm] Running callable-authored-javascript (execution); elapsed 60.02s
+{"status":"passed","executions":14,"schemaOutputRejections":4,"sourceRejections":["mutation","HTTP","effect","codec authority","async","nested","loop","indirect","context escape","await"],"ownershipChecks":20,"packaged":true}
+[pulsewasm] callable-authored-javascript: passed in 9.95s
+
+[pulsewasm:native] callable-authored-composition
+[pulsewasm] 05C authored helper/import composition, multiple callable owners and independent ownership rejection (timeout 180.00s)
+[pulsewasm] Running callable-authored-composition (execution); elapsed 70.03s
+{"version":"pulse.callable-composition-evidence.v1","status":"passed","providerReality":false,"executions":6,"sourceRejections":["borrowed input mutation","borrowed helper mutation","helper capture","helper recursion","helper bound product","borrowed record helper mutation","constant reassignment","mutable scalar import","nonliteral scalar import","helper alias write","awaited helper","nested helper arguments","nested callable","workspace return","resource return","17 targets/sites"],"planRejections":["forged target index","unreachable target","target count overflow","conflicting schema","conflicting resource","cross-owner helper local","forged helper bound","forged borrowed helper mutation","forged callable input mutation","workspace escape","resource escape"],"artifacts":{"node":{"bytes":45250,"sha256":"368bd656e7accc46ac4c602c6d8de483d802d2843855cc1905ccac52949f9f66","imports":[{"module":"env","name":"abort","kind":"function"},{"module":"pulse_host","name":"value_number","kind":"function"},{"module":"pulse_host","name":"value_object_set","kind":"function"},{"module":"pulse_host","name":"value_binary","kind":"function"},{"module":"pulse_host","name":"resource_check","kind":"function"},{"module":"pulse_host","name":"workspace_number_value","kind":"function"},{"module":"pulse_host","name":"value_object","kind":"function"},{"module":"pulse_host","name":"resource_offset_value","kind":"function"},{"module":"pulse_host","name":"workspace_check","kind":"function"},{"module":"pulse_host","name":"schema_encode","kind":"function"},{"module":"pulse_host","name":"schema_decode","kind":"function"},{"module":"pulse_host","name":"value_truthy","kind":"function"},{"module":"pulse_host","name":"value_property","kind":"function"},{"module":"pulse_host","name":"value_undefined","kind":"function"},{"module":"pulse_host","name":"value_string","kind":"function"},{"module":"pulse_host","name":"response_json","kind":"function"}]},"fastly":{"bytes":88619,"sha256":"632b826491386bbbb7b1e683403e6d7c91b7732657b9f7a6ab243a175bb776e4","imports":[{"module":"fastly_http_resp","name":"send_downstream","kind":"function"},{"module":"wasi_snapshot_preview1","name":"clock_time_get","kind":"function"},{"module":"fastly_http_resp","name":"status_set","kind":"function"},{"module":"fastly_http_resp","name":"status_get","kind":"function"},{"module":"fastly_http_resp","name":"new","kind":"function"},{"module":"fastly_http_resp","name":"header_append","kind":"function"},{"module":"fastly_http_req","name":"uri_get","kind":"function"},{"module":"fastly_http_req","name":"method_get","kind":"function"},{"module":"fastly_http_req","name":"body_downstream_get","kind":"function"},{"module":"fastly_http_body","name":"write","kind":"function"},{"module":"fastly_http_body","name":"new","kind":"function"},{"module":"fastly_abi","name":"init","kind":"function"},{"module":"fastly_async_io","name":"select","kind":"function"}]}},"plan":{"hash":"7f9522d1749b60d6ff2e11d61fcf08a21b733951647fd1ad59d50390d3f74a43","targets":2,"sites":3,"helperOwners":3,"resources":[{"id":"distinct","path":"/distinct"},{"id":"shared","path":"/shared"},{"id":"shared-alias","path":"/shared"}]},"additionalCompositionCases":["helper re-export identity","same-module helper"],"maxTargets":16,"source":{"revision":"9bfd77fb6e97233c35af5f7ab56d8581d8808c6b","status":"","files":[]}}
+[pulsewasm] callable-authored-composition: passed in 8.35s
+
+[pulsewasm:native] callable-authored-native
+[pulsewasm] 05B authored plain Native call, full caller validation, HTTP parity and unused-import elimination (timeout 180.00s)
+[pulsewasm] Running callable-authored-native (execution); elapsed 80.03s
+[pulsewasm] Running callable-authored-native (execution); elapsed 90.04s
+{"status":"passed","parityExecutions":8,"rejections":12,"baseline":null,"measurements":[{"name":"authored","nodeBytes":39522,"fastlyBytes":84685},{"name":"re-export-alias","nodeBytes":39522,"fastlyBytes":84685},{"name":"no-call","nodeBytes":37123,"fastlyBytes":81822},{"name":"imported-unused","nodeBytes":37123,"fastlyBytes":81822}]}
+[pulsewasm] callable-authored-native: passed in 21.53s
+
+[pulsewasm:conformance] native-context-primitives
+[pulsewasm] bounded UTF-8 and execution-owned numeric workspace parity and rejection (timeout 300.00s)
+[pulsewasm] Running native-context-primitives (execution); elapsed 100.04s
+{"status":"passed","utf8Parity":24,"invalidUtf8Ranges":11,"workspaceParity":12,"nativeBytes":14781,"fastlyBytes":41503,"workspaceBytes":2036}
+[pulsewasm] native-context-primitives: passed in 9.00s
+
+[pulsewasm:conformance] binary-resource-execution
+[pulsewasm] execution-owned binary views and raw-byte Native parity (timeout 300.00s)
+ok - Node/Fastly JS and Native: >1 MiB raw payload, unaligned LE, unsigned range and signed zero
+[pulsewasm] Running binary-resource-execution (execution); elapsed 110.04s
+ok - offset type, fraction, negative, safe-integer, bounds and nonfinite checks
+ok - repeated reads, bounded Native handles and Node/Fastly synchronous deadlines
+ok - forged, foreign, serialized and stale views fail
+ok - source escapes and corrupt plans rejected; unused Native resources add zero bytes
+[pulsewasm] Running binary-resource-execution (execution); elapsed 120.04s
+ok - conventional configuration, source packaging, composed schema/middleware/error handling, and Node event reads
+{"version":"pulse.binary-resource-execution-proof.v1","fixture":"generated, not the real MCP vector.bin","payloadBytes":1048577,"nativeBytes":1050020,"fastlyBytes":1079398,"scanReadsPerExecution":65536,"scanExecutions":17,"nativeHandleUpperBound":8}
+[pulsewasm] binary-resource-execution: passed in 22.09s
+
+[pulsewasm:conformance] request-budget-transport
+[pulsewasm] shared request deadline across S3 preparation and Node HTTP body admission (timeout 180.00s)
+[pulsewasm] Running request-budget-transport (execution); elapsed 130.04s
+ok - deadline covers cumulative S3 preparation on three targets and real Node Native/JS HTTP body admission
+[pulsewasm] request-budget-transport: passed in 7.05s
+
+[pulsewasm:native] mcp-native-binding
+[pulsewasm] B10-MCP-04 static binding and Node JavaScript/Native/Fastly Native protocol parity with direct Entities dispatch (timeout 240.00s)
+[pulsewasm] Running mcp-native-binding (execution); elapsed 140.04s
+[pulsewasm] Running mcp-native-binding (execution); elapsed 150.05s
+{"status":"passed","cases":83,"targets":["node-javascript","node-native","fastly-native-injected-abi"],"observations":[{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":500,"code":-32603},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":200},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32700},{"status":400,"code":-32700},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":202},{"status":202},{"status":202},{"status":403},{"status":403},{"status":406},{"status":406},{"status":406},{"status":415},{"status":415},{"status":415},{"status":400,"code":-32600},{"status":413,"code":-32600},{"status":400,"code":-32020},{"status":400,"code":-32020},{"status":415},{"status":400,"code":-32020},{"status":400,"code":-32020},{"status":400,"code":-32600},{"status":403},{"status":405},{"status":405},{"status":405},{"status":404},{"status":413,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32020},{"status":400,"code":-32020},{"status":400,"code":-32020},{"status":200},{"status":200},{"status":200},{"status":400,"code":-32020}],"node":"v24.19.0","planHash":"47a5a2ad270b78b012c7d7babcd0978bf5821497d3d5c04bf7f1a5419f562c2b","nodeWasmSha256":"1716e8d2e7cc655009e64271ec2e04b6a8c09494f0d0c2bbaf0ccd757fe40ebe","fastlyWasmSha256":"2b3c1e494b48306fcdb282fa29fd6b17e08ef71f9b336cd631e2d1a3df25a44a","staticNegativeCases":10,"terminalAndHeaderCases":10}
+[pulsewasm] mcp-native-binding: passed in 16.86s
+
+[pulsewasm:unit] mcp-http
+[pulsewasm] MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge (timeout 30.00s)
+ok - MCP-02 114 protocol exchanges plus bounded streams, deadlines, disconnects and real Node HTTP
+[pulsewasm] mcp-http: passed in 387ms
+
+[pulsewasm] test summary
+  passed        55.95s  callable-lifetime  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/callable-lifetime.log)
+  passed         9.95s  callable-authored-javascript  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/callable-authored-javascript.log)
+  passed         8.35s  callable-authored-composition  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/callable-authored-composition.log)
+  passed        21.53s  callable-authored-native  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/callable-authored-native.log)
+  passed         9.00s  native-context-primitives  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/native-context-primitives.log)
+  passed        22.09s  binary-resource-execution  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/binary-resource-execution.log)
+  passed         7.05s  request-budget-transport  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/request-budget-transport.log)
+  passed        16.86s  mcp-native-binding  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/mcp-native-binding.log)
+  passed         387ms  mcp-http  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/mcp-http.log)
+  passed         169ms  suite-shape  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26/tasks/suite-shape.log)
+  report       /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/focused-report.json
+  run logs     /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05f/runs/2026-10-20T19-56-37-154Z--26
+  total        151.35s

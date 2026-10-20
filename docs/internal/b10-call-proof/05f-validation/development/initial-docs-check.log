@@ -1,0 +1,17 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> docs:check
+> node scripts/documentation-check.cjs
+
+ok - 248 generated documentation/package file(s), 5 maintenance-policy output(s), 59 source block(s), and 19 owned page(s) are synchronized
+Error: Pulse-specific environment reads are undocumented: PULSE_CALLABLE_LIFETIME_RECEIPT
+    at fail (/workspace/scratch/803e6bf46c14/pulse/scripts/documentation-release.cjs:241:17)
+    at validateEnvironmentReference (/workspace/scratch/803e6bf46c14/pulse/scripts/documentation-release.cjs:789:28)
+    at validateDocumentationSource (/workspace/scratch/803e6bf46c14/pulse/scripts/documentation-release.cjs:1050:23)
+    at Object.validatePackageDocumentation (/workspace/scratch/803e6bf46c14/pulse/scripts/documentation-release.cjs:1059:10)
+    at checkDocumentation (/workspace/scratch/803e6bf46c14/pulse/scripts/documentation-check.cjs:12:64)
+    at Object.<anonymous> (/workspace/scratch/803e6bf46c14/pulse/scripts/documentation-check.cjs:31:36)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)

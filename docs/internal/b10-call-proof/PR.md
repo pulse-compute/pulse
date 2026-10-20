@@ -19,27 +19,28 @@ Node JavaScript. This draft implements 05B–05F (#443–#447).
 
 ## Validation
 
-05F adds successful-frame cleanup, failed-call fencing and resource-free Fastly
-request-budget instrumentation. Its final focused checkpoint is recorded in
-`docs/internal/b10-call-proof/05F-VALIDATION.md`. The prior 05E evidence follows.
+05F implementation: `ea1a05720f874c1941187e6ced637ec3def756b6`; full tree
+`18b6f9ab0d49a39259eeebbeebaed76aacdb79f6`, identical to clean tested local
+`9bfd77fb6e97233c35af5f7ab56d8581d8808c6b`.
 
-05E implementation: `d5a335aeb395db912a7208a2198464405340ea73`; full Git tree `e68f2b42c1252fd25c986cb062828e5f1b242f8e`,
-identical to clean tested local `88b62fc5f9b4fb74a0e2d38203987fcfd34593af`.
-Sixteen focused runner tasks pass. The new routed/MCP proof has 28 successful
-executions and 12 source rejection cases. Existing Entities regressions, 83 MCP
-cross-target protocol cases and 114 MCP HTTP/Node-host cases pass.
+Ten focused runner tasks pass with complete terminal reports. The lifetime proof
+covers 114 successful requests/recoveries, 18 conversion/computation failures,
+six cumulative-deadline cases and allocation exhaustion on both Native targets.
+Existing callable, workspace/resource, transport and MCP regressions pass.
+The separate Router/MCP replay adds 28 executions and 12 rejection cases and
+preserves byte-identical no-call/unused Wasm against untouched `8a51d70`.
+Build, maintenance, documentation and protected-scope checks pass.
 
-The separate Router/MCP baseline replay preserves byte-identical no-call Wasm
-against untouched `8a51d70`, including complete hashes, sizes and import tables.
-Imported-unused call-free plans match its untouched backend. Build, maintenance,
-documentation and scope checks pass. Exact source identity, terminal logs,
-measurements and remaining checks are in
-`docs/internal/b10-call-proof/05E-VALIDATION.md`.
+05F clears successful frame roots/workspaces, releases invalidated JavaScript
+backing stores and fences calls after failure. It also fixes Fastly guard and
+request-budget selection for resource-free callables. Recovery after a Native
+trap uses a fresh request instance; no catch-and-continue feature is added.
+Measurements and failed attempts are retained in
+`docs/internal/b10-call-proof/05F-VALIDATION.md` and `05f-validation/`.
 
-Full profiles remain deferred by the user's explicit checkpoint direction.
-Focused development and injected Fastly are not installed closure, real-provider
-acceptance or a release seal. Dependencies are the restored identical-lockfile
-graph, not fresh clean-install qualification.
+Full profiles remain deferred by the user's checkpoint direction. Focused
+and injected-provider evidence is not installed closure, real-provider acceptance
+or a release seal. Dependencies are the restored identical-lockfile graph.
 
 ## Remaining work and direction
 
