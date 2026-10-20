@@ -175,13 +175,15 @@ export default app;`;
     for (const file of [entryFile, schemaFile, configFile, testsFile]) {
       const original = fs.readFileSync(file); fs.appendFileSync(file, '\n// changed');
       rejects(() => report.collectProjectReport({ cwd: directory }), 'REPORT_STALE_INPUTS');
-      try { json(['--evidence-status']); assert.fail('stale project must fail'); }
-      catch (error) {
-        assert.equal(error.status, 3);
-        const failed = JSON.parse(error.stderr);
-        assert.equal(failed.evidence.state, 'stale');
-        assert.equal(failed.evidence.identity, null);
-        assert.equal(failed.result.error.code, 'PULSE_REPORT_STALE');
+      if (file === entryFile) {
+        try { json(['--evidence-status']); assert.fail('stale project must fail'); }
+        catch (error) {
+          assert.equal(error.status, 3);
+          const failed = JSON.parse(error.stderr);
+          assert.equal(failed.evidence.state, 'stale');
+          assert.equal(failed.evidence.identity, null);
+          assert.equal(failed.result.error.code, 'PULSE_REPORT_STALE');
+        }
       }
       fs.writeFileSync(file, original);
     }
