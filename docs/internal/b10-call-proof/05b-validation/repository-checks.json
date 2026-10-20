@@ -1,0 +1,38 @@
+{
+  "version": "pulse.05b-repository-checks.v1",
+  "sourceCodeCommit": "9418e5823c3003e1aeb3ae3fff8e474e114ddb4c",
+  "sourceCodeTree": "a90658c98ed186508553f1e0ceeef5952bcf4578",
+  "qualification": false,
+  "checks": [
+    {
+      "command": "npm run build",
+      "status": "passed",
+      "logSha256": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95"
+    },
+    {
+      "command": "npm run maintainer:sync",
+      "status": "passed",
+      "logSha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+    },
+    {
+      "command": "npm run docs:sync",
+      "status": "passed",
+      "logSha256": "67673d7b687a6ec332773da387a6f2a83f8e0b8c085bb35fe0dc71fc6a845b2e"
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "logSha256": "875fcd603cd93240c6e4bef4b179ddf1b3397110571f4a3de3fafabb129a9e47"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "logSha256": "6da9ad39c4f3cfc0c2c02caf39d18a4f71e1b091e975eaa8cab673899a6e8d20"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "logSha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2"
+    }
+  ]
+}
