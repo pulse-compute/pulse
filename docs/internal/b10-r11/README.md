@@ -110,3 +110,30 @@ slices; do not claim a complete-profile or seal pass. R09 live proof remains
 deferred by the release owner; hosted #407 and integrated R12/#382 qualification
 remain open. No full release seal, publication, deployment or human merge is
 performed by this checkpoint.
+
+## Conflict reconciliation after PR #442
+
+Integrated latest `b5e643a509a2a27ea399f87cfff5fbcf958ae621` into PR #466.
+All conflicts were generated diagnostics/corpus files. The upstream canonical
+example README and automatically merged source were preserved; diagnostics,
+corpus, application derivatives and installed mirrors were regenerated through
+their owners with pinned Node 24.18.0. No manual MCP behavior change was needed.
+
+Clean local merge `b737c8aae772dbc490b54f6a8e7542e1a4da5b60` has GitHub equivalent
+`54843b13e3e539471f77852ad85df386447c41bf`, identical tree
+`922d4a8e4c6f291602f5ed10ada69f2a65b73303`. Final merge validation passes all six
+registered tasks: cli-command-spec, cli-diagnostics, pulse-context-corpus,
+pulse-context-build, entities-contracts and entities-catalog. The former two
+Entities assertion failures are therefore historical on the earlier base, not
+current failures on this merged revision. The earlier 93-task record is retained
+without promoting it into full-profile qualification of the new revision.
+
+Fresh workspace build and complete 20-package packing pass. Local and
+private-prefix global installations each again pass 19 cases through actual bins,
+57 contained index links and unchanged first-party payload checks. Maintainer,
+documentation and documentation-release checks pass. Terminal cleanup receipts
+and an independent full-worktree scan find no remaining leases; Git is clean
+before adding this evidence, and no manual residue reconciliation is required
+for these focused runs. `merge-proof.json` retains identities, terminal results,
+installed receipts and control hashes. Full integrated release qualification
+remains an R12 obligation.

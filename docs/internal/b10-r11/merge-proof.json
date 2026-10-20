@@ -1,0 +1,846 @@
+{
+  "schemaVersion": "pulse.b10-r11.merge-reconciliation.v1",
+  "previousPrHead": "4bcb500731025ebc88064f72565de16581285905",
+  "integratedLatest": "b5e643a509a2a27ea399f87cfff5fbcf958ae621",
+  "integratedLatestTree": "dfc4041b633a1647c46684a1793479971d812dfc",
+  "qualifiedSource": "b737c8aae772dbc490b54f6a8e7542e1a4da5b60",
+  "githubEquivalentSource": "54843b13e3e539471f77852ad85df386447c41bf",
+  "qualifiedTree": "922d4a8e4c6f291602f5ed10ada69f2a65b73303",
+  "workingTree": "",
+  "resolution": "Source merges cleanly. Preserve upstream canonical example README. Regenerate diagnostics, corpus and application derivatives through owning generators with Node 24.18.0. No manual MCP behavior change.",
+  "producer": {
+    "path": "/tmp/r11-merge-context.log",
+    "sha256": "ad33809b76008cb8d6d2b4e6f21667c8c920332dd984abf369a5b87f648e8d51",
+    "bytes": 796,
+    "report": {
+      "schemaVersion": "pulse.context-build-receipt.v1",
+      "status": "ok",
+      "mode": "write",
+      "executionNode": "24.18.0",
+      "pinnedProducerNode": "24.18.0",
+      "manifestSha256": "fe2fed45c26773d9bd00f6f778dde65fa2827e983b6ab25ed5d932c542d736c4",
+      "corpusHash": "a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97",
+      "dimensions": {
+        "rows": 263,
+        "dimension": 2506,
+        "nonzeros": 15313,
+        "dictionarySha256": "973fe863a4fdf0a5227648978158a71c6f0c738684d3ee201a6759797645c961",
+        "manifestId": "44ce962dc41e007f8401e266f66b5956052aab6dc75d3eda020506dd0953a875",
+        "catalogueIdentity": "19a443454a2e6e4d4d350994be5973251d2c7d7fd7ff3f6176751adbffaa9610",
+        "rawBytes": 599957,
+        "serializedBytes": 800598,
+        "budgets": {
+          "files": 3,
+          "fileBytes": 5242880,
+          "totalBytes": 8388608,
+          "serializedBytes": 16777216,
+          "bindings": 3
+        }
+      },
+      "changedFiles": 0,
+      "comparedFiles": 28
+    }
+  },
+  "focused": {
+    "path": "/tmp/r11-merge-focused.json",
+    "sha256": "bb89e72ab3d0529d88a6a110272f690d9db03e1cda7bbc98f029bc9df5154c17",
+    "bytes": 5700,
+    "report": {
+      "schemaVersion": 2,
+      "runId": "2026-10-20T23-33-17-240Z--5",
+      "sourceRevision": "b737c8aae772dbc490b54f6a8e7542e1a4da5b60",
+      "sourceIdentity": {
+        "sourceRevision": "b737c8aae772dbc490b54f6a8e7542e1a4da5b60",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "status": "passed",
+      "startedAt": "2026-10-20T23:33:17.244Z",
+      "updatedAt": "2026-10-20T23:34:35.470Z",
+      "finishedAt": "2026-10-20T23:34:35.470Z",
+      "durationMs": 78226,
+      "profiles": [],
+      "requestedTasks": [
+        "cli-command-spec",
+        "cli-diagnostics",
+        "pulse-context-corpus",
+        "pulse-context-build",
+        "entities-contracts",
+        "entities-catalog"
+      ],
+      "selectedTasks": [
+        "cli-command-spec",
+        "cli-diagnostics",
+        "pulse-context-corpus",
+        "pulse-context-build",
+        "entities-contracts",
+        "entities-catalog"
+      ],
+      "currentTask": null,
+      "currentTaskPhase": null,
+      "activeChildPid": null,
+      "activeChildPids": [],
+      "currentTasks": [],
+      "currentTaskPhases": {},
+      "completedTasks": 6,
+      "results": [
+        {
+          "name": "cli-command-spec",
+          "evidence": "cli",
+          "description": "public parser, help, aliases, and positionals",
+          "commandSignature": "387f5cfcd67711dcc11eeb3de9188c86dcb1b933ec93c4a2ed5409094d31e2b5",
+          "timeoutMs": 30000,
+          "durationMs": 1870,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/tmp/runs/2026-10-20T23-33-17-240Z--5/tasks/cli-command-spec.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-diagnostics",
+          "evidence": "cli",
+          "description": "stable diagnostics, remediation, and exit policy",
+          "commandSignature": "259e846272af94977744eaaae1eff6ecd58d47187013f78d94733b062a6fa260",
+          "timeoutMs": 120000,
+          "durationMs": 5212,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/tmp/runs/2026-10-20T23-33-17-240Z--5/tasks/cli-diagnostics.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pulse-context-corpus",
+          "evidence": "unit",
+          "description": "PMCP-02 immutable bounded context snapshot, deterministic generation, source identity and version mismatch",
+          "commandSignature": "1e360eb118f2baec8a546f88610327ac44a370d1d8ecbc472c3421102e15b105",
+          "timeoutMs": 30000,
+          "durationMs": 1192,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/tmp/runs/2026-10-20T23-33-17-240Z--5/tasks/pulse-context-corpus.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pulse-context-build",
+          "evidence": "unit",
+          "description": "B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection",
+          "commandSignature": "7a459045930997839f8585730682e9170ab010d28e18259b742e3b412b7b1298",
+          "timeoutMs": 120000,
+          "durationMs": 69373,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/tmp/runs/2026-10-20T23-33-17-240Z--5/tasks/pulse-context-build.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-contracts",
+          "evidence": "unit",
+          "description": "Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary",
+          "commandSignature": "4a02061ef5d442b554e54856a91491500e89b7882f32ed52062dcc3ae6642fa6",
+          "timeoutMs": 30000,
+          "durationMs": 205,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/tmp/runs/2026-10-20T23-33-17-240Z--5/tasks/entities-contracts.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-catalog",
+          "evidence": "unit",
+          "description": "deterministic entity catalog, eligible-target truth, and current product status",
+          "commandSignature": "ede22359af6ce625e49023706832e6d5468fd9908372e526ebdd88b65222fe8c",
+          "timeoutMs": 30000,
+          "durationMs": 359,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/tmp/runs/2026-10-20T23-33-17-240Z--5/tasks/entities-catalog.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ],
+      "runDirectory": "/tmp/runs/2026-10-20T23-33-17-240Z--5"
+    }
+  },
+  "installed": {
+    "path": "/tmp/r11-merge-installed/proof.json",
+    "sha256": "3d70d3774aa5eb0407e9b174e3f07007466c14851946e7f5539f5f159899a259",
+    "bytes": 22331,
+    "report": {
+      "schemaVersion": "pulse.b10-r11.installed.v1",
+      "status": "passed",
+      "source": "b737c8aae772dbc490b54f6a8e7542e1a4da5b60",
+      "sourceTree": "922d4a8e4c6f291602f5ed10ada69f2a65b73303",
+      "workingTree": "",
+      "scriptSha256": "0af6ea980107d1a698addec47e860528b2a5c2a474783982b850f7ae1325ff8f",
+      "node": "v24.19.0",
+      "nodeBinarySha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+      "platform": "linux",
+      "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0",
+      "startedAt": "2026-10-20T23:33:17.744Z",
+      "layouts": [
+        {
+          "kind": "local",
+          "packageRoot": "/tmp/pulse r11 installations UjdnOE/local install/node_modules/@pulse-compute/cli",
+          "cases": {
+            "status": "passed",
+            "checks": 19,
+            "relativeIndexLinks": 57,
+            "offlineGuard": true,
+            "hostileCwdIgnored": true,
+            "faultCopiesOnly": true,
+            "publicBin": true
+          },
+          "installed": {
+            "packages": [
+              {
+                "path": "node_modules/@pulse-compute/cli",
+                "name": "@pulse-compute/cli",
+                "version": "1.0.0-beta.9",
+                "sha256": "765c0831f8fc24b7f91c9f79bb8a0a61a38a26be209f34dd7151ae4366eaa869"
+              },
+              {
+                "path": "node_modules/@pulse-compute/crypto",
+                "name": "@pulse-compute/crypto",
+                "version": "1.0.0-beta.9",
+                "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+              },
+              {
+                "path": "node_modules/@pulse-compute/jwt",
+                "name": "@pulse-compute/jwt",
+                "version": "1.0.0-beta.9",
+                "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+              },
+              {
+                "path": "node_modules/@pulse-compute/provider-fastly",
+                "name": "@pulse-compute/provider-fastly",
+                "version": "1.0.0-beta.9",
+                "sha256": "26c68b098a4923b0183603c81587364547f1eac11e43905129dd7f2b38e9f448"
+              },
+              {
+                "path": "node_modules/@pulse-compute/provider-node",
+                "name": "@pulse-compute/provider-node",
+                "version": "1.0.0-beta.9",
+                "sha256": "9a3ea0678a7b83bffec377ef6d6b6debd617ec41dc38640109cd238ce4461554"
+              },
+              {
+                "path": "node_modules/@pulse-compute/runtime",
+                "name": "@pulse-compute/runtime",
+                "version": "1.0.0-beta.9",
+                "sha256": "696d33be41ee3bc466bd458d40b4c5058fb0f82201dd4949ce8c1e5bd2f4b747"
+              },
+              {
+                "path": "node_modules/@pulse-compute/s3",
+                "name": "@pulse-compute/s3",
+                "version": "1.0.0-beta.9",
+                "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-build-support",
+                "name": "@pulse-compute/wasm-build-support",
+                "version": "1.0.0-beta.9",
+                "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-compiler",
+                "name": "@pulse-compute/wasm-compiler",
+                "version": "1.0.0-beta.9",
+                "sha256": "d662a793a40744e96eb79887c1859d5ba8f77d5f40398cd15a8efa4c624ef8c3"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-contracts",
+                "name": "@pulse-compute/wasm-contracts",
+                "version": "1.0.0-beta.9",
+                "sha256": "21a6fe0ae553fa19ca3fbe9884508d067940d57e32b61c168fd2890beb18df84"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-guest-link",
+                "name": "@pulse-compute/wasm-guest-link",
+                "version": "1.0.0-beta.9",
+                "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-host-runtime",
+                "name": "@pulse-compute/wasm-host-runtime",
+                "version": "1.0.0-beta.9",
+                "sha256": "5e64ce348396d2e2ee7e7209b1c02097a882ab1151e32b25c8d1050f601ff225"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-library-kit",
+                "name": "@pulse-compute/wasm-library-kit",
+                "version": "1.0.0-beta.9",
+                "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-runtime-core-as",
+                "name": "@pulse-compute/wasm-runtime-core-as",
+                "version": "1.0.0-beta.9",
+                "sha256": "70860b08d3dbb995742440bbb4b7e56db3abdeaba1e37ff8c7b5ead2df835b51"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-schema-json",
+                "name": "@pulse-compute/wasm-schema-json",
+                "version": "1.0.0-beta.9",
+                "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+              }
+            ],
+            "dependencies": [
+              {
+                "path": "node_modules/@pulse-compute/cli",
+                "name": "@pulse-compute/cli",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/crypto",
+                "name": "@pulse-compute/crypto",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/jwt",
+                "name": "@pulse-compute/jwt",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/provider-fastly",
+                "name": "@pulse-compute/provider-fastly",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/provider-node",
+                "name": "@pulse-compute/provider-node",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/runtime",
+                "name": "@pulse-compute/runtime",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/s3",
+                "name": "@pulse-compute/s3",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-build-support",
+                "name": "@pulse-compute/wasm-build-support",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-compiler",
+                "name": "@pulse-compute/wasm-compiler",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-contracts",
+                "name": "@pulse-compute/wasm-contracts",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-guest-link",
+                "name": "@pulse-compute/wasm-guest-link",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-host-runtime",
+                "name": "@pulse-compute/wasm-host-runtime",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-library-kit",
+                "name": "@pulse-compute/wasm-library-kit",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-runtime-core-as",
+                "name": "@pulse-compute/wasm-runtime-core-as",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/@pulse-compute/wasm-schema-json",
+                "name": "@pulse-compute/wasm-schema-json",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "node_modules/assemblyscript",
+                "name": "assemblyscript",
+                "version": "0.28.18"
+              },
+              {
+                "path": "node_modules/binaryen",
+                "name": "binaryen",
+                "version": "129.0.0-nightly.20260428"
+              },
+              {
+                "path": "node_modules/esbuild",
+                "name": "esbuild",
+                "version": "0.28.1"
+              },
+              {
+                "path": "node_modules/json-as",
+                "name": "json-as",
+                "version": "1.5.0"
+              },
+              {
+                "path": "node_modules/long",
+                "name": "long",
+                "version": "5.3.2"
+              },
+              {
+                "path": "node_modules/typescript",
+                "name": "typescript",
+                "version": "5.9.3"
+              },
+              {
+                "path": "node_modules/xjb-as",
+                "name": "xjb-as",
+                "version": "0.1.0"
+              }
+            ],
+            "files": 1034,
+            "sha256": "0ea3650c40c281c773b8a6990cb00b93e9e6cb2d6c769a3677e6aa7a572d0c6a"
+          },
+          "installedBytesUnchanged": true
+        },
+        {
+          "kind": "private-prefix-global",
+          "packageRoot": "/tmp/pulse r11 installations UjdnOE/global prefix/lib/node_modules/@pulse-compute/cli",
+          "cases": {
+            "status": "passed",
+            "checks": 19,
+            "relativeIndexLinks": 57,
+            "offlineGuard": true,
+            "hostileCwdIgnored": true,
+            "faultCopiesOnly": true,
+            "publicBin": true
+          },
+          "installed": {
+            "packages": [
+              {
+                "path": "lib/node_modules/@pulse-compute/cli",
+                "name": "@pulse-compute/cli",
+                "version": "1.0.0-beta.9",
+                "sha256": "765c0831f8fc24b7f91c9f79bb8a0a61a38a26be209f34dd7151ae4366eaa869"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/crypto",
+                "name": "@pulse-compute/crypto",
+                "version": "1.0.0-beta.9",
+                "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/jwt",
+                "name": "@pulse-compute/jwt",
+                "version": "1.0.0-beta.9",
+                "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/provider-fastly",
+                "name": "@pulse-compute/provider-fastly",
+                "version": "1.0.0-beta.9",
+                "sha256": "26c68b098a4923b0183603c81587364547f1eac11e43905129dd7f2b38e9f448"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/provider-node",
+                "name": "@pulse-compute/provider-node",
+                "version": "1.0.0-beta.9",
+                "sha256": "9a3ea0678a7b83bffec377ef6d6b6debd617ec41dc38640109cd238ce4461554"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/runtime",
+                "name": "@pulse-compute/runtime",
+                "version": "1.0.0-beta.9",
+                "sha256": "696d33be41ee3bc466bd458d40b4c5058fb0f82201dd4949ce8c1e5bd2f4b747"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/s3",
+                "name": "@pulse-compute/s3",
+                "version": "1.0.0-beta.9",
+                "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-build-support",
+                "name": "@pulse-compute/wasm-build-support",
+                "version": "1.0.0-beta.9",
+                "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-compiler",
+                "name": "@pulse-compute/wasm-compiler",
+                "version": "1.0.0-beta.9",
+                "sha256": "d662a793a40744e96eb79887c1859d5ba8f77d5f40398cd15a8efa4c624ef8c3"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-contracts",
+                "name": "@pulse-compute/wasm-contracts",
+                "version": "1.0.0-beta.9",
+                "sha256": "21a6fe0ae553fa19ca3fbe9884508d067940d57e32b61c168fd2890beb18df84"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-guest-link",
+                "name": "@pulse-compute/wasm-guest-link",
+                "version": "1.0.0-beta.9",
+                "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-host-runtime",
+                "name": "@pulse-compute/wasm-host-runtime",
+                "version": "1.0.0-beta.9",
+                "sha256": "5e64ce348396d2e2ee7e7209b1c02097a882ab1151e32b25c8d1050f601ff225"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-library-kit",
+                "name": "@pulse-compute/wasm-library-kit",
+                "version": "1.0.0-beta.9",
+                "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-runtime-core-as",
+                "name": "@pulse-compute/wasm-runtime-core-as",
+                "version": "1.0.0-beta.9",
+                "sha256": "70860b08d3dbb995742440bbb4b7e56db3abdeaba1e37ff8c7b5ead2df835b51"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-schema-json",
+                "name": "@pulse-compute/wasm-schema-json",
+                "version": "1.0.0-beta.9",
+                "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+              }
+            ],
+            "dependencies": [
+              {
+                "path": "lib/node_modules/@pulse-compute/cli",
+                "name": "@pulse-compute/cli",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/crypto",
+                "name": "@pulse-compute/crypto",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/jwt",
+                "name": "@pulse-compute/jwt",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/provider-fastly",
+                "name": "@pulse-compute/provider-fastly",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/provider-node",
+                "name": "@pulse-compute/provider-node",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/runtime",
+                "name": "@pulse-compute/runtime",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/s3",
+                "name": "@pulse-compute/s3",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-build-support",
+                "name": "@pulse-compute/wasm-build-support",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-compiler",
+                "name": "@pulse-compute/wasm-compiler",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-contracts",
+                "name": "@pulse-compute/wasm-contracts",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-guest-link",
+                "name": "@pulse-compute/wasm-guest-link",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-host-runtime",
+                "name": "@pulse-compute/wasm-host-runtime",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-library-kit",
+                "name": "@pulse-compute/wasm-library-kit",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-runtime-core-as",
+                "name": "@pulse-compute/wasm-runtime-core-as",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/@pulse-compute/wasm-schema-json",
+                "name": "@pulse-compute/wasm-schema-json",
+                "version": "1.0.0-beta.9"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/assemblyscript",
+                "name": "assemblyscript",
+                "version": "0.28.18"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/binaryen",
+                "name": "binaryen",
+                "version": "129.0.0-nightly.20260428"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/esbuild",
+                "name": "esbuild",
+                "version": "0.28.1"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/json-as",
+                "name": "json-as",
+                "version": "1.5.0"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/long",
+                "name": "long",
+                "version": "5.3.2"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/typescript",
+                "name": "typescript",
+                "version": "5.9.3"
+              },
+              {
+                "path": "lib/node_modules/@pulse-compute/cli/node_modules/xjb-as",
+                "name": "xjb-as",
+                "version": "0.1.0"
+              }
+            ],
+            "files": 1034,
+            "sha256": "c97e207858c30fd5a0b395c6ad60db740e7202b4d739d6839b1eca7ad0cdca01"
+          },
+          "installedBytesUnchanged": true
+        }
+      ],
+      "acquisitionMayUseNetwork": true,
+      "cliCasesGuardNetwork": true,
+      "cleanup": {
+        "status": "passed",
+        "consumersRemoved": true
+      },
+      "workspaceBuild": "passed",
+      "packages": [
+        {
+          "name": "@pulse-compute/runtime",
+          "version": "1.0.0-beta.9",
+          "sha256": "696d33be41ee3bc466bd458d40b4c5058fb0f82201dd4949ce8c1e5bd2f4b747"
+        },
+        {
+          "name": "@pulse-compute/pulse",
+          "version": "1.0.0-beta.9",
+          "sha256": "8a6c6769ef63532b28224fc84ee753094baec1c52392eb83447c4d9f70d997bc"
+        },
+        {
+          "name": "@pulse-compute/cli",
+          "version": "1.0.0-beta.9",
+          "sha256": "765c0831f8fc24b7f91c9f79bb8a0a61a38a26be209f34dd7151ae4366eaa869"
+        },
+        {
+          "name": "@pulse-compute/provider-fastly",
+          "version": "1.0.0-beta.9",
+          "sha256": "26c68b098a4923b0183603c81587364547f1eac11e43905129dd7f2b38e9f448"
+        },
+        {
+          "name": "@pulse-compute/grip",
+          "version": "1.0.0-beta.9",
+          "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+        },
+        {
+          "name": "@pulse-compute/assets",
+          "version": "1.0.0-beta.9",
+          "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+        },
+        {
+          "name": "@pulse-compute/crypto",
+          "version": "1.0.0-beta.9",
+          "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "version": "1.0.0-beta.9",
+          "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+        },
+        {
+          "name": "@pulse-compute/entities",
+          "version": "1.0.0-beta.9",
+          "sha256": "e025cab2fb7ba3f4614d7d3c035e3506802081f0e9156058c5486270efac8ab0"
+        },
+        {
+          "name": "@pulse-compute/mcp",
+          "version": "1.0.0-beta.9",
+          "sha256": "9195db098f1e1f5e257c1015fa60d7698242d50952d31bfe39f40e76c9b05866"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "version": "1.0.0-beta.9",
+          "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "version": "1.0.0-beta.9",
+          "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+        },
+        {
+          "name": "@pulse-compute/wasm-compiler",
+          "version": "1.0.0-beta.9",
+          "sha256": "d662a793a40744e96eb79887c1859d5ba8f77d5f40398cd15a8efa4c624ef8c3"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "version": "1.0.0-beta.9",
+          "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "version": "1.0.0-beta.9",
+          "sha256": "21a6fe0ae553fa19ca3fbe9884508d067940d57e32b61c168fd2890beb18df84"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "version": "1.0.0-beta.9",
+          "sha256": "5e64ce348396d2e2ee7e7209b1c02097a882ab1151e32b25c8d1050f601ff225"
+        },
+        {
+          "name": "@pulse-compute/wasm-library-kit",
+          "version": "1.0.0-beta.9",
+          "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+        },
+        {
+          "name": "@pulse-compute/provider-node",
+          "version": "1.0.0-beta.9",
+          "sha256": "9a3ea0678a7b83bffec377ef6d6b6debd617ec41dc38640109cd238ce4461554"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "version": "1.0.0-beta.9",
+          "sha256": "70860b08d3dbb995742440bbb4b7e56db3abdeaba1e37ff8c7b5ead2df835b51"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "version": "1.0.0-beta.9",
+          "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+        }
+      ],
+      "installedLockSha256": "525bc365f3613ee0c74eb4d8a8f57fa0317d226318c42976efd29af5e5f4ed7b",
+      "lifecycleScripts": false,
+      "registry": {
+        "total": 68,
+        "packuments": 38,
+        "tarballs": 30,
+        "rejected": 0,
+        "missing": 0,
+        "missingPackuments": {},
+        "missingTarballs": 0
+      },
+      "durationMs": 30175
+    }
+  },
+  "controls": {
+    "maintainer": {
+      "path": "/tmp/r11-merge-maintainer.log",
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2",
+      "bytes": 345,
+      "status": "passed"
+    },
+    "documentation": {
+      "path": "/tmp/r11-merge-docs.log",
+      "sha256": "c25b27e92e33c782e3551edca63740f5950807d5591fca88eda540d43492f1df",
+      "bytes": 247271,
+      "status": "passed"
+    },
+    "documentationRelease": {
+      "path": "/tmp/r11-merge-doc-release.log",
+      "sha256": "1738ecd7311b8b064d657a263fcc87da4e3557a4181047702b712d87695f3056",
+      "bytes": 236784,
+      "status": "passed"
+    }
+  },
+  "cleanup": {
+    "leaseFiles": [],
+    "workingTree": "",
+    "manualReconciliationRequired": false,
+    "installedConsumersRemoved": {
+      "status": "passed",
+      "consumersRemoved": true
+    },
+    "remainingManagedProcessTrees": []
+  },
+  "coverage": "Focused merge checks only, not a new full unit/CLI profile or release seal. Prior full-selection attempts are historical in proof.json. Both former Entities baseline assertions now pass on integrated latest."
+}
