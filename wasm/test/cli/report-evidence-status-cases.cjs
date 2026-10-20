@@ -99,6 +99,19 @@ function runEvidenceStatusCases(cli, directory) {
   const init = run('init', ['status-new-app', '--plan']);
   assert.equal(init.outcome, 'planned'); assert(!fs.existsSync(path.join(directory, 'status-new-app')));
 
+  // Preserve report-owner diagnostic classification through the presentation.
+  for (const [code, state] of [['REPORT_STALE_INPUTS', 'stale'], ['REPORT_INPUT_VERSION', 'incompatible']]) {
+    let stderr = '';
+    const error = require(path.join(cli, 'src/internal/report/command')).publicReportError({ code });
+    const summary = require(path.join(cli, 'src/internal/execution-error')).errorSummary(error);
+    const reporter = createCommandReporter({ stdout: { write: () => assert.fail('failure must use stderr') },
+      stderr: { write: text => { stderr += text; } } });
+    reporter.reportDiagnostic(summary, { request: { command: 'report', evidenceStatus: true }, exitCode: 3 });
+    const failed = JSON.parse(stderr);
+    assert.equal(failed.evidence.state, state); assert.equal(failed.evidence.identity, null);
+    assert.deepEqual(failed.result.error, JSON.parse(JSON.stringify(summary))); assert.equal(failed.exitCode, 3);
+  }
+
   // Completed audits/tests fail on stdout, unlike thrown diagnostic failures.
   for (const command of ['doctor', 'test', 'compile', 'build', 'inspect', 'init']) {
     let stdout = '', stderr = '';
