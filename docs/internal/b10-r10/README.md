@@ -89,7 +89,7 @@ The pnpm bootstrap failure documented in R02 remains separate; this installed
 run explicitly performs the real fresh workspace build before standalone packing.
 
 Final source build, maintainer, canonical/installed documentation,
-documentation-release and scope checks pass. All terminal task cleanup receipts pass and no remaining process trees are recorded. Independent final cleanup is recorded in the receipt; these managed process observations do not establish a host-wide process inventory. Known task-owned lease residue required manual reconciliation after terminal children; this is not integrated release-cleanup qualification.
+documentation-release and scope checks pass. All terminal task cleanup receipts pass and no remaining process trees are recorded. Independent final cleanup is recorded in the receipt; these managed process observations do not establish a host-wide process inventory. The initial example scan reconciled nine lease files and one optimized output directory. The final full-worktree scan found five more ignored lease files and three retained task-created fixture roots; these were also reconciled after terminal children. All 14 lease files, the fixture-root file inventories and the optimized output hashes are retained in the cleanup receipt. The final full scan finds no remaining leases; manual reconciliation is not integrated release-cleanup qualification.
 
 ## Reproduction and remaining work
 

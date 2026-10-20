@@ -4187,6 +4187,400 @@
     "finalWorkingTree": "clean",
     "releaseCleanupQualified": false,
     "scope": "Only known task-created paths in the isolated R10 worktree. Passing task cleanup receipts did not establish absence of these residues. R12 retains integrated cleanup.",
-    "cause": "unproven; no source cleanup fix included"
+    "cause": "unproven; no source cleanup fix included",
+    "initialExampleLeaseCount": 9,
+    "additionalFullWorktreeScan": {
+      "extraLeaseFiles": [
+        {
+          "path": "wasm/test/fixtures/projects/mcp-native/.pulse-report-locks/dc92919ce011fd4d97e93fbd82160ed5d48b454edcc69361efbef953fe4eb011.lock",
+          "sha256": "1a5b4a626011444ac7320d9b18b14c628fe0939ef23f038d808295b762a8d2a1",
+          "bytes": 44
+        },
+        {
+          "path": "wasm/test/fixtures/projects/mcp-native/.pulse-report-locks/edc8983313b7d7d8406db0cc6d6069a99ec4120561fdb917a5cee89a8d761c99.lock",
+          "sha256": "ec296e22bfe02eed4bb1e7d4e03e83b1d5813b87486bcd987d8ab45eefc4013f",
+          "bytes": 44
+        },
+        {
+          "path": "wasm/.test-results/entities-node-native-0N59nu/.pulse-report-locks/dc92919ce011fd4d97e93fbd82160ed5d48b454edcc69361efbef953fe4eb011.lock",
+          "sha256": "a4d2abe59db7f37ccf6392ead5a3faa93450059158af58d1259854342c1cfb6d",
+          "bytes": 44
+        },
+        {
+          "path": "wasm/.test-results/rpt8-references-SC0Nr9/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "sha256": "95091bc414d0d319e2d5ffc947444f17f9f5c03b56ad0ae1a35d4d88fd080098",
+          "bytes": 44
+        },
+        {
+          "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.pulse-report-locks/edc8983313b7d7d8406db0cc6d6069a99ec4120561fdb917a5cee89a8d761c99.lock",
+          "sha256": "2fd807241cccffc3087b75d9cd73bc6fa21e5dce43400c1afaa60c5d01dd552e",
+          "bytes": 44
+        }
+      ],
+      "ownedFixtureRoots": [
+        {
+          "root": "wasm/.test-results/entities-node-native-0N59nu",
+          "files": [
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/tsconfig.json",
+              "sha256": "ccbd416279708d9e8aabb7ba3beaa9928e8fcdc9457d2d3ae28ef6d85f0639cd",
+              "bytes": 217
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/package.json",
+              "sha256": "17926c7318e8fa2e5907a26d7429f7e7e32a2e0e31724ded1fb4ad0dc7f7ceb1",
+              "bytes": 481
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/README.md",
+              "sha256": "7ed7c9ce4c3b7689f609194a6aa2406a2acbf9cb80f9ae0615af29f5829ea93f",
+              "bytes": 13590
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/tools-facade.cjs",
+              "sha256": "0b6ab49538980506f42425a6243adc26622310f41baa12a24ac0275377106dce",
+              "bytes": 5480
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/.gitignore",
+              "sha256": "cc0504a42b273dc56c28e7a86fee2bec61bf634ccc5db312fe62b4f8085f56b9",
+              "bytes": 19
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/src/handlers.ts",
+              "sha256": "d327aa6be594856d960109f920b96a3b8932e6c1cdd7e7b81db14db5cfb931b6",
+              "bytes": 505
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/src/schemas.ts",
+              "sha256": "982bf7e84eba5b021f5a8ee6884c707eeaf01a3cdb1aa8fd9ffc1764797842d5",
+              "bytes": 405
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/src/index.ts",
+              "sha256": "839a20a8e8940f7b75c02a7e1230610a171d302dac99b04d67686413aa80bcd6",
+              "bytes": 871
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/tests/pulse.harness.ts",
+              "sha256": "2e82c445286a8e3cecabac523ec726ff9e957a7297f48a55488c29649e3f54f1",
+              "bytes": 1006
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-native-manifest.json",
+              "sha256": "d26eaab59b08f0e94ef6da72ef7711de56107047b8a0b8b4d870c9dcfb870dd4",
+              "bytes": 7069
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-report-attribution.json",
+              "sha256": "c01101ac87065f7f18221ed7de50d208ea95492dedc20e26aa7f2bb022b9b2b2",
+              "bytes": 5514
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-native-plan.json",
+              "sha256": "81f996de4e69a688f634fee358d3f069964c3ef0fd02ee4770ee465011f44941",
+              "bytes": 53906
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-report-inputs.json",
+              "sha256": "101a1fe6310af5614d9be096d7a8def965c9d925e8f1bc94159e02bdeff9324b",
+              "bytes": 10421
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-report-completion.json",
+              "sha256": "4c3fff98295f67180ab1da909e96ed8972f648793c28966f8150debcc1a7a189",
+              "bytes": 1219
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/schema-json-codecs.cjs",
+              "sha256": "a1480c337f946d1ad0925542d3f78c4195bebea27b732fe1a8590baa1dde996c",
+              "bytes": 12298
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/package-artifacts.json",
+              "sha256": "99a2595f3b8dc554eff886fdc1590c39654753df24b768182917a3f57586809f",
+              "bytes": 625
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-build.json",
+              "sha256": "3fd71549fdc78e28e1009303d633a38dc757d12a975f6af98b5c8c45642cf93d",
+              "bytes": 34672
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/entities-inspection.json",
+              "sha256": "c66b2c54008fd6f9f319506cf0424e9d7e50c551ec024e3bfd1c9cf8f767d962",
+              "bytes": 4097
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-native.wasm",
+              "sha256": "bf837115e417882dcdc1a25ebb477ae5452ebb2fad1aaf1648d26321f6b03ce5",
+              "bytes": 78517
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-native.as.ts",
+              "sha256": "2006c09a68ddc51a459d9c8b6b355b5e1950e539eae94c99bae8aa9ca027a605",
+              "bytes": 38368
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-report-inventory.json",
+              "sha256": "b3b1a49c3504b98bb48441818d6123eacbdd11cc8eb9fe5f162c5027e7359a3d",
+              "bytes": 8853
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/entities-catalog.json",
+              "sha256": "521e83262d8e3c664d8ec56d14971e132bd05e09e0313e1ddd100827914928ea",
+              "bytes": 1436
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-program.json",
+              "sha256": "8c67cef33f43d03bbe355c70537ae70fadb60bfe7c12efe4b76d516ece1c9ce6",
+              "bytes": 6812
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-handler.cjs",
+              "sha256": "6e2d97762e8bd7944e4c7bc901cfffabf256ca69db44c7be35bbc24d3587305b",
+              "bytes": 21857
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/schema-json-registry.json",
+              "sha256": "09080378351a3bb10ae0624bceca9e5f06e9337cebb0cd770417079ed2d67e07",
+              "bytes": 4118
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/.pulse/config.ts",
+              "sha256": "e43628eff33ff8daa0722ac794fbad5b113bc1b3b8f3b99c06f64aae5db833b4",
+              "bytes": 1137
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/.pulse/.gitignore",
+              "sha256": "a43e1246b335d1ab42d4f182dc114460da24cbdcec9e5d8dcdd1e50c9ce6df5d",
+              "bytes": 26
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/.pulse-report-locks/dc92919ce011fd4d97e93fbd82160ed5d48b454edcc69361efbef953fe4eb011.lock",
+              "sha256": "a4d2abe59db7f37ccf6392ead5a3faa93450059158af58d1259854342c1cfb6d",
+              "bytes": 44
+            }
+          ]
+        },
+        {
+          "root": "wasm/.test-results/rpt8-references-SC0Nr9",
+          "files": [
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/src/helper.ts",
+              "sha256": "a502de95356874017ee4a6384f54b26cf45ed82683ef1ced9d50387b2029429b",
+              "bytes": 288
+            },
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/src/schemas.ts",
+              "sha256": "5dd3d7ba7a3eb200ecf173f447c9a1a23aaec6ab7adedd623a6f5a009f08c542",
+              "bytes": 320
+            },
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/src/index.ts",
+              "sha256": "bd9aeda7fc43da24b316d036c5e2701326afa91638ecfeca66d75ec8e5fff6ef",
+              "bytes": 1854
+            },
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/.pulse/config.ts",
+              "sha256": "4d24799e27b858fd7b9671e468b9928197470df380c010b6987656a21847b204",
+              "bytes": 404
+            },
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+              "sha256": "95091bc414d0d319e2d5ffc947444f17f9f5c03b56ad0ae1a35d4d88fd080098",
+              "bytes": 44
+            }
+          ]
+        },
+        {
+          "root": "wasm/.test-results/entities-fastly-native-5zmb4u",
+          "files": [
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/tsconfig.json",
+              "sha256": "ccbd416279708d9e8aabb7ba3beaa9928e8fcdc9457d2d3ae28ef6d85f0639cd",
+              "bytes": 217
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/package.json",
+              "sha256": "17926c7318e8fa2e5907a26d7429f7e7e32a2e0e31724ded1fb4ad0dc7f7ceb1",
+              "bytes": 481
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/README.md",
+              "sha256": "7ed7c9ce4c3b7689f609194a6aa2406a2acbf9cb80f9ae0615af29f5829ea93f",
+              "bytes": 13590
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/tools-facade.cjs",
+              "sha256": "0b6ab49538980506f42425a6243adc26622310f41baa12a24ac0275377106dce",
+              "bytes": 5480
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.gitignore",
+              "sha256": "cc0504a42b273dc56c28e7a86fee2bec61bf634ccc5db312fe62b4f8085f56b9",
+              "bytes": 19
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/src/handlers.ts",
+              "sha256": "8796eda06057950863148968c6adc1d31ceee13d975b058a7a06ef9df242d191",
+              "bytes": 389
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/src/schemas.ts",
+              "sha256": "982bf7e84eba5b021f5a8ee6884c707eeaf01a3cdb1aa8fd9ffc1764797842d5",
+              "bytes": 405
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/src/index.ts",
+              "sha256": "839a20a8e8940f7b75c02a7e1230610a171d302dac99b04d67686413aa80bcd6",
+              "bytes": 871
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/tests/pulse.harness.ts",
+              "sha256": "2e82c445286a8e3cecabac523ec726ff9e957a7297f48a55488c29649e3f54f1",
+              "bytes": 1006
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-native-manifest.json",
+              "sha256": "3ceb94ceb7da8377aef9ca084eb37cb701b5495aa680cda8ca951c42bd063fa8",
+              "bytes": 7069
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/pulse-report-attribution.json",
+              "sha256": "328737a9ef15fe2cc739e9e3267f7e65195329683bd6014d187c59cd6c611adf",
+              "bytes": 7510
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-native-plan.json",
+              "sha256": "26ecb04aab97cc2ca9ab45b60e239b9451b36bda28dccf952134667ef103d5e4",
+              "bytes": 60373
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly.toml",
+              "sha256": "1ba6e757dd37d13099cb7a0ba3d8ce2185773fbf02e0ae205033379ac4bbed14",
+              "bytes": 288
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/pulse-report-inputs.json",
+              "sha256": "f84df6a95c9c914e6cbd2f9f6b81fefb82c5b19526515ae06e0b831365289742",
+              "bytes": 10423
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/package.json",
+              "sha256": "b41a8a450a335be9579b411d3bdccd2d1784589c79eaf82e0d0158a4112235da",
+              "bytes": 300
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/schema-json-codecs.cjs",
+              "sha256": "a1480c337f946d1ad0925542d3f78c4195bebea27b732fe1a8590baa1dde996c",
+              "bytes": 12298
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-native-manifest.json",
+              "sha256": "f24f3872a66fb19a1e487e3979b3ba7e5de571cabbe8959626f0b3f733ec265e",
+              "bytes": 14827
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/package-artifacts.json",
+              "sha256": "99a2595f3b8dc554eff886fdc1590c39654753df24b768182917a3f57586809f",
+              "bytes": 625
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/pulse-build.json",
+              "sha256": "b39fdcb83fe46d86c9965f2c5f01f215c681a6b260d3f2f52b4e151a257eb168",
+              "bytes": 36308
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/entities-inspection.json",
+              "sha256": "c66b2c54008fd6f9f319506cf0424e9d7e50c551ec024e3bfd1c9cf8f767d962",
+              "bytes": 4097
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-provider.json",
+              "sha256": "d94299fbe1b3c774e7025db5d89333904be0a417025ea99fac16aef863d145e3",
+              "bytes": 783
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-native.wasm",
+              "sha256": "7174dc1ede5d861e0e5d8959a22918ed8d89e9c6d0d99a44a34d3dc1a9643cf0",
+              "bytes": 76262
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-native.as.ts",
+              "sha256": "5d1a0bd26e48704552ad35e43d9490f056681ed46bb3168681018e03e1d6e10c",
+              "bytes": 41258
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/pulse-report-inventory.json",
+              "sha256": "8ddaadd9d6b916e4b80ad5ddf91ae810306eb131c1be3b6e922d9ce39bad1374",
+              "bytes": 10231
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/entities-catalog.json",
+              "sha256": "521e83262d8e3c664d8ec56d14971e132bd05e09e0313e1ddd100827914928ea",
+              "bytes": 1436
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-program.json",
+              "sha256": "8c67cef33f43d03bbe355c70537ae70fadb60bfe7c12efe4b76d516ece1c9ce6",
+              "bytes": 6812
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-native-plan.json",
+              "sha256": "26ecb04aab97cc2ca9ab45b60e239b9451b36bda28dccf952134667ef103d5e4",
+              "bytes": 60373
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-handler.cjs",
+              "sha256": "6e2d97762e8bd7944e4c7bc901cfffabf256ca69db44c7be35bbc24d3587305b",
+              "bytes": 21857
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-build.json",
+              "sha256": "f0b61565194b2e2dc3c90b5f59503edaf356e084cc1e0a8bad994445af63a35d",
+              "bytes": 9687
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-entry.cjs",
+              "sha256": "dbda0d24c5c18943fa22c8ec726aa447e91ec68e5df67c2dba39fce24f9553cb",
+              "bytes": 856
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/schema-json-registry.json",
+              "sha256": "09080378351a3bb10ae0624bceca9e5f06e9337cebb0cd770417079ed2d67e07",
+              "bytes": 4118
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.pulse/config.ts",
+              "sha256": "26ac296616c5ba2290920e8150cedf0cd23ed06251e9685944d8518058787c7e",
+              "bytes": 1101
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.pulse/.gitignore",
+              "sha256": "a43e1246b335d1ab42d4f182dc114460da24cbdcec9e5d8dcdd1e50c9ce6df5d",
+              "bytes": 26
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.pulse-report-locks/edc8983313b7d7d8406db0cc6d6069a99ec4120561fdb917a5cee89a8d761c99.lock",
+              "sha256": "2fd807241cccffc3087b75d9cd73bc6fa21e5dce43400c1afaa60c5d01dd552e",
+              "bytes": 44
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/src/main.as.ts",
+              "sha256": "960905674db03f5b426db9e2a00c7270ca2bbc3c46d78044f4d25399105b64eb",
+              "bytes": 160171
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/bin/main.wasm",
+              "sha256": "1cf02bd885486e938f477314901d1854677778999fa5dd7aac95484e2a9e82e1",
+              "bytes": 124204
+            }
+          ]
+        }
+      ],
+      "remainingLeases": []
+    },
+    "totalLeaseFilesReconciled": 14
   }
 }
