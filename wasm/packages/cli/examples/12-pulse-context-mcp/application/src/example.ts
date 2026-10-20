@@ -7,7 +7,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
     const c = input.version[i] ?? ''
     versionBytes += c < '\u0080' ? 1 : c < '\u0800' ? 2 : c >= '\udc00' && c <= '\udfff' ? 1 : 3
   }
-  const empty: ExampleOutput = versionBytes <= 64 ? {"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"f2fa83a6b81f706a050e1ffc0281bf0f5503b170c17a63e553026c665e5510a0","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v2","maxReplyBytes":24576,"requestedVersion":input.version},"status":"ok","availableIds":[],"records":[],"totalRecords":0,"truncated":false} : {"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"f2fa83a6b81f706a050e1ffc0281bf0f5503b170c17a63e553026c665e5510a0","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v2","maxReplyBytes":24576},"status":"ok","availableIds":[],"records":[],"totalRecords":0,"truncated":false}
+  const empty: ExampleOutput = versionBytes <= 64 ? {"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v2","maxReplyBytes":24576,"requestedVersion":input.version},"status":"ok","availableIds":[],"records":[],"totalRecords":0,"truncated":false} : {"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v2","maxReplyBytes":24576},"status":"ok","availableIds":[],"records":[],"totalRecords":0,"truncated":false}
   if (input.version.length === 0 || versionBytes > 64) return {...empty,status:'invalid-input',error:{code:'invalid-version',message:'Supply an exact version of at most 64 UTF-8 bytes.'}}
   if (input.version !== "1.0.0-beta.9") return {...empty,status:'version-mismatch',error:{code:'version-mismatch',message:'The requested version is not bundled. See meta.pulseVersion; no fallback was selected.'}}
   let nameBytes = 0
@@ -80,7 +80,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2014 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61","id":"example/01-hello-json/.pulse/config.ts","source":{"path":"examples/01-hello-json/.pulse/config.ts","selection":"file","sha256":"9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/3c81bdab5869b21461b3bb3164cf3da751b9f946"},"tags":["01-hello-json","example"],"title":"01-hello-json: .pulse/config.ts","content":text.readUtf8(179923, 347),"offset":0,"totalBytes":347,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61","id":"example/01-hello-json/.pulse/config.ts","source":{"path":"examples/01-hello-json/.pulse/config.ts","selection":"file","sha256":"9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/3c81bdab5869b21461b3bb3164cf3da751b9f946"},"tags":["01-hello-json","example"],"title":"01-hello-json: .pulse/config.ts","content":text.readUtf8(183270, 347),"offset":0,"totalBytes":347,"truncated":false}]
           replyBytes += 2014 + (count > 0 ? 2 : 0)
           count++
         }
@@ -91,7 +91,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2376 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0","id":"example/01-hello-json/package.json","source":{"path":"examples/01-hello-json/package.json","selection":"file","sha256":"f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/9a3749fb6ed09ef23dd354da424a73c5147f9f67"},"tags":["01-hello-json","example"],"title":"01-hello-json: package.json","content":text.readUtf8(180270, 430),"offset":0,"totalBytes":430,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0","id":"example/01-hello-json/package.json","source":{"path":"examples/01-hello-json/package.json","selection":"file","sha256":"f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/9a3749fb6ed09ef23dd354da424a73c5147f9f67"},"tags":["01-hello-json","example"],"title":"01-hello-json: package.json","content":text.readUtf8(183617, 430),"offset":0,"totalBytes":430,"truncated":false}]
           replyBytes += 2376 + (count > 0 ? 2 : 0)
           count++
         }
@@ -102,7 +102,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 1891 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b","id":"example/01-hello-json/src/index.ts","source":{"path":"examples/01-hello-json/src/index.ts","selection":"file","sha256":"906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/241c1539af35f74de5b9e5a975af29c3c0cea9ec"},"tags":["01-hello-json","example"],"title":"01-hello-json: src/index.ts","content":text.readUtf8(180700, 308),"offset":0,"totalBytes":308,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b","id":"example/01-hello-json/src/index.ts","source":{"path":"examples/01-hello-json/src/index.ts","selection":"file","sha256":"906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/241c1539af35f74de5b9e5a975af29c3c0cea9ec"},"tags":["01-hello-json","example"],"title":"01-hello-json: src/index.ts","content":text.readUtf8(184047, 308),"offset":0,"totalBytes":308,"truncated":false}]
           replyBytes += 1891 + (count > 0 ? 2 : 0)
           count++
         }
@@ -113,7 +113,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2258 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa","id":"example/01-hello-json/tests/pulse.harness.ts","source":{"path":"examples/01-hello-json/tests/pulse.harness.ts","selection":"file","sha256":"1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/c4ad09e7cd99c0ad54a9dc0885bf19c5329b28aa"},"tags":["01-hello-json","example"],"title":"01-hello-json: tests/pulse.harness.ts","content":text.readUtf8(181008, 442),"offset":0,"totalBytes":442,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa","id":"example/01-hello-json/tests/pulse.harness.ts","source":{"path":"examples/01-hello-json/tests/pulse.harness.ts","selection":"file","sha256":"1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/c4ad09e7cd99c0ad54a9dc0885bf19c5329b28aa"},"tags":["01-hello-json","example"],"title":"01-hello-json: tests/pulse.harness.ts","content":text.readUtf8(184355, 442),"offset":0,"totalBytes":442,"truncated":false}]
           replyBytes += 2258 + (count > 0 ? 2 : 0)
           count++
         }
@@ -124,7 +124,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 1874 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","id":"example/01-hello-json/tsconfig.json","source":{"path":"examples/01-hello-json/tsconfig.json","selection":"file","sha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"},"tags":["01-hello-json","example"],"title":"01-hello-json: tsconfig.json","content":text.readUtf8(181450, 237),"offset":0,"totalBytes":237,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","id":"example/01-hello-json/tsconfig.json","source":{"path":"examples/01-hello-json/tsconfig.json","selection":"file","sha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"},"tags":["01-hello-json","example"],"title":"01-hello-json: tsconfig.json","content":text.readUtf8(184797, 237),"offset":0,"totalBytes":237,"truncated":false}]
           replyBytes += 1874 + (count > 0 ? 2 : 0)
           count++
         }
@@ -135,7 +135,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2190 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"0908ca90c1b70b9a5bc35f5d234fbb855f3f1405df58fb9d0a18ebce2646b2a6","id":"example/01-hello-json/workflow","source":{"endLine":150,"path":"examples/01-hello-json/README.md","selection":"heading:Workflow","sha256":"a39336a65f9afb18bea54f7f2e53e940017117771a2c61cef1ae10f180a970d8","startLine":134,"url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/ae7ded8b4fcb9b0147fcde04e16402d15ea1d8be"},"tags":["01-hello-json","example","workflow"],"title":"01-hello-json: workflow","content":text.readUtf8(181687, 402),"offset":0,"totalBytes":402,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"0908ca90c1b70b9a5bc35f5d234fbb855f3f1405df58fb9d0a18ebce2646b2a6","id":"example/01-hello-json/workflow","source":{"endLine":150,"path":"examples/01-hello-json/README.md","selection":"heading:Workflow","sha256":"a39336a65f9afb18bea54f7f2e53e940017117771a2c61cef1ae10f180a970d8","startLine":134,"url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/ae7ded8b4fcb9b0147fcde04e16402d15ea1d8be"},"tags":["01-hello-json","example","workflow"],"title":"01-hello-json: workflow","content":text.readUtf8(185034, 402),"offset":0,"totalBytes":402,"truncated":false}]
           replyBytes += 2190 + (count > 0 ? 2 : 0)
           count++
         }
@@ -216,7 +216,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2157 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"93d844c6637690510a51c8f105ac179aca0d2ff788d90ec3e68ec9c4927fdc90","id":"example/02-request-schema/.pulse/config.ts","source":{"path":"examples/02-request-schema/.pulse/config.ts","selection":"file","sha256":"93d844c6637690510a51c8f105ac179aca0d2ff788d90ec3e68ec9c4927fdc90","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/c81ea322657c3719d041a555b8f323cd6701bd67"},"tags":["02-request-schema","example"],"title":"02-request-schema: .pulse/config.ts","content":text.readUtf8(182089, 401),"offset":0,"totalBytes":401,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"93d844c6637690510a51c8f105ac179aca0d2ff788d90ec3e68ec9c4927fdc90","id":"example/02-request-schema/.pulse/config.ts","source":{"path":"examples/02-request-schema/.pulse/config.ts","selection":"file","sha256":"93d844c6637690510a51c8f105ac179aca0d2ff788d90ec3e68ec9c4927fdc90","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/c81ea322657c3719d041a555b8f323cd6701bd67"},"tags":["02-request-schema","example"],"title":"02-request-schema: .pulse/config.ts","content":text.readUtf8(185436, 401),"offset":0,"totalBytes":401,"truncated":false}]
           replyBytes += 2157 + (count > 0 ? 2 : 0)
           count++
         }
@@ -227,7 +227,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2416 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"86f09de55ca7c3c4e7afe7de7bebf2b0f911240af6a0cb090e8ed2dc69efdcab","id":"example/02-request-schema/package.json","source":{"path":"examples/02-request-schema/package.json","selection":"file","sha256":"86f09de55ca7c3c4e7afe7de7bebf2b0f911240af6a0cb090e8ed2dc69efdcab","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/140647598e84fe2493c84dfb50b716ca100ca4ea"},"tags":["02-request-schema","example"],"title":"02-request-schema: package.json","content":text.readUtf8(182490, 434),"offset":0,"totalBytes":434,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"86f09de55ca7c3c4e7afe7de7bebf2b0f911240af6a0cb090e8ed2dc69efdcab","id":"example/02-request-schema/package.json","source":{"path":"examples/02-request-schema/package.json","selection":"file","sha256":"86f09de55ca7c3c4e7afe7de7bebf2b0f911240af6a0cb090e8ed2dc69efdcab","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/140647598e84fe2493c84dfb50b716ca100ca4ea"},"tags":["02-request-schema","example"],"title":"02-request-schema: package.json","content":text.readUtf8(185837, 434),"offset":0,"totalBytes":434,"truncated":false}]
           replyBytes += 2416 + (count > 0 ? 2 : 0)
           count++
         }
@@ -238,7 +238,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2488 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"746e47b02bfb401fd375c271df96fb3e3bef386592598137975196e2a233abd1","id":"example/02-request-schema/src/index.ts","source":{"path":"examples/02-request-schema/src/index.ts","selection":"file","sha256":"746e47b02bfb401fd375c271df96fb3e3bef386592598137975196e2a233abd1","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/f4f2ff8df73aae8a48579d74839c52abb8857388"},"tags":["02-request-schema","example"],"title":"02-request-schema: src/index.ts","content":text.readUtf8(182924, 577),"offset":0,"totalBytes":577,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"746e47b02bfb401fd375c271df96fb3e3bef386592598137975196e2a233abd1","id":"example/02-request-schema/src/index.ts","source":{"path":"examples/02-request-schema/src/index.ts","selection":"file","sha256":"746e47b02bfb401fd375c271df96fb3e3bef386592598137975196e2a233abd1","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/f4f2ff8df73aae8a48579d74839c52abb8857388"},"tags":["02-request-schema","example"],"title":"02-request-schema: src/index.ts","content":text.readUtf8(186271, 577),"offset":0,"totalBytes":577,"truncated":false}]
           replyBytes += 2488 + (count > 0 ? 2 : 0)
           count++
         }
@@ -249,7 +249,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2204 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"2b69359585e52a2e332e821f0379505a37d652b3040b40524594f2ab102a52f8","id":"example/02-request-schema/src/schemas.ts","source":{"path":"examples/02-request-schema/src/schemas.ts","selection":"file","sha256":"2b69359585e52a2e332e821f0379505a37d652b3040b40524594f2ab102a52f8","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/8dbea35f6437a5bc91780f014e6275adcc5bdffc"},"tags":["02-request-schema","example"],"title":"02-request-schema: src/schemas.ts","content":text.readUtf8(183501, 426),"offset":0,"totalBytes":426,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"2b69359585e52a2e332e821f0379505a37d652b3040b40524594f2ab102a52f8","id":"example/02-request-schema/src/schemas.ts","source":{"path":"examples/02-request-schema/src/schemas.ts","selection":"file","sha256":"2b69359585e52a2e332e821f0379505a37d652b3040b40524594f2ab102a52f8","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/8dbea35f6437a5bc91780f014e6275adcc5bdffc"},"tags":["02-request-schema","example"],"title":"02-request-schema: src/schemas.ts","content":text.readUtf8(186848, 426),"offset":0,"totalBytes":426,"truncated":false}]
           replyBytes += 2204 + (count > 0 ? 2 : 0)
           count++
         }
@@ -260,7 +260,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 3039 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"6b55edf4563de2cc1fbde2850b0d3748f1627b9d4435d350998d93bcdfba4bba","id":"example/02-request-schema/tests/pulse.harness.ts","source":{"path":"examples/02-request-schema/tests/pulse.harness.ts","selection":"file","sha256":"6b55edf4563de2cc1fbde2850b0d3748f1627b9d4435d350998d93bcdfba4bba","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/40ea134ceebe29c1777f5c72716d2323e31ef8a6"},"tags":["02-request-schema","example"],"title":"02-request-schema: tests/pulse.harness.ts","content":text.readUtf8(183927, 794),"offset":0,"totalBytes":794,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"6b55edf4563de2cc1fbde2850b0d3748f1627b9d4435d350998d93bcdfba4bba","id":"example/02-request-schema/tests/pulse.harness.ts","source":{"path":"examples/02-request-schema/tests/pulse.harness.ts","selection":"file","sha256":"6b55edf4563de2cc1fbde2850b0d3748f1627b9d4435d350998d93bcdfba4bba","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/40ea134ceebe29c1777f5c72716d2323e31ef8a6"},"tags":["02-request-schema","example"],"title":"02-request-schema: tests/pulse.harness.ts","content":text.readUtf8(187274, 794),"offset":0,"totalBytes":794,"truncated":false}]
           replyBytes += 3039 + (count > 0 ? 2 : 0)
           count++
         }
@@ -271,7 +271,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 1906 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","id":"example/02-request-schema/tsconfig.json","source":{"path":"examples/02-request-schema/tsconfig.json","selection":"file","sha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"},"tags":["02-request-schema","example"],"title":"02-request-schema: tsconfig.json","content":text.readUtf8(184721, 237),"offset":0,"totalBytes":237,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","id":"example/02-request-schema/tsconfig.json","source":{"path":"examples/02-request-schema/tsconfig.json","selection":"file","sha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"},"tags":["02-request-schema","example"],"title":"02-request-schema: tsconfig.json","content":text.readUtf8(188068, 237),"offset":0,"totalBytes":237,"truncated":false}]
           replyBytes += 1906 + (count > 0 ? 2 : 0)
           count++
         }
@@ -282,7 +282,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 1719 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"15a8175a42dbc4f0f0c6627952850119ea554d2cf571db473faf3ceebc6880af","id":"example/02-request-schema/workflow","source":{"endLine":161,"path":"examples/02-request-schema/README.md","selection":"heading:Workflow","sha256":"423e861c3943025e44ca44b067122eb8b43d14183d5a3555b2c6ca2eeddb7133","startLine":150,"url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/ba46ada49807b050de29682a13a4bb7da7e648ac"},"tags":["02-request-schema","example","workflow"],"title":"02-request-schema: workflow","content":text.readUtf8(184958, 158),"offset":0,"totalBytes":158,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"15a8175a42dbc4f0f0c6627952850119ea554d2cf571db473faf3ceebc6880af","id":"example/02-request-schema/workflow","source":{"endLine":161,"path":"examples/02-request-schema/README.md","selection":"heading:Workflow","sha256":"423e861c3943025e44ca44b067122eb8b43d14183d5a3555b2c6ca2eeddb7133","startLine":150,"url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/ba46ada49807b050de29682a13a4bb7da7e648ac"},"tags":["02-request-schema","example","workflow"],"title":"02-request-schema: workflow","content":text.readUtf8(188305, 158),"offset":0,"totalBytes":158,"truncated":false}]
           replyBytes += 1719 + (count > 0 ? 2 : 0)
           count++
         }
@@ -357,7 +357,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2837 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"c5df387372687e0b834acdd9263795222e5a92b2b4040813501027351cf78951","id":"example/03-fetch-composition/.pulse/config.ts","source":{"path":"examples/03-fetch-composition/.pulse/config.ts","selection":"file","sha256":"c5df387372687e0b834acdd9263795222e5a92b2b4040813501027351cf78951","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/21dcbf6280b612774ceab7e7f725ae6d25ed1b14"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: .pulse/config.ts","content":text.readUtf8(185116, 708),"offset":0,"totalBytes":708,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"c5df387372687e0b834acdd9263795222e5a92b2b4040813501027351cf78951","id":"example/03-fetch-composition/.pulse/config.ts","source":{"path":"examples/03-fetch-composition/.pulse/config.ts","selection":"file","sha256":"c5df387372687e0b834acdd9263795222e5a92b2b4040813501027351cf78951","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/21dcbf6280b612774ceab7e7f725ae6d25ed1b14"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: .pulse/config.ts","content":text.readUtf8(188463, 708),"offset":0,"totalBytes":708,"truncated":false}]
           replyBytes += 2837 + (count > 0 ? 2 : 0)
           count++
         }
@@ -368,7 +368,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2446 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"3fbde4e7443a7de23cd5a83540239a766a023eb104240d3abcbc58b4df587c6c","id":"example/03-fetch-composition/package.json","source":{"path":"examples/03-fetch-composition/package.json","selection":"file","sha256":"3fbde4e7443a7de23cd5a83540239a766a023eb104240d3abcbc58b4df587c6c","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/f1cf7fa9f90b1662bec7adc412ebcd5e1f94f34a"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: package.json","content":text.readUtf8(185824, 437),"offset":0,"totalBytes":437,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"3fbde4e7443a7de23cd5a83540239a766a023eb104240d3abcbc58b4df587c6c","id":"example/03-fetch-composition/package.json","source":{"path":"examples/03-fetch-composition/package.json","selection":"file","sha256":"3fbde4e7443a7de23cd5a83540239a766a023eb104240d3abcbc58b4df587c6c","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/f1cf7fa9f90b1662bec7adc412ebcd5e1f94f34a"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: package.json","content":text.readUtf8(189171, 437),"offset":0,"totalBytes":437,"truncated":false}]
           replyBytes += 2446 + (count > 0 ? 2 : 0)
           count++
         }
@@ -379,7 +379,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 4364 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"97c2e1fe82e2bb8cde5a05ed5adc7db73ead9199553c0adcf143c7f660a95fc1","id":"example/03-fetch-composition/src/index.ts","source":{"path":"examples/03-fetch-composition/src/index.ts","selection":"file","sha256":"97c2e1fe82e2bb8cde5a05ed5adc7db73ead9199553c0adcf143c7f660a95fc1","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/4d353e1df104bc09e31f1378a81f377cb04691f0"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: src/index.ts","content":text.readUtf8(186261, 1439),"offset":0,"totalBytes":1439,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"97c2e1fe82e2bb8cde5a05ed5adc7db73ead9199553c0adcf143c7f660a95fc1","id":"example/03-fetch-composition/src/index.ts","source":{"path":"examples/03-fetch-composition/src/index.ts","selection":"file","sha256":"97c2e1fe82e2bb8cde5a05ed5adc7db73ead9199553c0adcf143c7f660a95fc1","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/4d353e1df104bc09e31f1378a81f377cb04691f0"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: src/index.ts","content":text.readUtf8(189608, 1439),"offset":0,"totalBytes":1439,"truncated":false}]
           replyBytes += 4364 + (count > 0 ? 2 : 0)
           count++
         }
@@ -390,7 +390,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 3317 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"efb50c5547f1741abc52e1398b7939074bbf9f53e054e656165882ddda7a001f","id":"example/03-fetch-composition/tests/pulse.harness.ts","source":{"path":"examples/03-fetch-composition/tests/pulse.harness.ts","selection":"file","sha256":"efb50c5547f1741abc52e1398b7939074bbf9f53e054e656165882ddda7a001f","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/f4c6b7eff06c306e45fa0166918dc5af5d941c9d"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: tests/pulse.harness.ts","content":text.readUtf8(187700, 906),"offset":0,"totalBytes":906,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"efb50c5547f1741abc52e1398b7939074bbf9f53e054e656165882ddda7a001f","id":"example/03-fetch-composition/tests/pulse.harness.ts","source":{"path":"examples/03-fetch-composition/tests/pulse.harness.ts","selection":"file","sha256":"efb50c5547f1741abc52e1398b7939074bbf9f53e054e656165882ddda7a001f","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/f4c6b7eff06c306e45fa0166918dc5af5d941c9d"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: tests/pulse.harness.ts","content":text.readUtf8(191047, 906),"offset":0,"totalBytes":906,"truncated":false}]
           replyBytes += 3317 + (count > 0 ? 2 : 0)
           count++
         }
@@ -401,7 +401,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 1930 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","id":"example/03-fetch-composition/tsconfig.json","source":{"path":"examples/03-fetch-composition/tsconfig.json","selection":"file","sha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: tsconfig.json","content":text.readUtf8(188606, 237),"offset":0,"totalBytes":237,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","id":"example/03-fetch-composition/tsconfig.json","source":{"path":"examples/03-fetch-composition/tsconfig.json","selection":"file","sha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"},"tags":["03-fetch-composition","example"],"title":"03-fetch-composition: tsconfig.json","content":text.readUtf8(191953, 237),"offset":0,"totalBytes":237,"truncated":false}]
           replyBytes += 1930 + (count > 0 ? 2 : 0)
           count++
         }
@@ -412,7 +412,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 1743 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"15a8175a42dbc4f0f0c6627952850119ea554d2cf571db473faf3ceebc6880af","id":"example/03-fetch-composition/workflow","source":{"endLine":216,"path":"examples/03-fetch-composition/README.md","selection":"heading:Workflow","sha256":"c16f9a8f150c0f46fbf9bc6167592bb1e8086312be64ffafede9b0219885423b","startLine":205,"url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/3af2fa0056daffe136e14d4f3d5c8402ea7c7720"},"tags":["03-fetch-composition","example","workflow"],"title":"03-fetch-composition: workflow","content":text.readUtf8(188843, 158),"offset":0,"totalBytes":158,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"15a8175a42dbc4f0f0c6627952850119ea554d2cf571db473faf3ceebc6880af","id":"example/03-fetch-composition/workflow","source":{"endLine":216,"path":"examples/03-fetch-composition/README.md","selection":"heading:Workflow","sha256":"c16f9a8f150c0f46fbf9bc6167592bb1e8086312be64ffafede9b0219885423b","startLine":205,"url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/3af2fa0056daffe136e14d4f3d5c8402ea7c7720"},"tags":["03-fetch-composition","example","workflow"],"title":"03-fetch-composition: workflow","content":text.readUtf8(192190, 158),"offset":0,"totalBytes":158,"truncated":false}]
           replyBytes += 1743 + (count > 0 ? 2 : 0)
           count++
         }
@@ -487,7 +487,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2272 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"be7fb9e3f668225cf69d139746790cfcf5755050ea1fc25cf36ebd8c47b97859","id":"example/09-router-lowering/.pulse/config.ts","source":{"path":"examples/09-router-lowering/.pulse/config.ts","selection":"file","sha256":"be7fb9e3f668225cf69d139746790cfcf5755050ea1fc25cf36ebd8c47b97859","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/9550079ef17b87f5493d627b8a7a9b487c496c25"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: .pulse/config.ts","content":text.readUtf8(189001, 447),"offset":0,"totalBytes":447,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"be7fb9e3f668225cf69d139746790cfcf5755050ea1fc25cf36ebd8c47b97859","id":"example/09-router-lowering/.pulse/config.ts","source":{"path":"examples/09-router-lowering/.pulse/config.ts","selection":"file","sha256":"be7fb9e3f668225cf69d139746790cfcf5755050ea1fc25cf36ebd8c47b97859","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/9550079ef17b87f5493d627b8a7a9b487c496c25"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: .pulse/config.ts","content":text.readUtf8(192348, 447),"offset":0,"totalBytes":447,"truncated":false}]
           replyBytes += 2272 + (count > 0 ? 2 : 0)
           count++
         }
@@ -498,7 +498,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 2620 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"243eca97152204a52b5e9b7f7eb41ab9448d460bc28658552cf769cfe3f035e8","id":"example/09-router-lowering/package.json","source":{"path":"examples/09-router-lowering/package.json","selection":"file","sha256":"243eca97152204a52b5e9b7f7eb41ab9448d460bc28658552cf769cfe3f035e8","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/4a3df7a67537808e26bfa61875776b5d1d0b5f6b"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: package.json","content":text.readUtf8(189448, 513),"offset":0,"totalBytes":513,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"243eca97152204a52b5e9b7f7eb41ab9448d460bc28658552cf769cfe3f035e8","id":"example/09-router-lowering/package.json","source":{"path":"examples/09-router-lowering/package.json","selection":"file","sha256":"243eca97152204a52b5e9b7f7eb41ab9448d460bc28658552cf769cfe3f035e8","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/4a3df7a67537808e26bfa61875776b5d1d0b5f6b"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: package.json","content":text.readUtf8(192795, 513),"offset":0,"totalBytes":513,"truncated":false}]
           replyBytes += 2620 + (count > 0 ? 2 : 0)
           count++
         }
@@ -509,7 +509,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 4657 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"f9950548685c3a719774dd8065c3be505bc5d22b8ad4759f4b38953276d8710d","id":"example/09-router-lowering/src/index.ts","source":{"path":"examples/09-router-lowering/src/index.ts","selection":"file","sha256":"f9950548685c3a719774dd8065c3be505bc5d22b8ad4759f4b38953276d8710d","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/3a6998a256f7b8a94c6a77bd5a7b7fbaaf7b49f7"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: src/index.ts","content":text.readUtf8(189961, 1586),"offset":0,"totalBytes":1586,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"f9950548685c3a719774dd8065c3be505bc5d22b8ad4759f4b38953276d8710d","id":"example/09-router-lowering/src/index.ts","source":{"path":"examples/09-router-lowering/src/index.ts","selection":"file","sha256":"f9950548685c3a719774dd8065c3be505bc5d22b8ad4759f4b38953276d8710d","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/3a6998a256f7b8a94c6a77bd5a7b7fbaaf7b49f7"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: src/index.ts","content":text.readUtf8(193308, 1586),"offset":0,"totalBytes":1586,"truncated":false}]
           replyBytes += 4657 + (count > 0 ? 2 : 0)
           count++
         }
@@ -520,7 +520,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 5865 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"c162ee20de3c1ab929b296fa4a9620be3008cf5b119c86125028a7827767c1c2","id":"example/09-router-lowering/tests/pulse.harness.ts","source":{"path":"examples/09-router-lowering/tests/pulse.harness.ts","selection":"file","sha256":"c162ee20de3c1ab929b296fa4a9620be3008cf5b119c86125028a7827767c1c2","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/de0e455e4a55d0d9dc6a6d9ba7826926437bce37"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: tests/pulse.harness.ts","content":text.readUtf8(191547, 2121),"offset":0,"totalBytes":2121,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"c162ee20de3c1ab929b296fa4a9620be3008cf5b119c86125028a7827767c1c2","id":"example/09-router-lowering/tests/pulse.harness.ts","source":{"path":"examples/09-router-lowering/tests/pulse.harness.ts","selection":"file","sha256":"c162ee20de3c1ab929b296fa4a9620be3008cf5b119c86125028a7827767c1c2","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/de0e455e4a55d0d9dc6a6d9ba7826926437bce37"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: tests/pulse.harness.ts","content":text.readUtf8(194894, 2121),"offset":0,"totalBytes":2121,"truncated":false}]
           replyBytes += 5865 + (count > 0 ? 2 : 0)
           count++
         }
@@ -531,7 +531,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 1914 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","id":"example/09-router-lowering/tsconfig.json","source":{"path":"examples/09-router-lowering/tsconfig.json","selection":"file","sha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: tsconfig.json","content":text.readUtf8(193668, 237),"offset":0,"totalBytes":237,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","id":"example/09-router-lowering/tsconfig.json","source":{"path":"examples/09-router-lowering/tsconfig.json","selection":"file","sha256":"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052","url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"},"tags":["09-router-lowering","example"],"title":"09-router-lowering: tsconfig.json","content":text.readUtf8(197015, 237),"offset":0,"totalBytes":237,"truncated":false}]
           replyBytes += 1914 + (count > 0 ? 2 : 0)
           count++
         }
@@ -542,7 +542,7 @@ export function computeExample(ctx: PulseComputationContext, input: PulseReadonl
       if (position >= offset && count < 5 && !stopped) {
         if (false || replyBytes + 3449 + (count > 0 ? 2 : 0) > 24576) stopped = true
         else {
-          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"cb39319a0c0eaa036041d2345d2d6bf247f9bd593585a0a6f0e16835c1232ad3","id":"example/09-router-lowering/workflow","source":{"endLine":254,"path":"examples/09-router-lowering/README.md","selection":"heading:Workflow","sha256":"d1036524243026b2ace98f06a4e1369d500375a0310784f2c7a3c967b3f6ef5f","startLine":209,"url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/7a6b0e91aa072bfc98a94bd918a6036915c9e8a9"},"tags":["09-router-lowering","example","workflow"],"title":"09-router-lowering: workflow","content":text.readUtf8(193905, 872),"offset":0,"totalBytes":872,"truncated":false}]
+          page = [...page,{"applicability":[{"provider":"node","target":"native"}],"category":"example","contentSha256":"cb39319a0c0eaa036041d2345d2d6bf247f9bd593585a0a6f0e16835c1232ad3","id":"example/09-router-lowering/workflow","source":{"endLine":254,"path":"examples/09-router-lowering/README.md","selection":"heading:Workflow","sha256":"d1036524243026b2ace98f06a4e1369d500375a0310784f2c7a3c967b3f6ef5f","startLine":209,"url":"https://api.github.com/repos/pulse-compute/pulse/git/blobs/7a6b0e91aa072bfc98a94bd918a6036915c9e8a9"},"tags":["09-router-lowering","example","workflow"],"title":"09-router-lowering: workflow","content":text.readUtf8(197252, 872),"offset":0,"totalBytes":872,"truncated":false}]
           replyBytes += 3449 + (count > 0 ? 2 : 0)
           count++
         }

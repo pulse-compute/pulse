@@ -10,6 +10,7 @@ commands=(
     'compile:Compile the canonical project into provider-neutral Pulse-owned WebAssembly.'
     'build:Build the Native or JavaScript target for the deployment provider selected by the active project profile.'
     'report:Review retained evidence from a completed Native build without rebuilding or executing project code.'
+    'docs:Locate the offline documentation shipped with the executing CLI package.'
     'completion:Print a generated shell completion script'
     'help:Print public help'
     'version:Print the installed CLI version'
@@ -124,6 +125,14 @@ case $words[2] in
       '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
       '--out[HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html.]:directory:_directories' \
       '--artifact[Replay a saved Report capsule or supported completed-Wasm manifest without loading project code.]:file:_files'
+      ;;
+    docs)
+      _arguments -s       '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]'
       ;;
   *)
     _describe 'pulse command' commands

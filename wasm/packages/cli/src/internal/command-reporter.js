@@ -9,6 +9,10 @@ function writeJson(stream, value) {
 }
 
 function writeHumanResult(stream, command, result) {
+  if (command === 'docs') {
+    stream.write(`Pulse CLI ${result.version}\n${result.docs.index}\n`);
+    return;
+  }
   if (command === 'init') {
     stream.write(`Initialized Pulse project at ${result.root}\n`);
     for (const file of result.files) stream.write(`  ${file}\n`);

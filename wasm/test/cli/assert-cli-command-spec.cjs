@@ -82,7 +82,7 @@ const reference = fs.readFileSync(referencePath, 'utf8');
 const publicOptions = OPTION_SPECS.filter((option) => option.visibility === 'public');
 
 assert.deepEqual(workflow.COMMANDS, COMMANDS, 'workflow command surface must use the canonical command specification');
-assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report']);
+assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report', 'docs']);
 assert.equal(publicOptions.length, 21, 'the CLI must expose exactly 21 documented option contracts');
 assert.equal(OPTION_SPECS.every((option) => option.visibility === 'public'), true, 'the product parser must not retain repository-only controls');
 
@@ -266,4 +266,5 @@ assert.throws(
   (error) => error instanceof PulseProjectError && error.code === 'PULSE_ARGUMENT_UNEXPECTED'
 );
 
+console.log('ok - offline documentation locator ' + JSON.stringify(require('./docs-locator-cases.cjs').runDocsLocatorCases(cliRoot)));
 console.log(`ok - CLI parser, help, machine spec, and ${COMPLETION_SHELLS.length} completions agree on ${COMMANDS.length} commands and ${publicOptions.length} public options with no hidden product controls`);

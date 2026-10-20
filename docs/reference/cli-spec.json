@@ -807,6 +807,45 @@
         "Reports are build-review artifacts; review contents before sharing publicly."
       ],
       "exit": "0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence or an output write failure."
+    },
+    {
+      "name": "docs",
+      "summary": "Locate the offline documentation shipped with the executing CLI package.",
+      "usage": [
+        "pulse docs [--json]"
+      ],
+      "positionals": [],
+      "options": [
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        }
+      ],
+      "examples": [
+        "pulse docs",
+        "pulse docs --json"
+      ],
+      "diagnostics": [
+        "PULSE_DOCS_UNAVAILABLE",
+        "PULSE_DOCS_INVALID"
+      ],
+      "outputs": [
+        "Human output prints the installed CLI version and absolute documentation index path.",
+        "With --json, emits {status: \"ok\", version, docs: {root, index}} with the executing CLI version and absolute physical paths."
+      ],
+      "sideEffects": [
+        "Reads only the executing package documentation index; does not discover a project, compile code, install dependencies, contact the network, launch a server or open a browser.",
+        "Validates the index type, containment, readability and nonempty UTF-8 text; does not audit every document or establish package integrity.",
+        "--plan and --dry-run describe the locator without reading or validating documentation."
+      ],
+      "exit": "0 on success; 2 for invalid arguments; 5 when packaged documentation is unavailable or the index is invalid."
     }
   ]
 }
