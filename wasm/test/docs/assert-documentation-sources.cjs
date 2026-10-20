@@ -8,7 +8,7 @@ const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const { isPublicDocumentationSource } = require('../../../scripts/documentation-system.cjs');
 const { SOURCE_CONTRACT, publicPageSources, publicAssetSources } = require('../../../scripts/documentation-sources.cjs');
-const { buildExpectedFiles } = require('../../scripts/sync-reference-docs.cjs');
+const { buildExpectedFiles, transformCliCopy } = require('../../scripts/sync-reference-docs.cjs');
 
 function assertDocumentationSources() {
   // Importing the source owner must not execute presentation or release code.
@@ -47,6 +47,18 @@ function assertDocumentationSources() {
     'docs/guides/internal/run.json'
   ];
   const included = ['docs/guides/current.md', 'docs/fixtures/selected.json'];
+  const from = 'docs/architecture/current-contracts.md';
+  for (const target of ['../internal/proof.md#result', './decisions/history.md', '../AGENTS.md']) {
+    const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(from), target));
+    assert.equal(transformCliCopy(from, `[Evidence](${target})`),
+      `Evidence (repository-only: \`${resolved}\`)\n`, 'excluded source stays a readable checkout pointer');
+  }
+  for (const markdown of [
+    '[Public](../guides/current.md#result)', '[Hosted](https://example.test/proof)',
+    '![Image](../internal/proof.png)', '`[Literal](../internal/proof.md)`',
+    '```md\n[Literal](../internal/proof.md)\n```',
+    '~~~md\n[Literal](../internal/proof.md)\n~~~'
+  ]) assert.equal(transformCliCopy(from, markdown), markdown + '\n', 'preserve public links and literal/image content');
   const pages = ['README.md', 'API.md', 'CHANGELOG.md', 'docs/README.md', 'docs/examples.md', 'docs/nested/README.md', 'examples/demo/README.md'];
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-doc-source-policy-'));
   try {

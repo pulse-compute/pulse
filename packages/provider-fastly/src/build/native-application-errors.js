@@ -130,7 +130,16 @@ function instrument(source) {
     ['host_response_json', 'value: i32, options: i32', 'value, options', '2'],
     ['__pulse_fastly_schema_apply', 'schemaId: string, valueHandle: i32, encode: bool', 'schemaId, valueHandle, encode', 'encode ? 2 : 1']
   ];
-  for (const [name, params, args, mode] of wrappers) {
+  for (let [name, params, args, mode] of wrappers) {
+    if (name === '__pulse_fastly_schema_apply') {
+      // Text-result specialization adds an optional parameter. Preserve the
+      // compiler-owned declaration (including defaults) and forward every value.
+      const declaration = source.match(/function __pulse_fastly_schema_apply\(([^)]*)\): i32 \{/);
+      if (declaration) {
+        params = declaration[1];
+        args = params.split(',').map(parameter => parameter.split(':')[0].trim()).join(', ');
+      }
+    }
     source = source.replace(`function ${name}(`, `function __pulse_application_impl_${name}(`);
     source += `\nfunction ${name}(${params}): i32 {
   const previous = __pulse_application_schema; __pulse_application_schema = ${mode}
