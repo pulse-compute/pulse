@@ -1,0 +1,41 @@
+Auto-merging examples/12-pulse-context-mcp/README.md
+CONFLICT (content): Merge conflict in examples/12-pulse-context-mcp/README.md
+Auto-merging examples/12-pulse-context-mcp/context-corpus.ts
+CONFLICT (content): Merge conflict in examples/12-pulse-context-mcp/context-corpus.ts
+Auto-merging examples/12-pulse-context-mcp/context-data/context-manifest.json
+CONFLICT (content): Merge conflict in examples/12-pulse-context-mcp/context-data/context-manifest.json
+Auto-merging examples/12-pulse-context-mcp/context-data/context-metadata.ts
+CONFLICT (content): Merge conflict in examples/12-pulse-context-mcp/context-data/context-metadata.ts
+warning: Cannot merge binary files: examples/12-pulse-context-mcp/context-data/metadata.bin (HEAD vs. origin/latest)
+Auto-merging examples/12-pulse-context-mcp/context-data/metadata.bin
+CONFLICT (content): Merge conflict in examples/12-pulse-context-mcp/context-data/metadata.bin
+warning: Cannot merge binary files: examples/12-pulse-context-mcp/context-data/text.bin (HEAD vs. origin/latest)
+Auto-merging examples/12-pulse-context-mcp/context-data/text.bin
+CONFLICT (content): Merge conflict in examples/12-pulse-context-mcp/context-data/text.bin
+warning: Cannot merge binary files: examples/12-pulse-context-mcp/context-data/vector.bin (HEAD vs. origin/latest)
+Auto-merging examples/12-pulse-context-mcp/context-data/vector.bin
+CONFLICT (content): Merge conflict in examples/12-pulse-context-mcp/context-data/vector.bin
+Auto-merging packages/provider-fastly/src/build/native-platform-capabilities.js
+Auto-merging packages/provider-fastly/src/testing/native-platform-capabilities-host.js
+CONFLICT (content): Merge conflict in packages/provider-fastly/src/testing/native-platform-capabilities-host.js
+Auto-merging packages/runtime/docs/API.md
+Auto-merging wasm/packages/cli/docs/architecture/current-contracts.md
+Auto-merging wasm/packages/cli/examples/12-pulse-context-mcp/README.md
+CONFLICT (content): Merge conflict in wasm/packages/cli/examples/12-pulse-context-mcp/README.md
+Auto-merging wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts
+CONFLICT (content): Merge conflict in wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts
+Auto-merging wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json
+CONFLICT (content): Merge conflict in wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json
+Auto-merging wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts
+CONFLICT (content): Merge conflict in wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts
+warning: Cannot merge binary files: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin (HEAD vs. origin/latest)
+Auto-merging wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin
+CONFLICT (content): Merge conflict in wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin
+warning: Cannot merge binary files: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin (HEAD vs. origin/latest)
+Auto-merging wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin
+CONFLICT (content): Merge conflict in wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin
+warning: Cannot merge binary files: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin (HEAD vs. origin/latest)
+Auto-merging wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin
+CONFLICT (content): Merge conflict in wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin
+Auto-merging wasm/test/suite/registry.cjs
+Automatic merge failed; fix conflicts and then commit the result.

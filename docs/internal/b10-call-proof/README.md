@@ -1,6 +1,7 @@
 # B10 — shared callable composition proof
 
-Current application checkpoint: [B10-MCP-05I](./05I.md). Bounded imported
+Current checkpoint: [reconciliation with latest](./RECONCILIATION.md), ready for
+full qualification. Application implementation is through [05I](./05I.md). Bounded imported
 computations execute through shared `ctx.call` in plain HTTP, Router and managed
 MCP callers on Node Native, Fastly Native and explicit Node JavaScript. 05G adds
 public types, contract documentation, diagnostics and versioned callable metadata.

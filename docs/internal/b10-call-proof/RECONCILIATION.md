@@ -47,3 +47,36 @@ protected-scope checks. Exact terminal results will be retained in the follow-up
 Next: full qualification of the reconciled candidate, then human review/merge of
 PR 442. Feature work pauses here; 06A search resumes after integration. The MCP
 installed/provider/client and release-seal acceptance tickets remain distinct.
+
+## Terminal reconciliation results
+
+Clean tested local merge: `fb87b2c47fbc74007663fa771e49ec0d52e1611c`.
+Published merge: `3db0ac01e4fdba0271f0d8f371ca2984ff10c99a`.
+Identical complete tree: `3d477de329785d84889974a6eb11593fd2ddc1c4`.
+Both merge parents are retained in order: d5c4daa and 54c779c. Connector metadata
+changes the commit identity, not its tree or ancestry. The subsequent evidence
+commit changes documentation only; its final identity is recorded on PR 442.
+
+Seven of seven selected runner tasks passed with no active child and exit 0:
+pulse-context-tools, pulse-context-build, callable-lifetime, cli-command-spec,
+cli-report-retained-evidence, suite-shape and docs-example-12-pulse-context-mcp.
+The two standalone checks also emitted their final success messages: assert-fastly-native-dynamic-backends.cjs
+and assert-fastly-schema-encode-text.cjs. Build, maintainer, documentation inventory
+and scope checks passed. Complete reports, logs and documentation receipts are in
+reconciliation-validation/. No check remains running.
+
+The four-tool suite passed 3,330 executions (2,673 production and 657 synthetic),
+including all corpus reads, diagnostics, examples, start cases, Unicode boundaries
+and full MCP response budgeting. It retained the 24,576-byte tool-result bound.
+The regenerated production artifacts measure 771,581 bytes (Node Native) and
+823,686 bytes (Fastly Native); artifact and plan hashes are in the tool task log.
+Callable lifetime passed 114 requests and eighteen fault cases. Deterministic
+rebuild passed 120 cases against 28 outputs. Dynamic backend and schema text-result
+tests exercise the behavior from latest through the reconciled provider.
+
+Generation used Node 24.18.0; execution used Node 24.19.0 with the restored
+identical-lockfile dependencies. The original 05I no-call byte-equality evidence
+remains historical; it was not relabeled as a fresh reconciliation result.
+Full profiles, clean dependency installation, installed closure and external
+provider acceptance are not claimed by this checkpoint. Qualification remains
+the immediate next action; search stays paused until integration.

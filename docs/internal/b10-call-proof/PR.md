@@ -41,8 +41,11 @@ Reconciliation with latest `54c779c` is described in
 `docs/internal/b10-call-proof/RECONCILIATION.md`. This combines the callable work
 with current Fastly dynamic backends, schema-wrapper repair, documentation links
 and CLI evidence status. Full qualification of this combined candidate is the
-next checkpoint before human review/merge. Earlier 05I measurements below retain
-their original source identity.
+next checkpoint before human review/merge. Seven focused reconciliation tasks and both targeted Fastly suites passed on
+clean local merge `fb87b2c`; published merge `3db0ac0` has the identical full tree.
+The four-tool regression passed 3,330 executions against the combined corpus.
+Build, maintainer, docs and scope checks passed. Earlier 05I measurements below
+retain their original source identity.
 
 Source identities, focused results, measurements and failed development attempts
 are retained in `docs/internal/b10-call-proof/05I-VALIDATION.md`. The four-tool task

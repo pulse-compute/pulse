@@ -1,0 +1,7 @@
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - run examples/12-pulse-context-mcp/README.md: npm run inspect -- --json
+docs - run examples/12-pulse-context-mcp/README.md: npm run doctor -- --json
+docs - run examples/12-pulse-context-mcp/README.md: pulse test --json
+docs - verify canonical example 12-pulse-context-mcp
+ok - docs example 12-pulse-context-mcp: provider=node tests=2 capabilities=2 schemas=10
