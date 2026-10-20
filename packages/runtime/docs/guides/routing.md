@@ -19,7 +19,7 @@ or ends with `return next()` so the next registered handler can run.
 
 Keep [managed handler restrictions](https://pulsecompute.io/v1.0.0-beta.9/reference/handler-authoring/) and
 [provider/target limits](https://pulsecompute.io/v1.0.0-beta.9/reference/compatibility-matrix/) alongside these
-routing rules. [Express migration](./migrating-from-express.md) explains the
+routing rules. [Express migration](https://pulsecompute.io/v1.0.0-beta.9/guides/migrating-from-express/) explains the
 behavior changes for an existing service.
 
 ## Follow a routed request

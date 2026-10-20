@@ -174,6 +174,8 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   function readBytes(pointer, length) { return Buffer.from(new Uint8Array(memory().buffer, Number(pointer), Number(length))); }
   function readUtf8(pointer, length) { return readBytes(pointer, length).toString('utf8'); }
 
+  const dynamicBackends = require('./native-dynamic-backends-host.js').createDynamicBackendHost({ view, readUtf8, trace, options, beforeRegister: () => { monotonicMs += Number(options.dynamicBackendRegistrationMs || 0); } });
+
   function writeUtf8(value, pointer, maxLength, writtenOut) {
     const bytes = Buffer.from(String(value), 'utf8');
     writeU32(writtenOut, bytes.length);
@@ -376,6 +378,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       }
     },
     fastly_http_req: {
+      register_dynamic_backend: dynamicBackends.register,
       body_downstream_get(requestOut, bodyOut) {
         trace.push({ module: 'fastly_http_req', name: 'body_downstream_get' });
         writeU32(requestOut, downstreamRequestHandle);
@@ -483,6 +486,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         const body = bodies.get(Number(bodyHandle));
         if (!request || !body) return FASTLY_STATUS_BADF;
         const backend = readUtf8(backendPointer, backendLength);
+        dynamicBackends.route(backend, request);
         const signedS3 = request.headers.some(([name, value]) => name.toLowerCase() === 'authorization' && value.startsWith('AWS4-HMAC-SHA256 '));
         if (signedS3) privateUrls.add(request.url);
         const fixture = resolveFixture(options.fixtures, backend, request.method, request.url);
@@ -816,7 +820,11 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     && ((lastError === 1006 && errorStage === 271 && downstream?.status === 504)
       || (lastError === 1001 && errorStage === 270 && downstream?.status === 400)
       || (lastError === 1003 && errorStage === 272 && downstream?.status === 500));
-  if (lastError !== FASTLY_STATUS_OK && !handledDeadlineError && !handledTransportError && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
+  const handledDynamicBackendError = options.allowHandledDynamicBackendError === true
+    && ((lastError === 1001 && errorStage === 273 && downstream?.status === 400)
+      || (lastError === 1001 && errorStage === 276 && downstream?.status === 500)
+      || (lastError === 1003 && (errorStage === 274 || errorStage === 275) && downstream?.status === 500));
+  if (lastError !== FASTLY_STATUS_OK && !handledDynamicBackendError && !handledDeadlineError && !handledTransportError && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
     throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module reported an execution error.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED', { ...callableEvidence(), lastError, errorStage, errorEffect, pulseLastError, trace });
   }
   if (!downstream) {

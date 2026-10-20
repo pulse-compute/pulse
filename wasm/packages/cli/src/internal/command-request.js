@@ -34,6 +34,9 @@ function allowedRequestKeys(command) {
 }
 
 function finishCommandRequest(request) {
+  if (request.evidenceStatus && request.html) {
+    throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', '--evidence-status emits JSON and cannot be combined with --html.');
+  }
   if (request.command === 'report') require('./report/command.js').validateReportRequest(request);
   if (request.experimentalNativeSize === true && request.experimentalNativeBoundedSize === true) {
     throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'Select only one experimental Native size mode.', { flags: ['--experimental-native-size', '--experimental-native-bounded-size'] });

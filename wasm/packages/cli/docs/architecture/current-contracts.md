@@ -2720,7 +2720,7 @@ The public bounds and source restrictions are in
 unchanged. Workspace-only artifacts also retain synchronous deadline checks.
 
 The isolated actual-corpus and capacity-bound query-to-citation proof is in
-[B10-MCP-02](../internal/b10-mcp-02/README.md). It uses injected Fastly ABI
+B10-MCP-02 (repository-only: `docs/internal/b10-mcp-02/README.md`). It uses injected Fastly ABI
 execution, not CLI/Viceroy or a completed MCP transport.
 
 `scripts/pulse-context-build.cjs` owns explicit offline context resource generation

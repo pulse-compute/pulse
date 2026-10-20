@@ -25,7 +25,7 @@ This document describes the provider-neutral TypeScript application contract com
 
 `@pulse-compute/runtime` is the low-level portable application surface and
 `@pulse-compute/pulse` is the conventional project surface. Both belong to the
-[public release catalog](./docs/maintainers/release-manifest.md). Native and JavaScript execution remain
+[public release catalog](https://pulsecompute.io/v1.0.0-beta.9/maintainers/release-manifest/). Native and JavaScript execution remain
 explicitly selected targets over the same canonical runtime contract.
 
 ## Context at a glance
@@ -269,7 +269,7 @@ stream or buffer. See [incoming forwarding](https://pulsecompute.io/v1.0.0-beta.
 HTTP status is response data. Network and timeout failures are runtime failures.
 The [Router recovery contract](./guides/routing.md#next-is-a-terminal-transfer)
 owns which failures enter application error handling; the
-[deadline contract](./docs/concepts/effects-and-continuations.md#timeouts-have-two-scopes)
+[deadline contract](https://pulsecompute.io/v1.0.0-beta.9/concepts/effects-and-continuations/#timeouts-have-two-scopes)
 distinguishes per-fetch timeouts from terminal request deadlines.
 
 ```ts
@@ -513,7 +513,7 @@ capacity does not replace schema, request or cumulative-effect limits.
 
 The portable source shape is deliberately bounded: one local collection, one
 direct `for...of` with one inline `add`, then one awaited flush. Keep the full
-[collection grammar, ownership and failure rules](./docs/concepts/effects-and-continuations.md#bounded-dynamic-collections)
+[collection grammar, ownership and failure rules](https://pulsecompute.io/v1.0.0-beta.9/concepts/effects-and-continuations/#bounded-dynamic-collections)
 with their owner rather than treating this as an arbitrary Promise collection.
 
 ## `ctx.emit`

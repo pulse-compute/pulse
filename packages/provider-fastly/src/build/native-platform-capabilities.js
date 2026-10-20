@@ -1,5 +1,7 @@
 'use strict';
 
+const dynamicBackends = require('./native-dynamic-backends.js');
+
 const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
 const { nativeStdioSource } = require('./native-stdio.js');
@@ -183,6 +185,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
 });
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
+  'fastly_http_req:register_dynamic_backend',
   ...FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS.map(([moduleName, name]) => `${moduleName}:${name}`)
 ]);
 
@@ -903,11 +906,11 @@ function resolveCapabilityBindings(plan, options = {}) {
       backend = byEffect[effect.id]
         || (origin && byOrigin[origin])
         || (effect.resource && effect.resource.value && byOrigin[effect.resource.value]);
-      if ((typeof backend !== 'string' || backend.trim() === '') && !origin) {
+      if ((typeof backend !== 'string' || backend.trim() === '') && !origin && source.dynamicBackends !== true) {
         const configured = [...new Set(Object.values(byOrigin).filter((value) => typeof value === 'string' && value.trim()).map((value) => value.trim()))];
         if (configured.length === 1) backend = configured[0];
       }
-      if (typeof backend !== 'string' || backend.trim() === '') {
+      if ((typeof backend !== 'string' || backend.trim() === '') && !(source.dynamicBackends === true && !(plan.capabilities || []).includes('request.body.forward'))) {
         fail(`Fastly native effect ${effect.id} has no static backend binding.`, 'PULSE_FASTLY_BACKEND_REQUIRED', {
           effectId: effect.id,
           effectIndex: index,
@@ -915,7 +918,7 @@ function resolveCapabilityBindings(plan, options = {}) {
           hint: `Provide bindings.backends[${JSON.stringify(origin || '<origin>')}] or an explicit effect backend.`
         });
       }
-      backend = backend.trim();
+      backend = typeof backend === 'string' ? backend.trim() : '';
     }
     const binding = Object.freeze({
       index,
@@ -924,6 +927,7 @@ function resolveCapabilityBindings(plan, options = {}) {
       origin,
       url,
       backend,
+      ...(!backend && effect.kind === 'fetch' ? { dynamic: true } : {}),
       ...(effect.kind === 'grip.broadcast' && gripSecretRef ? { authSecretRef: gripSecretRef } : {})
     });
     backends.push(binding);
@@ -993,6 +997,7 @@ function requiredImportsForPlan(plan, bindings) {
       'fastly_http_req:header_insert', 'fastly_http_req:send_async', 'fastly_http_req:pending_req_wait'
     ]) keys.add(key);
   }
+  if (bindings && dynamicBackends.active(bindings)) keys.add('fastly_http_req:register_dynamic_backend');
   if (kinds.has('fetch')) for (const key of ['wasi_snapshot_preview1:clock_time_get', 'fastly_async_io:select', 'fastly_http_req:pending_req_poll_v2', 'fastly_http_resp:close', 'fastly_http_body:close']) keys.add(key);
   if (planRequiresFetchBodyRead(plan)) keys.add('fastly_http_body:read');
   if (kinds.has('config.get')) for (const key of ['fastly_config_store:open', 'fastly_config_store:get']) keys.add(key);
@@ -2103,7 +2108,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./native-request-body.js').runtimeSource(),
     require('./native-request-headers.js').runtimeSource(),
     require('./native-header-lookup.js').runtimeSource(),
-    require('./native-fetch-errors.js').runtimeSource(),
+    require('./native-fetch-errors.js').runtimeSource(dynamicBackends.active(bindings)),
     require('./native-fetch-deadlines.js').runtimeSource(plan),
     applicationErrors.settlementEnabled(plan) ? applicationErrors.runtimeSource(plan) : '',
     effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan) }),
@@ -2126,6 +2131,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = packageApplication.terminalFailure(source, plan);
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
+  source = dynamicBackends.instrument(source, bindings, true, (options.bindings || options).backends);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;
@@ -2137,7 +2143,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     capability: effect.capability,
     package: effect.package,
     contractId: effect.contractId,
-    imports: Object.freeze(capabilityImports(effect))
+    imports: Object.freeze([...capabilityImports(effect), ...(bindings.backends.some(b => b.index === index && b.dynamic) ? ['fastly_http_req.register_dynamic_backend'] : [])])
   })));
   const manifest = Object.freeze({
     version: FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
@@ -2191,7 +2197,10 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     bindings,
     backends: bindings.backends,
     capabilityDiagnostics,
-    allowedImports: FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS,
+    ...(dynamicBackends.active(bindings) ? { dynamicBackends: dynamicBackends.describe((options.bindings || options).backends) } : {}),
+    allowedImports: dynamicBackends.active(bindings)
+      ? Object.freeze([...FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS, Object.freeze(['fastly_http_req', 'register_dynamic_backend'])])
+      : FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS,
     requiredImports: requiredImportsForPlan(plan, bindings),
     requiredExports: Object.freeze([
       '_start',
@@ -2203,6 +2212,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       ...(bindings.maxDurationMs === undefined ? [] : ['pulse_fastly_request_expired'])
     ]),
     policy: Object.freeze({
+      ...(dynamicBackends.active(bindings) ? { dynamicBackends: dynamicBackends.describe((options.bindings || options).backends) } : {}),
       ...(nativeValueBudget.hasBoundedReadLoop(plan) ? { readLoopMemory: nativeValueBudget.policy } : {}),
       nativeFastly: true,
       provider: 'fastly',

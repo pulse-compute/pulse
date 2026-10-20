@@ -37,6 +37,13 @@ No source syntax, context authority or provider capability is widened.
 
 ## Validation
 
+Reconciliation with latest `54c779c` is described in
+`docs/internal/b10-call-proof/RECONCILIATION.md`. This combines the callable work
+with current Fastly dynamic backends, schema-wrapper repair, documentation links
+and CLI evidence status. Full qualification of this combined candidate is the
+next checkpoint before human review/merge. Earlier 05I measurements below retain
+their original source identity.
+
 Source identities, focused results, measurements and failed development attempts
 are retained in `docs/internal/b10-call-proof/05I-VALIDATION.md`. The four-tool task
 includes the 05H start regression and independently executes legacy handlers as
@@ -53,7 +60,8 @@ Dependencies are the restored identical-lockfile graph.
 
 ## Remaining work and direction
 
-05I (#450) completes four migrated tools. Next: 06A (#451), sparse lexical search.
+05I (#450) completes four migrated tools. Next: qualify the reconciled draft for
+integration into latest. Then resume 06A (#451), sparse lexical search.
 Application migration, retrieval, reporting, installed
 closure, provider/client acceptance and sealing retain separate tickets in #436.
 

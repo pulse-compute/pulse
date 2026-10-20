@@ -26,6 +26,7 @@ function reject(args, code, status = 3) {
   check(diagnostic.docs.endsWith('#' + code.toLowerCase().replaceAll('_', '-')), 'stable diagnostic anchor');
 }
 try {
+  require('./report-evidence-status-cases.cjs').runEvidenceStatusCases(cli, directory);
   const value = f.fixture(); value.application.name = '<b>\x1b]52;c;PAYLOAD\x07\nFORGED\u202e';
   const capsule = createCapsule(value), text = serializeCapsule(capsule);
   fs.writeFileSync(path.join(directory, 'saved.json'), text);
