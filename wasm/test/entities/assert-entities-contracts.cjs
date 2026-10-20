@@ -246,7 +246,10 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.j
 const pulsePackage = JSON.parse(fs.readFileSync(path.join(packageRoot, 'pulse.package.json'), 'utf8'));
 assert.equal(packageJson.name, '@pulse-compute/entities');
 assert.equal(packageJson.version, releaseVersion);
-assert.deepEqual(Object.keys(packageJson.exports), ['.', './pulsewasm/manifest', './pulsewasm/compiler', './pulsewasm-native']);
+assert.deepEqual(Object.keys(packageJson.exports), ['.', './pulsewasm/manifest', './pulsewasm/compiler', './pulsewasm-native', './internal/transport']);
+assert.deepEqual(packageJson.exports['./internal/transport'], {
+  types: './dist/entity-router.d.ts', import: './dist/entity-router.js', default: './dist/entity-router.js'
+});
 assert.deepEqual(packageJson.pulsewasm, { manifest: './pulsewasm.manifest.cjs' });
 assert.deepEqual(packageJson.files, ['dist', 'README.md', 'pulse.package.json', 'pulsewasm.manifest.cjs', 'pulsewasm.compiler.cjs', 'pulsewasm.native.cjs', 'as', 'conformance']);
 assert.equal(fs.existsSync(path.join(packageRoot, 'pulsewasm.manifest.cjs')), true);
