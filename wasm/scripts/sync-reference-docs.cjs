@@ -865,12 +865,25 @@ function transformCliCopy(sourceRelative, content) {
     );
     out = out.replaceAll('../wasm/docs/PACKAGE-BOUNDARIES.md', './packages/README.md');
   }
+  // Keep pointers to repository-only evidence without publishing dead local
+  // links or copying excluded material into the installed documentation set.
+  out = out.replace(/(```[\s\S]*?```|~~~[\s\S]*?~~~|`[^`\n]*`)|(?<!!)\[([^\]]+)\]\((\.\.?\/[^)\s]+)\)/g,
+    (link, code, label, target) => {
+      if (code) return code;
+      const hash = target.indexOf('#');
+      const pathname = hash < 0 ? target : target.slice(0, hash);
+      const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(sourceRelative), decodeURIComponent(pathname)));
+      if (!resolved.startsWith('docs/') || isPublicDocumentationSource(resolved)) return link;
+      return `${label} (repository-only: ${inlineCode(resolved + (hash < 0 ? '' : target.slice(hash)))})`;
+    });
   return stable(out);
 }
 
 function transformApiCopy(sourceRelative, content) {
   if (sourceRelative === 'API.md') {
     return stable(content
+      .replaceAll('./docs/maintainers/release-manifest.md', publicCliDoc('docs/maintainers/release-manifest.md'))
+      .replaceAll('./docs/concepts/effects-and-continuations.md', publicCliDoc('docs/concepts/effects-and-continuations.md'))
       .replaceAll('./docs/reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))
       .replaceAll('./docs/reference/compatibility-matrix.md', publicCliDoc('docs/reference/compatibility-matrix.md'))
       .replaceAll('./docs/reference/diagnostics.md', publicCliDoc('docs/reference/diagnostics.md'))
@@ -899,6 +912,7 @@ function transformApiCopy(sourceRelative, content) {
   }
   if (sourceRelative === 'docs/guides/routing.md') {
     return stable(content
+      .replaceAll('./migrating-from-express.md', publicCliDoc('docs/guides/migrating-from-express.md'))
       .replaceAll('../concepts/effects-and-continuations.md', publicCliDoc('docs/concepts/effects-and-continuations.md'))
       .replaceAll('../reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))
       .replaceAll('../reference/compatibility-matrix.md', publicCliDoc('docs/reference/compatibility-matrix.md')));
@@ -1088,6 +1102,7 @@ module.exports = Object.freeze({
   renderCliReference,
   renderProjectConfigReference,
   renderDiagnosticsReference,
+  transformCliCopy,
   buildExpectedFiles,
   synchronizeReferenceDocs
 });
