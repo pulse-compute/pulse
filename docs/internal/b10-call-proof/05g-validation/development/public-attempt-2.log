@@ -1,0 +1,4 @@
+The input did not match the regular expression /callable version/. Input:
+
+'TypeError: JavaScript application entry module id must be a non-empty string.'
+ ERR_ASSERTION undefined

@@ -20,12 +20,21 @@ Node JavaScript. This draft implements 05B–05G (#443–#448).
 
 ## Validation
 
-05G adds packed public type checks, a source-bound example executed on all three
-claimed targets, stale callable rejection and caller-position/diagnostic checks.
-It versions callable metadata separately to preserve call-free Native identity.
-Final checkpoint receipts and source identity are recorded in
-`docs/internal/b10-call-proof/05G-VALIDATION.md`; preceding lifetime/budget evidence
-remains in `05F-VALIDATION.md`.
+05G implementation: `5195e06e3debdf21a555954e7e470cc6a88efd6a`; full tree
+`edf4acb94afd41c4c3cd8975a4446926c75980e4`, identical to clean tested local
+`1555a51887749f78500978287fa3b93ee67a1305`.
+
+Eleven focused runner tasks pass with complete terminal reports, including exact
+packed public types, nine example executions across the three supported targets,
+seven stale-metadata rejection checks, fourteen diagnostic entries and regenerated
+context corpus/resources. Existing composition and JavaScript packaged-source
+regressions pass. The separate 28-execution routed/MCP baseline replay preserves
+byte-identical no-call/unused Wasm against untouched `8a51d70`. Runtime surface,
+build, maintenance, documentation and scope checks pass.
+
+Receipts, failed attempts and exact source identities are in
+`docs/internal/b10-call-proof/05G-VALIDATION.md` and `05g-validation/`.
+Preceding lifetime/budget evidence remains in `05F-VALIDATION.md`.
 
 Full profiles remain deferred by the user's checkpoint direction. Focused and
 injected-provider evidence is not installed closure, deployed-provider acceptance
