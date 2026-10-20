@@ -92,6 +92,7 @@ function assembleNativeSource({
     `const PULSE_ABI_VERSION: i32 = ${runtimeContract.CANONICAL_NATIVE_ABI_VERSION}`,
     `const PULSE_PLAN_HASH: string = ${quote(plan.planHash)}`,
     `const PULSE_ENTRY_PC: i32 = ${entryBlock}`,
+    ...(plan.callable ? ['let __pulse_callable_input: i32 = 0'] : []),
     ...support.executionGlobals,
     ...support.globals,
     ...numeric.globals,
@@ -112,6 +113,7 @@ function assembleNativeSource({
     ...renderNativeRun({ guardStateCount, partitioned, renderedBlocks, invalidProgramCounter }),
     ...renderNativeExports({ eventReachable, stateEnabled, eventExports: support.eventExports, setterCases: support.setterCases }),
     ...nativeSchemaCodecs.exports,
+    ...(plan.callables?.length ? [require('./canonical-native-callable.js').generateCallableSources(plan.callables)] : []),
     ''
   ].join('\n');
 }

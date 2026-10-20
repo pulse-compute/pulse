@@ -2349,7 +2349,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
     ];
     if (emitWat) args.push('--textFile', assemblyScriptWatFile);
     const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization, { guestLinked });
-    if (!guestLinked && (nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
+    if (!guestLinked && (plan.callables?.length || nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
       args.push('--maximumMemory', String(nativeValueBudget.policy.maximumMemoryPages));
     }
     if (generated.guestUnits.length > 0) {

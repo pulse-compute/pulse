@@ -1204,6 +1204,9 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 300000,
     description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'
   }),
+  'callable-composition-proof': nodeTask('test/callables/assert-callable-proof.cjs', {
+    evidence: 'native', timeoutMs: 300000, description: 'Internal shared callable body, route/MCP composition, reachability and bounded rejection proof'
+  }),
   'mcp-native-binding': nodeTask('test/mcp/assert-mcp-native-binding.cjs', {
     evidence: 'native', timeoutMs: 240000,
     description: 'B10-MCP-04 static binding and Node JavaScript/Native/Fastly Native protocol parity with direct Entities dispatch'
@@ -1473,6 +1476,7 @@ const profiles = Object.freeze({
     'entities-native-runtime',
     'entities-hardening',
     'entities-node-native-workflow',
+    'callable-composition-proof',
     'mcp-native-binding',
     'fastly-entities-native-workflow',
     'crypto-native-guest-source',

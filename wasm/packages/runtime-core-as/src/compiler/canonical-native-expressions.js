@@ -54,6 +54,12 @@ function prepareNativeExpressions({
     const lines = [];
     const emit = (line) => lines.push(`  ${line}`);
     switch (expression.kind) {
+      case 'callable-input':
+        emit('return __pulse_callable_input');
+        break;
+      case 'callable-call':
+        emit(`return __pulse_callable_${expression.index}(${exprName(expression.argument)}())`);
+        break;
       case 'workspace-init':
         emit(resources.workspaces.init(expression));
         emit('return host_value_undefined()');

@@ -1375,6 +1375,9 @@ function walkExpression(expression, visit) {
   if (!expression || typeof expression !== 'object') return;
   visit(expression);
   switch (expression.kind) {
+    case 'callable-call':
+      walkExpression(expression.argument, visit);
+      break;
     case 'workspace-write':
       walkExpression(expression.value, visit);
     case 'workspace-read':
@@ -1970,6 +1973,7 @@ function assertCanonicalNativePlan(plan) {
     validateResourceReads(plan, fail);
     require('./numeric-workspace-plan').validateNumericWorkspaces(plan, fail, walkExpression);
     require("./source-helper-plan").validateHelpers(plan, fail, walkStatements, walkExpression);
+    require('./callable-plan.js').validateCallables(plan, fail, walkStatements, assertCanonicalNativePlan);
 
     const states = Array.isArray(plan.states) ? plan.states : [];
     if (states.length !== continuations.length + 1) fail('state table must contain entry plus one state per continuation', { expected: continuations.length + 1, actual: states.length });
