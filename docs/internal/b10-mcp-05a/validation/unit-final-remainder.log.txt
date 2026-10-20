@@ -1,0 +1,34 @@
+
+[pulsewasm:unit] entities-catalog
+[pulsewasm] deterministic entity catalog, eligible-target truth, and current product status (timeout 30.00s)
+{"version":"pulse.entities-catalog.v1","catalogHash":"d603d6f18768c799e50ab926fbb21ee75df18fa12386d69040b924ccbc908c55","entityOrder":["alpha.lookup","beta.notify"],"targetsEligible":4,"releaseAssigned":false}
+ok - Entities catalog remains deterministic, non-sensitive, immutable, and honest about I9 target support without assigning a release
+[pulsewasm] entities-catalog: passed in 461ms
+
+[pulsewasm:unit] entities-inspection
+[pulsewasm] canonical project and pulse inspect declarations, redacted handler effects, I9 target evidence, and deterministic build artifacts (timeout 120.00s)
+[pulsewasm] Running entities-inspection (execution); elapsed 10.00s
+{"version":"pulse.canonical-package-inspection.v1","planHash":"2539e18788f3a72b135846cada2d8d2e7dcd589dd8c0a1aed8304c4a5344578a","catalogHash":"b1fa3623b597a773efb01a25b7162206817a45462ae824844da626e6cf265a9e","declaredHandlers":2,"measuredNodeTargets":2,"measuredFastlyTargets":2,"externalFastlyExecutionClaimed":true}
+ok - Entities inspection exposes deterministic declarations, schemas, effects, eligibility, reasons, and build artifacts without runtime or provider data
+[pulsewasm] entities-inspection: passed in 17.49s
+
+[pulsewasm:unit] entities-orchestration-demo
+[pulsewasm] I10 external tools facade over static catalog discovery, governed JSON-RPC calls, backend fetch, and Native artifact inspection (timeout 180.00s)
+[pulsewasm] Running entities-orchestration-demo (execution); elapsed 20.00s
+{
+  "status": "passed",
+  "tools": 2,
+  "calls": 2,
+  "governedEffects": 3,
+  "nativeBytes": 77215,
+  "report": "wasm/.test-results/entities-i10/entities-tools-orchestration.json",
+  "reportSha256": "57639a6934d367d1209192654793bcf1ad09e9d1ac3f1e7ba82653a7c08cd178"
+}
+ok - I10 projects static catalog metadata through an external tools facade, invokes governed JSON-RPC entities, and inspects reproducible package-owned Native Wasm without protocol state or fallback
+[pulsewasm] entities-orchestration-demo: passed in 10.20s
+
+[pulsewasm] test summary
+  passed         461ms  entities-catalog
+  passed        17.49s  entities-inspection
+  passed        10.20s  entities-orchestration-demo
+  total        28.16s

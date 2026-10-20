@@ -1,0 +1,74 @@
+DIRECT OUTPUT {
+  value: 275,
+  text: '{"value":275}',
+  word: 'ABCD',
+  initial: 0,
+  alias: 65,
+  optional: undefined,
+  nested: [ { label: 'ABCD', values: [Array] } ]
+}
+DIRECT FAILURE Error [SchemaEncodeError]: Schema encode failed for proof.Output/optional: expected string, received undefined.
+    at __pulse_schema_failure (eval at createCanonicalSchemaCodecs (/workspace/scratch/3471f7320bf6/pulse-mcp05a/wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js:350:21), <anonymous>:352:17)
+    at __pulse_schema_apply_node (eval at createCanonicalSchemaCodecs (/workspace/scratch/3471f7320bf6/pulse-mcp05a/wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js:350:21), <anonymous>:379:42)
+    at __pulse_schema_apply_node (eval at createCanonicalSchemaCodecs (/workspace/scratch/3471f7320bf6/pulse-mcp05a/wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js:350:21), <anonymous>:413:114)
+    at __pulse_schema_proof_Output_2 (eval at createCanonicalSchemaCodecs (/workspace/scratch/3471f7320bf6/pulse-mcp05a/wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js:350:21), <anonymous>:430:10)
+    at __pulse_schema_apply (eval at createCanonicalSchemaCodecs (/workspace/scratch/3471f7320bf6/pulse-mcp05a/wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js:350:21), <anonymous>:436:33)
+    at Object.encodeJsonText (eval at createCanonicalSchemaCodecs (/workspace/scratch/3471f7320bf6/pulse-mcp05a/wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js:350:21), <anonymous>:461:24)
+    at encodeSchemaValue (/workspace/scratch/3471f7320bf6/pulse-mcp05a/packages/runtime/src/internal/schema.js:264:25)
+    at Object.encodeJson (/workspace/scratch/3471f7320bf6/pulse-mcp05a/packages/runtime/src/internal/context.js:180:14)
+    at require.executeApplication.schemaCodecs (/workspace/scratch/3471f7320bf6/pulse-mcp05a/docs/internal/b10-mcp-05a/proof.cjs:65:200) {
+  code: 'PULSE_SCHEMA_ENCODE',
+  detail: {
+    schemaId: 'proof.Output',
+    path: '/optional',
+    expected: 'string',
+    actualKind: 'undefined',
+    source: 'application-value'
+  }
+}
+AssertionError [ERR_ASSERTION]: Node parity {}
++ actual - expected
+... Skipped lines
+
+  {
+    id: 1,
+    jsonrpc: '2.0',
+    result: {
+      _meta: {
+...
+        {
++         text: '{"value":275,"text":"{\\"value\\":275}","word":"ABCD","initial":0,"alias":65,"nested":[{"label":"ABCD","values":[275,0]}]}',
+-         text: 'Tool execution or output validation failed',
+          type: 'text'
+        }
+      ],
++     isError: false,
+-     isError: true,
+      resultType: 'complete',
++     structuredContent: {
++       alias: 65,
++       initial: 0,
++       nested: [
++         {
++           label: 'ABCD',
++           values: [
++             275,
++             0
++           ]
++         }
++       ],
++       text: '{"value":275}',
++       value: 275,
++       word: 'ABCD'
++     }
+    }
+  }
+
+    at main (/workspace/scratch/3471f7320bf6/pulse-mcp05a/docs/internal/b10-mcp-05a/proof.cjs:74:12) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [Object],
+  expected: [Object],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+} undefined undefined

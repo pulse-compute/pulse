@@ -4,41 +4,8 @@
   "featureComplete": false,
   "node": "v24.19.0",
   "source": {
-    "head": "04f382e0c6527d32c5f4a7cb14625c6814a1ca57",
-    "files": [
-      {
-        "path": "docs/internal/b10-mcp-05a/README.md",
-        "sha256": "d729a5b84b35631b2c614b0e89f96b9f0fc6ee6ba3afb39c2602d577bc99e306"
-      },
-      {
-        "path": "packages/entities/as/index.as.ts",
-        "sha256": "891bfe29c36061aa88f239b5e20b47afad65f021053956689d38f1a24554382c"
-      },
-      {
-        "path": "packages/entities/pulsewasm.native.cjs",
-        "sha256": "623c02ebcb3cd345fa46fa17e100609544edb6d080beeef5c069eabb861ac75d"
-      },
-      {
-        "path": "wasm/packages/compiler/src/spine/handler-ir-managed.js",
-        "sha256": "96a46553f2c4bee7bcc63d2b7efd3f1f0dfa87560ebce9f3c6d5ccd3de522dbc"
-      },
-      {
-        "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-managed.js",
-        "sha256": "e656dd437ccccd3ea4ec59d13d8831ddd4f7a9d4ee5a6fa3049ced8d1ec13da8"
-      },
-      {
-        "path": "wasm/test/entities/assert-managed-native-primitives.cjs",
-        "sha256": "34e577d0c1cba4cd4fcf23c05941d609023e3e3ffbe66b48b3b11dcfc7ec31ad"
-      },
-      {
-        "path": "wasm/test/s3/.body-Z92s4L/.pulse/config.ts",
-        "sha256": "822df0ae33789699500df21f0f8706465c9b63f84f7f5249a5b37a4edc9d5252"
-      },
-      {
-        "path": "wasm/test/s3/.body-Z92s4L/src/index.ts",
-        "sha256": "acd1b330c4a87a18f879499ddc3a37b8c0143d3054d3c6d55b0de53977c1e3fc"
-      }
-    ]
+    "head": "30355b67c6cc8105afd0140309ac3bb2a5eb0b35",
+    "files": []
   },
   "artifacts": {
     "planHash": "50cb2129c05b0c99a79c586c4d514caab6cbc8ecf203bac99b854e9c08aa406c",

@@ -1,0 +1,32 @@
+
+[pulsewasm:native] entities-managed-handler
+[pulsewasm] I5 reachable pure managed-handler IR, schema-bound input/result adoption, and fail-closed source diagnostics (timeout 120.00s)
+{"version":"pulse.managed-handler-ir-bundle.v3","bundleHash":"85bab9c1ff9e8d22c8f09ca11cda494ed17013bd30be29235bc6052a621e257b","handlers":2,"schemaResults":1,"effects":0,"negativeClasses":10,"targetStatus":"provider-dependent"}
+ok - Entities I5 resolves I2 handler identities into generic pure managed-handler IR with schema-bound input/results and fail-closed diagnostics
+[pulsewasm] entities-managed-handler: passed in 700ms
+
+[pulsewasm:native] entities-native-runtime
+[pulsewasm] I7 package-owned bounded Native scanner, schema codecs, static dispatcher, managed effects, exact framing, and zero JavaScript fallback (timeout 180.00s)
+{"version":"pulse.entities-native-source.v1","sourceSha256":"7d46f551ac7ae72806c28ce1585c8fd0d6c11f16139f9f47ebeb7b1f6beb4ea7","wasmSha256":"78635da4209db68faaeaab95fde8f525f5879be60f261eb6870b6ae15260197a","wasmBytes":78764,"routes":2,"schemas":2,"effects":2,"imports":["env:abort","pulse_entities_host:log","pulse_entities_host:effect_begin"]}
+ok - Entities I7 package-owned Native scanner, schema codecs, static dispatcher, managed handlers, effects, and exact JSON-RPC framer execute without JavaScript fallback
+[pulsewasm] entities-native-runtime: passed in 8.49s
+
+[pulsewasm:native] entities-managed-handler-effects
+[pulsewasm] I6 reachable managed-handler effects, package operations, exact provider requirements, and selected Node execution (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/3471f7320bf6/pulse-mcp05a
+
+[pulsewasm] Running entities-managed-handler-effects (execution); elapsed 10.00s
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  17:54:44
+   Duration  1.01s (transform 213ms, setup 0ms, import 522ms, tests 262ms, environment 0ms)
+
+[pulsewasm] entities-managed-handler-effects: passed in 1.54s
+
+[pulsewasm] test summary
+  passed         700ms  entities-managed-handler
+  passed         8.49s  entities-native-runtime
+  passed         1.54s  entities-managed-handler-effects
+  total        10.75s

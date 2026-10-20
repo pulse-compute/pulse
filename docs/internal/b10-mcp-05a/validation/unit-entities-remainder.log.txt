@@ -1,0 +1,147 @@
+
+[pulsewasm:unit] entities-contracts
+[pulsewasm] Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary (timeout 30.00s)
+{"version":"pulse.entities-contract.v1","registryHash":"46f5c921451588141b5ffadb27fb4e489a1b72aba5a260aa7122ce71c14931f2","planHash":"379b0d182fb4c9e084547918df3c2cb03c8594e01172fcf973a0163b98bddd30","catalogHash":"433f95d1d129fa638b003911653fefd9ae79ec41a51726705bc0da1d85464db9","diagnostics":18,"packageExports":[".","./pulsewasm/manifest","./pulsewasm/compiler","./pulsewasm-native","./internal/transport"],"executableLowererInstalled":true,"releaseAssigned":false}
+ok - Entities versions, normalizers, declaration registry, plan/catalog identities, trusted lowerer, and package-owned Native source entry are singular and bounded
+[pulsewasm] entities-contracts: passed in 280ms
+
+[pulsewasm:unit] entities-schema-bridge
+[pulsewasm] I3 request-bound declared-schema codec bridge, immutable values, semantic traces, and negative authority surface (timeout 120.00s)
+{"version":"pulse.first-party-embedded-schema-codec-bridge.v1","declaredSchemas":["app.createInput","app.user"],"bridgeKeys":["describe","decodeEmbeddedJson","encodeEmbeddedJson"],"traceKinds":["json.decode.request","json.encode.response","json.decode.error","json.encode.error"],"deeplyImmutable":true,"encoded":"{\"id\":\"8\",\"name\":\"Grace\",\"score\":42.5,\"active\":true}","schemaBridgePublicExportsAdded":false,"nativeSourceBuilderExportedByI7":true}
+ok - Entities I3 binds only declared generated schema codecs to contained request text and package-owned output text
+[pulsewasm] entities-schema-bridge: passed in 459ms
+
+[pulsewasm:javascript] entities-javascript-runtime
+[pulsewasm] I4 real package dispatch, JSON-RPC framing, redaction, notification acknowledgement, and catalog identity (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/3471f7320bf6/pulse-mcp05a
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  18:20:16
+   Duration  748ms (transform 156ms, setup 0ms, import 220ms, tests 320ms, environment 0ms)
+
+[pulsewasm] entities-javascript-runtime: passed in 1.29s
+
+[pulsewasm:unit] entities-json-rpc-corpus
+[pulsewasm] I4 production scanner parity with the frozen bounded positive and negative envelope corpus (timeout 30.00s)
+{"version":"pulse.entities-envelope-corpus.v1","valid":6,"invalid":17,"productionScanner":"packages/entities/dist/internal/bounded-json-rpc.js"}
+ok - Entities I4 production scanner matches the frozen bounded JSON-RPC corpus
+[pulsewasm] entities-json-rpc-corpus: passed in 181ms
+
+[pulsewasm:unit] mcp-http
+[pulsewasm] MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge (timeout 30.00s)
+ok - MCP-02 114 protocol exchanges plus bounded streams, deadlines, disconnects and real Node HTTP
+[pulsewasm] mcp-http: passed in 661ms
+
+[pulsewasm:unit] pulse-context-corpus
+[pulsewasm] PMCP-02 immutable bounded context snapshot, deterministic generation, source identity and version mismatch (timeout 30.00s)
+ok - 246 versioned context records; immutable standalone data, deterministic/stale/missing/excluded source checks
+[pulsewasm] pulse-context-corpus: passed in 1.29s
+
+[pulsewasm:unit] pulse-context-build
+[pulsewasm] B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection (timeout 60.00s)
+[pulsewasm] Running pulse-context-build (execution); elapsed 10.00s
+[pulsewasm] Running pulse-context-build (execution); elapsed 20.01s
+{"schemaVersion":"pulse.context-build-test.v1","node":"24.19.0","cases":["current output closure","independent 02 fixture encoder agrees","manifest identities and scalar-only tables","two fresh independent roots, reverse creation/enumeration, locale/timezone/cache variation","read-only stale rejection: docs/getting-started.md","read-only stale rejection: scripts/pulse-context-inputs.json","read-only stale rejection: pnpm-lock.yaml","read-only stale rejection: scripts/pulse-context-build.cjs","read-only stale rejection: scripts/pulse-context-corpus.cjs","read-only stale rejection: scripts/pulse-context-format.cjs","read-only stale rejection: wasm/packages/cli/src/command-spec.js","read-only stale rejection: wasm/packages/cli/src/diagnostics.js","read-only stale rejection: wasm/packages/cli/src/documentation.js","read-only stale rejection: wasm/packages/contracts/src/assets/embedded-manifest.js","read-only stale rejection: wasm/packages/contracts/src/resources/embedded.js","read-only stale rejection: examples/12-pulse-context-mcp/src/schemas.ts","read-only stale rejection: examples/12-pulse-context-mcp/src/index.ts","read-only stale rejection: weighting","read-only stale rejection: normalization","read-only stale rejection: producer","read-only stale rejection: resource budget","read-only stale rejection: status","read-only stale rejection: version","read-only stale rejection: examples/12-pulse-context-mcp/context-corpus.ts","read-only stale rejection: examples/12-pulse-context-mcp/context-data/vector.bin","read-only stale rejection: examples/12-pulse-context-mcp/context-data/text.bin","read-only stale rejection: examples/12-pulse-context-mcp/context-data/metadata.bin","read-only stale rejection: examples/12-pulse-context-mcp/context-data/context-metadata.ts","read-only stale rejection: examples/12-pulse-context-mcp/context-data/context-manifest.json","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json","missing and unexpected outputs, symlink destinations","missing/malformed source, source symlink","mixed generation and forged self-consistent manifest cannot pass","format rejection: vector.bin short header","format rejection: vector.bin truncated section","format rejection: vector.bin trailing bytes","format rejection: vector.bin version","format rejection: vector.bin magic","format rejection: vector.bin mixed hash","format rejection: vector.bin row count","format rejection: vector.bin range overflow","format rejection: text.bin short header","format rejection: text.bin truncated section","format rejection: text.bin trailing bytes","format rejection: text.bin version","format rejection: text.bin magic","format rejection: text.bin mixed hash","format rejection: text.bin row count","format rejection: text.bin range overflow","format rejection: metadata.bin short header","format rejection: metadata.bin truncated section","format rejection: metadata.bin trailing bytes","format rejection: metadata.bin version","format rejection: metadata.bin magic","format rejection: metadata.bin mixed hash","format rejection: metadata.bin row count","format rejection: metadata.bin range overflow","format rejection: nonfinite float bit pattern coordinate","format rejection: weight 0","format rejection: weight 20","format rejection: weight 4294967295","format rejection: weight 2147483648","format rejection: valid but wrong coordinate","format rejection: unsorted entries","format rejection: term outside dimension","format rejection: row gap","format rejection: empty token","format rejection: invalid token UTF-8","format rejection: unsorted dictionary","format rejection: text invalid UTF-8","format rejection: wrong UTF16 count","format rejection: reserved word","format rejection: metadata JSON","input rejection: duplicate IDs","input rejection: mixed record version","input rejection: unknown metadata field","input rejection: malformed surrogate","input rejection: unmapped source","input rejection: content hash","input rejection: oversize token","input rejection: nonfinite numeric","input rejection: metadata budget","input rejection: record count","input rejection: row term count","all byte/count budgets apply jointly","exact Unicode, BOM, controls, empty text and maximum text","512 rows, 4096 terms, 1024 entries per row; overflow rejects","CLI invalid options never write"],"manifestSha256":"c9bfd161f1b508338dfd057f9293452dafb37cde2d09a7e5b65b3f4715ebc855","corpusHash":"8fe387adb9281724500ca08b2262e1a7e2925fc8477fc715b9f16f6cd52a8afc","dimensions":{"rows":246,"dimension":2462,"nonzeros":14476,"dictionarySha256":"573672c9be4982d48874b6fe61d0b0150c2c7faeb1fb3f5505974e77eef3a5da","manifestId":"cb1d599203b2eb6dd56c8abb21d9168cc7830b7d5c66c5bb2020eb75553b63c7","catalogueIdentity":"d16593ffd42c2d6ae4107a9c54fbcfb5a205703882a21d77c80861f0882d29d8","rawBytes":566352,"serializedBytes":755790,"budgets":{"files":3,"fileBytes":5242880,"totalBytes":8388608,"serializedBytes":16777216,"bindings":3}},"status":"passed"}
+ok - 93 deterministic context build and strict admission cases
+[pulsewasm] pulse-context-build: passed in 18.64s
+
+[pulsewasm:unit] pulse-context-application
+[pulsewasm] PMCP-03 five read-only Entities context operations, real Node JavaScript build, schemas/catalog and bounded MCP projection (timeout 30.00s)
+[pulsewasm] Running pulse-context-application (execution); elapsed 30.01s
+ok - five schema-bound context operations; 481 real app calls; largest reply 13679 bytes; emitted catalog/MCP projection, Native rejection and source-independent build execution
+[pulsewasm] pulse-context-application: passed in 8.43s
+
+[pulsewasm:unit] pulse-context-host
+[pulsewasm] PMCP-04 built-only loopback host, build/corpus identity, bounded MCP readiness, interruption and shutdown (timeout 30.00s)
+ok - built-only clean process; copied runtime closure; five MCP tools; identity/pre-readiness rejection, bind cleanup, request deadline/disconnect and shutdown; startup 281.3ms; largest MCP reply 17416 bytes
+[pulsewasm] pulse-context-host: passed in 4.87s
+
+[pulsewasm:unit] mcp-compatibility
+[pulsewasm] PMCP-01A opt-in 2025-06-18 framing, modern isolation and shared bounded/authenticated tools (timeout 30.00s)
+ok - opt-in legacy initialization/tools, modern isolation, bounded admission and per-request authorization
+[pulsewasm] mcp-compatibility: passed in 351ms
+
+[pulsewasm:unit] mcp-tools
+[pulsewasm] MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures (timeout 30.00s)
+ok - MCP-03 projection, errors, one selected HTTP call, isolation, deadlines and cancellation
+[pulsewasm] mcp-tools: passed in 408ms
+
+[pulsewasm:unit] mcp-authorization
+[pulsewasm] MCP-04 resource metadata, token introspection, scoped admission and credential isolation (timeout 30.00s)
+ok - MCP-04 metadata/challenges, issuer/audience/expiry/scopes, deny-before-effects, backend isolation and cancellation
+[pulsewasm] Running mcp-authorization (execution); elapsed 40.01s
+ok - private directory catalog scope/write/schema negatives deny before dispatch
+[pulsewasm] mcp-authorization: passed in 3.45s
+
+[pulsewasm:unit] entities-package-owned-lowering
+[pulsewasm] I2 first-party static extraction, terminal intrinsic, schema linkage, and fail-closed lowerer boundary (timeout 30.00s)
+{"version":"pulse.entities-lowering-plan.v1","planHash":"e675ab4d16eb0d6d4662528410017fd2d38e1c6b509195c59fec11a3006abed5","catalogHash":"090783f5e4635f713051c93920201c2374b2301d8848981761fa51cd1994036d","entities":2,"schemaReferences":2,"intrinsic":"pulse.entities.handle.v1","targetStatus":"provider-dependent","negativeDiagnostics":12}
+ok - Entities package-owned extraction emits deterministic plan/catalog inspection, managed-handler descriptors, terminal intrinsic, and I9 target truth
+[pulsewasm] entities-package-owned-lowering: passed in 722ms
+
+[pulsewasm:unit] entities-catalog
+[pulsewasm] deterministic entity catalog, eligible-target truth, and current product status (timeout 30.00s)
+node:assert:152
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    '.',
+    './pulsewasm/manifest',
+    './pulsewasm/compiler',
+    './pulsewasm-native',
++   './internal/transport'
+  ]
+
+    at Object.<anonymous> (/workspace/scratch/3471f7320bf6/pulse-mcp05a/wasm/test/entities/assert-entities-catalog.cjs:108:8)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    '.',
+    './pulsewasm/manifest',
+    './pulsewasm/compiler',
+    './pulsewasm-native',
+    './internal/transport'
+  ],
+  expected: [
+    '.',
+    './pulsewasm/manifest',
+    './pulsewasm/compiler',
+    './pulsewasm-native'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+[pulsewasm] entities-catalog: failed in 736ms
+
+[pulsewasm] test summary
+  passed         280ms  entities-contracts
+  passed         459ms  entities-schema-bridge
+  passed         1.29s  entities-javascript-runtime
+  passed         181ms  entities-json-rpc-corpus
+  passed         661ms  mcp-http
+  passed         1.29s  pulse-context-corpus
+  passed        18.64s  pulse-context-build
+  passed         8.43s  pulse-context-application
+  passed         4.87s  pulse-context-host
+  passed         351ms  mcp-compatibility
+  passed         408ms  mcp-tools
+  passed         3.45s  mcp-authorization
+  passed         722ms  entities-package-owned-lowering
+  failed         736ms  entities-catalog
+  total        41.79s

@@ -1,0 +1,46 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 303 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 211ms
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 20 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 314ms
+
+[pulsewasm:unit] boundaries
+[pulsewasm] workspace layout and import boundaries (timeout 30.00s)
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages
+[pulsewasm] boundaries: passed in 551ms
+
+[pulsewasm:unit] workspace-hygiene
+[pulsewasm] package-manager and workspace hygiene (timeout 30.00s)
+ok - workspace package-manager hygiene is pnpm-only and portable
+[pulsewasm] workspace-hygiene: passed in 306ms
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+
+Caught error:
+
+Error: Release tasks are not mapped to a shard: managed-native-primitives
+    at async verifySealOrchestration (/workspace/scratch/3471f7320bf6/pulse-mcp05a/wasm/test/release/assert-release-feature-acceptance.cjs:124:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [Error],
+  expected: [Function (anonymous)],
+  operator: 'rejects',
+  diff: 'simple'
+}
+[pulsewasm] release-feature-acceptance: failed in 253ms
+
+[pulsewasm] test summary
+  passed         211ms  suite-shape
+  passed         314ms  package-exports
+  passed         551ms  boundaries
+  passed         306ms  workspace-hygiene
+  failed         253ms  release-feature-acceptance
+  total        1.65s

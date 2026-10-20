@@ -1,0 +1,51 @@
+
+[pulsewasm:unit] entities-contracts
+[pulsewasm] Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary (timeout 30.00s)
+node:assert:152
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    '.',
+    './pulsewasm/manifest',
+    './pulsewasm/compiler',
+    './pulsewasm-native',
++   './internal/transport'
+  ]
+
+    at Object.<anonymous> (/workspace/scratch/3471f7320bf6/pulse-mcp05-readiness/wasm/test/entities/assert-entities-contracts.cjs:249:8)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    '.',
+    './pulsewasm/manifest',
+    './pulsewasm/compiler',
+    './pulsewasm-native',
+    './internal/transport'
+  ],
+  expected: [
+    '.',
+    './pulsewasm/manifest',
+    './pulsewasm/compiler',
+    './pulsewasm-native'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+[pulsewasm] entities-contracts: failed in 283ms
+
+[pulsewasm] test summary
+  failed         283ms  entities-contracts
+  total        292ms

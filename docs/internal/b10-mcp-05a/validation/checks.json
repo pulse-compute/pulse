@@ -1,0 +1,1099 @@
+{
+  "version": "pulse.b10-mcp-05a-development-evidence.v1",
+  "scope": "bounded combined proof; production bridge and B10-MCP-05 incomplete",
+  "qualification": false,
+  "releaseSeal": false,
+  "allRequiredChecksPassed": false,
+  "base": "8a51d705025c69ae306004215cb6cb48248d68e1",
+  "baseline": {
+    "head": "6266d7d3514289fe0c88c213bf8ed9645116ca9d",
+    "tree": "91f819ebced3597a90bddef940a23a1b621a14a3",
+    "sameTreeAsBase": true
+  },
+  "codeAndTestCandidate": "30355b67c6cc8105afd0140309ac3bb2a5eb0b35",
+  "sourceCaveat": "Broad runs began on the original proof tree and overlapped review edits. Per-task and split passes are development evidence only. Final focused receipt contains its own exact source identity.",
+  "toolchain": {
+    "node": "v24.19.0",
+    "producerNode": "24.18.0",
+    "typescript": "5.9.3",
+    "assemblyscript": "0.28.18",
+    "jsonAs": "1.5.0",
+    "dependencies": "restored lockfile-pinned bundle; fresh offline install did not pass"
+  },
+  "summary": {
+    "nativeJavascriptConformance": {
+      "passedAcrossSplitRuns": 97,
+      "selected": 97,
+      "fullProfilesPassed": false,
+      "immutableCandidate": false,
+      "earlierTimeout": "schema-codecs"
+    },
+    "unit": {
+      "passedAcrossSplitRuns": 66,
+      "selected": 67,
+      "fullProfilePassed": false,
+      "unresolved": [
+        "release-recovery-runner"
+      ]
+    },
+    "repeatedProofArtifactHashesMatch": true
+  },
+  "runs": [
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile native --profile javascript --profile conformance --no-report",
+      "exitCode": 124,
+      "note": "schema-codecs exceeded its 180s task limit after reporting successful assertions. Development run overlapped review edits. Not one immutable-candidate qualification.",
+      "log": "docs/internal/b10-mcp-05a/validation/native-profiles.log.txt",
+      "sha256": "354719832ae26a51635db2cc886582dc818af28e4a1f4db86b76223670e96cf9",
+      "completedTasks": [
+        {
+          "task": "context-native-proof",
+          "status": "passed",
+          "duration": "41.93s"
+        },
+        {
+          "task": "npm-source-imports",
+          "status": "passed",
+          "duration": "6.58s"
+        },
+        {
+          "task": "fastly-numeric-regions",
+          "status": "passed",
+          "duration": "89.40s"
+        },
+        {
+          "task": "fastly-numeric-budgets",
+          "status": "passed",
+          "duration": "60.19s"
+        },
+        {
+          "task": "fastly-handle-ownership",
+          "status": "passed",
+          "duration": "60.11s"
+        },
+        {
+          "task": "fastly-handle-frames",
+          "status": "passed",
+          "duration": "120.73s"
+        },
+        {
+          "task": "pure-helper-vocabulary",
+          "status": "passed",
+          "duration": "3.77s"
+        },
+        {
+          "task": "pure-string-index",
+          "status": "passed",
+          "duration": "6.30s"
+        },
+        {
+          "task": "pure-field-projection",
+          "status": "passed",
+          "duration": "16.06s"
+        },
+        {
+          "task": "pure-guarded-arguments",
+          "status": "passed",
+          "duration": "60.97s"
+        },
+        {
+          "task": "pure-source-helpers",
+          "status": "passed",
+          "duration": "14.53s"
+        },
+        {
+          "task": "pure-record-helpers",
+          "status": "passed",
+          "duration": "25.72s"
+        },
+        {
+          "task": "pure-argument-helpers",
+          "status": "passed",
+          "duration": "30.98s"
+        },
+        {
+          "task": "pure-loop-helpers",
+          "status": "passed",
+          "duration": "9.17s"
+        },
+        {
+          "task": "fastly-driver-behavior-o09",
+          "status": "passed",
+          "duration": "53.49s"
+        },
+        {
+          "task": "kv-native-abi-feasibility",
+          "status": "passed",
+          "duration": "1.55s"
+        },
+        {
+          "task": "s3-native-read",
+          "status": "passed",
+          "duration": "30.25s"
+        },
+        {
+          "task": "s3-body-read",
+          "status": "passed",
+          "duration": "12.18s"
+        },
+        {
+          "task": "s3-node-transport",
+          "status": "passed",
+          "duration": "635ms"
+        },
+        {
+          "task": "canonical-api-lowering",
+          "status": "passed",
+          "duration": "1.54s"
+        },
+        {
+          "task": "canonical-native-plan",
+          "status": "passed",
+          "duration": "8.04s"
+        },
+        {
+          "task": "shared-stage-o19",
+          "status": "passed",
+          "duration": "9.01s"
+        },
+        {
+          "task": "str02b-node-native",
+          "status": "passed",
+          "duration": "9.06s"
+        },
+        {
+          "task": "fastly-incoming-body-forwarding",
+          "status": "passed",
+          "duration": "12.96s"
+        },
+        {
+          "task": "str03a-generated-output",
+          "status": "passed",
+          "duration": "39.97s"
+        },
+        {
+          "task": "str03c-bounded-transforms",
+          "status": "passed",
+          "duration": "46.77s"
+        },
+        {
+          "task": "bounded-app-logic",
+          "status": "passed",
+          "duration": "61.61s"
+        },
+        {
+          "task": "bounded-read-loops",
+          "status": "passed",
+          "duration": "62.64s"
+        },
+        {
+          "task": "bounded-loop-helpers",
+          "status": "passed",
+          "duration": "7.27s"
+        },
+        {
+          "task": "logging-lowering",
+          "status": "passed",
+          "duration": "3.18s"
+        },
+        {
+          "task": "canonical-router-lowering",
+          "status": "passed",
+          "duration": "10.39s"
+        },
+        {
+          "task": "canonical-router-terminal-middleware",
+          "status": "passed",
+          "duration": "12.07s"
+        },
+        {
+          "task": "router-selected-groups",
+          "status": "passed",
+          "duration": "8.24s"
+        },
+        {
+          "task": "json-as-compatibility",
+          "status": "passed",
+          "duration": "6.55s"
+        },
+        {
+          "task": "entities-envelope-feasibility",
+          "status": "passed",
+          "duration": "3.06s"
+        },
+        {
+          "task": "managed-native-primitives",
+          "status": "passed",
+          "duration": "13.73s"
+        },
+        {
+          "task": "entities-managed-handler",
+          "status": "passed",
+          "duration": "591ms"
+        },
+        {
+          "task": "entities-managed-handler-effects",
+          "status": "passed",
+          "duration": "1.47s"
+        },
+        {
+          "task": "entities-native-runtime",
+          "status": "passed",
+          "duration": "9.02s"
+        },
+        {
+          "task": "entities-hardening",
+          "status": "passed",
+          "duration": "52.81s"
+        },
+        {
+          "task": "entities-node-native-workflow",
+          "status": "passed",
+          "duration": "31.67s"
+        },
+        {
+          "task": "mcp-native-binding",
+          "status": "passed",
+          "duration": "24.99s"
+        },
+        {
+          "task": "fastly-entities-native-workflow",
+          "status": "passed",
+          "duration": "106.77s"
+        },
+        {
+          "task": "crypto-native-guest-source",
+          "status": "passed",
+          "duration": "6.24s"
+        },
+        {
+          "task": "guest-link-package",
+          "status": "passed",
+          "duration": "9.26s"
+        },
+        {
+          "task": "guest-link-materialization-stage",
+          "status": "passed",
+          "duration": "38.36s"
+        },
+        {
+          "task": "guest-link-audit-diagnostics",
+          "status": "passed",
+          "duration": "19.77s"
+        },
+        {
+          "task": "assets-lowering-plan",
+          "status": "passed",
+          "duration": "586ms"
+        },
+        {
+          "task": "assets-package-owned-lowering",
+          "status": "passed",
+          "duration": "435ms"
+        },
+        {
+          "task": "assets-native-embedded",
+          "status": "passed",
+          "duration": "19.71s"
+        },
+        {
+          "task": "grip-package-owned-lowering",
+          "status": "passed",
+          "duration": "1.02s"
+        },
+        {
+          "task": "jwt-package-owned-lowering",
+          "status": "passed",
+          "duration": "1.15s"
+        },
+        {
+          "task": "canonical-api-runtime",
+          "status": "passed",
+          "duration": "2.08s"
+        },
+        {
+          "task": "canonical-opaque-node-emission",
+          "status": "passed",
+          "duration": "1.88s"
+        },
+        {
+          "task": "grip-package-runtime",
+          "status": "passed",
+          "duration": "916ms"
+        },
+        {
+          "task": "package-root-native",
+          "status": "passed",
+          "duration": "2.37s"
+        },
+        {
+          "task": "canonical-native-wasm",
+          "status": "passed",
+          "duration": "84.52s"
+        },
+        {
+          "task": "cli-javascript-target-compilation",
+          "status": "passed",
+          "duration": "23.55s"
+        },
+        {
+          "task": "target-support",
+          "status": "passed",
+          "duration": "716ms"
+        },
+        {
+          "task": "jwt-javascript-admission",
+          "status": "passed",
+          "duration": "9.97s"
+        },
+        {
+          "task": "crypto-runtime-builtin",
+          "status": "passed",
+          "duration": "945ms"
+        },
+        {
+          "task": "javascript-effect-adapter",
+          "status": "passed",
+          "duration": "693ms"
+        },
+        {
+          "task": "logging-runtime",
+          "status": "passed",
+          "duration": "206ms"
+        },
+        {
+          "task": "assets-javascript-runtime",
+          "status": "passed",
+          "duration": "1.25s"
+        },
+        {
+          "task": "native-context-primitives",
+          "status": "passed",
+          "duration": "13.63s"
+        },
+        {
+          "task": "binary-resource-execution",
+          "status": "passed",
+          "duration": "37.59s"
+        },
+        {
+          "task": "effect-collections",
+          "status": "passed",
+          "duration": "3.78s"
+        },
+        {
+          "task": "effect-collection-providers",
+          "status": "passed",
+          "duration": "18.50s"
+        },
+        {
+          "task": "jwt-signing",
+          "status": "passed",
+          "duration": "23.24s"
+        },
+        {
+          "task": "jwt-es256-signing",
+          "status": "passed",
+          "duration": "58.44s"
+        },
+        {
+          "task": "jwt-rs256",
+          "status": "passed",
+          "duration": "571.43s"
+        },
+        {
+          "task": "s3-write-conformance",
+          "status": "passed",
+          "duration": "13.10s"
+        },
+        {
+          "task": "crypto-cross-target-conformance",
+          "status": "passed",
+          "duration": "7.15s"
+        },
+        {
+          "task": "crypto-digest-text-conformance",
+          "status": "passed",
+          "duration": "13.15s"
+        },
+        {
+          "task": "crypto-digest-storage-conformance",
+          "status": "passed",
+          "duration": "18.42s"
+        },
+        {
+          "task": "multifile-source-identity",
+          "status": "passed",
+          "duration": "29.85s"
+        },
+        {
+          "task": "text-capacity-conformance",
+          "status": "passed",
+          "duration": "52.44s"
+        },
+        {
+          "task": "events-conformance",
+          "status": "passed",
+          "duration": "4.88s"
+        },
+        {
+          "task": "node-router-context-parity",
+          "status": "passed",
+          "duration": "5.14s"
+        },
+        {
+          "task": "catalog-router-parity",
+          "status": "passed",
+          "duration": "33.61s"
+        },
+        {
+          "task": "fetch-projections-request-bodies",
+          "status": "passed",
+          "duration": "1.26s"
+        },
+        {
+          "task": "config-secrets-kv-redaction",
+          "status": "passed",
+          "duration": "1.17s"
+        },
+        {
+          "task": "kv-conditional-conformance",
+          "status": "passed",
+          "duration": "7.37s"
+        },
+        {
+          "task": "kv-conditional-adversarial",
+          "status": "passed",
+          "duration": "42.09s"
+        },
+        {
+          "task": "fastly-conditional-kv",
+          "status": "passed",
+          "duration": "43.29s"
+        },
+        {
+          "task": "schema-codecs",
+          "status": "timeout",
+          "duration": "185.93s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --no-report",
+      "exitCode": 124,
+      "note": "28 passing tasks before release-recovery-runner timeout; report-capsule timeout passed on this retry.",
+      "log": "docs/internal/b10-mcp-05a/validation/unit-retry.log.txt",
+      "sha256": "2d6316fd8467bc21b2e79db2945c422118079e42971f0624650b7f4f9b85ef28",
+      "completedTasks": [
+        {
+          "task": "binary-resource-admission",
+          "status": "passed",
+          "duration": "400ms"
+        },
+        {
+          "task": "report-capsule-contract",
+          "status": "passed",
+          "duration": "27.23s"
+        },
+        {
+          "task": "cli-report-workflow",
+          "status": "passed",
+          "duration": "4.37s"
+        },
+        {
+          "task": "cli-report-viewer",
+          "status": "passed",
+          "duration": "16.89s"
+        },
+        {
+          "task": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "51.48s"
+        },
+        {
+          "task": "cli-report-size-evidence",
+          "status": "passed",
+          "duration": "1.25s"
+        },
+        {
+          "task": "cli-report-capture-proof",
+          "status": "passed",
+          "duration": "12.13s"
+        },
+        {
+          "task": "cli-report-entry-proof",
+          "status": "passed",
+          "duration": "58.73s"
+        },
+        {
+          "task": "cli-report-reference-provenance",
+          "status": "passed",
+          "duration": "22.25s"
+        },
+        {
+          "task": "cli-report-handler-topology",
+          "status": "passed",
+          "duration": "100.67s"
+        },
+        {
+          "task": "cli-report-handler-associations",
+          "status": "passed",
+          "duration": "2.62s"
+        },
+        {
+          "task": "cli-report-relationships",
+          "status": "passed",
+          "duration": "37.58s"
+        },
+        {
+          "task": "cli-report-imported-inputs",
+          "status": "passed",
+          "duration": "21.01s"
+        },
+        {
+          "task": "cli-report-resource-inventory",
+          "status": "passed",
+          "duration": "9.65s"
+        },
+        {
+          "task": "cli-report-graph-diagnostics",
+          "status": "passed",
+          "duration": "7.53s"
+        },
+        {
+          "task": "multifile-source-indexes",
+          "status": "passed",
+          "duration": "766ms"
+        },
+        {
+          "task": "guest-json-roundtrip",
+          "status": "passed",
+          "duration": "205ms"
+        },
+        {
+          "task": "pure-helper-contract",
+          "status": "passed",
+          "duration": "2.65s"
+        },
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "257ms"
+        },
+        {
+          "task": "test-orchestration",
+          "status": "passed",
+          "duration": "16.36s"
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "duration": "321ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "602ms"
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "duration": "386ms"
+        },
+        {
+          "task": "hidden-contracts",
+          "status": "passed",
+          "duration": "418ms"
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "passed",
+          "duration": "737ms"
+        },
+        {
+          "task": "release-runtime-policy",
+          "status": "passed",
+          "duration": "4.12s"
+        },
+        {
+          "task": "release-seal-lifecycle",
+          "status": "passed",
+          "duration": "4.22s"
+        },
+        {
+          "task": "release-checkpoints",
+          "status": "passed",
+          "duration": "405ms"
+        },
+        {
+          "task": "release-recovery-runner",
+          "status": "timeout",
+          "duration": "95.87s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --from release-recovery --no-report",
+      "exitCode": 1,
+      "note": "Continued remaining tasks; stale Entities contract export expectation failed.",
+      "log": "docs/internal/b10-mcp-05a/validation/unit-remainder.log.txt",
+      "sha256": "78f692d6f8032de0a6b5112fb99c5811af0500e16cd9a72806357009d9a8d183",
+      "completedTasks": [
+        {
+          "task": "release-recovery",
+          "status": "passed",
+          "duration": "3.62s"
+        },
+        {
+          "task": "release-tag",
+          "status": "passed",
+          "duration": "1.14s"
+        },
+        {
+          "task": "api-surface",
+          "status": "passed",
+          "duration": "1.41s"
+        },
+        {
+          "task": "logging-contract",
+          "status": "passed",
+          "duration": "206ms"
+        },
+        {
+          "task": "s3-design-contract",
+          "status": "passed",
+          "duration": "2.11s"
+        },
+        {
+          "task": "kv-design-contract",
+          "status": "passed",
+          "duration": "1.80s"
+        },
+        {
+          "task": "kv-conditional-runtime",
+          "status": "passed",
+          "duration": "1.78s"
+        },
+        {
+          "task": "kv-conditional-gates",
+          "status": "passed",
+          "duration": "812ms"
+        },
+        {
+          "task": "s3-read-contract",
+          "status": "passed",
+          "duration": "3.10s"
+        },
+        {
+          "task": "s3-write-contract",
+          "status": "passed",
+          "duration": "535ms"
+        },
+        {
+          "task": "crypto-config-planning",
+          "status": "passed",
+          "duration": "981ms"
+        },
+        {
+          "task": "crypto-es256-signing",
+          "status": "passed",
+          "duration": "295ms"
+        },
+        {
+          "task": "crypto-rs256",
+          "status": "passed",
+          "duration": "2.35s"
+        },
+        {
+          "task": "crypto-digest-text-contract",
+          "status": "passed",
+          "duration": "917ms"
+        },
+        {
+          "task": "reachable-graph",
+          "status": "passed",
+          "duration": "291ms"
+        },
+        {
+          "task": "project-modules",
+          "status": "passed",
+          "duration": "1.38s"
+        },
+        {
+          "task": "package-reachability",
+          "status": "passed",
+          "duration": "1.53s"
+        },
+        {
+          "task": "external-lowerers",
+          "status": "passed",
+          "duration": "2.89s"
+        },
+        {
+          "task": "package-runtime",
+          "status": "passed",
+          "duration": "288ms"
+        },
+        {
+          "task": "provider-toolchain",
+          "status": "passed",
+          "duration": "248ms"
+        },
+        {
+          "task": "schema-registry",
+          "status": "passed",
+          "duration": "2.02s"
+        },
+        {
+          "task": "continuation-registry",
+          "status": "passed",
+          "duration": "247ms"
+        },
+        {
+          "task": "entities-contracts",
+          "status": "failed",
+          "duration": "319ms"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --from entities-contracts --no-report",
+      "exitCode": 1,
+      "note": "Contract expectation fixed; stale catalog export expectation failed.",
+      "log": "docs/internal/b10-mcp-05a/validation/unit-entities-remainder.log.txt",
+      "sha256": "e31e98fe83bc82bbe164494008f67bfa6088864e2ee6fd96181c83fc8479126f",
+      "completedTasks": [
+        {
+          "task": "entities-contracts",
+          "status": "passed",
+          "duration": "280ms"
+        },
+        {
+          "task": "entities-schema-bridge",
+          "status": "passed",
+          "duration": "459ms"
+        },
+        {
+          "task": "entities-javascript-runtime",
+          "status": "passed",
+          "duration": "1.29s"
+        },
+        {
+          "task": "entities-json-rpc-corpus",
+          "status": "passed",
+          "duration": "181ms"
+        },
+        {
+          "task": "mcp-http",
+          "status": "passed",
+          "duration": "661ms"
+        },
+        {
+          "task": "pulse-context-corpus",
+          "status": "passed",
+          "duration": "1.29s"
+        },
+        {
+          "task": "pulse-context-build",
+          "status": "passed",
+          "duration": "18.64s"
+        },
+        {
+          "task": "pulse-context-application",
+          "status": "passed",
+          "duration": "8.43s"
+        },
+        {
+          "task": "pulse-context-host",
+          "status": "passed",
+          "duration": "4.87s"
+        },
+        {
+          "task": "mcp-compatibility",
+          "status": "passed",
+          "duration": "351ms"
+        },
+        {
+          "task": "mcp-tools",
+          "status": "passed",
+          "duration": "408ms"
+        },
+        {
+          "task": "mcp-authorization",
+          "status": "passed",
+          "duration": "3.45s"
+        },
+        {
+          "task": "entities-package-owned-lowering",
+          "status": "passed",
+          "duration": "722ms"
+        },
+        {
+          "task": "entities-catalog",
+          "status": "failed",
+          "duration": "736ms"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --from entities-catalog --no-report",
+      "exitCode": 0,
+      "note": "Catalog expectation fixed; last three unit tasks passed.",
+      "log": "docs/internal/b10-mcp-05a/validation/unit-final-remainder.log.txt",
+      "sha256": "dd60ce59441c19bc19a6ca892b9c99038d25d191a2dcaa7ee741944990bd130f",
+      "completedTasks": [
+        {
+          "task": "entities-catalog",
+          "status": "passed",
+          "duration": "461ms"
+        },
+        {
+          "task": "entities-inspection",
+          "status": "passed",
+          "duration": "17.49s"
+        },
+        {
+          "task": "entities-orchestration-demo",
+          "status": "passed",
+          "duration": "10.20s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task report-capsule-contract --no-report",
+      "exitCode": 0,
+      "note": "Unchanged base; passed in 27.28s against the 30s task budget.",
+      "log": "docs/internal/b10-mcp-05a/validation/baseline-report-capsule.log.txt",
+      "sha256": "51702915101bfdbfc0a1fce9c9fb0c9e6453d961b53e61b7109f4f861814a9cd",
+      "completedTasks": [
+        {
+          "task": "report-capsule-contract",
+          "status": "passed",
+          "duration": "27.28s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task release-recovery-runner --no-report",
+      "exitCode": 124,
+      "note": "Unchanged base reproduces the recovery-runner timeout.",
+      "log": "docs/internal/b10-mcp-05a/validation/baseline-recovery.log.txt",
+      "sha256": "36a6cb8fd1469049f0603f3601dfa658c54b8f074391bd3490acde8c348994a9",
+      "completedTasks": [
+        {
+          "task": "release-recovery-runner",
+          "status": "timeout",
+          "duration": "95.89s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task entities-contracts --no-report",
+      "exitCode": 1,
+      "note": "Unchanged base reproduces the stale export expectation.",
+      "log": "docs/internal/b10-mcp-05a/validation/baseline-entities-contracts.log.txt",
+      "sha256": "4ff6c9653e8c8ebefca3c2565b3d20dc770f81b45f1fed0cccb843d4ce522264",
+      "completedTasks": [
+        {
+          "task": "entities-contracts",
+          "status": "failed",
+          "duration": "283ms"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task entities-catalog --no-report",
+      "exitCode": 1,
+      "note": "Unchanged base reproduces the stale export expectation.",
+      "log": "docs/internal/b10-mcp-05a/validation/baseline-entities-catalog.log.txt",
+      "sha256": "4337ad92637503ed4f6db2095c5fb5346c8d7a5352ecbaf140fb59ba46e0e184",
+      "completedTasks": [
+        {
+          "task": "entities-catalog",
+          "status": "failed",
+          "duration": "995ms"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task entities-managed-handler --task entities-native-runtime --task entities-managed-handler-effects --no-report",
+      "exitCode": 0,
+      "note": "",
+      "log": "docs/internal/b10-mcp-05a/validation/regression.log.txt",
+      "sha256": "17615eea0eb8a7372a647fd3a4fba2b19ce560dd26a10be039526123c7e3116e",
+      "completedTasks": [
+        {
+          "task": "entities-managed-handler",
+          "status": "passed",
+          "duration": "700ms"
+        },
+        {
+          "task": "entities-native-runtime",
+          "status": "passed",
+          "duration": "8.49s"
+        },
+        {
+          "task": "entities-managed-handler-effects",
+          "status": "passed",
+          "duration": "1.54s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/test/entities/assert-managed-native-primitives.cjs docs/internal/b10-mcp-05a/proof.json",
+      "exitCode": 0,
+      "note": "Final code and test candidate; no source edits during this run.",
+      "log": "docs/internal/b10-mcp-05a/validation/proof-final-candidate.log.txt",
+      "sha256": "17c1a1bdb7635c0af1507a4bc9f9c05e841dcb8d944b176828eddc242d280e94",
+      "completedTasks": []
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "note": "Read-only deterministic context check plus TypeScript workspace build using restored dependencies.",
+      "log": "docs/internal/b10-mcp-05a/validation/build-npm.log.txt",
+      "sha256": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95",
+      "completedTasks": []
+    },
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "note": "",
+      "log": "docs/internal/b10-mcp-05a/validation/maintainer-final.log.txt",
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2",
+      "completedTasks": []
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --base 8a51d705025c69ae306004215cb6cb48248d68e1 --head HEAD --declaration-file /tmp/mcp05a-pr.md --check",
+      "exitCode": 0,
+      "note": "",
+      "log": "docs/internal/b10-mcp-05a/validation/scope-final.log.txt",
+      "sha256": "f5a2fbeb8c41b077acd38e21c70d3a057c822924404d31721f6bf5759c2dff5c",
+      "completedTasks": []
+    },
+    {
+      "command": "node scripts/release-preflight.cjs --check",
+      "exitCode": 0,
+      "note": "",
+      "log": "docs/internal/b10-mcp-05a/validation/preflight.log.txt",
+      "sha256": "802fef768e75b58840bd1db71c5885fcd1e8d76224e8810a56370a85cbb33a6d",
+      "completedTasks": []
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile conformance --from schema-codecs --no-report",
+      "exitCode": 0,
+      "note": "One bounded retry after schema-codecs timeout, then the remaining 11 conformance tasks. Not an aggregate profile pass.",
+      "log": "docs/internal/b10-mcp-05a/validation/conformance-retry.log.txt",
+      "sha256": "20a97c1414d5e5e2f36cf88dc174fdb95bc5b4400395cf02c3a6188f4a2e2dd2",
+      "completedTasks": [
+        {
+          "task": "schema-codecs",
+          "status": "passed",
+          "duration": "174.52s"
+        },
+        {
+          "task": "schema-kv-parity",
+          "status": "passed",
+          "duration": "16.91s"
+        },
+        {
+          "task": "time-conformance",
+          "status": "passed",
+          "duration": "9.72s"
+        },
+        {
+          "task": "time-consumer",
+          "status": "passed",
+          "duration": "29.14s"
+        },
+        {
+          "task": "request-budget-transport",
+          "status": "passed",
+          "duration": "10.77s"
+        },
+        {
+          "task": "node-launcher",
+          "status": "passed",
+          "duration": "10.09s"
+        },
+        {
+          "task": "http-input-outcomes",
+          "status": "passed",
+          "duration": "19.54s"
+        },
+        {
+          "task": "application-errors",
+          "status": "passed",
+          "duration": "27.44s"
+        },
+        {
+          "task": "application-error-boundaries",
+          "status": "passed",
+          "duration": "6.67s"
+        },
+        {
+          "task": "node-cross-target-conformance",
+          "status": "passed",
+          "duration": "9.10s"
+        },
+        {
+          "task": "grip-cross-target-conformance",
+          "status": "passed",
+          "duration": "10.55s"
+        },
+        {
+          "task": "four-mode-conformance",
+          "status": "passed",
+          "duration": "65.07s"
+        }
+      ]
+    }
+  ],
+  "earlierFailedAttempts": [
+    {
+      "log": "profiles.log.txt",
+      "outcome": "failed",
+      "reason": "New proof task initially missing release shard mapping; corrected.",
+      "sha256": "13867c7cdaaad906e1ed5c5f8add4c8c886a9d542f5abd90990b1a54143ab396"
+    },
+    {
+      "log": "profiles-retry.log.txt",
+      "outcome": "failed",
+      "reason": "Removing Native profile registration broke suite shape; restored proper registration and shard mapping.",
+      "sha256": "b6204a479f783a5236c569d804a5adf9b5383517ce99b923fc65a8fcef38ba30"
+    },
+    {
+      "log": "profiles-final.log.txt",
+      "outcome": "timeout",
+      "reason": "report-capsule-contract exceeded its time budget; retained alongside passing baseline and retry.",
+      "sha256": "e46ae89b22bd27b04c02b4c40fb271a30f38cbe16e161c954b48b4a62a75c3b0"
+    },
+    {
+      "log": "proof4.log.txt",
+      "outcome": "failed",
+      "reason": "Explicit undefined was incorrectly treated as optional absence in the proof; corrected to preserve canonical rejection.",
+      "sha256": "b9215d1631c285de7a8d8aedbd8249acb8a9b01db5005fc1c1ceed5e2b274046"
+    },
+    {
+      "log": "proof5.log.txt",
+      "outcome": "failed",
+      "reason": "Explicit undefined versus absence investigation; final test constructs true optional absence and separately checks rejection.",
+      "sha256": "434e9158461dd540064be0e61cfba60e2b23984563867b5b2c6198fea742768a"
+    },
+    {
+      "log": "build.log.txt",
+      "outcome": "failed",
+      "reason": "pnpm preflight returned ERR_PNPM_IGNORED_BUILDS for esbuild; no build approval was relaxed. npm ran the workspace build successfully.",
+      "sha256": "7508e992ae487d313024db8b6a15eac740f82a6d86516d766fbce2aebf385869"
+    }
+  ],
+  "notClaimed": [
+    "full clean-candidate replay",
+    "candidate seal",
+    "installed closure",
+    "Viceroy",
+    "external MCP clients",
+    "deployment",
+    "worst-case application memory"
+  ]
+}

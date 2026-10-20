@@ -1,0 +1,12 @@
+Scope: all 22 workspace projects
+? Verifying lockfile against supply-chain policies (352 entries)...
+✓ Lockfile passes supply-chain policies (352 entries in 4.1s)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+Error: ERR_PNPM_IGNORED_BUILDS
+
+  × installing dependencies
+  ╰─▶ Ignored build scripts: esbuild@0.25.12, esbuild@0.28.1
+  help: Run "pnpm approve-builds" to pick which dependencies should be allowed
+        to run scripts.
+

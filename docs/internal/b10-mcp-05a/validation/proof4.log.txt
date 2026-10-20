@@ -1,0 +1,46 @@
+AssertionError [ERR_ASSERTION]: Node parity {}
++ actual - expected
+... Skipped lines
+
+  {
+    id: 1,
+    jsonrpc: '2.0',
+    result: {
+      _meta: {
+...
+        {
++         text: '{"value":275,"text":"{\\"value\\":275}","word":"ABCD","initial":0,"alias":65,"nested":[{"label":"ABCD","values":[275,0]}]}',
+-         text: 'Tool execution or output validation failed',
+          type: 'text'
+        }
+      ],
++     isError: false,
+-     isError: true,
+      resultType: 'complete',
++     structuredContent: {
++       alias: 65,
++       initial: 0,
++       nested: [
++         {
++           label: 'ABCD',
++           values: [
++             275,
++             0
++           ]
++         }
++       ],
++       text: '{"value":275}',
++       value: 275,
++       word: 'ABCD'
++     }
+    }
+  }
+
+    at main (/workspace/scratch/3471f7320bf6/pulse-mcp05a/docs/internal/b10-mcp-05a/proof.cjs:69:12) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [Object],
+  expected: [Object],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+} undefined undefined

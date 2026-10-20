@@ -3,7 +3,7 @@
 This branch implements the first, bounded architectural proof for
 [#436](https://github.com/pulse-compute/pulse/issues/436). **It does not complete
 05A or B10-MCP-05.** The application draft remains separately checkpointed at
-`27afe74` on `codex/b10-mcp-05`.
+`0b33b3c` on `codex/b10-mcp-05-wip` (identical tree to local `27afe74`).
 
 Human direction: after reviewing the managed-execution prerequisite, its risk,
 and the sequence “prove the architecture, then complete the implementation,”
@@ -66,16 +66,30 @@ the work log; a passing focused run is not an aggregate release seal.
 
 ## Remaining before 05A / 05 completion
 
+- Update canonical public contracts and regenerate their installed mirrors before
+  treating the bridge as supported product behavior.
 - Review the new projection and emitter as production code, especially scalar
-  provenance, schema failures, multi-handler workspace ownership, interaction
+  provenance/coercion and undefined/null comparisons, schema failures,
+  multi-handler workspace ownership, interaction
   with effects, allocation exhaustion and independent forged-plan validation.
-- Complete the regression profiles and TypeScript build; record dependency-bound
-  failures honestly. The restored dependency bundle was copied from the previous
-  lockfile-pinned worktree. A fresh offline dependency installation has not passed.
+  Invalid schema text currently aborts Native execution; this proof checks terminal
+  failure, not identical negative MCP envelopes across targets. Close that gap.
+  Qualify package-root and installed use of the terminal source composition.
+- Resolve the remaining validation gates on a frozen candidate. The TypeScript
+  workspace build passes. Unit coverage is 66/67 across split development runs;
+  the recovery-runner timeout also reproduces on the unchanged base. The restored
+  dependency bundle was copied from the previous lockfile-pinned worktree. A fresh
+  offline dependency installation has not passed.
 - Adapt the application draft to admitted source. It currently relies on a
   ctx-first helper and imported scalars that managed admission does not yet
   support. Determine reuse of the existing ordinary source/helper owners before
-  adding any bridge; do not copy a second general compiler into Entities.
+  adding any bridge; do not copy a second general compiler into Entities. The
+  ordinary owners are `wasm/packages/compiler/src/project/router-module-linker.js`,
+  `wasm/packages/compiler/src/spine/pure-helper-source.js` and
+  `wasm/packages/compiler/src/source-helper-plan.js`. Imported scalar composition
+  is not established by this proof.
+- Resume authored changes in `examples/12-pulse-context-mcp`, the canonical owner;
+  the copy under `wasm/packages/cli/examples` is generated.
 - Complete all five application outputs. Start/example/search plumbing is still
   missing from the draft. Finish exact-version/citation/applicability behavior,
   Unicode UTF-16 pagination and the 24 KiB tool-result budget.
@@ -89,3 +103,27 @@ the work log; a passing focused run is not an aggregate release seal.
 
 The successful composition proof reduces architectural uncertainty. It does not
 justify calling the remaining work a small cleanup or closing #436, #381 or #412.
+
+## Validation record
+
+The retained attempt logs under `validation/` preserve the failed attempts and
+explicit retries. The unit export assertions were stale on the unchanged base:
+three expectations omitted the already-existing `./internal/transport` entry.
+Those expectations now include that exact export; the package manifest and
+public export set were not changed. The candidate-seal expectation was updated
+for consistency, but the complete candidate-seal task was not run.
+
+The broad development runs overlapped final proof review edits and therefore
+are not evidence for one immutable candidate. The focused final receipt binds
+its exact source bytes. Fresh full qualification remains necessary before merge
+as a completed feature. Earlier local checkpoints map to identical remote trees:
+`04f382e` → `57de6c2`, and `af7e2d5` → `b1510be`.
+
+The final focused run passed on clean code/test commit `30355b6` with no modified
+source files. Its plan and both Wasm hashes match the earlier independent runs.
+All 97 Native/JavaScript/conformance tasks passed across split development runs:
+the initial run stopped at a schema-codecs timeout, and the bounded retry passed
+that task and the final eleven. This does not turn the timed-out run into a pass.
+See `validation/checks.json` for exact task outcomes, commands, baseline evidence
+and retained failed attempts. Unit coverage remains 66/67, with the base-reproduced
+recovery-runner timeout unresolved.

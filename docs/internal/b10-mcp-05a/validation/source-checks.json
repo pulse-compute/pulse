@@ -1,0 +1,24 @@
+[
+  {
+    "command": "npm run docs:check",
+    "exitCode": 0,
+    "reports": [
+      {
+        "status": "ok"
+      }
+    ],
+    "stdoutSha256": "13d10227ecb590ae01f6225970cf4ae9ff64c8a4da4f082757c26b8a90290f4d"
+  },
+  {
+    "command": "node scripts/documentation-release.cjs",
+    "exitCode": 0,
+    "reports": [
+      {
+        "status": "ok",
+        "validationKind": "package-source",
+        "releaseVersion": "1.0.0-beta.9"
+      }
+    ],
+    "stdoutSha256": "0380e74b2aa6730cf0be0024b047f07dfafe5798b5aca5c6ba4a6ba0277e85c8"
+  }
+]

@@ -1,0 +1,188 @@
+
+[pulsewasm:unit] release-recovery
+[pulsewasm] Recovery input identity, checkout exclusion and retained-attempt expiry (timeout 30.00s)
+release-recovery: 17 candidate, dependency, artifact, locking and pruning fixtures passed
+[pulsewasm] release-recovery: passed in 3.62s
+
+[pulsewasm:unit] release-tag
+[pulsewasm] release-owner tagging guards and immutable tag identity (timeout 30.00s)
+ok - release tag requires reviewed remote main, defaults to dry run, preserves tag identity, and never pushes
+[pulsewasm] release-tag: passed in 1.14s
+
+[pulsewasm:unit] api-surface
+[pulsewasm] provider-neutral TypeScript API and fixture type surface (timeout 30.00s)
+ok - runtime owns one async provider-neutral type algebra and Pulse re-exports it without a second Router value
+[pulsewasm] api-surface: passed in 1.41s
+
+[pulsewasm:unit] logging-contract
+[pulsewasm] logging levels, ABI, reporting resolution, and public surfaces (timeout 30.00s)
+ok - logging levels, synchronous ABI, flat reporting resolution, and handler surfaces are canonical
+[pulsewasm] logging-contract: passed in 206ms
+
+[pulsewasm:unit] s3-design-contract
+[pulsewasm] S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes (timeout 30.00s)
+ok - S3 O1 design: typed subset, canonical input seam, key/body/signing vectors and bounded envelopes; no runtime support claim
+[pulsewasm] s3-design-contract: passed in 2.11s
+
+[pulsewasm:unit] kv-design-contract
+[pulsewasm] K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty (timeout 30.00s)
+[pulsewasm] Running kv-design-contract (execution); elapsed 10.01s
+{"status":"passed","proof":"K1-executable-specification","tokens":8,"outcomeVectors":31,"readOutcomeVectors":15,"raceSchedules":12,"publicRuntimeSupport":false,"providerReality":false}
+[pulsewasm] kv-design-contract: passed in 1.80s
+
+[pulsewasm:unit] kv-conditional-runtime
+[pulsewasm] K2 production conditional KV types, wire bounds, snapshots and outcome contracts (timeout 30.00s)
+ok - K2 production types, wire/token/bounds corpus, admission snapshot, redaction and explicit failure outcomes
+[pulsewasm] kv-conditional-runtime: passed in 1.78s
+
+[pulsewasm:unit] kv-conditional-gates
+[pulsewasm] K4 executable requirement and deployed evidence identity, location and uncertainty gates (timeout 30.00s)
+ok - K4 rejects missing executables, mixed deployment identities, repeated receipts, same-POP evidence and unknown write acceptance; deployed orchestration tested with a local fixture only
+[pulsewasm] kv-conditional-gates: passed in 812ms
+
+[pulsewasm:unit] s3-read-contract
+[pulsewasm] S3 read binding authority, lowering negatives and bounded result contract (timeout 30.00s)
+ok - S3 read bindings, literal authority, dynamic key seam and result bounds
+ok - guarded S3 text state planning, suspension, scope and mutation negatives
+[pulsewasm] s3-read-contract: passed in 3.10s
+
+[pulsewasm:unit] s3-write-contract
+[pulsewasm] S3 PUT lowering, bounded outcomes, JavaScript Crypto bytes and pre-dispatch lifecycle (timeout 30.00s)
+ok - S3 PUT literal lowering, bounded results, explicit Crypto JavaScript vectors, snapshot and wipe
+[pulsewasm] s3-write-contract: passed in 535ms
+
+[pulsewasm:unit] crypto-config-planning
+[pulsewasm] crypto profile replacement, reachable requirements, and deterministic target realization planning (timeout 180.00s)
+ok - crypto configuration replacement, reachable demand, deterministic realization planning, and pre-lowering failure are canonical
+[pulsewasm] crypto-config-planning: passed in 981ms
+
+[pulsewasm:unit] crypto-es256-signing
+[pulsewasm] RFC6979 signing vector, frame rejection and private material cleanup (timeout 180.00s)
+ok - RFC6979 ES256 signing, independent verification, strict frames, key consistency and cleanup
+[pulsewasm] crypto-es256-signing: passed in 295ms
+
+[pulsewasm:unit] crypto-rs256
+[pulsewasm] RS256 independent interoperability, CRT consistency, malformed padding, bounds and cleanup (timeout 180.00s)
+[pulsewasm] Running crypto-rs256 (execution); elapsed 20.01s
+{"status":"passed","assertions":177,"artifactBytes":36378,"fixedMemoryBytes":2097152,"observedStackBytes":6324,"reservedStackBytes":65536,"timings":[{"bits":2048,"signMedianMs":7.707213000000024,"verifyMedianMs":0.5737980000000107},{"bits":3072,"signMedianMs":21.80074000000002,"verifyMedianMs":1.1157470000000558},{"bits":4096,"signMedianMs":69.05865399999993,"verifyMedianMs":2.2144760000001042}],"timingEnvironment":"local Node Wasm; development evidence, not Fastly measurements","providerReality":false}
+[pulsewasm] crypto-rs256: passed in 2.35s
+
+[pulsewasm:unit] crypto-digest-text-contract
+[pulsewasm] Exact-text digest admission, bounded failures, unavailable providers and cancellation (timeout 30.00s)
+ok - digest vectors, exact import admission, bounded failures, staging wipe, provider unavailability and cancellation
+[pulsewasm] crypto-digest-text-contract: passed in 917ms
+
+[pulsewasm:unit] reachable-graph
+[pulsewasm] deterministic path-independent reachable graph (timeout 120.00s)
+ok - reachable graph locks resolver b67ace60ec94fd12c0c05bf64429b1eae16421da96721205c1983852dd931fc5, graph d8af8e6582ab6d2eca4b67a72be9e5becabe2a1fd6a87742590e8a3542ba9790, and 5 path-independent module identities
+[pulsewasm] reachable-graph: passed in 291ms
+
+[pulsewasm:unit] project-modules
+[pulsewasm] recursive modules, handlers, Routers, cycles, and diagnostics (timeout 180.00s)
+ok - project graph compiles 4 runtime modules through one Handler/Router IR path
+[pulsewasm] project-modules: passed in 1.38s
+
+[pulsewasm:unit] package-reachability
+[pulsewasm] graph-selected package operations and native eligibility (timeout 240.00s)
+ok - package reachability selects pulse.grip, owns 2 bindings, and rejects unsupported boundaries without fallback
+[pulsewasm] package-reachability: passed in 1.53s
+
+[pulsewasm:native] external-lowerers
+[pulsewasm] trusted external contracts, independent package versions, nested resolution and Native/JavaScript parity (timeout 180.00s)
+ok - external trusted lowerer: independent version, Native/JavaScript parity, nested resolution, protocol/ownership/path/collision rejection
+[pulsewasm] external-lowerers: passed in 2.89s
+
+[pulsewasm:unit] package-runtime
+[pulsewasm] Generic trusted package Wasm ABI, host grants, private memory and cancellation (timeout 30.00s)
+Trusted package Wasm ABI, bounded grants, private staging, capture ownership and late-result fencing passed.
+[pulsewasm] package-runtime: passed in 288ms
+
+[pulsewasm:unit] provider-toolchain
+[pulsewasm] exact compiler-to-provider toolchain invocation and result boundary (timeout 30.00s)
+ok - provider toolchains, target descriptors, invocations, requirements, results, and final-byte packaging are exact, versioned, and fail closed
+[pulsewasm] provider-toolchain: passed in 248ms
+
+[pulsewasm:unit] schema-registry
+[pulsewasm] pulse.schema registry and semantic trace contracts (timeout 120.00s)
+ok - pulse.schema extracts versioned schema/response IR and locks semantic trace and backend-input contracts
+ok - schema cost attribution preserves IDs, policies, response roots, Unicode byte accounting and production generation
+[pulsewasm] schema-registry: passed in 2.02s
+
+[pulsewasm:unit] continuation-registry
+[pulsewasm] continuation state, expiry, and resume guards (timeout 30.00s)
+ok - continuation registry enforces waiting/resume/complete, double-resume, expiry, failure, cancellation, and ordered trace transitions
+[pulsewasm] continuation-registry: passed in 247ms
+
+[pulsewasm:unit] entities-contracts
+[pulsewasm] Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary (timeout 30.00s)
+[pulsewasm] Running entities-contracts (execution); elapsed 30.01s
+node:assert:152
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    '.',
+    './pulsewasm/manifest',
+    './pulsewasm/compiler',
+    './pulsewasm-native',
++   './internal/transport'
+  ]
+
+    at Object.<anonymous> (/workspace/scratch/3471f7320bf6/pulse-mcp05a/wasm/test/entities/assert-entities-contracts.cjs:249:8)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    '.',
+    './pulsewasm/manifest',
+    './pulsewasm/compiler',
+    './pulsewasm-native',
+    './internal/transport'
+  ],
+  expected: [
+    '.',
+    './pulsewasm/manifest',
+    './pulsewasm/compiler',
+    './pulsewasm-native'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+[pulsewasm] entities-contracts: failed in 319ms
+
+[pulsewasm] test summary
+  passed         3.62s  release-recovery
+  passed         1.14s  release-tag
+  passed         1.41s  api-surface
+  passed         206ms  logging-contract
+  passed         2.11s  s3-design-contract
+  passed         1.80s  kv-design-contract
+  passed         1.78s  kv-conditional-runtime
+  passed         812ms  kv-conditional-gates
+  passed         3.10s  s3-read-contract
+  passed         535ms  s3-write-contract
+  passed         981ms  crypto-config-planning
+  passed         295ms  crypto-es256-signing
+  passed         2.35s  crypto-rs256
+  passed         917ms  crypto-digest-text-contract
+  passed         291ms  reachable-graph
+  passed         1.38s  project-modules
+  passed         1.53s  package-reachability
+  passed         2.89s  external-lowerers
+  passed         288ms  package-runtime
+  passed         248ms  provider-toolchain
+  passed         2.02s  schema-registry
+  passed         247ms  continuation-registry
+  failed         319ms  entities-contracts
+  total        30.29s
