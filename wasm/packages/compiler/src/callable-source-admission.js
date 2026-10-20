@@ -2,7 +2,7 @@
 // Private source admission; caller expressions still pass ordinary lowering.
 const ts = require('typescript');
 const { projectFunctionResolver } = require('./project/router-module-linker');
-const { compileCallable } = require('./canonical-callable-proof');
+const { compileCallable } = require('./canonical-callable');
 
 class CallableSourceAdmissionError extends Error {
   constructor(code, message, node, sourceFile, cause) {

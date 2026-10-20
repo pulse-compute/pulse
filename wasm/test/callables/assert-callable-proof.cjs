@@ -11,7 +11,7 @@ const root = path.resolve(__dirname, '../../..');
 const baseline = process.argv[2] && path.resolve(process.argv[2]);
 const output = process.argv[3] && path.resolve(process.argv[3]);
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-const { compileCallable, seal } = require('../../packages/compiler/src/canonical-callable-proof');
+const { compileCallable, seal } = require('../../packages/compiler/src/canonical-callable');
 const { compileCanonicalSource } = require('../../packages/compiler/src/canonical-api-compiler');
 const { buildCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
 const { compileCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-compiler');

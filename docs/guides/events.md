@@ -223,10 +223,10 @@ Promise, Asyncify, target probing, or fallback.
 
 The event contract intentionally exposes no `ctx.call`, `app.call`, generic
 call effect, request/reply bus, correlation protocol, or compiler/runtime
-reservation for one. `ctx.emit` cannot observe or invoke a local handler. Any
-future call mechanism requires a separately specified host, ownership model,
-failure contract, recursion/reentrancy guard, and explicit authorization; it is
-not latent in this candidate.
+reservation for one. `ctx.emit` cannot observe or invoke a local handler. HTTP
+[`ctx.call`](../../API.md#ctxcall) invokes a bounded computation, not an event
+handler. Event request/reply or reflexive routing would require a separately
+specified host, ownership model, failure and recursion/reentrancy contract.
 
 See the [canonical API](../../API.md), [effects and
 continuations](../concepts/effects-and-continuations.md), [compatibility

@@ -102,3 +102,25 @@ const timeHandler: import('../src/index.js').Handler = async ctx => {
   return ctx.text(iso);
 };
 void timeHandler;
+
+// The computation context exposes only synchronous resource/workspace authority.
+import type { PulseComputation, PulseComputationContext, PulseReadonly, PulseCallSchemas } from '../src/index.js'
+interface CallInput { value: number; nested: { labels: string[] } }
+interface CallOutput { value: number }
+export function computation(ctx: PulseComputationContext, input: PulseReadonly<CallInput>): CallOutput {
+  const cells = ctx.workspace.numbers(1)
+  cells[0] = input.value
+  const labels: readonly string[] = input.nested.labels
+  void labels
+  return { value: cells[0] }
+}
+const typedComputation: PulseComputation<CallInput, CallOutput> = computation
+const schemas: PulseCallSchemas = { inputSchema: 'app.Input', outputSchema: 'app.Output' }
+const calls: Handler = async ctx => {
+  const result = ctx.call(typedComputation, { value: 2, nested: { labels: ['a'] } }, schemas)
+  const exact: Assert<Equal<typeof result, CallOutput>> = true
+  result.value = 3 // The returned normalized record is owned by the caller.
+  void exact
+  return ctx.json(result, { schema: 'app.Output' })
+}
+void calls // Source admission additionally requires a direct imported target and inline literal schemas.

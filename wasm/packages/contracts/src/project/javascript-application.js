@@ -1,6 +1,7 @@
 'use strict';
 
 const { sha256Hex, stableStringify } = require('../stable-id.js');
+const { CALLABLE_COMPUTATION_VERSION } = require('../handler/surface-contract.js');
 
 const JAVASCRIPT_APPLICATION_PLAN_VERSION = 'pulse.javascript-application-plan.v1';
 const JAVASCRIPT_APPLICATION_LOADER_VERSION = 'pulse.javascript-application-loader.v1';
@@ -113,6 +114,8 @@ function normalizeJavascriptApplicationPlan(input) {
   let callables;
   if (input.callables) {
     const table = input.callables;
+    if (table.version !== CALLABLE_COMPUTATION_VERSION)
+      throw new TypeError('Unsupported JavaScript callable version; rebuild the application plan.');
     const identifier = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
     if (input.provider !== 'node' || !modules.some(module => module.runtime && module.kind === 'project' && module.path === table.modulePath)
       || !identifier.test(table.exportName) || !Array.isArray(table.bindings) || !table.bindings.length || table.bindings.length > 16) {
@@ -135,7 +138,7 @@ function normalizeJavascriptApplicationPlan(input) {
         resources: binding.resources.map(id => requireString('JavaScript callable resource', id)) };
     });
     if (sites > 16) throw new TypeError('JavaScript callable site limit exceeded.');
-    callables = { modulePath: table.modulePath, exportName: table.exportName, bindings };
+    callables = { version: table.version, modulePath: table.modulePath, exportName: table.exportName, bindings };
   }
   const document = {
     version: JAVASCRIPT_APPLICATION_PLAN_VERSION,
@@ -181,7 +184,8 @@ function normalizeJavascriptApplicationPlan(input) {
 }
 
 function isJavascriptApplicationPlan(value) {
-  return Boolean(value && value.version === JAVASCRIPT_APPLICATION_PLAN_VERSION && value.kind === 'pulse.javascript-application-plan');
+  return Boolean(value && value.version === JAVASCRIPT_APPLICATION_PLAN_VERSION && value.kind === 'pulse.javascript-application-plan'
+    && (!value.callables || value.callables.version === CALLABLE_COMPUTATION_VERSION));
 }
 
 function normalizeJavascriptTargetDescriptor(input) {
@@ -232,6 +236,8 @@ function normalizeJavascriptTargetDescriptor(input) {
 module.exports = Object.freeze({
   // Private source realization shared by the graph loader and Node packager.
   javascriptCallableSource(plan, modulePath, source) {
+    if (plan.callables && plan.callables.version !== CALLABLE_COMPUTATION_VERSION)
+      throw new TypeError('Unsupported JavaScript callable version; rebuild the application plan.');
     if (!plan.callables || !plan.callables.bindings.some(binding => modulePath === (binding.modulePath || plan.callables.modulePath))) return source;
     const { exportName, bindings } = plan.callables;
     const identifier = /^[A-Za-z_$][A-Za-z0-9_$]*$/;

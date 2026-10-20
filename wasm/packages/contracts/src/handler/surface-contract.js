@@ -2,6 +2,8 @@
 
 const HANDLER_SURFACE_CONTRACT_VERSION = 'pulse.handler-surface.v4';
 const HANDLER_SURFACE_CONTRACT_ID = 'pulse.handler-surface';
+// Optional extension: call-free plans retain their existing format and identity.
+const CALLABLE_COMPUTATION_VERSION = 'pulse.computation-call.v1';
 
 const HANDLER_SURFACE_CLASSES = Object.freeze([
   'handler-wrapper',
@@ -315,6 +317,19 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     nativeBehavior: 'emit-body-effect-and-generic-parser',
     schemaPolicy: 'allowed-only-when-pulse-strict-false',
     status: 'supported-when-nonstrict'
+  }),
+  surface({
+    id: 'ctx.call',
+    class: 'sync',
+    canonicalOperation: 'computation.call',
+    publicForms: ["ctx.call(target, input, { inputSchema: 'app.Input', outputSchema: 'app.Output' })"],
+    awaitPolicy: 'forbidden',
+    validPositions: ['selected-http-caller-outside-loops-and-nested-calls'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'shared-bounded-computation-with-schema-conversion',
+    schemaPolicy: 'literal-registered-input-output-object-pair',
+    shapePolicy: CALLABLE_COMPUTATION_VERSION,
+    status: 'supported',
   }),
   surface({
     id: 'ctx.resources',
@@ -679,6 +694,7 @@ function defaultHandlerSurfaceContract() {
 }
 
 module.exports = {
+  CALLABLE_COMPUTATION_VERSION,
   HANDLER_SURFACE_CONTRACT_VERSION,
   HANDLER_AUTHORING_POLICY_VERSION,
   HANDLER_AUTHORING_MODES,

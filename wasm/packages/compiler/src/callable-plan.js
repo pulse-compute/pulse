@@ -1,18 +1,18 @@
 'use strict';
-// Experimental v1 composition boundary. Computation admission remains canonical.
-const VERSION = 'pulse.callable-proof.v1';
+// Versioned synchronous composition boundary; ordinary computation admission owns the body.
+const { CALLABLE_COMPUTATION_VERSION: VERSION } = require('@pulse-compute/wasm-contracts/handler/surface-contract');
 const { CANONICAL_NATIVE_PURE_HELPER_VERSION } = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
 function validateCallables(plan, fail, walkStatements, validatePlan) {
   const entries = plan.callables || [];
-  if (!Array.isArray(entries) || entries.length > 16) { fail('callable table exceeds proof limit'); return; }
+  if (!Array.isArray(entries) || entries.length > 16) { fail('callable table exceeds limit'); return; }
   if (plan.callable) {
     const c = plan.callable;
     const first = plan.entry?.body?.[0];
     if (c.version !== VERSION || !first || first.kind !== 'local' || first.localId !== c.inputLocalId || first.value?.kind !== 'callable-input'
       || first.declaration !== 'const') fail('invalid callable input boundary');
     for (const id of [c.inputSchema, c.outputSchema]) if (!plan.schemas?.registry?.schemas?.some(s => s.id === id)) fail('callable schema missing');
-    if (entries.length || plan.effects?.length || plan.continuations?.length || plan.handlers?.length || plan.helpers?.some(h => h.version !== CANONICAL_NATIVE_PURE_HELPER_VERSION) || plan.stages?.length || plan.packages?.application) fail('callable proof cannot suspend, nest or own dispatch');
-    if (plan.capabilities?.length) fail('callable proof cannot acquire effects or HTTP authority');
+    if (entries.length || plan.effects?.length || plan.continuations?.length || plan.handlers?.length || plan.helpers?.some(h => h.version !== CANONICAL_NATIVE_PURE_HELPER_VERSION) || plan.stages?.length || plan.packages?.application) fail('callable cannot suspend, nest or own dispatch');
+    if (plan.capabilities?.length) fail('callable cannot acquire effects or HTTP authority');
   }
   for (const callee of entries) {
     if (!callee?.callable || callee.callables?.length) { fail('invalid or nested callable'); continue; }
@@ -51,7 +51,7 @@ function validateCallables(plan, fail, walkStatements, validatePlan) {
   if (used.size !== entries.length) fail('unreachable callable retained');
   function rejectLoopCalls(n, inLoop = false) {
     if (!n || typeof n !== 'object') return;
-    if (inLoop && n.kind === 'callable-call') fail('calls inside loops are outside the proof');
+    if (inLoop && n.kind === 'callable-call') fail('calls inside loops are not supported');
     for (const v of Object.values(n)) if (v && typeof v === 'object') rejectLoopCalls(v, inLoop || ['pure-loop','read-loop'].includes(n.kind));
   }
   for (const body of bodies) rejectLoopCalls(body);

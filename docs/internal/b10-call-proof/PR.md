@@ -2,7 +2,7 @@
 
 Plain handlers, reachable Router handlers and managed MCP operations now invoke
 bounded imported computations through shared `ctx.call` on Native and explicit
-Node JavaScript. This draft implements 05B–05F (#443–#447).
+Node JavaScript. This draft implements 05B–05G (#443–#448).
 
 - Shared project resolution, helper composition, schema codecs, readonly ownership,
   resource/workspace rules and Native generation remain the owners. Entities keeps
@@ -15,41 +15,30 @@ Node JavaScript. This draft implements 05B–05F (#443–#447).
   request-owned schemas, resource access, fresh workspace lifetime and deadlines.
 - Calls remain synchronous and bounded: no nested/effectful/dynamic calls,
   call-in-loop, recursion or arbitrary package targets. Callees receive no HTTP,
-  state or effect authority. Public types/support remain 05G.
+  state or effect authority. 05G adds public types, source-bound docs and diagnostics;
+  final support still requires human PR review.
 
 ## Validation
 
-05F implementation: `ea1a05720f874c1941187e6ced637ec3def756b6`; full tree
-`18b6f9ab0d49a39259eeebbeebaed76aacdb79f6`, identical to clean tested local
-`9bfd77fb6e97233c35af5f7ab56d8581d8808c6b`.
+05G adds packed public type checks, a source-bound example executed on all three
+claimed targets, stale callable rejection and caller-position/diagnostic checks.
+It versions callable metadata separately to preserve call-free Native identity.
+Final checkpoint receipts and source identity are recorded in
+`docs/internal/b10-call-proof/05G-VALIDATION.md`; preceding lifetime/budget evidence
+remains in `05F-VALIDATION.md`.
 
-Ten focused runner tasks pass with complete terminal reports. The lifetime proof
-covers 114 successful requests/recoveries, 18 conversion/computation failures,
-six cumulative-deadline cases and allocation exhaustion on both Native targets.
-Existing callable, workspace/resource, transport and MCP regressions pass.
-The separate Router/MCP replay adds 28 executions and 12 rejection cases and
-preserves byte-identical no-call/unused Wasm against untouched `8a51d70`.
-Build, maintenance, documentation and protected-scope checks pass.
-
-05F clears successful frame roots/workspaces, releases invalidated JavaScript
-backing stores and fences calls after failure. It also fixes Fastly guard and
-request-budget selection for resource-free callables. Recovery after a Native
-trap uses a fresh request instance; no catch-and-continue feature is added.
-Measurements and failed attempts are retained in
-`docs/internal/b10-call-proof/05F-VALIDATION.md` and `05f-validation/`.
-
-Full profiles remain deferred by the user's checkpoint direction. Focused
-and injected-provider evidence is not installed closure, real-provider acceptance
+Full profiles remain deferred by the user's checkpoint direction. Focused and
+injected-provider evidence is not installed closure, deployed-provider acceptance
 or a release seal. Dependencies are the restored identical-lockfile graph.
 
 ## Remaining work and direction
 
-05F (#447) hardens cleanup, failures and cumulative request budgets. The next
-unit is 05G, public contract finalization. Application migration, retrieval, reporting, installed
+05G (#448) finalizes the bounded public contract/types and diagnostics. Next:
+05H (#449). Application migration, retrieval, reporting, installed
 closure, provider/client acceptance and sealing retain separate tickets in #436.
 
 The user directed shared `ctx.call`, moderate measured used-call cost and zero
-unused Wasm overhead, then selected each implementation checkpoint through 05F.
+unused Wasm overhead, then selected each implementation checkpoint through 05G.
 No single Entry Point covers this cross-owner work; ordinary root, packages,
 Wasm/compiler, CLI and documentation instructions apply. The release evidence map
 only enrolls the new task. PR #438 stays superseded. Merge, release, deployment and

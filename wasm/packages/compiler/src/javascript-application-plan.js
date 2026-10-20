@@ -220,7 +220,8 @@ function buildJavascriptCallables(graphBuild, options, entryFile) {
       inputSchema: callee.inputSchema, outputSchema: callee.outputSchema, maxCalls: sites.reduce((count, site) => count + (site.maxCalls || 1), 0),
       resources: (callee.plan.binaryResources?.records || []).map(record => record.id) };
   });
-  return { modulePath: bindings[0].modulePath, exportName, bindings };
+  return { version: require('@pulse-compute/wasm-contracts/handler/surface-contract').CALLABLE_COMPUTATION_VERSION,
+    modulePath: bindings[0].modulePath, exportName, bindings };
 }
 
 module.exports = Object.freeze({

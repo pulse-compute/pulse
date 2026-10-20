@@ -15,6 +15,20 @@ function entry(category, options = {}) {
 }
 
 const DIAGNOSTIC_DEFINITIONS = Object.freeze({
+  PULSE_CALL_SOURCE_ENTRY: entry('compile', { exitCode: 3, remediation: ["Place the call in a named plain handler, a reachable Router handler, or a selected managed operation."] }),
+  PULSE_CALL_SOURCE_CONTEXT: entry('compile', { exitCode: 3, remediation: ["Use a simple named context parameter at the selected caller position."] }),
+  PULSE_CALL_SOURCE_FORM: entry('compile', { exitCode: 3, remediation: ["Use ctx.call(importedFunction, input, { inputSchema: 'app.Input', outputSchema: 'app.Output' }) without aliases, computed access, type arguments or spreads."] }),
+  PULSE_CALL_SOURCE_PLACEMENT: entry('compile', { exitCode: 3, remediation: ["Call synchronously in the selected caller body, outside loops, nested calls and nested functions."] }),
+  PULSE_CALL_SOURCE_BINDING: entry('compile', { exitCode: 3, remediation: ["Keep direct context and imported target references unshadowed and unwritten; do not alias or pass the context."] }),
+  PULSE_CALL_SOURCE_TARGET: entry('compile', { exitCode: 3, remediation: ["Import a named synchronous function from a contained project module. Factories, dynamic targets and arbitrary package functions are unsupported."] }),
+  PULSE_CALL_SOURCE_SCHEMAS: entry('compile', { exitCode: 3, remediation: ["Supply exactly inputSchema and outputSchema as literal string properties in an inline object."] }),
+  PULSE_CALL_SOURCE_SCHEMA_UNKNOWN: entry('compile', { exitCode: 3, remediation: ["Register both object schemas in the project schema registry and use their exact literal IDs."] }),
+  PULSE_CALL_SOURCE_SCHEMA_CONFLICT: entry('compile', { exitCode: 3, remediation: ["Use one consistent input/output schema pair for every reachable occurrence of a target."] }),
+  PULSE_CALL_SOURCE_LIMIT: entry('compile', { exitCode: 3, remediation: ["Reduce reachable call occurrences to at most sixteen; reused Router handlers count per reachable occurrence."] }),
+  PULSE_CALL_SOURCE_TARGET_LIMIT: entry('compile', { exitCode: 3, remediation: ["Reduce the number of reachable imported computation targets to at most sixteen."] }),
+  PULSE_CALL_SOURCE_CALLEE: entry('compile', { exitCode: 3, remediation: ["Inspect the nested compiler error. Use bounded synchronous computation, admitted pure helpers, resource reads and workspaces; remove effects, HTTP/state, mutation of borrowed input, escaping views and nested calls."] }),
+  PULSE_CALL_SOURCE_PROVIDER: entry('compile', { exitCode: 3, remediation: ["Select explicit Node JavaScript, or a supported Native provider; there is no automatic target fallback."] }),
+  PULSE_CALL_BOUNDARY_INVALID: entry('runtime', { exitCode: 4, httpStatus: 500, remediation: ['Rebuild the application from admitted source; use each computation only within its request, static call count and invocation-owned view lifetime.'] }),
   PULSE_MCP_STATIC_BINDING_REQUIRED: entry('compile', { exitCode: 3, remediation: ['Declare one module-level MCP binding with literal protocol options, one local EntityRouter and a direct terminal handle(ctx) return.'] }),
   PULSE_REPORT_INPUT_INVALID: entry('report', { exitCode: 3, remediation: ['Use an unmodified supported Report capsule or a completed-Wasm manifest with its matching local files.'] }),
   PULSE_REPORT_EVIDENCE_MISSING: entry('report', { exitCode: 3, remediation: ['Run pulse compile or pulse build with the selected Native profile, then retry report; report never builds automatically.'] }),
@@ -191,6 +205,20 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
  });
 
 const DIAGNOSTIC_SUMMARIES = Object.freeze({
+  PULSE_CALL_SOURCE_ENTRY: "Computation calls need a selected project HTTP caller.",
+  PULSE_CALL_SOURCE_CONTEXT: "The computation caller context parameter is unsupported.",
+  PULSE_CALL_SOURCE_FORM: "Computation call syntax is not a direct static call.",
+  PULSE_CALL_SOURCE_PLACEMENT: "The computation call is awaited, nested or inside a loop/function.",
+  PULSE_CALL_SOURCE_BINDING: "The computation context or target binding escapes or changes.",
+  PULSE_CALL_SOURCE_TARGET: "The computation target is not an imported synchronous project function.",
+  PULSE_CALL_SOURCE_SCHEMAS: "Computation calls require two literal schema IDs.",
+  PULSE_CALL_SOURCE_SCHEMA_UNKNOWN: "A computation schema ID is absent from the project registry.",
+  PULSE_CALL_SOURCE_SCHEMA_CONFLICT: "The same computation target uses conflicting schema pairs.",
+  PULSE_CALL_SOURCE_LIMIT: "The application exceeds sixteen reachable computation call occurrences.",
+  PULSE_CALL_SOURCE_TARGET_LIMIT: "The application exceeds sixteen computation targets.",
+  PULSE_CALL_SOURCE_CALLEE: "The computation body failed canonical admission.",
+  PULSE_CALL_SOURCE_PROVIDER: "Computation calls are unavailable on this JavaScript provider.",
+  PULSE_CALL_BOUNDARY_INVALID: 'A computation call violated its target, schema, count or lifetime boundary.',
   PULSE_MCP_STATIC_BINDING_REQUIRED: 'The MCP binding is dynamic, invalid or outside the supported static protocol and Entities composition contract.',
   PULSE_REPORT_INPUT_INVALID: 'Report evidence is malformed, unsafe, or fails integrity validation.',
   PULSE_REPORT_EVIDENCE_MISSING: 'A matching completed Wasm build and its required retained evidence are missing.',

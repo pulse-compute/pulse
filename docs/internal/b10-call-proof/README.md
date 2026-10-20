@@ -1,13 +1,13 @@
 # B10 — shared callable composition proof
 
-Current authored execution checkpoint: [B10-MCP-05F](./05F.md). Multiple imported
-targets and ordinary pure helpers execute through named plain Native and explicit
-Node JavaScript entries, including the graph loader and built Node source package. [05B](./05B.md) records the single-target foundation. The backend-proof measurements and limitations below are retained
-historical evidence. Router/MCP authoring is implemented in 05E. Public support
-and the complete context application remain separate work units.
+Current authored contract checkpoint: [B10-MCP-05G](./05G.md). Bounded imported
+computations execute through shared `ctx.call` in plain HTTP, Router and managed
+MCP callers on Node Native, Fastly Native and explicit Node JavaScript. 05G adds
+public types, contract documentation, diagnostics and versioned callable metadata.
+The backend-proof measurements below remain historical evidence.
 
-Status: **internal execution-boundary proof, not a supported `ctx.call` API and
-not completion of B10-MCP-05**. Do not merge as product completion.
+Status: **public contract prepared for human review on draft #442; not completion
+of B10-MCP-05**. Application migration and final acceptance remain separate units.
 
 ## Human direction and superseded work
 
@@ -162,3 +162,9 @@ records the focused integration checkpoint. Next: 05F (#447).
 [05F](./05F.md) hardens frame cleanup, terminal failures and cumulative request
 budgets, including resource-free Fastly callable instrumentation.
 [Validation](./05F-VALIDATION.md) records the focused checkpoint. Next: 05G.
+
+## 05G continuation
+
+[05G](./05G.md) finalizes public computation types, source-bound documentation,
+diagnostics and stale metadata rejection. `05G-VALIDATION.md` records the focused
+checkpoint. Next: 05H (#449).

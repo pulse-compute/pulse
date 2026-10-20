@@ -1,5 +1,5 @@
 'use strict';
-// Internal proof frontend, deliberately not an authoring export. This adapts a
+// Internal computation frontend, not an authoring export. This adapts a
 // parameter binding, then delegates the whole body to ordinary admission/lowering.
 const ts = require('typescript');
 const crypto = require('node:crypto');
@@ -16,7 +16,7 @@ function compileCallable(source, { inputSchema, outputSchema, schemaBundle, bina
   const fn = sf.statements[0];
   if (sf.statements.length !== 1 || !ts.isFunctionDeclaration(fn) || !fn.name || !fn.body || fn.asteriskToken || fn.typeParameters?.length
     || fn.parameters.length !== 2 || fn.parameters.some(p => !ts.isIdentifier(p.name) || p.initializer || p.dotDotDotToken || p.questionToken)
-    || fn.parameters[0].name.text === fn.parameters[1].name.text) throw new TypeError('Callable proof requires one named (ctx, input) function; the project linker supplies admitted helpers separately.');
+    || fn.parameters[0].name.text === fn.parameters[1].name.text) throw new TypeError('Computation requires one named (ctx, input) function; the project linker supplies admitted helpers separately.');
   const ctx = fn.parameters[0].name.text, input = fn.parameters[1].name.text;
   const printer = ts.createPrinter();
   const body = fn.body.statements.map(s => printer.printNode(ts.EmitHint.Unspecified, s, sf)).join('\n');
