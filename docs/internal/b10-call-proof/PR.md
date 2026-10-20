@@ -21,7 +21,14 @@ explicit Node JavaScript.
 
 ## Validation
 
-The exact 05D tested revision, terminal logs and remaining checks are recorded in
+05D implementation: `56f1e464ae4427d78bb20e839e54fb9cc65ce703`, with full tree
+`a0d3aac1d4aebeeeb86fcf6929c64602771154f0` identical to clean tested local
+`f27ef5674458305dc944ec354110b0e95a5b7b9b`. Nine selected runner tasks pass,
+plus the authored unchanged-baseline replay and build/documentation/maintenance/
+scope checks. The new task has 14 successful executions, 4 invalid-output
+rejections, 10 source rejections and 18 ownership/deadline checks.
+
+The exact source binding, terminal logs and remaining checks are recorded in
 `docs/internal/b10-call-proof/05D-VALIDATION.md`. The registered
 `callable-authored-javascript` task exercises actual `ctx.call` sites across
 Native, the JavaScript loader, CLI preparation and built Node packages, plus
