@@ -33,10 +33,11 @@ function bindCallableApplication(application, targets, bindings) {
   return application;
 }
 
-function readonly(value, execution) {
+function readonly(value, execution, cleanups) {
   if (!value || typeof value !== 'object') return value;
-  const copy = Array.isArray(value) ? value.map(item => readonly(item, execution))
-    : Object.fromEntries(Object.entries(value).map(([key, item]) => [key, readonly(item, execution)]));
+  const copy = Array.isArray(value) ? value.map(item => readonly(item, execution, cleanups))
+    : Object.fromEntries(Object.entries(value).map(([key, item]) => [key, readonly(item, execution, cleanups)]));
+  cleanups.push(() => { for (const key of Object.keys(copy)) delete copy[key]; if (Array.isArray(copy)) copy.length = 0; });
   return new Proxy(copy, {
     get(target, key, receiver) { execution.checkOpen(); return Reflect.get(target, key, receiver); },
     has(target, key) { execution.checkOpen(); return Reflect.has(target, key); },
@@ -58,11 +59,13 @@ function createCallBoundary(parent, options) {
       || schemas.inputSchema !== binding.inputSchema || schemas.outputSchema !== binding.outputSchema) fail('schema pair changed');
     let state = executions.get(parent);
     if (!state) { state = { active: false, counts: new Map() }; executions.set(parent, state); }
+    if (state.failed) throw state.failure;
     if (state.active) fail('cannot be nested');
     const count = (state.counts.get(target) || 0) + 1;
     if (count > binding.maxCalls) fail('static site budget exceeded');
     state.counts.set(target, count);
     let closed = false;
+    const cleanups = [];
     const execution = Object.freeze({ checkOpen() {
       parent.checkOpen();
       if (closed) fail('lifetime is closed');
@@ -80,7 +83,7 @@ function createCallBoundary(parent, options) {
     try {
       const decoded = encodeSchemaValue(binding.inputSchema, input, options, { source: 'application-value' }).value;
       execution.checkOpen();
-      const result = target(context, readonly(decoded, execution));
+      const result = target(context, readonly(decoded, execution, cleanups));
       if (result && typeof result.then === 'function') {
         // Source admission rejects async targets; still observe an invalid host
         // Promise so boundary rejection cannot create an unhandled rejection.
@@ -91,8 +94,17 @@ function createCallBoundary(parent, options) {
       const output = encodeSchemaValue(binding.outputSchema, result, options, { source: 'application-value' }).value;
       execution.checkOpen();
       return output;
+    } catch (error) {
+      // A failed computation is terminal for this request's callable frame.
+      // Protocol owners may frame the error, but cannot resume the computation.
+      state.failed = true;
+      state.failure = error;
+      throw error;
     } finally {
       closed = true;
+      require('./workspace.js').closeNumericWorkspaceContext(execution);
+      for (const cleanup of cleanups) cleanup();
+      cleanups.length = 0;
       state.active = false;
     }
   };

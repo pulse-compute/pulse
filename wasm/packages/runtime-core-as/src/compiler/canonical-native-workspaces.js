@@ -15,6 +15,7 @@ function __pulse_workspace_write(base: usize, capacity: i32, offset: f64, value:
   return value;
 }`);
   return { source,
+    clear: () => records.map(r => `memory.fill(${base(r.id)}, 0, ${r.capacity * 8})`),
     init: e => `if (host_workspace_check(0.0, ${capacity(e.workspaceId)}, 0.0) >= 0) memory.fill(${base(e.workspaceId)}, 0, ${capacity(e.workspaceId) * 8})`,
     read: (e, offset) => e.offset ? `__pulse_workspace_read(${base(e.workspaceId)}, ${capacity(e.workspaceId)}, ${offset})` : `(<f64>${capacity(e.workspaceId)} + <f64>(host_workspace_check(0.0, ${capacity(e.workspaceId)}, 0.0) * 0))`,
     write: (e, offset, value) => `__pulse_workspace_write(${base(e.workspaceId)}, ${capacity(e.workspaceId)}, ${offset}, ${value})`

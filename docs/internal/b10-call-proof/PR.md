@@ -2,7 +2,7 @@
 
 Plain handlers, reachable Router handlers and managed MCP operations now invoke
 bounded imported computations through shared `ctx.call` on Native and explicit
-Node JavaScript. This draft implements 05B–05E (#443–#446).
+Node JavaScript. This draft implements 05B–05F (#443–#447).
 
 - Shared project resolution, helper composition, schema codecs, readonly ownership,
   resource/workspace rules and Native generation remain the owners. Entities keeps
@@ -18,6 +18,10 @@ Node JavaScript. This draft implements 05B–05E (#443–#446).
   state or effect authority. Public types/support remain 05G.
 
 ## Validation
+
+05F adds successful-frame cleanup, failed-call fencing and resource-free Fastly
+request-budget instrumentation. Its final focused checkpoint is recorded in
+`docs/internal/b10-call-proof/05F-VALIDATION.md`. The prior 05E evidence follows.
 
 05E implementation: `d5a335aeb395db912a7208a2198464405340ea73`; full Git tree `e68f2b42c1252fd25c986cb062828e5f1b242f8e`,
 identical to clean tested local `88b62fc5f9b4fb74a0e2d38203987fcfd34593af`.
@@ -39,12 +43,12 @@ graph, not fresh clean-install qualification.
 
 ## Remaining work and direction
 
-Next is 05F (#447), failure/cleanup and cumulative request budgets; public contract
-finalization remains 05G. Application migration, retrieval, reporting, installed
+05F (#447) hardens cleanup, failures and cumulative request budgets. The next
+unit is 05G, public contract finalization. Application migration, retrieval, reporting, installed
 closure, provider/client acceptance and sealing retain separate tickets in #436.
 
 The user directed shared `ctx.call`, moderate measured used-call cost and zero
-unused Wasm overhead, then selected each implementation checkpoint through 05E.
+unused Wasm overhead, then selected each implementation checkpoint through 05F.
 No single Entry Point covers this cross-owner work; ordinary root, packages,
 Wasm/compiler, CLI and documentation instructions apply. The release evidence map
 only enrolls the new task. PR #438 stays superseded. Merge, release, deployment and

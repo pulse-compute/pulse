@@ -29,24 +29,23 @@ function generateCallableSources(callables, options = {}) {
     // codec boundary. Dead private generated codecs disappear during Wasm DCE.
     let source = namespaceSource(generated.source,prefix);
     source = source.replace(/^import .*\n/gm,'').replace(/^@external\("pulse_host",.*\n/gm,'');
-    const clear = plan.locals.map((_,i) => `${prefix}__pulse_local_${i} = 0`).join('; ');
+    const clear = `${prefix}__pulse_callable_close()`;
     fragments.push(source, `
 let __pulse_callable_active_${index}: bool = false
 function __pulse_callable_${index}(input: i32): i32 {
   if (__pulse_callable_active_${index}) abort('Recursive callable', 'callable', 0, 0)
   if (host_resource_check(0.0, 0, 0) < 0) return 0
   __pulse_callable_active_${index} = true
+  ${clear}
   // A bounded schema round trip gives the callee an owned input graph. No HTTP.
   const inputText = host_schema_encode(input, __pulse_callable_string(${JSON.stringify(plan.callable.inputSchema)}))
   ${prefix}__pulse_callable_input = host_schema_decode(inputText, __pulse_callable_string(${JSON.stringify(plan.callable.inputSchema)}))
-  ${clear}
   ${prefix}__pulse_started = 0
   const status = ${prefix}pulse_start()
   if (status != 0) abort('Callable failed', 'callable', 0, 0)
   const resultText = host_schema_encode(${prefix}pulse_result_handle(), __pulse_callable_string(${JSON.stringify(plan.callable.outputSchema)}))
   const result = host_schema_decode(resultText, __pulse_callable_string(${JSON.stringify(plan.callable.outputSchema)}))
   ${clear}
-  ${prefix}__pulse_result = 0; ${prefix}__pulse_callable_input = 0
   __pulse_callable_active_${index} = false
   if (host_resource_check(0.0, 0, 0) < 0) return 0
   return result

@@ -97,6 +97,13 @@ function assembleNativeSource({
     ...support.globals,
     ...numeric.globals,
     ...resources.source,
+    ...(plan.callable ? [
+      'function __pulse_callable_close(): void {',
+      ...support.valueRoots.map(name => `  ${name} = 0`),
+      '  __pulse_callable_input = 0',
+      ...resources.workspaces.clear().map(line => `  ${line}`),
+      '}'
+    ] : []),
     ...(ownership.enabled ? [
       'function __pulse_handle_guest_roots(): void {',
       ...support.valueRoots.map(name => `  __pulse_handle_mark(${name})`),

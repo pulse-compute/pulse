@@ -1218,6 +1218,10 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 180000,
     description: '05D static Node JavaScript calls, packaged source, Native parity and request-owned boundary rejection'
   }),
+  'callable-lifetime': nodeTask('test/callables/assert-callable-lifetime.cjs', {
+    evidence: 'native', timeoutMs: 300000,
+    description: '05F callable failure, fresh-request recovery, cumulative deadlines and allocation evidence'
+  }),
   'callable-authored-routed': nodeTask('test/callables/assert-callable-routed.cjs', {
     evidence: 'native', timeoutMs: 300000,
     description: '05E reachable Router and managed MCP calls, shared computation parity and unused emission'
@@ -1501,6 +1505,7 @@ const profiles = Object.freeze({
     'callable-authored-composition',
     'callable-authored-javascript',
     'callable-authored-routed',
+    'callable-lifetime',
     'mcp-native-binding',
     'fastly-entities-native-workflow',
     'crypto-native-guest-source',

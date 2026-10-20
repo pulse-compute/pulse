@@ -138,8 +138,9 @@ export default defineSchemaRegistry({schemas:{'proof.Input':schema<Input>(),'pro
   await boundary(retry,ctx=>{
     assert.throws(()=>ctx.call(retry,input,pair),/callee failure/);
     assert.throws(()=>failedView.readU8(0),/lifetime is closed/);
-    assert.equal(ctx.call(retry,input,pair).word,'ok');checks+=3;
+    assert.throws(()=>ctx.call(retry,input,pair),/callee failure/);assert.equal(attempt,1);checks+=4;
   },2);
+  await boundary(retry,ctx=>{assert.equal(ctx.call(retry,input,pair).word,'ok');checks++;});
   let now=0, expiredView;
   const clock={now:()=>now,setTimeout:()=>0,clearTimeout:()=>{}};
   const budget=runtime.createRequestBudget({maxDurationMs:5,requestClock:clock});

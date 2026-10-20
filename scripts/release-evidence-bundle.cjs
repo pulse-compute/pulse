@@ -127,6 +127,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'callable-authored-composition',
       'callable-authored-javascript',
       'callable-authored-routed',
+      'callable-lifetime',
       'mcp-native-binding',
       'fastly-entities-native-workflow',
       'crypto-native-guest-source',
