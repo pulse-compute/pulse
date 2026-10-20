@@ -1,0 +1,303 @@
+{
+  "schemaVersion": "pulse.r06-checkpoint.v1",
+  "status": "passed",
+  "claim": "Standalone Native registration ABI proof; R07 production implementation and R08 feature qualification remain pending",
+  "baseRevision": "138ab310de081e4f8bf62a8a90966c9731c40510",
+  "baseTree": "5632ed9453842131ee55cb4a5269eb123942c65f",
+  "sourceIdentity": "Development working tree on the named base; sourceFiles binds the final changed executable inputs and contract note. Runner sourceRevision labels the then-current commit and does not include uncommitted changes. These are focused development runs, not an immutable release candidate or seal.",
+  "sourceFiles": {
+    "wasm/test/provider/assert-fastly-native-dynamic-backend-abi.cjs": "59f401d7dfad995be38437a88c760daaafb7c83c7851f82837650eb66a0fd8f2",
+    "wasm/test/fixtures/projects/fastly-compute-reality/dynamic-backend-abi.as.ts": "5f2e9b2ec67e820b1cea35272656b4aa30c0e4ce4aa81cf1c8867fd764e7bf66",
+    "wasm/test/provider/assert-fastly-native-http-effects.cjs": "41d58a90d3a4bacb7f3f546067ca590e97d9cbd2ee752c22978d655482050181",
+    "docs/internal/b10-r06/README.md": "773072be21eed30363e077af12c3f114f009148fe67856e057f20f3cadfcfd5a"
+  },
+  "node": "v24.19.0",
+  "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0",
+  "upstream": {
+    "repository": "fastly/Viceroy",
+    "commit": "ba6fb78c02b2f40b70f8c65ab86fa86c66f0641f",
+    "version": "0.21.1",
+    "archiveSha256": "54a5b46ab05ce1492f4df136728b2eb81b350cb42da5d9f2eec66558ddc1e233"
+  },
+  "commands": [
+    "node wasm/scripts/run-wasm-tests.cjs --task fastly-native-http-effects --task suite-shape",
+    "PULSE_VICEROY_BIN=/absolute/path/to/viceroy node wasm/test/provider/assert-fastly-native-dynamic-backend-abi.cjs --viceroy",
+    "PULSE_VICEROY_BIN=/absolute/path/to/viceroy node wasm/scripts/run-wasm-tests.cjs --task fastly-native-http-effects --task provider-fastly-package --task fastly-javascript-runtime --task provider-fastly-compute-reality --task suite-shape",
+    "node wasm/scripts/run-wasm-tests.cjs --task release-evidence-authority"
+  ],
+  "observations": {
+    "schemaVersion": "pulse.r06-dynamic-backend-proof.v1",
+    "status": "passed",
+    "claim": "standalone ABI experiment; Pulse Native support remains R07",
+    "compiler": "0.28.18",
+    "strictCells": 13,
+    "dynamic": {
+      "bytes": 8677,
+      "sha256": "a3baa524a43899dde4350ee1c76190331cf1529e57e3b8caec5df19add3c5d4e"
+    },
+    "staticControl": {
+      "bytes": 7533,
+      "sha256": "443755e58fe7c09f7108e9a21f53f7b0185b78416ff23a911f3cf382337f60a2"
+    },
+    "standaloneProbeDeltaBytes": 1144,
+    "local": {
+      "status": "passed",
+      "checks": [
+        "two-runtime-origins",
+        "fresh-request-same-names",
+        "same-origin-reuse",
+        "duplicate-name-rejected",
+        "reserved-mask-rejected",
+        "empty-host-rejected",
+        "tls-ca-host-sni",
+        "mismatched-cert-sni-rejected",
+        "wrong-certificate-host-rejected",
+        "untrusted-ca-rejected",
+        "static-name-collision-rejected",
+        "disabled-static-control"
+      ],
+      "engine": "0.21.1",
+      "binarySha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9",
+      "openssl": "OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)",
+      "tlsArtifactSha256": "3ea893ee24ff8713b5dd5f41d95b814be0a79ccb676955af984eeb9aed73cdd7",
+      "testCaSha256": "379f33e1d5cd9127583ed9129fc951060e8e3d0524e765e21864bccc4090e262",
+      "stopped": [
+        {
+          "exitCode": null,
+          "signal": "SIGTERM"
+        },
+        {
+          "exitCode": null,
+          "signal": "SIGTERM"
+        },
+        {
+          "exitCode": null,
+          "signal": "SIGTERM"
+        },
+        {
+          "exitCode": null,
+          "signal": "SIGTERM"
+        },
+        {
+          "exitCode": null,
+          "signal": "SIGTERM"
+        }
+      ],
+      "cleanup": "passed",
+      "testCaOnly": true,
+      "hosted": "not-run"
+    }
+  },
+  "controls": {
+    "build": "passed",
+    "maintainer": "passed-final-integration",
+    "documentation": "passed",
+    "documentationRelease": "passed",
+    "publication": "passed"
+  },
+  "failedAttempts": [
+    {
+      "logs": [
+        "/tmp/r06-strict-first.log"
+      ],
+      "outcome": "Compiler resolver initially searched workspace root rather than the compiler package; corrected to existing resolver ownership."
+    },
+    {
+      "logs": [
+        "/tmp/r06-strict-second.log"
+      ],
+      "outcome": "Absolute source argument did not match the abort alias; compile now uses the staging cwd and module basename."
+    },
+    {
+      "logs": [
+        "/tmp/r06-strict-third.log",
+        "/tmp/r06-local-first.log"
+      ],
+      "outcome": "Disabled experimental duplicate case retained the import; conditional emission corrected and import absence now passes."
+    },
+    {
+      "logs": [
+        "/tmp/r06-local.log"
+      ],
+      "outcome": "Arrival-order oracle was too strict; corrected to unordered arrival with a barrier enforcing both dispatches and reverse completion."
+    },
+    {
+      "logs": [
+        "/tmp/r06-local-second.log",
+        "/tmp/r06-local-third.log"
+      ],
+      "outcome": "Initial local TLS fixture incorrectly used a CA as the server leaf; Viceroy rejected it. Replaced with a proper CA-signed CA:false server certificate; trust/hostname failures remain asserted."
+    },
+    {
+      "logs": [
+        "/tmp/r06-maintainer.log"
+      ],
+      "outcome": "Initial separate registry task lacked a shard mapping. Mapping was added and passed, then both metadata edits were retired in favor of attaching the proof to the existing Native effects task. Final diff changes no registry/profile/shard or release-authority source."
+    },
+    {
+      "logs": [
+        "/tmp/r06-scope.log"
+      ],
+      "outcome": "Earlier six-file design touched release evidence metadata without a complete boundary declaration. That design was retired; final five-file scope removes registry/shard metadata changes. No committed-run receipt was produced by the short-circuited command."
+    }
+  ],
+  "limits": [
+    "No Pulse production dynamic-backend support is added by this checkpoint.",
+    "No hosted service capability, public DNS/TLS, connection reuse, production artifact overhead or RSS qualification is claimed.",
+    "Standalone probe delta is not the Pulse no-feature or enabled artifact delta.",
+    "Local TLS additional CA exists only in the experiment.",
+    "R07 Native URL subset and diagnostics must be implemented and publicly reported before claiming eligibility.",
+    "No merge, publication or deployment performed."
+  ],
+  "developmentHistory": [
+    {
+      "file": "/tmp/r06-focused.json",
+      "sha256": "00fb8d397501b6573805fa0103a7f80eb3f83e30a24e92c7e9a79de02ca20378",
+      "sourceRevision": "138ab310de081e4f8bf62a8a90966c9731c40510",
+      "status": "passed",
+      "tasks": [
+        {
+          "name": "fastly-native-dynamic-backend-abi",
+          "status": "passed",
+          "durationMs": 2762
+        },
+        {
+          "name": "suite-shape",
+          "status": "passed",
+          "durationMs": 144
+        }
+      ],
+      "disposition": "Earlier standalone registered-task design; superseded by integration into existing Native effects task. Not final-source qualification."
+    },
+    {
+      "file": "/tmp/r06-regression.json",
+      "sha256": "1c2d7d8c8a063b78c5d08ab56326e8023b5a6cd3450f673449005ae29f5a25e8",
+      "sourceRevision": "138ab310de081e4f8bf62a8a90966c9731c40510",
+      "status": "passed",
+      "tasks": [
+        {
+          "name": "fastly-native-dynamic-backend-abi",
+          "status": "passed",
+          "durationMs": 2404
+        },
+        {
+          "name": "provider-fastly-package",
+          "status": "passed",
+          "durationMs": 10065
+        },
+        {
+          "name": "fastly-javascript-runtime",
+          "status": "passed",
+          "durationMs": 224
+        },
+        {
+          "name": "provider-fastly-compute-reality",
+          "status": "passed",
+          "durationMs": 13591
+        },
+        {
+          "name": "suite-shape",
+          "status": "passed",
+          "durationMs": 151
+        }
+      ],
+      "disposition": "Earlier standalone registered-task design; superseded by integration into existing Native effects task. Not final-source qualification."
+    },
+    {
+      "file": "/tmp/r06-evidence-authority.json",
+      "sha256": "f841c01342c36ec12f813c8f2ecdda1808475f0881ccfdc175628f74b8251e38",
+      "sourceRevision": "138ab310de081e4f8bf62a8a90966c9731c40510",
+      "status": "passed",
+      "tasks": [
+        {
+          "name": "release-evidence-authority",
+          "status": "passed",
+          "durationMs": 1199
+        }
+      ],
+      "disposition": "Earlier standalone registered-task design; superseded by integration into existing Native effects task. Not final-source qualification."
+    }
+  ],
+  "reports": [
+    {
+      "file": "/tmp/r06-integrated-regression.json",
+      "sha256": "8c1ae4c6473fcf8a4517518cbfb8556249f494aad771e44054d963d29229c999",
+      "sourceRevision": "bc14a9c69ca0cb9d5f85731cf7e488b34fd22502",
+      "workingTreeSourceHashes": "sourceFiles",
+      "status": "passed",
+      "durationMs": 39721,
+      "tasks": [
+        {
+          "name": "fastly-native-http-effects",
+          "status": "passed",
+          "durationMs": 16083,
+          "cleanup": {
+            "status": "passed"
+          },
+          "retainedTaskRoot": null,
+          "remainingProcessTree": []
+        },
+        {
+          "name": "provider-fastly-package",
+          "status": "passed",
+          "durationMs": 9705,
+          "cleanup": {
+            "status": "passed"
+          },
+          "retainedTaskRoot": null,
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-javascript-runtime",
+          "status": "passed",
+          "durationMs": 185,
+          "cleanup": {
+            "status": "passed"
+          },
+          "retainedTaskRoot": null,
+          "remainingProcessTree": []
+        },
+        {
+          "name": "provider-fastly-compute-reality",
+          "status": "passed",
+          "durationMs": 13538,
+          "cleanup": {
+            "status": "passed"
+          },
+          "retainedTaskRoot": null,
+          "remainingProcessTree": []
+        },
+        {
+          "name": "suite-shape",
+          "status": "passed",
+          "durationMs": 195,
+          "cleanup": {
+            "status": "passed"
+          },
+          "retainedTaskRoot": null,
+          "remainingProcessTree": []
+        }
+      ]
+    },
+    {
+      "file": "/tmp/r06-evidence-integrated.json",
+      "sha256": "56d0d0acdacd940f8c23d3a7fc98ff07d20f7b70e31cae6f684e7c6f90d1f39a",
+      "sourceRevision": "bc14a9c69ca0cb9d5f85731cf7e488b34fd22502",
+      "workingTreeSourceHashes": "sourceFiles",
+      "status": "passed",
+      "durationMs": 1020,
+      "tasks": [
+        {
+          "name": "release-evidence-authority",
+          "status": "passed",
+          "durationMs": 1012,
+          "cleanup": {
+            "status": "passed"
+          },
+          "retainedTaskRoot": null,
+          "remainingProcessTree": []
+        }
+      ]
+    }
+  ]
+}
