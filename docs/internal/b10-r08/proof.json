@@ -1,0 +1,1092 @@
+{
+  "schemaVersion": "pulse.b10-r08.evidence.v1",
+  "base": "7659f51283bddf9465144b32716931a092b31003",
+  "baseTree": "5d8d54880dcd2271cba1d685d479edc9fff83b09",
+  "sourceInputs": [
+    {
+      "path": "docs/guides/fastly-capabilities.md",
+      "sha256": "8ade2544eb08b37ee27cd5402149e5cf85d8bb17e83b2950a02edeaefb793844"
+    },
+    {
+      "path": "wasm/packages/cli/docs/guides/fastly-capabilities.md",
+      "sha256": "8ade2544eb08b37ee27cd5402149e5cf85d8bb17e83b2950a02edeaefb793844"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/fastly-compute-reality/dynamic-backends-example.ts",
+      "sha256": "b895ded0cf4c6485e09f1cbc9070278f4b73d1924f23a855921be61849115dfb"
+    },
+    {
+      "path": "wasm/test/provider/assert-fastly-dynamic-backends-installed.cjs",
+      "sha256": "d80b772e500ccae8e760240a08a8b03c6f7f43377a884926592a846fcfb56ee0"
+    },
+    {
+      "path": "wasm/test/suite/assert-suite-shape.cjs",
+      "sha256": "ca878b3678b0df9ef74bd2303bedab116de7ea14826d8c0fa6b61e83c3c89186"
+    },
+    {
+      "path": "wasm/test/suite/registry.cjs",
+      "sha256": "d43f7310d85a70c5d591e5426dca6be8d55dab68ebde00ec1ff2dea6e3c12c7a"
+    }
+  ],
+  "qualificationReceiptSha256": "de1c0f929e42d6a84558b4d37db4170451bba96491aad7cbf4f46d7064151ae8",
+  "qualification": {
+    "schemaVersion": "pulse.fastly-dynamic-installed.v1",
+    "status": "passed",
+    "scope": "installed public CLI, injected ABI and local Compute; no hosted acceptance",
+    "featureAcceptance": "pending-hosted",
+    "lanes": {
+      "nativeInjected": "installed artifact on workspace ABI oracle",
+      "javascript": "installed emitted Fastly closure on Node provider-emulation; not js-compute Wasm",
+      "localCompute": "installed Native Wasm on real local Fastly engine",
+      "hosted": "not-run"
+    },
+    "source": "ca82faa94ba60fe832ae664dcac7c45c16ac5282",
+    "sourceTree": "917b8c6d52917f664343fb93c91fb7d06f4600da",
+    "workingTree": "",
+    "scriptSha256": "d80b772e500ccae8e760240a08a8b03c6f7f43377a884926592a846fcfb56ee0",
+    "workingDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0",
+    "node": "v24.19.0",
+    "nodeBinarySha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+    "startedAt": "2026-10-20T20:47:41.354Z",
+    "hosted": {
+      "status": "not-run",
+      "requirements": [
+        "authorized Fastly test service and Dynamic Backends entitlement",
+        "public DNS and platform-root TLS/certificate rejection",
+        "host resource limits, unavailable capability and connection reuse"
+      ],
+      "releaseDisposition": "not-waived"
+    },
+    "artifacts": [
+      {
+        "capacity": 1,
+        "dynamicBytes": 130502,
+        "fixedBytes": 124323,
+        "deltaBytes": 6179,
+        "dynamicGzipBytes": 49984,
+        "fixedGzipBytes": 47840,
+        "wasmSha256": "7e6a282aa470020325d34ed5ec599103b6b41f2990c044f544f02bdbab219381",
+        "fixedSha256": "bc073960a9b17de6ee34c9116bc3fcad49133c48ec72b621ebc7b21291212439",
+        "sourceSha256": "acbbd3dfd663e196708d2c48c484c8fccd2fec811cdde468c4ac359192424129",
+        "javascriptBundleBytes": 581981,
+        "javascriptBundleSha256": "4552c8c3f184bb8f37f375f6eeffa9d5b8a9fb2a53a919a99114804abe41fb72"
+      },
+      {
+        "capacity": 4,
+        "dynamicBytes": 131441,
+        "fixedBytes": 125298,
+        "deltaBytes": 6143,
+        "dynamicGzipBytes": 50523,
+        "fixedGzipBytes": 48380,
+        "wasmSha256": "9f62f1d04b83041ce8e9c60474eac2418cddb9981b1cd57b7d21bc4802ed08e8",
+        "fixedSha256": "a9861c58ca1303097e17e8ce0730625b6119452ba6fa8b658df4b654c0070a64",
+        "sourceSha256": "f957a7fc2850ae29200ddd290ac1171a12d1886230494f9e644e030b9c4cc990",
+        "javascriptBundleBytes": 581981,
+        "javascriptBundleSha256": "6331bfc64eaffa7aadde8bc1ef2d2f1a84ce37b7456cd25bffca88b9e3c4c934"
+      },
+      {
+        "capacity": 16,
+        "dynamicBytes": 135152,
+        "fixedBytes": 129113,
+        "deltaBytes": 6039,
+        "dynamicGzipBytes": 51799,
+        "fixedGzipBytes": 49775,
+        "wasmSha256": "1a69176010f99d81834970067e58a4531fe4ff89477d0536589ea2355a48d96d",
+        "fixedSha256": "69bb3b77600f2f766227df44dd0c7fbc1c1e601b4be86d945e8f522279dc0873",
+        "sourceSha256": "ddec0c17f64ae05ace9a52f1b3fe5f52232a559225f7ff3d8b6d520dc411219f",
+        "javascriptBundleBytes": 581982,
+        "javascriptBundleSha256": "c225b5fbf3d6e48bca6915a419b25ecaa1c6bc9e988d5b298740e7aba5c0b394"
+      },
+      {
+        "capacity": 32,
+        "dynamicBytes": 140009,
+        "fixedBytes": 133856,
+        "deltaBytes": 6153,
+        "dynamicGzipBytes": 53438,
+        "fixedGzipBytes": 51364,
+        "wasmSha256": "0c08ccadcf125436ec32bf19518d7c96a7c1f4c3b770a1032f5bb9f32ae22bfd",
+        "fixedSha256": "103d1d5021269ad56bef13764b74bc7df144bccd547107ac1b37a876bcdc2bec",
+        "sourceSha256": "dd86ba1beaf9eecf43f9559eaae69379251ae1e26d1e6d0619ee8e273323623d",
+        "javascriptBundleBytes": 581982,
+        "javascriptBundleSha256": "8b108820cde365894e5ce5ee2d5091788e66040d2ff98ddf005abcb0401bc41d"
+      }
+    ],
+    "matrix": [
+      {
+        "capacity": 1,
+        "kind": "repeated",
+        "registrations": 1,
+        "sends": 1,
+        "linearMemoryBytes": 2621440,
+        "linearMemoryScope": "committed Wasm memory after execution; not RSS or live guest allocation",
+        "injectedExecutionMedianMs": 1.5326009999989765,
+        "fixedControlMedianMs": 1.4257920000018203,
+        "timingScope": "fresh Wasm instance + guest + strict JS host, no network; not platform registration CPU",
+        "javascript": "passed",
+        "native": "passed"
+      },
+      {
+        "capacity": 1,
+        "kind": "distinct",
+        "registrations": 1,
+        "sends": 1,
+        "linearMemoryBytes": 2621440,
+        "linearMemoryScope": "committed Wasm memory after execution; not RSS or live guest allocation",
+        "injectedExecutionMedianMs": 1.2871760000052745,
+        "fixedControlMedianMs": null,
+        "timingScope": "fresh Wasm instance + guest + strict JS host, no network; not platform registration CPU",
+        "javascript": "passed",
+        "native": "passed"
+      },
+      {
+        "capacity": 4,
+        "kind": "repeated",
+        "registrations": 1,
+        "sends": 4,
+        "linearMemoryBytes": 2621440,
+        "linearMemoryScope": "committed Wasm memory after execution; not RSS or live guest allocation",
+        "injectedExecutionMedianMs": 1.807368999994651,
+        "fixedControlMedianMs": 1.759857999997621,
+        "timingScope": "fresh Wasm instance + guest + strict JS host, no network; not platform registration CPU",
+        "javascript": "passed",
+        "native": "passed"
+      },
+      {
+        "capacity": 4,
+        "kind": "distinct",
+        "registrations": 4,
+        "sends": 4,
+        "linearMemoryBytes": 2621440,
+        "linearMemoryScope": "committed Wasm memory after execution; not RSS or live guest allocation",
+        "injectedExecutionMedianMs": 1.898605000002135,
+        "fixedControlMedianMs": null,
+        "timingScope": "fresh Wasm instance + guest + strict JS host, no network; not platform registration CPU",
+        "javascript": "passed",
+        "native": "passed"
+      },
+      {
+        "capacity": 16,
+        "kind": "repeated",
+        "registrations": 1,
+        "sends": 16,
+        "linearMemoryBytes": 5242880,
+        "linearMemoryScope": "committed Wasm memory after execution; not RSS or live guest allocation",
+        "injectedExecutionMedianMs": 3.678723999997601,
+        "fixedControlMedianMs": 3.7223980000126176,
+        "timingScope": "fresh Wasm instance + guest + strict JS host, no network; not platform registration CPU",
+        "javascript": "passed",
+        "native": "passed"
+      },
+      {
+        "capacity": 16,
+        "kind": "distinct",
+        "registrations": 16,
+        "sends": 16,
+        "linearMemoryBytes": 5242880,
+        "linearMemoryScope": "committed Wasm memory after execution; not RSS or live guest allocation",
+        "injectedExecutionMedianMs": 4.383774000001722,
+        "fixedControlMedianMs": null,
+        "timingScope": "fresh Wasm instance + guest + strict JS host, no network; not platform registration CPU",
+        "javascript": "passed",
+        "native": "passed"
+      },
+      {
+        "capacity": 32,
+        "kind": "repeated",
+        "registrations": 1,
+        "sends": 32,
+        "linearMemoryBytes": 5242880,
+        "linearMemoryScope": "committed Wasm memory after execution; not RSS or live guest allocation",
+        "injectedExecutionMedianMs": 4.968114999996033,
+        "fixedControlMedianMs": 5.126046999997925,
+        "timingScope": "fresh Wasm instance + guest + strict JS host, no network; not platform registration CPU",
+        "javascript": "passed",
+        "native": "passed"
+      },
+      {
+        "capacity": 32,
+        "kind": "distinct",
+        "registrations": 32,
+        "sends": 32,
+        "linearMemoryBytes": 5242880,
+        "linearMemoryScope": "committed Wasm memory after execution; not RSS or live guest allocation",
+        "injectedExecutionMedianMs": 4.948703000001842,
+        "fixedControlMedianMs": null,
+        "timingScope": "fresh Wasm instance + guest + strict JS host, no network; not platform registration CPU",
+        "javascript": "passed",
+        "native": "passed"
+      }
+    ],
+    "checks": [
+      {
+        "case": "registration-1",
+        "status": "passed",
+        "scope": "injected ABI only"
+      },
+      {
+        "case": "registration-5",
+        "status": "passed",
+        "scope": "injected ABI only"
+      },
+      {
+        "case": "registration-13",
+        "status": "passed",
+        "scope": "injected ABI only"
+      },
+      {
+        "case": "invalid-url",
+        "status": "passed",
+        "nativeHttp": 400,
+        "javascriptHttp": 500,
+        "javascriptCode": "not-exposed-by-contained-public-lifecycle"
+      },
+      {
+        "case": "transport",
+        "status": "passed",
+        "nativeHttp": 502,
+        "javascriptHttp": 500,
+        "javascriptCode": "PULSE_FASTLY_FETCH_NETWORK"
+      },
+      {
+        "case": "timeout",
+        "status": "passed",
+        "nativeHttp": 504,
+        "javascriptHttp": 500,
+        "javascriptCode": "PULSE_FETCH_TIMEOUT"
+      },
+      {
+        "case": "cancellation",
+        "status": "passed",
+        "javascriptErrors": [
+          {
+            "name": "PulseRuntimeContractError",
+            "code": "PULSE_RUNTIME_EFFECT_ABORTED"
+          },
+          {
+            "name": "PulseRuntimeContractError",
+            "code": "PULSE_RUNTIME_EFFECT_ABORTED"
+          },
+          {
+            "name": "PulseRuntimeContractError",
+            "code": "PULSE_RUNTIME_EFFECT_ABORTED"
+          },
+          {
+            "code": null,
+            "name": "Error"
+          }
+        ],
+        "wireCancellation": "not-claimed"
+      },
+      {
+        "case": "empty-collection",
+        "status": "passed"
+      },
+      {
+        "case": "mixed-static-dynamic",
+        "status": "passed"
+      },
+      {
+        "case": "schema-textResult-composition",
+        "status": "passed"
+      },
+      {
+        "case": "schema-error-recovery",
+        "status": "passed"
+      },
+      {
+        "case": "canonical-public-example",
+        "status": "passed"
+      }
+    ],
+    "failedAttempts": [],
+    "cleanup": {
+      "status": "passed",
+      "consumerRemoved": true,
+      "temporaryRemoved": true
+    },
+    "engine": {
+      "kind": "viceroy-direct",
+      "version": "0.21.1",
+      "binarySha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+    },
+    "workspaceBuild": "passed",
+    "packages": [
+      {
+        "name": "@pulse-compute/runtime",
+        "version": "1.0.0-beta.9",
+        "sha256": "323aa0eae5e90617fb7251b711e84f0b2a7017d49512d29a0fbc654491b3594c"
+      },
+      {
+        "name": "@pulse-compute/pulse",
+        "version": "1.0.0-beta.9",
+        "sha256": "4ec5d7590d4538bd5075b165544a8f9e9b5db76c2ec424f1ac2d331271b943ba"
+      },
+      {
+        "name": "@pulse-compute/cli",
+        "version": "1.0.0-beta.9",
+        "sha256": "f72cd398fb55dc1ac9d5d7641361ea7f5372edcfd34cfd6b8423872c19280f06"
+      },
+      {
+        "name": "@pulse-compute/provider-fastly",
+        "version": "1.0.0-beta.9",
+        "sha256": "22c55c226fc148f381c6afe50e31a3898a346a2176f895085ba0e9aa9ace2154"
+      },
+      {
+        "name": "@pulse-compute/grip",
+        "version": "1.0.0-beta.9",
+        "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+      },
+      {
+        "name": "@pulse-compute/assets",
+        "version": "1.0.0-beta.9",
+        "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+      },
+      {
+        "name": "@pulse-compute/crypto",
+        "version": "1.0.0-beta.9",
+        "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+      },
+      {
+        "name": "@pulse-compute/jwt",
+        "version": "1.0.0-beta.9",
+        "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+      },
+      {
+        "name": "@pulse-compute/entities",
+        "version": "1.0.0-beta.9",
+        "sha256": "40d40da8a5e4d7303e5737f8daa36f05dae37e1107c8969ffd8f8adc405c2595"
+      },
+      {
+        "name": "@pulse-compute/mcp",
+        "version": "1.0.0-beta.9",
+        "sha256": "9195db098f1e1f5e257c1015fa60d7698242d50952d31bfe39f40e76c9b05866"
+      },
+      {
+        "name": "@pulse-compute/s3",
+        "version": "1.0.0-beta.9",
+        "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+      },
+      {
+        "name": "@pulse-compute/wasm-build-support",
+        "version": "1.0.0-beta.9",
+        "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+      },
+      {
+        "name": "@pulse-compute/wasm-compiler",
+        "version": "1.0.0-beta.9",
+        "sha256": "d493c264fa02db241351e349f18b0bba7d199d56d2e0380e3a813caf28657625"
+      },
+      {
+        "name": "@pulse-compute/wasm-guest-link",
+        "version": "1.0.0-beta.9",
+        "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+      },
+      {
+        "name": "@pulse-compute/wasm-contracts",
+        "version": "1.0.0-beta.9",
+        "sha256": "40b65c5ddaebd3d1eda66ce1f8f7b2492b2db9779976dd22e0b83782f54ef8db"
+      },
+      {
+        "name": "@pulse-compute/wasm-host-runtime",
+        "version": "1.0.0-beta.9",
+        "sha256": "1ca864932ea06f7256a224b6dfc87f7464896bf6a544faf3f1a8a1198967d3cd"
+      },
+      {
+        "name": "@pulse-compute/wasm-library-kit",
+        "version": "1.0.0-beta.9",
+        "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+      },
+      {
+        "name": "@pulse-compute/provider-node",
+        "version": "1.0.0-beta.9",
+        "sha256": "cd4022ed6edbe38bd6c22122215b18afe22d2ed6d36c8cf74ff025106e4e849b"
+      },
+      {
+        "name": "@pulse-compute/wasm-runtime-core-as",
+        "version": "1.0.0-beta.9",
+        "sha256": "643f291e708ffd9c75e70c2a5a0c34516977746adc3d62e4342934313a2946a6"
+      },
+      {
+        "name": "@pulse-compute/wasm-schema-json",
+        "version": "1.0.0-beta.9",
+        "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+      }
+    ],
+    "installedPackages": [
+      {
+        "name": "@pulse-compute/cli",
+        "version": "1.0.0-beta.9",
+        "sha256": "f72cd398fb55dc1ac9d5d7641361ea7f5372edcfd34cfd6b8423872c19280f06"
+      },
+      {
+        "name": "@pulse-compute/crypto",
+        "version": "1.0.0-beta.9",
+        "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+      },
+      {
+        "name": "@pulse-compute/jwt",
+        "version": "1.0.0-beta.9",
+        "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+      },
+      {
+        "name": "@pulse-compute/provider-fastly",
+        "version": "1.0.0-beta.9",
+        "sha256": "22c55c226fc148f381c6afe50e31a3898a346a2176f895085ba0e9aa9ace2154"
+      },
+      {
+        "name": "@pulse-compute/provider-node",
+        "version": "1.0.0-beta.9",
+        "sha256": "cd4022ed6edbe38bd6c22122215b18afe22d2ed6d36c8cf74ff025106e4e849b"
+      },
+      {
+        "name": "@pulse-compute/pulse",
+        "version": "1.0.0-beta.9",
+        "sha256": "4ec5d7590d4538bd5075b165544a8f9e9b5db76c2ec424f1ac2d331271b943ba"
+      },
+      {
+        "name": "@pulse-compute/runtime",
+        "version": "1.0.0-beta.9",
+        "sha256": "323aa0eae5e90617fb7251b711e84f0b2a7017d49512d29a0fbc654491b3594c"
+      },
+      {
+        "name": "@pulse-compute/s3",
+        "version": "1.0.0-beta.9",
+        "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+      },
+      {
+        "name": "@pulse-compute/wasm-build-support",
+        "version": "1.0.0-beta.9",
+        "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+      },
+      {
+        "name": "@pulse-compute/wasm-compiler",
+        "version": "1.0.0-beta.9",
+        "sha256": "d493c264fa02db241351e349f18b0bba7d199d56d2e0380e3a813caf28657625"
+      },
+      {
+        "name": "@pulse-compute/wasm-contracts",
+        "version": "1.0.0-beta.9",
+        "sha256": "40b65c5ddaebd3d1eda66ce1f8f7b2492b2db9779976dd22e0b83782f54ef8db"
+      },
+      {
+        "name": "@pulse-compute/wasm-guest-link",
+        "version": "1.0.0-beta.9",
+        "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+      },
+      {
+        "name": "@pulse-compute/wasm-host-runtime",
+        "version": "1.0.0-beta.9",
+        "sha256": "1ca864932ea06f7256a224b6dfc87f7464896bf6a544faf3f1a8a1198967d3cd"
+      },
+      {
+        "name": "@pulse-compute/wasm-library-kit",
+        "version": "1.0.0-beta.9",
+        "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+      },
+      {
+        "name": "@pulse-compute/wasm-runtime-core-as",
+        "version": "1.0.0-beta.9",
+        "sha256": "643f291e708ffd9c75e70c2a5a0c34516977746adc3d62e4342934313a2946a6"
+      },
+      {
+        "name": "@pulse-compute/wasm-schema-json",
+        "version": "1.0.0-beta.9",
+        "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+      }
+    ],
+    "installedHash": "b631cedb0e611a3a362d74db628cabde3f3ab2a3e09e5708ef71ee8d13871ab3",
+    "lifecycleScripts": false,
+    "installedLockSha256": "a3d3ec697d43e7f89a6f094f7a8ac7464acfa5f3f81e501af79850f626cd2831",
+    "dependencies": [
+      {
+        "path": "node_modules/@esbuild/aix-ppc64",
+        "version": "0.28.1",
+        "integrity": "sha512-Svl7tq8k/08+p6CXPpRjQ1fKX+1odH/BQbb48fV6fj3CWHhsoIOoY87w1oHXm0qEpkIK3ZfVgp0hed3XBXzXMQ=="
+      },
+      {
+        "path": "node_modules/@esbuild/android-arm",
+        "version": "0.28.1",
+        "integrity": "sha512-0k2F129Xdio1TdJfzJ8sy1Q47vUD2NnwdhiAf7drUN1EBTfPf4hsFCtmMgu/6m8JSzsBrlmVjudMBQqOfG8usQ=="
+      },
+      {
+        "path": "node_modules/@esbuild/android-arm64",
+        "version": "0.28.1",
+        "integrity": "sha512-34EGEbCIAgosYz6goLcopX6Mo7NyGv9tfwEM2/7Ce2VcVRk568iSvniGWcUXIy7wEDR1wzolcxcriFVrWYcwBg=="
+      },
+      {
+        "path": "node_modules/@esbuild/android-x64",
+        "version": "0.28.1",
+        "integrity": "sha512-dbwY7ltSMDWsRatcRpCnES4F+im88OCUgGZjy52shC7GqHRE/cYlxNbB4Z4UpJswpcc4Qxd2oE/ufM0p61IKng=="
+      },
+      {
+        "path": "node_modules/@esbuild/darwin-arm64",
+        "version": "0.28.1",
+        "integrity": "sha512-TZbWkQY7kvTAXbXUT7uVACR5cMHsDiSz9z7ZKAX/RTq/WJEk3QyRr0wZpNhBDX+/0CtdqUIJlOiodQcta6tY3Q=="
+      },
+      {
+        "path": "node_modules/@esbuild/darwin-x64",
+        "version": "0.28.1",
+        "integrity": "sha512-zfdzgK9ACBNZLI/CyHTOx81SyNbM6YXn7rxSgX97VjyiPl9W1i4Ka4fgKECEoFCKGpvBj5qArWIGgQjOwkgskQ=="
+      },
+      {
+        "path": "node_modules/@esbuild/freebsd-arm64",
+        "version": "0.28.1",
+        "integrity": "sha512-wG2EA8ENdEI0qhkSZMjfqrdY+ziCYCPMmtZjjIwOmXFjmyzEHn+UUxk5of+SYsjtfs3VpnlC7QLzSI5hY/rOAw=="
+      },
+      {
+        "path": "node_modules/@esbuild/freebsd-x64",
+        "version": "0.28.1",
+        "integrity": "sha512-i7dZ9vQgnvSCzi/rYCXNgtF/U+eKZNJBzu3eTQbRgHnM7tNSizLOkRFAl3qzVc/Op/u5YkHHa4pf/3DOYHthLQ=="
+      },
+      {
+        "path": "node_modules/@esbuild/linux-arm",
+        "version": "0.28.1",
+        "integrity": "sha512-qVXBOHQS+d5Y722GwJzJUtOLlX7km3CraOaGormF1pDtPd2C/l1SHRPgjLunLGe51Sh5YYWKMFDyV4SxgMQYTQ=="
+      },
+      {
+        "path": "node_modules/@esbuild/linux-arm64",
+        "version": "0.28.1",
+        "integrity": "sha512-yHs+0uc8+nvEAfAfxrWQKK5peSNzBc4PegcMO0EJ2hT71uA7vB8Ihg2e77R2P7SG5uYjPbHlLLmve4LLLRCf0g=="
+      },
+      {
+        "path": "node_modules/@esbuild/linux-ia32",
+        "version": "0.28.1",
+        "integrity": "sha512-d1z4ZuP0ajrfz/FhGT4vv278rX8KnPPJx8i5+AtK7TYbx9Le9F1hyzurZpkEyjkGa9dUGhQow4C1NmeGvqxN2w=="
+      },
+      {
+        "path": "node_modules/@esbuild/linux-loong64",
+        "version": "0.28.1",
+        "integrity": "sha512-M5sRjUVZrkm1OAPR3dlOYzNmN+loZKGVi1VUQGrwuqLcbR6qeAz+famMhjASeH3YVKvZz+zT1jlh/keC3Rj/lg=="
+      },
+      {
+        "path": "node_modules/@esbuild/linux-mips64el",
+        "version": "0.28.1",
+        "integrity": "sha512-mRObBZeHh2OxcBFPWE/FjylkRgZdYuiTR3vaTozquCGOH14iP9oN4x4Ge81CoIDYQrXmIxpFumJBu5MtZpnQJQ=="
+      },
+      {
+        "path": "node_modules/@esbuild/linux-ppc64",
+        "version": "0.28.1",
+        "integrity": "sha512-slScBsMAb3GFDcdrCgLwZtPYRoH2H/youv10QiZyRjmsP48fznoveWytSgCI/R0ZcUgpc0ZhIUEx6LHts8yrfQ=="
+      },
+      {
+        "path": "node_modules/@esbuild/linux-riscv64",
+        "version": "0.28.1",
+        "integrity": "sha512-kw0owk1o0GFETUJyW0jc0G4Yzs0BHZn0JDZ8JRT088vjJYX777BAs1fDGxAC+q831qOs2DTC96mNsG2opdfyyQ=="
+      },
+      {
+        "path": "node_modules/@esbuild/linux-s390x",
+        "version": "0.28.1",
+        "integrity": "sha512-/lAIjX8aYFRByhh6L5rYtPEDRqa9de/4V/juOXcta5frjvzXO4/sqEtyytse0g3zZFuWu5cDN0MkLz2qRDD2Ag=="
+      },
+      {
+        "path": "node_modules/@esbuild/linux-x64",
+        "version": "0.28.1",
+        "integrity": "sha512-u/anNYF2mmVOEDwLtnQ1wOr3EZ9sTNGLWrsYGYwHWzGA3Si84IOkHXlbWTD1NB+9/1lcnweYKO54uhxZydNzfA=="
+      },
+      {
+        "path": "node_modules/@esbuild/netbsd-arm64",
+        "version": "0.28.1",
+        "integrity": "sha512-oks0DYbLwWMmaakTsCb+zL4E+aHRVLom9IJZOAthMQEPiQmydXHkziYEsGYRx0uNV/IjEKGAV941JzH02pflqw=="
+      },
+      {
+        "path": "node_modules/@esbuild/netbsd-x64",
+        "version": "0.28.1",
+        "integrity": "sha512-aeL6lAnN89Hz43Mlh1G8ARasbuoYvSITDEx0tHh5b7jJnHcssqgjy9Yx430GDpmCa6OyrKoS0aNRjKundRizGg=="
+      },
+      {
+        "path": "node_modules/@esbuild/openbsd-arm64",
+        "version": "0.28.1",
+        "integrity": "sha512-MEFJe5C3R8pwXdZ5Y21oo6m7ePiS0d9pWucn99O/wvyJZChoIQKrQDxKrGeW8F5+T0okTHesAmDeiHDTIq0V/Q=="
+      },
+      {
+        "path": "node_modules/@esbuild/openbsd-x64",
+        "version": "0.28.1",
+        "integrity": "sha512-i/ZLIOafE0Z8cI/XANJAixoJL/uRAoS2xOA3rb0xN+KK0K177cMAsQYkzHtBrtMXAKuAc7HGgcWiZ/sRC1Nxgw=="
+      },
+      {
+        "path": "node_modules/@esbuild/openharmony-arm64",
+        "version": "0.28.1",
+        "integrity": "sha512-ge+Z7EXFNt2BO1oAMsVpiQ8EwndV9i1xXerAeTIK7AtPs3bKFXQM7nlRxDSIUIMeueR1CNXxqztLzdNeReKBJg=="
+      },
+      {
+        "path": "node_modules/@esbuild/sunos-x64",
+        "version": "0.28.1",
+        "integrity": "sha512-BEjgtECkL3vY+SaSQ6nzVfiALUeFxpawyp8Jmf5PtYhf1Ug40N1h/hxlhts+f1FvSvarEigdxS3BlSMI2PJLcQ=="
+      },
+      {
+        "path": "node_modules/@esbuild/win32-arm64",
+        "version": "0.28.1",
+        "integrity": "sha512-lCv9eK/H6ZJWbE7bh2nw54CZ9M2nupBxJcTsdk/QQnWkdSjKGuxmmH8/GWrlT1eMmZfn4dGcCjRte397WqfQXA=="
+      },
+      {
+        "path": "node_modules/@esbuild/win32-ia32",
+        "version": "0.28.1",
+        "integrity": "sha512-zvb/mB2bSCoJOpoCBgYKKpX6YM6mJBlBUVUtVj41DlZJVEB6/0CKlRYxP5wWl1C1ILiCoAU5wZZ4q1P3qeS6Eg=="
+      },
+      {
+        "path": "node_modules/@esbuild/win32-x64",
+        "version": "0.28.1",
+        "integrity": "sha512-bm4Mowrv+GXMlpWX++EcXw/iLyd1o3+bJkC2DkWXYVvgZCqD/bSj9ctZeAMC3cIxgjRVR2Dufaiu4YPxr5gW1A=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/cli",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-yJ9367xH6De8YodZOayGQRf0QVlaacpetA/heyLRab+bX20KYui7h5zIKX2ZjWenl9wX2L2Dr1FVvq6HBv11mw=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/crypto",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-Ns/Dw2QNpFxwg+HqWf9VCpCKs467Q1xPWUmdbdy7PnC3ChJ/j5xb3JCchYfnKn2lN03cexYXMH6NKfMMs7cP3g=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/jwt",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-SHSNZgzpaKQmwiriQW0xsbWtdtvpF/uziZZ4bFe7p5eFqeKVLi/TooNZPLMp4NY+ISvujFyLiLsFXzZprtFU2Q=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/provider-fastly",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-fPpMLDpXD+3NdomRxJM02ePMPH8xBBqPIWOaprXSOgvE13UO/dJ+L53LVDVU7H0DPn2lOOFBRgxBECRQEkXAcA=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/provider-node",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-MMIaCdPUnAw7TKncd0zB23+CFi7Dp0MmjWP6vXPNnh4uW7vzrJLQJmrsYmCHCHFOHlWxjQ0JvH8zipfrWmxbDQ=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/pulse",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-1YtI6kEIZuwwGgSsxuw3IicSA744oECA/EOZzLAr0THe6emGzBnQ1ZTvGhHfzBiIMFpz4wTfNlQXZEubaOgDlA=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/runtime",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-FO2ldsuMLymTHcYfLZq/EkgcDXWb2wJkEEMSEDtUQqhY6bHgeGlVuGa5af4FYBDB6keYdeMPlSJVlcR8fhL8tg=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/s3",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-eUpfajS7tEwbidd0Kl5s9NTJP5vNMt4VuhpTIlpNErrYcF0es8ZRyzYQ4zHijxdiV1eieWo3eVK8FUDDByrgkw=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/wasm-build-support",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-m7/BQqtlyft8NRKzTwJcpVjkSO3sj4gWTFDkRDT5VrqXI5Ut1zpOR8zBIkPF902U+cgS4hQpCHOW84MLX8vjKw=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/wasm-compiler",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-ti5WYyZ8sklOIxGoC7RDk0MlWSbjcWUMANL+AHxqvPWCpA3XDNPPEuliUc8hrC9jH97+3hno6ooVRx2KbcNCTQ=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/wasm-contracts",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-a09t4R4AnptPSIpPIlnW/1WivWb2VspopW8Q/1QaztTLEqu5b4cjVEu/7ojVH9M8GaCmrw3IQ393tWNkXyXZXg=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/wasm-guest-link",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-RhJ1JKmOnUx5IP1uqTx0VGNxiq/64dOCLcAzloHbN2kUEbgk+k+y0bn4lnUXVWtx2zOz1BDeurB3zDhFrVZBjA=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/wasm-host-runtime",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-dvP/DFut3vsvRUxZkquxrnOUFywy/bO7Vj+9R7Ue3DDfOipr9zJOnCet46ONaADIVy4hOXtoCNQPDZ4yFqFicA=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/wasm-library-kit",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-5g9lR+Qm6A1Jk4HxRoLVQVMtYSoWG1GkriQyMk6JymbqvCEoAhqLYCeZjP8THZnBobizo0XlIJbVfxpDGdHv5g=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/wasm-runtime-core-as",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-3GIWeZpcrMyWP7wEwt7VbwDDWqTgONp5HH151e0AsG5KTxrL3VnamR9knBCvPNZb3LzIa9xuwswfvLSRh1VJkg=="
+      },
+      {
+        "path": "node_modules/@pulse-compute/wasm-schema-json",
+        "version": "1.0.0-beta.9",
+        "integrity": "sha512-U9JUXxnrxPf/gbRGS9opf3G+S8dWre6HJpnRe74IHcKYq+cihljMkAr+nYVEG1ROIBAijyEQxxeeF6yUd+oyAg=="
+      },
+      {
+        "path": "node_modules/assemblyscript",
+        "version": "0.28.18",
+        "integrity": "sha512-NWvSjTS0bC0SVTLdJ4x8M0fezsFmYvGk+dIXGQZnvSSvnl/6PsY+kdLJ+pcS1idkEOHtGQMBtSSUyLBXH2gn5w=="
+      },
+      {
+        "path": "node_modules/binaryen",
+        "version": "129.0.0-nightly.20260428",
+        "integrity": "sha512-RpjRVPZw8NOhkGzx3tTaKYdv4C+zO1VVI0VB9GSCNLM81flHOAZUwRJTLDM3Hqco3OmwB8hTLpkkpMSJjUfHXw=="
+      },
+      {
+        "path": "node_modules/esbuild",
+        "version": "0.28.1",
+        "integrity": "sha512-HrJrvZv5ayxBzPfwphOoNzkzOIIlifzk0KJrGK2c8R4+LKpMtpYLQeUdjnwjWv/LZlkH2laZk+4w78pi99D4Vw=="
+      },
+      {
+        "path": "node_modules/json-as",
+        "version": "1.5.0",
+        "integrity": "sha512-5p4N1D7iI0DMVGmD9yIpXBAlVHPkpqzUETpTMt4w0PwJUdixIH6ebl7+RxdVcJHJ/GoNO4nknsc9xO1LQU0xeQ=="
+      },
+      {
+        "path": "node_modules/long",
+        "version": "5.3.2",
+        "integrity": "sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA=="
+      },
+      {
+        "path": "node_modules/typescript",
+        "version": "5.9.3",
+        "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="
+      },
+      {
+        "path": "node_modules/xjb-as",
+        "version": "0.1.0",
+        "integrity": "sha512-Q73gSq7cfWbsDY/RcJHTa2QU9nb6bktp4iqCxUxNg8VhK+JQd3wcwIY0Nwuo6gTtAsBBpEPMf4zfUXbATHdwhw=="
+      }
+    ],
+    "publicExampleSha256": "b895ded0cf4c6485e09f1cbc9070278f4b73d1924f23a855921be61849115dfb",
+    "local": [
+      {
+        "capacity": 1,
+        "artifactCapacity": 32,
+        "kind": "repeated",
+        "status": "passed",
+        "listenerIdentityVerified": true,
+        "loopbackRoundTripMs": 17.828249999991385,
+        "timingScope": "host + loopback transport + origin barrier; not registration overhead"
+      },
+      {
+        "capacity": 1,
+        "artifactCapacity": 32,
+        "kind": "distinct",
+        "status": "passed",
+        "listenerIdentityVerified": true,
+        "loopbackRoundTripMs": 3.572428999992553,
+        "timingScope": "host + loopback transport + origin barrier; not registration overhead"
+      },
+      {
+        "capacity": 4,
+        "artifactCapacity": 32,
+        "kind": "repeated",
+        "status": "passed",
+        "listenerIdentityVerified": true,
+        "loopbackRoundTripMs": 4.918290000001434,
+        "timingScope": "host + loopback transport + origin barrier; not registration overhead"
+      },
+      {
+        "capacity": 4,
+        "artifactCapacity": 32,
+        "kind": "distinct",
+        "status": "passed",
+        "listenerIdentityVerified": true,
+        "loopbackRoundTripMs": 4.345648999995319,
+        "timingScope": "host + loopback transport + origin barrier; not registration overhead"
+      },
+      {
+        "capacity": 16,
+        "artifactCapacity": 32,
+        "kind": "repeated",
+        "status": "passed",
+        "listenerIdentityVerified": true,
+        "loopbackRoundTripMs": 40.30630699999165,
+        "timingScope": "host + loopback transport + origin barrier; not registration overhead"
+      },
+      {
+        "capacity": 16,
+        "artifactCapacity": 32,
+        "kind": "distinct",
+        "status": "passed",
+        "listenerIdentityVerified": true,
+        "loopbackRoundTripMs": 6.964959999997518,
+        "timingScope": "host + loopback transport + origin barrier; not registration overhead"
+      },
+      {
+        "capacity": 32,
+        "artifactCapacity": 32,
+        "kind": "repeated",
+        "status": "passed",
+        "listenerIdentityVerified": true,
+        "loopbackRoundTripMs": 10.403039999990142,
+        "timingScope": "host + loopback transport + origin barrier; not registration overhead"
+      },
+      {
+        "capacity": 32,
+        "artifactCapacity": 32,
+        "kind": "distinct",
+        "status": "passed",
+        "listenerIdentityVerified": true,
+        "loopbackRoundTripMs": 9.797107999998843,
+        "timingScope": "host + loopback transport + origin barrier; not registration overhead"
+      },
+      {
+        "kind": "untrusted-tls",
+        "status": "passed",
+        "http": 502,
+        "originHttpRequests": 0,
+        "tlsErrors": [
+          "ERR_SSL_TLSV1_ALERT_UNKNOWN_CA"
+        ],
+        "customTrustOverride": false
+      }
+    ],
+    "installedBytesUnchanged": true,
+    "registry": {
+      "total": 33,
+      "packuments": 17,
+      "tarballs": 16,
+      "rejected": 0,
+      "missing": 0,
+      "missingPackuments": {},
+      "missingTarballs": 0
+    },
+    "durationMs": 129277.30879
+  },
+  "taskRunner": {
+    "schemaVersion": 2,
+    "runId": "2026-10-20T20-47-40-679Z--5",
+    "sourceRevision": "ca82faa94ba60fe832ae664dcac7c45c16ac5282",
+    "sourceIdentity": {
+      "sourceRevision": "ca82faa94ba60fe832ae664dcac7c45c16ac5282",
+      "sourceIdentityKind": "git-commit",
+      "sourceDigestSha256": null,
+      "sourceFiles": null
+    },
+    "status": "passed",
+    "startedAt": "2026-10-20T20:47:40.687Z",
+    "updatedAt": "2026-10-20T20:49:50.736Z",
+    "finishedAt": "2026-10-20T20:49:50.736Z",
+    "durationMs": 130049,
+    "profiles": [],
+    "requestedTasks": [
+      "fastly-dynamic-backends-installed",
+      "suite-shape"
+    ],
+    "selectedTasks": [
+      "fastly-dynamic-backends-installed",
+      "suite-shape"
+    ],
+    "currentTask": null,
+    "currentTaskPhase": null,
+    "activeChildPid": null,
+    "activeChildPids": [],
+    "currentTasks": [],
+    "currentTaskPhases": {},
+    "completedTasks": 2,
+    "results": [
+      {
+        "name": "fastly-dynamic-backends-installed",
+        "evidence": "external",
+        "description": "R08 exact installed Native/JavaScript multi-origin parity, lifecycle, local Compute and 1/4/16/32 overhead",
+        "commandSignature": "c8aa022f0aa17afea7702da692bbbd35c0370a72922eb3e864b82fba5ddb6643",
+        "timeoutMs": 600000,
+        "durationMs": 129885,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "interruptedBy": null,
+        "error": null,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logPath": "/tmp/runs/2026-10-20T20-47-40-679Z--5/tasks/fastly-dynamic-backends-installed.log",
+        "retainedTaskRoot": null,
+        "diagnosticReports": [],
+        "failureArtifacts": [],
+        "processTree": [],
+        "remainingProcessTree": []
+      },
+      {
+        "name": "suite-shape",
+        "evidence": "unit",
+        "description": "profile separation, uniqueness, and timeout budgets",
+        "commandSignature": "f17732f96f43efdcae09e0ed13d66e8e3be764479712272ed20846d3d95f8abb",
+        "timeoutMs": 30000,
+        "durationMs": 154,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "interruptedBy": null,
+        "error": null,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logPath": "/tmp/runs/2026-10-20T20-47-40-679Z--5/tasks/suite-shape.log",
+        "retainedTaskRoot": null,
+        "diagnosticReports": [],
+        "failureArtifacts": [],
+        "processTree": [],
+        "remainingProcessTree": []
+      }
+    ],
+    "runDirectory": "/tmp/runs/2026-10-20T20-47-40-679Z--5"
+  },
+  "authorityAndFeatureControls": {
+    "schemaVersion": 2,
+    "runId": "2026-10-20T20-51-39-132Z--5",
+    "sourceRevision": "ca82faa94ba60fe832ae664dcac7c45c16ac5282",
+    "sourceIdentity": {
+      "sourceRevision": "ca82faa94ba60fe832ae664dcac7c45c16ac5282",
+      "sourceIdentityKind": "git-commit",
+      "sourceDigestSha256": null,
+      "sourceFiles": null
+    },
+    "status": "passed",
+    "startedAt": "2026-10-20T20:51:39.139Z",
+    "updatedAt": "2026-10-20T20:51:40.986Z",
+    "finishedAt": "2026-10-20T20:51:40.986Z",
+    "durationMs": 1847,
+    "profiles": [],
+    "requestedTasks": [
+      "release-evidence-authority",
+      "release-feature-acceptance"
+    ],
+    "selectedTasks": [
+      "release-evidence-authority",
+      "release-feature-acceptance"
+    ],
+    "currentTask": null,
+    "currentTaskPhase": null,
+    "activeChildPid": null,
+    "activeChildPids": [],
+    "currentTasks": [],
+    "currentTaskPhases": {},
+    "completedTasks": 2,
+    "results": [
+      {
+        "name": "release-evidence-authority",
+        "evidence": "release",
+        "description": "sixteen-shard aggregation and exact evidence boundary",
+        "commandSignature": "beca8662c83621d6095aa11949e2351b807bffa278f9b2b9e7b673a6fbb9126c",
+        "timeoutMs": 30000,
+        "durationMs": 1195,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "interruptedBy": null,
+        "error": null,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logPath": "/tmp/runs/2026-10-20T20-51-39-132Z--5/tasks/release-evidence-authority.log",
+        "retainedTaskRoot": null,
+        "diagnosticReports": [],
+        "failureArtifacts": [],
+        "processTree": [],
+        "remainingProcessTree": []
+      },
+      {
+        "name": "release-feature-acceptance",
+        "evidence": "unit",
+        "description": "installed feature gate coverage and exact candidate report rejection",
+        "commandSignature": "8563c5e88ba1acd2db0cf2df21a5b185f55df5ea2a327859a67241804d8390e6",
+        "timeoutMs": 30000,
+        "durationMs": 639,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "interruptedBy": null,
+        "error": null,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logPath": "/tmp/runs/2026-10-20T20-51-39-132Z--5/tasks/release-feature-acceptance.log",
+        "retainedTaskRoot": null,
+        "diagnosticReports": [],
+        "failureArtifacts": [],
+        "processTree": [],
+        "remainingProcessTree": []
+      }
+    ],
+    "runDirectory": "/tmp/runs/2026-10-20T20-51-39-132Z--5"
+  },
+  "controlFiles": [
+    {
+      "path": "/tmp/r08-qualified.json",
+      "sha256": "fe1d510aa44d5f56e623585de7d0025e5a054f06b19220f76259aed80fd3f362"
+    },
+    {
+      "path": "/tmp/r08-controls-final.json",
+      "sha256": "8e6ca0764b21336a5151ad4c84f783bffd53753dcc19066fcb2ef622b5c517b2"
+    },
+    {
+      "path": "/tmp/r08-maintainer-final.log",
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2"
+    },
+    {
+      "path": "/tmp/r08-docs-final.log",
+      "sha256": "8512376e38703e552c8d4bb246f1a97836e89c6cdc67f90fd9b4fb2398c6dcf9"
+    },
+    {
+      "path": "/tmp/r08-doc-release-final.json",
+      "sha256": "1093d0f71bbd6f8115e90864e457e680ec24dc7e7fa1b63533b37c214fa33d8b"
+    }
+  ],
+  "historicalAttempts": [
+    {
+      "path": "/tmp/r08-first.json",
+      "sha256": "13ae47469bc7de194cd168d1504cd59e8af7f7f119e16537620b8a1efae1d8ec",
+      "status": "failed",
+      "source": "7659f51283bddf9465144b32716931a092b31003",
+      "durationMs": 153,
+      "error": null,
+      "cleanup": null,
+      "disposition": "Failed suite-shape: new explicit external task initially absent from external allowlist. Gate did not run; fixed classification without changing default/release profiles."
+    },
+    {
+      "path": "/tmp/r08-second-proof.json",
+      "sha256": "cd7b03d890670eebddba00bc40f2e7ed251169ae863071a65a128399ec11ebf3",
+      "status": "passed",
+      "source": "7659f51283bddf9465144b32716931a092b31003",
+      "durationMs": 126103.54549799999,
+      "error": null,
+      "cleanup": {
+        "status": "passed",
+        "consumerRemoved": true,
+        "temporaryRemoved": true
+      },
+      "disposition": "Early complete pass, superseded by stricter local finish-order/listener identity, schema and public example checks."
+    },
+    {
+      "path": "/tmp/r08-committed-proof.json",
+      "sha256": "45c782e1778f81be9cbad5e2e0520d39e44a851efb3d577b31a972caaf4e62e9",
+      "status": "failed",
+      "source": "7a6ff747282d26327e750e6cb33973eaf8f93f8c",
+      "durationMs": 100746.617018,
+      "error": "TypeError: Cannot read properties of undefined (reading 'code')\n    at main (/workspace/scratch/568d09e2cccd/pulse-r08/wasm/test/provider/assert-fastly-dynamic-backends-installed.cjs:171:117)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+      "cleanup": {
+        "status": "passed",
+        "consumerRemoved": true,
+        "temporaryRemoved": true
+      },
+      "disposition": "Failed diagnostic oracle: incorrectly expected lifecycle onError for contained invalid-URL construction. Corrected assertions to public effect observations for dispatched codes, HTTP/no-dispatch for pre-construction failure."
+    },
+    {
+      "path": "/tmp/r08-final-proof.json",
+      "sha256": "4c72a52d3de6e91b45ccae63302fdf907799681ea5ce659ea6d3fba75f1cd0fd",
+      "status": "passed",
+      "source": "4eaa40d66821f3231073c322dbbaeab468135bde",
+      "durationMs": 137420.909624,
+      "error": null,
+      "cleanup": {
+        "status": "passed",
+        "consumerRemoved": true,
+        "temporaryRemoved": true
+      },
+      "disposition": "Strengthened complete pass; superseded by final committed run with independent listener identity and explicit execution-lane metadata."
+    }
+  ],
+  "finalDiffBoundary": "After qualification only docs/internal/b10-r08/README.md and proof.json were added. Execution identity is qualification.source/sourceTree, not the later evidence commit.",
+  "releaseClaims": {
+    "installedLocal": "passed",
+    "hosted": "not-run",
+    "hostedWaiver": false,
+    "fullUnit": "not-run in R08; R07 Entities baseline failure retained",
+    "seal": "not-run",
+    "mcpImplementationChanged": false
+  }
+}

@@ -75,6 +75,7 @@ const externalTasks = new Set([
   'str02b-installed',
   'fwd9-03-installed',
   'fastly-stdio-installed',
+  'fastly-dynamic-backends-installed', // R08 explicit installed/local Compute acceptance
   // Beta.9 comparison preflight is explicitly selected, never a release gate.
   'perf9-01a-parity', 'perf9-01b-measurements',
   'str03b-installed', 'node01-installed', 'arc01-installed',
