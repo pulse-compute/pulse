@@ -25,9 +25,8 @@ function createDynamicBackendHost({ view, readUtf8, trace, options, beforeRegist
     return status;
   }
   function route(name, request) {
-    if (!name.startsWith('pulse-native-dynamic-')) return;
     const backend = backends.get(name);
-    assert(backend, 'Dynamic send must use a successfully registered name');
+    if (!backend) return; // Statically configured names retain fixture routing.
     const url = new URL(request.url);
     assert.equal(backend.target, url.hostname + ':' + (url.port || (url.protocol === 'https:' ? '443' : '80')));
     assert.equal(backend.tls, url.protocol === 'https:');

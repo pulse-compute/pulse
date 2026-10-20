@@ -910,7 +910,7 @@ function resolveCapabilityBindings(plan, options = {}) {
         const configured = [...new Set(Object.values(byOrigin).filter((value) => typeof value === 'string' && value.trim()).map((value) => value.trim()))];
         if (configured.length === 1) backend = configured[0];
       }
-      if ((typeof backend !== 'string' || backend.trim() === '') && !(source.dynamicBackends === true && !options.bodyForwarding)) {
+      if ((typeof backend !== 'string' || backend.trim() === '') && !(source.dynamicBackends === true && !(plan.capabilities || []).includes('request.body.forward'))) {
         fail(`Fastly native effect ${effect.id} has no static backend binding.`, 'PULSE_FASTLY_BACKEND_REQUIRED', {
           effectId: effect.id,
           effectIndex: index,

@@ -31,7 +31,7 @@ function main() {
     let r = run('http://alpha.test/a','https://beta.test:8443/b');
     assert.equal(r.response.body,'a|b');
     assert.deepEqual(registrations(r).map(x=>[x.target,x.host,x.tls,x.sni]),[['alpha.test:80','alpha.test',false,''],['beta.test:8443','beta.test:8443',true,'beta.test']]);
-    assert.equal(sends(r).length,2);checks++;
+    assert.equal(sends(r).length,2);assert.deepEqual(sends(r).map(x=>x.backend),registrations(r).map(x=>x.backendName));checks++;
     r = run('HTTPS://Alpha.TEST:443/a#fragment','https://alpha.test/b');
     assert.equal(r.response.body,'a|b');assert.equal(registrations(r).length,1);
     assert.deepEqual(sends(r).map(x=>x.url),['https://alpha.test/a','https://alpha.test/b']);checks++;
@@ -50,6 +50,10 @@ function main() {
     assert(!off.source.includes('__pulse_dynamic_'));checks++;
     // Explicit effect bindings also bypass dynamic URL eligibility.
     r = execute(unused,{request:{headers:{'x-a':'https://[::1]/a','x-b':'https://[::1]/b'}},fixtures:{'https://[::1]/a':{body:'a'},'https://[::1]/b':{body:'b'}}});
+    assert.equal(r.response.body,'a|b');assert.equal(registrations(r).length,0);checks++;
+    const reservedStatic=Object.fromEntries(p.effects.map(e=>[e.id,'pulse-native-dynamic-0']));
+    const reserved=compile(p,{...staticOptions,effectBackends:reservedStatic,bindings:{effectBackends:reservedStatic}});
+    r=execute(reserved,{request:{headers:{'x-a':'https://static.test/a','x-b':'https://static.test/b'}},fixtures:{'https://static.test/a':{body:'a'},'https://static.test/b':{body:'b'}}});
     assert.equal(r.response.body,'a|b');assert.equal(registrations(r).length,0);checks++;
     assert.throws(()=>generate(p,{...options,dynamicBackends:false,bindings:{dynamicBackends:false}}));checks++;
     const invalid = ['ftp://host/a','https://user:token@host/a','https://[::1]/a','https://127.0.0.1/a','http://127.1/a','http://0177.0.0.1/a','http://0x7f000001/a','http://alpha.123/a','https://xn--example.test/a','https://é.test/a','https://host:0/a','https://host:65536/a','https://-bad.test/a','https://bad..test/a','https://host\\evil/a','https://host/a b'];
@@ -76,6 +80,7 @@ function main() {
     else{collision=collide();assert.equal(collision.response.status,500);}
     assert.equal(registrations(collision).length,1);assert.equal(sends(collision).length,0);checks++;
     if(name==='platform') {
+      assert(generate(p,{...options,maxDurationMs:1000,bodyForwarding:{requestMaxBytes:1024,responseMaxBytes:1024}}).manifest.dynamicBackends, 'Unused forwarding configuration does not disable ordinary dynamic fetch');checks++;
       const {inspectFastlyCanonicalTarget}=require('../../../packages/provider-fastly/src/build/canonical-target.js');
       const inspected=inspectFastlyCanonicalTarget({plan:p,native:mapped,bindings:{dynamicBackends:true,backends:{'https://mapped.test':'mapped'}}});
       assert.equal(inspected.policy.dynamicBackends.maxRegistrationAttempts,32);
