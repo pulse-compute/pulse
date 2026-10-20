@@ -1210,6 +1210,10 @@ const tasks = Object.freeze({
   'callable-composition-proof': nodeTask('test/callables/assert-callable-proof.cjs', {
     evidence: 'native', timeoutMs: 300000, description: 'Internal shared callable body, route/MCP composition, reachability and bounded rejection proof'
   }),
+  'callable-authored-composition': nodeTask('test/callables/assert-callable-composition.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: '05C authored helper/import composition, multiple callable owners and independent ownership rejection'
+  }),
   'callable-authored-native': nodeTask('test/callables/assert-callable-authored.cjs', {
     evidence: 'native', timeoutMs: 180000,
     description: '05B authored plain Native call, full caller validation, HTTP parity and unused-import elimination'
@@ -1486,6 +1490,7 @@ const profiles = Object.freeze({
     'entities-node-native-workflow',
     'callable-composition-proof',
     'callable-authored-native',
+    'callable-authored-composition',
     'mcp-native-binding',
     'fastly-entities-native-workflow',
     'crypto-native-guest-source',

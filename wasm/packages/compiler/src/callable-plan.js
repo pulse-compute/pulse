@@ -1,6 +1,7 @@
 'use strict';
 // Experimental v1 composition boundary. Computation admission remains canonical.
 const VERSION = 'pulse.callable-proof.v1';
+const { CANONICAL_NATIVE_PURE_HELPER_VERSION } = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
 function validateCallables(plan, fail, walkStatements, validatePlan) {
   const entries = plan.callables || [];
   if (!Array.isArray(entries) || entries.length > 16) { fail('callable table exceeds proof limit'); return; }
@@ -10,7 +11,7 @@ function validateCallables(plan, fail, walkStatements, validatePlan) {
     if (c.version !== VERSION || !first || first.kind !== 'local' || first.localId !== c.inputLocalId || first.value?.kind !== 'callable-input'
       || first.declaration !== 'const') fail('invalid callable input boundary');
     for (const id of [c.inputSchema, c.outputSchema]) if (!plan.schemas?.registry?.schemas?.some(s => s.id === id)) fail('callable schema missing');
-    if (entries.length || plan.effects?.length || plan.continuations?.length || plan.handlers?.length || plan.helpers?.length || plan.stages?.length || plan.packages?.application) fail('callable proof cannot suspend, nest or own dispatch');
+    if (entries.length || plan.effects?.length || plan.continuations?.length || plan.handlers?.length || plan.helpers?.some(h => h.version !== CANONICAL_NATIVE_PURE_HELPER_VERSION) || plan.stages?.length || plan.packages?.application) fail('callable proof cannot suspend, nest or own dispatch');
     if (plan.capabilities?.length) fail('callable proof cannot acquire effects or HTTP authority');
   }
   for (const callee of entries) {
@@ -58,4 +59,16 @@ function validateCallables(plan, fail, walkStatements, validatePlan) {
     inputType: e => ['string','number','boolean','undefined','null'].includes(e?.valueKind) ? e.valueKind : undefined }, fail);
   if (plan.callable && inputUses !== 1) fail('callable needs one input binding');
 }
-module.exports = { VERSION, validateCallables };
+function attachCallableBoundary(input, { inputName, inputSchema, outputSchema }) {
+  const plan = JSON.parse(JSON.stringify(input));
+  const binding = plan.entry.body[0];
+  if (binding?.kind !== 'local' || binding.name !== inputName || !['undefined', 'callable-input'].includes(binding.value.kind)) throw new Error('Callable parameter normalization drift');
+  binding.value = { kind: 'callable-input', valueKind: 'object' };
+  binding.valueKind = 'object';
+  plan.locals.find(l => l.id === binding.localId).valueKind = 'object';
+  const visit = n => { if (!n || typeof n !== 'object') return; if (n.kind === 'local' && n.id === binding.localId) n.valueKind = 'object'; for (const v of Object.values(n)) if (v && typeof v === 'object') visit(v); };
+  visit(plan.entry);
+  plan.callable = { version: VERSION, inputLocalId: binding.localId, inputSchema, outputSchema };
+  return plan;
+}
+module.exports = { VERSION, validateCallables, attachCallableBoundary };

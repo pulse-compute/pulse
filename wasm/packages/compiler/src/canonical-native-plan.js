@@ -298,7 +298,7 @@ class NativePlanBuilder {
     this.numericWorkspaces = [];
     this.pureTypes = new Map();
     this.pureTypes.schemas = compiled.metadata.schemaRegistry;
-    this.helperBodies = new Map((this.metadata.router?.helpers || []).map(helper => [helper.name, helper]));
+    this.helperBodies = new Map((this.metadata.sourceHelpers || this.metadata.router?.helpers || []).map(helper => [helper.name, helper]));
     if (this.metadata.capabilities?.some(id => ['request.body.forward', 'request.body.transform'].includes(id))
       && this.metadata.capabilities.some(id => ['request.text', 'request.json'].includes(id))) {
       throw new CanonicalNativePlanError('Native incoming forwarding/transforms cannot be combined with structured request reads.', [
@@ -976,9 +976,14 @@ class NativePlanBuilder {
         this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.BINDING_UNSUPPORTED, 'Canonical native locals require simple identifier bindings outside compiler-owned effect groups.', { binding: item.name.getText(this.sourceFile) });
         continue;
       }
-      const value = item.initializer ? this.expression(item.initializer, scope) : Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
+      let value = item.initializer ? this.expression(item.initializer, scope) : Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
+      const callableInput = this.options.callableBoundary && this.metadata.sourceHelpers?.length && !this.activeHelper
+        && item.name.text === this.options.callableBoundary.inputName && value.kind === 'undefined';
+      if (callableInput) value = Object.freeze({ kind: 'callable-input', valueKind: 'object' });
       const local = this.allocateLocal(item.name.text, value.valueKind || 'unknown', itemPath, declaration);
-      const type = pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
+      const type = callableInput
+        ? pureValues.schemaType(this.pureTypes.schemas.schemas.find(s => s.id === this.options.callableBoundary.inputSchema)?.root)
+        : pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
       if (type) this.pureTypes.set(local.id, type);
       scope.set(local.name, local);
       out.push(Object.freeze({ kind: 'local', localId: local.id, name: local.name, declaration, valueKind: local.valueKind, value, statementPath: itemPath }));
@@ -1391,6 +1396,7 @@ class NativePlanBuilder {
     };
     if (this.options.sharedStages !== false) unsigned = lowerSharedStages(unsigned);
     unsigned.summary = summarizeNativePlan(unsigned.entry.body, unsigned.locals, unsigned.effects, continuations, [...unsigned.handlers, ...(unsigned.stages || []), ...(unsigned.helpers || [])]);
+    if (this.options.callableBoundary) unsigned = require('./callable-plan').attachCallableBoundary(unsigned, this.options.callableBoundary);
     const planHash = stableHash(stableStringify(unsigned));
     const plan = deepFreeze({ ...unsigned, planHash });
     assertCanonicalNativePlan(plan);

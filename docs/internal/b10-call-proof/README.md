@@ -1,8 +1,8 @@
 # B10 — shared callable composition proof
 
-Current authored execution checkpoint: [B10-MCP-05B](./05B.md). One imported
-target now executes through a named plain Native entry with full caller
-lowering. The backend-proof measurements and limitations below are retained
+Current authored execution checkpoint: [B10-MCP-05C](./05C.md). Multiple imported
+targets and ordinary pure helpers execute through a named plain Native entry
+with full caller lowering. [05B](./05B.md) records the single-target foundation. The backend-proof measurements and limitations below are retained
 historical evidence. Public support, router/MCP authoring and the complete
 context application remain separate work units.
 
@@ -138,3 +138,9 @@ Actual Viceroy/Fastly service and external MCP clients are not exercised.
 The zero-use fixture gate must stay byte-identical unless an explicitly reviewed
 change explains a measured difference. Keep PR #438 as historical evidence;
 do not resume its Entities primitive expansion.
+
+## 05C continuation
+
+[05C](./05C.md) extends the authored Native path with existing pure helpers,
+scalar imports and multiple callable owners. This remains the draft #442
+lineage; the earlier proofs above retain their historical evidence boundaries.

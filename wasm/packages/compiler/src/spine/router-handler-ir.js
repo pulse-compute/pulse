@@ -173,14 +173,12 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
   for (const helper of topology.options?.linkedProjectModules?.sourceHelpers || []) {
     const fn = helper.functionNode;
     if (helper.pure) {
-      const diagnostics = require('./pure-helper-source').validatePureHelperSource(helper);
-      if (diagnostics.length) throw new CanonicalRouterCompileError('Unsupported pure source helper.', diagnostics);
-      const start = synthetic.length;
-      synthetic += `function ${helper.name}(${fn.parameters.map(p => printer.printNode(ts.EmitHint.Unspecified, p, helper.sourceFile)).join(',')}) ${printer.printNode(ts.EmitHint.Unspecified, fn.body, helper.sourceFile)}\n`;
-      const generatedRange = { start, end: synthetic.length };
-      helpers.push({ id: helper.id, name: helper.name, pure: true, source: helper.source,
-        resultKind: fn.type.getText(helper.sourceFile),
-        parameters: fn.parameters.map((p, i) => { const type = helper.parameterTypes[i]; return { name: p.name.text, valueKind: typeof type === 'string' ? type : type.kind === 'record' ? 'object' : 'array', ...(typeof type === 'object' ? { borrow: { version: require('@pulse-compute/wasm-contracts/handler/canonical-native-plan').CANONICAL_NATIVE_PURE_BORROW_VERSION, type } } : {}) }; }), generatedRange });
+      let emitted;
+      try { emitted = require('./pure-helper-source').emitPureHelper(helper, synthetic.length); }
+      catch (error) { throw new CanonicalRouterCompileError(error.message, error.diagnostics); }
+      synthetic += emitted.source;
+      helpers.push(emitted.descriptor);
+      const generatedRange = emitted.descriptor.generatedRange;
       helperRecords.push({ entryStableId: helper.id, operationIr: { sourceFile: helper.sourceFile, handler: fn },
         canonicalIr: { router: { entry: { generatedRange } } } });
       continue;

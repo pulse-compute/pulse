@@ -253,6 +253,18 @@ function resolveLocal(context, indexes, module, localName, diagnostics, stack = 
     exportName: requestedExportName || localExportNames(module, localName)[0] || null,
     declaration: index.handlers.get(localName)
   });
+  for (const statement of module.sourceFile.statements) {
+    if (!ts.isVariableStatement(statement) || !(statement.declarationList.flags & ts.NodeFlags.Const)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== localName) continue;
+      const value = declaration.initializer;
+      if (value && (ts.isStringLiteral(value) || ts.isNumericLiteral(value)
+        || [ts.SyntaxKind.TrueKeyword, ts.SyntaxKind.FalseKeyword].includes(value.kind)
+        || ts.isPrefixUnaryExpression(value) && [ts.SyntaxKind.PlusToken, ts.SyntaxKind.MinusToken].includes(value.operator) && ts.isNumericLiteral(value.operand))) {
+        return Object.freeze({ kind: 'scalar', module, localName, value });
+      }
+    }
+  }
   const imported = importResolutionForLocal(context, module, localName);
   if (!imported) return undefined;
   if (consumedImports) consumedImports.add(`${module.path}\u0000${localName}`);
@@ -780,18 +792,45 @@ function projectFunctionResolver(graphBuild) {
       sourceFile: target.module.sourceFile, functionNode,
       packageSource: Boolean(target.module.packageSource) });
   }
+  function resolve(modulePath, localName) {
+    const module = context.projectModules.get(modulePath);
+    if (!module) return undefined;
+    const diagnostics = [], selectedImports = new Set();
+    const target = resolveLocal(context, indexes, module, localName, diagnostics, [], undefined, selectedImports);
+    if (diagnostics.length) throw new RouterModuleLinkError('Project function resolution failed.', diagnostics);
+    if (target?.module && !target.module.packageSource && ['handler', 'scalar'].includes(target.kind)) {
+      for (const key of selectedImports) consumedImports.add(key);
+    }
+    return target;
+  }
   return Object.freeze({
     entry: describe(root),
+    modules: Object.freeze([...context.projectModules.values()].filter(module => module.runtime && !module.packageSource)
+      .map(module => Object.freeze({ modulePath: module.path, sourceFile: module.sourceFile }))),
     consumedRuntimeImports: () => Object.freeze([...consumedImports].sort()),
+    scalar(modulePath, localName) {
+      const target = resolve(modulePath, localName);
+      if (target?.kind !== 'scalar' || target.module.packageSource) return undefined;
+      let written = false;
+      const scan = node => {
+        const lhs = ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment
+          ? node.left : (ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator) ? node.operand : undefined;
+        const binding = item => { if (ts.isIdentifier(item) && item.text === target.localName) written = true; ts.forEachChild(item, binding); };
+        if (lhs) binding(lhs);
+        ts.forEachChild(node, scan);
+      };
+      scan(target.module.sourceFile);
+      if (written) throw new TypeError('Imported scalar binding must be unwritten.');
+      return target.value;
+    },
+    pureType(modulePath, node) {
+      return require('../spine/pure-helper-source').resolvePureType(context, context.projectModules.get(modulePath), node);
+    },
     resolve(modulePath, localName) {
       const module = context.projectModules.get(modulePath);
       if (!module) return undefined;
-      const diagnostics = [];
-      const selectedImports = new Set();
-      const target = resolveLocal(context, indexes, module, localName, diagnostics, [], undefined, selectedImports);
-      if (diagnostics.length) throw new RouterModuleLinkError('Project function resolution failed.', diagnostics);
+      const target = resolve(modulePath, localName);
       const result = describe(target);
-      if (result && !result.packageSource) for (const key of selectedImports) consumedImports.add(key);
       return result && Object.freeze({ ...result, imported: Boolean(importResolutionForLocal(context, module, localName)) });
     }
   });

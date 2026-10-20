@@ -51,7 +51,8 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
     if (expression.kind !== 'local' && values.scalar(inputType(expression))) scalarArgumentKind(expression,locals,fail,true,projectionType);
     // Schema decoders and typed effect results establish their own boundary;
     // the encoded input need not itself have the decoded shape.
-    if (expression.kind === 'intrinsic' && ['request.json','schema.decode.text'].includes(expression.name)) return;
+    if (expression.kind === 'intrinsic' && ['request.json','schema.decode.text'].includes(expression.name)
+      || expression.kind === 'callable-input' && plan.callable) return;
     if (expression.kind === 'object') { for (const field of expression.entries) proveInputs(field.value, visiting); return; }
     if (expression.kind !== 'local') {
       for (const child of Object.values(expression)) {
@@ -181,7 +182,9 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
       const type = candidates.length && candidates[0] && candidates.every(t=>values.same(candidates[0],t)) ? candidates[0] : undefined;
       return guarded && locals.get(id)?.declaration === 'const' && type === 'string-or-undefined' ? 'string' : type;
     }};
-    const type=values.readType(e,types);
+    const type=e.kind === 'callable-input' && plan.callable
+      ? values.schemaType(plan.schemas?.registry?.schemas?.find(s => s.id === plan.callable.inputSchema)?.root)
+      : values.readType(e,types);
     if(type && !seen.size)inputTypes.set(e,type);
     return type;
   }
@@ -219,6 +222,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   }
   const admittedCalls = new Map();
   const admit = (body, owner) => { const visit = s => { if (s.kind === 'helper-call') admittedCalls.set(s, owner); }; visit.expression = e => { if (e.kind === 'pure-helper-call') admittedCalls.set(e, owner); }; walkStatements(body, visit); };
+  if (plan.callable) admit(plan.entry.body, 'entry');
   const cursor = plan.locals.find(l => l.scopeId === 'entry' && l.name === '__pulse_router_cursor')?.id;
   for (const entry of plan.routing?.entries || []) {
     if (!['route', 'use'].includes(entry.kind)) continue;

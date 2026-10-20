@@ -61,7 +61,8 @@ try {
   fs.writeFileSync(path.join(cwd,'node_modules/call-target/package.json'),JSON.stringify({name:'call-target',version:'1.0.0',type:'module',exports:'./index.ts'}));
   fs.writeFileSync(path.join(cwd,'node_modules/call-target/index.ts'),target);
   reject(`const result=${call};`,'PULSE_CALL_SOURCE_TARGET',"import {query} from 'call-target';");
-  reject(`const a=${call};const b=ctx.call(second,input,${pair});`,'PULSE_CALL_SOURCE_TARGET_LIMIT',"import {query,second} from './query';",target+'export function second(ctx,input){return {value:1};}');
+  const multiple=admit(`const a=${call};const b=ctx.call(second,input,${pair});`,"import {query,second} from './query';",target+'export function second(ctx,input){return {value:1};}');
+  assert.equal(multiple.callees.length,2);accepted++;
   for(const source of ['export function query(ctx,input){input.value=2;return input;}','export function query(ctx,input){return {value:ctx.req.header("x")};}','export function query(ctx,input){return ctx.call(query,input);}'])reject(`const result=${call};`,'PULSE_CALL_SOURCE_CALLEE',undefined,source);
   // Private admission alone remains non-executing. The ordinary project path
   // now consumes those facts and validates the complete caller into a plan.

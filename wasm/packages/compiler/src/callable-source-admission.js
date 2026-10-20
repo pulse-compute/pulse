@@ -102,9 +102,12 @@ function admitCallableSource(graphBuild, { schemaBundle, binaryResources } = {})
           fail('PULSE_CALL_SOURCE_SCHEMA_CONFLICT','A target must use one consistent schema pair.',node);
         }
         if (!callee) {
-          if (callees.size) fail('PULSE_CALL_SOURCE_TARGET_LIMIT','This source admission slice supports one resolved target.',node);
+          if (callees.size >= 16) fail('PULSE_CALL_SOURCE_TARGET_LIMIT','At most 16 resolved targets are admitted.',node);
           let plan;
-          try { plan=compileCallable(target.functionNode.getText(target.sourceFile),{...pair,schemaBundle,binaryResources,fileName:target.modulePath}); }
+          try {
+            const composition = require('./project/callable-composition').composeCallable(target, resolver);
+            plan=compileCallable(composition.source,{...pair,schemaBundle,binaryResources,fileName:target.modulePath,helpers:composition.helpers});
+          }
           catch (error) { fail('PULSE_CALL_SOURCE_CALLEE','Callee failed ordinary computation admission.',node.arguments[0],error); }
           callee=Object.freeze({identity:target.identity,modulePath:target.modulePath,name:target.name,...pair,plan});
           callees.set(target.identity,callee);
@@ -121,7 +124,7 @@ function admitCallableSource(graphBuild, { schemaBundle, binaryResources } = {})
   // An unreferenced named project function import cannot contribute executable
   // behavior. Resolve it with the ordinary linker, but never compile its body.
   // Other imports/references retain ordinary strict import validation.
-  for (const statement of sf.statements) {
+  for (const module of resolver.modules) for (const statement of module.sourceFile.statements) {
     if (!ts.isImportDeclaration(statement)) continue;
     const bindings = statement.importClause?.namedBindings;
     if (!bindings || !ts.isNamedImports(bindings)) continue;
@@ -132,8 +135,8 @@ function admitCallableSource(graphBuild, { schemaBundle, binaryResources } = {})
         if (ts.isIdentifier(node) && node.text === binding.name.text) referenced = true;
         ts.forEachChild(node, reference);
       }
-      reference(sf);
-      if (!referenced) resolver.resolve(entry.modulePath, binding.name.text);
+      reference(module.sourceFile);
+      if (!referenced) resolver.resolve(module.modulePath, binding.name.text);
     }
   }
   return Object.freeze({version:'pulse.call-source-admission.v1',callerValidated:false,runtimeWired:false,

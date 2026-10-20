@@ -124,6 +124,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-node-native-workflow',
       'callable-composition-proof',
       'callable-authored-native',
+      'callable-authored-composition',
       'mcp-native-binding',
       'fastly-entities-native-workflow',
       'crypto-native-guest-source',

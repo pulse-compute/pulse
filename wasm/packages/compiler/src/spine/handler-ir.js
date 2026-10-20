@@ -198,7 +198,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
   const continuationSites = [];
   const effectCounters = new Map();
   let continuationIndex = 0;
-  const helperBodies = new Map((options.internalGeneratedHandler && options.metadataExtensions?.router?.helpers || []).map(helper => [helper.name, helper]));
+  const helperBodies = new Map((options.internalGeneratedHandler && (options.metadataExtensions?.sourceHelpers || options.metadataExtensions?.router?.helpers) || []).map(helper => [helper.name, helper]));
   const pureHelperBounds = new Map();
   for (const declaration of handler.body.statements || []) {
     if (!ts.isFunctionDeclaration(declaration) || !helperBodies.get(declaration.name?.text)?.pure) continue;

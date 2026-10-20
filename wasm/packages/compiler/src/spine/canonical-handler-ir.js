@@ -233,6 +233,7 @@ function createCanonicalHandlerIr(input) {
     ...(applicationEntries ? { applicationEntries } : {}),
     ...(events ? { events } : {}),
     router: routerMetadata,
+    ...(metadataExtensions.sourceHelpers ? { sourceHelpers: metadataExtensions.sourceHelpers } : {}),
     compilerOwnedCalls,
     compilerOwnedIntrinsics,
     compilerPreludeHash: options.compilerPrelude ? stableHash(options.compilerPrelude) : undefined,

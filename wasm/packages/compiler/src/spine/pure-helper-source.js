@@ -120,4 +120,22 @@ function typeNode(type) {
   if (type.kind === 'number-array') return ts.factory.createArrayTypeNode(typeNode('number'));
   return ts.factory.createTypeLiteralNode(type.fields.map(f => ts.factory.createPropertySignature(undefined, f.name, undefined, typeNode(f.type))));
 }
-module.exports = { validatePureHelperSource, resolvePureType, typeNode };
+// Shared declaration/metadata emission for Router and callable owners. Admission
+// and parameter provenance stay in validatePureHelperSource above.
+function emitPureHelper(helper, start = 0) {
+  const diagnostics = validatePureHelperSource(helper);
+  if (diagnostics.length) {
+    const error = new TypeError('Unsupported pure source helper.');
+    error.diagnostics = diagnostics;
+    throw error;
+  }
+  const fn = helper.functionNode, printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
+  const source = `function ${helper.name}(${fn.parameters.map(p => printer.printNode(ts.EmitHint.Unspecified, p, helper.sourceFile)).join(',')}) ${printer.printNode(ts.EmitHint.Unspecified, fn.body, helper.sourceFile)}\n`;
+  const generatedRange = { start, end: start + source.length };
+  return { source, descriptor: { id: helper.id, name: helper.name, pure: true, source: helper.source,
+    resultKind: fn.type.getText(helper.sourceFile),
+    parameters: fn.parameters.map((p, i) => { const type = helper.parameterTypes[i]; return { name: p.name.text,
+      valueKind: typeof type === 'string' ? type : type.kind === 'record' ? 'object' : 'array',
+      ...(typeof type === 'object' ? { borrow: { version: require('@pulse-compute/wasm-contracts/handler/canonical-native-plan').CANONICAL_NATIVE_PURE_BORROW_VERSION, type } } : {}) }; }), generatedRange } };
+}
+module.exports = { validatePureHelperSource, resolvePureType, typeNode, emitPureHelper };
