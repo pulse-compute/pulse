@@ -1037,6 +1037,15 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
     rootDir,
     configFile: options.configFile
   });
+  // Only the named plain Native entry enters this first executable slice.
+  // Router/managed and JavaScript authoring retain their existing boundaries.
+  const namedEntry = root.kind === 'handler' && root.module.sourceFile.statements.find(node =>
+    ts.isFunctionDeclaration(node) && node.name?.text === root.localName);
+  const callableSource = options.target !== 'javascript' && namedEntry
+    ? require('./callable-source-admission').admitCallableSource(graphBuild, {
+        schemaBundle: schema.bundle, binaryResources: options.binaryResources
+      })
+    : undefined;
   const packageOperationRecognition = prepareReachableProjectPackageOperations(graphBuild, {
     rootDir,
     workspaceRoot: options.workspaceRoot,
@@ -1093,7 +1102,10 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
         : linkProjectPlainHandler(graphBuild, {
             rootDir,
             target: options.target,
-            consumedRuntimeImports: managedHandlerRuntimeImportKeys(packageOperationRecognition.managedHandlers)
+            consumedRuntimeImports: [
+              ...managedHandlerRuntimeImportKeys(packageOperationRecognition.managedHandlers),
+              ...(callableSource?.consumedRuntimeImports || [])
+            ]
           });
     } catch (error) {
       if (error instanceof RouterModuleLinkError) {
@@ -1157,7 +1169,15 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
     packageEffectForCall: generatedPackageEffectForCall,
     packageIntrinsicForCall: terminalPackageApplication ? undefined : generatedPackageIntrinsicForCall,
     packageResultAdapterForCall: generatedPackageResultAdapterForCall,
-    allowedRuntimeImports: packageExtensions.allowedRuntimeImports,
+    allowedRuntimeImports: [
+      ...(packageExtensions.allowedRuntimeImports || []),
+      ...root.module.sourceFile.statements.filter(node => ts.isImportDeclaration(node)
+        && ts.isStringLiteral(node.moduleSpecifier) && node.importClause?.namedBindings
+        && ts.isNamedImports(node.importClause.namedBindings)
+        && node.importClause.namedBindings.elements.every(binding =>
+          callableSource?.consumedRuntimeImports.includes(`${root.module.path}\u0000${binding.name.text}`)))
+        .map(node => node.moduleSpecifier.text)
+    ],
     authoringSourceText,
     compilerPrelude: router && router.compilerPrelude,
     compilerOwnedCalls: router && router.compilerOwnedCalls,
@@ -1205,6 +1225,14 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   const graphProjections = reachableProjectGraphProjections(graphBuild, reachableGraph);
   const project = Object.freeze({
     ...compiled,
+    ...(callableSource?.callSites.length ? { callableSource: Object.freeze({
+      version: callableSource.version,
+      callees: callableSource.callees,
+      sites: Object.freeze(callableSource.callSites.map(site => Object.freeze({
+        target: site.target, localName: site.localName, inputSchema: site.inputSchema,
+        outputSchema: site.outputSchema, source: site.source
+      })))
+    }) } : {}),
     ...(options.binaryResources ? { binaryResources: options.binaryResources } : {}),
     projectCompilerVersion: CANONICAL_PROJECT_COMPILER_VERSION,
     graphBuilderVersion: PROJECT_GRAPH_BUILDER_VERSION,

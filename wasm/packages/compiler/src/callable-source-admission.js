@@ -1,6 +1,5 @@
 'use strict';
-// Private, non-executing source admission. Ordinary compilation does not call
-// this module; returned argument ASTs still need normal caller lowering.
+// Private source admission; caller expressions still pass ordinary lowering.
 const ts = require('typescript');
 const { projectFunctionResolver } = require('./project/router-module-linker');
 const { compileCallable } = require('./canonical-callable-proof');
@@ -111,7 +110,7 @@ function admitCallableSource(graphBuild, { schemaBundle, binaryResources } = {})
           callees.set(target.identity,callee);
         }
         const point=sf.getLineAndCharacterOfPosition(node.getStart(sf));
-        sites.push(Object.freeze({target:target.identity,...pair,source:{file:entry.modulePath,line:point.line+1,column:point.character+1},callNode:node,argumentNode:node.arguments[1]}));
+        sites.push(Object.freeze({target:target.identity,localName:targetName,...pair,source:{file:entry.modulePath,line:point.line+1,column:point.character+1},callNode:node,argumentNode:node.arguments[1]}));
       }
     }
     const childNested=nested || ts.isFunctionLike(node);
@@ -119,8 +118,27 @@ function admitCallableSource(graphBuild, { schemaBundle, binaryResources } = {})
     ts.forEachChild(node,child=>visit(child,childNested,childLoop,inCall || recognizedCall));
   }
   visit(fn.body);
+  // An unreferenced named project function import cannot contribute executable
+  // behavior. Resolve it with the ordinary linker, but never compile its body.
+  // Other imports/references retain ordinary strict import validation.
+  for (const statement of sf.statements) {
+    if (!ts.isImportDeclaration(statement)) continue;
+    const bindings = statement.importClause?.namedBindings;
+    if (!bindings || !ts.isNamedImports(bindings)) continue;
+    for (const binding of bindings.elements) {
+      let referenced = false;
+      function reference(node) {
+        if (node === statement || ts.isTypeNode(node)) return;
+        if (ts.isIdentifier(node) && node.text === binding.name.text) referenced = true;
+        ts.forEachChild(node, reference);
+      }
+      reference(sf);
+      if (!referenced) resolver.resolve(entry.modulePath, binding.name.text);
+    }
+  }
   return Object.freeze({version:'pulse.call-source-admission.v1',callerValidated:false,runtimeWired:false,
-    entry:entry.identity,callees:Object.freeze([...callees.values()]),callSites:Object.freeze(sites)});
+    entry:entry.identity,consumedRuntimeImports:resolver.consumedRuntimeImports(),
+    callees:Object.freeze([...callees.values()]),callSites:Object.freeze(sites)});
 }
 
 module.exports = { admitCallableSource, CallableSourceAdmissionError };

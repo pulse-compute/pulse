@@ -1,5 +1,11 @@
 # B10 — shared callable composition proof
 
+Current authored execution checkpoint: [B10-MCP-05B](./05B.md). One imported
+target now executes through a named plain Native entry with full caller
+lowering. The backend-proof measurements and limitations below are retained
+historical evidence. Public support, router/MCP authoring and the complete
+context application remain separate work units.
+
 Status: **internal execution-boundary proof, not a supported `ctx.call` API and
 not completion of B10-MCP-05**. Do not merge as product completion.
 

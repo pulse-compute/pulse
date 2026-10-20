@@ -115,7 +115,7 @@ const tasks = Object.freeze({
     description: 'Pure-helper source oracles and scalar/record admission'
   }),
   'callable-source-admission': nodeTask('test/callables/assert-callable-source-admission.cjs', {
-    description: 'Private callable target/schema source admission; no execution support'
+    description: 'Private callable target/schema admission and authored plain Native plan handoff'
   }),
   'array-demand-n01': nodeTask('test/runtime/compiler-efficiency/n01/array-demand.cjs', {
     evidence: 'external', timeoutMs: 120000,
@@ -1210,6 +1210,10 @@ const tasks = Object.freeze({
   'callable-composition-proof': nodeTask('test/callables/assert-callable-proof.cjs', {
     evidence: 'native', timeoutMs: 300000, description: 'Internal shared callable body, route/MCP composition, reachability and bounded rejection proof'
   }),
+  'callable-authored-native': nodeTask('test/callables/assert-callable-authored.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: '05B authored plain Native call, full caller validation, HTTP parity and unused-import elimination'
+  }),
   'mcp-native-binding': nodeTask('test/mcp/assert-mcp-native-binding.cjs', {
     evidence: 'native', timeoutMs: 240000,
     description: 'B10-MCP-04 static binding and Node JavaScript/Native/Fastly Native protocol parity with direct Entities dispatch'
@@ -1481,6 +1485,7 @@ const profiles = Object.freeze({
     'entities-hardening',
     'entities-node-native-workflow',
     'callable-composition-proof',
+    'callable-authored-native',
     'mcp-native-binding',
     'fastly-entities-native-workflow',
     'crypto-native-guest-source',

@@ -1,5 +1,11 @@
 # Static call source admission: checkpoint 2
 
+Historical admission checkpoint. [05B](./05B.md) now connects these facts to
+ordinary named plain Native project compilation and caller lowering. The
+admission function itself still reports `callerValidated: false` and
+`runtimeWired: false`; those properties describe this pass, not the complete
+project compiler. The remaining text records checkpoint 2's original boundary.
+
 Implemented privately in `wasm/packages/compiler/src/callable-source-admission.js`.
 Normal project compilation does not invoke it and still rejects `ctx.call`.
 No public API, runtime wiring or context-mcp migration is included.

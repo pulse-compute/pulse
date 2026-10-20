@@ -770,6 +770,7 @@ function projectFunctionResolver(graphBuild) {
   const context = projectGraphContext(graphBuild);
   if (!context) throw new TypeError('projectFunctionResolver requires a reachable project graph build.');
   const { root, indexes } = resolveProjectRoot(graphBuild);
+  const consumedImports = new Set();
   function describe(target) {
     if (!target || target.kind !== 'handler') return undefined;
     const functionNode = functionForNamedHandler(target.module.sourceFile, target.localName);
@@ -781,13 +782,16 @@ function projectFunctionResolver(graphBuild) {
   }
   return Object.freeze({
     entry: describe(root),
+    consumedRuntimeImports: () => Object.freeze([...consumedImports].sort()),
     resolve(modulePath, localName) {
       const module = context.projectModules.get(modulePath);
       if (!module) return undefined;
       const diagnostics = [];
-      const target = resolveLocal(context, indexes, module, localName, diagnostics);
+      const selectedImports = new Set();
+      const target = resolveLocal(context, indexes, module, localName, diagnostics, [], undefined, selectedImports);
       if (diagnostics.length) throw new RouterModuleLinkError('Project function resolution failed.', diagnostics);
       const result = describe(target);
+      if (result && !result.packageSource) for (const key of selectedImports) consumedImports.add(key);
       return result && Object.freeze({ ...result, imported: Boolean(importResolutionForLocal(context, module, localName)) });
     }
   });

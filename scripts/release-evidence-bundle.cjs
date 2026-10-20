@@ -123,6 +123,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-hardening',
       'entities-node-native-workflow',
       'callable-composition-proof',
+      'callable-authored-native',
       'mcp-native-binding',
       'fastly-entities-native-workflow',
       'crypto-native-guest-source',

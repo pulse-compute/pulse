@@ -63,9 +63,11 @@ try {
   reject(`const result=${call};`,'PULSE_CALL_SOURCE_TARGET',"import {query} from 'call-target';");
   reject(`const a=${call};const b=ctx.call(second,input,${pair});`,'PULSE_CALL_SOURCE_TARGET_LIMIT',"import {query,second} from './query';",target+'export function second(ctx,input){return {value:1};}');
   for(const source of ['export function query(ctx,input){input.value=2;return input;}','export function query(ctx,input){return {value:ctx.req.header("x")};}','export function query(ctx,input){return ctx.call(query,input);}'])reject(`const result=${call};`,'PULSE_CALL_SOURCE_CALLEE',undefined,source);
-  // Ordinary project compilation is deliberately unchanged and still rejects
-  // ctx.call. This experiment cannot accidentally become supported execution.
+  // Private admission alone remains non-executing. The ordinary project path
+  // now consumes those facts and validates the complete caller into a plan.
   graph();
-  assert.throws(()=>compileCanonicalProject(path.join(cwd,'index.ts'),{rootDir:cwd,workspaceRoot:root,target:'native',schemaBundle}),error=>Boolean(error.diagnostics?.length));rejected++;
-  console.log(JSON.stringify({status:'passed',accepted,rejected,runtimeWired:false,publicCallSyntax:false}));
+  const project=compileCanonicalProject(path.join(cwd,'index.ts'),{rootDir:cwd,workspaceRoot:root,target:'native',schemas:{registry,maxBytes:4096}});
+  const plan=require('../../packages/compiler/src/canonical-native-plan').buildCanonicalNativePlan(project);
+  assert.equal(plan.callables.length,1);accepted++;
+  console.log(JSON.stringify({status:'passed',accepted,rejected,admissionRuntimeWired:false,authoredNativePlan:true,publicCallSyntax:false}));
 } finally {fs.rmSync(cwd,{recursive:true,force:true});}
