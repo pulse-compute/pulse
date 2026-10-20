@@ -102,9 +102,16 @@ export default app;`;
     const json = args => JSON.parse(execFileSync(process.execPath, [binary, 'report', ...args, '--json'], {
       cwd: directory, encoding: 'utf8', env: { ...process.env, PULSE_PROFILE: 'native' }
     }));
-    assert.deepEqual(json([]), c);
+    const status = json(['--evidence-status']);
+    assert.deepEqual(status.result, c);
     assert.deepEqual(json(['--profile', 'native']), c);
     assert.deepEqual(json(['--artifact', path.join(directory, 'dist/pulse-compile.json')]), c);
+    assert.equal(status.evidence.state, 'verified-completed-artifact');
+    assert.equal(status.evidence.snapshot, 'current-inputs-matched');
+    assert.equal(status.evidence.artifactBytes, 'verified');
+    assert.equal(status.evidence.source.revision.value, null);
+    assert.equal(status.evidence.source.sourceFingerprint.value, null);
+    assert.equal(status.evidence.coverage.inventory.resources.status, c.coverage.resources.status);
 
     const html = out => execFileSync(process.execPath, [binary, 'report', '--html', ...(out ? ['--out', out] : [])], {cwd:directory,encoding:'utf8',env:{...process.env,PULSE_PROFILE:'native'}});
     for (const destination of ['.pulse/reports/pulse-report.html', 'reviews/custom.html']) {

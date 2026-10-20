@@ -77,6 +77,17 @@
       ],
       "options": [
         {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
+        {
           "id": "force",
           "key": "force",
           "flags": [
@@ -133,6 +144,17 @@
         }
       ],
       "options": [
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
         {
           "id": "strict",
           "key": "strict",
@@ -194,6 +216,17 @@
       ],
       "options": [
         {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
+        {
           "id": "profile",
           "key": "profile",
           "flags": [
@@ -251,6 +284,17 @@
         }
       ],
       "options": [
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
         {
           "id": "profile",
           "key": "profile",
@@ -408,6 +452,17 @@
       ],
       "options": [
         {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
+        {
           "id": "clean",
           "key": "clean",
           "flags": [
@@ -530,6 +585,17 @@
         }
       ],
       "options": [
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
         {
           "id": "clean",
           "key": "clean",
@@ -668,6 +734,17 @@
           "description": "Write a self-contained offline HTML report; mutually exclusive with --json."
         },
         {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
+        {
           "id": "profile",
           "key": "profile",
           "flags": [
@@ -718,6 +795,7 @@
       ],
       "outputs": [
         "Default output is a bounded terminal overview; --json emits one complete authoritative Report capsule.",
+        "--evidence-status wraps the unchanged capsule in pulse.command-evidence v1; --json alone remains the authoritative capsule.",
         "Historical capsule replay preserves evidence identity without claiming current-project freshness.",
         "--html writes an offline route-first viewer with expandable schemas and full-capsule JSON export; it does not open a browser."
       ],

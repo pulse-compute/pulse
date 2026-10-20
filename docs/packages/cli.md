@@ -95,6 +95,11 @@ the ordinary lifecycle and configured provider realization.
 
 ## Reports
 
+For agents, `--evidence-status` adds a JSON presentation of command outcome,
+evidence identity, coverage, provenance and snapshot validity around the original
+result. See the [interpretation contract](../guides/troubleshooting.md#agent-evidence-status).
+`report --json` alone continues to emit the authoritative report v1 capsule.
+
 `report` reviews retained evidence from a successful Native build: a compact overview by default, or one complete capsule with `--json`. `--artifact` replays a supported manifest or historical capsule without loading project code. `--html` writes a self-contained offline viewer with expandable schemas and full JSON export. It never opens a browser. `--out file.html` selects a contained destination; generated-output receipts beside the file preserve repeatable project matching. Reports contain build-review metadata; review before sharing.
 
 Retained inventory and HTML data use lossless normalized storage when smaller.

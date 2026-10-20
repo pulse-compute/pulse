@@ -1,0 +1,4586 @@
+{
+  "schemaVersion": "pulse.b10-r10.evidence.v1",
+  "base": "ee5a51a76100ba32724f823933cb4ad2f04877d8",
+  "baseTree": "a30c2557dd6a51f923536f2e80b616175f1f5f3c",
+  "originalPrHead": "ba599b9eb3c039c2353ca02f906c19275c1bd786",
+  "qualifiedSource": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+  "qualifiedTree": "f2f0f336e2441d904384f15cd19ed977db0f7ae7",
+  "githubEquivalentSource": "868a22a47ddd1a60a6bd5dcc96e9d6f1a8676087",
+  "workingTree": "",
+  "sourceInputs": [
+    {
+      "path": "docs/guides/troubleshooting.md",
+      "sha256": "bb3124fd6ab8882b35c650662f140230b1da9d5c129630f9d5c5cef26fae69a7"
+    },
+    {
+      "path": "docs/packages/cli.md",
+      "sha256": "7ae72032e6bddba70b1ccad9bd7f6fd209a0d89b669b95bbf464dd5bf3948f5e"
+    },
+    {
+      "path": "docs/reference/cli-spec.json",
+      "sha256": "566053a4c42c0f6fb393809c594317bb8d90a6e45f5af58d074ea3300bb96dc3"
+    },
+    {
+      "path": "docs/reference/cli.md",
+      "sha256": "8a129c6fc3ecf79e03d12c6408a9559a5189e31f0a29ec60542ff86423e3f12c"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/README.md",
+      "sha256": "ce3d51c90a77b2f1b49ca42300be8f8cc941d56a458a79a6b52417c28d66f9ab"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "a45a921cff13b4a9d778fa26b284774d0a0c34d4b1577c905bffeed91c3b07e7"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/context-manifest.json",
+      "sha256": "ad8b5ce324c1f63560f0c01fed464a7ce6fb14d8c9f221da122da783a3c9976a"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+      "sha256": "0cbe8ca6143f31876d99064269b175ab8b610eed6232623cfcda870b086e2c38"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/metadata.bin",
+      "sha256": "7c620c7a82469119ade9b4a1edcd2c365664cf024dc52847e802e1e19e239bb0"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/text.bin",
+      "sha256": "09dfa7275f6e6210f9de8b44e514c9e4c26bff062776a505c2f1955be226f64a"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/vector.bin",
+      "sha256": "f8f6dd4e5759ec860b88f9a34a6785268ee72bab53ef14d7fa1154e1461be460"
+    },
+    {
+      "path": "wasm/packages/cli/cli-spec.json",
+      "sha256": "566053a4c42c0f6fb393809c594317bb8d90a6e45f5af58d074ea3300bb96dc3"
+    },
+    {
+      "path": "wasm/packages/cli/completions/_pulse",
+      "sha256": "e2a58f7552540ac5f1e4ee92558f4fafa3ef393d103cfe9b63016e94bf8b16df"
+    },
+    {
+      "path": "wasm/packages/cli/completions/pulse.bash",
+      "sha256": "70621f3ed611b1aa9ff070b6ecec341d34faf3faff85edb7bc33010a54c9b598"
+    },
+    {
+      "path": "wasm/packages/cli/completions/pulse.fish",
+      "sha256": "390130349c882d41a0e69264bd0abc5645406f8a717a148bca4093e5c035a3b5"
+    },
+    {
+      "path": "wasm/packages/cli/docs/guides/troubleshooting.md",
+      "sha256": "bb3124fd6ab8882b35c650662f140230b1da9d5c129630f9d5c5cef26fae69a7"
+    },
+    {
+      "path": "wasm/packages/cli/docs/packages/cli.md",
+      "sha256": "7ae72032e6bddba70b1ccad9bd7f6fd209a0d89b669b95bbf464dd5bf3948f5e"
+    },
+    {
+      "path": "wasm/packages/cli/docs/reference/cli-spec.json",
+      "sha256": "566053a4c42c0f6fb393809c594317bb8d90a6e45f5af58d074ea3300bb96dc3"
+    },
+    {
+      "path": "wasm/packages/cli/docs/reference/cli.md",
+      "sha256": "8a129c6fc3ecf79e03d12c6408a9559a5189e31f0a29ec60542ff86423e3f12c"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/README.md",
+      "sha256": "ce3d51c90a77b2f1b49ca42300be8f8cc941d56a458a79a6b52417c28d66f9ab"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "a45a921cff13b4a9d778fa26b284774d0a0c34d4b1577c905bffeed91c3b07e7"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json",
+      "sha256": "ad8b5ce324c1f63560f0c01fed464a7ce6fb14d8c9f221da122da783a3c9976a"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+      "sha256": "0cbe8ca6143f31876d99064269b175ab8b610eed6232623cfcda870b086e2c38"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin",
+      "sha256": "7c620c7a82469119ade9b4a1edcd2c365664cf024dc52847e802e1e19e239bb0"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin",
+      "sha256": "09dfa7275f6e6210f9de8b44e514c9e4c26bff062776a505c2f1955be226f64a"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin",
+      "sha256": "f8f6dd4e5759ec860b88f9a34a6785268ee72bab53ef14d7fa1154e1461be460"
+    },
+    {
+      "path": "wasm/packages/cli/src/command-spec.js",
+      "sha256": "3739c6476f66020a3b7fc914ce1ad86e7d9426cf3e8c9303e6c5c9272f9b7def"
+    },
+    {
+      "path": "wasm/packages/cli/src/internal/command-reporter.js",
+      "sha256": "83011d2de4cfbb6ec556e730bd4982d3004830832bf62c8948c8df0a0f6dc6e7"
+    },
+    {
+      "path": "wasm/packages/cli/src/internal/command-request.js",
+      "sha256": "d9487af08c505e63ab75307e925fb17c544f768a0dbe0b366793df2ed025f582"
+    },
+    {
+      "path": "wasm/packages/cli/src/internal/evidence-status.js",
+      "sha256": "e2c250d46a031b28c28f8b7d331d42272fa2dd163793c4d5cc3e492d88d064ec"
+    },
+    {
+      "path": "wasm/packages/cli/src/internal/report/command.js",
+      "sha256": "8cc066aec382d70514a379d08355181a4c8bb95e40c7a91b3c26b5492f79ad55"
+    },
+    {
+      "path": "wasm/packages/cli/src/workflow.js",
+      "sha256": "49526fed76fbf61e5973ccacf712a6fb07f294b76d549c4bb4c525a2e768b684"
+    },
+    {
+      "path": "wasm/test/cli/assert-cli-command-spec.cjs",
+      "sha256": "9d21c9ee802f89f37915fdfac4078e2a869c10865d434bbc801e141c855cf811"
+    },
+    {
+      "path": "wasm/test/cli/assert-report-cli-workflow.cjs",
+      "sha256": "776a822ab346d380199bee860a43ea1f4ccb1c5c25cd60ac6580acdb3231bcf9"
+    },
+    {
+      "path": "wasm/test/cli/assert-report-retained-evidence.cjs",
+      "sha256": "75bcb6aa7910f89df402f01a41abbdd1fd0dcaf94f37b2fecd76975c327ae1ec"
+    },
+    {
+      "path": "wasm/test/cli/report-evidence-status-cases.cjs",
+      "sha256": "f42de0978327ddc0746177eae40e83c2a7ed66ca56378e670bee9a849d38f89b"
+    }
+  ],
+  "installed": {
+    "schemaVersion": "pulse.b10-r10.installed.v1",
+    "status": "passed",
+    "source": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+    "sourceTree": "f2f0f336e2441d904384f15cd19ed977db0f7ae7",
+    "workingTree": "",
+    "node": "v24.19.0",
+    "nodeBinarySha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+    "scriptSha256": "07ffadf08dba690edaf99ddfba0d24c088099c428d64ba951a8143b768ddbf0a",
+    "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0",
+    "startedAt": "2026-10-20T21:03:58.343Z",
+    "commands": [
+      {
+        "command": "init",
+        "args": [
+          "/tmp/pulse-r10-installed-BNzd36/project"
+        ],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "completed",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "doctor",
+        "args": [
+          "--plan"
+        ],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "planned",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "inspect",
+        "args": [
+          "--plan"
+        ],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "planned",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "test",
+        "args": [
+          "--plan"
+        ],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "planned",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "compile",
+        "args": [
+          "--plan"
+        ],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "planned",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "build",
+        "args": [
+          "--plan"
+        ],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "planned",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "report",
+        "args": [
+          "--plan"
+        ],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "planned",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "doctor",
+        "args": [],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "completed",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "inspect",
+        "args": [],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "completed",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "test",
+        "args": [],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "completed",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "compile",
+        "args": [],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "completed",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "report",
+        "args": [],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "completed",
+        "evidence": "verified-completed-artifact",
+        "snapshot": "current-inputs-matched"
+      },
+      {
+        "command": "build",
+        "args": [],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "completed",
+        "evidence": "not-collected",
+        "snapshot": "not-checked"
+      },
+      {
+        "command": "report",
+        "args": [],
+        "status": 0,
+        "stream": "stdout",
+        "outcome": "completed",
+        "evidence": "verified-completed-artifact",
+        "snapshot": "current-inputs-matched"
+      },
+      {
+        "command": "report",
+        "args": [],
+        "status": 3,
+        "stream": "stderr",
+        "outcome": "failed",
+        "evidence": "stale",
+        "snapshot": "not-checked"
+      }
+    ],
+    "cleanup": {
+      "status": "passed",
+      "consumerRemoved": true
+    },
+    "hosted": "not-run",
+    "seal": "not-run",
+    "workspaceBuild": "passed",
+    "packages": [
+      {
+        "name": "@pulse-compute/runtime",
+        "version": "1.0.0-beta.9",
+        "sha256": "323aa0eae5e90617fb7251b711e84f0b2a7017d49512d29a0fbc654491b3594c"
+      },
+      {
+        "name": "@pulse-compute/pulse",
+        "version": "1.0.0-beta.9",
+        "sha256": "4ec5d7590d4538bd5075b165544a8f9e9b5db76c2ec424f1ac2d331271b943ba"
+      },
+      {
+        "name": "@pulse-compute/cli",
+        "version": "1.0.0-beta.9",
+        "sha256": "3781730b5d341a6f2fafda1409b08e2cd5d21c0a012e6f777d0a43b768f98911"
+      },
+      {
+        "name": "@pulse-compute/provider-fastly",
+        "version": "1.0.0-beta.9",
+        "sha256": "22c55c226fc148f381c6afe50e31a3898a346a2176f895085ba0e9aa9ace2154"
+      },
+      {
+        "name": "@pulse-compute/grip",
+        "version": "1.0.0-beta.9",
+        "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+      },
+      {
+        "name": "@pulse-compute/assets",
+        "version": "1.0.0-beta.9",
+        "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+      },
+      {
+        "name": "@pulse-compute/crypto",
+        "version": "1.0.0-beta.9",
+        "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+      },
+      {
+        "name": "@pulse-compute/jwt",
+        "version": "1.0.0-beta.9",
+        "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+      },
+      {
+        "name": "@pulse-compute/entities",
+        "version": "1.0.0-beta.9",
+        "sha256": "40d40da8a5e4d7303e5737f8daa36f05dae37e1107c8969ffd8f8adc405c2595"
+      },
+      {
+        "name": "@pulse-compute/mcp",
+        "version": "1.0.0-beta.9",
+        "sha256": "9195db098f1e1f5e257c1015fa60d7698242d50952d31bfe39f40e76c9b05866"
+      },
+      {
+        "name": "@pulse-compute/s3",
+        "version": "1.0.0-beta.9",
+        "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+      },
+      {
+        "name": "@pulse-compute/wasm-build-support",
+        "version": "1.0.0-beta.9",
+        "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+      },
+      {
+        "name": "@pulse-compute/wasm-compiler",
+        "version": "1.0.0-beta.9",
+        "sha256": "d493c264fa02db241351e349f18b0bba7d199d56d2e0380e3a813caf28657625"
+      },
+      {
+        "name": "@pulse-compute/wasm-guest-link",
+        "version": "1.0.0-beta.9",
+        "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+      },
+      {
+        "name": "@pulse-compute/wasm-contracts",
+        "version": "1.0.0-beta.9",
+        "sha256": "40b65c5ddaebd3d1eda66ce1f8f7b2492b2db9779976dd22e0b83782f54ef8db"
+      },
+      {
+        "name": "@pulse-compute/wasm-host-runtime",
+        "version": "1.0.0-beta.9",
+        "sha256": "1ca864932ea06f7256a224b6dfc87f7464896bf6a544faf3f1a8a1198967d3cd"
+      },
+      {
+        "name": "@pulse-compute/wasm-library-kit",
+        "version": "1.0.0-beta.9",
+        "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+      },
+      {
+        "name": "@pulse-compute/provider-node",
+        "version": "1.0.0-beta.9",
+        "sha256": "cd4022ed6edbe38bd6c22122215b18afe22d2ed6d36c8cf74ff025106e4e849b"
+      },
+      {
+        "name": "@pulse-compute/wasm-runtime-core-as",
+        "version": "1.0.0-beta.9",
+        "sha256": "643f291e708ffd9c75e70c2a5a0c34516977746adc3d62e4342934313a2946a6"
+      },
+      {
+        "name": "@pulse-compute/wasm-schema-json",
+        "version": "1.0.0-beta.9",
+        "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+      }
+    ],
+    "bootstrap": {
+      "packages": [
+        {
+          "name": "@pulse-compute/assets",
+          "version": "1.0.0-beta.9",
+          "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+        },
+        {
+          "name": "@pulse-compute/cli",
+          "version": "1.0.0-beta.9",
+          "sha256": "3781730b5d341a6f2fafda1409b08e2cd5d21c0a012e6f777d0a43b768f98911"
+        },
+        {
+          "name": "@pulse-compute/crypto",
+          "version": "1.0.0-beta.9",
+          "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+        },
+        {
+          "name": "@pulse-compute/entities",
+          "version": "1.0.0-beta.9",
+          "sha256": "40d40da8a5e4d7303e5737f8daa36f05dae37e1107c8969ffd8f8adc405c2595"
+        },
+        {
+          "name": "@pulse-compute/grip",
+          "version": "1.0.0-beta.9",
+          "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "version": "1.0.0-beta.9",
+          "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+        },
+        {
+          "name": "@pulse-compute/mcp",
+          "version": "1.0.0-beta.9",
+          "sha256": "9195db098f1e1f5e257c1015fa60d7698242d50952d31bfe39f40e76c9b05866"
+        },
+        {
+          "name": "@pulse-compute/provider-fastly",
+          "version": "1.0.0-beta.9",
+          "sha256": "22c55c226fc148f381c6afe50e31a3898a346a2176f895085ba0e9aa9ace2154"
+        },
+        {
+          "name": "@pulse-compute/provider-node",
+          "version": "1.0.0-beta.9",
+          "sha256": "cd4022ed6edbe38bd6c22122215b18afe22d2ed6d36c8cf74ff025106e4e849b"
+        },
+        {
+          "name": "@pulse-compute/pulse",
+          "version": "1.0.0-beta.9",
+          "sha256": "4ec5d7590d4538bd5075b165544a8f9e9b5db76c2ec424f1ac2d331271b943ba"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "version": "1.0.0-beta.9",
+          "sha256": "323aa0eae5e90617fb7251b711e84f0b2a7017d49512d29a0fbc654491b3594c"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "version": "1.0.0-beta.9",
+          "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "version": "1.0.0-beta.9",
+          "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+        },
+        {
+          "name": "@pulse-compute/wasm-compiler",
+          "version": "1.0.0-beta.9",
+          "sha256": "d493c264fa02db241351e349f18b0bba7d199d56d2e0380e3a813caf28657625"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "version": "1.0.0-beta.9",
+          "sha256": "40b65c5ddaebd3d1eda66ce1f8f7b2492b2db9779976dd22e0b83782f54ef8db"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "version": "1.0.0-beta.9",
+          "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "version": "1.0.0-beta.9",
+          "sha256": "1ca864932ea06f7256a224b6dfc87f7464896bf6a544faf3f1a8a1198967d3cd"
+        },
+        {
+          "name": "@pulse-compute/wasm-library-kit",
+          "version": "1.0.0-beta.9",
+          "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "version": "1.0.0-beta.9",
+          "sha256": "643f291e708ffd9c75e70c2a5a0c34516977746adc3d62e4342934313a2946a6"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "version": "1.0.0-beta.9",
+          "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+        }
+      ],
+      "files": 1161,
+      "sha256": "bf4fae97207ebfcfc6387670af46fc630c97f84f4022841e7da75a1f2cd50caf"
+    },
+    "lifecycleScripts": false,
+    "projectionFixtures": "passed",
+    "retained": {
+      "mode": "installed",
+      "inventoryCases": null,
+      "status": "passed",
+      "negativeCases": 22,
+      "nativeCompiles": 4,
+      "portableGuestUnchanged": true,
+      "routes": 5,
+      "entries": 6,
+      "schemas": 1,
+      "bindings": 1,
+      "resources": 6,
+      "providerArtifacts": 2,
+      "buildMs": 4068,
+      "reportMs": 570,
+      "capsuleBytes": 101501,
+      "inputSidecarBytes": 9617,
+      "portableSha256": "072a542870efc3e6585b00143b1a08258c3321613215d887e65e7a7101ab0a36",
+      "providerSha256": "67241a97fb5d379327a3aed1141c47c560bf3f8f742c0fdbfa760fe6b0d39e73"
+    },
+    "consumer": {
+      "packages": [
+        {
+          "name": "@pulse-compute/assets",
+          "version": "1.0.0-beta.9",
+          "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+        },
+        {
+          "name": "@pulse-compute/cli",
+          "version": "1.0.0-beta.9",
+          "sha256": "3781730b5d341a6f2fafda1409b08e2cd5d21c0a012e6f777d0a43b768f98911"
+        },
+        {
+          "name": "@pulse-compute/crypto",
+          "version": "1.0.0-beta.9",
+          "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+        },
+        {
+          "name": "@pulse-compute/entities",
+          "version": "1.0.0-beta.9",
+          "sha256": "40d40da8a5e4d7303e5737f8daa36f05dae37e1107c8969ffd8f8adc405c2595"
+        },
+        {
+          "name": "@pulse-compute/grip",
+          "version": "1.0.0-beta.9",
+          "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "version": "1.0.0-beta.9",
+          "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+        },
+        {
+          "name": "@pulse-compute/mcp",
+          "version": "1.0.0-beta.9",
+          "sha256": "9195db098f1e1f5e257c1015fa60d7698242d50952d31bfe39f40e76c9b05866"
+        },
+        {
+          "name": "@pulse-compute/provider-fastly",
+          "version": "1.0.0-beta.9",
+          "sha256": "22c55c226fc148f381c6afe50e31a3898a346a2176f895085ba0e9aa9ace2154"
+        },
+        {
+          "name": "@pulse-compute/provider-node",
+          "version": "1.0.0-beta.9",
+          "sha256": "cd4022ed6edbe38bd6c22122215b18afe22d2ed6d36c8cf74ff025106e4e849b"
+        },
+        {
+          "name": "@pulse-compute/pulse",
+          "version": "1.0.0-beta.9",
+          "sha256": "4ec5d7590d4538bd5075b165544a8f9e9b5db76c2ec424f1ac2d331271b943ba"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "version": "1.0.0-beta.9",
+          "sha256": "323aa0eae5e90617fb7251b711e84f0b2a7017d49512d29a0fbc654491b3594c"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "version": "1.0.0-beta.9",
+          "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "version": "1.0.0-beta.9",
+          "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+        },
+        {
+          "name": "@pulse-compute/wasm-compiler",
+          "version": "1.0.0-beta.9",
+          "sha256": "d493c264fa02db241351e349f18b0bba7d199d56d2e0380e3a813caf28657625"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "version": "1.0.0-beta.9",
+          "sha256": "40b65c5ddaebd3d1eda66ce1f8f7b2492b2db9779976dd22e0b83782f54ef8db"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "version": "1.0.0-beta.9",
+          "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "version": "1.0.0-beta.9",
+          "sha256": "1ca864932ea06f7256a224b6dfc87f7464896bf6a544faf3f1a8a1198967d3cd"
+        },
+        {
+          "name": "@pulse-compute/wasm-library-kit",
+          "version": "1.0.0-beta.9",
+          "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "version": "1.0.0-beta.9",
+          "sha256": "643f291e708ffd9c75e70c2a5a0c34516977746adc3d62e4342934313a2946a6"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "version": "1.0.0-beta.9",
+          "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+        }
+      ],
+      "files": 1161,
+      "sha256": "bf4fae97207ebfcfc6387670af46fc630c97f84f4022841e7da75a1f2cd50caf"
+    },
+    "installedBytesUnchanged": true,
+    "installedLockSha256": "f00ea2ceef891f76fb3c041ffe162c7ee60108dff9e85faf714943dd34849d2d",
+    "registry": {
+      "total": 80,
+      "packuments": 40,
+      "tarballs": 40,
+      "rejected": 0,
+      "missing": 0,
+      "missingPackuments": {},
+      "missingTarballs": 0
+    },
+    "durationMs": 84434,
+    "finishedAt": "2026-10-20T21:05:22.778Z"
+  },
+  "installedReceiptSha256": "caa526e285d68d92b1ceb58a27f37a46beb8a0066c7fb0c7bc23f52895bea0ad",
+  "coverage": {
+    "selected": 93,
+    "attemptedUnique": 93,
+    "passedAtLeastOnce": 91,
+    "neverPassed": [
+      "entities-contracts",
+      "entities-catalog"
+    ],
+    "fullProfilePassed": false,
+    "sealPassed": false,
+    "reportsAreDevelopmentSlices": true
+  },
+  "registeredRuns": [
+    {
+      "receiptSha256": "a334c8b56f3ce89d01569336ba17cd68cf7b9543628496e9ee943e246a283feb",
+      "report": {
+        "schemaVersion": 2,
+        "runId": "2026-10-20T21-02-32-212Z--5",
+        "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+        "sourceIdentity": {
+          "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+          "sourceIdentityKind": "git-commit",
+          "sourceDigestSha256": null,
+          "sourceFiles": null
+        },
+        "status": "failed",
+        "startedAt": "2026-10-20T21:02:32.217Z",
+        "updatedAt": "2026-10-20T21:05:26.612Z",
+        "finishedAt": "2026-10-20T21:05:26.612Z",
+        "durationMs": 174395,
+        "profiles": [
+          "unit",
+          "cli"
+        ],
+        "requestedTasks": [
+          "binary-resource-admission",
+          "report-capsule-contract",
+          "cli-report-workflow",
+          "cli-report-viewer",
+          "cli-report-retained-evidence",
+          "cli-report-size-evidence",
+          "cli-report-capture-proof",
+          "cli-report-entry-proof",
+          "cli-report-reference-provenance",
+          "cli-report-handler-topology",
+          "cli-report-handler-associations",
+          "cli-report-relationships",
+          "cli-report-imported-inputs",
+          "cli-report-resource-inventory",
+          "cli-report-graph-diagnostics",
+          "multifile-source-indexes",
+          "guest-json-roundtrip",
+          "pure-helper-contract",
+          "suite-shape",
+          "test-orchestration",
+          "package-exports",
+          "boundaries",
+          "workspace-hygiene",
+          "hidden-contracts",
+          "release-feature-acceptance",
+          "release-runtime-policy",
+          "release-seal-lifecycle",
+          "release-checkpoints",
+          "release-recovery-runner",
+          "release-recovery",
+          "release-tag",
+          "api-surface",
+          "logging-contract",
+          "s3-design-contract",
+          "kv-design-contract",
+          "kv-conditional-runtime",
+          "kv-conditional-gates",
+          "s3-read-contract",
+          "s3-write-contract",
+          "crypto-config-planning",
+          "crypto-es256-signing",
+          "crypto-rs256",
+          "crypto-digest-text-contract",
+          "reachable-graph",
+          "project-modules",
+          "package-reachability",
+          "external-lowerers",
+          "package-runtime",
+          "provider-toolchain",
+          "schema-registry",
+          "continuation-registry",
+          "entities-contracts",
+          "entities-schema-bridge",
+          "entities-javascript-runtime",
+          "entities-json-rpc-corpus",
+          "mcp-http",
+          "pulse-context-corpus",
+          "pulse-context-build",
+          "pulse-context-application",
+          "pulse-context-host",
+          "mcp-compatibility",
+          "mcp-tools",
+          "mcp-authorization",
+          "entities-package-owned-lowering",
+          "entities-catalog",
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "entities-node-native-workflow",
+          "mcp-native-binding",
+          "fastly-entities-native-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-03-fetch-composition-dynamic-probes",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256"
+        ],
+        "selectedTasks": [
+          "binary-resource-admission",
+          "report-capsule-contract",
+          "cli-report-workflow",
+          "cli-report-viewer",
+          "cli-report-retained-evidence",
+          "cli-report-size-evidence",
+          "cli-report-capture-proof",
+          "cli-report-entry-proof",
+          "cli-report-reference-provenance",
+          "cli-report-handler-topology",
+          "cli-report-handler-associations",
+          "cli-report-relationships",
+          "cli-report-imported-inputs",
+          "cli-report-resource-inventory",
+          "cli-report-graph-diagnostics",
+          "multifile-source-indexes",
+          "guest-json-roundtrip",
+          "pure-helper-contract",
+          "suite-shape",
+          "test-orchestration",
+          "package-exports",
+          "boundaries",
+          "workspace-hygiene",
+          "hidden-contracts",
+          "release-feature-acceptance",
+          "release-runtime-policy",
+          "release-seal-lifecycle",
+          "release-checkpoints",
+          "release-recovery-runner",
+          "release-recovery",
+          "release-tag",
+          "api-surface",
+          "logging-contract",
+          "s3-design-contract",
+          "kv-design-contract",
+          "kv-conditional-runtime",
+          "kv-conditional-gates",
+          "s3-read-contract",
+          "s3-write-contract",
+          "crypto-config-planning",
+          "crypto-es256-signing",
+          "crypto-rs256",
+          "crypto-digest-text-contract",
+          "reachable-graph",
+          "project-modules",
+          "package-reachability",
+          "external-lowerers",
+          "package-runtime",
+          "provider-toolchain",
+          "schema-registry",
+          "continuation-registry",
+          "entities-contracts",
+          "entities-schema-bridge",
+          "entities-javascript-runtime",
+          "entities-json-rpc-corpus",
+          "mcp-http",
+          "pulse-context-corpus",
+          "pulse-context-build",
+          "pulse-context-application",
+          "pulse-context-host",
+          "mcp-compatibility",
+          "mcp-tools",
+          "mcp-authorization",
+          "entities-package-owned-lowering",
+          "entities-catalog",
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "entities-node-native-workflow",
+          "mcp-native-binding",
+          "fastly-entities-native-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-03-fetch-composition-dynamic-probes",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256"
+        ],
+        "currentTask": null,
+        "currentTaskPhase": null,
+        "activeChildPid": null,
+        "activeChildPids": [],
+        "currentTasks": [],
+        "currentTaskPhases": {},
+        "completedTasks": 16,
+        "results": [
+          {
+            "name": "binary-resource-admission",
+            "evidence": "unit",
+            "description": "B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy",
+            "commandSignature": "050ac1eb50bc3bb3493973d1f4463bdf52702f2586f986436eaf7c2005fcab5f",
+            "timeoutMs": 30000,
+            "durationMs": 293,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/binary-resource-admission.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "report-capsule-contract",
+            "evidence": "unit",
+            "description": "PRPT-01 capsule identity, schema projection, completion and attribution contracts",
+            "commandSignature": "000f8eba41e30c3efbbf6c2ec14085df13e2dc8d033b474e59ce992dbd1d19dc",
+            "timeoutMs": 30000,
+            "durationMs": 18183,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/report-capsule-contract.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-workflow",
+            "evidence": "unit",
+            "description": "PRPT-04 report CLI replay, planning, safe output and diagnostics",
+            "commandSignature": "2d7dfcd2ba8242fd71f6ff5719ced75ff83cd820b8c87e0ec8b96a03c57100c9",
+            "timeoutMs": 30000,
+            "durationMs": 3877,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/cli-report-workflow.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-viewer",
+            "evidence": "unit",
+            "description": "PRPT-05 offline encoding, view projections and generated-output receipts",
+            "commandSignature": "9c6266ebdb9f249c39b9fe5cf517cf317db27d579f07de8245a05566e7a98e5d",
+            "timeoutMs": 30000,
+            "durationMs": 11114,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/cli-report-viewer.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-retained-evidence",
+            "evidence": "unit",
+            "description": "PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm",
+            "commandSignature": "36263713c6bcadca1fb462d5d9a32d227e6cbcad1b3515deb9303598f2d444fe",
+            "timeoutMs": 60000,
+            "durationMs": 34215,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/cli-report-retained-evidence.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-size-evidence",
+            "evidence": "unit",
+            "description": "PRPT-03 physical size reconciliation and attribution rejection",
+            "commandSignature": "b049e2d228fd176892b68000f045e3667a47765a98d9311060d017cfa4525519",
+            "timeoutMs": 30000,
+            "durationMs": 901,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/cli-report-size-evidence.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-capture-proof",
+            "evidence": "unit",
+            "description": "PRPT-03 passive final capture noninterference",
+            "commandSignature": "93e7ca52213769c2795c9854907b7eae66fddf234a82de421bf92f12f56f6a57",
+            "timeoutMs": 120000,
+            "durationMs": 7887,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/cli-report-capture-proof.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-entry-proof",
+            "evidence": "native",
+            "description": "RPT8-01 production entry/stage/helper attribution and byte-preserving capture",
+            "commandSignature": "7950bbbc3231f1616148014f3881547f2e3bd7998456fe3f53bc4ce87c54993a",
+            "timeoutMs": 120000,
+            "durationMs": 35962,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/cli-report-entry-proof.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-reference-provenance",
+            "evidence": "native",
+            "description": "RPT8-02 resolved reference identities, shared consumers, unknowns, privacy and byte-preserving capture",
+            "commandSignature": "2536da7081a6141519a293f442cf3113558b526682f38e9868016a1588802bac",
+            "timeoutMs": 120000,
+            "durationMs": 13817,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/cli-report-reference-provenance.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-handler-topology",
+            "evidence": "native",
+            "description": "AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison",
+            "commandSignature": "0164bacbdfd70b1e7b9f49054de584954bef0d8c07d076f129956905349839ea",
+            "timeoutMs": 180000,
+            "durationMs": 43093,
+            "status": "failed",
+            "exitCode": 1,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/cli-report-handler-topology.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "suite-shape",
+            "evidence": "unit",
+            "description": "profile separation, uniqueness, and timeout budgets",
+            "commandSignature": "bd95e9fc69262fdd3b99f1d7abe02f346c0abc83ecdce7175f17908420c70304",
+            "timeoutMs": 30000,
+            "durationMs": 151,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/suite-shape.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "package-exports",
+            "evidence": "unit",
+            "description": "workspace package export smoke",
+            "commandSignature": "707e9798815513dcaf7c7c57aea609c9734ce274e96f79b573c925d7e3827630",
+            "timeoutMs": 30000,
+            "durationMs": 207,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/package-exports.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "boundaries",
+            "evidence": "unit",
+            "description": "workspace layout and import boundaries",
+            "commandSignature": "ad864f2667df5751ca459a9d116f5833fcb598635089d171be312425f19d7cc2",
+            "timeoutMs": 30000,
+            "durationMs": 404,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/boundaries.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "workspace-hygiene",
+            "evidence": "unit",
+            "description": "package-manager and workspace hygiene",
+            "commandSignature": "369e35d273ff124850e480d60897bee7d3a4e9d541ab443a9da78f1c9c287a50",
+            "timeoutMs": 30000,
+            "durationMs": 243,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/workspace-hygiene.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "release-feature-acceptance",
+            "evidence": "unit",
+            "description": "installed feature gate coverage and exact candidate report rejection",
+            "commandSignature": "6c02ca4a9b31743e534ebcf5d1a0380d740383ed69dfae4e0c282bc110251d91",
+            "timeoutMs": 30000,
+            "durationMs": 707,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/release-feature-acceptance.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "release-runtime-policy",
+            "evidence": "unit",
+            "description": "Node release-line acceptance and Fastly CLI lifecycle ownership",
+            "commandSignature": "29e93dda9813c0facde985e3ef968eed0e82fbe6dea48ab155f71eda53210f76",
+            "timeoutMs": 30000,
+            "durationMs": 3309,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-02-32-212Z--5/tasks/release-runtime-policy.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          }
+        ],
+        "runDirectory": "/tmp/runs/2026-10-20T21-02-32-212Z--5"
+      }
+    },
+    {
+      "receiptSha256": "2ddb17a80663220d08d55b783f23eafa6614ed4655f633bb23f1f18c7e8f30ec",
+      "report": {
+        "schemaVersion": 2,
+        "runId": "2026-10-20T21-05-51-098Z--5",
+        "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+        "sourceIdentity": {
+          "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+          "sourceIdentityKind": "git-commit",
+          "sourceDigestSha256": null,
+          "sourceFiles": null
+        },
+        "status": "failed",
+        "startedAt": "2026-10-20T21:05:51.102Z",
+        "updatedAt": "2026-10-20T21:08:19.090Z",
+        "finishedAt": "2026-10-20T21:08:19.090Z",
+        "durationMs": 147988,
+        "profiles": [
+          "unit",
+          "cli"
+        ],
+        "requestedTasks": [
+          "binary-resource-admission",
+          "report-capsule-contract",
+          "cli-report-workflow",
+          "cli-report-viewer",
+          "cli-report-retained-evidence",
+          "cli-report-size-evidence",
+          "cli-report-capture-proof",
+          "cli-report-entry-proof",
+          "cli-report-reference-provenance",
+          "cli-report-handler-topology",
+          "cli-report-handler-associations",
+          "cli-report-relationships",
+          "cli-report-imported-inputs",
+          "cli-report-resource-inventory",
+          "cli-report-graph-diagnostics",
+          "multifile-source-indexes",
+          "guest-json-roundtrip",
+          "pure-helper-contract",
+          "suite-shape",
+          "test-orchestration",
+          "package-exports",
+          "boundaries",
+          "workspace-hygiene",
+          "hidden-contracts",
+          "release-feature-acceptance",
+          "release-runtime-policy",
+          "release-seal-lifecycle",
+          "release-checkpoints",
+          "release-recovery-runner",
+          "release-recovery",
+          "release-tag",
+          "api-surface",
+          "logging-contract",
+          "s3-design-contract",
+          "kv-design-contract",
+          "kv-conditional-runtime",
+          "kv-conditional-gates",
+          "s3-read-contract",
+          "s3-write-contract",
+          "crypto-config-planning",
+          "crypto-es256-signing",
+          "crypto-rs256",
+          "crypto-digest-text-contract",
+          "reachable-graph",
+          "project-modules",
+          "package-reachability",
+          "external-lowerers",
+          "package-runtime",
+          "provider-toolchain",
+          "schema-registry",
+          "continuation-registry",
+          "entities-contracts",
+          "entities-schema-bridge",
+          "entities-javascript-runtime",
+          "entities-json-rpc-corpus",
+          "mcp-http",
+          "pulse-context-corpus",
+          "pulse-context-build",
+          "pulse-context-application",
+          "pulse-context-host",
+          "mcp-compatibility",
+          "mcp-tools",
+          "mcp-authorization",
+          "entities-package-owned-lowering",
+          "entities-catalog",
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "entities-node-native-workflow",
+          "mcp-native-binding",
+          "fastly-entities-native-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-03-fetch-composition-dynamic-probes",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256"
+        ],
+        "selectedTasks": [
+          "cli-report-handler-associations",
+          "cli-report-relationships",
+          "cli-report-imported-inputs",
+          "cli-report-resource-inventory",
+          "cli-report-graph-diagnostics",
+          "multifile-source-indexes",
+          "guest-json-roundtrip",
+          "pure-helper-contract",
+          "suite-shape",
+          "test-orchestration",
+          "package-exports",
+          "boundaries",
+          "workspace-hygiene",
+          "hidden-contracts",
+          "release-feature-acceptance",
+          "release-runtime-policy",
+          "release-seal-lifecycle",
+          "release-checkpoints",
+          "release-recovery-runner",
+          "release-recovery",
+          "release-tag",
+          "api-surface",
+          "logging-contract",
+          "s3-design-contract",
+          "kv-design-contract",
+          "kv-conditional-runtime",
+          "kv-conditional-gates",
+          "s3-read-contract",
+          "s3-write-contract",
+          "crypto-config-planning",
+          "crypto-es256-signing",
+          "crypto-rs256",
+          "crypto-digest-text-contract",
+          "reachable-graph",
+          "project-modules",
+          "package-reachability",
+          "external-lowerers",
+          "package-runtime",
+          "provider-toolchain",
+          "schema-registry",
+          "continuation-registry",
+          "entities-contracts",
+          "entities-schema-bridge",
+          "entities-javascript-runtime",
+          "entities-json-rpc-corpus",
+          "mcp-http",
+          "pulse-context-corpus",
+          "pulse-context-build",
+          "pulse-context-application",
+          "pulse-context-host",
+          "mcp-compatibility",
+          "mcp-tools",
+          "mcp-authorization",
+          "entities-package-owned-lowering",
+          "entities-catalog",
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "entities-node-native-workflow",
+          "mcp-native-binding",
+          "fastly-entities-native-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-03-fetch-composition-dynamic-probes",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256"
+        ],
+        "currentTask": null,
+        "currentTaskPhase": null,
+        "activeChildPid": null,
+        "activeChildPids": [],
+        "currentTasks": [],
+        "currentTaskPhases": {},
+        "completedTasks": 42,
+        "results": [
+          {
+            "name": "cli-report-handler-associations",
+            "evidence": "unit",
+            "description": "AN9-03 bounded contextual associations, scope, explicit continuations, lanes and unknowns",
+            "commandSignature": "36e7af0b985111bc725ad38d7907ea8e08f5162670e3323f83435626213418e4",
+            "timeoutMs": 60000,
+            "durationMs": 1255,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/cli-report-handler-associations.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-relationships",
+            "evidence": "unit",
+            "description": "VIS-07 compact graph, oracle parity, admission, offline queries and historical compatibility",
+            "commandSignature": "d5130b3d597b94dac13b2bd19c9fec0dff196a415046ec6fa60b6ea347981589",
+            "timeoutMs": 60000,
+            "durationMs": 5877,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/cli-report-relationships.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-imported-inputs",
+            "evidence": "native",
+            "description": "AN9-04 exact imported source receipts, passive replay, package links and freshness",
+            "commandSignature": "1c5396971b2ff14d7accee930c9ea16cd469040d94abadb0f003ce8d1b624534",
+            "timeoutMs": 120000,
+            "durationMs": 13976,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/cli-report-imported-inputs.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-resource-inventory",
+            "evidence": "unit",
+            "description": "RPT8-04 resource producer coverage, byte representations, privacy and unchanged asset responses",
+            "commandSignature": "53ac71e8188ddffc4b00593e359dd78481e8516c72f795043a3907064f6b9cd2",
+            "timeoutMs": 120000,
+            "durationMs": 7347,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/cli-report-resource-inventory.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-report-graph-diagnostics",
+            "evidence": "unit",
+            "description": "RPT8-03 bounded graph diagnostics, exhaustive direct-call joins, privacy and passive replay",
+            "commandSignature": "7f72c07a2f6b07dc17a4240211ec7c09374fef3624d963f5cc6f7f4a8845be39",
+            "timeoutMs": 60000,
+            "durationMs": 5609,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/cli-report-graph-diagnostics.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "multifile-source-indexes",
+            "evidence": "unit",
+            "description": "Workspace-only source range, intrinsic and generated-call identity assertions",
+            "commandSignature": "57d616424956a423d0bd865aa22a6f096400e60e5e8d62ed837149a183b58e17",
+            "timeoutMs": 30000,
+            "durationMs": 332,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/multifile-source-indexes.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "guest-json-roundtrip",
+            "evidence": "unit",
+            "description": "Guest v2 manifest/plan JSON key order, exact trust values and ordered arrays",
+            "commandSignature": "9b7dd9fdcad25cc19bc6a2c0334ac26f241d8a0c308eb947b5b08851c595a13c",
+            "timeoutMs": 30000,
+            "durationMs": 135,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/guest-json-roundtrip.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "pure-helper-contract",
+            "evidence": "unit",
+            "description": "Pure-helper source oracles and scalar/record admission",
+            "commandSignature": "aff35e23d00f5ec443dfd180f149d06f301c3728004cd38749f02a5c706cc750",
+            "timeoutMs": 30000,
+            "durationMs": 1213,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/pure-helper-contract.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "suite-shape",
+            "evidence": "unit",
+            "description": "profile separation, uniqueness, and timeout budgets",
+            "commandSignature": "bd95e9fc69262fdd3b99f1d7abe02f346c0abc83ecdce7175f17908420c70304",
+            "timeoutMs": 30000,
+            "durationMs": 141,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/suite-shape.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "test-orchestration",
+            "evidence": "unit",
+            "description": "atomic reports, deterministic slicing, timeouts, and descendant cleanup",
+            "commandSignature": "c6604092b118ae0eacce54a82ab491ee6d850afa9aa7e66aa5403684286f45d8",
+            "timeoutMs": 30000,
+            "durationMs": 16074,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/test-orchestration.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "package-exports",
+            "evidence": "unit",
+            "description": "workspace package export smoke",
+            "commandSignature": "707e9798815513dcaf7c7c57aea609c9734ce274e96f79b573c925d7e3827630",
+            "timeoutMs": 30000,
+            "durationMs": 217,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/package-exports.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "boundaries",
+            "evidence": "unit",
+            "description": "workspace layout and import boundaries",
+            "commandSignature": "ad864f2667df5751ca459a9d116f5833fcb598635089d171be312425f19d7cc2",
+            "timeoutMs": 30000,
+            "durationMs": 372,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/boundaries.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "workspace-hygiene",
+            "evidence": "unit",
+            "description": "package-manager and workspace hygiene",
+            "commandSignature": "369e35d273ff124850e480d60897bee7d3a4e9d541ab443a9da78f1c9c287a50",
+            "timeoutMs": 30000,
+            "durationMs": 205,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/workspace-hygiene.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "hidden-contracts",
+            "evidence": "unit",
+            "description": "hidden contract literal scanner",
+            "commandSignature": "4fee4b5d685c3923484c2ffac2f0446113fe34f63933f296886a30a22d675514",
+            "timeoutMs": 30000,
+            "durationMs": 331,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/hidden-contracts.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "release-feature-acceptance",
+            "evidence": "unit",
+            "description": "installed feature gate coverage and exact candidate report rejection",
+            "commandSignature": "6c02ca4a9b31743e534ebcf5d1a0380d740383ed69dfae4e0c282bc110251d91",
+            "timeoutMs": 30000,
+            "durationMs": 607,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/release-feature-acceptance.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "release-runtime-policy",
+            "evidence": "unit",
+            "description": "Node release-line acceptance and Fastly CLI lifecycle ownership",
+            "commandSignature": "29e93dda9813c0facde985e3ef968eed0e82fbe6dea48ab155f71eda53210f76",
+            "timeoutMs": 30000,
+            "durationMs": 2822,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/release-runtime-policy.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "release-seal-lifecycle",
+            "evidence": "unit",
+            "description": "durable seal heartbeat, terminal receipts and bounded process/cleanup lifecycle",
+            "commandSignature": "f854d2802f44b3db464c6d1542cd9f37b2fc101cb32237da6996931dcef4d652",
+            "timeoutMs": 60000,
+            "durationMs": 3644,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/release-seal-lifecycle.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "release-checkpoints",
+            "evidence": "unit",
+            "description": "Same-candidate receipt integrity, output retention and dependency invalidation",
+            "commandSignature": "b16866c94fae0829765cdad8848ab30b7864711f3791eaf5f76f8a46dd19724e",
+            "timeoutMs": 30000,
+            "durationMs": 383,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/release-checkpoints.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "release-recovery-runner",
+            "evidence": "unit",
+            "description": "Real subprocess late-failure recovery and fail-closed reruns",
+            "commandSignature": "94f66e628047474378bcc3d94d3715b86b7bdbe9c234e4a27491c2f9c065b4ad",
+            "timeoutMs": 90000,
+            "durationMs": 68151,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/release-recovery-runner.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "release-recovery",
+            "evidence": "unit",
+            "description": "Recovery input identity, checkout exclusion and retained-attempt expiry",
+            "commandSignature": "502c8c6364d4215fb859b3db44763677d76961fd0fc600b14897a8f3a6939d5a",
+            "timeoutMs": 30000,
+            "durationMs": 2646,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/release-recovery.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "release-tag",
+            "evidence": "unit",
+            "description": "release-owner tagging guards and immutable tag identity",
+            "commandSignature": "5e50dcd4627892feb000b4c29ccb856c9b2f241b7bb1e2171a5f6d1e4371bfd3",
+            "timeoutMs": 30000,
+            "durationMs": 733,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/release-tag.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "api-surface",
+            "evidence": "unit",
+            "description": "provider-neutral TypeScript API and fixture type surface",
+            "commandSignature": "c037143b2daed3da7456da7e51cddcf7a8df90f375d9d5cff6cfa98e32283d3d",
+            "timeoutMs": 30000,
+            "durationMs": 859,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/api-surface.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "logging-contract",
+            "evidence": "unit",
+            "description": "logging levels, ABI, reporting resolution, and public surfaces",
+            "commandSignature": "54172d7c9edb46e1922cfe1ed9f5d3117d61ac3efef785b3df813ccddf726ea9",
+            "timeoutMs": 30000,
+            "durationMs": 139,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/logging-contract.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "s3-design-contract",
+            "evidence": "unit",
+            "description": "S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes",
+            "commandSignature": "9802726dba62f9921d442308de1bf1c4c0e10d6f33dfcb8c412a04e4ca2e4246",
+            "timeoutMs": 30000,
+            "durationMs": 1224,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/s3-design-contract.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "kv-design-contract",
+            "evidence": "unit",
+            "description": "K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty",
+            "commandSignature": "fc63ddcfb1cb284a9c362c3debb26221398f9822ff5deb300ca24d67dc4d36d8",
+            "timeoutMs": 30000,
+            "durationMs": 1232,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/kv-design-contract.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "kv-conditional-runtime",
+            "evidence": "unit",
+            "description": "K2 production conditional KV types, wire bounds, snapshots and outcome contracts",
+            "commandSignature": "e06f6281a67773ed86902ca36bcf94f148d75a074928339146ba8ad42244d03c",
+            "timeoutMs": 30000,
+            "durationMs": 1240,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/kv-conditional-runtime.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "kv-conditional-gates",
+            "evidence": "unit",
+            "description": "K4 executable requirement and deployed evidence identity, location and uncertainty gates",
+            "commandSignature": "f81bb6374c0413d83a6966a416d3dcadfc01957ed96097156109d02395c5d887",
+            "timeoutMs": 30000,
+            "durationMs": 540,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/kv-conditional-gates.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "s3-read-contract",
+            "evidence": "unit",
+            "description": "S3 read binding authority, lowering negatives and bounded result contract",
+            "commandSignature": "270ee5e8cd49d434f8ebd27de9c6b76062c3a8d1e3a5ac7b23b636720c68d9f6",
+            "timeoutMs": 30000,
+            "durationMs": 1922,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/s3-read-contract.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "s3-write-contract",
+            "evidence": "unit",
+            "description": "S3 PUT lowering, bounded outcomes, JavaScript Crypto bytes and pre-dispatch lifecycle",
+            "commandSignature": "dac5b36bbc3850982da2d2cc0a3ace99c948940add77e72d7e5bd69d7d6aed12",
+            "timeoutMs": 30000,
+            "durationMs": 372,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/s3-write-contract.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "crypto-config-planning",
+            "evidence": "unit",
+            "description": "crypto profile replacement, reachable requirements, and deterministic target realization planning",
+            "commandSignature": "efb81f9ba3f26c42a8716d371d76361c2828e531de7dfde08bb92effbff0a525",
+            "timeoutMs": 180000,
+            "durationMs": 674,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/crypto-config-planning.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "crypto-es256-signing",
+            "evidence": "unit",
+            "description": "RFC6979 signing vector, frame rejection and private material cleanup",
+            "commandSignature": "f03d20ccf84e7aa02387300521018d08c59584f206073472b0940ce9e2cbc496",
+            "timeoutMs": 180000,
+            "durationMs": 148,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/crypto-es256-signing.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "crypto-rs256",
+            "evidence": "unit",
+            "description": "RS256 independent interoperability, CRT consistency, malformed padding, bounds and cleanup",
+            "commandSignature": "e36db97ac240600e44ff02bd838c7ae9dd61626accefe8a3c049deab48c43418",
+            "timeoutMs": 180000,
+            "durationMs": 1478,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/crypto-rs256.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "crypto-digest-text-contract",
+            "evidence": "unit",
+            "description": "Exact-text digest admission, bounded failures, unavailable providers and cancellation",
+            "commandSignature": "3686245b381d4dfb5db6c24c5efd12c6a45c30d7fc2c6831927bdb309ffa0dcd",
+            "timeoutMs": 30000,
+            "durationMs": 488,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/crypto-digest-text-contract.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "reachable-graph",
+            "evidence": "unit",
+            "description": "deterministic path-independent reachable graph",
+            "commandSignature": "ff9ac63241aa7ab5b8e510c386d13c84af78e46e46e9dc71b47676ac9441f49a",
+            "timeoutMs": 120000,
+            "durationMs": 169,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/reachable-graph.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "project-modules",
+            "evidence": "unit",
+            "description": "recursive modules, handlers, Routers, cycles, and diagnostics",
+            "commandSignature": "092455b950dad79a6d09bd6f1925eff7edf4e26fb50e9611c52e093a939fc807",
+            "timeoutMs": 180000,
+            "durationMs": 1025,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/project-modules.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "package-reachability",
+            "evidence": "unit",
+            "description": "graph-selected package operations and native eligibility",
+            "commandSignature": "d251edeee3c99a2204e61fe5ea4f1f4d36526216441ef6fcfea5f240a75c911e",
+            "timeoutMs": 240000,
+            "durationMs": 1005,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/package-reachability.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "external-lowerers",
+            "evidence": "native",
+            "description": "trusted external contracts, independent package versions, nested resolution and Native/JavaScript parity",
+            "commandSignature": "cc63e9ed3a5eda891d339ac11c605328b5c559fe28f17328cd6d58af9c5457bd",
+            "timeoutMs": 180000,
+            "durationMs": 1762,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/external-lowerers.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "package-runtime",
+            "evidence": "unit",
+            "description": "Generic trusted package Wasm ABI, host grants, private memory and cancellation",
+            "commandSignature": "6bdd7d0d4ce22c0327795d63f2427c457476ea78f8afce185b60839b50ba2449",
+            "timeoutMs": 30000,
+            "durationMs": 172,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/package-runtime.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "provider-toolchain",
+            "evidence": "unit",
+            "description": "exact compiler-to-provider toolchain invocation and result boundary",
+            "commandSignature": "5aea1d52d331adef49733c17119dae5f72b1679d9567232d896120187ffdf865",
+            "timeoutMs": 30000,
+            "durationMs": 129,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/provider-toolchain.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "schema-registry",
+            "evidence": "unit",
+            "description": "pulse.schema registry and semantic trace contracts",
+            "commandSignature": "2bfdbe14117f334cbcb77b79c4f49c00cd4049f7f65128179698a11f13748b9e",
+            "timeoutMs": 120000,
+            "durationMs": 994,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/schema-registry.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "continuation-registry",
+            "evidence": "unit",
+            "description": "continuation state, expiry, and resume guards",
+            "commandSignature": "4b42044226f353b6cf255029d296e6fb28509146c8ede7a0ce6a92443a173f6f",
+            "timeoutMs": 30000,
+            "durationMs": 121,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/continuation-registry.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "entities-contracts",
+            "evidence": "unit",
+            "description": "Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary",
+            "commandSignature": "251227bd12a1b8e5d9036487981ff551fb6ea37e87d55f4d7ee774fc00691e9a",
+            "timeoutMs": 30000,
+            "durationMs": 172,
+            "status": "failed",
+            "exitCode": 1,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-05-51-098Z--5/tasks/entities-contracts.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          }
+        ],
+        "runDirectory": "/tmp/runs/2026-10-20T21-05-51-098Z--5"
+      }
+    },
+    {
+      "receiptSha256": "0c6917b720e43fdd7570b8971dd23baa81e9e36ed847bb04a788c7ce740c7ff7",
+      "report": {
+        "schemaVersion": 2,
+        "runId": "2026-10-20T21-08-33-131Z--6",
+        "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+        "sourceIdentity": {
+          "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+          "sourceIdentityKind": "git-commit",
+          "sourceDigestSha256": null,
+          "sourceFiles": null
+        },
+        "status": "failed",
+        "startedAt": "2026-10-20T21:08:33.136Z",
+        "updatedAt": "2026-10-20T21:09:01.580Z",
+        "finishedAt": "2026-10-20T21:09:01.580Z",
+        "durationMs": 28444,
+        "profiles": [
+          "unit",
+          "cli"
+        ],
+        "requestedTasks": [
+          "binary-resource-admission",
+          "report-capsule-contract",
+          "cli-report-workflow",
+          "cli-report-viewer",
+          "cli-report-retained-evidence",
+          "cli-report-size-evidence",
+          "cli-report-capture-proof",
+          "cli-report-entry-proof",
+          "cli-report-reference-provenance",
+          "cli-report-handler-topology",
+          "cli-report-handler-associations",
+          "cli-report-relationships",
+          "cli-report-imported-inputs",
+          "cli-report-resource-inventory",
+          "cli-report-graph-diagnostics",
+          "multifile-source-indexes",
+          "guest-json-roundtrip",
+          "pure-helper-contract",
+          "suite-shape",
+          "test-orchestration",
+          "package-exports",
+          "boundaries",
+          "workspace-hygiene",
+          "hidden-contracts",
+          "release-feature-acceptance",
+          "release-runtime-policy",
+          "release-seal-lifecycle",
+          "release-checkpoints",
+          "release-recovery-runner",
+          "release-recovery",
+          "release-tag",
+          "api-surface",
+          "logging-contract",
+          "s3-design-contract",
+          "kv-design-contract",
+          "kv-conditional-runtime",
+          "kv-conditional-gates",
+          "s3-read-contract",
+          "s3-write-contract",
+          "crypto-config-planning",
+          "crypto-es256-signing",
+          "crypto-rs256",
+          "crypto-digest-text-contract",
+          "reachable-graph",
+          "project-modules",
+          "package-reachability",
+          "external-lowerers",
+          "package-runtime",
+          "provider-toolchain",
+          "schema-registry",
+          "continuation-registry",
+          "entities-contracts",
+          "entities-schema-bridge",
+          "entities-javascript-runtime",
+          "entities-json-rpc-corpus",
+          "mcp-http",
+          "pulse-context-corpus",
+          "pulse-context-build",
+          "pulse-context-application",
+          "pulse-context-host",
+          "mcp-compatibility",
+          "mcp-tools",
+          "mcp-authorization",
+          "entities-package-owned-lowering",
+          "entities-catalog",
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "entities-node-native-workflow",
+          "mcp-native-binding",
+          "fastly-entities-native-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-03-fetch-composition-dynamic-probes",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256"
+        ],
+        "selectedTasks": [
+          "entities-schema-bridge",
+          "entities-javascript-runtime",
+          "entities-json-rpc-corpus",
+          "mcp-http",
+          "pulse-context-corpus",
+          "pulse-context-build",
+          "pulse-context-application",
+          "pulse-context-host",
+          "mcp-compatibility",
+          "mcp-tools",
+          "mcp-authorization",
+          "entities-package-owned-lowering",
+          "entities-catalog",
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "entities-node-native-workflow",
+          "mcp-native-binding",
+          "fastly-entities-native-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-03-fetch-composition-dynamic-probes",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256"
+        ],
+        "currentTask": null,
+        "currentTaskPhase": null,
+        "activeChildPid": null,
+        "activeChildPids": [],
+        "currentTasks": [],
+        "currentTaskPhases": {},
+        "completedTasks": 13,
+        "results": [
+          {
+            "name": "entities-schema-bridge",
+            "evidence": "unit",
+            "description": "I3 request-bound declared-schema codec bridge, immutable values, semantic traces, and negative authority surface",
+            "commandSignature": "913ab9aaf262787dcf27d8d9a62c9e0469d9eef2c0985628517395f6e7a46891",
+            "timeoutMs": 120000,
+            "durationMs": 363,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/entities-schema-bridge.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "entities-javascript-runtime",
+            "evidence": "javascript",
+            "description": "I4 real package dispatch, JSON-RPC framing, redaction, notification acknowledgement, and catalog identity",
+            "commandSignature": "f393f04d4b7a8c5af4d24947ac092ca72722621050457169ed0e4083ceb23ba9",
+            "timeoutMs": 120000,
+            "durationMs": 828,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/entities-javascript-runtime.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "entities-json-rpc-corpus",
+            "evidence": "unit",
+            "description": "I4 production scanner parity with the frozen bounded positive and negative envelope corpus",
+            "commandSignature": "0dc5ea063088e98f1d743154949a246982e696d01a464fedda8bfdbf1e2909a0",
+            "timeoutMs": 30000,
+            "durationMs": 138,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/entities-json-rpc-corpus.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "mcp-http",
+            "evidence": "unit",
+            "description": "MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge",
+            "commandSignature": "021cae288e531c8d38e193567a65263494039a0448832800692c4b54622d0e0e",
+            "timeoutMs": 30000,
+            "durationMs": 397,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/mcp-http.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "pulse-context-corpus",
+            "evidence": "unit",
+            "description": "PMCP-02 immutable bounded context snapshot, deterministic generation, source identity and version mismatch",
+            "commandSignature": "f4e61362387b45801bf27c7121c74a262805718e16d30eb1160353237a0a4796",
+            "timeoutMs": 30000,
+            "durationMs": 1006,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/pulse-context-corpus.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "pulse-context-build",
+            "evidence": "unit",
+            "description": "B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection",
+            "commandSignature": "85ecc49d3fce5e91fb2ed059f0699a56d488fc067fe78285e7e10cabe6aaf8ca",
+            "timeoutMs": 60000,
+            "durationMs": 11766,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/pulse-context-build.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "pulse-context-application",
+            "evidence": "unit",
+            "description": "PMCP-03 five read-only Entities context operations, real Node JavaScript build, schemas/catalog and bounded MCP projection",
+            "commandSignature": "bf05229534bb72447fc83f7d1fae9b49d633e42071570cfe908327506127bf9c",
+            "timeoutMs": 30000,
+            "durationMs": 6112,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/pulse-context-application.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "pulse-context-host",
+            "evidence": "unit",
+            "description": "PMCP-04 built-only loopback host, build/corpus identity, bounded MCP readiness, interruption and shutdown",
+            "commandSignature": "d83aacf3a74449675266c13d5b0354954c323e7b19c8c138765ed8ff8dbb0ea4",
+            "timeoutMs": 30000,
+            "durationMs": 3445,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/pulse-context-host.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "mcp-compatibility",
+            "evidence": "unit",
+            "description": "PMCP-01A opt-in 2025-06-18 framing, modern isolation and shared bounded/authenticated tools",
+            "commandSignature": "3331fe10d437e669ae99c4a93abda0d92936603a645536e90b1e319abd829892",
+            "timeoutMs": 30000,
+            "durationMs": 272,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/mcp-compatibility.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "mcp-tools",
+            "evidence": "unit",
+            "description": "MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures",
+            "commandSignature": "e03fd7bdb72b8ef57858d77569eea76fac13766abc290c4c9f040160910ad2d9",
+            "timeoutMs": 30000,
+            "durationMs": 305,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/mcp-tools.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "mcp-authorization",
+            "evidence": "unit",
+            "description": "MCP-04 resource metadata, token introspection, scoped admission and credential isolation",
+            "commandSignature": "ad708f1f1e690183861c0793ba5dfa0e552f1def73f4e6ee7b7cfa901de1f605",
+            "timeoutMs": 30000,
+            "durationMs": 3049,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/mcp-authorization.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "entities-package-owned-lowering",
+            "evidence": "unit",
+            "description": "I2 first-party static extraction, terminal intrinsic, schema linkage, and fail-closed lowerer boundary",
+            "commandSignature": "ed872df039721835fa65681c44f070679ea0f55542c20f8d4ebebc89d61a609c",
+            "timeoutMs": 30000,
+            "durationMs": 401,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/entities-package-owned-lowering.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "entities-catalog",
+            "evidence": "unit",
+            "description": "deterministic entity catalog, eligible-target truth, and current product status",
+            "commandSignature": "f82959dc993b27221a813f2603d7fd8a8db4a3a8a9322a4d5a07bc644faec8f9",
+            "timeoutMs": 30000,
+            "durationMs": 338,
+            "status": "failed",
+            "exitCode": 1,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-08-33-131Z--6/tasks/entities-catalog.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          }
+        ],
+        "runDirectory": "/tmp/runs/2026-10-20T21-08-33-131Z--6"
+      }
+    },
+    {
+      "receiptSha256": "082a4e9ed4c0f4166876dd4954451ae2d9d2c65ce5c4138c13914da998f5be18",
+      "report": {
+        "schemaVersion": 2,
+        "runId": "2026-10-20T21-09-01-689Z--821",
+        "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+        "sourceIdentity": {
+          "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+          "sourceIdentityKind": "git-commit",
+          "sourceDigestSha256": null,
+          "sourceFiles": null
+        },
+        "status": "passed",
+        "startedAt": "2026-10-20T21:09:01.695Z",
+        "updatedAt": "2026-10-20T21:23:17.498Z",
+        "finishedAt": "2026-10-20T21:23:17.498Z",
+        "durationMs": 855803,
+        "profiles": [
+          "unit",
+          "cli"
+        ],
+        "requestedTasks": [
+          "binary-resource-admission",
+          "report-capsule-contract",
+          "cli-report-workflow",
+          "cli-report-viewer",
+          "cli-report-retained-evidence",
+          "cli-report-size-evidence",
+          "cli-report-capture-proof",
+          "cli-report-entry-proof",
+          "cli-report-reference-provenance",
+          "cli-report-handler-topology",
+          "cli-report-handler-associations",
+          "cli-report-relationships",
+          "cli-report-imported-inputs",
+          "cli-report-resource-inventory",
+          "cli-report-graph-diagnostics",
+          "multifile-source-indexes",
+          "guest-json-roundtrip",
+          "pure-helper-contract",
+          "suite-shape",
+          "test-orchestration",
+          "package-exports",
+          "boundaries",
+          "workspace-hygiene",
+          "hidden-contracts",
+          "release-feature-acceptance",
+          "release-runtime-policy",
+          "release-seal-lifecycle",
+          "release-checkpoints",
+          "release-recovery-runner",
+          "release-recovery",
+          "release-tag",
+          "api-surface",
+          "logging-contract",
+          "s3-design-contract",
+          "kv-design-contract",
+          "kv-conditional-runtime",
+          "kv-conditional-gates",
+          "s3-read-contract",
+          "s3-write-contract",
+          "crypto-config-planning",
+          "crypto-es256-signing",
+          "crypto-rs256",
+          "crypto-digest-text-contract",
+          "reachable-graph",
+          "project-modules",
+          "package-reachability",
+          "external-lowerers",
+          "package-runtime",
+          "provider-toolchain",
+          "schema-registry",
+          "continuation-registry",
+          "entities-contracts",
+          "entities-schema-bridge",
+          "entities-javascript-runtime",
+          "entities-json-rpc-corpus",
+          "mcp-http",
+          "pulse-context-corpus",
+          "pulse-context-build",
+          "pulse-context-application",
+          "pulse-context-host",
+          "mcp-compatibility",
+          "mcp-tools",
+          "mcp-authorization",
+          "entities-package-owned-lowering",
+          "entities-catalog",
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "entities-node-native-workflow",
+          "mcp-native-binding",
+          "fastly-entities-native-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-03-fetch-composition-dynamic-probes",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256"
+        ],
+        "selectedTasks": [
+          "entities-inspection",
+          "entities-orchestration-demo",
+          "cli-command-spec",
+          "cli-init-workflow",
+          "cli-project-workflow",
+          "cli-expansion-doctor",
+          "cli-project-guards",
+          "cli-dev-workflow",
+          "cli-schema-json-workflow",
+          "entities-node-native-workflow",
+          "mcp-native-binding",
+          "fastly-entities-native-workflow",
+          "events-cli-workflow",
+          "cli-diagnostics",
+          "docs-executable-contracts",
+          "docs-executable-init-dev",
+          "docs-migration-schema-lowering",
+          "docs-example-01-hello-json",
+          "docs-example-03-fetch-composition-dynamic-probes",
+          "docs-example-02-request-schema",
+          "docs-example-03-fetch-composition",
+          "docs-example-05-fastly-capabilities",
+          "docs-example-07-opaque-proxy",
+          "docs-example-09-router-lowering",
+          "docs-example-10-entities-tools",
+          "docs-example-11-events",
+          "docs-example-12-pulse-context-mcp",
+          "docs-example-13-jwt-es256"
+        ],
+        "currentTask": null,
+        "currentTaskPhase": null,
+        "activeChildPid": null,
+        "activeChildPids": [],
+        "currentTasks": [],
+        "currentTaskPhases": {},
+        "completedTasks": 28,
+        "results": [
+          {
+            "name": "entities-inspection",
+            "evidence": "unit",
+            "description": "canonical project and pulse inspect declarations, redacted handler effects, I9 target evidence, and deterministic build artifacts",
+            "commandSignature": "95a0b46162d869627029893244069301f8af6491abec37403d8d867547d1439d",
+            "timeoutMs": 120000,
+            "durationMs": 11872,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/entities-inspection.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "entities-orchestration-demo",
+            "evidence": "unit",
+            "description": "I10 external tools facade over static catalog discovery, governed JSON-RPC calls, backend fetch, and Native artifact inspection",
+            "commandSignature": "50b93e1c8a309ebc2ba527b2b8d6cca4af7e74a8222b318da59b6760f83ec508",
+            "timeoutMs": 180000,
+            "durationMs": 6365,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/entities-orchestration-demo.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-command-spec",
+            "evidence": "cli",
+            "description": "public parser, help, aliases, and positionals",
+            "commandSignature": "6a0f52d3ee791475dcd344baff25a9ba6ce613dd6142be87bab8a5f85b6015d4",
+            "timeoutMs": 30000,
+            "durationMs": 162,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/cli-command-spec.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-init-workflow",
+            "evidence": "cli",
+            "description": "deterministic conventional project creation",
+            "commandSignature": "7ce6559382487aae25b1c9fe3daf7e0891aea42aedbe0cfc37cfbddf58009a24",
+            "timeoutMs": 300000,
+            "durationMs": 21994,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/cli-init-workflow.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-project-workflow",
+            "evidence": "cli",
+            "description": "doctor, test, inspect, compile, and build workflow",
+            "commandSignature": "f2d068c900d1229136f1b9b56cbf0fe83da564ac31e667df1ef10ea0b30ac04d",
+            "timeoutMs": 180000,
+            "durationMs": 73911,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/cli-project-workflow.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-expansion-doctor",
+            "evidence": "cli",
+            "description": "bounded repeated-owner, retained-stage and missed-sharing doctor diagnostics",
+            "commandSignature": "697b296e4c504f050b296a68069942c92359d06582ddb19089b630803c378fb3",
+            "timeoutMs": 60000,
+            "durationMs": 10545,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/cli-expansion-doctor.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-project-guards",
+            "evidence": "cli",
+            "description": "output containment, redaction, and provider truth guards",
+            "commandSignature": "cd457c7cea09f6f6bbc056a212e69df125a77cbdd66181ebca98670885d5c60b",
+            "timeoutMs": 180000,
+            "durationMs": 9398,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/cli-project-guards.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-dev-workflow",
+            "evidence": "cli",
+            "description": "Node and Fastly development lifecycle",
+            "commandSignature": "7bfd936d1e97feedca1052d9d3a21fe42498074f41f57fc66f773a173ae050b9",
+            "timeoutMs": 60000,
+            "durationMs": 11536,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/cli-dev-workflow.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-schema-json-workflow",
+            "evidence": "cli",
+            "description": "schema compile, execution, diagnostics, and reload",
+            "commandSignature": "a2ca30fb5276310fcba0848718922cfc4af0290167bc3dcb73c36d01c4e56fc3",
+            "timeoutMs": 180000,
+            "durationMs": 66931,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/cli-schema-json-workflow.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "entities-node-native-workflow",
+            "evidence": "native",
+            "description": "ordinary Node Native Entities guest compilation, artifact execution, test and live development lifecycle",
+            "commandSignature": "254ca1e895b7baa396e8b3ff3fa22e259b057484f8a44888019bb83c0f5e1358",
+            "timeoutMs": 180000,
+            "durationMs": 23963,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/entities-node-native-workflow.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "mcp-native-binding",
+            "evidence": "native",
+            "description": "B10-MCP-04 static binding and Node JavaScript/Native/Fastly Native protocol parity with direct Entities dispatch",
+            "commandSignature": "117c59b65c0166dcabf12ea80f74cfdc1542b76f96e51ce71672dc1b672ed74f",
+            "timeoutMs": 240000,
+            "durationMs": 19778,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/mcp-native-binding.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "fastly-entities-native-workflow",
+            "evidence": "native",
+            "description": "ordinary Fastly Native Entities lifecycle and exact emitted artifact execution; optional explicit Viceroy replay",
+            "commandSignature": "ed66c9c08f51417ee4c5311463d226d514a0c876199a14eb9c36866bb1114231",
+            "timeoutMs": 240000,
+            "durationMs": 77333,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/fastly-entities-native-workflow.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "events-cli-workflow",
+            "evidence": "external",
+            "description": "event-aware project harness, inspection, packaging, Node JavaScript/Native workflow, and exact Fastly fail-closed eligibility",
+            "commandSignature": "32b40266b87043eb2e623d7859c07db9a5ee18cdfec8500538acc0449726eabc",
+            "timeoutMs": 300000,
+            "durationMs": 54447,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/events-cli-workflow.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "cli-diagnostics",
+            "evidence": "cli",
+            "description": "stable diagnostics, remediation, and exit policy",
+            "commandSignature": "185d8a784f704938bd931de128f14e167801daa8d71a980587b43d170326c06c",
+            "timeoutMs": 120000,
+            "durationMs": 4956,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/cli-diagnostics.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-executable-contracts",
+            "evidence": "cli",
+            "description": "source-bound documentation contracts",
+            "commandSignature": "93f7e2ccedfb4945b89cc18c41089d5da25f8bc8837232ef8915c59f5d7f785b",
+            "timeoutMs": 240000,
+            "durationMs": 147987,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-executable-contracts.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-executable-init-dev",
+            "evidence": "cli",
+            "description": "documented init and development lifecycle",
+            "commandSignature": "633f8768c6d64eea953cccb55f2bc595bdde21bc0ef26589ab1b0766b148e16d",
+            "timeoutMs": 180000,
+            "durationMs": 7788,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-executable-init-dev.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-migration-schema-lowering",
+            "evidence": "cli",
+            "description": "Express migration, schema/body ownership, and package-lowering documentation contracts",
+            "commandSignature": "fbc397ae9e1efc623aacbddc490becc8102e0068a4cf3d219cdfa8d343321543",
+            "timeoutMs": 30000,
+            "durationMs": 1273,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-migration-schema-lowering.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-01-hello-json",
+            "evidence": "cli",
+            "description": "documented 01-hello-json workflow",
+            "commandSignature": "f3f4afd24b852d796abf75b070371352b2e698327cf5179ed045603f730d8319",
+            "timeoutMs": 180000,
+            "durationMs": 16519,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-01-hello-json.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-03-fetch-composition-dynamic-probes",
+            "evidence": "cli",
+            "description": "documented 03-fetch-composition/dynamic-probes workflow",
+            "commandSignature": "5698f3462c89c1ea9905f01ab0ac29b8b102dc9425abb7058ce465e462d41d14",
+            "timeoutMs": 240000,
+            "durationMs": 45527,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-03-fetch-composition-dynamic-probes.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-02-request-schema",
+            "evidence": "cli",
+            "description": "documented 02-request-schema workflow",
+            "commandSignature": "ba544cbe997e36d7a736b0a0be22bf91ddba849b541934b8911b87ba5c387a03",
+            "timeoutMs": 240000,
+            "durationMs": 25527,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-02-request-schema.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-03-fetch-composition",
+            "evidence": "cli",
+            "description": "documented 03-fetch-composition workflow",
+            "commandSignature": "ef424f9a4478a1be2479c426e1840dc4217b7e4db9eb55a719f56e4095e255fa",
+            "timeoutMs": 180000,
+            "durationMs": 17614,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-03-fetch-composition.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-05-fastly-capabilities",
+            "evidence": "cli",
+            "description": "documented 05-fastly-capabilities workflow",
+            "commandSignature": "b3549c0562880499d687337a6cc586133a50b8c701cef93105aea2f5a0b752ec",
+            "timeoutMs": 360000,
+            "durationMs": 41161,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-05-fastly-capabilities.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-07-opaque-proxy",
+            "evidence": "cli",
+            "description": "documented 07-opaque-proxy workflow",
+            "commandSignature": "9d9768843e83334d95d38355ea16674629a0997ab02388f4ddb96df4e9ab1168",
+            "timeoutMs": 360000,
+            "durationMs": 29090,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-07-opaque-proxy.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-09-router-lowering",
+            "evidence": "cli",
+            "description": "documented 09-router-lowering workflow",
+            "commandSignature": "e382361ef587d57b2f3888300e6020b5a486f25fbb79e5dedc180d5f462227d7",
+            "timeoutMs": 240000,
+            "durationMs": 22108,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-09-router-lowering.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-10-entities-tools",
+            "evidence": "cli",
+            "description": "documented 10-entities-tools workflow",
+            "commandSignature": "cdc9451a7944e386b9d21d892baf46573431cc386d8da29a4e437d928a08a879",
+            "timeoutMs": 240000,
+            "durationMs": 22278,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-10-entities-tools.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-11-events",
+            "evidence": "cli",
+            "description": "documented 11-events workflow",
+            "commandSignature": "30ee0ce33378987f447c72810966bf04270bcc21aae19d6eb3c0d1467bb41d0f",
+            "timeoutMs": 300000,
+            "durationMs": 27108,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-11-events.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-12-pulse-context-mcp",
+            "evidence": "cli",
+            "description": "documented 12-pulse-context-mcp workflow",
+            "commandSignature": "a555149dfeb53743e3bca27a147a5e052d813944d361958cbc6ad728facdd172",
+            "timeoutMs": 240000,
+            "durationMs": 8248,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-12-pulse-context-mcp.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          },
+          {
+            "name": "docs-example-13-jwt-es256",
+            "evidence": "cli",
+            "description": "documented 13-jwt-es256 workflow",
+            "commandSignature": "a3dc896113be0fd6fdca9cbef91b5c5b5ca5e99a1aa75f238ff4b0616cf2711c",
+            "timeoutMs": 300000,
+            "durationMs": 50347,
+            "status": "passed",
+            "exitCode": 0,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/tmp/runs/2026-10-20T21-09-01-689Z--821/tasks/docs-example-13-jwt-es256.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          }
+        ],
+        "runDirectory": "/tmp/runs/2026-10-20T21-09-01-689Z--821"
+      }
+    }
+  ],
+  "topologyRecheck": {
+    "schemaVersion": 2,
+    "runId": "2026-10-20T21-06-36-741Z--5",
+    "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+    "sourceIdentity": {
+      "sourceRevision": "d24fbc02f0dcef5ac1fd05d3e37379fbe3403182",
+      "sourceIdentityKind": "git-commit",
+      "sourceDigestSha256": null,
+      "sourceFiles": null
+    },
+    "status": "passed",
+    "startedAt": "2026-10-20T21:06:36.747Z",
+    "updatedAt": "2026-10-20T21:07:31.124Z",
+    "finishedAt": "2026-10-20T21:07:31.124Z",
+    "durationMs": 54377,
+    "profiles": [],
+    "requestedTasks": [
+      "cli-report-handler-topology"
+    ],
+    "selectedTasks": [
+      "cli-report-handler-topology"
+    ],
+    "currentTask": null,
+    "currentTaskPhase": null,
+    "activeChildPid": null,
+    "activeChildPids": [],
+    "currentTasks": [],
+    "currentTaskPhases": {},
+    "completedTasks": 1,
+    "results": [
+      {
+        "name": "cli-report-handler-topology",
+        "evidence": "native",
+        "description": "AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison",
+        "commandSignature": "0164bacbdfd70b1e7b9f49054de584954bef0d8c07d076f129956905349839ea",
+        "timeoutMs": 180000,
+        "durationMs": 54366,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "interruptedBy": null,
+        "error": null,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logPath": "/tmp/runs/2026-10-20T21-06-36-741Z--5/tasks/cli-report-handler-topology.log",
+        "retainedTaskRoot": null,
+        "diagnosticReports": [],
+        "failureArtifacts": [],
+        "processTree": [],
+        "remainingProcessTree": []
+      }
+    ],
+    "runDirectory": "/tmp/runs/2026-10-20T21-06-36-741Z--5"
+  },
+  "baselineRuns": [
+    {
+      "schemaVersion": 2,
+      "runId": "2026-10-20T21-04-09-931Z--5",
+      "sourceRevision": "458317138196591c68ff0484bf58818fcbece134",
+      "sourceIdentity": {
+        "sourceRevision": "458317138196591c68ff0484bf58818fcbece134",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "status": "failed",
+      "startedAt": "2026-10-20T21:04:09.938Z",
+      "updatedAt": "2026-10-20T21:04:10.194Z",
+      "finishedAt": "2026-10-20T21:04:10.194Z",
+      "durationMs": 256,
+      "profiles": [],
+      "requestedTasks": [
+        "entities-contracts"
+      ],
+      "selectedTasks": [
+        "entities-contracts"
+      ],
+      "currentTask": null,
+      "currentTaskPhase": null,
+      "activeChildPid": null,
+      "activeChildPids": [],
+      "currentTasks": [],
+      "currentTaskPhases": {},
+      "completedTasks": 1,
+      "results": [
+        {
+          "name": "entities-contracts",
+          "evidence": "unit",
+          "description": "Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary",
+          "commandSignature": "dcde867c43bcbb99f2d421860d9be3df608e1f583cda4e490e7d5c10d5f07288",
+          "timeoutMs": 30000,
+          "durationMs": 243,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/tmp/runs/2026-10-20T21-04-09-931Z--5/tasks/entities-contracts.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ],
+      "runDirectory": "/tmp/runs/2026-10-20T21-04-09-931Z--5"
+    },
+    {
+      "schemaVersion": 2,
+      "runId": "2026-10-20T21-04-09-881Z--5",
+      "sourceRevision": "458317138196591c68ff0484bf58818fcbece134",
+      "sourceIdentity": {
+        "sourceRevision": "458317138196591c68ff0484bf58818fcbece134",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "status": "failed",
+      "startedAt": "2026-10-20T21:04:09.888Z",
+      "updatedAt": "2026-10-20T21:04:10.534Z",
+      "finishedAt": "2026-10-20T21:04:10.534Z",
+      "durationMs": 646,
+      "profiles": [],
+      "requestedTasks": [
+        "entities-catalog"
+      ],
+      "selectedTasks": [
+        "entities-catalog"
+      ],
+      "currentTask": null,
+      "currentTaskPhase": null,
+      "activeChildPid": null,
+      "activeChildPids": [],
+      "currentTasks": [],
+      "currentTaskPhases": {},
+      "completedTasks": 1,
+      "results": [
+        {
+          "name": "entities-catalog",
+          "evidence": "unit",
+          "description": "deterministic entity catalog, eligible-target truth, and current product status",
+          "commandSignature": "d74d23bdb8626837019f361fd244d1c66a099fadd6c1ebc259e6937a5265e5a3",
+          "timeoutMs": 30000,
+          "durationMs": 634,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/tmp/runs/2026-10-20T21-04-09-881Z--5/tasks/entities-catalog.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ],
+      "runDirectory": "/tmp/runs/2026-10-20T21-04-09-881Z--5"
+    },
+    {
+      "schemaVersion": 2,
+      "runId": "2026-10-20T21-05-52-349Z--5",
+      "sourceRevision": "458317138196591c68ff0484bf58818fcbece134",
+      "sourceIdentity": {
+        "sourceRevision": "458317138196591c68ff0484bf58818fcbece134",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "status": "failed",
+      "startedAt": "2026-10-20T21:05:52.354Z",
+      "updatedAt": "2026-10-20T21:06:25.651Z",
+      "finishedAt": "2026-10-20T21:06:25.651Z",
+      "durationMs": 33297,
+      "profiles": [],
+      "requestedTasks": [
+        "cli-report-handler-topology"
+      ],
+      "selectedTasks": [
+        "cli-report-handler-topology"
+      ],
+      "currentTask": null,
+      "currentTaskPhase": null,
+      "activeChildPid": null,
+      "activeChildPids": [],
+      "currentTasks": [],
+      "currentTaskPhases": {},
+      "completedTasks": 1,
+      "results": [
+        {
+          "name": "cli-report-handler-topology",
+          "evidence": "native",
+          "description": "AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison",
+          "commandSignature": "14285409cd1a0011ceb43f5e0c74227402ad7dedaa15bd5853b4a5ceb2238136",
+          "timeoutMs": 180000,
+          "durationMs": 33288,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/tmp/runs/2026-10-20T21-05-52-349Z--5/tasks/cli-report-handler-topology.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ],
+      "runDirectory": "/tmp/runs/2026-10-20T21-05-52-349Z--5"
+    }
+  ],
+  "baselineAssertionAndAdmissionInputs": [
+    {
+      "path": "wasm/test/entities/assert-entities-contracts.cjs",
+      "sha256": "1bad04d742d4d3dccde4b99587215d4c648a4ab5cd48162e42fd9546154521dc",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "wasm/test/entities/assert-entities-catalog.cjs",
+      "sha256": "c3db2ec118e1435baf3d9fa780913417c5a7113d1ae994b8a3f2f8d1e1e845fe",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/entities/package.json",
+      "sha256": "bd118be90c539d6234b7dd974efff7601dc887311b250af511e84b206a3ed9e1",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "wasm/test/cli/assert-report-handler-topology.cjs",
+      "sha256": "6d06af431b87246fca4a8fff365d552bde1632acc879a99838a49c63f28c922e",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "wasm/packages/cli/src/internal/report/completion.js",
+      "sha256": "4fb71754baef6ad020025fa6220c1dcf6aa52af0faae7d710f663b04ba2dcf60",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "wasm/packages/cli/src/internal/report/retained.js",
+      "sha256": "f0728d3247d267c3e4f4731662d17b2608c3b5f1649ecc70444f8af8e552207d",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "wasm/packages/cli/src/project-execution.js",
+      "sha256": "23f3ed2e98e0ad14163e6bda3e9367e08c3b8bde2349785a1ae300627f79c6e7",
+      "unchangedFromBase": true
+    }
+  ],
+  "controls": [
+    {
+      "path": "/tmp/r10-build.log",
+      "sha256": "88911224b3e411f0da55752eb3fdf9f68a5a0caad76a86fac990cee032e3ef9f"
+    },
+    {
+      "path": "/tmp/r10-maintainer.log",
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2"
+    },
+    {
+      "path": "/tmp/r10-docs.log",
+      "sha256": "55f50050250287f86b2548043f679366db8619eee8445282c0493556f1415ade"
+    },
+    {
+      "path": "/tmp/r10-doc-release.json",
+      "sha256": "48d8c75ec70285e6e904399a91c27a0604145bae41732c6764ea0f966fc44fbd"
+    },
+    {
+      "path": "/tmp/r10-scope-source.log",
+      "sha256": "f5a73359134a7fa214f7b6db3497ceb9b25076556f195fe76b4b3e63483d5b72"
+    },
+    {
+      "path": "/tmp/r10-context.log",
+      "sha256": "d2e3d93e7c4866ebd6b247eebaff3f7c63d4510c15cdf651e007adf7f0bd8932"
+    }
+  ],
+  "generator": {
+    "schemaVersion": "pulse.context-build-receipt.v1",
+    "status": "ok",
+    "mode": "write",
+    "executionNode": "24.18.0",
+    "pinnedProducerNode": "24.18.0",
+    "manifestSha256": "ad8b5ce324c1f63560f0c01fed464a7ce6fb14d8c9f221da122da783a3c9976a",
+    "corpusHash": "558d769f18f93cc38f83ee7ed4523769ce5ddb30e8a4be196f973b8467ac1a99",
+    "dimensions": {
+      "rows": 246,
+      "dimension": 2464,
+      "nonzeros": 14558,
+      "dictionarySha256": "73936af7422ac7cfb91ac98dc387d958a88252348ae9eb68a1ae33a4d504d75e",
+      "manifestId": "1d6b54d4d63350985265276a6440d87c73794c0dd0609f45351c2ace10fbec1e",
+      "catalogueIdentity": "624f38d36d46256d646280dece3b0af654425f9ad88d3b0193a152e51e68d06f",
+      "rawBytes": 569834,
+      "serializedBytes": 760434,
+      "budgets": {
+        "files": 3,
+        "fileBytes": 5242880,
+        "totalBytes": 8388608,
+        "serializedBytes": 16777216,
+        "bindings": 3
+      }
+    },
+    "changedFiles": 12,
+    "comparedFiles": 12
+  },
+  "historicalEvidence": "history.md retains the exact original PR body, including prior failures/retries; R03-R05 dispositions remain in tracker #372.",
+  "topologyDisposition": "Initial candidate REPORT_ARTIFACT_HASH; separate base REPORT_MISSING_COMPLETION. Different failures, causes unproven; candidate registered recheck passes without source/assertion/deadline changes.",
+  "entitiesDisposition": "Both unchanged-base export assertions include unexpected ./internal/transport. Remain with other workstream; not waived or fixed by R10.",
+  "finalDiffBoundary": "After execution only docs/internal/b10-r10 evidence files were added.",
+  "releaseDisposition": {
+    "R09": "deferred by release owner; #309 remains open",
+    "R08Hosted": "pending under #407",
+    "integratedQualification": "R12 pending",
+    "mcpImplementationChanged": false
+  },
+  "independentCleanup": {
+    "status": "reconciled",
+    "manualReconciliation": true,
+    "afterTerminalChildren": true,
+    "leaseFiles": [
+      {
+        "path": "examples/02-request-schema/.pulse-report-locks/1617f6910baf208b323bf6485ddc5e78f12183cabfd8276c8031fc9010287992.lock",
+        "sha256": "cd03a637dc5aeff872acb8e1ca80fb052c86db24fbc410f32204076209a9aac8",
+        "bytes": 44,
+        "keys": [
+          "token"
+        ],
+        "pid": null,
+        "alive": null
+      },
+      {
+        "path": "examples/02-request-schema/.pulse-report-locks/713957989177e4d956a383a2b80c57827760ba18c3ac903e694c470feabdc9ce.lock",
+        "sha256": "c00d234604487f7c926f95909dd58f5896a39d2cf02e7cf4604a4e9f9f2ecefb",
+        "bytes": 44,
+        "keys": [
+          "token"
+        ],
+        "pid": null,
+        "alive": null
+      },
+      {
+        "path": "examples/03-fetch-composition/dynamic-probes/.pulse-report-locks/713957989177e4d956a383a2b80c57827760ba18c3ac903e694c470feabdc9ce.lock",
+        "sha256": "36b5cf72eaf6358e19c8a588cded07ee7b583b09efd2b110fd54e0c210dbdbab",
+        "bytes": 44,
+        "keys": [
+          "token"
+        ],
+        "pid": null,
+        "alive": null
+      },
+      {
+        "path": "examples/11-events/.pulse-report-locks/1617f6910baf208b323bf6485ddc5e78f12183cabfd8276c8031fc9010287992.lock",
+        "sha256": "fb90be2e5728174dfeb15bf093764a7497df2244f01c53f50131c6f56aba4410",
+        "bytes": 44,
+        "keys": [
+          "token"
+        ],
+        "pid": null,
+        "alive": null
+      },
+      {
+        "path": "examples/11-events/.pulse-report-locks/713957989177e4d956a383a2b80c57827760ba18c3ac903e694c470feabdc9ce.lock",
+        "sha256": "047acc9b66483a635c1f9f2b1a8ab27b78be34e38bcf7037c2eb52f57440d386",
+        "bytes": 44,
+        "keys": [
+          "token"
+        ],
+        "pid": null,
+        "alive": null
+      },
+      {
+        "path": "examples/07-opaque-proxy/.pulse-report-locks/1617f6910baf208b323bf6485ddc5e78f12183cabfd8276c8031fc9010287992.lock",
+        "sha256": "6313bfa7d344e427f0d702081002d806ef91d9c305c4bb4ef2ca195ef6e7ecdd",
+        "bytes": 44,
+        "keys": [
+          "token"
+        ],
+        "pid": null,
+        "alive": null
+      },
+      {
+        "path": "examples/07-opaque-proxy/.pulse-report-locks/713957989177e4d956a383a2b80c57827760ba18c3ac903e694c470feabdc9ce.lock",
+        "sha256": "da37212ed630e838ca0e89288ebe85cb262f65f4c4b756a240ab2b94319f8ab8",
+        "bytes": 44,
+        "keys": [
+          "token"
+        ],
+        "pid": null,
+        "alive": null
+      },
+      {
+        "path": "examples/01-hello-json/.pulse-report-locks/1617f6910baf208b323bf6485ddc5e78f12183cabfd8276c8031fc9010287992.lock",
+        "sha256": "8d541043ffab544d7907a2f62fa73980e99e76c78d460ce83904d3554c90d677",
+        "bytes": 44,
+        "keys": [
+          "token"
+        ],
+        "pid": null,
+        "alive": null
+      },
+      {
+        "path": "examples/05-fastly-capabilities/.pulse-report-locks/713957989177e4d956a383a2b80c57827760ba18c3ac903e694c470feabdc9ce.lock",
+        "sha256": "fd0a85b81fcbb170fda6ac0acd798ddbc752948995b1b7c1ee6961fd023312ba",
+        "bytes": 44,
+        "keys": [
+          "token"
+        ],
+        "pid": null,
+        "alive": null
+      }
+    ],
+    "optimizedBuildFiles": [
+      {
+        "path": "examples/07-opaque-proxy/.pulse-docs-build-size/canonical-native-manifest.json",
+        "sha256": "64fd83ab237e93620d96c973400f60ec149495d24366a3ac9ccfd285c66c6ab6",
+        "bytes": 17950
+      },
+      {
+        "path": "examples/07-opaque-proxy/.pulse-docs-build-size/canonical-native-plan.json",
+        "sha256": "300205bdee4b057b6d752ad9e6ce07ad16864ee07361952f1ffc037763a4c88f",
+        "bytes": 24901
+      },
+      {
+        "path": "examples/07-opaque-proxy/.pulse-docs-build-size/canonical-native.wasm",
+        "sha256": "2e038f558776a42fac1a3fafd6de9a8f353895877fa7a3c66e39adcf5a56dcc3",
+        "bytes": 2205
+      },
+      {
+        "path": "examples/07-opaque-proxy/.pulse-docs-build-size/canonical-native.as.ts",
+        "sha256": "b9bcd833d5e9db40973199e897e56c81b7ac191056bac3dcb9369a8397005bd5",
+        "bytes": 13092
+      },
+      {
+        "path": "examples/07-opaque-proxy/.pulse-docs-build-size/canonical-program.json",
+        "sha256": "088c83327839c0bf052cba31902b10e511db747cf6747c64481b610e3dedff1c",
+        "bytes": 12716
+      },
+      {
+        "path": "examples/07-opaque-proxy/.pulse-docs-build-size/canonical-handler.cjs",
+        "sha256": "c72b41655bf7e3ed4882651cf90d5299c18d1941d44b6a25f87552882ae9efeb",
+        "bytes": 27172
+      }
+    ],
+    "finalWorkingTree": "clean",
+    "releaseCleanupQualified": false,
+    "scope": "Only known task-created paths in the isolated R10 worktree. Passing task cleanup receipts did not establish absence of these residues. R12 retains integrated cleanup.",
+    "cause": "unproven; no source cleanup fix included",
+    "initialExampleLeaseCount": 9,
+    "additionalFullWorktreeScan": {
+      "extraLeaseFiles": [
+        {
+          "path": "wasm/test/fixtures/projects/mcp-native/.pulse-report-locks/dc92919ce011fd4d97e93fbd82160ed5d48b454edcc69361efbef953fe4eb011.lock",
+          "sha256": "1a5b4a626011444ac7320d9b18b14c628fe0939ef23f038d808295b762a8d2a1",
+          "bytes": 44
+        },
+        {
+          "path": "wasm/test/fixtures/projects/mcp-native/.pulse-report-locks/edc8983313b7d7d8406db0cc6d6069a99ec4120561fdb917a5cee89a8d761c99.lock",
+          "sha256": "ec296e22bfe02eed4bb1e7d4e03e83b1d5813b87486bcd987d8ab45eefc4013f",
+          "bytes": 44
+        },
+        {
+          "path": "wasm/.test-results/entities-node-native-0N59nu/.pulse-report-locks/dc92919ce011fd4d97e93fbd82160ed5d48b454edcc69361efbef953fe4eb011.lock",
+          "sha256": "a4d2abe59db7f37ccf6392ead5a3faa93450059158af58d1259854342c1cfb6d",
+          "bytes": 44
+        },
+        {
+          "path": "wasm/.test-results/rpt8-references-SC0Nr9/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "sha256": "95091bc414d0d319e2d5ffc947444f17f9f5c03b56ad0ae1a35d4d88fd080098",
+          "bytes": 44
+        },
+        {
+          "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.pulse-report-locks/edc8983313b7d7d8406db0cc6d6069a99ec4120561fdb917a5cee89a8d761c99.lock",
+          "sha256": "2fd807241cccffc3087b75d9cd73bc6fa21e5dce43400c1afaa60c5d01dd552e",
+          "bytes": 44
+        }
+      ],
+      "ownedFixtureRoots": [
+        {
+          "root": "wasm/.test-results/entities-node-native-0N59nu",
+          "files": [
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/tsconfig.json",
+              "sha256": "ccbd416279708d9e8aabb7ba3beaa9928e8fcdc9457d2d3ae28ef6d85f0639cd",
+              "bytes": 217
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/package.json",
+              "sha256": "17926c7318e8fa2e5907a26d7429f7e7e32a2e0e31724ded1fb4ad0dc7f7ceb1",
+              "bytes": 481
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/README.md",
+              "sha256": "7ed7c9ce4c3b7689f609194a6aa2406a2acbf9cb80f9ae0615af29f5829ea93f",
+              "bytes": 13590
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/tools-facade.cjs",
+              "sha256": "0b6ab49538980506f42425a6243adc26622310f41baa12a24ac0275377106dce",
+              "bytes": 5480
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/.gitignore",
+              "sha256": "cc0504a42b273dc56c28e7a86fee2bec61bf634ccc5db312fe62b4f8085f56b9",
+              "bytes": 19
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/src/handlers.ts",
+              "sha256": "d327aa6be594856d960109f920b96a3b8932e6c1cdd7e7b81db14db5cfb931b6",
+              "bytes": 505
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/src/schemas.ts",
+              "sha256": "982bf7e84eba5b021f5a8ee6884c707eeaf01a3cdb1aa8fd9ffc1764797842d5",
+              "bytes": 405
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/src/index.ts",
+              "sha256": "839a20a8e8940f7b75c02a7e1230610a171d302dac99b04d67686413aa80bcd6",
+              "bytes": 871
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/tests/pulse.harness.ts",
+              "sha256": "2e82c445286a8e3cecabac523ec726ff9e957a7297f48a55488c29649e3f54f1",
+              "bytes": 1006
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-native-manifest.json",
+              "sha256": "d26eaab59b08f0e94ef6da72ef7711de56107047b8a0b8b4d870c9dcfb870dd4",
+              "bytes": 7069
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-report-attribution.json",
+              "sha256": "c01101ac87065f7f18221ed7de50d208ea95492dedc20e26aa7f2bb022b9b2b2",
+              "bytes": 5514
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-native-plan.json",
+              "sha256": "81f996de4e69a688f634fee358d3f069964c3ef0fd02ee4770ee465011f44941",
+              "bytes": 53906
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-report-inputs.json",
+              "sha256": "101a1fe6310af5614d9be096d7a8def965c9d925e8f1bc94159e02bdeff9324b",
+              "bytes": 10421
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-report-completion.json",
+              "sha256": "4c3fff98295f67180ab1da909e96ed8972f648793c28966f8150debcc1a7a189",
+              "bytes": 1219
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/schema-json-codecs.cjs",
+              "sha256": "a1480c337f946d1ad0925542d3f78c4195bebea27b732fe1a8590baa1dde996c",
+              "bytes": 12298
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/package-artifacts.json",
+              "sha256": "99a2595f3b8dc554eff886fdc1590c39654753df24b768182917a3f57586809f",
+              "bytes": 625
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-build.json",
+              "sha256": "3fd71549fdc78e28e1009303d633a38dc757d12a975f6af98b5c8c45642cf93d",
+              "bytes": 34672
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/entities-inspection.json",
+              "sha256": "c66b2c54008fd6f9f319506cf0424e9d7e50c551ec024e3bfd1c9cf8f767d962",
+              "bytes": 4097
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-native.wasm",
+              "sha256": "bf837115e417882dcdc1a25ebb477ae5452ebb2fad1aaf1648d26321f6b03ce5",
+              "bytes": 78517
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-native.as.ts",
+              "sha256": "2006c09a68ddc51a459d9c8b6b355b5e1950e539eae94c99bae8aa9ca027a605",
+              "bytes": 38368
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/pulse-report-inventory.json",
+              "sha256": "b3b1a49c3504b98bb48441818d6123eacbdd11cc8eb9fe5f162c5027e7359a3d",
+              "bytes": 8853
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/entities-catalog.json",
+              "sha256": "521e83262d8e3c664d8ec56d14971e132bd05e09e0313e1ddd100827914928ea",
+              "bytes": 1436
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-program.json",
+              "sha256": "8c67cef33f43d03bbe355c70537ae70fadb60bfe7c12efe4b76d516ece1c9ce6",
+              "bytes": 6812
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/canonical-handler.cjs",
+              "sha256": "6e2d97762e8bd7944e4c7bc901cfffabf256ca69db44c7be35bbc24d3587305b",
+              "bytes": 21857
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/dist-node-native/schema-json-registry.json",
+              "sha256": "09080378351a3bb10ae0624bceca9e5f06e9337cebb0cd770417079ed2d67e07",
+              "bytes": 4118
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/.pulse/config.ts",
+              "sha256": "e43628eff33ff8daa0722ac794fbad5b113bc1b3b8f3b99c06f64aae5db833b4",
+              "bytes": 1137
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/.pulse/.gitignore",
+              "sha256": "a43e1246b335d1ab42d4f182dc114460da24cbdcec9e5d8dcdd1e50c9ce6df5d",
+              "bytes": 26
+            },
+            {
+              "path": "wasm/.test-results/entities-node-native-0N59nu/.pulse-report-locks/dc92919ce011fd4d97e93fbd82160ed5d48b454edcc69361efbef953fe4eb011.lock",
+              "sha256": "a4d2abe59db7f37ccf6392ead5a3faa93450059158af58d1259854342c1cfb6d",
+              "bytes": 44
+            }
+          ]
+        },
+        {
+          "root": "wasm/.test-results/rpt8-references-SC0Nr9",
+          "files": [
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/src/helper.ts",
+              "sha256": "a502de95356874017ee4a6384f54b26cf45ed82683ef1ced9d50387b2029429b",
+              "bytes": 288
+            },
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/src/schemas.ts",
+              "sha256": "5dd3d7ba7a3eb200ecf173f447c9a1a23aaec6ab7adedd623a6f5a009f08c542",
+              "bytes": 320
+            },
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/src/index.ts",
+              "sha256": "bd9aeda7fc43da24b316d036c5e2701326afa91638ecfeca66d75ec8e5fff6ef",
+              "bytes": 1854
+            },
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/.pulse/config.ts",
+              "sha256": "4d24799e27b858fd7b9671e468b9928197470df380c010b6987656a21847b204",
+              "bytes": 404
+            },
+            {
+              "path": "wasm/.test-results/rpt8-references-SC0Nr9/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+              "sha256": "95091bc414d0d319e2d5ffc947444f17f9f5c03b56ad0ae1a35d4d88fd080098",
+              "bytes": 44
+            }
+          ]
+        },
+        {
+          "root": "wasm/.test-results/entities-fastly-native-5zmb4u",
+          "files": [
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/tsconfig.json",
+              "sha256": "ccbd416279708d9e8aabb7ba3beaa9928e8fcdc9457d2d3ae28ef6d85f0639cd",
+              "bytes": 217
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/package.json",
+              "sha256": "17926c7318e8fa2e5907a26d7429f7e7e32a2e0e31724ded1fb4ad0dc7f7ceb1",
+              "bytes": 481
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/README.md",
+              "sha256": "7ed7c9ce4c3b7689f609194a6aa2406a2acbf9cb80f9ae0615af29f5829ea93f",
+              "bytes": 13590
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/tools-facade.cjs",
+              "sha256": "0b6ab49538980506f42425a6243adc26622310f41baa12a24ac0275377106dce",
+              "bytes": 5480
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.gitignore",
+              "sha256": "cc0504a42b273dc56c28e7a86fee2bec61bf634ccc5db312fe62b4f8085f56b9",
+              "bytes": 19
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/src/handlers.ts",
+              "sha256": "8796eda06057950863148968c6adc1d31ceee13d975b058a7a06ef9df242d191",
+              "bytes": 389
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/src/schemas.ts",
+              "sha256": "982bf7e84eba5b021f5a8ee6884c707eeaf01a3cdb1aa8fd9ffc1764797842d5",
+              "bytes": 405
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/src/index.ts",
+              "sha256": "839a20a8e8940f7b75c02a7e1230610a171d302dac99b04d67686413aa80bcd6",
+              "bytes": 871
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/tests/pulse.harness.ts",
+              "sha256": "2e82c445286a8e3cecabac523ec726ff9e957a7297f48a55488c29649e3f54f1",
+              "bytes": 1006
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-native-manifest.json",
+              "sha256": "3ceb94ceb7da8377aef9ca084eb37cb701b5495aa680cda8ca951c42bd063fa8",
+              "bytes": 7069
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/pulse-report-attribution.json",
+              "sha256": "328737a9ef15fe2cc739e9e3267f7e65195329683bd6014d187c59cd6c611adf",
+              "bytes": 7510
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-native-plan.json",
+              "sha256": "26ecb04aab97cc2ca9ab45b60e239b9451b36bda28dccf952134667ef103d5e4",
+              "bytes": 60373
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly.toml",
+              "sha256": "1ba6e757dd37d13099cb7a0ba3d8ce2185773fbf02e0ae205033379ac4bbed14",
+              "bytes": 288
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/pulse-report-inputs.json",
+              "sha256": "f84df6a95c9c914e6cbd2f9f6b81fefb82c5b19526515ae06e0b831365289742",
+              "bytes": 10423
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/package.json",
+              "sha256": "b41a8a450a335be9579b411d3bdccd2d1784589c79eaf82e0d0158a4112235da",
+              "bytes": 300
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/schema-json-codecs.cjs",
+              "sha256": "a1480c337f946d1ad0925542d3f78c4195bebea27b732fe1a8590baa1dde996c",
+              "bytes": 12298
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-native-manifest.json",
+              "sha256": "f24f3872a66fb19a1e487e3979b3ba7e5de571cabbe8959626f0b3f733ec265e",
+              "bytes": 14827
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/package-artifacts.json",
+              "sha256": "99a2595f3b8dc554eff886fdc1590c39654753df24b768182917a3f57586809f",
+              "bytes": 625
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/pulse-build.json",
+              "sha256": "b39fdcb83fe46d86c9965f2c5f01f215c681a6b260d3f2f52b4e151a257eb168",
+              "bytes": 36308
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/entities-inspection.json",
+              "sha256": "c66b2c54008fd6f9f319506cf0424e9d7e50c551ec024e3bfd1c9cf8f767d962",
+              "bytes": 4097
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-provider.json",
+              "sha256": "d94299fbe1b3c774e7025db5d89333904be0a417025ea99fac16aef863d145e3",
+              "bytes": 783
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-native.wasm",
+              "sha256": "7174dc1ede5d861e0e5d8959a22918ed8d89e9c6d0d99a44a34d3dc1a9643cf0",
+              "bytes": 76262
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-native.as.ts",
+              "sha256": "5d1a0bd26e48704552ad35e43d9490f056681ed46bb3168681018e03e1d6e10c",
+              "bytes": 41258
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/pulse-report-inventory.json",
+              "sha256": "8ddaadd9d6b916e4b80ad5ddf91ae810306eb131c1be3b6e922d9ce39bad1374",
+              "bytes": 10231
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/entities-catalog.json",
+              "sha256": "521e83262d8e3c664d8ec56d14971e132bd05e09e0313e1ddd100827914928ea",
+              "bytes": 1436
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-program.json",
+              "sha256": "8c67cef33f43d03bbe355c70537ae70fadb60bfe7c12efe4b76d516ece1c9ce6",
+              "bytes": 6812
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-native-plan.json",
+              "sha256": "26ecb04aab97cc2ca9ab45b60e239b9451b36bda28dccf952134667ef103d5e4",
+              "bytes": 60373
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/canonical-handler.cjs",
+              "sha256": "6e2d97762e8bd7944e4c7bc901cfffabf256ca69db44c7be35bbc24d3587305b",
+              "bytes": 21857
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-build.json",
+              "sha256": "f0b61565194b2e2dc3c90b5f59503edaf356e084cc1e0a8bad994445af63a35d",
+              "bytes": 9687
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/fastly-entry.cjs",
+              "sha256": "dbda0d24c5c18943fa22c8ec726aa447e91ec68e5df67c2dba39fce24f9553cb",
+              "bytes": 856
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/schema-json-registry.json",
+              "sha256": "09080378351a3bb10ae0624bceca9e5f06e9337cebb0cd770417079ed2d67e07",
+              "bytes": 4118
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.pulse/config.ts",
+              "sha256": "26ac296616c5ba2290920e8150cedf0cd23ed06251e9685944d8518058787c7e",
+              "bytes": 1101
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.pulse/.gitignore",
+              "sha256": "a43e1246b335d1ab42d4f182dc114460da24cbdcec9e5d8dcdd1e50c9ce6df5d",
+              "bytes": 26
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/.pulse-report-locks/edc8983313b7d7d8406db0cc6d6069a99ec4120561fdb917a5cee89a8d761c99.lock",
+              "sha256": "2fd807241cccffc3087b75d9cd73bc6fa21e5dce43400c1afaa60c5d01dd552e",
+              "bytes": 44
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/src/main.as.ts",
+              "sha256": "960905674db03f5b426db9e2a00c7270ca2bbc3c46d78044f4d25399105b64eb",
+              "bytes": 160171
+            },
+            {
+              "path": "wasm/.test-results/entities-fastly-native-5zmb4u/dist-fastly-native/bin/main.wasm",
+              "sha256": "1cf02bd885486e938f477314901d1854677778999fa5dd7aac95484e2a9e82e1",
+              "bytes": 124204
+            }
+          ]
+        }
+      ],
+      "remainingLeases": []
+    },
+    "totalLeaseFilesReconciled": 14
+  }
+}
