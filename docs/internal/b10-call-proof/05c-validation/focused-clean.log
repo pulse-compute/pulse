@@ -1,0 +1,59 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 306 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 167ms
+
+[pulsewasm:unit] callable-source-admission
+[pulsewasm] Private callable target/schema admission and authored plain Native plan handoff (timeout 30.00s)
+{"status":"passed","accepted":9,"rejected":31,"admissionRuntimeWired":false,"authoredNativePlan":true,"publicCallSyntax":false}
+[pulsewasm] callable-source-admission: passed in 1.23s
+
+[pulsewasm:native] callable-authored-composition
+[pulsewasm] 05C authored helper/import composition, multiple callable owners and independent ownership rejection (timeout 180.00s)
+[pulsewasm] Running callable-authored-composition (execution); elapsed 10.00s
+{"version":"pulse.callable-composition-evidence.v1","status":"passed","providerReality":false,"executions":6,"sourceRejections":["borrowed input mutation","borrowed helper mutation","helper capture","helper recursion","helper bound product","borrowed record helper mutation","constant reassignment","mutable scalar import","nonliteral scalar import","helper alias write","awaited helper","nested helper arguments","nested callable","workspace return","resource return","17 targets/sites"],"planRejections":["forged target index","unreachable target","target count overflow","conflicting schema","conflicting resource","cross-owner helper local","forged helper bound","forged borrowed helper mutation","forged callable input mutation","workspace escape","resource escape"],"artifacts":{"node":{"bytes":45178,"sha256":"7d7b351944fc9ac2e553aa75cf4dc01896b0e1a582ba3f969387b389a63e53dd","imports":[{"module":"env","name":"abort","kind":"function"},{"module":"pulse_host","name":"value_number","kind":"function"},{"module":"pulse_host","name":"value_object_set","kind":"function"},{"module":"pulse_host","name":"value_binary","kind":"function"},{"module":"pulse_host","name":"resource_check","kind":"function"},{"module":"pulse_host","name":"workspace_number_value","kind":"function"},{"module":"pulse_host","name":"value_object","kind":"function"},{"module":"pulse_host","name":"resource_offset_value","kind":"function"},{"module":"pulse_host","name":"workspace_check","kind":"function"},{"module":"pulse_host","name":"schema_encode","kind":"function"},{"module":"pulse_host","name":"schema_decode","kind":"function"},{"module":"pulse_host","name":"value_truthy","kind":"function"},{"module":"pulse_host","name":"value_property","kind":"function"},{"module":"pulse_host","name":"value_undefined","kind":"function"},{"module":"pulse_host","name":"value_string","kind":"function"},{"module":"pulse_host","name":"response_json","kind":"function"}]},"fastly":{"bytes":88547,"sha256":"5560b7d0751bdbb8f53e8a49f49c02f3d00a8b2230a4f8bfe394c1e43c64f96f","imports":[{"module":"fastly_http_resp","name":"send_downstream","kind":"function"},{"module":"wasi_snapshot_preview1","name":"clock_time_get","kind":"function"},{"module":"fastly_http_resp","name":"status_set","kind":"function"},{"module":"fastly_http_resp","name":"status_get","kind":"function"},{"module":"fastly_http_resp","name":"new","kind":"function"},{"module":"fastly_http_resp","name":"header_append","kind":"function"},{"module":"fastly_http_req","name":"uri_get","kind":"function"},{"module":"fastly_http_req","name":"method_get","kind":"function"},{"module":"fastly_http_req","name":"body_downstream_get","kind":"function"},{"module":"fastly_http_body","name":"write","kind":"function"},{"module":"fastly_http_body","name":"new","kind":"function"},{"module":"fastly_abi","name":"init","kind":"function"},{"module":"fastly_async_io","name":"select","kind":"function"}]}},"plan":{"hash":"7f9522d1749b60d6ff2e11d61fcf08a21b733951647fd1ad59d50390d3f74a43","targets":2,"sites":3,"helperOwners":3,"resources":[{"id":"distinct","path":"/distinct"},{"id":"shared","path":"/shared"},{"id":"shared-alias","path":"/shared"}]},"additionalCompositionCases":["helper re-export identity","same-module helper"],"maxTargets":16,"source":{"revision":"5251782483c03171ca480fcf807e110bb74803cf","status":"","files":[]}}
+[pulsewasm] callable-authored-composition: passed in 9.44s
+
+[pulsewasm:unit] pure-helper-contract
+[pulsewasm] Pure-helper source oracles and scalar/record admission (timeout 30.00s)
+{"status":"passed","nativeSupport":"scalar-record-and-loop-supported","scalarOracleCases":5,"recordOracleCases":60,"nativeAdmissionCases":4}
+[pulsewasm] pure-helper-contract: passed in 1.56s
+
+[pulsewasm:native] pure-source-helpers
+[pulsewasm] PF-02 scalar source helpers: sharing, Native/JavaScript parity and fail-closed plans (timeout 120.00s)
+[pulsewasm] Running pure-source-helpers (execution); elapsed 20.01s
+{"status":"passed","cells":[{"count":1,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2106},{"count":2,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2237},{"count":16,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":3332}],"sourceRejections":22,"planRejections":19,"scope":"Source-tree scalar proof; no packed consumer or final-Wasm sharing claim."}
+[pulsewasm] pure-source-helpers: passed in 9.87s
+
+[pulsewasm:native] pure-record-helpers
+[pulsewasm] Read-only structural pure helper parity, ownership and allocation proof (timeout 180.00s)
+[pulsewasm] Running pure-record-helpers (execution); elapsed 30.01s
+{"status":"passed","parityCases":59,"sourceRejections":22,"planRejections":16,"costs":[{"calls":0,"handles":19,"structuredHandleInsertions":1,"distinctPayloadObjects":1,"wasmBytes":42286,"linearMemoryBytes":1245184},{"calls":1,"handles":226,"structuredHandleInsertions":16,"distinctPayloadObjects":3,"wasmBytes":43568,"linearMemoryBytes":1245184},{"calls":2,"handles":433,"structuredHandleInsertions":31,"distinctPayloadObjects":3,"wasmBytes":43587,"linearMemoryBytes":1245184},{"calls":16,"handles":3331,"structuredHandleInsertions":241,"distinctPayloadObjects":3,"wasmBytes":43758,"linearMemoryBytes":1245184}],"representation":"Borrowed i32 value handles; no per-call serialization, effects, payload copies or guest heap allocation. Property/operator reads retain existing host-handle costs; no reclamation or RSS claim."}
+[pulsewasm] pure-record-helpers: passed in 17.61s
+
+[pulsewasm:native] pure-loop-helpers
+[pulsewasm] Pure validators in bounded caller loops, combined limits and invocation isolation (timeout 180.00s)
+[pulsewasm] Running pure-loop-helpers (execution); elapsed 40.01s
+{"status":"passed","parityCases":19,"sourceRejections":10,"planRejections":12,"readSites":1,"pureHelperReadSites":0,"combinedLimit":65536}
+[pulsewasm] pure-loop-helpers: passed in 5.82s
+
+[pulsewasm:native] pure-argument-helpers
+[pulsewasm] Typed KV and scalar projection provenance, parity and independent tamper rejection (timeout 180.00s)
+[pulsewasm] Running pure-argument-helpers (execution); elapsed 50.02s
+[pulsewasm] Running pure-argument-helpers (execution); elapsed 60.02s
+{"status":"passed","parityCases":21,"variants":6,"sourceRejections":13,"planRejections":12}
+[pulsewasm] pure-argument-helpers: passed in 20.19s
+
+[pulsewasm] test summary
+  passed         1.23s  callable-source-admission  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/runs/2026-10-20T18-55-50-928Z--5/tasks/callable-source-admission.log)
+  passed         9.44s  callable-authored-composition  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/runs/2026-10-20T18-55-50-928Z--5/tasks/callable-authored-composition.log)
+  passed         1.56s  pure-helper-contract  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/runs/2026-10-20T18-55-50-928Z--5/tasks/pure-helper-contract.log)
+  passed         9.87s  pure-source-helpers  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/runs/2026-10-20T18-55-50-928Z--5/tasks/pure-source-helpers.log)
+  passed        17.61s  pure-record-helpers  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/runs/2026-10-20T18-55-50-928Z--5/tasks/pure-record-helpers.log)
+  passed         5.82s  pure-loop-helpers  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/runs/2026-10-20T18-55-50-928Z--5/tasks/pure-loop-helpers.log)
+  passed        20.19s  pure-argument-helpers  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/runs/2026-10-20T18-55-50-928Z--5/tasks/pure-argument-helpers.log)
+  passed         167ms  suite-shape  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/runs/2026-10-20T18-55-50-928Z--5/tasks/suite-shape.log)
+  report       /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/focused-clean.json
+  run logs     /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05c/runs/2026-10-20T18-55-50-928Z--5
+  total        65.89s
