@@ -1,60 +1,54 @@
 ## Behavior and scope
 
-B10-MCP computation needs the ordinary compiler through a shared call boundary.
-This draft implements 05B (#443), 05C (#444), and 05D (#445): named plain handlers
-invoke bounded imported project functions through `ctx.call` on Native and
-explicit Node JavaScript.
+Plain handlers, reachable Router handlers and managed MCP operations now invoke
+bounded imported computations through shared `ctx.call` on Native and explicit
+Node JavaScript. This draft implements 05B–05E (#443–#446).
 
-- Shared project resolution, pure-helper composition, readonly ownership,
-  schema codecs, resource/workspace rules and Native code generation remain the
-  owners. Entities retains its small invocation adapter.
-- Static targets preserve defining identities through imports and re-exports.
-  Up to 16 sites/targets use literal registered schema pairs. Unused Native
-  bodies/data are not emitted; separate callees retain their own workspace slots.
-- Node JavaScript uses its original source graph. Its loader and built source
-  package bind the compiler-selected targets once, without application target
-  registration. Each call gets immutable copied input, complete output validation,
-  selected resources, a fresh workspace lifetime and the parent request budget.
-- No nested/effectful/dynamic calls, call-in-loop, recursion, arbitrary package
-  targets or new helper language are admitted. Callees receive no HTTP/state/
-  effect authority. Public types and supported authoring remain 05G.
+- Shared project resolution, helper composition, schema codecs, readonly ownership,
+  resource/workspace rules and Native generation remain the owners. Entities keeps
+  its small invocation adapter; MCP owns protocol and dispatch selection.
+- Static imported identities and registered literal schema pairs define up to
+  sixteen reachable call occurrences. Reused Router handlers share callee bodies.
+  Dormant calls/resources are not emitted.
+- Node JavaScript retains original source. The loader and built source package
+  bind selected targets across caller modules to the application, preserving
+  request-owned schemas, resource access, fresh workspace lifetime and deadlines.
+- Calls remain synchronous and bounded: no nested/effectful/dynamic calls,
+  call-in-loop, recursion or arbitrary package targets. Callees receive no HTTP,
+  state or effect authority. Public types/support remain 05G.
 
 ## Validation
 
-05D implementation: `56f1e464ae4427d78bb20e839e54fb9cc65ce703`, with full tree
-`a0d3aac1d4aebeeeb86fcf6929c64602771154f0` identical to clean tested local
-`f27ef5674458305dc944ec354110b0e95a5b7b9b`. Nine selected runner tasks pass,
-plus the authored unchanged-baseline replay and build/documentation/maintenance/
-scope checks. The new task has 14 successful executions, 4 invalid-output
-rejections, 10 source rejections and 18 ownership/deadline checks.
+05E implementation: `d5a335aeb395db912a7208a2198464405340ea73`; full Git tree `e68f2b42c1252fd25c986cb062828e5f1b242f8e`,
+identical to clean tested local `88b62fc5f9b4fb74a0e2d38203987fcfd34593af`.
+Sixteen focused runner tasks pass. The new routed/MCP proof has 28 successful
+executions and 12 source rejection cases. Existing Entities regressions, 83 MCP
+cross-target protocol cases and 114 MCP HTTP/Node-host cases pass.
 
-The exact source binding, terminal logs and remaining checks are recorded in
-`docs/internal/b10-call-proof/05D-VALIDATION.md`. The registered
-`callable-authored-javascript` task exercises actual `ctx.call` sites across
-Native, the JavaScript loader, CLI preparation and built Node packages, plus
-source/ownership/schema/deadline rejection. The unchanged authored Native gate
-retains the byte-identical unused-Wasm comparison with untouched `8a51d70`.
+The separate Router/MCP baseline replay preserves byte-identical no-call Wasm
+against untouched `8a51d70`, including complete hashes, sizes and import tables.
+Imported-unused call-free plans match its untouched backend. Build, maintenance,
+documentation and scope checks pass. Exact source identity, terminal logs,
+measurements and remaining checks are in
+`docs/internal/b10-call-proof/05E-VALIDATION.md`.
 
-Full functional profiles are deferred by the user's explicit checkpoint
-direction. Historical receipts under `docs/internal/b10-call-proof` remain
-historical; focused development checks are not a release seal, installed closure
-or real Fastly/provider/client acceptance. Dependencies remain the restored
-identical-lockfile graph, not a fresh clean-install qualification.
+Full profiles remain deferred by the user's explicit checkpoint direction.
+Focused development and injected Fastly are not installed closure, real-provider
+acceptance or a release seal. Dependencies are the restored identical-lockfile
+graph, not fresh clean-install qualification.
 
 ## Remaining work and direction
 
-Next is 05E (#446), Router and managed MCP caller integration. Failure/cleanup and
-cumulative budget qualification remain 05F, public contract finalization 05G.
-Application migration, retrieval, reporting, installed closure, provider/client
-acceptance and sealing retain their separate tickets in #436.
+Next is 05F (#447), failure/cleanup and cumulative request budgets; public contract
+finalization remains 05G. Application migration, retrieval, reporting, installed
+closure, provider/client acceptance and sealing retain separate tickets in #436.
 
-The user directed shared `ctx.call`, moderate used-call conversion cost and
-zero/near-zero unused Wasm overhead, then explicitly selected each implementation
-checkpoint through 05D. No single Entry Point covers this cross-owner work;
-ordinary root, packages, Wasm/compiler, CLI and documentation instructions apply.
-The release evidence map only enrolls the new task. PR #438 remains superseded;
-its duplicated Entities primitive machinery is not resumed. Merge, release,
-deployment and self-approval remain human-owned.
+The user directed shared `ctx.call`, moderate measured used-call cost and zero
+unused Wasm overhead, then selected each implementation checkpoint through 05E.
+No single Entry Point covers this cross-owner work; ordinary root, packages,
+Wasm/compiler, CLI and documentation instructions apply. The release evidence map
+only enrolls the new task. PR #438 stays superseded. Merge, release, deployment and
+self-approval remain human-owned.
 
 <!-- pulse-maintainer-declaration:start -->
 Change class: architecture
