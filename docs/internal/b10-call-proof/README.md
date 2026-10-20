@@ -1,6 +1,6 @@
 # B10 — shared callable composition proof
 
-Current authored execution checkpoint: [B10-MCP-05D](./05D.md). Multiple imported
+Current authored execution checkpoint: [B10-MCP-05E](./05E.md). Multiple imported
 targets and ordinary pure helpers execute through named plain Native and explicit
 Node JavaScript entries, including the graph loader and built Node source package. [05B](./05B.md) records the single-target foundation. The backend-proof measurements and limitations below are retained
 historical evidence. Public support, router/MCP authoring and the complete
@@ -150,3 +150,9 @@ lineage; the earlier proofs above retain their historical evidence boundaries.
 [05D](./05D.md) adds the explicit Node JavaScript call boundary and same-source
 parity. [Validation and handoff](./05D-VALIDATION.md) records this checkpoint.
 Router and managed MCP callers remain 05E.
+
+## 05E continuation
+
+[05E](./05E.md) connects reachable Router and managed MCP callers to shared
+`ctx.call` on Native and explicit Node JavaScript. [Validation](./05E-VALIDATION.md)
+records the focused integration checkpoint. Next: 05F (#447).

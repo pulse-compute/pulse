@@ -228,5 +228,6 @@ function assembleNativeResult({
 module.exports = Object.freeze({
   CANONICAL_NATIVE_AS_GENERATOR_VERSION,
   CanonicalNativeAssemblyScriptError,
-  generateCanonicalNativeAssemblyScript
+  generateCanonicalNativeAssemblyScript,
+  generateCallableSources: (...args) => require('./canonical-native-callable').generateCallableSources(...args)
 });

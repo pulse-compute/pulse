@@ -242,9 +242,12 @@ function loadJavascriptApplication(plan, options = {}) {
   if (plan.callables) {
     if (typeof options.bindCallables !== 'function') throw new PulseModuleLoadError(
       'PULSE_JAVASCRIPT_CALLABLE_BINDING_UNAVAILABLE', 'Selected provider does not bind admitted computation calls.');
-    const owner = plan.graph.modules.find(module => module.kind === 'project' && module.runtime && module.path === plan.callables.modulePath);
-    if (!owner) throw new PulseModuleLoadError('PULSE_JAVASCRIPT_CALLABLE_BINDING_UNAVAILABLE', 'Callable owner is absent from the source graph.');
-    options.bindCallables(application, loadModule(owner.id)[plan.callables.exportName], plan.callables.bindings);
+    const targets = plan.callables.bindings.map((binding, index) => {
+      const owner = plan.graph.modules.find(module => module.kind === 'project' && module.runtime && module.path === (binding.modulePath || plan.callables.modulePath));
+      if (!owner) throw new PulseModuleLoadError('PULSE_JAVASCRIPT_CALLABLE_BINDING_UNAVAILABLE', 'Callable owner is absent from the source graph.');
+      return loadModule(owner.id)[plan.callables.exportName][index];
+    });
+    options.bindCallables(application, targets, plan.callables.bindings);
   }
   let validated;
   try {

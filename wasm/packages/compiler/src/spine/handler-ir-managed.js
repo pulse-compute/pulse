@@ -604,6 +604,9 @@ function createExpressionCompiler(state) {
     }
 
     if (ts.isCallExpression(current)) {
+      const callable = state.callableSource?.forCall(current);
+      if (callable) return Object.freeze({ kind: 'callable-call', index: callable.index,
+        argument: compile(current.arguments[1], scope) });
       const callee = unwrap(current.expression);
       const calleeName = callee && ts.isIdentifier(callee) ? callee.text : undefined;
       const inputEscapes = containsIdentifier(current.expression, inputName)
@@ -841,6 +844,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     return undefined;
   }
 
+  const callableSites = options.callableSource?.admit({ modulePath: resolved.sourceModule.path,
+    sourceFile, functionNode: original, identity: `${resolved.sourceModule.path}#${resolved.symbol}` }, { managed: true }) || [];
   const ctxName = original.parameters[0].name.text;
   const inputName = original.parameters[1].name.text;
   if (ctxName === inputName) {
@@ -929,7 +934,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     ctxName,
     inputName,
     handlerTargets,
-    currentSymbol: resolved.symbol
+    currentSymbol: resolved.symbol,
+    callableSource: options.callableSource
   });
 
   const state = {
@@ -1432,6 +1438,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     || deepFreeze({ effectId: site.id, inputs: Object.freeze([]) })
   )));
   const nativeSemantic = {
+    ...(callableSites.length ? { callableCount: Math.max(...callableSites.map(site => site.index)) + 1 } : {}),
     version: managedHandlerNativeFactsVersion,
     handlerIrVersion: managedHandlerIrVersion,
     id: record.id,
@@ -1480,7 +1487,7 @@ function compileManagedHandlerDescriptors(inputs = {}) {
   const resolved = resolveDescriptors(inputs.graphBuild, descriptors, diagnostics);
   const handlers = [];
   for (const entry of resolved) {
-    const handler = compileHandler(entry, inputs.graphBuild, resolved, diagnostics, packageRecognition, { target: inputs.target });
+    const handler = compileHandler(entry, inputs.graphBuild, resolved, diagnostics, packageRecognition, { target: inputs.target, callableSource: inputs.callableSource });
     if (handler) handlers.push(handler);
   }
   if (diagnostics.length > 0) {

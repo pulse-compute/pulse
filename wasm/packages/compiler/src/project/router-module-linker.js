@@ -573,10 +573,10 @@ function linkProjectRouterModules(graphBuild, options = {}) {
     }
   }
 
-  // Only HTTP handler loop calls enter JavaScript's bounded inspection. Never
-  // walk an ordinary dependency function into a new purity requirement.
+  // Only handler-owned calls enter Router helper inspection. Callable bodies
+  // own their helper graphs; JavaScript inspects only bounded-loop calls.
   const httpFunctions = new Set();
-  if (options.target === 'javascript') for (const ref of handlerReferences) {
+  for (const ref of handlerReferences) {
     if (!['route', 'middleware'].includes(ref.role)) continue;
     const module = context.projectModules.get(ref.module);
     if (!module) continue;
@@ -613,7 +613,7 @@ function linkProjectRouterModules(graphBuild, options = {}) {
             if (ts.isForStatement(owner)) inLoop = true;
           }
           const inspectPureLoopCall = inLoop && httpFunctions.has(owner) && fn && !fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword);
-          if (fn && (options.target !== 'javascript' || inspectPureLoopCall) && (awaited && fn.parameters.length > 1 || !awaited)) {
+          if (fn && (options.target !== 'javascript' && httpFunctions.has(owner) || inspectPureLoopCall) && (awaited && fn.parameters.length > 1 || !awaited)) {
             const identity = `${target.module.path}#${target.localName}`;
             let helper = byIdentity.get(identity);
             if (!helper) {
@@ -632,7 +632,7 @@ function linkProjectRouterModules(graphBuild, options = {}) {
   }
   const rootGlobalName = routerSymbols.get(`${root.module.path}:${root.localName}`);
   const ordered = orderLinkedRouters(routers, rootGlobalName);
-  if (options.target !== 'javascript') validateRuntimeProjectImports(context, consumedImports, diagnostics);
+  if (options.target !== 'javascript' && !options.deferRuntimeImportValidation) validateRuntimeProjectImports(context, consumedImports, diagnostics);
   const combinedIr = Object.freeze({
     source: entryModule.path,
     routerIR: Object.freeze(ordered.routers),
@@ -672,6 +672,12 @@ function linkProjectRouterModules(graphBuild, options = {}) {
   return Object.freeze({
     version: ROUTER_MODULE_LINKER_VERSION,
     kind: 'router',
+    validateRuntimeImports(extra = []) {
+      if (options.target === 'javascript') return;
+      const errors = [];
+      validateRuntimeProjectImports(context, new Set([...consumedImports, ...extra]), errors);
+      if (errors.length) throw new RouterModuleLinkError('Project module import validation failed.', errors, { entry: entryModule.path });
+    },
     graph: manifest,
     ir: combinedIr,
     entryModule,

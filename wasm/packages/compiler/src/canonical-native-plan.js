@@ -291,6 +291,7 @@ class NativePlanBuilder {
 
     this.metadata = compiled.metadata;
     this.callableSource = compiled.callableSource;
+    this.loweredCallableSites = new Set();
     this.callableSites = 0;
     this.resources = options.binaryResources || compiled.binaryResources;
     if (this.resources) require('@pulse-compute/wasm-contracts/resources/embedded').validateResourceCatalogue(this.resources);
@@ -595,13 +596,14 @@ class NativePlanBuilder {
     if (ctxPath) {
       if (ctxPath.length === 1 && ctxPath[0] === 'call' && this.callableSource) {
         const name = ts.isIdentifier(call.arguments[0]) && call.arguments[0].text;
-        const site = this.callableSource.sites[this.callableSites];
+        const site = this.callableSource.sites.find(site => site.marker === name)
+          || this.callableSource.sites.filter(site => !site.managed && !site.marker)[this.callableSites];
         const index = this.callableSource.callees.findIndex(callee => callee.identity === site?.target);
         const schemas = call.arguments[2];
         const pair = schemas && ts.isObjectLiteralExpression(schemas) && schemas.properties.length === 2
           && Object.fromEntries(schemas.properties.filter(ts.isPropertyAssignment).map(property =>
             [propertyName(this.sourceFile, property.name), ts.isStringLiteral(property.initializer) && property.initializer.text]));
-        if (!site || site.localName !== name || index < 0 || call.arguments.length !== 3 || call.typeArguments?.length
+        if (!site || (site.marker || site.localName) !== name || index < 0 || call.arguments.length !== 3 || call.typeArguments?.length
           || !pair || pair.inputSchema !== site.inputSchema || pair.outputSchema !== site.outputSchema) {
           this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Callable source binding does not match admitted target and schemas.');
           return Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
@@ -610,6 +612,7 @@ class NativePlanBuilder {
         if (!['object', 'json', 'unknown'].includes(argument.valueKind)) this.fail(call.arguments[1],
           contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Callable input must be a schema-bound object.');
         this.callableSites++;
+        this.loweredCallableSites.add(site);
         return Object.freeze({ kind: 'callable-call', index, argument, valueKind: 'object', source: site.source });
       }
       const intrinsic = intrinsicForContextCall(ctxPath);
@@ -1270,7 +1273,7 @@ class NativePlanBuilder {
       throw new CanonicalNativePlanError(`Native-plan lowering failed for ${this.metadata.file}.`, this.diagnostics);
     }
     const body = this.statementList(this.handler.body.statements, new Map(), ['entry', 'body'], 0);
-    if (this.callableSource && this.callableSites !== this.callableSource.sites.length) this.fail(this.handler,
+    if (this.callableSource && this.loweredCallableSites.size !== this.callableSource.sites.filter(site => !site.managed).length) this.fail(this.handler,
       contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Every admitted callable source site must be lowered exactly once.');
     for (const callee of this.callableSource?.callees || []) {
       for (const record of callee.plan.binaryResources?.records || []) this.usedResources.add(record.id);

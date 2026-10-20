@@ -12,7 +12,7 @@ function fail(reason) {
 // Trusted source realization only: a fixed compiler-selected table, bound once
 // to one application. This is not an application-author registration API.
 function bindCallableApplication(application, targets, bindings) {
-  if (typeof application !== 'function' || applications.has(application)
+  if ((!application || !['function', 'object'].includes(typeof application)) || applications.has(application)
     || !Array.isArray(targets) || !Array.isArray(bindings) || !bindings.length
     || bindings.length > 16 || targets.length !== bindings.length) fail('binding is invalid');
   const table = new Map();

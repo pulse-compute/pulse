@@ -123,11 +123,13 @@ function normalizeJavascriptApplicationPlan(input) {
     const bindings = table.bindings.map(binding => {
       const identity = requireString('JavaScript callable identity', binding.identity);
       if (identities.has(identity) || !identifier.test(binding.localName)
+        || binding.modulePath !== undefined && !modules.some(module => module.runtime && module.kind === 'project' && module.path === binding.modulePath)
         || !Number.isInteger(binding.maxCalls) || binding.maxCalls < 1 || !Array.isArray(binding.resources)) {
         throw new TypeError('Invalid JavaScript callable binding.');
       }
       identities.add(identity); sites += binding.maxCalls;
       return { identity, localName: binding.localName, maxCalls: binding.maxCalls,
+        ...(binding.modulePath !== undefined ? { modulePath: binding.modulePath } : {}),
         inputSchema: requireString('JavaScript callable input schema', binding.inputSchema),
         outputSchema: requireString('JavaScript callable output schema', binding.outputSchema),
         resources: binding.resources.map(id => requireString('JavaScript callable resource', id)) };
@@ -230,12 +232,12 @@ function normalizeJavascriptTargetDescriptor(input) {
 module.exports = Object.freeze({
   // Private source realization shared by the graph loader and Node packager.
   javascriptCallableSource(plan, modulePath, source) {
-    if (!plan.callables || modulePath !== plan.callables.modulePath) return source;
+    if (!plan.callables || !plan.callables.bindings.some(binding => modulePath === (binding.modulePath || plan.callables.modulePath))) return source;
     const { exportName, bindings } = plan.callables;
     const identifier = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
     if (!identifier.test(exportName) || !Array.isArray(bindings) || !bindings.length || bindings.length > 16
       || bindings.some(binding => !identifier.test(binding.localName))) throw new TypeError('Invalid static callable bindings.');
-    return `${source}\nexport const ${exportName} = [${bindings.map(binding => binding.localName).join(',')}];\n`;
+    return `${source}\nexport const ${exportName} = [${bindings.map(binding => modulePath === (binding.modulePath || plan.callables.modulePath) ? binding.localName : 'undefined').join(',')}];\n`;
   },
   JAVASCRIPT_APPLICATION_PLAN_VERSION,
   JAVASCRIPT_APPLICATION_LOADER_VERSION,

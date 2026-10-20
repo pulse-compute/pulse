@@ -15,20 +15,18 @@ class CallableSourceAdmissionError extends Error {
   }
 }
 
-function admitCallableSource(graphBuild, { schemaBundle, binaryResources } = {}) {
-  const resolver = projectFunctionResolver(graphBuild);
-  const entry = resolver.entry;
-  if (!entry || entry.packageSource || !ts.isFunctionDeclaration(entry.functionNode) || !entry.functionNode.name) {
+function admitCallableSource(graphBuild, { schemaBundle, binaryResources, resolver = projectFunctionResolver(graphBuild), entry = resolver.entry, parameterCount = 1, contextIndex = 0 } = {}) {
+  if (!entry || entry.packageSource || !ts.isFunctionLike(entry.functionNode)) {
     throw new CallableSourceAdmissionError('PULSE_CALL_SOURCE_ENTRY',
-      'Callable source admission currently requires a named plain entry handler.',undefined,{fileName:graphBuild.entryKey});
+      'Callable source admission requires a selected project handler.',undefined,{fileName:graphBuild.entryKey});
   }
   const fn = entry.functionNode, sf = entry.sourceFile;
   const fail = (code, message, node = fn, cause) => { throw new CallableSourceAdmissionError(code,message,node,sf,cause); };
-  if (!fn.body || fn.parameters.length !== 1 || !ts.isIdentifier(fn.parameters[0].name)
-    || fn.parameters[0].dotDotDotToken || fn.parameters[0].initializer || fn.parameters[0].questionToken) {
-    fail('PULSE_CALL_SOURCE_CONTEXT', 'Expected one plain context parameter.');
+  if (!fn.body || fn.parameters.length !== parameterCount || !fn.parameters[contextIndex] || !ts.isIdentifier(fn.parameters[contextIndex].name)
+    || fn.parameters[contextIndex].dotDotDotToken || fn.parameters[contextIndex].initializer || fn.parameters[contextIndex].questionToken) {
+    fail('PULSE_CALL_SOURCE_CONTEXT', 'Expected a simple context parameter at the selected caller position.');
   }
-  const ctxName = fn.parameters[0].name.text;
+  const ctxName = fn.parameters[contextIndex].name.text;
   const sites = [], callees = new Map();
   function bindingContains(node, name) {
     if (!node) return false;
@@ -121,6 +119,31 @@ function admitCallableSource(graphBuild, { schemaBundle, binaryResources } = {})
     ts.forEachChild(node,child=>visit(child,childNested,childLoop,inCall || recognizedCall));
   }
   visit(fn.body);
+  const recognized = new Set(sites.map(site => site.callNode.expression));
+  let usesCall = false;
+  function checkReference(node) {
+    if ((ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node))
+      && ts.isIdentifier(node.expression) && node.expression.text === ctxName
+      && (ts.isPropertyAccessExpression(node) ? node.name.text === 'call'
+        : ts.isStringLiteral(node.argumentExpression) && node.argumentExpression.text === 'call')) {
+      usesCall = true;
+      if (!recognized.has(node)) fail('PULSE_CALL_SOURCE_FORM', 'Computation calls require direct static ctx.call sites.', node);
+    }
+    ts.forEachChild(node, checkReference);
+  }
+  checkReference(fn.body);
+  if (usesCall) {
+    const checkContext = node => {
+      if (ts.isIdentifier(node) && node.text === ctxName
+        && !((ts.isPropertyAccessExpression(node.parent) || ts.isElementAccessExpression(node.parent)) && node.parent.expression === node)
+        && !(ts.isPropertyAccessExpression(node.parent) && node.parent.name === node)
+        && !(ts.isPropertyAssignment(node.parent) && node.parent.name === node)) {
+        fail('PULSE_CALL_SOURCE_BINDING', 'A callable context cannot escape through aliases or arguments.', node);
+      }
+      ts.forEachChild(node, checkContext);
+    };
+    checkContext(fn.body);
+  }
   // An unreferenced named project function import cannot contribute executable
   // behavior. Resolve it with the ordinary linker, but never compile its body.
   // Other imports/references retain ordinary strict import validation.

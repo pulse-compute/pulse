@@ -139,7 +139,7 @@ function buildJavascriptApplicationPlan(entryFile, options = {}) {
     );
   }
   const packages = createPackageEntries(graphBuild);
-  const callables = buildJavascriptCallables(graphBuild, options);
+  const callables = buildJavascriptCallables(graphBuild, options, absoluteEntry);
   const blockers = createBlockers(graphBuild, packages);
   const requestedEnvelope = options.capabilityEnvelope || {};
   const capabilityEnvelope = Object.freeze({
@@ -179,53 +179,48 @@ function buildJavascriptApplicationPlan(entryFile, options = {}) {
   });
 }
 
-function buildJavascriptCallables(graphBuild, options) {
+// Router and managed callers are selected by their ordinary canonical frontends.
+// Original source modules remain the JavaScript execution authority.
+function buildJavascriptCallables(graphBuild, options, entryFile) {
   const ts = require('typescript');
-  const entry = require('./project/router-module-linker').projectFunctionResolver(graphBuild).entry;
-  const parameter = entry?.functionNode.parameters[0]?.name;
-  if (!parameter || !ts.isIdentifier(parameter) || !entry.functionNode.body) return undefined;
-  let usesCall = false;
-  function visit(node) {
-    if ((ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node))
-      && ts.isIdentifier(node.expression) && node.expression.text === parameter.text
-      && (ts.isPropertyAccessExpression(node) ? node.name.text === 'call'
-        : ts.isStringLiteral(node.argumentExpression) && node.argumentExpression.text === 'call')) usesCall = true;
-    ts.forEachChild(node, visit);
+  const resolver = require('./project/router-module-linker').projectFunctionResolver(graphBuild);
+  let candidate = false;
+  function scan(node) {
+    if (ts.isPropertyAccessExpression(node) && node.name.text === 'call'
+      || ts.isElementAccessExpression(node) && ts.isStringLiteral(node.argumentExpression) && node.argumentExpression.text === 'call') candidate = true;
+    ts.forEachChild(node, scan);
   }
-  visit(entry.functionNode.body);
-  if (!usesCall) return undefined;
+  for (const module of resolver.modules) scan(module.sourceFile);
+  if (!candidate) return undefined;
+  const compiler = require('./canonical-project-compiler');
+  let admitted;
+  // Plain JavaScript retains its existing original-source admission, including
+  // callers supplied an already compiled schema bundle by the CLI/host.
+  if (resolver.entry?.functionNode.parameters.length === 1) {
+    const collection = require('./project/callable-collection').createCallableCollection(graphBuild, {
+      schemaBundle: options.schemaBundle || compiler.compileProjectSchemas(options.schemas || {}, options).bundle,
+      binaryResources: options.binaryResources, target: 'javascript'
+    });
+    collection.admit(resolver.entry);
+    admitted = collection.snapshot();
+  }
+  if (!admitted) admitted = compiler.compileCanonicalProject(entryFile, {
+    ...options, target: 'javascript',
+    applicationProjectMetadata: { ...options.applicationProjectMetadata, fragments: options.projectFragments ?? options.applicationProjectMetadata?.fragments },
+    tsconfigFile: options.tsconfigFile || options.tsconfig
+  }).callableSource;
+  if (!admitted) return undefined;
   if ((options.provider || 'node') !== 'node') throw new JavascriptApplicationPlanError(
     'PULSE_CALL_SOURCE_PROVIDER', 'Authored computation calls currently require explicit Node JavaScript.');
-  const schemaBundle = options.schemaBundle || require('./canonical-project-compiler').compileProjectSchemas(
-    options.schemas || {}, { rootDir: options.rootDir, configFile: options.configFile }).bundle;
-  const admitted = require('./callable-source-admission').admitCallableSource(graphBuild, {
-    schemaBundle, binaryResources: options.binaryResources
-  });
-  // Do not turn an indirect method reference into a runtime call registration.
-  const recognized = new Set(admitted.callSites.map(site => site.callNode.expression));
-  function check(node) {
-    if (ts.isIdentifier(node) && node.text === parameter.text
-      && !((ts.isPropertyAccessExpression(node.parent) || ts.isElementAccessExpression(node.parent)) && node.parent.expression === node)
-      && !(ts.isPropertyAccessExpression(node.parent) && node.parent.name === node)
-      && !(ts.isPropertyAssignment(node.parent) && node.parent.name === node)) {
-      throw new JavascriptApplicationPlanError('PULSE_CALL_SOURCE_BINDING', 'A callable entry context cannot escape through aliases or arguments.');
-    }
-    if ((ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node))
-      && ts.isIdentifier(node.expression) && node.expression.text === parameter.text
-      && (ts.isElementAccessExpression(node) || node.name.text === 'call') && !recognized.has(node)) {
-      throw new JavascriptApplicationPlanError('PULSE_CALL_SOURCE_FORM', 'Computation calls require direct static ctx.call sites.');
-    }
-    ts.forEachChild(node, check);
-  }
-  check(entry.functionNode.body);
   let exportName = '__pulseCallableTargets';
-  while (entry.sourceFile.text.includes(exportName)) exportName += '_';
-  return { modulePath: entry.modulePath, exportName, bindings: admitted.callees.map(callee => {
-    const sites = admitted.callSites.filter(site => site.target === callee.identity);
-    return { identity: callee.identity, localName: sites[0].localName,
-      inputSchema: callee.inputSchema, outputSchema: callee.outputSchema, maxCalls: sites.length,
+  while (resolver.modules.some(module => module.sourceFile.text.includes(exportName))) exportName += '_';
+  const bindings = admitted.callees.map(callee => {
+    const sites = admitted.sites.filter(site => site.target === callee.identity);
+    return { identity: callee.identity, modulePath: sites[0].source.file, localName: sites[0].localName,
+      inputSchema: callee.inputSchema, outputSchema: callee.outputSchema, maxCalls: sites.reduce((count, site) => count + (site.maxCalls || 1), 0),
       resources: (callee.plan.binaryResources?.records || []).map(record => record.id) };
-  }) };
+  });
+  return { modulePath: bindings[0].modulePath, exportName, bindings };
 }
 
 module.exports = Object.freeze({
