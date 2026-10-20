@@ -43,11 +43,11 @@ async function main() {
     if(input.mode==='control') { for(let i=0;i<10;i++){if(i===2)continue;if(i===5)break;extra+=i;} }
     let grown='';
     if(input.mode==='growth') { for(let i=0;i<1024;i++){grown+=input.text;} }
-    const decoded=ctx.decodeJson(input.json,'proof.Result');
+    const decoded=ctx.decodeJson<{value:number}>(input.json,'proof.Result');
     const value=sum+decoded.value+input.value+extra;
-    const encoded=ctx.encodeJson({value},'proof.Result');
+    const encoded=ctx.encodeJson({value, ignored:input.text},'proof.Result');
     if (input.mode==='undefined') return {value, text:encoded, word, initial, alias:alias.readU8(0), optional:undefined, nested:[]};
-    return {value, text:encoded, word, initial, alias:alias.readU8(0), ...(input.mode==='optional' ? {optional:word} : {}), nested:[{label:word,values:[value,initial]}]};
+    return {value, text:encoded, word, initial, alias:alias.readU8(0), ...(input.mode==='optional' ? {optional:word} : {}), nested:[{label:word[0] ?? '',values:[value,initial]}]};
   }`;
   write('src/handlers.ts', source);
   write('src/schemas.ts', "import {defineSchemaRegistry,schema} from '@pulse-compute/pulse/schema'; interface Result { value: number }; interface Input { value:number; mode:string; offset:number; length:number; index:number; json:string; text:string }; interface Output {value:number; text:string; word:string; initial:number; alias:number; optional?:string; nested:{label:string; values:number[]}[]}; export default defineSchemaRegistry({schemas:{'proof.Result':schema<Result>(),'proof.Input':schema<Input>(),'proof.Output':schema<Output>()}});");
@@ -66,7 +66,7 @@ async function main() {
   const baseInput={value:2,mode:'combined',offset:0,length:4,index:0,json:'{"value":7}',text:''};
   function requestFor(change={}) { return { method:'POST', path:'/mcp', headers: {'content-type':'application/json',accept:'application/json, text/event-stream','mcp-protocol-version':'2026-07-28','mcp-method':'tools/call','mcp-name':'proof.run'}, body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28','io.modelcontextprotocol/clientCapabilities':{}},name:'proof.run',arguments:{...baseInput,...change}}}) }; }
   let cases=0;
-  for (const change of [{},{},{mode:'optional',offset:4,length:7},{mode:'control'},{mode:'loop'},{length:bytes.length},{length:0,offset:bytes.length}]) {
+  for (const change of [{},{},{mode:'optional',offset:4,length:7},{mode:'control'},{mode:'loop'},{offset:7,length:4},{length:bytes.length},{length:0,offset:bytes.length}]) {
     const request=requestFor(change), nr=await executeCanonicalNativeModule(native.native,{request}), fr=fastlyExecute(fastly,{request});
     const jr=await executeJs(loaded.loaded.application,new Request('https://proof.test/mcp',{method:'POST',headers:request.headers,body:request.body}),{schemaCodecs:codecs,binaryResources:store,strict:true,maxDurationMs:5000});
     const expected=await jr.json();
@@ -75,7 +75,7 @@ async function main() {
     assert.equal(expected.result.isError,false);
     const value=275+(change.mode==='control'?8:change.mode==='loop'?65536:0);
     const word=bytes.subarray(change.offset??0,(change.offset??0)+(change.length??4)).toString('utf8');
-    assert.deepEqual(expected.result.structuredContent,{value,text:JSON.stringify({value}),word,initial:0,alias:65,...(change.mode==='optional'?{optional:word}:{}),nested:[{label:word,values:[value,0]}]});
+    assert.deepEqual(expected.result.structuredContent,{value,text:JSON.stringify({value}),word,initial:0,alias:65,...(change.mode==='optional'?{optional:word}:{}),nested:[{label:word[0] ?? '',values:[value,0]}]});
     cases++;
   }
   const failures=[];

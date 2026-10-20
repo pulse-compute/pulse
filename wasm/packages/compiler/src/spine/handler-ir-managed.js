@@ -986,7 +986,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
       if (binding?.kind === 'resource-view' && ['readU8','readU32LE','readF32LE','readUtf8'].includes(name)) return read(binding, name, node.arguments[0], node.arguments[1]);
       if (binding?.kind === 'context' && ['encodeJson','decodeJson'].includes(name)) {
         const schema = node.arguments[1];
-        if (node.questionDotToken || target.questionDotToken || node.typeArguments?.length || node.arguments.length !== 2 || !schema || !ts.isStringLiteral(schema)
+        if (node.questionDotToken || target.questionDotToken || (node.typeArguments?.length || 0) > 1 || node.arguments.length !== 2 || !schema || !ts.isStringLiteral(schema)
           || !options.schemaIds?.includes(schema.text)) {
           fail(node, 'PULSE_MANAGED_HANDLER_SCHEMA_INVALID', 'Schema text operations require one value and a declared literal schema identity.');
           return Object.freeze({ kind: 'rejected-expression' });

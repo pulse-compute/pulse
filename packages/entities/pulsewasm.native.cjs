@@ -286,7 +286,7 @@ function createHandlerCompiler(route, context) {
       const slot = context.resourceIds.indexOf(expression.resourceId);
       if (slot < 0) fail('PULSE_ENTITIES_NATIVE_RESOURCE_UNKNOWN', 'Unknown managed resource identity.');
       const offset = expression.offset ? `__pulse_entities_numeric(${expressionName(expression.offset)}())` : '0.0';
-      if (expression.operation === 'readUtf8') emit(`return __pulse_managed_utf8(${slot}, ${offset}, __pulse_entities_numeric(${expressionName(expression.length)}()))`);
+      if (expression.operation === 'readUtf8') emit(`return JSON.parse<JSON.Value>(__pulse_managed_utf8_json(${slot}, ${offset}, __pulse_entities_numeric(${expressionName(expression.length)}())))`);
       else {
         const op = ['byteLength','readU8','readU32LE','readF32LE'].indexOf(expression.operation);
         if (op < 0) fail('PULSE_ENTITIES_NATIVE_RESOURCE_UNKNOWN', 'Unknown managed resource operation.');
@@ -295,7 +295,7 @@ function createHandlerCompiler(route, context) {
     } else if (['workspace-init','workspace-read','workspace-write'].includes(expression.kind)) {
       const slot = context.workspaces.findIndex(w => w.handlerId === handler.id && w.localId === expression.workspaceId);
       if (slot < 0) fail('PULSE_ENTITIES_NATIVE_WORKSPACE_UNKNOWN', 'Unknown managed workspace identity.');
-      if (expression.kind === 'workspace-init') emit(`return __pulse_managed_workspace_init_${slot}()`);
+      if (expression.kind === 'workspace-init') { emit(`__pulse_managed_workspace_init_${slot}()`); emit('return __pulse_entities_null()'); }
       else if (!expression.offset) emit(`return JSON.Value.from<f64>(${context.workspaces[slot].capacity})`);
       else {
         const args = [`__pulse_entities_numeric(${expressionName(expression.offset)}())`];
@@ -313,13 +313,20 @@ function createHandlerCompiler(route, context) {
       const root = context.schemaOutput.roots.get(expression.schemaId);
       if (!root) fail('PULSE_ENTITIES_NATIVE_SCHEMA_MISSING', 'Missing managed text schema.');
       emit(`const value = ${expressionName(expression.value)}()`);
-      if (expression.operation === 'decodeJson') emit('if (value.type != JSON.Types.String) abort("Schema text must be string", "managed", 0, 0)');
-      emit(`const text = ${expression.operation === 'decodeJson' ? '__pulse_entities_text(value)' : 'JSON.stringify<JSON.Value>(value)'}`);
-      emit('if (__pulse_entities_utf8_bytes(text) > __PULSE_ENTITIES_SCHEMA_MAX_BYTES || !__pulse_entities_valid_json(text)) abort("Invalid schema text", "managed", 0, 0)');
+      if (expression.operation === 'decodeJson') {
+        emit('if (value.type != JSON.Types.String) abort("Schema text must be string", "managed", 0, 0)');
+        emit('const text = value.get<string>()');
+        emit('if (__pulse_entities_utf8_bytes(text) > __PULSE_ENTITIES_SCHEMA_MAX_BYTES || !__pulse_entities_valid_json(text)) abort("Invalid schema text", "managed", 0, 0)');
+      }
       emit('__pulse_entities_schema_valid = true');
       emit(`const result = ${root}(${expression.operation === 'decodeJson' ? 'JSON.parse<JSON.Value>(text)' : 'value'})`);
       emit('if (!__pulse_entities_schema_valid) abort("Invalid schema value", "managed", 0, 0)');
-      emit(expression.operation === 'decodeJson' ? 'return result' : 'return JSON.Value.from<string>(JSON.stringify<JSON.Value>(result))');
+      if (expression.operation === 'decodeJson') emit('return result');
+      else {
+        emit('const encoded = JSON.stringify<JSON.Value>(result)');
+        emit('if (__pulse_entities_utf8_bytes(encoded) > __PULSE_ENTITIES_SCHEMA_MAX_BYTES) abort("Schema text too large", "managed", 0, 0)');
+        emit('return JSON.Value.from<string>(encoded)');
+      }
     } else if (expression.kind === 'undefined') emit('return __pulse_entities_undefined_value');
     else if (expression.kind === 'input') emit('return __pulse_entities_input');
     else if (expression.kind === 'local') emit(`return unchecked(__pulse_entities_locals[${localIndex(expression.id)}])`);

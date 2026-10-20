@@ -348,8 +348,14 @@ function __pulse_entities_property(value: JSON.Value, key: string): JSON.Value {
 }
 
 function __pulse_entities_element(value: JSON.Value, key: JSON.Value): JSON.Value {
-  if (value.type == JSON.Types.Array && __pulse_entities_is_number(key)) {
-    const index = <i32>__pulse_entities_number(key)
+  if ((value.type == JSON.Types.Array || value.type == JSON.Types.String) && __pulse_entities_is_number(key)) {
+    const number = __pulse_entities_number(key)
+    if (!isFinite(number) || Math.floor(number) != number || number < 0 || number > 2147483647) return __pulse_entities_undefined_value
+    const index = <i32>number
+    if (value.type == JSON.Types.String) {
+      const text = value.get<string>()
+      return index < text.length ? JSON.Value.from<string>(text.charAt(index)) : __pulse_entities_undefined_value
+    }
     const array = value.get<JSON.Arr>()
     return index >= 0 && index < array.length ? array.at(index) : __pulse_entities_undefined_value
   }

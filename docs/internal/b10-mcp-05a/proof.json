@@ -4,118 +4,54 @@
   "featureComplete": false,
   "node": "v24.19.0",
   "source": {
-    "head": "8a51d705025c69ae306004215cb6cb48248d68e1",
+    "head": "04f382e0c6527d32c5f4a7cb14625c6814a1ca57",
     "files": [
       {
         "path": "docs/internal/b10-mcp-05a/README.md",
-        "sha256": "4b9d480d495a774eb262ccf72145de087614f54e17ac69de3e0937c2d2a2883f"
+        "sha256": "d729a5b84b35631b2c614b0e89f96b9f0fc6ee6ba3afb39c2602d577bc99e306"
       },
       {
         "path": "packages/entities/as/index.as.ts",
-        "sha256": "04bbf5c504251c7f90b380a6cd6b465075d76efde8cba43270a08f9a7f87f5dd"
-      },
-      {
-        "path": "packages/entities/pulsewasm.compiler.cjs",
-        "sha256": "bafe8e0074d59be8d8a13d5973e36488b60428ba7b2a1f0210c27419f76af51e"
+        "sha256": "891bfe29c36061aa88f239b5e20b47afad65f021053956689d38f1a24554382c"
       },
       {
         "path": "packages/entities/pulsewasm.native.cjs",
-        "sha256": "d396e72090793265cc7688fd56a2decfabe581ea743d84f81e8bb666b98ee0d2"
-      },
-      {
-        "path": "packages/provider-fastly/src/build/native-http-effects.js",
-        "sha256": "5040a2986caea3d6d322c2f86e1d26780b05039f6ca7308453e2854ec67d0deb"
-      },
-      {
-        "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
-        "sha256": "3995d10a3760b86007763c7a8d1a7be61a33473c5e409ec38983e77188f53319"
-      },
-      {
-        "path": "packages/provider-fastly/src/build/native-value-budget.js",
-        "sha256": "c8d1d056e9605c765108e57f3d6adf0dabcbf7a16339dbb6488ecb68a05f1397"
-      },
-      {
-        "path": "packages/provider-fastly/src/build/request-budget.js",
-        "sha256": "87b83dfb9167019c82b5500ef51c1613cfdb22848623a2f6ce9a05b59f953989"
-      },
-      {
-        "path": "scripts/release-evidence-bundle.cjs",
-        "sha256": "002b74d3e0dbbbab4c4907f6eb09050c1553b024993761141263aa9a4044d3db"
-      },
-      {
-        "path": "wasm/packages/compiler/src/canonical-native-compiler.js",
-        "sha256": "073458860ed2523e2e4a1fcbd0885bec55ec9468040616964f170d7d016650db"
-      },
-      {
-        "path": "wasm/packages/compiler/src/canonical-native-plan.js",
-        "sha256": "5ae8de01a61afb98e92f4f3626207db48d536c5ab826712b717a2dbdf986fb95"
-      },
-      {
-        "path": "wasm/packages/compiler/src/canonical-project-compiler.js",
-        "sha256": "8b421c4c6cab103fb04cdf09f6e4e3b01f7d8519bc216c4fbe8e294df6752e40"
-      },
-      {
-        "path": "wasm/packages/compiler/src/numeric-workspace-plan.js",
-        "sha256": "eee87028c9addd9a18bec3408869e4c3e37cadcfb475367513f8820aaeb62c3b"
+        "sha256": "623c02ebcb3cd345fa46fa17e100609544edb6d080beeef5c069eabb861ac75d"
       },
       {
         "path": "wasm/packages/compiler/src/spine/handler-ir-managed.js",
-        "sha256": "22db169cbf3d34cdd78c1ff671c08539d960a4a00302b245fe167517adaed3ca"
-      },
-      {
-        "path": "wasm/packages/compiler/src/spine/terminal-package-native.js",
-        "sha256": "637dcb7802bde6b51b351fe4a40c3b8e49a916811b024c88cbdf23527524ab3e"
-      },
-      {
-        "path": "wasm/packages/contracts/src/handler/canonical-native-plan.js",
-        "sha256": "eaa359e191b1e45c22ce1b04a0a26bfe235392104ee3e7693419121cc1f67f2d"
-      },
-      {
-        "path": "wasm/packages/contracts/src/handler/canonical-native-runtime.js",
-        "sha256": "fe53c436e9ba49be81edd967df24cba4ca15606db82a294b582f8a714c87628f"
-      },
-      {
-        "path": "wasm/packages/contracts/src/handler/managed-native-primitives.js",
-        "sha256": "9e1a62a9373b85cf4984a0cb1e8fe1faafa87a0e3b45f0571ae0843fbc63da60"
-      },
-      {
-        "path": "wasm/packages/host-runtime/src/runtime/canonical-native-host.js",
-        "sha256": "1f71288d0ee3ae8ffa591408f8edeb01fb61b80638fc9ce1e323949923934857"
+        "sha256": "96a46553f2c4bee7bcc63d2b7efd3f1f0dfa87560ebce9f3c6d5ccd3de522dbc"
       },
       {
         "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-managed.js",
-        "sha256": "56de3b41d1f61d3b57686c645a594e75cdc0a2ba9bf342aefe0ce3956f8c90fb"
-      },
-      {
-        "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native.js",
-        "sha256": "c6b41fe603e1bf8e78e07e6159449559644556a644f43c1feddb823fbef8dc9f"
-      },
-      {
-        "path": "wasm/test/entities/assert-entities-package-owned-lowering.cjs",
-        "sha256": "d8245e807cf54e64dbc598096fb927a923097d2485fa20516d8714e66704638a"
+        "sha256": "e656dd437ccccd3ea4ec59d13d8831ddd4f7a9d4ee5a6fa3049ced8d1ec13da8"
       },
       {
         "path": "wasm/test/entities/assert-managed-native-primitives.cjs",
-        "sha256": "9aab43bc9e254bb6fdf6c8eb77a2f3dd4fa7a2eeb765972b616e09fdd96230a5"
+        "sha256": "34e577d0c1cba4cd4fcf23c05941d609023e3e3ffbe66b48b3b11dcfc7ec31ad"
       },
       {
-        "path": "wasm/test/suite/registry.cjs",
-        "sha256": "ebe9c541b904f36f19b24d19af7c6b66b23b648079aea3a0b36c1849916a805c"
+        "path": "wasm/test/s3/.body-Z92s4L/.pulse/config.ts",
+        "sha256": "822df0ae33789699500df21f0f8706465c9b63f84f7f5249a5b37a4edc9d5252"
+      },
+      {
+        "path": "wasm/test/s3/.body-Z92s4L/src/index.ts",
+        "sha256": "acd1b330c4a87a18f879499ddc3a37b8c0143d3054d3c6d55b0de53977c1e3fc"
       }
     ]
   },
   "artifacts": {
-    "planHash": "7ecb64a4604107882f8a449b81fd0138a202756d36f33e6c1c47d372a0dba6fc",
-    "nodeWasmSha256": "4e725e349a5f5669988bc6f5bdd38afdb4c9bfe0a809fdae1c5346e7c7f4f3f9",
-    "fastlyWasmSha256": "e92a364783942d3d85c8dc93baad07d2a38fd249b324f412ae2c79cf9e3800ed"
+    "planHash": "50cb2129c05b0c99a79c586c4d514caab6cbc8ecf203bac99b854e9c08aa406c",
+    "nodeWasmSha256": "204394a64eddd8cd2083407c36db76d5640a3a2ae8e14d7fbcc9ca592fb9d2e6",
+    "fastlyWasmSha256": "d40725d089178a21c3f70186663afef1448c979f6575735547eac2519d410457"
   },
-  "cases": 7,
+  "cases": 8,
   "failures": 8,
   "negativeSources": 14,
   "forgedPlans": 6,
   "deadlines": 2,
-  "nativeBytes": 116008,
-  "fastlyBytes": 146083,
+  "nativeBytes": 116575,
+  "fastlyBytes": 146690,
   "resources": [
     "alias",
     "data"

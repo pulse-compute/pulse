@@ -37,7 +37,7 @@ per selected managed handler. The terminal compiler composes shared runtime
 source after the trusted package contribution; packages do not inject arbitrary
 source through primitive facts.
 
-The focused proof covers seven successful shapes, including nested arrays,
+The focused proof covers eight successful shapes, including nested arrays,
 optional absence/presence, supplementary Unicode/NUL, loop break/continue,
 65,536 bounded nested iterations and fresh workspace state. It compares all
 three targets with independently computed output values. Negative cases cover
