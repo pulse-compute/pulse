@@ -75,3 +75,11 @@ const effect = null as unknown as PulseEffect<string>
 void effect
 const next = null as unknown as RouterNext
 void next
+
+import type { PulseComputationContext, PulseComputation, PulseReadonly, PulseCallSchemas } from '../src/index.js'
+import type { PulseComputationContext as RuntimeComputationContext } from '@pulse-compute/runtime'
+const computationContextParity: Assert<Equal<PulseComputationContext, RuntimeComputationContext>> = true
+const computation: PulseComputation<{ value: number }, { value: number }> = (_ctx, input) => ({ value: input.value })
+const schemas: PulseCallSchemas = { inputSchema: 'app.Input', outputSchema: 'app.Output' }
+const borrowed: PulseReadonly<{ value: number }> = { value: 1 }
+void computationContextParity; void computation; void schemas; void borrowed

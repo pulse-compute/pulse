@@ -775,12 +775,21 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     throw new FastlyNativePlatformCapabilitiesMockError('Pass98 native module is missing _start.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_START_MISSING');
   }
   if (options.conditionalKv && options.conditionalKv.deadlineNs !== undefined) instance.exports.pulse_fastly_kv_request_deadline(BigInt(options.conditionalKv.deadlineNs));
+  const callableEvidence = () => input?.plan?.callables?.length ? {
+    guestMemoryBytes: instance.exports.memory.buffer.byteLength,
+    memory: { bytes: Number(instance.exports.pulse_fastly_memory_bytes()),
+      values: Number(instance.exports.pulse_fastly_memory_values()) },
+    responseStatus: downstream?.status
+  } : {};
   try { instance.exports._start(); }
   catch (error) {
-    if (Number(instance.exports.pulse_fastly_last_error?.()) !== 1010) throw error;
+    if (Number(instance.exports.pulse_fastly_last_error?.()) !== 1010) {
+      Object.defineProperty(error, 'execution', { value: Object.freeze(callableEvidence()), configurable: true });
+      throw error;
+    }
     throw new FastlyNativePlatformCapabilitiesMockError('Native retained-value budget exceeded.',
       'PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED', {
-        lastError: 1010, errorStage: Number(instance.exports.pulse_fastly_error_stage()), trace,
+        ...callableEvidence(), lastError: 1010, errorStage: Number(instance.exports.pulse_fastly_error_stage()), trace,
         bytes: Number(instance.exports.pulse_fastly_memory_bytes()),
         values: Number(instance.exports.pulse_fastly_memory_values())
       });
@@ -816,13 +825,14 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       || (lastError === 1001 && errorStage === 276 && downstream?.status === 500)
       || (lastError === 1003 && (errorStage === 274 || errorStage === 275) && downstream?.status === 500));
   if (lastError !== FASTLY_STATUS_OK && !handledDynamicBackendError && !handledDeadlineError && !handledTransportError && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
-    throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module reported an execution error.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED', { lastError, errorStage, errorEffect, pulseLastError, trace });
+    throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module reported an execution error.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED', { ...callableEvidence(), lastError, errorStage, errorEffect, pulseLastError, trace });
   }
   if (!downstream) {
     throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module did not send a downstream response.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_RESPONSE_NOT_SENT', { trace });
   }
 
   return Object.freeze({
+    ...callableEvidence(),
     version: 'pulse.fastly-native-platform-capabilities-mock.v1',
     request: Object.freeze({ method, url, path: pathValue, headers: Object.freeze(requestHeaders.map((entry) => Object.freeze(entry))) }),
     response: Object.freeze({

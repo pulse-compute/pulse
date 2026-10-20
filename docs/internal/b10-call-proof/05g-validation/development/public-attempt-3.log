@@ -1,0 +1,6 @@
+Expected values to be strictly equal:
++ actual - expected
+
++ '/workspace/scratch/803e6bf46c14/pulse/src/index.ts'
+- '/tmp/pulse-call-public-WYYGRI/bad/src/index.ts'
+ ERR_ASSERTION undefined

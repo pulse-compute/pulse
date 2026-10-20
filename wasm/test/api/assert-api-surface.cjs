@@ -22,7 +22,7 @@ const declarations = fs.readFileSync(declarationFile, 'utf8');
 const pulseDeclarations = fs.readFileSync(path.join(pulseRoot, 'src', 'index.d.ts'), 'utf8');
 const hostDeclarations = fs.readFileSync(path.join(runtimeRoot, 'src', 'host.d.ts'), 'utf8');
 
-assert.equal(runtime.RUNTIME_API_VERSION, 'pulse.runtime-authoring.v4');
+assert.equal(runtime.RUNTIME_API_VERSION, 'pulse.runtime-authoring.v5');
 assert.equal(runtime.ROUTER_API_VERSION, 'pulse.router-authoring.v2');
 assert.equal(typeof runtime.Router, 'function');
 const handler = async (ctx) => ctx;
@@ -112,21 +112,26 @@ assert.match(hostDeclarations, /readonly autoLoopback: false/);
 assert.doesNotMatch(hostDeclarations, /eventListener|queueTransport|executeCall/);
 
 const handlerTypes = handlerTypesContract.defaultHandlerTypesContract();
-assert.equal(handlerTypes.version, 'pulse.handler-types.v4');
-assert.equal(handlerTypes.runtimeVersion, 'pulse.runtime-authoring.v4');
+assert.equal(handlerTypes.version, 'pulse.handler-types.v5');
+assert.equal(handlerTypes.runtimeVersion, 'pulse.runtime-authoring.v5');
 assert.deepEqual(handlerTypes.executionContexts.shared, ['state', 'log', 'time', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit', 'encodeJson', 'decodeJson']);
 assert.deepEqual(handlerTypes.executionContexts.event, ['event.type', 'event.payload']);
 assert.equal(handlerTypes.executionContexts.emitPublished, true);
+assert.deepEqual(handlerTypes.executionContexts.computation, ['resources', 'workspace']);
+assert(handlerTypes.executionContexts.http.includes('call'));
+assert(!handlerTypes.executionContexts.event.includes('call'));
 assert.equal(handlerTypes.compiler.acceptsEventHandlers, true);
 assert.equal(handlerTypes.compiler.eventEmitRecognition, true);
 assert.equal(handlerTypes.compiler.eventEmitNativeLowering, false);
 
 const contextContract = ctxContract.validateCtxContract();
-assert.equal(contextContract.version, 'pulse.ctx-contract.v4');
+assert.equal(contextContract.version, 'pulse.ctx-contract.v5');
 assert.equal(contextContract.policies.stateRepresentation, 'execution-local-string-map');
 assert.equal(contextContract.policies.stateClearedPerExecution, true);
 assert.equal(contextContract.planes.eventExecutionImplemented, true);
 assert.equal(contextContract.planes.emitPublished, true);
+assert.deepEqual(contextContract.planes.computation, ['resources', 'workspace']);
+assert(contextContract.surfaces.some(surface => surface.id === 'ctx.call' && surface.awaitPolicy === 'forbidden'));
 assert.equal(contextContract.planes.emitJavascriptExecutionImplemented, true);
 assert.equal(contextContract.planes.emitNativeExecutionImplemented, false);
 

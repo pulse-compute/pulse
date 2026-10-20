@@ -1815,7 +1815,7 @@ function __pulse_fastly_scalar(kind: i32, boolean: i32, slot: i32): i32 {
 function host_value_undefined(): i32 { return __pulse_fastly_scalar(PULSE_VALUE_UNDEFINED, 0, 0) }
 function host_value_null(): i32 { return __pulse_fastly_scalar(PULSE_VALUE_NULL, 0, 1) }
 function host_value_boolean(value: i32): i32 { return __pulse_fastly_scalar(PULSE_VALUE_BOOLEAN, value != 0 ? 1 : 0, value != 0 ? 3 : 2) }
-${plan.binaryResources || plan.numericWorkspaces?.length ? require('./native-binary-resources.js').source() : ''}
+${plan.callables?.length || plan.binaryResources || plan.numericWorkspaces?.length ? require('./native-binary-resources.js').source() : ''}
 function host_value_number(value: f64): i32 {
   // Preserve negative zero, NaN, infinities and nonintegral values exactly.
   const cacheable = value >= 0 && value < 65536 && Math.floor(value) == value && (value != 0 || 1.0 / value > 0);
@@ -2359,7 +2359,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
     ];
     if (emitWat) args.push('--textFile', assemblyScriptWatFile);
     const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization, { guestLinked });
-    if (!guestLinked && (nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
+    if (!guestLinked && (plan.callables?.length || nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
       args.push('--maximumMemory', String(nativeValueBudget.policy.maximumMemoryPages));
     }
     if (generated.guestUnits.length > 0) {

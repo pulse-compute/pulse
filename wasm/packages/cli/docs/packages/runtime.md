@@ -44,12 +44,15 @@ The package exports:
 - structured and opaque response types;
 - `PulseExecutionContext`, shared by HTTP and event handlers, with state, logging,
   provider wall time, fetch, config, secret, KV, keyed parallel, and one-way event emission;
-- `PulseContext` with the shared authority plus HTTP request and response construction;
+- `PulseContext` with shared authority, HTTP request/response construction and bounded `call`;
+- `PulseComputationContext`, `PulseReadonly`, `PulseComputation` and `PulseCallSchemas`
+  for [synchronous imported computations](../../API.md#ctxcall), with resource/workspace
+  authority, readonly input and an owned validated result;
 - `PulseEvent`, `PulseEventContext`, and `PulseEventHandler` for exact type,
   immutable schema payload, non-HTTP authority, and void completion;
 - `PulseResult`, `Handler`, `PulseRouteContext`, `RouteHandler`, `RouterMiddleware`, `RouterErrorHandler`, and `RouterNext`;
 - `Router`, the compile-time marker for static route topology;
-- `RUNTIME_API_VERSION`, currently `pulse.runtime-authoring.v4`, and `ROUTER_API_VERSION`, currently `pulse.router-authoring.v2`.
+- `RUNTIME_API_VERSION`, currently `pulse.runtime-authoring.v5`, and `ROUTER_API_VERSION`, currently `pulse.router-authoring.v2`.
 
 The complete type-by-type reference is in [Canonical API](../../API.md).
 
@@ -162,8 +165,9 @@ records exact accepted frames independently from its FIFO ingress queue, so it
 never performs automatic loopback. It does not deliver a receipt, persistence,
 retry, or public provider transport.
 
-`ctx.emit` is not a call operation. The runtime exposes no request/reply
-correlation, automatic local dispatch, `ctx.call`, or reserved call capability.
+`ctx.emit` is not a call operation. Event contexts expose no `ctx.call`,
+request/reply correlation or automatic local dispatch. HTTP `ctx.call` invokes
+a bounded computation and does not dispatch events.
 See [Static events and outbound emission](../guides/events.md) for the frame,
 queue, target, and Native-extension details.
 

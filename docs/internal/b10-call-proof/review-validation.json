@@ -1,0 +1,47 @@
+{
+  "testedCommit": "51fcd830942283202a4aac0f7c84db3fb7b61651",
+  "clean": true,
+  "checks": {
+    "build": "passed",
+    "docs": "passed",
+    "documentationRelease": "passed",
+    "maintainer": "passed",
+    "scopeDeclaration": "passed-human-review-required",
+    "callableProof": "passed"
+  },
+  "historicalWasmHashMatches": 16,
+  "freshBaselineCompilation": false,
+  "dependencies": "Copied 20 node_modules directories from an existing checkout with identical pnpm-lock.yaml; no install scripts",
+  "node": "24.19.0",
+  "qualification": false,
+  "evidence": [
+    {
+      "path": "review-validation/call-review-build.log",
+      "sha256": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95"
+    },
+    {
+      "path": "review-validation/call-review-docs.log",
+      "sha256": "aed9ccd9d3975704a8ca13234a2ab4a973a4f9a5c2faef019832b947140effe1"
+    },
+    {
+      "path": "review-validation/call-review-documentation-release.log",
+      "sha256": "dd9c69bd8df81c07ed87cffcba6548a07d0fb0f3ff5fc5a62098492e614bd582"
+    },
+    {
+      "path": "review-validation/call-review-maintainer.log",
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2"
+    },
+    {
+      "path": "review-validation/call-review-scope.log",
+      "sha256": "ab8718dd7917df1fa5823d70f2be453045a295e20f88d83f5b6e521aa2750250"
+    },
+    {
+      "path": "review-validation/call-review-proof.log",
+      "sha256": "fe88e06858fe65b94f16c9dff400c94d3cbe122bb4c85493f3c560fb19c6467d"
+    },
+    {
+      "path": "review-validation/call-review-proof.json",
+      "sha256": "012e97081b91a77a3e906faa412ddb0668cec482d748e7a3af7d3e26ce39a957"
+    }
+  ]
+}

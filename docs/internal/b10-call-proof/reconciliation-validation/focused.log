@@ -1,0 +1,91 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 312 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 222ms
+
+[pulsewasm:native] pulse-context-tools
+[pulsewasm] 05I four-tool MCP parity, Unicode pagination and admitted response bounds (timeout 300.00s)
+[pulsewasm] Running pulse-context-tools (execution); elapsed 10.00s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 20.01s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 30.01s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 40.02s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 50.02s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 60.02s
+{"checkpoint":"compiled","synthetic":false,"nodeBytes":771581,"fastlyBytes":823686}
+[pulsewasm] Running pulse-context-tools (execution); elapsed 70.03s
+{"checkpoint":"read-parity","synthetic":false,"executions":1650}
+[pulsewasm] Running pulse-context-tools (execution); elapsed 80.03s
+{"checkpoint":"production","synthetic":false,"executions":2673,"corpusHash":"f2fa83a6b81f706a050e1ffc0281bf0f5503b170c17a63e553026c665e5510a0","planHash":"7a6778ba01b775df0f04a27a64aa50cc1e5ae2a3efbef434362a66dda1be90bf","artifacts":{"node":{"bytes":771581,"sha256":"e1d0bedc309cb0c02f82f59202169a8928b78b745cd85407e08212ac4ee0ccff"},"fastly":{"bytes":823686,"sha256":"20e016f55340ae454e2177e4966dd2972b93eb3e36fa78d1c9e0a5b9d4cb5cda"}}}
+[pulsewasm] Running pulse-context-tools (execution); elapsed 90.03s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 100.04s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 110.04s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 120.05s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 130.04s
+{"checkpoint":"compiled","synthetic":true,"nodeBytes":844906,"fastlyBytes":897051}
+[pulsewasm] Running pulse-context-tools (execution); elapsed 140.05s
+{"checkpoint":"read-parity","synthetic":true,"executions":156}
+{"checkpoint":"synthetic","synthetic":true,"executions":657,"corpusHash":"b4875497cf71a0678b8c8af7a80e503df082b48a2725265cb2cc0161b8f06341","planHash":"53c2f3549e01e9f03fafb2d506df4d55034cff51172c1c37bd6a4d6e38448b4c","artifacts":{"node":{"bytes":844906,"sha256":"76705659c920284fca2be14c679a321bfbd676c0775dc797e9efe06b29fce62c"},"fastly":{"bytes":897051,"sha256":"3cbee98ee0127e8661c61857d15a7fc59d481619eb4f34c19a30837eb3b95c39"}}}
+{"status":"passed","executions":3330,"largestToolBytes":12139,"largestMcpBytes":24610,"largestToolResultBytes":24576,"runs":[{"synthetic":false,"executions":2673,"corpusHash":"f2fa83a6b81f706a050e1ffc0281bf0f5503b170c17a63e553026c665e5510a0","planHash":"7a6778ba01b775df0f04a27a64aa50cc1e5ae2a3efbef434362a66dda1be90bf","artifacts":{"node":{"bytes":771581,"sha256":"e1d0bedc309cb0c02f82f59202169a8928b78b745cd85407e08212ac4ee0ccff"},"fastly":{"bytes":823686,"sha256":"20e016f55340ae454e2177e4966dd2972b93eb3e36fa78d1c9e0a5b9d4cb5cda"}}},{"synthetic":true,"executions":657,"corpusHash":"b4875497cf71a0678b8c8af7a80e503df082b48a2725265cb2cc0161b8f06341","planHash":"53c2f3549e01e9f03fafb2d506df4d55034cff51172c1c37bd6a4d6e38448b4c","artifacts":{"node":{"bytes":844906,"sha256":"76705659c920284fca2be14c679a321bfbd676c0775dc797e9efe06b29fce62c"},"fastly":{"bytes":897051,"sha256":"3cbee98ee0127e8661c61857d15a7fc59d481619eb4f34c19a30837eb3b95c39"}}}],"source":{"revision":"fb87b2c47fbc74007663fa771e49ec0d52e1611c","status":""}}
+[pulsewasm] pulse-context-tools: passed in 144.51s
+
+[pulsewasm:unit] pulse-context-build
+[pulsewasm] B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection (timeout 120.00s)
+[pulsewasm] Running pulse-context-build (execution); elapsed 150.05s
+[pulsewasm] Running pulse-context-build (execution); elapsed 160.06s
+[pulsewasm] Running pulse-context-build (execution); elapsed 170.07s
+[pulsewasm] Running pulse-context-build (execution); elapsed 180.07s
+[pulsewasm] Running pulse-context-build (execution); elapsed 190.07s
+[pulsewasm] Running pulse-context-build (execution); elapsed 200.07s
+[pulsewasm] Running pulse-context-build (execution); elapsed 210.08s
+{"schemaVersion":"pulse.context-build-test.v1","node":"24.19.0","cases":["current output closure","independent 02 fixture encoder agrees","manifest identities and scalar-only tables","two fresh independent roots, reverse creation/enumeration, locale/timezone/cache variation","read-only stale rejection: docs/getting-started.md","read-only stale rejection: scripts/pulse-context-inputs.json","read-only stale rejection: pnpm-lock.yaml","read-only stale rejection: scripts/pulse-context-build.cjs","read-only stale rejection: scripts/pulse-context-corpus.cjs","read-only stale rejection: scripts/pulse-context-format.cjs","read-only stale rejection: scripts/pulse-context-start.cjs","read-only stale rejection: scripts/pulse-context-tools.cjs","read-only stale rejection: wasm/packages/cli/src/command-spec.js","read-only stale rejection: wasm/packages/cli/src/diagnostics.js","read-only stale rejection: wasm/packages/cli/src/documentation.js","read-only stale rejection: wasm/packages/contracts/src/assets/embedded-manifest.js","read-only stale rejection: wasm/packages/contracts/src/resources/embedded.js","read-only stale rejection: examples/12-pulse-context-mcp/src/schemas.ts","read-only stale rejection: examples/12-pulse-context-mcp/src/index.ts","read-only stale rejection: scripts/pulse-context-start.json","read-only stale rejection: examples/12-pulse-context-mcp/application/.pulse/config.template.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/src/start.template.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/src/index.template.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/package.json","read-only stale rejection: examples/12-pulse-context-mcp/application/tsconfig.json","read-only stale rejection: examples/12-pulse-context-mcp/application/src/read.template.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/src/scalars.ts","read-only stale rejection: scripts/pulse-context-tools.json","read-only stale rejection: weighting","read-only stale rejection: normalization","read-only stale rejection: producer","read-only stale rejection: resource budget","read-only stale rejection: status","read-only stale rejection: version","read-only stale rejection: examples/12-pulse-context-mcp/context-corpus.ts","read-only stale rejection: examples/12-pulse-context-mcp/context-data/vector.bin","read-only stale rejection: examples/12-pulse-context-mcp/context-data/text.bin","read-only stale rejection: examples/12-pulse-context-mcp/context-data/metadata.bin","read-only stale rejection: examples/12-pulse-context-mcp/context-data/context-metadata.ts","read-only stale rejection: examples/12-pulse-context-mcp/context-data/resource-manifest.json","read-only stale rejection: examples/12-pulse-context-mcp/application/.pulse/config.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/src/start.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/src/index.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/src/schemas.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/src/read.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/src/example.ts","read-only stale rejection: examples/12-pulse-context-mcp/application/src/diagnostic.ts","read-only stale rejection: examples/12-pulse-context-mcp/context-data/context-manifest.json","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/resource-manifest.json","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/application/.pulse/config.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/application/src/start.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/application/src/index.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/application/src/schemas.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/application/src/read.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/application/src/example.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/application/src/diagnostic.ts","read-only stale rejection: wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json","missing and unexpected outputs, symlink destinations","missing/malformed source, source symlink","mixed generation and forged self-consistent manifest cannot pass","format rejection: vector.bin short header","format rejection: vector.bin truncated section","format rejection: vector.bin trailing bytes","format rejection: vector.bin version","format rejection: vector.bin magic","format rejection: vector.bin mixed hash","format rejection: vector.bin row count","format rejection: vector.bin range overflow","format rejection: text.bin short header","format rejection: text.bin truncated section","format rejection: text.bin trailing bytes","format rejection: text.bin version","format rejection: text.bin magic","format rejection: text.bin mixed hash","format rejection: text.bin row count","format rejection: text.bin range overflow","format rejection: metadata.bin short header","format rejection: metadata.bin truncated section","format rejection: metadata.bin trailing bytes","format rejection: metadata.bin version","format rejection: metadata.bin magic","format rejection: metadata.bin mixed hash","format rejection: metadata.bin row count","format rejection: metadata.bin range overflow","format rejection: nonfinite float bit pattern coordinate","format rejection: weight 0","format rejection: weight 20","format rejection: weight 4294967295","format rejection: weight 2147483648","format rejection: valid but wrong coordinate","format rejection: unsorted entries","format rejection: term outside dimension","format rejection: row gap","format rejection: empty token","format rejection: invalid token UTF-8","format rejection: unsorted dictionary","format rejection: text invalid UTF-8","format rejection: wrong UTF16 count","format rejection: reserved word","format rejection: metadata JSON","input rejection: duplicate IDs","input rejection: mixed record version","input rejection: unknown metadata field","input rejection: malformed surrogate","input rejection: unmapped source","input rejection: content hash","input rejection: oversize token","input rejection: nonfinite numeric","input rejection: metadata budget","input rejection: record count","input rejection: row term count","all byte/count budgets apply jointly","exact Unicode, BOM, controls, empty text and maximum text","512 rows, 4096 terms, 1024 entries per row; overflow rejects","CLI invalid options never write"],"manifestSha256":"db431652adcc4c7be5bc50a09d0927963257aa2d64433ff1091e7e16f15e179c","corpusHash":"f2fa83a6b81f706a050e1ffc0281bf0f5503b170c17a63e553026c665e5510a0","dimensions":{"rows":260,"dimension":2495,"nonzeros":15098,"dictionarySha256":"26f9c3528e4e017d973254985bae1351800b4088168fe7db4d880f7556f168a2","manifestId":"818be13269a39ed0d4082ac5577a715f9d9397930f3cec005063d6cf0088b4d9","catalogueIdentity":"6a9bb9dfdadeccbe979281b17171b932364afaecf90e29854f257740c7460fbf","rawBytes":592338,"serializedBytes":790438,"budgets":{"files":3,"fileBytes":5242880,"totalBytes":8388608,"serializedBytes":16777216,"bindings":3}},"status":"passed"}
+ok - 120 deterministic context build and strict admission cases
+[pulsewasm] pulse-context-build: passed in 70.27s
+
+[pulsewasm:native] callable-lifetime
+[pulsewasm] 05F callable failure, fresh-request recovery, cumulative deadlines and allocation evidence (timeout 300.00s)
+[pulsewasm] Running callable-lifetime (execution); elapsed 220.08s
+[pulsewasm] Running callable-lifetime (execution); elapsed 230.09s
+[pulsewasm] Running callable-lifetime (execution); elapsed 240.09s
+[pulsewasm] Running callable-lifetime (execution); elapsed 250.10s
+[pulsewasm] Running callable-lifetime (execution); elapsed 260.10s
+{"status":"passed","requests":114,"faults":18,"artifacts":8}
+[pulsewasm] callable-lifetime: passed in 54.83s
+
+[pulsewasm:cli] cli-command-spec
+[pulsewasm] public parser, help, aliases, and positionals (timeout 30.00s)
+ok - CLI parser, help, machine spec, and 3 completions agree on 8 commands and 21 public options with no hidden product controls
+[pulsewasm] cli-command-spec: passed in 172ms
+
+[pulsewasm:unit] cli-report-retained-evidence
+[pulsewasm] PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm (timeout 60.00s)
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 270.10s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 280.10s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 290.11s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 300.11s
+{"mode":"workspace","inventoryCases":[{"fixture":"examples/11-events","routes":1,"entries":3,"schemas":2},{"fixture":"wasm/test/fixtures/projects/canonical-integration","routes":1,"entries":3,"schemas":0},{"fixture":"wasm/test/fixtures/projects/catalog-router-methods","routes":20,"entries":23,"schemas":0},{"fixture":"wasm/test/fixtures/projects/canonical-workspace","routes":0,"entries":1,"schemas":0}],"status":"passed","negativeCases":22,"nativeCompiles":4,"portableGuestUnchanged":true,"routes":5,"entries":6,"schemas":1,"bindings":1,"resources":6,"providerArtifacts":2,"buildMs":3822,"reportMs":565,"capsuleBytes":101505,"inputSidecarBytes":9512,"portableSha256":"072a542870efc3e6585b00143b1a08258c3321613215d887e65e7a7101ab0a36","providerSha256":"67241a97fb5d379327a3aed1141c47c560bf3f8f742c0fdbfa760fe6b0d39e73"}
+[pulsewasm] cli-report-retained-evidence: passed in 34.29s
+
+[pulsewasm:cli] docs-example-12-pulse-context-mcp
+[pulsewasm] documented 12-pulse-context-mcp workflow (timeout 240.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - run examples/12-pulse-context-mcp/README.md: npm run inspect -- --json
+docs - run examples/12-pulse-context-mcp/README.md: npm run doctor -- --json
+docs - run examples/12-pulse-context-mcp/README.md: pulse test --json
+docs - verify canonical example 12-pulse-context-mcp
+[pulsewasm] Running docs-example-12-pulse-context-mcp (execution); elapsed 310.11s
+ok - docs example 12-pulse-context-mcp: provider=node tests=2 capabilities=2 schemas=10
+[pulsewasm] docs-example-12-pulse-context-mcp: passed in 9.14s
+
+[pulsewasm] test summary
+  passed       144.51s  pulse-context-tools  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/runs/2026-10-20T22-02-57-001Z--5/tasks/pulse-context-tools.log)
+  passed        70.27s  pulse-context-build  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/runs/2026-10-20T22-02-57-001Z--5/tasks/pulse-context-build.log)
+  passed        54.83s  callable-lifetime  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/runs/2026-10-20T22-02-57-001Z--5/tasks/callable-lifetime.log)
+  passed         172ms  cli-command-spec  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/runs/2026-10-20T22-02-57-001Z--5/tasks/cli-command-spec.log)
+  passed        34.29s  cli-report-retained-evidence  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/runs/2026-10-20T22-02-57-001Z--5/tasks/cli-report-retained-evidence.log)
+  passed         222ms  suite-shape  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/runs/2026-10-20T22-02-57-001Z--5/tasks/suite-shape.log)
+  passed         9.14s  docs-example-12-pulse-context-mcp  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/runs/2026-10-20T22-02-57-001Z--5/tasks/docs-example-12-pulse-context-mcp.log)
+  report       /workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/focused.json
+  run logs     /workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/runs/2026-10-20T22-02-57-001Z--5
+  total        313.47s

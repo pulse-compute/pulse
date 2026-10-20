@@ -6,6 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { buildCorpus, render, INPUTS, OUTPUT } = require('./pulse-context-corpus.cjs');
 const F = require('./pulse-context-format.cjs');
+const START = require('./pulse-context-start.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const CONFIG = 'scripts/pulse-context-build.json';
 const PROJECT = 'examples/12-pulse-context-mcp';
@@ -15,12 +16,12 @@ const MANIFEST = `${DIRECTORY}/context-manifest.json`;
 // Finite executable closure, audited against the CommonJS cache after extraction.
 // Generated data and evidence never enter this list.
 const PRODUCER_SOURCES = [
-  'scripts/pulse-context-build.cjs', 'scripts/pulse-context-format.cjs', 'scripts/pulse-context-corpus.cjs',
+  'scripts/pulse-context-build.cjs', 'scripts/pulse-context-format.cjs', 'scripts/pulse-context-corpus.cjs', 'scripts/pulse-context-start.cjs', 'scripts/pulse-context-tools.cjs',
   'wasm/packages/cli/src/command-spec.js', 'wasm/packages/cli/src/diagnostics.js', 'wasm/packages/cli/src/documentation.js',
   'wasm/packages/contracts/src/resources/embedded.js', 'wasm/packages/contracts/src/assets/embedded-manifest.js'
 ].sort();
-const COMPATIBILITY_SOURCES = [`${PROJECT}/src/schemas.ts`, `${PROJECT}/src/index.ts`];
-const DATA_NAMES = [...F.FILES, 'context-metadata.ts', 'context-manifest.json'].sort();
+const COMPATIBILITY_SOURCES = [...new Set([`${PROJECT}/src/schemas.ts`, `${PROJECT}/src/index.ts`, ...START.INPUTS])];
+const DATA_NAMES = [...F.FILES, 'context-metadata.ts', 'context-manifest.json', 'resource-manifest.json'].sort();
 function safePath(root, relative, missing = false) {
   if (typeof relative !== 'string' || !relative || relative.startsWith('/') || relative.includes('\\') || relative.split('/').some(p => !p || p === '.' || p === '..')) throw Error('Invalid context path');
   let current = fs.realpathSync(root);
@@ -92,16 +93,23 @@ function construct(root = ROOT) {
   const outputs = new Map([[OUTPUT, Buffer.from(render(corpus))]]);
   for (const name of F.FILES) outputs.set(`${DIRECTORY}/${name}`, encoded.files[name]);
   outputs.set(`${DIRECTORY}/context-metadata.ts`, scalarModule(corpus, config));
+  const resourceManifest = require('../wasm/packages/contracts/src/resources/embedded.js').createResourceManifest(
+    F.FILES.map(name => ({ path: `/${name}`, bytes: encoded.files[name] })), dimensions.budgets);
+  outputs.set(`${DIRECTORY}/resource-manifest.json`, Buffer.from(F.json(resourceManifest) + '\n'));
+  const application = START.generate(corpus, config, encoded.files, resourceManifest, file => read(root, file));
+  for (const [file, bytes] of application.outputs) outputs.set(file, bytes);
   const manifest = {
     schemaVersion: 'pulse.context-build-manifest.v1',
     source: { pulseVersion: corpus.pulseVersion, status: corpus.status, schemaVersion: corpus.schemaVersion, corpusHash: corpus.corpusHash,
       selectionSha256: corpus.selectionSha256, sources: corpus.sources },
     algorithm: { ...config.encoder, chunkRule: 'one canonical record per row; no truncation', numericRepresentation: 'unsigned 32-bit little-endian integers',
       formats: { vector: 'PCTXV001', text: 'PCTXT001', metadata: 'PCTXM001' }, rowIds: corpus.records.map(r => r.id), dictionarySha256: dimensions.dictionarySha256 },
-    producer: { node: config.producerNode, tools: { 'pulse-context-build': 1 }, packageDependencies: [], sources: sourceClosure(root),
+    producer: { node: config.producerNode, tools: { 'pulse-context-build': 2 }, packageDependencies: [], sources: sourceClosure(root),
       config: identity(root, CONFIG), allowlist: identity(root, INPUTS), lockfile: identity(root, 'pnpm-lock.yaml') },
     compatibility: { applicationVersion: config.applicationVersion, protocols: config.protocols, catalogVersions: corpus.catalogVersions,
-      hostV1Sources: COMPATIBILITY_SOURCES.map(file => identity(root, file)) },
+      hostV1Sources: COMPATIBILITY_SOURCES.slice(0, 2).map(file => identity(root, file)),
+      applicationSources: START.INPUTS.map(file => identity(root, file)) },
+    application: application.metadata,
     limits: config.limits, dimensions,
     outputs: [...outputs].map(([file, bytes]) => ({ path: file.slice(PROJECT.length + 1), byteLength: bytes.length, sha256: F.hash(bytes) })).sort((a, b) => F.compare(a.path, b.path)),
     mirrors: { prefix: MIRROR, byteIdentical: true }

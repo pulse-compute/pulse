@@ -1,0 +1,49 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 311 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 186ms
+
+[pulsewasm:native] pulse-context-tools
+[pulsewasm] 05I four-tool MCP parity, Unicode pagination and admitted response bounds (timeout 300.00s)
+[pulsewasm] Running pulse-context-tools (execution); elapsed 10.00s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 20.00s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 30.01s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 40.02s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 50.02s
+{"checkpoint":"compiled","synthetic":false,"nodeBytes":768790,"fastlyBytes":820895}
+[pulsewasm] Running pulse-context-tools (execution); elapsed 60.02s
+{"checkpoint":"read-parity","synthetic":false,"executions":1650}
+[pulsewasm] Running pulse-context-tools (execution); elapsed 70.02s
+{"checkpoint":"production","synthetic":false,"executions":2673,"corpusHash":"b892b2edc0bdfcd5d9a95726ad7711a586ae2c77e5a26611fa5d1fe558a025f8","planHash":"9116460859abb21aa0f6e438b80fcf574fd1c89fc7391af6eb5b91071399b4b6","artifacts":{"node":{"bytes":768790,"sha256":"462340017df4400fc8ebc29892f713d4a5f07f419d40f2c702e43a7ebf041992"},"fastly":{"bytes":820895,"sha256":"cc4b27fca0e4208efd2a15ac02072b34a15a666744e5a36debf34d2d25f01bd3"}}}
+[pulsewasm] Running pulse-context-tools (execution); elapsed 80.03s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 90.03s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 100.03s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 110.03s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 120.04s
+[pulsewasm] Running pulse-context-tools (execution); elapsed 130.04s
+{"checkpoint":"compiled","synthetic":true,"nodeBytes":842626,"fastlyBytes":894771}
+{"checkpoint":"read-parity","synthetic":true,"executions":156}
+[pulsewasm] Running pulse-context-tools (execution); elapsed 140.04s
+{"checkpoint":"synthetic","synthetic":true,"executions":657,"corpusHash":"5a5b0db19b6fb67b16193b34275dc66982ab772a22572f8740eb23a22829bb8d","planHash":"aa5dafd5ee4848e4af40132232f737219e0cff161ec8bced30f3a5eb3efbe282","artifacts":{"node":{"bytes":842626,"sha256":"e068b6bad0408891204805db262fd0831d4d38a9cb08cfbecaddacdb8e1a276e"},"fastly":{"bytes":894771,"sha256":"89bdf2aeeac0df7b7c079379be976e3ae6940a94fc1594f110f9a1218f170b54"}}}
+{"status":"passed","executions":3330,"largestToolBytes":12139,"largestMcpBytes":24610,"largestToolResultBytes":24576,"runs":[{"synthetic":false,"executions":2673,"corpusHash":"b892b2edc0bdfcd5d9a95726ad7711a586ae2c77e5a26611fa5d1fe558a025f8","planHash":"9116460859abb21aa0f6e438b80fcf574fd1c89fc7391af6eb5b91071399b4b6","artifacts":{"node":{"bytes":768790,"sha256":"462340017df4400fc8ebc29892f713d4a5f07f419d40f2c702e43a7ebf041992"},"fastly":{"bytes":820895,"sha256":"cc4b27fca0e4208efd2a15ac02072b34a15a666744e5a36debf34d2d25f01bd3"}}},{"synthetic":true,"executions":657,"corpusHash":"5a5b0db19b6fb67b16193b34275dc66982ab772a22572f8740eb23a22829bb8d","planHash":"aa5dafd5ee4848e4af40132232f737219e0cff161ec8bced30f3a5eb3efbe282","artifacts":{"node":{"bytes":842626,"sha256":"e068b6bad0408891204805db262fd0831d4d38a9cb08cfbecaddacdb8e1a276e"},"fastly":{"bytes":894771,"sha256":"89bdf2aeeac0df7b7c079379be976e3ae6940a94fc1594f110f9a1218f170b54"}}}],"source":{"revision":"eaa0180bb5576737af62aa638119b48c176a9707","status":""}}
+[pulsewasm] pulse-context-tools: passed in 142.19s
+
+[pulsewasm:unit] pulse-context-build
+[pulsewasm] B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection (timeout 60.00s)
+[pulsewasm] Running pulse-context-build (execution); elapsed 150.05s
+[pulsewasm] Running pulse-context-build (execution); elapsed 160.05s
+[pulsewasm] Running pulse-context-build (execution); elapsed 170.06s
+[pulsewasm] Running pulse-context-build (execution); elapsed 180.06s
+[pulsewasm] Running pulse-context-build (execution); elapsed 190.06s
+[pulsewasm] Running pulse-context-build (execution); elapsed 200.06s
+[pulsewasm] pulse-context-build: timeout; process group 154 contains 0 process(es)
+[pulsewasm] pulse-context-build: timeout in 65.86s
+
+[pulsewasm] test summary
+  passed       142.19s  pulse-context-tools  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/runs/2026-10-20T21-13-16-739Z--5/tasks/pulse-context-tools.log)
+  timeout       65.86s  pulse-context-build  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/runs/2026-10-20T21-13-16-739Z--5/tasks/pulse-context-build.log)
+  passed         186ms  suite-shape  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/runs/2026-10-20T21-13-16-739Z--5/tasks/suite-shape.log)
+  report       /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/focused-final.json
+  run logs     /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/runs/2026-10-20T21-13-16-739Z--5
+  total        208.25s

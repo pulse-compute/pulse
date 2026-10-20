@@ -70,3 +70,34 @@ ctx.parallel({ value: 'not-an-effect' })
 ctx.fetch('https://origin.test/users', { method: 'POST', body: 'x', json: { x: true } })
 // @ts-expect-error binary outbound request bodies are outside the supported request contract
 ctx.fetch('https://origin.test/users', { method: 'POST', body: new Uint8Array([1]) })
+
+import type { PulseComputationContext, PulseReadonly } from '../src/index.js'
+declare const computationContext: PulseComputationContext
+declare const borrowed: PulseReadonly<{ nested: { values: number[] } }>
+// @ts-expect-error borrowed fields are recursively readonly
+borrowed.nested.values = []
+// @ts-expect-error borrowed array cells are readonly
+borrowed.nested.values[0] = 1
+// @ts-expect-error borrowed arrays have no mutation methods
+borrowed.nested.values.push(1)
+// @ts-expect-error a computation cannot access HTTP
+computationContext.req
+// @ts-expect-error a computation cannot dispatch effects
+computationContext.fetch('https://invalid.test')
+// @ts-expect-error a computation cannot access state
+computationContext.state
+// @ts-expect-error codecs belong to the call boundary
+computationContext.decodeJson('{}', 'app.Input')
+// @ts-expect-error nested calls are not part of the computation context
+computationContext.call
+// @ts-expect-error events have no computation call surface
+eventCtx.call
+const normal = (_ctx: PulseComputationContext, input: PulseReadonly<{ value: number }>) => ({ value: input.value })
+// @ts-expect-error input shape must match the target
+ctx.call(normal, { value: 'wrong' }, { inputSchema: 'app.Input', outputSchema: 'app.Output' })
+// @ts-expect-error both schema IDs are required
+ctx.call(normal, { value: 1 }, { inputSchema: 'app.Input' })
+// @ts-expect-error computation targets return synchronously
+ctx.call(async (_ctx: PulseComputationContext, input: PulseReadonly<{ value: number }>) => ({ value: input.value }), { value: 1 }, { inputSchema: 'app.Input', outputSchema: 'app.Output' })
+// @ts-expect-error HTTP handlers require authority unavailable to a computation
+ctx.call((http: PulseContext, input: { value: number }) => ({ value: http.req.path.length + input.value }), { value: 1 }, { inputSchema: 'app.Input', outputSchema: 'app.Output' })

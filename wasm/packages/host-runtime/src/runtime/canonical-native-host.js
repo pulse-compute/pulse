@@ -398,7 +398,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   const moduleShape = validateNativeModule(module, plan);
   const adapter = normalizeProviderAdapter(options.providerAdapter || options.provider);
   const executionPlane = options.executionPlane === 'event' ? 'event' : 'http';
-  const memoryBudget = (runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
+  const memoryBudget = (plan.callables?.length || runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
     ? new NativeValueBudget(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, close) : undefined;
   const heap = new ValueHeap(memoryBudget);
   const pending = [];
@@ -1352,7 +1352,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       wasmSha256: controller.wasmSha256,
       response,
       effectCount,
-      ...((options.incomingBody || options.outputExecution) ? {guestMemoryBytes:controller.exports.memory.buffer.byteLength} : {}),
+      ...((options.incomingBody || options.outputExecution || controller.plan.callables?.length) ? {guestMemoryBytes:controller.exports.memory.buffer.byteLength} : {}),
       resolutionOrder: Object.freeze([...resolutionOrder]),
       continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
       trace: Object.freeze([...controller.trace]),
@@ -1366,6 +1366,8 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       activeContinuation.states.push('failed');
     }
     Object.defineProperty(executionFailure, 'execution', { configurable: true, value: Object.freeze({
+      ...(controller.plan.callables?.length ? { guestMemoryBytes: controller.exports.memory.buffer.byteLength,
+        valueHandleCount: controller.heap.size(), memory: controller.heap.budget.snapshot() } : {}),
       executionId,
       planHash: controller.plan.planHash,
       trace: Object.freeze([...controller.trace]),
@@ -1389,7 +1391,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         wasmSha256: controller.wasmSha256,
         response,
         effectCount,
-        ...((options.incomingBody || options.outputExecution) ? { guestMemoryBytes: controller.exports.memory.buffer.byteLength } : {}),
+        ...((options.incomingBody || options.outputExecution || controller.plan.callables?.length) ? { guestMemoryBytes: controller.exports.memory.buffer.byteLength } : {}),
         resolutionOrder: Object.freeze([...resolutionOrder]),
         continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
         trace: Object.freeze([...controller.trace]),

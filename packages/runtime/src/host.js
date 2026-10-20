@@ -57,6 +57,7 @@ function normalizeApplication(value) {
     router.use(async (ctx) => value(ctx));
     const store = require('./internal/resources.js').applicationResources(value);
     if (store) require('./internal/resources.js').bindBinaryResources(router, store);
+    require('./internal/callable.js').inheritApplicationCallables(value, router);
     return router;
   }
   throw new PulseRuntimeContractError(
@@ -77,10 +78,12 @@ function assertRouterApplication(value) {
 
 async function executeApplication(application, request, options = {}) {
   const binaryResources = options.binaryResources || require('./internal/resources.js').applicationResources(application);
-  return executeRouter(normalizeApplication(application), request, binaryResources ? { ...options, binaryResources } : options);
+  const callableTable = require('./internal/callable.js').applicationCallables(application);
+  return executeRouter(normalizeApplication(application), request, { ...options, binaryResources, callableTable });
 }
 
 module.exports = Object.freeze({
+  bindCallableApplication: require('./internal/callable.js').bindCallableApplication,
   createBinaryResourceStore: require('./internal/resources.js').createBinaryResourceStore,
   bindBinaryResources: require('./internal/resources.js').bindBinaryResources,
   createIncomingBodyOwnership: require('./internal/incoming-body.js').createIncomingBodyOwnership,

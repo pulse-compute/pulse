@@ -1,0 +1,1823 @@
+project /workspace/scratch/803e6bf46c14/pulse/examples/12-pulse-context-mcp/application/src/index.ts undefined
+CanonicalProjectCompileError: Reachable project graph failed with 1721 diagnostic(s).
+    at Object.compileCanonicalProjectLegacy [as compileLegacy] (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/canonical-project-compiler.js:1011:13)
+    at Object.run (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/canonical-project.js:55:24)
+    at Object.run (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalProjectSpine (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/canonical-project.js:63:42)
+    at compileCanonicalProject (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/canonical-project-compiler.js:1293:10)
+    at /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05h/probe.cjs:9:9
+    at Object.<anonymous> (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05h/probe.cjs:14:3)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32) {
+  code: 'PULSE_PROJECT_GRAPH_FAILED',
+  diagnostics: [
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    {
+      code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+      kind: 'ReachableProjectGraphDiagnostic',
+      severity: 'error',
+      message: "',' expected.",
+      file: 'src/read.ts',
+      position: [Object],
+      detail: [Object]
+    },
+    ... 1621 more items
+  ],
+  detail: {
+    entryFile: '/workspace/scratch/803e6bf46c14/pulse/examples/12-pulse-context-mcp/application/src/index.ts',
+    rootDir: '/workspace/scratch/803e6bf46c14/pulse/examples/12-pulse-context-mcp/application'
+  }
+} undefined [
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 23, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 23, column: 7 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 24, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 24, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 24, column: 35 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 25, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 25, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 25, column: 37 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 26, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 26, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 26, column: 33 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 27, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 27, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 27, column: 36 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 28, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 28, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 28, column: 34 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 29, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 29, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 29, column: 37 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 30, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 30, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 30, column: 36 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 31, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 31, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 31, column: 34 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 32, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 32, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 32, column: 42 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 33, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 33, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 33, column: 47 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 34, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 34, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 34, column: 45 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 35, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 35, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 35, column: 38 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 36, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 36, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 36, column: 42 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 37, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 37, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 37, column: 41 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 38, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 38, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 38, column: 44 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 39, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 39, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 39, column: 44 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 40, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 40, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 40, column: 48 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 41, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 41, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 41, column: 39 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 42, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 42, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 42, column: 52 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 43, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 43, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 43, column: 53 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 44, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 44, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 44, column: 48 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 45, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 45, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 45, column: 43 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 46, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 46, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 46, column: 50 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 47, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 47, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 47, column: 51 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 48, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 48, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 48, column: 38 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 49, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 49, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 49, column: 47 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 50, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 50, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 50, column: 78 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 51, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 51, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 51, column: 55 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 52, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 52, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 52, column: 58 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 53, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 53, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 53, column: 62 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 54, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 54, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 54, column: 50 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 55, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 55, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 55, column: 53 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 56, column: 3 },
+    detail: { typescriptCode: 1005 }
+  },
+  {
+    code: 'PULSE_PROJECT_MODULE_SYNTAX_ERROR',
+    kind: 'ReachableProjectGraphDiagnostic',
+    severity: 'error',
+    message: "',' expected.",
+    file: 'src/read.ts',
+    position: { line: 56, column: 12 },
+    detail: { typescriptCode: 1005 }
+  },
+  ... 1621 more items
+]

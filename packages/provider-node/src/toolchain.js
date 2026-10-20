@@ -184,6 +184,7 @@ function createDriver() {
       localEmulation: false,
       buildTimeLoader: false,
       validateApplication: nodeJavascriptHost.assertNodeJavascriptApplication,
+      bindCallables: require('@pulse-compute/runtime/host').bindCallableApplication,
       targetSupportPolicy: Object.freeze({
           providerId: 'node',
           declaration: NODE_JAVASCRIPT_TARGET_SUPPORT_DECLARATION,

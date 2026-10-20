@@ -9,6 +9,35 @@ are authoritative together. Git and sealed release checkpoints preserve why the
 contracts changed; numbered decision records are not part of the active
 documentation system.
 
+## Bounded computation calls
+
+Selected plain HTTP handlers, reachable Router handlers and managed MCP
+operations may synchronously call a named imported project computation through
+`ctx.call(target, input, { inputSchema, outputSchema })`. Both IDs are literal
+registered object schemas; a target identity has one pair. Node Native, Fastly
+Native and explicit Node JavaScript support this boundary. Fastly JavaScript
+and event contexts do not. The [canonical API](../../API.md#ctxcall) owns the
+source-bound example and full restrictions.
+
+The callee receives a recursively readonly validated input and only resource
+and workspace authority. Output conversion returns an independently owned,
+validated result. Existing pure helper admission, bounds, codec, resource,
+workspace, request-budget and error owners apply. There are at most sixteen
+reachable static occurrences, with no nested/recursive calls, call in a loop,
+await, dynamic target, arbitrary package target, effect or context escape.
+Entities uses this shared machinery; it owns only its invocation adapter.
+
+`PulseComputationContext`, `PulseReadonly`, `PulseComputation` and
+`PulseCallSchemas` belong to runtime declarations and are re-exported by Pulse.
+Runtime authoring, handler types and context inventories are version 5.
+Per-computation descriptors and JavaScript callable tables use
+`pulse.computation-call.v1`; independent validators reject stale proof-era or
+unversioned callable metadata even after a plan is rehashed. Optional callable
+metadata leaves call-free Native plan version/identity unchanged. No-call and
+imported-unused Wasm equality remains a gate; used calls pay conversion cost.
+No new runtime registration, package export entry point, dependency, provider,
+continuation ABI or release package-set change is introduced.
+
 ## Contract precedence
 
 The published `@pulse-compute/mcp` host package owns MCP HTTP admission and
@@ -187,7 +216,7 @@ implies delivery, a receipt, persistence, retry, a public provider listener, or
 automatic target fallback. Router lifecycle `on`, channel, and
 connect/disconnect semantics remain retired.
 
-The event contract reserves no `call` surface: there is no `ctx.call`,
+The event contract reserves no `call` surface: event contexts have no `ctx.call`,
 application call method, generic call effect, adapter operation, compiler
 opcode, or runtime capability. `ctx.emit` is strictly one-way and cannot enter
 local dispatch. Any request/reply or reflexive routing mechanism must arrive as

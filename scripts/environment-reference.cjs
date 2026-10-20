@@ -21,6 +21,19 @@ const ENVIRONMENT_CATEGORIES = Object.freeze({
 
 const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
+    name: 'PULSE_CALLABLE_LIFETIME_RECEIPT',
+    category: 'contributor',
+    group: 'Test execution and output',
+    value: 'Writable JSON receipt file path',
+    default: 'Unset; the callable lifetime proof only prints its terminal summary.',
+    precedence: 'The proof script positional output path takes precedence.',
+    consumer: 'The internal B10-MCP-05F callable lifetime proof.',
+    secretSafety: 'Not a secret. Records fixture artifact hashes, source identity, failure codes and memory measurements.',
+    stability: 'Contributor/test-only; no application compatibility or seal authority.',
+    description: 'Retains an incremental receipt when the proof runs through the shared test runner. Does not change test coverage or runtime limits.',
+    sourceFiles: ['wasm/test/callables/assert-callable-lifetime.cjs']
+  }),
+  entry({
     name: 'PULSEWASM_TEST_PHASE_DIR',
     category: 'contributor',
     group: 'Test execution and output',

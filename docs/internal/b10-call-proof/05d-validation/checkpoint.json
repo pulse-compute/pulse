@@ -1,0 +1,106 @@
+{
+  "version": "pulse.callable-javascript-checkpoint.v1",
+  "status": "passed",
+  "testedRevision": "f27ef5674458305dc944ec354110b0e95a5b7b9b",
+  "testedTree": "a0d3aac1d4aebeeeb86fcf6929c64602771154f0",
+  "testedDirtyState": "",
+  "publishedImplementation": "56f1e464ae4427d78bb20e839e54fb9cc65ce703",
+  "publishedTree": "a0d3aac1d4aebeeeb86fcf6929c64602771154f0",
+  "publication": "Exact local file blobs and full Git tree verified before connector commit; commit metadata differs, executable source does not.",
+  "node": "v24.19.0",
+  "checks": [
+    {
+      "log": "build.log",
+      "exitCode": 0,
+      "bytes": 986,
+      "sha256": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95",
+      "retained": true
+    },
+    {
+      "log": "maintainer-check.log",
+      "exitCode": 0,
+      "bytes": 345,
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2",
+      "retained": true
+    },
+    {
+      "log": "docs-check.log",
+      "exitCode": 0,
+      "bytes": 227596,
+      "sha256": "5f2b0e588e49b93cb7b75d9e5fc975e5a5a50752c04adacc793f645c60839161",
+      "retained": false
+    },
+    {
+      "log": "documentation-release.log",
+      "exitCode": 0,
+      "bytes": 217809,
+      "sha256": "0f91b4801c9d2b6d14de580a720addc95b3c07acebf1b55db7c86962b3aaebf0",
+      "retained": false
+    },
+    {
+      "log": "scope.log",
+      "exitCode": 0,
+      "bytes": 1107,
+      "sha256": "d9d431cb7cbbf4958ab53e0ae3e4bd14f3bf41f45a2200b7fb03c6acdd2f6d2c",
+      "retained": true
+    },
+    {
+      "log": "focused.log",
+      "exitCode": 0,
+      "bytes": 7704,
+      "sha256": "e56b9000e9bdeef02b07f6f0fe859741b4289fe7d7434ccbf76bd31367745186",
+      "retained": true
+    },
+    {
+      "log": "authored-baseline.log",
+      "exitCode": 0,
+      "bytes": 373,
+      "sha256": "6a6043f3f4392933ca1600428cb7b483e32eaec4c5d3bf642bd0417cbde6a8f0",
+      "retained": true
+    }
+  ],
+  "focusedTasks": [
+    "callable-authored-javascript",
+    "callable-source-admission",
+    "callable-authored-composition",
+    "cli-javascript-target-compilation",
+    "target-support",
+    "provider-toolchain",
+    "javascript-effect-adapter",
+    "binary-resource-execution",
+    "suite-shape"
+  ],
+  "callableJavascript": {
+    "successfulExecutions": 14,
+    "invalidOutputRejections": 4,
+    "sourceRejections": 10,
+    "ownershipChecks": 18,
+    "packaged": true
+  },
+  "baseline": "8a51d705025c69ae306004215cb6cb48248d68e1",
+  "developmentAttempts": "Initial iterations exposed frozen codec-normalized input handling, resolved by copying before the lifetime wrapper. Fixture issues (package return field, Unicode header escaping, Native exception envelope) were corrected. A codec-method probe was rejected by shared admission; no new computation authority was added. All selected final checks pass on the clean tested tree.",
+  "runningChecks": [],
+  "fullProfiles": "deferred by explicit user checkpoint direction",
+  "releaseQualified": false,
+  "next": "05E / #446",
+  "handoffChecks": [
+    {
+      "log": "handoff-docs-sync.log",
+      "exitCode": 0,
+      "sha256": "67673d7b687a6ec332773da387a6f2a83f8e0b8c085bb35fe0dc71fc6a845b2e",
+      "retained": false
+    },
+    {
+      "log": "handoff-docs-check.log",
+      "exitCode": 0,
+      "sha256": "b5f8d415ca5f81e3f7ebc7916c6708a885fc7b026a389f20a7b3e8e7903e6cb8",
+      "retained": false
+    },
+    {
+      "log": "handoff-documentation-release.log",
+      "exitCode": 0,
+      "sha256": "2d6f229f76892a1fb9f0cca160af5c6777e06cd66ddcd8ba11fc5f81086f8a88",
+      "retained": false
+    }
+  ]
+}

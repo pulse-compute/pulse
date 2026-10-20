@@ -1,0 +1,492 @@
+{
+  "schemaVersion": "pulse.maintainer-scope-report.v2",
+  "policyVersion": 13,
+  "releaseVersion": "1.0.0-beta.9",
+  "status": "decision-required",
+  "pullRequest": null,
+  "range": {
+    "base": "8a51d705025c69ae306004215cb6cb48248d68e1",
+    "head": "HEAD"
+  },
+  "declaration": {
+    "present": true,
+    "changeClass": "architecture",
+    "scope": "architecture-change",
+    "protectedBoundaries": [
+      "public-authoring-api",
+      "effect-capability-model",
+      "continuation-runtime",
+      "lowerer-trust",
+      "provider-registry",
+      "runtime-target-fluidity",
+      "package-publication",
+      "release-authority"
+    ],
+    "humanDecision": "required"
+  },
+  "inferred": {
+    "changedFiles": 66,
+    "areas": [
+      "cli",
+      "compiler",
+      "documentation",
+      "lowering",
+      "provider",
+      "release",
+      "runtime",
+      "testing"
+    ],
+    "protectedBoundaries": [
+      "continuation-runtime",
+      "effect-capability-model",
+      "lowerer-trust",
+      "package-publication",
+      "provider-registry",
+      "release-authority",
+      "runtime-target-fluidity"
+    ],
+    "requiredChecks": [
+      "build",
+      "cli",
+      "conformance",
+      "documentation",
+      "javascript",
+      "maintenance-policy",
+      "native",
+      "providers",
+      "release",
+      "release-preflight",
+      "unit"
+    ],
+    "matchedRules": [
+      "compiler-default",
+      "documentation",
+      "effects-and-continuations",
+      "lowerer-trust",
+      "providers",
+      "release-system",
+      "target-compilation",
+      "tests-and-evidence"
+    ],
+    "unmatchedFiles": [
+      "packages/entities/pulsewasm.native.cjs"
+    ],
+    "risk": "critical",
+    "humanDecisionRequired": true,
+    "contractUpdateRequired": true,
+    "releaseAuthorityRequired": true,
+    "suggestedChangeClasses": [
+      "release"
+    ]
+  },
+  "consistency": {
+    "errors": [],
+    "warnings": [
+      "declaration names protected boundary public-authoring-api, but changed paths did not infer it",
+      "unclassified path(s) require human review: packages/entities/pulsewasm.native.cjs"
+    ]
+  },
+  "files": [
+    {
+      "file": "docs/internal/b10-call-proof/05B.md",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/AUTHORING-CHECKPOINT.md",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/PR.md",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/README.md",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/RECOVERY.md",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/SOURCE-ADMISSION.md",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/linker-validation/call-static-linker-attempt.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/linker-validation/call-static-linker.json",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/linker-validation/call-static-linker.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/linker-validation/checkpoint.json",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/probes/static-linker.cjs",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/recovery-manifest.json",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/review-validation.json",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/review-validation/call-review-build.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/review-validation/call-review-docs.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/review-validation/call-review-documentation-release.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/review-validation/call-review-maintainer.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/review-validation/call-review-proof.json",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/review-validation/call-review-proof.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/review-validation/call-review-scope.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/source-admission-validation/call-source-build.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/source-admission-validation/call-source-final-focused.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/source-admission-validation/call-source-maintainer.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/source-admission-validation/receipt.json",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-build.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-doc-release.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-docs.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-final-scope.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-maintainer.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-ownership-regression.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-proof-final.json",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-proof-final.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-proof-qualified.json",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-proof-qualified.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-proof.json",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-proof.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-recovery-docs.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-recovery-documentation-release.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-recovery-maintainer.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "docs/internal/b10-call-proof/validation/call-regressions.log",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "packages/entities/pulsewasm.native.cjs",
+      "rules": []
+    },
+    {
+      "file": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "rules": [
+        "providers"
+      ]
+    },
+    {
+      "file": "packages/provider-fastly/src/build/native-value-budget.js",
+      "rules": [
+        "providers"
+      ]
+    },
+    {
+      "file": "packages/provider-fastly/src/build/package-native-application.js",
+      "rules": [
+        "providers"
+      ]
+    },
+    {
+      "file": "scripts/release-evidence-bundle.cjs",
+      "rules": [
+        "release-system"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/callable-plan.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/callable-source-admission.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/canonical-callable-proof.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/canonical-native-compiler.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/canonical-native-plan.js",
+      "rules": [
+        "target-compilation",
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/canonical-project-compiler.js",
+      "rules": [
+        "lowerer-trust",
+        "target-compilation",
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/project/router-module-linker.js",
+      "rules": [
+        "target-compilation",
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/source-helper-plan.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/contracts/src/handler/canonical-native-plan.js",
+      "rules": [
+        "effects-and-continuations",
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/host-runtime/src/runtime/canonical-native-host.js",
+      "rules": [
+        "effects-and-continuations",
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/runtime-core-as/src/compiler/canonical-native-callable.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/runtime-core-as/src/compiler/canonical-native-context.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/runtime-core-as/src/compiler/canonical-native-expressions.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/runtime-core-as/src/compiler/canonical-native.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/test/callables/assert-callable-authored.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/callables/assert-callable-proof.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/callables/assert-callable-source-admission.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/entities/assert-entities-candidate-seal.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/entities/assert-entities-catalog.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/entities/assert-entities-contracts.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/suite/registry.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    }
+  ],
+  "recommendation": "Human release authority must decide and approve this change before merge or publication."
+}

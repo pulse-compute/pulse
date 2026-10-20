@@ -1,0 +1,12 @@
+docs - verify canonical example formatting
+AssertionError [ERR_ASSERTION]: examples/12-pulse-context-mcp/application/.pulse/config.template.ts:11 exceeds the 100-column example limit
+    at assertExampleFormatting (/workspace/scratch/803e6bf46c14/pulse/wasm/test/docs/assert-executable-documentation.cjs:231:14)
+    at verifySourceContracts (/workspace/scratch/803e6bf46c14/pulse/wasm/test/docs/assert-executable-documentation.cjs:906:3)
+    at main (/workspace/scratch/803e6bf46c14/pulse/wasm/test/docs/assert-executable-documentation.cjs:926:26)
+    at Object.<anonymous> (/workspace/scratch/803e6bf46c14/pulse/wasm/test/docs/assert-executable-documentation.cjs:979:3)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)

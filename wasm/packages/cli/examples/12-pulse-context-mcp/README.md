@@ -15,7 +15,7 @@ Generated from the executable test harness below; these are tested requests or e
 
 | Request | Expected response |
 |---|---|
-| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"67800761f55356052686882ab94ca4d47e607e291de2a695f6667ad61fc664a0","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
+| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
 | schema-admission<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":2,"method":"pulse.search","params":{"version":"1.0.0-beta.9","query":42}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Invalid params"}}}</code> |
 
 <!-- pulse-example-view:code -->
@@ -268,6 +268,61 @@ when using another port. These same tools can be used by an MCP client pointed a
 endpoint. Modern framing is the default, including the qualified Claude client.
 For the pinned Codex compatibility profile, start with `npm start -- --codex`.
 
+## Migrating the compiled application
+
+The separate `application/` project now implements **`pulse.start`, `pulse.read`,
+`pulse.example`, and `pulse.diagnostic`** through
+shared `ctx.call`. It supports Node Native, Fastly Native and explicit Node
+JavaScript. The existing project and standalone five-tool Node host below remain
+the v1 workflow while search migration continues in its own checkpoint.
+The `@pulse-compute/mcp/node` host API is unchanged.
+
+The migrated tools return application version `pulse.context-application.v2`, the
+exact bundled package version and corpus hash. All four goals and both maintained
+Node starter targets return dependencies, configuration, complete contract arrays,
+immutable citations, commands and unresolved choices. A starter's selected target
+is independent of the provider running this MCP application. Version, goal and
+selection errors retain the existing structured statuses without fallback.
+
+From a complete copy of this example:
+
+```bash
+cd application
+npm install
+npm run inspect -- --profile node-native
+npm run build -- --profile node-native
+npm run dev -- --profile node-native
+```
+
+Call the running modern MCP endpoint from another terminal in `application/`:
+
+```bash
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp tools/list
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.start '{"version":"1.0.0-beta.9","goal":"schema-api","provider":"node","target":"native"}'
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.read '{"version":"1.0.0-beta.9","id":"contract/application"}'
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.example '{"version":"1.0.0-beta.9","id":"01-hello-json"}'
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.diagnostic '{"version":"1.0.0-beta.9","code":"PULSE_CALL_SOURCE_LIMIT"}'
+```
+
+Profiles `node-javascript` and `fastly-native` select the other implementations
+explicitly. Fastly local/deployed qualification and installed application closure
+remain separate work. Discovery exposes these four tools; migrated search is not
+yet advertised. `pulse.diagnostic` is the compiled application name for the
+operation called `pulse.explain_diagnostic` by the unchanged legacy host.
+
+The computations use complete existing output schemas. Cited content is read
+from `context.text`; generated code contains bounded metadata and no full-text
+corpus module. Reads retain UTF-16 offsets and scalar-aligned UTF-8 pages, counting
+both raw bytes and JSON escaping. Examples return whole files in corpus order,
+with explicit pagination or `record-requires-read`; diagnostics retain complete
+remediation, related contracts and local-check arrays. The complete tool result remains capped
+at 24 KiB, including metadata and both text/structured copies; the complete MCP
+protocol reply remains capped at 128 KiB. Compared with v1, read pages can end
+earlier and example pages can contain fewer files to fit that whole-result bound.
+Their explicit continuation fields retain the original content and offsets. Oversized results produce an explicit error, never silent truncation. The current emitted Native artifacts
+have one physical text resource backing. Other resources remain in the generated
+catalogue for later tools and are selected by ordinary reachability.
+
 ## Walkthrough 1: start a JSON API
 
 Ask for a Node Native plan with an explicit goal and exact corpus version:
@@ -351,7 +406,7 @@ record even when a page is truncated.
 The corpus is generated from an explicit allowlist of public contract sections,
 package/provider metadata, CLI commands/diagnostics and four maintained starters.
 It has no runtime generator, repository crawler or external index. The snapshot
-has 220 records and remains explicitly a candidate. No client filesystem,
+has 260 records and remains explicitly a candidate. No client filesystem,
 process execution, build, doctor, inspection, outbound fetch, Resources, Prompts
 or stdio capability is exposed. Command descriptions are context, not authority.
 
@@ -485,7 +540,8 @@ node wasm/scripts/run-wasm-tests.cjs --task pulse-context-build --task pulse-con
 
 The corpus extractor remains `scripts/pulse-context-corpus.cjs`, with the explicit
 allowlist in `scripts/pulse-context-inputs.json`. `context:build` owns the generated
-`context-corpus.ts`, `context-data/` and their byte-identical installed CLI mirrors.
+`context-corpus.ts`, `context-data/`, the migrated application config/source/schema
+outputs and their byte-identical installed CLI mirrors.
 Its `context-manifest.json` binds source selections, immutable citation blobs,
 producer/config/lockfile hashes, row IDs, vocabulary and every generated payload.
 The manifest's own SHA-256 belongs in the external check receipt, avoiding a
@@ -499,7 +555,7 @@ are 512 records, 4,096 terms, 1,024 nonzeros per row, 24 KiB content per record 
 2 MiB canonical corpus, together with explicit raw and serialized resource byte
 budgets. Every limit applies simultaneously; overflow fails without truncation.
 
-`context:check` reconstructs in a fresh temporary directory and compares all 12
+`context:check` reconstructs in a fresh temporary directory and compares all 28
 outputs. It fails on missing, stale, corrupt, mixed or unexpected data and never
 repairs the checkout. The receipt names the actual verifier Node version;
 verification on another Node version proves only that invocation's byte equality.
@@ -507,7 +563,21 @@ Generation requires the pinned producer. Repository `build` and `docs:check` run
 the read-only check. `docs:sync` may refresh the legacy corpus and copy emitted
 files, but never builds vectors; finish explicit generation before committing.
 
-The existing Node JavaScript host continues using its v1 corpus module. The new
-resource closure prepares the Native migration; it does not claim a Native MCP
-server, installed resource acceptance, or a candidate-bound seal receipt.
+The existing Node JavaScript host continues using its v1 corpus module. The migrated
+`application/` project implements four tools through compiled computation;
+`pulse.search` remains a separate migration checkpoint.
+Installed resource acceptance and a candidate-bound seal receipt remain separate.
 B10-MCP-07/09 own installed qualification and seal/recovery integration.
+
+The recovered application config template is
+`application/.pulse/config.template.ts`. `scripts/pulse-context-start.json` owns
+finite starter metadata; `scripts/pulse-context-tools.json` owns the additional
+tool metadata and `scripts/pulse-context-tools.cjs` owns their finite projection.
+`application/src/scalars.ts` owns shared pure byte-cost helpers.
+`application/src/*.template.ts` owns the call and
+computation shape. The context builder generates the resource manifest, inlines
+it into the new config, binds protocol budgets and exact server version, copies
+the canonical schema and materializes the eight finite starter plans. Edit these
+canonical inputs and run the pinned build/check sequence; generated edits are
+rejected by freshness checks. `pulse-context-start` adds three-target real MCP
+execution against the existing host's complete responses as an independent oracle.

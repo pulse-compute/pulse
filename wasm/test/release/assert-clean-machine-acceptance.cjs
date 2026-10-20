@@ -743,7 +743,7 @@ async function verifyRouterProject(tarballs, packageNames) {
   copyTree(path.join(repoRoot, 'examples', '09-router-lowering'), projectRoot);
   const cli = installPackedPackages(projectRoot, tarballs);
   assertPackedInstallIsolated(projectRoot, packageNames);
-  const runtimeSmoke = run(process.execPath, ['-e', `const runtime = require('@pulse-compute/runtime'); if (runtime.RUNTIME_API_VERSION !== 'pulse.runtime-authoring.v4' || runtime.ROUTER_API_VERSION !== 'pulse.router-authoring.v2' || typeof runtime.Router !== 'function' || Object.prototype.hasOwnProperty.call(runtime, 'defineHandler')) process.exit(1); process.stdout.write('ok');`], { cwd: projectRoot });
+  const runtimeSmoke = run(process.execPath, ['-e', `const runtime = require('@pulse-compute/runtime'); if (runtime.RUNTIME_API_VERSION !== 'pulse.runtime-authoring.v5' || runtime.ROUTER_API_VERSION !== 'pulse.router-authoring.v2' || typeof runtime.Router !== 'function' || Object.prototype.hasOwnProperty.call(runtime, 'defineHandler')) process.exit(1); process.stdout.write('ok');`], { cwd: projectRoot });
   assert.equal(runtimeSmoke.stdout, 'ok');
   assert.equal(runPulse(cli, projectRoot, ['doctor']).status, 'passed');
   const inspect = runPulse(cli, projectRoot, ['inspect']);

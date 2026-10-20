@@ -290,13 +290,16 @@ class NativePlanBuilder {
     }
 
     this.metadata = compiled.metadata;
+    this.callableSource = compiled.callableSource;
+    this.loweredCallableSites = new Set();
+    this.callableSites = 0;
     this.resources = options.binaryResources || compiled.binaryResources;
     if (this.resources) require('@pulse-compute/wasm-contracts/resources/embedded').validateResourceCatalogue(this.resources);
     this.usedResources = new Set();
     this.numericWorkspaces = [];
     this.pureTypes = new Map();
     this.pureTypes.schemas = compiled.metadata.schemaRegistry;
-    this.helperBodies = new Map((this.metadata.router?.helpers || []).map(helper => [helper.name, helper]));
+    this.helperBodies = new Map((this.metadata.sourceHelpers || this.metadata.router?.helpers || []).map(helper => [helper.name, helper]));
     if (this.metadata.capabilities?.some(id => ['request.body.forward', 'request.body.transform'].includes(id))
       && this.metadata.capabilities.some(id => ['request.text', 'request.json'].includes(id))) {
       throw new CanonicalNativePlanError('Native incoming forwarding/transforms cannot be combined with structured request reads.', [
@@ -591,6 +594,27 @@ class NativePlanBuilder {
     }
     const ctxPath = contextPath(target, this.ctxName);
     if (ctxPath) {
+      if (ctxPath.length === 1 && ctxPath[0] === 'call' && this.callableSource) {
+        const name = ts.isIdentifier(call.arguments[0]) && call.arguments[0].text;
+        const site = this.callableSource.sites.find(site => site.marker === name)
+          || this.callableSource.sites.filter(site => !site.managed && !site.marker)[this.callableSites];
+        const index = this.callableSource.callees.findIndex(callee => callee.identity === site?.target);
+        const schemas = call.arguments[2];
+        const pair = schemas && ts.isObjectLiteralExpression(schemas) && schemas.properties.length === 2
+          && Object.fromEntries(schemas.properties.filter(ts.isPropertyAssignment).map(property =>
+            [propertyName(this.sourceFile, property.name), ts.isStringLiteral(property.initializer) && property.initializer.text]));
+        if (!site || (site.marker || site.localName) !== name || index < 0 || call.arguments.length !== 3 || call.typeArguments?.length
+          || !pair || pair.inputSchema !== site.inputSchema || pair.outputSchema !== site.outputSchema) {
+          this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Callable source binding does not match admitted target and schemas.');
+          return Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
+        }
+        const argument = this.expression(call.arguments[1], scope);
+        if (!['object', 'json', 'unknown'].includes(argument.valueKind)) this.fail(call.arguments[1],
+          contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Callable input must be a schema-bound object.');
+        this.callableSites++;
+        this.loweredCallableSites.add(site);
+        return Object.freeze({ kind: 'callable-call', index, argument, valueKind: 'object', source: site.source });
+      }
       const intrinsic = intrinsicForContextCall(ctxPath);
       if (!intrinsic) {
         this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Context call ctx.${ctxPath.join('.')} is not part of the canonical native intrinsic set.`, { path: ctxPath });
@@ -955,9 +979,14 @@ class NativePlanBuilder {
         this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.BINDING_UNSUPPORTED, 'Canonical native locals require simple identifier bindings outside compiler-owned effect groups.', { binding: item.name.getText(this.sourceFile) });
         continue;
       }
-      const value = item.initializer ? this.expression(item.initializer, scope) : Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
+      let value = item.initializer ? this.expression(item.initializer, scope) : Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
+      const callableInput = this.options.callableBoundary && this.metadata.sourceHelpers?.length && !this.activeHelper
+        && item.name.text === this.options.callableBoundary.inputName && value.kind === 'undefined';
+      if (callableInput) value = Object.freeze({ kind: 'callable-input', valueKind: 'object' });
       const local = this.allocateLocal(item.name.text, value.valueKind || 'unknown', itemPath, declaration);
-      const type = pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
+      const type = callableInput
+        ? pureValues.schemaType(this.pureTypes.schemas.schemas.find(s => s.id === this.options.callableBoundary.inputSchema)?.root)
+        : pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
       if (type) this.pureTypes.set(local.id, type);
       scope.set(local.name, local);
       out.push(Object.freeze({ kind: 'local', localId: local.id, name: local.name, declaration, valueKind: local.valueKind, value, statementPath: itemPath }));
@@ -1244,6 +1273,11 @@ class NativePlanBuilder {
       throw new CanonicalNativePlanError(`Native-plan lowering failed for ${this.metadata.file}.`, this.diagnostics);
     }
     const body = this.statementList(this.handler.body.statements, new Map(), ['entry', 'body'], 0);
+    if (this.callableSource && this.loweredCallableSites.size !== this.callableSource.sites.filter(site => !site.managed).length) this.fail(this.handler,
+      contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Every admitted callable source site must be lowered exactly once.');
+    for (const callee of this.callableSource?.callees || []) {
+      for (const record of callee.plan.binaryResources?.records || []) this.usedResources.add(record.id);
+    }
     this.reconcile();
     if (this.diagnostics.length > 0) throw new CanonicalNativePlanError(`Native-plan lowering failed for ${this.metadata.file}.`, this.diagnostics);
 
@@ -1280,6 +1314,7 @@ class NativePlanBuilder {
 
     let unsigned = {
       version: contract.CANONICAL_NATIVE_PLAN_VERSION,
+      ...(this.callableSource ? { callables: Object.freeze(this.callableSource.callees.map(callee => callee.plan)) } : {}),
       ...(this.numericWorkspaces.length ? { numericWorkspaces: Object.freeze(this.numericWorkspaces) } : {}),
       ...(this.resources && this.usedResources.size ? { binaryResources: require('@pulse-compute/wasm-contracts/resources/embedded').selectResourceCatalogue(this.resources, [...this.usedResources]) } : {}),
       compilerVersion: CANONICAL_NATIVE_PLAN_COMPILER_VERSION,
@@ -1364,6 +1399,7 @@ class NativePlanBuilder {
     };
     if (this.options.sharedStages !== false) unsigned = lowerSharedStages(unsigned);
     unsigned.summary = summarizeNativePlan(unsigned.entry.body, unsigned.locals, unsigned.effects, continuations, [...unsigned.handlers, ...(unsigned.stages || []), ...(unsigned.helpers || [])]);
+    if (this.options.callableBoundary) unsigned = require('./callable-plan').attachCallableBoundary(unsigned, this.options.callableBoundary);
     const planHash = stableHash(stableStringify(unsigned));
     const plan = deepFreeze({ ...unsigned, planHash });
     assertCanonicalNativePlan(plan);
@@ -1375,6 +1411,9 @@ function walkExpression(expression, visit) {
   if (!expression || typeof expression !== 'object') return;
   visit(expression);
   switch (expression.kind) {
+    case 'callable-call':
+      walkExpression(expression.argument, visit);
+      break;
     case 'workspace-write':
       walkExpression(expression.value, visit);
     case 'workspace-read':
@@ -1970,6 +2009,7 @@ function assertCanonicalNativePlan(plan) {
     validateResourceReads(plan, fail);
     require('./numeric-workspace-plan').validateNumericWorkspaces(plan, fail, walkExpression);
     require("./source-helper-plan").validateHelpers(plan, fail, walkStatements, walkExpression);
+    require('./callable-plan.js').validateCallables(plan, fail, walkStatements, assertCanonicalNativePlan);
 
     const states = Array.isArray(plan.states) ? plan.states : [];
     if (states.length !== continuations.length + 1) fail('state table must contain entry plus one state per continuation', { expected: continuations.length + 1, actual: states.length });

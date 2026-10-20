@@ -1,0 +1,19 @@
+
+[pulsewasm:unit] pure-helper-contract
+[pulsewasm] Pure-helper source oracles and scalar/record admission (timeout 30.00s)
+{"status":"passed","nativeSupport":"scalar-record-and-loop-supported","scalarOracleCases":5,"recordOracleCases":60,"nativeAdmissionCases":4}
+[pulsewasm] pure-helper-contract: passed in 2.12s
+
+[pulsewasm:native] pure-record-helpers
+[pulsewasm] Read-only structural pure helper parity, ownership and allocation proof (timeout 180.00s)
+[pulsewasm] Running pure-record-helpers (execution); elapsed 10.00s
+[pulsewasm] Running pure-record-helpers (execution); elapsed 20.01s
+[pulsewasm] Running pure-record-helpers (execution); elapsed 30.02s
+[pulsewasm] Running pure-record-helpers (execution); elapsed 40.02s
+{"status":"passed","parityCases":59,"sourceRejections":22,"planRejections":16,"costs":[{"calls":0,"handles":19,"structuredHandleInsertions":1,"distinctPayloadObjects":1,"wasmBytes":42286,"linearMemoryBytes":1245184},{"calls":1,"handles":226,"structuredHandleInsertions":16,"distinctPayloadObjects":3,"wasmBytes":43568,"linearMemoryBytes":1245184},{"calls":2,"handles":433,"structuredHandleInsertions":31,"distinctPayloadObjects":3,"wasmBytes":43587,"linearMemoryBytes":1245184},{"calls":16,"handles":3331,"structuredHandleInsertions":241,"distinctPayloadObjects":3,"wasmBytes":43758,"linearMemoryBytes":1245184}],"representation":"Borrowed i32 value handles; no per-call serialization, effects, payload copies or guest heap allocation. Property/operator reads retain existing host-handle costs; no reclamation or RSS claim."}
+[pulsewasm] pure-record-helpers: passed in 42.80s
+
+[pulsewasm] test summary
+  passed         2.12s  pure-helper-contract
+  passed        42.80s  pure-record-helpers
+  total        44.93s
