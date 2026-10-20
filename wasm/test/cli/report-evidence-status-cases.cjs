@@ -112,6 +112,18 @@ function runEvidenceStatusCases(cli, directory) {
     assert.deepEqual(failed.result.error, JSON.parse(JSON.stringify(summary))); assert.equal(failed.exitCode, 3);
   }
 
+  // Unrecognized diagnostic codes must not inherit object properties as states.
+  for (const code of ['PULSE_OTHER_FAILURE', 'constructor', '__proto__', 'toString']) {
+    let stderr = '';
+    const summary = require(path.join(cli, 'src/internal/execution-error')).errorSummary(Object.assign(new Error('fixture failure'), { code }));
+    const reporter = createCommandReporter({ stdout: { write: () => assert.fail('failure must use stderr') },
+      stderr: { write: text => { stderr += text; } } });
+    reporter.reportDiagnostic(summary, { request: { command: 'inspect', evidenceStatus: true }, exitCode: 1 });
+    const failed = JSON.parse(stderr);
+    assert.equal(failed.evidence.state, 'not-collected'); assert.equal(failed.evidence.identity, null);
+    assert.deepEqual(failed.result.error, JSON.parse(JSON.stringify(summary))); assert.equal(failed.exitCode, 1);
+  }
+
   // Completed audits/tests fail on stdout, unlike thrown diagnostic failures.
   for (const command of ['doctor', 'test', 'compile', 'build', 'inspect', 'init']) {
     let stdout = '', stderr = '';

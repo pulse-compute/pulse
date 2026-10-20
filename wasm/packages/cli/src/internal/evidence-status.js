@@ -36,8 +36,9 @@ function reportEvidence(collected) {
 }
 
 function uncollectedEvidence(code) {
-  const state = ({ PULSE_REPORT_EVIDENCE_MISSING: 'missing', PULSE_REPORT_INPUT_INVALID: 'invalid',
-    PULSE_REPORT_STALE: 'stale', PULSE_REPORT_INCOMPATIBLE: 'incompatible' })[code] || 'not-collected';
+  const states = { PULSE_REPORT_EVIDENCE_MISSING: 'missing', PULSE_REPORT_INPUT_INVALID: 'invalid',
+    PULSE_REPORT_STALE: 'stale', PULSE_REPORT_INCOMPATIBLE: 'incompatible' };
+  const state = Object.hasOwn(states, code) ? states[code] : 'not-collected';
   return { state, integrity: 'not-established', artifactBytes: 'not-checked', snapshot: 'not-checked',
     identity: null, source: { revision: identityField(null), dirty: identityField(null), sourceFingerprint: identityField(null) },
     coverage: null, qualification: 'not-established-by-this-projection' };
