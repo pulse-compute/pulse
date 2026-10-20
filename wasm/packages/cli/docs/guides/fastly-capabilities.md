@@ -132,6 +132,18 @@ inside the provider-owned Fastly configuration boundary:
 
 Dynamic backends are disabled by default. Map every known origin to a named backend or opt in deliberately.
 
+For Native runtime destinations, set `fastly.bindings.dynamicBackends: true`.
+Configured canonical-origin mappings still win; unmapped origins register under
+a request-local policy with at most 32 attempts across all collections and
+continuations. The service must have Fastly Dynamic Backends enabled. Native
+admits ASCII HTTP/HTTPS DNS URLs and canonical IPv4 over HTTP; credentials, IDNA,
+IPv6, HTTPS IP literals and unusual numeric host forms fail explicitly. HTTPS
+retains normal certificate verification and URL-derived SNI. See
+[Native dynamic backends](../packages/provider-fastly.md#native-dynamic-backends)
+for precedence, URL handling, limits, failures and the qualification boundary.
+S3, GRIP control endpoints and experimental body forwarding remain statically
+bound.
+
 Secret values are never included raw in trace output, errors, snapshots, or CLI project JSON.
 
 Fastly Native conditional KV reads and writes redact object field names as

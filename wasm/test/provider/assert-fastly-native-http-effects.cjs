@@ -82,6 +82,7 @@ export default function handler(ctx: PulseContext): PulseResult {
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-fastly-effects-'));
 try {
   require('./assert-fastly-native-dynamic-backend-abi.cjs').proveStrict();
+  require('./assert-fastly-native-dynamic-backends.cjs').main();
   require('./assert-fastly-native-value-parity.cjs').main('http');
   const singlePlan = planForExample('fetchComposition');
   const singleOptions = {
