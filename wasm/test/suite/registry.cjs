@@ -1242,6 +1242,9 @@ const tasks = Object.freeze({
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
   }),
+  'pulse-context-start': nodeTask('test/mcp/assert-context-start.cjs', {
+    evidence: 'native', timeoutMs: 180000, description: '05H complete pulse.start, three-target MCP parity and single corpus backing'
+  }),
   'pulse-context-build': nodeTask('test/mcp/assert-context-build.cjs', {
     evidence: 'unit', timeoutMs: 60000, description: 'B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection'
   }),
@@ -1504,6 +1507,7 @@ const profiles = Object.freeze({
     'entities-native-runtime',
     'entities-hardening',
     'entities-node-native-workflow',
+    'pulse-context-start',
     'callable-public-contract',
     'callable-composition-proof',
     'callable-authored-native',

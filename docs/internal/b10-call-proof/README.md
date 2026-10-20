@@ -1,6 +1,6 @@
 # B10 — shared callable composition proof
 
-Current authored contract checkpoint: [B10-MCP-05G](./05G.md). Bounded imported
+Current application checkpoint: [B10-MCP-05H](./05H.md). Bounded imported
 computations execute through shared `ctx.call` in plain HTTP, Router and managed
 MCP callers on Node Native, Fastly Native and explicit Node JavaScript. 05G adds
 public types, contract documentation, diagnostics and versioned callable metadata.
@@ -168,3 +168,10 @@ budgets, including resource-free Fastly callable instrumentation.
 [05G](./05G.md) finalizes public computation types, source-bound documentation,
 diagnostics and stale metadata rejection. `05G-VALIDATION.md` records the focused
 checkpoint. Next: 05H (#449).
+
+## 05H continuation
+
+[05H](./05H.md) completes the migrated `pulse.start` application, its deterministic
+config/tool metadata and three-target MCP behavior. The v1 five-tool host remains
+available during migration. `05H-VALIDATION.md` records this checkpoint. Next: 05I
+(#450), migrated read/example/diagnostic.

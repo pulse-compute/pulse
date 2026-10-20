@@ -268,6 +268,49 @@ when using another port. These same tools can be used by an MCP client pointed a
 endpoint. Modern framing is the default, including the qualified Claude client.
 For the pinned Codex compatibility profile, start with `npm start -- --codex`.
 
+## Migrating the compiled application
+
+The separate `application/` project now implements **`pulse.start` only** through
+shared `ctx.call`. It supports Node Native, Fastly Native and explicit Node
+JavaScript. The existing project and standalone five-tool Node host below remain
+the v1 workflow while the remaining tools are migrated in later checkpoints.
+The `@pulse-compute/mcp/node` host API is unchanged.
+
+The new tool returns application version `pulse.context-application.v2`, the
+exact bundled package version and corpus hash. All four goals and both maintained
+Node starter targets return dependencies, configuration, complete contract arrays,
+immutable citations, commands and unresolved choices. A starter's selected target
+is independent of the provider running this MCP application. Version, goal and
+selection errors retain the existing structured statuses without fallback.
+
+From a complete copy of this example:
+
+```bash
+cd application
+npm install
+npm run inspect -- --profile node-native
+npm run build -- --profile node-native
+npm run dev -- --profile node-native
+```
+
+Call the running modern MCP endpoint from another terminal in `application/`:
+
+```bash
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp tools/list
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.start '{"version":"1.0.0-beta.9","goal":"schema-api","provider":"node","target":"native"}'
+```
+
+Profiles `node-javascript` and `fastly-native` select the other implementations
+explicitly. Fastly local/deployed qualification and installed application closure
+remain separate work. Discovery exposes only `pulse.start`; no completion claim
+is made for the migrated read, example, diagnostic or search tools.
+
+The computation uses the complete existing output schema. Cited configuration
+text is read from `context.text`; the generated function contains bounded plan
+metadata and no full-text corpus module. The current emitted Native artifacts
+have one physical text resource backing. Other resources remain in the generated
+catalogue for later tools and are selected by ordinary reachability.
+
 ## Walkthrough 1: start a JSON API
 
 Ask for a Node Native plan with an explicit goal and exact corpus version:
@@ -351,7 +394,7 @@ record even when a page is truncated.
 The corpus is generated from an explicit allowlist of public contract sections,
 package/provider metadata, CLI commands/diagnostics and four maintained starters.
 It has no runtime generator, repository crawler or external index. The snapshot
-has 220 records and remains explicitly a candidate. No client filesystem,
+has 260 records and remains explicitly a candidate. No client filesystem,
 process execution, build, doctor, inspection, outbound fetch, Resources, Prompts
 or stdio capability is exposed. Command descriptions are context, not authority.
 
@@ -485,7 +528,8 @@ node wasm/scripts/run-wasm-tests.cjs --task pulse-context-build --task pulse-con
 
 The corpus extractor remains `scripts/pulse-context-corpus.cjs`, with the explicit
 allowlist in `scripts/pulse-context-inputs.json`. `context:build` owns the generated
-`context-corpus.ts`, `context-data/` and their byte-identical installed CLI mirrors.
+`context-corpus.ts`, `context-data/`, the migrated application config/source/schema
+outputs and their byte-identical installed CLI mirrors.
 Its `context-manifest.json` binds source selections, immutable citation blobs,
 producer/config/lockfile hashes, row IDs, vocabulary and every generated payload.
 The manifest's own SHA-256 belongs in the external check receipt, avoiding a
@@ -499,7 +543,7 @@ are 512 records, 4,096 terms, 1,024 nonzeros per row, 24 KiB content per record 
 2 MiB canonical corpus, together with explicit raw and serialized resource byte
 budgets. Every limit applies simultaneously; overflow fails without truncation.
 
-`context:check` reconstructs in a fresh temporary directory and compares all 12
+`context:check` reconstructs in a fresh temporary directory and compares all 22
 outputs. It fails on missing, stale, corrupt, mixed or unexpected data and never
 repairs the checkout. The receipt names the actual verifier Node version;
 verification on another Node version proves only that invocation's byte equality.
@@ -507,7 +551,17 @@ Generation requires the pinned producer. Repository `build` and `docs:check` run
 the read-only check. `docs:sync` may refresh the legacy corpus and copy emitted
 files, but never builds vectors; finish explicit generation before committing.
 
-The existing Node JavaScript host continues using its v1 corpus module. The new
-resource closure prepares the Native migration; it does not claim a Native MCP
-server, installed resource acceptance, or a candidate-bound seal receipt.
+The existing Node JavaScript host continues using its v1 corpus module. The migrated
+`application/` project now implements `pulse.start` through compiled computation.
+Installed resource acceptance and a candidate-bound seal receipt remain separate.
 B10-MCP-07/09 own installed qualification and seal/recovery integration.
+
+The recovered application config template is
+`application/.pulse/config.template.ts`. `scripts/pulse-context-start.json` owns
+finite starter/tool metadata; `application/src/*.template.ts` owns the call and
+computation shape. The context builder generates the resource manifest, inlines
+it into the new config, binds protocol budgets and exact server version, copies
+the canonical schema and materializes the eight finite starter plans. Edit these
+canonical inputs and run the pinned build/check sequence; generated edits are
+rejected by freshness checks. `pulse-context-start` adds three-target real MCP
+execution against the existing host's complete responses as an independent oracle.

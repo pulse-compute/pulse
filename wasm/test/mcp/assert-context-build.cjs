@@ -38,7 +38,7 @@ function failCheck(dir) {
 function main() {
   const built = B.construct(root), { corpus, config } = built, limits = config.limits;
   const data = F.encode(corpus, limits);
-  test('current output closure', () => assert.equal(B.run().comparedFiles, 12));
+  test('current output closure', () => assert.equal(B.run().comparedFiles, 22));
   test('independent 02 fixture encoder agrees', () => {
     const old = require('../runtime/context-native-fixture.cjs').fixture(corpus);
     old.files.forEach(file => assert.deepEqual(file.bytes, data.files[file.path.slice(1)]));
