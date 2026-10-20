@@ -27,6 +27,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'binary-resource-admission',
       'report-capsule-contract',
       'pure-helper-contract',
+      'callable-source-admission',
       'suite-shape',
       'test-orchestration',
       'package-exports',

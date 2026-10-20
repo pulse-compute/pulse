@@ -1,0 +1,60 @@
+{
+  "version": "pulse.call-source-admission-evidence.v1",
+  "status": "passed",
+  "sourceHead": "dfe40c4132e7d12117900e20bbfee3e42ec2e726",
+  "modifiedSource": [
+    {
+      "path": "docs/internal/b10-call-proof/AUTHORING-CHECKPOINT.md",
+      "sha256": "7c25fbff27d4fa9cdd90544670c3ef25f7780eea18ea0617ed8120838fe92bc9"
+    },
+    {
+      "path": "docs/internal/b10-call-proof/SOURCE-ADMISSION.md",
+      "sha256": "ae888a63d85ea37de40e87735cec1f8f8295a5d2376dbff50bf07f1685a61f82"
+    },
+    {
+      "path": "scripts/release-evidence-bundle.cjs",
+      "sha256": "1fb7afe433ef07af7dd7e986722951c6da90bf3e7384d137613d65e0fd136bde"
+    },
+    {
+      "path": "wasm/packages/compiler/src/callable-source-admission.js",
+      "sha256": "8baf4fa88bf393707e61dc17985877561a58c65a8bfcf653e4f596c1fbc28bc0"
+    },
+    {
+      "path": "wasm/packages/compiler/src/project/router-module-linker.js",
+      "sha256": "33dfe52cd54a5b105ea3d4c0205a0e7829a4d5c599ea712a3d6125d4d5a60fff"
+    },
+    {
+      "path": "wasm/test/callables/assert-callable-source-admission.cjs",
+      "sha256": "53edaed1ac6bf1c289165324c6f6fc9ae8db4f71547aa1a8ec3f53697caac5e7"
+    },
+    {
+      "path": "wasm/test/suite/registry.cjs",
+      "sha256": "883e8fba4aba24b71b5c841f87fc3336022ab98879e4f198341f4e15b88ae973"
+    }
+  ],
+  "tasks": [
+    "callable-source-admission",
+    "pure-helper-contract",
+    "suite-shape"
+  ],
+  "completedTasks": 3,
+  "accepted": 7,
+  "rejected": 33,
+  "runtimeWired": false,
+  "callerValidated": false,
+  "checks": {
+    "maintainer": "passed",
+    "docs": "passed",
+    "documentationRelease": "passed",
+    "build": "passed"
+  },
+  "fullProfilesRun": false,
+  "wasmRerun": false,
+  "logHashes": {
+    "call-source-final-focused.log": "83f7e469a17bc50cf0bfe965858adeaf6d729267f14a9b82f43f6f2f2dc7e5d6",
+    "call-source-maintainer.log": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2",
+    "call-source-build.log": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95",
+    "call-source-docs.log": "804ff7ad36371372e1c6ede41f56bb428fcd73d3e1ccaf0a1813c7fbcc050b5d",
+    "call-source-doc-release.log": "2930ebf2de4de81c909a22a7829662cc14dc14c4c8042148a90ce457eec07a5e"
+  }
+}

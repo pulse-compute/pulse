@@ -764,11 +764,41 @@ function resolveProjectRoot(graphBuild) {
   return Object.freeze({ root, indexes: built.indexes });
 }
 
+// Private compiler seam: reuse the exact handler/export resolver for source
+// admission experiments without changing ordinary linking or import admission.
+function projectFunctionResolver(graphBuild) {
+  const context = projectGraphContext(graphBuild);
+  if (!context) throw new TypeError('projectFunctionResolver requires a reachable project graph build.');
+  const { root, indexes } = resolveProjectRoot(graphBuild);
+  function describe(target) {
+    if (!target || target.kind !== 'handler') return undefined;
+    const functionNode = functionForNamedHandler(target.module.sourceFile, target.localName);
+    if (!functionNode) return undefined;
+    return Object.freeze({ identity: `${target.module.path}#${target.localName}`,
+      modulePath: target.module.path, name: target.localName,
+      sourceFile: target.module.sourceFile, functionNode,
+      packageSource: Boolean(target.module.packageSource) });
+  }
+  return Object.freeze({
+    entry: describe(root),
+    resolve(modulePath, localName) {
+      const module = context.projectModules.get(modulePath);
+      if (!module) return undefined;
+      const diagnostics = [];
+      const target = resolveLocal(context, indexes, module, localName, diagnostics);
+      if (diagnostics.length) throw new RouterModuleLinkError('Project function resolution failed.', diagnostics);
+      const result = describe(target);
+      return result && Object.freeze({ ...result, imported: Boolean(importResolutionForLocal(context, module, localName)) });
+    }
+  });
+}
+
 module.exports = Object.freeze({
   ROUTER_MODULE_LINKER_VERSION,
   RouterModuleLinkError,
   linkProjectPlainHandler,
   linkProjectRouterModules,
   resolveProjectRoot,
+  projectFunctionResolver,
   wrappersForExpression
 });

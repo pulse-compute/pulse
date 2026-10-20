@@ -1,3 +1,18 @@
+## Current checkpoint: private source admission
+
+One statically imported target and its literal schema pair now produce admitted
+callee plans and call-site facts for a named plain entry handler. This is an
+opt-in internal pass: ordinary compilation still rejects `ctx.call`, and the
+caller is not yet validated or executable. Router/MCP authoring and runtime
+wiring remain deferred. The ordinary linker resolver and callable validator
+are reused; no public package API is added.
+
+Focused checks pass: 7 acceptance cases, 33 rejection cases, pure-helper
+contract and suite-shape regressions; maintainer, docs, documentation-release
+and build checks pass. Full profiles and backend execution were not rerun for
+this checkpoint. The backend proof results below remain historical evidence.
+See `SOURCE-ADMISSION.md` and `source-admission-validation/receipt.json`.
+
 ## Summary
 
 B10-MCP-05 needs resource/workspace computation from managed Native handlers.

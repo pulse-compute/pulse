@@ -114,6 +114,9 @@ const tasks = Object.freeze({
   'pure-helper-contract': nodeTask('test/lowering/assert-pure-helper-contract.cjs', {
     description: 'Pure-helper source oracles and scalar/record admission'
   }),
+  'callable-source-admission': nodeTask('test/callables/assert-callable-source-admission.cjs', {
+    description: 'Private callable target/schema source admission; no execution support'
+  }),
   'array-demand-n01': nodeTask('test/runtime/compiler-efficiency/n01/array-demand.cjs', {
     evidence: 'external', timeoutMs: 120000,
     description: 'N-01 bounded string/flat-record array demand matrix; no support activation'
@@ -1385,6 +1388,7 @@ const profiles = Object.freeze({
     'multifile-source-indexes',
     'guest-json-roundtrip',
     'pure-helper-contract',
+    'callable-source-admission',
     'suite-shape',
     'test-orchestration',
     'package-exports',

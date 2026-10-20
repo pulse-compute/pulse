@@ -1,7 +1,8 @@
 # Static call authoring: checkpoint 1
 
-Status: resolution characterization and a private prototype contract. No new
-source syntax, public export or executable compiler behavior is enabled here.
+Status: the initial resolution characterization and prototype contract below
+are followed by a private source-admission implementation. See
+`SOURCE-ADMISSION.md`. No public export or executable `ctx.call` support is enabled.
 
 ## Smallest next implementation
 
