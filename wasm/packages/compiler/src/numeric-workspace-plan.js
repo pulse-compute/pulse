@@ -1,7 +1,7 @@
 'use strict';
 function validateNumericWorkspaces(plan, fail, walkExpression) {
   const records = plan.numericWorkspaces || [];
-  if (!Array.isArray(records) || records.length > 4) { fail('workspace table must contain at most four records'); return; }
+  if (!Array.isArray(records) || (!plan.packages?.application?.primitivePlan && records.length > 4)) { fail('workspace table must contain at most four records'); return; }
   const ids = new Set();
   for (const r of records) {
     if (!r || typeof r.id !== 'string' || ids.has(r.id) || !Number.isInteger(r.capacity) || r.capacity < 1 || r.capacity > 1024) fail('invalid numeric workspace capacity or identity');
@@ -43,6 +43,26 @@ function validateNumericWorkspaces(plan, fail, walkExpression) {
   for (const e of plan.effects || []) {
     for (const i of e.inputs || []) expression(i.value, new Set());
     for (const a of e.result?.decoder?.arguments || []) expression(a, new Set());
+  }
+  // Package handlers have pre-bound inputs and typed returns, but use the same
+  // workspace ownership, dominance and numeric-operation contract.
+  const managed = plan.packages?.application?.primitivePlan;
+  if (managed) {
+    if (managed.version !== 'pulse.managed-native-primitives.v1' || !Array.isArray(managed.handlers)) fail('managed primitive plan');
+    for (const [index, handler] of (managed.handlers || []).entries()) {
+      try { require('@pulse-compute/wasm-contracts/handler/canonical-native-plan').validateManagedPrimitiveHandler(handler); }
+      catch (error) { fail(error.message); }
+      if (handler.index !== index) fail('managed handler ordering');
+      for (const record of handler.primitives.workspaces) {
+        const id = `managed-${index}-${record.id}`;
+        if (!ids.has(id) || records.find(r => r.id === id)?.capacity !== record.capacity || initialized.has(id)) fail('managed workspace ownership');
+        initialized.add(id);
+      }
+    }
+    const resourceIds = [...new Set(managed.handlers.flatMap(handler => handler.primitives.resourceIds))].sort();
+    if (JSON.stringify(resourceIds) !== JSON.stringify(managed.resourceIds)
+      || JSON.stringify(resourceIds) !== JSON.stringify((plan.binaryResources?.records || []).map(record => record.id).sort())
+      || JSON.stringify(managed.workspaces) !== JSON.stringify(records)) fail('managed primitive selection');
   }
   if (initialized.size !== ids.size) fail('workspace table contains an unowned allocation');
 }

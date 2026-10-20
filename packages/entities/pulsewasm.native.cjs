@@ -16,7 +16,7 @@ function loadContract(subpath, fallback) {
 const entitiesContracts = loadContract('entities/contracts', '../../wasm/packages/contracts/src/entities/contracts.js');
 
 const ENTITIES_NATIVE_SOURCE_VERSION = 'pulse.entities-native-source.v1';
-const MANAGED_NATIVE_BUNDLE_VERSION = 'pulse.managed-handler-native-bundle.v1';
+const MANAGED_NATIVE_BUNDLE_VERSION = 'pulse.managed-handler-native-bundle.v2';
 const sourceRelativeFile = 'as/index.as.ts';
 const sourceFile = path.join(__dirname, sourceRelativeFile);
 
@@ -77,6 +77,7 @@ function runtimeInputFor(handler, effectId) {
 }
 
 function collectRuntimeSchemaIds(handler, output) {
+  for (const id of handler.primitives?.schemaIds || []) output.add(id);
   for (const effect of handler.effects.sites) {
     if (effect.decoder !== 'json') continue;
     const decoder = runtimeInputFor(handler, effect.id).inputs.find((entry) => entry.name === 'decoderArgument0');
@@ -108,6 +109,7 @@ function normalizeInputs(input) {
     const matches = nativeBundle.handlers.filter(handler => handler.id === localId || handler.id.endsWith(`#${localId}`));
     if (matches.length !== 1) fail('PULSE_ENTITIES_NATIVE_HANDLER_MISSING', `Entity ${entity.discriminator} requires exactly one managed Native handler.`, { localId });
     const handler = matches[0];
+    loadContract('handler/canonical-native-plan', '../../wasm/packages/contracts/src/handler/canonical-native-plan.js').validateManagedPrimitiveHandler(handler);
     const handlerId = handler.id;
     if (handler.parameters.input.schemaId !== entity.inputSchema || handler.result.schemaId !== entity.outputSchema) {
       fail('PULSE_ENTITIES_NATIVE_HANDLER_SCHEMA_MISMATCH', `Managed handler ${handlerId} does not match its entity schema declaration.`, { handlerId });
@@ -152,7 +154,7 @@ function renderSchemas(schemas) {
     if (rendered.has(key)) return rendered.get(key);
     const name = nodeName(schemaIndex, pathParts);
     rendered.set(key, name);
-    const body = [];
+    const body = ['  if (__pulse_entities_is_undefined(input)) { __pulse_entities_schema_valid = false; return __pulse_entities_null() }'];
     const invalid = () => body.push('  __pulse_entities_schema_valid = false', '  return __pulse_entities_null()');
     if (!node || typeof node.kind !== 'string') fail('PULSE_ENTITIES_NATIVE_SCHEMA_NODE_INVALID', 'Reachable schema contains an invalid node.', { schemaIndex, pathParts });
     if (node.kind === 'string') {
@@ -241,6 +243,7 @@ function collectExpression(expression, list, indexes) {
   else if (expression.kind === 'property') add(expression.object);
   else if (expression.kind === 'element') { add(expression.object); add(expression.index); }
   else if (expression.kind === 'provider-namespace') add(expression.resource);
+  else if (['resource-read','workspace-read','workspace-write','schema-text','scalar-assignment'].includes(expression.kind)) { add(expression.offset); add(expression.length); add(expression.value); }
 }
 
 function createHandlerCompiler(route, context) {
@@ -279,7 +282,45 @@ function createHandlerCompiler(route, context) {
       else if (typeof expression.value === 'boolean') emit(`return JSON.Value.from<bool>(${expression.value ? 'true' : 'false'})`);
       else if (typeof expression.value === 'number' && Number.isFinite(expression.value)) emit(`return JSON.Value.from<f64>(${Number(expression.value)})`);
       else fail('PULSE_ENTITIES_NATIVE_LITERAL_UNSUPPORTED', 'Native managed literals must be finite JSON primitives.', { expression });
-    } else if (expression.kind === 'undefined') emit('return __pulse_entities_null()');
+    } else if (expression.kind === 'resource-read') {
+      const slot = context.resourceIds.indexOf(expression.resourceId);
+      if (slot < 0) fail('PULSE_ENTITIES_NATIVE_RESOURCE_UNKNOWN', 'Unknown managed resource identity.');
+      const offset = expression.offset ? `__pulse_entities_numeric(${expressionName(expression.offset)}())` : '0.0';
+      if (expression.operation === 'readUtf8') emit(`return __pulse_managed_utf8(${slot}, ${offset}, __pulse_entities_numeric(${expressionName(expression.length)}()))`);
+      else {
+        const op = ['byteLength','readU8','readU32LE','readF32LE'].indexOf(expression.operation);
+        if (op < 0) fail('PULSE_ENTITIES_NATIVE_RESOURCE_UNKNOWN', 'Unknown managed resource operation.');
+        emit(`return JSON.Value.from<f64>(__pulse_managed_resource(${slot}, ${op}, ${offset}))`);
+      }
+    } else if (['workspace-init','workspace-read','workspace-write'].includes(expression.kind)) {
+      const slot = context.workspaces.findIndex(w => w.handlerId === handler.id && w.localId === expression.workspaceId);
+      if (slot < 0) fail('PULSE_ENTITIES_NATIVE_WORKSPACE_UNKNOWN', 'Unknown managed workspace identity.');
+      if (expression.kind === 'workspace-init') emit(`return __pulse_managed_workspace_init_${slot}()`);
+      else if (!expression.offset) emit(`return JSON.Value.from<f64>(${context.workspaces[slot].capacity})`);
+      else {
+        const args = [`__pulse_entities_numeric(${expressionName(expression.offset)}())`];
+        if (expression.kind === 'workspace-write') args.push(`__pulse_entities_numeric(${expressionName(expression.value)}())`);
+        emit(`return JSON.Value.from<f64>(__pulse_managed_workspace_${expression.kind === 'workspace-write' ? 'write' : 'read'}_${slot}(${args.join(', ')}))`);
+      }
+    } else if (expression.kind === 'scalar-assignment') {
+      const slot = localIndex(expression.id);
+      const value = `${expressionName(expression.value)}()`;
+      const op = ['+=','-=','*=','/=','%='].indexOf(expression.operator);
+      emit(`const value = __pulse_entities_scalar(${expression.operator === '=' ? value : `__pulse_entities_binary(${op}, unchecked(__pulse_entities_locals[${slot}]), ${value})`})`);
+      emit(`unchecked(__pulse_entities_locals[${slot}] = value)`);
+      emit('return value');
+    } else if (expression.kind === 'schema-text') {
+      const root = context.schemaOutput.roots.get(expression.schemaId);
+      if (!root) fail('PULSE_ENTITIES_NATIVE_SCHEMA_MISSING', 'Missing managed text schema.');
+      emit(`const value = ${expressionName(expression.value)}()`);
+      if (expression.operation === 'decodeJson') emit('if (value.type != JSON.Types.String) abort("Schema text must be string", "managed", 0, 0)');
+      emit(`const text = ${expression.operation === 'decodeJson' ? '__pulse_entities_text(value)' : 'JSON.stringify<JSON.Value>(value)'}`);
+      emit('if (__pulse_entities_utf8_bytes(text) > __PULSE_ENTITIES_SCHEMA_MAX_BYTES || !__pulse_entities_valid_json(text)) abort("Invalid schema text", "managed", 0, 0)');
+      emit('__pulse_entities_schema_valid = true');
+      emit(`const result = ${root}(${expression.operation === 'decodeJson' ? 'JSON.parse<JSON.Value>(text)' : 'value'})`);
+      emit('if (!__pulse_entities_schema_valid) abort("Invalid schema value", "managed", 0, 0)');
+      emit(expression.operation === 'decodeJson' ? 'return result' : 'return JSON.Value.from<string>(JSON.stringify<JSON.Value>(result))');
+    } else if (expression.kind === 'undefined') emit('return __pulse_entities_undefined_value');
     else if (expression.kind === 'input') emit('return __pulse_entities_input');
     else if (expression.kind === 'local') emit(`return unchecked(__pulse_entities_locals[${localIndex(expression.id)}])`);
     else if (expression.kind === 'effect-result') emit(`return unchecked(__pulse_entities_effect_results[${effectIndex(expression.effectId)}])`);
@@ -308,7 +349,9 @@ function createHandlerCompiler(route, context) {
           const key = entry.key && typeof entry.key === 'object' && entry.key.kind === 'computed'
             ? `__pulse_entities_text(${expressionName(entry.key.value)}())`
             : quote(entry.key);
-          emit(`output.set<JSON.Value>(${key}, ${expressionName(entry.value)}())`);
+          const value = `field_${lines.length}`;
+          emit(`const ${value} = ${expressionName(entry.value)}()`);
+          emit(`output.set<JSON.Value>(${key}, ${value})`);
         }
       }
       emit('return JSON.Value.from<JSON.Obj>(output)');
@@ -324,7 +367,7 @@ function createHandlerCompiler(route, context) {
         emit(`const left = ${expressionName(expression.left)}()`);
         if (expression.operator === '&&') emit('if (!__pulse_entities_truthy(left)) return left');
         else if (expression.operator === '||') emit('if (__pulse_entities_truthy(left)) return left');
-        else emit('if (left.type != JSON.Types.Null) return left');
+        else emit('if (left.type != JSON.Types.Null && !__pulse_entities_is_undefined(left)) return left');
         emit(`return ${expressionName(expression.right)}()`);
       } else {
         const operators = new Map([['+', 0], ['-', 1], ['*', 2], ['/', 3], ['%', 4], ['===', 5], ['==', 5], ['!==', 6], ['!=', 6], ['<', 7], ['<=', 8], ['>', 9], ['>=', 10]]);
@@ -395,7 +438,9 @@ function renderNativeProgram(model, schemaOutput) {
     for (const effect of route.handler.effects.sites) effectIndexes.set(`${route.handler.id}:${effect.id}`, effectCount++);
     loggingCount += route.handler.effects.logging.length;
   }
-  const context = Object.freeze({ localIndexes, effectIndexes });
+  const resourceIds = [...new Set(model.nativeBundle.handlers.flatMap(handler => handler.primitives?.resourceIds || []))].sort();
+  const workspaces = model.nativeBundle.handlers.flatMap(handler => (handler.primitives?.workspaces || []).map(record => ({ ...record, handlerId: handler.id, localId: record.id })));
+  const context = Object.freeze({ localIndexes, effectIndexes, resourceIds, workspaces, schemaOutput });
   const compilers = model.routes.map((route) => createHandlerCompiler(route, context));
   const blocks = [];
   const routeEntryBlocks = new Map();
@@ -483,10 +528,28 @@ function renderNativeProgram(model, schemaOutput) {
     return suspendBlock(route, compiler, effects, resume);
   }
 
+  function primitiveLines(compiler, operation) {
+    if (operation.kind === 'block') return (operation.statements || []).flatMap(child => primitiveLines(compiler, child));
+    if (operation.kind === 'local') return [`unchecked(__pulse_entities_locals[${compiler.localIndex(operation.id)}] = ${operation.mutable ? '__pulse_entities_scalar(' : ''}${compiler.expressionName(operation.initializer)}()${operation.mutable ? ')' : ''})`];
+    if (operation.kind === 'expression') return [`${compiler.expressionName(operation.expression)}()`];
+    if (operation.kind === 'if') return [`if (__pulse_entities_truthy(${compiler.expressionName(operation.test)}())) {`, ...primitiveLines(compiler, operation.thenOperation), '}', ...(operation.elseOperation ? ['else {', ...primitiveLines(compiler, operation.elseOperation), '}'] : [])];
+    if (['break','continue'].includes(operation.kind)) return [operation.kind];
+    if (operation.kind === 'pure-loop') {
+      const slot = compiler.localIndex(operation.counter), counter = `counter_${slot}`;
+      if (!Number.isInteger(operation.maxIterations) || operation.maxIterations < 0 || operation.maxIterations > 1024) fail('PULSE_ENTITIES_NATIVE_LOOP_INVALID', 'Invalid managed loop bound.');
+      return [`for (let ${counter}: i32 = 0; ${counter} < ${operation.maxIterations}; ${counter}++) {`,
+        'if (__pulse_managed_resource_check(0.0, 0, 0) < 0) break',
+        `unchecked(__pulse_entities_locals[${slot}] = JSON.Value.from<f64>(<f64>${counter}))`,
+        `if (!__pulse_entities_truthy(${compiler.expressionName(operation.test)}())) break`,
+        ...primitiveLines(compiler, operation.body), '}'];
+    }
+    fail('PULSE_ENTITIES_NATIVE_LOOP_INVALID', 'Managed pure loops cannot suspend or produce results.');
+  }
+
   function compileOperation(route, compiler, operation, next) {
     if (!operation) return next;
     if (operation.kind === 'block') return compileSequence(route, compiler, operation.statements || [], next);
-    if (operation.kind === 'local') return block('action', { lines: [`unchecked(__pulse_entities_locals[${compiler.localIndex(operation.id)}] = ${compiler.expressionName(operation.initializer)}())`], next });
+    if (['local', 'expression', 'pure-loop'].includes(operation.kind)) return block('action', { lines: primitiveLines(compiler, operation), next });
     if (operation.kind === 'if') {
       const thenBlock = compileOperation(route, compiler, operation.thenOperation, next);
       const elseBlock = compileOperation(route, compiler, operation.elseOperation, next);

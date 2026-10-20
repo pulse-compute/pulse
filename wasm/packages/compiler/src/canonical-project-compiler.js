@@ -1048,6 +1048,8 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
       managedHandlers = compileManagedHandlerDescriptors({
         graphBuild,
         target: options.target,
+        resourceIds: options.binaryResources?.records.map(record => record.id) || [],
+        schemaIds: schema.bundle.registry.schemas.map(schema => schema.id),
         descriptors: packageOperationRecognition.managedHandlers,
         packageOperationRecognition
       });

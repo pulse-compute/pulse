@@ -1,6 +1,8 @@
 'use strict';
 
-const { CANONICAL_NATIVE_READ_LOOP_MEMORY: policy, hasBoundedReadLoop } = require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime');
+const { CANONICAL_NATIVE_READ_LOOP_MEMORY: policy, hasBoundedReadLoop: hasReadLoop, hasManagedNativePrimitives } = require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime');
+
+function hasBoundedReadLoop(plan) { return hasReadLoop(plan) || hasManagedNativePrimitives(plan); }
 
 function runtimeSource(limits = policy) {
   return `

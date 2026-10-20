@@ -185,6 +185,7 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
 });
 
 module.exports = Object.freeze({
+  ...require('./managed-native-primitives.js'),
   CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION,
   CANONICAL_NATIVE_PURE_BORROW_VERSION,
   CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION,

@@ -20,6 +20,10 @@ const CANONICAL_NATIVE_READ_LOOP_MEMORY = Object.freeze({
   reclamation: 'retain-until-terminal'
 });
 
+function hasManagedNativePrimitives(plan) {
+  return plan?.packages?.application?.primitivePlan?.version === 'pulse.managed-native-primitives.v1';
+}
+
 function hasBoundedReadLoop(plan) {
   function visit(node) {
     if (!node || typeof node !== 'object') return false;
@@ -214,6 +218,7 @@ module.exports = Object.freeze({
   CANONICAL_NATIVE_READ_LOOP_MEMORY,
   CANONICAL_NATIVE_VALUE_TRANSFER_MAX_BYTES,
   hasBoundedReadLoop,
+  hasManagedNativePrimitives,
   CANONICAL_NATIVE_RUN_STATUS,
   CANONICAL_NATIVE_RESULT_STATUS,
   CANONICAL_NATIVE_ERROR_CODES,

@@ -123,7 +123,7 @@ assert.deepEqual(direct.realizationArtifacts, [{
     entry: './pulsewasm.native.cjs',
     export: 'buildEntitiesNativeSource',
     sourceVersion: 'pulse.entities-native-source.v1',
-    managedHandlerNativeBundleVersion: 'pulse.managed-handler-native-bundle.v1',
+    managedHandlerNativeBundleVersion: 'pulse.managed-handler-native-bundle.v2',
     packageTargetPromoted: true,
     automaticFallback: false
   }

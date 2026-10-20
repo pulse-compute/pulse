@@ -1,0 +1,129 @@
+{
+  "status": "passed",
+  "scope": "combined-managed-native-proof",
+  "featureComplete": false,
+  "node": "v24.19.0",
+  "source": {
+    "head": "8a51d705025c69ae306004215cb6cb48248d68e1",
+    "files": [
+      {
+        "path": "docs/internal/b10-mcp-05a/README.md",
+        "sha256": "4b9d480d495a774eb262ccf72145de087614f54e17ac69de3e0937c2d2a2883f"
+      },
+      {
+        "path": "packages/entities/as/index.as.ts",
+        "sha256": "04bbf5c504251c7f90b380a6cd6b465075d76efde8cba43270a08f9a7f87f5dd"
+      },
+      {
+        "path": "packages/entities/pulsewasm.compiler.cjs",
+        "sha256": "bafe8e0074d59be8d8a13d5973e36488b60428ba7b2a1f0210c27419f76af51e"
+      },
+      {
+        "path": "packages/entities/pulsewasm.native.cjs",
+        "sha256": "d396e72090793265cc7688fd56a2decfabe581ea743d84f81e8bb666b98ee0d2"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/native-http-effects.js",
+        "sha256": "5040a2986caea3d6d322c2f86e1d26780b05039f6ca7308453e2854ec67d0deb"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+        "sha256": "3995d10a3760b86007763c7a8d1a7be61a33473c5e409ec38983e77188f53319"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/native-value-budget.js",
+        "sha256": "c8d1d056e9605c765108e57f3d6adf0dabcbf7a16339dbb6488ecb68a05f1397"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/request-budget.js",
+        "sha256": "87b83dfb9167019c82b5500ef51c1613cfdb22848623a2f6ce9a05b59f953989"
+      },
+      {
+        "path": "scripts/release-evidence-bundle.cjs",
+        "sha256": "002b74d3e0dbbbab4c4907f6eb09050c1553b024993761141263aa9a4044d3db"
+      },
+      {
+        "path": "wasm/packages/compiler/src/canonical-native-compiler.js",
+        "sha256": "073458860ed2523e2e4a1fcbd0885bec55ec9468040616964f170d7d016650db"
+      },
+      {
+        "path": "wasm/packages/compiler/src/canonical-native-plan.js",
+        "sha256": "5ae8de01a61afb98e92f4f3626207db48d536c5ab826712b717a2dbdf986fb95"
+      },
+      {
+        "path": "wasm/packages/compiler/src/canonical-project-compiler.js",
+        "sha256": "8b421c4c6cab103fb04cdf09f6e4e3b01f7d8519bc216c4fbe8e294df6752e40"
+      },
+      {
+        "path": "wasm/packages/compiler/src/numeric-workspace-plan.js",
+        "sha256": "eee87028c9addd9a18bec3408869e4c3e37cadcfb475367513f8820aaeb62c3b"
+      },
+      {
+        "path": "wasm/packages/compiler/src/spine/handler-ir-managed.js",
+        "sha256": "22db169cbf3d34cdd78c1ff671c08539d960a4a00302b245fe167517adaed3ca"
+      },
+      {
+        "path": "wasm/packages/compiler/src/spine/terminal-package-native.js",
+        "sha256": "637dcb7802bde6b51b351fe4a40c3b8e49a916811b024c88cbdf23527524ab3e"
+      },
+      {
+        "path": "wasm/packages/contracts/src/handler/canonical-native-plan.js",
+        "sha256": "eaa359e191b1e45c22ce1b04a0a26bfe235392104ee3e7693419121cc1f67f2d"
+      },
+      {
+        "path": "wasm/packages/contracts/src/handler/canonical-native-runtime.js",
+        "sha256": "fe53c436e9ba49be81edd967df24cba4ca15606db82a294b582f8a714c87628f"
+      },
+      {
+        "path": "wasm/packages/contracts/src/handler/managed-native-primitives.js",
+        "sha256": "9e1a62a9373b85cf4984a0cb1e8fe1faafa87a0e3b45f0571ae0843fbc63da60"
+      },
+      {
+        "path": "wasm/packages/host-runtime/src/runtime/canonical-native-host.js",
+        "sha256": "1f71288d0ee3ae8ffa591408f8edeb01fb61b80638fc9ce1e323949923934857"
+      },
+      {
+        "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-managed.js",
+        "sha256": "56de3b41d1f61d3b57686c645a594e75cdc0a2ba9bf342aefe0ce3956f8c90fb"
+      },
+      {
+        "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native.js",
+        "sha256": "c6b41fe603e1bf8e78e07e6159449559644556a644f43c1feddb823fbef8dc9f"
+      },
+      {
+        "path": "wasm/test/entities/assert-entities-package-owned-lowering.cjs",
+        "sha256": "d8245e807cf54e64dbc598096fb927a923097d2485fa20516d8714e66704638a"
+      },
+      {
+        "path": "wasm/test/entities/assert-managed-native-primitives.cjs",
+        "sha256": "9aab43bc9e254bb6fdf6c8eb77a2f3dd4fa7a2eeb765972b616e09fdd96230a5"
+      },
+      {
+        "path": "wasm/test/suite/registry.cjs",
+        "sha256": "ebe9c541b904f36f19b24d19af7c6b66b23b648079aea3a0b36c1849916a805c"
+      }
+    ]
+  },
+  "artifacts": {
+    "planHash": "7ecb64a4604107882f8a449b81fd0138a202756d36f33e6c1c47d372a0dba6fc",
+    "nodeWasmSha256": "4e725e349a5f5669988bc6f5bdd38afdb4c9bfe0a809fdae1c5346e7c7f4f3f9",
+    "fastlyWasmSha256": "e92a364783942d3d85c8dc93baad07d2a38fd249b324f412ae2c79cf9e3800ed"
+  },
+  "cases": 7,
+  "failures": 8,
+  "negativeSources": 14,
+  "forgedPlans": 6,
+  "deadlines": 2,
+  "nativeBytes": 116008,
+  "fastlyBytes": 146083,
+  "resources": [
+    "alias",
+    "data"
+  ],
+  "workspace": [
+    {
+      "id": "managed-0-workspace-0",
+      "capacity": 4
+    }
+  ]
+}

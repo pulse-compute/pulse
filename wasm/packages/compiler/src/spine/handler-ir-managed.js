@@ -45,18 +45,22 @@ function loadCanonicalNativePlanContract() {
 const canonicalNativePlanContract = loadCanonicalNativePlanContract();
 
 const managedHandlerDescriptorVersion = PACKAGE_MANAGED_HANDLER_DESCRIPTOR_VERSION;
-const managedHandlerIrVersion = 'pulse.managed-handler-ir.v2';
-const managedHandlerIrBundleVersion = 'pulse.managed-handler-ir-bundle.v2';
+const managedHandlerIrVersion = 'pulse.managed-handler-ir.v3';
+const managedHandlerIrBundleVersion = 'pulse.managed-handler-ir-bundle.v3';
 const managedHandlerEffectPlanVersion = 'pulse.managed-handler-effect-plan.v1';
 const managedHandlerReachabilityVersion = 'pulse.managed-handler-reachability.v1';
-const managedHandlerNativeFactsVersion = 'pulse.managed-handler-native-facts.v1';
-const managedHandlerNativeBundleVersion = 'pulse.managed-handler-native-bundle.v1';
+const managedHandlerNativeFactsVersion = 'pulse.managed-handler-native-facts.v2';
+const managedHandlerNativeBundleVersion = 'pulse.managed-handler-native-bundle.v2';
 const MANAGED_HANDLER_ROLE = 'schema-operation';
 const managedHandlerInputKinds = Object.freeze(['schema-value', 'empty-value']);
 const managedHandlerResultKinds = Object.freeze(['schema-value', 'completion']);
 const managedHandlerOperationKinds = Object.freeze([
   'block',
   'local',
+  'expression',
+  'pure-loop',
+  'break',
+  'continue',
   'if',
   'effect',
   'parallel',
@@ -533,6 +537,9 @@ function createExpressionCompiler(state) {
       return Object.freeze({ kind: 'template', parts: Object.freeze(parts) });
     }
 
+    const intrinsic = state.compilePrimitive?.(current, scope, compile);
+    if (intrinsic) return intrinsic;
+
     if (ts.isBinaryExpression(current)) {
       const operator = current.operatorToken.getText(sourceFile);
       if (ASSIGNMENT_OPERATORS.has(operator)) {
@@ -910,7 +917,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     packageResultAdapters: packageInputs.resultAdapters,
     packageEffectForCall,
     packageIntrinsicForCall,
-    packageResultAdapterForCall
+    packageResultAdapterForCall,
+    resourceIds: options.resourceIds || []
   });
   if (!rawOperationIr) return undefined;
 
@@ -929,7 +937,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     ctxName,
     inputName,
     handlerTargets,
-    currentSymbol: resolved.symbol
+    currentSymbol: resolved.symbol,
+    compilePrimitive
   });
 
   const state = {
@@ -939,7 +948,11 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     locals: [],
     resultSites: [],
     loggingSites: [],
-    effectRuntimeInputs: new Map()
+    effectRuntimeInputs: new Map(),
+    resourceIds: new Set(),
+    workspaces: [],
+    schemaIds: new Set(),
+    loopDepth: 0
   };
   const rootScope = new Map([
     [ctxName, Object.freeze({ kind: 'context', id: 'parameter-0', name: ctxName })],
@@ -948,6 +961,51 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
 
   function fail(node, code, message, detail = {}) {
     nativeDiagnostics.push(diagnostic({ descriptor, sourceFile, node, code, message, detail }));
+  }
+
+  // The canonical Handler IR already applies resource/workspace lexical ownership
+  // and full bounded-loop admission. This projection never carries source or AST.
+  function compilePrimitive(node, scope, compile) {
+    const bindingFor = value => ts.isIdentifier(unwrap(value)) && scope.get(unwrap(value).text);
+    const read = (binding, operation, offset, length) => {
+      state.resourceIds.add(binding.resourceId);
+      return Object.freeze({ kind: 'resource-read', resourceId: binding.resourceId, operation,
+        ...(offset ? { offset: compile(offset, scope) } : {}), ...(length ? { length: compile(length, scope) } : {}) });
+    };
+    if (ts.isPropertyAccessExpression(node)) {
+      const binding = bindingFor(node.expression);
+      if (binding?.kind === 'resource-view' && node.name.text === 'byteLength') return read(binding, 'byteLength');
+      if (binding?.kind === 'workspace-view' && node.name.text === 'length') return Object.freeze({ kind: 'workspace-read', workspaceId: binding.workspaceId });
+    }
+    if (ts.isElementAccessExpression(node)) {
+      const binding = bindingFor(node.expression);
+      if (binding?.kind === 'workspace-view') return Object.freeze({ kind: 'workspace-read', workspaceId: binding.workspaceId, offset: compile(node.argumentExpression, scope) });
+    }
+    if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
+      const target = node.expression, name = target.name.text, binding = bindingFor(target.expression);
+      if (binding?.kind === 'resource-view' && ['readU8','readU32LE','readF32LE','readUtf8'].includes(name)) return read(binding, name, node.arguments[0], node.arguments[1]);
+      if (binding?.kind === 'context' && ['encodeJson','decodeJson'].includes(name)) {
+        const schema = node.arguments[1];
+        if (node.questionDotToken || target.questionDotToken || node.typeArguments?.length || node.arguments.length !== 2 || !schema || !ts.isStringLiteral(schema)
+          || !options.schemaIds?.includes(schema.text)) {
+          fail(node, 'PULSE_MANAGED_HANDLER_SCHEMA_INVALID', 'Schema text operations require one value and a declared literal schema identity.');
+          return Object.freeze({ kind: 'rejected-expression' });
+        }
+        state.schemaIds.add(schema.text);
+        return Object.freeze({ kind: 'schema-text', operation: name, schemaId: schema.text, value: compile(node.arguments[0], scope) });
+      }
+    }
+    if (ts.isBinaryExpression(node) && ASSIGNMENT_OPERATORS.has(node.operatorToken.getText(sourceFile))) {
+      const target = unwrap(node.left), operator = node.operatorToken.getText(sourceFile);
+      if (ts.isElementAccessExpression(target)) {
+        const binding = bindingFor(target.expression);
+        if (binding?.kind === 'workspace-view' && operator === '=') return Object.freeze({ kind: 'workspace-write', workspaceId: binding.workspaceId,
+          offset: compile(target.argumentExpression, scope), value: compile(node.right, scope) });
+      }
+      const binding = bindingFor(target);
+      if (binding?.mutable && ['=','+=','-=','*=','/=','%='].includes(operator)) return Object.freeze({ kind: 'scalar-assignment', id: binding.id, operator, value: compile(node.right, scope) });
+    }
+    return undefined;
   }
 
   function registerEffectRuntimeInputs(site, candidate, scope) {
@@ -1010,12 +1068,12 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     }
   }
 
-  function bindLocal(name, node, scope, binding = 'value') {
+  function bindLocal(name, node, scope, binding = 'value', extras = {}) {
     if (scope.has(name)) {
       fail(node, 'PULSE_MANAGED_HANDLER_BINDING_DUPLICATE', `Managed handler local ${name} shadows an existing binding.`, { local: name });
     }
     state.localIndex += 1;
-    const local = Object.freeze({ kind: 'local', id: `local-${state.localIndex}`, name });
+    const local = Object.freeze({ kind: 'local', id: `local-${state.localIndex}`, name, ...extras });
     scope.set(name, local);
     const position = positionFor(sourceFile, node);
     state.locals.push(Object.freeze({ id: local.id, name, binding, position }));
@@ -1062,7 +1120,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
   }
 
   function compileVariable(statement, scope) {
-    requireConst(statement);
+    const mutable = (statement.declarationList.flags & ts.NodeFlags.Let) !== 0;
+    if (!(statement.declarationList.flags & ts.NodeFlags.BlockScoped)) requireConst(statement);
     const operations = [];
     for (const declaration of statement.declarationList.declarations) {
       if (!ts.isIdentifier(declaration.name) || !declaration.initializer) {
@@ -1070,15 +1129,33 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
         operations.push(createOperation('rejected', { position: positionFor(sourceFile, declaration), reason: 'binding' }));
         continue;
       }
+      const call = unwrap(declaration.initializer);
+      const callPath = ts.isCallExpression(call) && contextPath(call.expression, ctxName)?.join('.');
+      if (callPath === 'resources.map') {
+        // Full lexical validation and catalogue membership were checked above.
+        const resourceId = call.arguments[0]?.text;
+        scope.set(declaration.name.text, { kind: 'resource-view', resourceId });
+        continue;
+      }
+      if (callPath === 'workspace.numbers') {
+        if (state.workspaces.length >= 4) fail(call, 'PULSE_NUMERIC_WORKSPACE_INVALID', 'Managed operations admit at most four numeric workspaces.');
+        const workspaceId = `workspace-${state.workspaces.length}`;
+        const capacity = Number(call.arguments[0]?.text);
+        state.workspaces.push(Object.freeze({ id: workspaceId, capacity }));
+        scope.set(declaration.name.text, { kind: 'workspace-view', workspaceId });
+        operations.push(createOperation('expression', { expression: Object.freeze({ kind: 'workspace-init', workspaceId }) }));
+        continue;
+      }
       const initializer = compileExpression(declaration.initializer, scope);
       if (expressionContainsBareContext(initializer)) {
         fail(declaration.initializer, 'PULSE_MANAGED_HANDLER_CONTEXT_ESCAPE', 'The managed request context cannot be captured in a local value.');
       }
-      const local = bindLocal(declaration.name.text, declaration.name, scope);
+      const local = bindLocal(declaration.name.text, declaration.name, scope, 'value', { mutable });
       operations.push(createOperation('local', {
         id: local.id,
         name: local.name,
         initializer,
+        mutable,
         position: local.position
       }));
     }
@@ -1230,6 +1307,39 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
   }
 
   function compileSourceStatement(statement, scope) {
+    if (ts.isBlock(statement)) {
+      const nested = new Map(scope), statements = [];
+      for (const child of statement.statements) {
+        const result = compileSourceStatement(child, nested);
+        if (result.operations) statements.push(...result.operations); else if (result.operation) statements.push(result.operation);
+      }
+      return { operation: createOperation('block', { statements: Object.freeze(statements) }), terminates: false };
+    }
+    if (ts.isIfStatement(statement)) return { operation: createOperation('if', {
+      test: compileExpression(statement.expression, scope),
+      thenOperation: compileSourceStatement(statement.thenStatement, new Map(scope)).operation,
+      elseOperation: statement.elseStatement ? compileSourceStatement(statement.elseStatement, new Map(scope)).operation : undefined
+    }), terminates: false };
+    if (ts.isForStatement(statement)) {
+      const admission = require('./bounded-pure-loop.js').inspectBoundedPureLoop(statement, {
+        ctxName, resourceReadForCall: call => {
+          const target = call.expression;
+          return ts.isPropertyAccessExpression(target) && ts.isIdentifier(target.expression) && scope.get(target.expression.text)?.kind === 'resource-view';
+        }
+      });
+      if (admission.errors.length) {
+        for (const error of admission.errors) fail(error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
+        return { operation: createOperation('rejected'), terminates: false };
+      }
+      const nested = new Map(scope);
+      const local = bindLocal(admission.name, statement.initializer, nested);
+      state.loopDepth++;
+      const body = compileSourceStatement(statement.statement, nested).operation;
+      state.loopDepth--;
+      return { operation: createOperation('pure-loop', { counter: local.id, maxIterations: admission.maxIterations,
+        test: compileExpression(statement.condition, nested), body }), terminates: false };
+    }
+    if (state.loopDepth && (ts.isBreakStatement(statement) || ts.isContinueStatement(statement))) return { operation: createOperation(ts.isBreakStatement(statement) ? 'break' : 'continue'), terminates: false };
     if (ts.isVariableStatement(statement)) {
       const namespace = compileNamespace(statement, scope);
       return namespace || compileVariable(statement, scope);
@@ -1241,7 +1351,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     if (ts.isExpressionStatement(statement)) {
       const logging = compileLogging(statement, scope);
       if (logging) return logging;
-      compileExpression(statement.expression, scope);
+      const expression = compileExpression(statement.expression, scope);
+      if (['scalar-assignment', 'workspace-write'].includes(expression.kind)) return { operation: createOperation('expression', { expression }), terminates: false };
       fail(statement, 'PULSE_MANAGED_HANDLER_STATEMENT_UNSUPPORTED', 'Managed handlers accept canonical effects, logging, local declarations, if/else branches, and schema-bound returns only.');
       return Object.freeze({ operation: createOperation('rejected', { position: positionFor(sourceFile, statement), reason: 'expression-statement' }), terminates: false });
     }
@@ -1405,6 +1516,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     normalization: normalizer.summary,
     body,
     locals: Object.freeze(state.locals),
+    primitives: Object.freeze({ version: 'pulse.managed-native-primitives.v1', resourceIds: Object.freeze([...state.resourceIds].sort()), workspaces: Object.freeze(state.workspaces), schemaIds: Object.freeze([...state.schemaIds].sort()) }),
     resultSites: Object.freeze(state.resultSites),
     canonical: handlerIrSnapshot(operationIr),
     effects: Object.freeze({
@@ -1440,6 +1552,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     result: record.result,
     body: record.body,
     locals: record.locals,
+    primitives: record.primitives,
     resultSites: record.resultSites,
     effects: Object.freeze({
       count: record.effects.count,
@@ -1480,7 +1593,7 @@ function compileManagedHandlerDescriptors(inputs = {}) {
   const resolved = resolveDescriptors(inputs.graphBuild, descriptors, diagnostics);
   const handlers = [];
   for (const entry of resolved) {
-    const handler = compileHandler(entry, inputs.graphBuild, resolved, diagnostics, packageRecognition, { target: inputs.target });
+    const handler = compileHandler(entry, inputs.graphBuild, resolved, diagnostics, packageRecognition, { target: inputs.target, resourceIds: inputs.resourceIds, schemaIds: inputs.schemaIds });
     if (handler) handlers.push(handler);
   }
   if (diagnostics.length > 0) {

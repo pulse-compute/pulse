@@ -290,6 +290,9 @@ function __pulse_entities_scan_envelope(text: string): bool {
 }
 
 function __pulse_entities_null(): JSON.Value { return JSON.Value.empty() }
+const __pulse_entities_undefined_object: JSON.Obj = new JSON.Obj()
+const __pulse_entities_undefined_value: JSON.Value = JSON.Value.from<JSON.Obj>(__pulse_entities_undefined_object)
+function __pulse_entities_is_undefined(value: JSON.Value): bool { return value.type == JSON.Types.Object && value.get<JSON.Obj>() === __pulse_entities_undefined_object }
 
 function __pulse_entities_is_number(value: JSON.Value): bool {
   const kind = value.type
@@ -297,6 +300,7 @@ function __pulse_entities_is_number(value: JSON.Value): bool {
 }
 
 function __pulse_entities_number(value: JSON.Value): f64 {
+  if (__pulse_entities_is_undefined(value)) return NaN
   switch (value.type) {
     case JSON.Types.U8: return <f64>value.get<u8>()
     case JSON.Types.U16: return <f64>value.get<u16>()
@@ -313,6 +317,7 @@ function __pulse_entities_number(value: JSON.Value): f64 {
 }
 
 function __pulse_entities_text(value: JSON.Value): string {
+  if (__pulse_entities_is_undefined(value)) return 'undefined'
   if (value.type == JSON.Types.String) return value.get<string>()
   if (value.type == JSON.Types.Null) return 'null'
   if (value.type == JSON.Types.Bool) return value.get<bool>() ? 'true' : 'false'
@@ -321,6 +326,7 @@ function __pulse_entities_text(value: JSON.Value): string {
 }
 
 function __pulse_entities_truthy(value: JSON.Value): bool {
+  if (__pulse_entities_is_undefined(value)) return false
   if (value.type == JSON.Types.Null) return false
   if (value.type == JSON.Types.Bool) return value.get<bool>()
   if (value.type == JSON.Types.String) return value.get<string>().length > 0
@@ -334,23 +340,24 @@ function __pulse_entities_truthy(value: JSON.Value): bool {
 function __pulse_entities_property(value: JSON.Value, key: string): JSON.Value {
   if (value.type == JSON.Types.Object) {
     const found = value.get<JSON.Obj>().get(key)
-    return found === null ? __pulse_entities_null() : found!
+    return found === null ? __pulse_entities_undefined_value : found!
   }
   if (key == 'length' && value.type == JSON.Types.String) return JSON.Value.from<f64>(<f64>value.get<string>().length)
   if (key == 'length' && value.type == JSON.Types.Array) return JSON.Value.from<f64>(<f64>value.get<JSON.Arr>().length)
-  return __pulse_entities_null()
+  return __pulse_entities_undefined_value
 }
 
 function __pulse_entities_element(value: JSON.Value, key: JSON.Value): JSON.Value {
   if (value.type == JSON.Types.Array && __pulse_entities_is_number(key)) {
     const index = <i32>__pulse_entities_number(key)
     const array = value.get<JSON.Arr>()
-    return index >= 0 && index < array.length ? array.at(index) : __pulse_entities_null()
+    return index >= 0 && index < array.length ? array.at(index) : __pulse_entities_undefined_value
   }
   return __pulse_entities_property(value, __pulse_entities_text(key))
 }
 
 function __pulse_entities_equal(left: JSON.Value, right: JSON.Value): bool {
+  if (__pulse_entities_is_undefined(left) || __pulse_entities_is_undefined(right)) return __pulse_entities_is_undefined(left) && __pulse_entities_is_undefined(right)
   if (__pulse_entities_is_number(left) && __pulse_entities_is_number(right)) return __pulse_entities_number(left) == __pulse_entities_number(right)
   if (left.type != right.type) return false
   if (left.type == JSON.Types.Null) return true
@@ -370,6 +377,10 @@ function __pulse_entities_binary(operator: i32, left: JSON.Value, right: JSON.Va
   if (operator == 4) return JSON.Value.from<f64>(__pulse_entities_number(left) % __pulse_entities_number(right))
   if (operator == 5) return JSON.Value.from<bool>(__pulse_entities_equal(left, right))
   if (operator == 6) return JSON.Value.from<bool>(!__pulse_entities_equal(left, right))
+  if (operator >= 7 && operator <= 10 && left.type == JSON.Types.String && right.type == JSON.Types.String) {
+    const a = left.get<string>(), b = right.get<string>()
+    return JSON.Value.from<bool>(operator == 7 ? a < b : operator == 8 ? a <= b : operator == 9 ? a > b : a >= b)
+  }
   if (operator == 7) return JSON.Value.from<bool>(__pulse_entities_number(left) < __pulse_entities_number(right))
   if (operator == 8) return JSON.Value.from<bool>(__pulse_entities_number(left) <= __pulse_entities_number(right))
   if (operator == 9) return JSON.Value.from<bool>(__pulse_entities_number(left) > __pulse_entities_number(right))
@@ -433,3 +444,20 @@ export function pulse_entities_body_read_count(): i32 { return __pulse_entities_
 export function pulse_entities_run_complete(): i32 { return __PULSE_ENTITIES_RUN_COMPLETE }
 export function pulse_entities_run_suspended(): i32 { return __PULSE_ENTITIES_RUN_SUSPENDED }
 export function pulse_entities_run_failed(): i32 { return __PULSE_ENTITIES_RUN_FAILED }
+
+// Managed mutable locals are scalar values; input records and arrays stay borrowed.
+function __pulse_entities_scalar(value: JSON.Value): JSON.Value {
+  if (__pulse_entities_is_undefined(value)) return value
+  if (value.type == JSON.Types.Array || value.type == JSON.Types.Object) abort('Expected managed scalar', 'entities', 0, 0)
+  if (value.type == JSON.Types.String && __pulse_entities_utf8_bytes(value.get<string>()) > __PULSE_ENTITIES_SCHEMA_MAX_BYTES) abort('Managed scalar too large', 'entities', 0, 0)
+  return value
+}
+function __pulse_entities_numeric(value: JSON.Value): f64 {
+  if (!__pulse_entities_is_number(value)) return NaN
+  return __pulse_entities_number(value)
+}
+
+function __pulse_entities_valid_json(text: string): bool {
+  const end = __pulse_entities_scan_value(text, 0, 1)
+  return end >= 0 && __pulse_entities_ws(text, end) == text.length
+}

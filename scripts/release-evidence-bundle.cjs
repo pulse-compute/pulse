@@ -116,6 +116,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'crypto-config-planning',
       'entities-package-owned-lowering',
       'entities-envelope-feasibility',
+      'managed-native-primitives',
       'entities-managed-handler',
       'entities-managed-handler-effects',
       'entities-native-runtime',

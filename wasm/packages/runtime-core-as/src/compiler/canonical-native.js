@@ -226,5 +226,6 @@ function assembleNativeResult({
 module.exports = Object.freeze({
   CANONICAL_NATIVE_AS_GENERATOR_VERSION,
   CanonicalNativeAssemblyScriptError,
-  generateCanonicalNativeAssemblyScript
+  generateCanonicalNativeAssemblyScript,
+  generateManagedNativePrimitiveSource: require('./canonical-native-managed.js').generateManagedNativePrimitiveSource
 });

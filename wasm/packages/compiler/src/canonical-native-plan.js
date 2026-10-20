@@ -305,6 +305,10 @@ class NativePlanBuilder {
       ]);
     }
     this.packageApplication = terminalPackageNativeForCompiled(compiled);
+    if (this.packageApplication?.primitivePlan) {
+      for (const id of this.packageApplication.primitivePlan.resourceIds) this.usedResources.add(id);
+      this.numericWorkspaces.push(...this.packageApplication.primitivePlan.workspaces);
+    }
     this.routerBodies = new Map((this.metadata.router?.entries || [])
       .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));
     this.bodyNodes = new Map();

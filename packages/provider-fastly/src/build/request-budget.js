@@ -42,7 +42,7 @@ function instrumentRequestBudget(input, duration, plan) {
   if (source.includes('function __pulse_fastly_write_binary(')) replace('const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) {', 'const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) { if (!__request_check()) return 1;');
   replace('function __pulse_fetch_request_check(index: i32): bool { return true }', 'function __pulse_fetch_request_check(index: i32): bool { return __request_check(index) }');
   replace('function __pulse_fetch_request_remaining(): i32 { return 2147483647 }', 'function __pulse_fetch_request_remaining(): i32 { return __request_remaining() }');
-  if (plan.binaryResources || plan.numericWorkspaces?.length) replace('function __pulse_resource_request_check(): bool { return true }', 'function __pulse_resource_request_check(): bool { return __request_check() }');
+  if (plan.binaryResources || plan.numericWorkspaces?.length || plan.packages?.application?.primitivePlan) replace('function __pulse_resource_request_check(): bool { return true }', 'function __pulse_resource_request_check(): bool { return __request_check() }');
   return source + '\n' + fs.readFileSync(path.join(__dirname,'request-budget.as.ts'),'utf8');
 }
 module.exports = {instrumentRequestBudget};

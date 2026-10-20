@@ -903,6 +903,7 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'I11 unassigned candidate package, tarball, clean-consumer, deterministic-catalog, legal/dependency, and blocker seal'
   }),
+  'managed-native-primitives': nodeTask('test/entities/assert-managed-native-primitives.cjs', { evidence: 'native', timeoutMs: 300000, description: 'combined managed resource, workspace, loop and schema proof with three-target parity and bounded rejection' }),
   'entities-managed-handler': nodeTask('test/entities/assert-entities-managed-handler.cjs', {
     evidence: 'native',
     timeoutMs: 120000,
@@ -1468,6 +1469,7 @@ const profiles = Object.freeze({
     'router-selected-groups',
     'json-as-compatibility',
     'entities-envelope-feasibility',
+    'managed-native-primitives',
     'entities-managed-handler',
     'entities-managed-handler-effects',
     'entities-native-runtime',
