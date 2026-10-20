@@ -1214,6 +1214,10 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 180000,
     description: '05C authored helper/import composition, multiple callable owners and independent ownership rejection'
   }),
+  'callable-authored-javascript': nodeTask('test/callables/assert-callable-javascript.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: '05D static Node JavaScript calls, packaged source, Native parity and request-owned boundary rejection'
+  }),
   'callable-authored-native': nodeTask('test/callables/assert-callable-authored.cjs', {
     evidence: 'native', timeoutMs: 180000,
     description: '05B authored plain Native call, full caller validation, HTTP parity and unused-import elimination'
@@ -1491,6 +1495,7 @@ const profiles = Object.freeze({
     'callable-composition-proof',
     'callable-authored-native',
     'callable-authored-composition',
+    'callable-authored-javascript',
     'mcp-native-binding',
     'fastly-entities-native-workflow',
     'crypto-native-guest-source',

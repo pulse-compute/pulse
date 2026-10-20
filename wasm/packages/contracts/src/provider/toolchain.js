@@ -92,6 +92,7 @@ const JAVASCRIPT_DRIVER_FIELDS = Object.freeze([
   'realityRunner',
   'targetSupportPolicy',
   'validateApplication',
+  'bindCallables',
   'loadApplication',
   'writeSourcePackage',
   'describeSourcePackage',

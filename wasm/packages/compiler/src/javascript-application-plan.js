@@ -139,6 +139,7 @@ function buildJavascriptApplicationPlan(entryFile, options = {}) {
     );
   }
   const packages = createPackageEntries(graphBuild);
+  const callables = buildJavascriptCallables(graphBuild, options);
   const blockers = createBlockers(graphBuild, packages);
   const requestedEnvelope = options.capabilityEnvelope || {};
   const capabilityEnvelope = Object.freeze({
@@ -169,12 +170,62 @@ function buildJavascriptApplicationPlan(entryFile, options = {}) {
     nativeEligibility: graphBuild.nativeEligibility,
     entrySafety: graphBuild.entrySafety,
     capabilityEnvelope,
-    providerLifecycleDeferred: options.providerLifecycleDeferred !== false
+    providerLifecycleDeferred: options.providerLifecycleDeferred !== false,
+    ...(callables ? { callables } : {})
   });
   return Object.freeze({
     ...plan,
     plannerVersion: JAVASCRIPT_APPLICATION_PLANNER_VERSION
   });
+}
+
+function buildJavascriptCallables(graphBuild, options) {
+  const ts = require('typescript');
+  const entry = require('./project/router-module-linker').projectFunctionResolver(graphBuild).entry;
+  const parameter = entry?.functionNode.parameters[0]?.name;
+  if (!parameter || !ts.isIdentifier(parameter) || !entry.functionNode.body) return undefined;
+  let usesCall = false;
+  function visit(node) {
+    if ((ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node))
+      && ts.isIdentifier(node.expression) && node.expression.text === parameter.text
+      && (ts.isPropertyAccessExpression(node) ? node.name.text === 'call'
+        : ts.isStringLiteral(node.argumentExpression) && node.argumentExpression.text === 'call')) usesCall = true;
+    ts.forEachChild(node, visit);
+  }
+  visit(entry.functionNode.body);
+  if (!usesCall) return undefined;
+  if ((options.provider || 'node') !== 'node') throw new JavascriptApplicationPlanError(
+    'PULSE_CALL_SOURCE_PROVIDER', 'Authored computation calls currently require explicit Node JavaScript.');
+  const schemaBundle = options.schemaBundle || require('./canonical-project-compiler').compileProjectSchemas(
+    options.schemas || {}, { rootDir: options.rootDir, configFile: options.configFile }).bundle;
+  const admitted = require('./callable-source-admission').admitCallableSource(graphBuild, {
+    schemaBundle, binaryResources: options.binaryResources
+  });
+  // Do not turn an indirect method reference into a runtime call registration.
+  const recognized = new Set(admitted.callSites.map(site => site.callNode.expression));
+  function check(node) {
+    if (ts.isIdentifier(node) && node.text === parameter.text
+      && !((ts.isPropertyAccessExpression(node.parent) || ts.isElementAccessExpression(node.parent)) && node.parent.expression === node)
+      && !(ts.isPropertyAccessExpression(node.parent) && node.parent.name === node)
+      && !(ts.isPropertyAssignment(node.parent) && node.parent.name === node)) {
+      throw new JavascriptApplicationPlanError('PULSE_CALL_SOURCE_BINDING', 'A callable entry context cannot escape through aliases or arguments.');
+    }
+    if ((ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node))
+      && ts.isIdentifier(node.expression) && node.expression.text === parameter.text
+      && (ts.isElementAccessExpression(node) || node.name.text === 'call') && !recognized.has(node)) {
+      throw new JavascriptApplicationPlanError('PULSE_CALL_SOURCE_FORM', 'Computation calls require direct static ctx.call sites.');
+    }
+    ts.forEachChild(node, check);
+  }
+  check(entry.functionNode.body);
+  let exportName = '__pulseCallableTargets';
+  while (entry.sourceFile.text.includes(exportName)) exportName += '_';
+  return { modulePath: entry.modulePath, exportName, bindings: admitted.callees.map(callee => {
+    const sites = admitted.callSites.filter(site => site.target === callee.identity);
+    return { identity: callee.identity, localName: sites[0].localName,
+      inputSchema: callee.inputSchema, outputSchema: callee.outputSchema, maxCalls: sites.length,
+      resources: (callee.plan.binaryResources?.records || []).map(record => record.id) };
+  }) };
 }
 
 module.exports = Object.freeze({

@@ -431,6 +431,9 @@ function prepareJavascriptApplication(project, options = {}) {
   const descriptor = targetDescriptor(project, 'javascript');
   const javascript = providerDriver(project).javascript;
   const plan = buildJavascriptApplicationPlan(project.entryFile, {
+    schemas: project.schemas,
+    schemaBundle: options.schemaBundle,
+    binaryResources: project.binaryResources,
     rootDir: project.root,
     workspaceRoot: undefined,
     configFile: project.configFile,
@@ -468,6 +471,7 @@ function prepareJavascriptApplication(project, options = {}) {
           : loadJavascriptApplication(plan, {
               workspaceRoot: project.root,
               validateApplication: javascript.validateApplication,
+              bindCallables: javascript.bindCallables,
               allowedPackages: options.allowedPackages
             });
         if (project.binaryResources && loaded?.application) require('@pulse-compute/wasm-host-runtime/runtime/canonical-api-runtime').bindBinaryResourceCatalogue(project.binaryResources, loaded.application);

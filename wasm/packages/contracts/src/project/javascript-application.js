@@ -110,6 +110,31 @@ function normalizeJavascriptApplicationPlan(input) {
   }
   const entryModuleId = requireString('JavaScript application entry module id', input.entryModuleId);
   if (!moduleIds.has(entryModuleId)) throw new TypeError('JavaScript application entry module must be present in modules.');
+  let callables;
+  if (input.callables) {
+    const table = input.callables;
+    const identifier = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+    if (input.provider !== 'node' || !modules.some(module => module.runtime && module.kind === 'project' && module.path === table.modulePath)
+      || !identifier.test(table.exportName) || !Array.isArray(table.bindings) || !table.bindings.length || table.bindings.length > 16) {
+      throw new TypeError('Invalid JavaScript callable owner.');
+    }
+    const identities = new Set();
+    let sites = 0;
+    const bindings = table.bindings.map(binding => {
+      const identity = requireString('JavaScript callable identity', binding.identity);
+      if (identities.has(identity) || !identifier.test(binding.localName)
+        || !Number.isInteger(binding.maxCalls) || binding.maxCalls < 1 || !Array.isArray(binding.resources)) {
+        throw new TypeError('Invalid JavaScript callable binding.');
+      }
+      identities.add(identity); sites += binding.maxCalls;
+      return { identity, localName: binding.localName, maxCalls: binding.maxCalls,
+        inputSchema: requireString('JavaScript callable input schema', binding.inputSchema),
+        outputSchema: requireString('JavaScript callable output schema', binding.outputSchema),
+        resources: binding.resources.map(id => requireString('JavaScript callable resource', id)) };
+    });
+    if (sites > 16) throw new TypeError('JavaScript callable site limit exceeded.');
+    callables = { modulePath: table.modulePath, exportName: table.exportName, bindings };
+  }
   const document = {
     version: JAVASCRIPT_APPLICATION_PLAN_VERSION,
     kind: 'pulse.javascript-application-plan',
@@ -118,6 +143,7 @@ function normalizeJavascriptApplicationPlan(input) {
     targetId: requireString('JavaScript application target id', input.targetId),
     runtimeClass: JAVASCRIPT_RUNTIME_CLASS,
     sourceApplication: true,
+    ...(callables ? { callables } : {}),
     automaticFallback: false,
     workspace: Object.freeze({
       root: '.',
@@ -202,6 +228,15 @@ function normalizeJavascriptTargetDescriptor(input) {
 }
 
 module.exports = Object.freeze({
+  // Private source realization shared by the graph loader and Node packager.
+  javascriptCallableSource(plan, modulePath, source) {
+    if (!plan.callables || modulePath !== plan.callables.modulePath) return source;
+    const { exportName, bindings } = plan.callables;
+    const identifier = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+    if (!identifier.test(exportName) || !Array.isArray(bindings) || !bindings.length || bindings.length > 16
+      || bindings.some(binding => !identifier.test(binding.localName))) throw new TypeError('Invalid static callable bindings.');
+    return `${source}\nexport const ${exportName} = [${bindings.map(binding => binding.localName).join(',')}];\n`;
+  },
   JAVASCRIPT_APPLICATION_PLAN_VERSION,
   JAVASCRIPT_APPLICATION_LOADER_VERSION,
   JAVASCRIPT_TARGET_DESCRIPTOR_VERSION,
