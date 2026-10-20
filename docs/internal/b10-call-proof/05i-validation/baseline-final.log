@@ -1,0 +1,3 @@
+{"kind":"router","executions":12,"nodeBytes":40248,"fastlyBytes":87831}
+{"kind":"mcp","executions":24,"nodeBytes":101408,"fastlyBytes":144012}
+{"status":"passed","executions":28,"rejections":12,"baseline":"8a51d705025c69ae306004215cb6cb48248d68e1"}

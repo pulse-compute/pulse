@@ -1,0 +1,48 @@
+CallableSourceAdmissionError: Callee failed ordinary computation admission.
+    at fail (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:24:61)
+    at visit (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:109:27)
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+    at visitNode2 (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32449:18)
+    at forEachChildInReturnStatement (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32702:12)
+    at Object.forEachChild (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32970:35)
+    at visit (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:8)
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+    at visitNodes (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32457:22)
+    at forEachChildInBlock (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32927:10) undefined [
+  {
+    code: 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED',
+    kind: 'CanonicalNativePlanDiagnostic',
+    severity: 'error',
+    message: 'Direct function calls are outside the canonical native value model.',
+    file: 'src/example.ts.canonical.generated.js',
+    position: { line: 3730, column: 24, offset: 193152 },
+    detail: { callee: 'Number' }
+  },
+  {
+    code: 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED',
+    kind: 'CanonicalNativePlanDiagnostic',
+    severity: 'error',
+    message: 'Direct function calls are outside the canonical native value model.',
+    file: 'src/example.ts.canonical.generated.js',
+    position: { line: 3885, column: 24, offset: 204892 },
+    detail: { callee: 'Number' }
+  },
+  {
+    code: 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED',
+    kind: 'CanonicalNativePlanDiagnostic',
+    severity: 'error',
+    message: 'Direct function calls are outside the canonical native value model.',
+    file: 'src/example.ts.canonical.generated.js',
+    position: { line: 4045, column: 24, offset: 217465 },
+    detail: { callee: 'Number' }
+  },
+  {
+    code: 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED',
+    kind: 'CanonicalNativePlanDiagnostic',
+    severity: 'error',
+    message: 'Direct function calls are outside the canonical native value model.',
+    file: 'src/example.ts.canonical.generated.js',
+    position: { line: 4193, column: 24, offset: 228975 },
+    detail: { callee: 'Number' }
+  }
+]

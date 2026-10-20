@@ -1,0 +1,49 @@
+{
+  "testedLocalCommit": "eaa0180bb5576737af62aa638119b48c176a9707",
+  "workingTree": "clean",
+  "checks": [
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "status": "passed",
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/docs-final.log",
+      "bytes": 239927,
+      "sha256": "89a17f9d1e39581a397f9099c4fdca4ba3b5d85926cf3ed85cde81245a0972f8"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "status": "passed",
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/documentation-release-final.log",
+      "bytes": 229706,
+      "sha256": "452b184acf7bda5a71a362c8d3dee6fbd8bf65120ddb6a1e42ecdbacfeac2a05"
+    }
+  ],
+  "evidenceFollowupChecks": [
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "status": "passed",
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/maintainer-delivery.log",
+      "bytes": 345,
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2"
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "status": "passed",
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/docs-delivery.log",
+      "bytes": 242745,
+      "sha256": "0950f1e211cf065f52bfb563c9fe181d3dd51f0327fe7afb1d17d4fe60b41943"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "status": "passed",
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05i/documentation-release-delivery.log",
+      "bytes": 232426,
+      "sha256": "17161601a58e74fd948d9cf2d2412991de7ecbdc585206e2581a2b7af6787e6d"
+    }
+  ],
+  "evidenceFollowupSource": "7a82f92a6d63ded093e35b25bdc1a341c82b2792 with evidence/documentation-only additions"
+}

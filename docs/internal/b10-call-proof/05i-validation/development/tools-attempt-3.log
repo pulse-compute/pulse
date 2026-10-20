@@ -1,0 +1,14 @@
+AssertionError [ERR_ASSERTION]: only one full-text resource copy
+
+252176 !== -1
+
+    at main (/workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:84:12)
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:200:18
+    at Object.<anonymous> (/workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:200:290)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 undefined undefined

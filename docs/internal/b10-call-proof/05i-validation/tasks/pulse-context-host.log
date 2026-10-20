@@ -1,0 +1,1 @@
+ok - built-only clean process; copied runtime closure; five MCP tools; identity/pre-readiness rejection, bind cleanup, request deadline/disconnect and shutdown; startup 194.3ms; largest MCP reply 17416 bytes

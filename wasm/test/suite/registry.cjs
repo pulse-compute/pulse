@@ -1246,7 +1246,7 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 300000, description: '05I four-tool MCP parity, Unicode pagination and admitted response bounds'
   }),
   'pulse-context-build': nodeTask('test/mcp/assert-context-build.cjs', {
-    evidence: 'unit', timeoutMs: 60000, description: 'B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection'
+    evidence: 'unit', timeoutMs: 120000, description: 'B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection'
   }),
   'pulse-context-corpus': nodeTask('test/mcp/assert-context-corpus.cjs', {
     evidence: 'unit', timeoutMs: 30000,

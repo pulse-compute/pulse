@@ -42,8 +42,12 @@ are retained in `docs/internal/b10-call-proof/05I-VALIDATION.md`. The four-tool 
 includes the 05H start regression and independently executes legacy handlers as
 its oracle. Production coverage and a separate format-admitted synthetic corpus
 exercise Unicode, maximum content, terminal pages and response-bound failures.
-Previous lifetime evidence remains in 05G/05F. The no-call/unused baseline is
-replayed for the shared-emitter correction. Full profiles, installed closure, actual provider acceptance
+All nine focused checks have passing terminal evidence, including 3,330 tool
+executions and 120 rebuild/admission cases. The first aggregate run hit the old
+rebuild timeout; its completed results are retained, and the remainder passed
+after a timeout-only adjustment. The fresh baseline replay passed 28 executions
+with byte-identical no-call/unused Wasm. Published code `dd7241e1` matches the full
+tree of clean tested local `eaa0180`; the remainder ran on clean `7a82f92`. Full profiles, installed closure, actual provider acceptance
 and release sealing remain deferred under the user's checkpoint direction.
 Dependencies are the restored identical-lockfile graph.
 

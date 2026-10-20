@@ -1,0 +1,21 @@
+CallableSourceAdmissionError: Callee failed ordinary computation admission.
+    at fail (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:24:61)
+    at visit (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:109:27)
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+    at visitNode2 (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32449:18)
+    at forEachChildInReturnStatement (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32702:12)
+    at Object.forEachChild (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32970:35)
+    at visit (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:8)
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+    at visitNodes (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32457:22)
+    at forEachChildInBlock (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32927:10) undefined [
+  {
+    code: 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED',
+    kind: 'CanonicalNativePlanDiagnostic',
+    severity: 'error',
+    message: 'Pure helper arguments must match their declared scalar or borrowed structural kinds.',
+    file: 'src/read.ts.canonical.generated.js',
+    position: { line: 5031, column: 26, offset: 233671 },
+    detail: { arguments: [Array] }
+  }
+]
