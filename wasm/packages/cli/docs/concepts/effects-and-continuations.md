@@ -213,10 +213,15 @@ work and suppresses continuation, including late completions. A per-fetch timeou
 starts at flush dispatch; the request deadline also includes construction time.
 Fastly Native retires pending handles but cannot promise remote wire cancellation.
 
-Node and Fastly retain their existing provider capability restrictions. In
-particular, runtime URLs on Fastly Native require its existing explicit single
-backend binding; a collection does not add multi-backend selection or undeclared
-origin authority. Static keyed `ctx.parallel({ ... })` remains available.
+Node and Fastly retain their provider capability restrictions. Fastly Native
+runtime URLs use existing static bindings unless
+`fastly.bindings.dynamicBackends: true` explicitly enables bounded multi-origin
+selection. Configured origins take precedence; a request may attempt at most 32
+dynamic registrations across all collections, with canonical-origin reuse.
+The [Native dynamic-backend policy](../packages/provider-fastly.md#native-dynamic-backends)
+defines URL eligibility, Host/TLS behavior and service prerequisites. A collection
+does not independently grant origin authority. Static keyed
+`ctx.parallel({ ... })` remains available.
 
 ## Explicit portable groups with `ctx.parallel`
 

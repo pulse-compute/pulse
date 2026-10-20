@@ -116,6 +116,52 @@ The root `fastly()` helper supports:
 
 See [Project configuration](../reference/project-config.md#fastly-provider-options) for field-level defaults, precedence, and constraints.
 
+### Native dynamic backends
+
+Set `fastly.bindings.dynamicBackends: true` to allow ordinary Native fetches to
+select runtime origins. This uses the existing opt-in and requires the Fastly
+Dynamic Backends service capability on a deployed service. Configured canonical
+origin mappings take precedence; internal explicit effect bindings take first
+precedence. With the opt-in disabled, existing static selection is unchanged.
+With it enabled, an unmapped runtime origin never falls back to a different
+configured backend. S3, GRIP control endpoints and experimental body forwarding
+retain their static binding requirements.
+
+Native dynamic selection accepts absolute ASCII HTTP/HTTPS URLs with DNS names,
+and canonical dotted-decimal IPv4 over HTTP. Ports must be 1–65535. Credentials,
+IPv6, HTTPS IP literals, Unicode/IDNA (including `xn--` labels), numeric host
+aliases, backslashes, whitespace and malformed authorities are rejected before
+dispatch. Runtime origin lookup uses this same parser; a statically bound effect
+retains its existing URL handling. JavaScript uses the SDK/WHATWG URL path and
+may admit additional host forms.
+
+Scheme and DNS case and default ports are normalized. A DNS trailing dot remains
+part of identity. Paths and queries are preserved; fragments are removed. Host
+comes from the URL authority, including a nondefault port, and overrides an
+authored Host header for dynamic destinations. HTTPS uses the URL DNS hostname
+for certificate verification and SNI with normal platform trust. This opt-in adds
+no certificate bypass, custom CA, redirect following or retry policy.
+
+At most 32 registrations may be attempted per request, including failures and
+successive effect collections. Repeated requests to a canonical origin reuse its
+registered name without spending another attempt. This limit is separate from
+the existing 32-member collection limit. The registry survives continuation
+resumption and is cleared at invocation completion. Host-side network resources
+remain owned by the platform; no unregister or remote cancellation is promised.
+Registration runs inside the existing request/fetch deadline, before outbound
+request/body handles are allocated. Failure never falls back to another backend
+or target. Invalid/unsupported dynamic URLs produce a bounded 400 response;
+unavailable capability, registration failure or exhausted attempts produce a
+bounded 500 response with remediation text, without echoing the URL.
+
+Native artifact inspection records the active policy, static runtime mappings,
+required registration import and eligibility limits. Reusing an artifact with
+different dynamic selection bindings requires rebuilding. Disabled builds, and
+builds in which all fetches are statically bound, emit no dynamic helper, registry
+or registration import. Public/installed multi-origin acceptance, deployed
+entitlement, connection reuse and production overhead qualification remain
+separate release gates; local or injected-host success does not establish them.
+
 ## Build outputs
 
 The active `.pulse/config.ts` profile selects one target explicitly:

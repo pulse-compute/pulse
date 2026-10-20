@@ -112,6 +112,8 @@ function executeFastlyNativeHttpEffects(input, options = {}) {
   function readBytes(pointer, length) { return Buffer.from(new Uint8Array(memory().buffer, Number(pointer), Number(length))); }
   function readUtf8(pointer, length) { return readBytes(pointer, length).toString('utf8'); }
 
+  const dynamicBackends = require('./native-dynamic-backends-host.js').createDynamicBackendHost({ view, readUtf8, trace, options });
+
   function writeUtf8(value, pointer, maxLength, writtenOut) {
     const bytes = Buffer.from(String(value), 'utf8');
     writeU32(writtenOut, bytes.length);
@@ -165,6 +167,7 @@ function executeFastlyNativeHttpEffects(input, options = {}) {
       }
     },
     fastly_http_req: {
+      register_dynamic_backend: dynamicBackends.register,
       body_downstream_get(requestOut, bodyOut) {
         trace.push({ module: 'fastly_http_req', name: 'body_downstream_get' });
         writeU32(requestOut, downstreamRequestHandle);
@@ -225,6 +228,7 @@ function executeFastlyNativeHttpEffects(input, options = {}) {
         const body = bodies.get(Number(bodyHandle));
         if (!request || !body) return FASTLY_STATUS_BADF;
         const backend = readUtf8(backendPointer, backendLength);
+        dynamicBackends.route(backend, request);
         const fixture = resolveFixture(options.fixtures, backend, request.method, request.url);
         if (!fixture) {
           trace.push({ module: 'fastly_http_req', name: 'send_async', handle: Number(handle), backend, method: request.method, url: request.url, missingFixture: true });
