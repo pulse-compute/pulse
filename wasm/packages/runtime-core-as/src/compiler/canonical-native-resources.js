@@ -1,20 +1,22 @@
 'use strict';
 
-function prepareNativeResources(plan) {
+function nativeResourceBacking(blob, name) {
+  const bytes = Buffer.from(blob.data, 'base64');
+  // memory.data emits literal raw bytes, without base64 or a runtime decoder.
+  const words = [];
+  for (let offset = 0; offset < bytes.length; offset += 8) {
+    const word = Buffer.alloc(8); bytes.copy(word, 0, offset, offset + 8);
+    words.push('0x' + word.reverse().toString('hex'));
+  }
+  return `const ${name}: usize = memory.data<u64>([${words.length ? words.join(',') : '0'}])`;
+}
+function prepareNativeResources(plan, sharedReferences) {
   const catalogue = plan.binaryResources;
-  if (!catalogue) return { source: [], read() { throw new Error('Missing resource catalogue'); } };
+  if (!catalogue) return { source: [], references: new Map(), read() { throw new Error('Missing resource catalogue'); } };
   require('@pulse-compute/wasm-contracts/resources/embedded').validateResourceCatalogue(catalogue);
-  const source = catalogue.blobs.map((blob, index) => {
-    const bytes = Buffer.from(blob.data, 'base64');
-    // memory.data emits literal raw bytes, without base64 or a runtime decoder.
-    const words = [];
-    for (let offset = 0; offset < bytes.length; offset += 8) {
-      const word = Buffer.alloc(8); bytes.copy(word, 0, offset, offset + 8);
-      words.push('0x' + word.reverse().toString('hex'));
-    }
-    return `const __pulse_resource_${index}: usize = memory.data<u64>([${words.length ? words.join(',') : '0'}])`;
-
-  });
+  const references = sharedReferences || new Map(catalogue.blobs.map((blob, index) => [blob.id, `__pulse_resource_${index}`]));
+  for (const blob of catalogue.blobs) if (!references.has(blob.id)) throw new Error('Missing shared resource backing');
+  const source = sharedReferences ? [] : catalogue.blobs.map(blob => nativeResourceBacking(blob, references.get(blob.id)));
   source.push(`function __pulse_resource_read(base: usize, length: i32, offset: f64, operation: i32): f64 {
   const checked = host_resource_check(offset, length, operation == 1 ? 1 : operation == 0 ? 0 : 4);
   if (checked < 0) return 0;
@@ -54,13 +56,13 @@ function prepareNativeResources(plan) {
     const record = catalogue.records.find(entry => entry.id === expression.resourceId);
     return { record, index: catalogue.blobs.findIndex(blob => blob.id === record.blobId) };
   }
-  return { source, read(expression, offset = '0.0') {
+  return { source, references, read(expression, offset = '0.0') {
     const { record, index } = location(expression);
     const operation = ['byteLength', 'readU8', 'readU32LE', 'readF32LE'].indexOf(expression.operation);
-    return `__pulse_resource_read(__pulse_resource_${index}, ${record.byteLength}, ${offset}, ${operation})`;
+    return `__pulse_resource_read(${references.get(record.blobId)}, ${record.byteLength}, ${offset}, ${operation})`;
   }, utf8(expression, offset, length) {
     const { record, index } = location(expression);
-    return `__pulse_resource_utf8(__pulse_resource_${index}, ${record.byteLength}, ${offset}, ${length})`;
+    return `__pulse_resource_utf8(${references.get(record.blobId)}, ${record.byteLength}, ${offset}, ${length})`;
   } };
 }
-module.exports = { prepareNativeResources };
+module.exports = { prepareNativeResources, nativeResourceBacking };

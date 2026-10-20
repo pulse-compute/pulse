@@ -22,9 +22,22 @@ function namespaceSource(source, prefix, hostPrefix) {
 function generateCallableSources(callables, options = {}) {
   const { generateCanonicalNativeAssemblyScript } = require('./canonical-native');
   const fragments = [];
+  // Plain callers already own the combined catalogue. Terminal package callers
+  // have no canonical parent emitter, so allocate one pool across their callees.
+  const references = options.resourceReferences || new Map();
+  if (!options.resourceReferences) {
+    const { nativeResourceBacking } = require('./canonical-native-resources');
+    for (const plan of callables) for (const blob of plan.binaryResources?.blobs || []) {
+      if (!references.has(blob.id)) {
+        const name = `__pulse_shared_resource_${references.size}`;
+        references.set(blob.id, name);
+        fragments.push(nativeResourceBacking(blob, name));
+      }
+    }
+  }
   callables.forEach((plan,index) => {
     const prefix = `__call_${index}_`;
-    const generated = generateCanonicalNativeAssemblyScript(plan);
+    const generated = generateCanonicalNativeAssemblyScript(plan, { resourceReferences: references });
     // Caller owns schema exports; schema text operations use the existing host
     // codec boundary. Dead private generated codecs disappear during Wasm DCE.
     let source = namespaceSource(generated.source,prefix);

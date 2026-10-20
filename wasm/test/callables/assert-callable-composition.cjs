@@ -23,15 +23,16 @@ const write = (name, source) => fs.writeFileSync(path.join(cwd,name), source);
 const pair = "{inputSchema:'proof.Input',outputSchema:'proof.Output'}";
 const secondPair = "{inputSchema:'proof.OtherInput',outputSchema:'proof.OtherOutput'}";
 const imports = "import {query,unused} from './query';import {lookup} from './barrel';import {second} from './second';";
-const body = `const a=ctx.call(query,{value:2},${pair});const b=ctx.call(second,{value:5},${secondPair});const c=ctx.call(lookup,{value:7},${pair});return ctx.json({a,b,c},{schema:'proof.Runs'});`;
+const body = `const parentResource=ctx.resources.map('shared');const parentByte=parentResource.readU8(0);const a=ctx.call(query,{value:parentByte-63},${pair});const b=ctx.call(second,{value:5},${secondPair});const c=ctx.call(lookup,{value:7},${pair});return ctx.json({a,b,c},{schema:'proof.Runs'});`;
 const helper = "export function unusedHelper(value:number):number{return impossible();}import type {Payload} from './types';export function read(input:Payload):number{return input.value;}" + 'export function weight(value:number):number {let total=0;for(let i=0;i<2;i++){total+=value;}return total;}';
 const query = `import {weight,weight as twice,read,unusedHelper} from './helper';import {LIMIT as CAP,LABEL} from './constants-barrel';
 export function query(ctx,input){const data=ctx.resources.map('shared');const cells=ctx.workspace.numbers(CAP);const initial=cells[0];let total=0;for(let i=0;i<CAP;i++){cells[i]=data.readU8(i);total+=weight(cells[i]);}return {value:total+twice(input.value)+read(input),initial,word:LABEL};}
 export function unused(ctx,input){const data=ctx.resources.map('unused');return ctx.fetch('https://unused.invalid');}`;
 const second = `import {weight as multiply} from './helper';export function second(ctx,input){const shared=ctx.resources.map('shared-alias');const other=ctx.resources.map('distinct');const cells=ctx.workspace.numbers(2);const initial=cells[0];cells[0]=multiply(shared.readU8(0));return {value:cells[0]+other.readU8(0)+input.value,initial,word:other.readUtf8(1,3)};}`;
+const sharedBytes=Buffer.from('ABCD_unique_shared_resource_05I'), distinctBytes=Buffer.from('Z雪_unique_distinct_resource_05I');
 const budgets={files:3,bindings:4,fileBytes:128,totalBytes:384,serializedBytes:4096};
 const resources=R.admitResourceCatalogue(JSON.stringify(R.createResourceManifest([
-  {path:'/shared',bytes:Buffer.from('ABCD')},{path:'/distinct',bytes:Buffer.from('Z雪')},{path:'/unused',bytes:Buffer.from('UNREACHABLE_COMPOSITION_RESOURCE')}
+  {path:'/shared',bytes:sharedBytes},{path:'/distinct',bytes:distinctBytes},{path:'/unused',bytes:Buffer.from('UNREACHABLE_COMPOSITION_RESOURCE')}
 ],budgets)),[{id:'shared',path:'/shared'},{id:'shared-alias',path:'/shared'},{id:'distinct',path:'/distinct'},{id:'unused',path:'/unused'}],budgets);
 let registry;
 function source(text=body, imported=imports){write('index.ts',`${imported}\nexport default async function handler(ctx){${text}}`);}
@@ -51,13 +52,19 @@ async function main(){
   assert.deepEqual(p.binaryResources.records.map(r=>r.id),['distinct','shared','shared-alias']);
   assert.equal(plan().planHash,p.planHash);
   assert.equal(p.binaryResources.blobs.length,2);
-  assert.equal(p.binaryResources.backingBytes,8);
+  assert.equal(p.binaryResources.backingBytes,sharedBytes.length+distinctBytes.length);
   assert.equal(p.binaryResources.records[1].blobId,p.binaryResources.records[2].blobId);
   assert(!JSON.stringify(p).includes('UNREACHABLE_COMPOSITION_RESOURCE'));
   // Aliases share one target; independently owned callees retain their own
   // helper/workspace slots even when helper identity and physical bytes match.
   assert.equal(p.callables[0].helpers[0].id,p.callables[1].helpers[0].id);
   const artifacts={node:compileCanonicalNativePlan(p,{cwd:root,emitWat:false,reportCapture:false}),fastly:fastlyCompile(p,{cwd:root,requirePlatformCapability:false,canonicalBuild:true,maxDurationMs:5000})};
+  for(const artifact of Object.values(artifacts)){
+    const module=new WebAssembly.Module(artifact.wasm), imports={};
+    for(const entry of WebAssembly.Module.imports(module)){assert.equal(entry.kind,'function');(imports[entry.module]??={})[entry.name]=()=>0;}
+    const memory=Buffer.from(new WebAssembly.Instance(module,imports).exports.memory.buffer);
+    for(const bytes of [sharedBytes,distinctBytes]){const at=memory.indexOf(bytes);assert(at>=0);assert.equal(memory.indexOf(bytes,at+1),-1,'caller and callees share one physical backing');}
+  }
   report.artifacts=Object.fromEntries(Object.entries(artifacts).map(([name,a])=>[name,{bytes:a.wasm.length,sha256:sha(a.wasm),imports:WebAssembly.Module.imports(new WebAssembly.Module(a.wasm))}]));
   const expected={a:{value:538,initial:0,word:'雪😀'},b:{value:225,initial:0,word:'雪'},c:{value:553,initial:0,word:'雪😀'}};
   for(let i=0;i<3;i++)for(const response of [(await executeCanonicalNativeModule(artifacts.node,{})).response,fastlyExecute(artifacts.fastly,{}).response]){assert.equal(response.status,200);assert.deepEqual(JSON.parse(response.body),expected);report.executions++;}

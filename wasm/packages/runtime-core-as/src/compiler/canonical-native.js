@@ -27,7 +27,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     localIndex, effectIndex, continuationIndex, expressions, expressionIndex,
     stateEnabled, binaryIndex, unaryIndex, fail, localName, stringHandle
   } = prepareNativePlan(plan);
-  const resources = require('./canonical-native-resources.js').prepareNativeResources(plan);
+  const resources = require('./canonical-native-resources.js').prepareNativeResources(plan, options.resourceReferences);
   const workspaces = require('./canonical-native-workspaces.js').prepareNativeWorkspaces(plan);
   resources.source.push(...workspaces.source);
   resources.workspaces = workspaces;
@@ -120,7 +120,7 @@ function assembleNativeSource({
     ...renderNativeRun({ guardStateCount, partitioned, renderedBlocks, invalidProgramCounter }),
     ...renderNativeExports({ eventReachable, stateEnabled, eventExports: support.eventExports, setterCases: support.setterCases }),
     ...nativeSchemaCodecs.exports,
-    ...(plan.callables?.length ? [require('./canonical-native-callable.js').generateCallableSources(plan.callables)] : []),
+    ...(plan.callables?.length ? [require('./canonical-native-callable.js').generateCallableSources(plan.callables, { resourceReferences: resources.references })] : []),
     ''
   ].join('\n');
 }

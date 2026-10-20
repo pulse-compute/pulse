@@ -1,6 +1,6 @@
 # B10 — shared callable composition proof
 
-Current application checkpoint: [B10-MCP-05H](./05H.md). Bounded imported
+Current application checkpoint: [B10-MCP-05I](./05I.md). Bounded imported
 computations execute through shared `ctx.call` in plain HTTP, Router and managed
 MCP callers on Node Native, Fastly Native and explicit Node JavaScript. 05G adds
 public types, contract documentation, diagnostics and versioned callable metadata.
@@ -175,3 +175,9 @@ checkpoint. Next: 05H (#449).
 config/tool metadata and three-target MCP behavior. The v1 five-tool host remains
 available during migration. `05H-VALIDATION.md` records this checkpoint. Next: 05I
 (#450), migrated read/example/diagnostic.
+
+## 05I continuation
+
+[05I](./05I.md) completes cited read/example/diagnostic alongside `pulse.start`,
+with exact Unicode pagination and response bounds on all three targets.
+`05I-VALIDATION.md` records the checkpoint. Next: 06A (#451), sparse lexical search.

@@ -1,0 +1,17 @@
+{
+  "read": {
+    "title": "Read a Pulse contract",
+    "description": "Read one cited corpus ID; continue with the returned UTF-16 nextOffset.",
+    "mcp": {"readOnlyHint": true, "idempotentHint": true, "destructiveHint": false, "openWorldHint": false}
+  },
+  "example": {
+    "title": "Retrieve a Pulse example",
+    "description": "Retrieve maintained starter files by exact corpus ID, with pagination.",
+    "mcp": {"readOnlyHint": true, "idempotentHint": true, "destructiveHint": false, "openWorldHint": false}
+  },
+  "diagnostic": {
+    "title": "Explain a Pulse diagnostic",
+    "description": "Explain an exact diagnostic with citations and suggested local checks.",
+    "mcp": {"readOnlyHint": true, "idempotentHint": true, "destructiveHint": false, "openWorldHint": false}
+  }
+}

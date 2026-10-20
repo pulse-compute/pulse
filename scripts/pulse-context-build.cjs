@@ -16,7 +16,7 @@ const MANIFEST = `${DIRECTORY}/context-manifest.json`;
 // Finite executable closure, audited against the CommonJS cache after extraction.
 // Generated data and evidence never enter this list.
 const PRODUCER_SOURCES = [
-  'scripts/pulse-context-build.cjs', 'scripts/pulse-context-format.cjs', 'scripts/pulse-context-corpus.cjs', 'scripts/pulse-context-start.cjs',
+  'scripts/pulse-context-build.cjs', 'scripts/pulse-context-format.cjs', 'scripts/pulse-context-corpus.cjs', 'scripts/pulse-context-start.cjs', 'scripts/pulse-context-tools.cjs',
   'wasm/packages/cli/src/command-spec.js', 'wasm/packages/cli/src/diagnostics.js', 'wasm/packages/cli/src/documentation.js',
   'wasm/packages/contracts/src/resources/embedded.js', 'wasm/packages/contracts/src/assets/embedded-manifest.js'
 ].sort();

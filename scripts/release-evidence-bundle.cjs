@@ -122,7 +122,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-native-runtime',
       'entities-hardening',
       'entities-node-native-workflow',
-      'pulse-context-start',
+      'pulse-context-tools',
       'callable-public-contract',
       'callable-composition-proof',
       'callable-authored-native',

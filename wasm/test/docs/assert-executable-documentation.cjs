@@ -228,6 +228,9 @@ function assertExampleFormatting() {
       'examples/12-pulse-context-mcp/context-data/resource-manifest.json',
       'examples/12-pulse-context-mcp/application/.pulse/config.ts',
       'examples/12-pulse-context-mcp/application/src/start.ts',
+      'examples/12-pulse-context-mcp/application/src/read.ts',
+      'examples/12-pulse-context-mcp/application/src/example.ts',
+      'examples/12-pulse-context-mcp/application/src/diagnostic.ts',
       'examples/12-pulse-context-mcp/application/src/index.ts'
     ].includes(relativeFile)) continue;
     const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);

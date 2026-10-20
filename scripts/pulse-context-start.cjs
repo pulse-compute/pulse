@@ -1,11 +1,11 @@
 'use strict';
 // Deterministic authoring of one finite tool; all execution remains ordinary ctx.call.
-const F = require('./pulse-context-format.cjs');
+const TOOLS = require('./pulse-context-tools.cjs');
 const PROJECT = 'examples/12-pulse-context-mcp';
 const APP = `${PROJECT}/application`;
 const INPUTS = ['scripts/pulse-context-start.json', `${APP}/.pulse/config.template.ts`,
   `${APP}/src/start.template.ts`, `${APP}/src/index.template.ts`,
-  `${PROJECT}/src/schemas.ts`, `${APP}/package.json`, `${APP}/tsconfig.json`];
+  `${PROJECT}/src/schemas.ts`, `${APP}/package.json`, `${APP}/tsconfig.json`, ...TOOLS.INPUTS];
 function generate(corpus, config, files, manifest, read) {
   const declaration = JSON.parse(read(INPUTS[0]));
   if (declaration.goals.length !== 4 || new Set(declaration.goals.map(g => g.id)).size !== 4) throw Error('Expected four distinct starter goals');
@@ -56,6 +56,7 @@ function generate(corpus, config, files, manifest, read) {
       unresolvedChoices:[...goal.choices,'Choose a local directory and install the required toolchain. No commands or file writes have been performed.',...(adapted?['The bundled example retains its Node Native provenance. Apply the explicit target change above and validate JavaScript locally.']:[])]};
     // Worst echoed version is 64 ASCII control characters, six JSON bytes each.
     const upperBound = Buffer.byteLength(JSON.stringify({...common,status:'ok',plan,meta:{...meta,requestedVersion:'\0'.repeat(64)}}));
+    if(TOOLS.projectedSize({...common,status:'ok',plan,meta:{...meta,requestedVersion:corpus.pulseVersion}},corpus.pulseVersion)>config.limits.toolReplyBytes) throw Error('Starter MCP result exceeds tool byte budget');
     if(upperBound>config.limits.toolReplyBytes) throw Error('Starter reply exceeds tool byte budget');
     const row=corpus.records.indexOf(configuration), bytes=files['text.bin'];
     const begin=bytes.readUInt32LE(64+row*12), length=bytes.readUInt32LE(68+row*12);
@@ -70,17 +71,20 @@ function generate(corpus, config, files, manifest, read) {
     plans.push({goal:goal.id,target,configurationRow:row,maxReplyBytes:upperBound});
   }
   body+=`  return ${error('unknown-goal','unknown-goal','Choose one of supportedGoals.')}\n`;
-  const substitute = (source, token, value) => {if(source.split(token).length!==2)throw Error(`Expected one ${token} in starter template`);return source.replace(token,value);};
+  const substitute = (source, token, value) => {if(source.split(token).length!==2)throw Error(`Expected one ${token} in starter template`);return source.replace(token,()=>value);};
   const replace = (file, token, value) => substitute(read(file).toString(),token,value);
   let index=replace(INPUTS[3],'__TOOL_METADATA__',JSON.stringify(declaration.tool));
   index=substitute(index,'__SERVER_INFO__',JSON.stringify({name:'pulse-context',version:corpus.pulseVersion}));
   index=substitute(index,'__MCP_LIMITS__',JSON.stringify({maxRequestBytes:config.limits.requestBytes,maxResponseBytes:config.limits.mcpResponseBytes,maxDepth:config.limits.requestDepth,deadlineMs:config.limits.deadlineMs}));
+  const tools = TOOLS.generate(corpus, config, files, read);
+  for (const [name, metadata] of Object.entries(tools.declarations)) index=substitute(index,`__${name.toUpperCase()}_METADATA__`,JSON.stringify(metadata));
   const outputs = new Map([
     [`${APP}/.pulse/config.ts`, Buffer.from(replace(INPUTS[1],"'__CONTEXT_RESOURCE_MANIFEST__'",JSON.stringify(JSON.stringify(manifest))))],
     [`${APP}/src/start.ts`,Buffer.from(replace(INPUTS[2],'__START_BODY__',body))],
     [`${APP}/src/index.ts`,Buffer.from(index)],
     [`${APP}/src/schemas.ts`,read(`${PROJECT}/src/schemas.ts`)]
   ]);
-  return {outputs,metadata:{version:'pulse.context-start.v1',tools:['pulse.start'],plans}};
+  for (const [file, bytes] of tools.outputs) outputs.set(file, bytes);
+  return {outputs,metadata:{version:'pulse.context-tools.v2',tools:['pulse.start','pulse.read','pulse.example','pulse.diagnostic'],plans}};
 }
 module.exports={APP,INPUTS,generate};

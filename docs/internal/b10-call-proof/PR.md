@@ -2,7 +2,7 @@
 
 Plain handlers, reachable Router handlers and managed MCP operations now invoke
 bounded imported computations through shared `ctx.call` on Native and explicit
-Node JavaScript. This draft implements 05B–05H (#443–#449).
+Node JavaScript. This draft implements 05B–05I (#443–#450).
 
 - Shared project resolution, helper composition, schema codecs, readonly ownership,
   resource/workspace rules and Native generation remain the owners. Entities keeps
@@ -18,40 +18,43 @@ Node JavaScript. This draft implements 05B–05H (#443–#449).
   state or effect authority. 05G adds public types, source-bound docs and diagnostics;
   final support still requires human PR review.
 
-## 05H application checkpoint
+## 05I application checkpoint
 
-Example 12 now contains an explicit `application/` project with one complete
-migrated tool, `pulse.start`, running through shared `ctx.call` on Node Native,
-Fastly Native and Node JavaScript. It returns all dependency/configuration/
-contract arrays with exact versions and citations. The existing five-tool v1
-Node host remains available while other tools migrate.
+Example 12's contained `application/` project now exposes four complete tools:
+`pulse.start`, `pulse.read`, `pulse.example` and `pulse.diagnostic`, through shared
+`ctx.call` on Node Native, injected Fastly Native and Node JavaScript. The existing
+five-tool v1 Node host remains available, including its `pulse.explain_diagnostic`
+name. Migrated search remains a separate checkpoint.
 
-The deterministic context builder owns the resource manifest, application config,
-finite tool metadata, source/schema output and installed mirrors. Native uses one
-physical full-text resource backing. The preserved `0b33b3c` config prototype is
-reconciled against current owners without importing PR #438.
+Read preserves original UTF-16 offsets, scalar boundaries and exact UTF-8 text.
+Example pages retain whole files, optional fields and complete citation arrays;
+diagnostics retain remediation, related contracts and suggested local checks.
+Generation and application code enforce 24 KiB tool and 128 KiB protocol budgets,
+including JSON escaping and duplicate MCP text/structured content. Native retains
+one full-text resource backing. A focused shared-emitter correction reuses that
+backing across callable owners; resource checks and frame ownership remain intact.
+No source syntax, context authority or provider capability is widened.
 
 ## Validation
 
-Final source identity, complete focused task reports, measurements and retained
-failed attempts are recorded in `docs/internal/b10-call-proof/05H-VALIDATION.md`.
-All seven focused tasks passed, including 84 three-target MCP executions and 110
-deterministic rebuild/admission cases. Build, maintainer, documentation and scope
-checks passed. Published implementation `2ce5096d` has the identical full tree as
-clean tested local `681dd8f`; the subsequent commit retains evidence only.
-Previous callable/no-call and lifetime evidence remains in the 05G/05F records.
-Full profiles remain deferred by the user's checkpoint direction. Focused and
-injected-provider evidence is not installed closure, deployed-provider acceptance
-or a release seal. Dependencies are the restored identical-lockfile graph.
+Source identities, focused results, measurements and failed development attempts
+are retained in `docs/internal/b10-call-proof/05I-VALIDATION.md`. The four-tool task
+includes the 05H start regression and independently executes legacy handlers as
+its oracle. Production coverage and a separate format-admitted synthetic corpus
+exercise Unicode, maximum content, terminal pages and response-bound failures.
+Previous lifetime evidence remains in 05G/05F. The no-call/unused baseline is
+replayed for the shared-emitter correction. Full profiles, installed closure, actual provider acceptance
+and release sealing remain deferred under the user's checkpoint direction.
+Dependencies are the restored identical-lockfile graph.
 
 ## Remaining work and direction
 
-05H (#449) completes one migrated tool. Next: 05I (#450), read/example/diagnostic.
+05I (#450) completes four migrated tools. Next: 06A (#451), sparse lexical search.
 Application migration, retrieval, reporting, installed
 closure, provider/client acceptance and sealing retain separate tickets in #436.
 
 The user directed shared `ctx.call`, moderate measured used-call cost and zero
-unused Wasm overhead, then selected each implementation checkpoint through 05H.
+unused Wasm overhead, then selected each implementation checkpoint through 05I.
 No single Entry Point covers this cross-owner work; ordinary root, packages,
 Wasm/compiler, CLI and documentation instructions apply. The release evidence map
 only enrolls the new task. PR #438 stays superseded. Merge, release, deployment and
