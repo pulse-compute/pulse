@@ -42,6 +42,7 @@ command's options below retain the complete flags, limits and exit behavior.
 | [`pulse compile`](#pulse-compile) | Compile the canonical project into provider-neutral Pulse-owned WebAssembly. |
 | [`pulse build`](#pulse-build) | Build the Native or JavaScript target for the deployment provider selected by the active project profile. |
 | [`pulse report`](#pulse-report) | Review retained evidence from a completed Native build without rebuilding or executing project code. |
+| [`pulse docs`](#pulse-docs) | Locate the offline documentation shipped with the executing CLI package. |
 
 Use `build` for the configured target and provider. `compile` is advanced provider-neutral Native output, not a prerequisite for `build`. See [Provider restrictions and build products](#provider-restrictions-and-build-products) for target differences.
 
@@ -533,6 +534,51 @@ pulse report --artifact ./dist/pulse-compile.json --json
 ### Exit behavior
 
 0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence or an output write failure.
+
+## `pulse docs`
+
+Locate the offline documentation shipped with the executing CLI package.
+
+Syntax:
+
+```text
+pulse docs [--json]
+```
+
+### Options
+
+| Option | Behavior |
+|---|---|
+| `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
+
+### Examples
+
+```bash
+pulse docs
+pulse docs --json
+```
+
+
+### Related diagnostics
+
+- [`PULSE_DOCS_UNAVAILABLE`](diagnostics.md#pulse-docs-unavailable) — The executing CLI package documentation index is missing or unreadable.
+- [`PULSE_DOCS_INVALID`](diagnostics.md#pulse-docs-invalid) — The executing CLI package documentation index has an invalid type, location or text format.
+
+
+### Output
+
+- Human output prints the installed CLI version and absolute documentation index path.
+- With --json, emits {status: "ok", version, docs: {root, index}} with the executing CLI version and absolute physical paths.
+
+### Side effects
+
+- Reads only the executing package documentation index; does not discover a project, compile code, install dependencies, contact the network, launch a server or open a browser.
+- Validates the index type, containment, readability and nonempty UTF-8 text; does not audit every document or establish package integrity.
+- --plan and --dry-run describe the locator without reading or validating documentation.
+
+### Exit behavior
+
+0 on success; 2 for invalid arguments; 5 when packaged documentation is unavailable or the index is invalid.
 
 ## Configuration discovery and command precedence
 

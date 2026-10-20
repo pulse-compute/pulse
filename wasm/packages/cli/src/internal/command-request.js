@@ -115,7 +115,7 @@ function parseCommandRequest(argv) {
         request.target = token;
         continue;
       }
-      if (command !== 'init' && !request.directory) {
+      if (command !== 'init' && !request.directory && COMMAND_SPECS[command].positionals.some(entry => entry.key === 'directory')) {
         request.directory = token;
         continue;
       }

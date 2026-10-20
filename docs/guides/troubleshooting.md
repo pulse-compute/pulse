@@ -53,7 +53,7 @@ report nor a version string establishes freshness of a different checkout.
 ### Agent evidence status
 
 Use `--evidence-status` on `init`, `doctor`, `inspect`, `test`, `compile`,
-`build` or `report` for one `pulse.command-evidence` JSON object with
+`build`, `report` or `docs` for one `pulse.command-evidence` JSON object with
 `presentationVersion: 1`. The flag implies JSON output; adding `--json` is
 redundant. It cannot be combined with `--html` and does not apply to the
 `dev` event stream. Existing output without this flag is unchanged.

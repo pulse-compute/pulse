@@ -1,8 +1,8 @@
 'use strict';
 
 const COMMAND_SPEC_VERSION = 'pulse.cli-command-spec.v5';
-const COMMANDS = Object.freeze(['init', 'dev', 'test', 'inspect', 'compile', 'build', 'doctor', 'report']);
-const PUBLIC_COMMAND_ORDER = Object.freeze(['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report']);
+const COMMANDS = Object.freeze(['init', 'dev', 'test', 'inspect', 'compile', 'build', 'doctor', 'report', 'docs']);
+const PUBLIC_COMMAND_ORDER = Object.freeze(['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report', 'docs']);
 
 function freezeOption(value) {
   return Object.freeze({
@@ -17,7 +17,7 @@ function freezeOption(value) {
 const OPTION_SPECS = Object.freeze([
   freezeOption({ id: 'html', key: 'html', flags: ['--html'], kind: 'boolean', commands: ['report'], visibility: 'public', description: 'Write a self-contained offline HTML report; mutually exclusive with --json.' }),
   freezeOption({ id: 'help', key: 'help', flags: ['--help', '-h'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Print public CLI help and exit.' }),
-  freezeOption({ id: 'evidence-status', key: 'evidenceStatus', flags: ['--evidence-status'], kind: 'boolean', commands: ['init', 'doctor', 'inspect', 'test', 'compile', 'build', 'report'], visibility: 'public', description: 'Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.' }),
+  freezeOption({ id: 'evidence-status', key: 'evidenceStatus', flags: ['--evidence-status'], kind: 'boolean', commands: ['init', 'doctor', 'inspect', 'test', 'compile', 'build', 'report', 'docs'], visibility: 'public', description: 'Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.' }),
   freezeOption({ id: 'json', key: 'json', flags: ['--json'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Emit machine-readable JSON. pulse dev emits one JSON event per line.' }),
   freezeOption({ id: 'dry-run', key: 'dryRun', flags: ['--dry-run', '--plan'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Resolve and report the command plan without executing it.' }),
   freezeOption({ id: 'force', key: 'force', flags: ['--force'], kind: 'boolean', commands: ['init'], visibility: 'public', description: 'Allow generated files to replace entries in a non-empty target directory.' }),
@@ -53,6 +53,17 @@ function freezeCommand(value) {
 }
 
 const COMMAND_SPECS = Object.freeze({
+  docs: freezeCommand({
+    name: 'docs',
+    summary: 'Locate the offline documentation shipped with the executing CLI package.',
+    usage: ['pulse docs [--json]'],
+    optionIds: ['evidence-status'],
+    examples: ['pulse docs', 'pulse docs --json'],
+    diagnostics: ['PULSE_DOCS_UNAVAILABLE', 'PULSE_DOCS_INVALID'],
+    outputs: ['Human output prints the installed CLI version and absolute documentation index path.', 'With --json, emits {status: "ok", version, docs: {root, index}} with the executing CLI version and absolute physical paths.'],
+    sideEffects: ['Reads only the executing package documentation index; does not discover a project, compile code, install dependencies, contact the network, launch a server or open a browser.', 'Validates the index type, containment, readability and nonempty UTF-8 text; does not audit every document or establish package integrity.', '--plan and --dry-run describe the locator without reading or validating documentation.'],
+    exit: '0 on success; 2 for invalid arguments; 5 when packaged documentation is unavailable or the index is invalid.'
+  }),
   report: freezeCommand({
     name: 'report',
     summary: 'Review retained evidence from a completed Native build without rebuilding or executing project code.',

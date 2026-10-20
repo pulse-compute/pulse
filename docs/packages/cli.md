@@ -23,6 +23,31 @@ TypeScript configuration, and exact source-candidate package versions. It does
 not run a package manager or perform hidden network work. Public npm
 availability is defined by the synchronized [release manifest](../maintainers/release-manifest.md).
 
+## Offline documentation
+
+Run `pulse docs` from any directory to print the executing CLI's version and the
+absolute path to its shipped Markdown index. It uses the installed package,
+including local and global installations, rather than the current project or
+website version. Paths containing spaces are returned intact.
+
+```bash
+pulse docs
+pulse docs --json
+```
+
+The JSON result has the stable shape
+`{ "status": "ok", "version": "<CLI version>", "docs": { "root": "<absolute directory>", "index": "<absolute README.md path>" } }`.
+The paths are physical filesystem paths. Read the index with your editor or
+Markdown viewer; the command does not open a browser, discover or load a project,
+compile code, install dependencies, start a server or access the network.
+
+An unavailable index reports `PULSE_DOCS_UNAVAILABLE`; an invalid index reports
+`PULSE_DOCS_INVALID`. Both exit 5, with diagnostics on stderr (one JSON error
+object with `--json`). The index must be a readable, nonempty UTF-8 file inside
+the package's documentation directory. This check does not audit every document
+or prove package integrity. `--plan` describes the locator without validating
+the index. `--evidence-status` wraps the result without claiming report evidence.
+
 ## Daily workflow
 
 ```bash
@@ -47,6 +72,7 @@ pulse build
 | [`build`](../reference/cli.md#pulse-build) | Write the configured Native or JavaScript target realization. |
 | [`report`](../reference/cli.md#pulse-report) | Review retained Native build evidence; see [Reports](#reports). |
 | [`compile`](../reference/cli.md#pulse-compile) | Produce provider-neutral Native Wasm for advanced inspection or integration; see [Compile-only output](#compile-only-output). |
+| [`docs`](../reference/cli.md#pulse-docs) | Locate the offline documentation shipped with the executing CLI version. |
 
 Native builds emit provider Wasm; JavaScript builds emit deterministic source
 packages. Eligible event projects also emit `event-catalog.json` and
