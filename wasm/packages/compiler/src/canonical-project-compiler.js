@@ -1041,7 +1041,12 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   // Router/managed and JavaScript authoring retain their existing boundaries.
   const namedEntry = root.kind === 'handler' && root.module.sourceFile.statements.find(node =>
     ts.isFunctionDeclaration(node) && node.name?.text === root.localName);
-  const callableSource = options.target !== 'javascript' && namedEntry
+  const callableEntry = namedEntry && namedEntry.parameters.length === 1
+    && ts.isIdentifier(namedEntry.parameters[0].name) && !namedEntry.parameters[0].initializer
+    && !namedEntry.parameters[0].questionToken && !namedEntry.parameters[0].dotDotDotToken;
+  // Other context parameter forms retain ordinary compilation when call is
+  // unused; they do not opt into this bounded callable source contract.
+  const callableSource = options.target !== 'javascript' && callableEntry
     ? require('./callable-source-admission').admitCallableSource(graphBuild, {
         schemaBundle: schema.bundle, binaryResources: options.binaryResources
       })

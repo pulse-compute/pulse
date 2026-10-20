@@ -37,8 +37,8 @@ const resources = R.admitResourceCatalogue(JSON.stringify(R.createResourceManife
   {path:'/unused',bytes:Buffer.from('UNUSED_AUTHORED_CALL_RESOURCE')}
 ],budgets)),[{id:'data',path:'/data'},{id:'unused',path:'/unused'}],budgets);
 let registry;
-function source(body, imports = "import {query} from './query';") {
-  write('index.ts', `${imports}\nexport default async function handler(ctx){${body}}`);
+function source(body, imports = "import {query} from './query';", parameter = 'ctx') {
+  write('index.ts', `${imports}\nexport default async function handler(${parameter}){${body}}`);
 }
 function plan() {
   return buildCanonicalNativePlan(compileCanonicalProject(path.join(cwd,'index.ts'),{
@@ -104,6 +104,10 @@ async function main(){
     write('query.ts',badTarget);source(body);assert.throws(()=>plan(),error=>error.code==='PULSE_CALL_SOURCE_CALLEE');report.rejections.push('invalid callee');
   }
   const noCall=`return ctx.json({value:1,word:'plain'},{schema:'proof.Output'});`;
+  for(const parameter of ['ctx = {}','ctx?']){
+    source(noCall,'',parameter);assert.equal(plan().callables,undefined);
+  }
+  report.uncalledContextCompatibilityCases=2;
   source(noCall,'');const zeroPlan=plan(),zeroArtifacts=compile(zeroPlan),zero=measure('no-call',zeroPlan,zeroArtifacts);
   // The imported body is intentionally unsupported. It must never be compiled.
   write('query.ts',"export function query(ctx,input){return ctx.fetch('https://unused.invalid');}");
