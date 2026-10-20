@@ -144,6 +144,34 @@ for precedence, URL handling, limits, failures and the qualification boundary.
 S3, GRIP control endpoints and experimental body forwarding remain statically
 bound.
 
+With that opt-in and the service capability enabled, this handler fetches two
+runtime-supplied destinations concurrently. Send complete HTTP/HTTPS URLs in the
+two headers; returned fields retain their authored order even when origins finish
+in a different order. Neither origin needs a static declaration.
+
+<!-- pulse-doc-source: wasm/test/fixtures/projects/fastly-compute-reality/dynamic-backends-example.ts -->
+```ts
+import { Pulse } from '@pulse-compute/pulse'
+
+const app = new Pulse({ auto: true })
+
+app.get('/compare', async (ctx) => {
+  const firstUrl = ctx.req.header('x-first-url')
+  const secondUrl = ctx.req.header('x-second-url')
+  if (!firstUrl || !secondUrl) {
+    return ctx.text('Two complete origin URLs are required', { status: 400 })
+  }
+  const { first, second } = await ctx.parallel({
+    first: ctx.fetch(firstUrl).text(),
+    second: ctx.fetch(secondUrl).text(),
+  })
+  return ctx.json({ first, second })
+})
+
+export default app
+```
+<!-- /pulse-doc-source -->
+
 Secret values are never included raw in trace output, errors, snapshots, or CLI project JSON.
 
 Fastly Native conditional KV reads and writes redact object field names as
