@@ -31,6 +31,7 @@ case $words[2] in
     init)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -40,6 +41,7 @@ case $words[2] in
     doctor)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -49,6 +51,7 @@ case $words[2] in
     inspect)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -58,6 +61,7 @@ case $words[2] in
     test)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -80,6 +84,7 @@ case $words[2] in
     compile)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -95,6 +100,7 @@ case $words[2] in
     build)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -111,6 +117,7 @@ case $words[2] in
       _arguments -s       '--html[Write a self-contained offline HTML report; mutually exclusive with --json.]' \
       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \

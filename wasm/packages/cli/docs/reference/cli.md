@@ -105,6 +105,7 @@ pulse init [directory] [--name <package-name>] [--force]
 
 | Option | Behavior |
 |---|---|
+| `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
 | `--force` | Allow generated files to replace entries in a non-empty target directory. |
 | `--name <package-name>` | Set the generated npm package name. |
 
@@ -155,6 +156,7 @@ pulse doctor [directory] [--profile <name>] [--strict]
 
 | Option | Behavior |
 |---|---|
+| `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
 | `--strict` | Treat doctor warnings as failed checks. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 
@@ -208,6 +210,7 @@ pulse inspect --artifact <file.json>
 
 | Option | Behavior |
 |---|---|
+| `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 | `--artifact <file.json>` | Inspect an existing JSON build or compiler artifact instead of a project. |
 
@@ -258,6 +261,7 @@ pulse test [directory] [--profile <name>] [--case <name>]
 
 | Option | Behavior |
 |---|---|
+| `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 | `--case <name>` | Run one named project test case. |
 
@@ -362,6 +366,7 @@ pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] 
 
 | Option | Behavior |
 |---|---|
+| `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
 | `--elide-json-cache-arena` | Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
@@ -422,6 +427,7 @@ pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [-
 
 | Option | Behavior |
 |---|---|
+| `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
 | `--elide-json-cache-arena` | Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
@@ -486,6 +492,7 @@ pulse report --artifact <file.json> [--json | --html] [--out <file.html>]
 | Option | Behavior |
 |---|---|
 | `--html` | Write a self-contained offline HTML report; mutually exclusive with --json. |
+| `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 | `--out <file.html>` | HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html. |
 | `--artifact <file.json>` | Replay a saved Report capsule or supported completed-Wasm manifest without loading project code. |
@@ -511,6 +518,7 @@ pulse report --artifact ./dist/pulse-compile.json --json
 ### Output
 
 - Default output is a bounded terminal overview; --json emits one complete authoritative Report capsule.
+- --evidence-status wraps the unchanged capsule in pulse.command-evidence v1; --json alone remains the authoritative capsule.
 - Historical capsule replay preserves evidence identity without claiming current-project freshness.
 - --html writes an offline route-first viewer with expandable schemas and full-capsule JSON export; it does not open a browser.
 

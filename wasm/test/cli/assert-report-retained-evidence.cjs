@@ -105,6 +105,16 @@ export default app;`;
     assert.deepEqual(json([]), c);
     assert.deepEqual(json(['--profile', 'native']), c);
     assert.deepEqual(json(['--artifact', path.join(directory, 'dist/pulse-compile.json')]), c);
+    const status = json(['--evidence-status']);
+    assert.deepEqual(status.result, c);
+    assert.equal(status.evidence.state, 'verified-completed-artifact');
+    assert.equal(status.evidence.snapshot, 'current-inputs-matched');
+    assert.equal(status.evidence.artifactBytes, 'verified');
+    assert.equal(status.evidence.source.revision.value, null);
+    assert.equal(status.evidence.source.sourceFingerprint.value, null);
+    assert.equal(status.evidence.coverage.inventory.resources.status, c.coverage.resources.status);
+    assert.equal(json(['--artifact', path.join(directory, 'dist/pulse-compile.json'), '--evidence-status'])
+      .evidence.snapshot, 'current-project-unchecked');
 
     const html = out => execFileSync(process.execPath, [binary, 'report', '--html', ...(out ? ['--out', out] : [])], {cwd:directory,encoding:'utf8',env:{...process.env,PULSE_PROFILE:'native'}});
     for (const destination of ['.pulse/reports/pulse-report.html', 'reviews/custom.html']) {
@@ -165,6 +175,14 @@ export default app;`;
     for (const file of [entryFile, schemaFile, configFile, testsFile]) {
       const original = fs.readFileSync(file); fs.appendFileSync(file, '\n// changed');
       rejects(() => report.collectProjectReport({ cwd: directory }), 'REPORT_STALE_INPUTS');
+      try { json(['--evidence-status']); assert.fail('stale project must fail'); }
+      catch (error) {
+        assert.equal(error.status, 3);
+        const failed = JSON.parse(error.stderr);
+        assert.equal(failed.evidence.state, 'stale');
+        assert.equal(failed.evidence.identity, null);
+        assert.equal(failed.result.error.code, 'PULSE_REPORT_STALE');
+      }
       fs.writeFileSync(file, original);
     }
     // Fresh project matching needs no executable resolution; old artifact mode

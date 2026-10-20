@@ -2,6 +2,7 @@
 
 const { renderCompletion } = require('../completion.js');
 const { normalizeCommandRequest } = require('./command-request.js');
+const { evidencePresentation } = require('./evidence-status.js');
 
 function writeJson(stream, value) {
   stream.write(`${JSON.stringify(value, null, 2)}\n`);
@@ -82,7 +83,9 @@ function createCommandReporter(options = {}) {
   function reportPlan(requestValue, plan) {
     const request = normalizeCommandRequest(requestValue);
     if (request.kind !== 'command') return;
-    if (request.json) writeJson(stdout, { status: 'ok', version: cliVersion, plan });
+    if (request.evidenceStatus) writeJson(stdout, evidencePresentation({ command: request.command, cliVersion,
+      outcome: 'planned', exitCode: 0, result: { status: 'ok', version: cliVersion, plan } }));
+    else if (request.json) writeJson(stdout, { status: 'ok', version: cliVersion, plan });
     else if (request.command === 'report') {
       const safe = require('./report/command').terminalText;
       stdout.write(`report: ${plan.mode}; ${plan.format}\n  input: ${safe(plan.artifact || plan.directory, 4096)}\n${plan.output ? '  output: ' + safe(plan.output, 4096) + '\n' : ''}  No collection or writes; profile selection and evidence validation occur on execution.\n`);
@@ -112,6 +115,13 @@ function createCommandReporter(options = {}) {
       }
       return execution;
     }
+    if (request.evidenceStatus) {
+      writeJson(stdout, evidencePresentation({ command: request.command, cliVersion,
+        outcome: execution.status === 0 ? 'completed' : 'failed', exitCode: execution.status,
+        result: request.command === 'report' ? execution.result.capsule : execution.result,
+        collected: request.command === 'report' ? execution.result : undefined }));
+      return execution;
+    }
     if (request.command === 'report') {
       const report = require('./report/command');
       if (request.json) stdout.write(require('./report/capsule').serializeCapsule(execution.result.capsule));
@@ -132,6 +142,12 @@ function createCommandReporter(options = {}) {
 
   function reportDiagnostic(summary, context = {}) {
     const request = context.request;
+    if (request?.evidenceStatus || Array.from(context.argv || []).includes('--evidence-status')) {
+      const command = request?.command || String(context.argv?.[0] || '').toLowerCase();
+      writeJson(stderr, evidencePresentation({ command, cliVersion, outcome: 'failed', exitCode: context.exitCode,
+        diagnostic: summary, result: { status: 'error', version: cliVersion, error: summary } }));
+      return;
+    }
     const wantsJson = Boolean(context.json)
       || Boolean(request && request.kind === 'command' && request.json)
       || Array.from(context.argv || []).includes('--json');

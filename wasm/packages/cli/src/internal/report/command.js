@@ -23,7 +23,7 @@ function planReport(request, { cwd }) {
   const root = artifact ? path.dirname(artifact) : workspace.root;
   return Object.freeze({ ok: true, command: 'report', mode: artifact ? 'artifact' : 'retained-project',
     root, ...(artifact ? { artifact } : { directory: workspace.root, profile: request.profile ?? null, profileSelection: 'on-collection' }),
-    format: request.html ? 'html' : request.json ? 'json' : 'terminal',
+    format: request.html ? 'html' : request.evidenceStatus ? 'evidence-status' : request.json ? 'json' : 'terminal',
     ...(request.html ? { output: outputPath(root, request.outDir), renderer: 'pulse.report-viewer.v1' } : {}),
     collectOnExecution: true, backgroundWork: false, build: false, executeProjectCode: false });
 }
