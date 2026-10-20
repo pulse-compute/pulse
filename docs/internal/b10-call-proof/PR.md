@@ -35,6 +35,10 @@ reconciled against current owners without importing PR #438.
 
 Final source identity, complete focused task reports, measurements and retained
 failed attempts are recorded in `docs/internal/b10-call-proof/05H-VALIDATION.md`.
+All seven focused tasks passed, including 84 three-target MCP executions and 110
+deterministic rebuild/admission cases. Build, maintainer, documentation and scope
+checks passed. Published implementation `2ce5096d` has the identical full tree as
+clean tested local `681dd8f`; the subsequent commit retains evidence only.
 Previous callable/no-call and lifetime evidence remains in the 05G/05F records.
 Full profiles remain deferred by the user's checkpoint direction. Focused and
 injected-provider evidence is not installed closure, deployed-provider acceptance
@@ -42,7 +46,8 @@ or a release seal. Dependencies are the restored identical-lockfile graph.
 
 ## Remaining work and direction
 
-05H (#449) completes one migrated tool. Next: 05I (#450), read/example/diagnostic. Application migration, retrieval, reporting, installed
+05H (#449) completes one migrated tool. Next: 05I (#450), read/example/diagnostic.
+Application migration, retrieval, reporting, installed
 closure, provider/client acceptance and sealing retain separate tickets in #436.
 
 The user directed shared `ctx.call`, moderate measured used-call cost and zero
