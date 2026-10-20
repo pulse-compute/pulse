@@ -86,6 +86,7 @@ function emitCanonicalProgramFromHandlerIr(ir, options = {}) {
     ...(ir.applicationEntries ? { applicationEntries: ir.applicationEntries } : {}),
     ...(ir.events ? { events: ir.events } : {}),
     router: ir.router,
+    ...(ir.sourceHelpers ? { sourceHelpers: ir.sourceHelpers } : {}),
     compilerOwnedCalls: ir.compilerOwnedCalls,
     compilerOwnedIntrinsics: ir.compilerOwnedIntrinsics,
     compilerPreludeHash: ir.compilerPreludeHash,

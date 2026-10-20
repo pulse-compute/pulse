@@ -1,0 +1,11 @@
+PulseModuleLoadError: Cannot resolve tooling import ../context-corpus.js from /workspace/scratch/803e6bf46c14/pulse/examples/12-pulse-context-mcp/src/handlers.ts.
+    at localRequire (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/cli/src/typescript-module-loader.js:55:28)
+    at /workspace/scratch/803e6bf46c14/pulse/examples/12-pulse-context-mcp/src/handlers.ts:11:29
+    at load (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/cli/src/typescript-module-loader.js:60:150)
+    at loadTypescriptModule (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/cli/src/typescript-module-loader.js:63:91)
+    at main (/workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-start.cjs:57:16)
+    at Object.<anonymous> (/workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-start.cjs:95:1)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12) undefined undefined

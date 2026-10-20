@@ -1,0 +1,136 @@
+project /workspace/scratch/803e6bf46c14/pulse/examples/12-pulse-context-mcp/application/src/index.ts undefined
+CallableSourceAdmissionError: Callee failed ordinary computation admission.
+    at fail (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:24:61)
+    at visit (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:109:27)
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+    at visitNode2 (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32449:18)
+    at forEachChildInReturnStatement (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32702:12)
+    at Object.forEachChild (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32970:35)
+    at visit (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:8)
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+    at visitNodes (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32457:22)
+    at forEachChildInBlock (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32927:10) {
+  code: 'PULSE_CALL_SOURCE_CALLEE',
+  diagnostics: [
+    {
+      code: 'PULSE_CALL_SOURCE_CALLEE',
+      severity: 'error',
+      message: 'Callee failed ordinary computation admission.',
+      file: 'src/index.ts',
+      position: [Object]
+    }
+  ],
+  [cause]: CanonicalCompileError: Canonical compilation failed for src/example.ts.
+      at assertPlainHandlerDiagnostics (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/plain-handler-frontend.js:552:11)
+      at Object.run (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/canonical-source.js:97:9)
+      at Object.run (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/pipeline.js:168:23)
+      at executeCanonicalSourceSpine (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/canonical-source.js:129:41)
+      at compileCanonicalSource (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/canonical-api-compiler.js:187:10)
+      at compileCallable (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/canonical-callable.js:31:20)
+      at visit (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:107:18)
+      at /workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+      at visitNode2 (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32449:18)
+      at forEachChildInReturnStatement (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32702:12) {
+    code: 'PULSE_CANONICAL_COMPILE_FAILED',
+    diagnostics: [
+      [Object], [Object],
+      [Object], [Object],
+      [Object], [Object],
+      [Object], [Object]
+    ]
+  }
+} CanonicalCompileError: Canonical compilation failed for src/example.ts.
+    at assertPlainHandlerDiagnostics (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/plain-handler-frontend.js:552:11)
+    at Object.run (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/canonical-source.js:97:9)
+    at Object.run (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalSourceSpine (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/spine/canonical-source.js:129:41)
+    at compileCanonicalSource (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/canonical-api-compiler.js:187:10)
+    at compileCallable (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/canonical-callable.js:31:20)
+    at visit (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:107:18)
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+    at visitNode2 (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32449:18)
+    at forEachChildInReturnStatement (/workspace/scratch/803e6bf46c14/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32702:12) {
+  code: 'PULSE_CANONICAL_COMPILE_FAILED',
+  diagnostics: [
+    {
+      code: 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED',
+      kind: 'CanonicalCompileDiagnostic',
+      severity: 'error',
+      message: 'Pure loop bodies accept locals, value assignments, if/else, nested bounded for, break and continue only.',
+      file: 'src/example.ts',
+      position: [Object],
+      detail: {}
+    },
+    {
+      code: 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED',
+      kind: 'CanonicalCompileDiagnostic',
+      severity: 'error',
+      message: 'Pure loop bodies accept locals, value assignments, if/else, nested bounded for, break and continue only.',
+      file: 'src/example.ts',
+      position: [Object],
+      detail: {}
+    },
+    {
+      code: 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED',
+      kind: 'CanonicalCompileDiagnostic',
+      severity: 'error',
+      message: 'Pure loop bodies accept locals, value assignments, if/else, nested bounded for, break and continue only.',
+      file: 'src/example.ts',
+      position: [Object],
+      detail: {}
+    },
+    {
+      code: 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED',
+      kind: 'CanonicalCompileDiagnostic',
+      severity: 'error',
+      message: 'Pure loop bodies accept locals, value assignments, if/else, nested bounded for, break and continue only.',
+      file: 'src/example.ts',
+      position: [Object],
+      detail: {}
+    },
+    {
+      code: 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED',
+      kind: 'CanonicalCompileDiagnostic',
+      severity: 'error',
+      message: 'Pure loop bodies accept locals, value assignments, if/else, nested bounded for, break and continue only.',
+      file: 'src/example.ts',
+      position: [Object],
+      detail: {}
+    },
+    {
+      code: 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED',
+      kind: 'CanonicalCompileDiagnostic',
+      severity: 'error',
+      message: 'Pure loop bodies accept locals, value assignments, if/else, nested bounded for, break and continue only.',
+      file: 'src/example.ts',
+      position: [Object],
+      detail: {}
+    },
+    {
+      code: 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED',
+      kind: 'CanonicalCompileDiagnostic',
+      severity: 'error',
+      message: 'Pure loop bodies accept locals, value assignments, if/else, nested bounded for, break and continue only.',
+      file: 'src/example.ts',
+      position: [Object],
+      detail: {}
+    },
+    {
+      code: 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED',
+      kind: 'CanonicalCompileDiagnostic',
+      severity: 'error',
+      message: 'Pure loop bodies accept locals, value assignments, if/else, nested bounded for, break and continue only.',
+      file: 'src/example.ts',
+      position: [Object],
+      detail: {}
+    }
+  ]
+} [
+  {
+    code: 'PULSE_CALL_SOURCE_CALLEE',
+    severity: 'error',
+    message: 'Callee failed ordinary computation admission.',
+    file: 'src/index.ts',
+    position: { line: 20, column: 19 }
+  }
+]

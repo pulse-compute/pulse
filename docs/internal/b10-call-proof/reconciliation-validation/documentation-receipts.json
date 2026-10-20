@@ -1,0 +1,43 @@
+{
+  "sourceRevision": "fb87b2c47fbc74007663fa771e49ec0d52e1611c",
+  "workingTree": "clean",
+  "checks": [
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/docs.log",
+      "bytes": 245724,
+      "sha256": "94a054205af4d1749461d4723bb5eaf2f06297356b453469b788653b72529ec1"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/documentation-release.log",
+      "bytes": 235293,
+      "sha256": "934e1937806c594440c35d451879762f9d85bfb0b8ed2d04fc449c7cf664e289"
+    }
+  ],
+  "documentationFollowup": [
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/maintainer-delivery.log",
+      "bytes": 345,
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2"
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/docs-delivery.log",
+      "bytes": 246954,
+      "sha256": "55d163fe378a75d678070a7c54a5d53939afa719590e21353f69cdaf3288589a"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "log": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/reconcile/documentation-release-delivery.log",
+      "bytes": 236481,
+      "sha256": "778570ddf67c8656e0c6ba56fdd21af7ab77cc03ae06fb724d5dfd3e7dcc6b58"
+    }
+  ]
+}

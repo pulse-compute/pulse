@@ -1,0 +1,21 @@
+{
+  "version": "pulse.call-authoring-checkpoint.v1",
+  "sourceHead": "d0e43f016c495621c7eb936cef144fc2abe99fc3",
+  "productSourceChanged": false,
+  "probeSha256": "78b057141b87f8c89197e12992d94324afab7674e465552ed2d247e9432bd2f6",
+  "probeStatus": "passed",
+  "cases": 5,
+  "runtimeExecution": false,
+  "publicCallSyntax": false,
+  "checks": {
+    "maintainer": "passed",
+    "docs": "passed",
+    "documentationRelease": "passed"
+  },
+  "checkLogSha256": {
+    "call-linker-maintainer.log": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2",
+    "call-linker-docs.log": "b05c75070aa4378e002ca2e233970f369b525b231b847adcb3da70029c4fb308",
+    "call-linker-documentation-release.log": "1da57cd3df4f29342299f4701eb7ea8eea79df1fa95b95e3fd9c77eae687e78d"
+  },
+  "nextCheckpoint": "Static source target/schema admission only; no runtime wiring or context-mcp integration"
+}

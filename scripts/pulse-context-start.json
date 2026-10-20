@@ -1,0 +1,68 @@
+{
+  "tool": {
+    "title": "Start a Pulse project",
+    "description": "Return a Node Native or JavaScript starter plan for this exact snapshot.",
+    "mcp": {
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  "goals": [
+    {
+      "id": "json-api",
+      "example": "01-hello-json",
+      "contracts": [
+        "contract/application-root",
+        "contract/project-configuration",
+        "contract/targets"
+      ],
+      "choices": [
+        "Choose a package name and routes.",
+        "Choose the response shape and whether explicit JSON schemas are needed."
+      ]
+    },
+    {
+      "id": "schema-api",
+      "example": "02-request-schema",
+      "contracts": [
+        "contract/schema-declarations",
+        "schema/registry",
+        "schema/boundaries",
+        "schema/strict"
+      ],
+      "choices": [
+        "Choose request and response types and stable schema IDs.",
+        "Choose the structured body byte limit and validation policy."
+      ]
+    },
+    {
+      "id": "fetch-api",
+      "example": "03-fetch-composition",
+      "contracts": [
+        "contract/effects",
+        "contract/managed-async",
+        "contract/fetch-json",
+        "contract/parallel"
+      ],
+      "choices": [
+        "Choose fixed upstream origins and provider network bindings.",
+        "Choose sequential awaits or an explicit portable parallel group."
+      ]
+    },
+    {
+      "id": "router-api",
+      "example": "09-router-lowering",
+      "contracts": [
+        "contract/application-root",
+        "contract/application",
+        "contract/source-compatibility"
+      ],
+      "choices": [
+        "Choose route groups and middleware boundaries.",
+        "Choose stable request and response schemas."
+      ]
+    }
+  ]
+}

@@ -139,6 +139,7 @@ function buildJavascriptApplicationPlan(entryFile, options = {}) {
     );
   }
   const packages = createPackageEntries(graphBuild);
+  const callables = buildJavascriptCallables(graphBuild, options, absoluteEntry);
   const blockers = createBlockers(graphBuild, packages);
   const requestedEnvelope = options.capabilityEnvelope || {};
   const capabilityEnvelope = Object.freeze({
@@ -169,12 +170,58 @@ function buildJavascriptApplicationPlan(entryFile, options = {}) {
     nativeEligibility: graphBuild.nativeEligibility,
     entrySafety: graphBuild.entrySafety,
     capabilityEnvelope,
-    providerLifecycleDeferred: options.providerLifecycleDeferred !== false
+    providerLifecycleDeferred: options.providerLifecycleDeferred !== false,
+    ...(callables ? { callables } : {})
   });
   return Object.freeze({
     ...plan,
     plannerVersion: JAVASCRIPT_APPLICATION_PLANNER_VERSION
   });
+}
+
+// Router and managed callers are selected by their ordinary canonical frontends.
+// Original source modules remain the JavaScript execution authority.
+function buildJavascriptCallables(graphBuild, options, entryFile) {
+  const ts = require('typescript');
+  const resolver = require('./project/router-module-linker').projectFunctionResolver(graphBuild);
+  let candidate = false;
+  function scan(node) {
+    if (ts.isPropertyAccessExpression(node) && node.name.text === 'call'
+      || ts.isElementAccessExpression(node) && ts.isStringLiteral(node.argumentExpression) && node.argumentExpression.text === 'call') candidate = true;
+    ts.forEachChild(node, scan);
+  }
+  for (const module of resolver.modules) scan(module.sourceFile);
+  if (!candidate) return undefined;
+  const compiler = require('./canonical-project-compiler');
+  let admitted;
+  // Plain JavaScript retains its existing original-source admission, including
+  // callers supplied an already compiled schema bundle by the CLI/host.
+  if (resolver.entry?.functionNode.parameters.length === 1) {
+    const collection = require('./project/callable-collection').createCallableCollection(graphBuild, {
+      schemaBundle: options.schemaBundle || compiler.compileProjectSchemas(options.schemas || {}, options).bundle,
+      binaryResources: options.binaryResources, target: 'javascript'
+    });
+    collection.admit(resolver.entry);
+    admitted = collection.snapshot();
+  }
+  if (!admitted) admitted = compiler.compileCanonicalProject(entryFile, {
+    ...options, target: 'javascript',
+    applicationProjectMetadata: { ...options.applicationProjectMetadata, fragments: options.projectFragments ?? options.applicationProjectMetadata?.fragments },
+    tsconfigFile: options.tsconfigFile || options.tsconfig
+  }).callableSource;
+  if (!admitted) return undefined;
+  if ((options.provider || 'node') !== 'node') throw new JavascriptApplicationPlanError(
+    'PULSE_CALL_SOURCE_PROVIDER', 'Authored computation calls currently require explicit Node JavaScript.');
+  let exportName = '__pulseCallableTargets';
+  while (resolver.modules.some(module => module.sourceFile.text.includes(exportName))) exportName += '_';
+  const bindings = admitted.callees.map(callee => {
+    const sites = admitted.sites.filter(site => site.target === callee.identity);
+    return { identity: callee.identity, modulePath: sites[0].source.file, localName: sites[0].localName,
+      inputSchema: callee.inputSchema, outputSchema: callee.outputSchema, maxCalls: sites.reduce((count, site) => count + (site.maxCalls || 1), 0),
+      resources: (callee.plan.binaryResources?.records || []).map(record => record.id) };
+  });
+  return { version: require('@pulse-compute/wasm-contracts/handler/surface-contract').CALLABLE_COMPUTATION_VERSION,
+    modulePath: bindings[0].modulePath, exportName, bindings };
 }
 
 module.exports = Object.freeze({

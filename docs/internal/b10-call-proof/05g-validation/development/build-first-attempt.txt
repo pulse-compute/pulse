@@ -1,0 +1,4 @@
+Initial npm run build exited 1 after diagnostic/documentation regeneration:
+Stale/missing context output: examples/12-pulse-context-mcp/context-data/vector.bin; run npm run context:build using Node 24.18.0
+
+The exact terminal diagnostic is transcribed here; that first command did not redirect its output to a file. Regenerating all context outputs through the canonical builder on Node 24.18.0 fixed it. See context-build.log and build-final.log.

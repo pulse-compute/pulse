@@ -1,0 +1,79 @@
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 20 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 214ms
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 310 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 140ms
+
+[pulsewasm:unit] api-surface
+[pulsewasm] provider-neutral TypeScript API and fixture type surface (timeout 30.00s)
+ok - runtime owns one async provider-neutral type algebra and Pulse re-exports it without a second Router value
+[pulsewasm] api-surface: passed in 1.06s
+
+[pulsewasm:native] callable-public-contract
+[pulsewasm] packed public computation types, checked example, diagnostics and stale callable rejection (timeout 300.00s)
+[pulsewasm] Running callable-public-contract (execution); elapsed 10.00s
+{"status":"passed","packed":[{"name":"runtime","sha256":"d5460e204019eb9ce4e9c41be25a546fc34b7eab4ebcfa4032f5f89b91ceca00","typesSha256":"b9fb604da029704641e0aa903cfa10a232ffabef2fa024abc851cabb1c67424b"},{"name":"pulse","sha256":"944e6d75fd87d6306de8355807aeb6815ec32226e2b0bdbd3a696b162a186e7d","typesSha256":"936135e5856bbf975198e3ff706103cd03654d1e49a70eb7edc5a95b8865061a"}],"executions":9,"stalePlansRejected":7,"targetAndPlacementRejections":3,"diagnostics":14,"artifacts":{"node":{"bytes":34106,"sha256":"77c748cb661cb90e0b7a63ba7bc3b6b41590db9c6289e3d294bb53dc1c979ab3"},"fastly":{"bytes":78242,"sha256":"d1f7ac9b76fc27079816f6eaeb73bbe3c313663a19222550efe1aa8003db06ea"}}}
+[pulsewasm] callable-public-contract: passed in 10.57s
+
+[pulsewasm:unit] callable-source-admission
+[pulsewasm] Private callable target/schema admission and authored plain Native plan handoff (timeout 30.00s)
+{"status":"passed","accepted":9,"rejected":31,"admissionRuntimeWired":false,"authoredNativePlan":true,"publicCallSyntax":false}
+[pulsewasm] callable-source-admission: passed in 1.35s
+
+[pulsewasm:native] callable-authored-composition
+[pulsewasm] 05C authored helper/import composition, multiple callable owners and independent ownership rejection (timeout 180.00s)
+[pulsewasm] Running callable-authored-composition (execution); elapsed 20.01s
+{"version":"pulse.callable-composition-evidence.v1","status":"passed","providerReality":false,"executions":6,"sourceRejections":["borrowed input mutation","borrowed helper mutation","helper capture","helper recursion","helper bound product","borrowed record helper mutation","constant reassignment","mutable scalar import","nonliteral scalar import","helper alias write","awaited helper","nested helper arguments","nested callable","workspace return","resource return","17 targets/sites"],"planRejections":["forged target index","unreachable target","target count overflow","conflicting schema","conflicting resource","cross-owner helper local","forged helper bound","forged borrowed helper mutation","forged callable input mutation","workspace escape","resource escape"],"artifacts":{"node":{"bytes":45250,"sha256":"f50bcadeeb9990b17aeb965d6787aee73c64a8ac9b41095ae050f20c1e48ccc0","imports":[{"module":"env","name":"abort","kind":"function"},{"module":"pulse_host","name":"value_number","kind":"function"},{"module":"pulse_host","name":"value_object_set","kind":"function"},{"module":"pulse_host","name":"value_binary","kind":"function"},{"module":"pulse_host","name":"resource_check","kind":"function"},{"module":"pulse_host","name":"workspace_number_value","kind":"function"},{"module":"pulse_host","name":"value_object","kind":"function"},{"module":"pulse_host","name":"resource_offset_value","kind":"function"},{"module":"pulse_host","name":"workspace_check","kind":"function"},{"module":"pulse_host","name":"schema_encode","kind":"function"},{"module":"pulse_host","name":"schema_decode","kind":"function"},{"module":"pulse_host","name":"value_truthy","kind":"function"},{"module":"pulse_host","name":"value_property","kind":"function"},{"module":"pulse_host","name":"value_undefined","kind":"function"},{"module":"pulse_host","name":"value_string","kind":"function"},{"module":"pulse_host","name":"response_json","kind":"function"}]},"fastly":{"bytes":88619,"sha256":"57009f85fadc2070b1ca61e131b56101e9530d6c60d2591b7859353a34e2bb16","imports":[{"module":"fastly_http_resp","name":"send_downstream","kind":"function"},{"module":"wasi_snapshot_preview1","name":"clock_time_get","kind":"function"},{"module":"fastly_http_resp","name":"status_set","kind":"function"},{"module":"fastly_http_resp","name":"status_get","kind":"function"},{"module":"fastly_http_resp","name":"new","kind":"function"},{"module":"fastly_http_resp","name":"header_append","kind":"function"},{"module":"fastly_http_req","name":"uri_get","kind":"function"},{"module":"fastly_http_req","name":"method_get","kind":"function"},{"module":"fastly_http_req","name":"body_downstream_get","kind":"function"},{"module":"fastly_http_body","name":"write","kind":"function"},{"module":"fastly_http_body","name":"new","kind":"function"},{"module":"fastly_abi","name":"init","kind":"function"},{"module":"fastly_async_io","name":"select","kind":"function"}]}},"plan":{"hash":"165c10af251770c314d9cb00fd2cb2ffbbdff2dbf2fa70630a24534229e0c440","targets":2,"sites":3,"helperOwners":3,"resources":[{"id":"distinct","path":"/distinct"},{"id":"shared","path":"/shared"},{"id":"shared-alias","path":"/shared"}]},"additionalCompositionCases":["helper re-export identity","same-module helper"],"maxTargets":16,"source":{"revision":"1555a51887749f78500978287fa3b93ee67a1305","status":"","files":[]}}
+[pulsewasm] callable-authored-composition: passed in 11.75s
+
+[pulsewasm:native] callable-authored-javascript
+[pulsewasm] 05D static Node JavaScript calls, packaged source, Native parity and request-owned boundary rejection (timeout 180.00s)
+[pulsewasm] Running callable-authored-javascript (execution); elapsed 30.01s
+[pulsewasm] Running callable-authored-javascript (execution); elapsed 40.02s
+{"status":"passed","executions":14,"schemaOutputRejections":4,"sourceRejections":["mutation","HTTP","effect","codec authority","async","nested","loop","indirect","context escape","await"],"ownershipChecks":20,"packaged":true}
+[pulsewasm] callable-authored-javascript: passed in 15.73s
+
+[pulsewasm:native] callable-composition-proof
+[pulsewasm] Internal shared callable body, route/MCP composition, reachability and bounded rejection proof (timeout 300.00s)
+{"kind":"route","callSites":0,"nodeBytes":42902,"fastlyBytes":89334}
+[pulsewasm] Running callable-composition-proof (execution); elapsed 50.02s
+{"kind":"route","callSites":1,"nodeBytes":45498,"fastlyBytes":90288}
+[pulsewasm] Running callable-composition-proof (execution); elapsed 60.02s
+{"kind":"route","callSites":2,"nodeBytes":45532,"fastlyBytes":90323}
+{"kind":"route","callSites":16,"nodeBytes":45882,"fastlyBytes":90674}
+[pulsewasm] Running callable-composition-proof (execution); elapsed 70.03s
+{"kind":"mcp","callSites":0,"nodeBytes":100239,"fastlyBytes":130609}
+[pulsewasm] Running callable-composition-proof (execution); elapsed 80.03s
+{"kind":"mcp","callSites":1,"nodeBytes":102184,"fastlyBytes":145584}
+[pulsewasm] Running callable-composition-proof (execution); elapsed 90.03s
+{"kind":"mcp","callSites":2,"nodeBytes":102264,"fastlyBytes":145664}
+[pulsewasm] Running callable-composition-proof (execution); elapsed 100.03s
+{"kind":"mcp","callSites":16,"nodeBytes":102796,"fastlyBytes":146197}
+[pulsewasm] Running callable-composition-proof (execution); elapsed 110.03s
+{"status":"passed","negativeSources":7,"forgedPlans":8,"deadline":{"oneCallTicks":29,"expiredAfterTicks":35}}
+[pulsewasm] callable-composition-proof: passed in 76.94s
+
+[pulsewasm:cli] cli-diagnostics
+[pulsewasm] stable diagnostics, remediation, and exit policy (timeout 120.00s)
+[pulsewasm] Running cli-diagnostics (execution); elapsed 120.04s
+ok - CLI diagnostics align stable codes, categories, exit/HTTP policy, remediation, docs, doctor checks, expected runtime errors, provider bindings, and explicit Fastly CLI/Viceroy launcher failures
+[pulsewasm] cli-diagnostics: passed in 5.10s
+
+[pulsewasm] test summary
+  passed         1.06s  api-surface  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13/tasks/api-surface.log)
+  passed        10.57s  callable-public-contract  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13/tasks/callable-public-contract.log)
+  passed         1.35s  callable-source-admission  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13/tasks/callable-source-admission.log)
+  passed        11.75s  callable-authored-composition  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13/tasks/callable-authored-composition.log)
+  passed        15.73s  callable-authored-javascript  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13/tasks/callable-authored-javascript.log)
+  passed        76.94s  callable-composition-proof  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13/tasks/callable-composition-proof.log)
+  passed         5.10s  cli-diagnostics  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13/tasks/cli-diagnostics.log)
+  passed         214ms  package-exports  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13/tasks/package-exports.log)
+  passed         140ms  suite-shape  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13/tasks/suite-shape.log)
+  report       /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/focused-final.json
+  run logs     /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-07-881Z--13
+  total        122.89s

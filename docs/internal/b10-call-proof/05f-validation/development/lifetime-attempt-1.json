@@ -1,0 +1,12 @@
+{
+  "status": "failed",
+  "providerReality": false,
+  "artifacts": [],
+  "requests": [],
+  "faults": [],
+  "budgets": [],
+  "error": {
+    "message": "AssemblyScript failed to compile the Fastly native platform capabilities module.",
+    "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_ASC_FAILED"
+  }
+}

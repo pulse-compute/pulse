@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-20T18-14-29-378Z--5",
+  "sourceRevision": "e79a51d8c738deced6091032b64059d7a331a757",
+  "sourceIdentity": {
+    "sourceRevision": "e79a51d8c738deced6091032b64059d7a331a757",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-20T18:14:29.385Z",
+  "updatedAt": "2026-10-20T18:14:55.113Z",
+  "finishedAt": "2026-10-20T18:14:55.113Z",
+  "durationMs": 25728,
+  "profiles": [],
+  "requestedTasks": [
+    "entities-contracts",
+    "callable-source-admission",
+    "callable-authored-native",
+    "pure-helper-contract",
+    "suite-shape"
+  ],
+  "selectedTasks": [
+    "entities-contracts",
+    "callable-source-admission",
+    "callable-authored-native",
+    "pure-helper-contract",
+    "suite-shape"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 5,
+  "results": [
+    {
+      "name": "entities-contracts",
+      "evidence": "unit",
+      "description": "Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary",
+      "commandSignature": "9fa261e17429845cf121f27141ab6f01609a10c677aae8fe0cfbe7739b4c40f5",
+      "timeoutMs": 30000,
+      "durationMs": 197,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-14-29-378Z--5/tasks/entities-contracts.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "callable-source-admission",
+      "evidence": "unit",
+      "description": "Private callable target/schema admission and authored plain Native plan handoff",
+      "commandSignature": "922d14ddd5e803c9677629ea4f3840ab7380e2e623530936d8f9b46d272e7c8f",
+      "timeoutMs": 30000,
+      "durationMs": 985,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-14-29-378Z--5/tasks/callable-source-admission.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "callable-authored-native",
+      "evidence": "native",
+      "description": "05B authored plain Native call, full caller validation, HTTP parity and unused-import elimination",
+      "commandSignature": "2fea54ca24bbbe0aabfaf127d17cf41aab82e02f0b2cb8ca9b7df53fa51940aa",
+      "timeoutMs": 180000,
+      "durationMs": 22863,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-14-29-378Z--5/tasks/callable-authored-native.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "pure-helper-contract",
+      "evidence": "unit",
+      "description": "Pure-helper source oracles and scalar/record admission",
+      "commandSignature": "9367f2d49767cee33571462f1d86128c4759277a6f8ad66ac99b7464171d94cb",
+      "timeoutMs": 30000,
+      "durationMs": 1472,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-14-29-378Z--5/tasks/pure-helper-contract.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "suite-shape",
+      "evidence": "unit",
+      "description": "profile separation, uniqueness, and timeout budgets",
+      "commandSignature": "ee099fa2d518ee824efab593a49c71cfa384d3a947676677ec69e5b2f5453132",
+      "timeoutMs": 30000,
+      "durationMs": 197,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-14-29-378Z--5/tasks/suite-shape.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-14-29-378Z--5"
+}

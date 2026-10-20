@@ -1,0 +1,68 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 307 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 135ms
+
+[pulsewasm:native] callable-authored-javascript
+[pulsewasm] 05D static Node JavaScript calls, packaged source, Native parity and request-owned boundary rejection (timeout 180.00s)
+{"status":"passed","executions":14,"schemaOutputRejections":4,"sourceRejections":["mutation","HTTP","effect","codec authority","async","nested","loop","indirect","context escape","await"],"ownershipChecks":18,"packaged":true}
+[pulsewasm] Running callable-authored-javascript (cleanup); elapsed 10.00s
+[pulsewasm] callable-authored-javascript: passed in 9.89s
+
+[pulsewasm:unit] callable-source-admission
+[pulsewasm] Private callable target/schema admission and authored plain Native plan handoff (timeout 30.00s)
+{"status":"passed","accepted":9,"rejected":31,"admissionRuntimeWired":false,"authoredNativePlan":true,"publicCallSyntax":false}
+[pulsewasm] callable-source-admission: passed in 1.05s
+
+[pulsewasm:native] callable-authored-composition
+[pulsewasm] 05C authored helper/import composition, multiple callable owners and independent ownership rejection (timeout 180.00s)
+{"version":"pulse.callable-composition-evidence.v1","status":"passed","providerReality":false,"executions":6,"sourceRejections":["borrowed input mutation","borrowed helper mutation","helper capture","helper recursion","helper bound product","borrowed record helper mutation","constant reassignment","mutable scalar import","nonliteral scalar import","helper alias write","awaited helper","nested helper arguments","nested callable","workspace return","resource return","17 targets/sites"],"planRejections":["forged target index","unreachable target","target count overflow","conflicting schema","conflicting resource","cross-owner helper local","forged helper bound","forged borrowed helper mutation","forged callable input mutation","workspace escape","resource escape"],"artifacts":{"node":{"bytes":45178,"sha256":"7d7b351944fc9ac2e553aa75cf4dc01896b0e1a582ba3f969387b389a63e53dd","imports":[{"module":"env","name":"abort","kind":"function"},{"module":"pulse_host","name":"value_number","kind":"function"},{"module":"pulse_host","name":"value_object_set","kind":"function"},{"module":"pulse_host","name":"value_binary","kind":"function"},{"module":"pulse_host","name":"resource_check","kind":"function"},{"module":"pulse_host","name":"workspace_number_value","kind":"function"},{"module":"pulse_host","name":"value_object","kind":"function"},{"module":"pulse_host","name":"resource_offset_value","kind":"function"},{"module":"pulse_host","name":"workspace_check","kind":"function"},{"module":"pulse_host","name":"schema_encode","kind":"function"},{"module":"pulse_host","name":"schema_decode","kind":"function"},{"module":"pulse_host","name":"value_truthy","kind":"function"},{"module":"pulse_host","name":"value_property","kind":"function"},{"module":"pulse_host","name":"value_undefined","kind":"function"},{"module":"pulse_host","name":"value_string","kind":"function"},{"module":"pulse_host","name":"response_json","kind":"function"}]},"fastly":{"bytes":88547,"sha256":"5560b7d0751bdbb8f53e8a49f49c02f3d00a8b2230a4f8bfe394c1e43c64f96f","imports":[{"module":"fastly_http_resp","name":"send_downstream","kind":"function"},{"module":"wasi_snapshot_preview1","name":"clock_time_get","kind":"function"},{"module":"fastly_http_resp","name":"status_set","kind":"function"},{"module":"fastly_http_resp","name":"status_get","kind":"function"},{"module":"fastly_http_resp","name":"new","kind":"function"},{"module":"fastly_http_resp","name":"header_append","kind":"function"},{"module":"fastly_http_req","name":"uri_get","kind":"function"},{"module":"fastly_http_req","name":"method_get","kind":"function"},{"module":"fastly_http_req","name":"body_downstream_get","kind":"function"},{"module":"fastly_http_body","name":"write","kind":"function"},{"module":"fastly_http_body","name":"new","kind":"function"},{"module":"fastly_abi","name":"init","kind":"function"},{"module":"fastly_async_io","name":"select","kind":"function"}]}},"plan":{"hash":"7f9522d1749b60d6ff2e11d61fcf08a21b733951647fd1ad59d50390d3f74a43","targets":2,"sites":3,"helperOwners":3,"resources":[{"id":"distinct","path":"/distinct"},{"id":"shared","path":"/shared"},{"id":"shared-alias","path":"/shared"}]},"additionalCompositionCases":["helper re-export identity","same-module helper"],"maxTargets":16,"source":{"revision":"f27ef5674458305dc944ec354110b0e95a5b7b9b","status":"","files":[]}}
+[pulsewasm] callable-authored-composition: passed in 8.08s
+
+[pulsewasm:javascript] cli-javascript-target-compilation
+[pulsewasm] explicit JavaScript target propagation, ordinary imports, source execution and Native rejection (timeout 120.00s)
+[pulsewasm] Running cli-javascript-target-compilation (execution); elapsed 20.00s
+[pulsewasm] Running cli-javascript-target-compilation (execution); elapsed 30.00s
+ok - explicit JavaScript compilation preserves package and relative imports through Router/plain roots, async execution, doctor/test/build and Native rejection
+[pulsewasm] cli-javascript-target-compilation: passed in 16.64s
+
+[pulsewasm:javascript] target-support
+[pulsewasm] complete explicit Node JavaScript target support (timeout 30.00s)
+ok - target support and deterministic provider package bootstrap are current, explicit, and fallback-free
+[pulsewasm] target-support: passed in 487ms
+
+[pulsewasm:unit] provider-toolchain
+[pulsewasm] exact compiler-to-provider toolchain invocation and result boundary (timeout 30.00s)
+ok - provider toolchains, target descriptors, invocations, requirements, results, and final-byte packaging are exact, versioned, and fail closed
+[pulsewasm] provider-toolchain: passed in 132ms
+
+[pulsewasm:javascript] javascript-effect-adapter
+[pulsewasm] request-owned JavaScript effects and keyed parallelism (timeout 180.00s)
+ok - JavaScript effects preserve lifecycle, grouping, failure, and bounded-observation contracts
+[pulsewasm] javascript-effect-adapter: passed in 515ms
+
+[pulsewasm:conformance] binary-resource-execution
+[pulsewasm] execution-owned binary views and raw-byte Native parity (timeout 300.00s)
+[pulsewasm] Running binary-resource-execution (execution); elapsed 40.01s
+ok - Node/Fastly JS and Native: >1 MiB raw payload, unaligned LE, unsigned range and signed zero
+ok - offset type, fraction, negative, safe-integer, bounds and nonfinite checks
+[pulsewasm] Running binary-resource-execution (execution); elapsed 50.01s
+ok - repeated reads, bounded Native handles and Node/Fastly synchronous deadlines
+ok - forged, foreign, serialized and stale views fail
+ok - source escapes and corrupt plans rejected; unused Native resources add zero bytes
+ok - conventional configuration, source packaging, composed schema/middleware/error handling, and Node event reads
+{"version":"pulse.binary-resource-execution-proof.v1","fixture":"generated, not the real MCP vector.bin","payloadBytes":1048577,"nativeBytes":1050020,"fastlyBytes":1079398,"scanReadsPerExecution":65536,"scanExecutions":17,"nativeHandleUpperBound":8}
+[pulsewasm] binary-resource-execution: passed in 22.85s
+
+[pulsewasm] test summary
+  passed         9.89s  callable-authored-javascript
+  passed         1.05s  callable-source-admission
+  passed         8.08s  callable-authored-composition
+  passed        16.64s  cli-javascript-target-compilation
+  passed         487ms  target-support
+  passed         132ms  provider-toolchain
+  passed         515ms  javascript-effect-adapter
+  passed        22.85s  binary-resource-execution
+  passed         135ms  suite-shape
+  total        59.80s

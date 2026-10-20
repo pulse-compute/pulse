@@ -1,0 +1,9 @@
+{"kind":"route","callSites":0,"nodeBytes":42902,"fastlyBytes":89334}
+{"kind":"route","callSites":1,"nodeBytes":45470,"fastlyBytes":90260}
+{"kind":"route","callSites":2,"nodeBytes":45504,"fastlyBytes":90295}
+{"kind":"route","callSites":16,"nodeBytes":45854,"fastlyBytes":90646}
+{"kind":"mcp","callSites":0,"nodeBytes":100239,"fastlyBytes":130609}
+{"kind":"mcp","callSites":1,"nodeBytes":102154,"fastlyBytes":145554}
+{"kind":"mcp","callSites":2,"nodeBytes":102234,"fastlyBytes":145634}
+{"kind":"mcp","callSites":16,"nodeBytes":102766,"fastlyBytes":146167}
+{"status":"passed","negativeSources":7,"forgedPlans":8,"deadline":{"oneCallTicks":29,"expiredAfterTicks":35}}

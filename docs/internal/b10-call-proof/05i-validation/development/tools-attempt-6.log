@@ -1,0 +1,12 @@
+{"checkpoint":"compiled","synthetic":false,"nodeBytes":762432,"fastlyBytes":814552}
+AssertionError [ERR_ASSERTION]: {"jsonrpc":"2.0","id":1,"error":{"code":-32603,"message":"Response body limit exceeded"}}
+
+500 !== 200
+
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:107:37
+    at Array.map (<anonymous>)
+    at request (/workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:107:22)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async parity (/workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:131:24)
+    at async main (/workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:148:20)
+    at async /workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:202:12 undefined undefined

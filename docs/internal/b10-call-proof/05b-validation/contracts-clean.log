@@ -1,0 +1,37 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 305 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 193ms
+
+[pulsewasm:unit] callable-source-admission
+[pulsewasm] Private callable target/schema admission and authored plain Native plan handoff (timeout 30.00s)
+{"status":"passed","accepted":8,"rejected":32,"admissionRuntimeWired":false,"authoredNativePlan":true,"publicCallSyntax":false}
+[pulsewasm] callable-source-admission: passed in 1.32s
+
+[pulsewasm:unit] pure-helper-contract
+[pulsewasm] Pure-helper source oracles and scalar/record admission (timeout 30.00s)
+{"status":"passed","nativeSupport":"scalar-record-and-loop-supported","scalarOracleCases":5,"recordOracleCases":60,"nativeAdmissionCases":4}
+[pulsewasm] pure-helper-contract: passed in 1.45s
+
+[pulsewasm:unit] entities-contracts
+[pulsewasm] Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary (timeout 30.00s)
+{"version":"pulse.entities-contract.v1","registryHash":"46f5c921451588141b5ffadb27fb4e489a1b72aba5a260aa7122ce71c14931f2","planHash":"379b0d182fb4c9e084547918df3c2cb03c8594e01172fcf973a0163b98bddd30","catalogHash":"433f95d1d129fa638b003911653fefd9ae79ec41a51726705bc0da1d85464db9","diagnostics":18,"packageExports":[".","./pulsewasm/manifest","./pulsewasm/compiler","./pulsewasm-native","./internal/transport"],"executableLowererInstalled":true,"releaseAssigned":false}
+ok - Entities versions, normalizers, declaration registry, plan/catalog identities, trusted lowerer, and package-owned Native source entry are singular and bounded
+[pulsewasm] entities-contracts: passed in 196ms
+
+[pulsewasm:unit] entities-catalog
+[pulsewasm] deterministic entity catalog, eligible-target truth, and current product status (timeout 30.00s)
+{"version":"pulse.entities-catalog.v1","catalogHash":"d603d6f18768c799e50ab926fbb21ee75df18fa12386d69040b924ccbc908c55","entityOrder":["alpha.lookup","beta.notify"],"targetsEligible":4,"releaseAssigned":false}
+ok - Entities catalog remains deterministic, non-sensitive, immutable, and honest about I9 target support without assigning a release
+[pulsewasm] entities-catalog: passed in 453ms
+
+[pulsewasm] test summary
+  passed         1.32s  callable-source-admission  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-30-36-738Z--5/tasks/callable-source-admission.log)
+  passed         1.45s  pure-helper-contract  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-30-36-738Z--5/tasks/pure-helper-contract.log)
+  passed         193ms  suite-shape  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-30-36-738Z--5/tasks/suite-shape.log)
+  passed         196ms  entities-contracts  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-30-36-738Z--5/tasks/entities-contracts.log)
+  passed         453ms  entities-catalog  (/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-30-36-738Z--5/tasks/entities-catalog.log)
+  report       /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/contracts-clean.json
+  run logs     /workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-30-36-738Z--5
+  total        3.63s

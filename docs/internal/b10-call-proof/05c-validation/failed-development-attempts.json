@@ -1,0 +1,18 @@
+{
+  "qualification": false,
+  "attempts": [
+    {
+      "log": "admission-first.log",
+      "status": "failed",
+      "reason": "Expected one-target rejection became obsolete after enabling multiple targets; acceptance test updated.",
+      "source": "Uncommitted development tree based on dcafb95; not immutable evidence."
+    },
+    {
+      "log": "composition-first.log",
+      "status": "failed",
+      "reason": "New test fixture used an uppercase character in a resource ID; corrected to shared-alias. No product rule relaxed.",
+      "source": "Uncommitted development tree based on dcafb95; not immutable evidence."
+    }
+  ],
+  "resolution": "Both superseded by the clean passing 5251782 focused run. No remaining failed/running check."
+}

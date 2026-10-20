@@ -1,0 +1,1 @@
+{"status":"passed","parityExecutions":8,"rejections":12,"baseline":null,"measurements":[{"name":"authored","nodeBytes":39522,"fastlyBytes":84685},{"name":"re-export-alias","nodeBytes":39522,"fastlyBytes":84685},{"name":"no-call","nodeBytes":37123,"fastlyBytes":81822},{"name":"imported-unused","nodeBytes":37123,"fastlyBytes":81822}]}

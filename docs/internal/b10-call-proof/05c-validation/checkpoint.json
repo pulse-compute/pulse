@@ -1,0 +1,137 @@
+{
+  "qualification": false,
+  "sourceRevision": "5251782483c03171ca480fcf807e110bb74803cf",
+  "sourceTree": "187ab39a0fad579af85ba752eddef94571b483e2",
+  "cleanDuringAcceptance": true,
+  "baselineRevision": "8a51d705025c69ae306004215cb6cb48248d68e1",
+  "focusedRunner": {
+    "status": "passed",
+    "selected": [
+      "callable-source-admission",
+      "callable-authored-composition",
+      "pure-helper-contract",
+      "pure-source-helpers",
+      "pure-record-helpers",
+      "pure-loop-helpers",
+      "pure-argument-helpers",
+      "suite-shape"
+    ],
+    "completed": 8,
+    "durationMs": 65895
+  },
+  "authoredBaseline": {
+    "status": "passed",
+    "exitCode": 0
+  },
+  "repositoryChecks": {
+    "build": "passed after clean implementation acceptance; only evidence/docs untracked",
+    "maintainerSync": "passed; no generated change",
+    "docsSync": "passed; no generated change",
+    "docsCheck": "passed with final evidence/handoff",
+    "documentationRelease": "passed with final evidence/handoff",
+    "maintainerCheck": "passed with final evidence/handoff",
+    "scope": "passed"
+  },
+  "dependencies": "Existing identical-lockfile dependency graph restored in 05B; no clean-install qualification.",
+  "deferred": [
+    "complete unit/native/javascript/conformance profiles",
+    "real Fastly CLI/Viceroy",
+    "installed acceptance",
+    "release seal"
+  ],
+  "next": "05D / #445 explicit JavaScript boundary and same-source parity",
+  "receipts": [
+    {
+      "path": "admission-first.log",
+      "sha256": "45e73bb9014b43b8712a8360ba11c509d542b6244f3e96c146b4d92ffc741251"
+    },
+    {
+      "path": "authored-clean.json",
+      "sha256": "02ce94aa18ad9500b4ad1add14563552571da241d5e4bcd41216e566d7828a2e"
+    },
+    {
+      "path": "authored-clean.log",
+      "sha256": "6a6043f3f4392933ca1600428cb7b483e32eaec4c5d3bf642bd0417cbde6a8f0"
+    },
+    {
+      "path": "build.log",
+      "sha256": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95"
+    },
+    {
+      "path": "callable-authored-composition.log",
+      "sha256": "980e294ab1ae71965bc5f256b70c6588a4ba3692f1db948f0fcd07e3952dfab1"
+    },
+    {
+      "path": "callable-source-admission.log",
+      "sha256": "b1699f0786aecd0408815178d75329aa7bee975cea64e94bd45995010360c7bb"
+    },
+    {
+      "path": "composition-clean.json",
+      "sha256": "9262b6d78e17db6051c1ae3c56ce398c34c8854171b53936d99a6938f785a729"
+    },
+    {
+      "path": "composition-first.log",
+      "sha256": "a4a2cde0fc73d99b978853292d5f76239d7dfe4e908b306e7ca6ae1867ce3ced"
+    },
+    {
+      "path": "docs-check.log",
+      "sha256": "d3295366858e0461002c10abd94ca1bc89c1c70e5785da25c99800de7e0760f4"
+    },
+    {
+      "path": "docs-sync.log",
+      "sha256": "67673d7b687a6ec332773da387a6f2a83f8e0b8c085bb35fe0dc71fc6a845b2e"
+    },
+    {
+      "path": "documentation-release.log",
+      "sha256": "c194e27773c0737de899aece25e5b7f52e12e9203b0cc063db1470fbb52670a0"
+    },
+    {
+      "path": "failed-development-attempts.json",
+      "sha256": "2f5fada64873d9cbc7edaf5ba813a42609f8c9f673fc6f7e2460e35beee6d1e6"
+    },
+    {
+      "path": "focused-clean.json",
+      "sha256": "771cf1ec37fee679996a8260e85d9ba6d9f18fdb3fe10c14b5ca5f703bf11177"
+    },
+    {
+      "path": "focused-clean.log",
+      "sha256": "2cd359ea6582f79ee3f54cfba950c1f1538318d81fe157a5ff46cc8e4c95de17"
+    },
+    {
+      "path": "maintainer-check.log",
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2"
+    },
+    {
+      "path": "maintainer-sync.log",
+      "sha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+    },
+    {
+      "path": "pure-argument-helpers.log",
+      "sha256": "1da42472975829157a2865c96803f4ee4a07621d7c0179c1ad966b6ff2e1e514"
+    },
+    {
+      "path": "pure-helper-contract.log",
+      "sha256": "51c6707c5f91a4387ad89381bfcff3caea77ae9685adf30c9f98a43ae6edef94"
+    },
+    {
+      "path": "pure-loop-helpers.log",
+      "sha256": "d25f0b10e70a7ab24e7e6c8bab3a240344f5ba2ae2b08fc20fc1ff67a4e45a30"
+    },
+    {
+      "path": "pure-record-helpers.log",
+      "sha256": "38db7c3be24c190c923a35a9adfde41449f303bc994f1adb6ebbc6ca552814d3"
+    },
+    {
+      "path": "pure-source-helpers.log",
+      "sha256": "d1e0d1f4479bb8b2a976491d226b35cab04e0dc4477f6e241194ee5e788fcd84"
+    },
+    {
+      "path": "scope.log",
+      "sha256": "22f845bffa372a27dea6b4fa4ca1738b5172df65280a8e873426ed79172cf867"
+    },
+    {
+      "path": "suite-shape.log",
+      "sha256": "c5dbdd7064435ede8587925eefd67fe9ed86348f79e4015c491eb3cb913c7223"
+    }
+  ]
+}

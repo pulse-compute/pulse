@@ -186,7 +186,9 @@ function loadJavascriptApplication(plan, options = {}) {
         { module: moduleRecord.path, expected: moduleRecord.contentHash, actual: actualHash }
       );
     }
-    const transpiled = ts.transpileModule(source, {
+    const realizedSource = require('@pulse-compute/wasm-contracts/project/javascript-application')
+      .javascriptCallableSource(plan, moduleRecord.path, source);
+    const transpiled = ts.transpileModule(realizedSource, {
       fileName: resolved,
       compilerOptions: {
         target: ts.ScriptTarget.ES2022,
@@ -237,6 +239,16 @@ function loadJavascriptApplication(plan, options = {}) {
 
   const exports = loadModule(plan.graph.entryModuleId);
   const application = moduleDefault(exports);
+  if (plan.callables) {
+    if (typeof options.bindCallables !== 'function') throw new PulseModuleLoadError(
+      'PULSE_JAVASCRIPT_CALLABLE_BINDING_UNAVAILABLE', 'Selected provider does not bind admitted computation calls.');
+    const targets = plan.callables.bindings.map((binding, index) => {
+      const owner = plan.graph.modules.find(module => module.kind === 'project' && module.runtime && module.path === (binding.modulePath || plan.callables.modulePath));
+      if (!owner) throw new PulseModuleLoadError('PULSE_JAVASCRIPT_CALLABLE_BINDING_UNAVAILABLE', 'Callable owner is absent from the source graph.');
+      return loadModule(owner.id)[plan.callables.exportName][index];
+    });
+    options.bindCallables(application, targets, plan.callables.bindings);
+  }
   let validated;
   try {
     validated = options.validateApplication(application);

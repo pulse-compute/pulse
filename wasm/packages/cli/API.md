@@ -39,6 +39,7 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.req.header(name)`](#request-metadata-and-headers) | Context | HTTP handlers and middleware | Case-insensitive first-value header lookup. |
 | [`ctx.param(name)`](#ctxparam) | Context | Matched route handlers | Named parameters from the static route pattern. |
 | [`ctx.state`](#ctxstate) | Context | HTTP and event handlers | Invocation-local string state shared across one execution. |
+| [`ctx.call`](#ctxcall) | Context | Selected HTTP handlers | Synchronous imported computation with registered input/output schemas. |
 | [`ctx.workspace`](#ctxworkspace) | Context | HTTP and event handlers | Fixed-capacity execution-owned numeric scratch cells. |
 | [`ctx.resources`](#ctxresources) | Context | HTTP and event handlers | Execution-owned views over explicitly embedded immutable binary data. |
 | [`ctx.time.now()`](#ctxtime) | Context | HTTP and event handlers | Provider wall-clock sample with matching Unix milliseconds and UTC text. |
@@ -328,6 +329,125 @@ surrogate and out-of-range encodings fail without replacement decoding. BOM,
 NUL and supplementary characters are preserved. Validation checks the owning
 execution and deadline at every scalar.
 
+## `ctx.call`
+
+Invoke an imported, synchronous project computation from a plain HTTP handler,
+a reachable Router handler or a managed MCP operation:
+
+```ts
+const result = ctx.call(target, input, {
+  inputSchema: 'example.Input',
+  outputSchema: 'example.Output',
+})
+```
+
+The supported targets are Node Native, Fastly Native and explicitly selected
+Node JavaScript. Fastly JavaScript and event handlers do not support this
+boundary. Native compiles the computation; Node JavaScript executes its admitted
+source. Neither target falls back to the other.
+
+`PulseComputationContext` grants only `resources` and `workspace`.
+`PulseReadonly<Input>` recursively marks input fields and arrays readonly;
+`PulseComputation<Input, Output>` describes the synchronous function type.
+These types and `PulseCallSchemas` are exported by both `@pulse-compute/runtime`
+and `@pulse-compute/pulse`. Input and output schemas must have object roots.
+The caller receives an independently owned, schema-validated result, which it
+can mutate without changing the computation's input or workspace.
+
+Keep schema shapes in a type-only project module, such as `src/types.ts`:
+
+<!-- pulse-doc-source: wasm/test/fixtures/projects/callable-public/src/types.ts -->
+```ts
+export interface Input { value: number }
+export interface Output { value: number }
+```
+<!-- /pulse-doc-source -->
+
+Register both shapes in `.pulse/schema.ts`:
+
+<!-- pulse-doc-source: wasm/test/fixtures/projects/callable-public/.pulse/schema.ts -->
+```ts
+import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'
+import type { Input, Output } from '../src/types'
+
+export default defineSchemaRegistry({ schemas: {
+  'example.Input': schema<Input>(),
+  'example.Output': schema<Output>(),
+} })
+```
+<!-- /pulse-doc-source -->
+
+Define the named computation in `src/compute.ts`:
+
+<!-- pulse-doc-source: wasm/test/fixtures/projects/callable-public/src/compute.ts -->
+```ts
+import type { PulseComputationContext, PulseReadonly } from '@pulse-compute/pulse'
+
+import type { Input, Output } from './types'
+
+export function double(ctx: PulseComputationContext, input: PulseReadonly<Input>): Output {
+  const cells = ctx.workspace.numbers(1)
+  cells[0] = input.value * 2
+  return { value: cells[0] }
+}
+```
+<!-- /pulse-doc-source -->
+
+Import it directly at the call site in `src/index.ts`:
+
+<!-- pulse-doc-source: wasm/test/fixtures/projects/callable-public/src/index.ts -->
+```ts
+import type { PulseContext } from '@pulse-compute/pulse'
+import { double } from './compute'
+import type { Input } from './types'
+
+export default async function handler(ctx: PulseContext) {
+  const input = ctx.decodeJson<Input>(ctx.req.header('input') ?? '{"value":2}', 'example.Input')
+  const result = ctx.call(double, input, {
+    inputSchema: 'example.Input',
+    outputSchema: 'example.Output',
+  })
+  return ctx.json(result, { schema: 'example.Output' })
+}
+```
+<!-- /pulse-doc-source -->
+
+
+
+Compilation enforces the contract beyond TypeScript assignability:
+
+- The target is a statically resolved named project import. Import aliases and
+  project re-exports preserve identity; runtime registration, target selection,
+  factories and arbitrary package targets are not admitted.
+- The third argument is an inline object with literal registered `inputSchema`
+  and `outputSchema` IDs. Every use of one target identity uses the same pair.
+  TypeScript infers the function's result type; it does not infer schema IDs or
+  prove that a registered schema matches a TypeScript annotation.
+- There are at most sixteen reachable static call occurrences per application,
+  including reused Router occurrences. Calls cannot be awaited, nested, placed
+  in loops or made recursively. Dormant targets do not emit callable machinery.
+- Computations use the existing bounded pure language, static constants and
+  admitted pure helpers. They cannot capture caller authority or use HTTP,
+  state, logging, codecs, effects, another `ctx.call`, context escape or arbitrary
+  JavaScript. Helper and loop admission remains compiler-owned.
+- Input conversion creates a readonly computation view; output conversion
+  validates and detaches the result before returning it. Resources retain their
+  existing access rules and numeric workspaces are fresh per invocation.
+
+Calls share the enclosing request's deadline and cumulative Native allocation
+budget. A conversion or computation failure returns no successful partial result;
+existing handler, MCP and provider error owners frame the failure. A failed Native
+invocation cannot resume; recovery uses a fresh request. JavaScript closes the
+computation frame and rejects further calls on the failed request boundary.
+An escaped view does not extend frame lifetime. These rules do not create a
+sandbox for arbitrary JavaScript or a cross-provider identical error-body promise.
+
+The boundary has input/output conversion cost when used. Call-free and
+imported-unused Native artifacts retain byte-identical output. Callable metadata
+uses `pulse.computation-call.v1`; stale callable descriptors or JavaScript binding
+tables require rebuilding through the normal compiler. This optional metadata
+has its own version so call-free plan formats remain unchanged.
+
 ## `ctx.workspace`
 
 ```ts
@@ -425,10 +545,10 @@ exact-frame evidence in JavaScript and Native modes; it provides no delivery,
 retry, persistence, public event bus, or automatic loopback. Other provider
 realizations remain unclaimed.
 
-There is no `ctx.call`, `app.call`, generic call effect, request/reply bus, or
-reserved compiler/runtime opcode for reflexive routing. `ctx.emit` cannot
-observe or invoke a local handler. A future call mechanism requires a separate
-host and lifecycle contract.
+Event contexts expose no `ctx.call`, `app.call`, generic call effect or
+request/reply bus. `ctx.emit` cannot observe or invoke a local handler. The HTTP
+[`ctx.call`](#ctxcall) computation boundary does not dispatch events or provide
+reflexive routing; that would require a separate host and lifecycle contract.
 
 ## `ctx.log`
 

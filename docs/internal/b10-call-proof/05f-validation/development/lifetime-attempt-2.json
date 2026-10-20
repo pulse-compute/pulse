@@ -1,0 +1,936 @@
+{
+  "status": "failed",
+  "providerReality": false,
+  "artifacts": [
+    {
+      "name": "router-1",
+      "planHash": "9c78011704471105a55a9b0fe9cb38c912bde8a886975bac047d402b3693eedb",
+      "native": {
+        "bytes": 36733,
+        "sha256": "c233f3aecdb12d10775fbb6aea35efc34ec959411eb329bf17f4c60ea4635cdf"
+      },
+      "fastly": {
+        "bytes": 84874,
+        "sha256": "1605f331830f21784c8eb5de0a12d2207c100407fa58c5b227ced4b64d7cf4b4"
+      }
+    },
+    {
+      "name": "router-2",
+      "planHash": "865cd5374c5c0c6aab7ef9e35c5dda9b9834ed31407190374861ea463e6a7a87",
+      "native": {
+        "bytes": 36767,
+        "sha256": "9e4d01f37a71e59838de5b0a46e510d218acf379133a6c12463610b4ac246cb7"
+      },
+      "fastly": {
+        "bytes": 84933,
+        "sha256": "fc33bc87cd9e0ca99b110f271842f6457b6c7478f3e16f65a39b42fa372781fe"
+      }
+    },
+    {
+      "name": "router-16",
+      "planHash": "7e54a5fce5577db1a2977c55af21242478240b98712d617d25032fed792bb079",
+      "native": {
+        "bytes": 36979,
+        "sha256": "e2fdd73bae43705ef73878eac9c584023f087fbff9422ba49e6ec20712cbfad2"
+      },
+      "fastly": {
+        "bytes": 85145,
+        "sha256": "05105f6a918bc35bd4033625c03f98154a83e7c961b811c45300a66912dafc8d"
+      }
+    },
+    {
+      "name": "mcp-1",
+      "planHash": "e5d5d486bd1f85a981f5aa434fcdf90ee287ca4598468552889ef079c052779b",
+      "native": {
+        "bytes": 103209,
+        "sha256": "3a7678d51a530653d5acc8fe86d5bc9f502f182caffb0d916417efb45aee081a"
+      },
+      "fastly": {
+        "bytes": 144780,
+        "sha256": "92d7db2dfaed7b14ac086520668ca9fbf37d4cb67c80e416bef69c055ced5758"
+      }
+    },
+    {
+      "name": "mcp-2",
+      "planHash": "2fc938eb83ffcb560560fdbc523742273640d6e1e2b284dcc46f1a42ec04e4e4",
+      "native": {
+        "bytes": 103277,
+        "sha256": "b6119307632c547e8e8183963653c2d4e111f4a42b9e8431eb661c4d33f11ef4"
+      },
+      "fastly": {
+        "bytes": 144829,
+        "sha256": "04a80361e6e0568dd2125b34a6007984cc7675b3e9249d32cc5ade7ee764e73a"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "artifact": "router-1",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14420,
+        "values": 380
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 27
+    },
+    {
+      "artifact": "router-1",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14420,
+        "values": 380
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 27
+    },
+    {
+      "artifact": "router-1",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14420,
+        "values": 380
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 27
+    },
+    {
+      "artifact": "router-1",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14420,
+        "values": 380
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 27
+    },
+    {
+      "artifact": "router-1",
+      "target": "node",
+      "value": 0,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14228,
+        "values": 372
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 23
+    },
+    {
+      "artifact": "router-1",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 3396,
+        "values": 117
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-1",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 3396,
+        "values": 117
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-1",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 3396,
+        "values": 117
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-1",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 3396,
+        "values": 117
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-1",
+      "target": "fastly",
+      "value": 0,
+      "memory": {
+        "bytes": 3268,
+        "values": 113
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-1",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-1",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-1",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-1",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-1",
+      "target": "javascript",
+      "value": 0
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 21896,
+        "values": 564
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 31
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 21896,
+        "values": 564
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 31
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 21896,
+        "values": 564
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 31
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 21896,
+        "values": 564
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 31
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "value": 0,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 21706,
+        "values": 556
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 27
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5150,
+        "values": 185
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5150,
+        "values": 185
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5150,
+        "values": 185
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5150,
+        "values": 185
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "value": 0,
+      "memory": {
+        "bytes": 4958,
+        "values": 179
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "value": 0
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 21898,
+        "values": 564
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 31
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5150,
+        "values": 185
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 21898,
+        "values": 564
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 31
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5150,
+        "values": 185
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 21898,
+        "values": 564
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 31
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5150,
+        "values": 185
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-16",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 126562,
+        "values": 3140
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 87
+    },
+    {
+      "artifact": "router-16",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 126562,
+        "values": 3140
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 87
+    },
+    {
+      "artifact": "router-16",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 126562,
+        "values": 3140
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 87
+    },
+    {
+      "artifact": "router-16",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 126562,
+        "values": 3140
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 87
+    },
+    {
+      "artifact": "router-16",
+      "target": "node",
+      "value": 0,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 126370,
+        "values": 3132
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 83
+    },
+    {
+      "artifact": "router-16",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 29706,
+        "values": 1137
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-16",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 29706,
+        "values": 1137
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-16",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 29706,
+        "values": 1137
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-16",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 29706,
+        "values": 1137
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-16",
+      "target": "fastly",
+      "value": 0,
+      "memory": {
+        "bytes": 28618,
+        "values": 1103
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "router-16",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-16",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-16",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-16",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "router-16",
+      "target": "javascript",
+      "value": 0
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 16072,
+        "values": 398
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 34
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 16072,
+        "values": 398
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 34
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 16072,
+        "values": 398
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 34
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 16072,
+        "values": 398
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 34
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "node",
+      "value": 0,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 15832,
+        "values": 388
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 29
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5772,
+        "values": 145
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5772,
+        "values": 145
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5772,
+        "values": 145
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 5772,
+        "values": 145
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "fastly",
+      "value": 0,
+      "memory": {
+        "bytes": 5612,
+        "values": 140
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "mcp-1",
+      "target": "javascript",
+      "value": 0
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 25256,
+        "values": 623
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 38
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 25256,
+        "values": 623
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 38
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 25256,
+        "values": 623
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 38
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "node",
+      "value": 2,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 25256,
+        "values": 623
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 38
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "node",
+      "value": 0,
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 25016,
+        "values": 613
+      },
+      "guestMemoryBytes": 1310720,
+      "valueHandleCount": 33
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 7736,
+        "values": 221
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 7736,
+        "values": 221
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 7736,
+        "values": 221
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "fastly",
+      "value": 2,
+      "memory": {
+        "bytes": 7736,
+        "values": 221
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "fastly",
+      "value": 0,
+      "memory": {
+        "bytes": 7512,
+        "values": 214
+      },
+      "guestMemoryBytes": 2621440
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "javascript",
+      "value": 2
+    },
+    {
+      "artifact": "mcp-2",
+      "target": "javascript",
+      "value": 0
+    }
+  ],
+  "faults": [
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "phase": "input",
+      "code": "PULSE_SCHEMA_ENCODE",
+      "name": "SchemaEncodeError",
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 4880,
+        "values": 131
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 15
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "phase": "input",
+      "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+      "name": "FastlyNativePlatformCapabilitiesMockError",
+      "memory": {
+        "bytes": 2570,
+        "values": 89
+      },
+      "guestMemoryBytes": 2621440,
+      "lastError": 1005,
+      "errorStage": 53
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "phase": "input",
+      "status": 500,
+      "body": "Internal Server Error"
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "phase": "computation",
+      "code": "PULSE_NUMERIC_WORKSPACE_INVALID",
+      "name": "PulseRuntimeContractError",
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 6752,
+        "values": 178
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 17
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "phase": "computation",
+      "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+      "name": "FastlyNativePlatformCapabilitiesMockError",
+      "memory": {
+        "bytes": 3134,
+        "values": 111
+      },
+      "guestMemoryBytes": 2621440,
+      "lastError": 1001,
+      "errorStage": 280
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "phase": "computation",
+      "status": 500,
+      "body": "Internal Server Error"
+    },
+    {
+      "artifact": "router-2",
+      "target": "node",
+      "phase": "output",
+      "code": "PULSE_SCHEMA_ENCODE",
+      "name": "SchemaEncodeError",
+      "memory": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 8944,
+        "values": 235
+      },
+      "guestMemoryBytes": 1245184,
+      "valueHandleCount": 23
+    },
+    {
+      "artifact": "router-2",
+      "target": "fastly",
+      "phase": "output",
+      "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+      "name": "FastlyNativePlatformCapabilitiesMockError",
+      "memory": {
+        "bytes": 2296,
+        "values": 78
+      },
+      "guestMemoryBytes": 2621440,
+      "lastError": 1005,
+      "errorStage": 53
+    },
+    {
+      "artifact": "router-2",
+      "target": "javascript",
+      "phase": "output",
+      "status": 500,
+      "body": "Internal Server Error"
+    }
+  ],
+  "budgets": [],
+  "error": {
+    "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'PULSE_SCHEMA_DECODE'\n- 'PULSE_SCHEMA_ENCODE'\n                ^\n",
+    "code": "ERR_ASSERTION"
+  }
+}

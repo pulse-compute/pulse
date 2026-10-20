@@ -1,0 +1,34 @@
+
+[pulsewasm:native] canonical-native-plan
+[pulsewasm] deterministic provider-neutral native plan (timeout 60.00s)
+ok - canonical handler analysis lowers deterministically to a provider-neutral native execution plan across nine public examples and retained control-flow fixtures
+{"status":"passed","sourceRejections":11,"planRejections":12,"nativeChecks":7,"wasmBytes":5325}
+[pulsewasm] canonical-native-plan: passed in 9.33s
+
+[pulsewasm:native] entities-managed-handler
+[pulsewasm] I5 reachable pure managed-handler IR, schema-bound input/result adoption, and fail-closed source diagnostics (timeout 120.00s)
+{"version":"pulse.managed-handler-ir-bundle.v2","bundleHash":"a1e33c6c14ed47f815128d0c3f5671801f2d99e57de50fc1fc12a9a427ef8da0","handlers":2,"schemaResults":1,"effects":0,"negativeClasses":10,"targetStatus":"provider-dependent"}
+ok - Entities I5 resolves I2 handler identities into generic pure managed-handler IR with schema-bound input/results and fail-closed diagnostics
+[pulsewasm] Running entities-managed-handler (cleanup); elapsed 10.00s
+[pulsewasm] entities-managed-handler: passed in 675ms
+
+[pulsewasm:conformance] native-context-primitives
+[pulsewasm] bounded UTF-8 and execution-owned numeric workspace parity and rejection (timeout 300.00s)
+[pulsewasm] Running native-context-primitives (execution); elapsed 20.01s
+{"status":"passed","utf8Parity":24,"invalidUtf8Ranges":11,"workspaceParity":12,"nativeBytes":14781,"fastlyBytes":41503,"workspaceBytes":2036}
+[pulsewasm] native-context-primitives: passed in 17.54s
+
+[pulsewasm:native] mcp-native-binding
+[pulsewasm] B10-MCP-04 static binding and Node JavaScript/Native/Fastly Native protocol parity with direct Entities dispatch (timeout 240.00s)
+[pulsewasm] Running mcp-native-binding (execution); elapsed 30.01s
+[pulsewasm] Running mcp-native-binding (execution); elapsed 40.02s
+[pulsewasm] Running mcp-native-binding (execution); elapsed 50.02s
+{"status":"passed","cases":83,"targets":["node-javascript","node-native","fastly-native-injected-abi"],"observations":[{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":500,"code":-32603},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":200},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":200},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":404,"code":-32601},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32700},{"status":400,"code":-32700},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32600},{"status":202},{"status":202},{"status":202},{"status":403},{"status":403},{"status":406},{"status":406},{"status":406},{"status":415},{"status":415},{"status":415},{"status":400,"code":-32600},{"status":413,"code":-32600},{"status":400,"code":-32020},{"status":400,"code":-32020},{"status":415},{"status":400,"code":-32020},{"status":400,"code":-32020},{"status":400,"code":-32600},{"status":403},{"status":405},{"status":405},{"status":405},{"status":404},{"status":413,"code":-32600},{"status":400,"code":-32600},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32602},{"status":400,"code":-32020},{"status":400,"code":-32020},{"status":400,"code":-32020},{"status":200},{"status":200},{"status":200},{"status":400,"code":-32020}],"node":"v24.19.0","planHash":"47a5a2ad270b78b012c7d7babcd0978bf5821497d3d5c04bf7f1a5419f562c2b","nodeWasmSha256":"1716e8d2e7cc655009e64271ec2e04b6a8c09494f0d0c2bbaf0ccd757fe40ebe","fastlyWasmSha256":"2b3c1e494b48306fcdb282fa29fd6b17e08ef71f9b336cd631e2d1a3df25a44a","staticNegativeCases":10,"terminalAndHeaderCases":10}
+[pulsewasm] mcp-native-binding: passed in 31.83s
+
+[pulsewasm] test summary
+  passed         9.33s  canonical-native-plan
+  passed         675ms  entities-managed-handler
+  passed        17.54s  native-context-primitives
+  passed        31.83s  mcp-native-binding
+  total        59.39s

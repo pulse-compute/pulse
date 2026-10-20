@@ -20,7 +20,7 @@ function portable(plan) {
     throw new Error('Unsupported or invalid Fastly package Native application.');
   }
   const source = application.source.replace(
-    /^@external\("pulse_host", "([a-z_]+)"\) declare function (\w+)\(([^)]*)\): (i32|void)$/gm,
+    /^@external\("pulse_host", "([a-z_]+)"\) declare function (\w+)\(([^)]*)\): (i32|f64|void)$/gm,
     (_declaration, name, symbol, parameters, result) => {
       if (!CANONICAL_NATIVE_IMPORT_NAMES.includes(name)) throw new Error('Unsupported package host import: ' + name);
       const args = parameters ? parameters.split(',').map(parameter => parameter.trim().split(':')[0]).join(', ') : '';
@@ -28,14 +28,14 @@ function portable(plan) {
       if (name === 'value_json') return `function ${symbol}(${parameters}): i32 {
   // A failed request read must reach the provider's terminal error response,
   // without trapping JSON.parse<string> in the guest first.
-  if (handle <= 0) return changetype<i32>('""')
-  const text = __pulse_fastly_json(handle, 0)
+  if (${args} <= 0) return changetype<i32>('""')
+  const text = __pulse_fastly_json(${args}, 0)
   if (String.UTF8.byteLength(text) > ${CANONICAL_NATIVE_VALUE_TRANSFER_MAX_BYTES}) {
     __pulse_fastly_fail(PULSE_ERROR_VALUE, 172, -1); return changetype<i32>('null')
   }
   return changetype<i32>(text)
 }`;
-      const guard = name === 'log' ? `if (level <= 0 || level > ${Number(plan.logging.reporting.level)}) return; ` : '';
+      const guard = name === 'log' ? `if (${args.split(',')[0]} <= 0 || ${args.split(',')[0]} > ${Number(plan.logging.reporting.level)}) return; ` : '';
       return `function ${symbol}(${parameters}): ${result} { ${guard}${result === 'void' ? '' : 'return '}host_${name}(${args}) }`;
     }
   );

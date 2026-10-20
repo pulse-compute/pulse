@@ -101,10 +101,27 @@ Repository harness controls. They are intentionally outside the application comp
 
 | Variable | Purpose | Default |
 |---|---|---|
+| [`PULSE_CALLABLE_LIFETIME_RECEIPT`](#pulse-callable-lifetime-receipt) | Retains an incremental receipt when the proof runs through the shared test runner. Does not change test coverage or runtime limits. | Unset; the callable lifetime proof only prints its terminal summary. |
 | [`PULSEWASM_TEST_PHASE_DIR`](#pulsewasm-test-phase-dir) | Enables optional compiler/test phase spans and nested filesystem/hash counters. Does not change task coverage or authorize reuse. | Unset; phase observation is disabled. |
 | [`PULSEWASM_SUITE_TASK`](#pulsewasm-suite-task) | Identifies the current registered test task so forwarding target proofs have distinct reports. | Assigned by the test runner for each task. |
 | [`PULSEWASM_ARTIFACTS_DIR`](#pulsewasm-artifacts-dir) | Redirects generated build and test artifacts away from the default repository directory. | `wasm/artifacts`. |
 | [`PULSEWASM_TEST_TMP_ROOT`](#pulsewasm-test-tmp-root) | Pins test workspaces beneath a caller-managed temporary root. | A suite-specific temporary directory. |
+
+<a id="pulse-callable-lifetime-receipt"></a>
+
+#### `PULSE_CALLABLE_LIFETIME_RECEIPT`
+
+Retains an incremental receipt when the proof runs through the shared test runner. Does not change test coverage or runtime limits.
+
+| Property | Contract |
+|---|---|
+| Value | Writable JSON receipt file path |
+| Default | Unset; the callable lifetime proof only prints its terminal summary. |
+| Precedence | The proof script positional output path takes precedence. |
+| Consumer | The internal B10-MCP-05F callable lifetime proof. |
+| Secret safety | Not a secret. Records fixture artifact hashes, source identity, failure codes and memory measurements. |
+| Stability | Contributor/test-only; no application compatibility or seal authority. |
+| Source owners | `wasm/test/callables/assert-callable-lifetime.cjs` |
 
 <a id="pulsewasm-test-phase-dir"></a>
 

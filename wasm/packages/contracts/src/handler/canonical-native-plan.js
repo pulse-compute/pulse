@@ -45,6 +45,8 @@ const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
 ]);
 
 const CANONICAL_NATIVE_EXPRESSION_KINDS = Object.freeze([
+  'callable-input',
+  'callable-call',
   'resource-read',
   'workspace-init',
   'workspace-read',

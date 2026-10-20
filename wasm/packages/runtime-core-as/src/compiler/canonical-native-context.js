@@ -52,6 +52,7 @@ function collectExpressions(plan) {
     seen.add(expression);
     expressions.push(expression);
     switch (expression.kind) {
+      case 'callable-call': add(expression.argument); break;
       case 'workspace-write':
         add(expression.value);
       case 'workspace-read':

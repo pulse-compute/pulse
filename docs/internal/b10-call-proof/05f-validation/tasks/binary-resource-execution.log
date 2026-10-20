@@ -1,0 +1,7 @@
+ok - Node/Fastly JS and Native: >1 MiB raw payload, unaligned LE, unsigned range and signed zero
+ok - offset type, fraction, negative, safe-integer, bounds and nonfinite checks
+ok - repeated reads, bounded Native handles and Node/Fastly synchronous deadlines
+ok - forged, foreign, serialized and stale views fail
+ok - source escapes and corrupt plans rejected; unused Native resources add zero bytes
+ok - conventional configuration, source packaging, composed schema/middleware/error handling, and Node event reads
+{"version":"pulse.binary-resource-execution-proof.v1","fixture":"generated, not the real MCP vector.bin","payloadBytes":1048577,"nativeBytes":1050020,"fastlyBytes":1079398,"scanReadsPerExecution":65536,"scanExecutions":17,"nativeHandleUpperBound":8}

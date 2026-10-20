@@ -2,10 +2,10 @@
 
 const { HANDLER_SURFACE_DEFINITIONS, HANDLER_SURFACE_CONTRACT_VERSION } = require('./surface-contract.js');
 
-const CTX_CONTRACT_VERSION = 'pulse.ctx-contract.v4';
+const CTX_CONTRACT_VERSION = 'pulse.ctx-contract.v5';
 const CTX_CONTRACT_ID = 'pulse.ctx';
 const CTX_SURFACE_IDS = Object.freeze([
-  'ctx.param','ctx.req.method','ctx.req.url','ctx.req.path','ctx.req.header','ctx.req.headers',
+  'ctx.call','ctx.param','ctx.req.method','ctx.req.url','ctx.req.path','ctx.req.header','ctx.req.headers',
   'ctx.state.get','ctx.state.set','ctx.encodeJson','ctx.decodeJson','ctx.json','ctx.text','ctx.response','ctx.req.text','ctx.req.json.schema',
   'ctx.req.json.generic','ctx.fetch.projected','ctx.fetch.opaque-return','ctx.time.now','ctx.config.get','ctx.secret.get',
   'ctx.kv.get','ctx.kv.put','ctx.kv.getVersioned','ctx.kv.insertIfAbsent','ctx.kv.compareAndSwap','ctx.emit','package.operation'
@@ -33,8 +33,9 @@ function defaultCtxContract() {
     handlerSurfaceVersion: HANDLER_SURFACE_CONTRACT_VERSION,
     surfaces: CTX_SURFACES,
     planes: Object.freeze({
+      computation: Object.freeze(['resources', 'workspace']),
       sharedAuthoring: Object.freeze(['state', 'log', 'time', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit', 'encodeJson', 'decodeJson']),
-      httpAuthoring: Object.freeze(['req', 'json', 'text', 'response']),
+      httpAuthoring: Object.freeze(['req', 'json', 'text', 'response', 'call']),
       routeAuthoring: Object.freeze(['param']),
       eventAuthoring: Object.freeze(['event.type', 'event.payload']),
       eventExecutionImplemented: true,

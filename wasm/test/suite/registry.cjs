@@ -114,6 +114,9 @@ const tasks = Object.freeze({
   'pure-helper-contract': nodeTask('test/lowering/assert-pure-helper-contract.cjs', {
     description: 'Pure-helper source oracles and scalar/record admission'
   }),
+  'callable-source-admission': nodeTask('test/callables/assert-callable-source-admission.cjs', {
+    description: 'Private callable target/schema admission and authored plain Native plan handoff'
+  }),
   'array-demand-n01': nodeTask('test/runtime/compiler-efficiency/n01/array-demand.cjs', {
     evidence: 'external', timeoutMs: 120000,
     description: 'N-01 bounded string/flat-record array demand matrix; no support activation'
@@ -1204,6 +1207,33 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 300000,
     description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'
   }),
+  'callable-public-contract': nodeTask('test/callables/assert-callable-public.cjs', {
+    evidence: 'native', timeoutMs: 300000,
+    description: 'packed public computation types, checked example, diagnostics and stale callable rejection'
+  }),
+  'callable-composition-proof': nodeTask('test/callables/assert-callable-proof.cjs', {
+    evidence: 'native', timeoutMs: 300000, description: 'Internal shared callable body, route/MCP composition, reachability and bounded rejection proof'
+  }),
+  'callable-authored-composition': nodeTask('test/callables/assert-callable-composition.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: '05C authored helper/import composition, multiple callable owners and independent ownership rejection'
+  }),
+  'callable-authored-javascript': nodeTask('test/callables/assert-callable-javascript.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: '05D static Node JavaScript calls, packaged source, Native parity and request-owned boundary rejection'
+  }),
+  'callable-lifetime': nodeTask('test/callables/assert-callable-lifetime.cjs', {
+    evidence: 'native', timeoutMs: 300000,
+    description: '05F callable failure, fresh-request recovery, cumulative deadlines and allocation evidence'
+  }),
+  'callable-authored-routed': nodeTask('test/callables/assert-callable-routed.cjs', {
+    evidence: 'native', timeoutMs: 300000,
+    description: '05E reachable Router and managed MCP calls, shared computation parity and unused emission'
+  }),
+  'callable-authored-native': nodeTask('test/callables/assert-callable-authored.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: '05B authored plain Native call, full caller validation, HTTP parity and unused-import elimination'
+  }),
   'mcp-native-binding': nodeTask('test/mcp/assert-mcp-native-binding.cjs', {
     evidence: 'native', timeoutMs: 240000,
     description: 'B10-MCP-04 static binding and Node JavaScript/Native/Fastly Native protocol parity with direct Entities dispatch'
@@ -1212,8 +1242,11 @@ const tasks = Object.freeze({
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
   }),
+  'pulse-context-tools': nodeTask('test/mcp/assert-context-tools.cjs', {
+    evidence: 'native', timeoutMs: 300000, description: '05I four-tool MCP parity, Unicode pagination and admitted response bounds'
+  }),
   'pulse-context-build': nodeTask('test/mcp/assert-context-build.cjs', {
-    evidence: 'unit', timeoutMs: 60000, description: 'B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection'
+    evidence: 'unit', timeoutMs: 120000, description: 'B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection'
   }),
   'pulse-context-corpus': nodeTask('test/mcp/assert-context-corpus.cjs', {
     evidence: 'unit', timeoutMs: 30000,
@@ -1386,6 +1419,7 @@ const profiles = Object.freeze({
     'multifile-source-indexes',
     'guest-json-roundtrip',
     'pure-helper-contract',
+    'callable-source-admission',
     'suite-shape',
     'test-orchestration',
     'package-exports',
@@ -1477,6 +1511,14 @@ const profiles = Object.freeze({
     'entities-native-runtime',
     'entities-hardening',
     'entities-node-native-workflow',
+    'pulse-context-tools',
+    'callable-public-contract',
+    'callable-composition-proof',
+    'callable-authored-native',
+    'callable-authored-composition',
+    'callable-authored-javascript',
+    'callable-authored-routed',
+    'callable-lifetime',
     'mcp-native-binding',
     'fastly-entities-native-workflow',
     'crypto-native-guest-source',

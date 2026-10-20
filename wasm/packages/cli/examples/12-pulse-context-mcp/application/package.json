@@ -1,0 +1,24 @@
+{
+  "name": "@pulse-examples/pulse-context-application",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "doctor": "pulse doctor",
+    "inspect": "pulse inspect",
+    "build": "pulse build",
+    "dev": "pulse dev",
+    "start": "pulse dev"
+  },
+  "dependencies": {
+    "@pulse-compute/pulse": "1.0.0-beta.9",
+    "@pulse-compute/entities": "1.0.0-beta.9",
+    "@pulse-compute/provider-node": "1.0.0-beta.9",
+    "@pulse-compute/provider-fastly": "1.0.0-beta.9",
+    "@pulse-compute/mcp": "1.0.0-beta.9"
+  },
+  "devDependencies": {
+    "@pulse-compute/cli": "1.0.0-beta.9",
+    "typescript": "5.9.3"
+  }
+}

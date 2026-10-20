@@ -107,8 +107,12 @@ Fastly Native and JavaScript parity. This operation **does not exist today**.
 UTF-8 bytes to map a requested offset to a scalar boundary: ASCII and 2/3-byte
 scalars consume one UTF-16 unit, 4-byte scalars consume two. An offset in the
 middle of a surrogate pair is invalid. Choose the maximal next scalar-aligned
-slice within 12 KiB raw and 16 KiB JSON-escaped content; compute escaping before
-decode, then verify the whole 24 KiB tool reply cap. Return original offset,
+slice within 12 KiB raw, 16 KiB JSON-escaped content and the whole 24 KiB MCP
+tool-result cap. Count both structured content and its separately escaped text
+copy, citation metadata and pagination fields before decoding. A terminal page
+omits continuation fields; account for that smaller envelope when choosing the
+maximal prefix. The 05I implementation applies this combined bound so large
+records remain retrievable instead of failing after an otherwise valid slice. Return original offset,
 nextOffset only when more content exists, totalBytes and citation. A terminal
 offset returns empty content. Reject invalid integers/out-of-range offsets.
 Never split a scalar or change content to make it fit.

@@ -105,7 +105,7 @@ assert.equal(packageCatalog.policy.publicRegistration, false);
 
 const packageJson = JSON.parse(fs.readFileSync(path.join(repoRoot, 'packages/entities/package.json'), 'utf8'));
 assert.deepEqual(packageJson.pulsewasm, { manifest: './pulsewasm.manifest.cjs' });
-assert.deepEqual(Object.keys(packageJson.exports), ['.', './pulsewasm/manifest', './pulsewasm/compiler', './pulsewasm-native']);
+assert.deepEqual(Object.keys(packageJson.exports), ['.', './pulsewasm/manifest', './pulsewasm/compiler', './pulsewasm-native', './internal/transport']);
 assert.equal(packageJson.files.includes('pulsewasm.manifest.cjs'), true);
 assert.equal(packageJson.files.includes('pulsewasm.compiler.cjs'), true);
 assert.equal(packageJson.files.includes('pulsewasm.native.cjs'), true);

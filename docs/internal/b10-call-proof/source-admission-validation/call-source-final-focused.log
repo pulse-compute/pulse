@@ -1,0 +1,21 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 304 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 266ms
+
+[pulsewasm:unit] callable-source-admission
+[pulsewasm] Private callable target/schema source admission; no execution support (timeout 30.00s)
+{"status":"passed","accepted":7,"rejected":33,"runtimeWired":false,"publicCallSyntax":false}
+[pulsewasm] callable-source-admission: passed in 1.56s
+
+[pulsewasm:unit] pure-helper-contract
+[pulsewasm] Pure-helper source oracles and scalar/record admission (timeout 30.00s)
+{"status":"passed","nativeSupport":"scalar-record-and-loop-supported","scalarOracleCases":5,"recordOracleCases":60,"nativeAdmissionCases":4}
+[pulsewasm] pure-helper-contract: passed in 1.97s
+
+[pulsewasm] test summary
+  passed         1.56s  callable-source-admission
+  passed         1.97s  pure-helper-contract
+  passed         266ms  suite-shape
+  total        3.81s

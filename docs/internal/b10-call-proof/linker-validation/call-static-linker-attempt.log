@@ -1,0 +1,22 @@
+node:internal/assert/utils:77
+    throw err;
+    ^
+
+AssertionError [ERR_ASSERTION]: [{"code":"PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED","kind":"RouterModuleLinkDiagnostic","severity":"error","message":"Project runtime import lookup from \"./target\" is not a Router, middleware, route handler, event handler, error handler, mounted Router, or resolved application root.","file":"index.ts","position":{"line":2,"column":22},"detail":{"specifier":"./target","localName":"lookup","importedName":"lookup","supportedRoles":["application-root","router","middleware","route","event","error-middleware"],"automaticFallback":false}}]
+    at Object.<anonymous> (/workspace/scratch/3471f7320bf6/pulse-call-proof/docs/internal/b10-call-proof/probes/static-linker.cjs:36:12)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

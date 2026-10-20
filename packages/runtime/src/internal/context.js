@@ -175,6 +175,7 @@ function createContext(frame) {
 
   const eventContext = frame.event !== undefined;
   const ctx = {
+    ...(!eventContext && options.callableTable ? { call: require('./callable.js').createCallBoundary(effects, options) } : {}),
     encodeJson(value, schemaId) {
       const id = requireExplicitSchemaId(schemaId, options, 'application-value');
       return encodeSchemaValue(id, value, options, { source: 'application-value' }).text;
