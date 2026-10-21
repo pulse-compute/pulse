@@ -1,0 +1,405 @@
+{
+  "schemaVersion": "pulse.resource-acceptance-checkpoint.v1",
+  "status": "passed",
+  "selection": {
+    "revision": "b509b5dc64e14bd2f92d54747b3ea57619fb5c42",
+    "tree": "cdc280076d818d7dfc9755ba870438fdb7a6fb01",
+    "workingTree": "",
+    "node": "v24.19.0",
+    "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0",
+    "tasks": [
+      "pulse-context-build",
+      "pulse-context-corpus",
+      "binary-resource-admission",
+      "binary-resource-execution",
+      "callable-authored-composition",
+      "callable-lifetime",
+      "cli-report-resource-inventory",
+      "cli-report-handler-topology",
+      "cli-report-retained-evidence",
+      "pulse-context-quality-actual",
+      "pulse-context-quality-growth",
+      "pulse-context-quality-repeat"
+    ],
+    "externalTasks": [
+      "mcp-installed",
+      "mcp-fastly-local-installed"
+    ],
+    "releaseSeal": false,
+    "classification": "evidence",
+    "scope": "resource-acceptance-checkpoint",
+    "issues": [
+      412,
+      381
+    ],
+    "fullReleaseOwner": 382,
+    "producerNode": "v24.18.0",
+    "tools": {
+      "fastlyCli": {
+        "version": "16.1.0",
+        "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+      },
+      "viceroy": {
+        "version": "0.21.1",
+        "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+      }
+    }
+  },
+  "runs": [
+    {
+      "status": "passed",
+      "runId": "2026-10-21T17-21-04-996Z--24",
+      "durationMs": 500862,
+      "completedTasks": 12,
+      "tasks": [
+        "pulse-context-build",
+        "pulse-context-corpus",
+        "binary-resource-admission",
+        "binary-resource-execution",
+        "callable-authored-composition",
+        "callable-lifetime",
+        "cli-report-resource-inventory",
+        "cli-report-handler-topology",
+        "cli-report-retained-evidence",
+        "pulse-context-quality-actual",
+        "pulse-context-quality-growth",
+        "pulse-context-quality-repeat"
+      ]
+    },
+    {
+      "status": "passed",
+      "runId": "2026-10-21T17-30-22-232Z--14",
+      "durationMs": 168329,
+      "completedTasks": 1,
+      "tasks": [
+        "mcp-installed"
+      ]
+    },
+    {
+      "status": "passed",
+      "runId": "2026-10-21T17-33-19-157Z--14",
+      "durationMs": 217989,
+      "completedTasks": 1,
+      "tasks": [
+        "mcp-fastly-local-installed"
+      ]
+    }
+  ],
+  "quality": {
+    "actual": {
+      "status": "completed",
+      "acceptance": "passed",
+      "executions": 1274,
+      "failures": [],
+      "dimensions": {
+        "rows": 264,
+        "dimension": 2509,
+        "nonzeros": 15386,
+        "dictionarySha256": "2701a6c5731e54385ecb1eadb368cc338102cd0331b20697340e70c41681a288",
+        "manifestId": "a85aeb8f5c792c9f92ad3730f3fac176ead77e93001748b8605c27a2af30e067",
+        "catalogueIdentity": "a39b1d7972c6c11d1c4338875a51ed08d3eb0315130bacbe40658bb6f3b4abd3",
+        "rawBytes": 602337,
+        "serializedBytes": 803770,
+        "budgets": {
+          "files": 3,
+          "fileBytes": 5242880,
+          "totalBytes": 8388608,
+          "serializedBytes": 16777216,
+          "bindings": 3
+        }
+      },
+      "artifacts": {
+        "node": {
+          "bytes": 995091,
+          "sha256": "3e7e64a614fa9169bffca94308be761ccaccaeb65738ab80625f6f2dfbcf37e6",
+          "compileMs": 10630.762096000002,
+          "initialGuestBytes": 1966080
+        },
+        "fastly": {
+          "bytes": 1047209,
+          "sha256": "8147b6dcf02129897e0392b158228972a6c9d8234b7d01def9c732cdab2ce550",
+          "compileMs": 20119.117695999998,
+          "initialGuestBytes": 3932160
+        }
+      },
+      "timing": [
+        {
+          "target": "node",
+          "medianWallMs": 16.41937400000461,
+          "medianCpuMs": 24.718,
+          "warmCommittedMaximumBytes": 3932160
+        },
+        {
+          "target": "fastly",
+          "medianWallMs": 13.04961600000388,
+          "medianCpuMs": 27.374,
+          "warmCommittedMaximumBytes": 7864320
+        }
+      ]
+    },
+    "growth": {
+      "status": "completed",
+      "acceptance": "passed",
+      "executions": 44,
+      "failures": [],
+      "dimensions": {
+        "rows": 512,
+        "dimension": 3948,
+        "nonzeros": 65342,
+        "dictionarySha256": "c99c035320c1e6190db431ba6798d418ac7da59526dcb99b0058574d7f0be931",
+        "manifestId": "265fcfaa668aa7577e9dc229ef1108d38a97f531219dc2f5fbf5dbc8a9fe331d",
+        "catalogueIdentity": "0d186f2a85a7a632d40b838556589148b6e503bbfe958d2a6969604495d37b53",
+        "rawBytes": 1772128,
+        "serializedBytes": 2363491,
+        "budgets": {
+          "files": 3,
+          "fileBytes": 5242880,
+          "totalBytes": 8388608,
+          "serializedBytes": 16777216,
+          "bindings": 3
+        }
+      },
+      "artifacts": {
+        "node": {
+          "bytes": 2094827,
+          "sha256": "501f8da96d66b22433a4e622ffc6182397217dc79d26718ef1cf4097d0818ab6",
+          "compileMs": 13559.135926,
+          "initialGuestBytes": 3670016
+        },
+        "fastly": {
+          "bytes": 2146986,
+          "sha256": "7fad0c94f5c7236208a56e88e454181b253e3fb7c7311928c5e9465c5c0d4f13",
+          "compileMs": 27149.519529999998,
+          "initialGuestBytes": 3670016
+        }
+      },
+      "timing": [
+        {
+          "target": "node",
+          "medianWallMs": 58.147649999998976,
+          "medianCpuMs": 74.806,
+          "warmCommittedMaximumBytes": 3670016
+        },
+        {
+          "target": "fastly",
+          "medianWallMs": 58.571045999997295,
+          "medianCpuMs": 74.321,
+          "warmCommittedMaximumBytes": 14680064
+        }
+      ]
+    },
+    "repeat": {
+      "status": "completed",
+      "acceptance": "passed",
+      "executions": 23,
+      "failures": [],
+      "dimensions": {
+        "rows": 264,
+        "dimension": 2509,
+        "nonzeros": 15386,
+        "dictionarySha256": "2701a6c5731e54385ecb1eadb368cc338102cd0331b20697340e70c41681a288",
+        "manifestId": "a85aeb8f5c792c9f92ad3730f3fac176ead77e93001748b8605c27a2af30e067",
+        "catalogueIdentity": "a39b1d7972c6c11d1c4338875a51ed08d3eb0315130bacbe40658bb6f3b4abd3",
+        "rawBytes": 602337,
+        "serializedBytes": 803770,
+        "budgets": {
+          "files": 3,
+          "fileBytes": 5242880,
+          "totalBytes": 8388608,
+          "serializedBytes": 16777216,
+          "bindings": 3
+        }
+      },
+      "artifacts": {
+        "node": {
+          "bytes": 995169,
+          "sha256": "b3a59a9fe0fa8cbeebd7883bd210f854067ae1b19d1a071b4c14adc8689824c9",
+          "compileMs": 10556.124925000002,
+          "initialGuestBytes": 1966080
+        },
+        "fastly": {
+          "bytes": 1047302,
+          "sha256": "168e1602573c188f83f0757e2c87cca46d687f149c9bca5f68a06e60af6e03fc",
+          "compileMs": 20595.008281,
+          "initialGuestBytes": 3932160
+        }
+      },
+      "timing": [
+        {
+          "target": "node",
+          "medianWallMs": 26.969042000004265,
+          "medianCpuMs": 37.966,
+          "warmCommittedMaximumBytes": 3932160
+        },
+        {
+          "target": "fastly",
+          "medianWallMs": 20.03168000000005,
+          "medianCpuMs": 36.298,
+          "warmCommittedMaximumBytes": 7864320
+        }
+      ]
+    }
+  },
+  "installed": {
+    "status": "passed",
+    "packages": 18,
+    "nativeCalls": 537,
+    "javascriptCalls": 537,
+    "sourceInputsRemoved": true,
+    "genericResourceClosure": "passed"
+  },
+  "fastlyLocal": {
+    "status": "passed",
+    "providerReality": "actual-local-fastly-cli-and-viceroy",
+    "deployed": false,
+    "cases": 1445,
+    "variants": [
+      {
+        "name": "shipped",
+        "moduleBytes": 1047209,
+        "moduleSha256": "b96b03b616655eed07fa4a6036f59bf559b5805881704e84ae558a9403f5fa0d",
+        "requests": 605,
+        "memory": {
+          "initialBytes": 786432,
+          "maximumBytes": 268435456,
+          "runtimePeakBytes": null,
+          "liveAllocationCount": null,
+          "retainedBudgetBytes": null
+        },
+        "engineCompletionHeap": {
+          "meaning": "Viceroy rounded completed-request WebAssembly heap log; not peak live heap or allocation count",
+          "samples": 605,
+          "distribution": {
+            "3.9 MB": 483,
+            "7.9 MB": 119,
+            "15.7 MB": 3
+          }
+        },
+        "cleanup": {
+          "status": "passed",
+          "exitCode": 1,
+          "signal": null,
+          "descendantProcessObservation": "unavailable"
+        }
+      },
+      {
+        "name": "growth",
+        "moduleBytes": 2146986,
+        "moduleSha256": "76bb77c109f61c11c2f40068b5f3c563c438d25a965a434964290e8985749608",
+        "requests": 811,
+        "memory": {
+          "initialBytes": 1835008,
+          "maximumBytes": 268435456,
+          "runtimePeakBytes": null,
+          "liveAllocationCount": null,
+          "retainedBudgetBytes": null
+        },
+        "engineCompletionHeap": {
+          "meaning": "Viceroy rounded completed-request WebAssembly heap log; not peak live heap or allocation count",
+          "samples": 811,
+          "distribution": {
+            "7.3 MB": 734,
+            "14.7 MB": 77
+          }
+        },
+        "cleanup": {
+          "status": "passed",
+          "exitCode": 1,
+          "signal": null,
+          "descendantProcessObservation": "unavailable"
+        }
+      },
+      {
+        "name": "deadline",
+        "moduleBytes": 1047207,
+        "moduleSha256": "514436a96bfe2b6dc9c97cae382b0fea85f16ef00948312dbdbe33b417d246b0",
+        "requests": 6,
+        "memory": {
+          "initialBytes": 786432,
+          "maximumBytes": 268435456,
+          "runtimePeakBytes": null,
+          "liveAllocationCount": null,
+          "retainedBudgetBytes": null
+        },
+        "engineCompletionHeap": {
+          "meaning": "Viceroy rounded completed-request WebAssembly heap log; not peak live heap or allocation count",
+          "samples": 6,
+          "distribution": {
+            "3.9 MB": 6
+          }
+        },
+        "cleanup": {
+          "status": "passed",
+          "exitCode": 1,
+          "signal": null,
+          "descendantProcessObservation": "unavailable"
+        }
+      },
+      {
+        "name": "resources",
+        "moduleBytes": 1142104,
+        "moduleSha256": "b749fd7cffb14054f07dbfe80dd9ca5daca4902f5783017afaa82fcbe3d114fa",
+        "requests": 23,
+        "memory": {
+          "initialBytes": 1179648,
+          "maximumBytes": 268435456,
+          "runtimePeakBytes": null,
+          "liveAllocationCount": null,
+          "retainedBudgetBytes": null
+        },
+        "engineCompletionHeap": {
+          "meaning": "Viceroy rounded completed-request WebAssembly heap log; not peak live heap or allocation count",
+          "samples": 23,
+          "distribution": {
+            "4.7 MB": 23
+          }
+        },
+        "cleanup": {
+          "status": "passed",
+          "exitCode": 1,
+          "signal": null,
+          "descendantProcessObservation": "unavailable"
+        }
+      }
+    ],
+    "tools": {
+      "fastlyCli": {
+        "binary": "/tmp/pulse-10a-tools/fastly",
+        "version": "16.1.0",
+        "output": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-10-21)\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 16.2.0\nRun `fastly update` to get the latest version.",
+        "args": [
+          "version"
+        ],
+        "termination": "clean-exit",
+        "source": "environment",
+        "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+      },
+      "viceroy": {
+        "binary": "/tmp/467-recovery-tools/viceroy",
+        "version": "0.21.1",
+        "output": "viceroy 0.21.1",
+        "args": [
+          "--version"
+        ],
+        "source": "environment",
+        "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+      }
+    },
+    "limitations": [
+      "Local acceptance only; not deployed service qualification.",
+      "RSS samples cover CLI/Viceroy processes, not guest allocations or peak live heap.",
+      "Guest live allocation counts, retained-byte counters and peak committed pages are unavailable through this host HTTP surface.",
+      "Each Viceroy request uses a fresh instance; repeated requests do not claim retained-instance execution."
+    ]
+  },
+  "interruptedAttempts": [
+    {
+      "gate": "mcp-installed",
+      "status": "incomplete",
+      "countedAsPass": false,
+      "receipt": "interrupted-installed-attempt/disposition.json"
+    }
+  ],
+  "releaseSeal": false,
+  "remainingOwner": 382
+}
