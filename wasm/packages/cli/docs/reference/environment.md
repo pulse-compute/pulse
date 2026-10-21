@@ -101,11 +101,28 @@ Repository harness controls. They are intentionally outside the application comp
 
 | Variable | Purpose | Default |
 |---|---|---|
+| [`PULSE_CONTEXT_QUALITY_DIR`](#pulse-context-quality-dir) | Routes incremental actual, growth and repeated-call receipts. Does not change cases, acceptance criteria or runtime budgets. | wasm/.test-results/context-quality in the source checkout. |
 | [`PULSE_CALLABLE_LIFETIME_RECEIPT`](#pulse-callable-lifetime-receipt) | Retains an incremental receipt when the proof runs through the shared test runner. Does not change test coverage or runtime limits. | Unset; the callable lifetime proof only prints its terminal summary. |
 | [`PULSEWASM_TEST_PHASE_DIR`](#pulsewasm-test-phase-dir) | Enables optional compiler/test phase spans and nested filesystem/hash counters. Does not change task coverage or authorize reuse. | Unset; phase observation is disabled. |
 | [`PULSEWASM_SUITE_TASK`](#pulsewasm-suite-task) | Identifies the current registered test task so forwarding target proofs have distinct reports. | Assigned by the test runner for each task. |
 | [`PULSEWASM_ARTIFACTS_DIR`](#pulsewasm-artifacts-dir) | Redirects generated build and test artifacts away from the default repository directory. | `wasm/artifacts`. |
 | [`PULSEWASM_TEST_TMP_ROOT`](#pulsewasm-test-tmp-root) | Pins test workspaces beneath a caller-managed temporary root. | A suite-specific temporary directory. |
+
+<a id="pulse-context-quality-dir"></a>
+
+#### `PULSE_CONTEXT_QUALITY_DIR`
+
+Routes incremental actual, growth and repeated-call receipts. Does not change cases, acceptance criteria or runtime budgets.
+
+| Property | Contract |
+|---|---|
+| Value | Writable receipt directory path |
+| Default | wasm/.test-results/context-quality in the source checkout. |
+| Precedence | The environment value selects the output directory for each quality task. |
+| Consumer | The internal B10-MCP-06B complete-request quality and cost proof. |
+| Secret safety | Not a secret. Contains fixture queries, source/artifact identities, timing, allocation counters and failure evidence. |
+| Stability | Contributor/test-only; no application compatibility or seal authority. |
+| Source owners | `wasm/test/mcp/assert-context-quality.cjs` |
 
 <a id="pulse-callable-lifetime-receipt"></a>
 

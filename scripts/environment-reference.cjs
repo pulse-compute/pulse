@@ -21,6 +21,19 @@ const ENVIRONMENT_CATEGORIES = Object.freeze({
 
 const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
+    name: 'PULSE_CONTEXT_QUALITY_DIR',
+    category: 'contributor',
+    group: 'Test execution and output',
+    value: 'Writable receipt directory path',
+    default: 'wasm/.test-results/context-quality in the source checkout.',
+    precedence: 'The environment value selects the output directory for each quality task.',
+    consumer: 'The internal B10-MCP-06B complete-request quality and cost proof.',
+    secretSafety: 'Not a secret. Contains fixture queries, source/artifact identities, timing, allocation counters and failure evidence.',
+    stability: 'Contributor/test-only; no application compatibility or seal authority.',
+    description: 'Routes incremental actual, growth and repeated-call receipts. Does not change cases, acceptance criteria or runtime budgets.',
+    sourceFiles: ['wasm/test/mcp/assert-context-quality.cjs']
+  }),
+  entry({
     name: 'PULSE_CALLABLE_LIFETIME_RECEIPT',
     category: 'contributor',
     group: 'Test execution and output',
