@@ -1,7 +1,8 @@
 import { EntityRouter, jsonRpc, mcp } from '@pulse-compute/mcp/pulse'
 import type { PulseContext, PulseReadonly } from '@pulse-compute/pulse'
-import type { StartInput, ReadInput, ExampleInput, DiagnosticInput } from './schemas.js'
+import type { StartInput, SearchInput, ReadInput, ExampleInput, DiagnosticInput } from './schemas.js'
 import { computeStart } from './start.js'
+import { computeSearch } from './search.js'
 import { computeRead } from './read.js'
 import { computeExample } from './example.js'
 import { computeDiagnostic } from './diagnostic.js'
@@ -9,6 +10,11 @@ import { computeDiagnostic } from './diagnostic.js'
 export async function start(ctx: PulseContext, input: PulseReadonly<StartInput>) {
   return ctx.call(computeStart, input, {
     inputSchema: 'context.StartInput', outputSchema: 'context.StartOutput',
+  })
+}
+export async function search(ctx: PulseContext, input: PulseReadonly<SearchInput>) {
+  return ctx.call(computeSearch, input, {
+    inputSchema: 'context.SearchInput', outputSchema: 'context.SearchOutput',
   })
 }
 export async function read(ctx: PulseContext, input: PulseReadonly<ReadInput>) {
@@ -31,6 +37,10 @@ rpc.on('pulse.start', {
   input: 'context.StartInput', output: 'context.StartOutput',
   metadata: {"title":"Start a Pulse project","description":"Return a Node Native or JavaScript starter plan for this exact snapshot.","mcp":{"readOnlyHint":true,"idempotentHint":true,"destructiveHint":false,"openWorldHint":false}},
 }, start)
+rpc.on('pulse.search', {
+  input: 'context.SearchInput', output: 'context.SearchOutput',
+  metadata: {"title":"Search Pulse contracts","description":"Exact-token sparse lexical search with integer ranking, cited excerpts and offset pagination; not semantic search.","mcp":{"readOnlyHint":true,"idempotentHint":true,"destructiveHint":false,"openWorldHint":false}},
+}, search)
 rpc.on('pulse.read', {
   input: 'context.ReadInput', output: 'context.ReadOutput',
   metadata: {"title":"Read a Pulse contract","description":"Read one cited corpus ID; continue with the returned UTF-16 nextOffset.","mcp":{"readOnlyHint":true,"idempotentHint":true,"destructiveHint":false,"openWorldHint":false}},

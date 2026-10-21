@@ -1,0 +1,968 @@
+{
+  "status": "passed",
+  "unitStatus": "passed",
+  "scope": "06A application development qualification; not a release seal",
+  "source": {
+    "base": "e3bd03711ce15222fc318c6bb5ab5d68b51bfdbf",
+    "localCode": "afe635c",
+    "publishedCode": "7f2bf3768a605abb92b157ddfdad2acd6ff8bc3d",
+    "codeTree": "1dfa268136b20ab75464af90292543b440a0621f",
+    "unitAndNoCallLocal": "9e92e02",
+    "unitAndNoCallPublished": "2d4ef181dd4e6eb64722a7889077b7dd5c67c2c9",
+    "unitAndNoCallTree": "84496ca4652da24a4284e78e3231800f9363a155"
+  },
+  "fiveTools": {
+    "status": "passed",
+    "executions": 4692,
+    "largestToolBytes": 12139,
+    "largestMcpBytes": 24610,
+    "largestToolResultBytes": 24576,
+    "runs": [
+      {
+        "synthetic": false,
+        "executions": 3750,
+        "corpusHash": "a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97",
+        "planHash": "b2d12963461e5b12570f6a1b794339c43744288fbc45f21dca1d205645f5d05d",
+        "artifacts": {
+          "node": {
+            "bytes": 991442,
+            "sha256": "349ed4eff3da0f41911af21040b94415079c234f3d5365667fd5d55c0e021028"
+          },
+          "fastly": {
+            "bytes": 1043352,
+            "sha256": "5c561fb031d3c205bccf2cf15d41c08b453bc8d926ee2b19db1f9d520d7e67a5"
+          }
+        }
+      },
+      {
+        "synthetic": true,
+        "executions": 942,
+        "corpusHash": "dcc0885019064f56b26bcbe0fd2d6175e84b178e2603919d2bdbf65e0009c20e",
+        "planHash": "c70fe50918ead6109cba751f11def9c96eabbaa06031c1b91175da4ef9a30d16",
+        "artifacts": {
+          "node": {
+            "bytes": 1058563,
+            "sha256": "0aaefcab7330e6d8062c077170f6897d5384c3a0b14319b3e48290800322b8db"
+          },
+          "fastly": {
+            "bytes": 1110522,
+            "sha256": "59d0080d3b2b7616a9bb6d63b7488cceb0d77fd5d96a0bcbf8ebf867256cd327"
+          }
+        }
+      }
+    ],
+    "source": {
+      "revision": "afe635c1820c78da1bf4df00f3d8eb207ac1c0c0",
+      "status": ""
+    }
+  },
+  "runnerReport": {
+    "status": "passed",
+    "completedTasks": 2,
+    "selectedTasks": [
+      "pulse-context-tools",
+      "pulse-context-build"
+    ]
+  },
+  "unit": {
+    "status": "passed",
+    "sourceRevision": "9e92e02db676ea9d44b46226356e5d2a8cdd13af",
+    "completedTasks": 68,
+    "selectedTasks": [
+      "binary-resource-admission",
+      "report-capsule-contract",
+      "cli-report-workflow",
+      "cli-report-viewer",
+      "cli-report-retained-evidence",
+      "cli-report-size-evidence",
+      "cli-report-capture-proof",
+      "cli-report-entry-proof",
+      "cli-report-reference-provenance",
+      "cli-report-handler-topology",
+      "cli-report-handler-associations",
+      "cli-report-relationships",
+      "cli-report-imported-inputs",
+      "cli-report-resource-inventory",
+      "cli-report-graph-diagnostics",
+      "multifile-source-indexes",
+      "guest-json-roundtrip",
+      "pure-helper-contract",
+      "callable-source-admission",
+      "suite-shape",
+      "test-orchestration",
+      "package-exports",
+      "boundaries",
+      "workspace-hygiene",
+      "hidden-contracts",
+      "release-feature-acceptance",
+      "release-runtime-policy",
+      "release-seal-lifecycle",
+      "release-checkpoints",
+      "release-recovery-runner",
+      "release-recovery",
+      "release-tag",
+      "api-surface",
+      "logging-contract",
+      "s3-design-contract",
+      "kv-design-contract",
+      "kv-conditional-runtime",
+      "kv-conditional-gates",
+      "s3-read-contract",
+      "s3-write-contract",
+      "crypto-config-planning",
+      "crypto-es256-signing",
+      "crypto-rs256",
+      "crypto-digest-text-contract",
+      "reachable-graph",
+      "project-modules",
+      "package-reachability",
+      "external-lowerers",
+      "package-runtime",
+      "provider-toolchain",
+      "schema-registry",
+      "continuation-registry",
+      "entities-contracts",
+      "entities-schema-bridge",
+      "entities-javascript-runtime",
+      "entities-json-rpc-corpus",
+      "mcp-http",
+      "pulse-context-corpus",
+      "pulse-context-build",
+      "pulse-context-application",
+      "pulse-context-host",
+      "mcp-compatibility",
+      "mcp-tools",
+      "mcp-authorization",
+      "entities-package-owned-lowering",
+      "entities-catalog",
+      "entities-inspection",
+      "entities-orchestration-demo"
+    ],
+    "results": [
+      {
+        "name": "binary-resource-admission",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "report-capsule-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-workflow",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-viewer",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-retained-evidence",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-size-evidence",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-capture-proof",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-entry-proof",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-reference-provenance",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-handler-topology",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-handler-associations",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-relationships",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-imported-inputs",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-resource-inventory",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "cli-report-graph-diagnostics",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "multifile-source-indexes",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "guest-json-roundtrip",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "pure-helper-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "callable-source-admission",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "suite-shape",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "test-orchestration",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "package-exports",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "boundaries",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "workspace-hygiene",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "hidden-contracts",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "release-feature-acceptance",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "release-runtime-policy",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "release-seal-lifecycle",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "release-checkpoints",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "release-recovery-runner",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "release-recovery",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "release-tag",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "api-surface",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "logging-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "s3-design-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "kv-design-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "kv-conditional-runtime",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "kv-conditional-gates",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "s3-read-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "s3-write-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "crypto-config-planning",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "crypto-es256-signing",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "crypto-rs256",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "crypto-digest-text-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "reachable-graph",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "project-modules",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "package-reachability",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "external-lowerers",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "package-runtime",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "provider-toolchain",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "schema-registry",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "continuation-registry",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "entities-contracts",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "entities-schema-bridge",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "entities-javascript-runtime",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "entities-json-rpc-corpus",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "mcp-http",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "pulse-context-corpus",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "pulse-context-build",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "pulse-context-application",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "pulse-context-host",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "mcp-compatibility",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "mcp-tools",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "mcp-authorization",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "entities-package-owned-lowering",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "entities-catalog",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "entities-inspection",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      },
+      {
+        "name": "entities-orchestration-demo",
+        "status": "passed",
+        "exitCode": 0,
+        "timedOut": false,
+        "cleanup": {
+          "status": "passed"
+        }
+      }
+    ]
+  },
+  "developmentAttempts": [
+    {
+      "attempt": "first",
+      "status": "failed",
+      "source": {
+        "sourceRevision": "0c98b05313314a00bb966adb99deb84fb4296aa0",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "results": [
+        {
+          "name": "pulse-context-tools",
+          "evidence": "native",
+          "description": "05I four-tool MCP parity, Unicode pagination and admitted response bounds",
+          "commandSignature": "33ba3a298ea67188e6e04e14ca218e4e4788387e3dab2458537944af05dc6408",
+          "timeoutMs": 300000,
+          "durationMs": 20461,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/workspace/scratch/0174bfde4d1e/evidence/runs/2026-10-21T01-25-46-913Z--6/tasks/pulse-context-tools.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ]
+    },
+    {
+      "attempt": "second",
+      "status": "failed",
+      "source": {
+        "sourceRevision": "0c98b05313314a00bb966adb99deb84fb4296aa0",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "results": [
+        {
+          "name": "pulse-context-tools",
+          "evidence": "native",
+          "description": "06A five-tool MCP parity, independent lexical oracle, Unicode pagination and response bounds",
+          "commandSignature": "33ba3a298ea67188e6e04e14ca218e4e4788387e3dab2458537944af05dc6408",
+          "timeoutMs": 300000,
+          "durationMs": 19267,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/workspace/scratch/0174bfde4d1e/evidence/runs/2026-10-21T01-26-26-926Z--27/tasks/pulse-context-tools.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ]
+    },
+    {
+      "attempt": "third",
+      "status": "failed",
+      "source": {
+        "sourceRevision": "0c98b05313314a00bb966adb99deb84fb4296aa0",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "results": [
+        {
+          "name": "pulse-context-tools",
+          "evidence": "native",
+          "description": "06A five-tool MCP parity, independent lexical oracle, Unicode pagination and response bounds",
+          "commandSignature": "33ba3a298ea67188e6e04e14ca218e4e4788387e3dab2458537944af05dc6408",
+          "timeoutMs": 300000,
+          "durationMs": 22175,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/workspace/scratch/0174bfde4d1e/evidence/runs/2026-10-21T01-26-50-275Z--5/tasks/pulse-context-tools.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ]
+    },
+    {
+      "attempt": "fourth",
+      "status": "failed",
+      "source": {
+        "sourceRevision": "0c98b05313314a00bb966adb99deb84fb4296aa0",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "results": [
+        {
+          "name": "pulse-context-tools",
+          "evidence": "native",
+          "description": "06A five-tool MCP parity, independent lexical oracle, Unicode pagination and response bounds",
+          "commandSignature": "33ba3a298ea67188e6e04e14ca218e4e4788387e3dab2458537944af05dc6408",
+          "timeoutMs": 300000,
+          "durationMs": 22990,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/workspace/scratch/0174bfde4d1e/evidence/runs/2026-10-21T01-27-29-226Z--14/tasks/pulse-context-tools.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ]
+    },
+    {
+      "attempt": "fifth",
+      "status": "failed",
+      "source": {
+        "sourceRevision": "9e92e02db676ea9d44b46226356e5d2a8cdd13af",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "results": [
+        {
+          "name": "pulse-context-tools",
+          "evidence": "native",
+          "description": "06A five-tool MCP parity, independent lexical oracle, Unicode pagination and response bounds",
+          "commandSignature": "33ba3a298ea67188e6e04e14ca218e4e4788387e3dab2458537944af05dc6408",
+          "timeoutMs": 300000,
+          "durationMs": 89300,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/workspace/scratch/0174bfde4d1e/evidence/runs/2026-10-21T01-28-46-641Z--5/tasks/pulse-context-tools.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ]
+    },
+    {
+      "attempt": "sixth",
+      "status": "failed",
+      "source": {
+        "sourceRevision": "9655b46a5b254a5cbe4dc41b41b42d46f5256c28",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "results": [
+        {
+          "name": "pulse-context-tools",
+          "evidence": "native",
+          "description": "06A five-tool MCP parity, independent lexical oracle, Unicode pagination and response bounds",
+          "commandSignature": "98740d255a945a062570d2ea169e08844450f12423f9f590dcaecb26e185df98",
+          "timeoutMs": 300000,
+          "durationMs": 115551,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/workspace/scratch/0174bfde4d1e/evidence/runs/2026-10-21T01-31-03-875Z--36/tasks/pulse-context-tools.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ]
+    }
+  ]
+}

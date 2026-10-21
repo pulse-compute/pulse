@@ -1,0 +1,34 @@
+{"checkpoint":"compiled","synthetic":false,"nodeBytes":992011,"fastlyBytes":1043921}
+{"checkpoint":"read-parity","synthetic":false,"executions":1668}
+AssertionError [ERR_ASSERTION]: {"version":"1.0.0-beta.9","query":"target"}
++ actual - expected
+... Skipped lines
+
+  {
+    meta: {
+      applicationVersion: 'pulse.context-application.v2',
+      corpusHash: 'a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97',
+      corpusSchemaVersion: 'pulse.context-corpus.v1',
+...
+          path: 'docs/guides/project-lifecycle.md',
++         selection: 'heading:5. Build the record target',
+-         selection: 'heading:5. Build the selected target',
+          sha256: '628efab0d0ec7e82c123254644ad8311783d2b6eb45a2e0dbd54ec28ee5a0c51',
+          startLine: 78,
+          url: 'https://api.github.com/repos/pulse-compute/pulse/git/blobs/24f9cfb364be5bf649969beacc77d98648dcd1b7'
+        },
+        tags: [
+...
+        ],
++       title: '5. Build the record target'
+-       title: '5. Build the selected target'
+      },
+      {
+        applicability: [
+          {
+            provider: 'fastly',
+
+    at searchParity (/workspace/scratch/0174bfde4d1e/pulse/wasm/test/mcp/assert-context-tools.cjs:240:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async main (/workspace/scratch/0174bfde4d1e/pulse/wasm/test/mcp/assert-context-tools.cjs:250:30)
+    at async /workspace/scratch/0174bfde4d1e/pulse/wasm/test/mcp/assert-context-tools.cjs:280:12 undefined undefined

@@ -87,10 +87,15 @@ header/row reads still check ranges and failure never becomes an empty result.
 
 ## Text retrieval and Unicode
 
-Metadata is decoded through a literal registered schema with
+The 02 HTTP proof decodes metadata through a literal registered schema with
 `ctx.decodeJson`, at most 4,096 bytes per record. Generate derived scalar filter
 tables from the same manifest for search, so scoring does not parse 512 metadata
-records. 02 must prove their exact Native representation; no assumed general
+records. The 06A callable application uses the same generated finite citation
+projection as 05I read, derived from the identical validated corpus. Callable
+contexts expose resources/workspaces, not `decodeJson`; this application does
+not extend that authority. Resource bytes, scalar filters and citation literals
+are covered by the producer's freshness identities. 06B owns whole-request
+cost qualification of that representation. 02 must prove their exact Native representation; no assumed general
 support for imported arrays of objects or arbitrary structured helper returns.
 
 Text remains UTF-8 in `text.bin`; no JSON-escaped copy, base64 payload, duplicate

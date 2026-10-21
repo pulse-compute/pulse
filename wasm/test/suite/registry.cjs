@@ -1243,7 +1243,7 @@ const tasks = Object.freeze({
     description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
   }),
   'pulse-context-tools': nodeTask('test/mcp/assert-context-tools.cjs', {
-    evidence: 'native', timeoutMs: 300000, description: '05I four-tool MCP parity, Unicode pagination and admitted response bounds'
+    evidence: 'native', timeoutMs: 300000, description: '06A five-tool MCP parity, independent lexical oracle, Unicode pagination and response bounds'
   }),
   'pulse-context-build': nodeTask('test/mcp/assert-context-build.cjs', {
     evidence: 'unit', timeoutMs: 120000, description: 'B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection'

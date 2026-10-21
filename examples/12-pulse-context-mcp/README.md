@@ -270,11 +270,11 @@ For the pinned Codex compatibility profile, start with `npm start -- --codex`.
 
 ## Migrating the compiled application
 
-The separate `application/` project now implements **`pulse.start`, `pulse.read`,
+The separate `application/` project now implements **`pulse.start`, `pulse.search`, `pulse.read`,
 `pulse.example`, and `pulse.diagnostic`** through
 shared `ctx.call`. It supports Node Native, Fastly Native and explicit Node
 JavaScript. The existing project and standalone five-tool Node host below remain
-the v1 workflow while search migration continues in its own checkpoint.
+the v1 workflow; its search ranking remains unchanged.
 The `@pulse-compute/mcp/node` host API is unchanged.
 
 The migrated tools return application version `pulse.context-application.v2`, the
@@ -299,6 +299,7 @@ Call the running modern MCP endpoint from another terminal in `application/`:
 ```bash
 node ../client/request.cjs --url http://127.0.0.1:8787/mcp tools/list
 node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.start '{"version":"1.0.0-beta.9","goal":"schema-api","provider":"node","target":"native"}'
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.search '{"version":"1.0.0-beta.9","query":"schema","limit":2}'
 node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.read '{"version":"1.0.0-beta.9","id":"contract/application"}'
 node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.example '{"version":"1.0.0-beta.9","id":"01-hello-json"}'
 node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.diagnostic '{"version":"1.0.0-beta.9","code":"PULSE_CALL_SOURCE_LIMIT"}'
@@ -306,9 +307,24 @@ node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.diagnostic '{"v
 
 Profiles `node-javascript` and `fastly-native` select the other implementations
 explicitly. Fastly local/deployed qualification and installed application closure
-remain separate work. Discovery exposes these four tools; migrated search is not
-yet advertised. `pulse.diagnostic` is the compiled application name for the
+remain separate work. Discovery exposes all five tools. `pulse.diagnostic` is the compiled application name for the
 operation called `pulse.explain_diagnostic` by the unchanged legacy host.
+
+`pulse.search` advertises encoder `pulse.context-sparse-lexical.v1` in
+`meta.encoder`. Queries accept 1–256 ASCII bytes and one to eight tokens before
+deduplication (at most 64 bytes each). Only ASCII letters are case-folded; maximal
+`[a-z0-9_]` runs are tokens. All distinct terms must match. Scores sum field
+presence weights: ID 8, title 6, tags 4, content 1. Equal scores sort by ASCII ID.
+Category and exact provider/target filters apply before scoring. `limit` is 1–5;
+`offset` may equal the complete match count for an empty terminal page.
+
+Excerpts preserve the leading scalar-aligned 384 UTF-8 bytes, including whitespace,
+with `excerptTruncated` when more text exists. The complete MCP tool result,
+including both content copies and citations, must fit 24 KiB; oversized pages
+return `response-too-large` without partial results. Lower the limit or use
+`pulse.read`. Search uses the same generated finite citation projection as read,
+plus immutable vector/text resources and a request-owned numeric heap. Relevance
+and whole-request performance qualification remain B10-MCP-06B work.
 
 The computations use complete existing output schemas. Cited content is read
 from `context.text`; generated code contains bounded metadata and no full-text
@@ -555,7 +571,7 @@ are 512 records, 4,096 terms, 1,024 nonzeros per row, 24 KiB content per record 
 2 MiB canonical corpus, together with explicit raw and serialized resource byte
 budgets. Every limit applies simultaneously; overflow fails without truncation.
 
-`context:check` reconstructs in a fresh temporary directory and compares all 28
+`context:check` reconstructs in a fresh temporary directory and compares all 30
 outputs. It fails on missing, stale, corrupt, mixed or unexpected data and never
 repairs the checkout. The receipt names the actual verifier Node version;
 verification on another Node version proves only that invocation's byte equality.
@@ -564,8 +580,7 @@ the read-only check. `docs:sync` may refresh the legacy corpus and copy emitted
 files, but never builds vectors; finish explicit generation before committing.
 
 The existing Node JavaScript host continues using its v1 corpus module. The migrated
-`application/` project implements four tools through compiled computation;
-`pulse.search` remains a separate migration checkpoint.
+`application/` project implements all five tools through compiled computation.
 Installed resource acceptance and a candidate-bound seal receipt remain separate.
 B10-MCP-07/09 own installed qualification and seal/recovery integration.
 

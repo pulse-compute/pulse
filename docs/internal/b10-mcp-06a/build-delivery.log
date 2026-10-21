@@ -1,0 +1,6 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> build
+> node scripts/pulse-context-build.cjs --check && tsc -b tsconfig.workspace.json
+
+{"schemaVersion":"pulse.context-build-receipt.v1","status":"ok","mode":"check","executionNode":"24.18.0","pinnedProducerNode":"24.18.0","manifestSha256":"f083455f2d9a0032000df3bdf20dc3678b16caabfa7eeb0b57c3784cea426b9f","corpusHash":"a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97","dimensions":{"rows":263,"dimension":2506,"nonzeros":15313,"dictionarySha256":"973fe863a4fdf0a5227648978158a71c6f0c738684d3ee201a6759797645c961","manifestId":"44ce962dc41e007f8401e266f66b5956052aab6dc75d3eda020506dd0953a875","catalogueIdentity":"19a443454a2e6e4d4d350994be5973251d2c7d7fd7ff3f6176751adbffaa9610","rawBytes":599957,"serializedBytes":800598,"budgets":{"files":3,"fileBytes":5242880,"totalBytes":8388608,"serializedBytes":16777216,"bindings":3}},"changedFiles":0,"comparedFiles":30}
