@@ -1,0 +1,39 @@
+CallableSourceAdmissionError: Callee failed ordinary computation admission.
+    at fail (/workspace/scratch/0174bfde4d1e/pulse/wasm/packages/compiler/src/callable-source-admission.js:24:61)
+    at visit (/workspace/scratch/0174bfde4d1e/pulse/wasm/packages/compiler/src/callable-source-admission.js:109:27)
+    at /workspace/scratch/0174bfde4d1e/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+    at visitNode2 (/workspace/scratch/0174bfde4d1e/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32449:18)
+    at forEachChildInReturnStatement (/workspace/scratch/0174bfde4d1e/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32702:12)
+    at Object.forEachChild (/workspace/scratch/0174bfde4d1e/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32970:35)
+    at visit (/workspace/scratch/0174bfde4d1e/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:8)
+    at /workspace/scratch/0174bfde4d1e/pulse/wasm/packages/compiler/src/callable-source-admission.js:119:33
+    at visitNodes (/workspace/scratch/0174bfde4d1e/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32457:22)
+    at forEachChildInBlock (/workspace/scratch/0174bfde4d1e/pulse/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32927:10) undefined [
+  {
+    code: 'PULSE_CANONICAL_NATIVE_PLAN_INVALID',
+    kind: 'CanonicalNativePlanDiagnostic',
+    severity: 'error',
+    message: 'pure argument kind mismatch',
+    file: undefined,
+    position: undefined,
+    detail: {}
+  },
+  {
+    code: 'PULSE_CANONICAL_NATIVE_PLAN_INVALID',
+    kind: 'CanonicalNativePlanDiagnostic',
+    severity: 'error',
+    message: 'pure argument kind mismatch',
+    file: undefined,
+    position: undefined,
+    detail: {}
+  },
+  {
+    code: 'PULSE_CANONICAL_NATIVE_PLAN_INVALID',
+    kind: 'CanonicalNativePlanDiagnostic',
+    severity: 'error',
+    message: 'pure argument kind mismatch',
+    file: undefined,
+    position: undefined,
+    detail: {}
+  }
+]
