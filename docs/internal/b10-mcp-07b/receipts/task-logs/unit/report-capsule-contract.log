@@ -1,0 +1,4 @@
+ok - AN9-09 normalized storage, canonical compatibility, browser codec, semantic validation and bounded hostile expansion
+{"comparison":"passed","checks":49,"version":1,"deterministic":true,"missingIsNotZero":true}
+ok - AN9-06 semantic inventories, recipe independence, source-slot/retained identity, ambiguity, coverage and offline comparison HTML
+{"status":"passed","negativeCases":66,"goldenCapsules":2,"registeredSchemas":2,"attributionProofCells":3,"sameCapsuleHtmlRoundTrip":true,"completedWasmAndHistoricalReplay":true,"noIoOrToolchainImports":true}

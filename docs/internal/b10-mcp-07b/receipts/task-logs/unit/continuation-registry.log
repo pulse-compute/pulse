@@ -1,0 +1,1 @@
+ok - continuation registry enforces waiting/resume/complete, double-resume, expiry, failure, cancellation, and ordered trace transitions

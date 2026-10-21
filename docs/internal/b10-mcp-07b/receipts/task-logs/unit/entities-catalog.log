@@ -1,0 +1,2 @@
+{"version":"pulse.entities-catalog.v1","catalogHash":"d603d6f18768c799e50ab926fbb21ee75df18fa12386d69040b924ccbc908c55","entityOrder":["alpha.lookup","beta.notify"],"targetsEligible":4,"releaseAssigned":false}
+ok - Entities catalog remains deterministic, non-sensitive, immutable, and honest about I9 target support without assigning a release

@@ -1,0 +1,17 @@
+PulseNodeJavascriptSourcePackageError: Cannot determine a package version for reachable dependency @pulse-compute/wasm-contracts.
+    at normalizeDependencyVersion (/workspace/scratch/0174bfde4d1e/pulse-06b-final/packages/provider-node/src/javascript/source-package.js:219:9)
+    at Object.writeNodeJavascriptSourcePackage (/workspace/scratch/0174bfde4d1e/pulse-06b-final/packages/provider-node/src/javascript/source-package.js:333:44)
+    at main (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/runtime/binary-resource-closure.cjs:25:89)
+    at Object.<anonymous> (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/runtime/binary-resource-closure.cjs:46:26)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {
+  code: 'PULSE_JAVASCRIPT_SOURCE_PACKAGE_DEPENDENCY_VERSION_UNKNOWN',
+  detail: {
+    projectRoot: '/tmp/pulse-resource-closure-vLN2pV',
+    packageName: '@pulse-compute/wasm-contracts'
+  }
+} undefined undefined

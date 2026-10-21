@@ -1,0 +1,46 @@
+[
+  '/workspace/scratch/0174bfde4d1e/07a-debug/generic-consumer/node_modules/@pulse-compute/cli/bin/pulse.js',
+  'build',
+  '--profile',
+  'native'
+]
+Error: command failed 2
+
+{
+  "status": "error",
+  "version": "1.0.0-beta.9",
+  "error": {
+    "name": "PulseProjectError",
+    "code": "PULSE_CONFIG_SCOPE_PARAMETER_REQUIRED",
+    "title": "Uncatalogued Pulse diagnostic",
+    "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",
+    "category": "project",
+    "message": "Pulse config factory requires exactly one identifier parameter for its symbolic scope.",
+    "remediation": [
+      "Fix `.pulse/config.ts` and rerun `pulse doctor`."
+    ],
+    "stability": "internal-or-forward-compatible",
+    "scope": "fallback",
+    "docs": "https://pulsecompute.io/v1.0.0-beta.9/reference/diagnostics/",
+    "detail": {
+      "source": {
+        "file": "/workspace/scratch/0174bfde4d1e/07a-debug/generic-consumer/.pulse/config.ts",
+        "line": 1,
+        "column": 79,
+        "start": 78,
+        "end": 2978082
+      }
+    }
+  }
+}
+
+    at run (/tmp/07b-installed-debug.cjs:5:313)
+    at Object.qualify (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/mcp/generic-resource-installed.cjs:14:53)
+    at Object.<anonymous> (/tmp/07b-installed-debug.cjs:6:63)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47

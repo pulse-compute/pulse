@@ -1,0 +1,2 @@
+ok - pulse.schema extracts versioned schema/response IR and locks semantic trace and backend-input contracts
+ok - schema cost attribution preserves IDs, policies, response roots, Unicode byte accounting and production generation

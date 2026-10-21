@@ -1,0 +1,17 @@
+[
+  '/workspace/scratch/0174bfde4d1e/07a-debug/generic-consumer/node_modules/@pulse-compute/cli/bin/pulse.js',
+  'build',
+  '--profile',
+  'native'
+]
+[
+  '/workspace/scratch/0174bfde4d1e/07a-debug/generic-consumer/node_modules/@pulse-compute/cli/bin/pulse.js',
+  'build',
+  '--profile',
+  'javascript'
+]
+[
+  '/workspace/scratch/0174bfde4d1e/07a-debug/generic-proof/worker.cjs',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/generic-proof/settings.json'
+]
+DEVELOPMENT PASS

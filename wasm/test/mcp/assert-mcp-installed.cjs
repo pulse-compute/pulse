@@ -140,12 +140,13 @@ async function main() {
     report.consumerLockSha256 = hash(fs.readFileSync(path.join(consumer, 'package-lock.json')));
     console.log('mcp-installed - exact Native application closure and source-free five-tool replay');
     report.nativeClosure = await require('./context-installed-closure.cjs').qualify({ consumer, temporary, root, run, env, verifyCopy: directory => verifyInstalled(manifest, directory) });
+    report.genericResourceClosure = await require('./generic-resource-installed.cjs').qualify({ consumer, temporary, root, run, env, verifyCopy: directory => verifyInstalled(manifest, directory) });
     saveReport();
     const client = path.join(temporary, 'client'); fs.mkdirSync(client);
     for (const file of ['package.json', 'pnpm-lock.yaml', 'context-proof.mjs', 'context-agent-proof.cjs']) {
       fs.copyFileSync(path.join(__dirname, 'reference', file), path.join(client, file));
     }
-    report.fixtureFiles = Object.fromEntries(['reference/context-proof.mjs', 'reference/context-agent-proof.cjs', 'reference/pnpm-lock.yaml', 'codex-reference/pnpm-lock.yaml', 'package-context.cjs', 'context-installed-closure.cjs', 'context-installed-oracle.cjs', 'context-installed-worker.cjs', 'context-installed-read-guard.cjs', 'context-search-oracle.cjs', 'context-quality-cases.json']
+    report.fixtureFiles = Object.fromEntries(['reference/context-proof.mjs', 'reference/context-agent-proof.cjs', 'reference/pnpm-lock.yaml', 'codex-reference/pnpm-lock.yaml', 'package-context.cjs', 'context-installed-closure.cjs', 'context-installed-oracle.cjs', 'context-installed-worker.cjs', 'context-installed-read-guard.cjs', 'generic-resource-installed.cjs', 'generic-resource-worker.cjs', '../runtime/binary-resource-closure-fixture.cjs', 'context-search-oracle.cjs', 'context-quality-cases.json']
       .map(file => [file, hash(fs.readFileSync(path.join(__dirname, file)))]));
     const pnpm = pnpmInvocation(root);
     await run(pnpm.command, [...pnpm.prefix, 'install', '--frozen-lockfile', '--ignore-scripts'], { cwd: client });

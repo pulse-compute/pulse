@@ -1,0 +1,2 @@
+{"version":"pulse.canonical-package-inspection.v1","planHash":"2539e18788f3a72b135846cada2d8d2e7dcd589dd8c0a1aed8304c4a5344578a","catalogHash":"b1fa3623b597a773efb01a25b7162206817a45462ae824844da626e6cf265a9e","declaredHandlers":2,"measuredNodeTargets":2,"measuredFastlyTargets":2,"externalFastlyExecutionClaimed":true}
+ok - Entities inspection exposes deterministic declarations, schemas, effects, eligibility, reasons, and build artifacts without runtime or provider data

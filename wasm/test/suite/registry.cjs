@@ -520,7 +520,7 @@ const tasks = Object.freeze({
   }),
   'native-context-primitives': nodeTask('test/runtime/assert-native-context-primitives.cjs', { evidence: 'conformance', timeoutMs: 300000, description: 'bounded UTF-8 and execution-owned numeric workspace parity and rejection' }),
   'context-native-proof': nodeTask('test/runtime/assert-context-native-proof.cjs', { evidence: 'native', timeoutMs: 300000, description: 'actual and capacity-bound context query-to-citation Native proof' }),
-  'binary-resource-execution': nodeTask('test/runtime/assert-binary-resource-execution.cjs', { evidence: 'conformance', timeoutMs: 300000, description: 'execution-owned binary views and raw-byte Native parity' }),
+  'binary-resource-execution': nodeTask('test/runtime/assert-binary-resource-execution.cjs', { evidence: 'conformance', timeoutMs: 300000, description: '07B generic four-target resource matrix, callable backing deduplication, reachability and source-deleted closure' }),
   'effect-collections': nodeTask('test/runtime/assert-effect-collections.cjs', {
     evidence: 'conformance', timeoutMs: 180000, description: 'bounded dynamic collection ownership and JS/Native parity'
   }),
@@ -1201,7 +1201,7 @@ const tasks = Object.freeze({
   }),
   'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
     evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
-    description: '07A exact packed source-free Native five-tool closure, production host, official client and pinned Codex onboarding; one release-owned gate'
+    description: '07A/07B exact packed source-free MCP and generic resource closures, production host, official client and pinned Codex onboarding; one release-owned gate'
   }),
   'mcp-wire-proof': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
     evidence: 'external', timeoutMs: 300000,

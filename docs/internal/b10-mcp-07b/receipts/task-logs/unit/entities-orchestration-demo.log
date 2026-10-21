@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "tools": 2,
+  "calls": 2,
+  "governedEffects": 3,
+  "nativeBytes": 76859,
+  "report": "wasm/.test-results/entities-i10/entities-tools-orchestration.json",
+  "reportSha256": "ba8cdda848a4881bb5cfca27f28a451c74684a0836e66a0ae4b65ad23f7e2960"
+}
+ok - I10 projects static catalog metadata through an external tools facade, invokes governed JSON-RPC entities, and inspects reproducible package-owned Native Wasm without protocol state or fallback
