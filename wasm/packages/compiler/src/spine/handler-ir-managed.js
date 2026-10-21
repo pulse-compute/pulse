@@ -994,6 +994,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
       } else if (provider.providerKind === 'kv') {
         add('store', provider.store || provider.resource);
         add('key', provider.key);
+        add('options', provider.options);
         add('generation', provider.generation);
         add('value', provider.value);
       } else if (provider.providerKind === 'event') {

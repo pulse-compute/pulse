@@ -191,7 +191,7 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
     }
   }
 
-  if (['get', 'put', 'getVersioned', 'insertIfAbsent', 'compareAndSwap'].includes(method)) {
+  if (['get', 'put', 'getVersioned', 'insertIfAbsent', 'compareAndSwap', 'list', 'delete'].includes(method)) {
     let store;
     if (receiver && ts.isCallExpression(receiver) && isPropertyAccessNamed(receiver.expression, ctxName, 'kv', options) && receiver.arguments.length === 1) {
       store = receiver.arguments[0];
@@ -199,9 +199,9 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
       store = kvAliases.get(receiver.text);
     }
     if (store) {
-      if (['getVersioned', 'insertIfAbsent', 'compareAndSwap'].includes(method)
+      if (['getVersioned', 'insertIfAbsent', 'compareAndSwap', 'list', 'delete'].includes(method)
         && !ts.isStringLiteral(store) && !ts.isNoSubstitutionTemplateLiteral(store)) return undefined;
-      const expected = method === 'compareAndSwap' ? 3 : ['get', 'getVersioned'].includes(method) ? 1 : 2;
+      const expected = method === 'compareAndSwap' ? 3 : ['get', 'getVersioned', 'delete', 'list'].includes(method) ? 1 : 2;
       if (current.arguments.length === expected) {
         return Object.freeze({
           call: current,
@@ -213,7 +213,8 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
           capability: `kv.${method}`,
           resource: store,
           store,
-          key: current.arguments[0],
+          key: method === 'list' ? undefined : current.arguments[0],
+          options: method === 'list' ? current.arguments[0] : undefined,
           value: current.arguments[method === 'compareAndSwap' ? 2 : 1],
           generation: method === 'compareAndSwap' ? current.arguments[1] : undefined,
           args: Object.freeze([...current.arguments])

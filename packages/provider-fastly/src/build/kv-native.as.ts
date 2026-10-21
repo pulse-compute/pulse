@@ -5,6 +5,8 @@
 
 @lazy const __kv_deadline = new StaticArray<i64>(PULSE_FASTLY_EFFECT_COUNT)
 @lazy const __kv_dispatched = new StaticArray<bool>(PULSE_FASTLY_EFFECT_COUNT)
+@lazy const __kv_list_limits = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)
+@lazy const __kv_list_prefixes = new Array<string>(PULSE_FASTLY_EFFECT_COUNT).fill('')
 let __kv_request_deadline: i64 = -1;
 // Host embedding seam, in monotonic nanoseconds; never exposed through ctx.
 export function pulse_fastly_kv_request_deadline(deadline: i64): void { __kv_request_deadline = deadline; }
@@ -25,7 +27,8 @@ function __kv_result(status: string, reason: string = ''): i32 {
   return result;
 }
 function __kv_failure(index: i32, reason: string): i32 {
-  return __kv_result(__pulse_fastly_effect_kind(index) == 15 ? 'failed' : __kv_dispatched[index] ? 'unknown' : 'not-stored', reason);
+  const kind = __pulse_fastly_effect_kind(index);
+  return __kv_result(kind == 15 || kind == 23 ? 'failed' : __kv_dispatched[index] ? 'unknown' : kind == 22 ? 'not-deleted' : 'not-stored', reason);
 }
 function __kv_fail(index: i32, reason: string): void { __pulse_fastly_ready_effect(index, __kv_failure(index, reason)); }
 function __kv_expired(index: i32): bool {
@@ -58,6 +61,40 @@ function __kv_key(text: string): bool {
     && text.indexOf('./') < 0 && !text.endsWith('/.') && !text.endsWith('/..')
     && text.indexOf('#') < 0 && text.indexOf('?') < 0 && text.indexOf('^') < 0
     && text.indexOf('|') < 0 && text.indexOf(';') < 0 && text.indexOf('\n') < 0 && text.indexOf('\r') < 0;
+}
+function __kv_list_text(text: string, max: i32, empty: bool = false): bool {
+  if ((!empty && !text.length) || text.length > max || String.UTF8.byteLength(text) > max) return false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    if (c < 32 || (c >= 127 && c <= 159)) return false;
+    if (c >= 0xd800 && c <= 0xdbff) { if (++i >= text.length) return false; const next = text.charCodeAt(i); if (next < 0xdc00 || next > 0xdfff) return false; }
+    else if (c >= 0xdc00 && c <= 0xdfff) return false;
+  }
+  return true;
+}
+// ABI config: mode:u32, cursor:ptr/len, limit:u32, prefix:ptr/len.
+// Strong is the explicit provider mode; it does not establish a page snapshot.
+function __kv_list_config(index: i32, payload: __PulseFastlyValue, config: StaticArray<i32>): i32 {
+  const options = __pulse_fastly_value(__pulse_fastly_payload_field(payload, 'options'));
+  if (options.kind != PULSE_VALUE_OBJECT) return -1;
+  for (let i = 0; i < options.keys.length; i++) if (options.keys[i] != 'limit' && options.keys[i] != 'prefix' && options.keys[i] != 'cursor') return -1;
+  const limit = __pulse_fastly_value(__pulse_fastly_payload_field(options, 'limit'));
+  if (limit.kind != PULSE_VALUE_NUMBER || !isFinite(limit.number) || limit.number < 1 || limit.number > __KV_listLimit || Math.floor(limit.number) != limit.number) return -1;
+  config[3] = i32(limit.number); __kv_list_limits[index] = config[3]; __kv_list_prefixes[index] = '';
+  let mask = 4;
+  const prefix = __pulse_fastly_value(__pulse_fastly_payload_field(options, 'prefix'));
+  if (prefix.kind != PULSE_VALUE_UNDEFINED) {
+    if (prefix.kind != PULSE_VALUE_STRING || !__kv_list_text(prefix.text, __KV_keyBytes, true)) return -1;
+    __kv_private(prefix.text); __kv_list_prefixes[index] = prefix.text;
+    if (prefix.text.length) mask |= 8;
+  }
+  const cursor = __pulse_fastly_value(__pulse_fastly_payload_field(options, 'cursor'));
+  if (cursor.kind != PULSE_VALUE_UNDEFINED) {
+    if (cursor.kind != PULSE_VALUE_STRING || !__kv_list_text(cursor.text, __KV_cursorBytes)) return -2;
+    __kv_private(cursor.text);
+    mask |= 2;
+  }
+  return mask;
 }
 function __kv_token_valid(token: string): bool {
   if (token.length != 29 || !token.startsWith('fastly-kv-v1:')) return false;
@@ -125,8 +162,16 @@ function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyV
   __kv_deadline[index] = start + i64(__KV_timeoutMs) * 1000000;
   if (__kv_request_deadline >= 0 && __kv_request_deadline < __kv_deadline[index]) __kv_deadline[index] = __kv_request_deadline;
   const kind = __pulse_fastly_effect_kind(index), key = __pulse_fastly_value(__pulse_fastly_payload_field(payload, 'key'));
-  if (key.kind != PULSE_VALUE_STRING || !__kv_key(key.text)) { __kv_fail(index, 'invalid-key'); return; }
-  __kv_private(key.text);
+  let listConfig: StaticArray<i32> | null = null;
+  let listMask = 0;
+  if (__KV_HAS_LIST && kind == 23) {
+    listConfig = new StaticArray<i32>(6);
+    listMask = __kv_list_config(index, payload, listConfig!);
+    if (listMask < 0) { __kv_fail(index, listMask == -2 ? 'invalid-cursor' : 'invalid-options'); return; }
+  } else {
+    if (key.kind != PULSE_VALUE_STRING || !__kv_key(key.text)) { __kv_fail(index, 'invalid-key'); return; }
+    __kv_private(key.text);
+  }
   let generation: u64 = 0;
   if (kind == 17) {
     const token = __pulse_fastly_value(__pulse_fastly_payload_field(payload, 'generation'));
@@ -134,7 +179,7 @@ function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyV
     __kv_private(token.text); generation = __kv_generation(token.text);
   }
   let wire = '';
-  if (kind != 15) {
+  if (__KV_HAS_WRITE && (kind == 16 || kind == 17)) {
     const encoder = new __KvEncoder(); const json = encoder.encode(__pulse_fastly_payload_field(payload, 'value'));
     if (encoder.reason.length) { __kv_fail(index, encoder.reason); return; }
     // Immutable string snapshot exists before any binding/body/dispatch hostcall.
@@ -146,10 +191,22 @@ function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyV
   if (fastly_kv_store_open(changetype<usize>(name), name.byteLength, changetype<usize>(storeHandle)) != 0) { __kv_fail(index, 'configuration'); return; }
   if (__kv_expired(index)) return;
   const keyBytes = __pulse_fastly_utf8(key.text), pending = new StaticArray<i32>(1); let status: i32;
-  if (kind == 15) {
+  if (__KV_HAS_LIST && kind == 23) {
+    const options = __pulse_fastly_value(__pulse_fastly_payload_field(payload, 'options'));
+    const prefixBytes = __pulse_fastly_utf8(__kv_list_prefixes[index]);
+    const cursor = __pulse_fastly_value(__pulse_fastly_payload_field(options, 'cursor'));
+    const cursorBytes = __pulse_fastly_utf8(cursor.kind == PULSE_VALUE_STRING ? cursor.text : '');
+    listConfig![1] = i32(changetype<usize>(cursorBytes)); listConfig![2] = cursorBytes.byteLength;
+    listConfig![4] = i32(changetype<usize>(prefixBytes)); listConfig![5] = prefixBytes.byteLength;
+    status = fastly_kv_store_list(storeHandle[0], listMask, changetype<usize>(listConfig!), changetype<usize>(pending));
+  } else if (__KV_HAS_DELETE && kind == 22) {
+    const config = new StaticArray<i32>(1);
+    __kv_dispatched[index] = true;
+    status = fastly_kv_store_delete(storeHandle[0], changetype<usize>(keyBytes), keyBytes.byteLength, 0, changetype<usize>(config), changetype<usize>(pending));
+  } else if (__KV_HAS_READ && kind == 15) {
     const config = new StaticArray<i32>(1);
     status = fastly_kv_store_lookup(storeHandle[0], changetype<usize>(keyBytes), keyBytes.byteLength, 0, changetype<usize>(config), changetype<usize>(pending));
-  } else {
+  } else if (__KV_HAS_WRITE) {
     const body = new StaticArray<i32>(1), written = new StaticArray<i32>(1);
     if (fastly_http_body_new(changetype<usize>(body)) != 0) { __kv_fail(index, 'transport'); return; }
     if (__kv_expired(index)) { __kv_close(body[0]); return; }
@@ -165,8 +222,8 @@ function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyV
     // Insert takes ownership on success. On error the body may already be consumed;
     // best-effort close cannot turn uncertain acceptance into rejection.
     if (status != 0) __kv_close(body[0]);
-  }
-  if (status != 0) { __kv_fail(index, 'transport'); return; }
+  } else { __kv_fail(index, 'protocol'); return; }
+  if (status != 0) { __kv_fail(index, kind == 23 && status == 2 && (listMask & 2) != 0 ? 'invalid-cursor' : 'transport'); return; }
   __pulse_fastly_pending[index] = pending[0]; __pulse_fastly_pending_mode[index] = PULSE_FASTLY_PENDING_ASYNC;
 }
 function __kv_utf8(data: Uint8Array, length: i32): bool {
@@ -185,20 +242,22 @@ function __kv_utf8(data: Uint8Array, length: i32): bool {
 // scratch buffer. Only the written prefix is inspected, including after errors.
 @lazy let __kv_read_buffer: Uint8Array | null = null;
 function __kv_read(index: i32, body: i32, generation: u64): i32 {
-  if (__kv_read_buffer === null) __kv_read_buffer = new Uint8Array(__KV_wireBytes + 1);
+  const isList = __KV_HAS_LIST && __pulse_fastly_effect_kind(index) == 23, max = isList ? __KV_envelopeBytes : __KV_wireBytes;
+  if (__kv_read_buffer === null || __kv_read_buffer!.length < max + 1) __kv_read_buffer = new Uint8Array(max + 1);
   const buffer = __kv_read_buffer!, written = new StaticArray<i32>(1); let count = 0;
   while (true) {
     const ready = __kv_ready(index, body); if (ready <= 0) return __kv_ready_failure(index, ready);
     written[0] = 0;
-    if (fastly_http_body_read(body, buffer.dataStart + count, buffer.length - count, changetype<usize>(written)) != 0) return __kv_failure(index, 'transport');
-    if (written[0] < 0 || written[0] > buffer.length - count) return __kv_failure(index, 'protocol');
+    if (fastly_http_body_read(body, buffer.dataStart + count, max + 1 - count, changetype<usize>(written)) != 0) return __kv_failure(index, 'transport');
+    if (written[0] < 0 || written[0] > max + 1 - count) return __kv_failure(index, 'protocol');
     if (!written[0]) break;
-    count += written[0]; if (count > __KV_wireBytes) return __kv_failure(index, 'too-large');
+    count += written[0]; if (count > max) return __kv_failure(index, 'too-large');
   }
   if (!__kv_utf8(buffer, count)) return __kv_failure(index, 'protocol');
   const parser = new __PulseJsonParser(String.UTF8.decodeUnsafe(buffer.dataStart, count, false), true), parsed = parser.parse();
   if (parser.failed || parsed <= 0) return __kv_failure(index, parser.tooLarge ? 'too-large' : 'protocol');
   const outer = __pulse_fastly_value(parsed);
+  if (isList) return __kv_list_result(index, outer);
   if (outer.kind != PULSE_VALUE_OBJECT || outer.keys.length != 2 || __pulse_fastly_find(outer, '__pulseKv') < 0 || __pulse_fastly_find(outer, 'value') < 0) return __kv_failure(index, 'protocol');
   const marker = __pulse_fastly_value(__pulse_fastly_payload_field(outer, '__pulseKv'));
   if (marker.kind != PULSE_VALUE_NUMBER || marker.number != 1) return __kv_failure(index, 'protocol');
@@ -209,6 +268,31 @@ function __kv_read(index: i32, body: i32, generation: u64): i32 {
   __kv_set(result, 'generation', __pulse_fastly_string_value(token)); __kv_set(result, 'value', value);
   __pulse_fastly_deep_freeze(result); return result;
 }
+function __kv_list_result(index: i32, outer: __PulseFastlyValue): i32 {
+  if (outer.kind != PULSE_VALUE_OBJECT || outer.keys.length != 2 || __pulse_fastly_find(outer, 'data') < 0 || __pulse_fastly_find(outer, 'meta') < 0) return __kv_failure(index, 'protocol');
+  const data = __pulse_fastly_value(__pulse_fastly_payload_field(outer, 'data')), meta = __pulse_fastly_value(__pulse_fastly_payload_field(outer, 'meta'));
+  if (data.kind != PULSE_VALUE_ARRAY || data.values.length > __kv_list_limits[index] || meta.kind != PULSE_VALUE_OBJECT) return __kv_failure(index, 'protocol');
+  for (let i = 0; i < meta.keys.length; i++) if (meta.keys[i] != 'limit' && meta.keys[i] != 'prefix' && meta.keys[i] != 'next_cursor' && meta.keys[i] != 'consistency') return __kv_failure(index, 'protocol');
+  const limit = __pulse_fastly_value(__pulse_fastly_payload_field(meta, 'limit'));
+  if (limit.kind != PULSE_VALUE_NUMBER || limit.number != __kv_list_limits[index]) return __kv_failure(index, 'protocol');
+  const prefix = __pulse_fastly_value(__pulse_fastly_payload_field(meta, 'prefix'));
+  if (prefix.kind != PULSE_VALUE_UNDEFINED && prefix.kind != PULSE_VALUE_NULL && (prefix.kind != PULSE_VALUE_STRING || prefix.text != __kv_list_prefixes[index])) return __kv_failure(index, 'protocol');
+  const consistency = __pulse_fastly_value(__pulse_fastly_payload_field(meta, 'consistency'));
+  if (consistency.kind != PULSE_VALUE_UNDEFINED && consistency.kind != PULSE_VALUE_NULL && (consistency.kind != PULSE_VALUE_STRING || consistency.text != 'strong')) return __kv_failure(index, 'protocol');
+  const keys = host_value_array(), seen = new Set<string>();
+  for (let i = 0; i < data.values.length; i++) {
+    const key = __pulse_fastly_value(data.values[i]);
+    if (key.kind != PULSE_VALUE_STRING || !__kv_list_text(key.text, __KV_keyBytes) || !key.text.startsWith(__kv_list_prefixes[index]) || seen.has(key.text)) return __kv_failure(index, 'protocol');
+    seen.add(key.text); __kv_private(key.text); host_value_array_push(keys, data.values[i]);
+  }
+  const cursor = __pulse_fastly_value(__pulse_fastly_payload_field(meta, 'next_cursor'));
+  if (cursor.kind != PULSE_VALUE_UNDEFINED && cursor.kind != PULSE_VALUE_NULL && (cursor.kind != PULSE_VALUE_STRING || !__kv_list_text(cursor.text, __KV_cursorBytes))) return __kv_failure(index, 'protocol');
+  if (cursor.kind == PULSE_VALUE_STRING) __kv_private(cursor.text);
+  const remaining = __kv_remaining(index); if (remaining <= 0) return __kv_failure(index, remaining == 0 ? 'timeout' : 'unavailable');
+  const result = __kv_result('listed'); __kv_set(result, 'keys', keys);
+  __kv_set(result, 'cursor', cursor.kind == PULSE_VALUE_STRING ? __pulse_fastly_string_value(cursor.text) : host_value_null());
+  return result;
+}
 function __kv_wait(index: i32): i32 {
   if (__pulse_fastly_pending_mode[index] == PULSE_FASTLY_PENDING_READY) return __pulse_fastly_wait_ready(index);
   const pending = __pulse_fastly_pending[index];
@@ -217,21 +301,23 @@ function __kv_wait(index: i32): i32 {
   // teardown; never call an unready wait just to drain it, and never retry.
   const ready = __kv_ready(index, pending); if (ready <= 0) return __kv_ready_failure(index, ready);
   const error = new StaticArray<i32>(1), kind = __pulse_fastly_effect_kind(index);
-  if (kind != 15) {
-    const status = fastly_kv_store_insert_wait(pending, changetype<usize>(error));
+  if ((__KV_HAS_WRITE || __KV_HAS_DELETE) && kind != 15 && kind != 23) {
+    const status = __KV_HAS_DELETE && kind == 22 ? fastly_kv_store_delete_wait(pending, changetype<usize>(error)) : __KV_HAS_WRITE ? fastly_kv_store_insert_wait(pending, changetype<usize>(error)) : 1;
     if (status != 0) return __kv_failure(index, 'transport');
     const remaining = __kv_remaining(index); if (remaining <= 0) return __kv_failure(index, remaining == 0 ? 'timeout' : 'unavailable');
+    if (kind == 22 && (error[0] == 1 || error[0] == 3)) return __kv_result(error[0] == 1 ? 'deleted' : 'not-found');
     if (error[0] == 1) return __kv_result('stored');
-    if (error[0] == 4 || (error[0] == 3 && kind == 17)) return __kv_result('conflict');
-    if (error[0] == 2 || error[0] == 5 || error[0] == 7) return __kv_result('not-stored', error[0] == 2 ? 'rejected' : error[0] == 5 ? 'too-large' : 'throttled');
+    if (kind != 22 && (error[0] == 4 || (error[0] == 3 && kind == 17))) return __kv_result('conflict');
+    if (error[0] == 2 || error[0] == 5 || error[0] == 7) return __kv_result(kind == 22 ? 'not-deleted' : 'not-stored', error[0] == 2 ? 'rejected' : error[0] == 5 ? 'too-large' : 'throttled');
     return __kv_failure(index, error[0] == 6 ? 'unavailable' : 'protocol');
   }
   const body = new StaticArray<i32>(1), metadata = new Uint8Array(2000), written = new StaticArray<i32>(1), generation = new StaticArray<u64>(1);
-  const status = fastly_kv_store_lookup_wait_v2(pending, changetype<usize>(body), metadata.dataStart, metadata.length, changetype<usize>(written), changetype<usize>(generation), changetype<usize>(error));
+  const status = __KV_HAS_LIST && kind == 23 ? fastly_kv_store_list_wait(pending, changetype<usize>(body), changetype<usize>(error)) : __KV_HAS_READ ? fastly_kv_store_lookup_wait_v2(pending, changetype<usize>(body), metadata.dataStart, metadata.length, changetype<usize>(written), changetype<usize>(generation), changetype<usize>(error)) : 1;
   if (status != 0) return __kv_failure(index, 'transport');
   if (error[0] != 1) {
     const remaining = __kv_remaining(index); if (remaining <= 0) return __kv_failure(index, remaining == 0 ? 'timeout' : 'unavailable');
-    if (error[0] == 3) return __kv_result('not-found');
+    if (error[0] == 3 && kind == 15) return __kv_result('not-found');
+    if (error[0] == 2 && kind == 23) return __kv_failure(index, 'invalid-cursor');
     return __kv_failure(index, error[0] == 5 ? 'too-large' : error[0] == 6 ? 'unavailable' : error[0] == 7 ? 'throttled' : 'protocol');
   }
   const result = written[0] < 0 || written[0] > metadata.length ? __kv_failure(index, 'protocol') : __kv_read(index, body[0], generation[0]);
@@ -239,5 +325,7 @@ function __kv_wait(index: i32): i32 {
 }
 
 function __pulse_fastly_kv_conditional_wait(index: i32): i32 {
-  const result = __kv_wait(index); __pulse_fastly_deep_freeze(result); return result;
+  const result = __kv_wait(index);
+  if (__KV_HAS_LIST) { __kv_list_prefixes[index] = ''; __kv_list_limits[index] = 0; }
+  __pulse_fastly_deep_freeze(result); return result;
 }

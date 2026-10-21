@@ -63,7 +63,8 @@ function providerEffectExpression(factory, sourceFile, site, providerOperation) 
     properties.push(literalProperty(factory, 'name', providerOperation.name));
   } else if (providerOperation.providerKind === 'kv') {
     properties.push(literalProperty(factory, 'store', providerOperation.store));
-    properties.push(literalProperty(factory, 'key', providerOperation.key));
+    if (providerOperation.key) properties.push(literalProperty(factory, 'key', providerOperation.key));
+    if (providerOperation.options) properties.push(literalProperty(factory, 'options', providerOperation.options));
     if (providerOperation.generation) properties.push(literalProperty(factory, 'generation', providerOperation.generation));
     if (providerOperation.value) properties.push(literalProperty(factory, 'value', providerOperation.value));
   } else if (providerOperation.providerKind === 'output') {

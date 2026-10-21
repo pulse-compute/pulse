@@ -19,7 +19,7 @@ const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'secret.get',
   'kv.get',
   'kv.put',
-  'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap',
+  'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete',
   'event.ingress',
   'event.emit',
   'assets.lookup',
