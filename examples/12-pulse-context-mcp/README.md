@@ -20,7 +20,7 @@ Generated from the executable test harness below; these are tested requests or e
 
 | Request | Expected response |
 |---|---|
-| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"3dd815c0748b6ee9421e6489194850cd1dc15b212e84d520ea5e6285314e1118","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
+| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"5f52ab196319211d69471214601486ab988123d5a986cb3e5c23a9105a3a1783","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
 | schema-admission<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":2,"method":"pulse.search","params":{"version":"1.0.0-beta.9","query":42}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Invalid params"}}}</code> |
 
 <!-- pulse-example-view:code -->
@@ -204,7 +204,7 @@ npm run doctor -- --json
 }
 ```
 
-The `canonical-native-plan` warning describes this JavaScript-only app’s Native eligibility; it does not select an automatic fallback.
+The `canonical-native-plan` warning describes the retained root JavaScript profile’s Native eligibility; it does not select an automatic fallback.
 
 The selected JavaScript profile has no completed Wasm artifact for `pulse report`. No Report result is claimed; use the inspection above and the standalone-host readiness evidence below.
 

@@ -733,11 +733,11 @@ The incoming body marker appears outside its supported inline POST position.
 | [`PULSE_PACKAGE_SNAPSHOT_INVALID`](#pulse-package-snapshot-invalid) | The host cannot capture the supplied HTTP inputs within the supported representation and bounds. | `4` |
 | [`PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE`](#pulse-package-snapshot-unavailable) | A live authoritative HTTP capture for this package binding is unavailable. | `4` |
 | [`PULSE_PACKAGE_OPERATION_FAILED`](#pulse-package-operation-failed) | The bounded package operation failed; private provider and protocol data are withheld. | `4` |
-| [`PULSE_TRANSFORM_CHUNK_INVALID`](#pulse-transform-chunk-invalid) | [object Object] | `4` |
-| [`PULSE_TRANSFORM_OUTPUT_LIMIT`](#pulse-transform-output-limit) | [object Object] | `4` |
-| [`PULSE_TRANSFORM_READ_LIMIT`](#pulse-transform-read-limit) | [object Object] | `4` |
-| [`PULSE_TRANSFORM_CLOSED`](#pulse-transform-closed) | [object Object] | `4` |
-| [`PULSE_TRANSFORM_EOF_REQUIRED`](#pulse-transform-eof-required) | [object Object] | `4` |
+| [`PULSE_TRANSFORM_CHUNK_INVALID`](#pulse-transform-chunk-invalid) | A provider transform chunk or backing allocation exceeded its bound. | `4` |
+| [`PULSE_TRANSFORM_OUTPUT_LIMIT`](#pulse-transform-output-limit) | Transform output exceeded its total-byte or expansion limit. | `4` |
+| [`PULSE_TRANSFORM_READ_LIMIT`](#pulse-transform-read-limit) | The transform exceeded its admitted read count. | `4` |
+| [`PULSE_TRANSFORM_CLOSED`](#pulse-transform-closed) | Transform input was read after EOF, cancellation or request completion. | `4` |
+| [`PULSE_TRANSFORM_EOF_REQUIRED`](#pulse-transform-eof-required) | Transform output was closed before input EOF was observed. | `4` |
 | [`PULSE_REQUEST_FORWARDING_CHUNK_INVALID`](#pulse-request-forwarding-chunk-invalid) | A provider body chunk exceeds the admitted host chunk bound. | `4` |
 | [`PULSE_REQUEST_FORWARDING_REDIRECT`](#pulse-request-forwarding-redirect) | A single-use body cannot be replayed on redirect. | `4` |
 | [`PULSE_BODY_UNAVAILABLE`](#pulse-body-unavailable) | A structured body was requested when the provider had not supplied one. | `4` |
@@ -965,7 +965,7 @@ The bounded package operation failed; private provider and protocol data are wit
 <a id="pulse-transform-chunk-invalid"></a>
 ### `PULSE_TRANSFORM_CHUNK_INVALID` — Transform Chunk Invalid
 
-[object Object]
+A provider transform chunk or backing allocation exceeded its bound.
 
 - **Category:** `runtime`
 - **CLI exit class:** `4`
@@ -980,7 +980,7 @@ The bounded package operation failed; private provider and protocol data are wit
 <a id="pulse-transform-output-limit"></a>
 ### `PULSE_TRANSFORM_OUTPUT_LIMIT` — Transform Output Limit
 
-[object Object]
+Transform output exceeded its total-byte or expansion limit.
 
 - **Category:** `runtime`
 - **CLI exit class:** `4`
@@ -995,7 +995,7 @@ The bounded package operation failed; private provider and protocol data are wit
 <a id="pulse-transform-read-limit"></a>
 ### `PULSE_TRANSFORM_READ_LIMIT` — Transform Read Limit
 
-[object Object]
+The transform exceeded its admitted read count.
 
 - **Category:** `runtime`
 - **CLI exit class:** `4`
@@ -1010,7 +1010,7 @@ The bounded package operation failed; private provider and protocol data are wit
 <a id="pulse-transform-closed"></a>
 ### `PULSE_TRANSFORM_CLOSED` — Transform Closed
 
-[object Object]
+Transform input was read after EOF, cancellation or request completion.
 
 - **Category:** `runtime`
 - **CLI exit class:** `4`
@@ -1025,7 +1025,7 @@ The bounded package operation failed; private provider and protocol data are wit
 <a id="pulse-transform-eof-required"></a>
 ### `PULSE_TRANSFORM_EOF_REQUIRED` — Transform Eof Required
 
-[object Object]
+Transform output was closed before input EOF was observed.
 
 - **Category:** `runtime`
 - **CLI exit class:** `4`
@@ -1794,7 +1794,7 @@ A discriminated event test case is missing or violates the canonical bounded eve
 | [`PULSE_PACKAGE_CAPABILITY_UNAVAILABLE`](#pulse-package-capability-unavailable) | The package invocation lacks its exact artifact, operation grant or selected host capability. | `3` |
 | [`PULSE_PROVIDER_CAPABILITY_UNSUPPORTED`](#pulse-provider-capability-unsupported) | The selected provider cannot realize a capability required by the application. | `3` |
 | [`PULSE_EVENT_TARGET_UNSUPPORTED`](#pulse-event-target-unsupported) | The selected provider target cannot realize or test the reachable event plane. | `3` |
-| [`PULSE_TRANSFORM_UNAVAILABLE`](#pulse-transform-unavailable) | [object Object] | `3` |
+| [`PULSE_TRANSFORM_UNAVAILABLE`](#pulse-transform-unavailable) | The selected target cannot realize the configured UTF-8 transform. | `3` |
 
 <a id="pulse-target-implementation-pending"></a>
 ### `PULSE_TARGET_IMPLEMENTATION_PENDING` — Target Implementation Pending
@@ -2048,7 +2048,7 @@ The selected provider target cannot realize or test the reachable event plane.
 <a id="pulse-transform-unavailable"></a>
 ### `PULSE_TRANSFORM_UNAVAILABLE` — Transform Unavailable
 
-[object Object]
+The selected target cannot realize the configured UTF-8 transform.
 
 - **Category:** `capability`
 - **CLI exit class:** `3`
@@ -2933,9 +2933,9 @@ A schema declaration is missing its exported TypeScript type name.
 | [`PULSE_REQUEST_DEADLINE_EXCEEDED`](#pulse-request-deadline-exceeded) | The provider-owned total request budget expired. | `4` |
 | [`PULSE_REQUEST_CLOCK_INVALID`](#pulse-request-clock-invalid) | The provider monotonic request clock failed or regressed. | `4` |
 | [`PULSE_REQUEST_BODY_OWNERSHIP`](#pulse-request-body-ownership) | The incoming request body already belongs to another consumer. | `4` |
-| [`PULSE_TRANSFORM_HEADERS_INVALID`](#pulse-transform-headers-invalid) | [object Object] | `4` |
-| [`PULSE_TRANSFORM_INPUT_LIMIT`](#pulse-transform-input-limit) | [object Object] | `4` |
-| [`PULSE_TRANSFORM_UTF8_INVALID`](#pulse-transform-utf8-invalid) | [object Object] | `4` |
+| [`PULSE_TRANSFORM_HEADERS_INVALID`](#pulse-transform-headers-invalid) | The transform request has invalid Content-Length metadata. | `4` |
+| [`PULSE_TRANSFORM_INPUT_LIMIT`](#pulse-transform-input-limit) | Transform input exceeded its bounded byte limit. | `4` |
+| [`PULSE_TRANSFORM_UTF8_INVALID`](#pulse-transform-utf8-invalid) | Transform input is not complete, well-formed UTF-8. | `4` |
 | [`PULSE_REQUEST_FORWARDING_HEADERS_INVALID`](#pulse-request-forwarding-headers-invalid) | Forwarding headers contain invalid length or transport-owned framing. | `4` |
 | [`PULSE_REQUEST_BODY_TOO_LARGE`](#pulse-request-body-too-large) | A request or forwarded body exceeded its configured byte limit. | `4` |
 
@@ -3078,7 +3078,7 @@ The incoming request body already belongs to another consumer.
 <a id="pulse-transform-headers-invalid"></a>
 ### `PULSE_TRANSFORM_HEADERS_INVALID` — Transform Headers Invalid
 
-[object Object]
+The transform request has invalid Content-Length metadata.
 
 - **Category:** `request`
 - **CLI exit class:** `4`
@@ -3093,7 +3093,7 @@ The incoming request body already belongs to another consumer.
 <a id="pulse-transform-input-limit"></a>
 ### `PULSE_TRANSFORM_INPUT_LIMIT` — Transform Input Limit
 
-[object Object]
+Transform input exceeded its bounded byte limit.
 
 - **Category:** `request`
 - **CLI exit class:** `4`
@@ -3108,7 +3108,7 @@ The incoming request body already belongs to another consumer.
 <a id="pulse-transform-utf8-invalid"></a>
 ### `PULSE_TRANSFORM_UTF8_INVALID` — Transform Utf8 Invalid
 
-[object Object]
+Transform input is not complete, well-formed UTF-8.
 
 - **Category:** `request`
 - **CLI exit class:** `4`
@@ -3175,13 +3175,13 @@ A package runtime host binding is not a valid explicit grant.
 
 | Code | Meaning | CLI exit |
 |---|---|---|
-| [`PULSE_TRANSFORM_CONFIG_INVALID`](#pulse-transform-config-invalid) | [object Object] | `2` |
+| [`PULSE_TRANSFORM_CONFIG_INVALID`](#pulse-transform-config-invalid) | The Node UTF-8 transform configuration is invalid. | `2` |
 | [`PULSE_REQUEST_FORWARDING_CONFIG_INVALID`](#pulse-request-forwarding-config-invalid) | Incoming forwarding configuration is invalid. | `2` |
 
 <a id="pulse-transform-config-invalid"></a>
 ### `PULSE_TRANSFORM_CONFIG_INVALID` — Transform Config Invalid
 
-[object Object]
+The Node UTF-8 transform configuration is invalid.
 
 - **Category:** `config`
 - **CLI exit class:** `2`

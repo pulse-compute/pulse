@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-10-09
-review-by: 2027-04-09
+last-reviewed: 2026-10-21
+review-by: 2027-04-21
 pulse-doc-meta:end -->
 
 # npm publishing
@@ -121,12 +121,12 @@ before compilation: maintainer and publication controls, package/catalog and
 source and installed documentation validation, and generated snippets/references.
 New `pulse.release-source-checks.v2` receipts record `package-source` validation
 without building or sealing a website candidate. Existing control-plane checks
-and legacy delivery simulations remain separate from rendered output.
+and historical receipt verification remain separate from rendered output.
 Packing verifies this attempt's pinned result against the same clean source,
 Node, environment and dependency bytes. Standalone packing performs the same
 source-only documentation validation and retains packed-documentation link checks.
 Package artifact determinism compares independently constructed package bytes;
-site rendering remains covered by the separate documentation preview workflow.
+site rendering belongs to the separate `pulse-compute/website` build and preview workflows.
 Build, audit/license refresh, workspace tests, all release tasks, installed
 feature gates, required Fastly reality and cleanup retain their coverage.
 

@@ -267,6 +267,10 @@ coercion, and performs no automatic retry. Fastly JavaScript remains incomplete;
 K4 retains the deployed acceptance gate.
 The detailed contract is in [Effects and continuations](../concepts/effects-and-continuations.md#conditional-kv).
 
+The same targets support bounded `list({ limit, prefix?, cursor? })` and
+`delete(key)` effects. Listing returns one page and an opaque continuation;
+delete can return an uncertain outcome after dispatch. See [listing and deletion](../concepts/effects-and-continuations.md#kv-listing-and-deletion).
+
 Those calls are compiled into explicit effects and validated against the selected provider. See [Compilation and lowering](../concepts/compilation-and-lowering.md).
 
 ## Structured and opaque fetch results

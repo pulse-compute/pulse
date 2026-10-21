@@ -485,7 +485,7 @@ for conditional exports, containment and qualification limits.
 
 ### Canonical handler lowering
 
-Calls on `PulseContext`, such as `ctx.fetch`, `ctx.config.get`, `ctx.secret.get`, `ctx.kv.get`, and response constructors, are part of the canonical API contract. The central compiler recognizes them and emits canonical operations.
+Calls on `PulseContext`, such as `ctx.fetch`, `ctx.config.get`, `ctx.secret.get`, `ctx.kv('store').get`, and response constructors, are part of the canonical API contract. The central compiler recognizes them and emits canonical operations.
 
 ### Package-owned lowering
 

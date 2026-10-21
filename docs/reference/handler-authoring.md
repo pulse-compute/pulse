@@ -163,6 +163,25 @@ also group adjacent independent trusted effects internally, but that
 optimization is not a portable concurrency promise. Use `ctx.parallel` when
 concurrency is application behavior.
 
+## Shared computations and embedded data
+
+[`ctx.call`](../../API.md#ctxcall) synchronously invokes a named imported
+project computation with literal registered input/output object schemas.
+It is supported from selected HTTP/Router/managed callers on Node Native,
+Fastly Native and explicit Node JavaScript. It does not dispatch events,
+await effects, recurse, or admit arbitrary package functions. The callee owns
+only validated readonly input plus resource/workspace authority.
+
+[`ctx.resources`](../../API.md#ctxresources) reads explicitly admitted immutable
+binary data. [`ctx.workspace`](../../API.md#ctxworkspace) supplies fixed-capacity
+execution-owned numeric scratch space. Both retain checked bounds and
+lifetimes; neither exposes an arbitrary buffer, filesystem or host object.
+
+[`ctx.effects({ max })`](../../API.md#bounded-effect-collections) collects a
+bounded runtime number of fresh effects before one `ctx.parallel` flush. It
+has a separate finite build/flush grammar from keyed parallel groups and
+does not admit general callback or Promise scheduling.
+
 ## Static application boundaries
 
 Beyond the expression and statement subset above, Native eligibility requires

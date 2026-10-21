@@ -1,13 +1,13 @@
 <!-- pulse-doc-meta:start
 owner: docs-platform
 status: active
-last-reviewed: 2026-10-09
-review-by: 2027-04-09
+last-reviewed: 2026-10-21
+review-by: 2027-04-21
 pulse-doc-meta:end -->
 
 # Contributing to Pulse
 
-These pages describe changes to the synchronized Pulse repository. They are not application-author extension APIs.
+These pages cover Pulse repository maintenance and the supported contracts for trusted package lowerers and explicitly selected provider toolchains. Application authors should start with the [package guides](../packages/README.md).
 
 > Before changing a shared boundary, consult the
 > [Architecture contracts](../architecture/current-contracts.md) for ownership rules and invariants.

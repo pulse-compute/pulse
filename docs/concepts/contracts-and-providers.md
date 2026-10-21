@@ -92,7 +92,7 @@ export default defineConfig({
 })
 ```
 
-Handler source still calls `ctx.config.get`, `ctx.secret.get`, `ctx.kv.get`, or `ctx.fetch`. It never imports a Fastly store, backend, request, response, or SDK type.
+Handler source still calls `ctx.config.get`, `ctx.secret.get`, `ctx.kv('store').get`, or `ctx.fetch`. It never imports a Fastly store, backend, request, response, or SDK type.
 
 ## Local conformance versus deployment reality
 

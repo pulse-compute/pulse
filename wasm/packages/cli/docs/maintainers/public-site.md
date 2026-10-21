@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-10-09
-review-by: 2027-04-09
+last-reviewed: 2026-10-21
+review-by: 2027-04-21
 pulse-doc-meta:end -->
 
 # Public site and documentation presentation
@@ -63,5 +63,7 @@ future rendered baselines belong to website rendering and retained artifacts.
 Pulse retains source/reference drift, installed copies, MCP corpus, CLI/config
 parity, package documentation and executable-example checks. Website CI owns
 responsive layout, accessibility, navigation/search, theme and rendered-route
-checks. Old deployment simulations and the disabled writer workflow remain
-for the next retirement step; their presence is not permission to deploy.
+checks. The old writer source and storage-write simulations have been removed
+from Pulse. Historical receipt readers remain here; the website guard still
+checks the old workflow identity is disabled and idle before delivery. Source
+retirement does not remove a historical workflow from GitHub or authorize writes.
