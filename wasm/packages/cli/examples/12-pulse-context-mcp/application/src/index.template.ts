@@ -1,6 +1,12 @@
 import { EntityRouter, jsonRpc, mcp } from '@pulse-compute/mcp/pulse'
 import type { PulseContext, PulseReadonly } from '@pulse-compute/pulse'
-import type { StartInput, SearchInput, ReadInput, ExampleInput, DiagnosticInput } from './schemas.js'
+import type {
+  StartInput,
+  SearchInput,
+  ReadInput,
+  ExampleInput,
+  DiagnosticInput
+} from './schemas.js'
 import { computeStart } from './start.js'
 import { computeSearch } from './search.js'
 import { computeRead } from './read.js'

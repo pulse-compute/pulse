@@ -3,7 +3,10 @@ import type { SearchInput, SearchOutput, SearchHit, RecordSummary } from './sche
 import { digits } from './scalars.js'
 
 // Bounds and ordering follow the reviewed sparse-lexical v1 contract.
-export function computeSearch(ctx: PulseComputationContext, input: PulseReadonly<SearchInput>): SearchOutput {
+export function computeSearch(
+  ctx: PulseComputationContext,
+  input: PulseReadonly<SearchInput>
+): SearchOutput {
   let versionBytes = 0
   for (let i = 0; i < 65 && i < input.version.length; i++) {
     const c = input.version[i] ?? ''
@@ -45,14 +48,23 @@ export function computeSearch(ctx: PulseComputationContext, input: PulseReadonly
     let unit=query[i]??' ';
     if(i<query.length&&(unit<' '||unit>'~')&&unit!=='\t'&&unit!=='\n'&&unit!=='\r')invalid=1;
     if(unit>='A'&&unit<='Z')for(let a=0;a<26;a++){if(unit===upper[a]){unit=lower[a]??'';break;}}
-    if(unit>='a'&&unit<='z'||unit>='0'&&unit<='9'||unit==='_'){word+=unit;if(word.length>64)invalid=1;}
+    if(unit>='a'&&unit<='z'||unit>='0'&&unit<='9'||unit==='_'){
+      word+=unit;if(word.length>64)invalid=1;
+    }
     else if(word!==''){
-      if(rawCount===0)t0=word;else if(rawCount===1)t1=word;else if(rawCount===2)t2=word;else if(rawCount===3)t3=word;
-      else if(rawCount===4)t4=word;else if(rawCount===5)t5=word;else if(rawCount===6)t6=word;else if(rawCount===7)t7=word;
+      if(rawCount===0)t0=word;else if(rawCount===1)t1=word;
+      else if(rawCount===2)t2=word;else if(rawCount===3)t3=word;
+      else if(rawCount===4)t4=word;else if(rawCount===5)t5=word;
+      else if(rawCount===6)t6=word;else if(rawCount===7)t7=word;
       rawCount+=1;word='';
     }
   }
-  if(invalid===1||rawCount===0||rawCount>8)return {...empty, status:'invalid-input', error:{code:'invalid-search',message:'Use one to eight ASCII search tokens of at most 64 bytes in a query of at most 256 bytes.'}};
+  if(invalid===1||rawCount===0||rawCount>8)return {
+    ...empty, status:'invalid-input', error:{
+      code:'invalid-search',message:
+      'Use one to eight ASCII search tokens of at most 64 bytes in a query of at most 256 bytes.'
+    }
+  };
   const vocabulary=vector.readU32LE(24);
   let termCount=0,unknown=0;
   for(let t=0;t<8&&t<rawCount;t++){
@@ -69,7 +81,14 @@ export function computeSearch(ctx: PulseComputationContext, input: PulseReadonly
     for(let d=0;d<8&&d<termCount;d++){if(qids[d]===found)duplicate=1;}
     if(duplicate===0){qids[termCount]=found;termCount+=1;}
   }
-  if(unknown===1){if(offset>0)return {...empty,status:'invalid-input',error:{code:'invalid-offset',message:'Offset exceeds the search match count.'}};return empty;}
+  if(unknown===1){
+    if(offset>0)return {
+      ...empty,status:'invalid-input',error:{
+        code:'invalid-offset',message:'Offset exceeds the search match count.'
+      }
+    };
+    return empty;
+  }
 
   const tCount=termCount,wantedOffset=offset,wantedLimit=limit;
   let rows=vector.readU32LE(20),rowDirectory=64+vector.readU32LE(24)*8;
@@ -112,10 +131,16 @@ export function computeSearch(ctx: PulseComputationContext, input: PulseReadonly
       heap[pos]=last;
     }
   }
-  if(offset>total)return {...empty,status:'invalid-input',error:{code:'invalid-offset',message:'Offset exceeds the search match count.'}};
+  if(offset>total)return {
+    ...empty,status:'invalid-input',error:{
+      code:'invalid-offset',message:'Offset exceeds the search match count.'
+    }
+  };
 
   const next = offset + selectedCount
-  let replyBytes = (next < total ? 1091 + 2 * ((next < 10 ? 1 : next < 100 ? 2 : 3) - 1) : 1061) + 2 * (digits(total) - 1)
+  let replyBytes = (next < total
+    ? 1091 + 2 * ((next < 10 ? 1 : next < 100 ? 2 : 3) - 1)
+    : 1061) + 2 * (digits(total) - 1)
   let results: SearchHit[] = []
   let oversized = false
   for (let slot = 0; slot < 5 && slot < selectedCount; slot++) {
@@ -399,12 +424,14 @@ export function computeSearch(ctx: PulseComputationContext, input: PulseReadonly
 
     results = [...results, {
       id: record.id, title: record.title, category: record.category, tags: record.tags,
-      applicability: record.applicability, source: record.source, contentSha256: record.contentSha256,
+      applicability: record.applicability,
+      source: record.source, contentSha256: record.contentSha256,
       excerpt: text.readUtf8(at, width), excerptTruncated: width < length, score,
     }]
   }
   if (oversized) return {...empty, status:'response-too-large', error:{
-      code:'response-too-large',message:'Reply exceeds the byte budget. Retrieve individual corpus IDs with pulse.read.',
+      code:'response-too-large',message:
+      'Reply exceeds the byte budget. Retrieve individual corpus IDs with pulse.read.',
     }}
   if (next < total) return {...empty, results, totalMatches:total, truncated:true, nextOffset:next}
   return {...empty, results, totalMatches:total}
