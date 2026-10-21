@@ -57,7 +57,7 @@ async function qualify({ consumer, temporary, root, run, env }) {
   fs.writeFileSync(settingsFile, JSON.stringify(settings));
   const scratch = path.join(consumer, '.native-temp'); fs.mkdirSync(scratch);
   const trace = path.join(proof, 'trace.cjs');
-  fs.writeFileSync(trace, `const fs=require('node:fs');for(const key of ['readFileSync','realpathSync','statSync','lstatSync','readdirSync','accessSync']){const original=fs[key];const wrapped=function(...args){try{return original.apply(this,args)}catch(e){if(e.code==='ERR_ACCESS_DENIED')process.stderr.write('denied filesystem read: '+e.resource+'\\n');throw e}};Object.assign(wrapped,original);fs[key]=wrapped;}`);
+  fs.writeFileSync(trace, `const fs=require('node:fs');function wrap(original){const wrapped=function(...args){try{return original.apply(this,args)}catch(e){if(e.code==='ERR_ACCESS_DENIED')process.stderr.write('denied filesystem API: '+e.resource+' '+e.stack+'\\n');throw e}};Object.assign(wrapped,original);if(original.native)wrapped.native=wrap(original.native);return wrapped}for(const key of Object.keys(fs))if(key.endsWith('Sync')&&typeof fs[key]==='function')fs[key]=wrap(fs[key]);`);
   // TypeScript swaps the case of every character in its own filename. A grant
   // for a nonexistent directory does not recursively grant its children in
   // Node's permission model, so admit that exact probe filename only.
