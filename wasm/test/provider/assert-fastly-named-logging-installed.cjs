@@ -14,7 +14,7 @@ const { executeFastlyNativePlatformCapabilities } = require('../../../packages/p
 const root = path.resolve(__dirname, '../../..');
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-named-installed-'));
 const consumer = path.join(temporary, 'consumer');
-const output = path.resolve(process.env.PULSE_NAMED_LOG_PROOF_DIR || path.join(os.tmpdir(), 'pulse-named-proof-' + process.pid + '-' + Date.now()));
+const output = path.resolve(process.argv[2] || path.join(os.tmpdir(), 'pulse-named-proof-' + process.pid + '-' + Date.now()));
 const pack = path.join(output, 'packages');
 const identity = {source:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).trim(),workingTree:execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim()};
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
