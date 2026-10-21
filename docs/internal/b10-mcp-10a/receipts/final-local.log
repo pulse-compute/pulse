@@ -1,0 +1,105 @@
+
+[pulsewasm:external] mcp-fastly-local-installed
+[pulsewasm] 10A exact installed Native context, growth, deadlines and resource lifetime through actual Fastly CLI/Viceroy; local only (timeout 600.00s)
+mcp-installed - reuse standard public candidates and extract CLI-shipped context app
+[pulse:pack] Checking documentation source
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 10.00s
+[pulse:pack] Package 1/20: @pulse-compute/runtime
+[pulse:pack] Verified @pulse-compute/runtime: 95023 bytes
+[pulse:pack] Package 2/20: @pulse-compute/pulse
+[pulse:pack] Verified @pulse-compute/pulse: 15211 bytes
+[pulse:pack] Package 3/20: @pulse-compute/cli
+[pulse:pack] Verified @pulse-compute/cli: 1388438 bytes
+[pulse:pack] Package 4/20: @pulse-compute/provider-fastly
+[pulse:pack] Verified @pulse-compute/provider-fastly: 254430 bytes
+[pulse:pack] Package 5/20: @pulse-compute/grip
+[pulse:pack] Verified @pulse-compute/grip: 24135 bytes
+[pulse:pack] Package 6/20: @pulse-compute/assets
+[pulse:pack] Verified @pulse-compute/assets: 50327 bytes
+[pulse:pack] Package 7/20: @pulse-compute/crypto
+[pulse:pack] Verified @pulse-compute/crypto: 233235 bytes
+[pulse:pack] Package 8/20: @pulse-compute/jwt
+[pulse:pack] Verified @pulse-compute/jwt: 65796 bytes
+[pulse:pack] Package 9/20: @pulse-compute/entities
+[pulse:pack] Verified @pulse-compute/entities: 51773 bytes
+[pulse:pack] Package 10/20: @pulse-compute/mcp
+[pulse:pack] Verified @pulse-compute/mcp: 40897 bytes
+[pulse:pack] Package 11/20: @pulse-compute/s3
+[pulse:pack] Verified @pulse-compute/s3: 23651 bytes
+[pulse:pack] Package 12/20: @pulse-compute/wasm-build-support
+[pulse:pack] Verified @pulse-compute/wasm-build-support: 21363 bytes
+[pulse:pack] Package 13/20: @pulse-compute/wasm-compiler
+[pulse:pack] Verified @pulse-compute/wasm-compiler: 336632 bytes
+[pulse:pack] Package 14/20: @pulse-compute/wasm-guest-link
+[pulse:pack] Verified @pulse-compute/wasm-guest-link: 40052 bytes
+[pulse:pack] Package 15/20: @pulse-compute/wasm-contracts
+[pulse:pack] Verified @pulse-compute/wasm-contracts: 168626 bytes
+[pulse:pack] Package 16/20: @pulse-compute/wasm-host-runtime
+[pulse:pack] Verified @pulse-compute/wasm-host-runtime: 94157 bytes
+[pulse:pack] Package 17/20: @pulse-compute/wasm-library-kit
+[pulse:pack] Verified @pulse-compute/wasm-library-kit: 25658 bytes
+[pulse:pack] Package 18/20: @pulse-compute/provider-node
+[pulse:pack] Verified @pulse-compute/provider-node: 115738 bytes
+[pulse:pack] Package 19/20: @pulse-compute/wasm-runtime-core-as
+[pulse:pack] Verified @pulse-compute/wasm-runtime-core-as: 119082 bytes
+[pulse:pack] Package 20/20: @pulse-compute/wasm-schema-json
+[pulse:pack] Verified @pulse-compute/wasm-schema-json: 61506 bytes
+[pulse:pack] Checking packed documentation links
+mcp-installed - install extracted application dependency graph outside checkout
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 20.01s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 30.01s
+fastly-local - build shipped with installed CLI
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 40.02s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 50.02s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 60.02s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 70.03s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 80.03s
+fastly-local - build growth with installed CLI
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 90.03s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 100.04s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 110.04s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 120.05s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 130.05s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 140.05s
+fastly-local - build deadline with installed CLI
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 150.05s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 160.06s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 170.07s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 180.07s
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 190.07s
+fastly-local - build resources with installed CLI
+[pulsewasm] Running mcp-fastly-local-installed (execution); elapsed 200.08s
+acceptance report - /workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/.test-results/mcp-installed-7Tylcq/mcp-installed-acceptance.json
+AssertionError [ERR_ASSERTION]: Local Fastly admission/lifetime qualification blocked
++ actual - expected
+
++ [
++   {
++     actualStatus: 200,
++     body: '',
++     expectedStatus: 500,
++     mode: 'bounds',
++     passed: false,
++     variant: 'resources'
++   },
++   {
++     actualStatus: 200,
++     body: '',
++     expectedStatus: 500,
++     mode: 'resource-bounds',
++     passed: false,
++     variant: 'resources'
++   }
++ ]
+- []
+
+    at Object.qualify (<checkout>/wasm/test/mcp/context-fastly-local.cjs:275:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async main (<checkout>/wasm/test/mcp/assert-mcp-installed.cjs:152:28)
+[pulsewasm] mcp-fastly-local-installed: failed in 202.76s
+
+[pulsewasm] test summary
+  failed       202.76s  mcp-fastly-local-installed  (/tmp/runs/2026-10-21T06-18-11-460Z--5/tasks/mcp-fastly-local-installed.log)
+  report       /tmp/pulse-10a-local-final.json
+  run logs     /tmp/runs/2026-10-21T06-18-11-460Z--5
+  total        202.76s

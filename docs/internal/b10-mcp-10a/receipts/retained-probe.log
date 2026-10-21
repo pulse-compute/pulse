@@ -1,0 +1,8 @@
+{"mode":"","status":200,"body":"{\"parent\":82,\"a\":{\"value\":4275878602,\"length\":1048577,\"empty\":0},\"b\":{\"value\":4276002008,\"length\":1048577,\"empty\":0},\"again\":{\"value\":4275878602,\"length\":1048577,\"empty\":0}}"}
+{"mode":"bounds","status":200,"body":""}
+{"mode":"","status":200,"body":"{\"parent\":82,\"a\":{\"value\":4275878602,\"length\":1048577,\"empty\":0},\"b\":{\"value\":4276002008,\"length\":1048577,\"empty\":0},\"again\":{\"value\":4275878602,\"length\":1048577,\"empty\":0}}"}
+{"mode":"resource-bounds","status":200,"body":""}
+{"mode":"","status":200,"body":"{\"parent\":82,\"a\":{\"value\":4275878602,\"length\":1048577,\"empty\":0},\"b\":{\"value\":4276002008,\"length\":1048577,\"empty\":0},\"again\":{\"value\":4275878602,\"length\":1048577,\"empty\":0}}"}
+{"mode":"single","status":200,"body":"{\"value\":4194304}"}
+{"mode":"allocation","status":500,"body":"error while executing at wasm backtrace:\n    0:   0x323c - <unknown>!<wasm function 59>\n    1:   0x276c - <unknown>!<wasm function 43>\n    2:   0x1373 - <unknown>!<wasm function 25>\n    3:   0x20f7 - <unknown>!<wasm function 35>\n    4:   0xc145 - <unknown>!<wasm function 172>\n    5:   0x6c01 - <unknown>!<wasm function 116>\n    6:   0xc735 - <unknown>!<wasm function 174>\n    7:   0xbcaa - <unknown>!<wasm function 171>\n\nCaused by:\n    wasm trap: wasm `unreachable` instruction executed"}
+{"mode":"","status":200,"body":"{\"parent\":82,\"a\":{\"value\":4275878602,\"length\":1048577,\"empty\":0},\"b\":{\"value\":4276002008,\"length\":1048577,\"empty\":0},\"again\":{\"value\":4275878602,\"length\":1048577,\"empty\":0}}"}

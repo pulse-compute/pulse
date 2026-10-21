@@ -1,0 +1,38 @@
+✓ Running local server
+
+INFO: Command output:
+--------------------------------------------------------------------------------
+2026-10-21T06:21:20.145252Z  WARN no backend definitions found in /workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/.test-results/mcp-installed-7Tylcq/fastly-local/deadline/fastly.toml
+2026-10-21T06:21:20.145325Z  INFO Listening on http://127.0.0.1:37813
+2026-10-21T06:21:20.176392Z  INFO request{id=0}: handling request POST http://127.0.0.1:37813/mcp
+2026-10-21T06:21:20.179026Z  INFO request{id=0}: request completed using 3.9 MB of WebAssembly heap
+2026-10-21T06:21:20.179047Z  INFO request{id=0}: request completed in 3ms
+2026-10-21T06:21:20.179177Z  INFO request{id=0}: response status: 408
+2026-10-21T06:21:20.179718Z  INFO request{id=1}: handling request POST http://127.0.0.1:37813/not-mcp
+2026-10-21T06:21:20.180825Z  INFO request{id=1}: request completed using 3.9 MB of WebAssembly heap
+2026-10-21T06:21:20.180836Z  INFO request{id=1}: request completed in 1ms
+2026-10-21T06:21:20.180959Z  INFO request{id=1}: response status: 404
+2026-10-21T06:21:20.181531Z  INFO request{id=2}: handling request POST http://127.0.0.1:37813/mcp
+2026-10-21T06:21:20.184042Z  INFO request{id=2}: request completed using 3.9 MB of WebAssembly heap
+2026-10-21T06:21:20.184097Z  INFO request{id=2}: request completed in 3ms
+2026-10-21T06:21:20.184228Z  INFO request{id=2}: response status: 408
+2026-10-21T06:21:20.184555Z  INFO request{id=3}: handling request POST http://127.0.0.1:37813/not-mcp
+2026-10-21T06:21:20.185423Z  INFO request{id=3}: response status: 404
+2026-10-21T06:21:20.185447Z  INFO request{id=3}: request completed using 3.9 MB of WebAssembly heap
+2026-10-21T06:21:20.185453Z  INFO request{id=3}: request completed in 880µs
+2026-10-21T06:21:20.185673Z  INFO request{id=4}: handling request POST http://127.0.0.1:37813/mcp
+2026-10-21T06:21:20.187952Z  INFO request{id=4}: request completed using 3.9 MB of WebAssembly heap
+2026-10-21T06:21:20.187963Z  INFO request{id=4}: request completed in 2ms
+2026-10-21T06:21:20.188068Z  INFO request{id=4}: response status: 408
+2026-10-21T06:21:20.188346Z  INFO request{id=5}: handling request POST http://127.0.0.1:37813/not-mcp
+2026-10-21T06:21:20.189363Z  INFO request{id=5}: request completed using 3.9 MB of WebAssembly heap
+2026-10-21T06:21:20.189377Z  INFO request{id=5}: request completed in 1ms
+2026-10-21T06:21:20.189494Z  INFO request{id=5}: response status: 404
+--------------------------------------------------------------------------------
+
+A new version of the Fastly CLI is available.
+Current version: 16.1.0
+Latest version: 16.2.0
+Run `fastly update` to get the latest version.
+
+

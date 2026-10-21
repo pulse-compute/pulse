@@ -1,0 +1,669 @@
+{
+  "abiVersion": 1,
+  "allowedImports": [
+    [
+      "fastly_http_req",
+      "send_async_streaming"
+    ],
+    [
+      "fastly_http_body",
+      "abandon"
+    ],
+    [
+      "fastly_async_io",
+      "is_ready"
+    ],
+    [
+      "fastly_http_resp",
+      "header_names_get"
+    ],
+    [
+      "fastly_async_io",
+      "select"
+    ],
+    [
+      "fastly_http_body",
+      "close"
+    ],
+    [
+      "wasi_snapshot_preview1",
+      "clock_time_get"
+    ],
+    [
+      "fastly_kv_store",
+      "open"
+    ],
+    [
+      "fastly_http_req",
+      "pending_req_poll_v2"
+    ],
+    [
+      "fastly_http_req",
+      "cache_override_set"
+    ],
+    [
+      "fastly_http_req",
+      "auto_decompress_response_set"
+    ],
+    [
+      "fastly_http_req",
+      "close"
+    ],
+    [
+      "fastly_http_resp",
+      "close"
+    ],
+    [
+      "fastly_http_resp",
+      "header_values_get"
+    ],
+    [
+      "fastly_http_resp",
+      "status_get"
+    ],
+    [
+      "fastly_http_req",
+      "new"
+    ],
+    [
+      "fastly_http_req",
+      "method_set"
+    ],
+    [
+      "fastly_http_req",
+      "uri_set"
+    ],
+    [
+      "fastly_http_req",
+      "header_insert"
+    ],
+    [
+      "fastly_http_req",
+      "send_async"
+    ],
+    [
+      "fastly_http_body",
+      "new"
+    ],
+    [
+      "fastly_http_body",
+      "read"
+    ],
+    [
+      "fastly_http_body",
+      "write"
+    ],
+    [
+      "fastly_secret_store",
+      "open"
+    ],
+    [
+      "fastly_secret_store",
+      "get"
+    ],
+    [
+      "fastly_secret_store",
+      "plaintext"
+    ],
+    [
+      "fastly_abi",
+      "init"
+    ],
+    [
+      "fastly_http_req",
+      "body_downstream_get"
+    ],
+    [
+      "fastly_http_req",
+      "method_get"
+    ],
+    [
+      "fastly_http_req",
+      "uri_get"
+    ],
+    [
+      "fastly_http_req",
+      "header_value_get"
+    ],
+    [
+      "fastly_http_req",
+      "header_names_get"
+    ],
+    [
+      "fastly_http_req",
+      "header_values_get"
+    ],
+    [
+      "fastly_http_req",
+      "pending_req_wait"
+    ],
+    [
+      "fastly_http_resp",
+      "new"
+    ],
+    [
+      "fastly_http_resp",
+      "header_append"
+    ],
+    [
+      "fastly_http_resp",
+      "header_value_get"
+    ],
+    [
+      "fastly_http_resp",
+      "status_set"
+    ],
+    [
+      "fastly_http_resp",
+      "send_downstream"
+    ],
+    [
+      "fastly_config_store",
+      "open"
+    ],
+    [
+      "fastly_config_store",
+      "get"
+    ],
+    [
+      "fastly_kv_store",
+      "lookup"
+    ],
+    [
+      "fastly_kv_store",
+      "lookup_wait_v2"
+    ],
+    [
+      "fastly_kv_store",
+      "insert"
+    ],
+    [
+      "fastly_kv_store",
+      "insert_wait"
+    ],
+    [
+      "fastly_kv_store",
+      "list"
+    ],
+    [
+      "fastly_kv_store",
+      "list_wait"
+    ],
+    [
+      "fastly_kv_store",
+      "delete"
+    ],
+    [
+      "fastly_kv_store",
+      "delete_wait"
+    ],
+    [
+      "fastly_log",
+      "endpoint_get"
+    ],
+    [
+      "fastly_log",
+      "write"
+    ],
+    [
+      "wasi_snapshot_preview1",
+      "fd_write"
+    ]
+  ],
+  "assemblyScript": {
+    "package": "assemblyscript",
+    "version": "0.28.18"
+  },
+  "backends": [],
+  "bindings": {
+    "backends": [],
+    "configStore": "",
+    "fetch": [],
+    "grip": {
+      "directHold": true,
+      "publish": []
+    },
+    "kv": [],
+    "maxDurationMs": 5000,
+    "s3": [],
+    "secretStore": ""
+  },
+  "capabilityDiagnostics": [],
+  "compilerVersion": "pulse.fastly-native-platform-capabilities-compiler.v1",
+  "continuationCount": 0,
+  "effectCount": 0,
+  "effectInvocations": {
+    "budget": "cumulative effect invocations and one inherited monotonic deadline",
+    "defaultMaxEffects": 1024,
+    "identity": "execution-owned single-use ticket; static effect and continuation sites remain reusable",
+    "nativeResultBoundary": "managed host; raw guest ABI v2 setters remain trusted-host operations",
+    "terminal": "completion, failure and cancellation invalidate outstanding tickets",
+    "version": "pulse.effect-invocation.v1"
+  },
+  "effectKinds": {},
+  "exports": [
+    {
+      "kind": "function",
+      "name": "pulse_entities_string_id"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_set_request"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_response_ptr"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_response_length"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_response_status"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_body_read_count"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_run_complete"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_run_suspended"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_run_failed"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_start"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_set_effect_result"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_resume"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_pending_count"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_selected_index"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_invocation_count"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_entities_effect_count"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_abi_version"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_plan_hash_ptr"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_plan_hash_length"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_start"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_resume"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_set_effect_result"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_package_set_effect_failure"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_result_handle"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_program_counter"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_continuation_state"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_last_error_code"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_pending_count"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_schema_string_id"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_schema_decode"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_schema_encode"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_package_http_failure"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_last_error"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_error_stage"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_error_effect"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_jwt_error"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_jwt_secret_calls"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_jwt_crypto_calls"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_jwt_clock_calls"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_jwt_schema_calls"
+    },
+    {
+      "kind": "function",
+      "name": "_start"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_request_expired"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_memory_bytes"
+    },
+    {
+      "kind": "function",
+      "name": "pulse_fastly_memory_values"
+    },
+    {
+      "kind": "function",
+      "name": "__new"
+    },
+    {
+      "kind": "function",
+      "name": "__pin"
+    },
+    {
+      "kind": "function",
+      "name": "__unpin"
+    },
+    {
+      "kind": "function",
+      "name": "__collect"
+    },
+    {
+      "kind": "global",
+      "name": "__rtti_base"
+    },
+    {
+      "kind": "memory",
+      "name": "memory"
+    },
+    {
+      "kind": "function",
+      "name": "__setArgumentsLength"
+    },
+    {
+      "kind": "function",
+      "name": "__pulse_fastly_abort"
+    }
+  ],
+  "generatorVersion": "pulse.fastly-native-platform-capabilities-generator.v1",
+  "groupedContinuationCount": 0,
+  "handleOwnership": {
+    "checkpoints": "none",
+    "enabled": false,
+    "policy": null,
+    "reason": "package-owned-emitter",
+    "roots": []
+  },
+  "importModules": [
+    "fastly_abi",
+    "fastly_async_io",
+    "fastly_http_body",
+    "fastly_http_req",
+    "fastly_http_resp",
+    "wasi_snapshot_preview1"
+  ],
+  "imports": [
+    {
+      "kind": "function",
+      "module": "fastly_http_resp",
+      "name": "send_downstream"
+    },
+    {
+      "kind": "function",
+      "module": "wasi_snapshot_preview1",
+      "name": "clock_time_get"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_resp",
+      "name": "status_set"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_resp",
+      "name": "status_get"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_resp",
+      "name": "new"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_resp",
+      "name": "header_append"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_req",
+      "name": "uri_get"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_req",
+      "name": "method_get"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_req",
+      "name": "body_downstream_get"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_body",
+      "name": "write"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_body",
+      "name": "read"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_body",
+      "name": "new"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_abi",
+      "name": "init"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_async_io",
+      "name": "select"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_req",
+      "name": "header_values_get"
+    },
+    {
+      "kind": "function",
+      "module": "fastly_http_req",
+      "name": "header_names_get"
+    }
+  ],
+  "jsonAs": {
+    "elideDisabledCacheArena": false,
+    "fastPath": false,
+    "mode": "NAIVE",
+    "package": "json-as",
+    "strict": true,
+    "transform": true,
+    "version": "1.5.0"
+  },
+  "jwt": {
+    "status": "inactive"
+  },
+  "planHash": "7e3a20cb60ff67e298a45a6c698e0107c2df5ff5c20862cea9085fe720978db6",
+  "planVersion": "pulse.canonical-native-plan.v11",
+  "policy": {
+    "assets": "Fastly KV Store lookup with provider-owned content type, cache headers, and GET/HEAD body ownership",
+    "canonicalBuildLifecycle": true,
+    "config": "Fastly Config Store open/get with undefined for missing values",
+    "continuations": true,
+    "effects": "time.now, crypto.digestText, fetch, config.get, secret.get, kv.get, kv.put, kv.getVersioned, kv.insertIfAbsent, kv.compareAndSwap, kv.delete, kv.list, grip.channel, grip.hold, grip.publish, grip.broadcast, assets.lookup, jwt.verify, jwt.sign, s3.head, s3.getText, s3.putText, s3.getBody",
+    "grip": "canonical stateless framing plus bound, secret-referenced broadcast HTTP realization and stable acknowledgement",
+    "groupedEffects": "existing fetch start-before-wait ordering remains intact",
+    "javascriptRuntime": false,
+    "jsComputeRuntime": false,
+    "jwt": "inactive",
+    "kv": "Fastly KV Store async lookup/insert/delete and one bounded list page with opaque cursor; conditional operations preserve u64 generations, bounded readiness, strict Pulse envelopes and uncertain dispatch",
+    "logging": "best-effort redacted WASI fd_write to stdout (descriptor 1), one attempt per statement",
+    "nativeFastly": true,
+    "opaqueResponse": "origin fetch response/body handles and direct GRIP hold responses pass through without JavaScript runtime ownership",
+    "platformCapabilities": false,
+    "provider": "fastly",
+    "providerNeutralInput": true,
+    "realFastlyExecution": false,
+    "schemas": "fetch JSON decode and structured response encode",
+    "secrets": "Fastly Secret Store open/get/plaintext; proof traces redact plaintext values",
+    "transportErrors": "host status failures remain distinct from HTTP response status",
+    "wasi": "clock_time_get only"
+  },
+  "portableGeneratorVersion": "pulse.package-native-application.v2",
+  "portableSourceHash": "e578e7f6f73fa809b8281ce9928759c8e85f9753a7ff93f6bebad62a157befab",
+  "primaryArtifact": {
+    "bytes": 1046476,
+    "sha256": "5234e1dc34f48299e6eacfc536140bd0fd3c9208297a49b31279afe371d40b58"
+  },
+  "requiredExports": [
+    "_start",
+    "pulse_fastly_last_error",
+    "pulse_fastly_error_stage",
+    "pulse_fastly_error_effect",
+    "pulse_plan_hash_ptr",
+    "pulse_plan_hash_length",
+    "pulse_fastly_request_expired"
+  ],
+  "requiredImports": [
+    "fastly_abi:init",
+    "fastly_async_io:select",
+    "fastly_http_body:new",
+    "fastly_http_body:write",
+    "fastly_http_req:body_downstream_get",
+    "fastly_http_req:method_get",
+    "fastly_http_req:uri_get",
+    "fastly_http_resp:new",
+    "fastly_http_resp:send_downstream",
+    "fastly_http_resp:status_set",
+    "wasi_snapshot_preview1:clock_time_get"
+  ],
+  "schemaCodecs": {
+    "active": true,
+    "backend": "json-as",
+    "codecs": [
+      {
+        "id": "context.DiagnosticInput"
+      },
+      {
+        "id": "context.DiagnosticOutput"
+      },
+      {
+        "id": "context.ExampleInput"
+      },
+      {
+        "id": "context.ExampleOutput"
+      },
+      {
+        "id": "context.ReadInput"
+      },
+      {
+        "id": "context.ReadOutput"
+      },
+      {
+        "id": "context.SearchInput"
+      },
+      {
+        "id": "context.SearchOutput"
+      },
+      {
+        "id": "context.StartInput"
+      },
+      {
+        "id": "context.StartOutput"
+      }
+    ],
+    "package": "json-as",
+    "packageVersion": "1.5.0"
+  },
+  "sourceHash": "232fc4789172093ac6e675305a1a4bf1b9e955c94bfc6014e471ba098a0f13ba",
+  "version": "pulse.fastly-native-platform-capabilities.v1",
+  "wasm": {
+    "bytes": 1046476,
+    "magic": "0061736d01000000",
+    "sha256": "5234e1dc34f48299e6eacfc536140bd0fd3c9208297a49b31279afe371d40b58"
+  },
+  "wat": {
+    "bytes": 0,
+    "emitted": false,
+    "sha256": null
+  }
+}

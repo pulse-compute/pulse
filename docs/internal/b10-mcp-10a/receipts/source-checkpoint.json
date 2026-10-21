@@ -1,0 +1,9 @@
+{
+  "source": "fef3450798fe7d94058669348e9ff5f5a34535c6",
+  "tree": "25839d39a78479098519792e2fa520dfc1caefab",
+  "workingTreeBefore": "",
+  "workingTreeAfter": "",
+  "diffSha256BeforeAndAfter": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "passed",
+  "note": "Independent post-run check before adding retained evidence; failed main acceptance does not run its success-only source assertion."
+}

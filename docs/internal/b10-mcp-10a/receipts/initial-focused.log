@@ -1,0 +1,32 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+node:internal/assert/utils:77
+    throw err;
+    ^
+
+AssertionError [ERR_ASSERTION]: release must include current task mcp-fastly-local-installed
+    at Object.<anonymous> (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/suite/assert-suite-shape.cjs:217:10)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.18.0
+[pulsewasm] suite-shape: failed in 175ms
+
+[pulsewasm] test summary
+  failed         175ms  suite-shape  (/tmp/runs/2026-10-21T06-09-37-294Z--5/tasks/suite-shape.log)
+  report       /tmp/pulse-10a-focused.json
+  run logs     /tmp/runs/2026-10-21T06-09-37-294Z--5
+  total        185ms

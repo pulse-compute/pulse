@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T06-18-12-733Z--5",
+  "sourceRevision": "fef3450798fe7d94058669348e9ff5f5a34535c6",
+  "sourceIdentity": {
+    "sourceRevision": "fef3450798fe7d94058669348e9ff5f5a34535c6",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T06:18:12.739Z",
+  "updatedAt": "2026-10-21T06:18:21.432Z",
+  "finishedAt": "2026-10-21T06:18:21.432Z",
+  "durationMs": 8693,
+  "profiles": [],
+  "requestedTasks": [
+    "suite-shape",
+    "mcp-http",
+    "pulse-context-application",
+    "fastly-cli-gate-surface"
+  ],
+  "selectedTasks": [
+    "suite-shape",
+    "mcp-http",
+    "pulse-context-application",
+    "fastly-cli-gate-surface"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 4,
+  "results": [
+    {
+      "name": "suite-shape",
+      "evidence": "unit",
+      "description": "profile separation, uniqueness, and timeout budgets",
+      "commandSignature": "1ca38d9af89075e3b414c32042406c7333cfd754257eea7e4d5c6ea2a0d10322",
+      "timeoutMs": 30000,
+      "durationMs": 128,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-18-12-733Z--5/tasks/suite-shape.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "mcp-http",
+      "evidence": "unit",
+      "description": "MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge",
+      "commandSignature": "036876bc38459067b014830efeb225d15cfea751d6e0fe0a2adc233586f85bff",
+      "timeoutMs": 30000,
+      "durationMs": 378,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-18-12-733Z--5/tasks/mcp-http.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "pulse-context-application",
+      "evidence": "unit",
+      "description": "PMCP-03 five read-only Entities context operations, real Node JavaScript build, schemas/catalog and bounded MCP projection",
+      "commandSignature": "e86b5147c7bdefc5b0b4a5b223db72ebf9bd3351efe31dfbce025999bd2edcf2",
+      "timeoutMs": 30000,
+      "durationMs": 7455,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-18-12-733Z--5/tasks/pulse-context-application.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "fastly-cli-gate-surface",
+      "evidence": "providers",
+      "description": "Fastly CLI discovery and compute delegation",
+      "commandSignature": "acc2a3f9366102f6c791e41b96b9ce55c3a663e06839c19722723477afe54655",
+      "timeoutMs": 30000,
+      "durationMs": 721,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-18-12-733Z--5/tasks/fastly-cli-gate-surface.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T06-18-12-733Z--5"
+}
