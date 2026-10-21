@@ -2120,6 +2120,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       es256KeyRecords
     }),
     jwtSource ? jwtSource.source : '',
+    ((plan.effects || []).some(effect => effect.kind === 'fetch') || bindings.s3.length > 0)
+      ? fs.readFileSync(path.join(__dirname, 'native-send-error-detail.as.ts'), 'utf8') : '',
     require('./s3-native.js').s3NativeSource(plan, bindings),
     plan.effects.some(e => e.kind === 'assets.lookup') ? require('@pulse-compute/wasm-contracts/assets/contracts').embeddedNativeSource() + fs.readFileSync(path.join(__dirname, 'embedded-assets.as.ts'), 'utf8') : '',
     require('./time-native.js').timeNativeSource(plan),
