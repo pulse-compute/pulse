@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97",
+  "corpusHash": "0d87d0a4bc2c4ef5e5b45f8ba0c9e385462f5eb9396a0a632965819635be6de7",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -927,7 +927,8 @@ export const contextCorpus = freeze({
         "compare",
         "coverage",
         "identity",
-        "report"
+        "report",
+        "reports"
       ],
       "title": "Report comparison contract"
     },
@@ -10523,7 +10524,7 @@ export const contextCorpus = freeze({
     }
   ],
   "schemaVersion": "pulse.context-corpus.v1",
-  "selectionSha256": "08f477d93c599b981fc23726003c0f5dab4c0c2424fb9ba3698ba7b901094dcc",
+  "selectionSha256": "de9c0d730c566453ed29a679fc5856880179b50e5f10809125711d3be929f917",
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",

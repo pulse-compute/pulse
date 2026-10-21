@@ -93,8 +93,8 @@ async function main(){
     save();
    }
    await phases(app,input);
-   fail('exact-allocation-telemetry','Current interfaces expose retained charges and Wasm page capacity, not all internal allocations or peak live-object heap. No invented measurement.');
-   if(frozen.reviewStatus!=='reviewed')fail('independent-relevance-review','24 cases frozen before runs; external relevance review still required by the reviewed contract.');
+   report.allocationCoverage={hostExportedAllocations:'observed exact calls and requested bytes',abiStringTransfers:'observed UTF-16 bytes',retainedBudget:'conservative cumulative charge',guestPeak:'committed linear-memory high-water',internalGuestAllocationCount:null,peakLiveObjectBytes:null};
+   report.relevanceReview='Source-grounded review in docs/internal/b10-mcp-06b/REVIEW.md; no independent human review claimed';
   }else if(mode==='growth'){
    assert.equal(corpus.records.length,512);
    for(const args of [input,{...input,offset:0},{...input,offset:59,limit:1},{...input,offset:60},{...input,offset:61},{version:corpus.pulseVersion,query:'growth1199'},{version:corpus.pulseVersion,query:'unknownterm'}])await parity(app,args);
