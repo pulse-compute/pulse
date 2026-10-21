@@ -1,0 +1,152 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 315 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 159ms
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 20 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 213ms
+
+[pulsewasm:unit] boundaries
+[pulsewasm] workspace layout and import boundaries (timeout 30.00s)
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages
+[pulsewasm] boundaries: passed in 401ms
+
+[pulsewasm:unit] workspace-hygiene
+[pulsewasm] package-manager and workspace hygiene (timeout 30.00s)
+ok - workspace package-manager hygiene is pnpm-only and portable
+[pulsewasm] workspace-hygiene: passed in 251ms
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity
+[pulsewasm] release-feature-acceptance: passed in 655ms
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+ok - shared release packages are source-bound, hash-checked, private copies; tampering, dirty/stale source and overlapping paths fail closed
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 2.47s
+
+[pulsewasm:unit] binary-resource-admission
+[pulsewasm] B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy (timeout 30.00s)
+ok - resource size budgets are independent; HTTP Assets stays fixed
+ok - independent construction agrees with existing Assets identity
+ok - existing Assets constructor identity cross-check
+ok - snapshot and deeply immutable transport
+ok - all budgets are required finite safe integers; no inherited defaults or read quota
+ok - exact budgets pass; every smaller budget fails before selection
+ok - identity ignores declaration order; alias backing is not counted twice
+ok - selected and unselected corruption, length, identity and base64 are rejected
+ok - binding identity and path grammar are explicit
+ok - constructor rejects ambiguous inputs and accounts escaped UTF-8 metadata exactly
+ok - report projection omits payload and manifest paths; errors omit supplied content
+{"status":"passed","cases":11,"generatedInputMaximumBytes":2097152,"actualMcpFixture":"not-qualified"}
+[pulsewasm] binary-resource-admission: passed in 232ms
+
+[pulsewasm:unit] report-capsule-contract
+[pulsewasm] PRPT-01 capsule identity, schema projection, completion and attribution contracts (timeout 30.00s)
+ok - AN9-09 normalized storage, canonical compatibility, browser codec, semantic validation and bounded hostile expansion
+{"comparison":"passed","checks":49,"version":1,"deterministic":true,"missingIsNotZero":true}
+[pulsewasm] Running report-capsule-contract (execution); elapsed 10.00s
+[pulsewasm] Running report-capsule-contract (execution); elapsed 20.01s
+ok - AN9-06 semantic inventories, recipe independence, source-slot/retained identity, ambiguity, coverage and offline comparison HTML
+{"status":"passed","negativeCases":66,"goldenCapsules":2,"registeredSchemas":2,"attributionProofCells":3,"sameCapsuleHtmlRoundTrip":true,"completedWasmAndHistoricalReplay":true,"noIoOrToolchainImports":true}
+[pulsewasm] report-capsule-contract: passed in 20.38s
+
+[pulsewasm:unit] cli-report-workflow
+[pulsewasm] PRPT-04 report CLI replay, planning, safe output and diagnostics (timeout 30.00s)
+ok - PRPT-04/05 CLI replay, planning, diagnostics, hostile terminal text, guarded imports and atomic offline HTML (39 checks)
+[pulsewasm] cli-report-workflow: passed in 3.65s
+
+[pulsewasm:unit] cli-report-viewer
+[pulsewasm] PRPT-05 offline encoding, view projections and generated-output receipts (timeout 30.00s)
+ok - CMP8-02 comparison rendering: sparse details, zero-net anchors, missing evidence, compatibility, full provenance, exact payload and CSP
+[pulsewasm] Running cli-report-viewer (execution); elapsed 30.01s
+ok - VIS-07 graph-backed binding/registration/site navigation, admission and exact export
+ok - VIS-08 six journeys: mixed entry points, binding consumers, exact details and Explorer return, source/unknown evidence, identity and historical compatibility
+[pulsewasm] Running cli-report-viewer (execution); elapsed 40.01s
+RPT8-12 combined reconciliation: {"routes":2,"schemas":3,"helperRows":4,"distinctHelperBytes":6,"dispatcherBytes":4,"responseSites":8,"resolvedResponseSizes":6,"physicalBytes":36}
+ok - offline HTML encoding/CSP, exact export, route/schema projections, unknown states, safe repeatable outputs; browser qualification remains separate
+[pulsewasm] cli-report-viewer: passed in 12.14s
+
+[pulsewasm:unit] cli-report-retained-evidence
+[pulsewasm] PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm (timeout 60.00s)
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 50.01s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 60.01s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 70.02s
+{"mode":"workspace","inventoryCases":[{"fixture":"examples/11-events","routes":1,"entries":3,"schemas":2},{"fixture":"wasm/test/fixtures/projects/canonical-integration","routes":1,"entries":3,"schemas":0},{"fixture":"wasm/test/fixtures/projects/catalog-router-methods","routes":20,"entries":23,"schemas":0},{"fixture":"wasm/test/fixtures/projects/canonical-workspace","routes":0,"entries":1,"schemas":0}],"status":"passed","negativeCases":22,"nativeCompiles":4,"portableGuestUnchanged":true,"routes":5,"entries":6,"schemas":1,"bindings":1,"resources":6,"providerArtifacts":2,"buildMs":4041,"reportMs":570,"capsuleBytes":101505,"inputSidecarBytes":9512,"portableSha256":"072a542870efc3e6585b00143b1a08258c3321613215d887e65e7a7101ab0a36","providerSha256":"67241a97fb5d379327a3aed1141c47c560bf3f8f742c0fdbfa760fe6b0d39e73"}
+[pulsewasm] cli-report-retained-evidence: passed in 35.43s
+
+[pulsewasm:unit] cli-report-size-evidence
+[pulsewasm] PRPT-03 physical size reconciliation and attribution rejection (timeout 30.00s)
+{"status":"passed","negativeCases":30,"physicalBytes":36,"functionBodyBytes":10,"codeFramingBytes":6,"sharedBodyDeduplicated":true,"compilerFree":true}
+[pulsewasm] cli-report-size-evidence: passed in 923ms
+
+[pulsewasm:unit] cli-report-capture-proof
+[pulsewasm] PRPT-03 passive final capture noninterference (timeout 120.00s)
+[pulsewasm] Running cli-report-capture-proof (execution); elapsed 80.02s
+{"status":"passed","cells":[{"target":"portable","optimization":"default","bytes":2545,"sha256":"bc0ab48c15b2b893407c1792cbca69c0854a33243c9efa3ae0c87c54fc2b2922","unchanged":true,"ascCalls":2,"generatorCalls":2,"controlMs":936,"captureMs":1013,"collectionMs":28,"collectionRssDelta":5898240,"processMaxRssKiB":161380,"capsuleBytes":44770,"sidecarBytes":5052,"mappedRoutes":5,"directUniqueBytes":157,"executions":5},{"target":"fastly","optimization":"default","bytes":32026,"sha256":"b25cfd1ebcb86204265bc4a085c671d2f5bdedfec15b80bc9910de7eef315b6a","unchanged":true,"ascCalls":2,"generatorCalls":2,"controlMs":1759,"captureMs":1912,"collectionMs":30,"collectionRssDelta":2883584,"processMaxRssKiB":168516,"capsuleBytes":89677,"sidecarBytes":12497,"mappedRoutes":5,"directUniqueBytes":163,"executions":5},{"target":"portable","optimization":"experimental-native-size","bytes":2464,"sha256":"0a7f1918ac0ccc8ba74b6b61b84cf2ce5d46f4beb30b640379291f45ade9497c","unchanged":true,"ascCalls":2,"generatorCalls":2,"controlMs":869,"captureMs":983,"collectionMs":16,"collectionRssDelta":393216,"processMaxRssKiB":169796,"capsuleBytes":48593,"sidecarBytes":5385,"mappedRoutes":5,"directUniqueBytes":112,"executions":5}],"notes":"Paired builds are a test only. Report performs no compile or disassembly. RSS and timings are diagnostic, not a benchmark guarantee."}
+[pulsewasm] cli-report-capture-proof: passed in 8.39s
+
+[pulsewasm:native] cli-report-entry-proof
+[pulsewasm] RPT8-01 production entry/stage/helper attribution and byte-preserving capture (timeout 120.00s)
+[pulsewasm] Running cli-report-entry-proof (execution); elapsed 90.02s
+[pulsewasm] Running cli-report-entry-proof (execution); elapsed 100.03s
+[pulsewasm] Running cli-report-entry-proof (execution); elapsed 110.03s
+{"status":"passed","fixture":"transfer-router","cells":[{"target":"portable","optimization":"default","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":570,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":0},{"target":"fastly","optimization":"default","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":854,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":0},{"target":"portable","optimization":"experimental-native-size","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":489,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":2},{"target":"portable","optimization":"experimental-native-bounded-size","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":489,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":0},{"target":"fastly","optimization":"experimental-native-bounded-size","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":438,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":0}],"additional":[{"target":"portable","optimization":"default","mappedRoutes":7,"exactRoutes":5,"sharedHelperConsumers":2,"helperBodies":1,"survivingHelperBodies":0,"requests":10,"wholeExecutableUnchanged":true},{"target":"portable","optimization":"experimental-native-bounded-size","mappedRoutes":7,"exactRoutes":7,"sharedHelperConsumers":2,"helperBodies":1,"survivingHelperBodies":1,"requests":10,"wholeExecutableUnchanged":true},{"target":"fastly","optimization":"default","mappedRoutes":7,"exactRoutes":5,"sharedHelperConsumers":2,"helperBodies":1,"survivingHelperBodies":0,"requests":10,"wholeExecutableUnchanged":true},{"target":"fastly","optimization":"experimental-native-bounded-size","mappedRoutes":7,"exactRoutes":7,"sharedHelperConsumers":2,"helperBodies":1,"survivingHelperBodies":1,"requests":10,"wholeExecutableUnchanged":true}],"scope":"Production entry/stage capture; dispatcher carriers are explicit, not handler sizes. No exclusive ownership claim."}
+[pulsewasm] cli-report-entry-proof: passed in 31.52s
+
+[pulsewasm:native] cli-report-reference-provenance
+[pulsewasm] RPT8-02 resolved reference identities, shared consumers, unknowns, privacy and byte-preserving capture (timeout 120.00s)
+[pulsewasm] Running cli-report-reference-provenance (execution); elapsed 120.03s
+{"status":"passed","cells":[{"optimization":"default","bindings":4,"references":7,"requests":10,"unchanged":true},{"optimization":"experimental-native-bounded-size","bindings":4,"references":7,"requests":10,"unchanged":true}],"retainedReplay":true,"foreignOffsetRejected":true,"packageBinding":true,"redacted":true}
+[pulsewasm] cli-report-reference-provenance: passed in 12.89s
+
+[pulsewasm:native] cli-report-handler-topology
+[pulsewasm] AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison (timeout 180.00s)
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 130.03s
+[analytics parity] http/default: control and observed compilation
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 140.03s
+[analytics parity] http/experimental-native-bounded-size: control and observed compilation
+TypeError: Report input rejected (REPORT_ARTIFACT_HASH).
+    at fail (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/packages/cli/src/internal/report/data.js:7:17)
+    at ensure (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/packages/cli/src/internal/report/completion.js:7:47)
+    at verifyBytes (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/packages/cli/src/internal/report/completion.js:36:3)
+    at admitCompletedBuild (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/packages/cli/src/internal/report/completion.js:96:15)
+    at readCompleted (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/packages/cli/src/internal/report/retained.js:142:20)
+    at Object.collectArtifactReport (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/packages/cli/src/internal/report/retained.js:159:21)
+    at main (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/cli/assert-report-handler-topology.cjs:327:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  code: 'REPORT_ARTIFACT_HASH',
+  field: '$'
+}
+[pulsewasm] cli-report-handler-topology: failed in 17.71s
+
+[pulsewasm] test summary
+  passed         232ms  binary-resource-admission  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/binary-resource-admission.log)
+  passed        20.38s  report-capsule-contract  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/report-capsule-contract.log)
+  passed         3.65s  cli-report-workflow  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/cli-report-workflow.log)
+  passed        12.14s  cli-report-viewer  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/cli-report-viewer.log)
+  passed        35.43s  cli-report-retained-evidence  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/cli-report-retained-evidence.log)
+  passed         923ms  cli-report-size-evidence  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/cli-report-size-evidence.log)
+  passed         8.39s  cli-report-capture-proof  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/cli-report-capture-proof.log)
+  passed        31.52s  cli-report-entry-proof  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/cli-report-entry-proof.log)
+  passed        12.89s  cli-report-reference-provenance  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/cli-report-reference-provenance.log)
+  failed        17.71s  cli-report-handler-topology  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/cli-report-handler-topology.log)
+  passed         159ms  suite-shape  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/suite-shape.log)
+  passed         213ms  package-exports  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/package-exports.log)
+  passed         401ms  boundaries  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/boundaries.log)
+  passed         251ms  workspace-hygiene  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/workspace-hygiene.log)
+  passed         655ms  release-feature-acceptance  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/release-feature-acceptance.log)
+  passed         2.47s  release-runtime-policy  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5/tasks/release-runtime-policy.log)
+  report       /workspace/scratch/0174bfde4d1e/evidence-07a/unit.json
+  run logs     /workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-55-431Z--5
+  total        147.44s

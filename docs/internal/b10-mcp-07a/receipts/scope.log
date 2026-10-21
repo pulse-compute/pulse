@@ -1,0 +1,25 @@
+# Pulse maintainer scope
+
+**Status:** Pass
+
+| Signal | Result |
+|---|---|
+| Declared class | `hardening` |
+| Declared scope | `inside-developer-preview` |
+| Risk | `medium` |
+| Changed files | 9 |
+| Areas | `cli`, `documentation`, `testing` |
+| Protected boundaries | None |
+| Separate human decision | Not required |
+| Current contract update | Not inferred |
+| Release authority | Not inferred |
+| Required checks | `build`, `cli`, `documentation`, `maintenance-policy`, `unit` |
+
+The resident maintainer may analyze, review, and prepare a minimal patch; human review and merge remain required.
+
+## Warnings
+
+- declaration names protected boundary package-publication, but changed paths did not infer it
+- declaration names protected boundary release-authority, but changed paths did not infer it
+- Human decision is declared required even though changed paths do not require a separate scope or architecture decision
+

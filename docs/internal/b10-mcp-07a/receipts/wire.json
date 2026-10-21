@@ -1,0 +1,346 @@
+{
+  "status": "passed",
+  "client": "@modelcontextprotocol/client@2.2.0",
+  "protocol": "2026-07-28",
+  "target": "node-javascript",
+  "installedConsumer": true,
+  "deployed": false,
+  "checks": [
+    "installed-app-ordinary-cli-test-and-build",
+    "production-built-only-readiness",
+    "official-discover-list-and-projected-schemas",
+    "start-search-read-example-diagnostic-with-citations-and-pagination",
+    "explicit-version-id-selection-and-schema-errors-no-execution-tools",
+    "official-client-partial-upload-cancellation-and-recovery",
+    "returned-starter-client-side-cli-test-and-build",
+    "pinned-codex-complete-onboarding",
+    "production-host-graceful-shutdown"
+  ],
+  "commands": [
+    {
+      "command": "test --json",
+      "status": "passed",
+      "elapsedMs": 1268.109447
+    },
+    {
+      "command": "build --json",
+      "status": "built",
+      "elapsedMs": 1170.871108
+    },
+    {
+      "command": "prepare.cjs",
+      "status": "prepared",
+      "elapsedMs": 79.83904200000006
+    },
+    {
+      "command": "test --profile local --json",
+      "status": "passed",
+      "elapsedMs": 588.0254820000009
+    },
+    {
+      "command": "build --profile local --json",
+      "status": "built",
+      "elapsedMs": 638.8870229999993
+    }
+  ],
+  "wire": [
+    {
+      "method": "server/discover",
+      "status": 200,
+      "bytes": 295
+    },
+    {
+      "method": "server/discover",
+      "status": 200,
+      "bytes": 271
+    },
+    {
+      "method": "tools/list",
+      "status": 200,
+      "bytes": 17556
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.start",
+      "status": 200,
+      "bytes": 17445
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.search",
+      "status": 200,
+      "bytes": 5691
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.search",
+      "status": 200,
+      "bytes": 5981
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.read",
+      "status": 200,
+      "bytes": 3647
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.explain_diagnostic",
+      "status": 200,
+      "bytes": 9245
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.example",
+      "status": 200,
+      "bytes": 11968
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.example",
+      "status": 200,
+      "bytes": 3707
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.start",
+      "status": 200,
+      "bytes": 1663
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.search",
+      "status": 200,
+      "bytes": 1326
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.read",
+      "status": 200,
+      "bytes": 1124
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.example",
+      "status": 200,
+      "bytes": 1284
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.example",
+      "status": 200,
+      "bytes": 1838
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.explain_diagnostic",
+      "status": 200,
+      "bytes": 1210
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.start",
+      "status": 200,
+      "bytes": 1570
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.search",
+      "status": 200,
+      "bytes": 1300
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.read",
+      "status": 200,
+      "bytes": 1236
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.example",
+      "status": 200,
+      "bytes": 1338
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.explain_diagnostic",
+      "status": 200,
+      "bytes": 1198
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.read",
+      "status": 200,
+      "bytes": 238
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.build",
+      "status": 400,
+      "bytes": 74
+    },
+    {
+      "method": "tools/call",
+      "tool": "pulse.search",
+      "status": 200,
+      "bytes": 3426
+    }
+  ],
+  "build": {
+    "buildId": "89a2759d32beb63dc37d154215004abcb8628bd0574d7c73ded623288d30513d",
+    "identity": "627b2a81cd79a162b4f0a7437e8a53fb8c33615a01cc7206c58d62318c97578a",
+    "manifestSha256": "9d6aed59505eed4afbc1d6d20ab129893bc07dcc66337e0faa2f382e59f7c123",
+    "catalogHash": "0d7202d11987b9e51caf50aac3e3a398673dd34b2586a41772343e04dd53592b",
+    "registryHash": "cda45e9d2173588332a2086ab14c48e4a52e37b9f213aac02da1d0f972f7e9d7",
+    "corpus": {
+      "schemaVersion": "pulse.context-corpus.v1",
+      "corpusHash": "c84709676333ae576c6fe217c6ce651b1b442069a8a6bbe1cd8cd845de6c8060",
+      "pulseVersion": "1.0.0-beta.9",
+      "snapshotStatus": "candidate"
+    },
+    "files": [
+      {
+        "file": "application/context-corpus.js",
+        "bytes": 636359,
+        "sha256": "9b126a877646db33fe78a191ecdab8ab9b2bc449dc25b7f55c034384b2306767"
+      },
+      {
+        "file": "application/corpus-version.js",
+        "bytes": 665,
+        "sha256": "b13083ade79fa5c630d0908c5c73c3122c942507a76d56bf6309d2b4c7024846"
+      },
+      {
+        "file": "application/src/handlers.js",
+        "bytes": 20465,
+        "sha256": "7f154a609c5e204146c44b7e7a31a12c43990cbe0c056f89378fb8139816205f"
+      },
+      {
+        "file": "application/src/index.js",
+        "bytes": 2603,
+        "sha256": "29840071c0883b623fbf93bc31417d7da9cf36d239a4fe3b1f0de72b230271ec"
+      },
+      {
+        "file": "entities-catalog.json",
+        "bytes": 3846,
+        "sha256": "aa6f1dba41204df6f26b885091b0026f353ecc13016d273d27a7c56ddba13007"
+      },
+      {
+        "file": "index.cjs",
+        "bytes": 212,
+        "sha256": "3a69e9d98122cb2f640d3aa0aade78b128d8a6ad211fd0bc2c1f2a7b23b6962b"
+      },
+      {
+        "file": "package.json",
+        "bytes": 271,
+        "sha256": "ca2c27d3f570865cffd0c9656152913981aa5ab341f444175ebc4310af532b43"
+      },
+      {
+        "file": "pulse-build.json",
+        "bytes": 25841,
+        "sha256": "a4732386010779a99b302b1f5b9346db7d70d1ffd59e7931fcbf88a3087a19bc"
+      },
+      {
+        "file": "pulse-javascript-application-plan.json",
+        "bytes": 15392,
+        "sha256": "36f27503ad13fcbde3bc37bd3313f51d738c99595d15ac71b4c47717afb4cd76"
+      },
+      {
+        "file": "pulse-javascript-source-package.json",
+        "bytes": 3770,
+        "sha256": "aad2d313c0fe1b54062e4b7a1fdc5c2ddb2bd7565d9459808a0a303cfd4cfe0b"
+      },
+      {
+        "file": "schema-json-codecs.cjs",
+        "bytes": 122863,
+        "sha256": "1be6b6b8326c5ca888c465680b1fc69532d81b3a0b3353eb5b8ce2cf584e09dc"
+      },
+      {
+        "file": "schema-json-registry.json",
+        "bytes": 112175,
+        "sha256": "d2b3cd4ede089ba4f54621d338ec3aac8b507b4903f99a565648cd7d9598dbc7"
+      }
+    ]
+  },
+  "startupMs": 187.81755900000007,
+  "starter": {
+    "exampleId": "01-hello-json",
+    "supplied": [
+      {
+        "id": "example/01-hello-json/.pulse/config.ts",
+        "sha256": "9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61"
+      },
+      {
+        "id": "example/01-hello-json/package.json",
+        "sha256": "f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0"
+      },
+      {
+        "id": "example/01-hello-json/src/index.ts",
+        "sha256": "906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b"
+      },
+      {
+        "id": "example/01-hello-json/tests/pulse.harness.ts",
+        "sha256": "1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa"
+      },
+      {
+        "id": "example/01-hello-json/tsconfig.json",
+        "sha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052"
+      },
+      {
+        "id": "example/01-hello-json/workflow",
+        "sha256": "0908ca90c1b70b9a5bc35f5d234fbb855f3f1405df58fb9d0a18ebce2646b2a6"
+      }
+    ],
+    "configurationSha256": "ec769fd0d44effbb4a18287ca2f8992e5006e0a761190d029edde1e8831873d8",
+    "target": "javascript",
+    "test": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "buildStatus": "built",
+    "clientSideOnly": true,
+    "reusedInstalledDependencyGraph": true
+  },
+  "agent": {
+    "status": "passed",
+    "inferenceRequests": 0,
+    "checks": [
+      "actual-agent-discovery-and-five-tools",
+      "actual-agent-onboarding-without-inference"
+    ],
+    "calls": [
+      {
+        "tool": "pulse.start",
+        "status": "ok",
+        "bytes": 17290,
+        "corpusHash": "c84709676333ae576c6fe217c6ce651b1b442069a8a6bbe1cd8cd845de6c8060"
+      },
+      {
+        "tool": "pulse.search",
+        "status": "ok",
+        "bytes": 5784,
+        "corpusHash": "c84709676333ae576c6fe217c6ce651b1b442069a8a6bbe1cd8cd845de6c8060"
+      },
+      {
+        "tool": "pulse.read",
+        "status": "ok",
+        "bytes": 5723,
+        "corpusHash": "c84709676333ae576c6fe217c6ce651b1b442069a8a6bbe1cd8cd845de6c8060"
+      },
+      {
+        "tool": "pulse.example",
+        "status": "ok",
+        "bytes": 11813,
+        "corpusHash": "c84709676333ae576c6fe217c6ce651b1b442069a8a6bbe1cd8cd845de6c8060"
+      },
+      {
+        "tool": "pulse.explain_diagnostic",
+        "status": "ok",
+        "bytes": 9090,
+        "corpusHash": "c84709676333ae576c6fe217c6ce651b1b442069a8a6bbe1cd8cd845de6c8060"
+      }
+    ],
+    "client": "codex-cli 0.160.1"
+  },
+  "largestResponseBytes": 17556
+}

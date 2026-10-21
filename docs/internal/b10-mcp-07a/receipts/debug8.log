@@ -1,0 +1,23 @@
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/worker.cjs',
+  'guard',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/settings.json'
+]
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-consumer/node_modules/typescript/bin/tsc',
+  '--project',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-consumer/tsconfig.json'
+]
+DEVELOPMENT ONLY: already checked types skipped
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-consumer/node_modules/@pulse-compute/cli/bin/pulse.js',
+  'build',
+  '--profile',
+  'node-native'
+]
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/worker.cjs',
+  'runtime',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/settings.json'
+]
+DEVELOPMENT PASS

@@ -1,0 +1,396 @@
+{
+  "version": "pulse.mcp-installed-acceptance.v2",
+  "status": "failed",
+  "source": "b58353cddcdb6a3eb5bcb4c0b12b5c22631e0d6c",
+  "sourceTree": "e8409120ebb64c5e68a93076e44d6e26d936f551",
+  "workingTree": "",
+  "workingDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "acceptanceScriptSha256": "badcbd9eeb5d0c7238551e395a14b97db3058ff03ba6078dc683e5bd61dd78a0",
+  "node": "v24.18.0",
+  "fixture": "examples/12-pulse-context-mcp",
+  "applicationDelivery": "exact-cli-tarball",
+  "lifecycleScripts": false,
+  "providerRealityValidated": false,
+  "results": [
+    {
+      "elapsedMs": 12833.735096000002,
+      "command": "npm",
+      "args": [
+        "install",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "code": 0,
+      "signal": null,
+      "stdout": "\nadded 26 packages in 13s\n",
+      "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm notice\nnpm notice New major version of npm available! 11.16.0 -> 12.2.0\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0\nnpm notice To update run: npm install -g npm@12.2.0\nnpm notice\n"
+    },
+    {
+      "elapsedMs": 49.840486999997665,
+      "command": "node",
+      "args": [
+        "<acceptance>/native-proof/worker.cjs",
+        "guard",
+        "<acceptance>/native-proof/settings.json"
+      ],
+      "code": 0,
+      "signal": null,
+      "stdout": "ok - checkout reads denied\n",
+      "stderr": "denied filesystem read: <checkout>/package.json\n(node:1554) SecurityWarning: The flag --allow-child-process must be used with extreme caution. It could invalidate the permission model.\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:1554) SecurityWarning: The flag --allow-worker must be used with extreme caution. It could invalidate the permission model.\n"
+    },
+    {
+      "elapsedMs": 17012.296564,
+      "command": "node",
+      "args": [
+        "<acceptance>/consumer/node_modules/typescript/bin/tsc",
+        "--project",
+        "<acceptance>/consumer/application/tsconfig.json"
+      ],
+      "code": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "denied filesystem read: /TMP/PULSE-SUITE-TASK-MCP-INSTALLED-w0rYf4/PULSE-MCP-INSTALLED-lT6e2O/CONSUMER/NODE_MODULES/TYPESCRIPT/LIB/_TSC.JS\ndenied filesystem read: <acceptance>/node_modules/@types\ndenied filesystem read: /tmp/pulse-suite-task-mcp-installed-W0RyF4/node_modules/@types\ndenied filesystem read: /tmp/node_modules/@types\ndenied filesystem read: /node_modules/@types\ndenied filesystem read: <acceptance>/node_modules\ndenied filesystem read: /tmp/pulse-suite-task-mcp-installed-W0RyF4/node_modules\ndenied filesystem read: /tmp/node_modules\ndenied filesystem read: /node_modules\n"
+    }
+  ],
+  "applicationPackage": {
+    "name": "@pulse-compute/cli",
+    "version": "1.0.0-beta.9",
+    "role": "public-cli",
+    "license": "Apache-2.0",
+    "legalFiles": [
+      "LICENSE",
+      "NOTICE"
+    ],
+    "nodeEngines": "^22.14.0 || ^24.0.0",
+    "supportTier": "canonical-application",
+    "documentation": "docs/packages/cli.md",
+    "directInstall": "Yes. Install the package globally or as a project development dependency.",
+    "entryPoints": [
+      "pulse binary",
+      "@pulse-compute/cli",
+      "@pulse-compute/cli/workflow",
+      "@pulse-compute/cli/project-config",
+      "@pulse-compute/cli/project-execution",
+      "@pulse-compute/cli/project-config-schema",
+      "@pulse-compute/cli/diagnostics",
+      "@pulse-compute/cli/project-config.schema.json",
+      "@pulse-compute/cli/cli-spec.json",
+      "@pulse-compute/cli/release-manifest.json",
+      "@pulse-compute/cli/documentation-versions.json",
+      "@pulse-compute/cli/documentation-site.json"
+    ],
+    "stability": "Supported Beta workflow and project-configuration contract.",
+    "tarball": "pulse-compute-cli-1.0.0-beta.9.tgz",
+    "bytes": 1377375,
+    "sha256": "b2a7fabeac0b91dbc86ed9071fd8ee31f4bd19579a3ad92cfe25fc637713b952",
+    "sha512": "19620b1d17896be308bbe821b3c2f8e3648b28e582a908e0dbaafeb95a1cd7025732a1b98bf24bc8ec46daaa4ff9fa798b11c501a3c98073afc28744ff42eca4",
+    "integrity": "sha512-GWILHReJa+MIu+ghs8L442SLKOWCqQjg26r+uVoc1wJXMqG5i/JLyOxG2qpP+fp5ixHFAaPJgHOvwodE/0LspA==",
+    "shasum": "89a400ba89e3d3287f1f63cec0c881525c2bf0da",
+    "files": [
+      {
+        "file": ".gitignore",
+        "sha256": "d244370f47222decd3a49031dd368bea7bdd34521dcf95c431dd50bcf5cb6d9a"
+      },
+      {
+        "file": ".pulse/config.ts",
+        "sha256": "b8313e95b4390e5dd5970158a95aab4767eacd68ad333a89f184a1083f22f62b"
+      },
+      {
+        "file": "README.md",
+        "sha256": "6309fee0f0fe886419f8003e328acef67dd8e228ca23f11e1f69b96fce1652f7"
+      },
+      {
+        "file": "application/.gitignore",
+        "sha256": "739bef7a7a0eb829bdabfaa95238ac4e901ad3604441131d12cb6eaec2b0b3f3"
+      },
+      {
+        "file": "application/.pulse/config.template.ts",
+        "sha256": "b2469ddd8d149ad61efd327d2b72c271e48d78f695acffa908fcef7a50aecb36"
+      },
+      {
+        "file": "application/.pulse/config.ts",
+        "sha256": "02fef5784c88dabd7a7df6f8d5ecdee10fe45802d61b8d492e3cc354b1c506b8"
+      },
+      {
+        "file": "application/package.json",
+        "sha256": "380607ab7027480353be7f72925e97ee42bf8ab86680a67806adc366b035e629"
+      },
+      {
+        "file": "application/src/diagnostic.ts",
+        "sha256": "ff5f72da7d433c4dc65846ad8079db3bf535ce12c26feaea8852ee3fff2a1301"
+      },
+      {
+        "file": "application/src/example.ts",
+        "sha256": "2e5ef8ea9db47895ee9d2410bd6b9dc0eca172e7ee582c7977bedad77920c581"
+      },
+      {
+        "file": "application/src/index.template.ts",
+        "sha256": "fa7f675bba3945b88b3e68fe0c79b62cd70accba5ae26210d666b81ff26901dc"
+      },
+      {
+        "file": "application/src/index.ts",
+        "sha256": "1d74a09aabd8357b02f51e9cbd118a1e10b8721f5b81fb30a2129cd94f9c017a"
+      },
+      {
+        "file": "application/src/read.template.ts",
+        "sha256": "29723ab773b2ca9f6cffe00c339bb96ebf40d7aa5a514f2906f3209f091c1a15"
+      },
+      {
+        "file": "application/src/read.ts",
+        "sha256": "8644066b961205f10ef27fd90ba3c846aba744f04ec9675907445d95a55dec75"
+      },
+      {
+        "file": "application/src/scalars.ts",
+        "sha256": "53dd6e1574e33cc79edc6e88d6b066f22fbacadf6cc1b690b797304d4fc1c9d2"
+      },
+      {
+        "file": "application/src/schemas.ts",
+        "sha256": "7604b57777062c122fa23c7745bad8925b5082c938b9ccfa1d05a1a7bf1f3ffc"
+      },
+      {
+        "file": "application/src/search.template.ts",
+        "sha256": "8887c9af0173720435b5aade8b0a9dc270f7013d586f5827ad5cc4117fdd9be5"
+      },
+      {
+        "file": "application/src/search.ts",
+        "sha256": "7ff42563b3c6d806d9a89906687923e83965e4b6e6997aaf5ab4f6918d42c518"
+      },
+      {
+        "file": "application/src/start.template.ts",
+        "sha256": "10217ec1941733eaf56ba24378f29630de6d7c06cdac75e3b977bba23ee0251d"
+      },
+      {
+        "file": "application/src/start.ts",
+        "sha256": "f2c5f562c81b2934e864b07f7ca353c16098783e797fd2e7ca2d9bf7fbbb6b3f"
+      },
+      {
+        "file": "application/tsconfig.json",
+        "sha256": "870348caaa76610de9affec90c32623f1f3baab68f553ba3fd4d5be43048fcef"
+      },
+      {
+        "file": "client/request.cjs",
+        "sha256": "c5aaa7b6822c1242384c5beb736b81af2296e6214d7e1e05dc41eb97c6c34da1"
+      },
+      {
+        "file": "context-corpus.ts",
+        "sha256": "b02b7adfca6d82c3c70882abbe5b93dee7822176d718b3b3694950eeebfbe9e8"
+      },
+      {
+        "file": "context-data/context-manifest.json",
+        "sha256": "cbc86d66fe5d2c59e17139e27020a2b49958cd3bc2e099df71ce4fceee1a0da9"
+      },
+      {
+        "file": "context-data/context-metadata.ts",
+        "sha256": "4dca25e76a184ac4852471ef743f341f381134f30fcd2ad742ae66c211352392"
+      },
+      {
+        "file": "context-data/metadata.bin",
+        "sha256": "2cd6986de47f86d4eb2ffdc4a8cdef9732173973b4fbe1984cf2a96b7ab767ad"
+      },
+      {
+        "file": "context-data/resource-manifest.json",
+        "sha256": "a199bfc57eecc35271247ec2ad3e5ab601717379f391ef5fdb1f0665b432483b"
+      },
+      {
+        "file": "context-data/text.bin",
+        "sha256": "f04d2628983afe7e43ef1ce43d4b5f4b550486fb55e7b18d71da0dae9227b74e"
+      },
+      {
+        "file": "context-data/vector.bin",
+        "sha256": "b8f7b2a291027f2dae02e19612c354457ae14015f013aeb682036da91c79dd29"
+      },
+      {
+        "file": "corpus-version.ts",
+        "sha256": "fdc6e3805c5964bde7785a5bab19bdb266479a8b540a4654d3471523fdc66097"
+      },
+      {
+        "file": "host/artifacts.cjs",
+        "sha256": "ef3aee628b6d82ccfcfcf6a7259b530c2ebb829ee23e00060187592c5c9346aa"
+      },
+      {
+        "file": "host/prepare.cjs",
+        "sha256": "d28abbb22398a158e8a79c0308bfea3c76a0af3cc084762fca472727ee0c475d"
+      },
+      {
+        "file": "host/server.cjs",
+        "sha256": "18ef205a4799ce1560e8fccbd855303a2e339363119d486cf6d5ba06987ed7ee"
+      },
+      {
+        "file": "host/start.cjs",
+        "sha256": "17f8e25c8775511c32304a20dcddcbc3e72d896c967f80ce50214249bb21875b"
+      },
+      {
+        "file": "package.json",
+        "sha256": "5452546457ceee79db17e1aa6cf01b8a51b7d2341bcc1c7c1d8f5ba7f9003a54"
+      },
+      {
+        "file": "src/handlers.ts",
+        "sha256": "da7e1c3f9b814c98133434ef0f484ead845806c87bb48945fcea477f90471552"
+      },
+      {
+        "file": "src/index.ts",
+        "sha256": "1a27446f8e363a88b12d20ea425ec9c274d28f5828d394a45b6b24fa7072a7a0"
+      },
+      {
+        "file": "src/schemas.ts",
+        "sha256": "7604b57777062c122fa23c7745bad8925b5082c938b9ccfa1d05a1a7bf1f3ffc"
+      },
+      {
+        "file": "tests/pulse.harness.ts",
+        "sha256": "c847398188aa6b35da31f78ae02b606f268a642b22555e035ae544d851fc9173"
+      },
+      {
+        "file": "tsconfig.json",
+        "sha256": "7eff017e26e75fae8f4fd78d16cee1ef99ed3778381daee64ba5fa83eb3113c1"
+      }
+    ],
+    "pulseDependencies": [
+      {
+        "name": "@pulse-compute/provider-fastly",
+        "section": "dependencies",
+        "version": "1.0.0-beta.9"
+      },
+      {
+        "name": "@pulse-compute/provider-node",
+        "section": "dependencies",
+        "version": "1.0.0-beta.9"
+      },
+      {
+        "name": "@pulse-compute/wasm-build-support",
+        "section": "dependencies",
+        "version": "1.0.0-beta.9"
+      },
+      {
+        "name": "@pulse-compute/wasm-compiler",
+        "section": "dependencies",
+        "version": "1.0.0-beta.9"
+      },
+      {
+        "name": "@pulse-compute/wasm-contracts",
+        "section": "dependencies",
+        "version": "1.0.0-beta.9"
+      },
+      {
+        "name": "@pulse-compute/wasm-host-runtime",
+        "section": "dependencies",
+        "version": "1.0.0-beta.9"
+      },
+      {
+        "name": "@pulse-compute/wasm-schema-json",
+        "section": "dependencies",
+        "version": "1.0.0-beta.9"
+      }
+    ],
+    "prefix": "package/examples/12-pulse-context-mcp/"
+  },
+  "registry": {
+    "total": 42,
+    "packuments": 24,
+    "tarballs": 18,
+    "rejected": 0,
+    "missing": 0,
+    "missingPackuments": {},
+    "missingTarballs": 0
+  },
+  "installed": {
+    "packages": [
+      {
+        "name": "@pulse-compute/cli",
+        "version": "1.0.0-beta.9",
+        "sha256": "b2a7fabeac0b91dbc86ed9071fd8ee31f4bd19579a3ad92cfe25fc637713b952"
+      },
+      {
+        "name": "@pulse-compute/crypto",
+        "version": "1.0.0-beta.9",
+        "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+      },
+      {
+        "name": "@pulse-compute/entities",
+        "version": "1.0.0-beta.9",
+        "sha256": "e025cab2fb7ba3f4614d7d3c035e3506802081f0e9156058c5486270efac8ab0"
+      },
+      {
+        "name": "@pulse-compute/jwt",
+        "version": "1.0.0-beta.9",
+        "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+      },
+      {
+        "name": "@pulse-compute/mcp",
+        "version": "1.0.0-beta.9",
+        "sha256": "9195db098f1e1f5e257c1015fa60d7698242d50952d31bfe39f40e76c9b05866"
+      },
+      {
+        "name": "@pulse-compute/provider-fastly",
+        "version": "1.0.0-beta.9",
+        "sha256": "30d99f9668cfb7a9e0cd30d5a519e1b4e980f3d3dea8d54258892a4f21edf17d"
+      },
+      {
+        "name": "@pulse-compute/provider-node",
+        "version": "1.0.0-beta.9",
+        "sha256": "9a3ea0678a7b83bffec377ef6d6b6debd617ec41dc38640109cd238ce4461554"
+      },
+      {
+        "name": "@pulse-compute/pulse",
+        "version": "1.0.0-beta.9",
+        "sha256": "8a6c6769ef63532b28224fc84ee753094baec1c52392eb83447c4d9f70d997bc"
+      },
+      {
+        "name": "@pulse-compute/runtime",
+        "version": "1.0.0-beta.9",
+        "sha256": "696d33be41ee3bc466bd458d40b4c5058fb0f82201dd4949ce8c1e5bd2f4b747"
+      },
+      {
+        "name": "@pulse-compute/s3",
+        "version": "1.0.0-beta.9",
+        "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+      },
+      {
+        "name": "@pulse-compute/wasm-build-support",
+        "version": "1.0.0-beta.9",
+        "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+      },
+      {
+        "name": "@pulse-compute/wasm-compiler",
+        "version": "1.0.0-beta.9",
+        "sha256": "d662a793a40744e96eb79887c1859d5ba8f77d5f40398cd15a8efa4c624ef8c3"
+      },
+      {
+        "name": "@pulse-compute/wasm-contracts",
+        "version": "1.0.0-beta.9",
+        "sha256": "21a6fe0ae553fa19ca3fbe9884508d067940d57e32b61c168fd2890beb18df84"
+      },
+      {
+        "name": "@pulse-compute/wasm-guest-link",
+        "version": "1.0.0-beta.9",
+        "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+      },
+      {
+        "name": "@pulse-compute/wasm-host-runtime",
+        "version": "1.0.0-beta.9",
+        "sha256": "5e64ce348396d2e2ee7e7209b1c02097a882ab1151e32b25c8d1050f601ff225"
+      },
+      {
+        "name": "@pulse-compute/wasm-library-kit",
+        "version": "1.0.0-beta.9",
+        "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+      },
+      {
+        "name": "@pulse-compute/wasm-runtime-core-as",
+        "version": "1.0.0-beta.9",
+        "sha256": "70860b08d3dbb995742440bbb4b7e56db3abdeaba1e37ff8c7b5ead2df835b51"
+      },
+      {
+        "name": "@pulse-compute/wasm-schema-json",
+        "version": "1.0.0-beta.9",
+        "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+      }
+    ],
+    "files": 1111,
+    "sha256": "17887fd41f3302f9a7e29aa0f58d019a421cbadeff4a28fd375f4426b12e6936"
+  },
+  "consumerLockSha256": "6f78d817d525a8915e9820ab92c35b8571558db30ce47ef0588a2d6db70baa60",
+  "error": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /PULSE_BINARY_RESOURCE_INVALID/. Input:\n\n'denied filesystem read: /TMP/PULSE-SUITE-TASK-MCP-INSTALLED-w0rYf4/PULSE-MCP-INSTALLED-lT6e2O/CONSUMER/NODE_MODULES/TYPESCRIPT/LIB/TYPESCRIPT.JS\\n' +\n  '{\\n' +\n  '  \"status\": \"error\",\\n' +\n  '  \"version\": \"1.0.0-beta.9\",\\n' +\n  '  \"error\": {\\n' +\n  '    \"name\": \"PulseProjectError\",\\n' +\n  '    \"code\": \"ERR_ACCESS_DENIED\",\\n' +\n  '    \"title\": \"Uncatalogued Pulse diagnostic\",\\n' +\n  '    \"summary\": \"The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.\",\\n' +\n  '    \"category\": \"internal\",\\n' +\n  '    \"message\": \"Access to this API has been restricted. Use --allow-fs-read to manage permissions.\",\\n' +\n  '    \"remediation\": [\\n' +\n  '      \"Rerun with `--json` and retain the complete diagnostic for investigation.\"\\n' +\n  '    ],\\n' +\n  '    \"stability\": \"internal-or-forward-compatible\",\\n' +\n  '    \"scope\": \"fallback\",\\n' +\n  '    \"docs\": \"https://pulsecompute.io/v1.0.0-beta.9/reference/diagnostics/\",\\n' +\n  '    \"detail\": {}\\n' +\n  '  }\\n' +\n  '}\\n' +\n  '(node:1568) SecurityWarning: The flag --allow-child-process must be used with extreme caution. It could invalidate the permission model.\\n' +\n  '(Use `node --trace-warnings ...` to show where the warning was created)\\n' +\n  '(node:1568) SecurityWarning: The flag --allow-worker must be used with extreme caution. It could invalidate the permission model.\\n'\n\n    at Object.qualify (<checkout>/wasm/test/mcp/context-installed-closure.cjs:77:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (<checkout>/wasm/test/mcp/assert-mcp-installed.cjs:142:28)",
+  "cleanup": "passed",
+  "elapsedMs": 42291.341373
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T03-20-53-033Z--27",
+  "sourceRevision": "b58353cddcdb6a3eb5bcb4c0b12b5c22631e0d6c",
+  "sourceIdentity": {
+    "sourceRevision": "b58353cddcdb6a3eb5bcb4c0b12b5c22631e0d6c",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T03:20:53.039Z",
+  "updatedAt": "2026-10-21T03:21:35.810Z",
+  "finishedAt": "2026-10-21T03:21:35.810Z",
+  "durationMs": 42771,
+  "profiles": [],
+  "requestedTasks": [
+    "mcp-installed"
+  ],
+  "selectedTasks": [
+    "mcp-installed"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "mcp-installed",
+      "evidence": "external",
+      "description": "07A exact packed source-free Native five-tool closure, production host, official client and pinned Codex onboarding; one release-owned gate",
+      "commandSignature": "6ca72d56ce9649b79bba95266d56cdbabaf3d6e9e57df9954614208153aacaca",
+      "timeoutMs": 600000,
+      "durationMs": 42763,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-20-53-033Z--27/tasks/mcp-installed.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-20-53-033Z--27"
+}

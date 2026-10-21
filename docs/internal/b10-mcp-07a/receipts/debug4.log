@@ -1,0 +1,64 @@
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/worker.cjs',
+  'guard',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/settings.json'
+]
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/typescript/bin/tsc',
+  '--project',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/application/tsconfig.json'
+]
+DEVELOPMENT ONLY: already checked types skipped
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/bin/pulse.js',
+  'build',
+  '--profile',
+  'node-native'
+]
+Error: code 1
+
+Error: Installed build read outside consumer: /workspace/scratch/0174bfde4d1e/07a-debug/package.json
+    at check (/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/read-guard.cjs:19:17)
+    at Object.wrapped [as existsSync] (/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/read-guard.cjs:27:47)
+    at workspaceControls (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/report/snapshot.js:48:15)
+    at Object.resolutionStart (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/report/snapshot.js:71:51)
+    at loadConventionalProject (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/project-config.js:528:40)
+    at Object.resolveProject (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/project-config.js:634:34)
+    at resolveProjectContext (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/project-context.js:119:51)
+    at runPulseWorkflowCli (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workflow.js:47:9)
+    at Object.<anonymous> (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/bin/pulse.js:6:1)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+Error: Installed build read outside consumer: /workspace/scratch/0174bfde4d1e/07a-debug/package.json
+    at check (/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/read-guard.cjs:19:17)
+    at Object.wrapped [as existsSync] (/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/read-guard.cjs:27:47)
+    at findPackageWorkspaceRoot (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/wasm-compiler/src/project/reachable-graph-builder.js:402:25)
+    at createContext (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/wasm-compiler/src/project/reachable-graph-builder.js:869:68)
+    at buildReachableProjectGraph (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/wasm-compiler/src/project/reachable-graph-builder.js:953:19)
+    at Object.compileCanonicalProjectLegacy [as compileLegacy] (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-project-compiler.js:999:18)
+    at Object.run (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/wasm-compiler/src/spine/canonical-project.js:55:24)
+    at Object.run (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/wasm-compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalProjectSpine (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/wasm-compiler/src/spine/canonical-project.js:63:42)
+    at compileCanonicalProject (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-project-compiler.js:1293:10)
+{
+  "status": "error",
+  "version": "1.0.0-beta.9",
+  "error": {
+    "name": "Error",
+    "code": "ERR_ACCESS_DENIED",
+    "title": "Uncatalogued Pulse diagnostic",
+    "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",
+    "category": "internal",
+    "message": "Installed build read outside consumer: /workspace/scratch/0174bfde4d1e/07a-debug/package.json",
+    "remediation": [
+      "Rerun with `--json` and retain the complete diagnostic for investigation."
+    ],
+    "stability": "internal-or-forward-compatible",
+    "scope": "fallback",
+    "docs": "https://pulsecompute.io/v1.0.0-beta.9/reference/diagnostics/"
+  }
+}
+
+    at ChildProcess.<anonymous> (/tmp/07a-debug.cjs:7:557)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:306:5)
