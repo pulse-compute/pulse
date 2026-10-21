@@ -1,0 +1,4124 @@
+{
+  "schemaVersion": "pulse.context-quality-evidence.v1",
+  "mode": "actual",
+  "status": "completed",
+  "acceptance": "passed",
+  "source": {
+    "revision": "961dacacdef76070bb407ed51569e1ba29c2114d",
+    "tree": "5a9afa3775c4ceade7b9b11519f499290c024ff3",
+    "status": "",
+    "modifiedFiles": []
+  },
+  "frozenCasesSha256": "b62bb7dd5f3cd77f5271aca0d9da9dd33b1b84c47abd6bb8c14aeceb625745ce",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0"
+  },
+  "budgets": {
+    "requestMs": 5000,
+    "compileMs": 120000,
+    "artifactBytes": 8388608,
+    "guestCommittedBytes": 134217728,
+    "nodeValueHandles": 1048576,
+    "retainedBytes": 67108864,
+    "toolBytes": 24576,
+    "mcpBytes": 131072,
+    "warmSamples": 9
+  },
+  "queries": [
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "exact-1",
+      "group": "exact",
+      "input": {
+        "query": "compile"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "command/compile"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 83,
+        "ids": [
+          "command/compile",
+          "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+          "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "diagnostic/PULSE_PROJECT_COMPILE_FAILED"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 56,
+        "ids": [
+          "command/compile",
+          "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+          "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED"
+        ],
+        "scores": [
+          19,
+          11,
+          11,
+          11,
+          7
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "exact-2",
+      "group": "exact",
+      "input": {
+        "query": "inspect"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "command/inspect"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 45,
+        "ids": [
+          "command/inspect",
+          "diagnostic/PULSE_FASTLY_CLI_INSPECTION_FAILED",
+          "diagnostic/PULSE_OPAQUE_BODY_INSPECTION",
+          "diagnostic/PULSE_VICEROY_INSPECTION_FAILED",
+          "workflow/inspect"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 36,
+        "ids": [
+          "command/inspect",
+          "workflow/inspect",
+          "contract/eligibility",
+          "contract/opaque-bodies",
+          "contract/targets"
+        ],
+        "scores": [
+          19,
+          19,
+          1,
+          1,
+          1
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "exact-3",
+      "group": "exact",
+      "input": {
+        "query": "report"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "command/report"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 31,
+        "ids": [
+          "command/report",
+          "contract/report-comparison",
+          "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "diagnostic/PULSE_REPORT_INCOMPATIBLE"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 23,
+        "ids": [
+          "command/report",
+          "contract/report-comparison",
+          "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "diagnostic/PULSE_REPORT_INCOMPATIBLE"
+        ],
+        "scores": [
+          19,
+          19,
+          11,
+          11,
+          11
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "exact-4",
+      "group": "exact",
+      "input": {
+        "query": "PULSE_BINARY_RESOURCE_INVALID"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "diagnostic/PULSE_BINARY_RESOURCE_INVALID"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "diagnostic/PULSE_BINARY_RESOURCE_INVALID"
+        ],
+        "scores": [
+          13
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "diagnostic/PULSE_BINARY_RESOURCE_INVALID"
+        ],
+        "scores": [
+          13
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "exact-5",
+      "group": "exact",
+      "input": {
+        "query": "PULSE_CALL_SOURCE_PLACEMENT"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "diagnostic/PULSE_CALL_SOURCE_PLACEMENT"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "diagnostic/PULSE_CALL_SOURCE_PLACEMENT"
+        ],
+        "scores": [
+          13
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "diagnostic/PULSE_CALL_SOURCE_PLACEMENT"
+        ],
+        "scores": [
+          13
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "exact-6",
+      "group": "exact",
+      "input": {
+        "query": "PULSE_REQUEST_BODY_INVALID_UTF8"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "contract/request-json"
+        ],
+        "scores": [
+          13,
+          1
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "contract/request-json"
+        ],
+        "scores": [
+          13,
+          1
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "workflow-1",
+      "group": "workflow",
+      "input": {
+        "query": "configure project"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/project-configuration",
+        "node/configure"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 14,
+        "ids": [
+          "node/configure",
+          "start/verify",
+          "diagnostic/PULSE_ENTRY_NOT_FOUND",
+          "diagnostic/PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
+          "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED"
+        ],
+        "scores": [
+          16,
+          8,
+          6,
+          6,
+          6
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "node/configure",
+          "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED"
+        ],
+        "scores": [
+          16,
+          6
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "workflow-2",
+      "group": "workflow",
+      "input": {
+        "query": "request body limits"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/request-json",
+        "contract/transport-limits"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 3,
+        "ids": [
+          "contract/transport-limits",
+          "contract/request-json",
+          "node/production"
+        ],
+        "scores": [
+          25,
+          21,
+          3
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 3,
+        "ids": [
+          "contract/transport-limits",
+          "contract/request-json",
+          "node/production"
+        ],
+        "scores": [
+          25,
+          21,
+          3
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "workflow-3",
+      "group": "workflow",
+      "input": {
+        "query": "declare schema registry"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "schema/registry",
+        "contract/schema-declarations"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 7,
+        "ids": [
+          "schema/registry",
+          "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING",
+          "diagnostic/PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
+          "diagnostic/PULSE_SCHEMA_ID_INVALID",
+          "diagnostic/PULSE_SCHEMA_REFERENCE"
+        ],
+        "scores": [
+          39,
+          21,
+          21,
+          21,
+          21
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "schema/registry",
+          "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING"
+        ],
+        "scores": [
+          39,
+          13
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "workflow-4",
+      "group": "workflow",
+      "input": {
+        "query": "parallel fetch"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/parallel"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 6,
+        "ids": [
+          "contract/parallel",
+          "example/03-fetch-composition/src/index.ts",
+          "example/03-fetch-composition/tests/pulse.harness.ts",
+          "contract/application",
+          "contract/provider-compatibility"
+        ],
+        "scores": [
+          20,
+          20,
+          20,
+          2,
+          2
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 6,
+        "ids": [
+          "contract/parallel",
+          "example/03-fetch-composition/src/index.ts",
+          "example/03-fetch-composition/tests/pulse.harness.ts",
+          "contract/application",
+          "contract/provider-compatibility"
+        ],
+        "scores": [
+          20,
+          20,
+          19,
+          2,
+          2
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "workflow-5",
+      "group": "workflow",
+      "input": {
+        "query": "build selected target"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "workflow/build",
+        "command/build"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 8,
+        "ids": [
+          "workflow/build",
+          "command/build",
+          "contract/provider-compatibility",
+          "contract/eligibility",
+          "command/compile"
+        ],
+        "scores": [
+          37,
+          21,
+          13,
+          9,
+          3
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 6,
+        "ids": [
+          "workflow/build",
+          "command/build",
+          "contract/provider-compatibility",
+          "contract/eligibility",
+          "contract/package-authority"
+        ],
+        "scores": [
+          37,
+          21,
+          13,
+          3,
+          3
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "workflow-6",
+      "group": "workflow",
+      "input": {
+        "query": "compare reports"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/report-comparison",
+        "command/report"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "contract/report-comparison"
+        ],
+        "scores": [
+          9
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "contract/report-comparison"
+        ],
+        "scores": [
+          8
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "filtered-1",
+      "group": "filtered",
+      "input": {
+        "query": "node native",
+        "provider": "node",
+        "target": "native"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "node/native",
+        "provider/node"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 29,
+        "ids": [
+          "node/native",
+          "node/configure",
+          "node/production",
+          "provider/node",
+          "package/provider-node"
+        ],
+        "scores": [
+          38,
+          20,
+          20,
+          20,
+          16
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 28,
+        "ids": [
+          "node/native",
+          "node/configure",
+          "node/production",
+          "provider/node",
+          "package/provider-node"
+        ],
+        "scores": [
+          38,
+          20,
+          20,
+          20,
+          16
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "filtered-2",
+      "group": "filtered",
+      "input": {
+        "query": "fastly",
+        "provider": "fastly",
+        "target": "native",
+        "category": "target"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "provider/fastly"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "provider/fastly"
+        ],
+        "scores": [
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "provider/fastly"
+        ],
+        "scores": [
+          19
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "filtered-3",
+      "group": "filtered",
+      "input": {
+        "query": "schema declarations",
+        "category": "contract"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/schema-declarations"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 5,
+        "ids": [
+          "contract/schema-declarations",
+          "contract/application",
+          "contract/eligibility",
+          "contract/report-comparison",
+          "contract/source-compatibility"
+        ],
+        "scores": [
+          34,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 5,
+        "ids": [
+          "contract/schema-declarations",
+          "contract/application",
+          "contract/eligibility",
+          "contract/report-comparison",
+          "contract/source-compatibility"
+        ],
+        "scores": [
+          34,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 3,
+      "v2RelevantRank": 2,
+      "id": "filtered-4",
+      "group": "filtered",
+      "input": {
+        "query": "fetch",
+        "category": "example"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "example/03-fetch-composition/src/index.ts"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 9,
+        "ids": [
+          "example/03-fetch-composition/.pulse/config.ts",
+          "example/03-fetch-composition/package.json",
+          "example/03-fetch-composition/src/index.ts",
+          "example/03-fetch-composition/tests/pulse.harness.ts",
+          "example/03-fetch-composition/tsconfig.json"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          18
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 8,
+        "ids": [
+          "example/03-fetch-composition/package.json",
+          "example/03-fetch-composition/src/index.ts",
+          "example/03-fetch-composition/.pulse/config.ts",
+          "example/03-fetch-composition/tests/pulse.harness.ts",
+          "example/03-fetch-composition/tsconfig.json"
+        ],
+        "scores": [
+          19,
+          19,
+          18,
+          18,
+          18
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "filtered-5",
+      "group": "filtered",
+      "input": {
+        "query": "jwt",
+        "category": "package"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "package/jwt"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "package/jwt",
+          "package/crypto"
+        ],
+        "scores": [
+          15,
+          1
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "package/jwt",
+          "package/crypto"
+        ],
+        "scores": [
+          15,
+          1
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": 1,
+      "v2RelevantRank": 1,
+      "id": "filtered-6",
+      "group": "filtered",
+      "input": {
+        "query": "build",
+        "category": "command",
+        "provider": "node",
+        "target": "javascript"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "command/build"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 5,
+        "ids": [
+          "command/build",
+          "command/doctor",
+          "command/inspect",
+          "command/report",
+          "command/test"
+        ],
+        "scores": [
+          19,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 5,
+        "ids": [
+          "command/build",
+          "command/doctor",
+          "command/inspect",
+          "command/report",
+          "command/test"
+        ],
+        "scores": [
+          19,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": null,
+      "v2RelevantRank": null,
+      "id": "failure-1",
+      "group": "failure",
+      "input": {
+        "query": "zzzz_no_such_term"
+      },
+      "criterion": "empty",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": null,
+      "v2RelevantRank": null,
+      "id": "failure-2",
+      "group": "failure",
+      "input": {
+        "query": "schéma"
+      },
+      "criterion": "invalid-input",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "v2": {
+        "status": "invalid-input",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": false,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": null,
+      "v2RelevantRank": null,
+      "id": "failure-3",
+      "group": "failure",
+      "input": {
+        "query": "..."
+      },
+      "criterion": "invalid-input",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 3,
+        "ids": [
+          "contract/parallel",
+          "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
+          "diagnostic/PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED"
+        ],
+        "scores": [
+          1,
+          1,
+          1
+        ]
+      },
+      "v2": {
+        "status": "invalid-input",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": false,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": null,
+      "v2RelevantRank": null,
+      "id": "failure-4",
+      "group": "failure",
+      "input": {
+        "query": "one two three four five six seven eight nine"
+      },
+      "criterion": "invalid-input",
+      "relevantIds": [],
+      "v1": {
+        "status": "invalid-input",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "v2": {
+        "status": "invalid-input",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": null,
+      "v2RelevantRank": null,
+      "id": "failure-5",
+      "group": "failure",
+      "input": {
+        "query": "simultaneous upstream requests"
+      },
+      "criterion": "empty",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "v1RelevantRank": null,
+      "v2RelevantRank": null,
+      "id": "failure-6",
+      "group": "failure",
+      "input": {
+        "query": "schema"
+      },
+      "criterion": "ambiguous",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 63,
+        "ids": [
+          "contract/schema-declarations",
+          "diagnostic/PULSE_CALL_SOURCE_SCHEMAS",
+          "diagnostic/PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
+          "diagnostic/PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
+          "diagnostic/PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 58,
+        "ids": [
+          "contract/schema-declarations",
+          "example/02-request-schema/.pulse/config.ts",
+          "example/02-request-schema/package.json",
+          "example/02-request-schema/src/index.ts",
+          "example/02-request-schema/src/schemas.ts"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    }
+  ],
+  "failures": [],
+  "timing": [
+    {
+      "target": "node",
+      "input": {
+        "version": "1.0.0-beta.9",
+        "query": "schema",
+        "offset": 0,
+        "limit": 5
+      },
+      "cold": {
+        "wallMs": 45.561138,
+        "cpuMs": 68.896,
+        "status": 200,
+        "responseBytes": 12081,
+        "responseSha256": "b10d9a48baaeaae778fc809eb94390b1d1e999ac3e1628b490aa9eb4bbf6adf1",
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 462470,
+          "values": 14259
+        },
+        "guestMemoryBytes": 3932160,
+        "valueHandleCount": 6467,
+        "processPeakRssBytes": 134864896
+      },
+      "warm": [
+        {
+          "wallMs": 35.254965000000084,
+          "cpuMs": 70.302,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462470,
+            "values": 14259
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6467,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 18.207235999994737,
+          "cpuMs": 48.568,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462470,
+            "values": 14259
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6467,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 15.613678000001528,
+          "cpuMs": 32.881,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462470,
+            "values": 14259
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6467,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 14.494531000003917,
+          "cpuMs": 24.839,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462470,
+            "values": 14259
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6467,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 22.303949000001012,
+          "cpuMs": 39.603,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462470,
+            "values": 14259
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6467,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 14.036173000000417,
+          "cpuMs": 20.316,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462470,
+            "values": 14259
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6467,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 13.550794000002497,
+          "cpuMs": 15.076,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462470,
+            "values": 14259
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6467,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 17.021280999993905,
+          "cpuMs": 26.174,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462470,
+            "values": 14259
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6467,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 28.23844200000167,
+          "cpuMs": 43.998,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462470,
+            "values": 14259
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6467,
+          "responseBytes": 12081
+        }
+      ],
+      "medianWallMs": 17.021280999993905,
+      "medianCpuMs": 32.881
+    },
+    {
+      "target": "fastly",
+      "input": {
+        "version": "1.0.0-beta.9",
+        "query": "schema",
+        "offset": 0,
+        "limit": 5
+      },
+      "cold": {
+        "wallMs": 32.09187399999999,
+        "cpuMs": 61.591,
+        "status": 200,
+        "responseBytes": 12081,
+        "responseSha256": "b10d9a48baaeaae778fc809eb94390b1d1e999ac3e1628b490aa9eb4bbf6adf1",
+        "memory": {
+          "bytes": 415874,
+          "values": 10722
+        },
+        "guestMemoryBytes": 7864320,
+        "processPeakRssBytes": 131645440
+      },
+      "warm": [
+        {
+          "wallMs": 29.585520000000542,
+          "cpuMs": 49.359,
+          "memory": {
+            "bytes": 415874,
+            "values": 10722
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 15.40617100000236,
+          "cpuMs": 26.901,
+          "memory": {
+            "bytes": 415874,
+            "values": 10722
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 21.07833599999867,
+          "cpuMs": 58.221,
+          "memory": {
+            "bytes": 415874,
+            "values": 10722
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 47.34865400000126,
+          "cpuMs": 141.718,
+          "memory": {
+            "bytes": 415874,
+            "values": 10722
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 17.10595099999773,
+          "cpuMs": 29.08,
+          "memory": {
+            "bytes": 415874,
+            "values": 10722
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 13.96887300000526,
+          "cpuMs": 20.751,
+          "memory": {
+            "bytes": 415874,
+            "values": 10722
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 14.284769999998389,
+          "cpuMs": 19.246,
+          "memory": {
+            "bytes": 415874,
+            "values": 10722
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 12.187377000002016,
+          "cpuMs": 13.866,
+          "memory": {
+            "bytes": 415874,
+            "values": 10722
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 14.316057000003639,
+          "cpuMs": 20.69,
+          "memory": {
+            "bytes": 415874,
+            "values": 10722
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        }
+      ],
+      "medianWallMs": 15.40617100000236,
+      "medianCpuMs": 26.901
+    }
+  ],
+  "faults": [
+    {
+      "phase": "request",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 2,
+          "charges": 0,
+          "chargedBytes": 0,
+          "chargedValues": 0,
+          "imports": 0
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 0,
+        "hostToGuestUtf16Bytes": 0,
+        "hostToGuestAllocations": 0,
+        "hostExportedAllocations": 0,
+        "hostExportedAllocatedBytes": 0
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "request",
+        "kind": "deadline"
+      },
+      "error": {
+        "code": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+        "message": "Pulse request exceeded its total execution deadline."
+      }
+    },
+    {
+      "phase": "request",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 3,
+          "charges": 1,
+          "chargedBytes": 32,
+          "chargedValues": 1,
+          "imports": 0
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 0,
+        "hostToGuestUtf16Bytes": 0,
+        "hostToGuestAllocations": 0,
+        "hostExportedAllocations": 0,
+        "hostExportedAllocatedBytes": 0
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "request",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_EFFECT_INVOCATION_INVALID",
+        "message": "Effect invocation is stale, already settled, foreign, or closed."
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 0,
+        "values": 0
+      }
+    },
+    {
+      "phase": "callable-input",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 1,
+          "charges": 550,
+          "chargedBytes": 6040,
+          "chargedValues": 170,
+          "imports": 431
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 2974,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 8,
+        "hostExportedAllocatedBytes": 1514
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-input",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14450,
+        "values": 385
+      }
+    },
+    {
+      "phase": "callable-input",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 64,
+          "chargedValues": 2,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 204,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 7,
+        "hostExportedAllocatedBytes": 1386
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-input",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 4572,
+        "values": 123
+      }
+    },
+    {
+      "phase": "computation",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 1,
+          "charges": 550,
+          "chargedBytes": 6040,
+          "chargedValues": 170,
+          "imports": 431
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 2974,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 8,
+        "hostExportedAllocatedBytes": 1514
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "computation",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14450,
+        "values": 385
+      }
+    },
+    {
+      "phase": "computation",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 16,
+          "chargedValues": 1,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 242,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 8,
+        "hostExportedAllocatedBytes": 1514
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "computation",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 8410,
+        "values": 215
+      }
+    },
+    {
+      "phase": "callable-output",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64637,
+          "chargedBytes": 349376,
+          "chargedValues": 13605,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20108,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 11,
+        "hostExportedAllocatedBytes": 35438
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-output",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 387798,
+        "values": 14186
+      }
+    },
+    {
+      "phase": "callable-output",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64637,
+          "chargedBytes": 349376,
+          "chargedValues": 13605,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 64,
+          "chargedValues": 2,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20068,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 10,
+        "hostExportedAllocatedBytes": 24130
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-output",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 357786,
+        "values": 13820
+      }
+    },
+    {
+      "phase": "mcp-serialization",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64637,
+          "chargedBytes": 349376,
+          "chargedValues": 13605,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 1,
+          "charges": 89,
+          "chargedBytes": 74232,
+          "chargedValues": 62,
+          "imports": 18
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 44402,
+        "hostToGuestUtf16Bytes": 12310,
+        "hostToGuestAllocations": 5,
+        "hostExportedAllocations": 12,
+        "hostExportedAllocatedBytes": 46746
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "mcp-serialization",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 462030,
+        "values": 14248
+      }
+    },
+    {
+      "phase": "mcp-serialization",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64637,
+          "chargedBytes": 349376,
+          "chargedValues": 13605,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 16,
+          "chargedValues": 1,
+          "imports": 2
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20108,
+        "hostToGuestUtf16Bytes": 12310,
+        "hostToGuestAllocations": 5,
+        "hostExportedAllocations": 12,
+        "hostExportedAllocatedBytes": 46746
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "mcp-serialization",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 387798,
+        "values": 14186
+      }
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0,
+      "baselineClockChecks": 7380,
+      "clockChecks": 2,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.25,
+      "baselineClockChecks": 7380,
+      "clockChecks": 1846,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.5,
+      "baselineClockChecks": 7380,
+      "clockChecks": 3691,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.75,
+      "baselineClockChecks": 7380,
+      "clockChecks": 5536,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.99,
+      "baselineClockChecks": 7380,
+      "clockChecks": 7307,
+      "status": 408,
+      "noPartialSuccess": true
+    }
+  ],
+  "executions": 1274,
+  "limitations": [
+    "Injected Fastly ABI; not CLI/Viceroy or provider reality.",
+    "Warm samples reuse artifacts with fresh request instances; not retained-instance execution.",
+    "Node CPU is process CPU for the complete host execution and serialization, not isolated guest instructions.",
+    "Committed Wasm pages are monotonic high-water capacity, not live heap.",
+    "Retained bytes/values are conservative cumulative budget charges, not exact allocation counts.",
+    "Exact internal guest and JS allocation counts and peak live-object heap are unavailable through current evidence surfaces.",
+    "Frozen relevance cases are proposed for review; independent human relevance review is not claimed."
+  ],
+  "artifact": {
+    "repeat": 1,
+    "corpusHash": "0d87d0a4bc2c4ef5e5b45f8ba0c9e385462f5eb9396a0a632965819635be6de7",
+    "dimensions": {
+      "rows": 263,
+      "dimension": 2506,
+      "nonzeros": 15314,
+      "dictionarySha256": "973fe863a4fdf0a5227648978158a71c6f0c738684d3ee201a6759797645c961",
+      "manifestId": "5a78caca1bd90c440d7e55f7caa0581d4a7852ce060c25579c2fe19cc4cd8b18",
+      "catalogueIdentity": "27ccb242653b6a08c4d5f18939962846cbf1fe7ee76ee7cc505d6366ec680b96",
+      "rawBytes": 599975,
+      "serializedBytes": 800622,
+      "budgets": {
+        "files": 3,
+        "fileBytes": 5242880,
+        "totalBytes": 8388608,
+        "serializedBytes": 16777216,
+        "bindings": 3
+      }
+    },
+    "planHash": "657a3b906a222ac7e31fdaa734453962e643d22a7888bfe4a7c87a3a4d31c742",
+    "sourceSha256": "1d74a09aabd8357b02f51e9cbd118a1e10b8721f5b81fb30a2129cd94f9c017a",
+    "node": {
+      "bytes": 991496,
+      "sha256": "282457417fb955364cb599b75e40f0ba5b003ed4ad0e95925249267cf4e74e46",
+      "compileMs": 10766.343396,
+      "initialGuestBytes": 1966080,
+      "citationHashBackings": [
+        {
+          "id": "command/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/compile",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/dev",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/docs",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/doctor",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/inspect",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/report",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/test",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application-root",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/build-metadata",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/effects",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/eligibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/fetch-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/managed-async",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/opaque-bodies",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/package-authority",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/parallel",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/project-configuration",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/provider-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/report-comparison",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/request-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/schema-declarations",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/source-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/targets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/transport-limits",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_UNEXPECTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BINARY_RESOURCE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_OUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_BOUNDARY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_BINDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CALLEE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CONTEXT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_ENTRY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_FORM",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PLACEMENT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PROVIDER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMAS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_COMMAND_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_IMPLICIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_PLAN_PARITY_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_DOUBLE_RESUME",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_EXPIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DEV_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CAPACITY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CLAIMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_MEMBER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OVERFLOW",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OWNER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_SEALED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_UNFLUSHED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ENTRY_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EVENT_TARGET_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_KV_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_REQUEST_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_NETWORK",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_SCHEMA_WITHOUT_JSON",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_URL_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_HANDLER_ASYNC_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_FILE_EXISTS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_NOT_EMPTY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_MCP_STATIC_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_EXPANSION_REPEATED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_IMPORT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_TEXT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NODE_VERSION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NUMERIC_WORKSPACE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_OPAQUE_BODY_INSPECTION",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CAPABILITY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_LOWERING_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_OPERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SUBPATH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_ROOT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_COMPILE_ONLY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_FLAG_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_PACKAGE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INCOMPATIBLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INPUT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_STALE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_OWNERSHIP",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_CLOCK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DEADLINE_EXCEEDED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_REDIRECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RUNTIME_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODECS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CONTENT_TYPE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_DUPLICATE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMITS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_MALFORMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_SOURCE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_TYPE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SOURCE_ONLY_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TARGET_IMPLEMENTATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EVENT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EXPECT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CLOSED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_EOF_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_INPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_OUTPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_READ_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UTF8_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/schemas.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/configure",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/javascript",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/native",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/production",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/assets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/cli",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/crypto",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/entities",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/grip",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/jwt",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/mcp",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/pulse",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/runtime",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/s3",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/none",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/boundaries",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/registry",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/strict",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/create",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/requirements",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/verify",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/inspect",
+          "utf16LiteralCopies": 1
+        }
+      ],
+      "resourceBackings": [
+        {
+          "id": "context.vector",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.text",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.metadata",
+          "physicalFullCopies": 0
+        }
+      ]
+    },
+    "fastly": {
+      "bytes": 1043406,
+      "sha256": "d8e16fa622a6dc832448e34b9ed8518aab44134ce53887c8cc20a477ac2010d9",
+      "compileMs": 20021.268963000002,
+      "initialGuestBytes": 3932160,
+      "citationHashBackings": [
+        {
+          "id": "command/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/compile",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/dev",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/docs",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/doctor",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/inspect",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/report",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/test",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application-root",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/build-metadata",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/effects",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/eligibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/fetch-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/managed-async",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/opaque-bodies",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/package-authority",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/parallel",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/project-configuration",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/provider-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/report-comparison",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/request-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/schema-declarations",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/source-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/targets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/transport-limits",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_UNEXPECTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BINARY_RESOURCE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_OUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_BOUNDARY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_BINDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CALLEE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CONTEXT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_ENTRY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_FORM",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PLACEMENT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PROVIDER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMAS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_COMMAND_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_IMPLICIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_PLAN_PARITY_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_DOUBLE_RESUME",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_EXPIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DEV_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CAPACITY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CLAIMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_MEMBER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OVERFLOW",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OWNER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_SEALED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_UNFLUSHED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ENTRY_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EVENT_TARGET_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_KV_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_REQUEST_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_NETWORK",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_SCHEMA_WITHOUT_JSON",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_URL_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_HANDLER_ASYNC_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_FILE_EXISTS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_NOT_EMPTY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_MCP_STATIC_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_EXPANSION_REPEATED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_IMPORT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_TEXT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NODE_VERSION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NUMERIC_WORKSPACE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_OPAQUE_BODY_INSPECTION",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CAPABILITY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_LOWERING_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_OPERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SUBPATH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_ROOT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_COMPILE_ONLY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_FLAG_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_PACKAGE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INCOMPATIBLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INPUT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_STALE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_OWNERSHIP",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_CLOCK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DEADLINE_EXCEEDED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_REDIRECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RUNTIME_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODECS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CONTENT_TYPE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_DUPLICATE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMITS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_MALFORMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_SOURCE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_TYPE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SOURCE_ONLY_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TARGET_IMPLEMENTATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EVENT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EXPECT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CLOSED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_EOF_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_INPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_OUTPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_READ_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UTF8_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/schemas.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/configure",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/javascript",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/native",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/production",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/assets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/cli",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/crypto",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/entities",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/grip",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/jwt",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/mcp",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/pulse",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/runtime",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/s3",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/none",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/boundaries",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/registry",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/strict",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/create",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/requirements",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/verify",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/inspect",
+          "utf16LiteralCopies": 1
+        }
+      ],
+      "resourceBackings": [
+        {
+          "id": "context.vector",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.text",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.metadata",
+          "physicalFullCopies": 0
+        }
+      ]
+    },
+    "resources": [
+      {
+        "id": "context.vector",
+        "bytes": 167114,
+        "sha256": "1e648cad63b4a884bc7a84037df622bed560aed567518fb3c639028c648815a6"
+      },
+      {
+        "id": "context.text",
+        "bytes": 221650,
+        "sha256": "35c4c71bfbae87265a84ea5a0faa063e32e88fd0f2258bc2a4484b0c79f2d1e5"
+      },
+      {
+        "id": "context.metadata",
+        "bytes": 211211,
+        "sha256": "9de095d053546676188fea8f2caf7c5de51ecbfb8a20fda4de4aff8f74fe07f3"
+      }
+    ]
+  },
+  "observation": {
+    "phases": {
+      "request": {
+        "clockChecks": 5,
+        "charges": 155,
+        "chargedBytes": 4572,
+        "chargedValues": 123,
+        "imports": 14
+      },
+      "callable-input": {
+        "clockChecks": 0,
+        "charges": 120,
+        "chargedBytes": 3838,
+        "chargedValues": 92,
+        "imports": 3
+      },
+      "computation": {
+        "clockChecks": 7367,
+        "charges": 64637,
+        "chargedBytes": 349376,
+        "chargedValues": 13605,
+        "imports": 75596
+      },
+      "callable-output": {
+        "clockChecks": 1,
+        "charges": 461,
+        "chargedBytes": 30012,
+        "chargedValues": 366,
+        "imports": 4
+      },
+      "mcp-serialization": {
+        "clockChecks": 1,
+        "charges": 104,
+        "chargedBytes": 74676,
+        "chargedValues": 73,
+        "imports": 18
+      }
+    },
+    "transfers": {
+      "guestToHostUtf16Bytes": 44402,
+      "hostToGuestUtf16Bytes": 12310,
+      "hostToGuestAllocations": 5,
+      "hostExportedAllocations": 12,
+      "hostExportedAllocatedBytes": 46746
+    },
+    "triggered": false,
+    "guestCommittedBytes": 3932160,
+    "retained": {
+      "version": "pulse.native-read-loop-memory.v1",
+      "bytes": 462474,
+      "values": 14259
+    },
+    "faultMethod": "Deadline elapsed at named phase entry (checked at next existing checkpoint); allocation ceiling reduced at the next real charge. Production policy unchanged. Request-phase zero-headroom fault preserves any masking diagnostic."
+  },
+  "allocationCoverage": {
+    "hostExportedAllocations": "observed exact calls and requested bytes",
+    "abiStringTransfers": "observed UTF-16 bytes",
+    "retainedBudget": "conservative cumulative charge",
+    "guestPeak": "committed linear-memory high-water",
+    "internalGuestAllocationCount": null,
+    "peakLiveObjectBytes": null
+  },
+  "relevanceReview": "Source-grounded review in docs/internal/b10-mcp-06b/REVIEW.md; no independent human review claimed"
+}

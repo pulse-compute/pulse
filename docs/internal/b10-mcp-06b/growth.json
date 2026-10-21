@@ -1,0 +1,5073 @@
+{
+  "schemaVersion": "pulse.context-quality-evidence.v1",
+  "mode": "growth",
+  "status": "completed",
+  "acceptance": "passed",
+  "source": {
+    "revision": "961dacacdef76070bb407ed51569e1ba29c2114d",
+    "tree": "5a9afa3775c4ceade7b9b11519f499290c024ff3",
+    "status": "",
+    "modifiedFiles": []
+  },
+  "frozenCasesSha256": "b62bb7dd5f3cd77f5271aca0d9da9dd33b1b84c47abd6bb8c14aeceb625745ce",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0"
+  },
+  "budgets": {
+    "requestMs": 5000,
+    "compileMs": 120000,
+    "artifactBytes": 8388608,
+    "guestCommittedBytes": 134217728,
+    "nodeValueHandles": 1048576,
+    "retainedBytes": 67108864,
+    "toolBytes": 24576,
+    "mcpBytes": 131072,
+    "warmSamples": 9
+  },
+  "queries": [],
+  "failures": [],
+  "timing": [
+    {
+      "target": "node",
+      "input": {
+        "version": "1.0.0-beta.9",
+        "query": "growth0000 growth0001 growth0002 growth0003 growth0004 growth0005 growth0006 growth0007",
+        "offset": 55,
+        "limit": 5
+      },
+      "cold": {
+        "wallMs": 96.14824500000003,
+        "cpuMs": 157.342,
+        "status": 200,
+        "responseBytes": 12395,
+        "responseSha256": "ca6f6f36d66cdebae4ac95b4f0a9375d93a50d4eac765d44359195e6df575724",
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 698074,
+          "values": 22636
+        },
+        "guestMemoryBytes": 3670016,
+        "valueHandleCount": 12857,
+        "processPeakRssBytes": 221167616
+      },
+      "warm": [
+        {
+          "wallMs": 95.16481400000339,
+          "cpuMs": 169.546,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 698074,
+            "values": 22636
+          },
+          "guestMemoryBytes": 3670016,
+          "valueHandleCount": 12857,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 69.6318750000064,
+          "cpuMs": 110.513,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 698074,
+            "values": 22636
+          },
+          "guestMemoryBytes": 3670016,
+          "valueHandleCount": 12857,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 69.6254409999965,
+          "cpuMs": 94.526,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 698074,
+            "values": 22636
+          },
+          "guestMemoryBytes": 3670016,
+          "valueHandleCount": 12857,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 62.078896999999415,
+          "cpuMs": 73.479,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 698074,
+            "values": 22636
+          },
+          "guestMemoryBytes": 3670016,
+          "valueHandleCount": 12857,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 59.85824099999445,
+          "cpuMs": 61.825,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 698074,
+            "values": 22636
+          },
+          "guestMemoryBytes": 3670016,
+          "valueHandleCount": 12857,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 60.6563610000012,
+          "cpuMs": 80.295,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 698074,
+            "values": 22636
+          },
+          "guestMemoryBytes": 3670016,
+          "valueHandleCount": 12857,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 61.07801599999948,
+          "cpuMs": 66.911,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 698074,
+            "values": 22636
+          },
+          "guestMemoryBytes": 3670016,
+          "valueHandleCount": 12857,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 71.74330000000191,
+          "cpuMs": 89.972,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 698074,
+            "values": 22636
+          },
+          "guestMemoryBytes": 3670016,
+          "valueHandleCount": 12857,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 64.06748500000685,
+          "cpuMs": 69.83,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 698074,
+            "values": 22636
+          },
+          "guestMemoryBytes": 3670016,
+          "valueHandleCount": 12857,
+          "responseBytes": 12395
+        }
+      ],
+      "medianWallMs": 64.06748500000685,
+      "medianCpuMs": 80.295
+    },
+    {
+      "target": "fastly",
+      "input": {
+        "version": "1.0.0-beta.9",
+        "query": "growth0000 growth0001 growth0002 growth0003 growth0004 growth0005 growth0006 growth0007",
+        "offset": 55,
+        "limit": 5
+      },
+      "cold": {
+        "wallMs": 116.70985100000001,
+        "cpuMs": 177.26,
+        "status": 200,
+        "responseBytes": 12395,
+        "responseSha256": "ca6f6f36d66cdebae4ac95b4f0a9375d93a50d4eac765d44359195e6df575724",
+        "memory": {
+          "bytes": 2134756,
+          "values": 64509
+        },
+        "guestMemoryBytes": 14680064,
+        "processPeakRssBytes": 223764480
+      },
+      "warm": [
+        {
+          "wallMs": 74.67432800000824,
+          "cpuMs": 115.446,
+          "memory": {
+            "bytes": 2134756,
+            "values": 64509
+          },
+          "guestMemoryBytes": 14680064,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 56.36271699999634,
+          "cpuMs": 80.216,
+          "memory": {
+            "bytes": 2134756,
+            "values": 64509
+          },
+          "guestMemoryBytes": 14680064,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 86.24751499999547,
+          "cpuMs": 224.352,
+          "memory": {
+            "bytes": 2134756,
+            "values": 64509
+          },
+          "guestMemoryBytes": 14680064,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 69.17796899999666,
+          "cpuMs": 82.674,
+          "memory": {
+            "bytes": 2134756,
+            "values": 64509
+          },
+          "guestMemoryBytes": 14680064,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 61.885951999996905,
+          "cpuMs": 72.972,
+          "memory": {
+            "bytes": 2134756,
+            "values": 64509
+          },
+          "guestMemoryBytes": 14680064,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 71.53608299999905,
+          "cpuMs": 129.211,
+          "memory": {
+            "bytes": 2134756,
+            "values": 64509
+          },
+          "guestMemoryBytes": 14680064,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 75.27589900000021,
+          "cpuMs": 190.354,
+          "memory": {
+            "bytes": 2134756,
+            "values": 64509
+          },
+          "guestMemoryBytes": 14680064,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 53.06372499999998,
+          "cpuMs": 59.641,
+          "memory": {
+            "bytes": 2134756,
+            "values": 64509
+          },
+          "guestMemoryBytes": 14680064,
+          "responseBytes": 12395
+        },
+        {
+          "wallMs": 52.158834999994724,
+          "cpuMs": 63.44,
+          "memory": {
+            "bytes": 2134756,
+            "values": 64509
+          },
+          "guestMemoryBytes": 14680064,
+          "responseBytes": 12395
+        }
+      ],
+      "medianWallMs": 69.17796899999666,
+      "medianCpuMs": 82.674
+    }
+  ],
+  "faults": [
+    {
+      "phase": "request",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 2,
+          "charges": 0,
+          "chargedBytes": 0,
+          "chargedValues": 0,
+          "imports": 0
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 0,
+        "hostToGuestUtf16Bytes": 0,
+        "hostToGuestAllocations": 0,
+        "hostExportedAllocations": 0,
+        "hostExportedAllocatedBytes": 0
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "request",
+        "kind": "deadline"
+      },
+      "error": {
+        "code": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+        "message": "Pulse request exceeded its total execution deadline."
+      }
+    },
+    {
+      "phase": "request",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 3,
+          "charges": 1,
+          "chargedBytes": 32,
+          "chargedValues": 1,
+          "imports": 0
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 0,
+        "hostToGuestUtf16Bytes": 0,
+        "hostToGuestAllocations": 0,
+        "hostExportedAllocations": 0,
+        "hostExportedAllocatedBytes": 0
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "request",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_EFFECT_INVOCATION_INVALID",
+        "message": "Effect invocation is stale, already settled, foreign, or closed."
+      },
+      "guestCommittedBytes": 3670016,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 0,
+        "values": 0
+      }
+    },
+    {
+      "phase": "callable-input",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 5062,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 4000,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 1,
+          "charges": 554,
+          "chargedBytes": 6796,
+          "chargedValues": 174,
+          "imports": 431
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 4134,
+        "hostToGuestUtf16Bytes": 1166,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 8,
+        "hostExportedAllocatedBytes": 2334
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-input",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3670016,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 15858,
+        "values": 389
+      }
+    },
+    {
+      "phase": "callable-input",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 5062,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 64,
+          "chargedValues": 2,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 368,
+        "hostToGuestUtf16Bytes": 1166,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 7,
+        "hostExportedAllocatedBytes": 2042
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-input",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3670016,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 5062,
+        "values": 123
+      }
+    },
+    {
+      "phase": "computation",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 5062,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 4000,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 1,
+          "charges": 554,
+          "chargedBytes": 6796,
+          "chargedValues": 174,
+          "imports": 431
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 4134,
+        "hostToGuestUtf16Bytes": 1166,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 8,
+        "hostExportedAllocatedBytes": 2334
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "computation",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3670016,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 15858,
+        "values": 389
+      }
+    },
+    {
+      "phase": "computation",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 5062,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 4000,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 16,
+          "chargedValues": 1,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 406,
+        "hostToGuestUtf16Bytes": 1166,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 8,
+        "hostExportedAllocatedBytes": 2334
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "computation",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3670016,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 9062,
+        "values": 215
+      }
+    },
+    {
+      "phase": "callable-output",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 5062,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 4000,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 67304,
+          "charges": 553372,
+          "chargedBytes": 580400,
+          "chargedValues": 21913,
+          "imports": 775503
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 552,
+          "chargedBytes": 32124,
+          "chargedValues": 441,
+          "imports": 4
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 27636,
+        "hostToGuestUtf16Bytes": 1166,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 11,
+        "hostExportedAllocatedBytes": 37410
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-output",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3670016,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 621586,
+        "values": 22569
+      }
+    },
+    {
+      "phase": "callable-output",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 5062,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 4000,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 67304,
+          "charges": 553372,
+          "chargedBytes": 580400,
+          "chargedValues": 21913,
+          "imports": 775503
+        },
+        "callable-output": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 64,
+          "chargedValues": 2,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 27596,
+        "hostToGuestUtf16Bytes": 1166,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 10,
+        "hostExportedAllocatedBytes": 25718
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-output",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3670016,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 589462,
+        "values": 22128
+      }
+    },
+    {
+      "phase": "mcp-serialization",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 5062,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 4000,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 67304,
+          "charges": 553372,
+          "chargedBytes": 580400,
+          "chargedValues": 21913,
+          "imports": 775503
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 552,
+          "chargedBytes": 32124,
+          "chargedValues": 441,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 1,
+          "charges": 84,
+          "chargedBytes": 76048,
+          "chargedValues": 56,
+          "imports": 18
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 52558,
+        "hostToGuestUtf16Bytes": 12858,
+        "hostToGuestAllocations": 5,
+        "hostExportedAllocations": 12,
+        "hostExportedAllocatedBytes": 49102
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "mcp-serialization",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3670016,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 697634,
+        "values": 22625
+      }
+    },
+    {
+      "phase": "mcp-serialization",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 5062,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 4000,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 67304,
+          "charges": 553372,
+          "chargedBytes": 580400,
+          "chargedValues": 21913,
+          "imports": 775503
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 552,
+          "chargedBytes": 32124,
+          "chargedValues": 441,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 16,
+          "chargedValues": 1,
+          "imports": 2
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 27636,
+        "hostToGuestUtf16Bytes": 12858,
+        "hostToGuestAllocations": 5,
+        "hostExportedAllocations": 12,
+        "hostExportedAllocatedBytes": 49102
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "mcp-serialization",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3670016,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 621586,
+        "values": 22569
+      }
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0,
+      "baselineClockChecks": 67317,
+      "clockChecks": 2,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.25,
+      "baselineClockChecks": 67317,
+      "clockChecks": 16830,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.5,
+      "baselineClockChecks": 67317,
+      "clockChecks": 33659,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.75,
+      "baselineClockChecks": 67317,
+      "clockChecks": 50488,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.99,
+      "baselineClockChecks": 67317,
+      "clockChecks": 66644,
+      "status": 408,
+      "noPartialSuccess": true
+    }
+  ],
+  "executions": 44,
+  "limitations": [
+    "Injected Fastly ABI; not CLI/Viceroy or provider reality.",
+    "Warm samples reuse artifacts with fresh request instances; not retained-instance execution.",
+    "Node CPU is process CPU for the complete host execution and serialization, not isolated guest instructions.",
+    "Committed Wasm pages are monotonic high-water capacity, not live heap.",
+    "Retained bytes/values are conservative cumulative budget charges, not exact allocation counts.",
+    "Exact internal guest and JS allocation counts and peak live-object heap are unavailable through current evidence surfaces.",
+    "Frozen relevance cases are proposed for review; independent human relevance review is not claimed."
+  ],
+  "artifact": {
+    "repeat": 1,
+    "corpusHash": "4412c1ae664fb5abb0fea54985ae2a688da6fb93dbf01dbbd77d44d9d72b7690",
+    "dimensions": {
+      "rows": 512,
+      "dimension": 3946,
+      "nonzeros": 65278,
+      "dictionarySha256": "a6654d6f2f188ea66012c4119dd7a013bc33ec47f088b0b644ff95dccb66b7ee",
+      "manifestId": "e6241699b28f878a24ade99350930e0a291faf2addc8fa5e21d1e0e0f83d78b4",
+      "catalogueIdentity": "6adb7e9cd9029348a0ac8228a47da5351eba318cbb396224588832453009cd1a",
+      "rawBytes": 1770619,
+      "serializedBytes": 2361483,
+      "budgets": {
+        "files": 3,
+        "fileBytes": 5242880,
+        "totalBytes": 8388608,
+        "serializedBytes": 16777216,
+        "bindings": 3
+      }
+    },
+    "planHash": "310bc31991206ac8270fe3ac490038dd20d5f7be024d452d83315e7997ff4285",
+    "sourceSha256": "1d74a09aabd8357b02f51e9cbd118a1e10b8721f5b81fb30a2129cd94f9c017a",
+    "node": {
+      "bytes": 2091752,
+      "sha256": "2cb92325fadaf10aa152744121a51ff06b54ed78a728b1b7123b7baf0b82000a",
+      "compileMs": 13488.559063,
+      "initialGuestBytes": 3670016,
+      "citationHashBackings": [
+        {
+          "id": "command/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/compile",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/dev",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/docs",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/doctor",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/inspect",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/report",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/test",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application-root",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/build-metadata",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/effects",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/eligibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/fetch-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/managed-async",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/opaque-bodies",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/package-authority",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/parallel",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/project-configuration",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/provider-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/report-comparison",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/request-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/schema-declarations",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/source-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/targets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/transport-limits",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_UNEXPECTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BINARY_RESOURCE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_OUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_BOUNDARY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_BINDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CALLEE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CONTEXT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_ENTRY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_FORM",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PLACEMENT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PROVIDER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMAS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_COMMAND_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_IMPLICIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_PLAN_PARITY_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_DOUBLE_RESUME",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_EXPIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DEV_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CAPACITY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CLAIMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_MEMBER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OVERFLOW",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OWNER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_SEALED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_UNFLUSHED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ENTRY_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EVENT_TARGET_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_KV_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_REQUEST_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_NETWORK",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_SCHEMA_WITHOUT_JSON",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_URL_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_HANDLER_ASYNC_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_FILE_EXISTS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_NOT_EMPTY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_MCP_STATIC_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_EXPANSION_REPEATED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_IMPORT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_TEXT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NODE_VERSION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NUMERIC_WORKSPACE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_OPAQUE_BODY_INSPECTION",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CAPABILITY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_LOWERING_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_OPERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SUBPATH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_ROOT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_COMPILE_ONLY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_FLAG_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_PACKAGE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INCOMPATIBLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INPUT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_STALE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_OWNERSHIP",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_CLOCK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DEADLINE_EXCEEDED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_REDIRECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RUNTIME_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODECS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CONTENT_TYPE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_DUPLICATE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMITS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_MALFORMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_SOURCE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_TYPE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SOURCE_ONLY_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TARGET_IMPLEMENTATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EVENT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EXPECT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CLOSED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_EOF_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_INPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_OUTPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_READ_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UTF8_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/schemas.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/configure",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/javascript",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/native",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/production",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/assets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/cli",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/crypto",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/entities",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/grip",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/jwt",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/mcp",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/pulse",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/runtime",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/s3",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/none",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/boundaries",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/registry",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/strict",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/create",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/requirements",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/verify",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/inspect",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/000",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/001",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/002",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/003",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/004",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/005",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/006",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/007",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/008",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/009",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/010",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/011",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/012",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/013",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/014",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/015",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/016",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/017",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/018",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/019",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/020",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/021",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/022",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/023",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/024",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/025",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/026",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/027",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/028",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/029",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/030",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/031",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/032",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/033",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/034",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/035",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/036",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/037",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/038",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/039",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/040",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/041",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/042",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/043",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/044",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/045",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/046",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/047",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/048",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/049",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/050",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/051",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/052",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/053",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/054",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/055",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/056",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/057",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/058",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/059",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/060",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/061",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/062",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/063",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/064",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/065",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/066",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/067",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/068",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/069",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/070",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/071",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/072",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/073",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/074",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/075",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/076",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/077",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/078",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/079",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/080",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/081",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/082",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/083",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/084",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/085",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/086",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/087",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/088",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/089",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/090",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/091",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/092",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/093",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/094",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/095",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/096",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/097",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/098",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/099",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/100",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/101",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/102",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/103",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/104",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/105",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/106",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/107",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/108",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/109",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/110",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/111",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/112",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/113",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/114",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/115",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/116",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/117",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/118",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/119",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/120",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/121",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/122",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/123",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/124",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/125",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/126",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/127",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/128",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/129",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/130",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/131",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/132",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/133",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/134",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/135",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/136",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/137",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/138",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/139",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/140",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/141",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/142",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/143",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/144",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/145",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/146",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/147",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/148",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/149",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/150",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/151",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/152",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/153",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/154",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/155",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/156",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/157",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/158",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/159",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/160",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/161",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/162",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/163",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/164",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/165",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/166",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/167",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/168",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/169",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/170",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/171",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/172",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/173",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/174",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/175",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/176",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/177",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/178",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/179",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/180",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/181",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/182",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/183",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/184",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/185",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/186",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/187",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/188",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/189",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/190",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/191",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/192",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/193",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/194",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/195",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/196",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/197",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/198",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/199",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/200",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/201",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/202",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/203",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/204",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/205",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/206",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/207",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/208",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/209",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/210",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/211",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/212",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/213",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/214",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/215",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/216",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/217",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/218",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/219",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/220",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/221",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/222",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/223",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/224",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/225",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/226",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/227",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/228",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/229",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/230",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/231",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/232",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/233",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/234",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/235",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/236",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/237",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/238",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/239",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/240",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/241",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/242",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/243",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/244",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/245",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/246",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/247",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/248",
+          "utf16LiteralCopies": 1
+        }
+      ],
+      "resourceBackings": [
+        {
+          "id": "context.vector",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.text",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.metadata",
+          "physicalFullCopies": 0
+        }
+      ]
+    },
+    "fastly": {
+      "bytes": 2143700,
+      "sha256": "3392001ffe8f2b888eebde47802330e79c054673dbdccf736520f75217699471",
+      "compileMs": 26737.354340999995,
+      "initialGuestBytes": 3670016,
+      "citationHashBackings": [
+        {
+          "id": "command/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/compile",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/dev",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/docs",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/doctor",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/inspect",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/report",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/test",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application-root",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/build-metadata",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/effects",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/eligibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/fetch-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/managed-async",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/opaque-bodies",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/package-authority",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/parallel",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/project-configuration",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/provider-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/report-comparison",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/request-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/schema-declarations",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/source-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/targets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/transport-limits",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_UNEXPECTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BINARY_RESOURCE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_OUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_BOUNDARY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_BINDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CALLEE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CONTEXT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_ENTRY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_FORM",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PLACEMENT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PROVIDER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMAS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_COMMAND_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_IMPLICIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_PLAN_PARITY_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_DOUBLE_RESUME",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_EXPIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DEV_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CAPACITY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CLAIMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_MEMBER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OVERFLOW",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OWNER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_SEALED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_UNFLUSHED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ENTRY_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EVENT_TARGET_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_KV_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_REQUEST_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_NETWORK",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_SCHEMA_WITHOUT_JSON",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_URL_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_HANDLER_ASYNC_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_FILE_EXISTS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_NOT_EMPTY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_MCP_STATIC_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_EXPANSION_REPEATED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_IMPORT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_TEXT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NODE_VERSION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NUMERIC_WORKSPACE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_OPAQUE_BODY_INSPECTION",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CAPABILITY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_LOWERING_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_OPERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SUBPATH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_ROOT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_COMPILE_ONLY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_FLAG_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_PACKAGE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INCOMPATIBLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INPUT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_STALE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_OWNERSHIP",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_CLOCK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DEADLINE_EXCEEDED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_REDIRECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RUNTIME_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODECS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CONTENT_TYPE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_DUPLICATE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMITS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_MALFORMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_SOURCE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_TYPE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SOURCE_ONLY_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TARGET_IMPLEMENTATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EVENT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EXPECT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CLOSED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_EOF_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_INPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_OUTPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_READ_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UTF8_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/schemas.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/configure",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/javascript",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/native",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/production",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/assets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/cli",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/crypto",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/entities",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/grip",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/jwt",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/mcp",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/pulse",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/runtime",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/s3",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/none",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/boundaries",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/registry",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/strict",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/create",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/requirements",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/verify",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/inspect",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/000",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/001",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/002",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/003",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/004",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/005",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/006",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/007",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/008",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/009",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/010",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/011",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/012",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/013",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/014",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/015",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/016",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/017",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/018",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/019",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/020",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/021",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/022",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/023",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/024",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/025",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/026",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/027",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/028",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/029",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/030",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/031",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/032",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/033",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/034",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/035",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/036",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/037",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/038",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/039",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/040",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/041",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/042",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/043",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/044",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/045",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/046",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/047",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/048",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/049",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/050",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/051",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/052",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/053",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/054",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/055",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/056",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/057",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/058",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/059",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/060",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/061",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/062",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/063",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/064",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/065",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/066",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/067",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/068",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/069",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/070",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/071",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/072",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/073",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/074",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/075",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/076",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/077",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/078",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/079",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/080",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/081",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/082",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/083",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/084",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/085",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/086",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/087",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/088",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/089",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/090",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/091",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/092",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/093",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/094",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/095",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/096",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/097",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/098",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/099",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/100",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/101",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/102",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/103",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/104",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/105",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/106",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/107",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/108",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/109",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/110",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/111",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/112",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/113",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/114",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/115",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/116",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/117",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/118",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/119",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/120",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/121",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/122",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/123",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/124",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/125",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/126",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/127",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/128",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/129",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/130",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/131",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/132",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/133",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/134",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/135",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/136",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/137",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/138",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/139",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/140",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/141",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/142",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/143",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/144",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/145",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/146",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/147",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/148",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/149",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/150",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/151",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/152",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/153",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/154",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/155",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/156",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/157",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/158",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/159",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/160",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/161",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/162",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/163",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/164",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/165",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/166",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/167",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/168",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/169",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/170",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/171",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/172",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/173",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/174",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/175",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/176",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/177",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/178",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/179",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/180",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/181",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/182",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/183",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/184",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/185",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/186",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/187",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/188",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/189",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/190",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/191",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/192",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/193",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/194",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/195",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/196",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/197",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/198",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/199",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/200",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/201",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/202",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/203",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/204",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/205",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/206",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/207",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/208",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/209",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/210",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/211",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/212",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/213",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/214",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/215",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/216",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/217",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/218",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/219",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/220",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/221",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/222",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/223",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/224",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/225",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/226",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/227",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/228",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/229",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/230",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/231",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/232",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/233",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/234",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/235",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/236",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/237",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/238",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/239",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/240",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/241",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/242",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/243",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/244",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/245",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/246",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/247",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "zzgrowth/248",
+          "utf16LiteralCopies": 1
+        }
+      ],
+      "resourceBackings": [
+        {
+          "id": "context.vector",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.text",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.metadata",
+          "physicalFullCopies": 0
+        }
+      ]
+    },
+    "resources": [
+      {
+        "id": "context.vector",
+        "bytes": 593066,
+        "sha256": "666d873ea8c09bb5e2b137034b3a550a89c46b93c301b4c884f755659a3a84f0"
+      },
+      {
+        "id": "context.text",
+        "bytes": 776482,
+        "sha256": "a2d40ac3ba732f6d69f5ca84172f785b099585a7f6fd866226939461cc5e1bbe"
+      },
+      {
+        "id": "context.metadata",
+        "bytes": 401071,
+        "sha256": "59608c97df28e13b657e693d48a801fa82312b8da84c8d33d571cf22086bdf26"
+      }
+    ]
+  },
+  "observation": {
+    "phases": {
+      "request": {
+        "clockChecks": 5,
+        "charges": 155,
+        "chargedBytes": 5062,
+        "chargedValues": 123,
+        "imports": 14
+      },
+      "callable-input": {
+        "clockChecks": 0,
+        "charges": 120,
+        "chargedBytes": 4000,
+        "chargedValues": 92,
+        "imports": 3
+      },
+      "computation": {
+        "clockChecks": 67304,
+        "charges": 553372,
+        "chargedBytes": 580400,
+        "chargedValues": 21913,
+        "imports": 775503
+      },
+      "callable-output": {
+        "clockChecks": 1,
+        "charges": 552,
+        "chargedBytes": 32124,
+        "chargedValues": 441,
+        "imports": 4
+      },
+      "mcp-serialization": {
+        "clockChecks": 1,
+        "charges": 99,
+        "chargedBytes": 76490,
+        "chargedValues": 67,
+        "imports": 18
+      }
+    },
+    "transfers": {
+      "guestToHostUtf16Bytes": 52558,
+      "hostToGuestUtf16Bytes": 12858,
+      "hostToGuestAllocations": 5,
+      "hostExportedAllocations": 12,
+      "hostExportedAllocatedBytes": 49102
+    },
+    "triggered": false,
+    "guestCommittedBytes": 3670016,
+    "retained": {
+      "version": "pulse.native-read-loop-memory.v1",
+      "bytes": 698076,
+      "values": 22636
+    },
+    "faultMethod": "Deadline elapsed at named phase entry (checked at next existing checkpoint); allocation ceiling reduced at the next real charge. Production policy unchanged. Request-phase zero-headroom fault preserves any masking diagnostic."
+  }
+}
