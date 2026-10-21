@@ -62,6 +62,9 @@ function main() {
   }
   for (const [wire, reason] of [
     ['{"data":["item/b"],"meta":{"limit":1}}', null],
+    ['{"data":[],"meta":{"limit":1,"prefix":null,"next_cursor":null,"consistency":null}}', null],
+    ['{"data":[],"meta":{"limit":1,"consistency":"strong"}}', null],
+    ['{"data":[],"meta":{"limit":1,"consistency":"eventual"}}', 'protocol'],
     ['{"data":[],"data":[],"meta":{"limit":1}}', 'protocol'],
     ['{"data":["x","x"],"meta":{"limit":1}}', 'protocol'],
     ['{"data":[],"meta":{"limit":1,"next_cursor":""}}', 'protocol'],
@@ -80,6 +83,14 @@ function main() {
   const parallel = run({ operation: 'parallel', key: 'item/b', options: { limit: 1 } });
   assert.deepEqual([parallel.body.first.status, parallel.body.second.status].sort(), ['deleted', 'not-found']);
   assert.equal(parallel.result.kvEvidence.pending.size, 0);
+  const longPrefix = '雪'.repeat(340);
+  for (let i = 0; i < 101; i++) authority.seed('catalog', longPrefix + String(i).padStart(4, '0'), codec.encodeConditionalKvValue(null));
+  const maximum = list({ limit: 100, prefix: longPrefix });
+  assert.equal(maximum.body.keys.length, 100); assert.ok(maximum.body.keys.every(key => Buffer.byteLength(key) === 1024));
+  assert.equal(maximum.calls.filter(x => x.stage === 'list').length, 1);
+  const last = list({ limit: 100, prefix: longPrefix, cursor: maximum.body.cursor });
+  assert.deepEqual(last.body, { status: 'listed', keys: [longPrefix + '0100'], cursor: null });
+  assert.deepEqual(del(longPrefix + '0100').body, { status: 'deleted' });
   console.log(`ok - ${count} Fastly Native KV list/delete final-Wasm scenarios (enforcing ABI host; no deployed claim)`);
   return native;
 }

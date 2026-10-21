@@ -41,6 +41,16 @@ async function main() {
     console.log(`ok - KV list/delete ${target} actual execution, pagination, deletion, parallel race and existing get/put compatibility`);
   }
   for (const method of ['list({limit:1})', "delete('key')"]) assert.throws(() => compileCanonicalSource(`export default async function h(ctx) { const result = await ctx.kv(ctx.req.header('store')).${method}; return ctx.json(result); }`, { fileName: 'invalid.ts', strict: false }));
+  const manual = compileCanonicalNativePlan(buildCanonicalNativePlan(compileCanonicalSource(`export default async function h(ctx) { const page = await ctx.kv('catalog').list({limit:1,prefix:'item/'}); return ctx.json(page); }`, { fileName: 'manual-list.ts', strict: false })));
+  const controller = nativeHost.instantiateCanonicalNativeModule(manual, { providerAdapter: createNodeProviderAdapter() });
+  controller.start();
+  const [pending] = controller.pendingEffects();
+  const page = { status: 'listed', keys: ['item/a'], cursor: null };
+  assert.deepEqual(controller.prepareEffectResult(pending.index, page), page);
+  assert.deepEqual(controller.prepareEffectResult(pending.index, { ...page, keys: ['other'] }), { status: 'failed', reason: 'protocol' });
+  controller.setEffectResult(pending.ticket, controller.prepareEffectResult(pending.index, page)); controller.resume();
+  assert.deepEqual(JSON.parse(controller.response().body), page);
+  console.log('ok - Native manual host result preparation preserves admitted page size and prefix through ticket settlement');
 }
 if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
 module.exports = { main };

@@ -477,7 +477,7 @@ export declare function normalizeConditionalKvKey(value: unknown, options?: Puls
 export declare function encodeConditionalKvValue(value: unknown, options?: PulseBindingValueLimits): Uint8Array;
 export declare function decodeConditionalKvValue(bytes: Uint8Array, options?: PulseBindingValueLimits): unknown;
 export declare function admitConditionalKv(input: Readonly<Record<string, unknown>>, options?: PulseRuntimeExecutionOptions): Readonly<Record<string, unknown>>;
-export declare function normalizeConditionalKvResult(effect: Readonly<{ kind: string }>, value: unknown, options?: PulseBindingValueLimits): PulseKvVersionedResult<unknown> | PulseKvConditionalResult | PulseKvListResult | PulseKvDeleteResult;
+export declare function normalizeConditionalKvResult(effect: Readonly<{ kind: string; options?: PulseKvListOptions }>, value: unknown, options?: PulseBindingValueLimits): PulseKvVersionedResult<unknown> | PulseKvConditionalResult | PulseKvListResult | PulseKvDeleteResult;
 export declare function executeConditionalKv(effect: Readonly<Record<string, unknown>>, prepare: PulseConditionalKvPreparation, execution?: PulseConditionalKvExecution, options?: PulseRuntimeExecutionOptions): Promise<PulseKvVersionedResult<unknown> | PulseKvConditionalResult | PulseKvListResult | PulseKvDeleteResult>;
 export declare function registerKvRedactions(effect: Readonly<Record<string, unknown>>, register?: (value: string) => void): void;
 /** Whether a data failure can transfer to the next Router error handler. */

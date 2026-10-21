@@ -30,6 +30,16 @@ async function main() {
   assert.deepEqual(await ref.kv('n').getVersioned('a'), { status: 'not-found' });
   assert.deepEqual(await ref.kv('n').delete('a'), { status: 'not-found' });
   assert.deepEqual(await ref.kv('n').insertIfAbsent('a', 1), { status: 'stored' });
+  const longPrefix = '雪'.repeat(340);
+  for (let i = 0; i < 101; i++) ref.kv('bounded').put(longPrefix + String(i).padStart(4, '0'), null);
+  const maximum = await ref.kv('bounded').list({ limit: 100, prefix: longPrefix });
+  assert.equal(maximum.keys.length, 100); assert.ok(maximum.keys.every(key => Buffer.byteLength(key) === 1024));
+  assert.ok(Buffer.byteLength(maximum.cursor) <= 8192);
+  const last = await ref.kv('bounded').list({ limit: 100, prefix: longPrefix, cursor: maximum.cursor });
+  assert.deepEqual(last, { status: 'listed', keys: [longPrefix + '0100'], cursor: null });
+  const exactKey = '雪'.repeat(341) + 'a'; ref.kv('bounded').put(exactKey, null);
+  assert.deepEqual(await ref.kv('bounded').list({ limit: 1, prefix: exactKey }), { status: 'listed', keys: [exactKey], cursor: null });
+  assert.deepEqual(await ref.kv('bounded').delete(exactKey), { status: 'deleted' });
   const effect = host.admitConditionalKv({ kind: 'kv.list', namespace: 'n', options: { limit: 1, prefix: 'private/' } });
   const bad = [null, { status: 'listed', keys: ['other'], cursor: null }, { status: 'listed', keys: ['private/a', 'private/b'], cursor: null }, { status: 'listed', keys: [], cursor: '' }, { status: 'listed', keys: [], cursor: null, extra: true }];
   const keys = []; Object.defineProperty(keys, 0, { enumerable: true, get() { accesses++; return 'private/a'; } }); bad.push({ status: 'listed', keys, cursor: null });

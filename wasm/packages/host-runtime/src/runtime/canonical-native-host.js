@@ -402,6 +402,9 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     ? new NativeValueBudget(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, close) : undefined;
   const heap = new ValueHeap(memoryBudget);
   const pending = [];
+  // Retain the admitted arguments until settlement, including for hosts that
+  // take pending tickets and prepare their results manually.
+  const kvAdmissions = new Map();
   const invocations = createEffectInvocations(() => {
     options.requestBudget?.check();
     if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
@@ -409,6 +412,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   function close() {
     invocations.close();
     pending.length = 0;
+    kvAdmissions.clear();
     options.signal?.removeEventListener('abort', close);
   }
   function run(operation) {
@@ -879,6 +883,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const kvAdmission = portableKv.isConditionalKv(effect.kind) ? portableKv.admitConditionalKv(nativeEffect(effect, payload), options) : undefined;
       if (kvAdmission) portableKv.registerKvRedactions(kvAdmission, (value) => sensitiveValues.add(value));
       const ticket = invocations.open(index, effect.id);
+      if (kvAdmission) kvAdmissions.set(index, kvAdmission);
       pending.push(Object.freeze({ index, effect, payload, ticket, ...(kvAdmission ? { kvAdmission } : {}) }));
     }
   };
@@ -956,7 +961,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       throw new CanonicalNativeHostError(`Native host cannot prepare an unknown effect index ${effectIndex}.`, 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex });
     }
 
-    let result = portableKv.isConditionalKv(effect.kind) ? portableKv.normalizeConditionalKvResult(effect, rawResult, options) : rawResult;
+    let result = portableKv.isConditionalKv(effect.kind) ? portableKv.normalizeConditionalKvResult(kvAdmissions.get(effectIndex) || effect, rawResult, options) : rawResult;
     if (effect.kind === 'time.now') result = require('@pulse-compute/runtime/host').normalizeTimeResult(rawResult);
     if (effect.kind === 'event.emit' && result !== undefined) {
       throw new canonicalRuntime.CanonicalRuntimeError(
@@ -1002,6 +1007,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
         close();
         throw new CanonicalNativeHostError('Native module rejected an invocation result.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: ticket.slot, errorCode: instance.exports.pulse_last_error_code() });
       }
+      kvAdmissions.delete(ticket.slot);
       return handle;
     });
   }
@@ -1012,6 +1018,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
         close();
         throw new CanonicalNativeHostError('Native package rejected an invocation failure.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID');
       }
+      kvAdmissions.delete(ticket.slot);
     });
   }
 

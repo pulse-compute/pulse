@@ -271,11 +271,13 @@ function __kv_list_result(index: i32, outer: __PulseFastlyValue): i32 {
   if (outer.kind != PULSE_VALUE_OBJECT || outer.keys.length != 2 || __pulse_fastly_find(outer, 'data') < 0 || __pulse_fastly_find(outer, 'meta') < 0) return __kv_failure(index, 'protocol');
   const data = __pulse_fastly_value(__pulse_fastly_payload_field(outer, 'data')), meta = __pulse_fastly_value(__pulse_fastly_payload_field(outer, 'meta'));
   if (data.kind != PULSE_VALUE_ARRAY || data.values.length > __kv_list_limits[index] || meta.kind != PULSE_VALUE_OBJECT) return __kv_failure(index, 'protocol');
-  for (let i = 0; i < meta.keys.length; i++) if (meta.keys[i] != 'limit' && meta.keys[i] != 'prefix' && meta.keys[i] != 'next_cursor') return __kv_failure(index, 'protocol');
+  for (let i = 0; i < meta.keys.length; i++) if (meta.keys[i] != 'limit' && meta.keys[i] != 'prefix' && meta.keys[i] != 'next_cursor' && meta.keys[i] != 'consistency') return __kv_failure(index, 'protocol');
   const limit = __pulse_fastly_value(__pulse_fastly_payload_field(meta, 'limit'));
   if (limit.kind != PULSE_VALUE_NUMBER || limit.number != __kv_list_limits[index]) return __kv_failure(index, 'protocol');
   const prefix = __pulse_fastly_value(__pulse_fastly_payload_field(meta, 'prefix'));
-  if (prefix.kind != PULSE_VALUE_UNDEFINED && (prefix.kind != PULSE_VALUE_STRING || prefix.text != __kv_list_prefixes[index])) return __kv_failure(index, 'protocol');
+  if (prefix.kind != PULSE_VALUE_UNDEFINED && prefix.kind != PULSE_VALUE_NULL && (prefix.kind != PULSE_VALUE_STRING || prefix.text != __kv_list_prefixes[index])) return __kv_failure(index, 'protocol');
+  const consistency = __pulse_fastly_value(__pulse_fastly_payload_field(meta, 'consistency'));
+  if (consistency.kind != PULSE_VALUE_UNDEFINED && consistency.kind != PULSE_VALUE_NULL && (consistency.kind != PULSE_VALUE_STRING || consistency.text != 'strong')) return __kv_failure(index, 'protocol');
   const keys = host_value_array(), seen = new Set<string>();
   for (let i = 0; i < data.values.length; i++) {
     const key = __pulse_fastly_value(data.values[i]);
@@ -283,7 +285,7 @@ function __kv_list_result(index: i32, outer: __PulseFastlyValue): i32 {
     seen.add(key.text); __kv_private(key.text); host_value_array_push(keys, data.values[i]);
   }
   const cursor = __pulse_fastly_value(__pulse_fastly_payload_field(meta, 'next_cursor'));
-  if (cursor.kind != PULSE_VALUE_UNDEFINED && (cursor.kind != PULSE_VALUE_STRING || !__kv_list_text(cursor.text, __KV_cursorBytes))) return __kv_failure(index, 'protocol');
+  if (cursor.kind != PULSE_VALUE_UNDEFINED && cursor.kind != PULSE_VALUE_NULL && (cursor.kind != PULSE_VALUE_STRING || !__kv_list_text(cursor.text, __KV_cursorBytes))) return __kv_failure(index, 'protocol');
   if (cursor.kind == PULSE_VALUE_STRING) __kv_private(cursor.text);
   const remaining = __kv_remaining(index); if (remaining <= 0) return __kv_failure(index, remaining == 0 ? 'timeout' : 'unavailable');
   const result = __kv_result('listed'); __kv_set(result, 'keys', keys);
