@@ -56,7 +56,9 @@ async function qualify({ consumer, temporary, root, run, env }) {
   const settings = { consumer, checkoutProbe: path.join(root, 'package.json'), expected, result: path.join(proof, 'result.json'), buildDir: path.join(app, 'dist-node-native'), removedSources: [path.join(app, 'src/index.ts'), configFile, path.join(consumer, 'context-corpus.ts'), path.join(consumer, 'node_modules/@pulse-compute/cli/examples/12-pulse-context-mcp/context-corpus.ts')] };
   fs.writeFileSync(settingsFile, JSON.stringify(settings));
   const scratch = path.join(consumer, '.native-temp'); fs.mkdirSync(scratch);
-  const buildEnv = { ...env, TMPDIR: scratch, NODE_COMPILE_CACHE: '', NODE_OPTIONS: `--permission --allow-fs-read=${consumer} --allow-fs-read=${proof} --allow-fs-write=${consumer} --allow-child-process --allow-worker` };
+  const trace = path.join(proof, 'trace.cjs');
+  fs.writeFileSync(trace, `const fs=require('node:fs');for(const key of ['readFileSync','realpathSync','statSync','lstatSync','readdirSync','accessSync']){const original=fs[key];const wrapped=function(...args){try{return original.apply(this,args)}catch(e){if(e.code==='ERR_ACCESS_DENIED')process.stderr.write('denied filesystem read: '+e.resource+'\\n');throw e}};Object.assign(wrapped,original);fs[key]=wrapped;}`);
+  const buildEnv = { ...env, TMPDIR: scratch, NODE_COMPILE_CACHE: '', NODE_OPTIONS: `--permission --allow-fs-read=${consumer} --allow-fs-read=${proof} --allow-fs-write=${consumer} --allow-child-process --allow-worker --require=${trace}` };
   await run(process.execPath, [worker, 'guard', settingsFile], { environment: buildEnv });
   const cli = path.join(consumer, 'node_modules/@pulse-compute/cli/bin/pulse.js');
   await run(process.execPath, [path.join(consumer, 'node_modules/typescript/bin/tsc'), '--project', path.join(app, 'tsconfig.json')], { environment: buildEnv });
