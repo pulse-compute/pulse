@@ -2,12 +2,17 @@
 
 <!-- pulse-example-template:v1 -->
 
-Start a Pulse project with cited contracts and maintained examples. This app
-serves five read-only tools from an immutable bundled snapshot: `pulse.start`,
-`pulse.search`, `pulse.read`, `pulse.example`, and `pulse.explain_diagnostic`.
-The handlers are an ordinary schema-bound Entities application. The separate
-host uses `@pulse-compute/mcp/node` and the public Node launcher; every tool
-crosses the app's HTTP boundary.
+Start a Pulse project with cited contracts and maintained examples. The
+[compiled application workflow](#compiled-application-workflow) serves five
+read-only tools through shared `ctx.call`: `pulse.start`, `pulse.search`,
+`pulse.read`, `pulse.example`, and `pulse.diagnostic`. Select Node Native,
+Fastly Native, or explicit Node JavaScript in `application/`.
+
+The root project preserves the v1 compatibility host using
+`@pulse-compute/mcp/node`; its diagnostic tool is `pulse.explain_diagnostic`
+and every tool crosses its fixed HTTP backend. The generated code, inspection,
+doctor, test and size sections below describe that root project. Use the compiled
+workflow for direct MCP execution and resource-backed lexical retrieval.
 
 ## Request and response
 
@@ -15,7 +20,7 @@ Generated from the executable test harness below; these are tested requests or e
 
 | Request | Expected response |
 |---|---|
-| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
+| unknown-record<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":1,"method":"pulse.read","params":{"version":"1.0.0-beta.9","id":"missing"}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":1,"result":{"meta":{"pulseVersion":"1.0.0-beta.9","corpusSchemaVersion":"pulse.context-corpus.v1","corpusHash":"8c79970eee826dfd0d3ea67260a61d6b5450460b8155916993a1cedaccda95ef","snapshotStatus":"candidate","applicationVersion":"pulse.context-application.v1","requestedVersion":"1.0.0-beta.9","maxReplyBytes":24576},"status":"unknown-id","truncated":false,"error":{"code":"unknown-id","message":"No bundled record has that exact ID."}}}}</code> |
 | schema-admission<br><code>POST /</code><br>Headers: <code>[["content-type","application/json"]]</code><br>Body: <code>{"jsonrpc":"2.0","id":2,"method":"pulse.search","params":{"version":"1.0.0-beta.9","query":42}}</code> | <code>{"status":200,"json":{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Invalid params"}}}</code> |
 
 <!-- pulse-example-view:code -->
@@ -211,10 +216,11 @@ corpus, host and request helper are included; no repository checkout, upstream
 server, credentials or global Pulse installation is needed at runtime.
 
 **Candidate status:** all Pulse dependencies, including MCP, use the exact
-`1.0.0-beta.9` synchronized candidate version. Registry installation becomes
-available after release-owner bootstrap, trusted-publisher setup and publication.
-Until then, use matching candidate packages through the candidate registry.
-PMCP-07 owns the installed context-app onboarding journey. The install command is:
+`1.0.0-beta.9` synchronized candidate version. These instructions describe the current source candidate, not a claim that these
+bytes are already on npm. Obtain the matching CLI and dependency tarballs from
+the release owner through one candidate registry. A matching version string alone
+does not establish matching candidate bytes. Copy the complete installed CLI
+example, including `application/`, `client/`, and `context-data/`. The install command is:
 
 ```bash
 npm install
@@ -225,6 +231,9 @@ context version is `1.0.0-beta.9` with snapshot status `candidate`; check the
 readiness response for the bundled version before calling tools.
 
 ## Workflow
+
+This section runs the root v1 compatibility host. For direct Native MCP use
+[Compiled application workflow](#compiled-application-workflow).
 
 Run the example's local CLI scripts:
 
@@ -268,7 +277,7 @@ when using another port. These same tools can be used by an MCP client pointed a
 endpoint. Modern framing is the default, including the qualified Claude client.
 For the pinned Codex compatibility profile, start with `npm start -- --codex`.
 
-## Migrating the compiled application
+## Compiled application workflow
 
 The separate `application/` project now implements **`pulse.start`, `pulse.search`, `pulse.read`,
 `pulse.example`, and `pulse.diagnostic`** through
@@ -289,6 +298,7 @@ From a complete copy of this example:
 ```bash
 cd application
 npm install
+npm run doctor -- --profile node-native
 npm run inspect -- --profile node-native
 npm run build -- --profile node-native
 npm run dev -- --profile node-native
@@ -305,9 +315,45 @@ node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.example '{"vers
 node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.diagnostic '{"version":"1.0.0-beta.9","code":"PULSE_CALL_SOURCE_LIMIT"}'
 ```
 
-Profiles `node-javascript` and `fastly-native` select the other implementations
-explicitly. Fastly local/deployed qualification and installed application closure
-remain separate work. Discovery exposes all five tools. `pulse.diagnostic` is the compiled application name for the
+Stop `dev` before reusing its port. The application has no `npm test` script;
+`doctor` checks the selected profile, `inspect` exposes its plan, and the five
+requests above check the running MCP boundary. `npm start` in `application/`
+is an alias for `pulse dev`, not the root standalone host. The application
+endpoint uses port 8787; the root compatibility host uses port 8788.
+
+| Profile | Execution | Local command |
+| --- | --- | --- |
+| `node-native` (default) | Native Wasm on Node | `npm run dev -- --profile node-native` |
+| `node-javascript` | Explicit JavaScript on Node | `npm run dev -- --profile node-javascript` |
+| `fastly-native` | Native direct Fastly ABI | Build, then Fastly CLI serve below |
+
+Fastly JavaScript is not supported by this MCP binding. `pulse dev` for Fastly
+is local provider execution; actual CLI/Viceroy proof requires the built module.
+From `application/`, check and package the selected Fastly candidate:
+
+```bash
+npm run doctor -- --profile fastly-native
+npm run inspect -- --profile fastly-native
+npm run build -- --profile fastly-native
+cd dist-fastly-native
+fastly compute serve --file bin/main.wasm --addr 127.0.0.1:8787
+```
+
+`pulse build` writes the provider package, including `fastly.toml`,
+`bin/main.wasm`, and retained build manifests. There is no `pulse package`
+command. Preserve this complete output and its hashes when handing it to a
+deployment owner. Fastly CLI 16.1.0 with Viceroy 0.21.1 is the qualified local
+host pair. Run the same five requests from another terminal in `application/`.
+Stop the foreground server afterward. This public documentation application
+accepts POST `/mcp`, rejects supplied Origin, and grants no outbound fetch,
+secrets, client filesystem or process authority. It has no authentication or
+Origin allowlist feature. Local success does not establish deployed service
+health; service selection, deployment, activation and remote smoke remain
+separately authorized steps in the Fastly deployment guide.
+
+The exact installed application has source-deleted execution coverage; actual
+CLI/Viceroy workload and pinned-client checks are separate registered gates.
+Discovery exposes all five tools. `pulse.diagnostic` is the compiled application name for the
 operation called `pulse.explain_diagnostic` by the unchanged legacy host.
 
 `pulse.search` advertises encoder `pulse.context-sparse-lexical.v1` in
@@ -323,8 +369,12 @@ with `excerptTruncated` when more text exists. The complete MCP tool result,
 including both content copies and citations, must fit 24 KiB; oversized pages
 return `response-too-large` without partial results. Lower the limit or use
 `pulse.read`. Search uses the same generated finite citation projection as read,
-plus immutable vector/text resources and a request-owned numeric heap. Relevance
-and whole-request performance qualification remain B10-MCP-06B work.
+plus immutable vector/text resources and a request-owned numeric heap. This is
+sparse lexical retrieval, not semantic embeddings: no synonyms, stemming,
+non-ASCII query language or learned model. The reconstructed corpus is explicit;
+it does not recover the unavailable original vector workload. Frozen relevance
+cases and whole-request cost gates cover the admitted workload, not arbitrary
+future corpus growth. Source changes require regeneration and fresh qualification.
 
 The computations use complete existing output schemas. Cited content is read
 from `context.text`; generated code contains bounded metadata and no full-text
@@ -335,9 +385,34 @@ remediation, related contracts and local-check arrays. The complete tool result 
 at 24 KiB, including metadata and both text/structured copies; the complete MCP
 protocol reply remains capped at 128 KiB. Compared with v1, read pages can end
 earlier and example pages can contain fewer files to fit that whole-result bound.
-Their explicit continuation fields retain the original content and offsets. Oversized results produce an explicit error, never silent truncation. The current emitted Native artifacts
-have one physical text resource backing. Other resources remain in the generated
-catalogue for later tools and are selected by ordinary reachability.
+Their explicit continuation fields retain the original content and offsets.
+Oversized results produce an explicit error, never silent truncation. Native
+reachability selects immutable resource backings and deduplicates equal bytes.
+Report artifact bytes, selected backing bytes and committed linear memory
+separately; unavailable peak/live allocation and process memory remain unknown.
+
+### Pinned clients and migration
+
+| Client | Protocol configuration | Qualified local transport |
+| --- | --- | --- |
+| Official SDK 2.2.0 | Default `2026-07-28` | Native Fastly HTTP |
+| Claude Code 2.1.292 | Default `2026-07-28` | Native Fastly HTTP |
+| Official SDK 2.2.0 | Explicit `2025-06-18` | Native Fastly HTTP |
+| Codex 0.160.1 | Explicit `2025-06-18` | Native Fastly HTTP |
+
+The shipped application is modern-only. For the compatibility profile, explicitly
+add `legacyProtocol: '2025-06-18'` to the existing `mcp({...})` declaration and
+rebuild. That produces a different artifact identity. `--codex` belongs only to
+the root v1 host; it is not a compiled-application CLI flag. Modern admission
+never silently falls back. These are pinned local transport/tool checks, not
+inference, sessions, SSE, MCP Resources, Prompts or deployed-service qualification.
+
+When moving a v1 caller, rename `pulse.explain_diagnostic` to `pulse.diagnostic`,
+select the application endpoint, and follow returned `nextOffset` values rather
+than assuming identical page sizes or search ranking. Check application version,
+corpus hash, exact package version and tool `status` on every response. Preserve
+selection and version across pages; citations and hashes identify full source
+records even when the returned page is shorter.
 
 ## Walkthrough 1: start a JSON API
 
@@ -422,7 +497,8 @@ record even when a page is truncated.
 The corpus is generated from an explicit allowlist of public contract sections,
 package/provider metadata, CLI commands/diagnostics and four maintained starters.
 It has no runtime generator, repository crawler or external index. The snapshot
-has 260 records and remains explicitly a candidate. No client filesystem,
+identity and record count come from the generated manifest; it remains explicitly
+a candidate. No client filesystem,
 process execution, build, doctor, inspection, outbound fetch, Resources, Prompts
 or stdio capability is exposed. Command descriptions are context, not authority.
 
@@ -536,7 +612,7 @@ export default {
 
 ## Wasm size
 
-This explicit Node JavaScript profile emits **no application Wasm artifact**.
+The root v1 Node JavaScript profile emits **no application Wasm artifact**.
 `--experimental-native-size` does not apply. Switching this app to Native fails
 eligibility rather than selecting JavaScript automatically.
 

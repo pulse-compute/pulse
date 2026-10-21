@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749",
+  "corpusHash": "8c79970eee826dfd0d3ea67260a61d6b5450460b8155916993a1cedaccda95ef",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -10460,17 +10460,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "guide",
-      "content": "## 5. Build the selected target\n\n```bash\npulse build\n```\n\n`build` realizes the exact provider and target in the active profile:\n\n- Node Native emits Pulse-owned Wasm and the Node host-contract metadata.\n- Node JavaScript emits a deterministic executable CommonJS source package.\n- Fastly Native emits compact direct-host-ABI `bin/main.wasm`.\n- Fastly JavaScript emits a deterministic source/deployment closure and\n  downstream runtime candidate.\n\nA successful build produces a candidate artifact. It does not publish a\npackage, deploy documentation, create provider resources, deploy a service, or\nactivate traffic.\n\nContinue with the separate [Node build and execution\nguide](./deploying-node.md) or [Fastly deployment-candidate\nguide](./deploying-fastly.md).\n",
-      "contentSha256": "bbb32f16faa538b13eb46eea8c7f0c57c010dc83409d9e165896c3fed23b2055",
+      "content": "## 5. Build the selected target\n\n```bash\npulse build\n```\n\n`build` realizes the exact provider and target in the active profile:\n\n- Node Native emits Pulse-owned Wasm and the Node host-contract metadata.\n- Node JavaScript emits a deterministic executable CommonJS source package.\n- Fastly Native emits compact direct-host-ABI `bin/main.wasm`.\n- Fastly JavaScript emits a deterministic source/deployment closure and\n  downstream runtime candidate.\n\nA successful build produces a candidate artifact. It does not publish a\npackage, deploy documentation, create provider resources, deploy a service, or\nactivate traffic.\n\nContinue with the separate [Node build and execution\nguide](./deploying-node.md) or [Fastly deployment-candidate\nguide](./deploying-fastly.md). For a complete resource-backed application, follow\nthe [context MCP workflow](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow):\nselect a profile, check and build its package, then run the exact Native module\nlocally. Its compatibility Node host has a separate startup command.\n",
+      "contentSha256": "1c4482447e7a2f98d348c1f0f25f97f2449a93304fdb5f0449c5eec0cf5dc4aa",
       "id": "workflow/build",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
-        "endLine": 99,
+        "endLine": 102,
         "path": "docs/guides/project-lifecycle.md",
         "selection": "heading:5. Build the selected target",
-        "sha256": "628efab0d0ec7e82c123254644ad8311783d2b6eb45a2e0dbd54ec28ee5a0c51",
+        "sha256": "3f4a9130af28262e2eba3ec701f3330fbe6fe8b2218debba7c5b3c6b18a9a3ad",
         "startLine": 78,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/24f9cfb364be5bf649969beacc77d98648dcd1b7"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/2f587fcb590c2f5bb10c44657fdb857685141f4d"
       },
       "status": "candidate",
       "tags": [
@@ -10511,9 +10511,9 @@ export const contextCorpus = freeze({
         "endLine": 30,
         "path": "docs/guides/project-lifecycle.md",
         "selection": "heading:1. Initialize",
-        "sha256": "628efab0d0ec7e82c123254644ad8311783d2b6eb45a2e0dbd54ec28ee5a0c51",
+        "sha256": "3f4a9130af28262e2eba3ec701f3330fbe6fe8b2218debba7c5b3c6b18a9a3ad",
         "startLine": 18,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/24f9cfb364be5bf649969beacc77d98648dcd1b7"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/2f587fcb590c2f5bb10c44657fdb857685141f4d"
       },
       "status": "candidate",
       "tags": [
@@ -10551,12 +10551,12 @@ export const contextCorpus = freeze({
       "id": "workflow/inspect",
       "pulseVersion": "1.0.0-beta.9",
       "source": {
-        "endLine": 111,
+        "endLine": 114,
         "path": "docs/guides/project-lifecycle.md",
         "selection": "heading:Inspect when you need the plan",
-        "sha256": "628efab0d0ec7e82c123254644ad8311783d2b6eb45a2e0dbd54ec28ee5a0c51",
-        "startLine": 100,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/24f9cfb364be5bf649969beacc77d98648dcd1b7"
+        "sha256": "3f4a9130af28262e2eba3ec701f3330fbe6fe8b2218debba7c5b3c6b18a9a3ad",
+        "startLine": 103,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/2f587fcb590c2f5bb10c44657fdb857685141f4d"
       },
       "status": "candidate",
       "tags": [
@@ -10605,8 +10605,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/guides/project-lifecycle.md",
-      "sha256": "628efab0d0ec7e82c123254644ad8311783d2b6eb45a2e0dbd54ec28ee5a0c51",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/24f9cfb364be5bf649969beacc77d98648dcd1b7"
+      "sha256": "3f4a9130af28262e2eba3ec701f3330fbe6fe8b2218debba7c5b3c6b18a9a3ad",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/2f587fcb590c2f5bb10c44657fdb857685141f4d"
     },
     {
       "path": "docs/packages/pulse.md",

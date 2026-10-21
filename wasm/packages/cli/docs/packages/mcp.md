@@ -48,8 +48,8 @@ repository checkout or upstream service at runtime.
 `mcp-installed` is the single mandatory release-owned installed MCP gate, kept
 outside fast PR and aggregate release profiles. The generic package's selected
 packed-consumer check covers exact legal files, author entry points, lowerer files, CommonJS/ESM
-imports and TypeScript consumers. The context-app installed onboarding journey
-is separately tracked by PMCP-07.
+imports and TypeScript consumers. The installed context-app gate also exercises the packaged Native application
+after deleting authored inputs.
 
 ## Static Native binding
 
@@ -95,7 +95,10 @@ SSE, sessions, prompts, and MCP Resources are outside this binding. Embedded
 Pulse binary Resources are a separate application facility.
 
 The package depends on Entities and Runtime. Its root and `/node` adapters keep
-their existing fixed-backend behavior and authorization options. The context
-example's migration to this binding and resource-backed operations is tracked
-separately from the generic binding implementation. Local Native proof uses an
-injected Fastly ABI; actual Fastly/client qualification remains a separate gate.
+their existing fixed-backend behavior and authorization options. The [context example](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow)
+uses this binding and shared `ctx.call` for five resource-backed tools. Its exact
+installed closure, actual Fastly CLI/Viceroy workload, and pinned modern/legacy
+client matrices have separate development gates. Injected ABI tests, local host
+execution and deployed-service proof remain distinct; each new release candidate
+needs its own terminal receipts. See the example for installation, profile
+selection, lexical limits and migration from the unchanged Node host.
