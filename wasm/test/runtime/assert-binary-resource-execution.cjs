@@ -43,7 +43,14 @@ async function main() {
   for(const expression of ['data.readU8(-1)','data.readU8(0.5)','data.readU8(data.byteLength)','data.readU32LE(data.byteLength-3)',"data.readU8('0')",'data.readU8(9007199254740992)','data.readF32LE(13)']) {
     const input=`export default async function handler(ctx) {const data=ctx.resources.map('data');return ctx.text(''+${expression});}`;
     const small=catalogue(bytes.subarray(0,32)), smallStore=runtime.createBinaryResourceStore([{id:'data',bytes:bytes.subarray(0,32)}]);
-    await assert.rejects(nativeHost.executeCanonicalNativeModule(compile(input,small),{strict:false}),invalid);
+    const bad=compile(input,small);
+    await assert.rejects(nativeHost.executeCanonicalNativeModule(bad,{strict:false}),invalid);
+    assert.throws(()=>fastlyExecute(fastlyCompile(bad.plan,{cwd:root,requirePlatformCapability:false,canonicalBuild:true}),{}), error=>error.detail?.lastError!==undefined);
+    for(const execute of [executeNodeJavascriptApplication,executeFastlyJavascriptApplication]) {
+      let caught;
+      const response=await execute(async ctx=>{try{await handler(input)(ctx);}catch(error){caught=error;}return ctx.text('checked');},request(),{binaryResources:smallStore});
+      assert.equal(response.status,200);assert.equal(caught?.code,invalid.code,expression);
+    }
     // Plain runtime lets the bounded error reach the assertion through a text read outside Router error handling.
     let caught;
     await runtime.executeApplication(async ctx=>{try { await handler(input)(ctx); } catch(e) {caught=e;} return ctx.text('checked');},request(),{binaryResources:smallStore});
@@ -58,7 +65,10 @@ async function main() {
     assert.equal(result.response.body,'98304');assert(result.valueHandleCount<=8);
   }
   const repeated=scan.replace('for(let i=0;i<256;i++){for(let j=0;j<256;j++){sum+=data.readF32LE(9);}}',Array(17).fill('for(let i=0;i<256;i++){for(let j=0;j<256;j++){sum+=data.readF32LE(9);}}').join(''));
-  const repeatedResult=await nativeHost.executeCanonicalNativeModule(compile(repeated,catalogue(bytes.subarray(0,32))),{strict:false});
+  const repeatedModule=compile(repeated,catalogue(bytes.subarray(0,32)));
+  const repeatedResult=await nativeHost.executeCanonicalNativeModule(repeatedModule,{strict:false});
+  assert.equal(fastlyExecute(fastlyCompile(repeatedModule.plan,{cwd:root,requirePlatformCapability:false,canonicalBuild:true}),{}).response.body,String(98304*17));
+  for(const execute of [executeNodeJavascriptApplication,executeFastlyJavascriptApplication])assert.equal(await (await execute(handler(repeated),request(),{binaryResources:store})).text(),String(98304*17));
   assert.equal(repeatedResult.response.body,String(98304*17));assert(repeatedResult.valueHandleCount<=40);
   // Same execution exceeds the former 4 MiB proposal; runtime has no cumulative quota.
   let scans=0;
@@ -96,6 +106,8 @@ async function main() {
   assert.deepEqual(unused.wasm,absent.wasm);assert.equal(unused.plan.binaryResources,undefined);
   console.log('ok - source escapes and corrupt plans rejected; unused Native resources add zero bytes');
   await require('./binary-resource-project.cjs').main();
+  await require('./binary-resource-matrix.cjs').main();
+  await require('./binary-resource-closure.cjs').main();
   console.log(JSON.stringify({version:'pulse.binary-resource-execution-proof.v1',fixture:'generated, not the real MCP vector.bin',payloadBytes:bytes.length,nativeBytes:compiled.wasm.length,fastlyBytes:fastly.wasm.length,scanReadsPerExecution:65536,scanExecutions:17,nativeHandleUpperBound:8}));
 }
 main().catch(error=>{console.error(error.message,error.diagnostics||error.detail?.stderr||error.stack);process.exitCode=1;});
