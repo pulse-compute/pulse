@@ -28,6 +28,7 @@ const {
 const { validateDocumentationMetadata } = require('./documentation-ownership.cjs');
 const { MAINTENANCE_POLICY, synchronizeMaintenancePolicy } = require('./maintenance-policy.cjs');
 const { validateMaintainerControlPlane } = require('./validate-maintainer-control-plane.cjs');
+const { CONFIG_DOCUMENTATION_FIELDS, validateCoverage: validateConfigDocumentationCoverage } = require('./documentation-project-config.cjs');
 const { ENVIRONMENT_VARIABLES } = require('./environment-reference.cjs');
 const { SOURCE_CONTRACT, publicPageSources } = require('./documentation-sources.cjs');
 // Supported CLI compatibility export; not active website presentation.
@@ -694,7 +695,8 @@ function validateConfigParity(repoRoot) {
     }
   }
   const reference = fs.readFileSync(path.join(repoRoot, 'docs/reference/project-config.md'), 'utf8');
-  for (const field of CONFIG_FIELDS) if (!reference.includes(`### \`${field.path}\``)) fail(`project-config reference is missing ${field.path}`);
+  validateConfigDocumentationCoverage();
+  for (const field of CONFIG_DOCUMENTATION_FIELDS) if (!reference.includes(`### \`${field.path}\``)) fail(`project-config reference is missing ${field.path}`);
 
   const expectedBundle = Object.freeze({
     schemaVersion: 'pulse.project-config-schema-bundle.v1',

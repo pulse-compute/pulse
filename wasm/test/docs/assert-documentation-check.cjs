@@ -230,3 +230,46 @@ contextDataIntegrity();
   assert.throws(() => renderExampleTemplate(`${MARKER}\n\n## Report\n`, () => cases), /Empty example section/);
   console.log('ok - shared example template preserves fences/anchors, handles all eleven harnesses, HTTP/event cases and unavailable Report views');
 }
+
+// Authored reference coverage must follow the public project contract, not only
+// the older resolved CLI schema. Provider paths must match normalized objects.
+{
+  const { CONFIG_DOCUMENTATION_FIELDS: fields, anchor, legacyAnchor, validateCoverage } = require('../../../scripts/documentation-project-config.cjs');
+  const { CONFIG_FIELDS, PROJECT_CONFIG_JSON_SCHEMA } = require('../../packages/cli/src/project-config-schema.js');
+  const { renderProjectConfigReference } = require('../../scripts/sync-reference-docs.cjs');
+  const { normalizeFastlyProviderConfig } = require('../../../packages/provider-fastly/src/toolchain/config.js');
+  const document = renderProjectConfigReference();
+  const paths = new Set(fields.map(field => field.path));
+  validateCoverage();
+  for (const missing of ['pulse.schema', '<profile>.target', '<profile>.fastly.bindings.kv']) {
+    assert.throws(() => validateCoverage(fields.filter(field => field.path !== missing)), /Missing/);
+  }
+  const ids = [...document.matchAll(/<a id="([^"]+)"><\/a>/g)].map(match => match[1]);
+  assert.equal(ids.length, new Set(ids).size, 'explicit anchors must be unique');
+  for (const field of fields) assert(ids.includes(anchor(field.path)), `missing anchor: ${field.path}`);
+  for (const match of document.matchAll(/\]\(#(config-[^)]+)\)/g)) assert(ids.includes(match[1]), `broken property link: ${match[1]}`);
+  for (const field of CONFIG_FIELDS) {
+    const mapped = fields.find(value => value.sourcePath === field.path);
+    if (mapped.path !== field.path) assert(ids.includes(legacyAnchor(field.path)), `lost legacy anchor: ${field.path}`);
+  }
+  for (const key of Object.keys(PROJECT_CONFIG_JSON_SCHEMA.$defs.binaryResources.properties)) {
+    assert(paths.has(`pulse.binaryResources.${key}`));
+  }
+  for (const key of Object.keys(PROJECT_CONFIG_JSON_SCHEMA.$defs.binaryResources.properties.budgets.properties)) {
+    assert(paths.has(`pulse.binaryResources.budgets.${key}`));
+  }
+  const fastly = normalizeFastlyProviderConfig({ bindings: { logEndpoint: 'app_logs', grip: { authentication: { scheme: 'bearer', secretRef: 'TOKEN' } } } });
+  function assertLeaves(value, prefix) {
+    for (const [key, child] of Object.entries(value)) {
+      const path = `${prefix}.${key}`;
+      if (child && typeof child === 'object' && !Array.isArray(child) && Object.keys(child).length) assertLeaves(child, path);
+      else assert(paths.has(path), `missing normalized provider path: ${path}`);
+    }
+  }
+  for (const key of ['bindings', 'build', 'local']) assertLeaves(fastly[key], `<profile>.fastly.${key}`);
+  const s3 = require('../../../packages/s3/src/provider.js').normalizeBinding({ endpoint: 'https://s3.example.com', bucket: 'assets', region: 'us-east-1', accessKeyIdSecret: 'ACCESS', secretAccessKeySecret: 'SECRET', sessionTokenSecret: 'TOKEN' });
+  for (const provider of ['node', 'fastly']) for (const key of Object.keys(s3)) assert(paths.has(`<profile>.${provider}.bindings.s3.<name>.${key}`));
+  const packages = require('../../../packages/provider-node/src/runtime/package-operations.js').normalizePackageBindings({ remote: { package: '@example/remote', contractId: 'v1', artifact: 'a1', operations: ['run'], secret: 'TOKEN', keyId: 'key', keyVersion: '1', trustDomain: 'example', origin: 'https://example.com' } });
+  for (const key of Object.keys(packages.remote)) assert(paths.has(`<profile>.node.bindings.packages.<name>.${key}`));
+  console.log('ok - authored project config covers reserved/profile keys, normalized provider bindings, nested resources, and linked/legacy anchors');
+}
