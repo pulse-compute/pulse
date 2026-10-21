@@ -165,6 +165,8 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization,
     row.routeIds = capsule.routes.filter(route => route[key].includes(row.id)).map(route => route.id);
   }
   require('./resource-inventory').addResourceInventory(capsule, prepared, evidenceIds);
+  require('./computation').addComputation(capsule, references?.computation, project.root, evidenceIds);
+  require('./resource-bytes').observeResourceBytes(capsule, prepared);
   for (const resource of capsule.resources) {
     resource.entryIds = unique(resource.entryIds);
     resource.routeIds = capsule.routes.filter(route => route.composition.some(entry => resource.entryIds.includes(entry))).map(route => route.id);

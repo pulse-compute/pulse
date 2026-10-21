@@ -70,7 +70,7 @@ const tasks = Object.freeze({
     description: 'RPT8-02 resolved reference identities, shared consumers, unknowns, privacy and byte-preserving capture'
   }),
   'cli-report-resource-inventory': nodeTask('test/cli/assert-report-resource-inventory.cjs', {
-    timeoutMs: 120000, description: 'RPT8-04 resource producer coverage, byte representations, privacy and unchanged asset responses'
+    timeoutMs: 120000, description: 'Resource/callable source ownership, binary alias and raw-data proof, producer coverage, privacy and unchanged responses'
   }),
   'cli-report-retained-evidence': nodeTask('test/cli/assert-report-retained-evidence.cjs', {
     description: 'PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm', timeoutMs: 60000

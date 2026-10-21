@@ -94,6 +94,7 @@ function withoutProjection() {
   owner._compile(fs.readFileSync(file, 'utf8'), file); return owner.exports;
 }
 async function main() {
+  require('./report-computation-cases.cjs')();
   const responseCases = require('./report-response-payload-cases.cjs')();
   negatives += responseCases.negatives;
   const responseJson = capsule.serializeCapsule(responseCases.capsule);

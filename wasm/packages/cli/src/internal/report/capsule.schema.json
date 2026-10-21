@@ -213,6 +213,12 @@
       },
       "maxItems": 100000
     },
+    "computation": {
+      "$ref": "#/$defs/Computation"
+    },
+    "binaryResources": {
+      "$ref": "#/$defs/BinaryResources"
+    },
     "implementations": {
       "type": "array",
       "items": {
@@ -1639,7 +1645,8 @@
             "schema-validator",
             "helper",
             "other",
-            "response-payload"
+            "response-payload",
+            "binary-resource"
           ]
         },
         "mediaType": {
@@ -1697,6 +1704,38 @@
         },
         "generator": {
           "$ref": "#/$defs/ResourceGenerator"
+        },
+        "binary": {
+          "type": "object",
+          "properties": {
+            "backingId": {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "selected": {
+              "type": "boolean"
+            },
+            "calleeIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+              },
+              "maxItems": 100000
+            }
+          },
+          "required": [
+            "backingId",
+            "sha256",
+            "selected",
+            "calleeIds"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -1814,7 +1853,8 @@
             "package-guest-units",
             "package-realizations",
             "generated-support",
-            "canonical-text-responses"
+            "canonical-text-responses",
+            "binary-resources"
           ]
         },
         "producer": {
@@ -1825,7 +1865,8 @@
             "base64-text",
             "pulse.report-schema-shape.v1",
             "package-guest-unit",
-            "native-string"
+            "native-string",
+            "native-immutable-data"
           ]
         },
         "representationBytes": {
@@ -2167,7 +2208,8 @@
             "package-guest-units",
             "package-realizations",
             "generated-support",
-            "canonical-text-responses"
+            "canonical-text-responses",
+            "binary-resources"
           ]
         },
         "producer": {
@@ -2198,6 +2240,549 @@
         "producer",
         "coverage",
         "resourceIds",
+        "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "Computation": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "pulse.report-computation.v1"
+        },
+        "callees": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "source": {
+                "type": "object",
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "available",
+                      "unavailable",
+                      "not-applicable"
+                    ]
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/AnalyticsSpan"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "reason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-recorded",
+                          "not-applicable"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "state",
+                  "value",
+                  "reason"
+                ],
+                "additionalProperties": false
+              },
+              "helpers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "maxLength": 1048576,
+                      "minLength": 1
+                    },
+                    "source": {
+                      "type": "object",
+                      "properties": {
+                        "state": {
+                          "enum": [
+                            "available",
+                            "unavailable",
+                            "not-applicable"
+                          ]
+                        },
+                        "value": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/$defs/AnalyticsSpan"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "reason": {
+                          "anyOf": [
+                            {
+                              "enum": [
+                                "not-recorded",
+                                "not-applicable"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "state",
+                        "value",
+                        "reason"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 100000
+              },
+              "inputSchema": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "outputSchema": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "entryIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                "maxItems": 100000
+              },
+              "entryCoverage": {
+                "$ref": "#/$defs/Coverage"
+              },
+              "resourceIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                "maxItems": 100000
+              },
+              "bodyBytes": {
+                "$ref": "#/$defs/Fact"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "source",
+              "helpers",
+              "inputSchema",
+              "outputSchema",
+              "entryIds",
+              "entryCoverage",
+              "resourceIds",
+              "bodyBytes"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "sites": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "calleeId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+              },
+              "source": {
+                "type": "object",
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "available",
+                      "unavailable",
+                      "not-applicable"
+                    ]
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/AnalyticsSpan"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "reason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-recorded",
+                          "not-applicable"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "state",
+                  "value",
+                  "reason"
+                ],
+                "additionalProperties": false
+              },
+              "entryIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                "maxItems": 100000
+              },
+              "managed": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "calleeId",
+              "source",
+              "entryIds",
+              "managed"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "coverage": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "version",
+        "callees",
+        "sites",
+        "coverage",
+        "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "AnalyticsSpan": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "start": {
+          "$ref": "#/$defs/AnalyticsPosition"
+        },
+        "end": {
+          "$ref": "#/$defs/AnalyticsPosition"
+        }
+      },
+      "required": [
+        "file",
+        "sha256",
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "AnalyticsPosition": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "column": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "offset",
+        "line",
+        "column"
+      ],
+      "additionalProperties": false
+    },
+    "BinaryResources": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "pulse.report-binary-resources.v1"
+        },
+        "identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "manifestId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "budgets": {
+          "type": "object",
+          "properties": {
+            "files": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "fileBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "totalBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "serializedBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "bindings": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "files",
+            "fileBytes",
+            "totalBytes",
+            "serializedBytes",
+            "bindings"
+          ],
+          "additionalProperties": false
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "recordCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "decodedBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "serializedBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "recordCount",
+            "decodedBytes",
+            "serializedBytes"
+          ],
+          "additionalProperties": false
+        },
+        "bindingCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "uniqueBackingCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "selectedBindingCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "selectedUniqueBackingCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "declaredBackingBytes": {
+          "$ref": "#/$defs/Fact"
+        },
+        "selectedBackingBytes": {
+          "$ref": "#/$defs/Fact"
+        },
+        "observedBackingBytes": {
+          "$ref": "#/$defs/Fact"
+        },
+        "observedArtifactId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedRanges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "backingId": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "backingId",
+              "offset",
+              "bytes"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "instanceMemoryBytes": {
+          "$ref": "#/$defs/Fact"
+        },
+        "processMemoryBytes": {
+          "$ref": "#/$defs/Fact"
+        },
+        "backings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "byteLength": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "resourceIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                "maxItems": 100000
+              },
+              "selected": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "sha256",
+              "byteLength",
+              "resourceIds",
+              "selected"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "version",
+        "identity",
+        "manifestId",
+        "budgets",
+        "source",
+        "bindingCount",
+        "uniqueBackingCount",
+        "selectedBindingCount",
+        "selectedUniqueBackingCount",
+        "declaredBackingBytes",
+        "selectedBackingBytes",
+        "observedBackingBytes",
+        "observedArtifactId",
+        "observedRanges",
+        "instanceMemoryBytes",
+        "processMemoryBytes",
+        "backings",
         "evidenceIds"
       ],
       "additionalProperties": false
@@ -3067,59 +3652,6 @@
         "source",
         "package",
         "evidence"
-      ],
-      "additionalProperties": false
-    },
-    "AnalyticsSpan": {
-      "type": "object",
-      "properties": {
-        "file": {
-          "type": "string",
-          "maxLength": 1048576,
-          "minLength": 1
-        },
-        "sha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "start": {
-          "$ref": "#/$defs/AnalyticsPosition"
-        },
-        "end": {
-          "$ref": "#/$defs/AnalyticsPosition"
-        }
-      },
-      "required": [
-        "file",
-        "sha256",
-        "start",
-        "end"
-      ],
-      "additionalProperties": false
-    },
-    "AnalyticsPosition": {
-      "type": "object",
-      "properties": {
-        "offset": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 9007199254740991
-        },
-        "line": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 9007199254740991
-        },
-        "column": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 9007199254740991
-        }
-      },
-      "required": [
-        "offset",
-        "line",
-        "column"
       ],
       "additionalProperties": false
     },

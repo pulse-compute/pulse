@@ -2743,3 +2743,43 @@ the new resources are the sparse lexical inputs for Native migration. See the
 [explicit build workflow](../../examples/12-pulse-context-mcp/README.md#maintaining-the-snapshot).
 Installed closure, full reports, candidate-bound seal/recovery receipts and real
 Fastly/client qualification remain B10-MCP-07/08/09/10.
+
+## Shared computation and binary resource reporting
+
+The optional `pulse.report-computation.v1` inventory retains shared callee
+definitions, original authored call-site and helper spans with source hashes,
+schema pairs, and canonical entry consumers. Adapted computation coordinates
+are never presented as original source. Repeated calls share one definition;
+Router registrations remain distinct consumers. Managed callers and helpers
+without a retained entry join stay partial. Per-callee final code-body bytes
+remain unavailable: source ownership is not final instruction ownership.
+These observations are collected outside executable plans and hashes, through
+the ordinary callable source collection and report projection.
+
+The optional `pulse.report-binary-resources.v1` inventory uses the existing safe
+resource catalogue summary. It records admission budgets, original manifest
+decoded/serialized sizes, logical bindings and shared backing identities.
+Selection is Native plan selection, including callees; it is not execution
+frequency. Unselected aliases may share backing with selected aliases. A unique
+backing is counted once even when several callables or logical bindings use it.
+The `binary-resources` producer can be complete while overall resource coverage
+remains partial. No resource payloads or manifest paths enter the capsule.
+
+Resolved selected backing bytes are separate from observed artifact bytes.
+Build-time raw-data proof accepts only a single complete match per nonempty
+selected backing in parsed Wasm data payloads, with disjoint ranges and at least
+32 bytes per nonempty pattern. Empty backing adds zero bytes. Ambiguous, repeated,
+overlapping, transformed or missing patterns, unsupported data expressions, and
+exhausted scan budgets stay unavailable. The proof is bound to the exact artifact
+hash and stage; retained-byte replay verifies ranges and hashes again. Its union
+is subtracted once from that artifact's unattributed data ledger. Logical rows
+never add their shared input lengths to physical totals. This is raw-data
+placement evidence, not a runtime backing-copy count, heap census, initial
+memory size or process measurement; instance/process memory stays unknown.
+
+Existing JSON, terminal and resource-detail HTML projections expose these facts.
+Historical capsules lacking the optional records preserve their identity; no
+historical 06B/07B measurement is imported as fresh build evidence. Their bounded
+performance/lifetime receipts remain separate, and actual Fastly observations
+remain the 10A obligation. This does not implement command-aware evidence
+summaries from #440 or resolve the historical `REPORT_ARTIFACT_HASH` uncertainty.

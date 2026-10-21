@@ -281,6 +281,11 @@ function check(capsule) {
       else ensure(resource.entryIds.length === 0, 'REPORT_REVERSE_REFERENCE');
       ensure(generator.representationBytes.state === 'available' ? schema?.structure.state === 'available'
         && generator.representationBytes.value === schema.structure.descriptorBytes : schema?.structure.state !== 'available', 'REPORT_RESOURCE_METRICS');
+    } else if (generator.scope === 'binary-resources') {
+      ensure(resource.kind === 'binary-resource' && resource.binary && resource.artifactId === null
+        && generator.representation === 'native-immutable-data' && generator.schemaId === null
+        && generator.representationBytes.state === 'unavailable' && resource.inputBytes.state === 'available'
+        && resource.inputBytes.basis === 'resolved' && resource.inputBytes.coverage === 'exact', 'REPORT_RESOURCE_METRICS');
     } else {
       ensure(generator.scope === 'package-guest-units' && resource.kind === 'helper' && generator.representation === 'package-guest-unit'
         && generator.schemaId === null && generator.representationBytes.state === 'unavailable'
@@ -288,11 +293,12 @@ function check(capsule) {
     }
   }
   if (capsule.resourceProducers) {
-    ensure(capsule.resourceProducers.filter(row => row.scope === 'canonical-text-responses').length <= 1, 'REPORT_COVERAGE');
+    const optionalScopes = ['canonical-text-responses', 'binary-resources'];
+    for (const scope of optionalScopes) ensure(capsule.resourceProducers.filter(row => row.scope === scope).length <= 1, 'REPORT_COVERAGE');
     // The new response producer is optional; historical five-scope capsules
     // retain their exact serialized bytes and evidence identities.
-    ensure(same(capsule.resourceProducers.map(row => row.scope).filter(scope => scope !== 'canonical-text-responses'),
-      RESOURCE_SCOPES.filter(scope => scope !== 'canonical-text-responses').sort(compare)), 'REPORT_COVERAGE');
+    ensure(same(capsule.resourceProducers.map(row => row.scope).filter(scope => !optionalScopes.includes(scope)),
+      RESOURCE_SCOPES.filter(scope => !optionalScopes.includes(scope)).sort(compare)), 'REPORT_COVERAGE');
     ensure(capsule.resources.every(row => row.generator
       && capsule.resourceProducers.some(producer => producer.scope === row.generator.scope)), 'REPORT_COVERAGE');
     for (const row of capsule.resourceProducers) {
@@ -302,12 +308,13 @@ function check(capsule) {
       ensure(same(row.resourceIds, expected), 'REPORT_COVERAGE'); coverage(row.coverage, expected.length);
       if (row.scope === 'generated-support') ensure(row.coverage.status === 'unavailable' && row.coverage.expected === null, 'REPORT_COVERAGE');
       if (row.scope === 'package-realizations') ensure(expected.length === 0, 'REPORT_COVERAGE');
-      if (row.scope === 'canonical-text-responses') ensure(row.coverage.status === 'complete'
+      if (optionalScopes.includes(row.scope)) ensure(row.coverage.status === 'complete'
         && row.coverage.expected === expected.length, 'REPORT_COVERAGE');
     }
     ensure(capsule.coverage.resources.status === 'partial' && capsule.coverage.resources.expected === null, 'REPORT_COVERAGE');
   }
   require('./handler-topology').validateHandlerTopology(capsule);
+  require('./computation').validateComputation(capsule);
   return capsule;
 }
 function evidenceDigest(capsule) { const { evidenceHash, ...payload } = capsule; return sha256(canonicalJson(payload)); }

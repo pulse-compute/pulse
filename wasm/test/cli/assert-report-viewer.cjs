@@ -189,6 +189,26 @@ require(path.join(f.reportRoot,'resource-inventory')).addResourceInventory(gener
 for(const resource of generated.resources)resource.routeIds=generated.routes.filter(route=>route.composition.some(id=>resource.entryIds.includes(id))).map(row=>row.id);
 generated.coverage.resources={status:'partial',observed:generated.resources.length,expected:null,reason:'incomplete-mapping'};
 const generatedCapsule=f.createCapsule(generated),generatedTree=renderedTree(generatedCapsule);
+const callableView=structuredClone(generated);
+const span={file:'src/compute.ts',sha256:'a'.repeat(64),start:{offset:10,line:2,column:1},end:{offset:50,line:3,column:1}};
+require(path.join(f.reportRoot,'computation')).addComputation(callableView,{
+  version:'pulse.compiler-report-computation.v1',
+  callees:[{index:0,name:'query',source:span,helpers:[],inputSchema:'app.UpdateInput',outputSchema:'app.UpdateInput',entryIds:['entry-0'],entriesComplete:true,resourceIds:['data']}],
+  sites:[{callee:0,source:span,entryIds:['entry-0'],managed:false}],
+  resources:{identity:'b'.repeat(64),manifestId:'c'.repeat(64),budgets:{files:1,fileBytes:64,totalBytes:64,serializedBytes:1024,bindings:2},
+    source:{recordCount:1,decodedBytes:64,serializedBytes:400},backingBytes:64,
+    records:['data','alias'].map(name=>({id:name,blobId:'d'.repeat(64)+':64',sha256:'d'.repeat(64),byteLength:64,selected:name==='data',entryIds:name==='data'?['entry-0']:[],calleeIndices:name==='data'?[0]:[]}))}
+},'/',[f.buildId]);
+for(const resource of callableView.resources)resource.routeIds=callableView.routes.filter(route=>route.composition.some(id=>resource.entryIds.includes(id))).map(row=>row.id);
+callableView.coverage.resources.observed=callableView.resources.length;
+const callableCapsule=f.createCapsule(callableView),callableTree=renderedTree(callableCapsule);
+assert.match(callableTree.get('view-resources').textContent,/Binary resource closure/);
+assert.match(callableTree.get('view-resources').textContent,/Shared computationsquery.*src\/compute.ts:2/);
+assert.match(callableTree.get('view-resources').textContent,/Instance \/ process memoryNot recorded/);
+callableTree.renderers.state.resourceAdvanced=true;callableTree.renderers.renderResources();
+const binaryIndex=callableCapsule.resources.findIndex(row=>row.name==='data');
+callableTree.get('resource-expand-'+binaryIndex).events.click();
+assert.match(callableTree.get('resource-detail-'+binaryIndex).textContent,/Logical aliases(?:data, alias|alias, data)/);
 assert.match(generatedTree.get('view-resources').textContent,/Packed base64 text/);
 assert.match(generatedTree.get('view-resources').textContent,/Normalized descriptor/);
 assert.match(generatedTree.get('view-resources').textContent,/Package realization records · complete · 0 observed \/ 0 expected/);
