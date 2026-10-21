@@ -45,7 +45,7 @@ async function main() {
     }
     assert.equal(native.inspection.imports.some(e => /pulse_host|js[_-]?compute/i.test(`${e.module}:${e.name}`)), false);
     assert.deepEqual(native.inspection.imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
-      plan.effects.some(effect => effect.kind === 'fetch') ? ['wasi_snapshot_preview1:clock_time_get'] : [], 'only the fetch deadline clock is permitted');
+      plan.effects.some(effect => effect.kind === 'fetch') ? ['wasi_snapshot_preview1:clock_time_get', 'wasi_snapshot_preview1:fd_write'] : [], 'only the fetch deadline clock and transport diagnostic writer are permitted');
     // Execute original async source through the live runtime, not normalized compiler output.
     const js = ts.transpileModule(source.replace('@pulse-compute/runtime', path.join(root, 'packages/runtime/src/index.js')), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
     const entry = path.join(tmp, 'app.cjs'); fs.writeFileSync(entry, js);

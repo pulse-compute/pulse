@@ -58,6 +58,7 @@ function __s3_header(request: i32, name: string, value: string): bool {
   return fastly_http_req_header_insert(request, n.dataStart, n.length, v.dataStart, v.length) == 0;
 }
 function __pulse_fastly_s3_begin(index: i32, outer: __PulseFastlyValue): void {
+  __pulse_transport_slots[index] = null;
   __s3_dispatched[index] = false; __s3_sent_bytes[index] = 0; __s3_digests[index] = '';
   const put = __pulse_fastly_effect_kind(index) == 14;
   const payload = __pulse_fastly_value(__pulse_fastly_payload_field(outer, 'invocation'));
@@ -117,7 +118,9 @@ function __pulse_fastly_s3_begin(index: i32, outer: __PulseFastlyValue): void {
   }
   if (__s3_remaining(index) == 0) { __s3_close_req(req); __s3_close_body(body[0]); __s3_fail(index, 'timeout'); return; }
   __s3_dispatched[index] = true;
-  if (fastly_http_req_send_async(req, body[0], backend.dataStart, backend.length, changetype<usize>(pending)) != 0) {
+  const sent = fastly_http_req_send_async(req, body[0], backend.dataStart, backend.length, changetype<usize>(pending));
+  if (sent != 0) {
+    __pulse_transport_capture(index, sent, 'send');
     __s3_close_req(req); __s3_close_body(body[0]); __s3_fail(index, 'transport'); return;
   }
   // send_async consumes request/body. Pending handles have no cancel hostcall.
@@ -213,7 +216,8 @@ function __pulse_fastly_s3_wait(index: i32): i32 {
     const ready = __s3_wait_ready(index, pending);
     if (ready <= 0) return __s3_failure(index, ready == 0 ? 'timeout' : 'transport');
     done[0] = 0; __pulse_send_error_detail_reset(changetype<usize>(detail));
-    if (__s3_poll(pending, changetype<usize>(detail), changetype<usize>(done), changetype<usize>(response), changetype<usize>(body)) != 0) return __s3_failure(index, 'transport');
+    const status = __s3_poll(pending, changetype<usize>(detail), changetype<usize>(done), changetype<usize>(response), changetype<usize>(body));
+    if (status != 0) { __pulse_transport_capture(index, status, 'poll', changetype<usize>(detail)); return __s3_failure(index, 'transport'); }
     if (done[0] != 0) break;
   }
   let result: i32;

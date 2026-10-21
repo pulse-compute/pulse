@@ -131,8 +131,8 @@ async function main() {
     assert.deepEqual(
       imports.filter((entry) => /wasi/i.test(entry.module))
         .map((entry) => `${entry.module}:${entry.name}`),
-      ['wasi_snapshot_preview1:clock_time_get'],
-      'the example fetch deadlines require only the monotonic WASI clock'
+      ['wasi_snapshot_preview1:clock_time_get', 'wasi_snapshot_preview1:fd_write'],
+      'the example requires only the deadline clock and transport diagnostic writer'
     );
 
     const program = require(path.join(dist, 'canonical-handler.cjs'));

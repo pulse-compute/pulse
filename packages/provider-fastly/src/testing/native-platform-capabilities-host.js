@@ -254,6 +254,39 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     if (fault?.unterminated && count) new Uint8Array(memory().buffer)[Number(buffer) + count - 1] = 65;
     return fault?.status ?? FASTLY_STATUS_OK;
   }
+  function writeSendErrorDetail(item, handle, detail, outputs, name) {
+    // Independent wasm32 ABI oracle: SendErrorDetail is 20 bytes, aligned to
+    // four, even when no optional field is valid. Do not import guest constants.
+    const strict = options.sendErrorDetailLayout;
+    if (strict) {
+      const fail = message => { throw new FastlyNativePlatformCapabilitiesMockError(message, 'PULSE_FASTLY_SEND_ERROR_DETAIL_LAYOUT'); };
+      if (detail % 4) fail('SendErrorDetail must be four-byte aligned');
+      // AssemblyScript managed StaticArray rtSize is the word at data - 4.
+      if (strict === 'managed' && view().getUint32(detail - 4, true) < 20) fail('SendErrorDetail allocation is smaller than 20 bytes');
+      for (const output of outputs) if (output < detail + 20 && output + 4 > detail) fail('SendErrorDetail overlaps an output');
+      if (view().getUint32(detail, true) !== 0 || view().getUint32(detail + 4, true) !== 30) fail('SendErrorDetail tag/mask were not reset before host call');
+      for (let offset = 8; offset < 20; offset++) if (view().getUint8(detail + offset) !== 0) fail('SendErrorDetail contains stale optional fields');
+    }
+    const guards = [...new Set([detail - 4, detail + 20, ...outputs])];
+    const saved = guards.map(pointer => view().getUint32(pointer, true));
+    const canary = guards.map((_, i) => 0x13579bd0 + i);
+    if (strict) guards.forEach((pointer, i) => writeU32(pointer, canary[i]));
+    const wire = item.fixture.sendErrorDetail === null ? {tag:0,mask:0} : item.fixture.sendErrorDetail || { tag: item.fixture.transportStatus ? 22 : 1, mask: 0 };
+    // Write the entire C-layout record, including padding and the final word.
+    new Uint8Array(memory().buffer, detail, 20).fill(0);
+    writeU32(detail, wire.tag); writeU32(detail + 4, wire.mask);
+    view().setUint16(detail + 8, wire.dnsRcode || 0, true);
+    view().setUint16(detail + 10, wire.dnsInfo || 0, true);
+    view().setUint8(detail + 12, wire.tlsAlert || 0);
+    view().setUint8(detail + 13, wire.h2Frame || 0);
+    writeU32(detail + 16, wire.h2Code || 0);
+    if (strict) guards.forEach((pointer, i) => {
+      if (view().getUint32(pointer, true) !== canary[i]) throw new FastlyNativePlatformCapabilitiesMockError('SendErrorDetail overwrote an adjacent/output sentinel', 'PULSE_FASTLY_SEND_ERROR_DETAIL_LAYOUT');
+      writeU32(pointer, saved[i]);
+    });
+    trace.push({module:'fastly_http_req',name,pendingHandle:Number(handle),
+      detailBytes:20, detailTag:wire.tag, detailMask:wire.mask, detailLayoutChecked:Boolean(strict)});
+  }
   const imports = {
     fastly_async_io: {
       is_ready(handle, out) {
@@ -461,37 +494,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       close(handle) { return requests.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF; },
       pending_req_poll_v2(handle, detail, done, responseOut, bodyOut) {
         const item = pending.get(Number(handle)); if (!item) return FASTLY_STATUS_BADF;
-        // Independent wasm32 ABI oracle: SendErrorDetail is 20 bytes, aligned to
-        // four, even when no optional field is valid. Do not import guest constants.
-        const strict = options.sendErrorDetailLayout;
-        if (strict) {
-          const fail = message => { throw new FastlyNativePlatformCapabilitiesMockError(message, 'PULSE_FASTLY_SEND_ERROR_DETAIL_LAYOUT'); };
-          if (detail % 4) fail('SendErrorDetail must be four-byte aligned');
-          // AssemblyScript managed StaticArray rtSize is the word at data - 4.
-          if (strict === 'managed' && view().getUint32(detail - 4, true) < 20) fail('SendErrorDetail allocation is smaller than 20 bytes');
-          for (const output of [done, responseOut, bodyOut]) if (output < detail + 20 && output + 4 > detail) fail('SendErrorDetail overlaps a poll output');
-          if (view().getUint32(detail, true) !== 0 || view().getUint32(detail + 4, true) !== 30) fail('SendErrorDetail tag/mask were not reset before poll');
-          for (let offset = 8; offset < 20; offset++) if (view().getUint8(detail + offset) !== 0) fail('SendErrorDetail contains stale optional fields');
-        }
-        const guards = [...new Set([detail - 4, detail + 20, done, responseOut, bodyOut])];
-        const saved = guards.map(pointer => view().getUint32(pointer, true));
-        const canary = guards.map((_, i) => 0x13579bd0 + i);
-        if (strict) guards.forEach((pointer, i) => writeU32(pointer, canary[i]));
-        const wire = item.fixture.sendErrorDetail || { tag: item.fixture.transportStatus ? 22 : 1, mask: 0 };
-        // Write the entire C-layout record, including padding and the final word.
-        new Uint8Array(memory().buffer, detail, 20).fill(0);
-        writeU32(detail, wire.tag); writeU32(detail + 4, wire.mask);
-        view().setUint16(detail + 8, wire.dnsRcode || 0, true);
-        view().setUint16(detail + 10, wire.dnsInfo || 0, true);
-        view().setUint8(detail + 12, wire.tlsAlert || 0);
-        view().setUint8(detail + 13, wire.h2Frame || 0);
-        writeU32(detail + 16, wire.h2Code || 0);
-        if (strict) guards.forEach((pointer, i) => {
-          if (view().getUint32(pointer, true) !== canary[i]) throw new FastlyNativePlatformCapabilitiesMockError('SendErrorDetail overwrote an adjacent/output sentinel', 'PULSE_FASTLY_SEND_ERROR_DETAIL_LAYOUT');
-          writeU32(pointer, saved[i]);
-        });
-        trace.push({module:'fastly_http_req',name:'pending_req_poll_v2',pendingHandle:Number(handle),
-          detailBytes:20, detailTag:wire.tag, detailMask:wire.mask, detailLayoutChecked:Boolean(strict)});
+        writeSendErrorDetail(item, handle, detail, [done, responseOut, bodyOut], 'pending_req_poll_v2');
         // Exercise a readiness race: select/is_ready can precede a not-ready poll.
         if (monotonicMs >= item.readyAt && item.fixture.pollNotReadyMs && !item.delayedPoll) {
           item.delayedPoll = true; item.readyAt = monotonicMs + Number(item.fixture.pollNotReadyMs);
@@ -546,6 +549,11 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         writeU32(pendingOut, pendingHandle);
         trace.push({ module: 'fastly_http_req', name: 'send_async', handle: Number(handle), bodyHandle: Number(bodyHandle), pendingHandle, backend, method: request.method, url: redactText(request.url), headers: redactRuntimeHeaders(request.headers, signedS3), bodyBytes: capturedBody.length });
         return FASTLY_STATUS_OK;
+      },
+      pending_req_wait_v2(handle, detail, responseOut, bodyOut) {
+        const item = pending.get(Number(handle)); if (!item) return FASTLY_STATUS_BADF;
+        writeSendErrorDetail(item, handle, detail, [responseOut, bodyOut], 'pending_req_wait_v2');
+        return imports.fastly_http_req.pending_req_wait(handle, responseOut, bodyOut);
       },
       pending_req_wait(handle, responseOut, bodyOut) {
         const item = pending.get(Number(handle));

@@ -206,7 +206,7 @@ try {
   assert.ok(imports.some((entry) => entry.module === 'fastly_http_req' && entry.name === 'send_async'));
   assert.equal(imports.some((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false);
   assert.deepEqual(imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
-    ['wasi_snapshot_preview1:clock_time_get'], 'fetch deadlines require only the monotonic WASI clock');
+    ['wasi_snapshot_preview1:clock_time_get', 'wasi_snapshot_preview1:fd_write'], 'fetch requires the monotonic WASI clock and bounded failure diagnostics');
   const exports = WebAssembly.Module.exports(new WebAssembly.Module(wasmBytes));
   assert.ok(exports.some((entry) => entry.name === '_start'));
 

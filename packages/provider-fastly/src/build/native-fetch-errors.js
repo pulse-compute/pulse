@@ -10,6 +10,7 @@ function __pulse_fetch_fail(status: i32, stage: i32, effect: i32): void {
   // Fastly ERROR and HTTP parse/user/incomplete/size/status errors represent
   // failed exchanges. Invalid arguments, handles and unsupported ABI stay fatal.
   const network = __pulse_fastly_effect_kind(effect) != 1 || status == 1 || status == 7 || status == 8 || status == 9 || status == 11 || status == 12;
+  if (__pulse_fastly_last_error == 0) __pulse_transport_error = __pulse_transport_slots[effect];
   __pulse_fastly_fail(network ? PULSE_ERROR_TRANSPORT : PULSE_ERROR_HOSTCALL, stage, effect);
 }
 function __pulse_fetch_failed(): bool {

@@ -188,6 +188,59 @@ best-effort write; errors and partial writes do not retry, change the HTTP resul
 or disable later statements. It does not open a named logging endpoint: `stdout`
 and `stderr` are reserved names. No logging binding is required.
 
+### Native transport diagnostics
+
+Fastly Native preserves bounded host transport details on `error.detail` when an
+existing application error handler receives `PULSE_FETCH_NETWORK`. The existing
+`code`, `name`, and `message` remain unchanged. Handlers may return a custom
+response or pass the error through `next(error)`. Other providers and failures
+may omit `detail`; guard its presence in shared handlers.
+
+The record contains `provider: 'fastly'`, `phase` (`send`, `wait`, or `poll`),
+unsigned host `status`, `tag`, `mask`, and `kind`, plus nullable numeric
+`dnsRcode`, `dnsInfo`, `tlsAlert`, `h2Frame`, and `h2Code`. DNS fields require the
+DNS-error tag and their respective mask bits; TLS-alert and HTTP/2 fields likewise
+require both their tag and mask. Valid zero values remain zero. Missing values
+are `null`; an absent/uninitialized detail has `kind: 'unavailable'` and null
+`tag`/`mask`. Unknown tags use `kind: 'unknown'` and retain the unsigned numeric tag
+and mask. These are host observations, not independently verified root causes.
+
+Each active send/wait/poll failure also attempts one `[pulse:error]` JSON log
+with `event: 'pulse.transport'` and the same fields through the existing configured
+sink. The record is less than 512 UTF-8 bytes and includes only fixed strings and
+bounded integers: no pointers, URL, backend name, headers, body, or secret values.
+Sink failure does not change error handling. This provider diagnostic does not
+require an authored `ctx.log` statement. S3 retains its existing failure result;
+forwarding retains its terminal response contract. Their details are available
+through this diagnostic, without introducing application recovery for forwarding.
+
+| Native path | Host detail and lifecycle |
+| --- | --- |
+| Ordinary fetch (also shared GRIP transport) | `send_async`, then `pending_req_wait_v2`; failed sends have no detail output and explicitly report unavailable detail. |
+| Fetch with an active header deadline | Existing `pending_req_poll_v2`; expiration remains `PULSE_FETCH_TIMEOUT`, even if a poll also reports a transport failure. |
+| S3 | Existing async send and bounded poll; transport diagnostics do not alter S3 result fields or timeout reasons. |
+| Terminal body forwarding | Existing streaming send and poll; diagnostics do not resume application code, retry, or send a replacement after response commitment. |
+| Cleanup | Late polls discard details and close owned results; they cannot replace the original error. Pending requests have no host cancellation operation. |
+
+All detail-bearing calls reset the complete 20-byte wasm32 ABI record before
+reuse. Ordinary Native fetch/GRIP now requires `pending_req_wait_v2`; deadline,
+S3, and forwarding paths retain their existing `pending_req_poll_v2` requirement.
+An older host missing these imports cannot instantiate the artifact; there is no
+legacy-host fallback. Historical internal HTTP-effects/entities prototypes are
+not the canonical `pulse build` route and do not acquire this diagnostic contract.
+
+The focused authoring-to-Wasm proof is
+`node wasm/test/provider/assert-fastly-transport-details.cjs`. Setting
+`PULSE_VICEROY_BIN` adds local socket-reset and untrusted-certificate replay
+(requires OpenSSL to create a temporary local certificate). Viceroy 0.21.1 returns
+transport statuses for these failures but leaves detail uninitialized; Pulse
+reports `unavailable`, without inventing DNS or TLS subcodes. The opt-in
+`assert-fastly-transport-details-installed.cjs` runner freshly packs and installs
+the candidate, verifies installed bytes before and after compilation, and records
+Wasm/package hashes and local engine identity. Enforcing-host DNS/TLS/mask cases
+and actual local host observations are distinct evidence; neither establishes
+deployed Fastly acceptance.
+
 ### Named production log streams
 
 Select one case-sensitive stream explicitly in `.pulse/config.ts`:
