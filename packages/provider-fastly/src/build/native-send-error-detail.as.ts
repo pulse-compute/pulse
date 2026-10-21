@@ -7,6 +7,6 @@ const __PULSE_SEND_ERROR_DETAIL_WORDS: i32 = __PULSE_SEND_ERROR_DETAIL_BYTES / 4
 function __pulse_send_error_detail_reset(detail: usize): void {
   memory.fill(detail, 0, __PULSE_SEND_ERROR_DETAIL_BYTES)
   // Advertise storage for all known optional fields (bits 1..4); bit 0 is reserved.
-  // Returned fields and mask are deliberately not exposed as public diagnostics.
+  // Diagnostics consume only returned fields authorized by both tag and mask.
   store<u32>(detail + 4, 0x1e)
 }

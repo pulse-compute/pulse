@@ -117,6 +117,7 @@ function __pulse_fetch_wait(index: i32): i32 {
       const status = __pulse_fetch_poll(__pulse_fastly_pending[i], changetype<usize>(detail), changetype<usize>(done), changetype<usize>(response), changetype<usize>(body))
       now = __pulse_fetch_clock(i)
       if (status != 0) {
+        __pulse_transport_capture(i, status, 'poll', changetype<usize>(detail))
         __pulse_fetch_complete(i, now < 0 ? -2 : __pulse_fetch_remaining(i, now) <= 0 ? -1 : status)
         if (now < 0) { __pulse_fetch_retire_all(); return 0 }
         continue

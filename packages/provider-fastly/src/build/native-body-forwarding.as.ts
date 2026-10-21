@@ -151,10 +151,11 @@ function __fwd_begin(index: i32, payload: __PulseFastlyValue): void {
     if (fastly_http_req_header_insert(__fwd_request, changetype<usize>(name), name.byteLength, changetype<usize>(value), value.byteLength) != 0) { __fwd_fail(400); return; }
   }
   if (!__fwd_remaining()) return;
+  __pulse_transport_slots[index] = null;
   const status = __fwd_dispatch(__fwd_request, __fwd_upload, changetype<usize>(backend), backend.byteLength, __fwd_io + 52);
   // send may consume the request even on failure. Cleanup makes only a best-effort
   // close on that error path before any handle allocation/reuse can occur.
-  if (status != 0) { __fwd_fail(502); return; }
+  if (status != 0) { __pulse_transport_capture(__fwd_index, status, 'send'); __fwd_fail(502); return; }
   __fwd_request = -1; __fwd_pending = load<i32>(__fwd_io + 52);
   __pulse_fastly_pending[index] = __fwd_pending; __pulse_fastly_pending_mode[index] = PULSE_FASTLY_PENDING_ASYNC;
   __fwd_remaining();
@@ -166,7 +167,7 @@ function __fwd_poll(): bool {
   store<i32>(__fwd_done, 0);
   const status = __pulse_fetch_poll(__fwd_pending, __fwd_detail, __fwd_done, __fwd_response_out, __fwd_body_out);
   const done = load<i32>(__fwd_done);
-  if (status != 0) { __fwd_pending = -1; __fwd_fail(502); return false; }
+  if (status != 0) { __pulse_transport_capture(__fwd_index, status, 'poll', __fwd_detail); __fwd_pending = -1; __fwd_fail(502); return false; }
   if (done != 0 && done != 1) { __fwd_fail(502); return false; }
   if (done == 1) {
     __fwd_response = load<i32>(__fwd_response_out); __fwd_body = load<i32>(__fwd_body_out); __fwd_pending = -1;
