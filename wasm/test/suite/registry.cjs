@@ -1203,6 +1203,10 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
     description: '07A/07B exact packed source-free MCP and generic resource closures, production host, official client and pinned Codex onboarding; one release-owned gate'
   }),
+  'mcp-fastly-local-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
+    args: ['--fastly-local'], evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
+    description: '10A exact installed Native context, growth, deadlines and resource lifetime through actual Fastly CLI/Viceroy; local only'
+  }),
   'mcp-wire-proof': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
     evidence: 'external', timeoutMs: 300000,
     description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'

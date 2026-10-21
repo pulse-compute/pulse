@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createRequire } = require('node:module');
 const { search, wholeBytes } = require('./context-search-oracle.cjs');
-function expectations(consumer, output, corpus, manifest) {
+function expectations(consumer, output, corpus, manifest, extraCases = []) {
   const local = createRequire(path.join(consumer, 'package.json'));
   const ts = local('typescript');
   const oracle = path.join(output, 'oracle');
@@ -84,6 +84,7 @@ function expectations(consumer, output, corpus, manifest) {
     }
   }
   for (const [tool, args] of [['start', { goal: 'json-api', provider: 'node', target: 'native' }], ['read', { id: 'schema/registry' }], ['search', { query: 'schema' }], ['example', { id: '01-hello-json' }], ['diagnostic', { code: 'PULSE_SCHEMA_COMPILE_FAILED' }]]) add(tool, { ...args, version: 'not-bundled' });
+  for (const item of extraCases) add(item.tool, item.input);
   return cases;
 }
 module.exports = { expectations };

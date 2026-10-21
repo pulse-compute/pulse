@@ -271,6 +271,29 @@ node wasm/scripts/run-wasm-tests.cjs --task provider-fastly-compute-reality --no
 
 The task records the Fastly CLI version, invokes `fastly compute serve --file`, and lets the CLI own its local Compute engine. It then sends real HTTP requests through the generated native module. `PULSE_VICEROY_BIN` remains available only as an explicit lower-level reproduction override. The fixture covers schemas, configuration, secrets, KV persistence, named-backend fetch, opaque bytes, repeated headers, and GRIP hold/publish. It does not deploy or activate a Fastly service.
 
+The context application has a separate exact-installed local acceptance task:
+
+```bash
+PULSE_FASTLY_BIN=/path/to/fastly PULSE_VICEROY_BIN=/path/to/viceroy \
+  node wasm/scripts/run-wasm-tests.cjs --task mcp-fastly-local-installed
+```
+
+This task requires both tools and invokes the actual Fastly CLI with the selected
+Viceroy binary. It uses the standard package candidates, an unrelated installed
+consumer and its shipped `fastly-native` profile. Independent expectations cover
+all five tools, complete read/search pagination, citations, admission failures
+and repeated requests. Separately identified growth, deadline and generic resource
+fixtures exercise the admitted row ceiling, UTF-8/bounds behavior, deduplication,
+unused resource elimination, workspace lifetime and cumulative allocation failure.
+No configured backend or JavaScript fallback participates in these requests.
+
+Receipts retain package, source, configuration, context-manifest and module hashes,
+tool versions, HTTP outcomes, latency and the module's declared memory bounds.
+Host RSS is sampled only when observable; live guest allocation counts and peak
+heap remain unknown. Failed runs remain failed. This standalone development task
+does not extend the release selection or authorize deployment. Final release use
+requires a fresh run bound to the selected immutable candidate.
+
 ## Aggregate seal and evidence
 
 [Testing Pulse](./testing.md#aggregate-release-seal) owns execution, deadlines,
