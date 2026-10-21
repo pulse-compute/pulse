@@ -447,6 +447,82 @@ is abandoned to invocation teardown and may still commit. Host termination never
 resumes an inactive handler. Local Wasm evidence is separate from K4's deployed
 cross-location acceptance.
 
+## KV listing and deletion
+
+`ctx.kv('catalog').list({ limit: 10, prefix: 'user/', cursor })` requests exactly
+one page. `limit` is required and must be an integer from 1 through 100. Omit
+`cursor` for the first page; pass back the returned opaque string for the next
+page with the same store, prefix and provider. A successful result is
+`{ status: 'listed', keys: [...], cursor: string | null }`. `null` marks the final
+page. An empty page is valid; use the cursor to determine completion. Pulse
+never fetches another page automatically or decodes/translates provider cursors.
+
+```ts
+const page = await ctx.kv('catalog').list({ limit: 10, prefix: 'user/' });
+if (page.status === 'listed') {
+  return ctx.json({ keys: page.keys, nextCursor: page.cursor });
+}
+return ctx.json(page, { status: 503 });
+```
+
+Listing failure is `{ status: 'failed', reason }`. Invalid option shapes, limits
+or prefixes return `invalid-options`; malformed or provider-rejected cursors
+return `invalid-cursor`. Keys and prefixes have a 1,024-byte UTF-8 ceiling
+(prefix may be empty), and cursors have an 8,192-byte ceiling. Strings must be
+Unicode scalar text without control characters. Each returned page contains at
+most the requested number of distinct keys matching the prefix. Acquired response
+bodies are bounded to 262,144 bytes, checked as strict UTF-8/JSON, and closed on
+success or failure. Oversized or malformed provider responses return `too-large`
+or `protocol`; they never produce a partial successful page. Cursors, prefixes
+and returned keys are redacted in managed traces and errors.
+
+Ordering and visibility are provider-defined. Node's local reference maintains
+a UTF-8 byte-ordered key index and seeks after the cursor key, including when
+that key was deleted. Its signed cursors are scoped to the reference instance,
+store and prefix. Fastly Native requests the provider's strong list mode and
+passes its cursor through unchanged. Neither target promises a snapshot across
+pages, globally ordered results, or stable visibility under concurrent mutation.
+An insertion before the current cursor can be missed; later pages may reflect
+deletions and new writes. Do not use a listing to establish absence, perform an
+atomic bulk operation, or prove a cross-location consistency guarantee.
+
+```ts
+const result = await ctx.kv('catalog').delete('user/123');
+return ctx.json(result);
+```
+
+Delete returns `deleted` when the provider acknowledges deletion and `not-found`
+when it explicitly reports absence, including repeated deletion. An idempotent
+provider may acknowledge an already absent key as `deleted`; that acknowledgement
+does not prove the key previously existed. A definite validation/binding
+failure or provider rejection is `not-deleted` with a reason. Timeout or transport
+failure after dispatch is `unknown`: deletion may have happened. There is no
+preflight get, retry, rollback, generation condition, or physical-delete/recreate
+guarantee. Existing versioned and conditional operations retain their semantics;
+deleting a key invalidates the prior current value, and later creation receives
+a new Node generation.
+
+Both methods are awaited effects and may be keyed members of `ctx.parallel`.
+They share conditional KV's monotonic ten-second/request deadline, cancellation
+and pending-handle cleanup rules. Expired Fastly pending handles are left to
+invocation teardown; acquired list bodies are closed, and no late completion
+resumes an inactive handler. Fastly-specific key restrictions remain explicit
+`invalid-key` failures.
+
+Node JavaScript and Native implement both methods. Fastly Native uses direct
+`fastly_kv_store.list/list_wait` and `delete/delete_wait` hostcalls. Fastly
+JavaScript blocks these capabilities during target-support evaluation rather
+than substituting get/put or silently returning an empty page. Final-Wasm ABI
+fault tests and installed-package Viceroy tests are local evidence. Production
+acceptance still requires a configured Fastly KV binding: verify multi-page
+prefix listing, rejected cursor handling, present/absent/repeated deletion and
+observed concurrent-mutation behavior on the deployed service. Local Viceroy
+does not qualify hosted consistency, propagation or cross-location visibility.
+Viceroy 0.21.1's `delete_wait` discards its internal existence boolean and returns
+success for absent keys. Its installed-package receipt records that limitation;
+explicit host `NotFound` normalization is exercised by the enforcing ABI host
+and must be checked on the deployed binding.
+
 ## Native dispatcher containment
 
 The Native emitter keeps small plans in one guarded dispatcher. Larger plans use

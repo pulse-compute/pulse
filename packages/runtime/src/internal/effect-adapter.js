@@ -238,7 +238,9 @@ function createCapabilityEffectAdapter(capabilities = {}) {
       if (!namespaces.has(effect.namespace)) namespaces.set(effect.namespace, await value.kv(effect.namespace, execution));
       const namespace = namespaces.get(effect.namespace), method = effect.kind.slice(3);
       if (!namespace || typeof namespace[method] !== 'function') return undefined;
-      return () => method === 'getVersioned' ? namespace[method](effect.key, execution)
+      return () => method === 'list' ? namespace[method](effect.options, execution)
+        : method === 'delete' ? namespace[method](effect.key, execution)
+        : method === 'getVersioned' ? namespace[method](effect.key, execution)
         : method === 'insertIfAbsent' ? namespace[method](effect.key, effect.value, execution)
         : namespace[method](effect.key, effect.generation, effect.value, execution);
     },

@@ -1,6 +1,16 @@
-import type { PulseContext, PulseKvConditionalResult, PulseKvVersionedResult } from '@pulse-compute/pulse';
+import type { PulseContext, PulseKvConditionalResult, PulseKvVersionedResult, PulseKvListResult, PulseKvDeleteResult } from '@pulse-compute/pulse';
 async function contract(ctx: PulseContext) {
   const store = ctx.kv<{ count: number }>('catalog');
+  const page: PulseKvListResult = await store.list({ limit: 10, prefix: 'user/' });
+  const deleted: PulseKvDeleteResult = await store.delete('k');
+  await ctx.parallel({ page: store.list({ limit: 1 }), deleted: store.delete('missing') });
+  // @ts-expect-error Listing requires an explicit bounded page size.
+  store.list({ prefix: 'user/' });
+  // @ts-expect-error Cursors remain opaque strings.
+  store.list({ limit: 1, cursor: 1 });
+  // @ts-expect-error Delete accepts one key, never a bulk array.
+  store.delete(['k']);
+  void page; void deleted;
   const found: PulseKvVersionedResult<{ count: number }> = await store.getVersioned('k');
   const created: PulseKvConditionalResult = await store.insertIfAbsent('k', { count: 1 });
   if (found.status === 'found') await store.compareAndSwap('k', found.generation, { count: found.value.count + 1 });

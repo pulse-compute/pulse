@@ -541,7 +541,7 @@ function requiresExactNativeExecution(compiled) {
     || compiled.metadata?.capabilities?.includes('request.body.forward')
     || compiled.metadata?.capabilities?.includes('request.body.transform')
     || (compiled.metadata?.router?.entries || []).some((entry) => entry.kind === 'error')
-    || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(entry.capability));
+    || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete'].includes(entry.capability));
 }
 
 function prepareNativeExecution(project, compiled, native) {

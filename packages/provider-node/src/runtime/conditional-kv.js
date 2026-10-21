@@ -1,6 +1,6 @@
 'use strict';
 
-const { randomUUID } = require('node:crypto');
+const { randomUUID, randomBytes, createHmac, timingSafeEqual } = require('node:crypto');
 const host = require('@pulse-compute/runtime/host');
 
 // One explicit instance is one local authority. Reuse it across requests/targets
@@ -11,7 +11,39 @@ function createNodeKvReference(options = {}) {
   if (typeof identity !== 'string' || !/^[a-zA-Z0-9_-]{1,64}$/.test(identity)) throw new TypeError('Node KV instance identity must be bounded ASCII.');
   let sequence = options.kvGenerationStart === undefined ? 0n : BigInt(options.kvGenerationStart);
   if (sequence < 0n || sequence >= (1n << 128n)) throw new TypeError('Node KV generation sequence is out of range.');
-  const stores = new Map(), records = new Map();
+  const stores = new Map(), records = new Map(), indexes = new Map();
+  const cursorSecret = randomBytes(32);
+  // Legacy put accepts arbitrary JS strings. Distinct malformed surrogate keys
+  // can encode to identical replacement bytes; retain an exact-key tie break.
+  const compare = (a, b) => Buffer.compare(Buffer.from(a), Buffer.from(b)) || (a < b ? -1 : a > b ? 1 : 0);
+  function lowerBound(keys, key, exclusive = false) {
+    let low = 0, high = keys.length;
+    while (low < high) { const mid = (low + high) >>> 1, order = compare(keys[mid], key); if (order < 0 || exclusive && order === 0) low = mid + 1; else high = mid; }
+    return low;
+  }
+  const signature = text => createHmac('sha256', cursorSecret).update(text).digest('base64url');
+  function list(name, { limit, prefix = '', cursor }) {
+    let after;
+    if (cursor !== undefined) {
+      try {
+        const [payload, mac, extra] = cursor.split('.');
+        const expected = signature(payload);
+        if (extra !== undefined || !mac || mac.length !== expected.length || !timingSafeEqual(Buffer.from(mac), Buffer.from(expected))) throw new Error();
+        const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+        if (decoded.n !== name || decoded.p !== prefix || typeof decoded.k !== 'string') throw new Error();
+        after = decoded.k;
+      } catch (_) { return { status: 'failed', reason: 'invalid-cursor' }; }
+    }
+    const keys = indexes.get(name), start = lowerBound(keys, after ?? prefix, after !== undefined), page = [];
+    let i = start;
+    for (; i < keys.length && page.length < limit && keys[i].startsWith(prefix); i++) page.push(keys[i]);
+    let next = null;
+    if (i < keys.length && keys[i].startsWith(prefix)) {
+      const payload = Buffer.from(JSON.stringify({ n: name, p: prefix, k: page[page.length - 1] })).toString('base64url');
+      next = payload + '.' + signature(payload);
+    }
+    return { status: 'listed', keys: page, cursor: next };
+  }
   const hooks = options.kvHooks || {};
   function nextGeneration() {
     if (sequence >= (1n << 128n) - 1n) throw new Error('Node KV generation space exhausted.');
@@ -20,7 +52,7 @@ function createNodeKvReference(options = {}) {
   }
   function namespace(name) {
     host.normalizeKvNamespace(name, options);
-    if (!stores.has(name)) { stores.set(name, new Map()); records.set(name, new Map()); }
+    if (!stores.has(name)) { stores.set(name, new Map()); records.set(name, new Map()); indexes.set(name, []); }
     return { values: stores.get(name), entries: records.get(name) };
   }
   function put(name, key, value) {
@@ -28,6 +60,7 @@ function createNodeKvReference(options = {}) {
     const wire = host.encodeConditionalKvValue(value, options);
     const detached = host.decodeConditionalKvValue(wire, options);
     const generation = nextGeneration();
+    if (!entries.has(key)) { const keys = indexes.get(name); keys.splice(lowerBound(keys, key), 0, key); }
     entries.set(key, { wire, generation }); values.set(key, detached);
   }
   // Reject accessors instead of executing configuration as ambient code.
@@ -44,8 +77,15 @@ function createNodeKvReference(options = {}) {
     host.normalizeKvKey(key, options); put(name, key, value);
   }
   function apply(effect) {
-    const { entries } = namespace(effect.namespace);
+    const { entries, values } = namespace(effect.namespace);
+    if (effect.kind === 'kv.list') return list(effect.namespace, effect.options);
     const current = entries.get(effect.key);
+    if (effect.kind === 'kv.delete') {
+      if (!current) return { status: 'not-found' };
+      entries.delete(effect.key); values.delete(effect.key);
+      const keys = indexes.get(effect.namespace); keys.splice(lowerBound(keys, effect.key), 1);
+      return { status: 'deleted' };
+    }
     if (effect.kind === 'kv.getVersioned') return current
       ? Object.freeze({ status: 'found', generation: current.generation, value: host.decodeConditionalKvValue(current.wire, options) })
       : Object.freeze({ status: 'not-found' });
@@ -65,7 +105,7 @@ function createNodeKvReference(options = {}) {
       if (execution.signal && execution.signal.aborted) throw new Error('Node KV operation stopped before acceptance.');
       const result = apply(effect);
       if (result.status === 'found' && hooks.read) return hooks.read(result, effect, execution);
-      if (result.status === 'stored' && hooks.afterCommit) await hooks.afterCommit(effect, execution);
+      if ((result.status === 'stored' || result.status === 'deleted') && hooks.afterCommit) await hooks.afterCommit(effect, execution);
       return result;
     };
   }
@@ -81,6 +121,8 @@ function createNodeKvReference(options = {}) {
         return host.executeConditionalKv(admitted, prepareConditionalKv, {}, options);
       };
       return Object.freeze({
+        list(listOptions) { return host.executeConditionalKv(host.admitConditionalKv({ kind: 'kv.list', namespace: name, options: listOptions }, options), prepareConditionalKv, {}, options); },
+        delete(key) { return conditional('delete', key); },
         get(key) { host.normalizeKvKey(key, options); return host.cloneKvValue(values.get(key), { ...options, allowUndefined: true }); },
         put(key, value) { host.normalizeKvKey(key, options); put(name, key, value); return true; },
         getVersioned(key) { return conditional('getVersioned', key); },

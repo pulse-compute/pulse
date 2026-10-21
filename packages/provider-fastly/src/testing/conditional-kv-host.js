@@ -11,6 +11,20 @@ function createConditionalKvAuthority() {
       stores.get(store).set(key, { wire: Buffer.from(wire), generation: BigInt(generation) });
     },
     get(store, key) { return stores.get(store)?.get(key); },
+    delete(store, key) { return stores.get(store).delete(key) ? 1 : 3; },
+    list(store, { limit, prefix = '', cursor }) {
+      // Test authority models a live ordered page independently of Pulse's parser.
+      let after;
+      if (cursor !== undefined) {
+        if (!/^abi-kv:/.test(cursor)) return { code: 2 };
+        try { const token = JSON.parse(Buffer.from(cursor.slice(7), 'base64url')); if (token.store !== store || token.prefix !== prefix || typeof token.after !== 'string') return { code: 2 }; after = token.after; }
+        catch (_) { return { code: 2 }; }
+      }
+      const all = [...stores.get(store).keys()].sort((a,b) => Buffer.compare(Buffer.from(a),Buffer.from(b))).filter(key => key.startsWith(prefix) && (after === undefined || Buffer.compare(Buffer.from(key), Buffer.from(after)) > 0));
+      const data = all.slice(0, limit), meta = { limit, ...(prefix ? { prefix } : {}) };
+      if (all.length > limit) meta.next_cursor = 'abi-kv:' + Buffer.from(JSON.stringify({ store, prefix, after: data[data.length - 1] })).toString('base64url');
+      return { code: 1, wire: Buffer.from(JSON.stringify({ data, meta })) };
+    },
     apply(store, key, wire, mode, condition) {
       const values = stores.get(store), current = values.get(key);
       if (mode === 1 && current || condition !== undefined && (!current || current.generation !== condition)) return 4;
@@ -67,6 +81,38 @@ function attachConditionalKvHost(imports, host, options) {
       if (fault.status) return fault.status;
       const handle = alloc('kvInsert'); pending.set(handle, { kind: 'insert', code, readyAt: now() + Number(fault.readyDelayMs || 0) });
       writeU32(out, handle); return 0;
+    },
+    delete(store, ptr, len, mask, config, out) {
+      if (mask !== 0 || view().getUint32(config, true) !== 0) throw new Error('KV delete config must be empty.');
+      const name = stores.get(store), key = readUtf8(ptr, len), fault = call('delete', { store: name, key, mask });
+      const code = fault.kvError ?? ((!fault.status || fault.commit) ? authority.delete(name, key) : undefined);
+      if (fault.status) return fault.status;
+      const handle = alloc('kvDelete'); pending.set(handle, { kind: 'delete', code, readyAt: now() + Number(fault.readyDelayMs || 0) });
+      writeU32(out, handle); return 0;
+    },
+    delete_wait(handle, error) {
+      const item = pending.get(handle); if (!item || item.kind !== 'delete' || item.readyAt > now()) throw new Error('KV delete wait called before readiness.');
+      pending.delete(handle); const fault = call('delete_wait'); writeU32(error, fault.kvError ?? item.code ?? 0); return fault.status ?? 0;
+    },
+    list(store, mask, config, out) {
+      if ((mask & ~14) !== 0 || !(mask & 4) || view().getUint32(config, true) !== 0) throw new Error('KV list requires bounded strong mode.');
+      const cursor = mask & 2 ? readUtf8(view().getUint32(config + 4, true), view().getUint32(config + 8, true)) : undefined;
+      const limit = view().getUint32(config + 12, true);
+      const prefix = mask & 8 ? readUtf8(view().getUint32(config + 16, true), view().getUint32(config + 20, true)) : '';
+      if (limit < 1 || limit > 100 || cursor === '' || mask & 8 && !prefix) throw new Error('KV list config is invalid.');
+      const name = stores.get(store), fault = call('list', { store: name, mask, limit, prefix, cursor });
+      if (fault.status) return fault.status;
+      const result = authority.list(name, { limit, prefix, cursor });
+      const handle = alloc('kvList'); pending.set(handle, { kind: 'list', ...result, readyAt: now() + Number(fault.readyDelayMs || 0) });
+      writeU32(out, handle); return 0;
+    },
+    list_wait(handle, body, error) {
+      const item = pending.get(handle); if (!item || item.kind !== 'list' || item.readyAt > now()) throw new Error('KV list wait called before readiness.');
+      pending.delete(handle); const fault = call('list_wait'); writeU32(error, fault.kvError ?? item.code);
+      if (fault.status) return fault.status;
+      if ((fault.kvError ?? item.code) !== 1) return 0;
+      const bodyHandle = alloc('body'); bodies.set(bodyHandle, { bytes: Buffer.from(fault.wire ?? item.wire), readOffset: 0, writes: [], readyAt: now() + Number(fault.bodyDelayMs || 0) });
+      bodyFixtures.set(bodyHandle, fault); writeU32(body, bodyHandle); return 0;
     },
     insert_wait(handle, error) {
       const item = pending.get(handle); if (!item || item.readyAt > now()) throw new Error('KV insert wait called before readiness.');

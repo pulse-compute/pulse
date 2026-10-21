@@ -135,7 +135,25 @@ export type PulseKvConditionalResult =
   | { readonly status: 'not-stored'; readonly reason: PulseKvNotStoredReason }
   | { readonly status: 'unknown'; readonly reason: 'transport' | 'timeout' | 'unavailable' | 'protocol' };
 
+export interface PulseKvListOptions {
+  /** Required page size, an integer from 1 through 100. No automatic traversal. */
+  readonly limit: number;
+  readonly prefix?: string;
+  /** Opaque provider cursor; reuse only with the same store, prefix and provider. */
+  readonly cursor?: string;
+}
+export type PulseKvListResult =
+  | { readonly status: 'listed'; readonly keys: readonly string[]; readonly cursor: string | null }
+  | { readonly status: 'failed'; readonly reason: PulseKvReadFailureReason | 'invalid-options' | 'invalid-cursor' };
+export type PulseKvDeleteResult =
+  | { readonly status: 'deleted' }
+  | { readonly status: 'not-found' }
+  | { readonly status: 'not-deleted'; readonly reason: PulseKvNotStoredReason }
+  | { readonly status: 'unknown'; readonly reason: 'transport' | 'timeout' | 'unavailable' | 'protocol' };
+
 export interface PulseKvNamespace<T = unknown> {
+  list(options: PulseKvListOptions): PulseParallelEffect<PulseKvListResult>;
+  delete(key: string): PulseParallelEffect<PulseKvDeleteResult>;
   getVersioned(key: string): PulseParallelEffect<PulseKvVersionedResult<T>>;
   insertIfAbsent(key: string, value: T): PulseParallelEffect<PulseKvConditionalResult>;
   compareAndSwap(key: string, generation: PulseKvGeneration, value: T): PulseParallelEffect<PulseKvConditionalResult>;

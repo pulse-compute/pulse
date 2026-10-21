@@ -3,7 +3,7 @@ import type {
   PulseTimeResult,
   PulseEffect,
   PulseEffects,
-  PulseKvGeneration, PulseKvVersionedResult, PulseKvConditionalResult,
+  PulseKvGeneration, PulseKvVersionedResult, PulseKvConditionalResult, PulseKvListOptions, PulseKvListResult, PulseKvDeleteResult,
   PulseFetchResponse,
   PulseParallelEffect,
   PulseParallelResult,
@@ -106,6 +106,8 @@ export interface PulseEventRecordingAdapter extends PulseJavascriptEffectAdapter
 }
 
 export interface PulseRuntimeHostKvNamespace<T = unknown> {
+  list?(options: PulseKvListOptions): Promise<PulseKvListResult> | PulseKvListResult;
+  delete?(key: string): Promise<PulseKvDeleteResult> | PulseKvDeleteResult;
   getVersioned?(key: string): Promise<PulseKvVersionedResult<T>> | PulseKvVersionedResult<T>;
   insertIfAbsent?(key: string, value: T): Promise<PulseKvConditionalResult> | PulseKvConditionalResult;
   compareAndSwap?(key: string, generation: PulseKvGeneration, value: T): Promise<PulseKvConditionalResult> | PulseKvConditionalResult;
@@ -475,8 +477,8 @@ export declare function normalizeConditionalKvKey(value: unknown, options?: Puls
 export declare function encodeConditionalKvValue(value: unknown, options?: PulseBindingValueLimits): Uint8Array;
 export declare function decodeConditionalKvValue(bytes: Uint8Array, options?: PulseBindingValueLimits): unknown;
 export declare function admitConditionalKv(input: Readonly<Record<string, unknown>>, options?: PulseRuntimeExecutionOptions): Readonly<Record<string, unknown>>;
-export declare function normalizeConditionalKvResult(effect: Readonly<{ kind: string }>, value: unknown, options?: PulseBindingValueLimits): PulseKvVersionedResult<unknown> | PulseKvConditionalResult;
-export declare function executeConditionalKv(effect: Readonly<Record<string, unknown>>, prepare: PulseConditionalKvPreparation, execution?: PulseConditionalKvExecution, options?: PulseRuntimeExecutionOptions): Promise<PulseKvVersionedResult<unknown> | PulseKvConditionalResult>;
+export declare function normalizeConditionalKvResult(effect: Readonly<{ kind: string; options?: PulseKvListOptions }>, value: unknown, options?: PulseBindingValueLimits): PulseKvVersionedResult<unknown> | PulseKvConditionalResult | PulseKvListResult | PulseKvDeleteResult;
+export declare function executeConditionalKv(effect: Readonly<Record<string, unknown>>, prepare: PulseConditionalKvPreparation, execution?: PulseConditionalKvExecution, options?: PulseRuntimeExecutionOptions): Promise<PulseKvVersionedResult<unknown> | PulseKvConditionalResult | PulseKvListResult | PulseKvDeleteResult>;
 export declare function registerKvRedactions(effect: Readonly<Record<string, unknown>>, register?: (value: string) => void): void;
 /** Whether a data failure can transfer to the next Router error handler. */
 export declare function isApplicationError(error: unknown): boolean;
