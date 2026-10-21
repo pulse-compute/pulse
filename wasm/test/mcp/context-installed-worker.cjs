@@ -10,10 +10,10 @@ const settings = JSON.parse(fs.readFileSync(settingsFile));
 const local = createRequire(path.join(settings.consumer, 'package.json'));
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 async function main() {
-  assert(process.permission, 'filesystem permission enforcement must be active');
-  assert.equal(process.permission.has('fs.read', settings.checkoutProbe), false);
   assert.throws(() => fs.readFileSync(settings.checkoutProbe), { code: 'ERR_ACCESS_DENIED' });
-  if (mode === 'guard') { console.log('ok - checkout reads denied'); return; }
+  if (mode === 'guard') { assert.equal(globalThis.__pulseInstalledBuildReadGuard, true); console.log('ok - build guard denies checkout reads'); return; }
+  assert(process.permission, 'runtime filesystem permission enforcement must be active');
+  assert.equal(process.permission.has('fs.read', settings.checkoutProbe), false);
   assert.equal(mode, 'runtime');
   const { createNodeLauncher } = local('@pulse-compute/provider-node/server');
   for (const file of settings.removedSources) {
@@ -31,12 +31,15 @@ async function main() {
     for (const fault of ['missing', 'truncated', 'corrupt', ...(file === build.portable.wasm.file ? ['mixed-identity'] : [])]) {
       try {
         if (fault === 'missing') fs.unlinkSync(target);
-        else if (fault === 'truncated') fs.writeFileSync(target, original.subarray(0, Math.max(0, original.length - 1)));
+        else if (fault === 'truncated') fs.writeFileSync(target, original.subarray(0, Math.floor(original.length / 2)));
         else if (fault === 'mixed-identity' && file === build.portable.wasm.file) fs.writeFileSync(target, Buffer.from('0061736d01000000', 'hex'));
         else { const bytes = Buffer.from(original); bytes[Math.floor(bytes.length / 2)] ^= 1; fs.writeFileSync(target, bytes); }
-        assert.throws(() => createNodeLauncher({ buildDir: settings.buildDir, target: 'native', networkFetch: false }));
+        assert.throws(() => createNodeLauncher({ buildDir: settings.buildDir, target: 'native', networkFetch: false }), undefined, `${file}: ${fault}`);
         failures.push({ file, fault, rejectedBeforeListening: true });
-      } finally { fs.writeFileSync(target, original); }
+      } finally {
+        fs.writeFileSync(target, original);
+        assert.equal(hash(fs.readFileSync(target)), hash(original), `restored ${file}: ${fault}`);
+      }
     }
   }
   const launcher = createNodeLauncher({ buildDir: settings.buildDir, target: 'native', host: '127.0.0.1', port: 0, networkFetch: false, maxDurationMs: 5000 });

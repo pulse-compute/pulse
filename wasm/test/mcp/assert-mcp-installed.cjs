@@ -75,22 +75,22 @@ function run(command, args, { timeout = 120000, onOutput, cwd = consumer, enviro
   });
 }
 
-function verifyInstalled(manifest) {
+function verifyInstalled(manifest, installedConsumer = consumer) {
   const digests = [], packages = [];
   function checkLinks(directory) {
     for (const name of fs.readdirSync(directory)) {
       const file = path.join(directory, name), stat = fs.lstatSync(file);
-      if (stat.isSymbolicLink()) assert.ok(fs.realpathSync(file).startsWith(consumer + path.sep), `external installed link: ${file}`);
+      if (stat.isSymbolicLink()) assert.ok(fs.realpathSync(file).startsWith(installedConsumer + path.sep), `external installed link: ${file}`);
       else if (stat.isDirectory()) checkLinks(file);
     }
   }
-  checkLinks(path.join(consumer, 'node_modules'));
-  for (const name of fs.readdirSync(path.join(consumer, 'node_modules/@pulse-compute')).sort()) {
+  checkLinks(path.join(installedConsumer, 'node_modules'));
+  for (const name of fs.readdirSync(path.join(installedConsumer, 'node_modules/@pulse-compute')).sort()) {
     const id = '@pulse-compute/' + name;
     const entry = manifest.packages.find(item => item.name === id);
     assert.ok(entry, `unexpected installed Pulse package ${id}`);
-    const packageRoot = path.join(consumer, 'node_modules', id);
-    assert.ok(fs.realpathSync(packageRoot).startsWith(consumer + path.sep), `workspace link: ${id}`);
+    const packageRoot = path.join(installedConsumer, 'node_modules', id);
+    assert.ok(fs.realpathSync(packageRoot).startsWith(installedConsumer + path.sep), `workspace link: ${id}`);
     assert.equal(readJson(path.join(packageRoot, 'package.json')).version, entry.version);
     const tarball = path.join(pack, entry.tarball);
     assert.equal(hash(fs.readFileSync(tarball)), entry.sha256);
@@ -139,13 +139,13 @@ async function main() {
     const before = verifyInstalled(manifest); report.installed = before;
     report.consumerLockSha256 = hash(fs.readFileSync(path.join(consumer, 'package-lock.json')));
     console.log('mcp-installed - exact Native application closure and source-free five-tool replay');
-    report.nativeClosure = await require('./context-installed-closure.cjs').qualify({ consumer, temporary, root, run, env });
+    report.nativeClosure = await require('./context-installed-closure.cjs').qualify({ consumer, temporary, root, run, env, verifyCopy: directory => verifyInstalled(manifest, directory) });
     saveReport();
     const client = path.join(temporary, 'client'); fs.mkdirSync(client);
     for (const file of ['package.json', 'pnpm-lock.yaml', 'context-proof.mjs', 'context-agent-proof.cjs']) {
       fs.copyFileSync(path.join(__dirname, 'reference', file), path.join(client, file));
     }
-    report.fixtureFiles = Object.fromEntries(['reference/context-proof.mjs', 'reference/context-agent-proof.cjs', 'reference/pnpm-lock.yaml', 'codex-reference/pnpm-lock.yaml', 'package-context.cjs', 'context-installed-closure.cjs', 'context-installed-oracle.cjs', 'context-installed-worker.cjs', 'context-search-oracle.cjs', 'context-quality-cases.json']
+    report.fixtureFiles = Object.fromEntries(['reference/context-proof.mjs', 'reference/context-agent-proof.cjs', 'reference/pnpm-lock.yaml', 'codex-reference/pnpm-lock.yaml', 'package-context.cjs', 'context-installed-closure.cjs', 'context-installed-oracle.cjs', 'context-installed-worker.cjs', 'context-installed-read-guard.cjs', 'context-search-oracle.cjs', 'context-quality-cases.json']
       .map(file => [file, hash(fs.readFileSync(path.join(__dirname, file)))]));
     const pnpm = pnpmInvocation(root);
     await run(pnpm.command, [...pnpm.prefix, 'install', '--frozen-lockfile', '--ignore-scripts'], { cwd: client });
