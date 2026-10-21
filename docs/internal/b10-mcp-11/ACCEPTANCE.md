@@ -1,5 +1,14 @@
 # B10-MCP-11 acceptance reconciliation
 
+> **Status update — October 21, 2026:** The later
+> [resource acceptance checkpoint](../b10-resource-acceptance/README.md) freshly
+> qualifies A02/A09–A14 on clean merged revision `b509b5d`, including installed
+> Node Native/JS and actual Fastly CLI/Viceroy. It satisfies #412/#381 closure and
+> confirms #485's installed JS doctor repair. #371's composed-feature work is
+> separately complete through #461. #382 remains open for the full seal. The
+> dated assessment and original receipts below remain unchanged historical
+> evidence; they are not passes for the later candidate.
+
 This supersedes the **status assessment**, not the historical receipts, in
 [00's baseline ledger](../b10-mcp-00/ACCEPTANCE.md). No historical pass becomes a
 pass for the candidate selected in `candidate-selection.json`. The selection
