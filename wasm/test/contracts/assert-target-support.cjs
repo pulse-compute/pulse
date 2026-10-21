@@ -13,6 +13,28 @@ const {
 } = require('../../../packages/provider-node/src/javascript/target.js');
 
 const declaration = NODE_JAVASCRIPT_TARGET_SUPPORT_DECLARATION;
+const {
+  classifyNodeJavascriptCapability,
+  classifyNodeJavascriptProviderRequirement
+} = require('../../../packages/provider-node/src/javascript/target-support-policy.js');
+// Exercise the owning package contracts, so a newly declared requirement cannot
+// silently escape the Node admission matrix again.
+for (const name of ['entities', 'mcp']) {
+  const contract = require(`../../../packages/${name}/pulse.package.json`);
+  for (const requirement of contract.targets.javascript.providerRequirements) {
+    assert.equal(classifyNodeJavascriptProviderRequirement(requirement, []).status,
+      'eligible', `${name}: ${requirement}`);
+  }
+}
+assert.deepEqual(classifyNodeJavascriptProviderRequirement('logging', []),
+  classifyNodeJavascriptCapability('logging'));
+for (const id of ['unknown.requirement', 'effect-execution.extra', 'response-transport.extra', 'logging.extra']) {
+  assert.equal(classifyNodeJavascriptProviderRequirement(id, []).reasonId,
+    'unknown-provider-requirement-fail-closed', id);
+}
+assert.equal(classifyNodeJavascriptCapability('unknown.effect').status, 'blocked');
+assert.equal(classifyNodeJavascriptProviderRequirement('kv.get', []).status, 'pending');
+assert.equal(classifyNodeJavascriptProviderRequirement('request.body.forward', []).status, 'blocked');
 assert.equal(declaration.targetId, NODE_JAVASCRIPT_TARGET_DESCRIPTOR.targetId);
 assert.deepEqual(declaration.availability.summary, { total: 12, satisfied: 12, pending: 0, blocked: 0 });
 assert.ok(declaration.availability.gates.every((entry) => entry.status === 'satisfied'));
