@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T06-50-54-364Z--13",
+  "sourceRevision": "8fc66ed2f2a17af3e68b33f941ebe5c968310791",
+  "sourceIdentity": {
+    "sourceRevision": "8fc66ed2f2a17af3e68b33f941ebe5c968310791",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T06:50:54.368Z",
+  "updatedAt": "2026-10-21T06:50:54.522Z",
+  "finishedAt": "2026-10-21T06:50:54.522Z",
+  "durationMs": 154,
+  "profiles": [],
+  "requestedTasks": [
+    "suite-shape",
+    "mcp-http",
+    "mcp-compatibility",
+    "mcp-tools"
+  ],
+  "selectedTasks": [
+    "suite-shape",
+    "mcp-http",
+    "mcp-compatibility",
+    "mcp-tools"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "suite-shape",
+      "evidence": "unit",
+      "description": "profile separation, uniqueness, and timeout budgets",
+      "commandSignature": "cb9cd6abfd8d643b83fae7677728d5f7ec0c31879d30f8531cccc937c79dfb8b",
+      "timeoutMs": 30000,
+      "durationMs": 144,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-50-54-364Z--13/tasks/suite-shape.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T06-50-54-364Z--13"
+}

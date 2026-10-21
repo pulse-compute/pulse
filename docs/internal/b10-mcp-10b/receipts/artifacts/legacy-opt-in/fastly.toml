@@ -1,0 +1,5 @@
+manifest_version = 3
+name = "pulse-context-legacy-opt-in"
+description = "Pulse Fastly Compute reality fixture"
+authors = []
+language = "other"

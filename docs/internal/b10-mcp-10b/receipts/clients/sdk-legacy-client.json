@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "kind": "sdk",
+  "profile": "2025-06-18",
+  "inferenceRequests": 0,
+  "calls": [
+    {
+      "tool": "pulse.diagnostic",
+      "status": "ok",
+      "bytes": 8520
+    },
+    {
+      "tool": "pulse.example",
+      "status": "ok",
+      "bytes": 11813
+    },
+    {
+      "tool": "pulse.read",
+      "status": "ok",
+      "bytes": 15794
+    },
+    {
+      "tool": "pulse.search",
+      "status": "ok",
+      "bytes": 13958
+    },
+    {
+      "tool": "pulse.start",
+      "status": "ok",
+      "bytes": 16938
+    }
+  ],
+  "cleanup": "passed"
+}

@@ -1,0 +1,3115 @@
+{
+  "id": "sdk-modern",
+  "kind": "sdk",
+  "profile": "2026-07-28",
+  "fixture": "reference",
+  "package": "@modelcontextprotocol/client",
+  "version": "2.2.0",
+  "source": {
+    "commit": "abb77482e004cd8e09e82064e76a22a55f0053f9",
+    "tree": "cbd0be7add1f1c9efcc299b7f4d3a0b4ad62af81",
+    "workingTree": "",
+    "workingDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "status": "passed",
+  "wire": [
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "request": {
+        "jsonrpc": "2.0",
+        "id": "server-discover-probe-1",
+        "method": "server/discover",
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "pulse-native-qualification",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      },
+      "requestHeaders": {
+        "host": "127.0.0.1:39105",
+        "connection": "keep-alive",
+        "mcp-protocol-version": "2026-07-28",
+        "mcp-method": "server/discover",
+        "content-type": "application/json",
+        "accept": "application/json, text/event-stream",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "288"
+      },
+      "requestSha256": "f303bfd391b48af1021668eca90d404f3e598a8808a320c1232785ae3f6b9f99",
+      "status": 200,
+      "responseHeaders": {
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "content-length": "295",
+        "date": "Wed, 21 Oct 2026 07:01:32 GMT"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "server-discover-probe-1",
+        "result": {
+          "resultType": "complete",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "pulse-context",
+              "version": "1.0.0-beta.9"
+            }
+          },
+          "supportedVersions": [
+            "2026-07-28"
+          ],
+          "capabilities": {
+            "tools": {
+              "listChanged": false
+            }
+          },
+          "ttlMs": 0,
+          "cacheScope": "private"
+        }
+      },
+      "responseSha256": "37308959fb0fb5c7b920e2e3ce3d18adf00b450e1111eadc58c396c7b070b04e",
+      "responseBytes": 295
+    },
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "request": {
+        "method": "server/discover",
+        "jsonrpc": "2.0",
+        "id": 0,
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "pulse-native-qualification",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      },
+      "requestHeaders": {
+        "host": "127.0.0.1:39105",
+        "connection": "keep-alive",
+        "mcp-protocol-version": "2026-07-28",
+        "mcp-method": "server/discover",
+        "content-type": "application/json",
+        "accept": "application/json, text/event-stream",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "264"
+      },
+      "requestSha256": "0201a66e74cd4650543dcf9eaf186c5f27df6b0a535cfdd597878c8687312a32",
+      "status": 200,
+      "responseHeaders": {
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "content-length": "271",
+        "date": "Wed, 21 Oct 2026 07:01:32 GMT"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "result": {
+          "resultType": "complete",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "pulse-context",
+              "version": "1.0.0-beta.9"
+            }
+          },
+          "supportedVersions": [
+            "2026-07-28"
+          ],
+          "capabilities": {
+            "tools": {
+              "listChanged": false
+            }
+          },
+          "ttlMs": 0,
+          "cacheScope": "private"
+        }
+      },
+      "responseSha256": "0ef0e0ed37a575820950759c3d96f1bb149f2e8188171d2e3c3a86f10c7467a1",
+      "responseBytes": 271
+    },
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "request": {
+        "method": "tools/list",
+        "jsonrpc": "2.0",
+        "id": 1,
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "pulse-native-qualification",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      },
+      "requestHeaders": {
+        "host": "127.0.0.1:39105",
+        "connection": "keep-alive",
+        "mcp-protocol-version": "2026-07-28",
+        "mcp-method": "tools/list",
+        "content-type": "application/json",
+        "accept": "application/json, text/event-stream",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "259"
+      },
+      "requestSha256": "849100f3c909f7c26b8225755360a8d6046303d28b7cb5288981cbd55c916cf3",
+      "status": 200,
+      "responseHeaders": {
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "content-length": "17596",
+        "date": "Wed, 21 Oct 2026 07:01:32 GMT"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "resultType": "complete",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "pulse-context",
+              "version": "1.0.0-beta.9"
+            }
+          },
+          "tools": [
+            {
+              "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+              },
+              "description": "Explain an exact diagnostic with citations and suggested local checks.",
+              "inputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": true,
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "version",
+                  "code"
+                ],
+                "type": "object"
+              },
+              "name": "pulse.diagnostic",
+              "outputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": false,
+                "properties": {
+                  "error": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message"
+                    ],
+                    "type": "object"
+                  },
+                  "explanation": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "contracts": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "applicability": {
+                              "items": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "provider": {
+                                    "type": "string"
+                                  },
+                                  "target": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "provider",
+                                  "target"
+                                ],
+                                "type": "object"
+                              },
+                              "type": "array"
+                            },
+                            "category": {
+                              "type": "string"
+                            },
+                            "contentSha256": {
+                              "type": "string"
+                            },
+                            "id": {
+                              "type": "string"
+                            },
+                            "source": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "endLine": {
+                                  "maximum": 2147483647,
+                                  "minimum": -2147483648,
+                                  "type": "integer"
+                                },
+                                "path": {
+                                  "type": "string"
+                                },
+                                "selection": {
+                                  "type": "string"
+                                },
+                                "sha256": {
+                                  "type": "string"
+                                },
+                                "startLine": {
+                                  "maximum": 2147483647,
+                                  "minimum": -2147483648,
+                                  "type": "integer"
+                                },
+                                "url": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "path",
+                                "selection",
+                                "url",
+                                "sha256"
+                              ],
+                              "type": "object"
+                            },
+                            "tags": {
+                              "items": {
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "title": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "title",
+                            "category",
+                            "tags",
+                            "applicability",
+                            "source",
+                            "contentSha256"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "diagnostic": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "applicability": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "provider": {
+                                  "type": "string"
+                                },
+                                "target": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "provider",
+                                "target"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "content": {
+                            "type": "string"
+                          },
+                          "contentSha256": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "nextOffset": {
+                            "maximum": 2147483647,
+                            "minimum": -2147483648,
+                            "type": "integer"
+                          },
+                          "offset": {
+                            "maximum": 2147483647,
+                            "minimum": -2147483648,
+                            "type": "integer"
+                          },
+                          "source": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "endLine": {
+                                "maximum": 2147483647,
+                                "minimum": -2147483648,
+                                "type": "integer"
+                              },
+                              "path": {
+                                "type": "string"
+                              },
+                              "selection": {
+                                "type": "string"
+                              },
+                              "sha256": {
+                                "type": "string"
+                              },
+                              "startLine": {
+                                "maximum": 2147483647,
+                                "minimum": -2147483648,
+                                "type": "integer"
+                              },
+                              "url": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "selection",
+                              "url",
+                              "sha256"
+                            ],
+                            "type": "object"
+                          },
+                          "tags": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "totalBytes": {
+                            "maximum": 2147483647,
+                            "minimum": -2147483648,
+                            "type": "integer"
+                          },
+                          "truncated": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "category",
+                          "tags",
+                          "applicability",
+                          "source",
+                          "contentSha256",
+                          "content",
+                          "offset",
+                          "totalBytes",
+                          "truncated"
+                        ],
+                        "type": "object"
+                      },
+                      "nextLocalChecks": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "command": {
+                              "type": "string"
+                            },
+                            "purpose": {
+                              "type": "string"
+                            },
+                            "sourceId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "command",
+                            "purpose",
+                            "sourceId"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "remediation": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "summary": {
+                        "type": "string"
+                      },
+                      "summaryAvailable": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "summary",
+                      "summaryAvailable",
+                      "remediation",
+                      "diagnostic",
+                      "contracts",
+                      "nextLocalChecks"
+                    ],
+                    "type": "object"
+                  },
+                  "meta": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "applicationVersion": {
+                        "type": "string"
+                      },
+                      "corpusHash": {
+                        "type": "string"
+                      },
+                      "corpusSchemaVersion": {
+                        "type": "string"
+                      },
+                      "encoder": {
+                        "type": "string"
+                      },
+                      "maxReplyBytes": {
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "type": "integer"
+                      },
+                      "pulseVersion": {
+                        "type": "string"
+                      },
+                      "requestedVersion": {
+                        "type": "string"
+                      },
+                      "snapshotStatus": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "pulseVersion",
+                      "corpusSchemaVersion",
+                      "corpusHash",
+                      "snapshotStatus",
+                      "applicationVersion",
+                      "maxReplyBytes"
+                    ],
+                    "type": "object"
+                  },
+                  "status": {
+                    "enum": [
+                      "ok",
+                      "version-mismatch",
+                      "invalid-input",
+                      "unsupported-selection",
+                      "unknown-id",
+                      "unknown-code",
+                      "unknown-goal",
+                      "unknown-example",
+                      "response-too-large"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "meta",
+                  "status"
+                ],
+                "type": "object"
+              },
+              "title": "Explain a Pulse diagnostic"
+            },
+            {
+              "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+              },
+              "description": "Retrieve maintained starter files by exact corpus ID, with pagination.",
+              "inputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": true,
+                "properties": {
+                  "files": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "offset": {
+                    "maximum": 2147483647,
+                    "minimum": -2147483648,
+                    "type": "integer"
+                  },
+                  "provider": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "version",
+                  "id"
+                ],
+                "type": "object"
+              },
+              "name": "pulse.example",
+              "outputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": false,
+                "properties": {
+                  "availableIds": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "error": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message"
+                    ],
+                    "type": "object"
+                  },
+                  "meta": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "applicationVersion": {
+                        "type": "string"
+                      },
+                      "corpusHash": {
+                        "type": "string"
+                      },
+                      "corpusSchemaVersion": {
+                        "type": "string"
+                      },
+                      "encoder": {
+                        "type": "string"
+                      },
+                      "maxReplyBytes": {
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "type": "integer"
+                      },
+                      "pulseVersion": {
+                        "type": "string"
+                      },
+                      "requestedVersion": {
+                        "type": "string"
+                      },
+                      "snapshotStatus": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "pulseVersion",
+                      "corpusSchemaVersion",
+                      "corpusHash",
+                      "snapshotStatus",
+                      "applicationVersion",
+                      "maxReplyBytes"
+                    ],
+                    "type": "object"
+                  },
+                  "nextOffset": {
+                    "maximum": 2147483647,
+                    "minimum": -2147483648,
+                    "type": "integer"
+                  },
+                  "records": {
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "applicability": {
+                          "items": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "provider": {
+                                "type": "string"
+                              },
+                              "target": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "provider",
+                              "target"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "content": {
+                          "type": "string"
+                        },
+                        "contentSha256": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "nextOffset": {
+                          "maximum": 2147483647,
+                          "minimum": -2147483648,
+                          "type": "integer"
+                        },
+                        "offset": {
+                          "maximum": 2147483647,
+                          "minimum": -2147483648,
+                          "type": "integer"
+                        },
+                        "source": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "endLine": {
+                              "maximum": 2147483647,
+                              "minimum": -2147483648,
+                              "type": "integer"
+                            },
+                            "path": {
+                              "type": "string"
+                            },
+                            "selection": {
+                              "type": "string"
+                            },
+                            "sha256": {
+                              "type": "string"
+                            },
+                            "startLine": {
+                              "maximum": 2147483647,
+                              "minimum": -2147483648,
+                              "type": "integer"
+                            },
+                            "url": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "path",
+                            "selection",
+                            "url",
+                            "sha256"
+                          ],
+                          "type": "object"
+                        },
+                        "tags": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "totalBytes": {
+                          "maximum": 2147483647,
+                          "minimum": -2147483648,
+                          "type": "integer"
+                        },
+                        "truncated": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "category",
+                        "tags",
+                        "applicability",
+                        "source",
+                        "contentSha256",
+                        "content",
+                        "offset",
+                        "totalBytes",
+                        "truncated"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "status": {
+                    "enum": [
+                      "ok",
+                      "version-mismatch",
+                      "invalid-input",
+                      "unsupported-selection",
+                      "unknown-id",
+                      "unknown-code",
+                      "unknown-goal",
+                      "unknown-example",
+                      "response-too-large"
+                    ],
+                    "type": "string"
+                  },
+                  "totalRecords": {
+                    "maximum": 2147483647,
+                    "minimum": -2147483648,
+                    "type": "integer"
+                  },
+                  "truncated": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "meta",
+                  "status",
+                  "availableIds",
+                  "records",
+                  "totalRecords",
+                  "truncated"
+                ],
+                "type": "object"
+              },
+              "title": "Retrieve a Pulse example"
+            },
+            {
+              "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+              },
+              "description": "Read one cited corpus ID; continue with the returned UTF-16 nextOffset.",
+              "inputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "offset": {
+                    "maximum": 2147483647,
+                    "minimum": -2147483648,
+                    "type": "integer"
+                  },
+                  "provider": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "version",
+                  "id"
+                ],
+                "type": "object"
+              },
+              "name": "pulse.read",
+              "outputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": false,
+                "properties": {
+                  "error": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message"
+                    ],
+                    "type": "object"
+                  },
+                  "meta": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "applicationVersion": {
+                        "type": "string"
+                      },
+                      "corpusHash": {
+                        "type": "string"
+                      },
+                      "corpusSchemaVersion": {
+                        "type": "string"
+                      },
+                      "encoder": {
+                        "type": "string"
+                      },
+                      "maxReplyBytes": {
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "type": "integer"
+                      },
+                      "pulseVersion": {
+                        "type": "string"
+                      },
+                      "requestedVersion": {
+                        "type": "string"
+                      },
+                      "snapshotStatus": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "pulseVersion",
+                      "corpusSchemaVersion",
+                      "corpusHash",
+                      "snapshotStatus",
+                      "applicationVersion",
+                      "maxReplyBytes"
+                    ],
+                    "type": "object"
+                  },
+                  "nextOffset": {
+                    "maximum": 2147483647,
+                    "minimum": -2147483648,
+                    "type": "integer"
+                  },
+                  "record": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "applicability": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "provider": {
+                              "type": "string"
+                            },
+                            "target": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "provider",
+                            "target"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "category": {
+                        "type": "string"
+                      },
+                      "content": {
+                        "type": "string"
+                      },
+                      "contentSha256": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "nextOffset": {
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "type": "integer"
+                      },
+                      "offset": {
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "type": "integer"
+                      },
+                      "source": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "endLine": {
+                            "maximum": 2147483647,
+                            "minimum": -2147483648,
+                            "type": "integer"
+                          },
+                          "path": {
+                            "type": "string"
+                          },
+                          "selection": {
+                            "type": "string"
+                          },
+                          "sha256": {
+                            "type": "string"
+                          },
+                          "startLine": {
+                            "maximum": 2147483647,
+                            "minimum": -2147483648,
+                            "type": "integer"
+                          },
+                          "url": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "selection",
+                          "url",
+                          "sha256"
+                        ],
+                        "type": "object"
+                      },
+                      "tags": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "totalBytes": {
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "type": "integer"
+                      },
+                      "truncated": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "title",
+                      "category",
+                      "tags",
+                      "applicability",
+                      "source",
+                      "contentSha256",
+                      "content",
+                      "offset",
+                      "totalBytes",
+                      "truncated"
+                    ],
+                    "type": "object"
+                  },
+                  "status": {
+                    "enum": [
+                      "ok",
+                      "version-mismatch",
+                      "invalid-input",
+                      "unsupported-selection",
+                      "unknown-id",
+                      "unknown-code",
+                      "unknown-goal",
+                      "unknown-example",
+                      "response-too-large"
+                    ],
+                    "type": "string"
+                  },
+                  "truncated": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "meta",
+                  "status",
+                  "truncated"
+                ],
+                "type": "object"
+              },
+              "title": "Read a Pulse contract"
+            },
+            {
+              "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+              },
+              "description": "Exact-token sparse lexical search with integer ranking, cited excerpts and offset pagination; not semantic search.",
+              "inputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": true,
+                "properties": {
+                  "category": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "maximum": 2147483647,
+                    "minimum": -2147483648,
+                    "type": "integer"
+                  },
+                  "offset": {
+                    "maximum": 2147483647,
+                    "minimum": -2147483648,
+                    "type": "integer"
+                  },
+                  "provider": {
+                    "type": "string"
+                  },
+                  "query": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "version",
+                  "query"
+                ],
+                "type": "object"
+              },
+              "name": "pulse.search",
+              "outputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": false,
+                "properties": {
+                  "error": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message"
+                    ],
+                    "type": "object"
+                  },
+                  "meta": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "applicationVersion": {
+                        "type": "string"
+                      },
+                      "corpusHash": {
+                        "type": "string"
+                      },
+                      "corpusSchemaVersion": {
+                        "type": "string"
+                      },
+                      "encoder": {
+                        "type": "string"
+                      },
+                      "maxReplyBytes": {
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "type": "integer"
+                      },
+                      "pulseVersion": {
+                        "type": "string"
+                      },
+                      "requestedVersion": {
+                        "type": "string"
+                      },
+                      "snapshotStatus": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "pulseVersion",
+                      "corpusSchemaVersion",
+                      "corpusHash",
+                      "snapshotStatus",
+                      "applicationVersion",
+                      "maxReplyBytes"
+                    ],
+                    "type": "object"
+                  },
+                  "nextOffset": {
+                    "maximum": 2147483647,
+                    "minimum": -2147483648,
+                    "type": "integer"
+                  },
+                  "results": {
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "applicability": {
+                          "items": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "provider": {
+                                "type": "string"
+                              },
+                              "target": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "provider",
+                              "target"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "contentSha256": {
+                          "type": "string"
+                        },
+                        "excerpt": {
+                          "type": "string"
+                        },
+                        "excerptTruncated": {
+                          "type": "boolean"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "score": {
+                          "maximum": 2147483647,
+                          "minimum": -2147483648,
+                          "type": "integer"
+                        },
+                        "source": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "endLine": {
+                              "maximum": 2147483647,
+                              "minimum": -2147483648,
+                              "type": "integer"
+                            },
+                            "path": {
+                              "type": "string"
+                            },
+                            "selection": {
+                              "type": "string"
+                            },
+                            "sha256": {
+                              "type": "string"
+                            },
+                            "startLine": {
+                              "maximum": 2147483647,
+                              "minimum": -2147483648,
+                              "type": "integer"
+                            },
+                            "url": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "path",
+                            "selection",
+                            "url",
+                            "sha256"
+                          ],
+                          "type": "object"
+                        },
+                        "tags": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "category",
+                        "tags",
+                        "applicability",
+                        "source",
+                        "contentSha256",
+                        "excerpt",
+                        "excerptTruncated",
+                        "score"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "status": {
+                    "enum": [
+                      "ok",
+                      "version-mismatch",
+                      "invalid-input",
+                      "unsupported-selection",
+                      "unknown-id",
+                      "unknown-code",
+                      "unknown-goal",
+                      "unknown-example",
+                      "response-too-large"
+                    ],
+                    "type": "string"
+                  },
+                  "totalMatches": {
+                    "maximum": 2147483647,
+                    "minimum": -2147483648,
+                    "type": "integer"
+                  },
+                  "truncated": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "meta",
+                  "status",
+                  "results",
+                  "totalMatches",
+                  "truncated"
+                ],
+                "type": "object"
+              },
+              "title": "Search Pulse contracts"
+            },
+            {
+              "annotations": {
+                "destructiveHint": false,
+                "idempotentHint": true,
+                "openWorldHint": false,
+                "readOnlyHint": true
+              },
+              "description": "Return a Node Native or JavaScript starter plan for this exact snapshot.",
+              "inputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": true,
+                "properties": {
+                  "goal": {
+                    "type": "string"
+                  },
+                  "provider": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "version",
+                  "goal",
+                  "provider",
+                  "target"
+                ],
+                "type": "object"
+              },
+              "name": "pulse.start",
+              "outputSchema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "additionalProperties": false,
+                "properties": {
+                  "error": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message"
+                    ],
+                    "type": "object"
+                  },
+                  "meta": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "applicationVersion": {
+                        "type": "string"
+                      },
+                      "corpusHash": {
+                        "type": "string"
+                      },
+                      "corpusSchemaVersion": {
+                        "type": "string"
+                      },
+                      "encoder": {
+                        "type": "string"
+                      },
+                      "maxReplyBytes": {
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "type": "integer"
+                      },
+                      "pulseVersion": {
+                        "type": "string"
+                      },
+                      "requestedVersion": {
+                        "type": "string"
+                      },
+                      "snapshotStatus": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "pulseVersion",
+                      "corpusSchemaVersion",
+                      "corpusHash",
+                      "snapshotStatus",
+                      "applicationVersion",
+                      "maxReplyBytes"
+                    ],
+                    "type": "object"
+                  },
+                  "plan": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "commands": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "command": {
+                              "type": "string"
+                            },
+                            "purpose": {
+                              "type": "string"
+                            },
+                            "sourceId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "command",
+                            "purpose",
+                            "sourceId"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "configuration": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "changedFields": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "content": {
+                            "type": "string"
+                          },
+                          "path": {
+                            "type": "string"
+                          },
+                          "sourceId": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "content",
+                          "sourceId",
+                          "changedFields"
+                        ],
+                        "type": "object"
+                      },
+                      "contracts": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "applicability": {
+                              "items": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "provider": {
+                                    "type": "string"
+                                  },
+                                  "target": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "provider",
+                                  "target"
+                                ],
+                                "type": "object"
+                              },
+                              "type": "array"
+                            },
+                            "category": {
+                              "type": "string"
+                            },
+                            "contentSha256": {
+                              "type": "string"
+                            },
+                            "id": {
+                              "type": "string"
+                            },
+                            "source": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "endLine": {
+                                  "maximum": 2147483647,
+                                  "minimum": -2147483648,
+                                  "type": "integer"
+                                },
+                                "path": {
+                                  "type": "string"
+                                },
+                                "selection": {
+                                  "type": "string"
+                                },
+                                "sha256": {
+                                  "type": "string"
+                                },
+                                "startLine": {
+                                  "maximum": 2147483647,
+                                  "minimum": -2147483648,
+                                  "type": "integer"
+                                },
+                                "url": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "path",
+                                "selection",
+                                "url",
+                                "sha256"
+                              ],
+                              "type": "object"
+                            },
+                            "tags": {
+                              "items": {
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "title": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "title",
+                            "category",
+                            "tags",
+                            "applicability",
+                            "source",
+                            "contentSha256"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "dependencies": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "kind": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "version": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "version",
+                            "kind"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "exampleApplicability": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "provider": {
+                              "type": "string"
+                            },
+                            "target": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "provider",
+                            "target"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "exampleId": {
+                        "type": "string"
+                      },
+                      "goal": {
+                        "type": "string"
+                      },
+                      "imports": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "provider": {
+                        "type": "string"
+                      },
+                      "target": {
+                        "type": "string"
+                      },
+                      "unresolvedChoices": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "goal",
+                      "provider",
+                      "target",
+                      "imports",
+                      "dependencies",
+                      "configuration",
+                      "contracts",
+                      "exampleId",
+                      "exampleApplicability",
+                      "commands",
+                      "unresolvedChoices"
+                    ],
+                    "type": "object"
+                  },
+                  "status": {
+                    "enum": [
+                      "ok",
+                      "version-mismatch",
+                      "invalid-input",
+                      "unsupported-selection",
+                      "unknown-id",
+                      "unknown-code",
+                      "unknown-goal",
+                      "unknown-example",
+                      "response-too-large"
+                    ],
+                    "type": "string"
+                  },
+                  "supportedGoals": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "supportedSelections": {
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "provider": {
+                          "type": "string"
+                        },
+                        "target": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "provider",
+                        "target"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "meta",
+                  "status",
+                  "supportedGoals",
+                  "supportedSelections"
+                ],
+                "type": "object"
+              },
+              "title": "Start a Pulse project"
+            }
+          ],
+          "ttlMs": 0,
+          "cacheScope": "private"
+        }
+      },
+      "responseSha256": "a9b4bb7e5c67320f1d505839d7e2fca3359a317b212b2247a89dbc154cc1e0f9",
+      "responseBytes": 17596
+    },
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "request": {
+        "method": "tools/call",
+        "params": {
+          "name": "pulse.diagnostic",
+          "arguments": {
+            "version": "1.0.0-beta.9",
+            "code": "PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "pulse-native-qualification",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        },
+        "jsonrpc": "2.0",
+        "id": 2
+      },
+      "requestHeaders": {
+        "host": "127.0.0.1:39105",
+        "connection": "keep-alive",
+        "mcp-protocol-version": "2026-07-28",
+        "mcp-method": "tools/call",
+        "mcp-name": "pulse.diagnostic",
+        "content-type": "application/json",
+        "accept": "application/json, text/event-stream",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "379"
+      },
+      "requestSha256": "2a592ad2eb976d571edf8db3a3ec75098102cc0cbd8c4c6e5c1728fddf3f8262",
+      "status": 200,
+      "responseHeaders": {
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "content-length": "8675",
+        "date": "Wed, 21 Oct 2026 07:01:32 GMT"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "resultType": "complete",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "pulse-context",
+              "version": "1.0.0-beta.9"
+            }
+          },
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"meta\":{\"pulseVersion\":\"1.0.0-beta.9\",\"corpusSchemaVersion\":\"pulse.context-corpus.v1\",\"corpusHash\":\"f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749\",\"snapshotStatus\":\"candidate\",\"applicationVersion\":\"pulse.context-application.v2\",\"requestedVersion\":\"1.0.0-beta.9\",\"maxReplyBytes\":24576},\"status\":\"ok\",\"explanation\":{\"code\":\"PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT\",\"summary\":\"The configured application entry graph starts a known provider lifecycle during module evaluation.\",\"summaryAvailable\":true,\"remediation\":[\"Keep the configured application entry import-safe and move provider lifecycle startup to a separate runner.\",\"Use the provider lifecycle through CLI delegation rather than starting infrastructure during application import.\"],\"diagnostic\":{\"id\":\"diagnostic/PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT\",\"title\":\"Application Entry Lifecycle Side Effect\",\"category\":\"diagnostic\",\"tags\":[\"PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT\",\"compile\",\"diagnostic\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/diagnostics.js\",\"selection\":\"DIAGNOSTIC_CATALOG.PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b\",\"sha256\":\"bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f\"},\"contentSha256\":\"44b69a0e8cad7d1745cc5af5011de10ce63e3b26748339b24a7dc6d1d0264b00\",\"content\":\"{\\n  \\\"category\\\": \\\"compile\\\",\\n  \\\"code\\\": \\\"PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT\\\",\\n  \\\"exitCode\\\": 3,\\n  \\\"remediation\\\": [\\n    \\\"Keep the configured application entry import-safe and move provider lifecycle startup to a separate runner.\\\",\\n    \\\"Use the provider lifecycle through CLI delegation rather than starting infrastructure during application import.\\\"\\n  ],\\n  \\\"scope\\\": \\\"public\\\",\\n  \\\"stability\\\": \\\"preview-stable\\\",\\n  \\\"summary\\\": \\\"The configured application entry graph starts a known provider lifecycle during module evaluation.\\\",\\n  \\\"title\\\": \\\"Application Entry Lifecycle Side Effect\\\"\\n}\",\"offset\":0,\"totalBytes\":584,\"truncated\":false},\"contracts\":[{\"id\":\"contract/application\",\"title\":\"One application contract and one compiler spine\",\"category\":\"contract\",\"tags\":[\"authority\",\"handler\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"docs/architecture/current-contracts.md\",\"selection\":\"heading:One application contract and one compiler spine\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/9e6cc1378a131668df903da95bf4be475ea035bc\",\"sha256\":\"24ff84dde22474c490ba68d012e37f0d4a1ba39727d1253a061d886b1e782478\",\"startLine\":114,\"endLine\":236},\"contentSha256\":\"512499f9abc99407296104129fe9b7dee25c1003eced54456b45af5cc72b04f8\"},{\"id\":\"contract/project-configuration\",\"title\":\"Project configuration\",\"category\":\"contract\",\"tags\":[\"profile\",\"provider\",\"target\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"docs/packages/pulse.md\",\"selection\":\"heading:Project configuration\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b\",\"sha256\":\"1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e\",\"startLine\":80,\"endLine\":107},\"contentSha256\":\"84005c508bfa3e837ffac74e879cdaf9a3d9eddca61f21343b0f4f2724481dfb\"}],\"nextLocalChecks\":[{\"command\":\"pulse doctor --json\",\"purpose\":\"Inspect the local project diagnostics. This server has not run the command.\",\"sourceId\":\"command/doctor\"}]}}"
+            }
+          ],
+          "structuredContent": {
+            "meta": {
+              "pulseVersion": "1.0.0-beta.9",
+              "corpusSchemaVersion": "pulse.context-corpus.v1",
+              "corpusHash": "f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749",
+              "snapshotStatus": "candidate",
+              "applicationVersion": "pulse.context-application.v2",
+              "requestedVersion": "1.0.0-beta.9",
+              "maxReplyBytes": 24576
+            },
+            "status": "ok",
+            "explanation": {
+              "code": "PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+              "summary": "The configured application entry graph starts a known provider lifecycle during module evaluation.",
+              "summaryAvailable": true,
+              "remediation": [
+                "Keep the configured application entry import-safe and move provider lifecycle startup to a separate runner.",
+                "Use the provider lifecycle through CLI delegation rather than starting infrastructure during application import."
+              ],
+              "diagnostic": {
+                "id": "diagnostic/PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+                "title": "Application Entry Lifecycle Side Effect",
+                "category": "diagnostic",
+                "tags": [
+                  "PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+                  "compile",
+                  "diagnostic"
+                ],
+                "applicability": [
+                  {
+                    "provider": "fastly",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "fastly",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "none",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "wasm/packages/cli/src/diagnostics.js",
+                  "selection": "DIAGNOSTIC_CATALOG.PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b",
+                  "sha256": "bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f"
+                },
+                "contentSha256": "44b69a0e8cad7d1745cc5af5011de10ce63e3b26748339b24a7dc6d1d0264b00",
+                "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Keep the configured application entry import-safe and move provider lifecycle startup to a separate runner.\",\n    \"Use the provider lifecycle through CLI delegation rather than starting infrastructure during application import.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The configured application entry graph starts a known provider lifecycle during module evaluation.\",\n  \"title\": \"Application Entry Lifecycle Side Effect\"\n}",
+                "offset": 0,
+                "totalBytes": 584,
+                "truncated": false
+              },
+              "contracts": [
+                {
+                  "id": "contract/application",
+                  "title": "One application contract and one compiler spine",
+                  "category": "contract",
+                  "tags": [
+                    "authority",
+                    "handler"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "docs/architecture/current-contracts.md",
+                    "selection": "heading:One application contract and one compiler spine",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9e6cc1378a131668df903da95bf4be475ea035bc",
+                    "sha256": "24ff84dde22474c490ba68d012e37f0d4a1ba39727d1253a061d886b1e782478",
+                    "startLine": 114,
+                    "endLine": 236
+                  },
+                  "contentSha256": "512499f9abc99407296104129fe9b7dee25c1003eced54456b45af5cc72b04f8"
+                },
+                {
+                  "id": "contract/project-configuration",
+                  "title": "Project configuration",
+                  "category": "contract",
+                  "tags": [
+                    "profile",
+                    "provider",
+                    "target"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "docs/packages/pulse.md",
+                    "selection": "heading:Project configuration",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b",
+                    "sha256": "1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e",
+                    "startLine": 80,
+                    "endLine": 107
+                  },
+                  "contentSha256": "84005c508bfa3e837ffac74e879cdaf9a3d9eddca61f21343b0f4f2724481dfb"
+                }
+              ],
+              "nextLocalChecks": [
+                {
+                  "command": "pulse doctor --json",
+                  "purpose": "Inspect the local project diagnostics. This server has not run the command.",
+                  "sourceId": "command/doctor"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "responseSha256": "e16add715a56ca5d5da7b636eddacb60292af46a6fa052cbcb95ae6029ba386c",
+      "responseBytes": 8675
+    },
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "request": {
+        "method": "tools/call",
+        "params": {
+          "name": "pulse.example",
+          "arguments": {
+            "version": "1.0.0-beta.9",
+            "id": "01-hello-json",
+            "offset": 0
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "pulse-native-qualification",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        },
+        "jsonrpc": "2.0",
+        "id": 3
+      },
+      "requestHeaders": {
+        "host": "127.0.0.1:39105",
+        "connection": "keep-alive",
+        "mcp-protocol-version": "2026-07-28",
+        "mcp-method": "tools/call",
+        "mcp-name": "pulse.example",
+        "content-type": "application/json",
+        "accept": "application/json, text/event-stream",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "353"
+      },
+      "requestSha256": "42662757b6dafee51c6679c748eb05c33cef32161ad2e77ede2ee34a8fadd8b2",
+      "status": 200,
+      "responseHeaders": {
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "content-length": "11968",
+        "date": "Wed, 21 Oct 2026 07:01:32 GMT"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "result": {
+          "resultType": "complete",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "pulse-context",
+              "version": "1.0.0-beta.9"
+            }
+          },
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"meta\":{\"pulseVersion\":\"1.0.0-beta.9\",\"corpusSchemaVersion\":\"pulse.context-corpus.v1\",\"corpusHash\":\"f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749\",\"snapshotStatus\":\"candidate\",\"applicationVersion\":\"pulse.context-application.v2\",\"requestedVersion\":\"1.0.0-beta.9\",\"maxReplyBytes\":24576},\"status\":\"ok\",\"availableIds\":[\"example/01-hello-json/.pulse/config.ts\",\"example/01-hello-json/package.json\",\"example/01-hello-json/src/index.ts\",\"example/01-hello-json/tests/pulse.harness.ts\",\"example/01-hello-json/tsconfig.json\",\"example/01-hello-json/workflow\"],\"records\":[{\"id\":\"example/01-hello-json/.pulse/config.ts\",\"title\":\"01-hello-json: .pulse/config.ts\",\"category\":\"example\",\"tags\":[\"01-hello-json\",\"example\"],\"applicability\":[{\"provider\":\"node\",\"target\":\"native\"}],\"source\":{\"path\":\"examples/01-hello-json/.pulse/config.ts\",\"selection\":\"file\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/3c81bdab5869b21461b3bb3164cf3da751b9f946\",\"sha256\":\"9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61\"},\"contentSha256\":\"9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61\",\"content\":\"import { defineConfig } from '@pulse-compute/pulse'\\n\\nexport default defineConfig((_scope) => ({\\n  pulse: {\\n    entry: 'src/index.ts',\\n    tests: 'tests/pulse.harness.ts',\\n    defaultProfile: 'local',\\n    strict: true,\\n  },\\n  local: {\\n    host: 'node',\\n    target: 'native',\\n    outDir: 'dist',\\n    dev: { host: '127.0.0.1', port: 8787 },\\n  },\\n}))\\n\",\"offset\":0,\"totalBytes\":347,\"truncated\":false},{\"id\":\"example/01-hello-json/package.json\",\"title\":\"01-hello-json: package.json\",\"category\":\"example\",\"tags\":[\"01-hello-json\",\"example\"],\"applicability\":[{\"provider\":\"node\",\"target\":\"native\"}],\"source\":{\"path\":\"examples/01-hello-json/package.json\",\"selection\":\"file\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/9a3749fb6ed09ef23dd354da424a73c5147f9f67\",\"sha256\":\"f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0\"},\"contentSha256\":\"f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0\",\"content\":\"{\\n  \\\"name\\\": \\\"@pulse-examples/01-hello-json\\\",\\n  \\\"version\\\": \\\"0.0.0\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\",\\n  \\\"scripts\\\": {\\n    \\\"doctor\\\": \\\"pulse doctor\\\",\\n    \\\"inspect\\\": \\\"pulse inspect\\\",\\n    \\\"test\\\": \\\"pulse test\\\",\\n    \\\"dev\\\": \\\"pulse dev\\\",\\n    \\\"build\\\": \\\"pulse build\\\"\\n  },\\n  \\\"dependencies\\\": {\\n    \\\"@pulse-compute/pulse\\\": \\\"1.0.0-beta.9\\\"\\n  },\\n  \\\"devDependencies\\\": {\\n    \\\"@pulse-compute/cli\\\": \\\"1.0.0-beta.9\\\",\\n    \\\"typescript\\\": \\\"5.9.3\\\"\\n  }\\n}\\n\",\"offset\":0,\"totalBytes\":430,\"truncated\":false},{\"id\":\"example/01-hello-json/src/index.ts\",\"title\":\"01-hello-json: src/index.ts\",\"category\":\"example\",\"tags\":[\"01-hello-json\",\"example\"],\"applicability\":[{\"provider\":\"node\",\"target\":\"native\"}],\"source\":{\"path\":\"examples/01-hello-json/src/index.ts\",\"selection\":\"file\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/241c1539af35f74de5b9e5a975af29c3c0cea9ec\",\"sha256\":\"906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b\"},\"contentSha256\":\"906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b\",\"content\":\"import { Pulse } from '@pulse-compute/pulse'\\n\\nconst app = new Pulse({ auto: true })\\n\\napp.get('/health', async (ctx) => ctx.json({ ok: true }))\\napp.get('/hello', async (ctx) => ctx.json({ message: 'hello from Pulse' }))\\napp.get('/*', async (ctx) => ctx.text('not found', { status: 404 }))\\n\\nexport default app\\n\",\"offset\":0,\"totalBytes\":308,\"truncated\":false},{\"id\":\"example/01-hello-json/tests/pulse.harness.ts\",\"title\":\"01-hello-json: tests/pulse.harness.ts\",\"category\":\"example\",\"tags\":[\"01-hello-json\",\"example\"],\"applicability\":[{\"provider\":\"node\",\"target\":\"native\"}],\"source\":{\"path\":\"examples/01-hello-json/tests/pulse.harness.ts\",\"selection\":\"file\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/c4ad09e7cd99c0ad54a9dc0885bf19c5329b28aa\",\"sha256\":\"1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa\"},\"contentSha256\":\"1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa\",\"content\":\"export default {\\n  cases: [\\n    {\\n      name: 'health',\\n      request: { path: '/health' },\\n      expect: { status: 200, json: { ok: true } },\\n    },\\n    {\\n      name: 'hello',\\n      request: { path: '/hello' },\\n      expect: {\\n        status: 200,\\n        json: { message: 'hello from Pulse' },\\n      },\\n    },\\n    {\\n      name: 'missing',\\n      request: { path: '/missing' },\\n      expect: { status: 404, text: 'not found' },\\n    },\\n  ],\\n}\\n\",\"offset\":0,\"totalBytes\":442,\"truncated\":false},{\"id\":\"example/01-hello-json/tsconfig.json\",\"title\":\"01-hello-json: tsconfig.json\",\"category\":\"example\",\"tags\":[\"01-hello-json\",\"example\"],\"applicability\":[{\"provider\":\"node\",\"target\":\"native\"}],\"source\":{\"path\":\"examples/01-hello-json/tsconfig.json\",\"selection\":\"file\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b\",\"sha256\":\"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052\"},\"contentSha256\":\"29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052\",\"content\":\"{\\n  \\\"compilerOptions\\\": {\\n    \\\"target\\\": \\\"ES2022\\\",\\n    \\\"module\\\": \\\"NodeNext\\\",\\n    \\\"moduleResolution\\\": \\\"NodeNext\\\",\\n    \\\"strict\\\": true,\\n    \\\"noEmit\\\": true\\n  },\\n  \\\"include\\\": [\\n    \\\"src/**/*.ts\\\",\\n    \\\".pulse/**/*.ts\\\",\\n    \\\"tests/**/*.ts\\\"\\n  ]\\n}\\n\",\"offset\":0,\"totalBytes\":237,\"truncated\":false}],\"totalRecords\":6,\"truncated\":true,\"nextOffset\":5}"
+            }
+          ],
+          "structuredContent": {
+            "meta": {
+              "pulseVersion": "1.0.0-beta.9",
+              "corpusSchemaVersion": "pulse.context-corpus.v1",
+              "corpusHash": "f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749",
+              "snapshotStatus": "candidate",
+              "applicationVersion": "pulse.context-application.v2",
+              "requestedVersion": "1.0.0-beta.9",
+              "maxReplyBytes": 24576
+            },
+            "status": "ok",
+            "availableIds": [
+              "example/01-hello-json/.pulse/config.ts",
+              "example/01-hello-json/package.json",
+              "example/01-hello-json/src/index.ts",
+              "example/01-hello-json/tests/pulse.harness.ts",
+              "example/01-hello-json/tsconfig.json",
+              "example/01-hello-json/workflow"
+            ],
+            "records": [
+              {
+                "id": "example/01-hello-json/.pulse/config.ts",
+                "title": "01-hello-json: .pulse/config.ts",
+                "category": "example",
+                "tags": [
+                  "01-hello-json",
+                  "example"
+                ],
+                "applicability": [
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "examples/01-hello-json/.pulse/config.ts",
+                  "selection": "file",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3c81bdab5869b21461b3bb3164cf3da751b9f946",
+                  "sha256": "9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61"
+                },
+                "contentSha256": "9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61",
+                "content": "import { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig((_scope) => ({\n  pulse: {\n    entry: 'src/index.ts',\n    tests: 'tests/pulse.harness.ts',\n    defaultProfile: 'local',\n    strict: true,\n  },\n  local: {\n    host: 'node',\n    target: 'native',\n    outDir: 'dist',\n    dev: { host: '127.0.0.1', port: 8787 },\n  },\n}))\n",
+                "offset": 0,
+                "totalBytes": 347,
+                "truncated": false
+              },
+              {
+                "id": "example/01-hello-json/package.json",
+                "title": "01-hello-json: package.json",
+                "category": "example",
+                "tags": [
+                  "01-hello-json",
+                  "example"
+                ],
+                "applicability": [
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "examples/01-hello-json/package.json",
+                  "selection": "file",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9a3749fb6ed09ef23dd354da424a73c5147f9f67",
+                  "sha256": "f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0"
+                },
+                "contentSha256": "f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0",
+                "content": "{\n  \"name\": \"@pulse-examples/01-hello-json\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"doctor\": \"pulse doctor\",\n    \"inspect\": \"pulse inspect\",\n    \"test\": \"pulse test\",\n    \"dev\": \"pulse dev\",\n    \"build\": \"pulse build\"\n  },\n  \"dependencies\": {\n    \"@pulse-compute/pulse\": \"1.0.0-beta.9\"\n  },\n  \"devDependencies\": {\n    \"@pulse-compute/cli\": \"1.0.0-beta.9\",\n    \"typescript\": \"5.9.3\"\n  }\n}\n",
+                "offset": 0,
+                "totalBytes": 430,
+                "truncated": false
+              },
+              {
+                "id": "example/01-hello-json/src/index.ts",
+                "title": "01-hello-json: src/index.ts",
+                "category": "example",
+                "tags": [
+                  "01-hello-json",
+                  "example"
+                ],
+                "applicability": [
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "examples/01-hello-json/src/index.ts",
+                  "selection": "file",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/241c1539af35f74de5b9e5a975af29c3c0cea9ec",
+                  "sha256": "906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b"
+                },
+                "contentSha256": "906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b",
+                "content": "import { Pulse } from '@pulse-compute/pulse'\n\nconst app = new Pulse({ auto: true })\n\napp.get('/health', async (ctx) => ctx.json({ ok: true }))\napp.get('/hello', async (ctx) => ctx.json({ message: 'hello from Pulse' }))\napp.get('/*', async (ctx) => ctx.text('not found', { status: 404 }))\n\nexport default app\n",
+                "offset": 0,
+                "totalBytes": 308,
+                "truncated": false
+              },
+              {
+                "id": "example/01-hello-json/tests/pulse.harness.ts",
+                "title": "01-hello-json: tests/pulse.harness.ts",
+                "category": "example",
+                "tags": [
+                  "01-hello-json",
+                  "example"
+                ],
+                "applicability": [
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "examples/01-hello-json/tests/pulse.harness.ts",
+                  "selection": "file",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/c4ad09e7cd99c0ad54a9dc0885bf19c5329b28aa",
+                  "sha256": "1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa"
+                },
+                "contentSha256": "1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa",
+                "content": "export default {\n  cases: [\n    {\n      name: 'health',\n      request: { path: '/health' },\n      expect: { status: 200, json: { ok: true } },\n    },\n    {\n      name: 'hello',\n      request: { path: '/hello' },\n      expect: {\n        status: 200,\n        json: { message: 'hello from Pulse' },\n      },\n    },\n    {\n      name: 'missing',\n      request: { path: '/missing' },\n      expect: { status: 404, text: 'not found' },\n    },\n  ],\n}\n",
+                "offset": 0,
+                "totalBytes": 442,
+                "truncated": false
+              },
+              {
+                "id": "example/01-hello-json/tsconfig.json",
+                "title": "01-hello-json: tsconfig.json",
+                "category": "example",
+                "tags": [
+                  "01-hello-json",
+                  "example"
+                ],
+                "applicability": [
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "examples/01-hello-json/tsconfig.json",
+                  "selection": "file",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b",
+                  "sha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052"
+                },
+                "contentSha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052",
+                "content": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"NodeNext\",\n    \"moduleResolution\": \"NodeNext\",\n    \"strict\": true,\n    \"noEmit\": true\n  },\n  \"include\": [\n    \"src/**/*.ts\",\n    \".pulse/**/*.ts\",\n    \"tests/**/*.ts\"\n  ]\n}\n",
+                "offset": 0,
+                "totalBytes": 237,
+                "truncated": false
+              }
+            ],
+            "totalRecords": 6,
+            "truncated": true,
+            "nextOffset": 5
+          }
+        }
+      },
+      "responseSha256": "8dbbc11a0ad066a2ffaf33d8e479bb9f52ee3eaa853b91b450e4d2b0608b80c2",
+      "responseBytes": 11968
+    },
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "request": {
+        "method": "tools/call",
+        "params": {
+          "name": "pulse.read",
+          "arguments": {
+            "version": "1.0.0-beta.9",
+            "id": "command/build",
+            "offset": 0
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "pulse-native-qualification",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        },
+        "jsonrpc": "2.0",
+        "id": 4
+      },
+      "requestHeaders": {
+        "host": "127.0.0.1:39105",
+        "connection": "keep-alive",
+        "mcp-protocol-version": "2026-07-28",
+        "mcp-method": "tools/call",
+        "mcp-name": "pulse.read",
+        "content-type": "application/json",
+        "accept": "application/json, text/event-stream",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "350"
+      },
+      "requestSha256": "a111710875b6481da6d2c2d6640e159d5c9b9287b97d153f257f9cbc1105a577",
+      "status": 200,
+      "responseHeaders": {
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "content-length": "15949",
+        "date": "Wed, 21 Oct 2026 07:01:32 GMT"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "result": {
+          "resultType": "complete",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "pulse-context",
+              "version": "1.0.0-beta.9"
+            }
+          },
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"meta\":{\"pulseVersion\":\"1.0.0-beta.9\",\"corpusSchemaVersion\":\"pulse.context-corpus.v1\",\"corpusHash\":\"f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749\",\"snapshotStatus\":\"candidate\",\"applicationVersion\":\"pulse.context-application.v2\",\"requestedVersion\":\"1.0.0-beta.9\",\"maxReplyBytes\":24576},\"status\":\"ok\",\"record\":{\"id\":\"command/build\",\"title\":\"pulse build\",\"category\":\"command\",\"tags\":[\"build\",\"cli\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/command-spec.js\",\"selection\":\"COMMAND_SPECS.build\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a\",\"sha256\":\"2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf\"},\"contentSha256\":\"7bbb6fc594d757dfb9b9e2840cfcd7ff7eeaac15a74fb9f62feed4f9e03b837d\",\"content\":\"{\\n  \\\"diagnostics\\\": [\\n    \\\"PULSE_BUILD_OUT_UNSAFE\\\",\\n    \\\"PULSE_BUILD_PROVIDER_REQUIRED\\\",\\n    \\\"PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED\\\",\\n    \\\"PULSE_NATIVE_TEXT_UNSUPPORTED\\\",\\n    \\\"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\\\"\\n  ],\\n  \\\"examples\\\": [\\n    \\\"pulse build ./my-pulse-app\\\",\\n    \\\"pulse build ./edge-app --out ./dist --json\\\",\\n    \\\"pulse build ./edge-app --experimental-native-size\\\",\\n    \\\"pulse build ./edge-app --experimental-native-bounded-size\\\"\\n  ],\\n  \\\"exit\\\": \\\"0 on success; 2–5 according to the emitted stable diagnostic.\\\",\\n  \\\"globalOptions\\\": [\\n    {\\n      \\\"description\\\": \\\"Print public CLI help and exit.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--help\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"-h\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"help\\\",\\n      \\\"key\\\": \\\"help\\\",\\n      \\\"kind\\\": \\\"boolean\\\"\\n    },\\n    {\\n      \\\"description\\\": \\\"Emit machine-readable JSON. pulse dev emits one JSON event per line.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--json\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"json\\\",\\n      \\\"key\\\": \\\"json\\\",\\n      \\\"kind\\\": \\\"boolean\\\"\\n    },\\n    {\\n      \\\"description\\\": \\\"Resolve and report the command plan without executing it.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--dry-run\\\"\\n        },\\n        {\\n          \\\"name\\\": \\\"--plan\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"dry-run\\\",\\n      \\\"key\\\": \\\"dryRun\\\",\\n      \\\"kind\\\": \\\"boolean\\\"\\n    }\\n  ],\\n  \\\"name\\\": \\\"build\\\",\\n  \\\"options\\\": [\\n    {\\n      \\\"description\\\": \\\"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--evidence-status\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"evidence-status\\\",\\n      \\\"key\\\": \\\"evidenceStatus\\\",\\n      \\\"kind\\\": \\\"boolean\\\"\\n    },\\n    {\\n      \\\"description\\\": \\\"Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--clean\\\",\\n          \\\"value\\\": true\\n        },\\n        {\\n          \\\"name\\\": \\\"--no-clean\\\",\\n          \\\"value\\\": false\\n        }\\n      ],\\n      \\\"id\\\": \\\"clean\\\",\\n      \\\"key\\\": \\\"clean\\\",\\n      \\\"kind\\\": \\\"boolean-value\\\"\\n    },\\n    {\\n      \\\"description\\\": \\\"Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--elide-json-cache-arena\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"elide-json-cache-arena\\\",\\n      \\\"key\\\": \\\"elideJsonCacheArena\\\",\\n      \\\"kind\\\": \\\"boolean\\\"\\n    },\\n    {\\n      \\\"description\\\": \\\"Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--emit-wat\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"emit-wat\\\",\\n      \\\"key\\\": \\\"emitWat\\\",\\n      \\\"kind\\\": \\\"boolean\\\"\\n    },\\n    {\\n      \\\"description\\\": \\\"Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--experimental-native-bounded-size\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"experimental-native-bounded-size\\\",\\n      \\\"key\\\": \\\"experimentalNativeBoundedSize\\\",\\n      \\\"kind\\\": \\\"boolean\\\"\\n    },\\n    {\\n      \\\"description\\\": \\\"Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--experimental-native-size\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"experimental-native-size\\\",\\n      \\\"key\\\": \\\"experimentalNativeSize\\\",\\n      \\\"kind\\\": \\\"boolean\\\"\\n    },\\n    {\\n      \\\"description\\\": \\\"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--profile\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"profile\\\",\\n      \\\"key\\\": \\\"profile\\\",\\n      \\\"kind\\\": \\\"value\\\",\\n      \\\"valueName\\\": \\\"<profile>\\\"\\n    },\\n    {\\n      \\\"description\\\": \\\"Override the project-relative artifact output directory.\\\",\\n      \\\"flags\\\": [\\n        {\\n          \\\"name\\\": \\\"--out\\\"\\n        }\\n      ],\\n      \\\"id\\\": \\\"out\\\",\\n      \\\"key\\\": \\\"outDir\\\",\\n      \\\"kind\\\": \\\"value\\\",\\n      \\\"valueName\\\": \\\"<dir>\\\"\\n    }\\n  ],\\n  \\\"outputs\\\": [\\n    \\\"Writes pulse-build.json and the configured provider realization. Native builds include the provider-neutral native module; JavaScript builds emit a deterministic source package. Native --emit-wat builds also write diagnostic WAT.\\\",\\n    \\\"Fastly Native builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm without a JavaScript runtime image. Fastly JavaScript builds emit a source/deployment package with exact downstream compiler pins and deployment-candidate metadata.\\\",\\n    \\\"Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.\\\",\\n    \\\"With --json, emits one build result object containing exact artifact paths for the selected target and provider.\\\"\\n  ],\\n  \\\"positionals\\\": [\\n    {\\n      \\\"description\\\": \\\"Project discovery start. Defaults to the current directory.\\\",\\n      \\\"key\\\": \\\"directory\\\",\\n      \\\"name\\\": \\\"directory\\\"\\n    }\\n  ],\\n  \\\"sideEffects\\\": [\\n    \\\"Cleans the output directory by default.\\\",\\n    \\\"Native builds invoke the native compiler and configured provider realization. JavaScript builds validate and package the reachable application graph without invoking the Pulse Native compiler.\\\",\\n    \\\"Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.\\\"\\n  ],\\n  \\\"summary\\\": \\\"Build the Native or JavaScript target for the deployment provider selected by the active project profile.\\\",\\n  \\\"usage\\\": [\\n    \\\"pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]\\\"\\n  ]\\n}\",\"offset\":0,\"totalBytes\":5777,\"truncated\":false},\"truncated\":false}"
+            }
+          ],
+          "structuredContent": {
+            "meta": {
+              "pulseVersion": "1.0.0-beta.9",
+              "corpusSchemaVersion": "pulse.context-corpus.v1",
+              "corpusHash": "f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749",
+              "snapshotStatus": "candidate",
+              "applicationVersion": "pulse.context-application.v2",
+              "requestedVersion": "1.0.0-beta.9",
+              "maxReplyBytes": 24576
+            },
+            "status": "ok",
+            "record": {
+              "id": "command/build",
+              "title": "pulse build",
+              "category": "command",
+              "tags": [
+                "build",
+                "cli"
+              ],
+              "applicability": [
+                {
+                  "provider": "fastly",
+                  "target": "javascript"
+                },
+                {
+                  "provider": "fastly",
+                  "target": "native"
+                },
+                {
+                  "provider": "node",
+                  "target": "javascript"
+                },
+                {
+                  "provider": "node",
+                  "target": "native"
+                },
+                {
+                  "provider": "none",
+                  "target": "native"
+                }
+              ],
+              "source": {
+                "path": "wasm/packages/cli/src/command-spec.js",
+                "selection": "COMMAND_SPECS.build",
+                "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a",
+                "sha256": "2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf"
+              },
+              "contentSha256": "7bbb6fc594d757dfb9b9e2840cfcd7ff7eeaac15a74fb9f62feed4f9e03b837d",
+              "content": "{\n  \"diagnostics\": [\n    \"PULSE_BUILD_OUT_UNSAFE\",\n    \"PULSE_BUILD_PROVIDER_REQUIRED\",\n    \"PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED\",\n    \"PULSE_NATIVE_TEXT_UNSUPPORTED\",\n    \"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\"\n  ],\n  \"examples\": [\n    \"pulse build ./my-pulse-app\",\n    \"pulse build ./edge-app --out ./dist --json\",\n    \"pulse build ./edge-app --experimental-native-size\",\n    \"pulse build ./edge-app --experimental-native-bounded-size\"\n  ],\n  \"exit\": \"0 on success; 2–5 according to the emitted stable diagnostic.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"build\",\n  \"options\": [\n    {\n      \"description\": \"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\",\n      \"flags\": [\n        {\n          \"name\": \"--evidence-status\"\n        }\n      ],\n      \"id\": \"evidence-status\",\n      \"key\": \"evidenceStatus\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.\",\n      \"flags\": [\n        {\n          \"name\": \"--clean\",\n          \"value\": true\n        },\n        {\n          \"name\": \"--no-clean\",\n          \"value\": false\n        }\n      ],\n      \"id\": \"clean\",\n      \"key\": \"clean\",\n      \"kind\": \"boolean-value\"\n    },\n    {\n      \"description\": \"Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads.\",\n      \"flags\": [\n        {\n          \"name\": \"--elide-json-cache-arena\"\n        }\n      ],\n      \"id\": \"elide-json-cache-arena\",\n      \"key\": \"elideJsonCacheArena\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.\",\n      \"flags\": [\n        {\n          \"name\": \"--emit-wat\"\n        }\n      ],\n      \"id\": \"emit-wat\",\n      \"key\": \"emitWat\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-bounded-size\"\n        }\n      ],\n      \"id\": \"experimental-native-bounded-size\",\n      \"key\": \"experimentalNativeBoundedSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-size\"\n        }\n      ],\n      \"id\": \"experimental-native-size\",\n      \"key\": \"experimentalNativeSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    },\n    {\n      \"description\": \"Override the project-relative artifact output directory.\",\n      \"flags\": [\n        {\n          \"name\": \"--out\"\n        }\n      ],\n      \"id\": \"out\",\n      \"key\": \"outDir\",\n      \"kind\": \"value\",\n      \"valueName\": \"<dir>\"\n    }\n  ],\n  \"outputs\": [\n    \"Writes pulse-build.json and the configured provider realization. Native builds include the provider-neutral native module; JavaScript builds emit a deterministic source package. Native --emit-wat builds also write diagnostic WAT.\",\n    \"Fastly Native builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm without a JavaScript runtime image. Fastly JavaScript builds emit a source/deployment package with exact downstream compiler pins and deployment-candidate metadata.\",\n    \"Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.\",\n    \"With --json, emits one build result object containing exact artifact paths for the selected target and provider.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Cleans the output directory by default.\",\n    \"Native builds invoke the native compiler and configured provider realization. JavaScript builds validate and package the reachable application graph without invoking the Pulse Native compiler.\",\n    \"Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.\"\n  ],\n  \"summary\": \"Build the Native or JavaScript target for the deployment provider selected by the active project profile.\",\n  \"usage\": [\n    \"pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]\"\n  ]\n}",
+              "offset": 0,
+              "totalBytes": 5777,
+              "truncated": false
+            },
+            "truncated": false
+          }
+        }
+      },
+      "responseSha256": "09bf27268a7b8226a8100545d2a906d1619df2bfedb416a76e8152e881962e24",
+      "responseBytes": 15949
+    },
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "request": {
+        "method": "tools/call",
+        "params": {
+          "name": "pulse.search",
+          "arguments": {
+            "version": "1.0.0-beta.9",
+            "query": "compile",
+            "offset": 0
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "pulse-native-qualification",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        },
+        "jsonrpc": "2.0",
+        "id": 5
+      },
+      "requestHeaders": {
+        "host": "127.0.0.1:39105",
+        "connection": "keep-alive",
+        "mcp-protocol-version": "2026-07-28",
+        "mcp-method": "tools/call",
+        "mcp-name": "pulse.search",
+        "content-type": "application/json",
+        "accept": "application/json, text/event-stream",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "349"
+      },
+      "requestSha256": "7c86538d59621dc648f33adc88740cdece374c52a90b61985d2a886896cdc485",
+      "status": 200,
+      "responseHeaders": {
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "content-length": "14113",
+        "date": "Wed, 21 Oct 2026 07:01:32 GMT"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "result": {
+          "resultType": "complete",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "pulse-context",
+              "version": "1.0.0-beta.9"
+            }
+          },
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"meta\":{\"pulseVersion\":\"1.0.0-beta.9\",\"corpusSchemaVersion\":\"pulse.context-corpus.v1\",\"corpusHash\":\"f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749\",\"snapshotStatus\":\"candidate\",\"applicationVersion\":\"pulse.context-application.v2\",\"encoder\":\"pulse.context-sparse-lexical.v1\",\"requestedVersion\":\"1.0.0-beta.9\",\"maxReplyBytes\":24576},\"status\":\"ok\",\"results\":[{\"id\":\"command/compile\",\"title\":\"pulse compile\",\"category\":\"command\",\"tags\":[\"cli\",\"compile\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/command-spec.js\",\"selection\":\"COMMAND_SPECS.compile\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a\",\"sha256\":\"2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf\"},\"contentSha256\":\"5881b220a1285636b5b91bb7ed528c9bb28003c4200a1751a1c9f4cdca22bd65\",\"excerpt\":\"{\\n  \\\"diagnostics\\\": [\\n    \\\"PULSE_BUILD_OUT_UNSAFE\\\",\\n    \\\"PULSE_CANONICAL_NATIVE_PLAN_FAILED\\\",\\n    \\\"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\\\"\\n  ],\\n  \\\"examples\\\": [\\n    \\\"pulse compile ./my-pulse-app\\\",\\n    \\\"pulse compile ./edge-app --out ./dist --json\\\",\\n    \\\"pulse compile ./edge-app --experimental-native-size\\\",\\n    \\\"pulse compile ./edge-app --experimental-native-bounded-size\\\"\\n  ],\\n  \\\"exit\\\"\",\"excerptTruncated\":true,\"score\":19},{\"id\":\"diagnostic/PULSE_CANONICAL_COMPILE_FAILED\",\"title\":\"Canonical Compile Failed\",\"category\":\"diagnostic\",\"tags\":[\"PULSE_CANONICAL_COMPILE_FAILED\",\"compile\",\"diagnostic\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/diagnostics.js\",\"selection\":\"DIAGNOSTIC_CATALOG.PULSE_CANONICAL_COMPILE_FAILED\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b\",\"sha256\":\"bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f\"},\"contentSha256\":\"a62a47e0f87de6c2f043c8de09dda0324d3fedd0708c61ab13b57f35a3eae875\",\"excerpt\":\"{\\n  \\\"category\\\": \\\"compile\\\",\\n  \\\"code\\\": \\\"PULSE_CANONICAL_COMPILE_FAILED\\\",\\n  \\\"exitCode\\\": 3,\\n  \\\"remediation\\\": [\\n    \\\"Rewrite the handler using the documented canonical API subset.\\\",\\n    \\\"Run `pulse inspect --json` to see unsupported source forms.\\\"\\n  ],\\n  \\\"scope\\\": \\\"public\\\",\\n  \\\"stability\\\": \\\"preview-stable\\\",\\n  \\\"summary\\\": \\\"The handler uses a source form outside the canonical Beta authoring \",\"excerptTruncated\":true,\"score\":11},{\"id\":\"diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED\",\"title\":\"Javascript Module Compile Failed\",\"category\":\"diagnostic\",\"tags\":[\"PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED\",\"compile\",\"diagnostic\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/diagnostics.js\",\"selection\":\"DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b\",\"sha256\":\"bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f\"},\"contentSha256\":\"46a973042b1d6d4de2b641d28b53d1ed53f89700973578ee5c984d709ad471cc\",\"excerpt\":\"{\\n  \\\"category\\\": \\\"compile\\\",\\n  \\\"code\\\": \\\"PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED\\\",\\n  \\\"exitCode\\\": 3,\\n  \\\"remediation\\\": [\\n    \\\"Fix the TypeScript or JavaScript syntax in the graph-owned project module.\\\"\\n  ],\\n  \\\"scope\\\": \\\"public\\\",\\n  \\\"stability\\\": \\\"preview-stable\\\",\\n  \\\"summary\\\": \\\"A graph-owned TypeScript or JavaScript module could not be transpiled for the Node loader.\\\",\\n  \\\"title\\\": \\\"Javascript\",\"excerptTruncated\":true,\"score\":11},{\"id\":\"diagnostic/PULSE_PROJECT_COMPILE_FAILED\",\"title\":\"Project Compile Failed\",\"category\":\"diagnostic\",\"tags\":[\"PULSE_PROJECT_COMPILE_FAILED\",\"compile\",\"diagnostic\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/diagnostics.js\",\"selection\":\"DIAGNOSTIC_CATALOG.PULSE_PROJECT_COMPILE_FAILED\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b\",\"sha256\":\"bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f\"},\"contentSha256\":\"b89dfc7eb490e1863b13a3903cd844504d377a93b5b8d07893f5c421d36968b2\",\"excerpt\":\"{\\n  \\\"category\\\": \\\"compile\\\",\\n  \\\"code\\\": \\\"PULSE_PROJECT_COMPILE_FAILED\\\",\\n  \\\"exitCode\\\": 3,\\n  \\\"remediation\\\": [\\n    \\\"Read the nested diagnostics and fix the first reported source or schema error.\\\",\\n    \\\"Run `pulse inspect --json` or `pulse doctor --json` for structured diagnostics.\\\"\\n  ],\\n  \\\"scope\\\": \\\"public\\\",\\n  \\\"stability\\\": \\\"preview-stable\\\",\\n  \\\"summary\\\": \\\"Whole-project compilation failed a\",\"excerptTruncated\":true,\"score\":11},{\"id\":\"diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED\",\"title\":\"Canonical Native Compile Failed\",\"category\":\"diagnostic\",\"tags\":[\"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\",\"diagnostic\",\"toolchain\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/diagnostics.js\",\"selection\":\"DIAGNOSTIC_CATALOG.PULSE_CANONICAL_NATIVE_COMPILE_FAILED\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b\",\"sha256\":\"bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f\"},\"contentSha256\":\"bd06e6eb9311256fd971209bc1f0e709a3dd663fa2c5f8242499c7422e02b353\",\"excerpt\":\"{\\n  \\\"category\\\": \\\"toolchain\\\",\\n  \\\"code\\\": \\\"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\\\",\\n  \\\"exitCode\\\": 5,\\n  \\\"remediation\\\": [\\n    \\\"Restore the lockfile-pinned AssemblyScript dependency and rerun `pulse doctor`.\\\",\\n    \\\"Retain the generated diagnostic detail if AssemblyScript rejects valid Pulse output.\\\"\\n  ],\\n  \\\"scope\\\": \\\"public\\\",\\n  \\\"stability\\\": \\\"preview-stable\\\",\\n  \\\"summary\\\": \\\"The provider-neut\",\"excerptTruncated\":true,\"score\":7}],\"totalMatches\":56,\"truncated\":true,\"nextOffset\":5}"
+            }
+          ],
+          "structuredContent": {
+            "meta": {
+              "pulseVersion": "1.0.0-beta.9",
+              "corpusSchemaVersion": "pulse.context-corpus.v1",
+              "corpusHash": "f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749",
+              "snapshotStatus": "candidate",
+              "applicationVersion": "pulse.context-application.v2",
+              "encoder": "pulse.context-sparse-lexical.v1",
+              "requestedVersion": "1.0.0-beta.9",
+              "maxReplyBytes": 24576
+            },
+            "status": "ok",
+            "results": [
+              {
+                "id": "command/compile",
+                "title": "pulse compile",
+                "category": "command",
+                "tags": [
+                  "cli",
+                  "compile"
+                ],
+                "applicability": [
+                  {
+                    "provider": "fastly",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "none",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "wasm/packages/cli/src/command-spec.js",
+                  "selection": "COMMAND_SPECS.compile",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a",
+                  "sha256": "2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf"
+                },
+                "contentSha256": "5881b220a1285636b5b91bb7ed528c9bb28003c4200a1751a1c9f4cdca22bd65",
+                "excerpt": "{\n  \"diagnostics\": [\n    \"PULSE_BUILD_OUT_UNSAFE\",\n    \"PULSE_CANONICAL_NATIVE_PLAN_FAILED\",\n    \"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\"\n  ],\n  \"examples\": [\n    \"pulse compile ./my-pulse-app\",\n    \"pulse compile ./edge-app --out ./dist --json\",\n    \"pulse compile ./edge-app --experimental-native-size\",\n    \"pulse compile ./edge-app --experimental-native-bounded-size\"\n  ],\n  \"exit\"",
+                "excerptTruncated": true,
+                "score": 19
+              },
+              {
+                "id": "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+                "title": "Canonical Compile Failed",
+                "category": "diagnostic",
+                "tags": [
+                  "PULSE_CANONICAL_COMPILE_FAILED",
+                  "compile",
+                  "diagnostic"
+                ],
+                "applicability": [
+                  {
+                    "provider": "fastly",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "fastly",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "none",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "wasm/packages/cli/src/diagnostics.js",
+                  "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_COMPILE_FAILED",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b",
+                  "sha256": "bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f"
+                },
+                "contentSha256": "a62a47e0f87de6c2f043c8de09dda0324d3fedd0708c61ab13b57f35a3eae875",
+                "excerpt": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CANONICAL_COMPILE_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Rewrite the handler using the documented canonical API subset.\",\n    \"Run `pulse inspect --json` to see unsupported source forms.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The handler uses a source form outside the canonical Beta authoring ",
+                "excerptTruncated": true,
+                "score": 11
+              },
+              {
+                "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+                "title": "Javascript Module Compile Failed",
+                "category": "diagnostic",
+                "tags": [
+                  "PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+                  "compile",
+                  "diagnostic"
+                ],
+                "applicability": [
+                  {
+                    "provider": "fastly",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "fastly",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "none",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "wasm/packages/cli/src/diagnostics.js",
+                  "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b",
+                  "sha256": "bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f"
+                },
+                "contentSha256": "46a973042b1d6d4de2b641d28b53d1ed53f89700973578ee5c984d709ad471cc",
+                "excerpt": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Fix the TypeScript or JavaScript syntax in the graph-owned project module.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A graph-owned TypeScript or JavaScript module could not be transpiled for the Node loader.\",\n  \"title\": \"Javascript",
+                "excerptTruncated": true,
+                "score": 11
+              },
+              {
+                "id": "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+                "title": "Project Compile Failed",
+                "category": "diagnostic",
+                "tags": [
+                  "PULSE_PROJECT_COMPILE_FAILED",
+                  "compile",
+                  "diagnostic"
+                ],
+                "applicability": [
+                  {
+                    "provider": "fastly",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "fastly",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "none",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "wasm/packages/cli/src/diagnostics.js",
+                  "selection": "DIAGNOSTIC_CATALOG.PULSE_PROJECT_COMPILE_FAILED",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b",
+                  "sha256": "bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f"
+                },
+                "contentSha256": "b89dfc7eb490e1863b13a3903cd844504d377a93b5b8d07893f5c421d36968b2",
+                "excerpt": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_PROJECT_COMPILE_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Read the nested diagnostics and fix the first reported source or schema error.\",\n    \"Run `pulse inspect --json` or `pulse doctor --json` for structured diagnostics.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Whole-project compilation failed a",
+                "excerptTruncated": true,
+                "score": 11
+              },
+              {
+                "id": "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+                "title": "Canonical Native Compile Failed",
+                "category": "diagnostic",
+                "tags": [
+                  "PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+                  "diagnostic",
+                  "toolchain"
+                ],
+                "applicability": [
+                  {
+                    "provider": "fastly",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "fastly",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "javascript"
+                  },
+                  {
+                    "provider": "node",
+                    "target": "native"
+                  },
+                  {
+                    "provider": "none",
+                    "target": "native"
+                  }
+                ],
+                "source": {
+                  "path": "wasm/packages/cli/src/diagnostics.js",
+                  "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+                  "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6dabe835eec08285ee840111ff6d8200dfc1565b",
+                  "sha256": "bcd373e5295bb91e3399d57a1377d10ace2d59b355462065f75ceaaaefbcef2f"
+                },
+                "contentSha256": "bd06e6eb9311256fd971209bc1f0e709a3dd663fa2c5f8242499c7422e02b353",
+                "excerpt": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Restore the lockfile-pinned AssemblyScript dependency and rerun `pulse doctor`.\",\n    \"Retain the generated diagnostic detail if AssemblyScript rejects valid Pulse output.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The provider-neut",
+                "excerptTruncated": true,
+                "score": 7
+              }
+            ],
+            "totalMatches": 56,
+            "truncated": true,
+            "nextOffset": 5
+          }
+        }
+      },
+      "responseSha256": "ee9690628a1b7f7f9464186bab126374f0d942ff132887e7da670b4b5a2e32b4",
+      "responseBytes": 14113
+    },
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "request": {
+        "method": "tools/call",
+        "params": {
+          "name": "pulse.start",
+          "arguments": {
+            "version": "1.0.0-beta.9",
+            "goal": "json-api",
+            "provider": "node",
+            "target": "native"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "pulse-native-qualification",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        },
+        "jsonrpc": "2.0",
+        "id": 6
+      },
+      "requestHeaders": {
+        "host": "127.0.0.1:39105",
+        "connection": "keep-alive",
+        "mcp-protocol-version": "2026-07-28",
+        "mcp-method": "tools/call",
+        "mcp-name": "pulse.start",
+        "content-type": "application/json",
+        "accept": "application/json, text/event-stream",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "373"
+      },
+      "requestSha256": "eb17f1fcf9a786b78fdcd45b05c93834358562795d14672d9f9dd228303f5c48",
+      "status": 200,
+      "responseHeaders": {
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "content-length": "17093",
+        "date": "Wed, 21 Oct 2026 07:01:32 GMT"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "result": {
+          "resultType": "complete",
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "pulse-context",
+              "version": "1.0.0-beta.9"
+            }
+          },
+          "isError": false,
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"meta\":{\"pulseVersion\":\"1.0.0-beta.9\",\"corpusSchemaVersion\":\"pulse.context-corpus.v1\",\"corpusHash\":\"f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749\",\"snapshotStatus\":\"candidate\",\"applicationVersion\":\"pulse.context-application.v2\",\"requestedVersion\":\"1.0.0-beta.9\",\"maxReplyBytes\":24576},\"status\":\"ok\",\"plan\":{\"goal\":\"json-api\",\"provider\":\"node\",\"target\":\"native\",\"imports\":[\"@pulse-compute/pulse\"],\"dependencies\":[{\"name\":\"@pulse-compute/pulse\",\"version\":\"1.0.0-beta.9\",\"kind\":\"runtime\"},{\"name\":\"@pulse-compute/cli\",\"version\":\"1.0.0-beta.9\",\"kind\":\"development\"},{\"name\":\"typescript\",\"version\":\"5.9.3\",\"kind\":\"development\"}],\"configuration\":{\"path\":\".pulse/config.ts\",\"content\":\"import { defineConfig } from '@pulse-compute/pulse'\\n\\nexport default defineConfig((_scope) => ({\\n  pulse: {\\n    entry: 'src/index.ts',\\n    tests: 'tests/pulse.harness.ts',\\n    defaultProfile: 'local',\\n    strict: true,\\n  },\\n  local: {\\n    host: 'node',\\n    target: 'native',\\n    outDir: 'dist',\\n    dev: { host: '127.0.0.1', port: 8787 },\\n  },\\n}))\\n\",\"sourceId\":\"example/01-hello-json/.pulse/config.ts\",\"changedFields\":[]},\"contracts\":[{\"id\":\"contract/application-root\",\"title\":\"Application root\",\"category\":\"contract\",\"tags\":[\"Pulse\",\"Router\",\"handler\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"docs/packages/pulse.md\",\"selection\":\"heading:Application root\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b\",\"sha256\":\"1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e\",\"startLine\":23,\"endLine\":79},\"contentSha256\":\"5d9fefffe67b35daf79bf388c83f9d677a7d0774244373c4a3b616a7b817cf1d\"},{\"id\":\"contract/project-configuration\",\"title\":\"Project configuration\",\"category\":\"contract\",\"tags\":[\"profile\",\"provider\",\"target\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"docs/packages/pulse.md\",\"selection\":\"heading:Project configuration\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b\",\"sha256\":\"1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e\",\"startLine\":80,\"endLine\":107},\"contentSha256\":\"84005c508bfa3e837ffac74e879cdaf9a3d9eddca61f21343b0f4f2724481dfb\"},{\"id\":\"contract/targets\",\"title\":\"Current Beta targets\",\"category\":\"contract\",\"tags\":[\"JavaScript\",\"Native\",\"provider\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"docs/concepts/targets-and-hosts.md\",\"selection\":\"heading:Current Beta targets\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/a644f6ef180e8fb06bb38cac5f7e2724cf0e7019\",\"sha256\":\"3a6a393bad0526b0c4f86072a4f8c75b4e31b35b4ae05e10716d4e05c4b62177\",\"startLine\":17,\"endLine\":36},\"contentSha256\":\"3e057a23bad0e97465ee6ddfed30c493bbd7dc43982ea69f6ee8d491ed31d158\"},{\"id\":\"start/requirements\",\"title\":\"Requirements\",\"category\":\"guide\",\"tags\":[\"install\",\"start\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"docs/getting-started.md\",\"selection\":\"heading:Requirements\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e0323d3acf44796b8876b2e97c0c65748f099b8\",\"sha256\":\"a52a9412e7697d5fb35f53a4a509b2d0c608976b9a342489d3c5881abaca9027\",\"startLine\":8,\"endLine\":14},\"contentSha256\":\"243c42ab80794eec4d8e6a758dd62ece76331aec5ca70baa7eebc4fd4c07f41d\"},{\"id\":\"command/init\",\"title\":\"pulse init\",\"category\":\"command\",\"tags\":[\"cli\",\"init\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/command-spec.js\",\"selection\":\"COMMAND_SPECS.init\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a\",\"sha256\":\"2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf\"},\"contentSha256\":\"9931d6f0027f2ceb62537280024d02ade3123d495b757e12c6063e68ece0cb76\"},{\"id\":\"command/doctor\",\"title\":\"pulse doctor\",\"category\":\"command\",\"tags\":[\"cli\",\"doctor\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/command-spec.js\",\"selection\":\"COMMAND_SPECS.doctor\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a\",\"sha256\":\"2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf\"},\"contentSha256\":\"4cb2bc55a89b146e63a8bd04daf66e3d2e6a84b56eea3bd212c974a85f14d5cb\"},{\"id\":\"command/test\",\"title\":\"pulse test\",\"category\":\"command\",\"tags\":[\"cli\",\"test\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/command-spec.js\",\"selection\":\"COMMAND_SPECS.test\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a\",\"sha256\":\"2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf\"},\"contentSha256\":\"b6dfd7dfabadff173edf2182c965d3f2365d653bc197534ed53a95c9dee078a3\"},{\"id\":\"command/build\",\"title\":\"pulse build\",\"category\":\"command\",\"tags\":[\"build\",\"cli\"],\"applicability\":[{\"provider\":\"fastly\",\"target\":\"javascript\"},{\"provider\":\"fastly\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"},{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"none\",\"target\":\"native\"}],\"source\":{\"path\":\"wasm/packages/cli/src/command-spec.js\",\"selection\":\"COMMAND_SPECS.build\",\"url\":\"https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a\",\"sha256\":\"2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf\"},\"contentSha256\":\"7bbb6fc594d757dfb9b9e2840cfcd7ff7eeaac15a74fb9f62feed4f9e03b837d\"}],\"exampleId\":\"01-hello-json\",\"exampleApplicability\":[{\"provider\":\"node\",\"target\":\"native\"}],\"commands\":[{\"command\":\"pulse init ./my-pulse-app\",\"purpose\":\"Create the workspace locally, then choose its name and copy the selected example files/configuration.\",\"sourceId\":\"command/init\"},{\"command\":\"cd ./my-pulse-app\",\"purpose\":\"Enter the local project.\",\"sourceId\":\"start/create\"},{\"command\":\"npm install\",\"purpose\":\"Install the exact dependencies listed in this plan.\",\"sourceId\":\"start/create\"},{\"command\":\"pulse doctor --profile local\",\"purpose\":\"Audit the chosen project locally.\",\"sourceId\":\"command/doctor\"},{\"command\":\"pulse test --profile local\",\"purpose\":\"Run the chosen harness locally.\",\"sourceId\":\"command/test\"},{\"command\":\"pulse build --profile local\",\"purpose\":\"Build the explicitly selected provider/target locally.\",\"sourceId\":\"command/build\"}],\"unresolvedChoices\":[\"Choose a package name and routes.\",\"Choose the response shape and whether explicit JSON schemas are needed.\",\"Choose a local directory and install the required toolchain. No commands or file writes have been performed.\"]},\"supportedGoals\":[\"json-api\",\"schema-api\",\"fetch-api\",\"router-api\"],\"supportedSelections\":[{\"provider\":\"node\",\"target\":\"native\"},{\"provider\":\"node\",\"target\":\"javascript\"}]}"
+            }
+          ],
+          "structuredContent": {
+            "meta": {
+              "pulseVersion": "1.0.0-beta.9",
+              "corpusSchemaVersion": "pulse.context-corpus.v1",
+              "corpusHash": "f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749",
+              "snapshotStatus": "candidate",
+              "applicationVersion": "pulse.context-application.v2",
+              "requestedVersion": "1.0.0-beta.9",
+              "maxReplyBytes": 24576
+            },
+            "status": "ok",
+            "plan": {
+              "goal": "json-api",
+              "provider": "node",
+              "target": "native",
+              "imports": [
+                "@pulse-compute/pulse"
+              ],
+              "dependencies": [
+                {
+                  "name": "@pulse-compute/pulse",
+                  "version": "1.0.0-beta.9",
+                  "kind": "runtime"
+                },
+                {
+                  "name": "@pulse-compute/cli",
+                  "version": "1.0.0-beta.9",
+                  "kind": "development"
+                },
+                {
+                  "name": "typescript",
+                  "version": "5.9.3",
+                  "kind": "development"
+                }
+              ],
+              "configuration": {
+                "path": ".pulse/config.ts",
+                "content": "import { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig((_scope) => ({\n  pulse: {\n    entry: 'src/index.ts',\n    tests: 'tests/pulse.harness.ts',\n    defaultProfile: 'local',\n    strict: true,\n  },\n  local: {\n    host: 'node',\n    target: 'native',\n    outDir: 'dist',\n    dev: { host: '127.0.0.1', port: 8787 },\n  },\n}))\n",
+                "sourceId": "example/01-hello-json/.pulse/config.ts",
+                "changedFields": []
+              },
+              "contracts": [
+                {
+                  "id": "contract/application-root",
+                  "title": "Application root",
+                  "category": "contract",
+                  "tags": [
+                    "Pulse",
+                    "Router",
+                    "handler"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "docs/packages/pulse.md",
+                    "selection": "heading:Application root",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b",
+                    "sha256": "1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e",
+                    "startLine": 23,
+                    "endLine": 79
+                  },
+                  "contentSha256": "5d9fefffe67b35daf79bf388c83f9d677a7d0774244373c4a3b616a7b817cf1d"
+                },
+                {
+                  "id": "contract/project-configuration",
+                  "title": "Project configuration",
+                  "category": "contract",
+                  "tags": [
+                    "profile",
+                    "provider",
+                    "target"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "docs/packages/pulse.md",
+                    "selection": "heading:Project configuration",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b",
+                    "sha256": "1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e",
+                    "startLine": 80,
+                    "endLine": 107
+                  },
+                  "contentSha256": "84005c508bfa3e837ffac74e879cdaf9a3d9eddca61f21343b0f4f2724481dfb"
+                },
+                {
+                  "id": "contract/targets",
+                  "title": "Current Beta targets",
+                  "category": "contract",
+                  "tags": [
+                    "JavaScript",
+                    "Native",
+                    "provider"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "docs/concepts/targets-and-hosts.md",
+                    "selection": "heading:Current Beta targets",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a644f6ef180e8fb06bb38cac5f7e2724cf0e7019",
+                    "sha256": "3a6a393bad0526b0c4f86072a4f8c75b4e31b35b4ae05e10716d4e05c4b62177",
+                    "startLine": 17,
+                    "endLine": 36
+                  },
+                  "contentSha256": "3e057a23bad0e97465ee6ddfed30c493bbd7dc43982ea69f6ee8d491ed31d158"
+                },
+                {
+                  "id": "start/requirements",
+                  "title": "Requirements",
+                  "category": "guide",
+                  "tags": [
+                    "install",
+                    "start"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "docs/getting-started.md",
+                    "selection": "heading:Requirements",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e0323d3acf44796b8876b2e97c0c65748f099b8",
+                    "sha256": "a52a9412e7697d5fb35f53a4a509b2d0c608976b9a342489d3c5881abaca9027",
+                    "startLine": 8,
+                    "endLine": 14
+                  },
+                  "contentSha256": "243c42ab80794eec4d8e6a758dd62ece76331aec5ca70baa7eebc4fd4c07f41d"
+                },
+                {
+                  "id": "command/init",
+                  "title": "pulse init",
+                  "category": "command",
+                  "tags": [
+                    "cli",
+                    "init"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "wasm/packages/cli/src/command-spec.js",
+                    "selection": "COMMAND_SPECS.init",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a",
+                    "sha256": "2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf"
+                  },
+                  "contentSha256": "9931d6f0027f2ceb62537280024d02ade3123d495b757e12c6063e68ece0cb76"
+                },
+                {
+                  "id": "command/doctor",
+                  "title": "pulse doctor",
+                  "category": "command",
+                  "tags": [
+                    "cli",
+                    "doctor"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "wasm/packages/cli/src/command-spec.js",
+                    "selection": "COMMAND_SPECS.doctor",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a",
+                    "sha256": "2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf"
+                  },
+                  "contentSha256": "4cb2bc55a89b146e63a8bd04daf66e3d2e6a84b56eea3bd212c974a85f14d5cb"
+                },
+                {
+                  "id": "command/test",
+                  "title": "pulse test",
+                  "category": "command",
+                  "tags": [
+                    "cli",
+                    "test"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "wasm/packages/cli/src/command-spec.js",
+                    "selection": "COMMAND_SPECS.test",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a",
+                    "sha256": "2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf"
+                  },
+                  "contentSha256": "b6dfd7dfabadff173edf2182c965d3f2365d653bc197534ed53a95c9dee078a3"
+                },
+                {
+                  "id": "command/build",
+                  "title": "pulse build",
+                  "category": "command",
+                  "tags": [
+                    "build",
+                    "cli"
+                  ],
+                  "applicability": [
+                    {
+                      "provider": "fastly",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "fastly",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "javascript"
+                    },
+                    {
+                      "provider": "node",
+                      "target": "native"
+                    },
+                    {
+                      "provider": "none",
+                      "target": "native"
+                    }
+                  ],
+                  "source": {
+                    "path": "wasm/packages/cli/src/command-spec.js",
+                    "selection": "COMMAND_SPECS.build",
+                    "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6c4414982d1193c0a19e2b580bba2f92d5c6f05a",
+                    "sha256": "2a601ec8b47baf838e55e18cb4ac831d03b26c4363a404f15755cedb66c92ccf"
+                  },
+                  "contentSha256": "7bbb6fc594d757dfb9b9e2840cfcd7ff7eeaac15a74fb9f62feed4f9e03b837d"
+                }
+              ],
+              "exampleId": "01-hello-json",
+              "exampleApplicability": [
+                {
+                  "provider": "node",
+                  "target": "native"
+                }
+              ],
+              "commands": [
+                {
+                  "command": "pulse init ./my-pulse-app",
+                  "purpose": "Create the workspace locally, then choose its name and copy the selected example files/configuration.",
+                  "sourceId": "command/init"
+                },
+                {
+                  "command": "cd ./my-pulse-app",
+                  "purpose": "Enter the local project.",
+                  "sourceId": "start/create"
+                },
+                {
+                  "command": "npm install",
+                  "purpose": "Install the exact dependencies listed in this plan.",
+                  "sourceId": "start/create"
+                },
+                {
+                  "command": "pulse doctor --profile local",
+                  "purpose": "Audit the chosen project locally.",
+                  "sourceId": "command/doctor"
+                },
+                {
+                  "command": "pulse test --profile local",
+                  "purpose": "Run the chosen harness locally.",
+                  "sourceId": "command/test"
+                },
+                {
+                  "command": "pulse build --profile local",
+                  "purpose": "Build the explicitly selected provider/target locally.",
+                  "sourceId": "command/build"
+                }
+              ],
+              "unresolvedChoices": [
+                "Choose a package name and routes.",
+                "Choose the response shape and whether explicit JSON schemas are needed.",
+                "Choose a local directory and install the required toolchain. No commands or file writes have been performed."
+              ]
+            },
+            "supportedGoals": [
+              "json-api",
+              "schema-api",
+              "fetch-api",
+              "router-api"
+            ],
+            "supportedSelections": [
+              {
+                "provider": "node",
+                "target": "native"
+              },
+              {
+                "provider": "node",
+                "target": "javascript"
+              }
+            ]
+          }
+        }
+      },
+      "responseSha256": "09faebe91d267a8f0b4fe02f5a9b34e49179c3838cf164e7dcd2540b00e982e9",
+      "responseBytes": 17093
+    }
+  ],
+  "client": {
+    "package": "@modelcontextprotocol/client",
+    "version": "2.2.0",
+    "lockSha256": "a0aba23bc44c940d415d557da8ceb2592d36cbe4db4ce2de6e5a7b01d95adad2",
+    "installed": {
+      "files": 1835,
+      "bytes": 22973745,
+      "sha256": "cbade7cdde52147650028d44132d524da7b1fe46d9eb494f72b671a4250c54d8"
+    },
+    "unchanged": true
+  },
+  "artifact": {
+    "hostTools": {
+      "fastlyCli": {
+        "binary": "/tmp/pulse-10a-tools/fastly",
+        "version": "16.1.0",
+        "output": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-10-21)\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 16.2.0\nRun `fastly update` to get the latest version.",
+        "args": [
+          "version"
+        ],
+        "termination": "clean-exit",
+        "source": "environment",
+        "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+      },
+      "viceroy": {
+        "binary": "/tmp/467-recovery-tools/viceroy",
+        "version": "0.21.1",
+        "output": "viceroy 0.21.1",
+        "args": [
+          "--version"
+        ],
+        "source": "environment",
+        "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+      }
+    },
+    "name": "shipped",
+    "moduleSha256": "25349f157dd40e14b5c9b28d3badfcf115ed89b0d24ee98a9c95c8f2817722e2",
+    "moduleBytes": 1046697,
+    "configSha256": "fcd5491ef0175118542ec7c49fa2479502962b4f22dd2826efc0a5dada90fc4f",
+    "applicationEntrySha256": "77108139b770d957434a55dc736cf31a938b1dae685d4a6ec97820778fb43dfd",
+    "receipts": {
+      "pulse-build.json": "e12499f6ccdfc3a4ae942f1d717d5fa111a91dceadf3a8f6dbb6ac952bf27579",
+      "fastly-build.json": "99e72fd30044159b015f49537c363cbe21abbcad9ec8243769bbc5a83e20ca5f",
+      "fastly-native-manifest.json": "f3672424da2173f40bb893502e38d5d791f8e63320310ed1612ec35428f45e1a"
+    }
+  },
+  "expectedSha256": "fbac6a9e4d17fae0d3d3057d6ea559c1cc99d9ee1eb7db639de90ce5e4512e07",
+  "proof": {
+    "status": "passed",
+    "kind": "sdk",
+    "profile": "2026-07-28",
+    "inferenceRequests": 0,
+    "calls": [
+      {
+        "tool": "pulse.diagnostic",
+        "status": "ok",
+        "bytes": 8617
+      },
+      {
+        "tool": "pulse.example",
+        "status": "ok",
+        "bytes": 11910
+      },
+      {
+        "tool": "pulse.read",
+        "status": "ok",
+        "bytes": 15891
+      },
+      {
+        "tool": "pulse.search",
+        "status": "ok",
+        "bytes": 14055
+      },
+      {
+        "tool": "pulse.start",
+        "status": "ok",
+        "bytes": 17035
+      }
+    ],
+    "cleanup": "passed"
+  }
+}

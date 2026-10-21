@@ -91,6 +91,7 @@ async function main() {
     const timed = createMcpHttpHandler({ ...f.options, legacyProtocol: version, limits: { deadlineMs: 40 } });
     assert.equal((await exchange(timed, 'tools/call', { name: 'status' }, { authorization: 'Bearer ' + f.issue() })).status, 408);
   } finally { await f.close(); }
+  await require('./assert-mcp-client-receipts.cjs').receiptContracts();
   console.log('ok - opt-in legacy initialization/tools, modern isolation, bounded admission and per-request authorization');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

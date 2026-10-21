@@ -1207,6 +1207,10 @@ const tasks = Object.freeze({
     args: ['--fastly-local'], evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
     description: '10A exact installed Native context, growth, deadlines and resource lifetime through actual Fastly CLI/Viceroy; local only'
   }),
+  'mcp-fastly-clients-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
+    args: ['--fastly-clients'], evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
+    description: '10B exact installed Native Viceroy endpoint with pinned SDK both profiles, Claude 2026-07-28 and Codex 2025-06-18; individual terminal receipts'
+  }),
   'mcp-wire-proof': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
     evidence: 'external', timeoutMs: 300000,
     description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'

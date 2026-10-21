@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T06-59-13-435Z--22",
+  "sourceRevision": "944919c1b84086a7daba6d3a164b8bb882c935a2",
+  "sourceIdentity": {
+    "sourceRevision": "944919c1b84086a7daba6d3a164b8bb882c935a2",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T06:59:13.441Z",
+  "updatedAt": "2026-10-21T06:59:14.533Z",
+  "finishedAt": "2026-10-21T06:59:14.533Z",
+  "durationMs": 1092,
+  "profiles": [],
+  "requestedTasks": [
+    "suite-shape",
+    "mcp-http",
+    "mcp-compatibility",
+    "mcp-tools"
+  ],
+  "selectedTasks": [
+    "suite-shape",
+    "mcp-http",
+    "mcp-compatibility",
+    "mcp-tools"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 4,
+  "results": [
+    {
+      "name": "suite-shape",
+      "evidence": "unit",
+      "description": "profile separation, uniqueness, and timeout budgets",
+      "commandSignature": "cb9cd6abfd8d643b83fae7677728d5f7ec0c31879d30f8531cccc937c79dfb8b",
+      "timeoutMs": 30000,
+      "durationMs": 140,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-59-13-435Z--22/tasks/suite-shape.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "mcp-http",
+      "evidence": "unit",
+      "description": "MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge",
+      "commandSignature": "45b3fea7e31be57b46e47bab332f31c6a28d443d1511d2563a62b8021173ecad",
+      "timeoutMs": 30000,
+      "durationMs": 371,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-59-13-435Z--22/tasks/mcp-http.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "mcp-compatibility",
+      "evidence": "unit",
+      "description": "PMCP-01A opt-in 2025-06-18 framing, modern isolation and shared bounded/authenticated tools",
+      "commandSignature": "2f87686aec93e25bcf3f82d3534ca694fdba3750df26ee236413107dd84a991e",
+      "timeoutMs": 30000,
+      "durationMs": 280,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-59-13-435Z--22/tasks/mcp-compatibility.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "mcp-tools",
+      "evidence": "unit",
+      "description": "MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures",
+      "commandSignature": "b50ed718b4a5820bb0757a319cf6ac6c011e7648427b425ebe9b6714f2ff8561",
+      "timeoutMs": 30000,
+      "durationMs": 287,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-59-13-435Z--22/tasks/mcp-tools.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T06-59-13-435Z--22"
+}

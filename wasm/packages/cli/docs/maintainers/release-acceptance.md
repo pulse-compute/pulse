@@ -301,6 +301,30 @@ their specific responses. Failed historical runs remain failed; allocation
 trapping and subsequent healthy requests are recorded separately. A new complete
 run is required after a provider repair before claiming local acceptance.
 
+Pinned client qualification of the installed Native endpoint is a separate task:
+
+```bash
+PULSE_FASTLY_BIN=/path/to/fastly PULSE_VICEROY_BIN=/path/to/viceroy \
+  node wasm/scripts/run-wasm-tests.cjs --task mcp-fastly-clients-installed
+```
+
+It reuses the exact-package installation and actual local host lifecycle above.
+The shipped application keeps its default `2026-07-28` profile. A separately
+hashed fixture enables `2025-06-18` explicitly through the existing binding
+option. The frozen official SDK 2.2.0 exercises both profiles, Claude Code 2.1.292
+exercises `2026-07-28`, and Codex 0.160.1 exercises `2025-06-18`. Host controls make
+explicit calls without model turns or operator accounts. A loopback recording
+relay forwards request/response bytes to Viceroy without MCP translation.
+
+Each client/profile has a terminal receipt binding its frozen lockfile, installed
+client files, application source/configuration, build receipts and Wasm identity.
+All five tools are compared with independent expectations. Separate wire checks
+cover IDs, notifications, protocol errors, disabled capabilities, admission and
+recovery. Malformed modern requests must fail even on the explicitly compatible
+variant. Dependency failures remain blockers, other row failures remain failures,
+and unexecuted rows cannot pass. Existing root/Node adapter qualification remains
+separate. This task adds no transport, deployment or release-selection authority.
+
 ## Aggregate seal and evidence
 
 [Testing Pulse](./testing.md#aggregate-release-seal) owns execution, deadlines,
