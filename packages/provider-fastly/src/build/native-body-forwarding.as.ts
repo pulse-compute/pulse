@@ -13,6 +13,10 @@ const __fwd_buffer: usize = memory.data(16384)
 const __fwd_headers: usize = memory.data(16384)
 const __fwd_pairs: usize = memory.data(1024) // 64 x (name ptr/size, value ptr/size)
 const __fwd_io: usize = memory.data(128) // aligned reusable ABI outputs
+const __fwd_detail: usize = __fwd_io + 8
+const __fwd_done: usize = __fwd_detail + __PULSE_SEND_ERROR_DETAIL_BYTES
+const __fwd_response_out: usize = __fwd_done + 4
+const __fwd_body_out: usize = __fwd_response_out + 4 // ends at +40; next scratch field starts there
 let __fwd_source: i32 = -1
 let __fwd_upload: i32 = -1
 let __fwd_request: i32 = -1
@@ -63,10 +67,11 @@ function __fwd_cleanup(): void {
   if (__fwd_pending >= 0) {
     // No pending-request cancel ABI. Poll once without waiting and discard any
     // late handles; an unresolved host operation ends at invocation teardown.
-    store<i32>(__fwd_io + 24, 0);
-    const status = __pulse_fetch_poll(__fwd_pending, __fwd_io + 8, __fwd_io + 24, __fwd_io + 28, __fwd_io + 32);
-    if (status == 0 && load<i32>(__fwd_io + 24) == 1) {
-      __pulse_fetch_close_response(load<i32>(__fwd_io + 28)); __pulse_fetch_close_body(load<i32>(__fwd_io + 32));
+    __pulse_send_error_detail_reset(__fwd_detail);
+    store<i32>(__fwd_done, 0);
+    const status = __pulse_fetch_poll(__fwd_pending, __fwd_detail, __fwd_done, __fwd_response_out, __fwd_body_out);
+    if (status == 0 && load<i32>(__fwd_done) == 1) {
+      __pulse_fetch_close_response(load<i32>(__fwd_response_out)); __pulse_fetch_close_body(load<i32>(__fwd_body_out));
     }
     __fwd_pending = -1;
   }
@@ -157,13 +162,14 @@ function __fwd_begin(index: i32, payload: __PulseFastlyValue): void {
 // Adopt early headers before considering readiness of the source or writer.
 function __fwd_poll(): bool {
   if (__fwd_pending < 0 || !__fwd_remaining()) return __fwd_response >= 0;
-  store<i32>(__fwd_io + 24, 0);
-  const status = __pulse_fetch_poll(__fwd_pending, __fwd_io + 8, __fwd_io + 24, __fwd_io + 28, __fwd_io + 32);
-  const done = load<i32>(__fwd_io + 24);
+  __pulse_send_error_detail_reset(__fwd_detail);
+  store<i32>(__fwd_done, 0);
+  const status = __pulse_fetch_poll(__fwd_pending, __fwd_detail, __fwd_done, __fwd_response_out, __fwd_body_out);
+  const done = load<i32>(__fwd_done);
   if (status != 0) { __fwd_pending = -1; __fwd_fail(502); return false; }
   if (done != 0 && done != 1) { __fwd_fail(502); return false; }
   if (done == 1) {
-    __fwd_response = load<i32>(__fwd_io + 28); __fwd_body = load<i32>(__fwd_io + 32); __fwd_pending = -1;
+    __fwd_response = load<i32>(__fwd_response_out); __fwd_body = load<i32>(__fwd_body_out); __fwd_pending = -1;
   }
   if (!__fwd_remaining()) return false;
   return done == 1;
