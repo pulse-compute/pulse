@@ -44,7 +44,7 @@ async function qualify({ consumer, temporary, root, run, env, output, verifyCopy
     providerReality: 'actual-local-fastly-cli-and-viceroy', deployed: false, injectedAbiExecution: false,
     limitations: ['Local acceptance only; not deployed service qualification.', 'RSS samples cover CLI/Viceroy processes, not guest allocations or peak live heap.',
       'Guest live allocation counts, retained-byte counters and peak committed pages are unavailable through this host HTTP surface.',
-      'Each Viceroy request uses a fresh instance; repeated requests do not claim retained-instance execution.'], variants: [], cases: [] };
+      'Each Viceroy request uses a fresh instance; repeated requests do not claim retained-instance execution.'], variants: [], cases: [], failures: [] };
   const save = () => write(path.join(output, 'qualification.json'), report);
   let active;
   try {
@@ -106,6 +106,7 @@ async function qualify({ consumer, temporary, root, run, env, output, verifyCopy
       const inventory = fs.readdirSync(variant.directory).sort();
       assert(!inventory.some(file => /\.(?:ts|js|cjs)$/.test(file)));
       active = await fastly.startFastlyComputeServe({ launcher, packageRoot: variant.directory, env, timeoutMs: 5000, startTimeoutMs: 120000, stopTimeoutMs: 5000 });
+      const closed = new Promise(resolve => active.child.once('close', resolve));
       assert.deepEqual(active.args.slice(0, 2), ['compute', 'serve']); assert(active.args.includes('--viceroy-path'));
       variant.item.launch = { command: active.child.spawnfile, args: active.args, rssBefore: observedRss(active.child.pid) };
       const latencies = [];
@@ -123,10 +124,18 @@ async function qualify({ consumer, temporary, root, run, env, output, verifyCopy
         variant.item.requests = latencies.length;
         const sorted = [...latencies].sort((a,b) => a-b);
         variant.item.latencyMs = { first: latencies[0] ?? null, median: sorted[Math.floor(sorted.length/2)] ?? null, maximum: sorted.at(-1) ?? null };
+        await active.stop();
+        let timer;
+        try { await Promise.race([closed, new Promise((_,reject) => { timer=setTimeout(()=>reject(Error('CLI output pipes did not close')),5000); })]); }
+        finally { clearTimeout(timer); }
+        assert(active.child.exitCode !== null || active.child.signalCode !== null, 'CLI process must terminate');
         variant.item.logs = { stdout: hash(active.logs.stdout), stderr: hash(active.logs.stderr) };
         fs.writeFileSync(path.join(variant.directory, 'stdout.log'), active.logs.stdout); fs.writeFileSync(path.join(variant.directory, 'stderr.log'), active.logs.stderr);
-        await active.stop();
-        assert(active.child.exitCode !== null || active.child.signalCode !== null, 'CLI process must terminate');
+        const heapSamples = [...(active.logs.stdout+'\n'+active.logs.stderr).matchAll(/request completed using ([0-9.]+ [A-Za-z]+) of WebAssembly heap/g)].map(match=>match[1]);
+        variant.item.engineCompletionHeap = heapSamples.length ? {
+          meaning: 'Viceroy rounded completed-request WebAssembly heap log; not peak live heap or allocation count',
+          samples: heapSamples.length, distribution: Object.fromEntries([...new Set(heapSamples)].map(value=>[value,heapSamples.filter(item=>item===value).length]))
+        } : null;
         variant.item.cleanup = { status: 'passed', exitCode: active.child.exitCode, signal: active.child.signalCode,
           descendantProcessObservation: variant.item.launch.rssAfter === null ? 'unavailable' : 'sampled-before-stop' };
         active = null;
@@ -252,12 +261,19 @@ async function qualify({ consumer, temporary, root, run, env, output, verifyCopy
       for(let i=0;i<16;i++)assert.deepEqual(JSON.parse((await exchange('resource-success',{path:'/'})).body),data.expected);
       const single=await exchange('single-allocation',{path:'/',headers:{mode:'single'}});assert.equal(single.status,200);assert.equal(JSON.parse(single.body).value,4194304);
       for(const mode of ['bounds','resource-bounds','allocation']) {
-        const failed=await exchange(mode,{path:'/',headers:{mode}});assert.equal(failed.status,500,failed.body.toString());
+        const failed=await exchange(mode,{path:'/',headers:{mode}});
+        // Retain every independent failure and recovery before terminal failure;
+        // an empty 200 is never accepted as a successful rejection.
+        const outcome={variant:'resources',mode,expectedStatus:500,actualStatus:failed.status,body:failed.body.toString(),passed:failed.status===500};
+        (generic.item.failureOutcomes??=[]).push(outcome);
+        if(!outcome.passed)report.failures.push(outcome);
         assert.deepEqual(JSON.parse((await exchange('recovery-after-'+mode,{path:'/'})).body),data.expected);
       }
     });
     assert.deepEqual(verifyCopy(consumer),baselineInstalled);
-    report.installedUnchanged = true; report.status = 'passed'; save(); return report;
+    report.installedUnchanged = true; report.coverageComplete = true;
+    assert.deepEqual(report.failures, [], 'Local Fastly admission/lifetime qualification blocked');
+    report.status = 'passed'; save(); return report;
   } catch(error) { report.status='failed';report.error={message:error.message,stack:error.stack,detail:error.detail};save();throw error; }
   finally { if(active)await active.stop(); }
 }

@@ -294,6 +294,13 @@ heap remain unknown. Failed runs remain failed. This standalone development task
 does not extend the release selection or authorize deployment. Final release use
 requires a fresh run bound to the selected immutable candidate.
 
+The 10A local run on Fastly CLI 16.1.0 and Viceroy 0.21.1 exposes a blocker:
+generic workspace/resource bounds failures terminate without a downstream error
+response, yielding empty HTTP 200 responses. The acceptance task retains these
+failures and remains failed; allocation trapping and subsequent healthy requests
+are recorded separately. Repair the provider's fatal-error response path and
+rerun the complete task before claiming local acceptance. This is not a waiver.
+
 ## Aggregate seal and evidence
 
 [Testing Pulse](./testing.md#aggregate-release-seal) owns execution, deadlines,

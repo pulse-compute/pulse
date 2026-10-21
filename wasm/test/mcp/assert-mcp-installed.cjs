@@ -47,6 +47,13 @@ function saveReport() {
   fs.renameSync(reportFile + '.tmp', reportFile);
 }
 
+function assertSourceUnchanged() {
+  assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(), report.source, 'Acceptance source revision changed');
+  assert.equal(execFileSync('git', ['rev-parse', 'HEAD^{tree}'], { cwd: root, encoding: 'utf8' }).trim(), report.sourceTree, 'Acceptance source tree changed');
+  assert.equal(execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim(), report.workingTree, 'Acceptance working tree changed');
+  assert.equal(hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })), report.workingDiffSha256, 'Acceptance modified tracked source');
+}
+
 function run(command, args, { timeout = 120000, onOutput, cwd = consumer, environment = env } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, { cwd, env: environment, stdio: ['ignore', 'pipe', 'pipe'], detached: process.platform !== 'win32' });
@@ -146,7 +153,7 @@ async function main() {
         output: path.join(reportDir, 'fastly-local'), verifyCopy: directory => verifyInstalled(manifest, directory) });
       report.providerRealityValidated = true;
       assert.deepEqual(verifyInstalled(manifest), before); report.installed.unchanged = true;
-      assert.equal(hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })), report.workingDiffSha256);
+      assertSourceUnchanged();
       report.status = 'passed'; console.log('ok - exact installed Native context through actual Fastly CLI/Viceroy');
       return;
     }
@@ -172,7 +179,7 @@ async function main() {
     await run(process.execPath, [path.join(client, 'context-proof.mjs'), consumer, path.join(reportDir, 'wire.json'), executable], { cwd: client, timeout: 150000 });
     report.wire = readJson(path.join(reportDir, 'wire.json')); assert.equal(report.wire.status, 'passed');
     assert.deepEqual(verifyInstalled(manifest), before); report.installed.unchanged = true;
-    assert.equal(hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })), report.workingDiffSha256, 'packaging modified tracked source');
+    assertSourceUnchanged();
     report.status = 'passed'; console.log('ok - exact packed installed Pulse context journey');
   } catch (error) { report.status = 'failed'; report.error = clean(error.stack || String(error)); throw error; }
   finally {
