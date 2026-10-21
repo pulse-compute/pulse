@@ -70,8 +70,12 @@ async function main() {
     const installedHash = verifyInstalled(packed.manifest);
     fs.mkdirSync(path.join(consumer, '.pulse'));
     fs.mkdirSync(path.join(consumer, 'src'));
-    fs.writeFileSync(path.join(consumer, '.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse'; export default defineConfig(scope => ({pulse:{entry:'src/index.ts',defaultProfile:'native',strict:false},native:{host:'fastly',target:'native',outDir:'dist',fastly:{bindings:{kv:{catalog:'catalog'}}}}}));`);
+    fs.writeFileSync(path.join(consumer, '.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse'; export default defineConfig(scope => ({pulse:{entry:'src/index.ts',defaultProfile:'native',strict:false},'node-native':{host:'node',target:'native'},'node-javascript':{host:'node',target:'javascript'},native:{host:'fastly',target:'native',outDir:'dist',fastly:{bindings:{kv:{catalog:'catalog'}}}}}));`);
     fs.copyFileSync(path.join(__dirname, '../kv/list-delete/consumer.ts'), path.join(consumer, 'src/index.ts'));
+    const nodeProbe = path.join(consumer, 'installed-node.cjs');
+    fs.copyFileSync(path.join(__dirname, '../kv/list-delete/installed-node.cjs'), nodeProbe);
+    const nodeParity = JSON.parse(await run(process.execPath, [nodeProbe, output]));
+    assert.equal(nodeParity.status, 'passed'); assert.equal(nodeParity.workspaceProductModules, 0);
     const cli = path.join(consumer, 'node_modules/@pulse-compute/cli/bin/pulse.js');
     const built = JSON.parse(await run(process.execPath, [cli, 'build', '--json']));
     assert.equal(built.status, 'built');
@@ -118,7 +122,7 @@ async function main() {
     assert.equal(verifyInstalled(packed.manifest), installedHash); assert.equal(hash(fs.readFileSync(wasmFile)),hash(wasm));
     fs.writeFileSync(path.join(output,'main.wasm'),wasm);
     fs.writeFileSync(path.join(output,'scenarios.json'),JSON.stringify(scenarios,null,2)+'\n');
-    proof={status:'passed',...identity,packages:packed.manifest.packages.map(p=>({name:p.name,sha256:p.sha256})),installedHash,wasmSha256:hash(wasm),engine:launcher.inspection.version,engineSha256:hash(fs.readFileSync(launcher.inspection.binary)),lifecycleScripts:false,localKvAbi:true,scenarioCount:scenarios.length,simulatorLimitations,registry:{...registry.requests},deployed:false,hostedSemantics:'not-qualified; verify configured KV binding, prefix pages, rejected cursor, delete absence and observed concurrent mutations on the service'};
+    proof={status:'passed',...identity,packages:packed.manifest.packages.map(p=>({name:p.name,sha256:p.sha256})),installedHash,wasmSha256:hash(wasm),engine:launcher.inspection.version,engineSha256:hash(fs.readFileSync(launcher.inspection.binary)),lifecycleScripts:false,localKvAbi:true,scenarioCount:scenarios.length,nodeParity,simulatorLimitations,registry:{...registry.requests},deployed:false,hostedSemantics:'not-qualified; verify configured KV binding, prefix pages, rejected cursor, delete absence and observed concurrent mutations on the service'};
     assert.equal(execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim(),'');
     console.log('ok - installed Fastly KV list/delete '+JSON.stringify(proof));
   } finally {
