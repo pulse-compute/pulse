@@ -29,12 +29,10 @@ const {
   diagnosticAnchor
 } = require('../packages/cli/src/diagnostics.js');
 const {
-  CONFIG_SECTIONS,
-  CONFIG_FIELDS,
   CONFIG_DISCOVERY,
-  CONFIG_PRECEDENCE,
   projectConfigSchemaDocument
 } = require('../packages/cli/src/project-config-reference.js');
+const { CONFIG_DOCUMENTATION_FIELDS, CONFIG_DOCUMENTATION_SECTIONS, anchor: configAnchor, legacyAnchor: configLegacyAnchor } = require('../../scripts/documentation-project-config.cjs');
 const {
   COMPLETION_SHELLS,
   renderCompletion,
@@ -567,28 +565,63 @@ function configDiagnosticLinks(codes) {
 }
 
 function renderConfigField(field) {
-  const requiredDefault = field.required ? 'Required.' : `Optional; default ${field.default}.`;
-  return `### ${inlineCode(field.path)}
+  const requiredDefault = field.required ? 'Required when the containing object is configured.' : `Optional; default ${field.default}.`;
+  const facts = [
+    ['Type', field.type],
+    ['Required/default', requiredDefault],
+    ['Allowed values or constraints', field.allowed !== '—' && field.allowed],
+    ['Scope', field.scope !== 'conventional project configuration' && field.scope],
+    ['Precedence', field.precedence !== 'Configuration value.' && field.precedence],
+    ['Security and safety', field.security !== 'No special handling.' && field.security],
+    ['Related diagnostics', field.diagnostics.length && configDiagnosticLinks(field.diagnostics)]
+  ].filter(([, value]) => value).map(([label, value]) => `- **${label}:** ${value}`).join('\n');
+  const aliases = field.sourcePath && field.sourcePath !== field.path ? `<a id="${configLegacyAnchor(field.sourcePath)}"></a>\n` : '';
+  return `${aliases}<a id="${configAnchor(field.path)}"></a>
+
+### ${inlineCode(field.path)}
 
 ${field.description}
 
-- **Type:** ${field.type}
-- **Required/default:** ${requiredDefault}
-- **Allowed values or constraints:** ${field.allowed}
-- **Scope:** ${field.scope}
-- **Precedence:** ${field.precedence}
-- **Security and safety:** ${field.security}
-- **Related diagnostics:** ${configDiagnosticLinks(field.diagnostics)}`;
+${facts}`;
 }
 
 function renderProjectConfigReference() {
-  const sections = CONFIG_SECTIONS.map((section) => {
-    const fields = CONFIG_FIELDS.filter((field) => field.section === section.id);
+  const sections = CONFIG_DOCUMENTATION_SECTIONS.map((section) => {
+    const fields = CONFIG_DOCUMENTATION_FIELDS.filter((field) => field.section === section.id);
     return `## ${section.title}\n\n${section.description}\n\n${fields.map(renderConfigField).join('\n\n')}`;
+  }).join('\n\n');
+  const groups = new Map();
+  for (const field of CONFIG_DOCUMENTATION_FIELDS) {
+    if (field.section === 'facade') continue;
+    const split = field.path.lastIndexOf('.');
+    const parent = field.path.slice(0, split);
+    if (!groups.has(parent)) groups.set(parent, []);
+    groups.get(parent).push(`[${inlineCode(field.path.slice(split + 1))}](#${configAnchor(field.path)})`);
+  }
+  const mapGroups = [
+    ['Project and profiles', parent => !/^<profile>\.(node|fastly)(\.|$)/.test(parent)],
+    ['Node options', parent => /^<profile>\.node(\.|$)/.test(parent)],
+    ['Fastly options', parent => /^<profile>\.fastly(\.|$)/.test(parent)]
+  ];
+  const propertyMap = mapGroups.map(([title, includes]) => {
+    const rows = [...groups].filter(([parent]) => includes(parent))
+      .sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)
+      .map(([parent, links]) => `| ${inlineCode(parent)} | ${links.join(', ')} |`).join('\n');
+    return `### ${title}\n\n| Object | Properties — select for details |\n| --- | --- |\n${rows}`;
   }).join('\n\n');
   return stable(`# Project configuration reference
 
 ${GENERATED_NOTICE}
+
+A conventional project uses ${inlineCode('.pulse/config.ts')}. Start with the property map, then select a property for its type, default, constraints, and diagnostics.
+
+## Property map
+
+${inlineCode('pulse')} holds project-wide settings. Every other top-level key names a profile, such as ${inlineCode('local')} or ${inlineCode('production')}. Below, ${inlineCode('<profile>')} means that profile name and ${inlineCode('<name>')} means a logical binding name you choose. At least one profile is required; each profile must set ${inlineCode('host')} and ${inlineCode('target')}. Optional objects can have required members when configured.
+
+${propertyMap}
+
+Provider options belong under the selected provider namespace. For example, a Fastly KV binding is ${inlineCode('production.fastly.bindings.kv')}, while local test data belongs in ${inlineCode('production.dev.kv')}.
 
 ## Conventional ${inlineCode('.pulse/config.ts')}
 
@@ -621,7 +654,7 @@ Project pointers are workspace-relative. Profile selection is explicit and deter
 
 Project commands accept one optional positional directory and otherwise start from the current directory. Discovery searches upward only for ${inlineCode('.pulse/config.ts')}. Public entry, config-file, workspace, provider, and target overrides are not supported.
 
-${CONFIG_PRECEDENCE.map((entry, index) => `${index + 1}. ${entry}`).join('\n')}
+Command-line output, listener host, port, and watch options override the corresponding selected-profile value for that command. Harness case inputs replace development inputs for that case. Neither changes deployed resource bindings.
 
 ${sections}
 
