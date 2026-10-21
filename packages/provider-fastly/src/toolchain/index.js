@@ -172,7 +172,7 @@ function createDriver() {
         status: 'supported',
         capabilities: Object.freeze([
           's3.head', 's3.getText', 's3.getBody',
-          'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap',
+          'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete',
           'jwt.verify',
           'jwt.sign',
           'jwt.verify.hs256',

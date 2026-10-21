@@ -15,7 +15,7 @@ const intrinsics = new Set(['request.header', 'request.text', 'request.json', 'r
 // These implementations return before any checkpoint; only the payload/ready
 // slots and pinned opaque wrappers outlive the synchronous provider call.
 const effects = new Set(['fetch', 'config.get', 'secret.get', 'kv.get', 'kv.put',
-  'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'time.now',
+  'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete', 'time.now',
   'package.invoke', 'crypto.digestText', 'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast',
   'assets.lookup', 'jwt.verify', 'jwt.sign', 's3.head', 's3.getText', 's3.putText', 's3.getBody']);
 const capabilities = new Set(['request', 'request.method', 'request.url', 'request.path',

@@ -13,7 +13,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
   localExecution: true,
   capabilities: [
     'request', 'request.body.forward', 'response.json', 'response.text', 'response.custom', 'fetch',
-    'time.wall-clock', 'crypto.digestText', 'config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'assets.lookup',
+    'time.wall-clock', 'crypto.digestText', 'config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete', 'assets.lookup',
     'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify', 'jwt.sign',
     'opaque.pass-through', 's3.head', 's3.getText', 's3.putText', 's3.getBody'
   ],
@@ -30,6 +30,8 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'secret.get': 'fastly.secret-store.get',
     'kv.get': 'fastly.kv-store.get',
     'kv.put': 'fastly.kv-store.put',
+    'kv.list': 'fastly.native.kv-store.list',
+    'kv.delete': 'fastly.native.kv-store.delete',
     'kv.getVersioned': 'fastly.native.kv-store.getVersioned',
     'kv.insertIfAbsent': 'fastly.native.kv-store.insertIfAbsent',
     'kv.compareAndSwap': 'fastly.native.kv-store.compareAndSwap',

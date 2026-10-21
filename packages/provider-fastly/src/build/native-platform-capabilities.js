@@ -148,6 +148,10 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   Object.freeze(['fastly_kv_store', 'lookup_wait_v2']),
   Object.freeze(['fastly_kv_store', 'insert']),
   Object.freeze(['fastly_kv_store', 'insert_wait']),
+  Object.freeze(['fastly_kv_store', 'list']),
+  Object.freeze(['fastly_kv_store', 'list_wait']),
+  Object.freeze(['fastly_kv_store', 'delete']),
+  Object.freeze(['fastly_kv_store', 'delete_wait']),
   Object.freeze(['fastly_log', 'endpoint_get']),
   Object.freeze(['fastly_log', 'write']),
   Object.freeze(['wasi_snapshot_preview1', 'fd_write']),
@@ -179,6 +183,8 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   's3.getText': 13,
   's3.putText': 14,
   's3.getBody': 21,
+  'kv.delete': 22,
+  'kv.list': 23,
   'kv.getVersioned': 15,
   'kv.insertIfAbsent': 16,
   'kv.compareAndSwap': 17,
@@ -1452,6 +1458,10 @@ function __pulse_fastly_jwt_send_error(): void {}
 @external("fastly_kv_store", "lookup_wait_v2") declare function fastly_kv_store_lookup_wait_v2(handle: i32, bodyOut: usize, metadata: usize, metadataLength: i32, writtenOut: usize, generationOut: usize, kvErrorOut: usize): i32
 @external("fastly_kv_store", "insert") declare function fastly_kv_store_insert(store: i32, key: usize, keyLength: i32, body: i32, configMask: i32, config: usize, insertOut: usize): i32
 @external("fastly_kv_store", "insert_wait") declare function fastly_kv_store_insert_wait(handle: i32, kvErrorOut: usize): i32
+@external("fastly_kv_store", "delete") declare function fastly_kv_store_delete(store: i32, key: usize, keyLength: i32, configMask: i32, config: usize, pendingOut: usize): i32
+@external("fastly_kv_store", "delete_wait") declare function fastly_kv_store_delete_wait(handle: i32, kvErrorOut: usize): i32
+@external("fastly_kv_store", "list") declare function fastly_kv_store_list(store: i32, configMask: i32, config: usize, pendingOut: usize): i32
+@external("fastly_kv_store", "list_wait") declare function fastly_kv_store_list_wait(handle: i32, bodyOut: usize, kvErrorOut: usize): i32
 ${nativeLoggingSource(bindings.logEndpoint)}
 @external("wasi_snapshot_preview1", "clock_time_get") declare function wasi_snapshot_preview1_clock_time_get(clockId: i32, precision: i64, timeOut: usize): i32
 
@@ -2232,7 +2242,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       jwt: hasJwt || hasSign
         ? `package-owned compact-JWS, registered-claim, and bounded issuance semantics composed with ${jwtCrypto.realization}; provider-owned request, secret, clock, schema, and transport`
         : 'inactive',
-      kv: 'Fastly KV Store async lookup/insert; conditional operations preserve u64 generations, bounded readiness, strict Pulse envelopes and uncertain dispatch',
+      kv: 'Fastly KV Store async lookup/insert/delete and one bounded list page with opaque cursor; conditional operations preserve u64 generations, bounded readiness, strict Pulse envelopes and uncertain dispatch',
       assets: 'Fastly KV Store lookup with provider-owned content type, cache headers, and GET/HEAD body ownership',
       grip: 'canonical stateless framing plus bound, secret-referenced broadcast HTTP realization and stable acknowledgement',
       logging: bindings.logEndpoint === undefined ? 'best-effort redacted WASI fd_write to stdout (descriptor 1), one attempt per statement' : 'best-effort named fastly_log endpoint; one lookup and at most one write per statement, 65536 UTF-8 byte maximum, no retries or stdout fallback; downstream delivery unverified',

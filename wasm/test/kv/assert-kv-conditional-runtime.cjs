@@ -9,6 +9,7 @@ const spec = require('./k1/reference.cjs');
 const vectors = require('./k1/vectors.json');
 
 async function main() {
+  await require('./assert-kv-list-delete-runtime.cjs').main();
   for (const row of vectors.tokens) assert.equal(host.normalizeKvGeneration(row.token), row.token);
   for (const token of [...vectors.invalidTokens, 1n, 'x'.repeat(257)]) assert.throws(() => host.normalizeKvGeneration(token));
   for (const {value, wire} of vectors.wire) {

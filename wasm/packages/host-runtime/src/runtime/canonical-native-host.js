@@ -272,7 +272,7 @@ function nativeEffect(planEffect, payload) {
   }
   if (planEffect.kind === 'config.get' || planEffect.kind === 'secret.get') return { ...base, name: payload.name };
   if (planEffect.kind === 'kv.get' || planEffect.kind === 'kv.put') return { ...base, store: kvStoreName(payload.store), key: payload.key, value: planEffect.kind === 'kv.put' ? payload.value : undefined };
-  if (portableKv.isConditionalKv(planEffect.kind)) return { ...base, store: kvStoreName(payload.store), key: payload.key, value: payload.value, generation: payload.generation };
+  if (portableKv.isConditionalKv(planEffect.kind)) return { ...base, store: kvStoreName(payload.store), key: payload.key, value: payload.value, generation: payload.generation, options: payload.options };
   if (planEffect.kind === 'event.emit') {
     return {
       ...base,

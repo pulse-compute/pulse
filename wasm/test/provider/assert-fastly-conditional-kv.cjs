@@ -12,6 +12,7 @@ const codec = require('../../../packages/runtime/src/host');
 const vectors = require('../kv/k1/vectors.json');
 const root = path.resolve(__dirname, '../../..');
 require('./assert-fastly-safe-structured-logging.cjs').main();
+require('./assert-fastly-kv-list-delete.cjs').main();
 const filename = path.join(__dirname, '../kv/k2/consumer.ts');
 function compile(source, fileName = filename) {
   const compiled = compileCanonicalSource(source, { fileName, strict: false, schemaBundle: buildCanonicalSchemaBundle([], {maxBytes:262144}) });

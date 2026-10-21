@@ -199,7 +199,7 @@ function resultKindForEffect(site, decoder, continuation, resultMode) {
   if (site.kind === 'time.now') return 'json';
   if (site.kind === 'kv.get') return 'json-or-undefined';
   if (site.kind === 'kv.put') return 'ack';
-  if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(site.kind)) return 'json';
+  if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete'].includes(site.kind)) return 'json';
   if (site.kind === 'event.emit') return 'ack';
   return 'unknown';
 }

@@ -4,9 +4,11 @@
 // the returned primitive is the conservative dispatch boundary (including throws).
 const { cloneKvValue, normalizeKvNamespace } = require('./bindings.js');
 const { PulseRuntimeContractError } = require('./errors.js');
-const KV_CONDITIONAL_KINDS = Object.freeze(['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap']);
+// Historical host export name: all bounded KV operations share this lifecycle.
+const KV_CONDITIONAL_KINDS = Object.freeze(['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.delete', 'kv.list']);
 const KV_CONDITIONAL_LIMITS = Object.freeze({ namespaceBytes: 256, keyBytes: 1024, generationBytes: 256,
-  valueBytes: 65536, wireBytes: 65560, depth: 64, entries: 10000, envelopeBytes: 262144, timeoutMs: 10000 });
+  valueBytes: 65536, wireBytes: 65560, depth: 64, entries: 10000, envelopeBytes: 262144, timeoutMs: 10000,
+  listLimit: 100, cursorBytes: 8192 });
 const readReasons = new Set(['invalid-key', 'configuration', 'not-authorized', 'throttled', 'unavailable', 'transport', 'timeout', 'protocol', 'too-large', 'invalid-value']);
 const writeReasons = new Set([...readReasons, 'invalid-generation', 'rejected']);
 const unknownReasons = new Set(['transport', 'timeout', 'unavailable', 'protocol']);
@@ -16,7 +18,8 @@ const admissions = new WeakSet();
 // the serialized effect envelope; only admissions minted by this owner are trusted.
 const admissionSymbol = Symbol('pulse.conditional-kv-admission');
 const isConditionalKv = (kind) => KV_CONDITIONAL_KINDS.includes(kind);
-const isRead = (effect) => effect.kind === 'kv.getVersioned';
+const isRead = (effect) => effect.kind === 'kv.getVersioned' || effect.kind === 'kv.list';
+const reasonsFor = (effect) => effect.kind === 'kv.list' ? new Set([...readReasons, 'invalid-options', 'invalid-cursor']) : readReasons;
 const frozen = (value) => Object.freeze(value);
 function fail(reason) { const error = new Error('Pulse conditional KV boundary rejected data.'); error.kvReason = reason; throw error; }
 function byteLength(value) { return encoder.encode(value).byteLength; }
@@ -37,6 +40,25 @@ function normalizeConditionalKvKey(value, options = {}) {
 function validationReason(error) {
   if (error && error.kvReason) return error.kvReason;
   return /TOO_LARGE|DEPTH_EXCEEDED|ENTRIES_EXCEEDED/.test(error && error.code || '') ? 'too-large' : 'invalid-value';
+}
+function boundedText(value, max, reason, allowEmpty = false) {
+  if (typeof value !== 'string' || (!allowEmpty && !value.length) || value.length > max || byteLength(value) > max
+    || /[\u0000-\u001f\u007f-\u009f]/u.test(value) || /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/u.test(value)) fail(reason);
+  return value;
+}
+function normalizeListOptions(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) fail('invalid-options');
+  const keys = Reflect.ownKeys(value);
+  if (!keys.includes('limit') || keys.some(key => !['limit', 'prefix', 'cursor'].includes(key))
+    || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) fail('invalid-options');
+  for (const key of keys) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (!descriptor.enumerable || !Object.hasOwn(descriptor, 'value')) fail('invalid-options');
+  }
+  if (!Number.isInteger(value.limit) || value.limit < 1 || value.limit > KV_CONDITIONAL_LIMITS.listLimit) fail('invalid-options');
+  return frozen({ limit: value.limit,
+    ...(value.prefix === undefined ? {} : { prefix: boundedText(value.prefix, 1024, 'invalid-options', true) }),
+    ...(value.cursor === undefined ? {} : { cursor: boundedText(value.cursor, KV_CONDITIONAL_LIMITS.cursorBytes, 'invalid-cursor') }) });
 }
 function encodeConditionalKvValue(value, options = {}) {
   let detached;
@@ -81,8 +103,8 @@ function decodeConditionalKvValue(bytes, options = {}) {
   try { return cloneKvValue(parsed.value, boundedLimits(options)); } catch (error) { fail(validationReason(error)); }
 }
 function kvFailure(effect, reason, dispatched = false) {
-  return frozen(isRead(effect) ? { status: 'failed', reason: readReasons.has(reason) ? reason : 'protocol' }
-    : { status: dispatched ? 'unknown' : 'not-stored', reason: (dispatched ? unknownReasons : writeReasons).has(reason) ? reason : 'protocol' });
+  return frozen(isRead(effect) ? { status: 'failed', reason: reasonsFor(effect).has(reason) ? reason : 'protocol' }
+    : { status: dispatched ? 'unknown' : effect.kind === 'kv.delete' ? 'not-deleted' : 'not-stored', reason: (dispatched ? unknownReasons : writeReasons).has(reason) ? reason : 'protocol' });
 }
 function admitConditionalKv(input, options = {}) {
   if (admissions.has(input)) return input;
@@ -93,9 +115,10 @@ function admitConditionalKv(input, options = {}) {
   try {
     try { result.namespace = normalizeKvNamespace(input.namespace ?? input.store, { maxKvNamespaceBytes: Math.min(256, options.maxKvNamespaceBytes ?? 256) }); }
     catch (_) { fail('configuration'); }
-    result.key = normalizeConditionalKvKey(input.key, options);
+    if (input.kind === 'kv.list') result.options = normalizeListOptions(input.options);
+    else result.key = normalizeConditionalKvKey(input.key, options);
     if (input.kind === 'kv.compareAndSwap') result.generation = normalizeKvGeneration(input.generation);
-    if (!isRead(input)) result.value = decodeConditionalKvValue(encodeConditionalKvValue(input.value, options), options);
+    if (input.kind === 'kv.insertIfAbsent' || input.kind === 'kv.compareAndSwap') result.value = decodeConditionalKvValue(encodeConditionalKvValue(input.value, options), options);
     if (byteLength(JSON.stringify(result)) > KV_CONDITIONAL_LIMITS.envelopeBytes) fail('too-large');
   } catch (error) { result.validationResult = kvFailure(result, validationReason(error)); }
   result[admissionSymbol] = result;
@@ -117,20 +140,38 @@ function normalizeConditionalKvResult(effect, value, options = {}) {
     // Read status without invoking an accessor from a malformed provider result.
     const status = value && Object.getOwnPropertyDescriptor(value, 'status');
     const tag = status && status.value;
+    if (effect.kind === 'kv.list' && tag === 'listed') {
+      exactRecord(value, ['status', 'keys', 'cursor']);
+      if (!Array.isArray(value.keys) || value.keys.length > effect.options.limit) fail('protocol');
+      const descriptor = Object.getOwnPropertyDescriptors(value.keys);
+      if (Reflect.ownKeys(descriptor).length !== value.keys.length + 1) fail('protocol');
+      const keys = [];
+      for (let i = 0; i < value.keys.length; i++) {
+        const item = descriptor[i];
+        if (!item || !Object.hasOwn(item, 'value') || !item.enumerable) fail('protocol');
+        const key = boundedText(item.value, 1024, 'protocol');
+        if (!key.startsWith(effect.options.prefix || '')) fail('protocol');
+        keys.push(key);
+      }
+      if (new Set(keys).size !== keys.length) fail('protocol');
+      const cursor = value.cursor === null ? null : boundedText(value.cursor, KV_CONDITIONAL_LIMITS.cursorBytes, 'protocol');
+      if (byteLength(JSON.stringify({ keys, cursor })) > KV_CONDITIONAL_LIMITS.envelopeBytes) fail('too-large');
+      return frozen({ status: 'listed', keys: frozen(keys), cursor });
+    }
     if (isRead(effect)) {
-      if (tag === 'found') {
+      if (effect.kind !== 'kv.list' && tag === 'found') {
         exactRecord(value, ['status', 'value', 'generation']);
         const generation = normalizeKvGeneration(value.generation);
         const detached = decodeConditionalKvValue(encodeConditionalKvValue(value.value, options), options);
         return frozen({ status: 'found', value: detached, generation });
       }
-      if (tag === 'not-found') { exactRecord(value, ['status']); return frozen({ status: tag }); }
+      if (effect.kind !== 'kv.list' && tag === 'not-found') { exactRecord(value, ['status']); return frozen({ status: tag }); }
       exactRecord(value, ['status', 'reason']);
-      if (tag !== 'failed' || !readReasons.has(value.reason)) fail('protocol');
+      if (tag !== 'failed' || !reasonsFor(effect).has(value.reason)) fail('protocol');
     } else {
-      if (tag === 'stored' || tag === 'conflict') { exactRecord(value, ['status']); return frozen({ status: tag }); }
+      if ((effect.kind === 'kv.delete' ? ['deleted', 'not-found'] : ['stored', 'conflict']).includes(tag)) { exactRecord(value, ['status']); return frozen({ status: tag }); }
       exactRecord(value, ['status', 'reason']);
-      if (!((tag === 'not-stored' && writeReasons.has(value.reason)) || (tag === 'unknown' && unknownReasons.has(value.reason)))) fail('protocol');
+      if (!((tag === (effect.kind === 'kv.delete' ? 'not-deleted' : 'not-stored') && writeReasons.has(value.reason)) || (tag === 'unknown' && unknownReasons.has(value.reason)))) fail('protocol');
     }
     return frozen({ status: tag, reason: value.reason });
   } catch (error) { return kvFailure(effect, validationReason(error) === 'invalid-generation' ? 'protocol' : validationReason(error), !isRead(effect)); }
@@ -141,7 +182,7 @@ function registerKvRedactions(effect, register) {
     if (typeof value === 'string' && value.length) register(value);
     else if (value && typeof value === 'object') for (const key of Object.keys(value)) { register(key); visit(value[key]); }
   };
-  visit(effect.key); visit(effect.generation); visit(effect.value);
+  visit(effect.key); visit(effect.generation); visit(effect.value); visit(effect.options); visit(effect.keys); visit(effect.cursor);
 }
 function cancelled() { return new PulseRuntimeContractError('PULSE_RUNTIME_EFFECT_ABORTED', 'Pulse conditional KV execution was cancelled.'); }
 async function executeConditionalKv(effect, prepare, execution = {}, options = {}) {
@@ -182,7 +223,7 @@ async function executeConditionalKv(effect, prepare, execution = {}, options = {
           return kvFailure(admitted, 'timeout', true);
         }
         const normalized = normalizeConditionalKvResult(admitted, value, options);
-        if (normalized.status === 'found') registerKvRedactions(normalized, execution.registerRedactionValue);
+        if (normalized.status === 'found' || normalized.status === 'listed') registerKvRedactions(normalized, execution.registerRedactionValue);
         return normalized;
       } catch (error) {
         return kvFailure(admitted, dispatched ? 'transport' : error && writeReasons.has(error.kvReason) ? error.kvReason : 'unavailable', dispatched);

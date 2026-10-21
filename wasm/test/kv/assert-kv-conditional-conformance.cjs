@@ -22,6 +22,7 @@ function clock() {
 }
 function permutations(xs) { return xs.length ? xs.flatMap((x,i)=>permutations(xs.filter((_,j)=>i!==j)).map(t=>[x,...t])) : [[]]; }
 async function main() {
+  await require('./assert-kv-list-delete-conformance.cjs').main();
   const filename=path.join(__dirname,'k2/consumer.ts'), source=fs.readFileSync(filename,'utf8');
   const compiled=compileCanonicalSource(source,{fileName:filename,strict:false});
   const plan=buildCanonicalNativePlan(compiled), native=compileCanonicalNativePlan(plan);

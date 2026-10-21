@@ -950,6 +950,15 @@ readiness deadlines. Its AssemblyScript limits come from the runtime owner; the
 shared corpus checks its wire and outcome semantics. Fastly JavaScript remains
 incomplete capability mapping. Deployed acceptance remains a separate gate. See [conditional KV](../concepts/effects-and-continuations.md#conditional-kv).
 
+The same bounded KV lifecycle owns `kv.list({ limit, prefix?, cursor? })` and
+`kv.delete(key)`. Listing exposes exactly one provider page, at most 100 keys,
+with an opaque continuation cursor or `null` at the end. It never traverses the
+store implicitly. Delete distinguishes deletion, absence, explicit rejection and
+uncertain acceptance without a preflight read. Both operations support Node
+JavaScript/Native and Fastly Native; Fastly JavaScript reports them unsupported.
+See [KV listing and deletion](../concepts/effects-and-continuations.md#kv-listing-and-deletion)
+for bounds, live-page semantics and local versus hosted evidence.
+
 `ctx.parallel({ ... })` is the explicit cross-target concurrency form. Router
 `next()` and `next(error)` are terminal cursor transfers, not onion-style calls:
 no application code resumes after the transfer. Normal exhaustion produces

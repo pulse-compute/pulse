@@ -8,6 +8,8 @@ const KV_IMPORTS = Object.freeze([
   'fastly_kv_store:open'
 ]);
 function kvImports(kind) {
+  if (kind === 'kv.list') return [...KV_IMPORTS, 'fastly_kv_store:list', 'fastly_kv_store:list_wait', 'fastly_http_body:read'];
+  if (kind === 'kv.delete') return [...KV_IMPORTS, 'fastly_kv_store:delete', 'fastly_kv_store:delete_wait'];
   return [...KV_IMPORTS, ...(kind === 'kv.getVersioned'
     ? ['fastly_kv_store:lookup', 'fastly_kv_store:lookup_wait_v2', 'fastly_http_body:read']
     : ['fastly_kv_store:insert', 'fastly_kv_store:insert_wait', 'fastly_http_body:new', 'fastly_http_body:write'])];
