@@ -98,7 +98,7 @@ async function execute(app,target,input,extra={},name='pulse.search'){
 async function observe(app,input,fault){
  const Original=WebAssembly.Instance,charge=NativeValueBudget.prototype.charge;
  let instance,phase='request',expired=false,triggered=false,clockCalls=0;
- const strings=new Map(),phases={},transfers={guestToHostUtf16Bytes:0,hostToGuestUtf16Bytes:0,hostToGuestAllocations:0};
+ const strings=new Map(),phases={},transfers={guestToHostUtf16Bytes:0,hostToGuestUtf16Bytes:0,hostToGuestAllocations:0,hostExportedAllocations:0,hostExportedAllocatedBytes:0};
  const entry=()=>phases[phase]??=( {clockChecks:0,charges:0,chargedBytes:0,chargedValues:0,imports:0} );
  const set=p=>{phase=p;entry();if(fault?.kind==='deadline'&&phase===fault.phase){expired=true;triggered=true;}};
  const clock={now(){entry().clockChecks++;if(++clockCalls>1&&fault?.kind==='deadline'&&phase===fault.phase){expired=true;triggered=true;}return expired?5001:0;},setTimeout:()=>0,clearTimeout(){}};
@@ -119,6 +119,9 @@ async function observe(app,input,fault){
     return result;
    }]))]));
    super(module,wrapped);instance=this;
+   const raw=this.exports,observed={...raw};
+   if(raw.__new)observed.__new=(...args)=>{transfers.hostExportedAllocations++;transfers.hostExportedAllocatedBytes+=args[0];return raw.__new(...args);};
+   return new Proxy(this,{get(target,key){return key==='exports'?observed:Reflect.get(target,key,target);}});
   }
  };
  NativeValueBudget.prototype.charge=function(values,bytes){

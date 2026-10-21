@@ -94,7 +94,7 @@ async function main(){
    }
    await phases(app,input);
    fail('exact-allocation-telemetry','Current interfaces expose retained charges and Wasm page capacity, not all internal allocations or peak live-object heap. No invented measurement.');
-   fail('independent-relevance-review','24 cases frozen before runs; external relevance review still required by the reviewed contract.');
+   if(frozen.reviewStatus!=='reviewed')fail('independent-relevance-review','24 cases frozen before runs; external relevance review still required by the reviewed contract.');
   }else if(mode==='growth'){
    assert.equal(corpus.records.length,512);
    for(const args of [input,{...input,offset:0},{...input,offset:59,limit:1},{...input,offset:60},{...input,offset:61},{version:corpus.pulseVersion,query:'growth1199'},{version:corpus.pulseVersion,query:'unknownterm'}])await parity(app,args);
