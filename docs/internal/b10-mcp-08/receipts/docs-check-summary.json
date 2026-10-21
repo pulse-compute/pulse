@@ -1,0 +1,36 @@
+{
+  "status": "ok",
+  "context": {
+    "schemaVersion": "pulse.context-build-receipt.v1",
+    "status": "ok",
+    "mode": "check",
+    "executionNode": "24.19.0",
+    "pinnedProducerNode": "24.18.0",
+    "manifestSha256": "68e804f55490e6dce2bfc390f437a11155db94d50564186bda6e7d16af24a747",
+    "corpusHash": "f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749",
+    "dimensions": {
+      "rows": 264,
+      "dimension": 2509,
+      "nonzeros": 15363,
+      "dictionarySha256": "2701a6c5731e54385ecb1eadb368cc338102cd0331b20697340e70c41681a288",
+      "manifestId": "ad5f3e5179858036ef8c3215ecd197d1c0da25ef7e0e80169db46843e884511c",
+      "catalogueIdentity": "99ae36bdb1280b73d3b8c9b177de4c9715dbdc6f55d31c2153ba9bc12110898f",
+      "rawBytes": 601847,
+      "serializedBytes": 803118,
+      "budgets": {
+        "files": 3,
+        "fileBytes": 5242880,
+        "totalBytes": 8388608,
+        "serializedBytes": 16777216,
+        "bindings": 3
+      }
+    },
+    "changedFiles": 0,
+    "comparedFiles": 30
+  },
+  "command": "npm run docs:check",
+  "exitCode": 0,
+  "rawLogSha256": "0300ba11cba40556efd13eee77d77ad92f4f3d04bcc5c7eeaac1f4e5ee5bdc78",
+  "rawLogPath": "/tmp/pulse-08-recovery/docs-check.log",
+  "note": "Compact projection of the successful documentation report; full local log hash retained."
+}
