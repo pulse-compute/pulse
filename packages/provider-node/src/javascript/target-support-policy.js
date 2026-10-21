@@ -84,6 +84,12 @@ function classifyNodeJavascriptCapability(id, options = {}) {
 
 function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, options = {}) {
   const requirement = String(id);
+  // Package contracts name provider responsibilities, separately from the
+  // individual compiler capabilities they may exercise. Keep this list exact:
+  // admitting a responsibility does not admit unknown effects or capabilities.
+  if (requirement === 'effect-execution') return decision(requirement, 'eligible', 'javascript-effect-adapter', 'runtime');
+  if (requirement === 'logging') return classifyNodeJavascriptCapability(requirement, options);
+  if (requirement === 'response-transport') return decision(requirement, 'eligible', 'node-response-ownership', 'provider-node');
   if (requirement === 'request.deadline') return decision(requirement, 'eligible', 'node-provider-request-deadline', 'provider-node');
   if (requirement === 'request.body.transform') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'response.output') return classifyNodeJavascriptCapability(requirement, options);

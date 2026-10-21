@@ -160,6 +160,8 @@ async function main() {
       report.status = 'passed'; console.log('ok - exact installed Native context through actual Fastly CLI/Viceroy');
       return;
     }
+    console.log('mcp-installed - exact JavaScript doctor/dev/build, five tools and provider responsibilities');
+    report.javascriptWorkflow = await require('./context-javascript-installed.cjs').qualify({ consumer, temporary, root, run, env, verifyCopy: directory => verifyInstalled(manifest, directory) });
     console.log('mcp-installed - exact Native application closure and source-free five-tool replay');
     report.nativeClosure = await require('./context-installed-closure.cjs').qualify({ consumer, temporary, root, run, env, verifyCopy: directory => verifyInstalled(manifest, directory) });
     report.genericResourceClosure = await require('./generic-resource-installed.cjs').qualify({ consumer, temporary, root, run, env, verifyCopy: directory => verifyInstalled(manifest, directory) });
