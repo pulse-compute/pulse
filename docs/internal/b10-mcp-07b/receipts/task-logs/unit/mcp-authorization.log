@@ -1,0 +1,2 @@
+ok - MCP-04 metadata/challenges, issuer/audience/expiry/scopes, deny-before-effects, backend isolation and cancellation
+ok - private directory catalog scope/write/schema negatives deny before dispatch

@@ -1,0 +1,2 @@
+{"version":"pulse.entities-lowering-plan.v1","planHash":"e675ab4d16eb0d6d4662528410017fd2d38e1c6b509195c59fec11a3006abed5","catalogHash":"090783f5e4635f713051c93920201c2374b2301d8848981761fa51cd1994036d","entities":2,"schemaReferences":2,"intrinsic":"pulse.entities.handle.v1","targetStatus":"provider-dependent","negativeDiagnostics":12}
+ok - Entities package-owned extraction emits deterministic plan/catalog inspection, managed-handler descriptors, terminal intrinsic, and I9 target truth

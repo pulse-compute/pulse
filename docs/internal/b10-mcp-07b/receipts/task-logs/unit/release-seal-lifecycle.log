@@ -1,0 +1,6 @@
+ok - dependency-free seal reaches restoration; setup failures terminalize; clean candidate and required tools fail early; parent deadline cancels work and preserves cleanup
+
+[pulsewasm:unit] cleanup-stall-fixture
+[pulsewasm] successful task with deliberately stalled cleanup (timeout 3.00s)
+[pulsewasm] cleanup-stall-fixture: failed in 456ms
+ok - seal heartbeat and immutable terminal receipts; failure, interruption, stubborn owned descendants and stalled cleanup return bounded results

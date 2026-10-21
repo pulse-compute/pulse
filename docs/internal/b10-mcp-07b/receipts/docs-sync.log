@@ -1,0 +1,6 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> docs:sync
+> node wasm/scripts/sync-doc-snippets.cjs --write
+
+ok - 266 generated documentation/package file(s), 5 maintenance-policy output(s), 64 source block(s), and 19 owned page(s) are synchronized; updated 1 file(s)

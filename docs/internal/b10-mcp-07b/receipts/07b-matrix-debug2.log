@@ -1,0 +1,11 @@
+DOMException [AbortError]: This operation was aborted
+    at new DOMException (node:internal/per_context/domexception:76:18)
+    at AbortController.abort (node:internal/abort_controller:565:18)
+    at run.signal (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/runtime/binary-resource-matrix.cjs:27:86)
+    at /workspace/scratch/0174bfde4d1e/pulse-06b-final/packages/runtime/src/host.js:57:31
+    at runNormalHandler (/workspace/scratch/0174bfde4d1e/pulse-06b-final/packages/runtime/src/internal/router.js:308:20)
+    at dispatchRouter (/workspace/scratch/0174bfde4d1e/pulse-06b-final/packages/runtime/src/internal/router.js:265:28)
+    at executeRouter (/workspace/scratch/0174bfde4d1e/pulse-06b-final/packages/runtime/src/internal/router.js:486:38)
+    at Object.executeApplication (/workspace/scratch/0174bfde4d1e/pulse-06b-final/packages/runtime/src/host.js:82:10)
+    at executeNodeJavascriptApplication (/workspace/scratch/0174bfde4d1e/pulse-06b-final/packages/provider-node/src/javascript/runtime-host.js:99:30)
+    at run (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/runtime/binary-resource-matrix.cjs:10:33)

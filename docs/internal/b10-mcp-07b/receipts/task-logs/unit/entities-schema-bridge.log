@@ -1,0 +1,2 @@
+{"version":"pulse.first-party-embedded-schema-codec-bridge.v1","declaredSchemas":["app.createInput","app.user"],"bridgeKeys":["describe","decodeEmbeddedJson","encodeEmbeddedJson"],"traceKinds":["json.decode.request","json.encode.response","json.decode.error","json.encode.error"],"deeplyImmutable":true,"encoded":"{\"id\":\"8\",\"name\":\"Grace\",\"score\":42.5,\"active\":true}","schemaBridgePublicExportsAdded":false,"nativeSourceBuilderExportedByI7":true}
+ok - Entities I3 binds only declared generated schema codecs to contained request text and package-owned output text

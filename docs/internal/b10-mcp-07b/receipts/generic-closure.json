@@ -1,0 +1,63 @@
+{
+  "version": "pulse.generic-resource-closure.v1",
+  "status": "passed",
+  "providerReality": false,
+  "sourceInputsRemoved": true,
+  "declaredBindings": 6,
+  "selectedBindings": 5,
+  "selectedUniqueBackingCount": 3,
+  "rawManifestBytes": 2232326,
+  "serializedManifestBytes": 2977405,
+  "selectedBackingBytes": 1052676,
+  "serializedNativePlanBytes": 4238764,
+  "targets": {
+    "node-native": {
+      "artifactBytes": 1093276,
+      "sha256": "d457ee264a4a7db255e4346918ba400cebe730cb5af36602e194ac0d3dd4514e",
+      "initialLinearMemoryBytes": 2293760,
+      "physicalCopies": {
+        "shared": 1,
+        "distinct": 1,
+        "unused": 0
+      },
+      "execution": {
+        "linearMemoryBytes": 2293760,
+        "retainedBudget": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 29320,
+          "values": 757
+        }
+      },
+      "requests": 3
+    },
+    "fastly-native-injected": {
+      "artifactBytes": 1136497,
+      "sha256": "06be3861ddc5734ff59506317b8ebb26151cbbeffed1850e1af5cf27091b70d9",
+      "initialLinearMemoryBytes": 4718592,
+      "physicalCopies": {
+        "shared": 1,
+        "distinct": 1,
+        "unused": 0
+      },
+      "execution": {
+        "linearMemoryBytes": 4718592,
+        "retainedBudget": {
+          "bytes": 10644,
+          "values": 399
+        }
+      },
+      "requests": 3
+    },
+    "node-javascript": {
+      "requests": 3,
+      "originalSourcesRemoved": true,
+      "declaredBindings": 6,
+      "declaredUniqueBackingCount": 4,
+      "declaredBackingBytes": 1183749,
+      "entryArtifactBytes": 1579594,
+      "unusedConfiguredBackingRetained": true,
+      "physicalBackingMemoryBytes": null,
+      "note": "Private JS store backing is not directly observable; catalogue deduplication is not a heap measurement."
+    }
+  }
+}

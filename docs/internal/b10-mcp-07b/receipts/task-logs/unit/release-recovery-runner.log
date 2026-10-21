@@ -1,0 +1,71 @@
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 324ms
+
+[pulsewasm:unit] second
+[pulsewasm] checkpoint fixture second (timeout 3.00s)
+deliberate late failure
+[pulsewasm] second: failed in 121ms
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+[pulsewasm] first: reused verified same-candidate checkpoint
+[pulsewasm] second: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] second
+[pulsewasm] checkpoint fixture second (timeout 3.00s)
+second passed
+[pulsewasm] second: passed in 116ms
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint task definition changed"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 4.00s)
+first passed
+[pulsewasm] first: passed in 145ms
+[pulsewasm] second: reused verified same-candidate checkpoint
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint dependency proof changed"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 134ms
+[pulsewasm] second: executing again; "Checkpoint dependency proof changed"
+
+[pulsewasm:unit] second
+[pulsewasm] checkpoint fixture second (timeout 3.00s)
+second passed
+[pulsewasm] second: passed in 115ms
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+[pulsewasm] first: executing again; "missing-checkpoint-or-artifact"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 125ms
+[pulsewasm] second: reused verified same-candidate checkpoint
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: failed in 98ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 111ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: failed in 133ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)

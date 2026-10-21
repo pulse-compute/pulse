@@ -1,0 +1,2 @@
+{"version":"pulse.entities-envelope-corpus.v1","valid":6,"invalid":17,"productionScanner":"packages/entities/dist/internal/bounded-json-rpc.js"}
+ok - Entities I4 production scanner matches the frozen bounded JSON-RPC corpus

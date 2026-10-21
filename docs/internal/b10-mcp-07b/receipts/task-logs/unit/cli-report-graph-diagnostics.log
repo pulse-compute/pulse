@@ -1,0 +1,1 @@
+{"status":"passed","negativeCases":38,"cyclesAndSharing":true,"passiveReplay":true,"traversalBudget":1000000,"textBudget":{"limitBytes":167772160,"status":"passed","elapsedMs":3647.787933,"maxRssKiB":540932},"costs":[{"table":false,"captureMs":11.215382999999747,"wasmBytes":97,"sidecarBytes":741},{"table":true,"captureMs":2.033690000000206,"wasmBytes":103,"sidecarBytes":819}]}

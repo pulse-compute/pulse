@@ -1,0 +1,12 @@
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+500 !== 200
+
+    at main (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/runtime/binary-resource-closure.cjs:40:195) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 500,
+  expected: 200,
+  operator: 'strictEqual',
+  diff: 'simple'
+} undefined undefined

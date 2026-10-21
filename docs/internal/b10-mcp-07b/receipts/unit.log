@@ -1,0 +1,319 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 315 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 208ms
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 20 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 279ms
+
+[pulsewasm:unit] boundaries
+[pulsewasm] workspace layout and import boundaries (timeout 30.00s)
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages
+[pulsewasm] boundaries: passed in 563ms
+
+[pulsewasm:unit] workspace-hygiene
+[pulsewasm] package-manager and workspace hygiene (timeout 30.00s)
+ok - workspace package-manager hygiene is pnpm-only and portable
+[pulsewasm] workspace-hygiene: passed in 439ms
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity
+[pulsewasm] release-feature-acceptance: passed in 658ms
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+ok - shared release packages are source-bound, hash-checked, private copies; tampering, dirty/stale source and overlapping paths fail closed
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 3.40s
+
+[pulsewasm:unit] binary-resource-admission
+[pulsewasm] B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy (timeout 30.00s)
+ok - resource size budgets are independent; HTTP Assets stays fixed
+ok - independent construction agrees with existing Assets identity
+ok - existing Assets constructor identity cross-check
+ok - snapshot and deeply immutable transport
+ok - all budgets are required finite safe integers; no inherited defaults or read quota
+ok - exact budgets pass; every smaller budget fails before selection
+ok - identity ignores declaration order; alias backing is not counted twice
+ok - selected and unselected corruption, length, identity and base64 are rejected
+ok - binding identity and path grammar are explicit
+ok - constructor rejects ambiguous inputs and accounts escaped UTF-8 metadata exactly
+ok - report projection omits payload and manifest paths; errors omit supplied content
+{"status":"passed","cases":11,"generatedInputMaximumBytes":2097152,"actualMcpFixture":"not-qualified"}
+[pulsewasm] binary-resource-admission: passed in 362ms
+
+[pulsewasm:unit] report-capsule-contract
+[pulsewasm] PRPT-01 capsule identity, schema projection, completion and attribution contracts (timeout 30.00s)
+ok - AN9-09 normalized storage, canonical compatibility, browser codec, semantic validation and bounded hostile expansion
+{"comparison":"passed","checks":49,"version":1,"deterministic":true,"missingIsNotZero":true}
+[pulsewasm] Running report-capsule-contract (execution); elapsed 10.00s
+[pulsewasm] Running report-capsule-contract (execution); elapsed 20.00s
+ok - AN9-06 semantic inventories, recipe independence, source-slot/retained identity, ambiguity, coverage and offline comparison HTML
+{"status":"passed","negativeCases":66,"goldenCapsules":2,"registeredSchemas":2,"attributionProofCells":3,"sameCapsuleHtmlRoundTrip":true,"completedWasmAndHistoricalReplay":true,"noIoOrToolchainImports":true}
+[pulsewasm] Running report-capsule-contract (execution); elapsed 30.01s
+[pulsewasm] report-capsule-contract: passed in 24.33s
+
+[pulsewasm:unit] cli-report-workflow
+[pulsewasm] PRPT-04 report CLI replay, planning, safe output and diagnostics (timeout 30.00s)
+ok - PRPT-04/05 CLI replay, planning, diagnostics, hostile terminal text, guarded imports and atomic offline HTML (39 checks)
+[pulsewasm] cli-report-workflow: passed in 6.72s
+
+[pulsewasm:unit] cli-report-viewer
+[pulsewasm] PRPT-05 offline encoding, view projections and generated-output receipts (timeout 30.00s)
+ok - CMP8-02 comparison rendering: sparse details, zero-net anchors, missing evidence, compatibility, full provenance, exact payload and CSP
+[pulsewasm] Running cli-report-viewer (execution); elapsed 40.01s
+[pulsewasm] Running cli-report-viewer (execution); elapsed 50.01s
+ok - VIS-07 graph-backed binding/registration/site navigation, admission and exact export
+ok - VIS-08 six journeys: mixed entry points, binding consumers, exact details and Explorer return, source/unknown evidence, identity and historical compatibility
+RPT8-12 combined reconciliation: {"routes":2,"schemas":3,"helperRows":4,"distinctHelperBytes":6,"dispatcherBytes":4,"responseSites":8,"resolvedResponseSizes":6,"physicalBytes":36}
+ok - offline HTML encoding/CSP, exact export, route/schema projections, unknown states, safe repeatable outputs; browser qualification remains separate
+[pulsewasm] cli-report-viewer: passed in 20.40s
+
+[pulsewasm:unit] cli-report-retained-evidence
+[pulsewasm] PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm (timeout 60.00s)
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 60.01s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 70.01s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 80.02s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 90.02s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 100.03s
+{"mode":"workspace","inventoryCases":[{"fixture":"examples/11-events","routes":1,"entries":3,"schemas":2},{"fixture":"wasm/test/fixtures/projects/canonical-integration","routes":1,"entries":3,"schemas":0},{"fixture":"wasm/test/fixtures/projects/catalog-router-methods","routes":20,"entries":23,"schemas":0},{"fixture":"wasm/test/fixtures/projects/canonical-workspace","routes":0,"entries":1,"schemas":0}],"status":"passed","negativeCases":22,"nativeCompiles":4,"portableGuestUnchanged":true,"routes":5,"entries":6,"schemas":1,"bindings":1,"resources":6,"providerArtifacts":2,"buildMs":5186,"reportMs":671,"capsuleBytes":101505,"inputSidecarBytes":9512,"portableSha256":"072a542870efc3e6585b00143b1a08258c3321613215d887e65e7a7101ab0a36","providerSha256":"67241a97fb5d379327a3aed1141c47c560bf3f8f742c0fdbfa760fe6b0d39e73"}
+[pulsewasm] cli-report-retained-evidence: passed in 46.77s
+
+[pulsewasm:unit] cli-report-size-evidence
+[pulsewasm] PRPT-03 physical size reconciliation and attribution rejection (timeout 30.00s)
+{"status":"passed","negativeCases":30,"physicalBytes":36,"functionBodyBytes":10,"codeFramingBytes":6,"sharedBodyDeduplicated":true,"compilerFree":true}
+[pulsewasm] cli-report-size-evidence: passed in 1.47s
+
+[pulsewasm:unit] cli-report-capture-proof
+[pulsewasm] PRPT-03 passive final capture noninterference (timeout 120.00s)
+[pulsewasm] Running cli-report-capture-proof (execution); elapsed 110.03s
+{"status":"passed","cells":[{"target":"portable","optimization":"default","bytes":2545,"sha256":"bc0ab48c15b2b893407c1792cbca69c0854a33243c9efa3ae0c87c54fc2b2922","unchanged":true,"ascCalls":2,"generatorCalls":2,"controlMs":1193,"captureMs":1420,"collectionMs":59,"collectionRssDelta":4849664,"processMaxRssKiB":163480,"capsuleBytes":44770,"sidecarBytes":5052,"mappedRoutes":5,"directUniqueBytes":157,"executions":5},{"target":"fastly","optimization":"default","bytes":32026,"sha256":"b25cfd1ebcb86204265bc4a085c671d2f5bdedfec15b80bc9910de7eef315b6a","unchanged":true,"ascCalls":2,"generatorCalls":2,"controlMs":2273,"captureMs":2627,"collectionMs":32,"collectionRssDelta":3670016,"processMaxRssKiB":171640,"capsuleBytes":89677,"sidecarBytes":12497,"mappedRoutes":5,"directUniqueBytes":163,"executions":5},{"target":"portable","optimization":"experimental-native-size","bytes":2464,"sha256":"0a7f1918ac0ccc8ba74b6b61b84cf2ce5d46f4beb30b640379291f45ade9497c","unchanged":true,"ascCalls":2,"generatorCalls":2,"controlMs":1469,"captureMs":1816,"collectionMs":36,"collectionRssDelta":131072,"processMaxRssKiB":172536,"capsuleBytes":48593,"sidecarBytes":5385,"mappedRoutes":5,"directUniqueBytes":112,"executions":5}],"notes":"Paired builds are a test only. Report performs no compile or disassembly. RSS and timings are diagnostic, not a benchmark guarantee."}
+[pulsewasm] cli-report-capture-proof: passed in 12.21s
+
+[pulsewasm:native] cli-report-entry-proof
+[pulsewasm] RPT8-01 production entry/stage/helper attribution and byte-preserving capture (timeout 120.00s)
+[pulsewasm] Running cli-report-entry-proof (execution); elapsed 120.03s
+[pulsewasm] Running cli-report-entry-proof (execution); elapsed 130.03s
+[pulsewasm] Running cli-report-entry-proof (execution); elapsed 140.03s
+[pulsewasm] Running cli-report-entry-proof (execution); elapsed 150.03s
+[pulsewasm] Running cli-report-entry-proof (execution); elapsed 160.04s
+{"status":"passed","fixture":"transfer-router","cells":[{"target":"portable","optimization":"default","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":570,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":0},{"target":"fastly","optimization":"default","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":854,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":0},{"target":"portable","optimization":"experimental-native-size","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":489,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":2},{"target":"portable","optimization":"experimental-native-bounded-size","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":489,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":0},{"target":"fastly","optimization":"experimental-native-bounded-size","entries":9,"provenEntries":6,"productionMappedRoutes":4,"productionExpectedRoutes":6,"sharedRegistrations":2,"sharedPhysicalBodies":1,"sharedPhysicalBytes":438,"dispatcherCarrierEntries":3,"wholeExecutableUnchanged":true,"generatorCalls":2,"ascCalls":2,"requests":14,"graph":"available","convergenceEmissions":0}],"additional":[{"target":"portable","optimization":"default","mappedRoutes":7,"exactRoutes":5,"sharedHelperConsumers":2,"helperBodies":1,"survivingHelperBodies":0,"requests":10,"wholeExecutableUnchanged":true},{"target":"portable","optimization":"experimental-native-bounded-size","mappedRoutes":7,"exactRoutes":7,"sharedHelperConsumers":2,"helperBodies":1,"survivingHelperBodies":1,"requests":10,"wholeExecutableUnchanged":true},{"target":"fastly","optimization":"default","mappedRoutes":7,"exactRoutes":5,"sharedHelperConsumers":2,"helperBodies":1,"survivingHelperBodies":0,"requests":10,"wholeExecutableUnchanged":true},{"target":"fastly","optimization":"experimental-native-bounded-size","mappedRoutes":7,"exactRoutes":7,"sharedHelperConsumers":2,"helperBodies":1,"survivingHelperBodies":1,"requests":10,"wholeExecutableUnchanged":true}],"scope":"Production entry/stage capture; dispatcher carriers are explicit, not handler sizes. No exclusive ownership claim."}
+[pulsewasm] cli-report-entry-proof: passed in 45.00s
+
+[pulsewasm:native] cli-report-reference-provenance
+[pulsewasm] RPT8-02 resolved reference identities, shared consumers, unknowns, privacy and byte-preserving capture (timeout 120.00s)
+[pulsewasm] Running cli-report-reference-provenance (execution); elapsed 170.05s
+{"status":"passed","cells":[{"optimization":"default","bindings":4,"references":7,"requests":10,"unchanged":true},{"optimization":"experimental-native-bounded-size","bindings":4,"references":7,"requests":10,"unchanged":true}],"retainedReplay":true,"foreignOffsetRejected":true,"packageBinding":true,"redacted":true}
+[pulsewasm] cli-report-reference-provenance: passed in 16.19s
+
+[pulsewasm:native] cli-report-handler-topology
+[pulsewasm] AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison (timeout 180.00s)
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 180.05s
+[analytics parity] http/default: control and observed compilation
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 190.05s
+[analytics parity] http/experimental-native-bounded-size: control and observed compilation
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 200.06s
+[analytics parity] event/default: control and observed compilation
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 210.06s
+[analytics parity] event/experimental-native-bounded-size: control and observed compilation
+[analytics parity] full/default: control and observed compilation
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 220.06s
+[analytics parity] full/experimental-native-bounded-size: control and observed compilation
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 230.06s
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 240.07s
+{"status":"passed","cells":[{"variant":"http","optimization":"default","executions":28,"unchangedPlanSourceWasm":true,"effectOrder":true,"importedPassiveReplay":true,"reportHtml":true,"semanticComparison":true,"sourcesRemoved":true},{"variant":"http","optimization":"experimental-native-bounded-size","executions":28,"unchangedPlanSourceWasm":true,"effectOrder":true,"importedPassiveReplay":true,"reportHtml":true,"semanticComparison":true,"sourcesRemoved":true},{"variant":"event","optimization":"default","executions":28,"unchangedPlanSourceWasm":true,"effectOrder":true,"importedPassiveReplay":true,"reportHtml":true,"semanticComparison":true,"sourcesRemoved":true},{"variant":"event","optimization":"experimental-native-bounded-size","executions":28,"unchangedPlanSourceWasm":true,"effectOrder":true,"importedPassiveReplay":true,"reportHtml":true,"semanticComparison":true,"sourcesRemoved":true},{"variant":"full","optimization":"default","executions":32,"unchangedPlanSourceWasm":true,"effectOrder":true,"importedPassiveReplay":true,"reportHtml":true,"semanticComparison":true,"sourcesRemoved":true},{"variant":"full","optimization":"experimental-native-bounded-size","executions":32,"unchangedPlanSourceWasm":true,"effectOrder":true,"importedPassiveReplay":true,"reportHtml":true,"semanticComparison":true,"sourcesRemoved":true}],"negativeCases":54,"importedSpans":true,"nestedMounts":true,"oldCapsulesUnchanged":true,"authoredUseSites":true,"validatedHelperCalls":true,"contextualAssociations":true,"importedSourceReplay":true,"handlerNames":true}
+[pulsewasm] cli-report-handler-topology: passed in 61.87s
+
+[pulsewasm:unit] cli-report-handler-associations
+[pulsewasm] AN9-03 bounded contextual associations, scope, explicit continuations, lanes and unknowns (timeout 60.00s)
+{"status":"passed","scopeAndMethods":true,"explicitErrorRecovery":true,"terminalShadowing":true,"partialPatterns":true,"missingControl":true,"deterministicBudget":true}
+[pulsewasm] cli-report-handler-associations: passed in 1.20s
+
+[pulsewasm:unit] cli-report-relationships
+[pulsewasm] VIS-07 compact graph, oracle parity, admission, offline queries and historical compatibility (timeout 60.00s)
+ok - VIS-07 oracle equivalence, admission without operations, v2/v1 validation/replay/comparison, browser parity, paging and privacy
+[pulsewasm] cli-report-relationships: passed in 6.90s
+
+[pulsewasm:native] cli-report-imported-inputs
+[pulsewasm] AN9-04 exact imported source receipts, passive replay, package links and freshness (timeout 120.00s)
+[pulsewasm] Running cli-report-imported-inputs (execution); elapsed 250.07s
+[pulsewasm] Running cli-report-imported-inputs (execution); elapsed 260.07s
+{"status":"passed","importedCompletion":true,"nestedPackages":true,"passiveCurrentAndArtifact":true,"exactInputsOnly":true,"sourceAndManifestEdits":true,"nearerPackageShadowing":true,"linkRetargeting":true,"concurrentRestoreRejected":true,"tamperedAnalyticsRejected":true,"sourceFreeArtifactReplay":true}
+[pulsewasm] cli-report-imported-inputs: passed in 15.65s
+
+[pulsewasm:unit] cli-report-resource-inventory
+[pulsewasm] RPT8-04 resource producer coverage, byte representations, privacy and unchanged asset responses (timeout 120.00s)
+[pulsewasm] Running cli-report-resource-inventory (execution); elapsed 270.07s
+{"status":"passed","negativeCases":20,"passiveReplay":true,"cells":[{"optimization":"default","resources":10,"responseSites":8,"handlerBytes":[100,154,20,154,20,20,567,145,20],"inputBytes":80053,"physicalBytes":220272,"unchanged":true},{"optimization":"experimental-native-bounded-size","resources":10,"responseSites":8,"handlerBytes":[14,133,106,14,133,79,14,334,14],"inputBytes":80053,"physicalBytes":219603,"unchanged":true}]}
+[pulsewasm] cli-report-resource-inventory: passed in 8.21s
+
+[pulsewasm:unit] cli-report-graph-diagnostics
+[pulsewasm] RPT8-03 bounded graph diagnostics, exhaustive direct-call joins, privacy and passive replay (timeout 60.00s)
+{"status":"passed","negativeCases":38,"cyclesAndSharing":true,"passiveReplay":true,"traversalBudget":1000000,"textBudget":{"limitBytes":167772160,"status":"passed","elapsedMs":3647.787933,"maxRssKiB":540932},"costs":[{"table":false,"captureMs":11.215382999999747,"wasmBytes":97,"sidecarBytes":741},{"table":true,"captureMs":2.033690000000206,"wasmBytes":103,"sidecarBytes":819}]}
+[pulsewasm] cli-report-graph-diagnostics: passed in 6.41s
+
+[pulsewasm:unit] multifile-source-indexes
+[pulsewasm] Workspace-only source range, intrinsic and generated-call identity assertions (timeout 30.00s)
+{"status":"passed","sourceIndexes":"passed"}
+[pulsewasm] multifile-source-indexes: passed in 390ms
+
+[pulsewasm:unit] guest-json-roundtrip
+[pulsewasm] Guest v2 manifest/plan JSON key order, exact trust values and ordered arrays (timeout 30.00s)
+ok - guest manifest/plan JSON roundtrip preserves values, trust checks and ordered arrays
+[pulsewasm] guest-json-roundtrip: passed in 199ms
+
+[pulsewasm:unit] pure-helper-contract
+[pulsewasm] Pure-helper source oracles and scalar/record admission (timeout 30.00s)
+[pulsewasm] Running pure-helper-contract (execution); elapsed 280.07s
+{"status":"passed","nativeSupport":"scalar-record-and-loop-supported","scalarOracleCases":5,"recordOracleCases":60,"nativeAdmissionCases":4}
+[pulsewasm] pure-helper-contract: passed in 1.60s
+
+[pulsewasm:unit] callable-source-admission
+[pulsewasm] Private callable target/schema admission and authored plain Native plan handoff (timeout 30.00s)
+{"status":"passed","accepted":9,"rejected":31,"admissionRuntimeWired":false,"authoredNativePlan":true,"publicCallSyntax":false}
+[pulsewasm] callable-source-admission: passed in 1.25s
+
+[pulsewasm:unit] test-orchestration
+[pulsewasm] atomic reports, deterministic slicing, timeouts, and descendant cleanup (timeout 30.00s)
+[pulsewasm] Running test-orchestration (execution); elapsed 290.08s
+
+[pulsewasm:unit] log-open-failure
+[pulsewasm] early log open failure (timeout 5.00s)
+not a passing log
+[pulsewasm] log-open-failure: failed in 222ms
+
+[pulsewasm:unit] log-write-failure
+[pulsewasm] early log write failure (timeout 5.00s)
+not a passing log
+[pulsewasm] log-write-failure: failed in 262ms
+
+[pulsewasm:unit] log-close-interruption
+[pulsewasm] interruption during log closure (timeout 5.00s)
+complete before interruption
+[pulsewasm] log-close-interruption: interrupted in 156ms
+ok - task logs require complete writes and closure after controller stalls; early I/O errors and stuck streams fail boundedly
+
+[pulsewasm:unit] orchestration-pass-fixture
+[pulsewasm] orchestration pass fixture (timeout 5.00s)
+fixture-pass
+[pulsewasm] orchestration-pass-fixture: passed in 111ms
+
+[pulsewasm:unit] orchestration-failure-evidence-fixture
+[pulsewasm] orchestration failure evidence fixture (timeout 5.00s)
+[pulsewasm] orchestration-failure-evidence-fixture: copied 1 task-owned failure log(s) into the durable run report
+[pulsewasm] orchestration-failure-evidence-fixture: failed in 118ms
+
+[pulsewasm:unit] orchestration-timeout-fixture
+[pulsewasm] orchestration timeout and descendant cleanup fixture (timeout 1.20s)
+fixture-timeout-ready
+[pulsewasm] orchestration-timeout-fixture: timeout; process group 2827 contains 0 process(es)
+
+Writing Node.js report to file: report.20261020.215632.2827.0.001.json
+Node.js report completed
+[pulsewasm] orchestration-timeout-fixture: timeout in 7.03s
+ok - test orchestration writes atomic reports, slices profiles deterministically, preserves task and failure logs, captures timeout diagnostics, and terminates descendant process groups
+[pulsewasm] test-orchestration: passed in 15.88s
+
+[pulsewasm:unit] hidden-contracts
+[pulsewasm] hidden contract literal scanner (timeout 30.00s)
+ok - PulseWasm hidden contract scanner classifies non-contract versions and rejects duplicate contract literals
+[pulsewasm] hidden-contracts: passed in 323ms
+
+[pulsewasm:unit] release-seal-lifecycle
+[pulsewasm] durable seal heartbeat, terminal receipts and bounded process/cleanup lifecycle (timeout 60.00s)
+[pulsewasm] Running release-seal-lifecycle (execution); elapsed 300.08s
+ok - dependency-free seal reaches restoration; setup failures terminalize; clean candidate and required tools fail early; parent deadline cancels work and preserves cleanup
+
+[pulsewasm:unit] cleanup-stall-fixture
+[pulsewasm] successful task with deliberately stalled cleanup (timeout 3.00s)
+[pulsewasm] cleanup-stall-fixture: failed in 456ms
+ok - seal heartbeat and immutable terminal receipts; failure, interruption, stubborn owned descendants and stalled cleanup return bounded results
+[pulsewasm] release-seal-lifecycle: passed in 3.67s
+
+[pulsewasm:unit] release-checkpoints
+[pulsewasm] Same-candidate receipt integrity, output retention and dependency invalidation (timeout 30.00s)
+release-checkpoints: 54 recovery/invalidation fixtures passed
+[pulsewasm] release-checkpoints: passed in 311ms
+
+[pulsewasm:unit] release-recovery-runner
+[pulsewasm] Real subprocess late-failure recovery and fail-closed reruns (timeout 90.00s)
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 324ms
+
+[pulsewasm:unit] second
+[pulsewasm] checkpoint fixture second (timeout 3.00s)
+deliberate late failure
+[pulsewasm] second: failed in 121ms
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+[pulsewasm] first: reused verified same-candidate checkpoint
+[pulsewasm] second: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] second
+[pulsewasm] checkpoint fixture second (timeout 3.00s)
+second passed
+[pulsewasm] second: passed in 116ms
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint task definition changed"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 4.00s)
+first passed
+[pulsewasm] first: passed in 145ms
+[pulsewasm] second: reused verified same-candidate checkpoint
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint dependency proof changed"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 134ms
+[pulsewasm] second: executing again; "Checkpoint dependency proof changed"
+
+[pulsewasm:unit] second
+[pulsewasm] checkpoint fixture second (timeout 3.00s)
+second passed
+[pulsewasm] second: passed in 115ms
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+[pulsewasm] first: executing again; "missing-checkpoint-or-artifact"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 125ms
+[pulsewasm] second: reused verified same-candidate checkpoint
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: failed in 98ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 111ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: failed in 133ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
