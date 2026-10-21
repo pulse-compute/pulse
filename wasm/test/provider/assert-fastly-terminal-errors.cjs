@@ -55,6 +55,25 @@ export default app;`);
       const healthy = execute(native, {request:request(),configStore:'expected',config:{VALUE:'healthy'},secretStore:'secrets',secrets:{LATER:'unused'}});
       assert.equal(healthy.response.status,200); assert.equal(healthy.response.body,'healthy'); checks++;
     }
+    fs.writeFileSync(path.join(dir,'.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse';
+export default defineConfig(_ => ({pulse:{entry:'src/index.ts',strict:false,crypto:['HS256'],defaultProfile:'proof'},proof:{host:'fastly',target:'native'}}));`);
+    fs.writeFileSync(path.join(dir,'src/index.ts'), `import {Pulse} from '@pulse-compute/pulse';
+import {jwt} from '@pulse-compute/jwt';
+const app = new Pulse({auto:true});
+app.get('/jwt', async ctx => {const verified = await jwt.verify(ctx,jwt.bearer(ctx.req),{algorithms:['HS256'],key:{type:'secret',binding:'KEY'}});return ctx.text('verified');});
+app.get('/bounds', async ctx => {const cells = ctx.workspace.numbers(2);cells[-1]=1;return ctx.text('must-not-succeed');});
+app.get('/healthy', async ctx => ctx.text('healthy'));
+export default app;`);
+    const jwtPlan = tc.compileNativeProjectInMemory(tc.resolveProject({cwd:dir,profile:'proof'})).plan;
+    const jwtNative = compile(jwtPlan, {cwd:dir, canonicalBuild:true, secretStore:'secrets', jwtReality:{enabled:true}});
+    for (const [authorization, code] of [[undefined,'PULSE_JWT_TOKEN_REQUIRED'],['Bearer malformed','PULSE_JWT_MALFORMED']]) {
+      const result = execute(jwtNative, {request:{...request(authorization ? {authorization} : {}),path:'/jwt',url:'https://proof.test/jwt'},allowHandledJwtError:true});
+      assert.equal(result.response.status,400); assert.equal(result.response.body,'');
+      assert(result.response.headers.some(([name,value]) => name === 'x-pulse-e2-code' && value === code));
+      assert.equal(result.trace.filter(x => x.name === 'send_downstream').length,1); checks++;
+    }
+    rejected(() => execute(jwtNative, {request:{...request(),path:'/bounds',url:'https://proof.test/bounds'}}),1001,280); checks++;
+    assert.equal(execute(jwtNative, {request:{...request(),path:'/healthy',url:'https://proof.test/healthy'}}).response.body,'healthy'); checks++;
   } finally {fs.rmSync(dir,{recursive:true,force:true});}
   console.log(`ok - ${checks} Fastly terminal bounds/effect failure and fresh-request recovery checks`);
 }
