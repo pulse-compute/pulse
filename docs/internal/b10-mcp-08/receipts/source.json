@@ -1,0 +1,11 @@
+{
+  "testedLocalCommit": "f19edac3c0c77420915d54904f264af3e689702f",
+  "testedTree": "f5299e5b809bd31d6d93754b5cf63fa5282794d8",
+  "publishedImplementation": "c8fa3a1379ac2d1636fdd586a27448eb934d7071",
+  "publishedTree": "f5299e5b809bd31d6d93754b5cf63fa5282794d8",
+  "base": "e77c3625d79726a658debbd7b4d538139fbded20",
+  "trackedStateAtStart": "clean",
+  "node": "v24.19.0",
+  "producerNode": "24.18.0",
+  "note": "Local and connector commits have identical trees; metadata differs. Profile reports are snapshots, not invented terminal passes."
+}

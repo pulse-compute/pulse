@@ -3,6 +3,16 @@
 const ts = require('typescript');
 const { projectFunctionResolver } = require('./project/router-module-linker');
 const { compileCallable } = require('./canonical-callable');
+const { createHash } = require('node:crypto');
+
+// Original authored coordinates, retained only in the observational source
+// collection. Adapted computation coordinates are not authored source maps.
+function reportSource(node, sf, file) {
+  const position = offset => { const p = sf.getLineAndCharacterOfPosition(offset);
+    return { offset, line: p.line + 1, column: p.character + 1 }; };
+  return { file, sha256: createHash('sha256').update(sf.text).digest('hex'),
+    start: position(node.getStart(sf)), end: position(node.getEnd()) };
+}
 
 class CallableSourceAdmissionError extends Error {
   constructor(code, message, node, sourceFile, cause) {
@@ -101,17 +111,22 @@ function admitCallableSource(graphBuild, { schemaBundle, binaryResources, resolv
         }
         if (!callee) {
           if (callees.size >= 16) fail('PULSE_CALL_SOURCE_TARGET_LIMIT','At most 16 resolved targets are admitted.',node);
-          let plan;
+          let plan, reportHelpers;
           try {
             const composition = require('./project/callable-composition').composeCallable(target, resolver);
+            reportHelpers = composition.helpers.map(helper => ({ name: helper.source.name,
+              source: reportSource(helper.functionNode, helper.sourceFile, helper.source.file) }));
             plan=compileCallable(composition.source,{...pair,schemaBundle,binaryResources,fileName:target.modulePath,helpers:composition.helpers});
           }
           catch (error) { fail('PULSE_CALL_SOURCE_CALLEE','Callee failed ordinary computation admission.',node.arguments[0],error); }
-          callee=Object.freeze({identity:target.identity,modulePath:target.modulePath,name:target.name,...pair,plan});
+          callee=Object.freeze({identity:target.identity,modulePath:target.modulePath,name:target.name,...pair,plan,
+            reportSource: reportSource(target.functionNode, target.sourceFile, target.modulePath), reportHelpers });
           callees.set(target.identity,callee);
         }
         const point=sf.getLineAndCharacterOfPosition(node.getStart(sf));
-        sites.push(Object.freeze({target:target.identity,localName:targetName,...pair,source:{file:entry.modulePath,line:point.line+1,column:point.character+1},callNode:node,argumentNode:node.arguments[1]}));
+        sites.push(Object.freeze({target:target.identity,localName:targetName,...pair,source:{file:entry.modulePath,line:point.line+1,column:point.character+1},
+          reportSource: reportSource(node, sf, entry.modulePath), caller: entry.identity,
+          callNode:node,argumentNode:node.arguments[1]}));
       }
     }
     const childNested=nested || ts.isFunctionLike(node);

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T05-06-53-367Z--39",
+  "sourceRevision": "f19edac3c0c77420915d54904f264af3e689702f",
+  "sourceIdentity": {
+    "sourceRevision": "f19edac3c0c77420915d54904f264af3e689702f",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T05:06:53.371Z",
+  "updatedAt": "2026-10-21T05:07:33.426Z",
+  "finishedAt": "2026-10-21T05:07:33.426Z",
+  "durationMs": 40055,
+  "profiles": [],
+  "requestedTasks": [
+    "cli-report-handler-topology"
+  ],
+  "selectedTasks": [
+    "cli-report-handler-topology"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "cli-report-handler-topology",
+      "evidence": "native",
+      "description": "AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison",
+      "commandSignature": "ea3496b3c60bc93867396a9ed9688ef7c8d95d198dd3565820ae8bf4e89cc45b",
+      "timeoutMs": 180000,
+      "durationMs": 40046,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/pulse-08-recovery/runs/2026-10-21T05-06-53-367Z--39/tasks/cli-report-handler-topology.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/pulse-08-recovery/runs/2026-10-21T05-06-53-367Z--39"
+}

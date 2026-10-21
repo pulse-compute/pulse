@@ -1,0 +1,29 @@
+
+[pulsewasm:native] cli-report-handler-topology
+[pulsewasm] AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison (timeout 180.00s)
+[analytics parity] http/default: control and observed compilation
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 10.00s
+[analytics parity] http/experimental-native-bounded-size: control and observed compilation
+[analytics parity] event/default: control and observed compilation
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 20.00s
+[analytics parity] event/experimental-native-bounded-size: control and observed compilation
+[pulsewasm] Running cli-report-handler-topology (execution); elapsed 30.00s
+[analytics parity] full/default: control and observed compilation
+TypeError: Report input rejected (REPORT_MISSING_COMPLETION).
+    at fail (/workspace/scratch/d3826bbd4bf5/pulse-08/wasm/packages/cli/src/internal/report/data.js:7:17)
+    at ensure (/workspace/scratch/d3826bbd4bf5/pulse-08/wasm/packages/cli/src/internal/report/retained.js:18:55)
+    at readCompleted (/workspace/scratch/d3826bbd4bf5/pulse-08/wasm/packages/cli/src/internal/report/retained.js:134:3)
+    at Object.collectArtifactReport (/workspace/scratch/d3826bbd4bf5/pulse-08/wasm/packages/cli/src/internal/report/retained.js:159:21)
+    at main (/workspace/scratch/d3826bbd4bf5/pulse-08/wasm/test/cli/assert-report-handler-topology.cjs:327:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  code: 'REPORT_MISSING_COMPLETION',
+  field: '$'
+}
+[pulsewasm] Running cli-report-handler-topology (cleanup); elapsed 40.00s
+[pulsewasm] cli-report-handler-topology: failed in 40.05s
+
+[pulsewasm] test summary
+  failed        40.05s  cli-report-handler-topology  (/tmp/pulse-08-recovery/runs/2026-10-21T05-06-53-367Z--39/tasks/cli-report-handler-topology.log)
+  report       /tmp/pulse-08-recovery/topology.json
+  run logs     /tmp/pulse-08-recovery/runs/2026-10-21T05-06-53-367Z--39
+  total        40.05s
