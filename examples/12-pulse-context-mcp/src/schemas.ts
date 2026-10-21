@@ -78,6 +78,18 @@ export interface RecordContent {
   truncated: boolean
   nextOffset?: Int32
 }
+// Complete canonical metadata resource record, decoded only for returned hits.
+export interface SearchRecord {
+  id: string
+  title: string
+  category: string
+  tags: string[]
+  applicability: Applicability[]
+  source: Source
+  contentSha256: string
+  pulseVersion: string
+  status: string
+}
 export interface SearchHit {
   id: string
   title: string
@@ -96,6 +108,7 @@ export interface Metadata {
   corpusHash: string
   snapshotStatus: string
   applicationVersion: string
+  encoder?: string
   requestedVersion?: string
   maxReplyBytes: Int32
 }
@@ -203,6 +216,7 @@ export default defineSchemaRegistry({
   schemas: {
     'context.StartInput': schema<StartInput>(),
     'context.StartOutput': schema<StartOutput>(),
+    'context.SearchRecord': schema<SearchRecord>(),
     'context.SearchInput': schema<SearchInput>(),
     'context.SearchOutput': schema<SearchOutput>(),
     'context.ReadInput': schema<ReadInput>(),

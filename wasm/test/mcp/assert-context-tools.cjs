@@ -21,6 +21,7 @@ const {compileFastlyNativePlatformCapabilitiesPlan} = require('../../../packages
 const {executeFastlyNativePlatformCapabilities} = require('../../../packages/provider-fastly/src/testing/native-platform-capabilities-host');
 let cwd;
 const F = require('../../../scripts/pulse-context-format.cjs');
+const SEARCH = require('./context-search-oracle.cjs');
 const START = require('../../../scripts/pulse-context-start.cjs');
 const {canonical,render} = require('../../../scripts/pulse-context-corpus.cjs');
 const {createResourceManifest} = require('../../packages/contracts/src/resources/embedded');
@@ -45,6 +46,14 @@ async function main(synthetic) {
     const diagnostics=built.corpus.records.filter(r=>r.category==='diagnostic');
     set(diagnostics[0].id,JSON.stringify({code:diagnostics[0].id.slice(11),category:'schema',summary:'Synthetic bound',remediation:['"'.repeat(9000)]}));
     set(diagnostics[1].id,JSON.stringify({code:diagnostics[1].id.slice(11),category:'async-effect',summary:'Exact 雪😀\n summary',remediation:['first','second \t check']}));
+    // Five equal-score rows, scalar-boundary excerpts and a page whose complete
+    // duplicated MCP envelope exceeds 24 KiB while each metadata row is admitted.
+    const tied=built.corpus.records.filter(r=>r.category==='guide').slice(-5);
+    assert.equal(tied.length,5);
+    for(const [i,r] of tied.entries()){
+      r.title='"'.repeat(1200);
+      set(r.id,'searchtie '+('a '.repeat(185))+'😀é雪\0\n"\\ '+i);
+    }
     const {corpusHash,...snapshot}=built.corpus;built.corpus.corpusHash=F.hash(JSON.stringify(canonical(snapshot),null,2));
     fixtureFiles=F.encode(built.corpus,built.config.limits).files;
     F.validateFiles(fixtureFiles,built.corpus,built.config.limits);
@@ -64,7 +73,7 @@ async function main(synthetic) {
   for(const p of projects){assert(p.binaryResources);assert.equal(p.strict,true);}
   const project=projects[0], options={rootDir:cwd,workspaceRoot:root,strict:true,schemas:project.schemas,binaryResources:project.binaryResources};
   const compiled=compileCanonicalProject(project.entryFile,{...options,target:'native'}), plan=buildCanonicalNativePlan(compiled);
-  assert.equal(plan.callables.length,4);assert.equal(compiled.callableSource.sites.length,4);
+  assert.equal(plan.callables.length,5);assert.equal(compiled.callableSource.sites.length,5);
   const native=compileCanonicalNativePlan(plan,{cwd:root,emitWat:false,reportCapture:false});
   const fastly=compileFastlyNativePlatformCapabilitiesPlan(plan,{cwd:root,requirePlatformCapability:false,canonicalBuild:true,maxDurationMs:5000});
   const js=buildJavascriptApplicationPlan(project.entryFile,{...options,provider:'node'});
@@ -83,7 +92,7 @@ async function main(synthetic) {
     const memory=Buffer.from(new WebAssembly.Instance(module,imports).exports.memory.buffer);
     const at=memory.indexOf(fullText);assert(at>=0,'full text has a physical resource backing');
     assert.equal(memory.indexOf(fullText,at+1),-1,'only one full-text resource copy');
-    for(const file of ['start','read','example','diagnostic']){const source=fs.readFileSync(path.join(cwd,'src/'+file+'.ts'),'utf8');for(const record of built.corpus.records.filter(r=>r.content.length>200))assert(!source.includes(JSON.stringify(record.content)),'no full cited text in generated computation source');}
+    for(const file of ['start','search','read','example','diagnostic']){const source=fs.readFileSync(path.join(cwd,'src/'+file+'.ts'),'utf8');for(const record of built.corpus.records.filter(r=>r.content.length>200))assert(!source.includes(JSON.stringify(record.content)),'no full cited text in generated computation source');}
   }
   const oracle=path.join(cwd,'oracle');fs.mkdirSync(path.join(oracle,'src'),{recursive:true});
   fs.writeFileSync(path.join(oracle,'package.json'),'{"type":"commonjs"}');
@@ -118,7 +127,7 @@ async function main(synthetic) {
     }
   }
   for(const reply of await request('tools/list')){
-    assert(!reply.error);assert.deepEqual(reply.result.tools.map(t=>t.name),['pulse.diagnostic','pulse.example','pulse.read','pulse.start']);
+    assert(!reply.error);assert.deepEqual(reply.result.tools.map(t=>t.name),['pulse.diagnostic','pulse.example','pulse.read','pulse.search','pulse.start']);
     assert(reply.result.tools.find(t=>t.name==='pulse.start').outputSchema.properties.plan.properties.dependencies);
     assert(reply.result.tools.find(t=>t.name==='pulse.start').outputSchema.properties.plan.properties.configuration);
     assert(reply.result.tools.find(t=>t.name==='pulse.start').outputSchema.properties.plan.properties.contracts);receipt.executions++;run.executions++;
@@ -224,6 +233,45 @@ async function main(synthetic) {
     for(const id of ['contract/application','example/01-hello-json/src/index.ts'])await parity('read',{version,id,...selection});
   }
   for(const offset of [0.5,2147483648])for(const reply of await request('tools/call',{version,id:'contract/application',offset},'pulse.read')){assert(reply.error||reply.result?.isError);receipt.executions++;run.executions++;}
+  async function searchParity(args){
+    const input={version,...args},expected=SEARCH.search(built.corpus,built.config,input);
+    for(const reply of await request('tools/call',input,'pulse.search')){
+      assert(!reply.error,JSON.stringify({input,reply}));assert.equal(reply.result.isError,false);
+      assert.deepEqual(reply.result.structuredContent,expected,JSON.stringify(input));
+      assert.deepEqual(JSON.parse(reply.result.content[0].text),expected);
+      receipt.executions++;run.executions++;
+    }
+    return expected;
+  }
+  const queries=synthetic?['searchtie']:['schema','managed async','PARALLEL parallel','@pulse-compute/pulse','schema.compile','pulse_schema_compile_failed','report','target'];
+  // Every production corpus ID is searched against the direct field-presence
+  // oracle. IDs outside the 8-token query envelope must reject explicitly.
+  if(!synthetic)queries.push(...built.corpus.records.map(r=>r.id));
+  for(const query of queries)await searchParity({query});
+  for(const query of ['schema','searchtie','zzzz_unknown_term']){
+    const first=await searchParity({query,limit:2});
+    if(first.status==='ok'){
+      const order=[...first.results.map(r=>r.id)];let next=first.nextOffset;
+      for(let page=0;next!==undefined&&page<256;page++){
+        const reply=await searchParity({query,limit:2,offset:next});
+        assert.equal(reply.status,'ok');order.push(...reply.results.map(r=>r.id));next=reply.nextOffset;
+      }
+      assert.equal(order.length,first.totalMatches);assert.equal(new Set(order).size,order.length);
+      await searchParity({query,offset:first.totalMatches});
+      await searchParity({query,offset:first.totalMatches+1});
+    }
+  }
+  for(const category of [...new Set(built.corpus.records.map(r=>r.category))])await searchParity({query:'pulse',category});
+  for(const pair of [{provider:'node',target:'native'},{provider:'node',target:'javascript'},{provider:'fastly',target:'native'},{provider:'fastly',target:'javascript'},{provider:'none',target:'native'},{provider:'node'},{target:'native'},{provider:''},{provider:'unknown',target:'native'}])await searchParity({query:'schema',...pair});
+  for(const query of ['', ' ', '---', 'é', '😀', '\0', '\x7f', 'a'.repeat(64), 'a'.repeat(65), 'x '.repeat(8), 'x '.repeat(9), ' '.repeat(250)+'schema', ' '.repeat(251)+'schema', 'schema\tSCHEMA\r\n'])await searchParity({query});
+  for(const change of [{limit:0},{limit:6},{offset:-1},{offset:2147483647},{category:''},{category:'private'},...['','latest','é'.repeat(33),'\0'.repeat(64)].map(version=>({version}))])await searchParity({query:'schema',...change});
+  for(const change of [{query:42},{limit:1.5},{offset:2147483648}])for(const reply of await request('tools/call',{version,query:'schema',...change},'pulse.search')){assert(reply.error||reply.result?.isError);receipt.executions++;run.executions++;}
+  if(synthetic){
+    assert.equal((await searchParity({query:'searchtie'})).status,'response-too-large');
+    const single=await searchParity({query:'searchtie',limit:1});assert.equal(single.status,'ok');
+    assert.equal(single.results[0].excerptTruncated,true);
+  }
+  console.log(JSON.stringify({checkpoint:'search-parity',synthetic,executions:run.executions}));
   run.corpusHash=built.corpus.corpusHash;run.planHash=plan.planHash;
   run.artifacts={node:{bytes:native.wasm.length,sha256:sha(native.wasm)},fastly:{bytes:fastly.wasm.length,sha256:sha(fastly.wasm)}};
   receipt.runs.push(run);console.log(JSON.stringify({checkpoint:synthetic?'synthetic':'production',...run}));

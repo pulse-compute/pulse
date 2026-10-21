@@ -85,6 +85,6 @@ function generate(corpus, config, files, manifest, read) {
     [`${APP}/src/schemas.ts`,read(`${PROJECT}/src/schemas.ts`)]
   ]);
   for (const [file, bytes] of tools.outputs) outputs.set(file, bytes);
-  return {outputs,metadata:{version:'pulse.context-tools.v2',tools:['pulse.start','pulse.read','pulse.example','pulse.diagnostic'],plans}};
+  return {outputs,metadata:{version:'pulse.context-tools.v2',tools:['pulse.start','pulse.search','pulse.read','pulse.example','pulse.diagnostic'],plans}};
 }
 module.exports={APP,INPUTS,generate};
