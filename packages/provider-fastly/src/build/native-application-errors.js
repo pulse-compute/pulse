@@ -102,7 +102,8 @@ function __pulse_application_settle_effect(index: i32, fatal: bool): i32 {
 `;
 }
 
-// Preserve the fatal-return boundary consumed by request-budget instrumentation.
+// Fatal settlement uses the same response hook as synchronous failure; its
+// instrumentation preserves deadline and transport-specific precedence.
 function driverLoop(plan) {
   return `  while (runStatus == 1) {
     let fatal = __pulse_fastly_last_error != 0${enabled(plan) ? ' && __pulse_application_code().length == 0' : ''}
@@ -111,7 +112,7 @@ ${(plan.effects || []).map((_, index) => `    if (__pulse_effect_pending_${index
       if (settled < 0) return
       fatal = settled != 0
     }`).join('\n')}
-    ${enabled(plan) ? 'if (fatal) return' : 'if (fatal) { __pulse_fastly_jwt_send_error(); return }'}
+    if (fatal) { __pulse_fastly_jwt_send_error(); return }
     runStatus = pulse_resume()
   }`;
 }

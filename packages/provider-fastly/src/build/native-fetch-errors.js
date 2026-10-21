@@ -30,9 +30,6 @@ function __pulse_fetch_send_error(): bool {
 `;
 }
 function instrument(source) {
-  // Keep the fatal marker for the deadline owner, which runs after this pass.
-  source = source.replace('if (fatal) return',
-    'if (fatal && __pulse_fetch_failed()) { __pulse_fastly_jwt_send_error(); return; }\n    if (fatal) return');
   const marker = 'function __pulse_fastly_jwt_send_error(): void {';
   if (!source.includes(marker)) throw new Error('Fastly fetch error boundary drift.');
   return source.replace(marker, marker + ' if (__pulse_fetch_send_error()) return;');

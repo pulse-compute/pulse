@@ -33,7 +33,6 @@ function instrumentRequestBudget(input, duration, plan) {
   replace('if (sendStatus != FASTLY_STATUS_OK) __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 104, -1)', 'if (sendStatus != FASTLY_STATUS_OK) { if (__request_expired) { __request_send_timeout(); return; } __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 104, -1); }');
   replace('status = fastly_http_req_send_async(requestHandle', 'if (!__request_check(effectIndex)) return; status = fastly_http_req_send_async(requestHandle');
   replace('function __pulse_fastly_ready_effect(effectIndex: i32, handle: i32): void {', 'function __pulse_fastly_ready_effect(effectIndex: i32, handle: i32): void { if (!__request_check(effectIndex)) return;');
-  source = source.replace('if (fatal) return', 'if (fatal) { if (__request_expired || !__request_check()) __request_send_timeout(); return; }');
   replace('function __pulse_fastly_jwt_send_error(): void {', 'function __pulse_fastly_jwt_send_error(): void { if (__request_expired || !__request_check()) { __request_send_timeout(); return; }');
   source = source.replaceAll('runStatus = pulse_resume()', 'if (!__request_check()) { __request_send_timeout(); return; }\n    runStatus = pulse_resume()');
   replace('  const result = pulse_result_handle()', '  if (!__request_check()) { __request_send_timeout(); return; }\n  const result = pulse_result_handle()');
