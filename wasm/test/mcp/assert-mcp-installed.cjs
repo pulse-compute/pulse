@@ -41,7 +41,7 @@ const report = { version: 'pulse.mcp-installed-acceptance.v2', status: 'running'
   acceptanceScriptSha256: hash(fs.readFileSync(__filename)),
   node: process.version, fixture: 'examples/12-pulse-context-mcp', applicationDelivery: 'exact-cli-tarball', lifecycleScripts: false,
   providerRealityValidated: false, qualificationMode: fastlyClients ? 'fastly-clients' : fastlyLocal ? 'fastly-local' : 'installed-node-and-clients', results: [] };
-const clientSuite = fastlyClients ? require('./context-fastly-clients.cjs').createSuite({ temporary, root, run, env, output: path.join(reportDir, 'fastly-clients') }) : null;
+const clientSuite = fastlyClients ? require('./context-fastly-clients.cjs').createSuite({ temporary, root, run, env, source: { commit: report.source, tree: report.sourceTree, workingTree: report.workingTree, workingDiffSha256: report.workingDiffSha256 }, output: path.join(reportDir, 'fastly-clients') }) : null;
 
 function saveReport() {
   fs.mkdirSync(reportDir, { recursive: true });

@@ -168,17 +168,17 @@ async function qualify({ consumer, temporary, root, run, env, output, verifyCopy
     if (clientSuite) {
       const selected = toolNames.map(tool => cases.find(c => c.tool === tool && c.expected.status === 'ok'));
       assert(selected.every(Boolean));
-      await serve(actual, (exchange, endpoint) => clientSuite.qualify({ profile: protocol, endpoint, exchange, cases: selected, artifact: actual.item }));
+      await serve(actual, (exchange, endpoint) => clientSuite.qualify({ profile: protocol, endpoint, exchange, cases: selected, artifact: actual.item, hostTools: report.tools }));
       const legacy = await build('legacy-opt-in', app => {
         const file = path.join(app, 'src/index.ts'), source = fs.readFileSync(file, 'utf8');
         assert.equal(source.split('const server = mcp({').length, 2);
         fs.writeFileSync(file, source.replace('const server = mcp({', "const server = mcp({\n  legacyProtocol: '2025-06-18',"));
       });
-      await serve(legacy, (exchange, endpoint) => clientSuite.qualify({ profile: '2025-06-18', endpoint, exchange, cases: selected, artifact: legacy.item }));
+      await serve(legacy, (exchange, endpoint) => clientSuite.qualify({ profile: '2025-06-18', endpoint, exchange, cases: selected, artifact: legacy.item, hostTools: report.tools }));
       assert.deepEqual(verifyCopy(consumer), baselineInstalled);
       report.installedUnchanged = true;
-      report.coverageComplete = true;
       clientSuite.assertPassed();
+      report.coverageComplete = true;
       report.status = 'passed'; save(); return report;
     }
     await serve(actual, async exchange => {

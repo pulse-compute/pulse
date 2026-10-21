@@ -95,7 +95,7 @@ async function wireProfile(profile, exchange, cases) {
       const req = structuredClone(modernRequest), body = JSON.parse(req.body); mutate(req, body); req.body = JSON.stringify(body);
       await check('no-fallback:' + label, req, 400, body => assert(body.error));
     }
-    await check('unknown-tool', message(profile, 'tools/call', { name: 'unknown', arguments: {} }), 404, body => assert(body.error));
+    await check('unknown-tool', message(profile, 'tools/call', { name: 'unknown', arguments: {} }), 400, body => { assert.equal(body.error.code, -32602); });
     await check('tool-schema-error', message(profile, 'tools/call', { name: 'pulse.search', arguments: { version: cases[0].input.version, query: 42 } }), 200, body => { assert.equal(body.result.isError, true); assert.equal(body.result.structuredContent, undefined); });
     for (const c of cases) await check('recovery:' + c.tool, message(profile, 'tools/call', { name: c.tool, arguments: c.input }), 200, body => assert.deepEqual(body.result.structuredContent, c.expected));
     report.status = 'passed';
@@ -138,7 +138,16 @@ function assertWire(row, cases) {
     if (x.response) assert.equal(x.response.id, x.request?.id);
   }
   assert(successful('tools/list').length);
-  for (const c of cases) assert(successful('tools/call').some(x => x.request.params.name === c.tool && x.response.result.isError === false));
+  for (const c of cases) {
+    const calls = successful('tools/call').filter(x => x.request.params.name === c.tool);
+    assert(calls.length, 'Missing tool call: ' + c.tool);
+    for (const x of calls) {
+      assert.equal(x.response.result.isError, false);
+      assert.deepEqual(x.request.params.arguments, c.input);
+      assert.deepEqual(x.response.result.structuredContent, c.expected);
+      assert.deepEqual(JSON.parse(x.response.result.content.find(item => item.type === 'text').text), c.expected);
+    }
+  }
   const handshake = successful(row.profile === modern ? 'server/discover' : 'initialize'); assert(handshake.length);
   for (const x of handshake) assert.deepEqual(x.response.result.capabilities, { tools: { listChanged: false } });
   if (row.profile === modern) {
@@ -156,10 +165,12 @@ function assertWire(row, cases) {
     assert(wire.some(x => x.request?.method === 'notifications/initialized' && x.status === 202));
   }
 }
-function createSuite({ temporary, root, run, env, output }) {
+function createSuite({ temporary, root, run, env, output, source }) {
   const report = { schemaVersion: 'pulse.context-fastly-clients.v1', status: 'running', deployed: false,
+    source, node: process.version, platform: process.platform, arch: process.arch,
+    fixtureFiles: Object.fromEntries(['context-fastly-clients.cjs', 'reference/native-client-proof.cjs'].map(file => [file, hash(fs.readFileSync(path.join(__dirname, file)))])),
     transport: 'byte-preserving loopback recording relay to actual Fastly CLI/Viceroy; no MCP translation',
-    rows: matrix.map(row => ({ ...row, status: 'pending', wire: [] })), profiles: [] };
+    rows: matrix.map(row => ({ ...row, source, status: 'pending', wire: [] })), profiles: [] };
   const installed = new Map();
   function persist() {
     save(path.join(output, 'qualification.json'), report);
@@ -190,8 +201,8 @@ function createSuite({ temporary, root, run, env, output }) {
       }
       persist();
     },
-    async qualify({ profile, endpoint, exchange, cases, artifact }) {
-      const boundArtifact = { name: artifact.name, moduleSha256: artifact.moduleSha256, moduleBytes: artifact.moduleBytes,
+    async qualify({ profile, endpoint, exchange, cases, artifact, hostTools }) {
+      const boundArtifact = { hostTools, name: artifact.name, moduleSha256: artifact.moduleSha256, moduleBytes: artifact.moduleBytes,
         configSha256: artifact.configSha256, applicationEntrySha256: artifact.applicationEntrySha256, receipts: artifact.receipts };
       report.profiles.push({ ...await wireProfile(profile, exchange, cases), artifact: boundArtifact }); persist();
       for (const row of report.rows.filter(r => r.profile === profile)) {
@@ -220,7 +231,7 @@ function createSuite({ temporary, root, run, env, output }) {
     },
     finish(status, error) {
       for (const row of report.rows) if (['pending', 'running'].includes(row.status)) { row.status = 'blocked'; row.error = error || 'Prerequisite did not complete'; }
-      report.status = status; persist();
+      report.status = status === 'passed' && report.rows.every(row => row.status === 'passed') && report.profiles.length === 2 && report.profiles.every(p => p.status === 'passed') ? 'passed' : 'failed'; persist();
     }
   };
 }

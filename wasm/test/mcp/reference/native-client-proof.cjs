@@ -24,9 +24,11 @@ function rpc(method, params) {
   });
 }
 function check(c, result) {
-  assert.equal(result.isError, false, c.tool);
+  // Claude control flattens text content; the relay separately validates the full MCP envelope.
+  if (kind === 'claude') assert.notEqual(result.isError, true, c.tool);
+  else assert.equal(result.isError, false, c.tool);
   assert.deepEqual(result.structuredContent, c.expected, c.tool);
-  assert.deepEqual(JSON.parse(result.content.find(x => x.type === 'text').text), c.expected, c.tool);
+  assert.deepEqual(JSON.parse(kind === 'claude' ? result.content : result.content.find(x => x.type === 'text').text), c.expected, c.tool);
   report.calls.push({ tool: c.tool, status: c.expected.status, bytes: Buffer.byteLength(JSON.stringify(result)) });
 }
 async function main() {
