@@ -1,0 +1,125 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 315 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 174ms
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 20 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 251ms
+
+[pulsewasm:unit] boundaries
+[pulsewasm] workspace layout and import boundaries (timeout 30.00s)
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages
+[pulsewasm] boundaries: passed in 498ms
+
+[pulsewasm:unit] workspace-hygiene
+[pulsewasm] package-manager and workspace hygiene (timeout 30.00s)
+ok - workspace package-manager hygiene is pnpm-only and portable
+[pulsewasm] workspace-hygiene: passed in 268ms
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity
+[pulsewasm] release-feature-acceptance: passed in 681ms
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+ok - shared release packages are source-bound, hash-checked, private copies; tampering, dirty/stale source and overlapping paths fail closed
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 2.82s
+
+[pulsewasm:unit] binary-resource-admission
+[pulsewasm] B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy (timeout 30.00s)
+ok - resource size budgets are independent; HTTP Assets stays fixed
+ok - independent construction agrees with existing Assets identity
+ok - existing Assets constructor identity cross-check
+ok - snapshot and deeply immutable transport
+ok - all budgets are required finite safe integers; no inherited defaults or read quota
+ok - exact budgets pass; every smaller budget fails before selection
+ok - identity ignores declaration order; alias backing is not counted twice
+ok - selected and unselected corruption, length, identity and base64 are rejected
+ok - binding identity and path grammar are explicit
+ok - constructor rejects ambiguous inputs and accounts escaped UTF-8 metadata exactly
+ok - report projection omits payload and manifest paths; errors omit supplied content
+{"status":"passed","cases":11,"generatedInputMaximumBytes":2097152,"actualMcpFixture":"not-qualified"}
+[pulsewasm] binary-resource-admission: passed in 250ms
+
+[pulsewasm:unit] report-capsule-contract
+[pulsewasm] PRPT-01 capsule identity, schema projection, completion and attribution contracts (timeout 30.00s)
+ok - AN9-09 normalized storage, canonical compatibility, browser codec, semantic validation and bounded hostile expansion
+{"comparison":"passed","checks":49,"version":1,"deterministic":true,"missingIsNotZero":true}
+[pulsewasm] Running report-capsule-contract (execution); elapsed 10.00s
+[pulsewasm] Running report-capsule-contract (execution); elapsed 20.01s
+ok - AN9-06 semantic inventories, recipe independence, source-slot/retained identity, ambiguity, coverage and offline comparison HTML
+{"status":"passed","negativeCases":66,"goldenCapsules":2,"registeredSchemas":2,"attributionProofCells":3,"sameCapsuleHtmlRoundTrip":true,"completedWasmAndHistoricalReplay":true,"noIoOrToolchainImports":true}
+[pulsewasm] report-capsule-contract: passed in 20.96s
+
+[pulsewasm:unit] cli-report-workflow
+[pulsewasm] PRPT-04 report CLI replay, planning, safe output and diagnostics (timeout 30.00s)
+ok - PRPT-04/05 CLI replay, planning, diagnostics, hostile terminal text, guarded imports and atomic offline HTML (39 checks)
+[pulsewasm] cli-report-workflow: passed in 4.06s
+
+[pulsewasm:unit] cli-report-viewer
+[pulsewasm] PRPT-05 offline encoding, view projections and generated-output receipts (timeout 30.00s)
+[pulsewasm] Running cli-report-viewer (execution); elapsed 30.01s
+ok - CMP8-02 comparison rendering: sparse details, zero-net anchors, missing evidence, compatibility, full provenance, exact payload and CSP
+ok - VIS-07 graph-backed binding/registration/site navigation, admission and exact export
+[pulsewasm] Running cli-report-viewer (execution); elapsed 40.01s
+ok - VIS-08 six journeys: mixed entry points, binding consumers, exact details and Explorer return, source/unknown evidence, identity and historical compatibility
+RPT8-12 combined reconciliation: {"routes":2,"schemas":3,"helperRows":4,"distinctHelperBytes":6,"dispatcherBytes":4,"responseSites":8,"resolvedResponseSizes":6,"physicalBytes":36}
+ok - offline HTML encoding/CSP, exact export, route/schema projections, unknown states, safe repeatable outputs; browser qualification remains separate
+[pulsewasm] cli-report-viewer: passed in 12.99s
+
+[pulsewasm:unit] cli-report-retained-evidence
+[pulsewasm] PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm (timeout 60.00s)
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 50.01s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 60.02s
+TypeError: Report input rejected (REPORT_MISSING_ARTIFACT).
+    at fail (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/data.js:7:17)
+    at checkedPath (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/files.js:22:79)
+    at readFile (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/files.js:36:27)
+    at read (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:129:20)
+    at readCompleted (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:139:34)
+    at Object.collectArtifactReport (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:159:21)
+    at /workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/cli/assert-report-retained-evidence.cjs:194:26
+    at getActual (node:assert:611:5)
+    at strict.throws (node:assert:759:24)
+    at rejects (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/cli/assert-report-retained-evidence.cjs:30:49)
+AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+
+Caught error:
+
+TypeError: Report input rejected (REPORT_MISSING_ARTIFACT).
+    at rejects (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/cli/assert-report-retained-evidence.cjs:30:49)
+    at main (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/cli/assert-report-retained-evidence.cjs:194:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [TypeError],
+  expected: [Function (anonymous)],
+  operator: 'throws',
+  diff: 'simple'
+}
+[pulsewasm] cli-report-retained-evidence: failed in 20.41s
+
+[pulsewasm] test summary
+  passed         250ms  binary-resource-admission  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/binary-resource-admission.log)
+  passed        20.96s  report-capsule-contract  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/report-capsule-contract.log)
+  passed         4.06s  cli-report-workflow  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/cli-report-workflow.log)
+  passed        12.99s  cli-report-viewer  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/cli-report-viewer.log)
+  failed        20.41s  cli-report-retained-evidence  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/cli-report-retained-evidence.log)
+  passed         174ms  suite-shape  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/suite-shape.log)
+  passed         251ms  package-exports  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/package-exports.log)
+  passed         498ms  boundaries  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/boundaries.log)
+  passed         268ms  workspace-hygiene  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/workspace-hygiene.log)
+  passed         681ms  release-feature-acceptance  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/release-feature-acceptance.log)
+  passed         2.82s  release-runtime-policy  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30/tasks/release-runtime-policy.log)
+  report       /workspace/scratch/0174bfde4d1e/evidence-06b/unit.json
+  run logs     /workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-35-272Z--30
+  total        63.39s

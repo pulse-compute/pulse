@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T02-42-39-621Z--34",
+  "sourceRevision": "961dacacdef76070bb407ed51569e1ba29c2114d",
+  "sourceIdentity": {
+    "sourceRevision": "961dacacdef76070bb407ed51569e1ba29c2114d",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T02:42:39.628Z",
+  "updatedAt": "2026-10-21T02:47:00.808Z",
+  "finishedAt": "2026-10-21T02:47:00.808Z",
+  "durationMs": 261180,
+  "profiles": [],
+  "requestedTasks": [
+    "pulse-context-quality-actual",
+    "pulse-context-quality-growth",
+    "pulse-context-quality-repeat",
+    "pulse-context-build"
+  ],
+  "selectedTasks": [
+    "pulse-context-quality-actual",
+    "pulse-context-quality-growth",
+    "pulse-context-quality-repeat",
+    "pulse-context-build"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 4,
+  "results": [
+    {
+      "name": "pulse-context-quality-actual",
+      "evidence": "native",
+      "description": "06B actual retrieval evidence; receipt acceptance is separate from completed measurement",
+      "commandSignature": "0289315d40bbee36e00fe6b2e96c76b9be7399d7eb10ae504cfe00d60bda5946",
+      "timeoutMs": 240000,
+      "durationMs": 63884,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-42-39-621Z--34/tasks/pulse-context-quality-actual.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "pulse-context-quality-growth",
+      "evidence": "native",
+      "description": "06B growth retrieval evidence; receipt acceptance is separate from completed measurement",
+      "commandSignature": "2649abaa81dcd79342c4636dcc1ba6a626976c101624786b7fb7b2a4bba1f8e6",
+      "timeoutMs": 240000,
+      "durationMs": 71071,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-42-39-621Z--34/tasks/pulse-context-quality-growth.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "pulse-context-quality-repeat",
+      "evidence": "native",
+      "description": "06B repeat retrieval evidence; receipt acceptance is separate from completed measurement",
+      "commandSignature": "f28c3c9d5336dafcd08125357dedf099615b04ed76165032e1fb3aa13de2ed55",
+      "timeoutMs": 240000,
+      "durationMs": 50664,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-42-39-621Z--34/tasks/pulse-context-quality-repeat.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "pulse-context-build",
+      "evidence": "unit",
+      "description": "B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection",
+      "commandSignature": "27c92cd327eca9ee13947506eb5740e4ee22f174534397391e098124e2f9817c",
+      "timeoutMs": 120000,
+      "durationMs": 75549,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-42-39-621Z--34/tasks/pulse-context-build.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-42-39-621Z--34"
+}

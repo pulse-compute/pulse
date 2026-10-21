@@ -1,0 +1,292 @@
+{
+  "schemaVersion": "pulse.context-quality-cases.v1",
+  "frozenBeforeMeasurement": true,
+  "reviewStatus": "proposed-for-review; no independent human relevance review claimed",
+  "base": "777f1e264a0a5006e8138b56311a795984de613a",
+  "budgetBasis": "06 contract and existing 02 experiment ceilings; no provider performance promise",
+  "budgets": {
+    "requestMs": 5000,
+    "compileMs": 120000,
+    "artifactBytes": 8388608,
+    "guestCommittedBytes": 134217728,
+    "nodeValueHandles": 1048576,
+    "retainedBytes": 67108864,
+    "toolBytes": 24576,
+    "mcpBytes": 131072,
+    "warmSamples": 9
+  },
+  "cases": [
+    {
+      "id": "exact-1",
+      "group": "exact",
+      "input": {
+        "query": "compile"
+      },
+      "relevantIds": [
+        "command/compile"
+      ],
+      "criterion": "rank-one"
+    },
+    {
+      "id": "exact-2",
+      "group": "exact",
+      "input": {
+        "query": "inspect"
+      },
+      "relevantIds": [
+        "command/inspect"
+      ],
+      "criterion": "rank-one"
+    },
+    {
+      "id": "exact-3",
+      "group": "exact",
+      "input": {
+        "query": "report"
+      },
+      "relevantIds": [
+        "command/report"
+      ],
+      "criterion": "rank-one"
+    },
+    {
+      "id": "exact-4",
+      "group": "exact",
+      "input": {
+        "query": "PULSE_BINARY_RESOURCE_INVALID"
+      },
+      "relevantIds": [
+        "diagnostic/PULSE_BINARY_RESOURCE_INVALID"
+      ],
+      "criterion": "rank-one"
+    },
+    {
+      "id": "exact-5",
+      "group": "exact",
+      "input": {
+        "query": "PULSE_CALL_SOURCE_PLACEMENT"
+      },
+      "relevantIds": [
+        "diagnostic/PULSE_CALL_SOURCE_PLACEMENT"
+      ],
+      "criterion": "rank-one"
+    },
+    {
+      "id": "exact-6",
+      "group": "exact",
+      "input": {
+        "query": "PULSE_REQUEST_BODY_INVALID_UTF8"
+      },
+      "relevantIds": [
+        "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8"
+      ],
+      "criterion": "rank-one"
+    },
+    {
+      "id": "workflow-1",
+      "group": "workflow",
+      "input": {
+        "query": "configure project"
+      },
+      "relevantIds": [
+        "contract/project-configuration",
+        "node/configure"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "workflow-2",
+      "group": "workflow",
+      "input": {
+        "query": "request body limits"
+      },
+      "relevantIds": [
+        "contract/request-json",
+        "contract/transport-limits"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "workflow-3",
+      "group": "workflow",
+      "input": {
+        "query": "declare schema registry"
+      },
+      "relevantIds": [
+        "schema/registry",
+        "contract/schema-declarations"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "workflow-4",
+      "group": "workflow",
+      "input": {
+        "query": "parallel fetch"
+      },
+      "relevantIds": [
+        "contract/parallel"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "workflow-5",
+      "group": "workflow",
+      "input": {
+        "query": "build selected target"
+      },
+      "relevantIds": [
+        "workflow/build",
+        "command/build"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "workflow-6",
+      "group": "workflow",
+      "input": {
+        "query": "compare reports"
+      },
+      "relevantIds": [
+        "contract/report-comparison",
+        "command/report"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "filtered-1",
+      "group": "filtered",
+      "input": {
+        "query": "node native",
+        "provider": "node",
+        "target": "native"
+      },
+      "relevantIds": [
+        "node/native",
+        "provider/node"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "filtered-2",
+      "group": "filtered",
+      "input": {
+        "query": "fastly",
+        "provider": "fastly",
+        "target": "native",
+        "category": "target"
+      },
+      "relevantIds": [
+        "provider/fastly"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "filtered-3",
+      "group": "filtered",
+      "input": {
+        "query": "schema declarations",
+        "category": "contract"
+      },
+      "relevantIds": [
+        "contract/schema-declarations"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "filtered-4",
+      "group": "filtered",
+      "input": {
+        "query": "fetch",
+        "category": "example"
+      },
+      "relevantIds": [
+        "example/03-fetch-composition/src/index.ts"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "filtered-5",
+      "group": "filtered",
+      "input": {
+        "query": "jwt",
+        "category": "package"
+      },
+      "relevantIds": [
+        "package/jwt"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "filtered-6",
+      "group": "filtered",
+      "input": {
+        "query": "build",
+        "category": "command",
+        "provider": "node",
+        "target": "javascript"
+      },
+      "relevantIds": [
+        "command/build"
+      ],
+      "criterion": "top-five"
+    },
+    {
+      "id": "failure-1",
+      "group": "failure",
+      "input": {
+        "query": "zzzz_no_such_term"
+      },
+      "relevantIds": [],
+      "criterion": "empty"
+    },
+    {
+      "id": "failure-2",
+      "group": "failure",
+      "input": {
+        "query": "sch\u00e9ma"
+      },
+      "relevantIds": [],
+      "criterion": "invalid-input",
+      "limitation": "Non-ASCII queries explicitly reject; no semantic retrieval claim."
+    },
+    {
+      "id": "failure-3",
+      "group": "failure",
+      "input": {
+        "query": "..."
+      },
+      "relevantIds": [],
+      "criterion": "invalid-input"
+    },
+    {
+      "id": "failure-4",
+      "group": "failure",
+      "input": {
+        "query": "one two three four five six seven eight nine"
+      },
+      "relevantIds": [],
+      "criterion": "invalid-input"
+    },
+    {
+      "id": "failure-5",
+      "group": "failure",
+      "input": {
+        "query": "simultaneous upstream requests"
+      },
+      "relevantIds": [],
+      "criterion": "empty",
+      "limitation": "Paraphrase of parallel fetch is deliberately not a synonym-expanded query."
+    },
+    {
+      "id": "failure-6",
+      "group": "failure",
+      "input": {
+        "query": "schema"
+      },
+      "relevantIds": [],
+      "criterion": "ambiguous",
+      "limitation": "Ambiguous query retains lexical ordering; there is no intent inference."
+    }
+  ]
+}

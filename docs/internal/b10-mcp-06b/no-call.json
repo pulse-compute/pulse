@@ -1,0 +1,836 @@
+{
+  "version": "pulse.callable-authored-evidence.v1",
+  "status": "passed",
+  "providerReality": false,
+  "measurements": [
+    {
+      "name": "authored",
+      "planHash": "4496455453358d8feec1a3e023d95d43bcdffbdd21813d0a009bfd1159056cf5",
+      "callees": 1,
+      "resources": [
+        "data"
+      ],
+      "node": {
+        "bytes": 39504,
+        "sha256": "0562b9c113f08c2171effe0f8c6d9da165a9f48bf7e32819ef59f61622bf1667",
+        "imports": [
+          {
+            "module": "env",
+            "name": "abort",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_number",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "resource_check",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "workspace_number_value",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "workspace_check",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object_set",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_binary",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "schema_decode",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "resource_offset_value",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_string",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "schema_encode",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_undefined",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_truthy",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_property",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_nullish",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "response_json",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "request_header",
+            "kind": "function"
+          }
+        ]
+      },
+      "fastly": {
+        "bytes": 84667,
+        "sha256": "d69e2dde7d966156bb725aaa5b3d74d8f2f6b596c5a9af8b8f34322a32fb0736",
+        "imports": [
+          {
+            "module": "fastly_http_resp",
+            "name": "send_downstream",
+            "kind": "function"
+          },
+          {
+            "module": "wasi_snapshot_preview1",
+            "name": "clock_time_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_set",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "header_append",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "uri_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "method_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "body_downstream_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "write",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_abi",
+            "name": "init",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_async_io",
+            "name": "select",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "header_values_get",
+            "kind": "function"
+          }
+        ]
+      }
+    },
+    {
+      "name": "re-export-alias",
+      "planHash": "7b5f1fd59e6e6a1c9781e14426f42bd6dd65bc8e14f01cce6c52e9a88f5ef9b2",
+      "callees": 1,
+      "resources": [
+        "data"
+      ],
+      "node": {
+        "bytes": 39504,
+        "sha256": "146c7119b3ee6694830035d89a588b8b0964c16bc846ad441084548eb87cc6d2",
+        "imports": [
+          {
+            "module": "env",
+            "name": "abort",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_number",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "resource_check",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "workspace_number_value",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "workspace_check",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object_set",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_binary",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "schema_decode",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "resource_offset_value",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_string",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "schema_encode",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_undefined",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_truthy",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_property",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_nullish",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "response_json",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "request_header",
+            "kind": "function"
+          }
+        ]
+      },
+      "fastly": {
+        "bytes": 84667,
+        "sha256": "9a46bf42a73deb9990b2798c114ccf311a1c2a264425000854a01ba021c02507",
+        "imports": [
+          {
+            "module": "fastly_http_resp",
+            "name": "send_downstream",
+            "kind": "function"
+          },
+          {
+            "module": "wasi_snapshot_preview1",
+            "name": "clock_time_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_set",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "header_append",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "uri_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "method_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "body_downstream_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "write",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_abi",
+            "name": "init",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_async_io",
+            "name": "select",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "header_values_get",
+            "kind": "function"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-call",
+      "planHash": "a1def351e37f2c06066ce438ddedb6648f434b4383ea5be10c1a40f3fb98a63d",
+      "callees": 0,
+      "resources": [],
+      "node": {
+        "bytes": 37123,
+        "sha256": "23411145f24eb5202096863db43ff087d4425e92cd1e3660a61feacdce63b86d",
+        "imports": [
+          {
+            "module": "env",
+            "name": "abort",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object_set",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_string",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_number",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "response_json",
+            "kind": "function"
+          }
+        ]
+      },
+      "fastly": {
+        "bytes": 81822,
+        "sha256": "cf3af7add8235f76e58a3a267e392066d647bde20d88c8dd7b4de43b1e334cf6",
+        "imports": [
+          {
+            "module": "fastly_http_resp",
+            "name": "send_downstream",
+            "kind": "function"
+          },
+          {
+            "module": "wasi_snapshot_preview1",
+            "name": "clock_time_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_set",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "header_append",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "uri_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "method_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "body_downstream_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "write",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_abi",
+            "name": "init",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_async_io",
+            "name": "select",
+            "kind": "function"
+          }
+        ]
+      }
+    },
+    {
+      "name": "imported-unused",
+      "planHash": "db73bd7c46d83f38293442fb0bd9cc794ee3f33c7819bbfb3df8ac10b6bdb9ee",
+      "callees": 0,
+      "resources": [],
+      "node": {
+        "bytes": 37123,
+        "sha256": "9475cd0ef309cb9c016cbd023f3bb82f63a7befaa309dce00c46daa1b5e1d1a9",
+        "imports": [
+          {
+            "module": "env",
+            "name": "abort",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object_set",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_string",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_number",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "response_json",
+            "kind": "function"
+          }
+        ]
+      },
+      "fastly": {
+        "bytes": 81822,
+        "sha256": "cef9928939c6932ef2f6414677b29358164eeeb1eba4e3d482ce27a8f3e98663",
+        "imports": [
+          {
+            "module": "fastly_http_resp",
+            "name": "send_downstream",
+            "kind": "function"
+          },
+          {
+            "module": "wasi_snapshot_preview1",
+            "name": "clock_time_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_set",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "header_append",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "uri_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "method_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "body_downstream_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "write",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_abi",
+            "name": "init",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_async_io",
+            "name": "select",
+            "kind": "function"
+          }
+        ]
+      }
+    }
+  ],
+  "rejections": [
+    "unresolved caller",
+    "unresolved input",
+    "scalar input",
+    "ambient input",
+    "dynamic target",
+    "unknown schema",
+    "call in loop",
+    "awaited call",
+    "shadowed target",
+    "unresolved caller result",
+    "invalid callee",
+    "invalid callee"
+  ],
+  "parityExecutions": 8,
+  "uncalledContextCompatibilityCases": 2,
+  "baseline": {
+    "revision": "e3bd03711ce15222fc318c6bb5ab5d68b51bfdbf",
+    "noCall": {
+      "node": {
+        "bytes": 37123,
+        "sha256": "23411145f24eb5202096863db43ff087d4425e92cd1e3660a61feacdce63b86d",
+        "imports": [
+          {
+            "module": "env",
+            "name": "abort",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object_set",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_string",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_number",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "response_json",
+            "kind": "function"
+          }
+        ]
+      },
+      "fastly": {
+        "bytes": 81822,
+        "sha256": "cf3af7add8235f76e58a3a267e392066d647bde20d88c8dd7b4de43b1e334cf6",
+        "imports": [
+          {
+            "module": "fastly_http_resp",
+            "name": "send_downstream",
+            "kind": "function"
+          },
+          {
+            "module": "wasi_snapshot_preview1",
+            "name": "clock_time_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_set",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "header_append",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "uri_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "method_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "body_downstream_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "write",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_abi",
+            "name": "init",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_async_io",
+            "name": "select",
+            "kind": "function"
+          }
+        ]
+      }
+    },
+    "importedUnused": {
+      "node": {
+        "bytes": 37123,
+        "sha256": "9475cd0ef309cb9c016cbd023f3bb82f63a7befaa309dce00c46daa1b5e1d1a9",
+        "imports": [
+          {
+            "module": "env",
+            "name": "abort",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object_set",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_object",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_string",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "value_number",
+            "kind": "function"
+          },
+          {
+            "module": "pulse_host",
+            "name": "response_json",
+            "kind": "function"
+          }
+        ]
+      },
+      "fastly": {
+        "bytes": 81822,
+        "sha256": "cef9928939c6932ef2f6414677b29358164eeeb1eba4e3d482ce27a8f3e98663",
+        "imports": [
+          {
+            "module": "fastly_http_resp",
+            "name": "send_downstream",
+            "kind": "function"
+          },
+          {
+            "module": "wasi_snapshot_preview1",
+            "name": "clock_time_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_set",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "header_append",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "uri_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "method_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "body_downstream_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "write",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_abi",
+            "name": "init",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_async_io",
+            "name": "select",
+            "kind": "function"
+          }
+        ]
+      }
+    },
+    "comparison": "no-call: same-source project compile; imported-unused: same call-free plan through untouched backend. Adding unused import changes only embedded plan identity, with equal bytes/imports."
+  },
+  "source": {
+    "revision": "ee1d6c30fc6a7c92d786466640e0bd84c5b9a6bd",
+    "status": "",
+    "files": []
+  }
+}

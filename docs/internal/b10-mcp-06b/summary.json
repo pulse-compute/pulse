@@ -1,0 +1,53 @@
+{
+  "status": "passed",
+  "pr": 471,
+  "base": "777f1e264a0a5006e8138b56311a795984de613a",
+  "branch": "codex/b10-mcp-06b",
+  "source": {
+    "localCode": "961daca",
+    "publishedCode": "19cf3d1d99dcf32ed2397157cb2adc3cd148400f",
+    "tree": "5a9afa3775c4ceade7b9b11519f499290c024ff3"
+  },
+  "quality": {
+    "beforePassed": 23,
+    "afterPassed": 24,
+    "total": 24,
+    "declines": []
+  },
+  "executions": {
+    "actual": 1274,
+    "growth": 44,
+    "repeat": 23
+  },
+  "faults": {
+    "actual": 15,
+    "growth": 15,
+    "repeat": 15
+  },
+  "focusedRunner": {
+    "status": "passed",
+    "completedTasks": 4
+  },
+  "noCall": {
+    "status": "passed",
+    "source": {
+      "revision": "ee1d6c30fc6a7c92d786466640e0bd84c5b9a6bd",
+      "status": "",
+      "files": []
+    },
+    "baseline": "e3bd03711ce15222fc318c6bb5ab5d68b51bfdbf"
+  },
+  "unitDevelopmentCoverage": {
+    "expected": 69,
+    "passed": 69,
+    "missing": [],
+    "originalAggregateStatus": "failed",
+    "reportFiles": [
+      "unit.json",
+      "retained-retry.json",
+      "unit-remainder.json",
+      "unit-final-remainder.json"
+    ],
+    "isReleaseQualification": false
+  }
+}

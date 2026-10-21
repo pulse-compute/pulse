@@ -1,0 +1,17 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> docs:check
+> node scripts/documentation-check.cjs
+
+ok - 266 generated documentation/package file(s), 5 maintenance-policy output(s), 64 source block(s), and 19 owned page(s) are synchronized
+Error: Pulse-specific environment reads are undocumented: PULSE_CONTEXT_QUALITY_DIR
+    at fail (/workspace/scratch/0174bfde4d1e/pulse-06b-final/scripts/documentation-release.cjs:241:17)
+    at validateEnvironmentReference (/workspace/scratch/0174bfde4d1e/pulse-06b-final/scripts/documentation-release.cjs:789:28)
+    at validateDocumentationSource (/workspace/scratch/0174bfde4d1e/pulse-06b-final/scripts/documentation-release.cjs:1050:23)
+    at Object.validatePackageDocumentation (/workspace/scratch/0174bfde4d1e/pulse-06b-final/scripts/documentation-release.cjs:1059:10)
+    at checkDocumentation (/workspace/scratch/0174bfde4d1e/pulse-06b-final/scripts/documentation-check.cjs:12:64)
+    at Object.<anonymous> (/workspace/scratch/0174bfde4d1e/pulse-06b-final/scripts/documentation-check.cjs:31:36)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)

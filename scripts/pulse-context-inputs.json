@@ -409,7 +409,7 @@
           "id": "contract/report-comparison",
           "heading": "Report comparison contract",
           "targets": ["native"],
-          "tags": ["report", "compare", "identity", "coverage"]
+          "tags": ["report", "reports", "compare", "identity", "coverage"]
         },
         {
           "id": "contract/eligibility",

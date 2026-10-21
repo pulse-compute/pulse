@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "baseCorpusHash": "a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97",
+  "currentCorpusHash": "0d87d0a4bc2c4ef5e5b45f8ba0c9e385462f5eb9396a0a632965819635be6de7",
+  "records": 263,
+  "sourceContentAndCitationIdentityPreserved": true,
+  "frozenCasesAndBudgetsUnchanged": true,
+  "frozenSha256": "b62bb7dd5f3cd77f5271aca0d9da9dd33b1b84c47abd6bb8c14aeceb625745ce",
+  "changes": [
+    {
+      "id": "contract/report-comparison",
+      "field": "tags",
+      "before": [
+        "compare",
+        "coverage",
+        "identity",
+        "report"
+      ],
+      "after": [
+        "compare",
+        "coverage",
+        "identity",
+        "report",
+        "reports"
+      ]
+    }
+  ]
+}

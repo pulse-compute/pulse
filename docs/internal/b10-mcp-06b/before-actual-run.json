@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T02-35-09-547Z--5",
+  "sourceRevision": "d34ebaeeb1c973644b847993d4afdff4fcb5a166",
+  "sourceIdentity": {
+    "sourceRevision": "d34ebaeeb1c973644b847993d4afdff4fcb5a166",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T02:35:09.552Z",
+  "updatedAt": "2026-10-21T02:36:20.124Z",
+  "finishedAt": "2026-10-21T02:36:20.124Z",
+  "durationMs": 70572,
+  "profiles": [],
+  "requestedTasks": [
+    "pulse-context-quality-actual"
+  ],
+  "selectedTasks": [
+    "pulse-context-quality-actual"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "pulse-context-quality-actual",
+      "evidence": "native",
+      "description": "06B actual retrieval evidence; receipt acceptance is separate from completed measurement",
+      "commandSignature": "c0a7873cb808457e9f0a248020412dd81f6e80f448713e903b745169f5ca8926",
+      "timeoutMs": 240000,
+      "durationMs": 70563,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-35-09-547Z--5/tasks/pulse-context-quality-actual.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-35-09-547Z--5"
+}

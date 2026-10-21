@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T02-33-45-099Z--30",
+  "sourceRevision": "d1910eeaafdb25d5a17cc55c8b5cfbe066b72143",
+  "sourceIdentity": {
+    "sourceRevision": "d1910eeaafdb25d5a17cc55c8b5cfbe066b72143",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T02:33:45.104Z",
+  "updatedAt": "2026-10-21T02:35:02.242Z",
+  "finishedAt": "2026-10-21T02:35:02.242Z",
+  "durationMs": 77138,
+  "profiles": [],
+  "requestedTasks": [
+    "pulse-context-quality-growth"
+  ],
+  "selectedTasks": [
+    "pulse-context-quality-growth"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "pulse-context-quality-growth",
+      "evidence": "native",
+      "description": "06B growth retrieval evidence; receipt acceptance is separate from completed measurement",
+      "commandSignature": "b6690c08a36955fe712a20ff9fac5a7ba58d3237bae961a798793e89cc69999e",
+      "timeoutMs": 240000,
+      "durationMs": 77128,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-33-45-099Z--30/tasks/pulse-context-quality-growth.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-33-45-099Z--30"
+}

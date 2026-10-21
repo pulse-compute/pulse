@@ -1242,6 +1242,18 @@ const tasks = Object.freeze({
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
   }),
+  'pulse-context-quality-actual': nodeTask('test/mcp/assert-context-quality.cjs', {
+    args: ['actual'], evidence: 'native', timeoutMs: 240000, isolatedArtifacts: true,
+    description: '06B actual retrieval evidence; receipt acceptance is separate from completed measurement'
+  }),
+  'pulse-context-quality-growth': nodeTask('test/mcp/assert-context-quality.cjs', {
+    args: ['growth'], evidence: 'native', timeoutMs: 240000, isolatedArtifacts: true,
+    description: '06B growth retrieval evidence; receipt acceptance is separate from completed measurement'
+  }),
+  'pulse-context-quality-repeat': nodeTask('test/mcp/assert-context-quality.cjs', {
+    args: ['repeat'], evidence: 'native', timeoutMs: 240000, isolatedArtifacts: true,
+    description: '06B repeat retrieval evidence; receipt acceptance is separate from completed measurement'
+  }),
   'pulse-context-tools': nodeTask('test/mcp/assert-context-tools.cjs', {
     evidence: 'native', timeoutMs: 300000, description: '06A five-tool MCP parity, independent lexical oracle, Unicode pagination and response bounds'
   }),
@@ -1512,6 +1524,9 @@ const profiles = Object.freeze({
     'entities-hardening',
     'entities-node-native-workflow',
     'pulse-context-tools',
+    'pulse-context-quality-actual',
+    'pulse-context-quality-growth',
+    'pulse-context-quality-repeat',
     'callable-public-contract',
     'callable-composition-proof',
     'callable-authored-native',

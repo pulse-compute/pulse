@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T02-36-20-192Z--100",
+  "sourceRevision": "d34ebaeeb1c973644b847993d4afdff4fcb5a166",
+  "sourceIdentity": {
+    "sourceRevision": "d34ebaeeb1c973644b847993d4afdff4fcb5a166",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T02:36:20.196Z",
+  "updatedAt": "2026-10-21T02:37:09.037Z",
+  "finishedAt": "2026-10-21T02:37:09.037Z",
+  "durationMs": 48841,
+  "profiles": [],
+  "requestedTasks": [
+    "pulse-context-quality-repeat"
+  ],
+  "selectedTasks": [
+    "pulse-context-quality-repeat"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "pulse-context-quality-repeat",
+      "evidence": "native",
+      "description": "06B repeat retrieval evidence; receipt acceptance is separate from completed measurement",
+      "commandSignature": "abb50c21e88776126898b94a076878b04a8d24f2fe9104593f997c0607abbc9b",
+      "timeoutMs": 240000,
+      "durationMs": 48833,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-36-20-192Z--100/tasks/pulse-context-quality-repeat.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-36-20-192Z--100"
+}
