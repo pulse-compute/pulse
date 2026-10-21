@@ -52,7 +52,7 @@ async function main(synthetic) {
     assert.equal(tied.length,5);
     for(const [i,r] of tied.entries()){
       r.title='"'.repeat(1200);
-      set(r.id,'searchtie '+('a '.repeat(185))+'😀é雪\0\n"\\ '+i);
+      set(r.id,'searchtie '+('a '.repeat(184))+' '.repeat(i)+'😀é雪\0\n"\\ '+i);
     }
     const {corpusHash,...snapshot}=built.corpus;built.corpus.corpusHash=F.hash(JSON.stringify(canonical(snapshot),null,2));
     fixtureFiles=F.encode(built.corpus,built.config.limits).files;

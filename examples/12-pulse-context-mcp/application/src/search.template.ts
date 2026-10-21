@@ -1,5 +1,5 @@
 import type { PulseComputationContext, PulseReadonly } from '@pulse-compute/pulse'
-import type { SearchInput, SearchOutput, SearchHit, SearchRecord } from './schemas.js'
+import type { SearchInput, SearchOutput, SearchHit, RecordSummary } from './schemas.js'
 import { digits } from './scalars.js'
 
 // Bounds and ordering follow the reviewed sparse-lexical v1 contract.
@@ -7,7 +7,6 @@ export function computeSearch(ctx: PulseComputationContext, input: PulseReadonly
 __SEARCH_PRELUDE__
   const vector = ctx.resources.map('context.vector')
   const text = ctx.resources.map('context.text')
-  const metadata = ctx.resources.map('context.metadata')
   const qids = ctx.workspace.numbers(8)
   const heap = ctx.workspace.numbers(512)
   const selected = ctx.workspace.numbers(5)
@@ -88,16 +87,15 @@ __SEARCH_PRELUDE__
   if(offset>total)return {...empty,status:'invalid-input',error:{code:'invalid-offset',message:'Offset exceeds the search match count.'}};
 
   const next = offset + selectedCount
-  let replyBytes = (next < total ? __PAGE_BASE__ + 2 * (digits(next) - 1) : __TERMINAL_BASE__) + 2 * (digits(total) - 1)
+  let replyBytes = (next < total ? __PAGE_BASE__ + 2 * ((next < 10 ? 1 : next < 100 ? 2 : 3) - 1) : __TERMINAL_BASE__) + 2 * (digits(total) - 1)
   let results: SearchHit[] = []
+  let oversized = false
   for (let slot = 0; slot < 5 && slot < selectedCount; slot++) {
     const key = selected[slot]
     const row = 511 - key % 512
     const score = (key - key % 512) / 512
     replyBytes += hitBytes(row) + 2 * (digits(score) - 1) + (slot > 0 ? 2 : 0)
-    if (replyBytes > 24576) return {...empty, status:'response-too-large', error:{
-      code:'response-too-large',message:'Reply exceeds the byte budget. Retrieve individual corpus IDs with pulse.read.',
-    }}
+    if (replyBytes > 24576) { oversized = true; break }
     const at = text.readU32LE(64 + row * 12)
     const length = text.readU32LE(68 + row * 12)
     let width = length < 384 ? length : 384
@@ -106,14 +104,16 @@ __SEARCH_PRELUDE__
       if (byte < 128 || byte >= 192) break
       width -= 1
     }
-    const record = ctx.decodeJson<SearchRecord>(metadata.readUtf8(
-      metadata.readU32LE(64 + row * 8), metadata.readU32LE(68 + row * 8)), 'context.SearchRecord')
+__SEARCH_SUMMARY__
     results = [...results, {
       id: record.id, title: record.title, category: record.category, tags: record.tags,
       applicability: record.applicability, source: record.source, contentSha256: record.contentSha256,
       excerpt: text.readUtf8(at, width), excerptTruncated: width < length, score,
     }]
   }
+  if (oversized) return {...empty, status:'response-too-large', error:{
+      code:'response-too-large',message:'Reply exceeds the byte budget. Retrieve individual corpus IDs with pulse.read.',
+    }}
   if (next < total) return {...empty, results, totalMatches:total, truncated:true, nextOffset:next}
   return {...empty, results, totalMatches:total}
 }
