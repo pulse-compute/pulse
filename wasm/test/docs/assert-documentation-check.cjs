@@ -98,6 +98,26 @@ function contextDataIntegrity() {
 contract();
 contextDataIntegrity();
 
+// A locally installed architecture page must retain its diagram without a
+// network fetch, and drift checking must reject stale asset bytes.
+{
+  const { buildExpectedFiles, synchronizeReferenceDocs } = require('../../scripts/sync-reference-docs.cjs');
+  const asset = 'docs/architecture/assets/execution-paths.svg';
+  const mirror = path.join(ROOT, 'wasm/packages/cli', asset);
+  const bytes = fs.readFileSync(path.join(ROOT, asset));
+  assert.deepEqual(buildExpectedFiles().get(`wasm/packages/cli/${asset}`), bytes);
+  assert.deepEqual(fs.readFileSync(mirror), bytes);
+  const originalRead = fs.readFileSync;
+  try {
+    fs.readFileSync = function(file, ...args) {
+      if (file === mirror) return Buffer.from('<svg/>');
+      return originalRead.call(this, file, ...args);
+    };
+    assert.throws(() => synchronizeReferenceDocs(), /execution-paths\.svg/, 'stale installed diagram must fail');
+  } finally { fs.readFileSync = originalRead; }
+  console.log('ok - installed documentation retains exact diagrams and rejects asset drift');
+}
+
 // Compact indexes must derive facts from the same catalogs as full contracts.
 {
   const { renderEnvironmentReference, renderDiagnosticsReference } = require('../../scripts/sync-reference-docs.cjs');

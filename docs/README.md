@@ -1,6 +1,10 @@
 # Pulse documentation
 
-Pulse documentation is organized in layers so you can stop when you have enough detail. The `1.0.0-beta.9` candidate uses async-shaped managed handlers, trusted Pulse effects, a conventional `.pulse/config.ts` workspace, and the `pulse` CLI. The synchronized release catalog remains the authority for npm availability and support tiers.
+Start with a working project, then follow the guides and concepts as you need
+more detail. Pulse uses TypeScript handlers, explicit schemas and capabilities,
+a `.pulse/config.ts` project profile, and the `pulse` CLI. The synchronized
+[release catalog](./reference/release-manifest.json) defines package versions
+and support tiers.
 
 ## 1. Start and ship a first project
 
@@ -8,7 +12,7 @@ Pulse documentation is organized in layers so you can stop when you have enough 
 2. [Project lifecycle](./guides/project-lifecycle.md) — the normal `init → doctor → test → dev → build` journey and the advanced `inspect`/`compile` branches.
 3. [Beta scope](./preview-scope.md) — what the release guarantees and deliberately excludes.
 4. [Canonical examples](./examples.md) — source-bound projects,
-   including focused Entities, events, and MCP proxy shapes.
+   including Entities, events, and the resource-backed Pulse context MCP server.
 
 ## 2. Follow a task-oriented guide
 
@@ -22,12 +26,9 @@ Pulse documentation is organized in layers so you can stop when you have enough 
 - [Fastly deployment candidates](./guides/deploying-fastly.md) — including links to bindings and GRIP/Fanout.
 - [Troubleshooting](./guides/troubleshooting.md)
 
-Older package fixtures can use the retained [compatibility import notes](./guides/compatibility-imports.md).
-They are separate from current Express onboarding.
-
 ## 3. Understand the model
 
-1. [Architecture overview](./architecture/overview.md) — the application model and two execution paths.
+1. [Architecture overview](./architecture/overview.md) — application, compiler, runtime and provider responsibilities.
 2. [Targets and host work](./concepts/targets-and-hosts.md) — choose a target and distinguish current support from future hosts.
 3. [Contracts and providers](./concepts/contracts-and-providers.md) — bindings, eligibility and host realization.
 4. [Effects and continuations](./concepts/effects-and-continuations.md) — execution ownership, concurrency and failure.
@@ -65,6 +66,7 @@ direction rather than release support.
 - [Diagnostics and remediation](./reference/diagnostics.md)
 - [Environment variables](./reference/environment.md)
 - [Shell completion](./reference/shell-completion.md)
+- [Compatibility import migration](./guides/compatibility-imports.md) — for projects using older package subpaths.
 - [CLI machine specification](./reference/cli-spec.json)
 - [Project configuration JSON Schema bundle](./reference/project-config.schema.json)
 
