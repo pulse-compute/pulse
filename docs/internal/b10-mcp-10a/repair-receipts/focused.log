@@ -1,0 +1,30 @@
+/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/canonical-native-plan.js:1282
+    if (this.diagnostics.length > 0) throw new CanonicalNativePlanError(`Native-plan lowering failed for ${this.metadata.file}.`, this.diagnostics);
+                                     ^
+
+CanonicalNativePlanError: Native-plan lowering failed for context-primitives.ts.
+    at NativePlanBuilder.build (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/canonical-native-plan.js:1282:44)
+    at Object.buildCanonicalNativePlanLegacy [as buildNativePlan] (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/canonical-native-plan.js:2077:51)
+    at Object.run (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/canonical-native-plan.js:28:25)
+    at Object.run (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalNativePlanSpine (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/canonical-native-plan.js:51:46)
+    at buildCanonicalNativePlan (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/canonical-native-plan.js:2081:10)
+    at plan (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/runtime/assert-native-context-primitives.cjs:19:10)
+    at main (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-terminal-errors.cjs:25:13)
+    at Object.<anonymous> (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-terminal-errors.cjs:62:30)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14) {
+  code: 'PULSE_CANONICAL_NATIVE_PLAN_FAILED',
+  diagnostics: [
+    {
+      code: 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED',
+      kind: 'CanonicalNativePlanDiagnostic',
+      severity: 'error',
+      message: 'Direct function calls are outside the canonical native value model.',
+      file: 'context-primitives.ts.canonical.generated.js',
+      position: { line: 185, column: 25, offset: 9267 },
+      detail: { callee: 'String' }
+    }
+  ]
+}
+
+Node.js v24.18.0

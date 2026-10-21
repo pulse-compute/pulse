@@ -1,0 +1,98 @@
+
+[pulsewasm:providers] fastly-native-platform-capabilities
+[pulsewasm] Fastly Config, Secret, KV, and GRIP capabilities (timeout 300.00s)
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 10.00s
+ok - 12 Fastly terminal bounds/effect failure and fresh-request recovery checks
+node:assert:604
+    throw err;
+    ^
+
+AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+
+Caught error:
+
+FastlyNativePlatformCapabilitiesMockError: Fastly native platform capabilities module reported an execution error.
+    at Object.main (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-native-config-effect-sharing.cjs:62:10)
+    at Object.<anonymous> (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-native-platform-capabilities.cjs:50:63)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: FastlyNativePlatformCapabilitiesMockError: Fastly native platform capabilities module reported an execution error.
+      at Object.executeFastlyNativePlatformCapabilities (/workspace/scratch/d3826bbd4bf5/pulse-10a/packages/provider-fastly/src/testing/native-platform-capabilities-host.js:829:11)
+      at /workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-native-config-effect-sharing.cjs:62:28
+      at getActual (node:assert:611:5)
+      at strict.throws (node:assert:759:24)
+      at Object.main (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-native-config-effect-sharing.cjs:62:10)
+      at Object.<anonymous> (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-native-platform-capabilities.cjs:50:63)
+      at Module._compile (node:internal/modules/cjs/loader:1871:14)
+      at Object..js (node:internal/modules/cjs/loader:2002:10)
+      at Module.load (node:internal/modules/cjs/loader:1594:32)
+      at Module._load (node:internal/modules/cjs/loader:1396:12) {
+    code: 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED',
+    detail: {
+      lastError: 1003,
+      errorStage: 110,
+      errorEffect: 0,
+      pulseLastError: 0,
+      trace: [
+        { module: 'fastly_abi', name: 'init', version: '1' },
+        { module: 'fastly_http_req', name: 'body_downstream_get' },
+        { module: 'fastly_http_req', name: 'method_get', handle: 1 },
+        { module: 'fastly_http_req', name: 'uri_get', handle: 1 },
+        {
+          module: 'fastly_config_store',
+          name: 'open',
+          store: 'gen04',
+          found: false
+        },
+        { module: 'fastly_http_resp', name: 'new', handle: 10 },
+        { module: 'fastly_http_body', name: 'new', handle: 11 },
+        {
+          module: 'fastly_http_resp',
+          name: 'status_set',
+          handle: 10,
+          status: 500
+        },
+        {
+          module: 'fastly_http_resp',
+          name: 'header_append',
+          handle: 10,
+          header: [ 'content-type', 'text/plain; charset=utf-8' ]
+        },
+        {
+          module: 'fastly_http_body',
+          name: 'write',
+          handle: 11,
+          bytes: 21,
+          end: 0
+        },
+        {
+          module: 'fastly_http_resp',
+          name: 'send_downstream',
+          handle: 10,
+          bodyHandle: 11,
+          streaming: 0,
+          origin: false
+        }
+      ]
+    }
+  },
+  expected: [Function (anonymous)],
+  operator: 'throws',
+  diff: 'simple'
+}
+
+Node.js v24.18.0
+[pulsewasm] fastly-native-platform-capabilities: failed in 15.38s
+
+[pulsewasm] test summary
+  failed        15.38s  fastly-native-platform-capabilities  (/tmp/runs/2026-10-21T06-29-45-197Z--5/tasks/fastly-native-platform-capabilities.log)
+  report       /tmp/pulse-10a-error-provider.json
+  run logs     /tmp/runs/2026-10-21T06-29-45-197Z--5
+  total        15.39s

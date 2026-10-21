@@ -1,0 +1,122 @@
+
+[pulsewasm:providers] fastly-native-platform-capabilities
+[pulsewasm] Fastly Config, Secret, KV, and GRIP capabilities (timeout 300.00s)
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 10.00s
+ok - 16 Fastly terminal bounds/effect failure and fresh-request recovery checks
+ok - repeated config effect handoff preserves site identities, order, missing values, errors, and cancellation
+ok - Fastly Native shares a total request budget across KV operations and blocks the checkpoint
+ok - Fastly deadline preserves remote acceptance uncertainty
+ok - Fastly final response write is fenced; completed handoff is not withdrawn
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 20.00s
+ok - Fastly body admission, invalid clocks, stale artifacts and JS rejection are bounded
+ok - Fastly budget starts at request entry, before ABI setup
+ok - Fastly outbound preparation cannot dispatch fetch after expiry
+ok - shared error-driver settlement preserves the fatal-return deadline fence and transport diagnostics
+ok - bounded Fastly concatenation preserves snapshots, UTF-16 and exact digest bytes; memory 8912896
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 30.01s
+ok - scalar-heavy Fastly schema encoding preserves exact escaped bytes and independent collections; memory 28835840
+ok - Fastly scalar sharing preserves numeric bounds, distinct enums, nested projections, optionality, errors and generation isolation
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 40.01s
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 50.02s
+ok - Fastly structural code sharing: 86 semantic controls, fresh projections, alias isolation and frozen decoded values
+ok - MEM01 instrumentation is isolated, anchored and allocator accounting balances
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 60.02s
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 70.02s
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 80.03s
+ok - explicit Fastly text encode preserves exact bytes, Unicode, projection, alias mutation, admission and pre-effect failures
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 90.03s
+ok - O-05 101 parser cases preserve text, errors, scalar identity and owned storage
+ok - Fastly platform D2 value parity: UTF-16 ordering/indexing and exact numeric remainder
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 100.03s
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 110.04s
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 120.04s
+{
+  "version": "pulse.fastly-native-platform-capabilities.v1",
+  "plans": [
+    {
+      "name": "fastly-capabilities",
+      "planHash": "ccc85907f21e403b9b3ac41bd7d256d0260ba1342ad6037b77c0cd45210933cc",
+      "bytes": 53918,
+      "sha256": "3f5936fce47a6a04f00c0ce4189d171224c5d9fc55657ce8306cae409ee3eca0"
+    }
+  ],
+  "assertions": {
+    "directFastlyImports": true,
+    "configStore": true,
+    "secretStore": true,
+    "secretTraceRedaction": true,
+    "kvGetPutAndMiss": true,
+    "pulseKvEnvelope": true,
+    "gripBroadcast": true,
+    "gripAuthenticationRedaction": true,
+    "structuredPublishReceipt": true,
+    "outboundRequestEvidence": true,
+    "nonSuccessPublisherRejected": true,
+    "deterministic": true,
+    "zeroValuedOpaqueHandles": true,
+    "javascriptRuntime": false,
+    "realFastlyExecution": false
+  }
+}
+ok - the consolidated Fastly capability example realizes native Config Store, Secret Store, KV Store, and authenticated GRIP broadcast without a JavaScript runtime
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 130.04s
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - transport socket-reset replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+ok - Fastly transport recovery: 227 compiled ABI checks
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 140.05s
+skip - fetch deadline HTTP replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - fetch deadline HTTP replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 150.05s
+skip - fetch deadline HTTP replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+ok - Fastly fetch deadlines: 95 emitted-Wasm ABI cases
+ok - named Fastly logging {"checks":37,"finalWasm":true,"redaction":true,"bestEffort":true,"localEngine":false,"deployed":false}
+[pulsewasm] fastly-native-platform-capabilities: passed in 159.18s
+
+[pulsewasm:providers] provider-fastly-package
+[pulsewasm] Fastly package API and native target (timeout 180.00s)
+[pulsewasm] Running provider-fastly-package (execution); elapsed 160.05s
+ok - extracted @pulse-compute/provider-fastly emits deterministic compact direct-host-ABI Fastly Wasm without JavaScript runtime ownership or source-only packaging; incoming forwarding stays ineligible
+[pulsewasm] Running provider-fastly-package (execution); elapsed 170.06s
+[pulsewasm] provider-fastly-package: passed in 10.96s
+
+[pulsewasm:providers] provider-fastly-apps
+[pulsewasm] Fastly config, secret, KV, fetch, and redaction (timeout 30.00s)
+ok - documented Fastly examples are the provider conformance oracle for config, secrets, KV, fetch, opaque pass-through, and redaction
+[pulsewasm] provider-fastly-apps: passed in 1.04s
+
+[pulsewasm:providers] fastly-javascript-runtime
+[pulsewasm] Fastly JavaScript lifecycle, provider capabilities, package effects, and cleanup (timeout 180.00s)
+{
+  "version": "pulse.fastly-javascript-runtime-evidence.v1",
+  "cases": 27,
+  "matched": 27,
+  "mismatches": 0,
+  "status": "passed",
+  "capabilities": [
+    "request-response-lifecycle",
+    "fetch",
+    "config",
+    "secret",
+    "kv",
+    "parallel",
+    "schema-json",
+    "crypto-runtime-builtin",
+    "assets",
+    "grip-broadcast",
+    "logging-redaction",
+    "request-cleanup"
+  ]
+}
+[pulsewasm] fastly-javascript-runtime: passed in 226ms
+
+[pulsewasm] test summary
+  passed       159.18s  fastly-native-platform-capabilities  (/tmp/runs/2026-10-21T06-31-44-514Z--6/tasks/fastly-native-platform-capabilities.log)
+  passed        10.96s  provider-fastly-package  (/tmp/runs/2026-10-21T06-31-44-514Z--6/tasks/provider-fastly-package.log)
+  passed         1.04s  provider-fastly-apps  (/tmp/runs/2026-10-21T06-31-44-514Z--6/tasks/provider-fastly-apps.log)
+  passed         226ms  fastly-javascript-runtime  (/tmp/runs/2026-10-21T06-31-44-514Z--6/tasks/fastly-javascript-runtime.log)
+  report       /tmp/pulse-10a-error-provider-r4.json
+  run logs     /tmp/runs/2026-10-21T06-31-44-514Z--6
+  total        171.41s

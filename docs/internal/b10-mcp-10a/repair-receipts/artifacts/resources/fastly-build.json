@@ -1,0 +1,364 @@
+{
+  "version": "pulse.fastly-canonical-build.v6",
+  "status": "built",
+  "provider": "fastly",
+  "target": "fastly-compute-native",
+  "sourceHash": "8641903b676aca8a2182fd9e61e5f3d769383f5faba0f8fd4af8208d64a602c5",
+  "projectSourceHash": "1759fb8a8e5bfb0cb4e3f1840523a38c00520945dab40dd4935f7f5d8071d2a3",
+  "handlerSourceHash": "8641903b676aca8a2182fd9e61e5f3d769383f5faba0f8fd4af8208d64a602c5",
+  "planVersion": "pulse.canonical-native-plan.v11",
+  "planHash": "064d10271bb30e8898c3d7d453af30270e956c4ba22a30cde40fa4a5940e431f",
+  "deployable": true,
+  "sourcePackage": true,
+  "sourceOnly": false,
+  "compiledWasmPresent": true,
+  "deploymentValidated": false,
+  "compileCommand": "pulse build",
+  "outputWasm": "bin/main.wasm",
+  "compiler": {
+    "package": "assemblyscript",
+    "version": "0.28.18",
+    "target": "pulse.fastly-native-platform-capabilities.v1",
+    "targetCompilerVersion": "pulse.fastly-native-platform-capabilities-compiler.v1",
+    "invoked": false
+  },
+  "wasm": {
+    "file": "bin/main.wasm",
+    "bytes": 1142081,
+    "sha256": "b27f7a16e0ac4fb086b4228ef764cba96ef06050c960f11248bdd351a36d386e",
+    "magic": "0061736d01000000"
+  },
+  "wat": {
+    "file": null,
+    "emitted": false,
+    "bytes": 0,
+    "sha256": null
+  },
+  "imports": [
+    {
+      "module": "fastly_http_resp",
+      "name": "send_downstream",
+      "kind": "function"
+    },
+    {
+      "module": "wasi_snapshot_preview1",
+      "name": "clock_time_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "status_set",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "status_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "new",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "header_append",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "uri_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "method_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "body_downstream_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_body",
+      "name": "write",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_body",
+      "name": "new",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_abi",
+      "name": "init",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_async_io",
+      "name": "select",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "header_values_get",
+      "kind": "function"
+    }
+  ],
+  "importModules": [
+    "fastly_abi",
+    "fastly_async_io",
+    "fastly_http_body",
+    "fastly_http_req",
+    "fastly_http_resp",
+    "wasi_snapshot_preview1"
+  ],
+  "exports": [
+    {
+      "name": "pulse_abi_version",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_plan_hash_ptr",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_plan_hash_length",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_start",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_resume",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_set_effect_result",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_result_handle",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_program_counter",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_continuation_state",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_last_error_code",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_pending_count",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_schema_string_id",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_schema_decode",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_schema_encode",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_last_error",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_error_stage",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_error_effect",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_error",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_secret_calls",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_crypto_calls",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_clock_calls",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_schema_calls",
+      "kind": "function"
+    },
+    {
+      "name": "_start",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_request_expired",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_memory_bytes",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_memory_values",
+      "kind": "function"
+    },
+    {
+      "name": "__new",
+      "kind": "function"
+    },
+    {
+      "name": "__pin",
+      "kind": "function"
+    },
+    {
+      "name": "__unpin",
+      "kind": "function"
+    },
+    {
+      "name": "__collect",
+      "kind": "function"
+    },
+    {
+      "name": "__rtti_base",
+      "kind": "global"
+    },
+    {
+      "name": "memory",
+      "kind": "memory"
+    },
+    {
+      "name": "__setArgumentsLength",
+      "kind": "function"
+    },
+    {
+      "name": "__pulse_fastly_abort",
+      "kind": "function"
+    }
+  ],
+  "crypto": {
+    "version": "pulse.crypto-native-guest-source-plan.v1",
+    "active": false,
+    "realizationPlanVersion": "pulse.crypto-realization-plan.v1",
+    "realizationPlanHash": "274a78b53bedd17ef71bed5b9e21674f6bdf3daeb0a9d502b118976a205ed92a",
+    "algorithms": [],
+    "sourceHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "automaticFallback": false
+  },
+  "localConformanceRuntime": true,
+  "providerSpecificUserland": false,
+  "providerSdkUserland": false,
+  "javascriptRuntime": false,
+  "jsComputeRuntime": false,
+  "build": {
+    "name": "pulse-app",
+    "description": "Pulse application",
+    "authors": [],
+    "language": "other"
+  },
+  "files": {
+    "handler": "canonical-handler.cjs",
+    "program": "canonical-program.json",
+    "portableWasm": "canonical-native.wasm",
+    "portableManifest": "canonical-native-manifest.json",
+    "providerPlan": "fastly-provider.json",
+    "localEntry": "fastly-entry.cjs",
+    "sourceEntry": "src/main.as.ts",
+    "wasm": "bin/main.wasm",
+    "wat": null,
+    "nativePlan": "fastly-native-plan.json",
+    "nativeManifest": "fastly-native-manifest.json",
+    "fastlyToml": "fastly.toml",
+    "package": "package.json",
+    "schemaRegistry": "schema-json-registry.json",
+    "schemaCodecs": "schema-json-codecs.cjs"
+  },
+  "grip": {
+    "active": false,
+    "operations": []
+  },
+  "schemas": {
+    "active": true,
+    "ids": [
+      "proof.Input",
+      "proof.Output",
+      "proof.Runs"
+    ],
+    "references": [
+      {
+        "capability": "schema.encode",
+        "id": "proof.Input",
+        "position": {
+          "column": 1301,
+          "line": 1,
+          "offset": 1300
+        },
+        "usage": "response-encode"
+      },
+      {
+        "capability": "schema.encode",
+        "id": "proof.Input",
+        "position": {
+          "column": 1455,
+          "line": 1,
+          "offset": 1454
+        },
+        "usage": "response-encode"
+      },
+      {
+        "capability": "schema.encode",
+        "id": "proof.Runs",
+        "position": {
+          "column": 1859,
+          "line": 1,
+          "offset": 1858
+        },
+        "usage": "response-encode"
+      }
+    ],
+    "sourceHash": "3fd4ef9f32928af89c9d7a889631ff57f8b88ee995cd6bd0051a1cb7b1fe3232"
+  },
+  "lowering": {
+    "bindings": {
+      "backends": {},
+      "configStore": "pulse_config",
+      "grip": {
+        "directHold": true
+      },
+      "kv": {},
+      "secretStore": "pulse_secrets"
+    },
+    "buildTarget": "fastly-compute",
+    "capabilityDiscoveryFromUserland": false,
+    "contractVersion": "pulse.canonical-provider-contract.v1",
+    "deployable": true,
+    "localExecution": true,
+    "operations": [],
+    "package": "@pulse-compute/provider-fastly",
+    "provider": "fastly",
+    "providerSdkUserland": false,
+    "providerSpecificUserland": false,
+    "providerVersion": "1.0.0-beta.9",
+    "requirements": [
+      "response.json"
+    ],
+    "runtime": "pulse.canonical-fastly-runtime.v2",
+    "version": "pulse.canonical-provider-plan.v1"
+  }
+}

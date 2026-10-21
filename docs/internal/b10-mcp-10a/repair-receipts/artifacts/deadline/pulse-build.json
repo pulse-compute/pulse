@@ -1,0 +1,1624 @@
+{
+  "version": "pulse.project-execution.v10",
+  "status": "built",
+  "buildMode": "native-provider",
+  "provider": "fastly",
+  "configuredTarget": "native",
+  "reporting": {
+    "version": "pulse.logging.v1",
+    "name": "info",
+    "level": 3,
+    "default": true,
+    "abi": {
+      "version": "pulse.log-abi.v1",
+      "operation": "pulse_log",
+      "signature": "pulse_log(level:i32,message_ptr:i32,message_len:i32)->void",
+      "parameters": [
+        {
+          "name": "level",
+          "type": "i32"
+        },
+        {
+          "name": "message_ptr",
+          "type": "i32"
+        },
+        {
+          "name": "message_len",
+          "type": "i32"
+        }
+      ],
+      "result": "void",
+      "synchronous": true,
+      "effect": false,
+      "continuation": false,
+      "suspension": false,
+      "providerAdapterOwned": true
+    }
+  },
+  "cryptoRealizationPlan": {
+    "version": "pulse.crypto-realization-plan.v1",
+    "semanticOwner": "@pulse-compute/crypto",
+    "requirementsHash": "eada5446439cd131ee91a2481fcd08396e754e931ffc6a6534c622cf7e603656",
+    "profile": "fastly-native",
+    "profileProvenance": {
+      "selectedProfile": "fastly-native",
+      "selectionSource": "cli",
+      "cryptoSource": "implicit"
+    },
+    "target": "native",
+    "algorithms": [],
+    "automaticFallback": false,
+    "planHash": "274a78b53bedd17ef71bed5b9e21674f6bdf3daeb0a9d502b118976a205ed92a"
+  },
+  "targetDescriptor": {
+    "version": "pulse.provider-target-descriptor.v1",
+    "provider": "fastly",
+    "target": "native",
+    "targetId": "fastly-compute-native",
+    "runtimeClass": "native",
+    "status": "supported",
+    "sourceApplication": false,
+    "automaticFallback": false,
+    "capabilities": [
+      "s3.head",
+      "s3.getText",
+      "s3.getBody",
+      "kv.getVersioned",
+      "kv.insertIfAbsent",
+      "kv.compareAndSwap",
+      "kv.list",
+      "kv.delete",
+      "jwt.verify",
+      "jwt.sign",
+      "jwt.verify.hs256",
+      "jwt.verify.es256",
+      "jwt.verify.rs256",
+      "secret.get",
+      "time.wall-clock"
+    ],
+    "keyTypes": [
+      "secret",
+      "jwk",
+      "jwks"
+    ],
+    "realizations": [
+      {
+        "automaticFallback": false,
+        "contractId": "pulse.entities",
+        "implementation": "pulse.package-native-application.v1",
+        "implemented": true,
+        "kind": "package-native-application"
+      },
+      {
+        "automaticFallback": false,
+        "contractId": "pulse.mcp",
+        "implementation": "pulse.package-native-application.v2",
+        "implemented": true,
+        "kind": "package-native-application"
+      },
+      {
+        "algorithms": [
+          "HS256"
+        ],
+        "automaticFallback": false,
+        "guestUnitRequired": false,
+        "implementation": "pulse-hmac-as.v1",
+        "implemented": true,
+        "keyTypes": [
+          "secret"
+        ],
+        "kind": "crypto-composed",
+        "portable": true,
+        "realization": "guest-source:pulse-hmac-as",
+        "semanticOwner": "@pulse-compute/crypto",
+        "status": "implemented-e2"
+      },
+      {
+        "algorithms": [
+          "ES256"
+        ],
+        "automaticFallback": false,
+        "guestUnitRequired": true,
+        "implementation": "rustcrypto.p256-0.13.2.ecdsa-0.16.9.sha2-0.10.9.v1",
+        "implemented": true,
+        "keyTypes": [
+          "jwk",
+          "jwks"
+        ],
+        "kind": "crypto-composed",
+        "portable": true,
+        "realization": "guest-linked:pulse-es256-rustcrypto-p256",
+        "semanticOwner": "@pulse-compute/crypto",
+        "status": "implemented-g4"
+      },
+      {
+        "algorithms": [
+          "RS256"
+        ],
+        "automaticFallback": false,
+        "guestUnitRequired": true,
+        "implementation": "bearssl.0.6.rsa-i31.sha256.v1",
+        "implemented": true,
+        "keyTypes": [
+          "jwk",
+          "jwks"
+        ],
+        "kind": "crypto-composed",
+        "portable": true,
+        "realization": "guest-linked:pulse-rs256-bearssl-i31",
+        "semanticOwner": "@pulse-compute/crypto",
+        "status": "implemented-g4"
+      }
+    ],
+    "jwt": {
+      "automaticFallback": false,
+      "implementation": "pulse-hmac-as.v1",
+      "packageSource": "pulse-jwt-as",
+      "providerAuthorities": [
+        "request",
+        "secret",
+        "wall-clock",
+        "schema",
+        "error-transport"
+      ],
+      "realization": "guest-source:pulse-hmac-as",
+      "status": "implemented-e2"
+    },
+    "crypto": {
+      "algorithms": [
+        {
+          "algorithm": "ES256",
+          "backend": "pulse-es256-rustcrypto-p256",
+          "implementation": "rustcrypto.p256-0.13.2.ecdsa-0.16.9.sha2-0.10.9.v1",
+          "implemented": true,
+          "kind": "guest-linked",
+          "realization": "guest-linked:pulse-es256-rustcrypto-p256",
+          "status": "implemented-g4"
+        },
+        {
+          "algorithm": "HMAC-SHA256",
+          "backend": "pulse-hmac-as",
+          "implementation": "pulse-hmac-as.v1",
+          "implemented": true,
+          "kind": "guest-source",
+          "realization": "guest-source:pulse-hmac-as",
+          "status": "implemented-o2"
+        },
+        {
+          "algorithm": "HS256",
+          "backend": "pulse-hmac-as",
+          "implementation": "pulse-hmac-as.v1",
+          "implemented": true,
+          "kind": "guest-source",
+          "realization": "guest-source:pulse-hmac-as",
+          "status": "implemented-c3"
+        },
+        {
+          "algorithm": "RS256",
+          "backend": "pulse-rs256-bearssl-i31",
+          "implementation": "bearssl.0.6.rsa-i31.sha256.v1",
+          "implemented": true,
+          "kind": "guest-linked",
+          "realization": "guest-linked:pulse-rs256-bearssl-i31",
+          "status": "implemented-g4"
+        },
+        {
+          "algorithm": "SHA-256",
+          "backend": "pulse-hmac-as",
+          "implementation": "pulse-hmac-as.v1",
+          "implemented": true,
+          "kind": "guest-source",
+          "realization": "guest-source:pulse-hmac-as",
+          "status": "implemented-o2"
+        }
+      ],
+      "automaticFallback": false,
+      "target": "native",
+      "version": "pulse.crypto-target-capabilities.v1"
+    },
+    "finalWasmPolicy": {
+      "version": "pulse.final-wasm-policy.v1",
+      "descriptorOwner": "@pulse-compute/provider-fastly",
+      "toolchainVersion": "pulse.provider-toolchain.v1",
+      "descriptorIdentity": "fastly-compute-native",
+      "permittedImports": [
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_config_store",
+          "name": "get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_config_store",
+          "name": "open",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "auto_decompress_response_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "cache_override_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "header_insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "header_names_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "header_value_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "header_values_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "pending_req_poll_v2",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "pending_req_wait",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "send_async",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "send_async_streaming",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_names_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_value_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_values_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_kv_store",
+          "name": "delete",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_kv_store",
+          "name": "delete_wait",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_kv_store",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_kv_store",
+          "name": "insert_wait",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_kv_store",
+          "name": "list",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_kv_store",
+          "name": "list_wait",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_kv_store",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_kv_store",
+          "name": "lookup_wait_v2",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_kv_store",
+          "name": "open",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_log",
+          "name": "endpoint_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_log",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_secret_store",
+          "name": "get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_secret_store",
+          "name": "open",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_secret_store",
+          "name": "plaintext",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "fd_write",
+          "kind": "function"
+        }
+      ],
+      "requiredExports": [
+        {
+          "name": "memory",
+          "kind": "memory"
+        },
+        {
+          "name": "pulse_abi_version",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_continuation_state",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_last_error_code",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_pending_count",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_plan_hash_length",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_plan_hash_ptr",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_program_counter",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_result_handle",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_resume",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_set_effect_result",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_start",
+          "kind": "function"
+        }
+      ],
+      "featureBaseline": "mvp",
+      "allowedFeatures": [],
+      "memory": {
+        "minimum": 1,
+        "maximum": 1,
+        "imported": 0,
+        "growable": false
+      },
+      "start": "forbidden",
+      "descriptorSha256": "9a3c71cc4f8dc72a71cf8a850fa56de2508b4a65d2c52605703eb66f1051b072"
+    },
+    "reporting": {
+      "default": "info",
+      "destinations": [
+        "stdout",
+        "configured-named-endpoint"
+      ],
+      "levels": [
+        "off",
+        "error",
+        "warn",
+        "info",
+        "debug"
+      ],
+      "supported": true
+    },
+    "commands": {
+      "compile": true,
+      "inspect": true,
+      "doctor": true,
+      "build": true,
+      "test": true,
+      "dev": true
+    },
+    "resolvedReporting": {
+      "version": "pulse.logging.v1",
+      "name": "info",
+      "level": 3,
+      "default": true,
+      "abi": {
+        "version": "pulse.log-abi.v1",
+        "operation": "pulse_log",
+        "signature": "pulse_log(level:i32,message_ptr:i32,message_len:i32)->void",
+        "parameters": [
+          {
+            "name": "level",
+            "type": "i32"
+          },
+          {
+            "name": "message_ptr",
+            "type": "i32"
+          },
+          {
+            "name": "message_len",
+            "type": "i32"
+          }
+        ],
+        "result": "void",
+        "synchronous": true,
+        "effect": false,
+        "continuation": false,
+        "suspension": false,
+        "providerAdapterOwned": true
+      }
+    }
+  },
+  "providerTarget": {
+    "package": "@pulse-compute/provider-fastly",
+    "buildTarget": "fastly-compute",
+    "target": "fastly-compute-native",
+    "deployable": true,
+    "deploymentValidated": false,
+    "sourcePackage": true,
+    "sourceOnly": false,
+    "sourceOnlySupported": false,
+    "nativeWasm": true,
+    "providerNeutralInput": true,
+    "compiledWasmPresent": true,
+    "javascriptRuntime": false,
+    "jsComputeRuntime": false,
+    "compiler": {
+      "invoked": false,
+      "package": "assemblyscript",
+      "target": "pulse.fastly-native-platform-capabilities.v1",
+      "targetCompilerVersion": "pulse.fastly-native-platform-capabilities-compiler.v1",
+      "version": "0.28.18"
+    },
+    "wasm": {
+      "bytes": 1046695,
+      "file": "bin/main.wasm",
+      "magic": "0061736d01000000",
+      "sha256": "d8802e76e69539d62bc91f556a4495d73a2b9bcc71726c4134af4648701c0bf6"
+    },
+    "wat": {
+      "bytes": 0,
+      "emitted": false,
+      "file": null,
+      "sha256": null
+    },
+    "importModules": [
+      "fastly_abi",
+      "fastly_async_io",
+      "fastly_http_body",
+      "fastly_http_req",
+      "fastly_http_resp",
+      "wasi_snapshot_preview1"
+    ],
+    "imports": [
+      {
+        "kind": "function",
+        "module": "fastly_http_resp",
+        "name": "send_downstream"
+      },
+      {
+        "kind": "function",
+        "module": "wasi_snapshot_preview1",
+        "name": "clock_time_get"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_resp",
+        "name": "status_set"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_resp",
+        "name": "status_get"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_resp",
+        "name": "new"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_resp",
+        "name": "header_append"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_req",
+        "name": "uri_get"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_req",
+        "name": "method_get"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_req",
+        "name": "body_downstream_get"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_body",
+        "name": "write"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_body",
+        "name": "read"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_body",
+        "name": "new"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_abi",
+        "name": "init"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_async_io",
+        "name": "select"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_req",
+        "name": "header_values_get"
+      },
+      {
+        "kind": "function",
+        "module": "fastly_http_req",
+        "name": "header_names_get"
+      }
+    ],
+    "exports": [
+      {
+        "kind": "function",
+        "name": "pulse_entities_string_id"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_set_request"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_response_ptr"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_response_length"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_response_status"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_body_read_count"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_run_complete"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_run_suspended"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_run_failed"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_start"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_set_effect_result"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_resume"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_pending_count"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_selected_index"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_invocation_count"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_entities_effect_count"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_abi_version"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_plan_hash_ptr"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_plan_hash_length"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_start"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_resume"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_set_effect_result"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_package_set_effect_failure"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_result_handle"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_program_counter"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_continuation_state"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_last_error_code"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_pending_count"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_schema_string_id"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_schema_decode"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_schema_encode"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_package_http_failure"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_last_error"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_error_stage"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_error_effect"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_jwt_error"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_jwt_secret_calls"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_jwt_crypto_calls"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_jwt_clock_calls"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_jwt_schema_calls"
+      },
+      {
+        "kind": "function",
+        "name": "_start"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_request_expired"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_memory_bytes"
+      },
+      {
+        "kind": "function",
+        "name": "pulse_fastly_memory_values"
+      },
+      {
+        "kind": "function",
+        "name": "__new"
+      },
+      {
+        "kind": "function",
+        "name": "__pin"
+      },
+      {
+        "kind": "function",
+        "name": "__unpin"
+      },
+      {
+        "kind": "function",
+        "name": "__collect"
+      },
+      {
+        "kind": "global",
+        "name": "__rtti_base"
+      },
+      {
+        "kind": "memory",
+        "name": "memory"
+      },
+      {
+        "kind": "function",
+        "name": "__setArgumentsLength"
+      },
+      {
+        "kind": "function",
+        "name": "__pulse_fastly_abort"
+      }
+    ],
+    "localConformanceRuntime": true,
+    "lowering": {
+      "version": "pulse.canonical-provider-plan.v1",
+      "contractVersion": "pulse.canonical-provider-contract.v1",
+      "provider": "fastly",
+      "providerVersion": "1.0.0-beta.9",
+      "package": "@pulse-compute/provider-fastly",
+      "runtime": "pulse.canonical-fastly-runtime.v2",
+      "buildTarget": "fastly-compute",
+      "deployable": true,
+      "localExecution": true,
+      "requirements": [],
+      "bindings": {
+        "configStore": "pulse_config",
+        "secretStore": "pulse_secrets",
+        "kv": {},
+        "backends": {},
+        "grip": {
+          "directHold": true
+        }
+      },
+      "operations": [],
+      "providerSpecificUserland": false,
+      "providerSdkUserland": false,
+      "capabilityDiscoveryFromUserland": false
+    }
+  },
+  "project": {
+    "root": ".",
+    "config": ".pulse/config.ts",
+    "entry": "src/index.ts",
+    "outDir": "dist-fastly-native"
+  },
+  "program": {
+    "file": "canonical-program.json",
+    "handler": "canonical-handler.cjs",
+    "sourceHash": "77108139b770d957434a55dc736cf31a938b1dae685d4a6ec97820778fb43dfd",
+    "compilerVersion": "pulse.canonical-api-compiler.v7",
+    "runtimeProtocolVersion": "pulse.canonical-runtime-protocol.v2",
+    "json": {
+      "strict": true,
+      "schemaBoundRequestCount": 0,
+      "genericRequestCount": 0,
+      "genericParserRequired": false,
+      "maxBytes": 65536
+    },
+    "warningCount": 0,
+    "capabilities": [
+      "schema.decode",
+      "schema.encode"
+    ],
+    "effectCount": 0,
+    "continuationCount": 0,
+    "groupedContinuationCount": 0,
+    "opaqueReturnCount": 0,
+    "projectSourceHash": "0624caaba2228fc9b8eef6dffcab8be15c2ec6e0a5647f8d3c4cb73c40e3804d",
+    "schemaReferenceCount": 10,
+    "schemaSourceHash": "5599781e198527e257c40c72cb65bc602ca500a25fc223a516b4f8a425bb9845"
+  },
+  "portable": {
+    "target": "portable-native-wasm",
+    "providerNeutral": true,
+    "version": "pulse.canonical-native-wasm.v2",
+    "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+    "planVersion": "pulse.canonical-native-plan.v11",
+    "planCompilerVersion": "pulse.canonical-native-plan-compiler.v11",
+    "planHash": "7e3a20cb60ff67e298a45a6c698e0107c2df5ff5c20862cea9085fe720978db6",
+    "ownership": {
+      "version": "pulse.canonical-native-ownership.v1",
+      "providerNeutral": true,
+      "provider": null,
+      "providerSpecificUserland": false,
+      "providerSdkUserland": false,
+      "javascriptRuntime": false,
+      "promiseSemantics": false,
+      "asyncify": false
+    },
+    "summary": {
+      "statementCount": 1,
+      "expressionCount": 1,
+      "localCount": 0,
+      "branchCount": 0,
+      "returnCount": 1,
+      "effectCount": 0,
+      "effectGroupCount": 0,
+      "continuationCount": 0,
+      "maxStatementDepth": 0
+    },
+    "logging": {
+      "contractVersion": "pulse.logging.v1",
+      "reporting": {
+        "version": "pulse.logging.v1",
+        "name": "info",
+        "level": 3,
+        "default": true,
+        "abi": {
+          "version": "pulse.log-abi.v1",
+          "operation": "pulse_log",
+          "signature": "pulse_log(level:i32,message_ptr:i32,message_len:i32)->void",
+          "parameters": [
+            {
+              "name": "level",
+              "type": "i32"
+            },
+            {
+              "name": "message_ptr",
+              "type": "i32"
+            },
+            {
+              "name": "message_len",
+              "type": "i32"
+            }
+          ],
+          "result": "void",
+          "synchronous": true,
+          "effect": false,
+          "continuation": false,
+          "suspension": false,
+          "providerAdapterOwned": true
+        }
+      },
+      "enabledStatements": 0,
+      "prunedStatements": 0,
+      "abi": {
+        "version": "pulse.log-abi.v1",
+        "operation": "pulse_log",
+        "signature": "pulse_log(level:i32,message_ptr:i32,message_len:i32)->void",
+        "parameters": [
+          {
+            "name": "level",
+            "type": "i32"
+          },
+          {
+            "name": "message_ptr",
+            "type": "i32"
+          },
+          {
+            "name": "message_len",
+            "type": "i32"
+          }
+        ],
+        "result": "void",
+        "synchronous": true,
+        "effect": false,
+        "continuation": false,
+        "suspension": false,
+        "providerAdapterOwned": true
+      }
+    },
+    "json": {
+      "strict": true,
+      "schemaBoundRequestCount": 0,
+      "genericRequestCount": 0,
+      "genericParserRequired": false,
+      "maxBytes": 65536,
+      "parser": "schema-specialized",
+      "parserOwnership": "compiled-schema-codec",
+      "inclusion": "schema-bound-only",
+      "costClass": "specialized",
+      "limits": {
+        "maxBytes": 65536,
+        "maxDepth": null,
+        "depthBounded": false
+      }
+    },
+    "assemblyScript": {
+      "package": "assemblyscript",
+      "version": "0.28.18"
+    },
+    "source": {
+      "file": "canonical-native.as.ts",
+      "sha256": "9b2f27d361c2d4a7a3eabbae465749a06a9980225eb262eddff54210e0845acb"
+    },
+    "wasm": {
+      "file": "canonical-native.wasm",
+      "bytes": 994602,
+      "sha256": "5b24e8232b6bc84e93c8010bff22e218c1204ce313800ee9821518294268101b",
+      "magic": "0061736d01000000"
+    },
+    "wat": {
+      "file": null,
+      "emitted": false,
+      "bytes": 0,
+      "sha256": null
+    },
+    "plan": "canonical-native-plan.json",
+    "manifest": "canonical-native-manifest.json",
+    "packageRealizationArtifacts": {
+      "version": "pulse.package-realization-artifact-set.v1",
+      "count": 0,
+      "ids": [],
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "importModules": [
+      "env",
+      "pulse_host"
+    ],
+    "imports": [
+      {
+        "module": "pulse_host",
+        "name": "value_object_set",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_number",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_binary",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_truthy",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_array_push",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_object",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_array",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_property",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_boolean",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "resource_offset_value",
+        "kind": "function"
+      },
+      {
+        "module": "env",
+        "name": "abort",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_object_spread",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_undefined",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_element",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_array_spread",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "workspace_number_value",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_nullish",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "resource_check",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "schema_decode",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_unary",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_json",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "schema_encode",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "workspace_check",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "value_string",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "package_http_version",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "request_path",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "request_method",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "request_headers",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "response_custom",
+        "kind": "function"
+      },
+      {
+        "module": "pulse_host",
+        "name": "request_text",
+        "kind": "function"
+      }
+    ],
+    "exports": [
+      {
+        "name": "pulse_entities_string_id",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_set_request",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_response_ptr",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_response_length",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_response_status",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_body_read_count",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_run_complete",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_run_suspended",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_run_failed",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_start",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_set_effect_result",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_resume",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_pending_count",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_selected_index",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_invocation_count",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_entities_effect_count",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_abi_version",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_plan_hash_ptr",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_plan_hash_length",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_start",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_resume",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_set_effect_result",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_package_set_effect_failure",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_result_handle",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_program_counter",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_continuation_state",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_last_error_code",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_pending_count",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_schema_string_id",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_schema_decode",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_schema_encode",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_package_http_failure",
+        "kind": "function"
+      },
+      {
+        "name": "__new",
+        "kind": "function"
+      },
+      {
+        "name": "__pin",
+        "kind": "function"
+      },
+      {
+        "name": "__unpin",
+        "kind": "function"
+      },
+      {
+        "name": "__collect",
+        "kind": "function"
+      },
+      {
+        "name": "__rtti_base",
+        "kind": "global"
+      },
+      {
+        "name": "memory",
+        "kind": "memory"
+      }
+    ],
+    "policy": {
+      "providerNeutral": true,
+      "providerSelected": false,
+      "javascriptRuntime": false,
+      "asyncify": false,
+      "promiseSemantics": false,
+      "valueOwnership": "host-owned opaque i32 handles; generated Wasm owns control flow and local identities",
+      "controlFlow": "generated AssemblyScript state machine with stable basic blocks",
+      "suspension": "effect_begin records descriptors before one explicit suspension boundary; results are injected before pulse_resume",
+      "groupedEffects": "all group members begin before one suspension boundary and all results must be ready before resume",
+      "incompleteResume": "rejected without advancing the program counter or consuming available results",
+      "resultFreshness": "managed hosts authenticate single-use invocation tickets; raw ABI v2 index/handle exports are trusted-host operations",
+      "authority": "request data and consequential effects remain host-owned; guest control flow remains authoritative",
+      "schemaJson": "normalized registry IR generates json-as 1.5.0 guest codecs; host preflight enforces shared policy and structured errors",
+      "schemaBodyOwnership": "request and fetched-response bytes are snapshotted once; application JSON values are encoded before suspension",
+      "packageOwnedApplication": true,
+      "automaticFallback": false
+    }
+  },
+  "schemas": {
+    "active": true,
+    "registry": "schema-json-registry.json",
+    "codecs": "schema-json-codecs.cjs",
+    "ids": [
+      "context.StartInput",
+      "context.StartOutput",
+      "context.SearchInput",
+      "context.SearchOutput",
+      "context.ReadInput",
+      "context.ReadOutput",
+      "context.ExampleInput",
+      "context.ExampleOutput",
+      "context.DiagnosticInput",
+      "context.DiagnosticOutput"
+    ],
+    "references": [
+      {
+        "id": "context.StartInput",
+        "usage": "entity-input",
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 42,
+          "column": 23,
+          "offset": 1649
+        }
+      },
+      {
+        "id": "context.StartOutput",
+        "usage": "entity-output",
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 42,
+          "column": 23,
+          "offset": 1649
+        }
+      },
+      {
+        "id": "context.SearchInput",
+        "usage": "entity-input",
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 46,
+          "column": 24,
+          "offset": 1978
+        }
+      },
+      {
+        "id": "context.SearchOutput",
+        "usage": "entity-output",
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 46,
+          "column": 24,
+          "offset": 1978
+        }
+      },
+      {
+        "id": "context.ReadInput",
+        "usage": "entity-input",
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 50,
+          "column": 22,
+          "offset": 2351
+        }
+      },
+      {
+        "id": "context.ReadOutput",
+        "usage": "entity-output",
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 50,
+          "column": 22,
+          "offset": 2351
+        }
+      },
+      {
+        "id": "context.ExampleInput",
+        "usage": "entity-input",
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 54,
+          "column": 25,
+          "offset": 2677
+        }
+      },
+      {
+        "id": "context.ExampleOutput",
+        "usage": "entity-output",
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 54,
+          "column": 25,
+          "offset": 2677
+        }
+      },
+      {
+        "id": "context.DiagnosticInput",
+        "usage": "entity-input",
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 58,
+          "column": 28,
+          "offset": 3017
+        }
+      },
+      {
+        "id": "context.DiagnosticOutput",
+        "usage": "entity-output",
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "position": {
+          "line": 58,
+          "column": 28,
+          "offset": 3017
+        }
+      }
+    ],
+    "sourceHash": "5599781e198527e257c40c72cb65bc602ca500a25fc223a516b4f8a425bb9845",
+    "policy": {
+      "strict": true,
+      "schemaBoundRequestCount": 0,
+      "genericRequestCount": 0,
+      "genericParserRequired": false,
+      "maxBytes": 65536
+    }
+  },
+  "packageInspection": {
+    "version": "pulse.canonical-package-inspection.v1",
+    "artifacts": [
+      {
+        "id": "pulse.mcp-catalog.v1",
+        "contractId": "pulse.mcp",
+        "kind": "deterministic-catalog",
+        "mediaType": "application/json",
+        "file": "mcp-catalog.json",
+        "sha256": "7ae076df51da3f4023ba66e95b3df8465a4565763455a5c3f787254122a0ca71"
+      }
+    ],
+    "summary": {
+      "packages": 1,
+      "artifacts": 1,
+      "declaredHandlers": 5,
+      "handlerEffects": 0
+    }
+  },
+  "reportInputs": {
+    "file": "pulse-report-inputs.json",
+    "bytes": 10333,
+    "sha256": "c126122ce384c438cfb7ad7bce636bb2ab1bcd29df4d2f796ab288d996a74d1e"
+  },
+  "reportCompletion": {
+    "file": "pulse-report-completion.json",
+    "bytes": 1442,
+    "sha256": "b09a9ca4a1a3f0948359fc41c58b98ac6bc4ad8f1b428d1bfc1ad3b6ae81a9cf"
+  }
+}

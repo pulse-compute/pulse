@@ -1,3 +1,5 @@
+> Historical blocked checkpoint. The user-authorized error-boundary repair and complete passing rerun are recorded in [REPAIR.md](./REPAIR.md). Original failed receipts below remain unchanged.
+
 # B10-MCP-10A handoff — acceptance blocked
 
 Issue #458; draft PR https://github.com/pulse-compute/pulse/pull/478.

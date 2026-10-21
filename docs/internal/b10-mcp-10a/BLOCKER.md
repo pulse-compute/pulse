@@ -1,3 +1,5 @@
+> Historical blocked checkpoint. The user-authorized error-boundary repair and complete passing rerun are recorded in [REPAIR.md](./REPAIR.md). Original failed receipts below remain unchanged.
+
 # 10A blocker: generic bounds errors become empty HTTP 200
 
 ## Observed failure
