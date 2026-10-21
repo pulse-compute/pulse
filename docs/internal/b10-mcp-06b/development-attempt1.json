@@ -1,0 +1,1987 @@
+{
+  "schemaVersion": "pulse.context-quality-evidence.v1",
+  "mode": "actual",
+  "status": "failed",
+  "acceptance": "pending",
+  "source": {
+    "revision": "ba4c6991d442c4652664c4e8253e78d4ca995729",
+    "tree": "97b46a76122260bc6f3a2e05a7047a9dcb76545d",
+    "status": "M wasm/test/suite/registry.cjs\n?? wasm/test/mcp/assert-context-quality.cjs\n?? wasm/test/mcp/context-quality-cold.cjs\n?? wasm/test/mcp/context-quality-harness.cjs"
+  },
+  "frozenCasesSha256": "b62bb7dd5f3cd77f5271aca0d9da9dd33b1b84c47abd6bb8c14aeceb625745ce",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0"
+  },
+  "budgets": {
+    "requestMs": 5000,
+    "compileMs": 120000,
+    "artifactBytes": 8388608,
+    "guestCommittedBytes": 134217728,
+    "nodeValueHandles": 1048576,
+    "retainedBytes": 67108864,
+    "toolBytes": 24576,
+    "mcpBytes": 131072,
+    "warmSamples": 9
+  },
+  "queries": [
+    {
+      "id": "exact-1",
+      "group": "exact",
+      "input": {
+        "query": "compile"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "command/compile"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 83,
+        "ids": [
+          "command/compile",
+          "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+          "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "diagnostic/PULSE_PROJECT_COMPILE_FAILED"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 56,
+        "ids": [
+          "command/compile",
+          "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+          "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED"
+        ],
+        "scores": [
+          19,
+          11,
+          11,
+          11,
+          7
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "exact-2",
+      "group": "exact",
+      "input": {
+        "query": "inspect"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "command/inspect"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 45,
+        "ids": [
+          "command/inspect",
+          "diagnostic/PULSE_FASTLY_CLI_INSPECTION_FAILED",
+          "diagnostic/PULSE_OPAQUE_BODY_INSPECTION",
+          "diagnostic/PULSE_VICEROY_INSPECTION_FAILED",
+          "workflow/inspect"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 36,
+        "ids": [
+          "command/inspect",
+          "workflow/inspect",
+          "contract/eligibility",
+          "contract/opaque-bodies",
+          "contract/targets"
+        ],
+        "scores": [
+          19,
+          19,
+          1,
+          1,
+          1
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "exact-3",
+      "group": "exact",
+      "input": {
+        "query": "report"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "command/report"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 31,
+        "ids": [
+          "command/report",
+          "contract/report-comparison",
+          "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "diagnostic/PULSE_REPORT_INCOMPATIBLE"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 23,
+        "ids": [
+          "command/report",
+          "contract/report-comparison",
+          "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "diagnostic/PULSE_REPORT_INCOMPATIBLE"
+        ],
+        "scores": [
+          19,
+          19,
+          11,
+          11,
+          11
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "exact-4",
+      "group": "exact",
+      "input": {
+        "query": "PULSE_BINARY_RESOURCE_INVALID"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "diagnostic/PULSE_BINARY_RESOURCE_INVALID"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "diagnostic/PULSE_BINARY_RESOURCE_INVALID"
+        ],
+        "scores": [
+          13
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "diagnostic/PULSE_BINARY_RESOURCE_INVALID"
+        ],
+        "scores": [
+          13
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "exact-5",
+      "group": "exact",
+      "input": {
+        "query": "PULSE_CALL_SOURCE_PLACEMENT"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "diagnostic/PULSE_CALL_SOURCE_PLACEMENT"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "diagnostic/PULSE_CALL_SOURCE_PLACEMENT"
+        ],
+        "scores": [
+          13
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "diagnostic/PULSE_CALL_SOURCE_PLACEMENT"
+        ],
+        "scores": [
+          13
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "exact-6",
+      "group": "exact",
+      "input": {
+        "query": "PULSE_REQUEST_BODY_INVALID_UTF8"
+      },
+      "criterion": "rank-one",
+      "relevantIds": [
+        "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "contract/request-json"
+        ],
+        "scores": [
+          13,
+          1
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "contract/request-json"
+        ],
+        "scores": [
+          13,
+          1
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "workflow-1",
+      "group": "workflow",
+      "input": {
+        "query": "configure project"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/project-configuration",
+        "node/configure"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 14,
+        "ids": [
+          "node/configure",
+          "start/verify",
+          "diagnostic/PULSE_ENTRY_NOT_FOUND",
+          "diagnostic/PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
+          "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED"
+        ],
+        "scores": [
+          16,
+          8,
+          6,
+          6,
+          6
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "node/configure",
+          "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED"
+        ],
+        "scores": [
+          16,
+          6
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "workflow-2",
+      "group": "workflow",
+      "input": {
+        "query": "request body limits"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/request-json",
+        "contract/transport-limits"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 3,
+        "ids": [
+          "contract/transport-limits",
+          "contract/request-json",
+          "node/production"
+        ],
+        "scores": [
+          25,
+          21,
+          3
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 3,
+        "ids": [
+          "contract/transport-limits",
+          "contract/request-json",
+          "node/production"
+        ],
+        "scores": [
+          25,
+          21,
+          3
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "workflow-3",
+      "group": "workflow",
+      "input": {
+        "query": "declare schema registry"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "schema/registry",
+        "contract/schema-declarations"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 7,
+        "ids": [
+          "schema/registry",
+          "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING",
+          "diagnostic/PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
+          "diagnostic/PULSE_SCHEMA_ID_INVALID",
+          "diagnostic/PULSE_SCHEMA_REFERENCE"
+        ],
+        "scores": [
+          39,
+          21,
+          21,
+          21,
+          21
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "schema/registry",
+          "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING"
+        ],
+        "scores": [
+          39,
+          13
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "workflow-4",
+      "group": "workflow",
+      "input": {
+        "query": "parallel fetch"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/parallel"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 6,
+        "ids": [
+          "contract/parallel",
+          "example/03-fetch-composition/src/index.ts",
+          "example/03-fetch-composition/tests/pulse.harness.ts",
+          "contract/application",
+          "contract/provider-compatibility"
+        ],
+        "scores": [
+          20,
+          20,
+          20,
+          2,
+          2
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 6,
+        "ids": [
+          "contract/parallel",
+          "example/03-fetch-composition/src/index.ts",
+          "example/03-fetch-composition/tests/pulse.harness.ts",
+          "contract/application",
+          "contract/provider-compatibility"
+        ],
+        "scores": [
+          20,
+          20,
+          19,
+          2,
+          2
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "workflow-5",
+      "group": "workflow",
+      "input": {
+        "query": "build selected target"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "workflow/build",
+        "command/build"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 8,
+        "ids": [
+          "workflow/build",
+          "command/build",
+          "contract/provider-compatibility",
+          "contract/eligibility",
+          "command/compile"
+        ],
+        "scores": [
+          37,
+          21,
+          13,
+          9,
+          3
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 6,
+        "ids": [
+          "workflow/build",
+          "command/build",
+          "contract/provider-compatibility",
+          "contract/eligibility",
+          "contract/package-authority"
+        ],
+        "scores": [
+          37,
+          21,
+          13,
+          3,
+          3
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "workflow-6",
+      "group": "workflow",
+      "input": {
+        "query": "compare reports"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/report-comparison",
+        "command/report"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": false,
+      "v1Passes": false,
+      "declined": false
+    },
+    {
+      "id": "filtered-1",
+      "group": "filtered",
+      "input": {
+        "query": "node native",
+        "provider": "node",
+        "target": "native"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "node/native",
+        "provider/node"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 29,
+        "ids": [
+          "node/native",
+          "node/configure",
+          "node/production",
+          "provider/node",
+          "package/provider-node"
+        ],
+        "scores": [
+          38,
+          20,
+          20,
+          20,
+          16
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 28,
+        "ids": [
+          "node/native",
+          "node/configure",
+          "node/production",
+          "provider/node",
+          "package/provider-node"
+        ],
+        "scores": [
+          38,
+          20,
+          20,
+          20,
+          16
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "filtered-2",
+      "group": "filtered",
+      "input": {
+        "query": "fastly",
+        "provider": "fastly",
+        "target": "native",
+        "category": "target"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "provider/fastly"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "provider/fastly"
+        ],
+        "scores": [
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 1,
+        "ids": [
+          "provider/fastly"
+        ],
+        "scores": [
+          19
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "filtered-3",
+      "group": "filtered",
+      "input": {
+        "query": "schema declarations",
+        "category": "contract"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "contract/schema-declarations"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 5,
+        "ids": [
+          "contract/schema-declarations",
+          "contract/application",
+          "contract/eligibility",
+          "contract/report-comparison",
+          "contract/source-compatibility"
+        ],
+        "scores": [
+          34,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 5,
+        "ids": [
+          "contract/schema-declarations",
+          "contract/application",
+          "contract/eligibility",
+          "contract/report-comparison",
+          "contract/source-compatibility"
+        ],
+        "scores": [
+          34,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "filtered-4",
+      "group": "filtered",
+      "input": {
+        "query": "fetch",
+        "category": "example"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "example/03-fetch-composition/src/index.ts"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 9,
+        "ids": [
+          "example/03-fetch-composition/.pulse/config.ts",
+          "example/03-fetch-composition/package.json",
+          "example/03-fetch-composition/src/index.ts",
+          "example/03-fetch-composition/tests/pulse.harness.ts",
+          "example/03-fetch-composition/tsconfig.json"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          18
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 8,
+        "ids": [
+          "example/03-fetch-composition/package.json",
+          "example/03-fetch-composition/src/index.ts",
+          "example/03-fetch-composition/.pulse/config.ts",
+          "example/03-fetch-composition/tests/pulse.harness.ts",
+          "example/03-fetch-composition/tsconfig.json"
+        ],
+        "scores": [
+          19,
+          19,
+          18,
+          18,
+          18
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "filtered-5",
+      "group": "filtered",
+      "input": {
+        "query": "jwt",
+        "category": "package"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "package/jwt"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "package/jwt",
+          "package/crypto"
+        ],
+        "scores": [
+          15,
+          1
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 2,
+        "ids": [
+          "package/jwt",
+          "package/crypto"
+        ],
+        "scores": [
+          15,
+          1
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "filtered-6",
+      "group": "filtered",
+      "input": {
+        "query": "build",
+        "category": "command",
+        "provider": "node",
+        "target": "javascript"
+      },
+      "criterion": "top-five",
+      "relevantIds": [
+        "command/build"
+      ],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 5,
+        "ids": [
+          "command/build",
+          "command/doctor",
+          "command/inspect",
+          "command/report",
+          "command/test"
+        ],
+        "scores": [
+          19,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 5,
+        "ids": [
+          "command/build",
+          "command/doctor",
+          "command/inspect",
+          "command/report",
+          "command/test"
+        ],
+        "scores": [
+          19,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "failure-1",
+      "group": "failure",
+      "input": {
+        "query": "zzzz_no_such_term"
+      },
+      "criterion": "empty",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "failure-2",
+      "group": "failure",
+      "input": {
+        "query": "schéma"
+      },
+      "criterion": "invalid-input",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "v2": {
+        "status": "invalid-input",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": false,
+      "declined": false
+    },
+    {
+      "id": "failure-3",
+      "group": "failure",
+      "input": {
+        "query": "..."
+      },
+      "criterion": "invalid-input",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 3,
+        "ids": [
+          "contract/parallel",
+          "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
+          "diagnostic/PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED"
+        ],
+        "scores": [
+          1,
+          1,
+          1
+        ]
+      },
+      "v2": {
+        "status": "invalid-input",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": false,
+      "declined": false
+    },
+    {
+      "id": "failure-4",
+      "group": "failure",
+      "input": {
+        "query": "one two three four five six seven eight nine"
+      },
+      "criterion": "invalid-input",
+      "relevantIds": [],
+      "v1": {
+        "status": "invalid-input",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "v2": {
+        "status": "invalid-input",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "failure-5",
+      "group": "failure",
+      "input": {
+        "query": "simultaneous upstream requests"
+      },
+      "criterion": "empty",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 0,
+        "ids": [],
+        "scores": []
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    },
+    {
+      "id": "failure-6",
+      "group": "failure",
+      "input": {
+        "query": "schema"
+      },
+      "criterion": "ambiguous",
+      "relevantIds": [],
+      "v1": {
+        "status": "ok",
+        "totalMatches": 63,
+        "ids": [
+          "contract/schema-declarations",
+          "diagnostic/PULSE_CALL_SOURCE_SCHEMAS",
+          "diagnostic/PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
+          "diagnostic/PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
+          "diagnostic/PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "v2": {
+        "status": "ok",
+        "totalMatches": 58,
+        "ids": [
+          "contract/schema-declarations",
+          "example/02-request-schema/.pulse/config.ts",
+          "example/02-request-schema/package.json",
+          "example/02-request-schema/src/index.ts",
+          "example/02-request-schema/src/schemas.ts"
+        ],
+        "scores": [
+          19,
+          19,
+          19,
+          19,
+          19
+        ]
+      },
+      "passes": true,
+      "v1Passes": true,
+      "declined": false
+    }
+  ],
+  "failures": [
+    {
+      "criterion": "relevance",
+      "detail": {
+        "id": "workflow-6",
+        "group": "workflow",
+        "input": {
+          "query": "compare reports"
+        },
+        "criterion": "top-five",
+        "relevantIds": [
+          "contract/report-comparison",
+          "command/report"
+        ],
+        "v1": {
+          "status": "ok",
+          "totalMatches": 0,
+          "ids": [],
+          "scores": []
+        },
+        "v2": {
+          "status": "ok",
+          "totalMatches": 0,
+          "ids": [],
+          "scores": []
+        },
+        "passes": false,
+        "v1Passes": false,
+        "declined": false
+      }
+    },
+    {
+      "criterion": "phase-failure-proof",
+      "detail": {
+        "phase": "request",
+        "kind": "deadline",
+        "triggered": true
+      }
+    },
+    {
+      "criterion": "phase-failure-proof",
+      "detail": {
+        "phase": "request",
+        "kind": "allocation",
+        "triggered": true,
+        "code": "PULSE_EFFECT_INVOCATION_INVALID"
+      }
+    },
+    {
+      "criterion": "phase-failure-proof",
+      "detail": {
+        "phase": "callable-input",
+        "kind": "deadline",
+        "triggered": false
+      }
+    }
+  ],
+  "timing": [
+    {
+      "target": "node",
+      "input": {
+        "version": "1.0.0-beta.9",
+        "query": "schema",
+        "offset": 0,
+        "limit": 5
+      },
+      "cold": {
+        "wallMs": 45.61803800000001,
+        "cpuMs": 67.428,
+        "status": 200,
+        "responseBytes": 12081,
+        "responseSha256": "767262778abb0c44b442a7d19379a2959d2f64fdaa8adb1227ff578554c0d46d",
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 462854,
+          "values": 14275
+        },
+        "guestMemoryBytes": 3932160,
+        "valueHandleCount": 6475,
+        "processPeakRssBytes": 134721536
+      },
+      "warm": [
+        {
+          "wallMs": 48.21951999999874,
+          "cpuMs": 71.197,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462854,
+            "values": 14275
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6475,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 28.686990999995032,
+          "cpuMs": 63.01,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462854,
+            "values": 14275
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6475,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 38.55824600000051,
+          "cpuMs": 68.377,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462854,
+            "values": 14275
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6475,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 16.843817000000854,
+          "cpuMs": 29.143,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462854,
+            "values": 14275
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6475,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 16.20977899999707,
+          "cpuMs": 34.739,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462854,
+            "values": 14275
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6475,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 15.382654000000912,
+          "cpuMs": 22.45,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462854,
+            "values": 14275
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6475,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 14.905878000005032,
+          "cpuMs": 16.287,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462854,
+            "values": 14275
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6475,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 24.670059000003675,
+          "cpuMs": 34.705,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462854,
+            "values": 14275
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6475,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 15.229127000005974,
+          "cpuMs": 22.548,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 462854,
+            "values": 14275
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6475,
+          "responseBytes": 12081
+        }
+      ],
+      "medianWallMs": 16.843817000000854,
+      "medianCpuMs": 34.705
+    },
+    {
+      "target": "fastly",
+      "input": {
+        "version": "1.0.0-beta.9",
+        "query": "schema",
+        "offset": 0,
+        "limit": 5
+      },
+      "cold": {
+        "wallMs": 24.974275000000006,
+        "cpuMs": 42.714,
+        "status": 200,
+        "responseBytes": 12081,
+        "responseSha256": "767262778abb0c44b442a7d19379a2959d2f64fdaa8adb1227ff578554c0d46d",
+        "memory": {
+          "bytes": 416162,
+          "values": 10731
+        },
+        "guestMemoryBytes": 7864320,
+        "processPeakRssBytes": 131547136
+      },
+      "warm": [
+        {
+          "wallMs": 31.74602600000071,
+          "cpuMs": 50.579,
+          "memory": {
+            "bytes": 416162,
+            "values": 10731
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 14.39051499999914,
+          "cpuMs": 29.39,
+          "memory": {
+            "bytes": 416162,
+            "values": 10731
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 14.645092999999179,
+          "cpuMs": 38.35,
+          "memory": {
+            "bytes": 416162,
+            "values": 10731
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 31.442070999997668,
+          "cpuMs": 114.143,
+          "memory": {
+            "bytes": 416162,
+            "values": 10731
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 13.975750999998127,
+          "cpuMs": 19.152,
+          "memory": {
+            "bytes": 416162,
+            "values": 10731
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 13.00354199999856,
+          "cpuMs": 20.353,
+          "memory": {
+            "bytes": 416162,
+            "values": 10731
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 11.009720000001835,
+          "cpuMs": 18.087,
+          "memory": {
+            "bytes": 416162,
+            "values": 10731
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 9.654182999998739,
+          "cpuMs": 11.814,
+          "memory": {
+            "bytes": 416162,
+            "values": 10731
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 10.011701999996149,
+          "cpuMs": 13.422,
+          "memory": {
+            "bytes": 416162,
+            "values": 10731
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        }
+      ],
+      "medianWallMs": 13.975750999998127,
+      "medianCpuMs": 20.353
+    }
+  ],
+  "faults": [
+    {
+      "phase": "request",
+      "kind": "deadline",
+      "enforced": false,
+      "noPartialSuccess": false,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 1,
+          "charges": 104,
+          "chargedBytes": 74676,
+          "chargedValues": 73,
+          "imports": 18
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 44402,
+        "hostToGuestUtf16Bytes": 12310,
+        "hostToGuestAllocations": 5
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "request",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 462858,
+        "values": 14275
+      }
+    },
+    {
+      "phase": "request",
+      "kind": "allocation",
+      "enforced": false,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 3,
+          "charges": 1,
+          "chargedBytes": 32,
+          "chargedValues": 1,
+          "imports": 0
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 0,
+        "hostToGuestUtf16Bytes": 0,
+        "hostToGuestAllocations": 0
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "request",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_EFFECT_INVOCATION_INVALID",
+        "message": "Effect invocation is stale, already settled, foreign, or closed."
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 0,
+        "values": 0
+      }
+    },
+    {
+      "phase": "callable-input",
+      "kind": "deadline",
+      "enforced": false,
+      "noPartialSuccess": false,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 1,
+          "charges": 104,
+          "chargedBytes": 74676,
+          "chargedValues": 73,
+          "imports": 18
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 44402,
+        "hostToGuestUtf16Bytes": 12310,
+        "hostToGuestAllocations": 5
+      },
+      "triggered": false,
+      "fault": {
+        "phase": "callable-input",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 462858,
+        "values": 14275
+      }
+    },
+    {
+      "phase": "callable-input",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 64,
+          "chargedValues": 2,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 204,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-input",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 4572,
+        "values": 123
+      }
+    },
+    {
+      "phase": "computation",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 1,
+          "charges": 550,
+          "chargedBytes": 6040,
+          "chargedValues": 170,
+          "imports": 431
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 2974,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "computation",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14450,
+        "values": 385
+      }
+    },
+    {
+      "phase": "computation",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 16,
+          "chargedValues": 1,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 242,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "computation",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 8410,
+        "values": 215
+      }
+    },
+    {
+      "phase": "callable-output",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20108,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-output",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 388182,
+        "values": 14202
+      }
+    },
+    {
+      "phase": "callable-output",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 64,
+          "chargedValues": 2,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20068,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-output",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 358170,
+        "values": 13836
+      }
+    },
+    {
+      "phase": "mcp-serialization",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 1,
+          "charges": 89,
+          "chargedBytes": 74232,
+          "chargedValues": 62,
+          "imports": 18
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 44402,
+        "hostToGuestUtf16Bytes": 12310,
+        "hostToGuestAllocations": 5
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "mcp-serialization",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 462414,
+        "values": 14264
+      }
+    },
+    {
+      "phase": "mcp-serialization",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 16,
+          "chargedValues": 1,
+          "imports": 2
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20108,
+        "hostToGuestUtf16Bytes": 12310,
+        "hostToGuestAllocations": 5
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "mcp-serialization",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 388182,
+        "values": 14202
+      }
+    }
+  ],
+  "executions": 1274,
+  "limitations": [
+    "Injected Fastly ABI; not CLI/Viceroy or provider reality.",
+    "Warm samples reuse artifacts with fresh request instances; not retained-instance execution.",
+    "Node CPU is process CPU for the complete host execution and serialization, not isolated guest instructions.",
+    "Committed Wasm pages are monotonic high-water capacity, not live heap.",
+    "Retained bytes/values are conservative cumulative budget charges, not exact allocation counts.",
+    "Exact internal guest and JS allocation counts and peak live-object heap are unavailable through current evidence surfaces.",
+    "Frozen relevance cases are proposed for review; independent human relevance review is not claimed."
+  ],
+  "artifact": {
+    "repeat": 1,
+    "corpusHash": "a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97",
+    "dimensions": {
+      "rows": 263,
+      "dimension": 2506,
+      "nonzeros": 15313,
+      "dictionarySha256": "973fe863a4fdf0a5227648978158a71c6f0c738684d3ee201a6759797645c961",
+      "manifestId": "44ce962dc41e007f8401e266f66b5956052aab6dc75d3eda020506dd0953a875",
+      "catalogueIdentity": "19a443454a2e6e4d4d350994be5973251d2c7d7fd7ff3f6176751adbffaa9610",
+      "rawBytes": 599957,
+      "serializedBytes": 800598,
+      "budgets": {
+        "files": 3,
+        "fileBytes": 5242880,
+        "totalBytes": 8388608,
+        "serializedBytes": 16777216,
+        "bindings": 3
+      }
+    },
+    "planHash": "b2d12963461e5b12570f6a1b794339c43744288fbc45f21dca1d205645f5d05d",
+    "sourceSha256": "1d74a09aabd8357b02f51e9cbd118a1e10b8721f5b81fb30a2129cd94f9c017a",
+    "node": {
+      "bytes": 991442,
+      "sha256": "349ed4eff3da0f41911af21040b94415079c234f3d5365667fd5d55c0e021028",
+      "compileMs": 11282.027243,
+      "initialGuestBytes": 1966080,
+      "resourceBackings": [
+        {
+          "id": "context.vector",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.text",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.metadata",
+          "physicalFullCopies": 0
+        }
+      ]
+    },
+    "fastly": {
+      "bytes": 1043352,
+      "sha256": "5c561fb031d3c205bccf2cf15d41c08b453bc8d926ee2b19db1f9d520d7e67a5",
+      "compileMs": 20894.450995,
+      "initialGuestBytes": 3932160,
+      "resourceBackings": [
+        {
+          "id": "context.vector",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.text",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.metadata",
+          "physicalFullCopies": 0
+        }
+      ]
+    },
+    "resources": [
+      {
+        "id": "context.vector",
+        "bytes": 167106,
+        "sha256": "24a777606a4563ab24b6f29e31c56b5d00519c4f4054e009cd1a988b0d42ca43"
+      },
+      {
+        "id": "context.text",
+        "bytes": 221650,
+        "sha256": "8071cb624870d9e6036f3c3fc7e7b74b89faa06f8ede700cc87ac56c73860232"
+      },
+      {
+        "id": "context.metadata",
+        "bytes": 211201,
+        "sha256": "b64d9ae1e8eec72b86e252cd4e8ba4a51e25b33a1f2dec160ee68b388643fd97"
+      }
+    ]
+  },
+  "observation": {
+    "phases": {
+      "request": {
+        "clockChecks": 5,
+        "charges": 155,
+        "chargedBytes": 4572,
+        "chargedValues": 123,
+        "imports": 14
+      },
+      "callable-input": {
+        "clockChecks": 0,
+        "charges": 120,
+        "chargedBytes": 3838,
+        "chargedValues": 92,
+        "imports": 3
+      },
+      "computation": {
+        "clockChecks": 7367,
+        "charges": 64653,
+        "chargedBytes": 349760,
+        "chargedValues": 13621,
+        "imports": 75596
+      },
+      "callable-output": {
+        "clockChecks": 1,
+        "charges": 461,
+        "chargedBytes": 30012,
+        "chargedValues": 366,
+        "imports": 4
+      },
+      "mcp-serialization": {
+        "clockChecks": 1,
+        "charges": 104,
+        "chargedBytes": 74676,
+        "chargedValues": 73,
+        "imports": 18
+      }
+    },
+    "transfers": {
+      "guestToHostUtf16Bytes": 44402,
+      "hostToGuestUtf16Bytes": 12310,
+      "hostToGuestAllocations": 5
+    },
+    "triggered": false,
+    "guestCommittedBytes": 3932160,
+    "retained": {
+      "version": "pulse.native-read-loop-memory.v1",
+      "bytes": 462858,
+      "values": 14275
+    }
+  },
+  "error": {
+    "message": "Fastly expired request must not return partial success",
+    "code": "ERR_ASSERTION",
+    "stack": "AssertionError [ERR_ASSERTION]: Fastly expired request must not return partial success\n    at phases (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/mcp/assert-context-quality.cjs:67:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/mcp/assert-context-quality.cjs:93:4)"
+  }
+}

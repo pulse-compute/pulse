@@ -1,0 +1,48 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 315 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 153ms
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 20 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 241ms
+
+[pulsewasm:unit] boundaries
+[pulsewasm] workspace layout and import boundaries (timeout 30.00s)
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages
+[pulsewasm] boundaries: passed in 443ms
+
+[pulsewasm:unit] workspace-hygiene
+[pulsewasm] package-manager and workspace hygiene (timeout 30.00s)
+ok - workspace package-manager hygiene is pnpm-only and portable
+[pulsewasm] workspace-hygiene: passed in 246ms
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+
+Caught error:
+
+Error: Release tasks are not mapped to a shard: pulse-context-quality-actual, pulse-context-quality-growth, pulse-context-quality-repeat
+    at async verifySealOrchestration (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/release/assert-release-feature-acceptance.cjs:124:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [Error],
+  expected: [Function (anonymous)],
+  operator: 'rejects',
+  diff: 'simple'
+}
+[pulsewasm] release-feature-acceptance: failed in 187ms
+
+[pulsewasm] test summary
+  passed         153ms  suite-shape  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-00-907Z--5/tasks/suite-shape.log)
+  passed         241ms  package-exports  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-00-907Z--5/tasks/package-exports.log)
+  passed         443ms  boundaries  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-00-907Z--5/tasks/boundaries.log)
+  passed         246ms  workspace-hygiene  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-00-907Z--5/tasks/workspace-hygiene.log)
+  failed         187ms  release-feature-acceptance  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-00-907Z--5/tasks/release-feature-acceptance.log)
+  report       /workspace/scratch/0174bfde4d1e/evidence-06b/unit.json
+  run logs     /workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-38-00-907Z--5
+  total        1.29s

@@ -1,0 +1,14 @@
+
+[pulsewasm:unit] cli-report-retained-evidence
+[pulsewasm] PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm (timeout 60.00s)
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 10.01s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 20.05s
+[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 30.02s
+{"mode":"workspace","inventoryCases":[{"fixture":"examples/11-events","routes":1,"entries":3,"schemas":2},{"fixture":"wasm/test/fixtures/projects/canonical-integration","routes":1,"entries":3,"schemas":0},{"fixture":"wasm/test/fixtures/projects/catalog-router-methods","routes":20,"entries":23,"schemas":0},{"fixture":"wasm/test/fixtures/projects/canonical-workspace","routes":0,"entries":1,"schemas":0}],"status":"passed","negativeCases":22,"nativeCompiles":4,"portableGuestUnchanged":true,"routes":5,"entries":6,"schemas":1,"bindings":1,"resources":6,"providerArtifacts":2,"buildMs":3899,"reportMs":536,"capsuleBytes":101505,"inputSidecarBytes":9512,"portableSha256":"072a542870efc3e6585b00143b1a08258c3321613215d887e65e7a7101ab0a36","providerSha256":"67241a97fb5d379327a3aed1141c47c560bf3f8f742c0fdbfa760fe6b0d39e73"}
+[pulsewasm] cli-report-retained-evidence: passed in 37.65s
+
+[pulsewasm] test summary
+  passed        37.65s  cli-report-retained-evidence  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-40-12-051Z--15/tasks/cli-report-retained-evidence.log)
+  report       /workspace/scratch/0174bfde4d1e/evidence-06b/retained-retry.json
+  run logs     /workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-40-12-051Z--15
+  total        37.66s
