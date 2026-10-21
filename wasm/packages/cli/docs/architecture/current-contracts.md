@@ -40,35 +40,6 @@ continuation ABI or release package-set change is introduced.
 
 ## Contract precedence
 
-The published `@pulse-compute/mcp` host package owns MCP HTTP admission and
-protocol framing outside Entities. With emitted catalog/schema artifacts and a
-fixed governed HTTP endpoint configured, its MCP-03 facade supports tools/list
-and tools/call, schema projection and finite tool results. Otherwise discovery
-advertises no optional capabilities. It has no Pulse runtime/compiler dependency
-or direct application-handler seam. MCP-04 optionally authenticates through a
-configured external OAuth issuer using bounded token introspection, checks the
-resource audience and scopes, filters tool discovery, and denies unauthorized
-operations before governed dispatch. Backend credentials are distinct from
-client tokens; the deploying application owns TLS and backend protection.
-PMCP-01A adds an explicit `legacyProtocol: '2025-06-18'` host option for stateless
-initialize/ping/tools compatibility with measured Codex CLI 0.160.1. The modern
-profile remains the default; mixed modern framing cannot downgrade to legacy.
-Both profiles share bounded admission, fresh per-request authority and governed
-HTTP dispatch. Initialization retains no session, capability grant or principal;
-notifications do not execute or coordinate cancellation. No SSE, Resources,
-Prompts, stdio or direct-handler boundary is added.
-PMCP-01B qualifies the unchanged modern default with Claude Code 2.1.292:
-packed Node HTTP discovery, scoped tools, separate backend credentials and fresh
-request authority, including denied writer access and token revocation. This
-local no-inference control-channel proof does not establish Desktop, claude.ai,
-browser OAuth, deployed or other client-version support.
-MCP-05 qualifies the Node JavaScript composition through an independent packaged
-resource-directory consumer and the pinned official client, including controlled
-OAuth, real local HTTP effects and bounded failure/cancellation. Installed local
-acceptance does not establish deployed or Native/Fastly MCP support.
-A same-artifact Native binding requires a separate owner review; this component
-does not add a Native MCP transport or widen the guest authoring API.
-
 When two surfaces appear to disagree, use this order:
 
 1. the public release manifest and its generated package/support policy define
@@ -88,6 +59,32 @@ disabled-cache arena allocation in pinned json-as 1.5.0. Defaults, enabled-cache
 behavior, schema semantics, GC policy and provider authority remain unchanged.
 The setting propagates from portable compilation to provider realization and is
 bound into retained report recipes; it is independent of scalar handle lifetime.
+
+## MCP protocol and operation ownership
+
+`@pulse-compute/mcp/pulse` owns static MCP admission, discovery and tool-result
+framing. Its selected Entities router owns schema-bound operation invocation
+inside the same request; shared `ctx.call` owns reusable computation. Node
+Native, Fastly Native and explicit Node JavaScript support this facade. Fastly
+JavaScript does not satisfy its request-deadline requirement. The binding
+retains finite request/result limits, explicit protocol selection and no
+internal HTTP hop. It adds no OAuth callback, dynamic registry or ambient host
+authority.
+
+The package root and `/node` are separate JavaScript host adapters. They project
+an emitted catalog and schema registry and forward admitted calls to a fixed
+governed HTTP endpoint. Their optional OAuth admission uses an external issuer,
+resource audience/scopes and bounded introspection; backend credentials remain
+separate from client tokens. These host options do not widen the static facade.
+
+Both paths keep MCP protocol state outside runtime core. Their explicit legacy
+protocol option does not permit automatic downgrade from modern framing.
+Initialization creates no retained session or capability grant. Notifications
+do not invoke tools. Neither path provides SSE, MCP Resources, Prompts or stdio.
+[The package guide](../packages/mcp.md) owns the public construction and limits;
+[Entities and adapters](../concepts/entities-and-adapters.md#mcptools-boundary)
+explains the invocation boundary. Local installed and actual-host receipts are
+separate from deployed-service qualification.
 
 ## Bounded effect collections (B10-06)
 

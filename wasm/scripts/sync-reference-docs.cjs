@@ -988,6 +988,11 @@ function buildExpectedFiles() {
     const targetRelative = `wasm/packages/cli/${sourceRelative}`;
     expected.set(targetRelative, transformCliCopy(sourceRelative, canonicalContent(sourceRelative, generatedCanonical)));
   }
+  // Diagrams keep the same relative URL in hosted and installed Markdown.
+  for (const file of filesUnder(path.join(repoRoot, 'docs'), (file) => file.endsWith('.svg')
+    && isPublicDocumentationSource(relative(file)))) {
+    expected.set(`wasm/packages/cli/${relative(file)}`, fs.readFileSync(file));
+  }
   expected.set('wasm/packages/cli/src/documentation.js', renderInstalledDocumentationModule());
   for (const shell of COMPLETION_SHELLS) expected.set(`wasm/packages/cli/completions/${completionFile(shell)}`, renderCompletion(shell));
   expected.set('wasm/packages/cli/cli-spec.json', stableJson(commandSpec));

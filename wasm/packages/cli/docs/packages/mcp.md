@@ -12,44 +12,19 @@ npm install @pulse-compute/mcp@1.0.0-beta.9
 
 Use matching exact versions of Pulse packages.
 
-## Supported host imports
-
-| Import | API | Host boundary |
-| --- | --- | --- |
-| `@pulse-compute/mcp` | `createMcpHttpHandler`, `PROTOCOL_VERSION`, `DEFAULT_LIMITS` | Fetch request/response adapter |
-| `@pulse-compute/mcp/node` | `createMcpNodeHandler` | Node HTTP bridge |
-
-Both CommonJS and ESM imports have TypeScript declarations. Implementation
-subpaths and `package.json` are not public imports. Use these APIs in ordinary
-host code outside Pulse guest handlers. The separate `/pulse` facade below owns Native lowering.
-Node 22.14+ and Node 24 are supported.
-
-The adapter implements bounded stateless Streamable HTTP discovery and tools.
-It projects a fixed Entities catalog and schemas, admits tool input, and sends
-one request to the governed JSON-RPC endpoint. The endpoint retains selection,
-effects and output authority. Optional OAuth resource-server admission uses an
-external authorization server and authenticated introspection; the adapter does
-not issue tokens. Its fixed limits and redacted errors remain in force.
-
-The [package contract](https://github.com/pulse-compute/pulse/blob/v1.0.0-beta.9/packages/mcp/README.md) documents construction,
-limits, authorization, protocol versions and supported client qualification.
-There is no stdio transport, resource/prompt API, filesystem access or execution
-service in this package.
-
 ## Start with the Pulse context server
 
-Copy the [Pulse context MCP example](../../examples/12-pulse-context-mcp/) from
-the matching CLI package. It serves starter plans, search, contract reads,
-maintained examples and diagnostic help from an immutable bundled corpus. All
-Pulse dependencies use the exact synchronized candidate version. The host
-composes the Node launcher and MCP bridge over loopback HTTP; it needs no
-repository checkout or upstream service at runtime.
+Use the [compiled application workflow](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow)
+from the matching CLI package. It serves five read-only tools—starter plans,
+search, contract reads, maintained examples and diagnostic help—from an
+immutable bundled corpus. The application uses the static `/pulse` binding and
+shared `ctx.call`; select Node Native, Fastly Native or explicit Node JavaScript.
+It needs no repository checkout or upstream service at runtime.
 
-`mcp-installed` is the single mandatory release-owned installed MCP gate, kept
-outside fast PR and aggregate release profiles. The generic package's selected
-packed-consumer check covers exact legal files, author entry points, lowerer files, CommonJS/ESM
-imports and TypeScript consumers. The installed context-app gate also exercises the packaged Native application
-after deleting authored inputs.
+The example's root project is the retained v1 Node host workflow. It forwards
+tools over loopback HTTP and has different configuration and tool names. The
+example documents migration to the compiled application; use its
+`application/` directory for the current workflow.
 
 ## Static Native binding
 
@@ -94,11 +69,33 @@ without dispatch. Origin allowlists, authorization, callbacks, dynamic registrie
 SSE, sessions, prompts, and MCP Resources are outside this binding. Embedded
 Pulse binary Resources are a separate application facility.
 
-The package depends on Entities and Runtime. Its root and `/node` adapters keep
-their existing fixed-backend behavior and authorization options. The [context example](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow)
-uses this binding and shared `ctx.call` for five resource-backed tools. Its exact
-installed closure, actual Fastly CLI/Viceroy workload, and pinned modern/legacy
-client matrices have separate development gates. Injected ABI tests, local host
-execution and deployed-service proof remain distinct; each new release candidate
-needs its own terminal receipts. See the example for installation, profile
-selection, lexical limits and migration from the unchanged Node host.
+See the [compiled application workflow](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow)
+for installation, profile selection, lexical limits and migration. A local build,
+actual local host execution and deployed-service acceptance remain separate
+checks.
+
+<a id="supported-host-imports"></a>
+
+## Separate JavaScript host adapters
+
+| Import | API | Host boundary |
+| --- | --- | --- |
+| `@pulse-compute/mcp` | `createMcpHttpHandler`, `PROTOCOL_VERSION`, `DEFAULT_LIMITS` | Fetch request/response adapter |
+| `@pulse-compute/mcp/node` | `createMcpNodeHandler` | Node HTTP bridge |
+
+Both CommonJS and ESM imports have TypeScript declarations. Implementation
+subpaths and `package.json` are not public imports. Use these APIs in ordinary
+host code outside Pulse guest handlers. The `/pulse` facade above owns Native lowering.
+Node 22.14+ and Node 24 are supported.
+
+The adapter implements bounded stateless Streamable HTTP discovery and tools.
+It projects a fixed Entities catalog and schemas, admits tool input, and sends
+one request to the governed JSON-RPC endpoint. The endpoint retains selection,
+effects and output authority. Optional OAuth resource-server admission uses an
+external authorization server and authenticated introspection; the adapter does
+not issue tokens. Its fixed limits and redacted errors remain in force.
+
+The [package contract](https://github.com/pulse-compute/pulse/blob/v1.0.0-beta.9/packages/mcp/README.md) documents construction,
+limits, authorization, protocol versions and supported client qualification.
+There is no stdio transport, resource/prompt API, filesystem access or execution
+service in this package.

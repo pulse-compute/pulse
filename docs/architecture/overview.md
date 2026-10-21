@@ -1,141 +1,140 @@
 # Architecture overview
 
-Pulse separates what an application does from how a host executes it. You write
-handlers, routes and schemas in TypeScript, then select a **target** (Native or
-JavaScript) and a **provider** (such as Node or Fastly) in a project profile.
-Changing the target is an explicit choice; unsupported Native source never
-silently runs as JavaScript.
+Pulse turns a TypeScript application into an explicit execution artifact. You
+write handlers, schemas and reusable computations; a project profile selects
+**Native or JavaScript** and a **provider such as Node or Fastly**. The compiler
+checks the application's requirements, and the provider connects it to the host.
 
-> For detailed ownership rules and invariants, see the
-> [Architecture contracts](./current-contracts.md).
+Four parts explain the architecture:
 
-The two execution paths share the application contract, but produce different
-artifacts:
+| Part | Responsibility |
+| --- | --- |
+| Application | Defines routes or events, structured data, computations and requested capabilities. |
+| Compiler | Resolves reachable source, validates the application and prepares the selected target. |
+| Runtime | Owns each invocation's values, effects, continuations, deadlines and cleanup. |
+| Provider | Supplies host bindings, target packaging and execution. |
 
-| Selected target | Path from source to execution |
-|---|---|
-| Native | Eligible source → canonical operations and continuations → Pulse-owned Wasm → provider realization. |
-| JavaScript | Validated application topology and resolved source graph → provider source package → JavaScript execution with the Pulse runtime. |
+<a id="whole-project-compiler"></a>
 
-Both paths validate recognized Pulse capabilities against the selected provider.
-JavaScript inspection describes recognized Pulse behavior; it does not inspect
-arbitrary dependency internals or establish a sandbox. Start with
-[Targets and host work](../concepts/targets-and-hosts.md) for the target matrix.
+## From source to a runnable artifact
 
-## Canonical API
+![TypeScript handlers, schemas and computations enter application validation. An explicit target selects either Native lowering to Wasm or preservation of the JavaScript source graph. The selected provider packages the result and supplies host bindings.](./assets/execution-paths.svg)
 
-`@pulse-compute/pulse` owns the conventional `Pulse` application root, project
+A profile fixes the target and provider before the build. Both paths check
+static application topology, schemas and recognized Pulse capabilities.
+**Native** then requires proof that the reachable source can be lowered to
+canonical operations and Wasm. **JavaScript** retains the original resolved
+source graph, including ordinary target-compatible dependency calls.
+
+Unsupported Native source produces an error. Running it as JavaScript requires
+an explicit profile change. JavaScript inspection describes recognized Pulse
+behavior; it does not analyze arbitrary dependency internals or sandbox them.
+See [Compilation and lowering](../concepts/compilation-and-lowering.md) for the
+compiler phases and [Targets and host work](../concepts/targets-and-hosts.md)
+for target selection.
+
+<a id="canonical-api"></a>
+
+## The application contract
+
+`@pulse-compute/pulse` supplies the conventional `Pulse` application root,
 configuration helpers and schema declarations. `@pulse-compute/runtime` owns
-portable handler/context types and the static `Router` contract. These are
-frontends to the same application model, not separate execution systems.
+handler/context types and the static `Router` contract. Plain handlers, Router
+and Pulse applications enter the same compiler and execution model.
 
-Handlers request managed host work through `ctx`: fetch, config, secrets, KV,
-time and supported package effects. Provider bindings supply the implementation
-and authority; handlers do not receive provider SDK objects. Schemas define
-bounded structured input and output. See the [Pulse](../packages/pulse.md) and
-[runtime](../packages/runtime.md) package guides.
+A handler receives `ctx`, which exposes the operations admitted for its context
+and selected provider. Managed host work—such as fetch, secrets and KV—passes
+through explicit capabilities and bindings. Schemas define bounded structured
+input and output. Provider SDK objects stay outside the portable handler API.
 
-## Whole-project compiler
+HTTP handlers select routes and produce responses. Event handlers select an
+exact event type, receive a schema-validated payload and complete with `void`.
+The provider owns ingress; an outbound `ctx.emit` frame has no automatic local
+loopback or delivery receipt. See [Routing](../guides/routing.md),
+[Events](../guides/events.md) and the [canonical API](../../API.md).
 
-The compiler resolves the reachable source graph, checks static application
-topology and schemas, and identifies supported operations. Native compilation
-must prove the admitted source shapes before producing its effect/continuation
-plan and Wasm. Trusted package lowerers can contribute narrow operations.
+<a id="lifecycle"></a>
 
-An explicit JavaScript target retains the original source graph and ordinary
-JavaScript dependency calls. Native eligibility is checked separately: a Native
-rejection can be advisory for JavaScript inspection, but `pulse compile` still
-requires a real Native compilation. Use `pulse build` to produce the selected
-provider/target output. See [Compilation and lowering](../concepts/compilation-and-lowering.md).
+## One invocation owns the work
 
-## Lifecycle
+Each HTTP request or direct event invocation owns its state and pending work.
+A managed effect asks the host to perform an operation. In Native, the program
+suspends at an explicit continuation and resumes with the host's result.
+JavaScript uses the execution-owned runtime and effect adapter. Application
+code uses the same managed API without creating continuation objects itself.
 
-Each HTTP request or direct event invocation owns its state, effects and pending
-work. A managed effect asks the provider to perform an operation; its result
-allows the waiting work to continue. Native represents that continuation
-explicitly. JavaScript uses the execution-owned runtime and effect adapter.
-Application code does not create or resume continuation objects.
+Use `ctx.parallel` to express independent concurrent work. Completion, failure,
+expiry and cancellation terminate the invocation's authority: late results
+cannot restart it. Cancellation does not undo a remote write already dispatched.
+[Effects and continuations](../concepts/effects-and-continuations.md) explains
+concurrency, budgets and failure handling.
 
-Use `ctx.parallel` when independent work must be concurrent across targets.
-Completion, failure, expiry and cancellation are execution boundaries: late
-results cannot resume terminated work. Cancellation does not roll back an
-already dispatched remote write. See [Effects and continuations](../concepts/effects-and-continuations.md).
+### Shared computation through `ctx.call`
 
-HTTP and event handlers share execution authority, but event handlers have no
-HTTP request/response surface and complete with `void`. Native event entries
-are conditional on event reachability and separate from HTTP entries.
-`ctx.emit` accepts a schema-bound one-way frame; it provides no delivery receipt,
-retry, request/reply call or automatic local loopback. Node's bounded reference
-adapter proves direct ingress/acceptance behavior, not a public event bus or
-production transport. Other provider eligibility remains separate. See
-[Static events and outbound emission](../guides/events.md).
+An admitted HTTP or managed MCP operation can call a statically imported
+computation with registered input and output schemas. The call stays inside the
+current invocation and shares its budget. Its callee receives readonly input,
+resource reads and numeric workspaces; it receives no network, secret, KV or
+response authority. The returned result is validated and independently owned.
 
-## Bodies
+This lets a route and an MCP tool reuse computation without another HTTP request
+or a separate execution engine. Calls are synchronous and bounded: no dynamic
+targets, nested or recursive calls, or calls in loops. Node Native, Fastly Native
+and Node JavaScript support this boundary; Fastly JavaScript and event contexts
+do not. See [`ctx.call`](../../API.md#ctxcall) for the exact authoring contract.
 
-Network text/JSON can become bounded, request-owned structured values. Opaque
-binary or streaming responses remain host-owned and cross only supported
-boundaries. The [bodies guide](../concepts/bodies.md) owns the distinctions,
-provider limits and experimental forwarding/output exceptions.
+<a id="bodies"></a>
 
-Explicitly admitted embedded resources are a separate source of immutable data,
-not a way to inspect opaque network bodies. Current source exposes bounded
-[resource reads](../../API.md#ctxresources) and request-local
-[numeric workspaces](../../API.md#ctxworkspace). These primitives do not by
-themselves qualify an MCP service, retrieval product or deployed application.
+### Data has explicit ownership
 
-## Providers
+Structured bodies become bounded invocation-owned values. Opaque network bodies
+and streams remain host-owned. Embedded binary resources provide immutable
+build-selected data, while numeric workspaces provide temporary computation
+storage. None of these surfaces grants ambient filesystem or network access.
+See [Bodies](../concepts/bodies.md),
+[`ctx.resources`](../../API.md#ctxresources) and
+[`ctx.workspace`](../../API.md#ctxworkspace).
 
-A target chooses the execution model. A provider supplies host capabilities,
-bindings, local execution and target packaging. Node and Fastly each have Native
-and JavaScript paths; `none` is compile-only and cannot execute handlers.
+<a id="providers"></a>
+<a id="package-extensions"></a>
 
-**Target support** describes a provider/target lane's declared gates.
-**Project eligibility** asks whether this application's reachable source,
-capabilities and bindings fit that lane. A supported target can reject a
-particular project. Missing capabilities fail closed, without another target
-or provider being selected automatically.
+## Packages contribute behavior; providers realize it
 
-Local tests, a completed build, external engine acceptance and a deployed
-service prove different things. A passing doctor or inspection is not deployment
-evidence. See [Contracts and providers](../concepts/contracts-and-providers.md)
-and the [compatibility matrix](../reference/compatibility-matrix.md).
+Domain packages own their APIs and the mapping to supported operations. A
+trusted package lowerer contributes that mapping at build time; shared contracts
+own operation semantics, and the compiler coordinates validation and lowering.
+For example, Entities owns operation selection and schema-bound invocation,
+while MCP owns protocol admission and tool framing. Their computations use the
+same runtime machinery as other admitted handlers.
 
-## Package extensions
+Ordinary imports grant no compiler-plugin authority. Declared lowerers execute
+as trusted build dependencies with the compiler process's authority. Admission
+checks their versioned contract and package ownership. See
+[Package-owned lowering](../concepts/package-owned-lowering.md) and
+[Entities and adapters](../concepts/entities-and-adapters.md).
 
-Ordinary application imports, executable lowerers and providers are distinct
-boundaries. Importing a package grants no compiler-plugin authority. A declared
-lowerer executes as a trusted build dependency with the compiler process's
-authority; it is not sandboxed. Admission checks protocol versions and package
-ownership, without a publisher allowlist or matching Pulse release version.
+The selected provider supplies host operations, deployment bindings, packaging
+and local execution through its versioned `./toolchain` contract. A supported
+provider/target combination can still reject a project whose capabilities or
+bindings it cannot satisfy. The compile-only `none` selector emits Native
+artifacts without executing them. The
+[compatibility matrix](../reference/compatibility-matrix.md) owns exact target
+support; [Contracts and providers](../concepts/contracts-and-providers.md)
+explains binding and eligibility.
 
-Domain packages own their API-to-operation mapping; shared contracts own the
-operation/result semantics; compiler core orchestrates lowering; providers
-realize the operations. Provider packages are explicitly selected through the
-versioned `./toolchain` export, without scanning or self-registration.
+<a id="maintenance-authority"></a>
+<a id="current-architecture-and-extension-readiness"></a>
 
-See [Package-owned lowering](../concepts/package-owned-lowering.md) and
-[Pulse-aware package authoring](../contributing/pulse-aware-packages.md).
-Older `/pulsewasm` imports retain their bounded
-[compatibility migration guidance](../guides/compatibility-imports.md).
+## Inspect the boundary you are about to ship
 
-## Maintenance authority
+`pulse doctor` checks project readiness, `pulse inspect` explains recognized
+structure and eligibility, and `pulse build` produces the selected provider
+artifact. `pulse report` describes retained build evidence, including artifact
+size, resource attribution and explicitly unavailable measurements. A local
+build and a deployed-service test establish different evidence.
 
-For repository changes, [Maintainer governance](../maintainers/README.md) and
-`release/maintenance-policy.json` own classification, checks and authority.
-Agents can prepare bounded patches; humans retain architecture, merge,
-repository-setting and release authority.
-
-## Current architecture and extension readiness
-
-Continue with [targets](../concepts/targets-and-hosts.md),
-[providers](../concepts/contracts-and-providers.md),
-[effects](../concepts/effects-and-continuations.md),
-[bodies](../concepts/bodies.md), then
-[compilation](../concepts/compilation-and-lowering.md).
-[Entities and adapters](../concepts/entities-and-adapters.md) explains how
-protocol-facing facades preserve governed operation boundaries.
-
-The [Architecture contracts](./current-contracts.md) retain implementation-level
-invariants. [Vision](./vision.md) is directional, not a support promise.
-General compiler hooks and untrusted plugin isolation remain deferred in the
-[plugin readiness record](../maintainers/plugin-readiness.md).
+Use [Project lifecycle](../guides/project-lifecycle.md) for the command workflow.
+The [Architecture contracts](./current-contracts.md) hold implementation-level
+invariants. [Vision](./vision.md) and [plugin readiness](../maintainers/plugin-readiness.md)
+describe future direction and deferred extension work. Repository-change
+procedures live in [Maintainer governance](../maintainers/README.md).
