@@ -1,0 +1,19 @@
+# Pulse maintainer scope
+
+**Status:** Human decision required
+
+| Signal | Result |
+|---|---|
+| Declared class | `release` |
+| Declared scope | `release-change` |
+| Risk | `critical` |
+| Changed files | 17 |
+| Areas | `cli`, `deployment`, `documentation`, `governance`, `release`, `testing` |
+| Protected boundaries | `documentation-deployment`, `maintenance-control-plane`, `package-publication`, `release-authority` |
+| Separate human decision | Required |
+| Current contract update | Required for the proposed boundary change |
+| Release authority | Required |
+| Required checks | `build`, `cli`, `documentation`, `maintenance-policy`, `publication-control-plane`, `release`, `release-preflight`, `unit` |
+
+Human release authority must decide and approve this change before merge or publication.
+

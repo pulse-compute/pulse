@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T05-30-44-419Z--5",
+  "sourceRevision": "74445503f238acd42680ea79fa6697772121844a",
+  "sourceIdentity": {
+    "sourceRevision": "74445503f238acd42680ea79fa6697772121844a",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T05:30:44.425Z",
+  "updatedAt": "2026-10-21T05:31:04.105Z",
+  "finishedAt": "2026-10-21T05:31:04.105Z",
+  "durationMs": 19680,
+  "profiles": [],
+  "requestedTasks": [
+    "release-feature-acceptance",
+    "release-evidence-authority",
+    "release-runtime-policy",
+    "release-seal-lifecycle"
+  ],
+  "selectedTasks": [
+    "release-feature-acceptance",
+    "release-evidence-authority",
+    "release-runtime-policy",
+    "release-seal-lifecycle"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 4,
+  "results": [
+    {
+      "name": "release-feature-acceptance",
+      "evidence": "unit",
+      "description": "installed feature gate coverage and exact candidate report rejection",
+      "commandSignature": "163cf37b1203c67c9decc644e934dc403af51478a2cbd9a1ffcd18077eb5304b",
+      "timeoutMs": 30000,
+      "durationMs": 9023,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5/tasks/release-feature-acceptance.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "release-evidence-authority",
+      "evidence": "release",
+      "description": "sixteen-shard aggregation and exact evidence boundary",
+      "commandSignature": "8e7b52fc57bd7377ed5f986016602ad835779796dc67f713bc06a5da0fcb3322",
+      "timeoutMs": 30000,
+      "durationMs": 2791,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5/tasks/release-evidence-authority.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "release-runtime-policy",
+      "evidence": "unit",
+      "description": "Node release-line acceptance and Fastly CLI lifecycle ownership",
+      "commandSignature": "85ca5a8c6de63b8fb7f4a358c141c966860f9d039d2abd7b3446f8a5f5826280",
+      "timeoutMs": 30000,
+      "durationMs": 4263,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5/tasks/release-runtime-policy.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "release-seal-lifecycle",
+      "evidence": "unit",
+      "description": "durable seal heartbeat, terminal receipts and bounded process/cleanup lifecycle",
+      "commandSignature": "68474e695551fa7cd5d4fb0926fb7805da22d45e044573c007dcff1ad34ab9e5",
+      "timeoutMs": 60000,
+      "durationMs": 3585,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5/tasks/release-seal-lifecycle.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5"
+}
