@@ -28,7 +28,7 @@ async function main() {
   // Wasm from a different identity. Never rewrite the authoritative build receipt.
   for (const file of artifactFiles) {
     const target = path.join(settings.buildDir, file), original = fs.readFileSync(target);
-    for (const fault of ['missing', 'truncated', 'corrupt', 'mixed-identity']) {
+    for (const fault of ['missing', 'truncated', 'corrupt', ...(file === build.portable.wasm.file ? ['mixed-identity'] : [])]) {
       try {
         if (fault === 'missing') fs.unlinkSync(target);
         else if (fault === 'truncated') fs.writeFileSync(target, original.subarray(0, Math.max(0, original.length - 1)));

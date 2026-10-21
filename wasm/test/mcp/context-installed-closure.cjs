@@ -58,9 +58,11 @@ async function qualify({ consumer, temporary, root, run, env }) {
   const scratch = path.join(consumer, '.native-temp'); fs.mkdirSync(scratch);
   const trace = path.join(proof, 'trace.cjs');
   fs.writeFileSync(trace, `const fs=require('node:fs');for(const key of ['readFileSync','realpathSync','statSync','lstatSync','readdirSync','accessSync']){const original=fs[key];const wrapped=function(...args){try{return original.apply(this,args)}catch(e){if(e.code==='ERR_ACCESS_DENIED')process.stderr.write('denied filesystem read: '+e.resource+'\\n');throw e}};Object.assign(wrapped,original);fs[key]=wrapped;}`);
-  // TypeScript probes an uppercased copy of its own path to detect filesystem
-  // case sensitivity. Permit only that consumer-local probe, not the checkout.
-  const buildEnv = { ...env, TMPDIR: scratch, NODE_COMPILE_CACHE: '', NODE_OPTIONS: `--permission --allow-fs-read=${consumer} --allow-fs-read=${consumer.toUpperCase()} --allow-fs-read=${proof} --allow-fs-write=${consumer} --allow-child-process --allow-worker --require=${trace}` };
+  // TypeScript swaps the case of every character in its own filename. A grant
+  // for a nonexistent directory does not recursively grant its children in
+  // Node's permission model, so admit that exact probe filename only.
+  const caseProbe = path.join(consumer, 'node_modules/typescript/lib/typescript.js').replace(/\w/g, c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase());
+  const buildEnv = { ...env, TMPDIR: scratch, NODE_COMPILE_CACHE: '', NODE_OPTIONS: `--permission --allow-fs-read=${consumer} --allow-fs-read=${caseProbe} --allow-fs-read=${proof} --allow-fs-write=${consumer} --allow-child-process --allow-worker --require=${trace}` };
   await run(process.execPath, [worker, 'guard', settingsFile], { environment: buildEnv });
   const cli = path.join(consumer, 'node_modules/@pulse-compute/cli/bin/pulse.js');
   await run(process.execPath, [path.join(consumer, 'node_modules/typescript/bin/tsc'), '--project', path.join(app, 'tsconfig.json')], { environment: buildEnv });
