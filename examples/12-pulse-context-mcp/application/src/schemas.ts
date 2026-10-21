@@ -96,6 +96,7 @@ export interface Metadata {
   corpusHash: string
   snapshotStatus: string
   applicationVersion: string
+  encoder?: string
   requestedVersion?: string
   maxReplyBytes: Int32
 }

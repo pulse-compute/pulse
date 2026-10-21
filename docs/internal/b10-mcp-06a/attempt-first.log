@@ -1,0 +1,14 @@
+Error: Command failed: /tmp/node-v24.18.0-linux-x64/bin/node /workspace/scratch/0174bfde4d1e/pulse/node_modules/typescript/bin/tsc --project /tmp/pulse-suite-task-pulse-context-tools-2IvuCO/pulse-context-tools-CnJDTI/tsconfig.json
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:925:11)
+    at execFileSync (node:child_process:961:15)
+    at main (/workspace/scratch/0174bfde4d1e/pulse/wasm/test/mcp/assert-context-tools.cjs:71:3)
+    at /workspace/scratch/0174bfde4d1e/pulse/wasm/test/mcp/assert-context-tools.cjs:280:18
+    at Object.<anonymous> (/workspace/scratch/0174bfde4d1e/pulse/wasm/test/mcp/assert-context-tools.cjs:280:290)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32) ../../../../../tmp/pulse-suite-task-pulse-context-tools-2IvuCO/pulse-context-tools-CnJDTI/src/search.ts(142,24): error TS2339: Property 'decodeJson' does not exist on type 'PulseComputationContext'.
+../packages/mcp/src/pulse.d.ts(2,35): error TS2307: Cannot find module '@pulse-compute/entities' or its corresponding type declarations.
+../packages/mcp/src/pulse.d.ts(3,39): error TS2307: Cannot find module '@pulse-compute/entities' or its corresponding type declarations.
+ undefined

@@ -1,0 +1,9 @@
+{"checkpoint":"compiled","synthetic":false,"nodeBytes":991442,"fastlyBytes":1043352}
+{"checkpoint":"read-parity","synthetic":false,"executions":1668}
+{"checkpoint":"search-parity","synthetic":false,"executions":3750}
+{"checkpoint":"production","synthetic":false,"executions":3750,"corpusHash":"a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97","planHash":"835788fec87d542742023d6ef2762a5d5bb1fb13607af93e994b7b24b1a080ed","artifacts":{"node":{"bytes":991442,"sha256":"90b5efee6a3eb9bc40ed5a76a25162da84f95d1cac51c936a0ed8873b9e162ea"},"fastly":{"bytes":1043352,"sha256":"4a80156b53bb2ff81821b8572f320c6290179712e5bd5b6538106662aac424f8"}}}
+Error: Starter MCP result exceeds tool byte budget
+    at Object.generate (/workspace/scratch/0174bfde4d1e/pulse-06a/scripts/pulse-context-start.cjs:59:166)
+    at main (/workspace/scratch/0174bfde4d1e/pulse-06a/wasm/test/mcp/assert-context-tools.cjs:65:27)
+    at /workspace/scratch/0174bfde4d1e/pulse-06a/wasm/test/mcp/assert-context-tools.cjs:280:36
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) undefined undefined

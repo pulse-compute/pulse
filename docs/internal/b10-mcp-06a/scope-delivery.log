@@ -1,0 +1,29 @@
+# Pulse maintainer scope
+
+**Status:** Human decision required
+
+| Signal | Result |
+|---|---|
+| Declared class | `hardening` |
+| Declared scope | `inside-developer-preview` |
+| Risk | `high` |
+| Changed files | 24 |
+| Areas | `cli`, `documentation`, `testing` |
+| Protected boundaries | None |
+| Separate human decision | Required |
+| Current contract update | Not inferred |
+| Release authority | Not inferred |
+| Required checks | `build`, `cli`, `documentation`, `maintenance-policy`, `unit` |
+
+A human must explicitly decide the named boundary or scope question; Codex may analyze or prepare a patch only after that direction is clear.
+
+## Warnings
+
+- unclassified path(s) require human review: scripts/pulse-context-start.cjs, scripts/pulse-context-tools.cjs, scripts/pulse-context-tools.json
+
+## Unclassified paths
+
+- `scripts/pulse-context-start.cjs`
+- `scripts/pulse-context-tools.cjs`
+- `scripts/pulse-context-tools.json`
+

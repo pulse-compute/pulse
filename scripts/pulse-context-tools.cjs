@@ -2,7 +2,7 @@
 // Finite corpus projection only. Execution uses ordinary computation/resource owners.
 const PROJECT = 'examples/12-pulse-context-mcp';
 const APP = `${PROJECT}/application`;
-const INPUTS = [`${APP}/src/read.template.ts`, `${APP}/src/scalars.ts`, 'scripts/pulse-context-tools.json'];
+const INPUTS = [`${APP}/src/read.template.ts`, `${APP}/src/scalars.ts`, 'scripts/pulse-context-tools.json', `${APP}/src/search.template.ts`];
 const J = JSON.stringify;
 const size = value => Buffer.byteLength(J(value));
 function projectedSize(value, version) {
@@ -19,7 +19,7 @@ function clip(text, rawLimit, escapedLimit) {
 }
 function generate(corpus, config, files, read) {
   const declarations = JSON.parse(read(INPUTS[2]));
-  if (Object.keys(declarations).join() !== 'read,example,diagnostic') throw Error('Unexpected context tool metadata');
+  if (Object.keys(declarations).join() !== 'read,example,diagnostic,search') throw Error('Unexpected context tool metadata');
   const records = corpus.records, limits = config.limits;
   const projected = value => projectedSize(value, corpus.pulseVersion);
   const meta = {pulseVersion:corpus.pulseVersion,corpusSchemaVersion:corpus.schemaVersion,
@@ -35,13 +35,13 @@ function generate(corpus, config, files, read) {
     }
     return source;
   };
-  const emptyFields = {Read:{truncated:false},Example:{availableIds:[],records:[],totalRecords:0,truncated:false},Diagnostic:{}};
-  const base = (type, requested=true) => expression({meta:{...meta,...(requested?{requestedVersion:'__REQUEST_VERSION__'}:{})},status:'ok',...emptyFields[type]}, {'__REQUEST_VERSION__':'input.version'});
+  const emptyFields = {Search:{results:[],totalMatches:0,truncated:false},Read:{truncated:false},Example:{availableIds:[],records:[],totalRecords:0,truncated:false},Diagnostic:{}};
+  const base = (type, requested=true) => expression({meta:{...meta,...(type==='Search'?{encoder:config.encoder.id}:{}),...(requested?{requestedVersion:'__REQUEST_VERSION__'}:{})},status:'ok',...emptyFields[type]}, {'__REQUEST_VERSION__':'input.version'});
   function prelude(type, field) {
     return `  let versionBytes = 0\n  for (let i = 0; i < 65 && i < input.version.length; i++) {\n    const c = input.version[i] ?? ''\n    versionBytes += c < '\\u0080' ? 1 : c < '\\u0800' ? 2 : c >= '\\udc00' && c <= '\\udfff' ? 1 : 3\n  }\n  const empty: ${type}Output = versionBytes <= 64 ? ${base(type)} : ${base(type,false)}\n`
       + `  if (input.version.length === 0 || versionBytes > 64) return {...empty,status:'invalid-input',error:{code:'invalid-version',message:'Supply an exact version of at most 64 UTF-8 bytes.'}}\n`
       + `  if (input.version !== ${J(corpus.pulseVersion)}) return {...empty,status:'version-mismatch',error:{code:'version-mismatch',message:'The requested version is not bundled. See meta.pulseVersion; no fallback was selected.'}}\n`
-      + `  let nameBytes = 0\n  for (let n = 0; n < 193 && n < input.${field}.length; n++) {\n    const c = input.${field}[n] ?? ''\n    nameBytes += c < '\\u0080' ? 1 : c < '\\u0800' ? 2 : c >= '\\udc00' && c <= '\\udfff' ? 1 : 3\n  }\n`;
+      + (field ? `  let nameBytes = 0\n  for (let n = 0; n < 193 && n < input.${field}.length; n++) {\n    const c = input.${field}[n] ?? ''\n    nameBytes += c < '\\u0080' ? 1 : c < '\\u0800' ? 2 : c >= '\\udc00' && c <= '\\udfff' ? 1 : 3\n  }\n` : '');
   }
   const fail=(base,status,code,message)=>`{...${base},status:${J(status)},error:{code:${J(code)},message:${J(message)}}}`;
   const tooLarge=base=>fail(base,'response-too-large','response-too-large','Reply exceeds the byte budget. Retrieve individual corpus IDs with pulse.read.');
@@ -72,8 +72,12 @@ function generate(corpus, config, files, read) {
   const groups=new Map();records.forEach((r,n)=>{const key=selection([r]);(groups.get(key)||groups.set(key,[]).get(key)).push(n);});
   for(const [select,rows] of groups)readBody+=`  if (${rows.map(n=>`row === ${n}`).join(' || ')}) applicable = ${select}\n`;
   readBody+=`  if (!applicable) return ${fail('empty','unsupported-selection','record-not-applicable','The record does not apply to the requested provider/target pair.')}\n`;
-  let pick=`  let selected: RecordSummary = ${J(summary(records[0]))}\n`;
-  records.slice(1).forEach((r,n)=>{pick+=`  if (row === ${n+1}) selected = ${J(summary(r))}\n`;});
+  function summaryPicker(name) {
+    let source=`  let ${name}: RecordSummary = ${J(summary(records[0]))}\n`;
+    records.slice(1).forEach((r,n)=>{source+=`  if (row === ${n+1}) ${name} = ${J(summary(r))}\n`;});
+    return source;
+  }
+  const pick=summaryPicker('selected');
   const substitute=(source,token,value)=>{if(source.split(token).length!==2)throw Error(`Expected one ${token} in read template`);return source.replace(token,()=>value);};
   const readSource=substitute(substitute(read(INPUTS[0]).toString(),'__READ_PRELUDE__',readBody),'__READ_SUMMARY__',pick);
   let exampleBody=prelude('Example','id');
@@ -111,6 +115,40 @@ function generate(corpus, config, files, read) {
   }
   diagnosticBody+=`  return ${fail('empty','unknown-code','unknown-code','That public diagnostic is not in the bundled snapshot; no substitute explanation was selected.')}\n`;
   const module=(type,body)=>`// Generated by scripts/pulse-context-build.cjs. Cited text stays in resources.\nimport type { PulseComputationContext, PulseReadonly } from '@pulse-compute/pulse'\nimport type { ${type}Input, ${type}Output, RecordContent } from './schemas.js'\nexport function compute${type}(ctx: PulseComputationContext, input: PulseReadonly<${type}Input>): ${type}Output {\n${body}}\n`;
-  return {outputs:new Map([[`${APP}/src/read.ts`,Buffer.from(readSource)],[`${APP}/src/example.ts`,Buffer.from(module('Example',exampleBody))],[`${APP}/src/diagnostic.ts`,Buffer.from(module('Diagnostic',diagnosticBody))]]),declarations};
+  // Search uses scalar filters and the same finite metadata projection as read.
+  const searchMeta = {...meta, encoder:config.encoder.id};
+  const searchEmpty = {meta:{...searchMeta,requestedVersion:'__REQUEST_VERSION__'},status:'ok',results:[],totalMatches:0,truncated:false};
+  const invalidSearch=fail('empty','invalid-input','invalid-search','Use one to eight ASCII search tokens of at most 64 bytes in a query of at most 256 bytes.');
+  let searchBody = prelude('Search');
+  searchBody+=`  const query = input.query
+  const offset = (input.offset ?? 0) as number
+  const limit = (input.limit ?? 5) as number
+  if (query.length === 0 || query.length > 256 || offset < 0 || offset % 1 !== 0 || limit < 1 || limit > 5 || limit % 1 !== 0) return ${invalidSearch}
+`;
+  searchBody+=`  let categoryFilter = ${J('1'.repeat(records.length))}
+  let pairFilter = ${J('1'.repeat(records.length))}
+`;
+  const categories = [...new Set(records.map(r=>r.category))].sort();
+  for(const c of categories) searchBody+=`  if (input.category === ${J(c)}) categoryFilter = ${J(records.map(r=>r.category===c?'1':'0').join(''))}
+`;
+  searchBody+=`  if (input.category !== undefined && ${categories.map(c=>`input.category !== ${J(c)}`).join(' && ')}) return ${fail('empty','invalid-input','invalid-category','Choose a bundled corpus category.')}
+`;
+  for(const pair of pairs){const [provider,target]=pair.split('/');searchBody+=`  if (input.provider === ${J(provider)} && input.target === ${J(target)}) pairFilter = ${J(records.map(r=>r.applicability.some(p=>p.provider===provider&&p.target===target)?'1':'0').join(''))}
+`;}
+  searchBody+=`  if (!((input.provider === undefined && input.target === undefined)${[...pairs].map(pair=>{const[p,t]=pair.split('/');return ` || (input.provider === ${J(p)} && input.target === ${J(t)})`;}).join('')})) return ${fail('empty','unsupported-selection','unsupported-selection','Select one exact bundled provider/target pair.')}
+`;
+  let costs='';
+  records.forEach((r,row)=>{
+    const c=clip(r.content,384,2304);
+    const hit={...summary(r),excerpt:r.content.slice(0,c.units),excerptTruncated:c.truncated,score:0};
+    costs+=`  if (row === ${row}) return ${size(hit)+size(J(hit))-2}
+`;
+  });
+  costs+='  return 24577\n';
+  const zero={...searchEmpty,meta:{...searchMeta,requestedVersion:corpus.pulseVersion}};
+  let searchSource=read(INPUTS[3]).toString();
+  for(const[token,value]of Object.entries({__SEARCH_PRELUDE__:searchBody,__HIT_BYTES__:costs,__SEARCH_SUMMARY__:summaryPicker('record'),
+    __PAGE_BASE__:String(projected({...zero,truncated:true,nextOffset:0})),__TERMINAL_BASE__:String(projected(zero))})) searchSource=substitute(searchSource,token,value);
+  return {outputs:new Map([[`${APP}/src/search.ts`,Buffer.from(searchSource)],[`${APP}/src/read.ts`,Buffer.from(readSource)],[`${APP}/src/example.ts`,Buffer.from(module('Example',exampleBody))],[`${APP}/src/diagnostic.ts`,Buffer.from(module('Diagnostic',diagnosticBody))]]),declarations};
 }
 module.exports={INPUTS,generate,clip,projectedSize};
