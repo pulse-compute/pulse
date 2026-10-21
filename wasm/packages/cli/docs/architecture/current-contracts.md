@@ -2747,8 +2747,11 @@ vectors. The focused PR test covers independent reconstruction and negative
 format/freshness cases. The existing JavaScript host retains its v1 corpus module;
 the new resources are the sparse lexical inputs for Native migration. See the
 [explicit build workflow](../../examples/12-pulse-context-mcp/README.md#maintaining-the-snapshot).
-Installed closure, full reports, candidate-bound seal/recovery receipts and real
-Fastly/client qualification remain B10-MCP-07/08/09/10.
+The compiled application now uses these resources through shared `ctx.call`.
+Its [current workflow](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow)
+documents installed execution, reporting and local Fastly/client qualification.
+These checks do not substitute for a fresh candidate-bound release seal or
+deployed-service acceptance.
 
 ## Shared computation and binary resource reporting
 
@@ -2786,6 +2789,6 @@ memory size or process measurement; instance/process memory stays unknown.
 Existing JSON, terminal and resource-detail HTML projections expose these facts.
 Historical capsules lacking the optional records preserve their identity; no
 historical 06B/07B measurement is imported as fresh build evidence. Their bounded
-performance/lifetime receipts remain separate, and actual Fastly observations
-remain the 10A obligation. This does not implement command-aware evidence
+performance/lifetime receipts remain separate; actual local Fastly observations also do not establish
+deployed-service acceptance. This does not implement command-aware evidence
 summaries from #440 or resolve the historical `REPORT_ARTIFACT_HASH` uncertainty.

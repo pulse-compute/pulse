@@ -51,7 +51,7 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.emit`](#ctxemit) | Effects | HTTP and event handlers | One-way, schema-bound event acceptance effect. |
 | [`ctx.log`](#ctxlog) | Context | HTTP and event handlers | Synchronous thresholded logging. |
 | [`ctx.config`, `ctx.secret`](#config-and-secrets) | Bindings | HTTP and event handlers | Explicit configured binding reads. |
-| [`ctx.kv(name)`](#kv) | Effects | HTTP and event handlers | Bound reads, writes, and conditional KV effects (Node reference). |
+| [`ctx.kv(name)`](#kv) | Effects | HTTP and event handlers | Bound reads, writes, conditional operations, listing and deletion on supported targets. |
 | [`ctx.json`, `ctx.text`, `ctx.response`](#response-builders) | Responses | HTTP handlers and middleware | Synchronous response construction. |
 | [`ctx.output`](#experimental-generated-output) | Responses | Opted-in Node HTTP handlers | Finite incremental UTF-8 output; experimental and deadline-bound. |
 | [`ctx.event`](#static-event-handlers) | Context | Event handlers only | Exact event type and immutable validated payload. |
@@ -699,6 +699,25 @@ retries or rebases. A write acknowledgement carries no new generation. An absent
 CAS conflicts. A read may be stale, but its value and token describe the same
 observation. Tokens are bounded opaque strings, never JavaScript numbers or
 application revision counters.
+
+### Listing and deletion
+
+`ctx.kv('catalog').list({ limit: 10, prefix: 'user/' })` requests one bounded
+page. `limit` is required (1–100); `prefix` and an opaque continuation `cursor`
+are optional. Success returns `{ status: 'listed', keys, cursor }`; a null
+cursor ends pagination. Empty pages can still have a continuation. Ordering
+and visibility are provider-defined; Pulse does not promise a snapshot or
+fetch another page automatically.
+
+`ctx.kv('catalog').delete(key)` returns `deleted`, `not-found`, `not-deleted`
+with a reason, or `unknown` with a reason. `unknown` may have committed; there
+is no retry, rollback, or generation condition. An acknowledged delete does
+not prove the key previously existed.
+
+Both are awaitable effects and keyed `ctx.parallel` members on Node JavaScript,
+Node Native and Fastly Native. Fastly JavaScript rejects them during eligibility
+inspection. See [KV listing and deletion](./docs/concepts/effects-and-continuations.md#kv-listing-and-deletion)
+for byte limits, cursor ownership, deadlines and failure semantics.
 
 ### KV limits and ownership
 

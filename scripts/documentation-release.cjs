@@ -526,7 +526,7 @@ function validateDiagnostics(repoRoot) {
   for (const code of codes) {
     const raw = DIAGNOSTIC_CATALOG[code];
     const descriptor = describeDiagnostic(code);
-    if (!raw.summary || !raw.title || !raw.remediation.length || raw.stability !== 'preview-stable' || raw.scope !== 'public') fail(`${code} catalog entry is incomplete`);
+    if (typeof raw.summary !== 'string' || !raw.summary.trim() || typeof raw.title !== 'string' || !raw.title.trim() || !raw.remediation.length || raw.stability !== 'preview-stable' || raw.scope !== 'public') fail(`${code} catalog entry is incomplete`);
     if (descriptor.docs !== `${DIAGNOSTICS_REFERENCE}#${diagnosticAnchor(code)}`) fail(`${code} docs URL is not canonical`);
     const anchor = `<a id="${diagnosticAnchor(code)}"></a>`;
     if ((doc.split(anchor).length - 1) !== 1) fail(`${code} must have exactly one generated documentation anchor`);

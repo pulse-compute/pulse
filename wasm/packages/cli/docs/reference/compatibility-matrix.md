@@ -34,6 +34,9 @@ the Native build; it does not authorize automatic JavaScript fallback.
 | Awaited one-way `ctx.emit` acceptance | Yes | No | Yes | No | Static schema-bound frames only; no delivery, loopback, public bus, call surface, or target fallback. |
 | Sequential awaits of trusted Pulse effects | Yes | Yes | Yes | Yes | JavaScript preserves source order. Native lowers effects and continuations and may group adjacent independent effects without changing results. |
 | `await ctx.parallel({ fixed: effect })` | Yes | Yes | Yes | Yes | Requires a nonempty inline object with fixed non-index keys and fresh request-owned Pulse effects. |
+| Bounded `ctx.effects({ max })` collection and flush | Yes | Yes | Yes | Yes | Literal capacity 1–32; one bounded build region and one explicit flush. Provider capability restrictions still apply. |
+| Synchronous schema-bound `ctx.call` | Yes | No | Yes | Yes | Named imported project computation; selected HTTP/Router/managed callers only. No effects, nested calls or event dispatch. |
+| Static `@pulse-compute/mcp/pulse` binding | Yes | No | Yes | Yes | Local Entities dispatch and bounded HTTP framing; Fastly JS cannot satisfy the required request deadline. Separate root and `/node` host adapters do not change this matrix. |
 | Request metadata, route parameters, request state, logging, and response construction | Yes | Yes | Yes | Yes | These are synchronous managed surfaces; awaiting a proven synchronous value is redundant and may warn. |
 | Schema-bound request, fetch, and response JSON | Yes | Yes | Yes | Yes | Schema and response-case IDs are literal project declarations. |
 | Generic bounded JSON with `pulse.strict: false` | Yes | Yes | Yes | Yes | The plan records the generic host parser. Strict mode requires a declared schema. |
@@ -43,7 +46,7 @@ the Native build; it does not authorize automatic JavaScript fallback.
 | Arbitrary Promise construction or library await | JS only | JS only | No | No | Never valid inside `ctx.parallel`; Native reports the first eligibility boundary and never falls back. |
 | Ambient `fetch`, timers, environment/process access, filesystem, sockets, or provider SDK | No | No | No | No | Use `ctx` effects and configured provider bindings. |
 | General userland body streams, binary transforms, or background work | No | No | No | No | Structured reads are bounded, opaque bodies stay host-owned, and work ends with the request. |
-| Incoming opaque request forwarding | Yes | No | Yes | No | Explicit Node `bodyForwarding`; Native excludes structured request reads. See [incoming forwarding](../concepts/bodies.md#incoming-forwarding-on-node). |
+| Incoming opaque request forwarding | Yes | No | Yes | Experimental | Explicit provider `bodyForwarding` and request deadline. Fastly Native admits one terminal static-backend POST with separate request/response limits. See [transport limits](../concepts/bodies.md#current-transport-limits). |
 | Finite generated UTF-8 output | Experimental | No | Experimental | No | Explicit `generatedOutput` and deadline; installed Node output evidence remains separate from production-launcher qualification. |
 | Finite incoming UTF-8 transforms | Experimental | No | Experimental | No | Explicit `bodyTransform` plus generated output/deadline; 64 KiB input, 256 KiB output, at most 4× expansion. Installed transform qualification is pending. |
 
@@ -61,6 +64,8 @@ cell names the provider-owned binding or artifact that realizes it.
 | Config reads | Test/dev binding | Config Store | Test/dev binding | Config Store | Exact names are resolved from the selected profile; no ambient fallback. |
 | Secret reads | Test/dev binding | Secret Store | Test/dev binding | Secret Store | Secret values remain provider-owned and are redacted from diagnostics and logs. |
 | KV `get` and `put` | In-memory binding | KV Store | In-memory binding | KV Store | Namespaces are explicit profile bindings. |
+| KV versioned/conditional operations | In-memory reference | No | In-memory reference | Native KV hostcalls | Opaque generation tokens; uncertain writes may have committed. No implicit retry or durable Node storage claim. |
+| KV listing and deletion | In-memory reference | No | In-memory reference | Native KV hostcalls | One bounded page per list; opaque cursor, provider-defined visibility and uncertain delete outcomes. Deployed acceptance remains separate. |
 | Opaque pass-through | Yes | Yes | Yes | Yes | Bodies remain host-owned in all four modes. |
 | S3 `head`, `getText`, `getBody`, `putText` | Yes | No | Yes | Yes | Bounded exact-key operations. `getBody` returns an opaque binary response with the documented HTTP subset; Fastly JS lacks required raw-header metadata. See [S3](../packages/s3.md). |
 | Embedded Assets bytes | Node middleware | Unqualified | Native lookup | Native lookup | JavaScript `createAssets` embedded middleware is tested on Node; Native uses literal `embeddedManifest`. Fastly Native evidence is injected ABI proof, not deployment. See [Assets](../packages/assets.md). |
@@ -76,7 +81,7 @@ cell names the provider-owned binding or artifact that realizes it.
 
 This table records measured behavior for the implemented
 `@pulse-compute/entities` package. Release membership does not erase the
-separate ordinary-lifecycle and Fastly Native integration boundaries.
+separate local execution and deployed-service acceptance boundaries.
 
 | Entities capability | Node JS | Fastly JS | Node Native | Fastly Native | Notes |
 |---|---:|---:|---:|---:|---|
@@ -85,9 +90,19 @@ separate ordinary-lifecycle and Fastly Native integration boundaries.
 | Declared input/output schema codecs | Measured | Measured | Measured | Measured | Selection precedes decode; only the selected schemas are available. |
 | Managed handler effects | Measured | Measured | Measured | Measured | The shared corpus includes schema work, fetch, and stable negative cases. |
 | Deterministic catalog and inspection | Yes | Yes | Yes | Yes | Catalog and redacted inspection are package-owned build artifacts. |
-| Ordinary project build integration | Yes | Yes | Yes | No | Node Native emits the package-owned application guest and catalog; Fastly Native evidence still uses a separate provider proof. |
-| Ordinary project `test`/`dev` loading | Yes | Not verified | Yes | No | Node lifecycle gates exercise the package root and the emitted Native guest; Fastly ordinary-lifecycle acceptance remains separate. |
+| Ordinary project build integration | Yes | Yes | Yes | Yes | Installed workflow coverage includes emitted catalogs and Native artifacts for both providers. |
+| Ordinary project `test`/`dev` loading | Yes | Yes | Yes | Yes | The installed workflow covers all four profiles. Fastly uses provider emulation or a fixture ABI; this is not deployed-service qualification. |
 | Automatic target fallback | No | No | No | No | Eligibility, measured execution, and release assignment remain separate claims. |
+
+## Embedded data and scratch storage
+
+[`ctx.resources`](../../API.md#ctxresources) and
+[`ctx.workspace`](../../API.md#ctxworkspace) expose checked execution-owned
+views, not arbitrary application buffers. Build admission, byte/scalar bounds,
+lifetimes and numeric capacities have separate contracts. Configured deadlines
+must be supported by the selected provider; Fastly JavaScript rejects request
+deadlines. An injected JavaScript runtime proof does not establish downstream
+Compute packaging or deployed acceptance.
 
 ## JWT and crypto Beta packages
 
@@ -149,24 +164,27 @@ proofs:
   `wasm/test/entities/assert-entities-inspection.cjs`; orchestration boundaries
   in `wasm/test/entities/assert-entities-orchestration-demo.cjs`; and the shared
   four-mode Viceroy corpus in
-  `wasm/test/entities/assert-entities-cross-target.cjs`.
-- **JWT/crypto packages:** the crypto corpus in
-  `packages/crypto/conformance/hs256.json`,
-  `wasm/test/crypto/assert-crypto-cross-target-conformance.cjs`, and
-  `wasm/.test-results/crypto-c4/phase-c-seal.json`; the JWT composition seal in
-  `wasm/.test-results/jwt-d4/jwt-phase-d-seal.json`; and the four-cell,
-  210-execution cross-target seal in
-  `wasm/.test-results/jwt-e4/jwt-phase-e-seal.json`. The Fastly reality tasks
-  execute generated JavaScript and Native provider artifacts locally through
-  `fastly compute serve`; they do not deploy or activate a service.
-  ES256 target alignment is recorded by the six-cell, 228-evaluation matrix in
-  `wasm/.test-results/boundary-h4/es256-six-cell-matrix.json`, including the
-  Fastly JavaScript runtime Wasm under Viceroy.
+  `wasm/test/entities/assert-entities-cross-target.cjs`. Ordinary installed
+  lifecycle coverage is owned by
+  `wasm/test/cli/assert-cli-entities-installed-workflow.cjs`.
+- **Computation calls and MCP:** `wasm/test/callables/assert-callable-public.cjs`,
+  `wasm/test/callables/assert-callable-javascript.cjs`, and
+  `wasm/test/mcp/assert-mcp-native-binding.cjs`.
+- **Embedded data and numeric storage:** `wasm/test/runtime/assert-binary-resource-execution.cjs`
+  and the public resource/workspace contracts linked above.
+- **Fastly forwarding and KV extensions:**
+  `wasm/test/provider/assert-fastly-incoming-body-forwarding.cjs`,
+  `wasm/test/provider/assert-fastly-conditional-kv.cjs`, and
+  `wasm/test/provider/assert-fastly-kv-list-delete-installed.cjs`.
+- **JWT/crypto packages:** the corpus in
+  `packages/crypto/conformance/hs256.json` and
+  `wasm/test/crypto/assert-crypto-cross-target-conformance.cjs`.
+  Candidate-specific reports must come from the exact tested source. A historical
+  seal or an ignored local report path is not current release evidence.
 
-The focused documentation assertion
-`wasm/test/docs/assert-compatibility-matrix.cjs` keeps the matrix header unique,
-checks the public target order, verifies its evidence paths, and compares the
-documented managed-surface rule with the canonical handler-surface registry.
+`wasm/test/docs/assert-compatibility-matrix.cjs`, invoked by the documentation
+regression test, checks matrix structure, current target cells and cited source
+owners. Runtime behavior remains covered by the owning tests above.
 
 ## Related reference
 

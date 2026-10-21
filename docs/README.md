@@ -52,6 +52,8 @@ direction rather than release support.
 - [`@pulse-compute/crypto`](./packages/crypto.md)
 - [`@pulse-compute/jwt`](./packages/jwt.md)
 - [`@pulse-compute/entities`](./packages/entities.md)
+- [`@pulse-compute/mcp`](./packages/mcp.md)
+- [`@pulse-compute/s3`](./packages/s3.md)
 - [All package support tiers](./packages/README.md)
 - [Implementation packages](./packages/implementation-packages.md)
 
@@ -68,7 +70,7 @@ direction rather than release support.
 - [Shell completion](./reference/shell-completion.md)
 - [Compatibility import migration](./guides/compatibility-imports.md) — for projects using older package subpaths.
 - [CLI machine specification](./reference/cli-spec.json)
-- [Project configuration JSON Schema bundle](./reference/project-config.schema.json)
+- [Normalized configuration JSON Schema bundle](./reference/project-config.schema.json) — resolved CLI/provider options; use the authored property map above for `.pulse/config.ts`.
 
 ## 6. Authors and contributors
 

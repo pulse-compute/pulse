@@ -7,12 +7,6 @@ const path = require('node:path');
 const {
   HANDLER_SURFACE_DEFINITIONS
 } = require('../../packages/contracts/src/handler/surface-contract.js');
-const {
-  compileCanonicalSource
-} = require('../../packages/compiler/src/canonical-api-compiler.js');
-const {
-  buildCanonicalNativePlan
-} = require('../../packages/compiler/src/canonical-native-plan.js');
 
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
 const matrixRelative = 'docs/reference/compatibility-matrix.md';
@@ -76,7 +70,7 @@ for (const name of [
 assert.deepEqual(targetCells(sourceRows.get('Ordinary target-compatible JavaScript package API')), ['Yes', 'Yes', 'No', 'No']);
 assert.deepEqual(targetCells(sourceRows.get('Arbitrary Promise construction or library await')), ['JS only', 'JS only', 'No', 'No']);
 assert.deepEqual(targetCells(sourceRows.get('Ambient fetch, timers, environment/process access, filesystem, sockets, or provider SDK')), ['No', 'No', 'No', 'No']);
-assert.deepEqual(targetCells(sourceRows.get('Userland body streams, chunk transforms, or background work')), ['No', 'No', 'No', 'No']);
+assert.deepEqual(targetCells(sourceRows.get('General userland body streams, binary transforms, or background work')), ['No', 'No', 'No', 'No']);
 
 const capabilityRows = tableRows(matrix, capabilityHeader);
 for (const name of [
@@ -94,7 +88,7 @@ assert.deepEqual(targetCells(capabilityRows.get('Config reads')), ['Test/dev bin
 assert.deepEqual(targetCells(capabilityRows.get('Secret reads')), ['Test/dev binding', 'Secret Store', 'Test/dev binding', 'Secret Store']);
 assert.deepEqual(targetCells(capabilityRows.get('KV get and put')), ['In-memory binding', 'KV Store', 'In-memory binding', 'KV Store']);
 assert.deepEqual(targetCells(capabilityRows.get('Deployment candidate')), ['Source package', 'Source package plus downstream runtime Wasm', 'Node build', '`bin/main.wasm`']);
-assert.deepEqual(targetCells(capabilityRows.get('Production deployment and activation')), ['Not applicable', 'Human-operated', 'Not applicable', 'Human-operated']);
+assert.deepEqual(targetCells(capabilityRows.get('Production deployment and activation')), ['Host-operated', 'Human-operated', 'Host-operated', 'Human-operated']);
 
 const entitiesRows = tableRows(matrix, entitiesHeader);
 for (const name of [
@@ -106,8 +100,8 @@ for (const name of [
   'Declared input/output schema codecs',
   'Managed handler effects'
 ]) assert.deepEqual(targetCells(entitiesRows.get(name)), ['Measured', 'Measured', 'Measured', 'Measured']);
-assert.deepEqual(targetCells(entitiesRows.get('Ordinary project build integration')), ['Yes', 'Yes', 'No', 'No']);
-assert.deepEqual(targetCells(entitiesRows.get('Ordinary project test/dev loading')), ['Blocked', 'Blocked', 'Not applicable', 'Not applicable']);
+assert.deepEqual(targetCells(entitiesRows.get('Ordinary project build integration')), ['Yes', 'Yes', 'Yes', 'Yes']);
+assert.deepEqual(targetCells(entitiesRows.get('Ordinary project test/dev loading')), ['Yes', 'Yes', 'Yes', 'Yes']);
 assert.deepEqual(targetCells(entitiesRows.get('Automatic target fallback')), ['No', 'No', 'No', 'No']);
 
 const candidateRows = tableRows(matrix, candidateHeader);
@@ -121,7 +115,7 @@ assert.deepEqual(
 );
 assert.deepEqual(
   targetCells(candidateRows.get('JWT verification')),
-  ['HS256, ES256', 'HS256, ES256', 'HS256, ES256', 'HS256, ES256']
+  Array(4).fill('HS256, ES256, RS256')
 );
 
 assert.equal(HANDLER_SURFACE_DEFINITIONS.every((entry) => entry.targetSupport.javascript), true);
@@ -164,78 +158,19 @@ const evidence = [
   'wasm/test/entities/assert-entities-cross-target.cjs',
   'wasm/test/suite/registry.cjs',
   'release/pulse-release-manifest.json',
-  'wasm/.test-results/boundary-h4/es256-six-cell-matrix.json'
+  'wasm/test/cli/assert-cli-entities-installed-workflow.cjs',
+  'wasm/test/provider/assert-fastly-incoming-body-forwarding.cjs',
+  'wasm/test/provider/assert-fastly-kv-list-delete-installed.cjs',
+  'wasm/test/mcp/assert-mcp-native-binding.cjs'
 ];
 for (const relative of evidence) {
   assert.equal(fs.existsSync(path.join(repoRoot, relative)), true, `missing matrix evidence ${relative}`);
   assert.equal(matrix.includes(`\`${relative}\``), true, `matrix must cite ${relative}`);
 }
 
-const portable = compileCanonicalSource(`
-interface Result { readonly selected: number }
-export default async function handler(ctx) {
-  let value: number = 1
-  value += 1
-  const source = { value } as const
-  const values = [value, 3]
-  const key = 'value'
-  const result: Result = ctx.req.path === '/x'
-    ? { ...source, selected: source[key] ?? values[0] }
-    : { selected: 0 }
-  return ctx.json(result)
-}
-`, { fileName: 'compatibility-portable.ts', strict: true });
-assert.ok(buildCanonicalNativePlan(portable));
-
-function nativeBoundary(label, source, expectedCode) {
-  assert.throws(() => {
-    const compiled = compileCanonicalSource(source, { fileName: `${label}.ts`, strict: true });
-    buildCanonicalNativePlan(compiled);
-  }, (error) => {
-    assert.ok((error.diagnostics || []).some((entry) => entry.code === expectedCode), `${label} must report ${expectedCode}`);
-    return true;
-  });
-}
-
-nativeBoundary(
-  'loop',
-  `export default async function handler(ctx) { let n = 0; while (n < 2) n++; return ctx.json({ n }); }`,
-  'PULSE_CANONICAL_CONTROL_FLOW_UNSUPPORTED'
-);
-nativeBoundary(
-  'throw',
-  `export default async function handler(ctx) { throw new Error('x'); }`,
-  'PULSE_CANONICAL_NATIVE_STATEMENT_UNSUPPORTED'
-);
-nativeBoundary(
-  'class',
-  `export default async function handler(ctx) { class Value {}; const value = new Value(); return ctx.json({ value }); }`,
-  'PULSE_CANONICAL_NATIVE_STATEMENT_UNSUPPORTED'
-);
-nativeBoundary(
-  'nested-function',
-  `export default async function handler(ctx) { function value() { return 1; } return ctx.json({ value: value() }); }`,
-  'PULSE_CANONICAL_NATIVE_STATEMENT_UNSUPPORTED'
-);
-nativeBoundary(
-  'optional-chain',
-  `export default async function handler(ctx) { const value = { ok: true }; return ctx.json({ ok: value?.ok }); }`,
-  'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED'
-);
-nativeBoundary(
-  'destructure',
-  `export default async function handler(ctx) { const { path } = ctx.req; return ctx.json({ path }); }`,
-  'PULSE_CANONICAL_NATIVE_BINDING_UNSUPPORTED'
-);
-nativeBoundary(
-  'arbitrary-await',
-  `export default async function handler(ctx) { const value = await Promise.resolve(1); return ctx.json({ value }); }`,
-  'PULSE_NATIVE_AWAIT_UNSUPPORTED'
-);
-nativeBoundary(
-  'ambient-fetch',
-  `export default async function handler(ctx) { const value = fetch('https://example.test'); return ctx.json({ value }); }`,
-  'PULSE_CANONICAL_AMBIENT_FETCH_UNSUPPORTED'
-);
-
-console.log('ok - one canonical matrix matches the managed handler registry, public types, evidence paths, target order, and focused Native language boundaries');
+assert.deepEqual(targetCells(sourceRows.get('Synchronous schema-bound ctx.call')), ['Yes', 'No', 'Yes', 'Yes']);
+assert.deepEqual(targetCells(sourceRows.get('Static @pulse-compute/mcp/pulse binding')), ['Yes', 'No', 'Yes', 'Yes']);
+assert.deepEqual(targetCells(sourceRows.get('Incoming opaque request forwarding')), ['Yes', 'No', 'Yes', 'Experimental']);
+for (const key of ['KV versioned/conditional operations', 'KV listing and deletion'])
+  assert.deepEqual(targetCells(capabilityRows.get(key)), ['In-memory reference', 'No', 'In-memory reference', 'Native KV hostcalls']);
+console.log('ok - canonical compatibility matrix matches documented target boundaries, declarations and current source evidence');

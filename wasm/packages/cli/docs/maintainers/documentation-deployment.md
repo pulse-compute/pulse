@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-25
-review-by: 2027-01-25
+last-reviewed: 2026-10-21
+review-by: 2027-04-21
 pulse-doc-meta:end -->
 
 # Documentation deployment
@@ -23,7 +23,7 @@ That run is identity evidence, not proof of current disabled state or an idle
 queue. Nathan reports the workflow disabled; this change makes no live-state
 claim and changes no settings or credentials.
 
-Merge the website compatibility PR first. Its guard uses that numeric identity,
+The website delivery guard uses that numeric identity,
 requires a live disabled workflow and no queued, requested, pending, waiting or
 in-progress runs before writes, and rejects unknown state, identity mismatch,
 HTTP 404 or API failure. Deleting a file on `latest` does not retire the writer

@@ -299,9 +299,10 @@ live deployment. Bind the real directory backend separately before deployment.
 `tools-facade.cjs` is an orchestration example, not a complete MCP server. It
 does not add listeners, SSE, sessions, tasks, resources, prompts, sampling,
 authorization, transport negotiation, or protocol lifecycle state to Pulse
-runtime core. A future MCP or tools facade remains an adapter outside the
-entity engine, just as a future Worker/event adapter would bind a different
-request or event protocol without changing entity handler semantics.
+runtime core. The supported [MCP `/pulse` facade](../../docs/packages/mcp.md) is a separate
+package-owned adapter over Entities and dispatches within the same invocation.
+This example demonstrates the smaller tools orchestration boundary; it does
+not replace that MCP implementation.
 
 ## Clean installed acceptance
 

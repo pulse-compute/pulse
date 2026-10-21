@@ -273,3 +273,14 @@ contextDataIntegrity();
   for (const key of Object.keys(packages.remote)) assert(paths.has(`<profile>.node.bindings.packages.<name>.${key}`));
   console.log('ok - authored project config covers reserved/profile keys, normalized provider bindings, nested resources, and linked/legacy anchors');
 }
+
+// Keep the public compatibility audit in the active documentation regression lane.
+require('./assert-compatibility-matrix.cjs');
+{
+  const { DIAGNOSTIC_CATALOG } = require('../../packages/cli/src/diagnostics.js');
+  for (const [code, descriptor] of Object.entries(DIAGNOSTIC_CATALOG)) {
+    assert.equal(typeof descriptor.summary, 'string', `${code}: summary must be prose`);
+    assert(descriptor.summary.trim());
+  }
+  assert(!fs.readFileSync(path.join(ROOT, 'docs/reference/diagnostics.md'), 'utf8').includes('[object Object]'));
+}

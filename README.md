@@ -85,7 +85,8 @@ Pulse currently supports:
 - request method, URL, path, headers, text, and JSON;
 - explicit TypeScript JSON schemas compiled with the project;
 - branching and structured value manipulation;
-- static `Router` authoring with mounted exact, parameter, wildcard, GET, HEAD, and POST routes;
+- schema-bound `ctx.call` computations, embedded binary resources and numeric workspaces on their [documented targets](docs/reference/compatibility-matrix.md);
+- static `Router` authoring with mounted exact, parameter, wildcard, GET, HEAD, POST, PUT, PATCH, and DELETE routes;
 - single, grouped, and dependent outbound fetches;
 - JSON, text, custom, and direct pass-through responses;
 - provider-neutral config, secret, and KV capabilities;
@@ -119,10 +120,10 @@ The public `1.0.0-beta.9` catalog is defined by the release manifest.
 | [`@pulse-compute/provider-fastly`](https://www.npmjs.com/package/@pulse-compute/provider-fastly) | Typed Fastly configuration, Native lowering, JavaScript execution, local conformance, and Compute target generation. |
 | [`@pulse-compute/grip`](https://www.npmjs.com/package/@pulse-compute/grip) | Stateless GRIP framing and request-bound broadcast across supported targets. |
 | [`@pulse-compute/assets`](https://www.npmjs.com/package/@pulse-compute/assets) | JavaScript asset runtime and package-owned Native lookup lowering. |
-| [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto) | Bounded provider-neutral HS256 and ES256 verification. |
-| [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt) | Bounded provider-neutral JWT verification and claims validation. |
+| [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto) | Bounded HS256, ES256 and RS256 verification, plus exact-text SHA-256. |
+| [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt) | Bounded provider-neutral JWT verification, issuance and claims validation. |
 | [`@pulse-compute/entities`](https://www.npmjs.com/package/@pulse-compute/entities) | Statically declared schema-backed operations with the first-party JSON-RPC adapter. |
-| [`@pulse-compute/mcp`](https://www.npmjs.com/package/@pulse-compute/mcp) | Bounded MCP HTTP host integration through the root Fetch handler and `/node` bridge. |
+| [`@pulse-compute/mcp`](https://www.npmjs.com/package/@pulse-compute/mcp) | Static `/pulse` MCP binding with local Entities dispatch, plus separate root Fetch and `/node` host adapters. |
 | [`@pulse-compute/s3`](https://www.npmjs.com/package/@pulse-compute/s3) | Bounded exact-key object reads and writes on supported Node and Fastly Native targets. |
 
 `@pulse-compute/pulse` and `@pulse-compute/runtime` are layered public

@@ -107,10 +107,10 @@ renderer from current Pulse. Future source inventories should use
 `release/documentation-sources.json`; rendered parity and recovery evidence
 belong to website tools and retained artifacts, not a rebuilt Pulse site.
 
-The old writer workflow and deployment simulations remain temporarily because
-the website handoff guard queries that workflow. Supported v1 receipt readers
-still verify all retained bytes; v2 source qualifications cannot authorize that
-writer. Its retirement is a separate next step. See the
+The old writer source and storage-write simulations are retired from Pulse.
+The website handoff guard still queries the historical workflow identity and
+requires it to remain disabled and idle. Supported v1 receipt readers verify
+retained bytes; v2 source qualifications cannot authorize the old writer. See the
 [deployment runbook](./documentation-deployment.md) for the legacy boundary and
 [versioning procedure](./documentation-versioning.md) for tagged source history.
 
