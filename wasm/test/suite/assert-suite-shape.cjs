@@ -66,6 +66,7 @@ const externalTasks = new Set([
   'mcp-wire-proof',
   'mcp-installed',
   'mcp-fastly-local-installed', // 10A explicit local provider qualification; not a portable seal task.
+  'mcp-fastly-clients-installed', // 10B explicit pinned-client qualification; not a portable seal task.
   // PMCP-01 qualifies the private packed surface before PMCP-06 release membership.
   'mcp-package',
   'mcp-codex',

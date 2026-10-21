@@ -14,7 +14,8 @@ const { packageContext } = require('./package-context.cjs');
 const { pnpmInvocation } = require('../../../scripts/pnpm-toolchain.cjs');
 const root = path.resolve(__dirname, '../../..');
 const fastlyLocal = process.argv[2] === '--fastly-local';
-assert(process.argv.length === 2 || (process.argv.length === 3 && fastlyLocal), 'Usage: assert-mcp-installed.cjs [--fastly-local]');
+const fastlyClients = process.argv[2] === '--fastly-clients';
+assert(process.argv.length === 2 || (process.argv.length === 3 && (fastlyLocal || fastlyClients)), 'Usage: assert-mcp-installed.cjs [--fastly-local|--fastly-clients]');
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-mcp-installed-'));
 assert.ok(!temporary.startsWith(root + path.sep), 'installed consumer must be outside the checkout');
 const consumer = path.join(temporary, 'consumer');
@@ -39,7 +40,8 @@ const report = { version: 'pulse.mcp-installed-acceptance.v2', status: 'running'
   workingDiffSha256: hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })),
   acceptanceScriptSha256: hash(fs.readFileSync(__filename)),
   node: process.version, fixture: 'examples/12-pulse-context-mcp', applicationDelivery: 'exact-cli-tarball', lifecycleScripts: false,
-  providerRealityValidated: false, qualificationMode: fastlyLocal ? 'fastly-local' : 'installed-node-and-clients', results: [] };
+  providerRealityValidated: false, qualificationMode: fastlyClients ? 'fastly-clients' : fastlyLocal ? 'fastly-local' : 'installed-node-and-clients', results: [] };
+const clientSuite = fastlyClients ? require('./context-fastly-clients.cjs').createSuite({ temporary, root, run, env, output: path.join(reportDir, 'fastly-clients') }) : null;
 
 function saveReport() {
   fs.mkdirSync(reportDir, { recursive: true });
@@ -147,10 +149,11 @@ async function main() {
     } finally { await new Promise(resolve => registry.server.close(resolve)); }
     const before = verifyInstalled(manifest); report.installed = before;
     report.consumerLockSha256 = hash(fs.readFileSync(path.join(consumer, 'package-lock.json')));
-    if (fastlyLocal) {
+    if (fastlyLocal || fastlyClients) {
+      if (clientSuite) await clientSuite.prepare();
       report.fastlyLocalReport = path.join(reportDir, 'fastly-local/qualification.json'); saveReport();
       report.fastlyLocal = await require('./context-fastly-local.cjs').qualify({ consumer, temporary, root, run, env,
-        output: path.join(reportDir, 'fastly-local'), verifyCopy: directory => verifyInstalled(manifest, directory) });
+        output: path.join(reportDir, 'fastly-local'), verifyCopy: directory => verifyInstalled(manifest, directory), clientSuite });
       report.providerRealityValidated = true;
       assert.deepEqual(verifyInstalled(manifest), before); report.installed.unchanged = true;
       assertSourceUnchanged();
@@ -183,6 +186,7 @@ async function main() {
     report.status = 'passed'; console.log('ok - exact packed installed Pulse context journey');
   } catch (error) { report.status = 'failed'; report.error = clean(error.stack || String(error)); throw error; }
   finally {
+    if (clientSuite) { clientSuite.finish(report.status, report.error); report.clients = clientSuite.report; }
     try { fs.rmSync(temporary, { recursive: true, force: true }); report.cleanup = 'passed'; }
     catch (error) { report.status = 'failed'; report.cleanup = 'failed'; report.cleanupError = clean(String(error)); process.exitCode = 1; }
     report.elapsedMs = performance.now() - startedAt; saveReport(); console.log(`acceptance report - ${reportFile}`);

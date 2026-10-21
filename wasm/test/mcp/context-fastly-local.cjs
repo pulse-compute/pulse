@@ -38,7 +38,7 @@ function inspectMemory(bytes) {
   }
   throw Error('Missing defined Wasm memory');
 }
-async function qualify({ consumer, temporary, root, run, env, output, verifyCopy }) {
+async function qualify({ consumer, temporary, root, run, env, output, verifyCopy, clientSuite }) {
   fs.mkdirSync(output, { recursive: true });
   const report = { schemaVersion: 'pulse.context-fastly-local.v1', status: 'running',
     providerReality: 'actual-local-fastly-cli-and-viceroy', deployed: false, injectedAbiExecution: false,
@@ -96,6 +96,7 @@ async function qualify({ consumer, temporary, root, run, env, output, verifyCopy
       }
       assert.deepEqual(verifyCopy(app), installed);
       const item = { name, configSha256, moduleSha256: hash(wasm), moduleBytes: wasm.length, compileMs: performance.now() - before,
+        applicationEntrySha256: hash(fs.readFileSync(path.join(app, 'src/index.ts'))),
         receipts, imports, memory: { ...inspectMemory(wasm), runtimePeakBytes: null, liveAllocationCount: null, retainedBudgetBytes: null },
         servingDirectory: directory, sourceFreeServingDirectory: true, configuredBackends: 0, dynamicBackends: false,
         buildReadGuard: 'trusted-tooling content reads and CommonJS resolution restricted to installed consumer; not a hostile-code sandbox' };
@@ -118,7 +119,7 @@ async function qualify({ consumer, temporary, root, run, env, output, verifyCopy
         report.cases.push({ variant: variant.item.name, label, status: response.status, bytes: response.body.length, sha256: hash(response.body), wallMs });
         latencies.push(wallMs); return response;
       }
-      try { await callback(exchange); }
+      try { await callback(exchange, active.baseUrl + '/mcp'); }
       finally {
         variant.item.launch.rssAfter = observedRss(active.child.pid);
         variant.item.requests = latencies.length;
@@ -164,6 +165,22 @@ async function qualify({ consumer, temporary, root, run, env, output, verifyCopy
     const cases = expectations(consumer, expectedDir, corpus, manifest, extraCases);
     report.expected = { cases: cases.length, sha256: hash(JSON.stringify(cases)), oracle: 'independent legacy handlers and lexical scan' };
     const actual = await build('shipped');
+    if (clientSuite) {
+      const selected = toolNames.map(tool => cases.find(c => c.tool === tool && c.expected.status === 'ok'));
+      assert(selected.every(Boolean));
+      await serve(actual, (exchange, endpoint) => clientSuite.qualify({ profile: protocol, endpoint, exchange, cases: selected, artifact: actual.item }));
+      const legacy = await build('legacy-opt-in', app => {
+        const file = path.join(app, 'src/index.ts'), source = fs.readFileSync(file, 'utf8');
+        assert.equal(source.split('const server = mcp({').length, 2);
+        fs.writeFileSync(file, source.replace('const server = mcp({', "const server = mcp({\n  legacyProtocol: '2025-06-18',"));
+      });
+      await serve(legacy, (exchange, endpoint) => clientSuite.qualify({ profile: '2025-06-18', endpoint, exchange, cases: selected, artifact: legacy.item }));
+      assert.deepEqual(verifyCopy(consumer), baselineInstalled);
+      report.installedUnchanged = true;
+      report.coverageComplete = true;
+      clientSuite.assertPassed();
+      report.status = 'passed'; save(); return report;
+    }
     await serve(actual, async exchange => {
       await tools(exchange, cases);
       const base = request('tools/list');
