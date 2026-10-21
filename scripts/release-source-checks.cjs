@@ -9,7 +9,7 @@ const crypto = require('node:crypto');
 const { candidateIdentity } = require('./release-feature-acceptance.cjs');
 const { atomicJson, inputIdentity } = require('./release-recovery.cjs');
 const { fingerprint } = require('./release-checkpoints.cjs');
-const SCHEMA = 'pulse.release-source-checks.v2';
+const SCHEMA = 'pulse.release-source-checks.v3';
 const LEGACY_SCHEMA = 'pulse.release-source-checks.v1';
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 
@@ -24,6 +24,7 @@ function check(root, file) {
   const started = Date.now();
   const candidate = candidateIdentity(root);
   const identity = inputs(root);
+  const contextFreshness = require('./release-context-freshness.cjs').check(root, candidate);
   // The release validator owns maintainer, publication, generated references,
   // source links, metadata, package/catalog consistency without rendering.
   require('./documentation-ownership.cjs').synchronizeDocumentationMetadata({ repoRoot: root, write: false });
@@ -32,7 +33,7 @@ function check(root, file) {
   assert.deepEqual(candidateIdentity(root), candidate, 'Source changed during source checks');
   assert.deepEqual(inputs(root), identity, 'Inputs changed during source checks');
   const report = { schemaVersion: SCHEMA, status: 'passed', repoRoot: fs.realpathSync(root),
-    candidate, inputs: identity, snippets, documentation, durationMs: Date.now() - started };
+    candidate, inputs: identity, contextFreshness, snippets, documentation, durationMs: Date.now() - started };
   assertPackageSourceChecks(report);
   atomicJson(file, report);
   return report;
@@ -40,8 +41,9 @@ function check(root, file) {
 
 // Portable structural proof; checkout/input authentication stays in verify().
 function assertPackageSourceChecks(report) {
-  assert.equal(report.schemaVersion, SCHEMA, 'New qualification requires v2 source checks');
+  assert.equal(report.schemaVersion, SCHEMA, 'New qualification requires v3 source checks');
   assert.equal(report.status, 'passed');
+  require('./release-context-freshness.cjs').validate(report.contextFreshness, report.candidate);
   for (const result of [report.snippets, report.documentation, report.documentation?.maintenance,
     report.documentation?.maintenance?.publication]) assert.equal(result?.status, 'ok', 'Incomplete source checks');
   assert.equal(report.documentation.validationKind, 'package-source', 'Package source validation required');
@@ -55,21 +57,19 @@ function verify(root, file, expectedSha256) {
   const bytes = fs.readFileSync(file);
   assert.equal(hash(bytes), expectedSha256, 'Source-check receipt changed');
   const report = JSON.parse(bytes);
-  assert([SCHEMA, LEGACY_SCHEMA].includes(report.schemaVersion), 'Unsupported source-check schema');
-  assert.equal(report.status, 'passed');
+  if (report.schemaVersion === LEGACY_SCHEMA) {
+    assert.equal(report.status, 'passed');
+    for (const result of [report.snippets, report.documentation, report.documentation?.maintenance,
+      report.documentation?.maintenance?.publication]) assert.equal(result?.status, 'ok', 'Incomplete source checks');
+    assert(report.documentation?.site?.generatedFiles > 0, 'Source checks must include the site');
+    const docs = report.documentationCandidate;
+    assert(docs, 'Missing retained documentation');
+    assert.deepEqual(require('./release-recovery.cjs').describeArtifact(docs.directory),
+      { kind: docs.kind, sha256: docs.sha256 }, 'Validated documentation changed');
+  } else assertPackageSourceChecks(report);
   assert.equal(report.repoRoot, fs.realpathSync(root), 'Source checks belong to another checkout');
   assert.deepEqual(report.candidate, candidateIdentity(root), 'Source checks belong to another candidate');
   assert.deepEqual(report.inputs, inputs(root), 'Source-check inputs changed');
-  for (const result of [report.snippets, report.documentation, report.documentation?.maintenance,
-    report.documentation?.maintenance?.publication]) assert.equal(result?.status, 'ok', 'Incomplete source checks');
-  if (report.schemaVersion === SCHEMA) assertPackageSourceChecks(report);
-  else {
-    assert(report.documentation.site?.generatedFiles > 0, 'Source checks must include the site');
-    const docs = report.documentationCandidate;
-    assert(docs, 'Source checks must retain the validated docs candidate');
-    assert.deepEqual(require('./release-recovery.cjs').describeArtifact(docs.directory),
-      { kind: docs.kind, sha256: docs.sha256 }, 'Validated documentation changed');
-  }
   return report;
 }
 

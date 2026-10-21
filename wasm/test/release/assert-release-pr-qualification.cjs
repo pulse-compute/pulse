@@ -87,7 +87,7 @@ async function main() {
     featureAcceptance: { separateGates: [{ task: 'kv-k4', status: 'not-run' }] } };
   const checksFile = path.join(root, 'attempt/source-checks.json');
   fs.mkdirSync(path.dirname(checksFile), { recursive: true });
-  const sourceChecks = { schemaVersion: 'pulse.release-source-checks.v2', status: 'passed', candidate: identity.candidate,
+  const sourceChecks = { contextFreshness: require('./context-freshness-fixture.cjs').freshness(identity.candidate), schemaVersion: require('../../../scripts/release-source-checks.cjs').SCHEMA, status: 'passed', candidate: identity.candidate,
     snippets: { status: 'ok' }, documentation: { status: 'ok', validationKind: 'package-source',
       maintenance: { status: 'ok', publication: { status: 'ok' } } } };
   fs.writeFileSync(checksFile, JSON.stringify(sourceChecks));
@@ -203,6 +203,7 @@ async function main() {
   const calls = [];
   Module._load = function(request, parent, ...rest) {
     if (parent?.filename.endsWith('/scripts/release-source-checks.cjs')) {
+      if (request === './release-context-freshness.cjs') return { ...require('../../../scripts/release-context-freshness.cjs'), check(_root, candidate) { calls.push('context'); return require('./context-freshness-fixture.cjs').freshness(candidate); } };
       if (request === './documentation-deployment.cjs') throw new Error('v2 source checks must not seal documentation');
       if (request === './documentation-ownership.cjs') return { synchronizeDocumentationMetadata() { calls.push('metadata'); } };
       if (request.endsWith('/sync-doc-snippets.cjs')) return { synchronizeDocSnippets() { calls.push('snippets'); return { status: 'ok' }; } };
@@ -213,7 +214,7 @@ async function main() {
   try {
     const file = path.join(root, 'source-checks.json'); source.check(repo, file);
     const bytes = fs.readFileSync(file), digest = crypto.createHash('sha256').update(bytes).digest('hex');
-    source.verify(repo, file, digest); assert.deepEqual(calls, ['metadata', 'snippets', 'documentation']);
+    source.verify(repo, file, digest); assert.deepEqual(calls, ['context', 'metadata', 'snippets', 'documentation']);
     const report = JSON.parse(bytes);
     assert.equal(report.schemaVersion, source.SCHEMA);
     assert.equal(Object.hasOwn(report, 'documentationCandidate'), false);

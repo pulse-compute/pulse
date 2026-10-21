@@ -116,7 +116,7 @@ async function main() {
     fs.writeFileSync(files.docs, legacyDocs);
 
     // v2 authenticates package source checks instead of a rendered candidate.
-    const checked = { schemaVersion: 'pulse.release-source-checks.v2', status: 'passed', candidate, repoRoot: repo,
+    const checked = { contextFreshness: require('./context-freshness-fixture.cjs').freshness(candidate), schemaVersion: require('../../../scripts/release-source-checks.cjs').SCHEMA, status: 'passed', candidate, repoRoot: repo,
       snippets: { status: 'ok' }, documentation: { status: 'ok', validationKind: 'package-source',
         maintenance: { status: 'ok', publication: { status: 'ok' } } } };
     const checksFile = path.join(directory, 'source-checks.json'); write(checksFile, checked);
@@ -151,7 +151,7 @@ async function main() {
     const wrongHash = hash(fs.readFileSync(checksFile));
     write(files.seal, { ...packageSeal, sourceChecks: { sha256: wrongHash } });
     write(files.receipt, { ...packageReceipt, sourceChecksSha256: wrongHash, sealSha256: hash(fs.readFileSync(files.seal)) });
-    assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection }), /Package source checks differ/);
+    assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection }), /Package source checks differ|freshness candidate differs/);
     write(checksFile, checked); write(files.seal, packageSeal);
     write(files.receipt, packageReceipt); write(files.docs, { source });
     assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection }), /cannot contain documentation/);

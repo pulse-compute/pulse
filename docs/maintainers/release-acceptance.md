@@ -279,6 +279,23 @@ TypeScript build, the complete release profile, mandatory installed features,
 and external Fastly proof when required. Workspace and installed checks cannot
 be pooled manually into a passing release claim.
 
+The v3 source-check receipt includes an independent, read-only reconstruction
+of the context corpus, vectors and generated application through the existing
+context builder. It binds the clean candidate tree, producer source/configuration,
+allowlist, lockfile, manifest, generated output hashes and complete release and
+installed-feature selections. Missing, stale, extra or corrupt context outputs
+fail before packaging; checks never regenerate candidate files.
+
+Packing compares every file in the CLI-shipped context application against this
+verified inventory, then records its freshness digest alongside the exact package
+closure. Standalone packing performs its own reconstruction, including with
+`--skip-build`. The controller requires the complete installed-feature runner,
+the `mcp-installed` receipt and matching tarball hashes before recording
+`pulse.release-context-qualification.v1`. Evidence aggregation rechecks retained
+receipt and tarball bytes and copies the source-check receipt, pack manifest and
+installed runner into the bundle. It does not refresh data after sealing. Fast PR
+checks remain development evidence; they do not replace installed qualification.
+
 Complete example workflows include default and experimental Native-size
 assertions. Run the size-only command for diagnosis, not as a replacement:
 
