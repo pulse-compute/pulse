@@ -70,7 +70,7 @@ export function computeSearch(ctx: PulseComputationContext, input: PulseReadonly
     if(duplicate===0){qids[termCount]=found;termCount+=1;}
   }
   if(unknown===1){if(offset>0)return {...empty,status:'invalid-input',error:{code:'invalid-offset',message:'Offset exceeds the search match count.'}};return empty;}
-  
+
   const tCount=termCount,wantedOffset=offset,wantedLimit=limit;
   let rows=vector.readU32LE(20),rowDirectory=64+vector.readU32LE(24)*8;
   let entryDirectory=rowDirectory+rows*8;

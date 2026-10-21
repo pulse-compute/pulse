@@ -48,7 +48,8 @@ async function main(synthetic) {
     set(diagnostics[1].id,JSON.stringify({code:diagnostics[1].id.slice(11),category:'async-effect',summary:'Exact 雪😀\n summary',remediation:['first','second \t check']}));
     // Five equal-score rows, scalar-boundary excerpts and a page whose complete
     // duplicated MCP envelope exceeds 24 KiB while each metadata row is admitted.
-    const tied=built.corpus.records.filter(r=>r.category==='guide').slice(-5);
+    const starterIds=new Set(JSON.parse(fs.readFileSync(path.join(root,'scripts/pulse-context-start.json'))).goals.flatMap(g=>g.contracts).concat(['start/requirements','command/init','command/doctor','command/test','command/build']));
+    const tied=built.corpus.records.filter(r=>r.category==='guide'&&!starterIds.has(r.id)).slice(-5);
     assert.equal(tied.length,5);
     for(const [i,r] of tied.entries()){
       r.title='"'.repeat(1200);
