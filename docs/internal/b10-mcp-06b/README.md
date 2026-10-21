@@ -1,5 +1,7 @@
 # B10-MCP-06B — retrieval quality and whole-request callable cost
 
+The subsequent [latest reconciliation](./merge-latest/README.md) regenerates the combined 264-record corpus and records fresh passing focused checks. Measurements below remain bound to their original revisions.
+
 ## Outcome
 
 [PR #471](https://github.com/pulse-compute/pulse/pull/471) implements [#452](https://github.com/pulse-compute/pulse/issues/452). The final **24/24 frozen cases pass**: six exact names at rank one, six workflow questions and six filtered questions with relevant top-five citations, and six negative/ambiguity cases. All admitted production query pages match an independent direct-scanning/sort oracle, including counts, ordering, terminal/invalid offsets and exact citation/excerpt fields. V1/v2 outcomes and scores are retained; there are **0 relevance-rank declines** on the corrected corpus.
