@@ -40,6 +40,10 @@ async function main() {
   const exactKey = '雪'.repeat(341) + 'a'; ref.kv('bounded').put(exactKey, null);
   assert.deepEqual(await ref.kv('bounded').list({ limit: 1, prefix: exactKey }), { status: 'listed', keys: [exactKey], cursor: null });
   assert.deepEqual(await ref.kv('bounded').delete(exactKey), { status: 'deleted' });
+  const legacy = ref.kv('legacy'); legacy.put('\ud800', 1); legacy.put('\ufffd', 2);
+  assert.deepEqual(await legacy.delete('\ufffd'), { status: 'deleted' });
+  assert.equal(legacy.get('\ud800'), 1); assert.equal(legacy.get('\ufffd'), undefined);
+  assert.deepEqual(await legacy.list({ limit: 1, prefix: '\ufffd' }), { status: 'listed', keys: [], cursor: null });
   const effect = host.admitConditionalKv({ kind: 'kv.list', namespace: 'n', options: { limit: 1, prefix: 'private/' } });
   const bad = [null, { status: 'listed', keys: ['other'], cursor: null }, { status: 'listed', keys: ['private/a', 'private/b'], cursor: null }, { status: 'listed', keys: [], cursor: '' }, { status: 'listed', keys: [], cursor: null, extra: true }];
   const keys = []; Object.defineProperty(keys, 0, { enumerable: true, get() { accesses++; return 'private/a'; } }); bad.push({ status: 'listed', keys, cursor: null });

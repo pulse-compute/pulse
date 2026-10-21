@@ -10,8 +10,8 @@ const mock = require('../../../packages/provider-fastly/src/testing/native-platf
 const { createConditionalKvAuthority } = require('../../../packages/provider-fastly/src/testing/conditional-kv-host');
 const codec = require('../../../packages/runtime/src/host');
 const fileName = path.join(__dirname, '../kv/list-delete/consumer.ts');
-function compile() {
-  const compiled = compileCanonicalSource(fs.readFileSync(fileName, 'utf8'), { fileName, strict: false, schemaBundle: buildCanonicalSchemaBundle([], { maxBytes: 262144 }) });
+function compile(source = fs.readFileSync(fileName, 'utf8')) {
+  const compiled = compileCanonicalSource(source, { fileName, strict: false, schemaBundle: buildCanonicalSchemaBundle([], { maxBytes: 262144 }) });
   return platform.compileFastlyNativePlatformCapabilitiesPlan(buildCanonicalNativePlan(compiled), { cwd: path.resolve(__dirname, '../../..'), bindings: { kv: { catalog: 'catalog' } } });
 }
 function main() {
@@ -19,6 +19,21 @@ function main() {
   assert.equal(native.manifest.policy.javascriptRuntime, false);
   for (const name of ['list', 'list_wait', 'delete', 'delete_wait']) assert.ok(native.inspection.imports.some(x => x.module === 'fastly_kv_store' && x.name === name));
   const authority = createConditionalKvAuthority(); authority.stores.set('catalog', new Map());
+  // Final Wasm imports must follow the selected operation. Adding list/delete
+  // cannot require their hostcalls in an existing read/write-only application.
+  for (const [expression, imports, status] of [
+    ["getVersioned('missing')", ['lookup', 'lookup_wait_v2', 'open'], 'not-found'],
+    ["insertIfAbsent('created', null)", ['insert', 'insert_wait', 'open'], 'stored'],
+    ["compareAndSwap('missing', 'fastly-kv-v1:0000000000000000', null)", ['insert', 'insert_wait', 'open'], 'conflict'],
+    ["delete('missing')", ['delete', 'delete_wait', 'open'], 'not-found'],
+    ["list({limit:1,prefix:'missing/'})", ['list', 'list_wait', 'open'], 'listed']
+  ]) {
+    const selected = compile(`export default async function h(ctx) { const result = await ctx.kv('catalog').${expression}; return ctx.json(result); }`);
+    assert.deepEqual(selected.inspection.imports.filter(x => x.module === 'fastly_kv_store').map(x => x.name).sort(), imports.sort());
+    const result = mock.executeFastlyNativePlatformCapabilities(selected, { conditionalKv: { authority } });
+    assert.equal(result.response.status, 200); assert.equal(JSON.parse(result.response.body).status, status); count++;
+  }
+  authority.stores.get('catalog').clear();
   function run(command, onCall = () => {}) {
     const calls = [];
     const result = mock.executeFastlyNativePlatformCapabilities(native, {

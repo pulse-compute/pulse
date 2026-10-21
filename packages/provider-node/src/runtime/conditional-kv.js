@@ -13,7 +13,9 @@ function createNodeKvReference(options = {}) {
   if (sequence < 0n || sequence >= (1n << 128n)) throw new TypeError('Node KV generation sequence is out of range.');
   const stores = new Map(), records = new Map(), indexes = new Map();
   const cursorSecret = randomBytes(32);
-  const compare = (a, b) => Buffer.compare(Buffer.from(a), Buffer.from(b));
+  // Legacy put accepts arbitrary JS strings. Distinct malformed surrogate keys
+  // can encode to identical replacement bytes; retain an exact-key tie break.
+  const compare = (a, b) => Buffer.compare(Buffer.from(a), Buffer.from(b)) || (a < b ? -1 : a > b ? 1 : 0);
   function lowerBound(keys, key, exclusive = false) {
     let low = 0, high = keys.length;
     while (low < high) { const mid = (low + high) >>> 1, order = compare(keys[mid], key); if (order < 0 || exclusive && order === 0) low = mid + 1; else high = mid; }

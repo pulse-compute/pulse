@@ -162,10 +162,11 @@ function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyV
   __kv_deadline[index] = start + i64(__KV_timeoutMs) * 1000000;
   if (__kv_request_deadline >= 0 && __kv_request_deadline < __kv_deadline[index]) __kv_deadline[index] = __kv_request_deadline;
   const kind = __pulse_fastly_effect_kind(index), key = __pulse_fastly_value(__pulse_fastly_payload_field(payload, 'key'));
-  const listConfig = new StaticArray<i32>(6);
+  let listConfig: StaticArray<i32> | null = null;
   let listMask = 0;
-  if (kind == 23) {
-    listMask = __kv_list_config(index, payload, listConfig);
+  if (__KV_HAS_LIST && kind == 23) {
+    listConfig = new StaticArray<i32>(6);
+    listMask = __kv_list_config(index, payload, listConfig!);
     if (listMask < 0) { __kv_fail(index, listMask == -2 ? 'invalid-cursor' : 'invalid-options'); return; }
   } else {
     if (key.kind != PULSE_VALUE_STRING || !__kv_key(key.text)) { __kv_fail(index, 'invalid-key'); return; }
@@ -178,7 +179,7 @@ function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyV
     __kv_private(token.text); generation = __kv_generation(token.text);
   }
   let wire = '';
-  if (kind == 16 || kind == 17) {
+  if (__KV_HAS_WRITE && (kind == 16 || kind == 17)) {
     const encoder = new __KvEncoder(); const json = encoder.encode(__pulse_fastly_payload_field(payload, 'value'));
     if (encoder.reason.length) { __kv_fail(index, encoder.reason); return; }
     // Immutable string snapshot exists before any binding/body/dispatch hostcall.
@@ -190,22 +191,22 @@ function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyV
   if (fastly_kv_store_open(changetype<usize>(name), name.byteLength, changetype<usize>(storeHandle)) != 0) { __kv_fail(index, 'configuration'); return; }
   if (__kv_expired(index)) return;
   const keyBytes = __pulse_fastly_utf8(key.text), pending = new StaticArray<i32>(1); let status: i32;
-  if (kind == 23) {
+  if (__KV_HAS_LIST && kind == 23) {
     const options = __pulse_fastly_value(__pulse_fastly_payload_field(payload, 'options'));
     const prefixBytes = __pulse_fastly_utf8(__kv_list_prefixes[index]);
     const cursor = __pulse_fastly_value(__pulse_fastly_payload_field(options, 'cursor'));
     const cursorBytes = __pulse_fastly_utf8(cursor.kind == PULSE_VALUE_STRING ? cursor.text : '');
-    listConfig[1] = i32(changetype<usize>(cursorBytes)); listConfig[2] = cursorBytes.byteLength;
-    listConfig[4] = i32(changetype<usize>(prefixBytes)); listConfig[5] = prefixBytes.byteLength;
-    status = fastly_kv_store_list(storeHandle[0], listMask, changetype<usize>(listConfig), changetype<usize>(pending));
-  } else if (kind == 22) {
+    listConfig![1] = i32(changetype<usize>(cursorBytes)); listConfig![2] = cursorBytes.byteLength;
+    listConfig![4] = i32(changetype<usize>(prefixBytes)); listConfig![5] = prefixBytes.byteLength;
+    status = fastly_kv_store_list(storeHandle[0], listMask, changetype<usize>(listConfig!), changetype<usize>(pending));
+  } else if (__KV_HAS_DELETE && kind == 22) {
     const config = new StaticArray<i32>(1);
     __kv_dispatched[index] = true;
     status = fastly_kv_store_delete(storeHandle[0], changetype<usize>(keyBytes), keyBytes.byteLength, 0, changetype<usize>(config), changetype<usize>(pending));
-  } else if (kind == 15) {
+  } else if (__KV_HAS_READ && kind == 15) {
     const config = new StaticArray<i32>(1);
     status = fastly_kv_store_lookup(storeHandle[0], changetype<usize>(keyBytes), keyBytes.byteLength, 0, changetype<usize>(config), changetype<usize>(pending));
-  } else {
+  } else if (__KV_HAS_WRITE) {
     const body = new StaticArray<i32>(1), written = new StaticArray<i32>(1);
     if (fastly_http_body_new(changetype<usize>(body)) != 0) { __kv_fail(index, 'transport'); return; }
     if (__kv_expired(index)) { __kv_close(body[0]); return; }
@@ -221,7 +222,7 @@ function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyV
     // Insert takes ownership on success. On error the body may already be consumed;
     // best-effort close cannot turn uncertain acceptance into rejection.
     if (status != 0) __kv_close(body[0]);
-  }
+  } else { __kv_fail(index, 'protocol'); return; }
   if (status != 0) { __kv_fail(index, kind == 23 && status == 2 && (listMask & 2) != 0 ? 'invalid-cursor' : 'transport'); return; }
   __pulse_fastly_pending[index] = pending[0]; __pulse_fastly_pending_mode[index] = PULSE_FASTLY_PENDING_ASYNC;
 }
@@ -241,7 +242,7 @@ function __kv_utf8(data: Uint8Array, length: i32): bool {
 // scratch buffer. Only the written prefix is inspected, including after errors.
 @lazy let __kv_read_buffer: Uint8Array | null = null;
 function __kv_read(index: i32, body: i32, generation: u64): i32 {
-  const isList = __pulse_fastly_effect_kind(index) == 23, max = isList ? __KV_envelopeBytes : __KV_wireBytes;
+  const isList = __KV_HAS_LIST && __pulse_fastly_effect_kind(index) == 23, max = isList ? __KV_envelopeBytes : __KV_wireBytes;
   if (__kv_read_buffer === null || __kv_read_buffer!.length < max + 1) __kv_read_buffer = new Uint8Array(max + 1);
   const buffer = __kv_read_buffer!, written = new StaticArray<i32>(1); let count = 0;
   while (true) {
@@ -300,8 +301,8 @@ function __kv_wait(index: i32): i32 {
   // teardown; never call an unready wait just to drain it, and never retry.
   const ready = __kv_ready(index, pending); if (ready <= 0) return __kv_ready_failure(index, ready);
   const error = new StaticArray<i32>(1), kind = __pulse_fastly_effect_kind(index);
-  if (kind != 15 && kind != 23) {
-    const status = kind == 22 ? fastly_kv_store_delete_wait(pending, changetype<usize>(error)) : fastly_kv_store_insert_wait(pending, changetype<usize>(error));
+  if ((__KV_HAS_WRITE || __KV_HAS_DELETE) && kind != 15 && kind != 23) {
+    const status = __KV_HAS_DELETE && kind == 22 ? fastly_kv_store_delete_wait(pending, changetype<usize>(error)) : __KV_HAS_WRITE ? fastly_kv_store_insert_wait(pending, changetype<usize>(error)) : 1;
     if (status != 0) return __kv_failure(index, 'transport');
     const remaining = __kv_remaining(index); if (remaining <= 0) return __kv_failure(index, remaining == 0 ? 'timeout' : 'unavailable');
     if (kind == 22 && (error[0] == 1 || error[0] == 3)) return __kv_result(error[0] == 1 ? 'deleted' : 'not-found');
@@ -311,7 +312,7 @@ function __kv_wait(index: i32): i32 {
     return __kv_failure(index, error[0] == 6 ? 'unavailable' : 'protocol');
   }
   const body = new StaticArray<i32>(1), metadata = new Uint8Array(2000), written = new StaticArray<i32>(1), generation = new StaticArray<u64>(1);
-  const status = kind == 23 ? fastly_kv_store_list_wait(pending, changetype<usize>(body), changetype<usize>(error)) : fastly_kv_store_lookup_wait_v2(pending, changetype<usize>(body), metadata.dataStart, metadata.length, changetype<usize>(written), changetype<usize>(generation), changetype<usize>(error));
+  const status = __KV_HAS_LIST && kind == 23 ? fastly_kv_store_list_wait(pending, changetype<usize>(body), changetype<usize>(error)) : __KV_HAS_READ ? fastly_kv_store_lookup_wait_v2(pending, changetype<usize>(body), metadata.dataStart, metadata.length, changetype<usize>(written), changetype<usize>(generation), changetype<usize>(error)) : 1;
   if (status != 0) return __kv_failure(index, 'transport');
   if (error[0] != 1) {
     const remaining = __kv_remaining(index); if (remaining <= 0) return __kv_failure(index, remaining == 0 ? 'timeout' : 'unavailable');
@@ -325,6 +326,6 @@ function __kv_wait(index: i32): i32 {
 
 function __pulse_fastly_kv_conditional_wait(index: i32): i32 {
   const result = __kv_wait(index);
-  __kv_list_prefixes[index] = ''; __kv_list_limits[index] = 0;
+  if (__KV_HAS_LIST) { __kv_list_prefixes[index] = ''; __kv_list_limits[index] = 0; }
   __pulse_fastly_deep_freeze(result); return result;
 }
