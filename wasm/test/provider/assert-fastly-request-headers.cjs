@@ -57,7 +57,9 @@ export default app;`);
         requestHeaderPageBytes:4, requestHeaderFault: call => call.kind === 'values' && call.cursor > 0 ? {status:1} : undefined,
       }), error => {
         assert.equal(error.detail.errorStage,24);
-        assert.ok(!error.detail.trace.some(x => x.module === 'fastly_kv_store' || x.name === 'send_downstream'));
+        assert.deepEqual(error.detail.trace.filter(x => x.name === 'status_set').map(x => x.status), [500]);
+        assert.equal(error.detail.trace.filter(x => x.name === 'send_downstream').length, 1);
+        assert.ok(!error.detail.trace.some(x => x.module === 'fastly_kv_store'));
         return true;
       }); checks++;
       assert.equal(run(Array.from({length:256},()=>['x','v'])).response.status,200);
@@ -79,7 +81,9 @@ export default app;`);
           assert.throws(() => run([['x-one','value']], {requestHeaderFault: call => call.kind === kind ? fault : undefined}), error => {
             assert.equal(error.detail.lastError,1003);
             assert.equal(error.detail.errorStage,24);
-            assert.ok(!error.detail.trace.some(x => x.module === 'fastly_kv_store' || x.name === 'send_downstream'), 'failed snapshot cannot reach storage or response');
+            assert.deepEqual(error.detail.trace.filter(x => x.name === 'status_set').map(x => x.status), [500]);
+            assert.equal(error.detail.trace.filter(x => x.name === 'send_downstream').length, 1);
+            assert.ok(!error.detail.trace.some(x => x.module === 'fastly_kv_store'), 'failed snapshot cannot reach storage');
             return true;
           }); checks++;
         }
@@ -87,7 +91,9 @@ export default app;`);
       for (const headers of [Array.from({length:257},(_,i)=>['x-'+i,'v']), Array.from({length:257},()=>['x','v']), [['x','v'.repeat(65534)]]]) {
         assert.throws(() => run(headers), error => {
           assert.equal(error.detail.errorStage,24);
-          assert.ok(!error.detail.trace.some(x => x.module === 'fastly_kv_store' || x.name === 'send_downstream'));
+          assert.deepEqual(error.detail.trace.filter(x => x.name === 'status_set').map(x => x.status), [500]);
+          assert.equal(error.detail.trace.filter(x => x.name === 'send_downstream').length, 1);
+          assert.ok(!error.detail.trace.some(x => x.module === 'fastly_kv_store'));
           return true;
         }); checks++;
       }

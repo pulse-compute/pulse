@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T06-30-23-442Z--6",
+  "sourceRevision": "85f67dc43cb965949037e2039cf6c0b65c4efddb",
+  "sourceIdentity": {
+    "sourceRevision": "85f67dc43cb965949037e2039cf6c0b65c4efddb",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T06:30:23.446Z",
+  "updatedAt": "2026-10-21T06:30:46.243Z",
+  "finishedAt": "2026-10-21T06:30:46.243Z",
+  "durationMs": 22797,
+  "profiles": [],
+  "requestedTasks": [
+    "fastly-native-platform-capabilities",
+    "provider-fastly-package",
+    "provider-fastly-apps",
+    "fastly-javascript-runtime"
+  ],
+  "selectedTasks": [
+    "fastly-native-platform-capabilities",
+    "provider-fastly-package",
+    "provider-fastly-apps",
+    "fastly-javascript-runtime"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "fastly-native-platform-capabilities",
+      "evidence": "providers",
+      "description": "Fastly Config, Secret, KV, and GRIP capabilities",
+      "commandSignature": "8b44c29982bed2ac2a305f6bec5c4c90a3716db5748572b41456aba36fe59abc",
+      "timeoutMs": 300000,
+      "durationMs": 22788,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-30-23-442Z--6/tasks/fastly-native-platform-capabilities.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T06-30-23-442Z--6"
+}

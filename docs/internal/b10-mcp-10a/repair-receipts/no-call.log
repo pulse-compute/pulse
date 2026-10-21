@@ -1,0 +1,13 @@
+
+[pulsewasm:native] callable-authored-native
+[pulsewasm] 05B authored plain Native call, full caller validation, HTTP parity and unused-import elimination (timeout 180.00s)
+[pulsewasm] Running callable-authored-native (execution); elapsed 10.00s
+[pulsewasm] Running callable-authored-native (execution); elapsed 20.00s
+{"status":"passed","parityExecutions":8,"rejections":12,"baseline":null,"measurements":[{"name":"authored","nodeBytes":39504,"fastlyBytes":84876},{"name":"re-export-alias","nodeBytes":39504,"fastlyBytes":84876},{"name":"no-call","nodeBytes":37123,"fastlyBytes":82031},{"name":"imported-unused","nodeBytes":37123,"fastlyBytes":82031}]}
+[pulsewasm] callable-authored-native: passed in 29.66s
+
+[pulsewasm] test summary
+  passed        29.66s  callable-authored-native  (/tmp/runs/2026-10-21T06-29-54-940Z--5/tasks/callable-authored-native.log)
+  report       /tmp/pulse-10a-error-no-call.json
+  run logs     /tmp/runs/2026-10-21T06-29-54-940Z--5
+  total        29.67s

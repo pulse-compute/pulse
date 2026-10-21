@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T06-09-37-294Z--5",
+  "sourceRevision": "081ca98d3fabc871361d934df655791581f95927",
+  "sourceIdentity": {
+    "sourceRevision": "081ca98d3fabc871361d934df655791581f95927",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T06:09:37.299Z",
+  "updatedAt": "2026-10-21T06:09:37.484Z",
+  "finishedAt": "2026-10-21T06:09:37.484Z",
+  "durationMs": 185,
+  "profiles": [],
+  "requestedTasks": [
+    "suite-shape",
+    "mcp-http",
+    "pulse-context-application",
+    "fastly-cli-gate-surface"
+  ],
+  "selectedTasks": [
+    "suite-shape",
+    "mcp-http",
+    "pulse-context-application",
+    "fastly-cli-gate-surface"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "suite-shape",
+      "evidence": "unit",
+      "description": "profile separation, uniqueness, and timeout budgets",
+      "commandSignature": "1ca38d9af89075e3b414c32042406c7333cfd754257eea7e4d5c6ea2a0d10322",
+      "timeoutMs": 30000,
+      "durationMs": 175,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-09-37-294Z--5/tasks/suite-shape.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T06-09-37-294Z--5"
+}

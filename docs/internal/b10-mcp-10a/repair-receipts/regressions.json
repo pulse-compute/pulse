@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T06-27-48-775Z--5",
+  "sourceRevision": "e43700dc51ea990ca762317e75a41d344a734f87",
+  "sourceIdentity": {
+    "sourceRevision": "e43700dc51ea990ca762317e75a41d344a734f87",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T06:27:48.782Z",
+  "updatedAt": "2026-10-21T06:30:32.672Z",
+  "finishedAt": "2026-10-21T06:30:32.672Z",
+  "durationMs": 163890,
+  "profiles": [],
+  "requestedTasks": [
+    "fastly-native-http-shell",
+    "fastly-native-http-effects",
+    "fastly-request-headers",
+    "callable-lifetime",
+    "application-errors",
+    "jwt-native-reality"
+  ],
+  "selectedTasks": [
+    "fastly-native-http-shell",
+    "fastly-native-http-effects",
+    "fastly-request-headers",
+    "callable-lifetime",
+    "application-errors",
+    "jwt-native-reality"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 6,
+  "results": [
+    {
+      "name": "fastly-native-http-shell",
+      "evidence": "providers",
+      "description": "direct Fastly HTTP request and response shell",
+      "commandSignature": "6e43d5546af6a917238f9001156da0537e80353efabc6be80f879e437ae0681c",
+      "timeoutMs": 180000,
+      "durationMs": 6088,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/fastly-native-http-shell.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "fastly-native-http-effects",
+      "evidence": "providers",
+      "description": "Fastly outbound HTTP effects and continuations",
+      "commandSignature": "8061a2d5a5243da1536dea3fbc84c435de5ee9dad137dc4e93dffa181afadbb9",
+      "timeoutMs": 300000,
+      "durationMs": 47014,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/fastly-native-http-effects.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "fastly-request-headers",
+      "evidence": "providers",
+      "description": "Fastly Native bounded request-header snapshots, duplicates and fail-closed enumeration",
+      "commandSignature": "af6ad013aa775ffcd25c8a4641c76d51e0eadea017d6ce7d61009313d27a2bab",
+      "timeoutMs": 180000,
+      "durationMs": 15982,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/fastly-request-headers.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "callable-lifetime",
+      "evidence": "native",
+      "description": "05F callable failure, fresh-request recovery, cumulative deadlines and allocation evidence",
+      "commandSignature": "6af599471b87577da37c4f78f133ffc202672da06ed1e4a407066defd0eaed14",
+      "timeoutMs": 300000,
+      "durationMs": 69957,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/callable-lifetime.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "application-errors",
+      "evidence": "conformance",
+      "description": "public schema and JWT application error recovery across targets",
+      "commandSignature": "1f0aac75a0180d3cd69581193cd72c55f48e5f83ae3fd16cf9499a50f210d0ee",
+      "timeoutMs": 240000,
+      "durationMs": 24215,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/application-errors.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "jwt-native-reality",
+      "evidence": "external",
+      "description": "shared JWT corpus through Local and real Fastly Native guest-source artifacts",
+      "commandSignature": "e11acaaf8621222e807b04ed84d35f2b1b6c902d1fd3b8ccc3842133e2bbd9cc",
+      "timeoutMs": 1200000,
+      "durationMs": 614,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/jwt-native-reality.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T06-27-48-775Z--5"
+}

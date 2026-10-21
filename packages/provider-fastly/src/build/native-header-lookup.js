@@ -43,10 +43,6 @@ function instrument(source) {
   source = source.replace(/function (host_\w+)\(([^)]*)\): (i32|void) \{/g,
     (declaration, name, _args, result) => name === 'host_router_error_take' ? declaration
       : `${declaration} if (__pulse_header_lookup_failed()) return${result === 'void' ? '' : ' 0'};`);
-  // Header reads performed while settling an effect have a separate fatal exit.
-  // Retain its marker so request-budget instrumentation still owns timeout priority.
-  source = source.replace('if (fatal) return',
-    'if (fatal && __pulse_header_lookup_failed()) { __pulse_fastly_jwt_send_error(); return; }\n    if (fatal) return');
   const marker = 'function __pulse_fastly_jwt_send_error(): void {';
   if (!source.includes(marker)) throw new Error('Fastly header-lookup error boundary drift.');
   return source.replace(marker, marker + ' if (__pulse_header_send_error()) return;');

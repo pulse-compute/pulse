@@ -13,6 +13,8 @@ const { catalogFromTarballs, createReadOnlyRegistry } = require('../release/read
 const { packageContext } = require('./package-context.cjs');
 const { pnpmInvocation } = require('../../../scripts/pnpm-toolchain.cjs');
 const root = path.resolve(__dirname, '../../..');
+const fastlyLocal = process.argv[2] === '--fastly-local';
+assert(process.argv.length === 2 || (process.argv.length === 3 && fastlyLocal), 'Usage: assert-mcp-installed.cjs [--fastly-local]');
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-mcp-installed-'));
 assert.ok(!temporary.startsWith(root + path.sep), 'installed consumer must be outside the checkout');
 const consumer = path.join(temporary, 'consumer');
@@ -37,12 +39,19 @@ const report = { version: 'pulse.mcp-installed-acceptance.v2', status: 'running'
   workingDiffSha256: hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })),
   acceptanceScriptSha256: hash(fs.readFileSync(__filename)),
   node: process.version, fixture: 'examples/12-pulse-context-mcp', applicationDelivery: 'exact-cli-tarball', lifecycleScripts: false,
-  providerRealityValidated: false, results: [] };
+  providerRealityValidated: false, qualificationMode: fastlyLocal ? 'fastly-local' : 'installed-node-and-clients', results: [] };
 
 function saveReport() {
   fs.mkdirSync(reportDir, { recursive: true });
   fs.writeFileSync(reportFile + '.tmp', JSON.stringify(report, null, 2) + '\n');
   fs.renameSync(reportFile + '.tmp', reportFile);
+}
+
+function assertSourceUnchanged() {
+  assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(), report.source, 'Acceptance source revision changed');
+  assert.equal(execFileSync('git', ['rev-parse', 'HEAD^{tree}'], { cwd: root, encoding: 'utf8' }).trim(), report.sourceTree, 'Acceptance source tree changed');
+  assert.equal(execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim(), report.workingTree, 'Acceptance working tree changed');
+  assert.equal(hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })), report.workingDiffSha256, 'Acceptance modified tracked source');
 }
 
 function run(command, args, { timeout = 120000, onOutput, cwd = consumer, environment = env } = {}) {
@@ -138,6 +147,16 @@ async function main() {
     } finally { await new Promise(resolve => registry.server.close(resolve)); }
     const before = verifyInstalled(manifest); report.installed = before;
     report.consumerLockSha256 = hash(fs.readFileSync(path.join(consumer, 'package-lock.json')));
+    if (fastlyLocal) {
+      report.fastlyLocalReport = path.join(reportDir, 'fastly-local/qualification.json'); saveReport();
+      report.fastlyLocal = await require('./context-fastly-local.cjs').qualify({ consumer, temporary, root, run, env,
+        output: path.join(reportDir, 'fastly-local'), verifyCopy: directory => verifyInstalled(manifest, directory) });
+      report.providerRealityValidated = true;
+      assert.deepEqual(verifyInstalled(manifest), before); report.installed.unchanged = true;
+      assertSourceUnchanged();
+      report.status = 'passed'; console.log('ok - exact installed Native context through actual Fastly CLI/Viceroy');
+      return;
+    }
     console.log('mcp-installed - exact Native application closure and source-free five-tool replay');
     report.nativeClosure = await require('./context-installed-closure.cjs').qualify({ consumer, temporary, root, run, env, verifyCopy: directory => verifyInstalled(manifest, directory) });
     report.genericResourceClosure = await require('./generic-resource-installed.cjs').qualify({ consumer, temporary, root, run, env, verifyCopy: directory => verifyInstalled(manifest, directory) });
@@ -160,7 +179,7 @@ async function main() {
     await run(process.execPath, [path.join(client, 'context-proof.mjs'), consumer, path.join(reportDir, 'wire.json'), executable], { cwd: client, timeout: 150000 });
     report.wire = readJson(path.join(reportDir, 'wire.json')); assert.equal(report.wire.status, 'passed');
     assert.deepEqual(verifyInstalled(manifest), before); report.installed.unchanged = true;
-    assert.equal(hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })), report.workingDiffSha256, 'packaging modified tracked source');
+    assertSourceUnchanged();
     report.status = 'passed'; console.log('ok - exact packed installed Pulse context journey');
   } catch (error) { report.status = 'failed'; report.error = clean(error.stack || String(error)); throw error; }
   finally {

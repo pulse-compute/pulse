@@ -1,0 +1,18 @@
+Scope: all 22 workspace projects
+✓ Lockfile passes supply-chain policies (verified 4h ago)
+Lockfile is up to date, resolution step is skipped
+Packages are hard linked from the content-addressable store to the virtual store.
+  Content-addressable store is at: /root/.local/share/pnpm/store/v11
+  Virtual store is at:             node_modules/.pnpm
+Packages: +209
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 209, reused 209, downloaded 0, added 209, done
+
+devDependencies:
++ @pulse-compute/provider-fastly link:packages/provider-fastly
++ @pulse-compute/provider-node link:packages/provider-node
++ @types/node 24.13.3
++ typescript 5.9.3
++ vitest 4.1.10
+
+Done in 95ms using pnpm v12.4.2

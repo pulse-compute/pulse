@@ -65,6 +65,7 @@ const externalTasks = new Set([
   // MCP-01 is a reference SDK/design proof, not Pulse adapter release acceptance.
   'mcp-wire-proof',
   'mcp-installed',
+  'mcp-fastly-local-installed', // 10A explicit local provider qualification; not a portable seal task.
   // PMCP-01 qualifies the private packed surface before PMCP-06 release membership.
   'mcp-package',
   'mcp-codex',

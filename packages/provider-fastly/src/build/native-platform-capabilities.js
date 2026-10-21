@@ -1406,19 +1406,24 @@ function __pulse_fastly_jwt_attach_evidence(handle: i32): void {
   const value = __pulse_fastly_value(handle)
   if (value.kind == PULSE_VALUE_RESPONSE) __pulse_fastly_jwt_evidence_headers(value)
 }
-function __pulse_fastly_jwt_send_error(): void {
-  const output = new __PulseFastlyValue()
-  output.kind = PULSE_VALUE_RESPONSE
-  output.status = 400
-  output.text = ""
-  output.headers.push(new __PulseFastlyHeader("content-type", "text/plain; charset=utf-8"))
-  __pulse_fastly_jwt_evidence_headers(output)
-  __pulse_fastly_send_result(__pulse_fastly_put(output))
-}
 `
     : String.raw`
 function __pulse_fastly_jwt_attach_evidence(handle: i32): void { void handle }
-function __pulse_fastly_jwt_send_error(): void {}
+`;
+  // Keep the legacy hook name: body, fetch, header and deadline owners prepend
+  // their specific responses here. Every remaining fatal path needs a response,
+  // independently of whether JWT evidence was requested for this build.
+  const terminalErrorSource = `
+function __pulse_fastly_jwt_send_error(): void {
+  const output = new __PulseFastlyValue()
+  output.kind = PULSE_VALUE_RESPONSE
+  output.status = ${jwtReality ? '__pulse_fastly_jwt_error != 0 ? 400 : 500' : '500'}
+  output.text = output.status == 400 ? "" : "Internal Server Error"
+  output.headers.push(new __PulseFastlyHeader("content-type", "text/plain; charset=utf-8"))
+  ${jwtReality ? 'if (__pulse_fastly_jwt_error != 0) __pulse_fastly_jwt_evidence_headers(output)' : ''}
+  // Do not clear the original failure or expose its detail in the response.
+  __pulse_fastly_send_result(__pulse_fastly_put(output))
+}
 `;
   const gripAuthentication = bindings.grip && bindings.grip.authentication;
   const gripSecretSource = gripAuthentication
@@ -1960,6 +1965,7 @@ function __pulse_fastly_write_body(bodyHandle: i32, value: string): i32 { const 
 function __pulse_fastly_send_result(handle: i32): i32 { const value = __pulse_fastly_value(handle); ${bindings.s3.length ? 'if (value.s3Body) return __s3_send_body(value);' : ''} if (value.kind == PULSE_VALUE_FETCH) return fastly_http_resp_send_downstream(value.responseHandle, value.bodyHandle, 0); if (value.kind != PULSE_VALUE_RESPONSE) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 90, -1); return PULSE_ERROR_VALUE } const responseOut = __pulse_fastly_out_i32(); let status = fastly_http_resp_new(changetype<usize>(responseOut)); if (status != FASTLY_STATUS_OK) return status; const responseHandle = __pulse_fastly_out_value(responseOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) return status; const bodyHandle = __pulse_fastly_out_value(bodyOut); status = fastly_http_resp_status_set(responseHandle, value.status); if (status != FASTLY_STATUS_OK) return status; for (let i = 0; i < value.headers.length; i += 1) { const header = unchecked(value.headers[i]); const nameBytes = __pulse_fastly_utf8(header.name); const valueBytes = __pulse_fastly_utf8(header.value); status = fastly_http_resp_header_append(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) return status } status = __pulse_fastly_write_body(bodyHandle, value.text); if (status != FASTLY_STATUS_OK) return status; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0) }
 
 ${jwtEvidenceSource}
+${terminalErrorSource}
 ${es256KeyArtifactSource(es256KeyRecords)}
 ${jwtCryptoCompositionSource(jwtCrypto)}
 ${jwtSigningCryptoCompositionSource(jwtCrypto)}

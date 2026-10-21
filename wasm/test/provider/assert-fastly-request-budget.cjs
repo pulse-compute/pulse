@@ -111,8 +111,10 @@ const errorNative = platform.compileFastlyNativePlatformCapabilitiesPlan(buildCa
   cwd: path.resolve(__dirname, '../../..'), maxDurationMs: 10000,
   bindings: {configStore: 'app_config', backends: {'https://budget.example.invalid': 'origin'}}
 });
-assert.match(errorNative.source, /if \(fatal\) \{ if \(__request_expired \|\| !__request_check\(\)\) __request_send_timeout\(\); return; \}/,
-  'fatal exit remains instrumented by the existing request-budget owner');
+assert.match(errorNative.source, /if \(fatal\) \{ __pulse_fastly_jwt_send_error\(\); return \}/,
+  'fatal settlement uses the shared response hook');
+assert.match(errorNative.source, /function __pulse_fastly_jwt_send_error\(\): void \{ if \(__request_expired \|\| !__request_check\(\)\)/,
+  'the request-budget owner retains first priority in that hook');
 const errorOptions = {request: {path: '/run'}, config: {SECOND: 'ready'}};
 const expiredGroup = mock.executeFastlyNativePlatformCapabilities(errorNative, {
   ...errorOptions, fixtures: {'https://budget.example.invalid/one': {body: 'late', delayMs: 10000}}

@@ -1,0 +1,29 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 316 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 128ms
+
+[pulsewasm:unit] mcp-http
+[pulsewasm] MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge (timeout 30.00s)
+ok - MCP-02 114 protocol exchanges plus bounded streams, deadlines, disconnects and real Node HTTP
+[pulsewasm] mcp-http: passed in 378ms
+
+[pulsewasm:unit] pulse-context-application
+[pulsewasm] PMCP-03 five read-only Entities context operations, real Node JavaScript build, schemas/catalog and bounded MCP projection (timeout 30.00s)
+ok - five schema-bound context operations; 516 real app calls; largest reply 13679 bytes; emitted catalog/MCP projection, Native rejection and source-independent build execution
+[pulsewasm] pulse-context-application: passed in 7.46s
+
+[pulsewasm:providers] fastly-cli-gate-surface
+[pulsewasm] Fastly CLI discovery and compute delegation (timeout 30.00s)
+ok - Fastly reality tooling records and safely owns either Fastly CLI-managed execution or an explicit direct Viceroy launcher
+[pulsewasm] fastly-cli-gate-surface: passed in 721ms
+
+[pulsewasm] test summary
+  passed         128ms  suite-shape  (/tmp/runs/2026-10-21T06-18-12-733Z--5/tasks/suite-shape.log)
+  passed         378ms  mcp-http  (/tmp/runs/2026-10-21T06-18-12-733Z--5/tasks/mcp-http.log)
+  passed         7.46s  pulse-context-application  (/tmp/runs/2026-10-21T06-18-12-733Z--5/tasks/pulse-context-application.log)
+  passed         721ms  fastly-cli-gate-surface  (/tmp/runs/2026-10-21T06-18-12-733Z--5/tasks/fastly-cli-gate-surface.log)
+  report       /tmp/pulse-10a-focused-final.json
+  run logs     /tmp/runs/2026-10-21T06-18-12-733Z--5
+  total        8.69s

@@ -1,0 +1,16 @@
+TypeError: Cannot read properties of undefined (reading 'scheduling')
+    at scheduling (/workspace/scratch/d3826bbd4bf5/pulse-10a/scripts/release-parallel.cjs:245:22)
+    at /workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/scripts/run-wasm-tests.cjs:746:82
+    at Array.map (<anonymous>)
+    at runSelectedTasks (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/scripts/run-wasm-tests.cjs:746:42)
+    at main (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/scripts/run-wasm-tests.cjs:938:11)
+    at Object.<anonymous> (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/scripts/run-wasm-tests.cjs:974:3)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+
+[pulsewasm] test summary
+  report       /tmp/pulse-10a-docs-release-final.json
+  run logs     /tmp/runs/2026-10-21T06-18-36-974Z--1895
+  total        9ms

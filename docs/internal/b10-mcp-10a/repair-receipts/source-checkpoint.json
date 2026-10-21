@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "head": "2ae120583ebdf154a8ff2e2a07f4519032d375b3",
+  "tree": "bea1ffb01e705a79b1d299e341bbb41cf2e50dcd",
+  "workingTreeBeforeAndAfter": "",
+  "installedUnchanged": true,
+  "sourceAssertions": "passed by installed acceptance and independent post-run check"
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T06-09-36-005Z--5",
+  "sourceRevision": "081ca98d3fabc871361d934df655791581f95927",
+  "sourceIdentity": {
+    "sourceRevision": "081ca98d3fabc871361d934df655791581f95927",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T06:09:36.010Z",
+  "updatedAt": "2026-10-21T06:13:00.354Z",
+  "finishedAt": "2026-10-21T06:13:00.354Z",
+  "durationMs": 204344,
+  "profiles": [],
+  "requestedTasks": [
+    "mcp-fastly-local-installed"
+  ],
+  "selectedTasks": [
+    "mcp-fastly-local-installed"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "mcp-fastly-local-installed",
+      "evidence": "external",
+      "description": "10A exact installed Native context, growth, deadlines and resource lifetime through actual Fastly CLI/Viceroy; local only",
+      "commandSignature": "bb8377fc43eda3792faebdf670e626bda29a227ce3242680551749f03ca98ed7",
+      "timeoutMs": 600000,
+      "durationMs": 204331,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-09-36-005Z--5/tasks/mcp-fastly-local-installed.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T06-09-36-005Z--5"
+}

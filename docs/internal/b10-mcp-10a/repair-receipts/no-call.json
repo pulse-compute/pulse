@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T06-29-54-940Z--5",
+  "sourceRevision": "85f67dc43cb965949037e2039cf6c0b65c4efddb",
+  "sourceIdentity": {
+    "sourceRevision": "85f67dc43cb965949037e2039cf6c0b65c4efddb",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T06:29:54.945Z",
+  "updatedAt": "2026-10-21T06:30:24.619Z",
+  "finishedAt": "2026-10-21T06:30:24.619Z",
+  "durationMs": 29674,
+  "profiles": [],
+  "requestedTasks": [
+    "callable-authored-native"
+  ],
+  "selectedTasks": [
+    "callable-authored-native"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "callable-authored-native",
+      "evidence": "native",
+      "description": "05B authored plain Native call, full caller validation, HTTP parity and unused-import elimination",
+      "commandSignature": "6235d39e2acb18d2d4f80f9549cab64bd847f5dc0532195f45f60a593bfb8a5e",
+      "timeoutMs": 180000,
+      "durationMs": 29664,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T06-29-54-940Z--5/tasks/callable-authored-native.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T06-29-54-940Z--5"
+}

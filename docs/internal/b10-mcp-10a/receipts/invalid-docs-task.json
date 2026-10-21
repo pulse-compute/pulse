@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T06-18-36-974Z--1895",
+  "sourceRevision": "fef3450798fe7d94058669348e9ff5f5a34535c6",
+  "sourceIdentity": {
+    "sourceRevision": "fef3450798fe7d94058669348e9ff5f5a34535c6",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T06:18:36.981Z",
+  "updatedAt": "2026-10-21T06:18:36.990Z",
+  "finishedAt": "2026-10-21T06:18:36.990Z",
+  "durationMs": 9,
+  "profiles": [],
+  "requestedTasks": [
+    "documentation-release"
+  ],
+  "selectedTasks": [
+    "documentation-release"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 0,
+  "results": [],
+  "runDirectory": "/tmp/runs/2026-10-21T06-18-36-974Z--1895",
+  "error": {
+    "code": null,
+    "message": "Cannot read properties of undefined (reading 'scheduling')"
+  }
+}

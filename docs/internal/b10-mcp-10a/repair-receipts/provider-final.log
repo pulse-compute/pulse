@@ -1,0 +1,31 @@
+
+[pulsewasm:providers] fastly-native-platform-capabilities
+[pulsewasm] Fastly Config, Secret, KV, and GRIP capabilities (timeout 300.00s)
+[pulsewasm] Running fastly-native-platform-capabilities (execution); elapsed 10.00s
+/workspace/scratch/d3826bbd4bf5/pulse-10a/packages/provider-fastly/src/build/native-platform-capabilities.js:290
+  throw new FastlyNativePlatformCapabilitiesError(message, code, detail);
+  ^
+
+FastlyNativePlatformCapabilitiesError: Fastly secretStore binding is required for Pass98 native Fastly realization.
+    at fail (/workspace/scratch/d3826bbd4bf5/pulse-10a/packages/provider-fastly/src/build/native-platform-capabilities.js:290:9)
+    at stringBinding (/workspace/scratch/d3826bbd4bf5/pulse-10a/packages/provider-fastly/src/build/native-platform-capabilities.js:789:20)
+    at resolveCapabilityBindings (/workspace/scratch/d3826bbd4bf5/pulse-10a/packages/provider-fastly/src/build/native-platform-capabilities.js:843:7)
+    at generateFastlyNativePlatformCapabilitiesAssemblyScript (/workspace/scratch/d3826bbd4bf5/pulse-10a/packages/provider-fastly/src/build/native-platform-capabilities.js:2097:20)
+    at compileFastlyNativePlatformCapabilitiesPlan (/workspace/scratch/d3826bbd4bf5/pulse-10a/packages/provider-fastly/src/build/native-platform-capabilities.js:2316:21)
+    at Object.main (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-terminal-errors.cjs:68:23)
+    at Object.<anonymous> (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-native-platform-capabilities.cjs:49:50)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32) {
+  code: 'PULSE_FASTLY_NATIVE_SECRET_STORE_MISSING',
+  detail: {}
+}
+
+Node.js v24.18.0
+[pulsewasm] fastly-native-platform-capabilities: failed in 11.58s
+
+[pulsewasm] test summary
+  failed        11.58s  fastly-native-platform-capabilities  (/tmp/runs/2026-10-21T06-31-19-867Z--6/tasks/fastly-native-platform-capabilities.log)
+  report       /tmp/pulse-10a-error-provider-final.json
+  run logs     /tmp/runs/2026-10-21T06-31-19-867Z--6
+  total        11.59s
