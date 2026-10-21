@@ -324,8 +324,15 @@ endpoint uses port 8787; the root compatibility host uses port 8788.
 | Profile | Execution | Local command |
 | --- | --- | --- |
 | `node-native` (default) | Native Wasm on Node | `npm run dev -- --profile node-native` |
-| `node-javascript` | Explicit JavaScript on Node | `npm run dev -- --profile node-javascript` |
+| `node-javascript` | Explicit JavaScript differential profile | Installed workflow has the admission gap below |
 | `fastly-native` | Native direct Fastly ABI | Build, then Fastly CLI serve below |
+
+The installed `node-javascript` profile currently reports a failed `target-support`
+doctor check (`unknown-provider-requirement-fail-closed`) for effect execution,
+logging and response transport. Retain that failure; do not treat this profile's
+installed dev/test workflow as qualified or bypass admission. The root v1 Node
+host remains the installed JavaScript onboarding path. Native workflow checks
+are independent of this gap.
 
 Fastly JavaScript is not supported by this MCP binding. `pulse dev` for Fastly
 is local provider execution; actual CLI/Viceroy proof requires the built module.
