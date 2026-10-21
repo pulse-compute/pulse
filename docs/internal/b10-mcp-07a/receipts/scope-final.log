@@ -1,0 +1,19 @@
+# Pulse maintainer scope
+
+**Status:** Pass
+
+| Signal | Result |
+|---|---|
+| Declared class | `hardening` |
+| Declared scope | `inside-developer-preview` |
+| Risk | `medium` |
+| Changed files | 9 |
+| Areas | `cli`, `documentation`, `testing` |
+| Protected boundaries | None |
+| Separate human decision | Not required |
+| Current contract update | Not inferred |
+| Release authority | Not inferred |
+| Required checks | `build`, `cli`, `documentation`, `maintenance-policy`, `unit` |
+
+The resident maintainer may analyze, review, and prepare a minimal patch; human review and merge remain required.
+

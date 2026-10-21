@@ -81,7 +81,7 @@ change requires another replay on the new candidate.
 | `str03b-installed` | Enabled experimental Node generated output, slow writers and disconnects; no support promotion |
 | `ast01-installed` | Assets signing facade and installed declarations |
 | `ast02b-installed`, `ast02d-installed` | Embedded binary Assets on JavaScript and Native, bounds, HTTP subsets and deterministic manifest identity |
-| `mcp-installed` | Exact CLI-shipped context app and public MCP package; production Node host, pinned official client/Codex onboarding and client-side starter CLI proof |
+| `mcp-installed` | Exact CLI-shipped context app and public MCP package; source-free Node Native five-tool replay, independent resource reconstruction and corrupt-closure rejection, plus production Node host, pinned official client/Codex onboarding and client-side starter CLI proof |
 | `s3-body-installed` | S3 binary bodies, GET/HEAD, range/conditional outcomes, length failures, cancellation and cleanup on Node Native/JavaScript and Fastly Native ABI fixtures |
 
 These gates qualify their existing target cells. They do not expand production

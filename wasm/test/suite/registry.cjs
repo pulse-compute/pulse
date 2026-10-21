@@ -1201,7 +1201,7 @@ const tasks = Object.freeze({
   }),
   'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
     evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
-    description: 'PMCP-07 exact CLI-shipped context app, production host, official client and pinned Codex onboarding; one release-owned gate'
+    description: '07A exact packed source-free Native five-tool closure, production host, official client and pinned Codex onboarding; one release-owned gate'
   }),
   'mcp-wire-proof': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
     evidence: 'external', timeoutMs: 300000,

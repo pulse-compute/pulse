@@ -1,0 +1,17 @@
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity
+[pulsewasm] release-feature-acceptance: passed in 719ms
+
+[pulsewasm:release] release-evidence-authority
+[pulsewasm] sixteen-shard aggregation and exact evidence boundary (timeout 30.00s)
+ok - release evidence authority aggregates sixteen shards and preserves the no-deploy/no-publish boundary
+[pulsewasm] release-evidence-authority: passed in 1.38s
+
+[pulsewasm] test summary
+  passed         719ms  release-feature-acceptance  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-44-788Z--5/tasks/release-feature-acceptance.log)
+  passed         1.38s  release-evidence-authority  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-44-788Z--5/tasks/release-evidence-authority.log)
+  report       /workspace/scratch/0174bfde4d1e/evidence-07a/authority-complete.json
+  run logs     /workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-32-44-788Z--5
+  total        2.11s

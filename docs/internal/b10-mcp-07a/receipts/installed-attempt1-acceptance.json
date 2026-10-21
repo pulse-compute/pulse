@@ -1,0 +1,18 @@
+{
+  "version": "pulse.mcp-installed-acceptance.v2",
+  "status": "failed",
+  "source": "9d379f52d638ca98b5ba921b925afcaeb777f742",
+  "sourceTree": "2a9d9ae2632f801694e65dc4f9b7dfd876558bec",
+  "workingTree": "",
+  "workingDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "acceptanceScriptSha256": "badcbd9eeb5d0c7238551e395a14b97db3058ff03ba6078dc683e5bd61dd78a0",
+  "node": "v24.18.0",
+  "fixture": "examples/12-pulse-context-mcp",
+  "applicationDelivery": "exact-cli-tarball",
+  "lifecycleScripts": false,
+  "providerRealityValidated": false,
+  "results": [],
+  "error": "Error: Command failed: /tmp/node-v24.18.0-linux-x64/bin/node <checkout>/scripts/pnpm-toolchain.cjs --root <checkout> --version 12.4.2 -- run -s build\nScope: all 22 workspace projects\n✓ Lockfile passes supply-chain policies (verified 1h ago)\nLockfile is up to date, resolution step is skipped\nAlready up to date\nError: ERR_PNPM_IGNORED_BUILDS\n\n  × installing dependencies\n  ╰─▶ Ignored build scripts: esbuild@0.25.12, esbuild@0.28.1\n  help: Run \"pnpm approve-builds\" to pick which dependencies should be allowed\n        to run scripts.\n    at fail (<checkout>/scripts/pack-release.cjs:28:17)\n    at run (<checkout>/scripts/pack-release.cjs:105:5)\n    at packRelease (<checkout>/scripts/pack-release.cjs:255:34)\n    at packageContext (<checkout>/wasm/test/mcp/package-context.cjs:11:20)\n    at main (<checkout>/wasm/test/mcp/assert-mcp-installed.cjs:114:22)\n    at Object.<anonymous> (<checkout>/wasm/test/mcp/assert-mcp-installed.cjs:171:1)\n    at Module._compile (node:internal/modules/cjs/loader:1871:14)\n    at Object..js (node:internal/modules/cjs/loader:2002:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)",
+  "cleanup": "passed",
+  "elapsedMs": 19253.059245
+}

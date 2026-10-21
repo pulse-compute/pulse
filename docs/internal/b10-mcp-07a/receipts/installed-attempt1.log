@@ -1,0 +1,36 @@
+
+[pulsewasm:external] mcp-installed
+[pulsewasm] 07A exact packed source-free Native five-tool closure, production host, official client and pinned Codex onboarding; one release-owned gate (timeout 600.00s)
+mcp-installed - reuse standard public candidates and extract CLI-shipped context app
+[pulse:pack] Checking documentation source
+[pulse:pack] Building workspace
+[pulsewasm] Running mcp-installed (execution); elapsed 10.00s
+acceptance report - /workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/.test-results/mcp-installed-XIayI2/mcp-installed-acceptance.json
+Error: Command failed: /tmp/node-v24.18.0-linux-x64/bin/node <checkout>/scripts/pnpm-toolchain.cjs --root <checkout> --version 12.4.2 -- run -s build
+Scope: all 22 workspace projects
+✓ Lockfile passes supply-chain policies (verified 1h ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+Error: ERR_PNPM_IGNORED_BUILDS
+
+  × installing dependencies
+  ╰─▶ Ignored build scripts: esbuild@0.25.12, esbuild@0.28.1
+  help: Run "pnpm approve-builds" to pick which dependencies should be allowed
+        to run scripts.
+    at fail (<checkout>/scripts/pack-release.cjs:28:17)
+    at run (<checkout>/scripts/pack-release.cjs:105:5)
+    at packRelease (<checkout>/scripts/pack-release.cjs:255:34)
+    at packageContext (<checkout>/wasm/test/mcp/package-context.cjs:11:20)
+    at main (<checkout>/wasm/test/mcp/assert-mcp-installed.cjs:114:22)
+    at Object.<anonymous> (<checkout>/wasm/test/mcp/assert-mcp-installed.cjs:171:1)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+[pulsewasm] mcp-installed: failed in 19.78s
+
+[pulsewasm] test summary
+  failed        19.78s  mcp-installed  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-18-41-523Z--35/tasks/mcp-installed.log)
+  report       /workspace/scratch/0174bfde4d1e/evidence-07a/installed-attempt1.json
+  run logs     /workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-18-41-523Z--35
+  total        19.79s

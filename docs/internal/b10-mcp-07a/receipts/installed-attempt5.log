@@ -1,0 +1,88 @@
+
+[pulsewasm:external] mcp-installed
+[pulsewasm] 07A exact packed source-free Native five-tool closure, production host, official client and pinned Codex onboarding; one release-owned gate (timeout 600.00s)
+mcp-installed - reuse standard public candidates and extract CLI-shipped context app
+[pulse:pack] Checking documentation source
+[pulse:pack] Package 1/20: @pulse-compute/runtime
+[pulse:pack] Verified @pulse-compute/runtime: 94026 bytes
+[pulse:pack] Package 2/20: @pulse-compute/pulse
+[pulse:pack] Verified @pulse-compute/pulse: 15192 bytes
+[pulse:pack] Package 3/20: @pulse-compute/cli
+[pulse:pack] Verified @pulse-compute/cli: 1377412 bytes
+[pulse:pack] Package 4/20: @pulse-compute/provider-fastly
+[pulse:pack] Verified @pulse-compute/provider-fastly: 251843 bytes
+[pulse:pack] Package 5/20: @pulse-compute/grip
+[pulse:pack] Verified @pulse-compute/grip: 24135 bytes
+[pulse:pack] Package 6/20: @pulse-compute/assets
+[pulse:pack] Verified @pulse-compute/assets: 50327 bytes
+[pulse:pack] Package 7/20: @pulse-compute/crypto
+[pulse:pack] Verified @pulse-compute/crypto: 233235 bytes
+[pulse:pack] Package 8/20: @pulse-compute/jwt
+[pulse:pack] Verified @pulse-compute/jwt: 65796 bytes
+[pulse:pack] Package 9/20: @pulse-compute/entities
+[pulse:pack] Verified @pulse-compute/entities: 51773 bytes
+[pulse:pack] Package 10/20: @pulse-compute/mcp
+[pulse:pack] Verified @pulse-compute/mcp: 40897 bytes
+[pulse:pack] Package 11/20: @pulse-compute/s3
+[pulse:pack] Verified @pulse-compute/s3: 23651 bytes
+[pulse:pack] Package 12/20: @pulse-compute/wasm-build-support
+[pulse:pack] Verified @pulse-compute/wasm-build-support: 21312 bytes
+[pulse:pack] Package 13/20: @pulse-compute/wasm-compiler
+[pulse:pack] Verified @pulse-compute/wasm-compiler: 335278 bytes
+[pulse:pack] Package 14/20: @pulse-compute/wasm-guest-link
+[pulse:pack] Verified @pulse-compute/wasm-guest-link: 40052 bytes
+[pulse:pack] Package 15/20: @pulse-compute/wasm-contracts
+[pulse:pack] Verified @pulse-compute/wasm-contracts: 168572 bytes
+[pulse:pack] Package 16/20: @pulse-compute/wasm-host-runtime
+[pulse:pack] Verified @pulse-compute/wasm-host-runtime: 94032 bytes
+[pulse:pack] Package 17/20: @pulse-compute/wasm-library-kit
+[pulse:pack] Verified @pulse-compute/wasm-library-kit: 25658 bytes
+[pulse:pack] Package 18/20: @pulse-compute/provider-node
+[pulsewasm] Running mcp-installed (execution); elapsed 10.00s
+[pulse:pack] Verified @pulse-compute/provider-node: 114745 bytes
+[pulse:pack] Package 19/20: @pulse-compute/wasm-runtime-core-as
+[pulse:pack] Verified @pulse-compute/wasm-runtime-core-as: 119072 bytes
+[pulse:pack] Package 20/20: @pulse-compute/wasm-schema-json
+[pulse:pack] Verified @pulse-compute/wasm-schema-json: 61506 bytes
+[pulse:pack] Checking packed documentation links
+mcp-installed - install extracted application dependency graph outside checkout
+[pulsewasm] Running mcp-installed (execution); elapsed 20.00s
+mcp-installed - exact Native application closure and source-free five-tool replay
+[pulsewasm] Running mcp-installed (execution); elapsed 30.01s
+[pulsewasm] Running mcp-installed (execution); elapsed 40.02s
+acceptance report - /workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/.test-results/mcp-installed-mFHBOu/mcp-installed-acceptance.json
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /PULSE_BINARY_RESOURCE_INVALID/. Input:
+
+'{\n' +
+  '  "status": "error",\n' +
+  '  "version": "1.0.0-beta.9",\n' +
+  '  "error": {\n' +
+  '    "name": "PulseProjectError",\n' +
+  '    "code": "ERR_ACCESS_DENIED",\n' +
+  '    "title": "Uncatalogued Pulse diagnostic",\n' +
+  '    "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",\n' +
+  '    "category": "internal",\n' +
+  '    "message": "Access to this API has been restricted. Use --allow-fs-read to manage permissions.",\n' +
+  '    "remediation": [\n' +
+  '      "Rerun with `--json` and retain the complete diagnostic for investigation."\n' +
+  '    ],\n' +
+  '    "stability": "internal-or-forward-compatible",\n' +
+  '    "scope": "fallback",\n' +
+  '    "docs": "https://pulsecompute.io/v1.0.0-beta.9/reference/diagnostics/",\n' +
+  '    "detail": {}\n' +
+  '  }\n' +
+  '}\n' +
+  '(node:1568) SecurityWarning: The flag --allow-child-process must be used with extreme caution. It could invalidate the permission model.\n' +
+  '(Use `node --trace-warnings ...` to show where the warning was created)\n' +
+  '(node:1568) SecurityWarning: The flag --allow-worker must be used with extreme caution. It could invalidate the permission model.\n'
+
+    at Object.qualify (<checkout>/wasm/test/mcp/context-installed-closure.cjs:81:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async main (<checkout>/wasm/test/mcp/assert-mcp-installed.cjs:142:28)
+[pulsewasm] mcp-installed: failed in 42.52s
+
+[pulsewasm] test summary
+  failed        42.52s  mcp-installed  (/workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-23-07-166Z--27/tasks/mcp-installed.log)
+  report       /workspace/scratch/0174bfde4d1e/evidence-07a/installed-attempt5.json
+  run logs     /workspace/scratch/0174bfde4d1e/evidence-07a/runs/2026-10-21T03-23-07-166Z--27
+  total        42.53s
