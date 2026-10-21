@@ -182,11 +182,58 @@ tokens, and known Secret Store values retain substring redaction. Keep operation
 observations separate from private payloads: redacting a payload does not preserve
 its schema or distinguish fields that collapse to the same redacted name.
 
-Fastly Native `ctx.log` writes redacted, newline-terminated messages to standard
+Unconfigured Fastly Native `ctx.log` writes redacted, newline-terminated messages to standard
 output through WASI `fd_write` (descriptor 1). Each enabled statement makes one
 best-effort write; errors and partial writes do not retry, change the HTTP result,
 or disable later statements. It does not open a named logging endpoint: `stdout`
 and `stderr` are reserved names. No logging binding is required.
+
+### Named production log streams
+
+Select one case-sensitive stream explicitly in `.pulse/config.ts`:
+
+```ts
+import { defineConfig } from '@pulse-compute/pulse'
+export default defineConfig(() => ({
+  pulse: { entry: 'src/index.ts', defaultProfile: 'production' },
+  production: {
+    host: 'fastly', target: 'native',
+    fastly: { bindings: { logEndpoint: 'application-events' } }
+  }
+}))
+```
+
+The provider facade accepts the equivalent `fastly({ logEndpoint: 'application-events' })`.
+Keep using `ctx.log.info(...)`, `warn`, `error` and `debug`; existing severity,
+structured message formatting and request-owned redaction still apply. Omitting
+`logEndpoint` preserves stdout. Names must be 1–255 UTF-8 bytes, without control
+characters or surrounding whitespace; `stdout`, `stderr` and `fst_managed_` names
+(case-insensitively) are reserved and rejected with `PULSE_FASTLY_LOG_ENDPOINT_INVALID`.
+
+Create that named Real-Time Log Streaming endpoint separately on the selected
+Fastly service. The configuration names an existing destination; it neither
+creates a stream nor embeds its credentials. Native uses `fastly_log.endpoint_get`
+and `fastly_log.write`; JavaScript packages pass the name to the SDK's
+`fastly:logger` `Logger` during request handling. JavaScript keeps its existing
+message format; it does not emulate Native output. Named records exceeding
+65,536 UTF-8 bytes including the target's prefix and terminator are dropped whole.
+This is a Pulse bound, not a promise of a platform message-size limit.
+
+Each Native record makes one lookup and at most one write. Lookup/write errors,
+zero writes and short writes drop the remaining bytes with no retry, stdout
+fallback or change to the HTTP outcome. JavaScript catches SDK lookup/write
+exceptions; its API does not expose short-write counts. Later statements still
+attempt delivery. Host acceptance cannot prove that the endpoint exists or that
+the downstream destination received the record. Loss, partial records and
+reordering remain possible; there is no queue or delivery guarantee.
+
+Viceroy named-endpoint output proves the local logging ABI only. It uses virtual
+named sinks in local process output; it does not qualify a production destination
+or missing-stream behavior on Fastly. Enforcing-host failures and actual local
+Compute evidence are retained separately. Deployed acceptance requires a unique
+probe to arrive at the configured receiver, secret absence and unchanged HTTP
+responses. `fastly log-tail` alone does not satisfy named-stream delivery; #309's
+stdout/log-tail acceptance remains separate from #467.
 
 This corrects the beta.8 Native logger's reserved-endpoint lookup. Local Viceroy
 qualification requires positive arrival/outcome output as well as secret absence.

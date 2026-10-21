@@ -86,7 +86,7 @@ async function executeFastlyJavascriptApplication(application, request, options 
     target: 'javascript',
     provider: 'fastly',
     reporting: options.reporting,
-    log: options.log || createFastlyJavascriptLogEmitter({ console: options.console }),
+    log: options.log || createFastlyJavascriptLogEmitter({ console: options.console, logEndpoint: options.bindings?.logEndpoint, Logger: options.apis?.Logger }),
     redactionValues: options.redactionValues,
     onLogObservation: options.onLogObservation,
     onJsonTrace: options.onJsonTrace,

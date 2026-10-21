@@ -38,6 +38,7 @@ function normalizeFastlyProviderConfig(value) {
     maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(input.maxDurationMs),
     version: input.version ? String(input.version) : undefined,
     bindings: Object.freeze({
+      ...(bindings.logEndpoint === undefined ? {} : { logEndpoint: require('./logging.js').normalizeFastlyLogEndpoint(bindings.logEndpoint) }),
       configStore: String(bindings.configStore || 'pulse_config'),
       secretStore: String(bindings.secretStore || 'pulse_secrets'),
       kv: normalizeStringMap(bindings.kv, 'PULSE_FASTLY_KV_BINDINGS_INVALID'),
@@ -106,6 +107,7 @@ const FASTLY_PROJECT_CONFIG_REFERENCE = Object.freeze({
     })
   ]),
   fields: Object.freeze([
+    Object.freeze({ section: 'fastly', path: 'fastly.logEndpoint', type: 'string', default: 'omitted (stdout)', scope: 'fastly() facade; conventional profiles use fastly.bindings.logEndpoint', description: 'One case-sensitive named production log stream, 1–255 UTF-8 bytes, excluding stdout, stderr, fst_managed_ names and control characters. Records above 65536 UTF-8 bytes are dropped. One lookup and at most one write per record; errors and zero/short writes are dropped without retry or stdout fallback. Host acceptance does not prove downstream delivery.', diagnostics: Object.freeze(['PULSE_FASTLY_LOG_ENDPOINT_INVALID']) }),
     Object.freeze({section:'fastly',path:'fastly.bodyForwarding',type:'object',default:'omitted',scope:'experimental Fastly Native forwarding',description:'Opt in to one terminal opaque POST with inline req.body() and a static backend. Requires maxDurationMs and both byte limits. Final close hands queued delivery to Fastly; it is not a client receipt.',diagnostics:Object.freeze(['PULSE_FASTLY_BODY_FORWARDING_INVALID'])}),
     ...['requestMaxBytes','responseMaxBytes'].map(name => Object.freeze({section:'fastly',path:`fastly.bodyForwarding.${name}`,type:'integer',allowed:'1–1048576',default:'required with bodyForwarding',scope:'experimental Fastly Native forwarding',description:'Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.'})),
     Object.freeze({section:'fastly',path:'fastly.maxWasmBytes',type:'integer',allowed:'positive safe integer',default:'4194304 (4 MiB)',scope:'fastly() facade',description:'Facade option projected to build.maxWasmBytes. Conventional profiles configure fastly.build.maxWasmBytes.'}),

@@ -1,5 +1,6 @@
 'use strict';
 
+const { normalizeFastlyLogEndpoint } = require('./toolchain/logging.js');
 const { normalizeFastlyMaxWasmBytes } = require('./build/wasm-budget.js');
 const { fastlyConfigDefault } = require('./config-schema.js');
 
@@ -43,6 +44,7 @@ function fastly(options = {}) {
     ...(options.maxDurationMs === undefined ? {} : { maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs) }),
     version: FASTLY_PROVIDER_API_VERSION,
     bindings: Object.freeze({
+      ...(options.logEndpoint === undefined ? {} : { logEndpoint: normalizeFastlyLogEndpoint(options.logEndpoint) }),
       configStore: String(options.configStore ?? fastlyConfigDefault('fastly.configStore')),
       secretStore: String(options.secretStore ?? fastlyConfigDefault('fastly.secretStore')),
       kv: stringMap(options.kv),

@@ -423,4 +423,5 @@ try {
 
 require('./assert-fastly-transport-recovery.cjs').main()
   .then(() => require('./assert-fastly-fetch-deadlines.cjs').main())
+  .then(() => require('./assert-fastly-named-logging.cjs').main())
   .catch(error => { console.error(error); process.exitCode = 1; });

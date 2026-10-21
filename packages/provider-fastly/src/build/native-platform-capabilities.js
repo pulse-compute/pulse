@@ -4,7 +4,7 @@ const dynamicBackends = require('./native-dynamic-backends.js');
 
 const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
-const { nativeStdioSource } = require('./native-stdio.js');
+const { nativeLoggingSource } = require('./native-stdio.js');
 const applicationErrors = require('./native-application-errors.js');
 const effectInvocations = require('./effect-invocations.js');
 const packageApplication = require('./package-native-application.js');
@@ -148,6 +148,8 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   Object.freeze(['fastly_kv_store', 'lookup_wait_v2']),
   Object.freeze(['fastly_kv_store', 'insert']),
   Object.freeze(['fastly_kv_store', 'insert_wait']),
+  Object.freeze(['fastly_log', 'endpoint_get']),
+  Object.freeze(['fastly_log', 'write']),
   Object.freeze(['wasi_snapshot_preview1', 'fd_write']),
   Object.freeze(['wasi_snapshot_preview1', 'clock_time_get'])
 ].filter(([module, name], index, entries) => entries.findIndex((item) => item[0] === module && item[1] === name) === index));
@@ -938,6 +940,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   return Object.freeze({
     maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs),
     bodyForwarding: require('../toolchain/body-forwarding.js').normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs),
+    ...(source.logEndpoint === undefined ? {} : { logEndpoint: require('../toolchain/logging.js').normalizeFastlyLogEndpoint(source.logEndpoint) }),
     configStore,
     secretStore,
     s3: require('../toolchain/s3.js').resolveFastlyS3(effects.map((effect) => ({ ...effect, payload: Object.fromEntries(['contentType', 'method', 'range', 'ifNoneMatch'].map(name => [name, literalObjectField(inputExpression(effect, 'payload'), name) ?? undefined])) })), source.s3),
@@ -1018,7 +1021,8 @@ function requiredImportsForPlan(plan, bindings) {
   if (kinds.has('kv.put')) for (const key of ['fastly_kv_store:insert', 'fastly_kv_store:insert_wait']) keys.add(key);
   if (kinds.has('grip.hold')) keys.add('fastly_http_resp:header_append');
   if (plan.logging && plan.logging.enabledStatements > 0) {
-    keys.add('wasi_snapshot_preview1:fd_write');
+    if (bindings.logEndpoint === undefined) keys.add('wasi_snapshot_preview1:fd_write');
+    else { keys.add('fastly_log:endpoint_get'); keys.add('fastly_log:write'); }
   }
   if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText') || kinds.has('s3.getBody')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
   if (require('./native-body-forwarding.js').enabled(plan)) {
@@ -1448,7 +1452,7 @@ function __pulse_fastly_jwt_send_error(): void {}
 @external("fastly_kv_store", "lookup_wait_v2") declare function fastly_kv_store_lookup_wait_v2(handle: i32, bodyOut: usize, metadata: usize, metadataLength: i32, writtenOut: usize, generationOut: usize, kvErrorOut: usize): i32
 @external("fastly_kv_store", "insert") declare function fastly_kv_store_insert(store: i32, key: usize, keyLength: i32, body: i32, configMask: i32, config: usize, insertOut: usize): i32
 @external("fastly_kv_store", "insert_wait") declare function fastly_kv_store_insert_wait(handle: i32, kvErrorOut: usize): i32
-${nativeStdioSource}
+${nativeLoggingSource(bindings.logEndpoint)}
 @external("wasi_snapshot_preview1", "clock_time_get") declare function wasi_snapshot_preview1_clock_time_get(clockId: i32, precision: i64, timeOut: usize): i32
 
 const PULSE_FASTLY_EFFECTS_ABI_VERSION: i64 = ${FASTLY_NATIVE_PLATFORM_CAPABILITIES_ABI_VERSION}
@@ -2231,7 +2235,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       kv: 'Fastly KV Store async lookup/insert; conditional operations preserve u64 generations, bounded readiness, strict Pulse envelopes and uncertain dispatch',
       assets: 'Fastly KV Store lookup with provider-owned content type, cache headers, and GET/HEAD body ownership',
       grip: 'canonical stateless framing plus bound, secret-referenced broadcast HTTP realization and stable acknowledgement',
-      logging: 'best-effort redacted WASI fd_write to stdout (descriptor 1), one attempt per statement',
+      logging: bindings.logEndpoint === undefined ? 'best-effort redacted WASI fd_write to stdout (descriptor 1), one attempt per statement' : 'best-effort named fastly_log endpoint; one lookup and at most one write per statement, 65536 UTF-8 byte maximum, no retries or stdout fallback; downstream delivery unverified',
       schemas: 'fetch JSON decode and structured response encode',
       opaqueResponse: 'origin fetch response/body handles and direct GRIP hold responses pass through without JavaScript runtime ownership',
       transportErrors: 'host status failures remain distinct from HTTP response status',

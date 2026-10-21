@@ -176,8 +176,12 @@ pulse build ./my-app
 `src/main.as.ts` plus compact `bin/main.wasm` importing the required `fastly_*`
 hostcalls directly. It contains no JavaScript runtime image or `pulse_host`.
 Clock-dependent capabilities import WASI `clock_time_get`; enabled Native logging
-imports `fd_write` for redacted, best-effort stdout. Named logging endpoints are
-not used. See [logging behavior](../guides/fastly-capabilities.md).
+imports `fd_write` for redacted, best-effort stdout by default. Configure
+`fastly.bindings.logEndpoint` (or `fastly({logEndpoint: 'application-events'})`)
+to select a named production stream through `fastly_log`; JavaScript uses the
+SDK Logger for the same provider configuration. Named records are bounded at
+65,536 UTF-8 bytes, with no retries or stdout fallback. Create the endpoint
+separately and verify receipt at its destination. See [logging behavior](../guides/fastly-capabilities.md).
 
 The compiler avoids boxed arithmetic temporaries in proven numeric loop regions
 for schema and stub builds without linked guests, and for schema-inactive builds

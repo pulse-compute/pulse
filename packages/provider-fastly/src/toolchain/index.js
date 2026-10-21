@@ -38,7 +38,8 @@ const packageManifest = require('../../package.json');
 const reportingTargetCapability = Object.freeze({
   supported: true,
   default: 'info',
-  levels: Object.freeze(['off', 'error', 'warn', 'info', 'debug'])
+  levels: Object.freeze(['off', 'error', 'warn', 'info', 'debug']),
+  destinations: Object.freeze(['stdout', 'configured-named-endpoint'])
 });
 
 const fastlyFinalWasmPolicy = defineFinalWasmPolicy({
