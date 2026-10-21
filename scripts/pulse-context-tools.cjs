@@ -72,8 +72,12 @@ function generate(corpus, config, files, read) {
   const groups=new Map();records.forEach((r,n)=>{const key=selection([r]);(groups.get(key)||groups.set(key,[]).get(key)).push(n);});
   for(const [select,rows] of groups)readBody+=`  if (${rows.map(n=>`row === ${n}`).join(' || ')}) applicable = ${select}\n`;
   readBody+=`  if (!applicable) return ${fail('empty','unsupported-selection','record-not-applicable','The record does not apply to the requested provider/target pair.')}\n`;
-  let pick=`  let selected: RecordSummary = ${J(summary(records[0]))}\n`;
-  records.slice(1).forEach((r,n)=>{pick+=`  if (row === ${n+1}) selected = ${J(summary(r))}\n`;});
+  function summaryPicker(name) {
+    let source=`  let ${name}: RecordSummary = ${J(summary(records[0]))}\n`;
+    records.slice(1).forEach((r,n)=>{source+=`  if (row === ${n+1}) ${name} = ${J(summary(r))}\n`;});
+    return source;
+  }
+  const pick=summaryPicker('selected');
   const substitute=(source,token,value)=>{if(source.split(token).length!==2)throw Error(`Expected one ${token} in read template`);return source.replace(token,()=>value);};
   const readSource=substitute(substitute(read(INPUTS[0]).toString(),'__READ_PRELUDE__',readBody),'__READ_SUMMARY__',pick);
   let exampleBody=prelude('Example','id');
@@ -143,7 +147,7 @@ function generate(corpus, config, files, read) {
   costs+='  return 24577\n';
   const zero={...searchEmpty,meta:{...searchMeta,requestedVersion:corpus.pulseVersion}};
   let searchSource=read(INPUTS[3]).toString();
-  for(const[token,value]of Object.entries({__SEARCH_PRELUDE__:searchBody,__HIT_BYTES__:costs,__SEARCH_SUMMARY__:pick.replaceAll('selected','record'),
+  for(const[token,value]of Object.entries({__SEARCH_PRELUDE__:searchBody,__HIT_BYTES__:costs,__SEARCH_SUMMARY__:summaryPicker('record'),
     __PAGE_BASE__:String(projected({...zero,truncated:true,nextOffset:0})),__TERMINAL_BASE__:String(projected(zero))})) searchSource=substitute(searchSource,token,value);
   return {outputs:new Map([[`${APP}/src/search.ts`,Buffer.from(searchSource)],[`${APP}/src/read.ts`,Buffer.from(readSource)],[`${APP}/src/example.ts`,Buffer.from(module('Example',exampleBody))],[`${APP}/src/diagnostic.ts`,Buffer.from(module('Diagnostic',diagnosticBody))]]),declarations};
 }
