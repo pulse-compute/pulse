@@ -411,6 +411,8 @@ async function main() {
   assert.equal(parseArgs(['--prune-recovery']).pruneRecovery, true);
   assert.equal(parseArgs(['--timeout-minutes', '4']).timeoutMs, 240000);
   for (const args of [ ['--resume'], ['--resume', '--help'], ['--resume', '/tmp/previous', '--no-report'], ['--prune-recovery', '--skip-install'], ['--skip-install', '--dependency-bundle', '/tmp/bundle'], ['--timeout-minutes', '0'], ['--timeout-minutes', '1441'], ['--unknown'] ]) assert.throws(() => parseArgs(args));
+  const contextRecovery = await require('./assert-context-seal-recovery.cjs').verifyContextSealRecovery();
+  console.log(`context seal recovery: ${contextRecovery.cases.length} deterministic cases passed`);
   console.log(`release-recovery: ${fixtures} candidate, dependency, artifact, locking and pruning fixtures passed`);
 }
 

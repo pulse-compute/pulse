@@ -315,6 +315,8 @@ async function main(argv = process.argv.slice(2)) {
       { timeoutMs: 10 * 60 * 1000, env: packageManagerEnv });
     assertCandidateSource(sourceIdentity);
     const sourceChecksSha256 = require('node:crypto').createHash('sha256').update(fs.readFileSync(sourceChecksFile)).digest('hex');
+    const packDependencies = require('./release-context-freshness.cjs').checkpointDependencies(
+      JSON.parse(fs.readFileSync(sourceChecksFile, 'utf8')), candidate);
     progress.persist({ sourceChecks: { file: sourceChecksFile, sha256: sourceChecksSha256 } });
     await runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
     if (progress.directory) artifactFiles = recoveryTools.artifactPaths(progress.directory);
@@ -380,9 +382,11 @@ async function main(argv = process.argv.slice(2)) {
       progress.persist({ recovery });
       packStore = createCheckpointStore({ directory: path.join(progress.directory, 'checkpoints/pack'),
         previousDirectory: previousDirectory ? path.join(previousDirectory, 'checkpoints/pack') : undefined, context });
-      packSpec = { id: 'shared-pack', definition: recoveryTools.sharedPackDefinition(), dependencies: {},
+      packSpec = { id: 'shared-pack', definition: recoveryTools.sharedPackDefinition(), dependencies: packDependencies,
         artifacts: { pack: sharedPackDirectory, log: path.join(progress.directory, 'shared-pack.log') } };
     }
+    assert.equal(require('./release-context-freshness.cjs').hash(fs.readFileSync(sourceChecksFile)), sourceChecksSha256,
+      'Source checks changed before package checkpoint admission');
     const reusedPack = packStore?.tryReuse(packSpec);
     let packProof;
     if (reusedPack?.reused) {

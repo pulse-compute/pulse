@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T05-42-53-934Z--6",
+  "sourceRevision": "9cdea0dc5fcca1e7bbde170a1a0c354e1d114ce0",
+  "sourceIdentity": {
+    "sourceRevision": "9cdea0dc5fcca1e7bbde170a1a0c354e1d114ce0",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-21T05:42:53.938Z",
+  "updatedAt": "2026-10-21T05:43:13.189Z",
+  "finishedAt": "2026-10-21T05:43:13.189Z",
+  "durationMs": 19251,
+  "profiles": [],
+  "requestedTasks": [
+    "release-checkpoints",
+    "release-recovery",
+    "release-recovery-runner",
+    "release-feature-acceptance",
+    "release-evidence-authority",
+    "release-runtime-policy",
+    "release-seal-lifecycle"
+  ],
+  "selectedTasks": [
+    "release-checkpoints",
+    "release-recovery",
+    "release-recovery-runner",
+    "release-feature-acceptance",
+    "release-evidence-authority",
+    "release-runtime-policy",
+    "release-seal-lifecycle"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 4,
+  "results": [
+    {
+      "name": "release-checkpoints",
+      "evidence": "unit",
+      "description": "Same-candidate receipt integrity, output retention and dependency invalidation",
+      "commandSignature": "a97bf831a7ffa106edc8ae1eb441353db6aebe40c5b960ebae796585a4e8659d",
+      "timeoutMs": 30000,
+      "durationMs": 288,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T05-42-53-934Z--6/tasks/release-checkpoints.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "release-recovery",
+      "evidence": "unit",
+      "description": "Recovery input identity, checkout exclusion and retained-attempt expiry",
+      "commandSignature": "0469da89253cde70407a940a4885a5209c5b65ce4fb5128f1ac4e54d55f04604",
+      "timeoutMs": 30000,
+      "durationMs": 6093,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T05-42-53-934Z--6/tasks/release-recovery.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "release-feature-acceptance",
+      "evidence": "unit",
+      "description": "installed feature gate coverage and exact candidate report rejection",
+      "commandSignature": "09a28bd6daab198d2b9c2d3a3af03ae9010e9718012e1251da4e0e9af64b1b23",
+      "timeoutMs": 30000,
+      "durationMs": 9117,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T05-42-53-934Z--6/tasks/release-feature-acceptance.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "release-runtime-policy",
+      "evidence": "unit",
+      "description": "Node release-line acceptance and Fastly CLI lifecycle ownership",
+      "commandSignature": "5004e43322fe28023d96b7870443d9dfdd383aef55521ce7ef62095886abc779",
+      "timeoutMs": 30000,
+      "durationMs": 3739,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T05-42-53-934Z--6/tasks/release-runtime-policy.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T05-42-53-934Z--6"
+}

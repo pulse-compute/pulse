@@ -196,7 +196,7 @@ async function verifyBootstrap(root) {
       if (argv[0] === '-e') return original.run(command, argv, options);
       calls.push({ argv, timeoutMs: options.timeoutMs });
       if (argv.includes('scripts/release-source-checks.cjs')) {
-        fs.writeFileSync(argv[argv.indexOf('--out') + 1], '{}');
+        fs.writeFileSync(argv[argv.indexOf('--out') + 1], JSON.stringify(require('./context-freshness-fixture.cjs').sourceChecks(acceptance.candidateIdentity())));
         Date.now = () => epoch + 5 * minute;
       }
       if (argv.includes('--profile') && argv.includes('release')) {
