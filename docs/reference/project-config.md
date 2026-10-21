@@ -376,6 +376,18 @@ Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdS
 
 Options passed to fastly(...) from @pulse-compute/provider-fastly.
 
+### `fastly.logEndpoint`
+
+One case-sensitive named production log stream, 1–255 UTF-8 bytes, excluding stdout, stderr, fst_managed_ names and control characters. Records above 65536 UTF-8 bytes are dropped. One lookup and at most one write per record; errors and zero/short writes are dropped without retry or stdout fallback. Host acceptance does not prove downstream delivery.
+
+- **Type:** string
+- **Required/default:** Optional; default omitted (stdout).
+- **Allowed values or constraints:** —
+- **Scope:** fastly() facade; conventional profiles use fastly.bindings.logEndpoint
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** [`PULSE_FASTLY_LOG_ENDPOINT_INVALID`](diagnostics.md#pulse-fastly-log-endpoint-invalid)
+
 ### `fastly.bodyForwarding`
 
 Opt in to one terminal opaque POST with inline req.body() and a static backend. Requires maxDurationMs and both byte limits. Final close hands queued delivery to Fastly; it is not a client receipt.

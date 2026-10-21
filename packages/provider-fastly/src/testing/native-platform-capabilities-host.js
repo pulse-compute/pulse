@@ -349,7 +349,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
           trace.push({ module: 'fastly_log', name: 'endpoint_get', endpoint, opened: false });
           return FASTLY_STATUS_INVALID_ARGUMENT;
         }
-        if (options.logEndpointFailure === true) {
+        if (options.logEndpointFailure === true || (options.logEndpoints && !options.logEndpoints.includes(endpoint))) {
           trace.push({ module: 'fastly_log', name: 'endpoint_get', endpoint, opened: false });
           return FASTLY_STATUS_ERROR;
         }
@@ -366,12 +366,13 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
           trace.push({ module: 'fastly_log', name: 'write', endpoint, accepted: false });
           return FASTLY_STATUS_ERROR;
         }
-        const emitted = readUtf8(messagePointer, messageLength);
+        const length = Math.min(Number(messageLength), options.logWriteMaxBytes ?? Number(messageLength));
+        const emitted = readUtf8(messagePointer, length);
         // Test-only assertion seam before proof-trace redaction. Never retain raw
         // guest bytes in the returned evidence, even when the guest regresses.
         if (typeof options.onLogWrite === 'function') options.onLogWrite(emitted);
         const message = redactText(emitted);
-        writeU32(writtenOut, Buffer.byteLength(message));
+        writeU32(writtenOut, length);
         logs.push(Object.freeze({ endpoint, message }));
         trace.push({ module: 'fastly_log', name: 'write', endpoint, message, accepted: true });
         return FASTLY_STATUS_OK;

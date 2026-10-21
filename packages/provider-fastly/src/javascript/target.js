@@ -72,6 +72,7 @@ const FASTLY_JAVASCRIPT_TARGET_DESCRIPTOR = normalizeJavascriptTargetDescriptor(
     supported: true,
     default: 'info',
     levels: ['off', 'error', 'warn', 'info', 'debug'],
+    destinations: ['stdout', 'configured-named-endpoint'],
     destination: 'provider-owned',
     betaDefault: 'stdio-log-tail'
   },

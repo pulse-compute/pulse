@@ -430,6 +430,21 @@
       },
       {
         "required": false,
+        "default": "omitted (stdout)",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_LOG_ENDPOINT_INVALID"
+        ],
+        "description": "One case-sensitive named production log stream, 1–255 UTF-8 bytes, excluding stdout, stderr, fst_managed_ names and control characters. Records above 65536 UTF-8 bytes are dropped. One lookup and at most one write per record; errors and zero/short writes are dropped without retry or stdout fallback. Host acceptance does not prove downstream delivery.",
+        "path": "fastly.logEndpoint",
+        "scope": "fastly() facade; conventional profiles use fastly.bindings.logEndpoint",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
         "default": "omitted",
         "allowed": "—",
         "precedence": "Configuration value.",
@@ -1240,6 +1255,9 @@
           "kind": "integer",
           "minimum": 1,
           "maximum": 1048576
+        },
+        "fastly.logEndpoint": {
+          "kind": "optional-string"
         }
       }
     }

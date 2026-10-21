@@ -1,6 +1,6 @@
 'use strict';
 
-const { nativeStdioSource } = require('./native-stdio.js');
+const { nativeLoggingSource } = require('./native-stdio.js');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -43,6 +43,8 @@ const ALLOWED_IMPORTS = new Set([
   'fastly_http_resp:send_downstream',
   'fastly_http_resp:status_set',
   'wasi_snapshot_preview1:fd_write',
+  'fastly_log:endpoint_get',
+  'fastly_log:write',
   'fastly_secret_store:get',
   'fastly_secret_store:open',
   'fastly_secret_store:plaintext'
@@ -178,7 +180,7 @@ function providerRuntimeSource(bindings, options) {
 @external("fastly_secret_store", "open") declare function fastly_secret_store_open(name: usize, nameLength: i32, handleOut: usize): i32
 @external("fastly_secret_store", "get") declare function fastly_secret_store_get(handle: i32, key: usize, keyLength: i32, secretOut: usize): i32
 @external("fastly_secret_store", "plaintext") declare function fastly_secret_store_plaintext(secret: i32, value: usize, valueLength: i32, writtenOut: usize): i32
-${nativeStdioSource}
+${nativeLoggingSource(options.logEndpoint)}
 
 const __PULSE_FASTLY_ENTITIES_ABI: i64 = 1
 const __PULSE_FASTLY_ENTITIES_BUFFER: i32 = ${BUFFER_BYTES}

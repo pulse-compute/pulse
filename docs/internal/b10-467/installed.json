@@ -1,0 +1,112 @@
+{
+  "status": "passed",
+  "source": "a19ec5d666805969a09ff549606364d0b7ce45ac",
+  "tree": "bcc67b31c5d85a9e98cce2fd86a6b22fb5b7f0a4",
+  "workingTree": "",
+  "packages": [
+    {
+      "name": "@pulse-compute/runtime",
+      "sha256": "696d33be41ee3bc466bd458d40b4c5058fb0f82201dd4949ce8c1e5bd2f4b747"
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "sha256": "8a6c6769ef63532b28224fc84ee753094baec1c52392eb83447c4d9f70d997bc"
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "sha256": "8ba6d08915d958812fb83ad20249a47c0239ca85051f7dec7513e61ec359e9bd"
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "sha256": "30d99f9668cfb7a9e0cd30d5a519e1b4e980f3d3dea8d54258892a4f21edf17d"
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "sha256": "52d16ccf8513ae59736562af3bbeaffdfd5b79654983ce8d353adc23edae341c"
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "sha256": "671b8484a6c5b932f0f95aec2738e342fac64db6368c42174f0a31efcc577ba7"
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "sha256": "e025cab2fb7ba3f4614d7d3c035e3506802081f0e9156058c5486270efac8ab0"
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "sha256": "9195db098f1e1f5e257c1015fa60d7698242d50952d31bfe39f40e76c9b05866"
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "sha256": "d662a793a40744e96eb79887c1859d5ba8f77d5f40398cd15a8efa4c624ef8c3"
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "sha256": "21a6fe0ae553fa19ca3fbe9884508d067940d57e32b61c168fd2890beb18df84"
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "sha256": "5e64ce348396d2e2ee7e7209b1c02097a882ab1151e32b25c8d1050f601ff225"
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "sha256": "9a3ea0678a7b83bffec377ef6d6b6debd617ec41dc38640109cd238ce4461554"
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "sha256": "70860b08d3dbb995742440bbb4b7e56db3abdeaba1e37ff8c7b5ead2df835b51"
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+    }
+  ],
+  "installedHash": "529a772c4b73dd65c171993049c20f363de40de5c93e3a9605e82395310c5eb7",
+  "wasmSha256": "90a24de03cc1342aaf8e8f8d9f5da236300ae36727c33f7d7612affdf067de0a",
+  "engine": "0.21.1",
+  "engineSha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9",
+  "lifecycleScripts": false,
+  "localNamedAbi": true,
+  "localNamedRecords": 2,
+  "secretAbsent": true,
+  "failedWritesNonblocking": true,
+  "registry": {
+    "total": 33,
+    "packuments": 17,
+    "tarballs": 16,
+    "rejected": 0,
+    "missing": 0,
+    "missingPackuments": {},
+    "missingTarballs": 0
+  },
+  "deployed": false,
+  "downstreamDelivery": "not-qualified; Viceroy exposes virtual named endpoints in local process output",
+  "cleanup": {
+    "status": "passed",
+    "consumersRemoved": true
+  }
+}
