@@ -1,0 +1,1501 @@
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+ok - release context freshness: exact package binding and 26 fail-closed cases
+[pulsewasm] Running release-feature-acceptance (execution); elapsed 10.00s
+ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity
+[pulsewasm] release-feature-acceptance: passed in 10.12s
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+ok - shared release packages are source-bound, hash-checked, private copies; tampering, dirty/stale source and overlapping paths fail closed
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 4.25s
+
+[pulsewasm:unit] release-checkpoints
+[pulsewasm] Same-candidate receipt integrity, output retention and dependency invalidation (timeout 30.00s)
+release-checkpoints: 54 recovery/invalidation fixtures passed
+[pulsewasm] release-checkpoints: passed in 368ms
+
+[pulsewasm:unit] release-recovery
+[pulsewasm] Recovery input identity, checkout exclusion and retained-attempt expiry (timeout 30.00s)
+[pulsewasm] Running release-recovery (execution); elapsed 20.01s
+context seal recovery: 30 deterministic cases passed
+release-recovery: 17 candidate, dependency, artifact, locking and pruning fixtures passed
+[pulsewasm] release-recovery: passed in 9.70s
+
+[pulsewasm:unit] release-recovery-runner
+[pulsewasm] Real subprocess late-failure recovery and fail-closed reruns (timeout 90.00s)
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 125ms
+
+[pulsewasm:unit] second
+[pulsewasm] checkpoint fixture second (timeout 3.00s)
+deliberate late failure
+[pulsewasm] second: failed in 117ms
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+[pulsewasm] first: reused verified same-candidate checkpoint
+[pulsewasm] second: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] second
+[pulsewasm] checkpoint fixture second (timeout 3.00s)
+second passed
+[pulsewasm] second: passed in 119ms
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint task definition changed"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 4.00s)
+first passed
+[pulsewasm] first: passed in 129ms
+[pulsewasm] second: reused verified same-candidate checkpoint
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint dependency proof changed"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 117ms
+[pulsewasm] second: executing again; "Checkpoint dependency proof changed"
+
+[pulsewasm:unit] second
+[pulsewasm] checkpoint fixture second (timeout 3.00s)
+second passed
+[pulsewasm] second: passed in 132ms
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+[pulsewasm] first: executing again; "missing-checkpoint-or-artifact"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 129ms
+[pulsewasm] second: reused verified same-candidate checkpoint
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: failed in 110ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 129ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: failed in 132ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 116ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 115ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+waiting-for-interruption
+[pulsewasm] first: interrupted by SIGTERM; process group 848 contains 0 process(es)
+
+Writing Node.js report to file: report.20261020.234509.848.0.001.json
+Node.js report completed
+[pulsewasm] Running release-recovery-runner (execution); elapsed 30.01s
+[pulsewasm] first: interrupted in 5.87s
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[pulsewasm] first: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] first
+[pulsewasm] checkpoint fixture first (timeout 3.00s)
+first passed
+[pulsewasm] first: passed in 123ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+ok - owned async worker verification: exact requests, terminal results, byte mutations and bounded cancellation
+
+[pulsewasm:unit] str02b-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] str02b-installed: passed in 288ms
+
+[pulsewasm:unit] node01-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] jwt-installed-workflow
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] jwt-installed-workflow: passed in 275ms
+[pulsewasm] node01-installed: passed in 284ms
+
+[pulsewasm:unit] arc01-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] str02-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] arc01-installed: passed in 298ms
+[pulsewasm] str02-installed: passed in 299ms
+
+[pulsewasm:unit] str03b-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] ast01-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] str03b-installed: passed in 289ms
+[pulsewasm] ast01-installed: passed in 291ms
+
+[pulsewasm:unit] ast02b-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] ast02d-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] ast02d-installed: passed in 276ms
+[pulsewasm] ast02b-installed: passed in 283ms
+
+[pulsewasm:unit] mcp-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] mcp-installed: passed in 263ms
+
+[pulsewasm:unit] s3-body-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] s3-body-installed: failed in 291ms
+[pulsewasm] Recovery: 11/11 completed, 0 verified reuses, 11 executed, 0 remaining.
+[pulsewasm] str02b-installed: reused verified same-candidate checkpoint
+[pulsewasm] node01-installed: reused verified same-candidate checkpoint
+[pulsewasm] jwt-installed-workflow: reused verified same-candidate checkpoint
+[pulsewasm] arc01-installed: reused verified same-candidate checkpoint
+[pulsewasm] str02-installed: reused verified same-candidate checkpoint
+[pulsewasm] str03b-installed: reused verified same-candidate checkpoint
+[pulsewasm] ast01-installed: reused verified same-candidate checkpoint
+[pulsewasm] ast02b-installed: reused verified same-candidate checkpoint
+[pulsewasm] ast02d-installed: reused verified same-candidate checkpoint
+[pulsewasm] mcp-installed: reused verified same-candidate checkpoint
+[pulsewasm] s3-body-installed: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] s3-body-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] s3-body-installed: passed in 279ms
+[pulsewasm] Recovery: 11/11 completed, 10 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] str02b-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] str02b-installed: passed in 288ms
+
+[pulsewasm:unit] jwt-installed-workflow
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] node01-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] jwt-installed-workflow: passed in 270ms
+[pulsewasm] node01-installed: passed in 280ms
+
+[pulsewasm:unit] arc01-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] str02-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] Running release-recovery-runner (execution); elapsed 40.01s
+[pulsewasm] str02-installed: passed in 295ms
+[pulsewasm] arc01-installed: passed in 305ms
+
+[pulsewasm:unit] str03b-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] ast01-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] str03b-installed: passed in 291ms
+[pulsewasm] ast01-installed: passed in 292ms
+
+[pulsewasm:unit] ast02b-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] ast02d-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] ast02b-installed: passed in 307ms
+[pulsewasm] ast02d-installed: passed in 304ms
+
+[pulsewasm:unit] mcp-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] mcp-installed: passed in 309ms
+
+[pulsewasm:unit] s3-body-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] s3-body-installed: passed in 289ms
+[pulsewasm] Recovery: 11/11 completed, 0 verified reuses, 11 executed, 0 remaining.
+
+[pulsewasm:unit] str02b-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] str02b-installed: passed in 282ms
+
+[pulsewasm:unit] jwt-installed-workflow
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] node01-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] jwt-installed-workflow: passed in 309ms
+[pulsewasm] node01-installed: passed in 307ms
+
+[pulsewasm:unit] str02-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] arc01-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] arc01-installed: passed in 282ms
+[pulsewasm] str02-installed: passed in 306ms
+
+[pulsewasm:unit] str03b-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] ast01-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] str03b-installed: passed in 393ms
+[pulsewasm] ast01-installed: passed in 368ms
+
+[pulsewasm:unit] ast02b-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+
+[pulsewasm:unit] ast02d-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] ast02b-installed: passed in 328ms
+[pulsewasm] ast02d-installed: passed in 327ms
+
+[pulsewasm:unit] mcp-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] mcp-installed: passed in 318ms
+
+[pulsewasm:unit] s3-body-installed
+[pulsewasm] worker cleanup recovery fixture (timeout 5.00s)
+[pulsewasm] s3-body-installed: passed in 319ms
+[pulsewasm] Recovery: 11/11 completed, 0 verified reuses, 11 executed, 0 remaining.
+[pulsewasm] Recovery: 0/11 completed, 0 verified reuses, 0 executed, 11 remaining.
+[pulsewasm] Recovery: 0/11 completed, 0 verified reuses, 0 executed, 11 remaining.
+
+[pulsewasm:unit] worker-false-cleanup
+[pulsewasm] cleanup receipt verification fixture (timeout 5.00s)
+[pulsewasm] worker-false-cleanup: passed in 260ms
+
+[pulsewasm:unit] worker-false-input-cleanup
+[pulsewasm] late input mutation receipt fixture (timeout 5.00s)
+[pulsewasm] worker-false-input-cleanup: failed in 239ms
+
+[pulsewasm:unit] worker-input-mutation
+[pulsewasm] tracked mutation fixture (timeout 5.00s)
+[pulsewasm] worker-input-mutation: cleanup diagnostic: node:assert:152
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: Worker candidate differs
++ actual - expected
+
+  {
+    sourceRevision: '7f0dfc67148b26a16c8d9f65c370114c8143b7a6',
+    sourceTree: '339ccf92aac185dd1acff92cd58d2c3a2fe2baa4',
++   workingTree: 'M packages/one/source.js'
+-   workingTree: ''
+  }
+
+    at readLayout (/workspace/scratch/d3826bbd4bf5/pulse-09b/scripts/release-parallel.cjs:140:12)
+    at assertManagedWorker (/workspace/scratch/d3826bbd4bf5/pulse-09b/scripts/release-parallel.cjs:221:18)
+    at verifyWorker (/workspace/scratch/d3826bbd4bf5/pulse-09b/scripts/release-parallel.cjs:157:3)
+    at Object.cleanupWorker (/workspace/scratch/d3826bbd4bf5/pulse-09b/scripts/release-parallel.cjs:165:3)
+    at [eval]:4:61
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+    at evalFunction (node:internal/process/execution:283:30) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: {
+    sourceRevision: '7f0dfc67148b26a16c8d9f65c370114c8143b7a6',
+    sourceTree: '339ccf92aac185dd1acff92cd58d2c3a2fe2baa4',
+    workingTree: 'M packages/one/source.js'
+  },
+  expected: {
+    sourceRevision: '7f0dfc67148b26a16c8d9f65c370114c8143b7a6',
+    sourceTree: '339ccf92aac185dd1acff92cd58d2c3a2fe2baa4',
+    workingTree: ''
+  },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+[pulsewasm] worker-input-mutation: failed in 164ms
+
+[pulsewasm:unit] absolute-script
+[pulsewasm] absolute script (timeout 3.00s)
+[pulsewasm] absolute-script: passed in 132ms
+
+[pulsewasm:unit] report-capsule-contract
+[pulsewasm] report-capsule-contract (timeout 3.00s)
+
+[pulsewasm:unit] api-surface
+[pulsewasm] api-surface (timeout 3.00s)
+api-surface: complete task log
+report-capsule-contract: complete task log
+[pulsewasm] report-capsule-contract: passed in 313ms
+
+[pulsewasm:unit] cli-report-viewer
+[pulsewasm] cli-report-viewer (timeout 3.00s)
+[pulsewasm] api-surface: passed in 314ms
+cli-report-viewer: complete task log
+[pulsewasm] cli-report-viewer: passed in 306ms
+
+[pulsewasm:unit] cli-report-retained-evidence
+[pulsewasm] cli-report-retained-evidence (timeout 3.00s)
+cli-report-retained-evidence: complete task log
+[pulsewasm] cli-report-retained-evidence: passed in 308ms
+
+[pulsewasm:unit] cli-report-relationships
+[pulsewasm] cli-report-relationships (timeout 3.00s)
+cli-report-relationships: complete task log
+[pulsewasm] cli-report-relationships: passed in 304ms
+
+[pulsewasm:unit] cli-report-resource-inventory
+[pulsewasm] cli-report-resource-inventory (timeout 3.00s)
+cli-report-resource-inventory: complete task log
+[pulsewasm] cli-report-resource-inventory: passed in 301ms
+
+[pulsewasm:unit] cli-report-graph-diagnostics
+[pulsewasm] cli-report-graph-diagnostics (timeout 3.00s)
+cli-report-graph-diagnostics: complete task log
+[pulsewasm] cli-report-graph-diagnostics: passed in 290ms
+
+[pulsewasm:unit] entities-orchestration-demo
+[pulsewasm] entities-orchestration-demo (timeout 3.00s)
+entities-orchestration-demo: complete task log
+[pulsewasm] entities-orchestration-demo: passed in 304ms
+
+[pulsewasm:unit] s3-body-read
+[pulsewasm] s3-body-read (timeout 3.00s)
+s3-body-read: complete task log
+[pulsewasm] s3-body-read: passed in 307ms
+
+[pulsewasm:unit] shared-stage-o19
+[pulsewasm] shared-stage-o19 (timeout 3.00s)
+shared-stage-o19: complete task log
+[pulsewasm] shared-stage-o19: passed in 303ms
+[pulsewasm] Recovery: 10/10 completed, 0 verified reuses, 10 executed, 0 remaining.
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] suite-shape (timeout 3.00s)
+suite-shape: complete task log
+[pulsewasm] suite-shape: passed in 306ms
+
+[pulsewasm:unit] boundaries
+[pulsewasm] boundaries (timeout 3.00s)
+boundaries: complete task log
+[pulsewasm] boundaries: passed in 305ms
+
+[pulsewasm:unit] jwt-rs256
+[pulsewasm] jwt-rs256 (timeout 3.00s)
+jwt-rs256: complete task log
+[pulsewasm] jwt-rs256: passed in 316ms
+
+[pulsewasm:unit] release-artifact-determinism
+[pulsewasm] release-artifact-determinism (timeout 3.00s)
+release-artifact-determinism: complete task log
+[pulsewasm] release-artifact-determinism: passed in 304ms
+[pulsewasm] Recovery: 4/4 completed, 0 verified reuses, 4 executed, 0 remaining.
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] suite-shape (timeout 3.00s)
+suite-shape: complete task log
+[pulsewasm] suite-shape: failed in 305ms
+[pulsewasm] Recovery: 1/4 completed, 0 verified reuses, 1 executed, 3 remaining.
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] suite-shape (timeout 3.00s)
+
+[pulsewasm:unit] boundaries
+[pulsewasm] boundaries (timeout 3.00s)
+[pulsewasm] Running release-recovery-runner (execution); elapsed 50.01s
+suite-shape: complete task log
+boundaries: complete task log
+[pulsewasm] suite-shape: passed in 315ms
+[pulsewasm] boundaries: passed in 314ms
+
+[pulsewasm:unit] release-artifact-determinism
+[pulsewasm] release-artifact-determinism (timeout 3.00s)
+
+[pulsewasm:unit] jwt-rs256
+[pulsewasm] jwt-rs256 (timeout 3.00s)
+release-artifact-determinism: complete task log
+jwt-rs256: complete task log
+[pulsewasm] release-artifact-determinism: passed in 316ms
+[pulsewasm] jwt-rs256: passed in 315ms
+[pulsewasm] Recovery: 4/4 completed, 0 verified reuses, 4 executed, 0 remaining.
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] suite-shape (timeout 3.00s)
+
+[pulsewasm:unit] boundaries
+[pulsewasm] boundaries (timeout 3.00s)
+suite-shape: complete task log
+boundaries: complete task log
+[pulsewasm] suite-shape: failed in 314ms
+[pulsewasm] boundaries: interrupted in 313ms
+[pulsewasm] Recovery: 2/4 completed, 0 verified reuses, 2 executed, 2 remaining.
+
+[pulsewasm:unit] str02b-installed
+[pulsewasm] str02b-installed (timeout 3.00s)
+str02b-installed: complete task log
+[pulsewasm] str02b-installed: passed in 318ms
+
+[pulsewasm:unit] jwt-installed-workflow
+[pulsewasm] jwt-installed-workflow (timeout 3.00s)
+jwt-installed-workflow: complete task log
+[pulsewasm] jwt-installed-workflow: passed in 345ms
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+
+[pulsewasm:unit] release-artifact-determinism
+[pulsewasm] release-artifact-determinism (timeout 3.00s)
+
+[pulsewasm:unit] cli-report-capture-proof
+[pulsewasm] cli-report-capture-proof (timeout 3.00s)
+release-artifact-determinism: complete task log
+cli-report-capture-proof: complete task log
+[pulsewasm] release-artifact-determinism: passed in 314ms
+[pulsewasm] cli-report-capture-proof: passed in 323ms
+
+[pulsewasm:unit] ast02d-installed
+[pulsewasm] ast02d-installed (timeout 3.00s)
+ast02d-installed: complete task log
+[pulsewasm] ast02d-installed: passed in 308ms
+[pulsewasm] Recovery: 3/3 completed, 0 verified reuses, 3 executed, 0 remaining.
+
+[pulsewasm:unit] benchmark
+[pulsewasm] benchmark (timeout 3.00s)
+benchmark: complete task log
+[pulsewasm] benchmark: passed in 292ms
+
+[pulsewasm:unit] a
+[pulsewasm] a (timeout 3.00s)
+
+[pulsewasm:unit] c
+[pulsewasm] c (timeout 3.00s)
+a: complete task log
+c: complete task log
+[pulsewasm] c: passed in 303ms
+[pulsewasm] a: passed in 314ms
+
+[pulsewasm:unit] b
+[pulsewasm] b (timeout 3.00s)
+b: complete task log
+[pulsewasm] b: passed in 326ms
+
+[pulsewasm:unit] d
+[pulsewasm] d (timeout 3.00s)
+d: complete task log
+[pulsewasm] d: passed in 317ms
+[pulsewasm] Recovery: 5/5 completed, 0 verified reuses, 5 executed, 0 remaining.
+
+[pulsewasm:unit] a
+[pulsewasm] a (timeout 3.00s)
+a: complete task log
+[pulsewasm] a: passed in 314ms
+
+[pulsewasm:unit] b
+[pulsewasm] b (timeout 3.00s)
+b: complete task log
+[pulsewasm] b: passed in 313ms
+
+[pulsewasm:unit] c
+[pulsewasm] c (timeout 3.00s)
+c: complete task log
+[pulsewasm] c: passed in 300ms
+
+[pulsewasm:unit] d
+[pulsewasm] d (timeout 3.00s)
+d: complete task log
+[pulsewasm] d: passed in 296ms
+
+[pulsewasm:unit] benchmark
+[pulsewasm] benchmark (timeout 3.00s)
+benchmark: complete task log
+[pulsewasm] benchmark: passed in 301ms
+[pulsewasm] Recovery: 5/5 completed, 0 verified reuses, 5 executed, 0 remaining.
+
+[pulsewasm:unit] a
+[pulsewasm] a (timeout 3.00s)
+
+[pulsewasm:unit] b
+[pulsewasm] b (timeout 3.00s)
+a: complete task log
+b: complete task log
+[pulsewasm] a: passed in 2.73s
+[pulsewasm] b: passed in 2.73s
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+
+[pulsewasm:unit] a
+[pulsewasm] a (timeout 3.00s)
+
+[pulsewasm:unit] b
+[pulsewasm] b (timeout 3.00s)
+a: complete task log
+b: complete task log
+[pulsewasm] a: passed in 314ms
+[pulsewasm] b: passed in 314ms
+
+[pulsewasm:unit] late
+[pulsewasm] late (timeout 3.00s)
+late: complete task log
+[pulsewasm] late: failed in 309ms
+[pulsewasm] Recovery: 3/3 completed, 0 verified reuses, 3 executed, 0 remaining.
+[pulsewasm] a: reused verified same-candidate checkpoint
+[pulsewasm] b: reused verified same-candidate checkpoint
+[pulsewasm] late: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] late
+[pulsewasm] late (timeout 3.00s)
+late: complete task log
+[pulsewasm] late: passed in 318ms
+[pulsewasm] Recovery: 3/3 completed, 2 verified reuses, 1 executed, 0 remaining.
+
+[pulsewasm:unit] a
+[pulsewasm] a (timeout 3.00s)
+
+[pulsewasm:unit] b
+[pulsewasm] b (timeout 3.00s)
+a: complete task log
+b: complete task log
+[pulsewasm] a: failed in 273ms
+[pulsewasm] b: interrupted by sibling-failure; process group 4835 contains 0 process(es)
+
+Writing Node.js report to file: report.20261020.234542.4835.0.001.json
+Node.js report completed
+[pulsewasm] b: interrupted in 1.16s
+[pulsewasm] Recovery: 2/3 completed, 0 verified reuses, 2 executed, 1 remaining.
+
+[pulsewasm:unit] a
+[pulsewasm] a (timeout 3.00s)
+
+[pulsewasm:unit] b
+[pulsewasm] b (timeout 3.00s)
+b: complete task log
+a: complete task log
+[pulsewasm] a: interrupted by SIGTERM; process group 4866 contains 0 process(es)
+[pulsewasm] b: interrupted by SIGTERM; process group 4867 contains 0 process(es)
+
+Writing Node.js report to file: 
+Writing Node.js report to file: report.20261020.234543.4866.0.001.jsonreport.20261020.234543.4867.0.001.json
+Node.js report completed
+
+Node.js report completed
+[pulsewasm] Running release-recovery-runner (execution); elapsed 60.01s
+[pulsewasm] b: interrupted in 982ms
+[pulsewasm] a: interrupted in 987ms
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+
+[pulsewasm:unit] observer
+[pulsewasm] observer (timeout 3.00s)
+[pulsewasm] observer: interrupted by observer-failure; process group 4898 contains 0 process(es)
+[pulsewasm] observer: interrupted in 900ms
+ok - isolated workers, serial equivalence, dependency/resource locks, exclusive benchmarks, cancellation and retained recovery
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-45-45-383Z-b5e65dee-4efb-4a59-bfa3-2fe6b9f14246
+
+[pulsewasm:unit] fixture-1
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-1: passed in 172ms
+
+[pulsewasm:unit] fixture-2
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-2: passed in 171ms
+
+[pulsewasm:unit] fixture-3
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-3: passed in 139ms
+
+[pulsewasm:unit] fixture-4
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-4: passed in 162ms
+
+[pulsewasm:unit] fixture-5
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-5: passed in 140ms
+
+[pulsewasm:unit] fixture-6
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-6: passed in 149ms
+
+[pulsewasm:unit] fixture-7
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-7: passed in 136ms
+
+[pulsewasm:unit] fixture-8
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-8: passed in 165ms
+
+[pulsewasm:unit] fixture-9
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-9: passed in 138ms
+
+[pulsewasm:unit] fixture-10
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-10: passed in 135ms
+
+[pulsewasm:unit] fixture-11
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-11: passed in 130ms
+
+[pulsewasm:unit] fixture-12
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-12: passed in 137ms
+
+[pulsewasm:unit] fixture-13
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-13: passed in 129ms
+
+[pulsewasm:unit] fixture-14
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-14: passed in 133ms
+
+[pulsewasm:unit] fixture-15
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-15: passed in 131ms
+
+[pulsewasm:unit] fixture-16
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-16: passed in 136ms
+
+[pulsewasm:unit] fixture-17
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-17: passed in 147ms
+
+[pulsewasm:unit] fixture-18
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-18: passed in 140ms
+
+[pulsewasm:unit] fixture-19
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-19: passed in 140ms
+
+[pulsewasm:unit] fixture-20
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-20: passed in 155ms
+
+[pulsewasm:unit] fixture-21
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-21: passed in 138ms
+
+[pulsewasm:unit] fixture-22
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-22: passed in 140ms
+
+[pulsewasm:unit] fixture-23
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-23: passed in 136ms
+
+[pulsewasm:unit] fixture-24
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-24: passed in 130ms
+
+[pulsewasm:unit] fixture-25
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-25: passed in 142ms
+
+[pulsewasm:unit] fixture-26
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-26: passed in 141ms
+
+[pulsewasm:unit] fixture-27
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-27: passed in 142ms
+
+[pulsewasm:unit] fixture-28
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-28: passed in 141ms
+
+[pulsewasm:unit] fixture-29
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-29: passed in 138ms
+
+[pulsewasm:unit] fixture-30
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-30: passed in 144ms
+
+[pulsewasm:unit] fixture-31
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-31: passed in 143ms
+
+[pulsewasm:unit] fixture-32
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-32: passed in 171ms
+
+[pulsewasm:unit] fixture-33
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-33: passed in 166ms
+
+[pulsewasm:unit] fixture-34
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-34: passed in 150ms
+
+[pulsewasm:unit] fixture-35
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-35: passed in 131ms
+
+[pulsewasm:unit] fixture-36
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-36: passed in 128ms
+
+[pulsewasm:unit] fixture-37
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-37: passed in 148ms
+
+[pulsewasm:unit] fixture-38
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-38: passed in 134ms
+
+[pulsewasm:unit] fixture-39
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-39: passed in 136ms
+
+[pulsewasm:unit] fixture-40
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-40: passed in 126ms
+
+[pulsewasm:unit] fixture-41
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-41: passed in 143ms
+
+[pulsewasm:unit] fixture-42
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-42: passed in 127ms
+
+[pulsewasm:unit] fixture-43
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-43: passed in 134ms
+
+[pulsewasm:unit] fixture-44
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-44: passed in 141ms
+
+[pulsewasm:unit] fixture-45
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-45: passed in 137ms
+
+[pulsewasm:unit] fixture-46
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-46: passed in 136ms
+
+[pulsewasm:unit] fixture-47
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-47: passed in 143ms
+
+[pulsewasm:unit] fixture-48
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-48: passed in 138ms
+
+[pulsewasm:unit] fixture-49
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-49: passed in 133ms
+
+[pulsewasm:unit] fixture-50
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-50: passed in 134ms
+
+[pulsewasm:unit] fixture-51
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-51: passed in 137ms
+
+[pulsewasm:unit] fixture-52
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-52: passed in 139ms
+
+[pulsewasm:unit] fixture-53
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-53: passed in 144ms
+
+[pulsewasm:unit] fixture-54
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-54: passed in 138ms
+
+[pulsewasm:unit] fixture-55
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-55: passed in 152ms
+
+[pulsewasm:unit] fixture-56
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-56: passed in 144ms
+
+[pulsewasm:unit] fixture-57
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] Running release-recovery-runner (execution); elapsed 70.01s
+[pulsewasm] fixture-57: passed in 135ms
+
+[pulsewasm:unit] fixture-58
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-58: passed in 136ms
+
+[pulsewasm:unit] fixture-59
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-59: passed in 136ms
+
+[pulsewasm:unit] fixture-60
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-60: passed in 128ms
+
+[pulsewasm:unit] fixture-61
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-61: passed in 137ms
+
+[pulsewasm:unit] fixture-62
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-62: passed in 147ms
+
+[pulsewasm:unit] fixture-63
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-63: passed in 145ms
+
+[pulsewasm:unit] fixture-64
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-64: passed in 134ms
+
+[pulsewasm:unit] fixture-65
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-65: passed in 161ms
+
+[pulsewasm:unit] fixture-66
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-66: passed in 146ms
+
+[pulsewasm:unit] fixture-67
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-67: passed in 137ms
+
+[pulsewasm:unit] fixture-68
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-68: passed in 167ms
+
+[pulsewasm:unit] fixture-69
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-69: passed in 149ms
+
+[pulsewasm:unit] fixture-70
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-70: passed in 137ms
+
+[pulsewasm:unit] fixture-71
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-71: passed in 149ms
+
+[pulsewasm:unit] fixture-72
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-72: passed in 146ms
+
+[pulsewasm:unit] fixture-73
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-73: passed in 140ms
+
+[pulsewasm:unit] fixture-74
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-74: passed in 134ms
+
+[pulsewasm:unit] fixture-75
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-75: passed in 140ms
+
+[pulsewasm:unit] fixture-76
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-76: passed in 128ms
+
+[pulsewasm:unit] fixture-77
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-77: passed in 169ms
+
+[pulsewasm:unit] fixture-78
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-78: passed in 162ms
+
+[pulsewasm:unit] fixture-79
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-79: passed in 157ms
+
+[pulsewasm:unit] fixture-80
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-80: passed in 143ms
+
+[pulsewasm:unit] fixture-81
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-81: passed in 142ms
+
+[pulsewasm:unit] fixture-82
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-82: passed in 140ms
+
+[pulsewasm:unit] fixture-83
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-83: passed in 135ms
+
+[pulsewasm:unit] fixture-84
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-84: passed in 134ms
+
+[pulsewasm:unit] fixture-85
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-85: passed in 128ms
+
+[pulsewasm:unit] fixture-86
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-86: passed in 130ms
+
+[pulsewasm:unit] fixture-87
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-87: passed in 133ms
+
+[pulsewasm:unit] fixture-88
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-88: passed in 124ms
+
+[pulsewasm:unit] fixture-89
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-89: passed in 132ms
+
+[pulsewasm:unit] fixture-90
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-90: passed in 121ms
+
+[pulsewasm:unit] fixture-91
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-91: passed in 122ms
+
+[pulsewasm:unit] fixture-92
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-92: passed in 125ms
+
+[pulsewasm:unit] fixture-93
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-93: passed in 132ms
+
+[pulsewasm:unit] fixture-94
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-94: passed in 123ms
+
+[pulsewasm:unit] fixture-95
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-95: passed in 127ms
+
+[pulsewasm:unit] fixture-96
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-96: passed in 141ms
+
+[pulsewasm:unit] fixture-97
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-97: passed in 122ms
+
+[pulsewasm:unit] fixture-98
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-98: passed in 121ms
+
+[pulsewasm:unit] fixture-99
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-99: passed in 123ms
+
+[pulsewasm:unit] fixture-100
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-100: passed in 118ms
+
+[pulsewasm:unit] fixture-101
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-101: passed in 134ms
+
+[pulsewasm:unit] fixture-102
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-102: passed in 125ms
+
+[pulsewasm:unit] fixture-103
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-103: passed in 132ms
+
+[pulsewasm:unit] fixture-104
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-104: passed in 130ms
+
+[pulsewasm:unit] fixture-105
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-105: passed in 135ms
+
+[pulsewasm:unit] fixture-106
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-106: passed in 128ms
+
+[pulsewasm:unit] fixture-107
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-107: passed in 131ms
+
+[pulsewasm:unit] fixture-108
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-108: passed in 123ms
+
+[pulsewasm:unit] fixture-109
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-109: passed in 123ms
+
+[pulsewasm:unit] fixture-110
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-110: passed in 122ms
+
+[pulsewasm:unit] fixture-111
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-111: passed in 124ms
+
+[pulsewasm:unit] fixture-112
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-112: passed in 121ms
+
+[pulsewasm:unit] fixture-113
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-113: passed in 125ms
+
+[pulsewasm:unit] fixture-114
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-114: passed in 126ms
+
+[pulsewasm:unit] fixture-115
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-115: passed in 128ms
+
+[pulsewasm:unit] fixture-116
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-116: passed in 140ms
+
+[pulsewasm:unit] fixture-117
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-117: passed in 131ms
+
+[pulsewasm:unit] fixture-118
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-118: passed in 119ms
+
+[pulsewasm:unit] fixture-119
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-119: passed in 126ms
+
+[pulsewasm:unit] fixture-120
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-120: passed in 130ms
+
+[pulsewasm:unit] fixture-121
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-121: passed in 117ms
+
+[pulsewasm:unit] fixture-122
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-122: passed in 121ms
+
+[pulsewasm:unit] fixture-123
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-123: passed in 130ms
+
+[pulsewasm:unit] fixture-124
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-124: passed in 130ms
+
+[pulsewasm:unit] fixture-125
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-125: passed in 123ms
+
+[pulsewasm:unit] fixture-126
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-126: passed in 120ms
+
+[pulsewasm:unit] fixture-127
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-127: passed in 133ms
+
+[pulsewasm:unit] fixture-128
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-128: passed in 122ms
+
+[pulsewasm:unit] fixture-129
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-129: passed in 115ms
+
+[pulsewasm:unit] fixture-130
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] Running release-recovery-runner (execution); elapsed 80.01s
+[pulsewasm] fixture-130: passed in 126ms
+
+[pulsewasm:unit] fixture-131
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-131: passed in 130ms
+
+[pulsewasm:unit] fixture-132
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-132: passed in 136ms
+
+[pulsewasm:unit] fixture-133
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-133: passed in 128ms
+
+[pulsewasm:unit] fixture-134
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-134: passed in 135ms
+
+[pulsewasm:unit] fixture-135
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-135: passed in 140ms
+
+[pulsewasm:unit] fixture-136
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-136: passed in 157ms
+
+[pulsewasm:unit] fixture-137
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-137: passed in 130ms
+
+[pulsewasm:unit] fixture-138
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-138: passed in 136ms
+
+[pulsewasm:unit] fixture-139
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-139: passed in 148ms
+
+[pulsewasm:unit] fixture-140
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-140: passed in 149ms
+
+[pulsewasm:unit] fixture-141
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-141: passed in 143ms
+
+[pulsewasm:unit] fixture-142
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-142: passed in 134ms
+
+[pulsewasm:unit] fixture-143
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-143: passed in 129ms
+
+[pulsewasm:unit] fixture-144
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-144: passed in 116ms
+
+[pulsewasm:unit] fixture-145
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-145: passed in 123ms
+
+[pulsewasm:unit] fixture-146
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-146: passed in 136ms
+
+[pulsewasm:unit] fixture-147
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-147: passed in 122ms
+
+[pulsewasm:unit] fixture-148
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-148: passed in 124ms
+
+[pulsewasm:unit] fixture-149
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-149: passed in 154ms
+
+[pulsewasm:unit] fixture-150
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-150: failed in 119ms
+[pulsewasm] Recovery: 150/150 completed, 0 verified reuses, 150 executed, 0 remaining.
+[development] failed: 150/150; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-45-45-383Z-b5e65dee-4efb-4a59-bfa3-2fe6b9f14246/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-06-477Z-2703d448-261a-4d55-b5ea-70bd8e878cdc
+[pulsewasm] fixture-1: reused verified same-candidate checkpoint
+[pulsewasm] fixture-2: reused verified same-candidate checkpoint
+[pulsewasm] fixture-3: reused verified same-candidate checkpoint
+[pulsewasm] fixture-4: reused verified same-candidate checkpoint
+[pulsewasm] fixture-5: reused verified same-candidate checkpoint
+[pulsewasm] fixture-6: reused verified same-candidate checkpoint
+[pulsewasm] fixture-7: reused verified same-candidate checkpoint
+[pulsewasm] fixture-8: reused verified same-candidate checkpoint
+[pulsewasm] fixture-9: reused verified same-candidate checkpoint
+[pulsewasm] fixture-10: reused verified same-candidate checkpoint
+[pulsewasm] fixture-11: reused verified same-candidate checkpoint
+[pulsewasm] fixture-12: reused verified same-candidate checkpoint
+[pulsewasm] fixture-13: reused verified same-candidate checkpoint
+[pulsewasm] fixture-14: reused verified same-candidate checkpoint
+[pulsewasm] fixture-15: reused verified same-candidate checkpoint
+[pulsewasm] fixture-16: reused verified same-candidate checkpoint
+[pulsewasm] fixture-17: reused verified same-candidate checkpoint
+[pulsewasm] fixture-18: reused verified same-candidate checkpoint
+[pulsewasm] fixture-19: reused verified same-candidate checkpoint
+[pulsewasm] fixture-20: reused verified same-candidate checkpoint
+[pulsewasm] fixture-21: reused verified same-candidate checkpoint
+[pulsewasm] fixture-22: reused verified same-candidate checkpoint
+[pulsewasm] fixture-23: reused verified same-candidate checkpoint
+[pulsewasm] fixture-24: reused verified same-candidate checkpoint
+[pulsewasm] fixture-25: reused verified same-candidate checkpoint
+[pulsewasm] fixture-26: reused verified same-candidate checkpoint
+[pulsewasm] fixture-27: reused verified same-candidate checkpoint
+[pulsewasm] fixture-28: reused verified same-candidate checkpoint
+[pulsewasm] fixture-29: reused verified same-candidate checkpoint
+[pulsewasm] fixture-30: reused verified same-candidate checkpoint
+[pulsewasm] fixture-31: reused verified same-candidate checkpoint
+[pulsewasm] fixture-32: reused verified same-candidate checkpoint
+[pulsewasm] fixture-33: reused verified same-candidate checkpoint
+[pulsewasm] fixture-34: reused verified same-candidate checkpoint
+[pulsewasm] fixture-35: reused verified same-candidate checkpoint
+[pulsewasm] fixture-36: reused verified same-candidate checkpoint
+[pulsewasm] fixture-37: reused verified same-candidate checkpoint
+[pulsewasm] fixture-38: reused verified same-candidate checkpoint
+[pulsewasm] fixture-39: reused verified same-candidate checkpoint
+[pulsewasm] fixture-40: reused verified same-candidate checkpoint
+[pulsewasm] fixture-41: reused verified same-candidate checkpoint
+[pulsewasm] fixture-42: reused verified same-candidate checkpoint
+[pulsewasm] fixture-43: reused verified same-candidate checkpoint
+[pulsewasm] fixture-44: reused verified same-candidate checkpoint
+[pulsewasm] fixture-45: reused verified same-candidate checkpoint
+[pulsewasm] fixture-46: reused verified same-candidate checkpoint
+[pulsewasm] fixture-47: reused verified same-candidate checkpoint
+[pulsewasm] fixture-48: reused verified same-candidate checkpoint
+[pulsewasm] fixture-49: reused verified same-candidate checkpoint
+[pulsewasm] fixture-50: reused verified same-candidate checkpoint
+[pulsewasm] fixture-51: reused verified same-candidate checkpoint
+[pulsewasm] fixture-52: reused verified same-candidate checkpoint
+[pulsewasm] fixture-53: reused verified same-candidate checkpoint
+[pulsewasm] fixture-54: reused verified same-candidate checkpoint
+[pulsewasm] fixture-55: reused verified same-candidate checkpoint
+[pulsewasm] fixture-56: reused verified same-candidate checkpoint
+[pulsewasm] fixture-57: reused verified same-candidate checkpoint
+[pulsewasm] fixture-58: reused verified same-candidate checkpoint
+[pulsewasm] fixture-59: reused verified same-candidate checkpoint
+[pulsewasm] fixture-60: reused verified same-candidate checkpoint
+[pulsewasm] fixture-61: reused verified same-candidate checkpoint
+[pulsewasm] fixture-62: reused verified same-candidate checkpoint
+[pulsewasm] fixture-63: reused verified same-candidate checkpoint
+[pulsewasm] fixture-64: reused verified same-candidate checkpoint
+[pulsewasm] fixture-65: reused verified same-candidate checkpoint
+[pulsewasm] fixture-66: reused verified same-candidate checkpoint
+[pulsewasm] fixture-67: reused verified same-candidate checkpoint
+[pulsewasm] fixture-68: reused verified same-candidate checkpoint
+[pulsewasm] fixture-69: reused verified same-candidate checkpoint
+[pulsewasm] fixture-70: reused verified same-candidate checkpoint
+[pulsewasm] fixture-71: reused verified same-candidate checkpoint
+[pulsewasm] fixture-72: reused verified same-candidate checkpoint
+[pulsewasm] fixture-73: reused verified same-candidate checkpoint
+[pulsewasm] fixture-74: reused verified same-candidate checkpoint
+[pulsewasm] fixture-75: reused verified same-candidate checkpoint
+[pulsewasm] fixture-76: reused verified same-candidate checkpoint
+[pulsewasm] fixture-77: reused verified same-candidate checkpoint
+[pulsewasm] fixture-78: reused verified same-candidate checkpoint
+[pulsewasm] fixture-79: reused verified same-candidate checkpoint
+[pulsewasm] fixture-80: reused verified same-candidate checkpoint
+[pulsewasm] fixture-81: reused verified same-candidate checkpoint
+[pulsewasm] fixture-82: reused verified same-candidate checkpoint
+[pulsewasm] fixture-83: reused verified same-candidate checkpoint
+[pulsewasm] fixture-84: reused verified same-candidate checkpoint
+[pulsewasm] fixture-85: reused verified same-candidate checkpoint
+[pulsewasm] fixture-86: reused verified same-candidate checkpoint
+[pulsewasm] fixture-87: reused verified same-candidate checkpoint
+[pulsewasm] fixture-88: reused verified same-candidate checkpoint
+[pulsewasm] fixture-89: reused verified same-candidate checkpoint
+[pulsewasm] fixture-90: reused verified same-candidate checkpoint
+[pulsewasm] fixture-91: reused verified same-candidate checkpoint
+[pulsewasm] fixture-92: reused verified same-candidate checkpoint
+[pulsewasm] fixture-93: reused verified same-candidate checkpoint
+[pulsewasm] fixture-94: reused verified same-candidate checkpoint
+[pulsewasm] fixture-95: reused verified same-candidate checkpoint
+[pulsewasm] fixture-96: reused verified same-candidate checkpoint
+[pulsewasm] fixture-97: reused verified same-candidate checkpoint
+[pulsewasm] fixture-98: reused verified same-candidate checkpoint
+[pulsewasm] fixture-99: reused verified same-candidate checkpoint
+[pulsewasm] fixture-100: reused verified same-candidate checkpoint
+[pulsewasm] fixture-101: reused verified same-candidate checkpoint
+[pulsewasm] fixture-102: reused verified same-candidate checkpoint
+[pulsewasm] fixture-103: reused verified same-candidate checkpoint
+[pulsewasm] fixture-104: reused verified same-candidate checkpoint
+[pulsewasm] fixture-105: reused verified same-candidate checkpoint
+[pulsewasm] fixture-106: reused verified same-candidate checkpoint
+[pulsewasm] fixture-107: reused verified same-candidate checkpoint
+[pulsewasm] fixture-108: reused verified same-candidate checkpoint
+[pulsewasm] fixture-109: reused verified same-candidate checkpoint
+[pulsewasm] fixture-110: reused verified same-candidate checkpoint
+[pulsewasm] fixture-111: reused verified same-candidate checkpoint
+[pulsewasm] fixture-112: reused verified same-candidate checkpoint
+[pulsewasm] fixture-113: reused verified same-candidate checkpoint
+[pulsewasm] fixture-114: reused verified same-candidate checkpoint
+[pulsewasm] fixture-115: reused verified same-candidate checkpoint
+[pulsewasm] fixture-116: reused verified same-candidate checkpoint
+[pulsewasm] fixture-117: reused verified same-candidate checkpoint
+[pulsewasm] fixture-118: reused verified same-candidate checkpoint
+[pulsewasm] fixture-119: reused verified same-candidate checkpoint
+[pulsewasm] fixture-120: reused verified same-candidate checkpoint
+[pulsewasm] fixture-121: reused verified same-candidate checkpoint
+[pulsewasm] fixture-122: reused verified same-candidate checkpoint
+[pulsewasm] fixture-123: reused verified same-candidate checkpoint
+[pulsewasm] fixture-124: reused verified same-candidate checkpoint
+[pulsewasm] fixture-125: reused verified same-candidate checkpoint
+[pulsewasm] fixture-126: reused verified same-candidate checkpoint
+[pulsewasm] fixture-127: reused verified same-candidate checkpoint
+[pulsewasm] fixture-128: reused verified same-candidate checkpoint
+[pulsewasm] fixture-129: reused verified same-candidate checkpoint
+[pulsewasm] fixture-130: reused verified same-candidate checkpoint
+[pulsewasm] fixture-131: reused verified same-candidate checkpoint
+[pulsewasm] fixture-132: reused verified same-candidate checkpoint
+[pulsewasm] fixture-133: reused verified same-candidate checkpoint
+[pulsewasm] fixture-134: reused verified same-candidate checkpoint
+[pulsewasm] fixture-135: reused verified same-candidate checkpoint
+[pulsewasm] fixture-136: reused verified same-candidate checkpoint
+[pulsewasm] fixture-137: reused verified same-candidate checkpoint
+[pulsewasm] fixture-138: reused verified same-candidate checkpoint
+[pulsewasm] fixture-139: reused verified same-candidate checkpoint
+[pulsewasm] fixture-140: reused verified same-candidate checkpoint
+[pulsewasm] fixture-141: reused verified same-candidate checkpoint
+[pulsewasm] fixture-142: reused verified same-candidate checkpoint
+[pulsewasm] fixture-143: reused verified same-candidate checkpoint
+[pulsewasm] fixture-144: reused verified same-candidate checkpoint
+[pulsewasm] fixture-145: reused verified same-candidate checkpoint
+[pulsewasm] fixture-146: reused verified same-candidate checkpoint
+[pulsewasm] fixture-147: reused verified same-candidate checkpoint
+[pulsewasm] fixture-148: reused verified same-candidate checkpoint
+[pulsewasm] fixture-149: reused verified same-candidate checkpoint
+[pulsewasm] fixture-150: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] fixture-150
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-150: passed in 126ms
+[pulsewasm] Recovery: 150/150 completed, 149 verified reuses, 1 executed, 0 remaining.
+[development] passed: 150/150; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-06-477Z-2703d448-261a-4d55-b5ea-70bd8e878cdc/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-102Z-5a7d4f3c-c648-434d-bba5-2e0d712b1179
+
+[pulsewasm:unit] fixture-1
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-1: passed in 124ms
+
+[pulsewasm:unit] fixture-2
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-2: passed in 137ms
+[pulsewasm] Recovery: 2/2 completed, 0 verified reuses, 2 executed, 0 remaining.
+[development] passed: 2/2; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-102Z-5a7d4f3c-c648-434d-bba5-2e0d712b1179/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-369Z-456306c8-6321-4318-876e-6fee487ad484
+[pulsewasm] fixture-1: executing again; "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+
+[pulsewasm:unit] fixture-1
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-1: passed in 128ms
+[pulsewasm] fixture-2: reused verified same-candidate checkpoint
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+[development] passed: 2/2; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-369Z-456306c8-6321-4318-876e-6fee487ad484/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-504Z-6599962b-ea2c-4d3f-9f68-423bd352d78f
+[pulsewasm] fixture-1: reused verified same-candidate checkpoint
+[pulsewasm] fixture-2: executing again; "missing-checkpoint-or-artifact"
+
+[pulsewasm:unit] fixture-2
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-2: passed in 124ms
+[pulsewasm] Recovery: 2/2 completed, 1 verified reuses, 1 executed, 0 remaining.
+[development] passed: 2/2; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-504Z-6599962b-ea2c-4d3f-9f68-423bd352d78f/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-636Z-dd6924a1-c523-460d-b3fd-b677aec9715a
+[development] failed: 0/2; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-636Z-dd6924a1-c523-460d-b3fd-b677aec9715a/report.json
+Development inputs changed (input); start a fresh attempt
++ actual - expected
+
++ '1fe1706d5b99b25c9e7eb618007edc18d0377542d58baf7a45cc667f19036531'
+- '9f5bbe9f922b8107e9bc481a320f5433149cadee28b8cdc4830b65c8a02be594'
+
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-638Z-59a7eb8c-42ff-4e34-a5d4-5c838d65526c
+
+[pulsewasm:unit] fixture-1
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-1: passed in 130ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[development] failed: 1/1; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-638Z-59a7eb8c-42ff-4e34-a5d4-5c838d65526c/report.json
+Development inputs changed during execution
++ actual - expected
+
++ '1ebb2b1e10f3bdf3a1ffcbddf9326561792c3ae17b83358fbcdd316f6f550d18'
+- '87472e8cbf048fe53f2992c4104d01abb8a3a46bf4d63bac47361b1075f7d741'
+
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-773Z-00e11a0f-ab33-40ca-8b47-35f94713ef4f
+[pulsewasm] fixture-1: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] fixture-1
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-1: passed in 128ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[development] passed: 1/1; input checks 1ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-773Z-00e11a0f-ab33-40ca-8b47-35f94713ef4f/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-906Z-549385ea-ad23-4c4f-83f8-057747989d73
+
+[pulsewasm:unit] fixture-1
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-1: interrupted by SIGTERM; process group 7419 contains 0 process(es)
+[pulsewasm] Running release-recovery-runner (execution); elapsed 90.01s
+[pulsewasm] fixture-1: interrupted in 5.83s
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[development] interrupted: 1/1; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-07-906Z-549385ea-ad23-4c4f-83f8-057747989d73/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-13-743Z-19749986-55b9-48f6-b83f-0443c98b45ea
+[pulsewasm] fixture-1: executing again; "Checkpoint did not pass with successful cleanup"
+
+[pulsewasm:unit] fixture-1
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-1: passed in 122ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[development] passed: 1/1; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-13-743Z-19749986-55b9-48f6-b83f-0443c98b45ea/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-13-870Z-e90eacf2-6d28-4666-870b-017e2e70358b
+
+[pulsewasm:external] fixture-1
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-1: passed in 124ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[development] passed: 1/1; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-13-870Z-e90eacf2-6d28-4666-870b-017e2e70358b/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-13-998Z-3618bdf5-7d4c-44dc-b9c2-2816dacaef64
+[pulsewasm] fixture-1: executing again; "task requires fresh development execution"
+
+[pulsewasm:external] fixture-1
+[pulsewasm] development recovery fixture (timeout 3.00s)
+[pulsewasm] fixture-1: passed in 123ms
+[pulsewasm] Recovery: 1/1 completed, 0 verified reuses, 1 executed, 0 remaining.
+[development] passed: 1/1; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-13-998Z-3618bdf5-7d4c-44dc-b9c2-2816dacaef64/report.json
+[development] attempt /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-14-128Z-9d5ebf22-aee1-4690-a944-e3ece0733a1f
+[development] failed: 0/0; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-SZ3tCH/pulse-development-test-BEiRUZ/.pulse-development/attempts/2026-10-21T05-46-14-128Z-9d5ebf22-aee1-4690-a944-e3ece0733a1f/report.json
+Invalid development manifest
++ actual - expected
+
++ undefined
+- 'pulse.development-attempt.v1'
+
+ok - development recovery: 149 verified passes plus one rerun; immutable attempts, signals, drift, corruption, locks and qualification isolation
+ok - real task recovery preserves late failures, changed inputs, lost outputs, interruption and failed cleanup; malformed configuration and checkpoint disk errors terminalize without invented passes
+[pulsewasm] release-recovery-runner: passed in 67.44s
+
+[pulsewasm:release] release-evidence-authority
+[pulsewasm] sixteen-shard aggregation and exact evidence boundary (timeout 30.00s)
+ok - release evidence authority aggregates sixteen shards and preserves the no-deploy/no-publish boundary
+[pulsewasm] release-evidence-authority: passed in 3.07s
+
+[pulsewasm:unit] release-seal-lifecycle
+[pulsewasm] durable seal heartbeat, terminal receipts and bounded process/cleanup lifecycle (timeout 60.00s)
+ok - dependency-free seal reaches restoration; setup failures terminalize; clean candidate and required tools fail early; parent deadline cancels work and preserves cleanup
+
+[pulsewasm:unit] cleanup-stall-fixture
+[pulsewasm] successful task with deliberately stalled cleanup (timeout 3.00s)
+[pulsewasm] cleanup-stall-fixture: failed in 475ms
+ok - seal heartbeat and immutable terminal receipts; failure, interruption, stubborn owned descendants and stalled cleanup return bounded results
+[pulsewasm] release-seal-lifecycle: passed in 4.63s
+
+[pulsewasm] test summary
+  passed         368ms  release-checkpoints  (/tmp/runs/2026-10-21T05-44-43-586Z--5/tasks/release-checkpoints.log)
+  passed         9.70s  release-recovery  (/tmp/runs/2026-10-21T05-44-43-586Z--5/tasks/release-recovery.log)
+  passed        67.44s  release-recovery-runner  (/tmp/runs/2026-10-21T05-44-43-586Z--5/tasks/release-recovery-runner.log)
+  passed        10.12s  release-feature-acceptance  (/tmp/runs/2026-10-21T05-44-43-586Z--5/tasks/release-feature-acceptance.log)
+  passed         3.07s  release-evidence-authority  (/tmp/runs/2026-10-21T05-44-43-586Z--5/tasks/release-evidence-authority.log)
+  passed         4.25s  release-runtime-policy  (/tmp/runs/2026-10-21T05-44-43-586Z--5/tasks/release-runtime-policy.log)
+  passed         4.63s  release-seal-lifecycle  (/tmp/runs/2026-10-21T05-44-43-586Z--5/tasks/release-seal-lifecycle.log)
+  report       /tmp/pulse-09b-focused-r2.json
+  run logs     /tmp/runs/2026-10-21T05-44-43-586Z--5
+  total        99.59s
