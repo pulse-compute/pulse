@@ -17,4 +17,29 @@ function __pulse_fastly_write_stdout(bytes: ArrayBuffer): void {
 }
 `;
 
-module.exports = { nativeStdioSource };
+function nativeLoggingSource(endpoint) {
+  const { normalizeFastlyLogEndpoint, MAX_LOG_BYTES } = require('../toolchain/logging.js');
+  const name = normalizeFastlyLogEndpoint(endpoint);
+  if (name === undefined) return nativeStdioSource;
+  return String.raw`
+@external("fastly_log", "endpoint_get")
+declare function __pulse_fastly_log_endpoint_get(name: usize, length: usize, handle: usize): i32
+@external("fastly_log", "write")
+declare function __pulse_fastly_log_write(handle: i32, message: usize, length: usize, written: usize): i32
+
+// Retain the shared emitter entry point; destination is selected at build time.
+function __pulse_fastly_write_stdout(bytes: ArrayBuffer): void {
+  if (bytes.byteLength > ${MAX_LOG_BYTES}) return
+  const name = String.UTF8.encode(${JSON.stringify(name)}, false)
+  const handle = new StaticArray<i32>(1)
+  unchecked(handle[0] = -1)
+  if (__pulse_fastly_log_endpoint_get(changetype<usize>(name), name.byteLength, changetype<usize>(handle)) != 0) return
+  if (unchecked(handle[0]) == -1) return
+  const written = new StaticArray<usize>(1)
+  // One best-effort write. No retry or fallback, including zero/short writes.
+  __pulse_fastly_log_write(unchecked(handle[0]), changetype<usize>(bytes), bytes.byteLength, changetype<usize>(written))
+}
+`;
+}
+
+module.exports = { nativeStdioSource, nativeLoggingSource };

@@ -1132,6 +1132,7 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 300000, scheduling: { compiler: true },
     description: 'MEM9-09B helper/stage roots, effect transfer, Router recovery and pinned resource lifetime'
   }),
+  'fastly-named-logging': nodeTask('test/provider/assert-fastly-named-logging.cjs', { evidence: 'providers', timeoutMs: 120000, description: 'Named log endpoint config, final Native ABI, bounded UTF-8, redaction and best-effort JavaScript routing' }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',
     timeoutMs: 300000,
@@ -1342,6 +1343,7 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 600000, scheduling: { compiler: true },
     description: 'R08 exact installed Native/JavaScript multi-origin parity, lifecycle, local Compute and 1/4/16/32 overhead'
   }),
+  'fastly-named-logging-installed': nodeTask('test/provider/assert-fastly-named-logging-installed.cjs', { evidence:'external', timeoutMs:600000, description:'Exact packed named logging artifact, enforcing-host failures and actual Viceroy named ABI; no deployed claim' }),
   'fastly-stdio-installed': nodeTask('test/provider/assert-fastly-stdio-installed.cjs', {
     evidence: 'external', timeoutMs: 600000,
     description: 'exact installed Native stdout, strict ABI failures and real Viceroy delivery'
@@ -1634,6 +1636,7 @@ const profiles = Object.freeze({
     'fastly-native-http-shell',
     'fastly-native-http-effects',
     'fastly-native-platform-capabilities',
+    'fastly-named-logging',
     'fastly-request-headers'
   ]),
   release: Object.freeze([

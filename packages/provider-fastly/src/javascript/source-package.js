@@ -153,6 +153,7 @@ function abortControllerCompatibilitySource() {
 function bootstrapSource(deployment, runtimeConfig) {
   return [
     "import { enforceExplicitBackends } from 'fastly:backend';",
+    "import { Logger } from 'fastly:logger';",
     "import { ConfigStore } from 'fastly:config-store';",
     "import { KVStore } from 'fastly:kv-store';",
     "import { SecretStore } from 'fastly:secret-store';",
@@ -165,7 +166,7 @@ function bootstrapSource(deployment, runtimeConfig) {
     'if (pulseRuntimeConfig.bindings.dynamicBackends !== true) enforceExplicitBackends();',
     'export const handler = createFastlyJavascriptHandler(application, {',
     '  ...pulseRuntimeConfig,',
-    '  apis: { ConfigStore, SecretStore, KVStore },',
+    '  apis: { ConfigStore, SecretStore, KVStore, Logger },',
     '  fetchImplementation: globalThis.fetch.bind(globalThis),',
     '  console: globalThis.console,',
     '  schemaCodecs',

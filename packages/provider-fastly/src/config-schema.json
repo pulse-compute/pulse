@@ -95,6 +95,9 @@
       "kind": "integer",
       "minimum": 1,
       "maximum": 1048576
+    },
+    "fastly.logEndpoint": {
+      "kind": "optional-string"
     }
   }
 }

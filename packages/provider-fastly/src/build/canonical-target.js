@@ -250,6 +250,9 @@ function inspectFastlyCanonicalTarget(options = {}) {
         emitWat: options.emitWat,
         timeoutMs: options.compileTimeoutMs
       });
+  if (native.manifest.bindings?.logEndpoint !== require('../toolchain/logging.js').normalizeFastlyLogEndpoint(bindings.logEndpoint)) {
+    throw providerBuildError('PULSE_FASTLY_NATIVE_ARTIFACT_INVALID', 'Fastly artifact logging destination does not match the selected provider profile; rebuild the Native artifact.');
+  }
   const duration = require('@pulse-compute/runtime/host').normalizeRequestDuration(providerConfig.maxDurationMs);
   if (native.manifest.bindings?.maxDurationMs !== duration) {
     throw providerBuildError('PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH', 'Fastly artifact request deadline does not match the selected provider profile.');

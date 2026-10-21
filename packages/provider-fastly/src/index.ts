@@ -1,3 +1,4 @@
+const { normalizeFastlyLogEndpoint } = require('../src/toolchain/logging.js') as { normalizeFastlyLogEndpoint(value?: string): string | undefined };
 const { normalizeBodyForwarding } = require('../src/toolchain/body-forwarding.js') as { normalizeBodyForwarding(value: PulseFastlyBodyForwardingOptions | undefined, maxDurationMs?: number): PulseFastlyBodyForwardingOptions | undefined };
 const { normalizeFastlyMaxWasmBytes } = require('../src/build/wasm-budget.js') as { normalizeFastlyMaxWasmBytes(value?: number): number };
 const { normalizeRequestDuration } = require('@pulse-compute/runtime/host') as { normalizeRequestDuration(value?: number): number | undefined };
@@ -36,6 +37,8 @@ export interface PulseFastlyProviderOptions {
   readonly maxDurationMs?: number;
   /** Experimental Native metered pump; final close hands delivery to Fastly. */
   readonly bodyForwarding?: PulseFastlyBodyForwardingOptions;
+  /** Named production log stream; omitted preserves stdout. */
+  readonly logEndpoint?: string;
   readonly configStore?: string;
   readonly secretStore?: string;
   readonly kv?: Readonly<Record<string, string>>;
@@ -55,6 +58,7 @@ export interface PulseFastlyProviderConfig {
   readonly kind: 'fastly';
   readonly version: typeof FASTLY_PROVIDER_API_VERSION;
   readonly bindings: {
+    readonly logEndpoint?: string;
     readonly configStore: string;
     readonly secretStore: string;
     readonly kv: Readonly<Record<string, string>>;
@@ -118,6 +122,7 @@ export function fastly(options: PulseFastlyProviderOptions = {}): PulseFastlyPro
     bodyForwarding: normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs),
     version: FASTLY_PROVIDER_API_VERSION,
     bindings: Object.freeze({
+      ...(options.logEndpoint === undefined ? {} : { logEndpoint: normalizeFastlyLogEndpoint(options.logEndpoint) }),
       configStore: String(options.configStore ?? fastlyDefaults['fastly.configStore']),
       secretStore: String(options.secretStore ?? fastlyDefaults['fastly.secretStore']),
       kv: stringMap(options.kv),
