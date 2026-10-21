@@ -45,9 +45,9 @@ function saveReport() {
   fs.renameSync(reportFile + '.tmp', reportFile);
 }
 
-function run(command, args, { timeout = 120000, onOutput, cwd = consumer } = {}) {
+function run(command, args, { timeout = 120000, onOutput, cwd = consumer, environment = env } = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { cwd, env, stdio: ['ignore', 'pipe', 'pipe'], detached: process.platform !== 'win32' });
+    const child = spawn(command, args, { cwd, env: environment, stdio: ['ignore', 'pipe', 'pipe'], detached: process.platform !== 'win32' });
     let stdout = '', stderr = '', failure;
     const stop = error => {
       failure ||= error;
@@ -77,6 +77,14 @@ function run(command, args, { timeout = 120000, onOutput, cwd = consumer } = {})
 
 function verifyInstalled(manifest) {
   const digests = [], packages = [];
+  function checkLinks(directory) {
+    for (const name of fs.readdirSync(directory)) {
+      const file = path.join(directory, name), stat = fs.lstatSync(file);
+      if (stat.isSymbolicLink()) assert.ok(fs.realpathSync(file).startsWith(consumer + path.sep), `external installed link: ${file}`);
+      else if (stat.isDirectory()) checkLinks(file);
+    }
+  }
+  checkLinks(path.join(consumer, 'node_modules'));
   for (const name of fs.readdirSync(path.join(consumer, 'node_modules/@pulse-compute')).sort()) {
     const id = '@pulse-compute/' + name;
     const entry = manifest.packages.find(item => item.name === id);
@@ -129,11 +137,15 @@ async function main() {
       report.registry = registry.requests;
     } finally { await new Promise(resolve => registry.server.close(resolve)); }
     const before = verifyInstalled(manifest); report.installed = before;
+    report.consumerLockSha256 = hash(fs.readFileSync(path.join(consumer, 'package-lock.json')));
+    console.log('mcp-installed - exact Native application closure and source-free five-tool replay');
+    report.nativeClosure = await require('./context-installed-closure.cjs').qualify({ consumer, temporary, root, run, env });
+    saveReport();
     const client = path.join(temporary, 'client'); fs.mkdirSync(client);
     for (const file of ['package.json', 'pnpm-lock.yaml', 'context-proof.mjs', 'context-agent-proof.cjs']) {
       fs.copyFileSync(path.join(__dirname, 'reference', file), path.join(client, file));
     }
-    report.fixtureFiles = Object.fromEntries(['reference/context-proof.mjs', 'reference/context-agent-proof.cjs', 'reference/pnpm-lock.yaml', 'codex-reference/pnpm-lock.yaml', 'package-context.cjs']
+    report.fixtureFiles = Object.fromEntries(['reference/context-proof.mjs', 'reference/context-agent-proof.cjs', 'reference/pnpm-lock.yaml', 'codex-reference/pnpm-lock.yaml', 'package-context.cjs', 'context-installed-closure.cjs', 'context-installed-oracle.cjs', 'context-installed-worker.cjs', 'context-search-oracle.cjs', 'context-quality-cases.json']
       .map(file => [file, hash(fs.readFileSync(path.join(__dirname, file)))]));
     const pnpm = pnpmInvocation(root);
     await run(pnpm.command, [...pnpm.prefix, 'install', '--frozen-lockfile', '--ignore-scripts'], { cwd: client });
