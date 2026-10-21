@@ -1,0 +1,104 @@
+{
+  "files": [
+    {
+      "file": "receipts/docs-check.log.gz",
+      "bytes": 11701,
+      "sha256": "2e7ee43b8efa362710c8595f17c3775deb9073ec504ed645db97c900e0f9eac7"
+    },
+    {
+      "file": "receipts/documentation-release.log.gz",
+      "bytes": 10918,
+      "sha256": "8782d487087e47efc2c4a3e070e60d1458d8a618a4978f24bd79f4fa16f22508"
+    },
+    {
+      "file": "receipts/focused.json.gz",
+      "bytes": 1210,
+      "sha256": "23f560d4d1755bf7bcc9d7df6baae179fadebf9ff74186e1f22e5b751feb2f9e"
+    },
+    {
+      "file": "receipts/focused.log.gz",
+      "bytes": 2682,
+      "sha256": "40196509005028cad8033ed15eed8951c5f392d28e8eb98453fe4f1a574cabd0"
+    },
+    {
+      "file": "receipts/initial-source-checks.json.gz",
+      "bytes": 24211,
+      "sha256": "f0fb980e2893e9150da43193ee7338c2fe81cd3d804bc5343316fa5e79cc6a9e"
+    },
+    {
+      "file": "receipts/installed-acceptance.json.gz",
+      "bytes": 39315,
+      "sha256": "90bde25ce68e5889c54b4c5c8eea2d926633838b675cd6aff1a78f601df158df"
+    },
+    {
+      "file": "receipts/installed.json.gz",
+      "bytes": 734,
+      "sha256": "d202235c286aee04a857cb0b48dd951a1c0fae6735e5f6ddc19b97755753cfd5"
+    },
+    {
+      "file": "receipts/installed.log.gz",
+      "bytes": 1055,
+      "sha256": "4d8bf1fd308032d455b7834f638e4bfc2ba319ddbafb0fe4dccb3ea0f11a4fcd"
+    },
+    {
+      "file": "receipts/maintainer.log.gz",
+      "bytes": 281,
+      "sha256": "49a58dfaa8e5d644f6dc4198bf02d3b73b5995e55f06ef5bc712b888facabea3"
+    },
+    {
+      "file": "receipts/pack-manifest.json.gz",
+      "bytes": 10086,
+      "sha256": "a16281418b6b0f89eef5e2ffeb25febb9122ac17f9ebc3d149304201fb075571"
+    },
+    {
+      "file": "receipts/scope.log.gz",
+      "bytes": 343,
+      "sha256": "06ea93bff962801883fb1bfb161fb02f270dbcb850c66a333572b3ebeada0ca6"
+    },
+    {
+      "file": "receipts/source-checks.json.gz",
+      "bytes": 24211,
+      "sha256": "c25f5e718fd0ed3432e76236e474c791e4dbd600d92161fdcbdcd057c168aab9"
+    },
+    {
+      "file": "receipts/workflow-fastly-native-doctor.log.gz",
+      "bytes": 16494,
+      "sha256": "44ffe9f61b215eaa94eb4862b8710919b0301a473ba098abdb43eaf3f1f18a82"
+    },
+    {
+      "file": "receipts/workflow-fastly-native-inspect.log.gz",
+      "bytes": 21938,
+      "sha256": "f4db72b80a150eeb4822badfe3d40da2e3a80dac9c7c7eda5bf0d75e46ba7822"
+    },
+    {
+      "file": "receipts/workflow-initial-receipt.json.gz",
+      "bytes": 620,
+      "sha256": "19fe6c3992b2e26c50d0f8d2f13c53ae24b79b48c71e890bc6526f93e6e96fe8"
+    },
+    {
+      "file": "receipts/workflow-node-javascript-doctor.log.gz",
+      "bytes": 21846,
+      "sha256": "aef6c9c178e43b393d106842ab25b15275dd2c5a2bbd672832ca60156f957111"
+    },
+    {
+      "file": "receipts/workflow-node-javascript-inspect.log.gz",
+      "bytes": 22453,
+      "sha256": "d3650fb852612897547f558bbe7685fd35ddde5737d8b432ecb196b684dd51e6"
+    },
+    {
+      "file": "receipts/workflow-node-native-doctor.log.gz",
+      "bytes": 15210,
+      "sha256": "e9508869a52510d19c393f0a6f858feedfe0cf05e81421c3827000cdcc2301c0"
+    },
+    {
+      "file": "receipts/workflow-node-native-inspect.log.gz",
+      "bytes": 20708,
+      "sha256": "ce6a87e7220d89416567079de07625c895c1859674ba6b553c6e000499d3ff61"
+    },
+    {
+      "file": "receipts/workflow-remaining-receipt.json.gz",
+      "bytes": 497,
+      "sha256": "64e7f4f815b4e94a6c57eae983ba00e0fabf67ba8069a3304836b17e87630352"
+    }
+  ]
+}

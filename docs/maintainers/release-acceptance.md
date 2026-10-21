@@ -368,6 +368,32 @@ identity changes, expiry, changed package bytes, interrupted execution, complete
 resume and rejection of unselected historical passes. This proves recovery control
 flow and receipt admission, not installed product behavior or release qualification.
 
+Before freezing the integrated MCP/resource candidate, run `docs:sync`, then
+`context:build` with the pinned producer Node, then `docs:sync` and
+`context:check`. Commit all canonical and installed mirrors together. A source
+citation or workflow edit can change corpus, vector and Wasm identities even
+when the encoder is unchanged. Freeze only after regeneration; subsequent edits,
+including evidence commits, describe a new source revision and require a new
+candidate selection. Never copy old receipts into that selection as fresh passes.
+
+The integrated handoff must record the clean revision/tree, complete expansion
+of the `release` profile, all `REQUIRED_TASKS` from
+`scripts/release-feature-acceptance.cjs`, package manifest and tarball hashes,
+source-check/context inventory, lockfile and tool identities, terminal statuses,
+failed attempts and remaining external gates. Use the existing controller with
+`--require-fastly`; explicitly retain the separate
+`mcp-fastly-local-installed` and `mcp-fastly-clients-installed` receipts as well.
+Those two MCP gates are not silently included by the aggregate profile. Preserve
+the separate KV/deployed-provider dispositions and unresolved report-integrity
+observations. A passing local provider receipt is not deployed proof.
+
+[B10-09 / #382](https://github.com/pulse-compute/pulse/issues/382) owns the full
+integrated qualification. The documentation handoff does not run or approve that
+seal. Resource issues #412 and #381 require real-workload, generic-resource,
+installed, reporting and provider evidence reconciled to the selected candidate;
+implementation history alone does not close them. No release, merge or deployment
+is authorized by a completed documentation or development gate.
+
 Complete example workflows include default and experimental Native-size
 assertions. Run the size-only command for diagnosis, not as a replacement:
 

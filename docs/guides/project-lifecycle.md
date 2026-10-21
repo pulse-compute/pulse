@@ -95,7 +95,10 @@ activate traffic.
 
 Continue with the separate [Node build and execution
 guide](./deploying-node.md) or [Fastly deployment-candidate
-guide](./deploying-fastly.md).
+guide](./deploying-fastly.md). For a complete resource-backed application, follow
+the [context MCP workflow](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow):
+select a profile, check and build its package, then run the exact Native module
+locally. Its compatibility Node host has a separate startup command.
 
 ## Inspect when you need the plan
 
