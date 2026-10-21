@@ -105,6 +105,14 @@ function validatePack(receipt, manifest) {
     assert.match(item.sha256 || '', /^[a-f0-9]{64}$/, 'Missing packed tarball hash');
   }
 }
+// Stable across fresh attempts: duration, checkout environment and receipt-file
+// formatting are intentionally outside this prerequisite. Candidate, builder,
+// inputs, outputs and complete selections remain inside the freshness proof.
+function checkpointDependencies(sourceChecks, candidate = sourceChecks.candidate) {
+  require('./release-source-checks.cjs').assertPackageSourceChecks(sourceChecks);
+  assert.deepEqual(sourceChecks.candidate, candidate, 'Fresh source checks belong to another candidate');
+  return { 'context-freshness': fingerprint(sourceChecks.contextFreshness) };
+}
 function qualify(sourceChecks, manifest, featureTasks, featureAcceptance) {
   require('./release-source-checks.cjs').assertPackageSourceChecks(sourceChecks);
   const freshness = sourceChecks.contextFreshness;
@@ -152,4 +160,4 @@ function verifySeal(seal) {
   verifyPacked(sourceChecks.contextFreshness, pack.readTarEntries(path.join(directory, cli.tarball)));
   return qualification;
 }
-module.exports = { SCHEMA, QUALIFICATION, hash, fingerprint, selections, check, validate, verifyPacked, validatePack, qualify, assertQualification, verifySeal };
+module.exports = { SCHEMA, QUALIFICATION, hash, fingerprint, selections, check, validate, verifyPacked, validatePack, qualify, assertQualification, verifySeal, checkpointDependencies };

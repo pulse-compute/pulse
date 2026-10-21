@@ -674,8 +674,12 @@ function validateRecoveryEvidence(releaseSeal, supplied = {}) {
   const pack = recovery.sharedPack;
   assert(pack && typeof pack.receiptPath === 'string', 'Shared package prerequisite proof missing');
   assert.equal(path.dirname(pack.receiptPath), path.join(recovery.directory, 'checkpoints', 'pack'), 'Shared package proof belongs to another attempt');
+  const sourceChecksBytes = fs.readFileSync(path.join(recovery.directory, 'source-checks.json'));
+  assert.equal(sha256(sourceChecksBytes), releaseSeal.sourceChecks?.sha256, 'Sealed source-check receipt changed');
+  const { repoRoot: _root, ...sourceCandidate } = recovery.context.candidate;
+  const packDependencies = require('./release-context-freshness.cjs').checkpointDependencies(JSON.parse(sourceChecksBytes), sourceCandidate);
   const verifiedPack = readCheckpointReceipt({ receiptPath: pack.receiptPath, context: recovery.context,
-    definition: sharedPackDefinition(), dependencies: {} });
+    definition: sharedPackDefinition(), dependencies: packDependencies });
   assert.equal(verifiedPack.receipt.id, 'shared-pack', 'Shared package checkpoint identity differs');
   assert.equal(verifiedPack.proofId, pack.proofId, 'Shared package proof identity differs');
   assert.equal(verifiedPack.receiptSha256, pack.receiptSha256, 'Shared package proof digest differs');

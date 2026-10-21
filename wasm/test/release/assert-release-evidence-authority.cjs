@@ -290,7 +290,8 @@ try {
     const packLog = path.join(recoveryDirectory, 'shared-pack.log');
     write(packLog, { package: 'built' });
     const packStore = createCheckpointStore({ directory: path.join(recoveryDirectory, 'checkpoints/pack'), context });
-    const pack = packStore.record({ id: 'shared-pack', definition: sharedPackDefinition(), dependencies: {},
+    const pack = packStore.record({ id: 'shared-pack', definition: sharedPackDefinition(),
+      dependencies: require('../../../scripts/release-context-freshness.cjs').checkpointDependencies(contextPack.checked),
       artifacts: { pack: path.dirname(packFile), log: packLog }, result: { id: 'shared-pack', status: 'passed', exitCode: 0, cleanup: { status: 'passed' } } });
     recovery.sharedPack = { execution: 'executed', proofId: pack.proofId, receiptPath: pack.receiptPath, receiptSha256: pack.receiptSha256 };
     write(artifacts.fourMode, fourMode);
