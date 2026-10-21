@@ -558,6 +558,7 @@
         "scripts/release-pr-qualification.cjs",
         "scripts/release-qualification.cjs",
         "scripts/release-source-checks.cjs",
+        "scripts/release-context-freshness.cjs",
         "scripts/release-shared-pack.cjs",
         "scripts/release-evidence-bundle.cjs",
         ".github/workflows/release-qualify.yml"

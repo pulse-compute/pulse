@@ -438,6 +438,20 @@ async function main(argv = process.argv.slice(2)) {
       revision
     );
 
+    const contextOwner = require('./release-context-freshness.cjs');
+    const sourceChecks = JSON.parse(fs.readFileSync(sourceChecksFile, 'utf8'));
+    assert.equal(contextOwner.hash(fs.readFileSync(sourceChecksFile)), sourceChecksSha256, 'Source checks changed during qualification');
+    const packManifest = JSON.parse(fs.readFileSync(path.join(sharedPackDirectory, 'pulse-release-manifest.json'), 'utf8'));
+    const featureTasks = JSON.parse(fs.readFileSync(artifactFiles?.featureTasks || path.join(featureAcceptance.directory, 'tasks.json'), 'utf8'));
+    const contextQualification = contextOwner.qualify(sourceChecks, packManifest, featureTasks, featureAcceptance);
+    const contextEvidence = {
+      packManifest: path.join(sharedPackDirectory, 'pulse-release-manifest.json'),
+      featureTasks: artifactFiles?.featureTasks || path.join(featureAcceptance.directory, 'tasks.json')
+    };
+    contextOwner.verifySeal({ sourceRevision: revision, sourceChecks: { file: sourceChecksFile, sha256: sourceChecksSha256 },
+      contextQualification, contextEvidence, featureAcceptance });
+    progress.persist({ contextQualification, contextEvidence });
+
     if (options.requireFastly || externalFastly.status === 'passed') {
       const provenGates = [
         'dependency-closure',

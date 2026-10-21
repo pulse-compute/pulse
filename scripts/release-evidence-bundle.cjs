@@ -694,6 +694,11 @@ function validateRecoveryEvidence(releaseSeal, supplied = {}) {
   }
   validateCheckpointTasks(taskReport, expandProfile('release'), releaseSeal, 'release');
   validateCheckpointTasks(featureTasks, REQUIRED_TASKS, releaseSeal, 'features');
+  const context = require('./release-context-freshness.cjs');
+  assert.equal(releaseSeal.sourceChecks?.file, path.join(recovery.directory, 'source-checks.json'), 'Source checks belong to another attempt');
+  assert.equal(releaseSeal.contextEvidence?.packManifest, path.join(recovery.directory, 'packages/pulse-release-manifest.json'), 'Context pack belongs to another attempt');
+  assert.equal(releaseSeal.contextEvidence?.featureTasks, recovery.artifacts.featureTasks, 'Context runner differs');
+  context.verifySeal(releaseSeal);
   return recovery;
 }
 
@@ -718,6 +723,7 @@ function aggregateValidation(input) {
   validateReport(taskReport, expectedTasks, sourceRevision);
   if (releaseSeal.recovery) validateRecoveryEvidence(releaseSeal, { taskReport, fourMode, candidates });
   else {
+    require('./release-context-freshness.cjs').verifySeal(releaseSeal);
     assert(!taskReport.recovery && !taskReport.results.some(result => result.execution === 'reused' || result.checkpoint),
       'Recovered task evidence requires a recovery-aware release seal');
   }
@@ -1119,6 +1125,9 @@ function createEvidenceBundle(options) {
     fs.cpSync(options.candidates, candidateRoot, { recursive: true });
     for (const [name, file] of Object.entries({
       'release-seal.json': options.releaseSeal,
+      'source-checks.json': releaseSeal.sourceChecks.file,
+      'context-pack-manifest.json': releaseSeal.contextEvidence.packManifest,
+      'context-feature-tasks.json': releaseSeal.contextEvidence.featureTasks,
       'release-tasks.json': options.taskReport,
       'four-mode-conformance.json': options.fourMode,
       'deployment-candidates.json': options.candidateReport,

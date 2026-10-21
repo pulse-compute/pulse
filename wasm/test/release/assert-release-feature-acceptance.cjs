@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+require('./assert-release-context-freshness.cjs');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -85,6 +86,10 @@ async function verifySealOrchestration() {
   const originalFastly = require(fastlyModule);
   const commands = [];
   let sharedEnvironment;
+  let mode = 'failure';
+  const contextFixture = require('./context-freshness-fixture.cjs');
+  const featureFile = path.resolve(__dirname, '../../.test-results/release-feature-acceptance.json');
+  const originalFeature = fs.existsSync(featureFile) ? fs.readFileSync(featureFile) : null;
   try {
     // The enclosing real seal supplies a CLI via env/PATH. Keep that ambient
     // availability out of this mocked controller fixture, and restore it below.
@@ -100,10 +105,11 @@ async function verifySealOrchestration() {
     supervisor.runCommand = async (command, args, options) => {
       if (args[0] === '-e') return originalRun(command, args, options); // real bounded cleanup
       commands.push(args);
-      if (args.includes('scripts/release-source-checks.cjs')) fs.writeFileSync(args[args.indexOf('--out') + 1], '{}');
+      if (args.includes('scripts/release-source-checks.cjs')) fs.writeFileSync(args[args.indexOf('--out') + 1], JSON.stringify(contextFixture.sourceChecks(acceptance.candidateIdentity())));
       if (args.includes('scripts/release-shared-pack.cjs')) {
         const directory = args[args.indexOf('--out') + 1];
         fs.mkdirSync(directory, { recursive: true });
+        contextFixture.pack(directory, acceptance.candidateIdentity());
         fs.writeFileSync(path.join(directory, 'pulse-shared-pack.json'), '{}');
       }
       if (args.includes('--profile')) {
@@ -116,8 +122,21 @@ async function verifySealOrchestration() {
       }
       if (args.includes('scripts/release-feature-acceptance.cjs')) {
         assert.deepEqual({ directory: options.env.PULSE_RELEASE_SHARED_PACK, digest: options.env.PULSE_RELEASE_SHARED_PACK_SHA256 }, sharedEnvironment);
+        if (mode !== 'failure') {
+          const featureAcceptance = { ...structuredClone(summary), ...acceptance.candidateIdentity() };
+          const seal = { sourceRevision: featureAcceptance.sourceRevision, featureAcceptance };
+          const { runner } = contextFixture.attach(seal, sharedEnvironment.directory);
+          featureAcceptance.directory = sharedEnvironment.directory;
+          if (mode === 'reduced') {
+            runner.selectedTasks = runner.selectedTasks.slice(1);
+            fs.writeFileSync(seal.contextEvidence.featureTasks, JSON.stringify(runner));
+          }
+          if (mode === 'corrupt') fs.appendFileSync(path.join(sharedEnvironment.directory, '0.tgz'), 'changed');
+          fs.mkdirSync(path.dirname(featureFile), { recursive: true });
+          fs.writeFileSync(featureFile, JSON.stringify(featureAcceptance));
+        }
       }
-      return { status: args.includes('scripts/release-feature-acceptance.cjs') ? 1 : 0, signal: null };
+      return { status: mode === 'failure' && args.includes('scripts/release-feature-acceptance.cjs') ? 1 : 0, signal: null };
     };
     process.stdout.write = () => true;
     delete require.cache[sealModule];
@@ -126,7 +145,17 @@ async function verifySealOrchestration() {
     assert(commands.some(args => args.includes('--profile') && args.includes('release')));
     assert(commands.some(args => args.includes('scripts/release-feature-acceptance.cjs')));
     assert(!commands.some(args => args.includes('provider-fastly-compute-reality')));
+    mode = 'success';
+    const passed = await require(sealModule).main(['--skip-install', '--no-report']);
+    assert.equal(passed.status, 'passed');
+    assert.equal(passed.contextQualification.schemaVersion, 'pulse.release-context-qualification.v1');
+    mode = 'corrupt';
+    await assert.rejects(() => require(sealModule).main(['--skip-install', '--no-report']), /Sealed tarball changed/);
+    mode = 'reduced';
+    await assert.rejects(() => require(sealModule).main(['--skip-install', '--no-report']), /Selected task set differs/);
+
   } finally {
+    if (originalFeature) fs.writeFileSync(featureFile, originalFeature); else fs.rmSync(featureFile, { force: true });
     require.cache[fastlyModule].exports = originalFastly;
     supervisor.runCommand = originalRun;
     recovery.acquireSealLock = originalAcquire;

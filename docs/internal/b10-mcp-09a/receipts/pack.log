@@ -1,0 +1,43 @@
+[pulse:pack] Checking documentation source
+[pulse:pack] Building workspace
+[pulse:pack] Package 1/20: @pulse-compute/runtime
+[pulse:pack] Verified @pulse-compute/runtime: 95023 bytes
+[pulse:pack] Package 2/20: @pulse-compute/pulse
+[pulse:pack] Verified @pulse-compute/pulse: 15211 bytes
+[pulse:pack] Package 3/20: @pulse-compute/cli
+[pulse:pack] Verified @pulse-compute/cli: 1387362 bytes
+[pulse:pack] Package 4/20: @pulse-compute/provider-fastly
+[pulse:pack] Verified @pulse-compute/provider-fastly: 254430 bytes
+[pulse:pack] Package 5/20: @pulse-compute/grip
+[pulse:pack] Verified @pulse-compute/grip: 24135 bytes
+[pulse:pack] Package 6/20: @pulse-compute/assets
+[pulse:pack] Verified @pulse-compute/assets: 50327 bytes
+[pulse:pack] Package 7/20: @pulse-compute/crypto
+[pulse:pack] Verified @pulse-compute/crypto: 233235 bytes
+[pulse:pack] Package 8/20: @pulse-compute/jwt
+[pulse:pack] Verified @pulse-compute/jwt: 65796 bytes
+[pulse:pack] Package 9/20: @pulse-compute/entities
+[pulse:pack] Verified @pulse-compute/entities: 51773 bytes
+[pulse:pack] Package 10/20: @pulse-compute/mcp
+[pulse:pack] Verified @pulse-compute/mcp: 40897 bytes
+[pulse:pack] Package 11/20: @pulse-compute/s3
+[pulse:pack] Verified @pulse-compute/s3: 23651 bytes
+[pulse:pack] Package 12/20: @pulse-compute/wasm-build-support
+[pulse:pack] Verified @pulse-compute/wasm-build-support: 21363 bytes
+[pulse:pack] Package 13/20: @pulse-compute/wasm-compiler
+[pulse:pack] Verified @pulse-compute/wasm-compiler: 336632 bytes
+[pulse:pack] Package 14/20: @pulse-compute/wasm-guest-link
+[pulse:pack] Verified @pulse-compute/wasm-guest-link: 40052 bytes
+[pulse:pack] Package 15/20: @pulse-compute/wasm-contracts
+[pulse:pack] Verified @pulse-compute/wasm-contracts: 168626 bytes
+[pulse:pack] Package 16/20: @pulse-compute/wasm-host-runtime
+[pulse:pack] Verified @pulse-compute/wasm-host-runtime: 94157 bytes
+[pulse:pack] Package 17/20: @pulse-compute/wasm-library-kit
+[pulse:pack] Verified @pulse-compute/wasm-library-kit: 25658 bytes
+[pulse:pack] Package 18/20: @pulse-compute/provider-node
+[pulse:pack] Verified @pulse-compute/provider-node: 115738 bytes
+[pulse:pack] Package 19/20: @pulse-compute/wasm-runtime-core-as
+[pulse:pack] Verified @pulse-compute/wasm-runtime-core-as: 119082 bytes
+[pulse:pack] Package 20/20: @pulse-compute/wasm-schema-json
+[pulse:pack] Verified @pulse-compute/wasm-schema-json: 61506 bytes
+[pulse:pack] Checking packed documentation links
