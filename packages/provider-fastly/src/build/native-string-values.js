@@ -1,5 +1,35 @@
 'use strict';
 
+// Array<string>.join uses repeated concatenation at AssemblyScript shrink >= 1.
+// Own the count/allocate/copy path so stub-runtime allocation stays linear at
+// every optimization level. Copy UTF-16 bytes without decoding or coercion.
+const nativeStringAssembly = `
+function __pulse_fastly_string_bytes(length: i64): i32 {
+  if (length < 0 || length > i64(String.MAX_LENGTH)) {
+    __pulse_fastly_fail(PULSE_ERROR_VALUE, 57, -1); return -1
+  }
+  return i32(length * 2)
+}
+function __pulse_fastly_join_strings(parts: Array<string>): string {
+  // Both array and string lengths are bounded i32 values: their product fits
+  // in i64. Validate before narrowing or allocating the UTF-16 byte length.
+  let length: i64 = 0
+  for (let i = 0; i < parts.length; i++) length += i64(unchecked(parts[i]).length)
+  const bytes = __pulse_fastly_string_bytes(length)
+  if (bytes <= 0) return ""
+  if (parts.length == 1) return unchecked(parts[0])
+  const result = changetype<string>(__new(usize(bytes), idof<string>()))
+  let cursor = changetype<usize>(result)
+  for (let i = 0; i < parts.length; i++) {
+    const part = unchecked(parts[i])
+    const size = usize(part.length) * 2
+    memory.copy(cursor, changetype<usize>(part), size)
+    cursor += size
+  }
+  return result
+}
+`;
+
 // Store concatenation as shared, immutable prefixes instead of retaining a flat
 // copy for every intermediate. Direct object edges preserve live rope children.
 // This changes representation only: coercion happens at the original operation,
@@ -19,7 +49,7 @@ const nativeStringFields = `
       if (node.textLeft === null) parts.push(node.textLeaf)
       else { pending.push(node.textRight!); pending.push(node.textLeft!) }
     }
-    this.textLeaf = parts.join("")
+    this.textLeaf = __pulse_fastly_join_strings(parts)
     this.textLeft = null
     this.textRight = null
     return this.textLeaf
@@ -110,4 +140,4 @@ function needsNativeValueFailureGuard(plan) {
   return containsValueOperation(plan.entry?.body) || containsValueOperation(plan.handlers) || containsValueOperation(plan.stages) || containsValueOperation(plan.helpers) || containsValueOperation(plan.effects);
 }
 
-module.exports = { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard };
+module.exports = { nativeStringAssembly, nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard };

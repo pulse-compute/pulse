@@ -51,6 +51,7 @@ try {
   require('./assert-fastly-terminal-errors.cjs').main();
   require('./assert-fastly-native-config-effect-sharing.cjs').main();
   require('./assert-fastly-request-budget.cjs');
+  require('./assert-fastly-string-assembly.cjs').main();
   require('./assert-fastly-bounded-concatenation.cjs').main();
   require('./assert-fastly-schema-allocation.cjs').main();
   require('./assert-fastly-scalar-sharing.cjs').main();

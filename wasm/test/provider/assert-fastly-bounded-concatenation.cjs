@@ -25,19 +25,39 @@ const app=new Pulse({auto:true});app.post('/concat',async ctx=>{
  const digest=await crypto.digestText(ctx,joined);
  const before=await crypto.digestText(ctx,retained);
  return ctx.json({digest,before,length:joined.length,total,first,last:joined[joined.length-1],equal:joined===retained,coerced:'v'+input.n+true+null});
+});
+app.post('/json',async ctx=>{
+ const input=await ctx.req.json();const rows=[];
+ for(let i=0;i<1024;i++)rows[i]={value:input.fragment,index:i};
+ return ctx.json({rows,tail:input.fragment});
 });export default app;`);
   const plan=buildCanonicalNativePlan(compileProject(resolveProject({cwd,profile:'fastly'})));
-  const compiled=compileFastlyNativePlatformCapabilitiesPlan(plan,{cwd,bindings:{},canonicalBuild:true,nativeOptimization:options.nativeOptimization});
+  const modes=Object.hasOwn(options,'nativeOptimization')?[options.nativeOptimization]:[undefined,'native-shrink0','experimental-native-bounded-size','experimental-native-size'];
+  for(const nativeOptimization of modes){
+  const compiled=compileFastlyNativePlatformCapabilitiesPlan(plan,{cwd,bindings:{},canonicalBuild:true,nativeOptimization});
   let maxMemoryBytes=0;
-  for(const fragment of ['x'.repeat(512),'\u0001'.repeat(512),'😀'.repeat(256)]){
+  for(const fragment of ['x'.repeat(512),'\u0001'.repeat(512),'😀'.repeat(256),'','\ud800x\udfff']){
    const result=executeFastlyNativePlatformCapabilities(compiled,{request:{method:'POST',path:'/concat',headers:[['content-type','application/json']],body:JSON.stringify({fragment,n:7})}});
-   const expected=text=>({status:'ok',byteLength:Buffer.byteLength(text),sha256:createHash('sha256').update(text).digest('hex')});
-   assert.equal(result.response.status,200);assert.deepEqual(JSON.parse(result.response.body),{digest:expected(fragment.repeat(1024)),before:expected(fragment.repeat(512)),length:fragment.length*1024,total:fragment.length*1024*1025/2,first:fragment[0],last:fragment.at(-1),equal:false,coerced:'v7truenull'});
+   const expected=text=>text.isWellFormed()?{status:'ok',byteLength:Buffer.byteLength(text),sha256:createHash('sha256').update(text).digest('hex')}:{status:'failed',reason:'invalid-text'};
+   assert.equal(result.response.status,200);assert.deepEqual(JSON.parse(result.response.body),{digest:expected(fragment.repeat(1024)),before:expected(fragment.repeat(512)),length:fragment.length*1024,total:fragment.length*1024*1025/2,first:fragment[0]||'',last:fragment.at(-1)??null,equal:fragment.length===0,coerced:'v7truenull'});
    maxMemoryBytes=Math.max(maxMemoryBytes,result.instance.exports.memory.buffer.byteLength);
    assert.throws(()=>result.instance.exports.memory.grow(4097),RangeError);
   }
   assert.ok(maxMemoryBytes<=33554432);
-  console.log('ok - bounded Fastly concatenation preserves snapshots, UTF-16 and exact digest bytes; memory '+maxMemoryBytes);
+  // A large fragment followed by thousands of punctuation/value fragments
+  // exposed the sibling shrink2 join path even without any concatenation rope.
+  let jsonMemoryBytes=0;
+  for(const fragment of ['x'.repeat(512),'\u0001\\\"\ud800😀'.repeat(32)]){
+   const result=executeFastlyNativePlatformCapabilities(compiled,{request:{method:'POST',path:'/json',headers:[['content-type','application/json']],body:JSON.stringify({fragment})}});
+   const expected={rows:Array.from({length:1024},(_,index)=>({value:fragment,index})),tail:fragment};
+   assert.equal(result.response.status,200);
+   assert.equal(result.response.body,JSON.stringify(expected),'JSON escaping, member order and exact UTF-16');
+   jsonMemoryBytes=Math.max(jsonMemoryBytes,result.instance.exports.memory.buffer.byteLength);
+  }
+  assert.ok(jsonMemoryBytes<=33554432,'many-fragment JSON stays within 32 MiB');
+  console.log('ok - bounded Fastly string assembly '+(nativeOptimization||'default')+' '+JSON.stringify({concatMemoryBytes:maxMemoryBytes,jsonMemoryBytes,wasmBytes:compiled.wasm.length,compileMs:compiled.assemblyScriptDurationMs}));
+  }
+
  }finally{fs.rmSync(cwd,{recursive:true,force:true})}
 }
 module.exports={main};if(require.main===module)main();

@@ -6,7 +6,7 @@ const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
 
 const crypto = require('node:crypto');
-const { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
+const { nativeStringAssembly, nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -594,6 +594,7 @@ function __pulse_fastly_json(handle: i32, depth: i32): string {
   if (value.kind == PULSE_VALUE_OBJECT) { let out = "{"; for (let i = 0; i < value.keys.length; i += 1) { if (i > 0) out += ","; out += __pulse_fastly_quote(unchecked(value.keys[i])) + ":" + __pulse_fastly_json(unchecked(value.values[i]), depth + 1) } return out + "}" }
   return "null"
 }
+${nativeStringAssembly}
 ${nativeStringConcat}
 ${nativeStringTrim}
 ${nativeStringIndex}

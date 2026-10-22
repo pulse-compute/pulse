@@ -12,7 +12,7 @@ const nativeValueBudget = require('./native-value-budget.js');
 const { schemaNeedsValueProjection } = require('@pulse-compute/wasm-contracts/schema-json/registry');
 
 const crypto = require('node:crypto');
-const { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
+const { nativeStringAssembly, nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
 const conditionalKv = require('./kv-native.js');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -1712,6 +1712,7 @@ function __pulse_fastly_out_i32(): StaticArray<i32> { return new StaticArray<i32
 function __pulse_fastly_out_value(out: StaticArray<i32>): i32 { return load<i32>(changetype<usize>(out)) }
 function __pulse_fastly_utf8(value: string): ArrayBuffer { return String.UTF8.encode(value, false) }
 function __pulse_fastly_decode(buffer: Uint8Array, length: i32): string { return String.UTF8.decodeUnsafe(buffer.dataStart, length, false) }
+${nativeStringAssembly}
 ${nativeStringConcat}
 ${nativeStringTrim}
 ${nativeStringIndex}
@@ -1798,7 +1799,7 @@ function __pulse_fastly_json(handle: i32, depth: i32): string {
   // Join once, avoiding a complete copy of a multi-MiB leaf at every ancestor
   // and at every following member in the response or effect result.
   const parts = new Array<string>(); __pulse_fastly_json_parts(handle, depth, parts);
-  return parts.join("")
+  return __pulse_fastly_join_strings(parts)
 }
 function __pulse_fastly_parse_json(text: string): i32 { const parser = new __PulseJsonParser(text); const value = parser.parse(); if (parser.failed || value <= 0) { __pulse_fastly_fail(PULSE_ERROR_JSON, 3, -1); return 0 } return value }
 function __pulse_fastly_path(uri: string): string { let start = 0; const scheme = uri.indexOf("://"); if (scheme >= 0) { const slash = uri.indexOf("/", scheme + 3); start = slash >= 0 ? slash : uri.length } let end = uri.length; const query = uri.indexOf("?", start); if (query >= 0 && query < end) end = query; const fragment = uri.indexOf("#", start); if (fragment >= 0 && fragment < end) end = fragment; return start >= end ? "/" : uri.substring(start, end) }

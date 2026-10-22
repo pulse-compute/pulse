@@ -24,6 +24,7 @@ function main(kind='both') {
  for(const [mode,[compiler,compile,host,execute]] of Object.entries(modes)) {
   if(kind!=='both' && mode!==kind)continue;
   const artifact=require(compiler)[compile](plan,{backends:{'https://values.test':'values_backend'},bindings:{backends:{'https://values.test':'values_backend'}},requirePlatformCapability:false,canonicalBuild:true});
+  assert.equal([...artifact.source.matchAll(/^function __pulse_fastly_join_strings\(/gm)].length,1,mode+' includes one shared assembly helper');
   for(const row of rows){const actual=require(host)[execute](artifact,{fixtures:{'https://values.test/ready':{status:200,body:'ready'}},request:{method:'POST',path:'/',headers:[['content-type','application/json']],body:JSON.stringify({...row,lengthKey:'length'})}});
    assert.equal(actual.response.status,200,mode);
    const expected={lt:row.left<row.right,le:row.left<=row.right,gt:row.left>row.right,ge:row.left>=row.right,length:row.text.length,keyedLength:row.text.length,first:true,second:true,stringKey:true,badStringKey:true,negative:true,fractional:true,pastEnd:true,bits:row.version.toString(2).padStart(53,'0'),remainder:Number.isFinite(row.dividend%row.divisor)?row.dividend%row.divisor:null,negativeZero:true,positiveZero:true,nan:false,cacheEdge:65536,uncachedFraction:0.75};
