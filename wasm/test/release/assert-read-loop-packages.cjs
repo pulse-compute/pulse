@@ -19,7 +19,7 @@ async function main(){
   console.log(JSON.stringify({...report,schemaVersion:'pulse.read-loop-packed-acceptance.v1',installedBytesUnchanged:true,packages:manifest.packages.map(({name,version,sha256})=>({name,version,sha256}))}));return;
  }
  const result=await require('../runtime/bounded-read-loop-packed.cjs').main(packed);
- const allowed=new Set(['native-platform-capabilities-host.js','conditional-kv-host.js'].map(f=>path.join(repo,'packages/provider-fastly/src/testing',f)));
+ const allowed=new Set(['native-platform-capabilities-host.js', 'native-dynamic-backends-host.js','conditional-kv-host.js'].map(f=>path.join(repo,'packages/provider-fastly/src/testing',f)));
  for(const file of Object.keys(require.cache))if(file.startsWith(repo+'/packages/')||file.startsWith(repo+'/wasm/packages/'))assert.ok(allowed.has(file),'Workspace product module: '+file);
  console.log(JSON.stringify({...result,workspaceProductModules:0}));
 }

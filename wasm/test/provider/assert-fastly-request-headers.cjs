@@ -124,7 +124,7 @@ if (require.main === module) {
     main(packedRoot);
     if (packedRoot) {
       const repo = path.resolve(__dirname, '../../..');
-      const fixtures = ['native-platform-capabilities-host.js', 'conditional-kv-host.js']
+      const fixtures = ['native-platform-capabilities-host.js', 'native-dynamic-backends-host.js', 'conditional-kv-host.js']
         .map(file => path.join(repo, 'packages/provider-fastly/src/testing', file));
       for (const file of Object.keys(require.cache)) {
         if (file.startsWith(path.join(repo, 'packages') + path.sep) || file.startsWith(path.join(repo, 'wasm/packages') + path.sep))

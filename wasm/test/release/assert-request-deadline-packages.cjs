@@ -113,7 +113,7 @@ budget.check(); budget.close(); void config;
   const {fastlyJavascriptProjectRestrictions} = load('@pulse-compute/provider-fastly/javascript/target-support-policy');
   assert.throws(() => fastlyJavascriptProjectRestrictions({},project), {code:'PULSE_REQUEST_DURATION_UNSUPPORTED'});
 
-  const hostFixtures = new Set(['native-platform-capabilities-host.js','conditional-kv-host.js']
+  const hostFixtures = new Set(['native-platform-capabilities-host.js', 'native-dynamic-backends-host.js','conditional-kv-host.js']
     .map(file => path.join(repoRoot,'packages/provider-fastly/src/testing',file)));
   for (const file of Object.keys(require.cache)) {
     if (file.startsWith(path.join(repoRoot,'packages') + path.sep)

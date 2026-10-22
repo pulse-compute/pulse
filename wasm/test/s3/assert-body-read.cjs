@@ -78,9 +78,11 @@ async function main(options = {}) {
       assert.equal(lower({sourceText}).hasErrors,true);
     }
     for (const options of [{range:'bytes=1-'},{range:'bytes=2-1'},{range:'bytes=0-1,3-4'},{method:'HEAD',range:'bytes=0-1'},{ifNoneMatch:'"one", "two"'},{method:'POST'}]) assert.throws(()=>protocol.normalizeBodyOptions(options));
+    const hostFixtures = new Set(['native-platform-capabilities-host.js', 'native-dynamic-backends-host.js']
+      .map(file => path.join(root, 'packages/provider-fastly/src/testing', file)));
     if (options.packedRoot) for (const file of Object.keys(require.cache)) {
       if (file.startsWith(path.join(root, 'packages') + path.sep) || file.startsWith(path.join(root, 'wasm/packages') + path.sep)) {
-        assert.equal(file, path.join(root, 'packages/provider-fastly/src/testing/native-platform-capabilities-host.js'));
+        assert.ok(hostFixtures.has(file), `Workspace product module loaded: ${file}`);
       }
     }
     console.log(`ok - AST-02A ${cases} binary/opaque executions on Node Native, Node JavaScript and Fastly Native ABI fixtures, bounded metadata, partial ranges, deadline and discard cleanup`);

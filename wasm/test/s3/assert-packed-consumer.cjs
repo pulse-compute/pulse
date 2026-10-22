@@ -87,12 +87,18 @@ async function main() {
     }));
     results[kind] = await require(runner).main({ packedRoot, cwd: packedRoot, quiet: true });
   }
-  // No product package may be loaded from repository source. The one allowed
-  // source module is the ABI host fixture; it imports only Node builtins.
-  const hostFixture = path.join(repoRoot, 'packages/provider-fastly/src/testing/native-platform-capabilities-host.js');
+  // No product implementation may be loaded from repository source. Only the
+  // ABI host fixture and its dynamic-backend fixture helper are permitted.
+  // The helper models host registration and depends only on Node builtins.
+  const hostFixtures = new Set([
+    'native-platform-capabilities-host.js',
+    'native-dynamic-backends-host.js'
+  ].map(name => path.join(repoRoot, 'packages/provider-fastly/src/testing', name)));
   for (const file of Object.keys(require.cache)) {
     if (file.startsWith(path.join(repoRoot, 'packages') + path.sep)
-      || file.startsWith(path.join(repoRoot, 'wasm/packages') + path.sep)) assert.equal(file, hostFixture);
+      || file.startsWith(path.join(repoRoot, 'wasm/packages') + path.sep)) {
+      assert.ok(hostFixtures.has(file), `Packed S3 consumer loaded workspace product code: ${file}`);
+    }
   }
   console.log(JSON.stringify({ status: 'passed', results, publicTypes: 'passed', providerReality: false }));
 }
