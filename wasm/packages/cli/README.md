@@ -1,5 +1,8 @@
 # @pulse-compute/cli
 
+Create, check, test, run, and build Pulse applications with the `pulse` command.
+Project configuration lives in `.pulse/config.ts`.
+
 <!-- pulse-package-status:start -->
 > **Support tier:** Canonical application surface<br>
 > **Audience:** Pulse application authors, CI workflows, and tooling integrations.<br>
@@ -12,32 +15,50 @@
 > This release-status block is generated from the synchronized `Pulse 1.0.0-beta.9` package policy.
 <!-- pulse-package-status:end -->
 
-The public CLI and conventional `@pulse-compute/pulse` application root are
-both part of the synchronized `1.0.0-beta.9` release set. Validate the generated
-workflow from the repository or the exact packed acceptance set:
+## Install and create a project
+
+Use Node.js 22.14 or newer on the 22.x line, or Node.js 24.x, with npm.
 
 ```bash
-pnpm pulse -- init ./my-app
+npm exec --package=@pulse-compute/cli@1.0.0-beta.9 -- pulse init ./my-app
 cd ./my-app
 npm install
-pulse doctor
-pulse test
-pulse dev
-# Stop the foreground server with Ctrl-C before building.
-pulse build
+npm run doctor
+npm test
 ```
 
-`pulse init` writes exact catalog package versions and does not invoke a package manager. Project commands discover one authoritative `.pulse/config.ts` workspace, select a flat profile, compile the same canonical handler contract, and realize Node, Fastly, or compile-only `none`.
+`pulse init` writes exact package versions and does not run a package manager.
+The generated project includes a local CLI and scripts for the normal workflow;
+no global install is needed.
 
-## Supported programmatic entries
+## Run and build
 
-- package root for `defineConfig`, public types, diagnostics, and workflow integration;
-- `workflow` for command parsing/execution;
-- `project-config` for discovery and normalization;
-- `project-execution` for canonical command orchestration;
-- `diagnostics` for stable public descriptors and mappings.
+```bash
+npm run dev
+```
 
-Repository fixture/profile/task flags are not part of installed help or the public contract.
+Open <http://127.0.0.1:8787/> to see `Pulse is running`, or
+<http://127.0.0.1:8787/health> for `{"ok":true}`.
+Stop the foreground server with Ctrl+C, then build:
+
+```bash
+npm run build
+```
+
+Use `npm run inspect` when you need the compiler/provider plan.
+`npm run compile` is the advanced provider-neutral Wasm workflow and requires
+Native-compatible source. Neither command is required before `npm run build`.
+See the [project lifecycle guide](./docs/guides/project-lifecycle.md).
+
+## Workflow boundaries
+
+Project commands discover one authoritative `.pulse/config.ts` workspace and
+select a flat profile. The profile chooses Node, Fastly, or compile-only `none`.
+Provider and target selection remain explicit.
+
+Repository fixture/profile/task flags are not part of installed help or the
+public contract. For checkout development with lockfile-pinned dependencies
+restored, replace the initial command with `pnpm pulse -- init ./my-app`.
 
 ## JavaScript support and eligibility
 
@@ -60,6 +81,14 @@ also carries exact downstream compiler pins and deployment-candidate metadata;
 the release gate compiles that closure to a runtime Wasm without deploying or
 publishing it. Pending or blocked projects never switch to Native execution:
 `automaticFallback` is always false.
+
+## Supported programmatic entries
+
+- package root for `defineConfig`, public types, diagnostics, and workflow integration;
+- `workflow` for command parsing/execution;
+- `project-config` for discovery and normalization;
+- `project-execution` for canonical command orchestration;
+- `diagnostics` for stable public descriptors and mappings.
 
 ## Included documentation
 
