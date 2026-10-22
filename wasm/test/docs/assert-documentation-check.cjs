@@ -201,21 +201,25 @@ contextDataIntegrity();
     const input = source.includes(MARKER) ? source : source.replace('\n', `\n\n${MARKER}\n`);
     const rendered = renderExampleTemplate(input, () => project.tests);
     assert.equal(renderExampleTemplate(rendered, () => project.tests), rendered, 'template must be idempotent');
-    for (const heading of ['Project config', 'Test harness', 'Wasm size']) assert(rendered.includes(` ${heading}\n`));
+    for (const heading of (id === '12-pulse-context-mcp' ? ['Project config'] : ['Project config', 'Test harness', 'Wasm size'])) assert(rendered.includes(` ${heading}\n`));
     assert(rendered.indexOf('## Request and response') < rendered.indexOf('## Code'));
-    assert(rendered.indexOf('## Code') < rendered.indexOf('## Test harness'));
+    if (id !== '12-pulse-context-mcp') assert(rendered.indexOf('## Code') < rendered.indexOf('## Test harness'));
     for (const heading of ['Inspect', 'Doctor']) assert(rendered.includes(`## ${heading}\n`));
-    assert.equal(rendered.includes('## Report\n'), id !== '12-pulse-context-mcp');
+    assert(rendered.includes('## Report\n'));
     if (id === '12-pulse-context-mcp') {
       assert(rendered.indexOf('## Doctor') < rendered.indexOf('## Install'));
       assert(rendered.indexOf('## Install') < rendered.indexOf('## Workflow'));
-      assert(rendered.indexOf('## Walkthrough 1:') < rendered.indexOf('## Test harness'));
+      assert(rendered.includes('application/src/index.ts'));
+      assert(rendered.includes('pulse.diagnostic'));
+      assert(!rendered.includes('pulse.explain_diagnostic'));
+      assert(!rendered.includes('## Test harness'));
+      assert.equal(renderExampleTemplate(input, () => { throw Error('must not use the legacy root harness'); }), rendered);
     }
     if (id === '10-entities-tools')
       assert(rendered.indexOf('## JavaScript workflow') < rendered.indexOf('## Test result'));
     const blocks = text => [...text.matchAll(/```[^\n]*\n([\s\S]*?)\n```/g)].map(match => match[1]).sort();
     assert.deepEqual(blocks(rendered), blocks(input), 'all source and output fences must survive composition');
-    for (const item of project.tests) assert(rendered.includes(item.kind === 'event' ? item.event.type : item.request.path));
+    for (const item of (id === '12-pulse-context-mcp' ? [] : project.tests)) assert(rendered.includes(item.kind === 'event' ? item.event.type : item.request.path));
     if (id === '02-request-schema') {
       assert(rendered.includes('PULSE_SCHEMA_DECODE'));
       const unselected = source.replace(MARKER, '');
@@ -228,6 +232,7 @@ contextDataIntegrity();
   assert(rendered.includes('## Inside code')); assert(rendered.includes('## Extra limitation\n\nKeep this.'));
   assert(rendered.includes('&#124;&lt;b&gt;')); assert(!rendered.includes('"status":200'));
   assert.throws(() => renderExampleTemplate(`${MARKER}\n\n## Report\n`, () => cases), /Empty example section/);
+  assert.throws(() => renderExampleTemplate(`${MARKER}\n<!-- pulse-example-requests:authored -->\n`, () => cases), /requires Request and response/);
   console.log('ok - shared example template preserves fences/anchors, handles all eleven harnesses, HTTP/event cases and unavailable Report views');
 }
 

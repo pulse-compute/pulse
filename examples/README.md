@@ -1,14 +1,14 @@
 # Pulse canonical examples
 
 These are complete canonical projects using the conventional
-`.pulse/config.ts` workspace, dedicated deterministic test harnesses,
+`.pulse/config.ts` workspace, executable request checks,
 async-shaped managed handlers, and the same `pulse` commands as a user
 application. Examples 01, 02, 03, 05, 07, 11, and 13 use the project-level
 `@pulse-compute/pulse` application root. Example 09 retains
 `@pulse-compute/runtime` and `Router` as the explicit low-level authoring path.
-Examples 10 and 12 use `@pulse-compute/entities` with external host adapters.
+Example 10 uses `@pulse-compute/entities`; Example 12 exposes compiled MCP tools.
 
-Enter an example directory and run its documented lifecycle:
+Enter an example directory and follow its README. Harness-based projects use:
 
 ```bash
 pulse doctor
@@ -30,10 +30,10 @@ Example 10 documents its JavaScript and Native entity workflows.
 Example 11 runs mixed HTTP and event cases on Node JavaScript or Node Native.
 Its development server remains HTTP-only; event input is available through the
 bounded test/reference adapter rather than a public listener.
-[Example 12](./12-pulse-context-mcp/) is a practical read-only Pulse context MCP
-server. Its `npm run build` prepares the standalone host, and `npm start` serves
-MCP discovery and five tools from that build. `pulse dev` serves the underlying
-JSON-RPC app for development. See its README for the candidate install status.
+[Example 12](./12-pulse-context-mcp/) is a read-only Pulse context MCP server.
+Run its `application/` project: Node Native is the default, with explicit Node
+JavaScript and Fastly Native profiles. Its documented MCP requests replace a
+`pulse test` harness.
 
 ## Example walkthroughs
 
@@ -52,7 +52,7 @@ Report excerpts replay completed Native build evidence, not runtime traffic.
 | [Router lowering](09-router-lowering/README.md) | HTTP routing and middleware | Default Native profile |
 | [Entities tools facade](10-entities-tools/README.md) | JSON-RPC | Explicit `node-native` profile |
 | [Static events](11-events/README.md) | HTTP and event frames | Default Native profile |
-| [Pulse context MCP](12-pulse-context-mcp/README.md) | JSON-RPC and MCP walkthroughs | JavaScript-only; no Wasm Report |
+| [Pulse context MCP](12-pulse-context-mcp/README.md) | MCP discovery and five tools | Compiled Node Native application |
 | [ES256 bearer verification](13-jwt-es256/README.md) | HTTP bearer fixtures | Default Native profile |
 
 Two other example-named directories are explicitly private test support:

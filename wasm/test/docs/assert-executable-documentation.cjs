@@ -127,16 +127,10 @@ const examples = Object.freeze([
   }),
   Object.freeze({
     id: '12-pulse-context-mcp',
-    runtimePackages: ['entities'],
+    project: '12-pulse-context-mcp/application',
+    runtimePackages: ['entities', 'mcp'],
     provider: 'node',
-    target: 'javascript',
-    noApplicationWasm: true,
-    capabilities: ['schema.decode', 'schema.encode'],
-    schemas: ['context.StartInput', 'context.StartOutput'],
-    entities: ['pulse.example', 'pulse.explain_diagnostic', 'pulse.read', 'pulse.search', 'pulse.start'],
-    handlerEffects: 0,
-    doctorWarnings: ['canonical-native-plan'],
-    prepareHost: true
+    compiledMcp: true
   }),
   Object.freeze({
     id: '13-jwt-es256',
@@ -345,7 +339,7 @@ function verifyRunBindings(bindings, selectedExample = null) {
       assert.ok(fs.existsSync(projectRoot), `pulse-doc-run project is missing: ${config.project}`);
       cwd = projectRoot;
       const example = config.project.startsWith('examples/') ? config.project.slice('examples/'.length) : null;
-      if (example) exampleCoverage.add(example);
+      if (example) exampleCoverage.add(examples.find(entry => (entry.project || entry.id) === example)?.id || example);
       if (config.args[0] === 'build' || config.prepare) {
         const dist = path.join(projectRoot, BUILD_DIR);
         fs.rmSync(dist, { recursive: true, force: true });
@@ -633,6 +627,10 @@ function verifyDocumentationSizes() {
   const syncResult = verifySourceContracts();
   for (const [index, example] of examples.entries()) {
     console.log(`docs sizes - ${index + 1}/${examples.length}: ${example.id}`);
+    if (example.compiledMcp) {
+      console.log(`ok - docs sizes ${example.id}: corpus-dependent measurements verified by the Report binding`);
+      continue;
+    }
     const projectDir = path.join(repoRoot, 'examples', example.id);
     const project = resolveProject({ cwd: projectDir });
     assertExampleReadme(example, project, syncResult);
@@ -658,6 +656,7 @@ function verifyDocumentationSizes() {
 }
 
 function verifyExampleWorkflow(example, syncResult) {
+  if (example.compiledMcp) return verifyCompiledMcpWorkflow(example, syncResult);
   console.log(`docs - verify canonical example ${example.id}`);
   const projectDir = path.join(repoRoot, 'examples', example.id);
   const guestCacheDir = path.join(projectDir, '.pulse', 'guests');
@@ -820,8 +819,10 @@ function verifyExampleWorkflow(example, syncResult) {
   return summary;
 }
 
-function verifyEveryExampleWorkflow(syncResult) {
-  return examples.map((example) => verifyExampleWorkflow(example, syncResult));
+async function verifyEveryExampleWorkflow(syncResult) {
+  const summaries = [];
+  for (const example of examples) summaries.push(await verifyExampleWorkflow(example, syncResult));
+  return summaries;
 }
 
 function verifyInitWorkflow() {
@@ -839,10 +840,10 @@ function verifyInitWorkflow() {
   }
 }
 
-function waitForReady(child, stderrText) {
+function waitForReady(child, stderrText, timeoutMs = 20000) {
   return new Promise((resolve, reject) => {
     let buffer = '';
-    const timer = setTimeout(() => finish(new Error(`timed out waiting for documented pulse dev readiness; stderr=${stderrText()}`)), 20000);
+    const timer = setTimeout(() => finish(new Error(`timed out waiting for documented pulse dev readiness; stderr=${stderrText()}`)), timeoutMs);
     function finish(error, value) {
       clearTimeout(timer);
       child.stdout.off('data', onData);
@@ -902,6 +903,49 @@ function waitForClose(child, stderrText) {
   });
 }
 
+// The public MCP page describes the compiled application, not the retained root
+// host. Replay its actual helper commands and verify its selected success JSON.
+async function verifyCompiledMcpWorkflow(example, syncResult) {
+  const projectRoot = path.join(repoRoot, 'examples', example.project);
+  const relativeReadme = `examples/${example.id}/README.md`;
+  const markdown = fs.readFileSync(path.join(repoRoot, relativeReadme), 'utf8');
+  const manifest = JSON.parse(fs.readFileSync(path.join(projectRoot, 'package.json')));
+  for (const command of ['doctor', 'inspect', 'build', 'dev']) {
+    assert.equal(manifest.scripts[command], `pulse ${command}`);
+    assert.match(markdown, new RegExp(`^npm run ${command}$`, 'm'));
+  }
+  assert.ok(syncResult.references.some(entry => entry.markdown === relativeReadme
+    && entry.source === `examples/${example.project}/src/index.ts`));
+  const commands = [...markdown.matchAll(/^node \.\.\/client\/request\.cjs --url http:\/\/127\.0\.0\.1:8787\/mcp ([a-z.\/]+)(?: '([^'\n]+)')?$/gm)];
+  assert.deepEqual(commands.map(match => match[1]), ['pulse.start', 'tools/list', 'pulse.search', 'pulse.read', 'pulse.example', 'pulse.diagnostic']);
+  const selected = JSON.parse(/Selected fields[\s\S]*?```json\n([\s\S]*?)\n```/.exec(markdown)[1]);
+  const child = spawn(process.execPath, [pulseCli, 'dev', '--host', '127.0.0.1', '--port', '0', '--no-watch', '--json'], {
+    cwd: projectRoot, env: process.env, stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  let stderr = '';
+  child.stderr.setEncoding('utf8'); child.stderr.on('data', chunk => { stderr += chunk; });
+  const closed = new Promise(resolve => child.once('close', resolve));
+  try {
+    const ready = await waitForReady(child, () => stderr, 120000);
+    assert.equal(ready.provider, 'node');
+    for (const [, operation, args] of commands) {
+      const result = JSON.parse(runNode([path.join(projectRoot, '../client/request.cjs'), '--url', `${ready.url}/mcp`, operation, args || '{}'], { cwd: projectRoot, timeoutMs: 15000 }).stdout);
+      if (operation === 'tools/list') {
+        assert.deepEqual(result.tools.map(tool => tool.name).sort(), ['pulse.start', 'pulse.search', 'pulse.read', 'pulse.example', 'pulse.diagnostic'].sort());
+      } else {
+        assert.equal(result.structuredContent.status, 'ok', operation);
+        if (operation === 'pulse.start') assertPartial(result, selected, 'documented MCP starter response');
+      }
+    }
+    console.log('ok - compiled Node Native MCP: five documented tools, discovery and selected starter response');
+  } finally {
+    child.kill('SIGTERM');
+    const timer = setTimeout(() => child.kill('SIGKILL'), 5000);
+    await closed; clearTimeout(timer);
+  }
+  return { id: example.id, provider: 'node', tests: commands.length, capabilities: 'compiled MCP' };
+}
+
 async function verifyDocumentedDevWorkflow() {
   const projectRoot = path.join(repoRoot, 'examples', '01-hello-json');
   const child = spawn(process.execPath, [pulseCli, 'dev', '--host', '127.0.0.1', '--port', '0', '--no-watch', '--once', '--json'], {
@@ -931,7 +975,7 @@ async function verifyDocumentedDevWorkflow() {
 // runtime dependencies for source-checkout checks; exercise real public exports.
 function prepareExampleRuntimePackages(example) {
   for (const name of example.runtimePackages || []) {
-    const scope = path.join(repoRoot, 'examples', example.id, 'node_modules', '@pulse-compute');
+    const scope = path.join(repoRoot, 'examples', example.project || example.id, 'node_modules', '@pulse-compute');
     const destination = path.join(scope, name);
     if (fs.existsSync(destination)) continue;
     for (const directory of [path.dirname(scope), scope]) {
@@ -970,8 +1014,8 @@ async function main() {
     if (options.example) {
       const syncResult = verifySourceContracts();
       const example = examples.find((entry) => entry.id === options.example);
-      verifyRunBindings(parseRunBindings().filter(binding => binding.config.project === `examples/${example.id}`), example.id);
-      const summary = verifyExampleWorkflow(example, syncResult);
+      verifyRunBindings(parseRunBindings().filter(binding => binding.config.project === `examples/${example.project || example.id}`), example.id);
+      const summary = await verifyExampleWorkflow(example, syncResult);
       if (summary.provider === 'fastly') assert.ok(summary.wasmBytes > 1024 && summary.wasmBytes < 1024 * 1024, `${summary.id} must produce compact native provider Wasm`);
       console.log(`ok - docs example ${summary.id}: provider=${summary.provider} tests=${summary.tests} capabilities=${summary.capabilities}${summary.schemas ? ` schemas=${summary.schemas}` : ''}${summary.wasmBytes ? ` wasm=${summary.wasmBytes}` : ''}`);
       return;
@@ -1009,7 +1053,7 @@ async function main() {
     console.log('docs - execute live dev workflow');
     await verifyDocumentedDevWorkflow();
     console.log('docs - execute every canonical example workflow');
-    const summaries = verifyEveryExampleWorkflow(syncResult);
+    const summaries = await verifyEveryExampleWorkflow(syncResult);
     const fastly = summaries.filter((entry) => entry.provider === 'fastly');
     assert.equal(fastly.length, 2, 'expected two documented Fastly examples');
     assert.ok(fastly.every((entry) => entry.wasmBytes > 1024 && entry.wasmBytes < 1024 * 1024), 'every Fastly example must produce compact native provider Wasm');

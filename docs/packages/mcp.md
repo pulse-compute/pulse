@@ -14,17 +14,12 @@ Use matching exact versions of Pulse packages.
 
 ## Start with the Pulse context server
 
-Use the [compiled application workflow](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow)
+Use the [Pulse context example](../../examples/12-pulse-context-mcp/README.md#workflow)
 from the matching CLI package. It serves five read-only tools—starter plans,
 search, contract reads, maintained examples and diagnostic help—from an
 immutable bundled corpus. The application uses the static `/pulse` binding and
 shared `ctx.call`; select Node Native, Fastly Native or explicit Node JavaScript.
 It needs no repository checkout or upstream service at runtime.
-
-The example's root project is the retained v1 Node host workflow. It forwards
-tools over loopback HTTP and has different configuration and tool names. The
-example documents migration to the compiled application; use its
-`application/` directory for the current workflow.
 
 ## Static Native binding
 
@@ -69,8 +64,8 @@ without dispatch. Origin allowlists, authorization, callbacks, dynamic registrie
 SSE, sessions, prompts, and MCP Resources are outside this binding. Embedded
 Pulse binary Resources are a separate application facility.
 
-See the [compiled application workflow](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow)
-for installation, profile selection, lexical limits and migration. A local build,
+See the [Pulse context example](../../examples/12-pulse-context-mcp/README.md#workflow)
+for installation, profile selection and tool requests. A local build,
 actual local host execution and deployed-service acceptance remain separate
 checks.
 
