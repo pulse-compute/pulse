@@ -10,5 +10,5 @@ export function collectArtifactReport(file: string): CollectedReport;
 export function collectProjectReport(options?: {
   cwd?: string; directory?: string; profile?: string; outDir?: string;
   env?: Record<string, string | undefined>;
-  optimization?: 'default' | 'experimental-native-size' | 'experimental-native-bounded-size';
+  optimization?: 'native-bounded-size' | 'native-shrink0' | 'default' | 'experimental-native-size' | 'experimental-native-bounded-size';
 }): CollectedReport;

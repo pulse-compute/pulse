@@ -33,7 +33,9 @@ const {
 function optimizationPosture(value) {
   if (value === undefined || value === null || value === false) return 'native-default';
   if (
-    value === 'experimental-native-bounded-size'
+    value === 'native-bounded-size' || value === 'native-shrink0'
+    || (value && typeof value === 'object' && ['native-bounded-size', 'native-shrink0'].includes(value.mode))
+    || value === 'experimental-native-bounded-size'
     || (value && typeof value === 'object' && value.mode === 'experimental-native-bounded-size')
   ) return 'native-default';
   if (

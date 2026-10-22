@@ -91,6 +91,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
       result: operations.compileNativeProject(project, {
         clean: request.clean,
         outDir: request.outDir,
+        nativeShrink0: request.nativeShrink0,
         experimentalNativeSize: request.experimentalNativeSize,
         experimentalNativeBoundedSize: request.experimentalNativeBoundedSize,
         elideJsonCacheArena: request.elideJsonCacheArena,
@@ -104,6 +105,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
       result: operations.buildProject(project, {
         clean: request.clean,
         outDir: request.outDir,
+        nativeShrink0: request.nativeShrink0,
         experimentalNativeSize: request.experimentalNativeSize,
         experimentalNativeBoundedSize: request.experimentalNativeBoundedSize,
         elideJsonCacheArena: request.elideJsonCacheArena,

@@ -141,7 +141,7 @@ function dependencyRecords(groups) {
 function mode(options = {}) {
   const value = options.experimentalNativeBoundedSize ? 'experimental-native-bounded-size'
     : options.experimentalNativeSize ? 'experimental-native-size' : options.nativeOptimization?.mode || options.nativeOptimization || 'default';
-  if (!['default', 'experimental-native-size', 'experimental-native-bounded-size'].includes(value)) fail('REPORT_INPUT_UNBOUND');
+  if (!['default', 'native-bounded-size', 'native-shrink0', 'experimental-native-size', 'experimental-native-bounded-size'].includes(value)) fail('REPORT_INPUT_UNBOUND');
   return value;
 }
 function selectedProfile(project) { return project.selectedProfile?.name || project.profile?.name || 'native'; }
@@ -160,7 +160,8 @@ function beginSnapshot(project, options, outDir) {
   const current = scan(project.root, { excluded }); sameSnapshot(receipt.snapshot, current);
   const workspace = workspaceControls(project.root); sameSnapshot(receipt.workspace, workspace);
   const dependencies = toolchainSnapshot(project.root, project.providerSelector || project.provider);
-  return { receipt, current, workspace, dependencies, excluded, elideJsonCacheArena: options.elideJsonCacheArena === true, optimization: mode(options),
+  return { receipt, current, workspace, dependencies, excluded, elideJsonCacheArena: options.elideJsonCacheArena === true, optimization: (options.operation === 'native-build' && project.target === 'javascript') ? 'default'
+      : require('../native-optimization').selectedNativeOptimization(options, project),
     profileSha256: profileDigest(project.profilePlan) };
 }
 function finishSnapshot(project, attempt, compiled) {

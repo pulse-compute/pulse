@@ -128,8 +128,8 @@ export function lookup(index: i32): i32 { return load<i32>(mapping + <usize>((in
       const args = [asc.script, 'canonical-native.as.ts', '--outFile', 'module.wasm', '--textFile', 'module.wat',
         '--runtime', 'stub', '--noAssert', '--optimize'];
       if (retained) {
-        appendAssemblyScriptOptimizationArgs(args);
-        assert.deepEqual(args.slice(-2), ['--runPasses', 'merge-similar-functions']);
+        appendAssemblyScriptOptimizationArgs(args, 'native-shrink0');
+        assert.equal(args[args.indexOf('--runPasses') + 1], 'merge-similar-functions');
         const guestArgs = [];
         appendAssemblyScriptOptimizationArgs(guestArgs, undefined, { guestLinked: true });
         assert.equal(guestArgs.includes('--runPasses'), false, 'guest input waits for audited post-link merging');
@@ -189,7 +189,7 @@ async function main() {
   }`;
   const plan = buildCanonicalNativePlan(compileCanonicalSource(source, { fileName: 'shared-expressions.ts', strict: false }));
   let nodeHandles;
-  for (const nativeOptimization of [undefined, 'experimental-native-size', 'experimental-native-bounded-size']) {
+  for (const nativeOptimization of [undefined, 'native-shrink0', 'experimental-native-size', 'experimental-native-bounded-size']) {
     const native = compileCanonicalNativePlan(plan, { cwd: root, emitWat: true, nativeOptimization });
     const declarations = [...native.source.matchAll(/^function __pulse_(?:expr_\d+|ex_\d+\$[ik])\(/gm)].length;
     assert.match(native.source, /@noinline\nfunction __pulse_ex_\d+\$k\(/,

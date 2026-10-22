@@ -114,7 +114,7 @@ const defs = {
   Producer: object({ name: text, version: text }),
   File: object({ file: text, bytes: uint, sha256: hash }),
   Context: object({ profile: text, host: text, target: fixed('native'), representation: fixed('canonical-native-wasm'), primaryArtifactId: id }),
-  Recipe: object({ name: text, version: text, optimization: en('default', 'experimental-native-size', 'experimental-native-bounded-size', 'unavailable'), guestLinked: bool, elideJsonCacheArena: bool }, ['elideJsonCacheArena']),
+  Recipe: object({ name: text, version: text, optimization: en('native-bounded-size', 'native-shrink0', 'default', 'experimental-native-size', 'experimental-native-bounded-size', 'unavailable'), guestLinked: bool, elideJsonCacheArena: bool }, ['elideJsonCacheArena']),
   Route: object({ id, canonicalId: text, order: uint, method: text, path: str, handlerId: id,
     behavior: object({ kind: en('terminal', 'continuing'), basis: fixed('canonical-handler-ir') }),
     handlerName: nullable(str), entryId: id, source: nullable(ref('Source')), composition: ids,

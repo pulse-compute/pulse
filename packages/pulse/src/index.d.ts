@@ -123,6 +123,8 @@ export interface PulseProjectOptions {
 export type PulseProfile = Readonly<{
   host: string;
   target: PulseExecutionTarget;
+  /** Native-only recipe; defaults to bounded O3/shrink2 without convergence. CLI recipe flags override it. */
+  nativeOptimization?: 'native-bounded-size' | 'native-shrink0' | 'experimental-native-size' | 'experimental-native-bounded-size';
   /** Flat profile override for pulse.reporting. */
   reporting?: PulseReportingLevel;
   /** Required crypto algorithms for this profile. Replaces pulse.crypto rather than merging. */

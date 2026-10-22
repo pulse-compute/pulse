@@ -11,7 +11,7 @@ const {buildCanonicalNativePlan} = require('../../packages/compiler/src/canonica
 const {compileFastlyNativePlatformCapabilitiesPlan} = require('../../../packages/provider-fastly/src/build/native-platform-capabilities.js');
 const {executeFastlyNativePlatformCapabilities} = require('../../../packages/provider-fastly/src/testing/native-platform-capabilities-host.js');
 const root=path.resolve(__dirname,'../../..');
-function main(){
+function main(options = {}){
  const cwd=fs.mkdtempSync(path.join(os.tmpdir(),'pulse-bounded-concat-'));
  try{
   fs.mkdirSync(path.join(cwd,'node_modules/@pulse-compute'),{recursive:true});
@@ -27,7 +27,7 @@ const app=new Pulse({auto:true});app.post('/concat',async ctx=>{
  return ctx.json({digest,before,length:joined.length,total,first,last:joined[joined.length-1],equal:joined===retained,coerced:'v'+input.n+true+null});
 });export default app;`);
   const plan=buildCanonicalNativePlan(compileProject(resolveProject({cwd,profile:'fastly'})));
-  const compiled=compileFastlyNativePlatformCapabilitiesPlan(plan,{cwd,bindings:{},canonicalBuild:true});
+  const compiled=compileFastlyNativePlatformCapabilitiesPlan(plan,{cwd,bindings:{},canonicalBuild:true,nativeOptimization:options.nativeOptimization});
   let maxMemoryBytes=0;
   for(const fragment of ['x'.repeat(512),'\u0001'.repeat(512),'😀'.repeat(256)]){
    const result=executeFastlyNativePlatformCapabilities(compiled,{request:{method:'POST',path:'/concat',headers:[['content-type','application/json']],body:JSON.stringify({fragment,n:7})}});

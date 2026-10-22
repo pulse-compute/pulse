@@ -1786,7 +1786,7 @@ A discriminated event test case is missing or violates the canonical bounded eve
 | [`PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE`](#pulse-javascript-package-module-unavailable) | The graph-selected JavaScript package module cannot be loaded from the application workspace. | `3` |
 | [`PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE`](#pulse-javascript-external-module-unavailable) | A declared external module is unavailable to the JavaScript application loader. | `3` |
 | [`PULSE_NATIVE_TEXT_UNSUPPORTED`](#pulse-native-text-unsupported) | Diagnostic WebAssembly text is available only for Native compilation. | `2` |
-| [`PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED`](#pulse-experimental-native-size-unsupported) | The experimental Native size optimizer cannot be used for a JavaScript build target. | `2` |
+| [`PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED`](#pulse-experimental-native-size-unsupported) | Native optimization selections cannot be used for a JavaScript build target. | `2` |
 | [`PULSE_PROVIDER_COMPILE_ONLY`](#pulse-provider-compile-only) | The none provider cannot execute development-server or project-test behavior. | `2` |
 | [`PULSE_TEST_PROVIDER_REQUIRED`](#pulse-test-provider-required) | Project tests require an executable provider. | `2` |
 | [`PULSE_DEV_PROVIDER_UNSUPPORTED`](#pulse-dev-provider-unsupported) | The development server requires an executable provider. | `2` |
@@ -1924,7 +1924,7 @@ Diagnostic WebAssembly text is available only for Native compilation.
 <a id="pulse-experimental-native-size-unsupported"></a>
 ### `PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED` — Experimental Native Size Unsupported
 
-The experimental Native size optimizer cannot be used for a JavaScript build target.
+Native optimization selections cannot be used for a JavaScript build target.
 
 - **Category:** `capability`
 - **CLI exit class:** `2`
@@ -1935,7 +1935,7 @@ The experimental Native size optimizer cannot be used for a JavaScript build tar
 **Remediation**
 
 1. Select a profile with `target: "native"` or use `pulse compile`.
-2. Remove `--experimental-native-size` for JavaScript build output.
+2. Remove Native recipe flags (`--native-shrink0`, `--experimental-native-size`, `--experimental-native-bounded-size`) for JavaScript build output.
 
 <a id="pulse-provider-compile-only"></a>
 ### `PULSE_PROVIDER_COMPILE_ONLY` — Provider Compile Only

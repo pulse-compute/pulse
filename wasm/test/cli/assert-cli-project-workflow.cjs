@@ -157,10 +157,13 @@ async function main() {
     ], projectRoot));
     assert.deepEqual(experimentalNative.native.optimization, expectedNativeSizeOptimization);
     assert.deepEqual(experimentalNative.manifest.native.optimization, expectedNativeSizeOptimization);
-    assert.ok(
-      experimentalNative.native.wasm.bytes < nativeCompile.native.wasm.bytes,
-      'the compiler-owned experimental size profile should reduce the representative portable Native module'
-    );
+    const shrink0 = parseJson(run(['compile', '--out', 'native-dist-shrink0', '--native-shrink0', '--json'], projectRoot));
+    assert.equal(shrink0.native.optimization.mode, 'native-shrink0');
+    assert.equal(shrink0.native.optimization.assemblyScript.shrinkLevel, 0);
+    assert.equal(shrink0.native.optimization.assemblyScript.converge, false);
+    assert.ok(experimentalNative.native.wasm.bytes < shrink0.native.wasm.bytes, 'convergence is compared against the genuine shrink0 control');
+    assert.equal(nativeCompile.native.optimization.mode, 'native-bounded-size');
+    assert.equal(nativeCompile.native.optimization.experimental, false);
     assert.deepEqual(
       canonicalWasmSurface(experimentalNative.manifest.native.imports),
       canonicalWasmSurface(nativeCompile.manifest.native.imports),
@@ -175,6 +178,7 @@ async function main() {
     const boundedNative = parseJson(run(['compile', '--out', boundedNativeOut, '--experimental-native-bounded-size', '--json'], projectRoot));
     const expectedBounded = { ...expectedNativeSizeOptimization, mode: 'experimental-native-bounded-size', assemblyScript: { ...expectedNativeSizeOptimization.assemblyScript, converge: false } };
     assert.deepEqual(boundedNative.native.optimization, expectedBounded);
+    assert.equal(boundedNative.native.wasm.sha256, nativeFirstHash, "compatibility bounded flag preserves the default recipe bytes");
     assert.equal(WebAssembly.validate(fs.readFileSync(path.join(boundedNativeOut, 'canonical-native.wasm'))), true);
     const compileProviderOverride = parseError(run(['compile', '--provider', 'fastly', '--json'], projectRoot));
     assert.equal(compileProviderOverride.error.code, 'PULSE_PROVIDER_FLAG_REMOVED');
@@ -220,10 +224,18 @@ async function main() {
     const projectConfig = path.join(projectRoot, '.pulse', 'config.ts');
     fs.writeFileSync(projectConfig, fs.readFileSync(projectConfig, 'utf8').replace(
       '\n}));\n',
-      "\n  'compile-only': { host: 'none', target: 'native', outDir: 'compile-only-dist' },\n  javascript: { host: 'node', target: 'javascript', outDir: 'javascript-dist' },\n}));\n"
+      "\n  'compile-only': { host: 'none', target: 'native', nativeOptimization: 'native-shrink0', outDir: 'compile-only-dist' },\n  javascript: { host: 'node', target: 'javascript', outDir: 'javascript-dist' },\n}));\n"
     ));
     const compileOnly = parseJson(run(['compile', '--profile', 'compile-only', '--json'], projectRoot));
     assert.equal(compileOnly.provider, null);
+    assert.equal(compileOnly.native.optimization.mode, 'native-shrink0');
+    const configuredPlan = parseJson(run(['compile', '--profile', 'compile-only', '--dry-run', '--json'], projectRoot));
+    assert.equal(configuredPlan.plan.optimization.mode, 'native-shrink0');
+    const defaultPlan = parseJson(run(['build', '--dry-run', '--json'], projectRoot));
+    assert.equal(defaultPlan.plan.optimization.mode, 'native-bounded-size');
+    const shrink0Build = parseJson(run(['build', '--out', 'dist-shrink0', '--native-shrink0', '--json'], projectRoot));
+    assert.equal(shrink0Build.manifest.providerTarget.optimization.mode, 'native-shrink0');
+    assert.equal(shrink0Build.manifest.portable.optimization.assemblyScript.shrinkLevel, 0);
     const compileOnlyExperimental = parseJson(run([
       'compile',
       '--profile', 'compile-only',
@@ -249,6 +261,10 @@ async function main() {
     assert.equal(javascriptExperimental.error.code, 'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED');
     const javascriptBounded = parseError(run(['build', '--profile', 'javascript', '--experimental-native-bounded-size', '--json'], projectRoot));
     assert.equal(javascriptBounded.error.code, 'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED');
+    for (const flags of [[], ['--dry-run']]) {
+      const rejected = parseError(run(['build', '--profile', 'javascript', '--native-shrink0', ...flags, '--json'], projectRoot));
+      assert.equal(rejected.error.code, 'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED');
+    }
     for (const planningFlags of [[], ['--dry-run']]) {
       const javascriptText = parseError(run([
         'build', '--profile', 'javascript', '--emit-wat', ...planningFlags, '--json'

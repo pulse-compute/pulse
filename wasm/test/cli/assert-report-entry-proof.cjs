@@ -227,7 +227,7 @@ async function main() {
   const { compiled, plan } = prepare(), cells = [];
   const planBefore = JSON.stringify(plan);
   try {
-    for (const [target, optimization] of [['portable', undefined], ['fastly', undefined], ['portable', 'experimental-native-size'],
+    for (const [target, optimization] of [['portable', 'native-shrink0'], ['fastly', 'native-shrink0'], ['portable', 'experimental-native-size'],
       ['portable', 'experimental-native-bounded-size'], ['fastly', 'experimental-native-bounded-size']]) {
       const control = build(plan, target, false, optimization, directory);
       const observed = build(plan, target, true, optimization, directory);
@@ -265,7 +265,7 @@ async function main() {
       const record = { id: 'artifact:' + capture.artifactSha256, sha256: capture.artifactSha256,
         bytes: artifact.wasm.length, stage: 'final', target };
       const seed = collectInventory({ root, provider: target === 'portable' ? 'node' : 'fastly' },
-        { compiled, plan, native: artifact }, [record], record.id, optimization || 'default');
+        { compiled, plan, native: artifact }, [record], record.id, optimization || 'native-bounded-size');
       const capsule = addSizeEvidence(seed, new Map([[record.id, artifact.wasm]]), artifact.reportAttribution);
       const routeIds = new Set(capsule.routes.map(row => row.id));
       const direct = capsule.measurements.filter(row => row.metric === 'handler-body' && routeIds.has(row.subjectId));
@@ -290,7 +290,7 @@ async function main() {
       assert.throws(() => entryProof(plan, wrongOwner, symbols, capture, prefix), /AssertionError/);
       const requests = await execute(control.artifact, target) + await execute(artifact, target);
       const sizes = new Map(capture.functions.map(row => [row.index, row.bytes]));
-      cells.push({ target, optimization: optimization || 'default', entries: rows.length, provenEntries: 6,
+      cells.push({ target, optimization: optimization || 'native-bounded-size', entries: rows.length, provenEntries: 6,
         productionMappedRoutes: 4, productionExpectedRoutes: 6, sharedRegistrations: shared.length,
         sharedPhysicalBodies: shared[0].indices.length, sharedPhysicalBytes: shared[0].indices.reduce((n, index) => n + sizes.get(index), 0),
         dispatcherCarrierEntries: 3, wholeExecutableUnchanged: true, generatorCalls: 2, ascCalls: 2, requests,
@@ -298,7 +298,7 @@ async function main() {
     }
     assert.equal(JSON.stringify(plan), planBefore, 'observation never mutates the executable plan');
     const additional = prepareAdditional(directory), extraCells = [];
-    for (const target of ['portable', 'fastly']) for (const optimization of [undefined, 'experimental-native-bounded-size']) {
+    for (const target of ['portable', 'fastly']) for (const optimization of ['native-shrink0', 'native-bounded-size']) {
       const control = build(additional.plan, target, false, optimization, directory);
       const observed = build(additional.plan, target, true, optimization, directory);
       const { artifact, generated, capture, layout } = observed, attribution = artifact.reportAttribution;
@@ -315,7 +315,7 @@ async function main() {
       assert.ok(helperBodies.length > 0);
       assert.ok(helperBodies.every(row => row.functionIndex === null ? row.reason === 'final-symbol-not-surviving' : row.reason === null));
       assert.equal(helperBodies.filter(row => row.functionIndex !== null).length,
-        optimization === 'experimental-native-bounded-size' ? 1 : 0, 'pinned surviving/optimized-away helper cases; never force retention');
+        optimization === 'native-bounded-size' ? 1 : 0, 'pinned surviving/optimized-away helper cases; never force retention');
       assert.ok(helperBodies.every(row => row.implementationId === additional.plan.helpers[0].id));
       const helperCallers = attribution.entries.filter(row => row.bodies.some(body => body.relation === 'shared-helper-body'));
       assert.equal(helperCallers.length, 2);
@@ -325,14 +325,14 @@ async function main() {
       assert.ok(attribution.entries.find(row => row.entryId === manyEntry.stableId).bodies.length > 1, 'one entry spans multiple surviving bodies');
       const record = { id: attribution.artifactId, sha256: attribution.artifactSha256, bytes: artifact.wasm.length, stage: 'final', target };
       const seed = collectInventory({ root: additional.cwd, provider: target === 'portable' ? 'node' : 'fastly' },
-        { compiled: additional.compiled, plan: additional.plan, native: artifact }, [record], record.id, optimization || 'default');
+        { compiled: additional.compiled, plan: additional.plan, native: artifact }, [record], record.id, optimization || 'native-bounded-size');
       const capsule = addSizeEvidence(seed, new Map([[record.id, artifact.wasm]]), attribution);
       const helperInventory = capsule.implementations.filter(row => row.origin === 'authored-helper');
       assert.equal(helperInventory.length, 1);
       assert.deepEqual(helperInventory[0].roles, ['helper']);
       assert.equal(helperInventory[0].entryIds.length, 2);
       assert.equal(helperInventory[0].routeIds.length, 2);
-      assert.equal(helperInventory[0].bodyCoverage.observed, optimization === 'experimental-native-bounded-size' ? 1 : 0);
+      assert.equal(helperInventory[0].bodyCoverage.observed, optimization === 'native-bounded-size' ? 1 : 0);
       assert.equal(helperInventory[0].bodyCoverage.expected, helperBodies.length);
       assert.ok(helperInventory[0].bodyIds.every(id => capsule.bodies.some(row => row.id === id)));
       const direct = capsule.measurements.filter(row => row.metric === 'handler-body');
@@ -352,7 +352,7 @@ async function main() {
       const cases = [['/helper-a', {}, 200, 'x:0:1:2:3:4:5:6:7a', 1], ['/helper-b', {}, 200, 'x:0:1:2:3:4:5:6:7b', 1],
         ['/many', {}, 200, 'a' + 'b'.repeat(70), 0], ['/stage-a', {}, 200, 'x', 1], ['/stage-b', {}, 200, 'x', 1]];
       const requests = await execute(control.artifact, target, cases) + await execute(artifact, target, cases);
-      extraCells.push({ target, optimization: optimization || 'default', mappedRoutes: direct.length,
+      extraCells.push({ target, optimization: optimization || 'native-bounded-size', mappedRoutes: direct.length,
         exactRoutes: direct.filter(row => row.fact.coverage === 'exact').length,
         sharedHelperConsumers: helperCallers.length, helperBodies: helperBodies.length,
         survivingHelperBodies: helperBodies.filter(row => row.functionIndex !== null).length, requests, wholeExecutableUnchanged: true });
