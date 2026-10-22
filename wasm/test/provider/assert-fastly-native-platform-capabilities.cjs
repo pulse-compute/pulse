@@ -51,6 +51,7 @@ try {
   require('./assert-fastly-terminal-errors.cjs').main();
   require('./assert-fastly-native-config-effect-sharing.cjs').main();
   require('./assert-fastly-request-budget.cjs');
+  require('./assert-fastly-string-assembly.cjs').main();
   require('./assert-fastly-bounded-concatenation.cjs').main();
   require('./assert-fastly-schema-allocation.cjs').main();
   require('./assert-fastly-scalar-sharing.cjs').main();
@@ -184,7 +185,10 @@ try {
   assert.equal(configFirst.wat, configSecond.wat, 'config/secret WAT must be deterministic across cwd');
   assert.deepEqual(configFirst.manifest, configSecond.manifest, 'config/secret manifest must be deterministic across cwd');
   assert.deepEqual(configExperimentalFirst.wasm, configExperimentalSecond.wasm, 'experimental size module must be byte deterministic across cwd');
-  assert.ok(configExperimentalFirst.wasm.length < configFirst.wasm.length, 'experimental O3z optimization must reduce the representative Fastly Native module');
+  const configShrink0 = platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, { cwd: repoRoot, bindings: configBindings, nativeOptimization: 'native-shrink0' });
+  assert.equal(configShrink0.manifest.optimization.assemblyScript.shrinkLevel, 0);
+  assert.equal(configShrink0.manifest.optimization.assemblyScript.converge, false);
+  assert.ok(configExperimentalFirst.wasm.length < configShrink0.wasm.length, 'experimental size optimization is compared against shrink0');
   assert.deepEqual(configExperimentalFirst.inspection.imports, configFirst.inspection.imports, 'experimental size optimization must preserve the Fastly host import surface');
   assert.deepEqual(configExperimentalFirst.inspection.exports, configFirst.inspection.exports, 'experimental size optimization must preserve the required export surface');
   assert.deepEqual(configExperimentalFirst.manifest.optimization, platform.FASTLY_NATIVE_SIZE_OPTIMIZATION);
@@ -193,7 +197,9 @@ try {
   assert.deepEqual(configBounded.inspection.exports, configFirst.inspection.exports);
   assert.equal(configBounded.manifest.optimization.mode, 'experimental-native-bounded-size');
   assert.equal(configBounded.manifest.optimization.assemblyScript.converge, false);
-  assert.equal(configFirst.manifest.optimization, undefined, 'default Fastly Native artifacts must not opt into experimental optimization');
+  assert.equal(configFirst.manifest.optimization.mode, 'native-bounded-size');
+  assert.equal(configFirst.manifest.optimization.experimental, false);
+  assert.deepEqual(configFirst.wasm, configBounded.wasm, 'bounded compatibility and ordinary default use identical optimizer settings');
 
   const secretValue = 'platform-capability-secret';
   let result = mock.executeFastlyNativePlatformCapabilities(configFirst, {

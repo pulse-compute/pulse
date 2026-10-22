@@ -81,7 +81,7 @@ node wasm/scripts/run-wasm-tests.cjs --task suite-shape --task cli-report-handle
 
 `cli-report-handler-topology` uses the product-owned
 `wasm/test/fixtures/projects/report-analytics` fixture. HTTP/error and HTTP/event
-variants each run under default and `experimental-native-bounded-size` recipes.
+variants each run under explicit `native-shrink0` and `experimental-native-bounded-size` recipes.
 The same cells qualify authored definitions, mount/registration instances, repeated
 use sites, helper calls and bounded associations through retained completion,
 source-free passive replay, offline HTML and semantic comparison. Observation on/off

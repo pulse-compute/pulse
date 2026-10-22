@@ -71,7 +71,7 @@ function inspect(job) {
   fs.copyFileSync(job.file + '.as.ts', path.join(directory, entry + '.ts'));
   const asc = resolveAsc(path.join(root, 'wasm'));
   const args = [asc.script, entry + '.ts', '--outFile', 'named.wasm', '--runtime', 'stub', '--noAssert', '--optimize', '--debug'];
-  appendAssemblyScriptOptimizationArgs(args, job.profile === 'bounded-size' ? 'experimental-native-bounded-size' : undefined);
+  appendAssemblyScriptOptimizationArgs(args, job.profile === 'bounded-size' ? 'experimental-native-bounded-size' : 'native-shrink0');
   if (job.target === 'fastly') args.push('--use', `abort=${entry}/__pulse_fastly_abort`);
   const result = spawnSync(asc.executable, args, { cwd: directory, encoding: 'utf8', timeout: 120000, maxBuffer: 16 * 1024 * 1024 });
   assert.equal(result.status, 0, result.error?.message || result.stderr);
@@ -141,7 +141,7 @@ function compile(job) {
   const plan = buildCanonicalNativePlan(compileCanonicalProject(path.join(job.project, 'src/index.ts'), { rootDir: job.project, workspaceRoot: root }));
   const planningMs = performance.now() - begin;
   const compiled = compiler(plan, { cwd: root, canonicalBuild: true, requirePlatformCapability: false, emitWat: false,
-    nativeOptimization: job.profile === 'bounded-size' ? 'experimental-native-bounded-size' : undefined,
+    nativeOptimization: job.profile === 'bounded-size' ? 'experimental-native-bounded-size' : 'native-shrink0',
     bindings: { effectBackends: Object.fromEntries(plan.effects.map(effect => [effect.id, 'proof'])) } });
   const buildMs = performance.now() - begin, workerPeakRssBytes = process.resourceUsage().maxRSS * 1024;
   assert.equal(plan.schemas?.registry?.schemas?.length || 0, 0, 'named companion recipe is scoped to this schema-free fixture');

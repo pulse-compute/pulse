@@ -36,7 +36,7 @@ function withoutProjection() {
   control._compile(fs.readFileSync(file, 'utf8'), file);
   return control.exports;
 }
-function report(project, prepared, optimization = 'default') {
+function report(project, prepared, optimization = 'native-shrink0') {
   const artifact = { id: capsule.artifactId(prepared.native.manifest.wasm.sha256), ...prepared.native.manifest.wasm,
     stage: 'final', target: 'portable-native-wasm' };
   return collectInventory(project, prepared, [artifact], artifact.id, optimization);
@@ -275,10 +275,10 @@ async function main() {
     let negative = 0;
     for (const variant of ['http', 'event', 'full']) {
       let defaultReport;
-      for (const optimization of ['default', 'experimental-native-bounded-size']) {
+      for (const optimization of ['native-shrink0', 'experimental-native-bounded-size']) {
         setup(directory, variant);
         project = resolveProject({ cwd: directory, metadataOnly: true });
-        const options = { emitWat: false, nativeOptimization: optimization === 'default' ? undefined : optimization };
+        const options = { emitWat: false, nativeOptimization: optimization };
         console.log(`[analytics parity] ${variant}/${optimization}: control and observed compilation`);
         const control = controlOwner.compileNativeProjectInMemory(project, options);
         const prepared = execution.compileNativeProjectInMemory(project, options);
@@ -289,7 +289,7 @@ async function main() {
         assert.deepEqual(prepared.native.manifest.optimization, control.native.manifest.optimization);
         const value = report(project, prepared, optimization);
         assertTopology(value, { event: variant !== 'http', error: variant !== 'event' });
-        if (variant === 'full' && optimization === 'default') {
+        if (variant === 'full' && optimization === 'native-shrink0') {
           const unprotected = structuredClone(prepared.plan);
           const errorIndex = unprotected.routing.entries.find(entry => entry.kind === 'error').index;
           const cursor = unprotected.locals.find(local => local.name === '__pulse_router_cursor').id;
@@ -305,7 +305,7 @@ async function main() {
         }
         assert.equal(report(project, control, optimization).analytics, undefined, 'disabled observation cannot invent analytics');
         assertIntegration(value, defaultReport || value);
-        if (optimization === 'default') defaultReport = value;
+        if (optimization === 'native-shrink0') defaultReport = value;
         else {
           assert.deepEqual(value.analytics, defaultReport.analytics, 'authored analytics do not depend on Native recipe');
           assert.notEqual(value.artifacts[0].sha256, defaultReport.artifacts[0].sha256, 'recipe changes physical bytes');

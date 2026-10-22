@@ -187,6 +187,17 @@ function main() {
     assert.equal(first.audit.artifact.sha256, sha256(first.wasm));
     assert.deepEqual(first.wasm, second.wasm);
     assert.equal(sha256(first.wasm), 'c6c7c9107a02a5506c793ac9562cc78cf5dbfd3173533101777a7e699d075879');
+    // Compiler entry points must preserve the guest-link posture for both new
+    // recipe identities, including serialized recipe objects from providers.
+    const { realizeSelectedGuestUnits } = require('../../packages/compiler/src/spine/guest-unit-stage');
+    for (const nativeOptimization of [undefined, 'native-bounded-size', 'native-shrink0', { mode: 'native-shrink0' }]) {
+      const linked = realizeSelectedGuestUnits({ wasm: primary }, [{ ...contribution, packageRoot }], {
+        projectRoot, nativeOptimization, targetDescriptor: { finalWasmPolicy },
+        synchronizedPackages: invocation.synchronizedPackages
+      });
+      assert.deepEqual(linked.wasm, first.wasm, 'bounded/shrink0 retain the same audited post-link recipe');
+      assert.equal(linked.guestLink.report.fallback.used, false);
+    }
     const finalModule = new WebAssembly.Module(first.wasm);
     const providerInput = Object.freeze({
       ...first,

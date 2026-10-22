@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
+const { selectedNativeOptimization, hasNativeOptimization } = require('./internal/native-optimization');
 const http = require('node:http');
 const path = require('node:path');
 const { once } = require('node:events');
@@ -367,11 +368,7 @@ function compileNativeProjectInMemory(project, options = {}) {
     elideJsonCacheArena: options.elideJsonCacheArena,
     emitWat: options.emitWat,
     reportCapture: options.reportCapture,
-    nativeOptimization: options.experimentalNativeBoundedSize === true
-      ? 'experimental-native-bounded-size'
-      : options.experimentalNativeSize === true
-        ? 'experimental-native-size'
-        : options.nativeOptimization
+    nativeOptimization: selectedNativeOptimization(options, project)
   });
   const reportReferences = collectCanonicalReportReferences(compiled, plan);
   return Object.freeze({ compiled, plan, native, reportReferences });
@@ -699,6 +696,7 @@ function cleanOutputDirectory(project, outDir) {
 }
 
 function withReportBuild(project, options, operation, execute) {
+  selectedNativeOptimization(options, project);
   const report = require('./internal/report/retained');
   const outDir = resolveOutputDirectory(project, options.outDir || project.outDir);
   const timing = require('./internal/report/build').startBuild();
@@ -737,10 +735,10 @@ function buildProjectWithReport(project, options, reportAttempt) {
   if (options.emitWat === true && (project.target || 'native') !== 'native') {
     throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: project.target || 'native' });
   }
-  if ((options.experimentalNativeSize === true || options.experimentalNativeBoundedSize === true) && (project.target || 'native') !== 'native') {
+  if (hasNativeOptimization(options) && (project.target || 'native') !== 'native') {
     throw new PulseProjectError(
       'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED',
-      'Experimental Native size flags are available only for Native compilation.',
+      'Native optimization flags are available only for Native compilation.',
       {
         target: project.target || 'native',
         required: Object.freeze({ target: 'native' })

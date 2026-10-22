@@ -83,7 +83,7 @@ const publicOptions = OPTION_SPECS.filter((option) => option.visibility === 'pub
 
 assert.deepEqual(workflow.COMMANDS, COMMANDS, 'workflow command surface must use the canonical command specification');
 assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report', 'docs']);
-assert.equal(publicOptions.length, 21, 'the CLI must expose exactly 21 documented option contracts');
+assert.equal(publicOptions.length, 22, 'the CLI must expose exactly 22 documented option contracts');
 assert.equal(OPTION_SPECS.every((option) => option.visibility === 'public'), true, 'the product parser must not retain repository-only controls');
 
 for (const command of PUBLIC_COMMAND_ORDER) {
@@ -268,3 +268,34 @@ assert.throws(
 
 console.log('ok - offline documentation locator ' + JSON.stringify(require('./docs-locator-cases.cjs').runDocsLocatorCases(cliRoot)));
 console.log(`ok - CLI parser, help, machine spec, and ${COMPLETION_SHELLS.length} completions agree on ${COMMANDS.length} commands and ${publicOptions.length} public options with no hidden product controls`);
+
+// #495: recipe defaults, escape hatch, compatibility identity and Native-only config.
+const nativePolicy = require('../../packages/build-support/src/native-optimization');
+const nativeModes = require('../../packages/contracts/src/project/native-optimization');
+assert.equal(parseCommandRequest(['build', '--native-shrink0']).nativeShrink0, true);
+for (const flag of ['--experimental-native-size', '--experimental-native-bounded-size']) {
+  assert.throws(() => parseCommandRequest(['compile', '--native-shrink0', flag]), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED');
+}
+assert.throws(() => parseCommandRequest(['inspect', '--native-shrink0']), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED');
+assert.throws(() => nativeModes.selectNativeOptimizationMode({ nativeShrink0: 'yes' }));
+for (const [mode, shrink, converge, experimental] of [
+  [undefined, 2, false, false], ['native-shrink0', 0, false, false],
+  ['experimental-native-bounded-size', 2, false, true], ['experimental-native-size', 2, true, true]
+]) {
+  const args = [];
+  const recipe = nativePolicy.appendAssemblyScriptOptimizationArgs(args, mode);
+  assert.equal(recipe.assemblyScript.shrinkLevel, shrink);
+  assert.equal(recipe.assemblyScript.converge, converge);
+  assert.equal(recipe.experimental, experimental);
+  assert.equal(args[args.indexOf('--shrinkLevel') + 1], String(shrink));
+  assert.equal(args.includes('--converge'), converge);
+  assert.ok(args.includes('merge-similar-functions'));
+  const linked = [];
+  nativePolicy.appendAssemblyScriptOptimizationArgs(linked, mode, { guestLinked: true });
+  assert.equal(linked.includes('merge-similar-functions'), false, 'guest-link owns final merging');
+  assert.ok(linked.includes('--transform'), 'retention remains active');
+}
+assert.equal(nativeModes.selectNativeOptimizationMode({ nativeShrink0: true }, 'experimental-native-size'), 'native-shrink0');
+const configPlan495 = require('../../packages/contracts/src/project/config-plan');
+assert.throws(() => configPlan495.normalizeProjectDeclaration({ pulse: { defaultProfile: 'js' }, js: { host: 'node', target: 'javascript', nativeOptimization: 'native-shrink0' } }), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED');
+assert.throws(() => configPlan495.normalizeProjectDeclaration({ pulse: { defaultProfile: 'native' }, native: { host: 'node', target: 'native', nativeOptimization: 'default' } }), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED');

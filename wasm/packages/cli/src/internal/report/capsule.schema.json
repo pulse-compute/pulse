@@ -591,6 +591,8 @@
         },
         "optimization": {
           "enum": [
+            "native-bounded-size",
+            "native-shrink0",
             "default",
             "experimental-native-size",
             "experimental-native-bounded-size",

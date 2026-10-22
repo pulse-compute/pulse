@@ -12,7 +12,7 @@ A conventional project uses `.pulse/config.ts`. Start with the property map, the
 
 | Object | Properties — select for details |
 | --- | --- |
-| `<profile>` | [`host`](#config-profile-host), [`outDir`](#config-profile-outdir), [`reporting`](#config-profile-reporting), [`crypto`](#config-profile-crypto), [`schemas`](#config-profile-schemas), [`dev`](#config-profile-dev), [`target`](#config-profile-target), [`<fragment>`](#config-profile-fragment), [`provider`](#config-profile-provider), [`node`](#config-profile-node), [`fastly`](#config-profile-fastly) |
+| `<profile>` | [`host`](#config-profile-host), [`nativeOptimization`](#config-profile-nativeoptimization), [`outDir`](#config-profile-outdir), [`reporting`](#config-profile-reporting), [`crypto`](#config-profile-crypto), [`schemas`](#config-profile-schemas), [`dev`](#config-profile-dev), [`target`](#config-profile-target), [`<fragment>`](#config-profile-fragment), [`provider`](#config-profile-provider), [`node`](#config-profile-node), [`fastly`](#config-profile-fastly) |
 | `<profile>.dev` | [`host`](#config-profile-dev-host), [`port`](#config-profile-dev-port), [`watch`](#config-profile-dev-watch), [`maxBodyBytes`](#config-profile-dev-maxbodybytes), [`networkFetch`](#config-profile-dev-networkfetch), [`config`](#config-profile-dev-config), [`secrets`](#config-profile-dev-secrets), [`kv`](#config-profile-dev-kv), [`fetches`](#config-profile-dev-fetches) |
 | `<profile>.schemas` | [`contentTypePolicy`](#config-profile-schemas-contenttypepolicy), [`maxBytes`](#config-profile-schemas-maxbytes) |
 | `pulse` | [`binaryResources`](#config-pulse-binaryresources), [`entry`](#config-pulse-entry), [`crypto`](#config-pulse-crypto), [`schema`](#config-pulse-schema), [`tests`](#config-pulse-tests), [`defaultProfile`](#config-pulse-defaultprofile), [`strict`](#config-pulse-strict), [`reporting`](#config-pulse-reporting) |
@@ -121,6 +121,20 @@ Selects the provider for this profile. Built-in host IDs include `node`, `fastly
 - **Precedence:** Required in every profile; there is no implicit host selection.
 - **Security and safety:** Package loading is explicit and limited to the selected package `./toolchain` export; there is no scanning or fallback discovery.
 - **Related diagnostics:** [`PULSE_PROVIDER_PACKAGE_NOT_FOUND`](diagnostics.md#pulse-provider-package-not-found), [`PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED`](diagnostics.md#pulse-provider-toolchain-load-failed), [`PULSE_PROVIDER_TOOLCHAIN_INVALID`](diagnostics.md#pulse-provider-toolchain-invalid), [`PULSE_PROVIDER_UNSUPPORTED`](diagnostics.md#pulse-provider-unsupported), [`PULSE_PROVIDER_COMPILE_ONLY`](diagnostics.md#pulse-provider-compile-only), [`PULSE_TEST_PROVIDER_REQUIRED`](diagnostics.md#pulse-test-provider-required), [`PULSE_DEV_PROVIDER_UNSUPPORTED`](diagnostics.md#pulse-dev-provider-unsupported)
+
+<a id="nativeoptimization"></a>
+<a id="config-profile-nativeoptimization"></a>
+
+### `<profile>.nativeOptimization`
+
+Native compiler recipe. native-bounded-size is O3/shrink2/no convergence; native-shrink0 restores O3/shrink0/no convergence. experimental-native-size enables convergence; experimental-native-bounded-size retains the bounded compatibility identity.
+
+- **Type:** 'native-bounded-size' | 'native-shrink0' | 'experimental-native-size' | 'experimental-native-bounded-size'
+- **Required/default:** Optional; default `native-bounded-size` for Native compilation.
+- **Allowed values or constraints:** native-bounded-size, native-shrink0, experimental-native-size, experimental-native-bounded-size
+- **Scope:** Native profile
+- **Precedence:** An explicit compile/build recipe flag overrides the selected profile; otherwise use the bounded Native default.
+- **Related diagnostics:** [`PULSE_ARGUMENT_UNEXPECTED`](diagnostics.md#pulse-argument-unexpected)
 
 <a id="outdir"></a>
 <a id="config-profile-outdir"></a>

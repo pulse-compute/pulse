@@ -73,7 +73,7 @@ async function main(){
    const cwd=path.join(dir,'fixture-'+count),source=fixture(cwd,count),plan=planFor(cwd);
    assert.equal(plan.stages.length,1);assert.equal(plan.stages[0].registrations.length,count);assert.equal(plan.effects.length,count);assert.equal(new Set(plan.continuations.map(c=>c.id)).size,count);
    validateCanonicalNativePlan(JSON.parse(JSON.stringify(plan)));assert.equal(plan.planHash,planFor(cwd).planHash);if(count===2)negative(plan);
-   for(const optimization of [undefined,'experimental-native-bounded-size']){
+   for(const optimization of ['native-shrink0','experimental-native-bounded-size']){
     const start=performance.now(),built=build(plan,optimization),inspectionDir=path.join(dir,`inspect-${count}-${optimization||'normal'}`);fs.mkdirSync(inspectionDir);
     const retained=inspect(built,'fastly',inspectionDir,optimization);let requests=0;
     for(let i=0;i<count;i++){run(built,i,'input-'+i);requests++;}
@@ -81,7 +81,7 @@ async function main(){
     report.cells.push({registrations:count,optimization:optimization||'normal',planHash:plan.planHash,...source,wasmBytes:built.wasm.length,requests,retained,elapsedMs:Math.round(performance.now()-start)});save();console.log('passed',count,optimization||'normal',built.wasm.length,'bytes');
    }
   }
-  for(const mode of ['normal','experimental-native-bounded-size']){
+  for(const mode of ['native-shrink0','experimental-native-bounded-size']){
    const cells=report.cells.filter(c=>c.optimization===mode);
    assert.equal(cells[0].retained.sharedBodyPartitions,cells[1].retained.sharedBodyPartitions);
   }

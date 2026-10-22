@@ -356,7 +356,7 @@ Compile the canonical project into provider-neutral Pulse-owned WebAssembly.
 Syntax:
 
 ```text
-pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]
+pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--native-shrink0|--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]
 ```
 
 ### Positionals
@@ -371,8 +371,9 @@ pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] 
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
 | `--elide-json-cache-arena` | Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
-| `--experimental-native-bounded-size` | Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag. |
-| `--experimental-native-size` | Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag. |
+| `--native-shrink0` | Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag. |
+| `--experimental-native-bounded-size` | Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag. |
+| `--experimental-native-size` | Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 | `--out <dir>` | Override the project-relative artifact output directory. |
 
@@ -397,7 +398,7 @@ pulse compile ./edge-app --experimental-native-bounded-size
 
 - Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, and native manifest; --emit-wat adds diagnostic WAT.
 - The output is provider-neutral and does not package a deployment provider runtime.
-- Experimental size builds record the exact non-default Native compiler optimization settings.
+- Native builds default to O3/shrink2/no convergence and record the explicit compiler recipe.
 - With --json, emits one compile result object containing exact artifact paths and native metadata.
 
 ### Side effects
@@ -417,7 +418,7 @@ Build the Native or JavaScript target for the deployment provider selected by th
 Syntax:
 
 ```text
-pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]
+pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--native-shrink0|--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]
 ```
 
 ### Positionals
@@ -432,8 +433,9 @@ pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [-
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
 | `--elide-json-cache-arena` | Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
-| `--experimental-native-bounded-size` | Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag. |
-| `--experimental-native-size` | Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag. |
+| `--native-shrink0` | Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag. |
+| `--experimental-native-bounded-size` | Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag. |
+| `--experimental-native-size` | Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 | `--out <dir>` | Override the project-relative artifact output directory. |
 
@@ -451,7 +453,7 @@ pulse build ./edge-app --experimental-native-bounded-size
 
 - [`PULSE_BUILD_OUT_UNSAFE`](diagnostics.md#pulse-build-out-unsafe) — The resolved build output can escape or alias outside the project root.
 - [`PULSE_BUILD_PROVIDER_REQUIRED`](diagnostics.md#pulse-build-provider-required) — pulse build requires a configured deployment provider; provider-neutral output belongs to pulse compile.
-- [`PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED`](diagnostics.md#pulse-experimental-native-size-unsupported) — The experimental Native size optimizer cannot be used for a JavaScript build target.
+- [`PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED`](diagnostics.md#pulse-experimental-native-size-unsupported) — Native optimization selections cannot be used for a JavaScript build target.
 - [`PULSE_NATIVE_TEXT_UNSUPPORTED`](diagnostics.md#pulse-native-text-unsupported) — Diagnostic WebAssembly text is available only for Native compilation.
 - [`PULSE_CANONICAL_NATIVE_COMPILE_FAILED`](diagnostics.md#pulse-canonical-native-compile-failed) — The provider-neutral native plan could not be compiled into Pulse-owned WebAssembly.
 
@@ -460,7 +462,7 @@ pulse build ./edge-app --experimental-native-bounded-size
 
 - Writes pulse-build.json and the configured provider realization. Native builds include the provider-neutral native module; JavaScript builds emit a deterministic source package. Native --emit-wat builds also write diagnostic WAT.
 - Fastly Native builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm without a JavaScript runtime image. Fastly JavaScript builds emit a source/deployment package with exact downstream compiler pins and deployment-candidate metadata.
-- Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.
+- Native builds default to O3/shrink2/no convergence and record the explicit compiler recipe in portable, provider, and build metadata.
 - With --json, emits one build result object containing exact artifact paths for the selected target and provider.
 
 ### Side effects

@@ -214,6 +214,12 @@ function normalizeProfile(name, value, allRefs) {
   if (!EXECUTION_TARGETS.includes(target)) {
     throw contractError('PULSE_PROJECT_TARGET_UNSUPPORTED', `Profile ${profileName} target must be native or javascript.`, { profile: profileName, target });
   }
+  if (value.nativeOptimization !== undefined) {
+    const modes = require('./native-optimization').NATIVE_OPTIMIZATION_MODES;
+    if (target !== 'native' || !modes.includes(value.nativeOptimization)) {
+      throw contractError('PULSE_ARGUMENT_UNEXPECTED', 'nativeOptimization requires a Native profile and a supported explicit recipe.', { profile: profileName, target });
+    }
+  }
   const reporting = value.reporting === undefined || value.reporting === null
     ? null
     : normalizeReportingLevel(value.reporting, `${profileName}.reporting`);

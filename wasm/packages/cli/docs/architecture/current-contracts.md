@@ -2792,3 +2792,25 @@ historical 06B/07B measurement is imported as fresh build evidence. Their bounde
 performance/lifetime receipts remain separate; actual local Fastly observations also do not establish
 deployed-service acceptance. This does not implement command-aware evidence
 summaries from #440 or resolve the historical `REPORT_ARTIFACT_HASH` uncertainty.
+
+
+## Native optimization recipe selection
+
+New Native compilation uses `native-bounded-size`: O3, shrink level 2,
+without convergence. `--native-shrink0` restores O3/shrink0/no convergence.
+A Native profile may set `nativeOptimization` to either recipe or the existing
+`experimental-native-size` and `experimental-native-bounded-size` modes.
+An explicit compile/build flag overrides the profile. The three recipe flags
+are mutually exclusive and JavaScript builds reject them; JavaScript profiles
+reject `nativeOptimization`. Portable `compile` still explicitly compiles Native.
+
+`--experimental-native-size` remains convergence-enabled opt-in.
+`--experimental-native-bounded-size` retains its exact bounded behavior and
+historical experimental recipe identity, although its optimizer settings now
+match the ordinary default. All new Native manifests and retained evidence
+record the explicit selected identity. Historical absent metadata and report
+`default` identities keep their historical meaning; passive replay never
+resolves them through the current build default or invents compiler measurements.
+Guest linking retains its independent final optimizer, retention and merging
+posture; bounded and shrink0 primary compilation both use `native-default`
+link posture. This does not change the guest prebuilt recipe.

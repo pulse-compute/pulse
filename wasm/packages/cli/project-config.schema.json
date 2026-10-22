@@ -100,6 +100,21 @@
       },
       {
         "required": false,
+        "default": "`native-bounded-size` for Native compilation",
+        "allowed": "native-bounded-size, native-shrink0, experimental-native-size, experimental-native-bounded-size",
+        "precedence": "An explicit compile/build recipe flag overrides the selected profile; otherwise use the bounded Native default.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_ARGUMENT_UNEXPECTED"
+        ],
+        "section": "project",
+        "path": "nativeOptimization",
+        "type": "'native-bounded-size' | 'native-shrink0' | 'experimental-native-size' | 'experimental-native-bounded-size'",
+        "scope": "Native profile",
+        "description": "Native compiler recipe. native-bounded-size is O3/shrink2/no convergence; native-shrink0 restores O3/shrink0/no convergence. experimental-native-size enables convergence; experimental-native-bounded-size retains the bounded compatibility identity."
+      },
+      {
+        "required": false,
         "default": "`./dist`",
         "allowed": "—",
         "precedence": "`--out` overrides this field for the current command.",
@@ -818,6 +833,16 @@
           "none"
         ]
       },
+      "nativeOptimization": {
+        "kind": "enum",
+        "optional": true,
+        "values": [
+          "native-bounded-size",
+          "native-shrink0",
+          "experimental-native-size",
+          "experimental-native-bounded-size"
+        ]
+      },
       "outDir": {
         "kind": "string",
         "default": "./dist",
@@ -975,6 +1000,14 @@
             }
           ],
           "default": "node"
+        },
+        "nativeOptimization": {
+          "enum": [
+            "native-bounded-size",
+            "native-shrink0",
+            "experimental-native-size",
+            "experimental-native-bounded-size"
+          ]
         },
         "outDir": {
           "type": "string",

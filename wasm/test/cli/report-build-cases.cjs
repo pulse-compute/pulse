@@ -20,6 +20,14 @@ function fixture() {
   return input;
 }
 function contractCases() {
+  for (const optimization of ['default', 'unavailable', 'native-bounded-size', 'native-shrink0']) {
+    const historical = f.fixture(); historical.provenance.recipe.optimization = optimization;
+    const saved = serializeCapsule(createCapsule(historical));
+    const replay = parseCapsule(saved);
+    assert.equal(replay.provenance.recipe.optimization, optimization);
+    assert.equal(replay.build, undefined);
+    assert.equal(serializeCapsule(replay), saved);
+  }
   const input = fixture(), capsule = createCapsule(input), wire = serializeCapsule(capsule);
   assert.equal(serializeCapsule(parseCapsule(wire)), wire);
   assert.equal(createCapsule(f.fixture()).build, undefined, 'historical capsules gain no invented facts');
