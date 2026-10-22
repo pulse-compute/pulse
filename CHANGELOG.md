@@ -33,7 +33,7 @@ logging evidence gaps for beta.10, including deployed Pulse cross-location K4.
 These dispositions preserve raw failed/not-run results and do not establish
 semantic passes. Required local and installed acceptance, final qualification,
 publication and separate website promotion remain outstanding; see the
-[beta.10 readiness ledger](docs/internal/beta10/README.md).
+[beta.10 readiness ledger](https://github.com/pulse-compute/pulse/blob/a9e49e1e71c3772ed62f272ab3c1f4b160731ff5/docs/internal/beta10/README.md).
 
 ## 1.0.0-beta.9 — Beta (2026-10-15)
 

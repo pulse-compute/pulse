@@ -73,7 +73,18 @@ try {
   const file = path.join(sizeRoot, 'canonical-native.wasm');
   const example = { id: 'size-regression', provider: 'node', guestWasmBytes: 1035 };
   fs.writeFileSync(file, wasm);
+  const manifestFile = path.join(sizeRoot, 'pulse-build.json');
+  const manifest = { portable: { optimization: {
+    version: 'pulse.native-optimization.v1', mode: 'native-bounded-size', experimental: false,
+    assemblyScript: { optimize: true, optimizeLevel: 3, shrinkLevel: 2, converge: false }
+  } } };
+  fs.writeFileSync(manifestFile, JSON.stringify(manifest));
   assert.deepEqual(verifyDefaultNativeSizes(example, sizeRoot), { guestWasmBytes: 1035, wasmBytes: 0 });
+  manifest.portable.optimization.assemblyScript.shrinkLevel = 0;
+  fs.writeFileSync(manifestFile, JSON.stringify(manifest));
+  assert.throws(() => verifyDefaultNativeSizes(example, sizeRoot), /AssemblyScript policy mismatch/);
+  manifest.portable.optimization.assemblyScript.shrinkLevel = 2;
+  fs.writeFileSync(manifestFile, JSON.stringify(manifest));
   assert.throws(() => verifyDefaultNativeSizes({ ...example, guestWasmBytes: 1034 }, sizeRoot), /documented application guest Wasm size changed/);
   fs.writeFileSync(file, Buffer.alloc(1024 * 1024));
   assert.throws(() => verifyDefaultNativeSizes(example, sizeRoot), /unexpected size/);

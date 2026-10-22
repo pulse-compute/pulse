@@ -261,4 +261,4 @@ for protocol options and supported clients.
 <a id="standalone-host"></a>
 
 Corpus regeneration, compatibility fixtures and qualification details are in the
-[repository maintenance notes](../../docs/internal/mcp-context-example.md).
+[repository maintenance notes](https://github.com/pulse-compute/pulse/blob/a9e49e1e71c3772ed62f272ab3c1f4b160731ff5/docs/internal/mcp-context-example.md).
