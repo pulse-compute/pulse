@@ -10,6 +10,8 @@ and retrieve maintained examples. It demonstrates schema-bound tools, shared
 Run the project in **`application/`**. Node Native is the default; Node
 JavaScript and Fastly Native are explicit alternatives.
 
+<a id="tool-contract-and-limits"></a>
+
 | Tool | Use it to |
 |---|---|
 | `pulse.start` | Get a project plan for a JSON, schema, fetch or router API. |
@@ -19,6 +21,8 @@ JavaScript and Fastly Native are explicit alternatives.
 | `pulse.diagnostic` | Explain a Pulse diagnostic and its suggested local checks. |
 
 ## Request and response
+
+<a id="walkthrough-1-start-a-json-api"></a>
 
 With the server running, ask for a Node Native starter. Run this from
 `application/` in a second terminal:
@@ -50,6 +54,8 @@ It returns a plan; it does not create files or run commands for you.
 ## Code
 
 ### Application
+
+<a id="entity-application"></a>
 
 Each tool calls a computation through `ctx.call`; the MCP binding exposes the
 router at `/mcp`.
@@ -130,6 +136,8 @@ export default async function handler(ctx: PulseContext) {
 
 ### Project config
 
+<a id="walkthrough-2-choose-native-or-javascript-explicitly"></a>
+
 The bundled [config](./application/.pulse/config.ts) selects a profile and binds
 three immutable corpus resources. Keep `application/` and `context-data/` together
 when copying the example.
@@ -154,6 +162,8 @@ npm run inspect -- --json
 
 ## Doctor
 
+<a id="test-harness"></a>
+
 Check the selected profile and local toolchain. The example has no `pulse test`
 harness; its live MCP requests are checked by the executable documentation gate.
 
@@ -166,6 +176,8 @@ npm run doctor -- --json
 ```
 
 ## Report
+
+<a id="wasm-size"></a>
 
 Build the selected profile, then inspect that completed artifact:
 
@@ -211,6 +223,8 @@ npm run build
 npm run dev
 ```
 
+<a id="walkthrough-3-understand-a-schema-or-effect-diagnostic"></a>
+
 Connect a compatible MCP HTTP client to **`http://127.0.0.1:8787/mcp`**, or use
 the included request helper from another terminal:
 
@@ -241,6 +255,8 @@ and rejects requests with an Origin header. See the [MCP package guide](../../do
 for protocol options and supported clients.
 
 ## Maintaining the snapshot
+
+<a id="standalone-host"></a>
 
 Corpus regeneration, compatibility fixtures and qualification details are in the
 [repository maintenance notes](../../docs/internal/mcp-context-example.md).
