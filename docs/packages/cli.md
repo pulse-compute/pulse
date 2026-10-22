@@ -167,6 +167,9 @@ at most 300 nodes; the paged routing table retains every matching registration.
 **Bindings** in the atlas connects retained contextual consumers to logical
 bindings and authored operations. Select a node for association evidence and
 exact registration links; graph and evidence pages preserve larger inventories.
+The **Bindings** tab shows application-wide consumers even when a route is
+selected in Routing. Use a registration's **Explore bindings** action to narrow
+the scope explicitly, then **All consumers** to return to application scope.
 Missing or partial analytics remain explicit and never imply no dependencies
 or effective permissions. **Expand workspace** gives the graph more room, with
 optional details and width controls; Escape exits the expanded view. These

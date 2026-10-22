@@ -15,12 +15,10 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
     const inspect=host?.querySelector('#atlas-inspector-toggle');if(inspect){inspect.textContent='ⓘ';inspect.setAttribute('aria-label',local.inspector?'Hide details':'Show details');inspect.setAttribute('title',local.inspector?'Hide details':'Show details');inspect.setAttribute('aria-expanded',String(local.inspector));}
   }
   function dismiss(){local.inspector=false;applyWorkspace();host.querySelector('#atlas-inspector-toggle')?.focus({preventScroll:true});}
-  function bindings(options){
+  function bindings(options={binding:bindingExplorer.selection()}){
     rememberCamera();local.mode='bindings';
-    const selection=m.state.selectedRegistration;
-    if(!options&&local.bindingSelection!==selection)options={scope:selection||local.scope};
     if(options){if(options.scope&&!options.binding)options={...options,binding:[...m.bindings.keys()].find(id=>m.bindingProjection(id,options.scope).rows.length)||null};bindingExplorer.configure(options);}
-    local.bindingSelection=selection;if(host)render(host);
+    if(host)render(host);
   }
   function toolbar(){
     const routing=button('Routing',()=>{local.mode='routing';render(host);host.querySelector('#atlas-routing-tab').focus({preventScroll:true});});routing.id='atlas-routing-tab';routing.setAttribute('aria-pressed',String(local.mode==='routing'));
