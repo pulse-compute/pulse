@@ -61,6 +61,33 @@ module.exports = ({capsule, renderedTree}) => {
   click('Focus subrouter');assert.match(tree.get('atlas-scope').textContent,/Application/);
   click('Explore bindings');assert.ok(tree.get('binding-viewport'));
   assert.match(tree.get('binding-workspace').textContent,/Scope:/);
+  // A selected route is inspector state, not an implicit Bindings-tab filter.
+  const allConsumers=model.bindingProjection(binding.id,null,true);
+  const route=registrations.find(r=>r.kind==='route'&&
+    model.bindingProjection(binding.id,r.id,true).consumerCount>0);
+  assert.ok(route,'fixture has a route consuming the shared binding');
+  assert.ok(allConsumers.consumerCount>1,'fixture exposes consumers outside the selected route');
+  const chooseBinding=()=>tree.nodes().find(n=>n.attrs['data-binding-id']===binding.id).events.click();
+  const assertApplicationConsumers=()=>{
+    assert.ok(tree.get('binding-workspace').textContent.includes('Scope: Application'));
+    assert.ok(tree.get('binding-summary').textContent.startsWith(allConsumers.consumerCount+' possible entry points'));
+    assert.deepEqual(tree.nodes().filter(n=>n.attrs['data-binding-node']==='consumer')
+      .map(n=>n.attrs['data-binding-key']),allConsumers.consumers.slice(0,12).map(g=>g.key));
+    assert.equal(tree.renderers.state.selectedRegistration,route.id,'routing selection remains available');
+  };
+  visit('#atlas/'+model.registrationIndex.get(route.id));
+  click('Bindings');chooseBinding();assertApplicationConsumers();
+  assert.equal(tree.document.activeElement.id,'binding-summary');
+  // Explicit contextual exploration still narrows to the exact route.
+  click('Routing');click('Explore bindings');chooseBinding();
+  assert.ok(tree.get('binding-workspace').textContent.includes('Scope: '+model.registrationLabel(route)));
+  assert.ok(tree.get('binding-summary').textContent.startsWith('1 possible entry points'));
+  click('All consumers');assertApplicationConsumers();
+  click('Routing');click('Explore bindings');chooseBinding();
+  click('Bindings');assertApplicationConsumers();
+  assert.equal(tree.document.activeElement.id,'atlas-bindings-tab');
+  // An unchanged route selection must not restore the old scope on a round trip.
+  click('Routing');click('Bindings');assertApplicationConsumers();
   visit('#handlers');assert.ok(!tree.document.body.classList.contains('atlas-expanded'),'navigation restores page layout');
   const desktop=renderedTree(capsule,{narrow:false});desktop.location.hash='#atlas';desktop.renderers.onHash();
   assert.ok(desktop.get('atlas-viewport'),'desktop atlas builds graph on opening');
