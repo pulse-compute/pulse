@@ -65,8 +65,9 @@ const examples = Object.freeze([
     provider: 'fastly',
     guestWasmBytes: 5695,
     optimizedGuestWasmBytes: 5181,
-    providerWasmBytes: 53833,
-    optimizedProviderWasmBytes: 42780,
+    providerWasmBytes: 57484,
+    optimizedProviderWasmBytes: 46189,
+    wasiImports: ['clock_time_get', 'fd_write'],
     capabilities: [
       'config.get',
       'secret.get',
@@ -82,8 +83,9 @@ const examples = Object.freeze([
     provider: 'fastly',
     guestWasmBytes: 2304,
     optimizedGuestWasmBytes: 2205,
-    providerWasmBytes: 40291,
-    optimizedProviderWasmBytes: 33191,
+    providerWasmBytes: 43842,
+    optimizedProviderWasmBytes: 36610,
+    wasiImports: ['clock_time_get', 'fd_write'],
     capabilities: ['fetch'],
     opaque: true
   }),
@@ -449,6 +451,43 @@ function assertSecretsRedacted(outputs, secrets, exampleId) {
   for (const secret of secrets) assert.equal(combined.includes(secret), false, `${exampleId} leaked a configured secret into CLI output`);
 }
 
+function assertFastlyExampleImports(imports, exampleId) {
+  const example = examples.find((entry) => entry.id === exampleId);
+  assert.ok(example?.provider === 'fastly' && Array.isArray(example.wasiImports), `${exampleId} needs an explicit Fastly WASI import expectation`);
+  assert.ok(imports.some((entry) => entry.module === 'fastly_abi' && entry.name === 'init' && entry.kind === 'function'), `${exampleId} native Fastly Wasm is missing fastly_abi.init`);
+  assert.equal(imports.some((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, `${exampleId} native Fastly Wasm contains a forbidden runtime import`);
+  // Both examples fetch upstreams: bounded transport diagnostics use stdout
+  // even without an authored ctx.log statement. Keep each fixture's WASI
+  // imports exact rather than inheriting a broader provider-wide allowlist.
+  assert.deepEqual(
+    imports.filter((entry) => /wasi/i.test(entry.module)).map((entry) => `${entry.module}:${entry.name}:${entry.kind}`).sort(),
+    example.wasiImports.map((name) => `wasi_snapshot_preview1:${name}:function`).sort(),
+    `${exampleId} WASI imports must match its bounded clock/stdout contract`
+  );
+}
+
+function verifyFastlyImportAssertions() {
+  for (const example of examples.filter((entry) => entry.provider === 'fastly')) {
+    const init = { module: 'fastly_abi', name: 'init', kind: 'function' };
+    const wasi = example.wasiImports.map((name) => ({ module: 'wasi_snapshot_preview1', name, kind: 'function' }));
+    const valid = [init, ...wasi];
+    assertFastlyExampleImports(valid, example.id);
+    for (const name of ['fd_read', 'random_get', 'path_open']) {
+      assert.throws(() => assertFastlyExampleImports([...valid, { module: 'wasi_snapshot_preview1', name, kind: 'function' }], example.id), /WASI imports/);
+    }
+    assert.throws(() => assertFastlyExampleImports([...valid, { module: 'wasi_unstable', name: 'fd_write', kind: 'function' }], example.id), /WASI imports/);
+    for (const entry of wasi) {
+      assert.throws(() => assertFastlyExampleImports(valid.filter((item) => item !== entry), example.id), /WASI imports/);
+      assert.throws(() => assertFastlyExampleImports(valid.map((item) => item === entry ? { ...item, kind: 'memory' } : item), example.id), /WASI imports/);
+      assert.throws(() => assertFastlyExampleImports([...valid, entry], example.id), /WASI imports/);
+    }
+    for (const module of ['pulse_host', 'js_compute']) {
+      assert.throws(() => assertFastlyExampleImports([...valid, { module, name: 'invoke', kind: 'function' }], example.id), /forbidden runtime import/);
+    }
+    assert.throws(() => assertFastlyExampleImports(wasi, example.id), /missing fastly_abi.init/);
+  }
+}
+
 function inspectWasm(file, exampleId) {
   assert.ok(fs.existsSync(file), `${exampleId} did not produce bin/main.wasm`);
   const bytes = fs.readFileSync(file);
@@ -456,10 +495,7 @@ function inspectWasm(file, exampleId) {
   assert.equal(bytes.subarray(0, 8).toString('hex'), '0061736d01000000', `${exampleId} produced an invalid Wasm header`);
   assert.equal(WebAssembly.validate(bytes), true, `${exampleId} produced invalid WebAssembly`);
   const imports = WebAssembly.Module.imports(new WebAssembly.Module(bytes));
-  assert.ok(imports.some((entry) => entry.module === 'fastly_abi' && entry.name === 'init'), `${exampleId} native Fastly Wasm is missing fastly_abi.init`);
-  assert.equal(imports.some((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, `${exampleId} native Fastly Wasm contains a forbidden runtime import`);
-  assert.equal(imports.some(entry => /wasi/i.test(entry.module)
-    && !(entry.module === 'wasi_snapshot_preview1' && entry.name === 'clock_time_get')), false, `${exampleId} permits only the bounded WASI clock import`);
+  assertFastlyExampleImports(imports, exampleId);
   return bytes.length;
 }
 
@@ -910,6 +946,7 @@ function prepareExampleRuntimePackages(example) {
 }
 
 function verifySourceContracts() {
+  verifyFastlyImportAssertions();
   console.log('docs - verify canonical example formatting');
   assertExampleFormatting();
   console.log('docs - verify source-backed Markdown');

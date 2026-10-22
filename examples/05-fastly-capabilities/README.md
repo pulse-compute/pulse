@@ -355,9 +355,10 @@ export default {
 | Artifact | Default build | `--experimental-native-size` | Reduction |
 |---|---:|---:|---:|
 | `canonical-native.wasm` | 5.6 KiB (5,695 bytes) | 5.1 KiB (5,181 bytes) | 9.0% |
-| `bin/main.wasm` | 52.6 KiB (53,833 bytes) | 41.8 KiB (42,780 bytes) | 20.5% |
+| `bin/main.wasm` | 56.1 KiB (57,484 bytes) | 45.1 KiB (46,189 bytes) | 19.6% |
 
 The executable documentation gate rebuilds and measures both variants from this
-checkout. The provider artifact includes the Fastly header, transport recovery,
-fetch deadline, and structured logging fixes. These are uncompressed on-disk
-sizes, not transfer sizes or platform limits.
+checkout. The provider artifact includes Fastly transport handling, deadlines,
+the complete send-error detail record, and bounded transport diagnostics through
+WASI stdout. The clock and stdout imports are checked explicitly. These are
+uncompressed on-disk sizes, not transfer sizes or platform limits.
