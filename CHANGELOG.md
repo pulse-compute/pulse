@@ -4,6 +4,35 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+- Add bounded dynamic effect collections and `ctx.call` for shared authored
+  computations across Router and MCP applications on Native and JavaScript.
+  Effect scheduling, cancellation and deadlines remain explicit and bounded.
+- Add portable immutable binary resources with build/report attribution, and
+  the compiled Pulse context MCP application with deterministic sparse lexical
+  search, documentation reads, examples and diagnostic guidance.
+- Extend Fastly Native with opt-in dynamic backends, bounded KV list/delete and
+  named production log streams. Correct transport error detail layout and retain
+  bounded diagnostics and explicit provider capability admission.
+- Fix Node doctor admission, schema wrapper error boundaries and route-scoped
+  report bindings. Add installed offline `pulse docs` and command-aware evidence
+  status reporting.
+- Use bounded O3/shrink2 optimization for ordinary Native builds, with explicit
+  `--native-shrink0` and experimental convergence opt-ins. Fix linear UTF-16
+  string assembly under shrink2 and document workload-specific measurements.
+- Move hosted documentation delivery to the website repository. Release
+  qualification retains source-only documentation evidence; release preparation
+  preserves tagged product metadata without rebuilding historical HTML.
+- Refresh canonical optimization guidance, executable example measurements and
+  the MCP workflow. Bound release CI concurrency and compiler memory while
+  preserving exact-candidate recovery, complete coverage and cleanup checks.
+
+The release owner accepted the outstanding deployed dynamic-backend, KV and
+logging evidence gaps for beta.10, including deployed Pulse cross-location K4.
+These dispositions preserve raw failed/not-run results and do not establish
+semantic passes. Required local and installed acceptance, final qualification,
+publication and separate website promotion remain outstanding; see the
+[beta.10 readiness ledger](docs/internal/beta10/README.md).
+
 ## 1.0.0-beta.9 — Beta (2026-10-15)
 
 - Expand Native reports with authored handlers, source-bound analytics,
