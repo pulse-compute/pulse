@@ -236,13 +236,13 @@ export default {
 
 For build settings, see [Native build optimization](../../docs/reference/native-build-optimization.md).
 
-| Artifact | Default build | `--experimental-native-size` | Reduction |
-|---|---:|---:|---:|
-| `canonical-native.wasm` | 2.3 KiB (2,304 bytes) | 2.2 KiB (2,205 bytes) | 4.3% |
-| `bin/main.wasm` | 42.8 KiB (43,842 bytes) | 35.8 KiB (36,610 bytes) | 16.5% |
+| Artifact | Default build |
+|---|---:|
+| Portable guest `canonical-native.wasm` | 2.2 KiB (2,205 bytes) |
+| Deployable Fastly module `bin/main.wasm` | 35.8 KiB (36,637 bytes) |
 
-The executable documentation gate rebuilds and measures both variants from this
-checkout. The provider artifact includes Fastly transport handling, deadlines,
+The executable documentation gate rebuilds and measures these default artifacts.
+Measured with Node 24.18.0 and lockfile-pinned AssemblyScript 0.28.18. The provider artifact includes Fastly transport handling, deadlines,
 the complete send-error detail record, and bounded transport diagnostics through
 WASI stdout. The clock and stdout imports are checked explicitly. These are
 uncompressed on-disk sizes, not transfer sizes or platform limits.
