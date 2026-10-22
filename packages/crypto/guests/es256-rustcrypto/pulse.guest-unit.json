@@ -3,7 +3,7 @@
   "id": "pulse.crypto.es256.rustcrypto-p256.v1",
   "module": "pulse_crypto_es256",
   "owner": "@pulse-compute/crypto",
-  "packageVersion": "1.0.0-beta.9",
+  "packageVersion": "1.0.0-beta.10",
   "abi": "pulse.crypto.es256-rs256.verify-and-sign.v3",
   "origin": "package-prebuilt",
   "artifact": {
@@ -110,7 +110,7 @@
     "sourceTreeSha256": "581fa765f228bd1a3ab6a40ee3cbb35a9d7a101e2839d32e36ececc94b66a741",
     "reconstructionCommandIdentity": "pulse.crypto.es256-rs256.build.v3",
     "buildScript": "build.cjs",
-    "buildScriptSha256": "ee03e9adf0f82b52dc9671198c0eb5658926ce6caf5b74b2f7c695dc600a7324",
+    "buildScriptSha256": "d953487dab0c39352534a0e82d3fdefa7967bf7c51fbf0011c88f41f906e0587",
     "optimizationPosture": "native-size",
     "binaryenWasmOptSha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56",
     "g0SourceDecision": "../../../../wasm/.test-results/jwt-g0/es256-source-decision.json",

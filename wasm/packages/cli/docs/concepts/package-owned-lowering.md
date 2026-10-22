@@ -2,7 +2,7 @@
 
 Package-owned lowering lets a trusted Pulse-aware package extend the canonical compiler with narrow, statically recognized operations while keeping domain rules out of compiler core.
 
-The synchronized `1.0.0-beta.9` release uses this pattern for Assets, GRIP,
+The synchronized `1.0.0-beta.10` release uses this pattern for Assets, GRIP,
 JWT, Entities, S3, and Crypto exact-text digests.
 External packages may implement the same versioned contract as trusted build
 dependencies. They need no monorepo allowlist or matching Pulse release version.

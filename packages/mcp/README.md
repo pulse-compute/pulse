@@ -7,9 +7,9 @@
 > **Supported entry points:** `@pulse-compute/mcp`, `@pulse-compute/mcp/node`, `@pulse-compute/mcp/pulse`<br>
 > **Stability:** The root Fetch handler and /node HTTP bridge retain fixed-backend host behavior. /pulse supplies a static package-owned Native binding with local Entities dispatch, strict HTTP admission and no fallback. Protocol resources, prompts, sessions and stdio are unsupported.<br>
 > **npm:** [`@pulse-compute/mcp`](https://www.npmjs.com/package/@pulse-compute/mcp)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.9/packages/mcp/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.10/packages/mcp/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.9` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.10` package policy.
 <!-- pulse-package-status:end -->
 
 `@pulse-compute/mcp` provides bounded **MCP 2026-07-28** HTTP integration for
@@ -17,7 +17,7 @@ host applications through the root and `/node`, and a static Native binding
 through `/pulse`. The latter depends on Entities and Runtime; implementation
 subpaths are private except for the declared trusted lowerer entries.
 
-The canonical [Pulse context MCP example](https://pulsecompute.io/v1.0.0-beta.9/examples/12-pulse-context-mcp/)
+The canonical [Pulse context MCP example](https://pulsecompute.io/v1.0.0-beta.10/examples/12-pulse-context-mcp/)
 uses a versioned, immutable corpus and five read-only Entities operations for
 starter plans, search, contract reads, maintained examples and public diagnostic
 help. Its standalone host composes the public Node launcher and `/mcp/node` over
@@ -26,7 +26,7 @@ inside the generic adapter tarball; its runtime needs no repository or upstream.
 See its README for installation status, client requests and three walkthroughs.
 
 Release status: supported Beta host extension in the synchronized
-`1.0.0-beta.9` candidate package set. Registry publication is pending the
+`1.0.0-beta.10` candidate package set. Registry publication is pending the
 release-owner bootstrap and trusted-publisher handoff. These host APIs are used
 outside Pulse guest handlers. Use `/pulse` for package-owned Native lowering.
 
@@ -59,7 +59,7 @@ Until publication, pack the package and install that tarball in the host project
 # From the Pulse checkout; no build or lifecycle script is needed.
 npm pack ./packages/mcp --ignore-scripts --pack-destination /tmp
 # From a separate host project:
-npm install /tmp/pulse-compute-mcp-1.0.0-beta.9.tgz --ignore-scripts
+npm install /tmp/pulse-compute-mcp-1.0.0-beta.10.tgz --ignore-scripts
 ```
 
 CommonJS host:
@@ -483,7 +483,7 @@ scope/write/schema negatives remain a small workspace check in
 
 After release-owner bootstrap, trusted-publisher setup and exact-version
 publication, run the narrow registry install/build/start smoke documented in the
-[npm publication handoff](https://pulsecompute.io/v1.0.0-beta.9/maintainers/npm-publishing/).
+[npm publication handoff](https://pulsecompute.io/v1.0.0-beta.10/maintainers/npm-publishing/).
 Local packed acceptance does not establish registry publication or deployment.
 
 `mcp-authorization` covers metadata/challenges, audience/issuer/expiry/scope
@@ -531,6 +531,6 @@ metadata at 24 KiB, and execution at 5 seconds. Limits may only be reduced.
 Modern 2026-07-28 is default; legacy 2025-06-18 requires the explicit
 `legacyProtocol` option. There are no sessions, SSE, prompts or MCP Resources.
 
-The [package guide](https://pulsecompute.io/v1.0.0-beta.9/packages/mcp/)
+The [package guide](https://pulsecompute.io/v1.0.0-beta.10/packages/mcp/)
 contains the complete declaration example. The context application's resource
 migration and installed/client qualification are separate work units.

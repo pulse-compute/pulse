@@ -12,13 +12,13 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "03f848ac3eb4c744cc4a91e7d2b324e0fe7ba59abaa7b550d485c21acfd0df21",
+  "corpusHash": "07945876170c4c65ffa927cfb1c7095a2eb3991506989399980d8e5bb89439dd",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
     "maxSnapshotBytes": 2097152
   },
-  "pulseVersion": "1.0.0-beta.9",
+  "pulseVersion": "1.0.0-beta.10",
   "records": [
     {
       "applicability": [
@@ -47,7 +47,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"diagnostics\": [\n    \"PULSE_BUILD_OUT_UNSAFE\",\n    \"PULSE_BUILD_PROVIDER_REQUIRED\",\n    \"PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED\",\n    \"PULSE_NATIVE_TEXT_UNSUPPORTED\",\n    \"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\"\n  ],\n  \"examples\": [\n    \"pulse build ./my-pulse-app\",\n    \"pulse build ./edge-app --out ./dist --json\",\n    \"pulse build ./edge-app --experimental-native-size\",\n    \"pulse build ./edge-app --experimental-native-bounded-size\"\n  ],\n  \"exit\": \"0 on success; 2–5 according to the emitted stable diagnostic.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"build\",\n  \"options\": [\n    {\n      \"description\": \"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\",\n      \"flags\": [\n        {\n          \"name\": \"--evidence-status\"\n        }\n      ],\n      \"id\": \"evidence-status\",\n      \"key\": \"evidenceStatus\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.\",\n      \"flags\": [\n        {\n          \"name\": \"--clean\",\n          \"value\": true\n        },\n        {\n          \"name\": \"--no-clean\",\n          \"value\": false\n        }\n      ],\n      \"id\": \"clean\",\n      \"key\": \"clean\",\n      \"kind\": \"boolean-value\"\n    },\n    {\n      \"description\": \"Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads.\",\n      \"flags\": [\n        {\n          \"name\": \"--elide-json-cache-arena\"\n        }\n      ],\n      \"id\": \"elide-json-cache-arena\",\n      \"key\": \"elideJsonCacheArena\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.\",\n      \"flags\": [\n        {\n          \"name\": \"--emit-wat\"\n        }\n      ],\n      \"id\": \"emit-wat\",\n      \"key\": \"emitWat\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--native-shrink0\"\n        }\n      ],\n      \"id\": \"native-shrink0\",\n      \"key\": \"nativeShrink0\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-bounded-size\"\n        }\n      ],\n      \"id\": \"experimental-native-bounded-size\",\n      \"key\": \"experimentalNativeBoundedSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-size\"\n        }\n      ],\n      \"id\": \"experimental-native-size\",\n      \"key\": \"experimentalNativeSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    },\n    {\n      \"description\": \"Override the project-relative artifact output directory.\",\n      \"flags\": [\n        {\n          \"name\": \"--out\"\n        }\n      ],\n      \"id\": \"out\",\n      \"key\": \"outDir\",\n      \"kind\": \"value\",\n      \"valueName\": \"<dir>\"\n    }\n  ],\n  \"outputs\": [\n    \"Writes pulse-build.json and the configured provider realization. Native builds include the provider-neutral native module; JavaScript builds emit a deterministic source package. Native --emit-wat builds also write diagnostic WAT.\",\n    \"Fastly Native builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm without a JavaScript runtime image. Fastly JavaScript builds emit a source/deployment package with exact downstream compiler pins and deployment-candidate metadata.\",\n    \"Native builds default to O3/shrink2/no convergence and record the explicit compiler recipe in portable, provider, and build metadata.\",\n    \"With --json, emits one build result object containing exact artifact paths for the selected target and provider.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Cleans the output directory by default.\",\n    \"Native builds invoke the native compiler and configured provider realization. JavaScript builds validate and package the reachable application graph without invoking the Pulse Native compiler.\",\n    \"Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.\"\n  ],\n  \"summary\": \"Build the Native or JavaScript target for the deployment provider selected by the active project profile.\",\n  \"usage\": [\n    \"pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--native-shrink0|--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]\"\n  ]\n}",
       "contentSha256": "9a3cdc32124da91bd158dd596f5b929f29e0c82c491e1cf6f8174e45d37b2aee",
       "id": "command/build",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.build",
@@ -80,7 +80,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"diagnostics\": [\n    \"PULSE_BUILD_OUT_UNSAFE\",\n    \"PULSE_CANONICAL_NATIVE_PLAN_FAILED\",\n    \"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\"\n  ],\n  \"examples\": [\n    \"pulse compile ./my-pulse-app\",\n    \"pulse compile ./edge-app --out ./dist --json\",\n    \"pulse compile ./edge-app --experimental-native-size\",\n    \"pulse compile ./edge-app --experimental-native-bounded-size\"\n  ],\n  \"exit\": \"0 on success; 2–5 according to the emitted stable diagnostic.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"compile\",\n  \"options\": [\n    {\n      \"description\": \"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\",\n      \"flags\": [\n        {\n          \"name\": \"--evidence-status\"\n        }\n      ],\n      \"id\": \"evidence-status\",\n      \"key\": \"evidenceStatus\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.\",\n      \"flags\": [\n        {\n          \"name\": \"--clean\",\n          \"value\": true\n        },\n        {\n          \"name\": \"--no-clean\",\n          \"value\": false\n        }\n      ],\n      \"id\": \"clean\",\n      \"key\": \"clean\",\n      \"kind\": \"boolean-value\"\n    },\n    {\n      \"description\": \"Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads.\",\n      \"flags\": [\n        {\n          \"name\": \"--elide-json-cache-arena\"\n        }\n      ],\n      \"id\": \"elide-json-cache-arena\",\n      \"key\": \"elideJsonCacheArena\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.\",\n      \"flags\": [\n        {\n          \"name\": \"--emit-wat\"\n        }\n      ],\n      \"id\": \"emit-wat\",\n      \"key\": \"emitWat\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--native-shrink0\"\n        }\n      ],\n      \"id\": \"native-shrink0\",\n      \"key\": \"nativeShrink0\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-bounded-size\"\n        }\n      ],\n      \"id\": \"experimental-native-bounded-size\",\n      \"key\": \"experimentalNativeBoundedSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag.\",\n      \"flags\": [\n        {\n          \"name\": \"--experimental-native-size\"\n        }\n      ],\n      \"id\": \"experimental-native-size\",\n      \"key\": \"experimentalNativeSize\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    },\n    {\n      \"description\": \"Override the project-relative artifact output directory.\",\n      \"flags\": [\n        {\n          \"name\": \"--out\"\n        }\n      ],\n      \"id\": \"out\",\n      \"key\": \"outDir\",\n      \"kind\": \"value\",\n      \"valueName\": \"<dir>\"\n    }\n  ],\n  \"outputs\": [\n    \"Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, and native manifest; --emit-wat adds diagnostic WAT.\",\n    \"The output is provider-neutral and does not package a deployment provider runtime.\",\n    \"Native builds default to O3/shrink2/no convergence and record the explicit compiler recipe.\",\n    \"With --json, emits one compile result object containing exact artifact paths and native metadata.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Cleans the output directory by default.\",\n    \"Invokes the lockfile-pinned AssemblyScript compiler.\",\n    \"Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.\"\n  ],\n  \"summary\": \"Compile the canonical project into provider-neutral Pulse-owned WebAssembly.\",\n  \"usage\": [\n    \"pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--native-shrink0|--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]\"\n  ]\n}",
       "contentSha256": "84c71cddae0c9085b25f9978f0bf55d21390e275f2ae6059fafa77de85720b0a",
       "id": "command/compile",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.compile",
@@ -121,7 +121,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"diagnostics\": [\n    \"PULSE_DEV_PROVIDER_UNSUPPORTED\",\n    \"PULSE_REQUEST_BODY_TOO_LARGE\",\n    \"PULSE_FETCH_NETWORK\"\n  ],\n  \"examples\": [\n    \"pulse dev ./my-pulse-app\",\n    \"pulse dev ./my-pulse-app --port 0 --once --json\"\n  ],\n  \"exit\": \"0 after a normal server close; 2–5 when setup, compilation, provider, runtime, or toolchain initialization fails.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"dev\",\n  \"options\": [\n    {\n      \"description\": \"Close the development server after the first completed request.\",\n      \"flags\": [\n        {\n          \"name\": \"--once\"\n        }\n      ],\n      \"id\": \"once\",\n      \"key\": \"once\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Enable or disable entry and schema dependency watching. Watching is enabled by default.\",\n      \"flags\": [\n        {\n          \"name\": \"--watch\",\n          \"value\": true\n        },\n        {\n          \"name\": \"--no-watch\",\n          \"value\": false\n        }\n      ],\n      \"id\": \"watch\",\n      \"key\": \"watch\",\n      \"kind\": \"boolean-value\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    },\n    {\n      \"description\": \"Override the development listen host.\",\n      \"flags\": [\n        {\n          \"name\": \"--host\"\n        }\n      ],\n      \"id\": \"host\",\n      \"key\": \"host\",\n      \"kind\": \"value\",\n      \"valueName\": \"<host>\"\n    },\n    {\n      \"description\": \"Override the development listen port. Use 0 to request an ephemeral port.\",\n      \"flags\": [\n        {\n          \"name\": \"--port\"\n        }\n      ],\n      \"id\": \"port\",\n      \"key\": \"port\",\n      \"kind\": \"value\",\n      \"valueName\": \"<port>\"\n    }\n  ],\n  \"outputs\": [\n    \"Human output reports the ready URL and reload or error messages.\",\n    \"With --json, stdout is newline-delimited JSON events: compiled, ready, reloaded, request, compile-error, and request-error. It is not one enclosing JSON document.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Binds a foreground HTTP listener.\",\n    \"Watches the entry and schema dependency graph by default.\",\n    \"Configuration-file changes require restarting the command.\"\n  ],\n  \"summary\": \"Start the foreground local server with the selected provider conformance runtime.\",\n  \"usage\": [\n    \"pulse dev [directory] [--profile <name>] [--host <host>] [--port <port>] [--watch|--no-watch] [--once]\"\n  ]\n}",
       "contentSha256": "9cdab1bdf79a76b970ac4432b10b9a21841131be633450e954898e2aa0668004",
       "id": "command/dev",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.dev",
@@ -162,7 +162,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"diagnostics\": [\n    \"PULSE_DOCS_UNAVAILABLE\",\n    \"PULSE_DOCS_INVALID\"\n  ],\n  \"examples\": [\n    \"pulse docs\",\n    \"pulse docs --json\"\n  ],\n  \"exit\": \"0 on success; 2 for invalid arguments; 5 when packaged documentation is unavailable or the index is invalid.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"docs\",\n  \"options\": [\n    {\n      \"description\": \"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\",\n      \"flags\": [\n        {\n          \"name\": \"--evidence-status\"\n        }\n      ],\n      \"id\": \"evidence-status\",\n      \"key\": \"evidenceStatus\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"outputs\": [\n    \"Human output prints the installed CLI version and absolute documentation index path.\",\n    \"With --json, emits {status: \\\"ok\\\", version, docs: {root, index}} with the executing CLI version and absolute physical paths.\"\n  ],\n  \"positionals\": [],\n  \"sideEffects\": [\n    \"Reads only the executing package documentation index; does not discover a project, compile code, install dependencies, contact the network, launch a server or open a browser.\",\n    \"Validates the index type, containment, readability and nonempty UTF-8 text; does not audit every document or establish package integrity.\",\n    \"--plan and --dry-run describe the locator without reading or validating documentation.\"\n  ],\n  \"summary\": \"Locate the offline documentation shipped with the executing CLI package.\",\n  \"usage\": [\n    \"pulse docs [--json]\"\n  ]\n}",
       "contentSha256": "cfa3c91dd3d16c462f87ec969b05cfd58287003b90f16df576ed9049ea03e9c9",
       "id": "command/docs",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.docs",
@@ -203,7 +203,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"diagnostics\": [\n    \"PULSE_CONFIG_NOT_FOUND\",\n    \"PULSE_PROJECT_COMPILE_FAILED\",\n    \"PULSE_NODE_VERSION_UNSUPPORTED\",\n    \"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\",\n    \"PULSE_NATIVE_EXPANSION_REPEATED\"\n  ],\n  \"examples\": [\n    \"pulse doctor ./my-pulse-app\",\n    \"pulse doctor ./edge-app --strict --json\"\n  ],\n  \"exit\": \"0 when the audit passes; 1 when a completed audit contains failed checks; 2–5 only when the audit command itself cannot be completed.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"doctor\",\n  \"options\": [\n    {\n      \"description\": \"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\",\n      \"flags\": [\n        {\n          \"name\": \"--evidence-status\"\n        }\n      ],\n      \"id\": \"evidence-status\",\n      \"key\": \"evidenceStatus\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Treat doctor warnings as failed checks.\",\n      \"flags\": [\n        {\n          \"name\": \"--strict\"\n        }\n      ],\n      \"id\": \"strict\",\n      \"key\": \"strict\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    }\n  ],\n  \"outputs\": [\n    \"Human output prints every check.\",\n    \"With --json, emits one completed audit object including failed and warning checks.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Reads and compiles the project.\",\n    \"Does not write the build output.\"\n  ],\n  \"summary\": \"Audit project shape, compilation, schemas, provider bindings, output safety, and required tools.\",\n  \"usage\": [\n    \"pulse doctor [directory] [--profile <name>] [--strict]\"\n  ]\n}",
       "contentSha256": "4cb2bc55a89b146e63a8bd04daf66e3d2e6a84b56eea3bd212c974a85f14d5cb",
       "id": "command/doctor",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.doctor",
@@ -244,7 +244,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"diagnostics\": [\n    \"PULSE_INIT_NOT_EMPTY\",\n    \"PULSE_INIT_FILE_EXISTS\",\n    \"PULSE_PROVIDER_UNSUPPORTED\"\n  ],\n  \"examples\": [\n    \"pulse init ./my-pulse-app\",\n    \"pulse init ./edge-app --name @example/edge-app\"\n  ],\n  \"exit\": \"0 on success; 2 for invalid usage, provider selection, or unsafe overwrite conditions.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"init\",\n  \"options\": [\n    {\n      \"description\": \"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\",\n      \"flags\": [\n        {\n          \"name\": \"--evidence-status\"\n        }\n      ],\n      \"id\": \"evidence-status\",\n      \"key\": \"evidenceStatus\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Allow generated files to replace entries in a non-empty target directory.\",\n      \"flags\": [\n        {\n          \"name\": \"--force\"\n        }\n      ],\n      \"id\": \"force\",\n      \"key\": \"force\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Set the generated npm package name.\",\n      \"flags\": [\n        {\n          \"name\": \"--name\"\n        }\n      ],\n      \"id\": \"name\",\n      \"key\": \"name\",\n      \"kind\": \"value\",\n      \"valueName\": \"<package-name>\"\n    }\n  ],\n  \"outputs\": [\n    \"Human output lists generated files and next steps.\",\n    \"With --json, emits one initialization result object.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Target directory. Defaults to the current directory.\",\n      \"key\": \"target\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Creates .pulse/config.ts, an async Pulse application, a dedicated test harness, package scripts, and documentation.\",\n    \"Does not install dependencies or run npm, pnpm, or any network operation.\"\n  ],\n  \"summary\": \"Create a conventional .pulse workspace with an async Pulse application and dedicated test harness.\",\n  \"usage\": [\n    \"pulse init [directory] [--name <package-name>] [--force]\"\n  ]\n}",
       "contentSha256": "9931d6f0027f2ceb62537280024d02ade3123d495b757e12c6063e68ece0cb76",
       "id": "command/init",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.init",
@@ -285,7 +285,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"diagnostics\": [\n    \"PULSE_CONFIG_NOT_FOUND\",\n    \"PULSE_PROJECT_COMPILE_FAILED\",\n    \"PULSE_CANONICAL_COMPILE_FAILED\"\n  ],\n  \"examples\": [\n    \"pulse inspect ./my-pulse-app --json\",\n    \"pulse inspect --artifact ./dist/pulse-build.json\"\n  ],\n  \"exit\": \"0 on success; 2–5 according to the emitted stable diagnostic.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"inspect\",\n  \"options\": [\n    {\n      \"description\": \"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\",\n      \"flags\": [\n        {\n          \"name\": \"--evidence-status\"\n        }\n      ],\n      \"id\": \"evidence-status\",\n      \"key\": \"evidenceStatus\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    },\n    {\n      \"description\": \"Inspect an existing JSON build or compiler artifact instead of a project.\",\n      \"flags\": [\n        {\n          \"name\": \"--artifact\"\n        }\n      ],\n      \"id\": \"artifact\",\n      \"key\": \"artifact\",\n      \"kind\": \"value\",\n      \"valueName\": \"<file.json>\"\n    }\n  ],\n  \"outputs\": [\n    \"Human output prints a compact project/compiler summary.\",\n    \"With --json, emits one inspection or artifact object.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Compiles and validates the project in memory.\",\n    \"Does not write the build output.\"\n  ],\n  \"summary\": \"Report canonical compiler, schema, effect, continuation, capability, provider, and build-mode details.\",\n  \"usage\": [\n    \"pulse inspect [directory] [--profile <name>]\",\n    \"pulse inspect --artifact <file.json>\"\n  ]\n}",
       "contentSha256": "8347759ae5e1a064b9dc96b9ab42a7796fef9ce383939b665a79678559f5e132",
       "id": "command/inspect",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.inspect",
@@ -326,7 +326,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"diagnostics\": [\n    \"PULSE_REPORT_INPUT_INVALID\",\n    \"PULSE_REPORT_EVIDENCE_MISSING\",\n    \"PULSE_REPORT_STALE\",\n    \"PULSE_REPORT_INCOMPATIBLE\",\n    \"PULSE_REPORT_OUTPUT_UNSAFE\",\n    \"PULSE_REPORT_OUTPUT_FAILED\"\n  ],\n  \"examples\": [\n    \"pulse report ./my-pulse-app\",\n    \"pulse report --artifact ./dist/pulse-compile.json --json\"\n  ],\n  \"exit\": \"0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence or an output write failure.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"report\",\n  \"options\": [\n    {\n      \"description\": \"Write a self-contained offline HTML report; mutually exclusive with --json.\",\n      \"flags\": [\n        {\n          \"name\": \"--html\"\n        }\n      ],\n      \"id\": \"html\",\n      \"key\": \"html\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\",\n      \"flags\": [\n        {\n          \"name\": \"--evidence-status\"\n        }\n      ],\n      \"id\": \"evidence-status\",\n      \"key\": \"evidenceStatus\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    },\n    {\n      \"description\": \"HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html.\",\n      \"flags\": [\n        {\n          \"name\": \"--out\"\n        }\n      ],\n      \"id\": \"out\",\n      \"key\": \"outDir\",\n      \"kind\": \"value\",\n      \"valueName\": \"<file.html>\"\n    },\n    {\n      \"description\": \"Replay a saved Report capsule or supported completed-Wasm manifest without loading project code.\",\n      \"flags\": [\n        {\n          \"name\": \"--artifact\"\n        }\n      ],\n      \"id\": \"artifact\",\n      \"key\": \"artifact\",\n      \"kind\": \"value\",\n      \"valueName\": \"<file.json>\"\n    }\n  ],\n  \"outputs\": [\n    \"Default output is a bounded terminal overview; --json emits one complete authoritative Report capsule.\",\n    \"--evidence-status wraps the unchanged capsule in pulse.command-evidence v1; --json alone remains the authoritative capsule.\",\n    \"Historical capsule replay preserves evidence identity without claiming current-project freshness.\",\n    \"--html writes an offline route-first viewer with expandable schemas and full-capsule JSON export; it does not open a browser.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Reads retained local evidence only; does not build, run tests, load project code, access secrets or contact the network.\",\n    \"--plan and --dry-run describe intent without collecting or writing a report.\",\n    \"--out requires --html; destinations must be contained regular .html files. Artifact roots are the input JSON parent directory.\",\n    \"HTML writes a bounded .pulse-report-outputs receipt beside its destination; only matching generated bytes are excluded from project input scans. Recorded build inputs cannot be overwritten.\",\n    \"Reports are build-review artifacts; review contents before sharing publicly.\"\n  ],\n  \"summary\": \"Review retained evidence from a completed Native build without rebuilding or executing project code.\",\n  \"usage\": [\n    \"pulse report [directory] [--profile <name>] [--json | --html] [--out <file.html>]\",\n    \"pulse report --artifact <file.json> [--json | --html] [--out <file.html>]\"\n  ]\n}",
       "contentSha256": "bdfef3ff2113ffc64e003d63c4d3be3d87df7941eef827a4f94d61c6a6d17b63",
       "id": "command/report",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.report",
@@ -367,7 +367,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"diagnostics\": [\n    \"PULSE_TEST_PROVIDER_REQUIRED\",\n    \"PULSE_PROVIDER_CAPABILITY_MISSING\",\n    \"PULSE_SCHEMA_DECODE\"\n  ],\n  \"examples\": [\n    \"pulse test ./my-pulse-app\",\n    \"pulse test ./my-pulse-app --case smoke --json\"\n  ],\n  \"exit\": \"0 when all selected cases pass; 1 when the completed test run has failed cases; 2–5 when setup, compilation, runtime, or toolchain execution fails before a normal result.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"test\",\n  \"options\": [\n    {\n      \"description\": \"Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.\",\n      \"flags\": [\n        {\n          \"name\": \"--evidence-status\"\n        }\n      ],\n      \"id\": \"evidence-status\",\n      \"key\": \"evidenceStatus\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.\",\n      \"flags\": [\n        {\n          \"name\": \"--profile\"\n        }\n      ],\n      \"id\": \"profile\",\n      \"key\": \"profile\",\n      \"kind\": \"value\",\n      \"valueName\": \"<profile>\"\n    },\n    {\n      \"description\": \"Run one named project test case.\",\n      \"flags\": [\n        {\n          \"name\": \"--case\"\n        }\n      ],\n      \"id\": \"case\",\n      \"key\": \"caseName\",\n      \"kind\": \"value\",\n      \"valueName\": \"<name>\"\n    }\n  ],\n  \"outputs\": [\n    \"Human output uses TAP-like case lines and a summary.\",\n    \"With --json, emits one test-run object; expected stable errors remain inside their case results.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Project discovery start. Defaults to the current directory.\",\n      \"key\": \"directory\",\n      \"name\": \"directory\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Compiles the project and executes configured deterministic or live fixtures.\",\n    \"Does not write the build output.\"\n  ],\n  \"summary\": \"Run configured cases through the selected provider local-conformance runtime.\",\n  \"usage\": [\n    \"pulse test [directory] [--profile <name>] [--case <name>]\"\n  ]\n}",
       "contentSha256": "b6dfd7dfabadff173edf2182c965d3f2365d653bc197534ed53a95c9dee078a3",
       "id": "command/test",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.test",
@@ -408,14 +408,14 @@ export const contextCorpus = freeze({
       "content": "## One application contract and one compiler spine\n\n`@pulse-compute/runtime` owns the low-level portable handler, context, effect,\nbody, and static `Router` contract. `@pulse-compute/pulse` owns the conventional\n`Pulse` application root, project configuration helpers, schema declarations,\nand runtime type re-exports. Applications import normal package roots and do not\nselect providers through application-package export conditions.\n\nPlain handlers, the `Pulse` application root, and static Router authoring are\nfrontends to one deterministic whole-project compiler:\n\n```text\nroot extraction\n→ reachable-module graph\n→ authoring and Router topology normalization\n→ semantic classification and contract validation\n→ canonical Handler IR\n→ effects, continuations, schemas, and package operations\n→ provider-neutral Native plan\n→ selected provider realization\n```\n\nThe compiler has one internal, fixed phase order. It does not expose a mutable\nvisitor framework or accept runtime rule registration. Frontends may retain\ntheir own topology while normalizing handler bodies into the same canonical IR.\nProvider realization begins only after the complete reachable program and its\ncapability requirements are known.\n\nExplicit JavaScript Entities operations retain their original static source\ngraph, including ordinary helpers and callbacks. Declared-handler inspection\nrecords recognized Pulse effects; it does not prove ordinary helper or dependency\ninternals. Schema admission, Pulse effect-await rules and static dispatch remain\nin force. Native handler restrictions are separate eligibility blockers during\nJavaScript inspection and remain errors when Native is selected. A JavaScript\ninspection body is never substituted for a Native generator.\n\nHTTP Router authoring supports static `get`, `head`, `post`, `put`, `patch`,\nand `delete` registrations, inherited by `Pulse`. The owned Router API registry\ndefines compiler admission; topology and lifecycle method catalogs derive from\nthat registry. Each verb uses the existing route entry, exact-method dispatch,\nterminal transfer and 404/500 exhaustion contracts. This expands ingress\nregistration without changing outgoing fetch methods or the effect/continuation\nABI.\n\nAn ordered mount can carry the static string descriptor\n`mount(path, child, { state: 'key', equals: 'family' })`. The owned Router API\nregistry and extractor admit only that inline, literal form. Runtime dispatch\nand canonical lowering read request state once at the matching mount entry;\nfalse takes `parentContinueIndex`, true takes `childStartIndex`. The descriptor\nparticipates in the mount's stable identity and retained topology. No child body\nis duplicated, no callback is evaluated, and no new effect or continuation ABI\nis introduced. Resumption stays inside the admitted child even if it changes\nthat state. Selection conveys no authorization. Historical table/harness\nemission rejects this form because its compatibility scanner has no eligibility\ncontract. See [Selected groups](../guides/routing.md#selected-groups).\n\nThe compiler also recognizes root-only `Pulse.on(type, { schema }, handler)`\ndeclarations as a separate static event topology. Event types and schema IDs\nmust be literal, schema IDs must resolve through the project registry, each\ntype has one owner, and event handlers receive the same checkout-independent\ncanonical handler identity used by HTTP handlers. The resulting event catalog\nis inspectable and enters a plane-neutral application-entry table without\nbecoming a Router route. Event handlers use exact event selection,\nschema-validated `ctx.event.payload`, shared non-HTTP context operations, void\ncompletion, and execution-owned failure.\n\nThe transport-free JavaScript runtime host can directly execute one canonical\nevent frame against a live Pulse application. Provider-neutral Native plans can\nlower the same eligible event handlers through the conditional\n`pulse.native-event-abi.v1` extension. Event-only artifacts expose the event\nentry; mixed artifacts retain the separate HTTP and event entries; HTTP-only\nartifacts add no event imports, exports, code, catalog data, or byte changes.\nThe Native host validates and detaches the frame and schema payload before\nentering the module, passes an artifact-local event runtime ID plus a host-owned\npayload handle, and drives the existing effect/continuation state machine to\nvoid completion or bounded failure. Event input never masquerades as an HTTP\nrequest, no Promise or Asyncify runtime is linked, and no target probing or\nfallback occurs. Node now supplies a bounded invocation-scoped reference\nadapter around this entry for direct JavaScript/Native parity. It is not a\npublic listener, process-global bus, or production transport; Fastly, browser,\nand ESP32 event realizations remain unclaimed.\n\nMixed Native applications may combine HTTP application-error handlers with\nevent entries. Compiler-owned HTTP cursor boundaries protect the HTTP error\nlane; event records in the shared routing inventory are not HTTP cursor entries.\nAn event effect failure remains an event execution failure and cannot enter\nHTTP middleware or application-error handlers.\n\nEach JavaScript or Native event invocation owns its state, effects,\ncancellation, redaction, logging, completion, and disposal. HTTP and event\nhandlers may await the shared one-way `ctx.emit(type, { schema, payload? })`\neffect in JavaScript and Native runtimes. Compilation requires literal event and\nschema identities, validates schemas against the project registry, records\ndeterministic callsite/capability requirements, and accepts emission inside an\nawaited `ctx.parallel` group. Runtime dispatch validates and detaches the frame\nbefore a trusted adapter sees it; public observations redact the payload. The\nbounded Node reference adapter owns a FIFO ingress queue and an independent\nexact-frame outbound acceptance ledger. It serializes instance entry,\npropagates cancellation/failure categories, and never invokes a matching local\nhandler. Native `event.emit` lowers through the canonical effect and\ncontinuation protocol with zero JavaScript/Asyncify imports. None of this\nimplies delivery, a receipt, persistence, retry, a public provider listener, or\nautomatic target fallback. Router lifecycle `on`, channel, and\nconnect/disconnect semantics remain retired.\n\nThe event contract reserves no `call` surface: event contexts have no `ctx.call`,\napplication call method, generic call effect, adapter operation, compiler\nopcode, or runtime capability. `ctx.emit` is strictly one-way and cannot enter\nlocal dispatch. Any request/reply or reflexive routing mechanism must arrive as\na separately reviewed host, lifecycle, recursion, and failure contract rather\nthan an interpretation of the current event plane. See [Static events and\noutbound emission](../guides/events.md).\n\nProject discovery is graph-based rather than substring-based. Module identity is\npath-independent and deterministic, resolver inputs are fixed, and only\nreachable project modules and package roots participate in compilation,\neligibility, and packaging. Static ESM links supported project modules; Pulse\ndoes not become a general TypeScript bundler or execute arbitrary application\nJavaScript during Native compilation.\n\nSee [Compilation and lowering](../concepts/compilation-and-lowering.md) and the\n[architecture overview](./overview.md).\n",
       "contentSha256": "512499f9abc99407296104129fe9b7dee25c1003eced54456b45af5cc72b04f8",
       "id": "contract/application",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 233,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:One application contract and one compiler spine",
-        "sha256": "c3ff22faa36bb33b413307c6e9ac61a4abac41f320a64682bd7620d380c5346e",
+        "sha256": "cdb53476458eb2b6f141ce477d626078725b87b0cdfeaaf435326714f0bac9e1",
         "startLine": 111,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98440d825d5d5ba6ad41dedccc1052bf625aa2e2"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0bf5c837b793cfc7ed418f66ae781c72cbb3ddd9"
       },
       "status": "candidate",
       "tags": [
@@ -451,14 +451,14 @@ export const contextCorpus = freeze({
       "content": "## Application root\n\n```ts\nimport { Pulse } from '@pulse-compute/pulse'\n\nconst app = new Pulse({ auto: true })\n\napp.get('/health', async (ctx) => {\n  return ctx.json({ ok: true })\n})\n\nexport default app\n```\n\n`Pulse` extends the same live `Router` implementation exposed by\n`@pulse-compute/runtime`; it does not introduce a second routing or execution\nsystem. Compiler analysis normalizes the application into the canonical Router\nIR before target selection and provider realization.\n\n`Pulse` also owns root-only static event registration:\n\n```ts\napp.on('device.reading', { schema: 'events.DeviceReading' }, async (ctx) => {\n  const reading = ctx.event.payload\n  await ctx.config.get('MODE')\n  void reading\n})\n\napp.on('system.tick', { schema: null }, async (ctx) => {\n  void ctx.event.type\n})\n```\n\nEvent types and schema IDs are literal compiler inputs, every type has one\nowner, and non-null schemas must resolve through the project registry. Event\nhandlers receive a non-HTTP context and complete with `void`. The compiler\nplaces HTTP and event handlers in separate planes of one application-entry\ntable. Eligible event handlers can lower through the conditional\nprovider-neutral Native event ABI. Node has a bounded invocation-scoped\nreference ingress and outbound-acceptance adapter for direct JavaScript/Native\nparity, but no public event bus, deployment listener, delivery guarantee, or\nother provider target support is implied.\n\nThe complete authoring, frame, queue, target, diagnostic, and no-call boundary\nis documented in [Static events and outbound emission](../guides/events.md).\n\nThe statically analyzable root forms are:\n\n```ts\nnew Pulse({ auto: true })\nnew Pulse(configFactory)\n```\n\nAliases, subclasses, factories returning `Pulse`, mounted `Pulse` instances, and\nre-exported application roots remain outside the initial single-entry grammar.\nUse `Router` for mounted and child applications.\n",
       "contentSha256": "5d9fefffe67b35daf79bf388c83f9d677a7d0774244373c4a3b616a7b817cf1d",
       "id": "contract/application-root",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 79,
         "path": "docs/packages/pulse.md",
         "selection": "heading:Application root",
-        "sha256": "1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e",
+        "sha256": "370c2303dbde4ba64d5c4a9d3e8f8734a1b293103aeb3add640431749220e0ea",
         "startLine": 23,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9ba92233413041f3946dacd8fe06593033a55929"
       },
       "status": "candidate",
       "tags": [
@@ -487,14 +487,14 @@ export const contextCorpus = freeze({
       "content": "## Retained build metadata\n\nOptional Report v1 `build` metadata is captured during Native compile/build and\nbound by the existing inventory/completion hashes. It records monotonic elapsed\nstages from build entry through inventory capture, plus separate portable and\nprovider AssemblyScript invocation durations, effective flags and optimization\nlevels, compiler/toolchain versions, and observed provider artifact reuse.\nCompiler observations reference the exact retained artifacts. Adjacent stage\nintervals sum to the recorded total; compiler durations are nested within those\nintervals, not additive overhead. The total excludes prior configuration\nresolution, inventory serialization and final publication. No timing claim is\nmade for replay, internal asc subpasses, or unobserved caches. Node packaging\nreuses portable Wasm without a second compilation. Filesystem flag values are\nreplaced with role placeholders; only compiler-owned flags are captured, never\narbitrary argv, environment or provider binding values. Qualified asc defaults\nare resolved only for the known version; unknown defaults remain null. Metadata\nis outside source, plan and executable Wasm identity. Historical capsules without\nthis optional block remain unchanged and display **Not recorded**.\n",
       "contentSha256": "def90544d79ee4b37fbc775a19a28d70333be002e24eaeb1cb33019c2cab6c19",
       "id": "contract/build-metadata",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 1513,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Retained build metadata",
-        "sha256": "c3ff22faa36bb33b413307c6e9ac61a4abac41f320a64682bd7620d380c5346e",
+        "sha256": "cdb53476458eb2b6f141ce477d626078725b87b0cdfeaaf435326714f0bac9e1",
         "startLine": 1495,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98440d825d5d5ba6ad41dedccc1052bf625aa2e2"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0bf5c837b793cfc7ed418f66ae781c72cbb3ddd9"
       },
       "status": "candidate",
       "tags": [
@@ -531,7 +531,7 @@ export const contextCorpus = freeze({
       "content": "## Effect\n\nAn effect is an explicit request for host authority. Each effect has an identity, capability, operation, resource, source position, and result shape. Common examples include:\n\n- dispatching an outbound fetch;\n- reading config or a secret;\n- sampling provider-owned wall time through `ctx.time.now()`;\n- getting or putting a KV value;\n- accepting one outbound event through `ctx.emit`;\n- broadcasting through `grip.broadcast(ctx, message)`.\n\nPure value construction, branching, property reads and arithmetic are not effects.\nNeither are synchronous logging or the GRIP root framing helpers (`isWebSocket`,\n`subscribe` and `handoff`). Older channel/hold/publish forms belong to the\n[compatibility facade](../guides/compatibility-imports.md#grip).\n",
       "contentSha256": "5fd2f1a10644fa278d88a66f6892bfda914e59b59693472b4a133efc0cbef9b4",
       "id": "contract/effects",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 22,
         "path": "docs/concepts/effects-and-continuations.md",
@@ -574,14 +574,14 @@ export const contextCorpus = freeze({
       "content": "## Providers, targets, and eligibility\n\nTarget selection is explicit and never falls back automatically. Target support\nand project eligibility answer different questions:\n\n- target support records whether a provider/target lane satisfies its declared\n  runtime, capability, packaging, tooling, and conformance gates;\n- project eligibility records whether the reachable program can use that lane.\n\nA generally available target can reject an ineligible project. A passing local\nruntime does not claim that an external deployment, binding, service, or\nprovider control plane is healthy.\n\nThe selected target reaches project linking and handler validation explicitly.\nFor `javascript`, resolved static package imports and project-relative helper\nimports remain source-runtime boundaries; they do not acquire Native lowerer\nauthority. Canonical application topology, schemas, effect-await rules, graph\ncontainment and entry lifecycle checks still apply. An ordinary imported async\ncall may be awaited in a JavaScript handler. Native compilation continues to\nreject unsupported imports and awaits, including when graph eligibility is\nrequested in record-only mode.\n\nJavaScript compilation returns canonical inspection metadata without an\nexecutable normalized generator. The provider's graph-backed loader and source\npackager execute the original module closure with its JavaScript async semantics.\nRouter source linking requires counterparts for package effects and intrinsics\nin normalized handlers. Recognized sites in JavaScript source-runtime helpers\nremain in project package inspection and provider requirements without requiring\ngenerated counterparts; Native still requires every reachable site to link.\nInspection describes recognized Pulse effects; it does not infer effects inside\nordinary dependency implementations or certify their isolation. An ordinary\nJavaScript import gains no compiler/lowerer authority or Native guest sandbox\nguarantee. Native inspection compiles the source\nindependently under Native rules. Its failure is advisory for a selected\nJavaScript target; `pulse compile` still requires a real Native compilation.\n\nNative build/compile orchestration retains optional Report v1 evidence without\nchanging executable emission. Safe-output orchestration invalidates previous\ncompletion before work; completion is published last and binds exact inputs,\nselected profile, recipe, toolchain and portable/final artifact hashes. Missing,\nunsupported, stale or failed completion cannot be repaired by reporting. An\ninternal collector uses the existing static configuration parser for current\nsnapshot matching; artifact and historical replay do not import project code,\nproviders or compilers. Report inventories remain declaration/evidence records,\nnot authorization or parity claims. Unknown binding realization, generated\nresource coverage and byte attribution stay explicit. See the [PRPT-02 packet](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/prpt02/README.md) for lifecycle,\nredaction, coverage and remaining integration gates.\n\nNative compilation also returns an observational\n`pulse.compiler-report-references.v1` projection after executable emission. It\nretains allowlisted binding names, schema IDs, embedded-resource identities and\ncanonical entry consumers from validated compiler records. Resolved references\nare deduplicated by semantic kind and identity; registrations remain distinct.\nSchema ownership uses compiler-generated entry or helper ranges only in the\nmatching generated file. An unambiguous helper range joins its validated caller\nentry IDs; repeated calls are deduplicated and shared-stage registrations remain\ndistinct. Missing callers, ambiguous ranges, and foreign or unassociated\nreferences retain incomplete consumer coverage instead of borrowing an unrelated\nsource offset. This records static consumers, not runtime invocation counts.\n\nSchema references may retain optional `externalPackages` names, joined by exact\nreference identity from trusted package recognition. These label external\ndependency use without claiming complete entry ownership. JWT consumer tracing\nremains unresolved where the package reference lacks an entry join. Package names\nare provenance, not new lowerer authority; arbitrary recognition data is excluded.\nThe schema viewer distinguishes known use, unresolved consumers, no observed use,\nand historical records without usage tracing. No observed use does not prove a\nschema unused or removable.\n\nThe required retained inventory can include an optional `references` collection\nand its coverage. Resolved references join inventory rows; dynamic expressions\nand unknown references remain observations with no target. Incomplete reference\ncoverage has a null expected count. Declarations and static references remain\nseparate from host binding realization, which stays unavailable. This allowlist\ncontains no binding values, resource bodies or arbitrary provider metadata.\nHistorical capsules without reference records keep their original identity.\nThe projection never enters the executable plan/hash, recipe or provider\nconfiguration; replay reads the retained capsule without loading the compiler.\nFinal payload attribution remains a separate proof obligation.\n\nReport retains optional `resourceProducers` coverage and per-resource `generator`\nmetadata. The build collector enumerates selected embedded-asset lookups, schema\ncodecs named by the Native generator, and package guest-unit contributions.\nEach scope has its own observed/expected counts and producer. A complete empty\nscope is `0 / 0`; a missing producer has a null expected count. Selected assets\ndo not enumerate unused files in an embedded manifest. Other generated support\nremains unavailable, so the overall resource inventory is explicitly partial.\nPackage realization records can contain signing material: only the independent\nmanifest count is retained, without their IDs, hashes, values or descriptors.\n\nThe optional `pulse.report-text-responses.v1` projection observes canonical\n`response.text` sites after emission in entry, handler, stage and helper bodies.\nThese become `response-payload` resources under `canonical-text-responses`.\nIdentity uses owner and expression location, never contents or payload hashes.\nLiteral strings and directly bound literal `const` strings have resolved UTF-8\nbyte counts, including empty strings. Dynamic expressions have unavailable\n`dynamic-reference` sizes; unsupported non-string literals use\n`unresolved-reference`. No expressions are evaluated. Custom/JSON responses,\narbitrary constant folding, execution frequency and reachability are excluded.\nOnly recognized static text media types are retained; dynamic or unsupported\nheader shapes remain unknown.\n\nProducer coverage counts sites, including unresolved payloads, independently of\nbyte availability and consumer coverage. Stages retain registration consumers;\nhelpers use recorded callers. Generated dispatcher sites may lack known entries.\nRoutes follow existing bounded composition. Equal strings at separate sites do\nnot prove separate or shared storage. No body, expression text or header values\nare retained beyond normalized allowlisted media types. Historical capsules\npreserve bytes and identity: an absent producer means not recorded, not empty.\n\nResource inputs and representations are distinct from physical artifact bytes.\nEmbedded assets retain the original byte length and, when recorded, the UTF-8\nlength of their validated base64 build input. Schema-codec resources join the\nexisting allowlisted normalized descriptor and its byte count; source input size\nis not applicable. Package guest units retain safe identity and producer fields,\nwith unavailable byte sizes and consumer coverage where no join exists. Known\nentry consumers and reverse route references survive sharing without adding\nbytes to the physical ledger. No asset bodies, raw schemas, generated source,\nprivate realization contents or manifest paths enter this metadata.\n\nThe viewer labels input, packed/descriptor representation, and retained payload\nseparately, exposes producer coverage, and sorts available byte values numerically\nwith unknowns last. Schema structure remains expandable. Handler-body and\nReachable metrics measure code bodies, excluding CSS/JavaScript payloads and\nschema data: a tiny handler can serve a large asset. Final retained payload values\nstay unavailable without final-byte identity proof; source or encoded lengths\nare never substituted. Historical capsules without producer metadata remain\nreadable without changes to their evidence identity. Collection only observes\ncompleted compiler records; replay never loads a compiler or package generator.\n\nFor text-response sites the input metric is the resolved string's UTF-8 payload\nlength, not TypeScript source-file bytes or literal spelling. Native string\nrepresentation bytes and final retained Wasm payload bytes remain unavailable:\nthe collector does not infer AssemblyScript storage, optimizer deduplication,\nencoding overhead or final data-segment identity from string length. Packed\nembedded assets keep their existing base64 representation measurements. Neither\ncategory adds bytes to the physical artifact ledger or changes route sizes.\n\nReport size collection reads exact retained Wasm sections and function bodies.\nA passive build-support observer of the same optimized final emission supplies\noptional artifact-bound handler mappings and a bounded static direct-call graph.\nThe reader verifies function indices/lengths and joins canonical entry identities;\nReport never compiles or disassembles. Missing/unsupported capture preserves the\nphysical ledger with unavailable attribution. Partial route measurements and\nshared bodies are nonadditive; exclusive ownership and resource-payload mapping\nremain unavailable. Final-link hash changes cannot reuse prelink indices. See the\n[PRPT-03 packet](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/prpt03/README.md) for the pinned observer, unchanged\nbyte proof and qualification ceiling.\n\nThe pinned graph adapter reconciles every defined function and direct-call site\nagainst the final census before accepting edges. Module framing handles compact\nand empty function bodies; quoted data and comments cannot introduce control or\ncalls. Tables/elements, indirect calls, function references and tail calls remain\noutside this proof. No table target set is inferred. Unsupported instruction\ncategories take precedence over their supporting table declarations.\n\nAttribution v1/v2 can retain an optional `graph.diagnostic`: an allowlisted reason\nand code, optional function index, and observed/expected counters. Reasons\ndistinguish unsupported table, indirect, reference and tail control, unresolved\nfunction identity, parser mismatch and budget exhaustion. Raw errors, names,\npaths, WAT and payloads are excluded. The reader preserves these records in\n`REPORT_GRAPH_UNAVAILABLE` observations with `graphDiagnostic`, and exposes the\nreason on unavailable reachable measurements. Absent and prelink-only capture\nremain distinct from a rejected graph. Historical sidecars without diagnostics\nretain their previous generic reason; historical capsules remain readable.\n\nGraph failure preserves verified direct-body metrics and the physical ledger.\nCapture enforces 160 MiB graph text and 100,000 defined functions/direct edges;\nthe reader retains its one-million-operation traversal budget per artifact.\nThe text ceiling accommodates named WAT expansion; it is not an artifact-size\nlimit or support for indirect calls. Readers also accept historical 32 MiB\ntext-budget diagnostics without changing their counters or capsule identities.\nBudget exhaustion never returns an unfinished reachable subset. Earlier complete\nclosures remain bounded, code-only, nonadditive measurements; cycles and shared\ncallees contribute each physical body once per closure. Parser/output bounds are\nnot a hard memory or time sandbox around Binaryen serialization. Capture timing\nand sidecar size are recorded by the paired regression fixtures, not presented as\na production performance guarantee. Own/Shared and the complete execution-root\nuniverse remain separate proof obligations.\n\nNative generators retain observational `pulse.native-report-ownership.v1`\nmetadata separately from the executable plan hash. Attribution sidecar v2 joins\ncanonical entries to exact emitted symbols for terminal bodies, shared stages,\nand shared state-machine helpers. Helper consumers come from validated canonical\ncall sites. One entry may map to several bodies, and distinct registrations may\nshare bodies; physical code is counted once by final artifact hash and function\nindex. Missing final symbols remain `final-symbol-not-surviving`; surviving\nsubsets have partial coverage and cannot establish complete reachability.\n\nThe Report capsule can retain an optional `implementations` inventory derived\nonly from verified attribution v2. Semantic `roles` and implementation `origin`\nare separate: dedicated bodies, authored state-machine helpers, consolidated\nstages, and dispatcher carriers do not change a registration's route,\nmiddleware, or error role. A stage or carrier can have several roles; helpers\nhave the helper role and link to caller entries with their own roles. Empty role\nsets on unassociated non-helper implementations mean no observed semantic role.\n\nEach implementation is artifact-bound and retains its canonical implementation\nidentity, per-chunk consumer entries, and surviving physical `bodyIds`. Dispatcher\ncarriers have no canonical implementation identity and are keyed by artifact and\nchunk. Reverse route links follow recorded route composition, including its\nexisting bounded coverage. `consumerBasis: compiler-entry-association` records\nstatic associations, not call counts, direct-call reachability, or a complete\nexecution-root census; `entryCoverage` stays partial with a null expected count.\nAn empty consumer list does not prove an implementation unused. Missing symbols\nremain explicit chunks with null body identity and partial `bodyCoverage`, never\nzero-byte bodies. Body coverage counts mapped chunks, not distinct functions.\n\nSeveral chunks or implementations may refer to the same physical body; sum only\nthe distinct body IDs when measuring their union. This inventory adds no bytes\nto the physical ledger and establishes neither exclusive ownership nor a\nper-route share of a dispatcher. Existing Handler-body/Reachable/Own/Shared\nmeasurement semantics are unchanged. Overall implementation coverage remains\npartial: pure helpers, package/runtime support, and other unclassified functions\nare not inferred from names or sizes. Prelink identities cannot label final\nbodies. Legacy v1 attribution supplies no origin classification, and historical\ncapsules without this optional inventory retain their serialized bytes and hash.\n\nThe offline Helpers view displays authored state-machine helpers and consolidated\nstages from the primary artifact's implementation inventory. Semantic roles stay\nseparate from origin. Capsule-local labels link route details to the implementation\nand its recorded entry/route consumers; canonical identities and chunk/evidence\nrecords remain available in disclosure details. Search, role/origin filters, and\nnumeric sorting affect presentation only. Missing mapped sizes sort last in both\ndirections, and the exported capsule remains complete and unchanged.\n\nHelper row sizes sum distinct mapped body IDs for that implementation. The shown\ntotal is the union across visible rows, with cross-row overlap identified; it is\nalready included in physical artifact bytes and must not be added to route\nHandler-body or Reachable measurements. Partial mappings show known bytes and\nmapped/expected chunk counts. With no mapped bodies, size is unavailable, never\nzero. These associations do not establish complete consumer coverage, exclusive\nownership, runtime execution cost, or deletion savings. Historical capsules\nwithout implementation records and capsules with only prelink records show an\nexplicit unavailable state. Dispatcher carriers remain outside this Helpers view.\n\nRoute facts and size details expose associated dispatcher carriers from the\nprimary artifact's retained implementation inventory. Expandable rows show each\ndistinct physical function once, its whole-body bytes, carrier chunks, and known\nassociated entries and routes. Other implementations of the same body contribute\nonly the consumers recorded on that exact body/chunk association; consumers of\ntheir other chunks are not borrowed. Missing carrier mappings keep their known\nentries and explicit unavailable sizes. Historical or prelink-only inventory\ncannot reconstruct final dispatcher associations.\n\nThe displayed dispatcher total is a union of known physical bodies, already\nincluded in the artifact, and may overlap helper or other route totals. It is\nnever substituted for Handler-body, Reachable, Own, or Shared measurements.\nPer-route bytes inside a mixed dispatcher remain unavailable. Consumer lists\nare partial static associations through recorded composition, not invocation\ncounts or complete reachability; no observed association does not prove absence.\n\nInline transfer/error ownership identifies dispatcher carriers, whose whole-body\nbytes cannot be presented as individual handler sizes. Those measurements remain\nunavailable with `dispatcher-carrier`, or `entry-ownership-not-retained` when no\nauthoritative join exists. Non-route entry measurements retain their own subjects.\nCompletion binds the actual attribution version; v1 sidecars and v1 historical\ncapsules remain readable. This does not qualify package-root application bodies,\npure expression helpers, post-link aliases, or a complete execution-root universe.\n\n`pulse report` exposes this retained collector as a bounded terminal overview or\none complete authoritative JSON capsule. Artifact replay preserves historical\nidentity without claiming current-input matching. Planning does not collect or\nwrite; CLI startup and artifact errors do not load project/compiler/provider code.\n`--html` writes the locked slate, route-first offline viewer with expandable\nschema property/provenance views, explicit evidence qualifiers, and complete\ncapsule export. A fixed hashed content policy and text-node rendering keep\npayload strings inert; no browser opens or remote assets load. HTML is bounded\nto 64 MiB after context escaping, within the retained-file reader's limit.\n\nFor repeatable HTML generation, a bounded `.pulse-report-outputs` receipt beside\neach destination records its basename and at most two content hashes (intended\nand previously verified bytes). Only exact matching generated bytes are excluded\nfrom project input records; ordinary or edited HTML remains an input. These\ninternal receipts are not build authority: recorded input comparison, graph\nsource hashes and compiler watch-file binding still fail closed. Package inputs\nnever use receipt exclusions. HTML cannot overwrite a recorded build input.\nThe existing 20,000-file/256 MiB scan budget includes generated HTML verification;\nreceipts are bounded to 256 per destination directory, 4 KiB each and 20,000 per\nscan. See the [PRPT-05 packet](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/prpt05/README.md) for implementation,\nexact design-fixture identities and the outstanding real-browser qualification.\n\n\nProvider packages own descriptors, configuration normalization, local\nexecution, target generation, source packaging, deployment bindings, and target\nsupport policy. The compiler owns the neutral bootstrap, contract validation,\nthe compile-only `none` driver, and shared evidence composition. The compiler's\nproduction dependencies contain no Node or Fastly provider. The CLI distribution\nowns both bundled provider dependencies and binds built-in resolution to its own\npackage context; CLI orchestration carries provider identity as data and does not\nimport or branch on concrete provider implementations.\n\nProvider bootstrap is exact and fail-closed:\n\n- bare host ID `x` resolves by convention to `@pulse-compute/provider-x`;\n- direct compiler consumers resolve the selected provider from `projectRoot`\n  (the working directory when omitted); the CLI resolves its bundled `node` and\n  `fastly` IDs from the CLI package, without retrying against the project;\n- an exact scoped package name resolves from the project;\n- `none` selects the internal compile-only driver;\n- every package provider must export the versioned `./toolchain` contract.\n\nPulse does not scan dependencies, inspect keywords, run self-registration hooks,\ntry alternate package names, or substitute another provider or target. A\nselected provider toolchain is trusted build code running in the Pulse process;\ndo not run it from an untrusted project tree.\n\nProvider-neutral compiler loading and compilation do not load either provider.\nLegacy proof commands load their selected provider lazily from the caller's\ncomposition root. Repository proof scripts retain development dependencies only.\nThe canonical API compiler, Native plan builder and Native compiler facade use\ndeclared package imports without checkout-relative recovery for missing or\nunexported dependencies. This is a bounded facade migration, not a claim that all\nhistorical loaders have been migrated.\n\n`arc01-installed` qualifies exact packed compiler-only, Node-only and Fastly-only\ninstalls outside the checkout, with the unselected providers physically absent.\nIt compiles real Wasm, executes the selected provider driver, verifies unchanged\ninstalled package bytes, and checks the bundled CLI's doctor/test/build workflow\non both targets. Fastly Native execution uses its fixture ABI; this evidence does\nnot establish Viceroy or deployed service behavior.\n\nThe compiler-to-provider seam is exact. A selected package exports one\nversioned toolchain whose zero-argument `createDriver()` returns a versioned\ndriver. Shared contracts validate the complete callable surface and normalize\nevery selected target descriptor before configuration, compilation, or\npackaging uses it. A supported Native target must carry its final-Wasm policy;\nan absent method, unknown field/version, provider/target identity mismatch, or\nautomatic-fallback claim fails during bootstrap.\n\nProvider planning receives a versioned projection of canonical capabilities and\noperations, never compiler metadata or lowerer output. Target realization then\nreceives one immutable invocation containing the canonical Native or JavaScript\napplication plan, canonical provider plan, selected target, normalized provider\nconfiguration, explicit capability/binding/package requirements, explicit\nproject/package facts, and—when Native—the copied final Wasm whose hash and\nguest-link packaging authorization have already been checked. It does not\ncontain a TypeScript AST/service, compiler cache, builder, mutable manifest,\ncompiled-program object, raw target option bag, or alternate target.\n\nCLI Native test/dev execution that needs guest crypto or conditional KV uses\nan optional provider-owned `prepareNativeExecution` driver hook. It receives the\nsame immutable, validated invocation with action `execute-native` and returns a\nlocal request executor. The CLI never substitutes another provider's host.\nNode executes the compiled neutral Wasm with its provider adapter. Fastly\nrealizes its own Native artifact and runs the existing fixture ABI, including\nthe conditional-KV authority. Its result identifies the artifact hash and fixture\nkind; unavailable effect telemetry is reported as such. This does not establish\nViceroy or deployed Fastly acceptance. S3 fixtures preserve raw response streams\ninside the provider transport while ordinary fetch retains its opaque response\ncontract. Dev retains a last-good Native executor if recompilation fails.\n\nNative realization and JavaScript source packaging are normalized into\nversioned, data-only results before the CLI consumes them. Provider packaging\nmust report the same artifact identity authorized by the final guest audit.\nProvider-specific legacy proof builders are confined to an explicit\nCLI/testing composition root and are not reachable from compiler internals or\nthe provider target invocation.\n\nSee [Contracts and providers](../concepts/contracts-and-providers.md) and\n[Add a core provider](../contributing/adding-core-provider.md).\n",
       "contentSha256": "577551a366e5707bd76c1db1157ad1ea057d8ed982162da35f20b2784c424bd4",
       "id": "contract/eligibility",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 2254,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Providers, targets, and eligibility",
-        "sha256": "c3ff22faa36bb33b413307c6e9ac61a4abac41f320a64682bd7620d380c5346e",
+        "sha256": "cdb53476458eb2b6f141ce477d626078725b87b0cdfeaaf435326714f0bac9e1",
         "startLine": 1893,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98440d825d5d5ba6ad41dedccc1052bf625aa2e2"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0bf5c837b793cfc7ed418f66ae781c72cbb3ddd9"
       },
       "status": "candidate",
       "tags": [
@@ -617,7 +617,7 @@ export const contextCorpus = freeze({
       "content": "## Structured fetch responses\n\nA fetch response can be inspected through normalized status, headers, `text()`, and `json<T>()`. Once application code asks for text or JSON, the body is treated as a bounded structured value governed by decoding and size policy.\n\n```ts\nconst user = await ctx.fetch('https://api.example.test/user').json<{ id: number; name: string }>()\nreturn ctx.json({ found: true, user })\n```\n\nThe application receives portable data, not a provider SDK response object.\n\nSchema-bound fetched JSON uses the same codec and content-type policy as\nschema-bound request JSON. A read consumes the response into a structured\nprojection for the current request; it does not expose a reusable provider\nstream.\n",
       "contentSha256": "17cef62c1d1fda661f0d4a9a8ab6344d0fea13db93e90d3d0fcdb6abe2eb9af1",
       "id": "contract/fetch-json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 107,
         "path": "docs/concepts/bodies.md",
@@ -661,7 +661,7 @@ export const contextCorpus = freeze({
       "content": "## Managed async, not arbitrary async\n\nWrite managed handlers with `async` and await trusted Pulse effects. On Native targets, the compiler erases that notation into effects and continuations. On JavaScript targets, the live runtime executes the same async-shaped handler normally.\n\nStatic source helpers can return values across recognized effect suspensions under the bounded [source-helper contract](../architecture/current-contracts.md#static-effectful-source-helpers-o-25). Their caller retains response ownership.\n\nArbitrary Promise construction, ambient asynchronous APIs, and unrecognized library awaits remain outside Native eligibility. They must not be mistaken for Pulse effects or silently trigger target fallback.\n\nThis design keeps:\n\n- effects visible to the compiler;\n- provider capability checks complete before execution;\n- failures and timeouts normalized;\n- request completion bounded;\n- Node and Fastly behavior comparable.\n",
       "contentSha256": "8f6bc51566cbb7374362c1c0d7955b99b03e257e555b32f8f4a3cee4da2acfff",
       "id": "contract/managed-async",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 371,
         "path": "docs/concepts/effects-and-continuations.md",
@@ -697,7 +697,7 @@ export const contextCorpus = freeze({
       "content": "# Native build optimization\n\nOrdinary Native compilation uses **O3, shrink level 2, without convergence**.\nIts recorded recipe is `native-bounded-size`. No optimization flag is needed:\n\n```bash\npulse build\npulse compile\n```\n\n`pulse build` produces the selected provider's deployment output. `pulse compile`\nproduces provider-neutral Native Wasm. These settings apply to portable\ncompilation, Node Native and Fastly Native builds. They do not change source\neligibility, provider selection or the application's supported behavior.\n\n## Choose a recipe\n\n| Selection | Recorded recipe | AssemblyScript settings | When to use it |\n|---|---|---|---|\n| No override | `native-bounded-size` | O3 / shrink2 / no convergence | The ordinary default, unless the selected Native profile configures another recipe. |\n| `--native-shrink0` | `native-shrink0` | O3 / shrink0 / no convergence | Restore the previous recipe when investigating an optimization regression or comparing a workload. |\n| `--experimental-native-size` | `experimental-native-size` | O3 / shrink2 / convergence | Try additional optimizer convergence and measure the resulting artifact and compilation cost. |\n| `--experimental-native-bounded-size` | `experimental-native-bounded-size` | O3 / shrink2 / no convergence | Keep existing explicit selections and their historical identity; its settings match the ordinary default. |\n\nFor a one-command override:\n\n```bash\npulse build --native-shrink0\npulse compile --native-shrink0\npulse build --experimental-native-size\n```\n\nThe three recipe flags are **mutually exclusive**. An explicit flag overrides\n`nativeOptimization` in the selected profile. Without a flag, that profile's\nsetting wins; without either, Pulse uses `native-bounded-size`.\n\nTo keep a selection in `.pulse/config.ts`, set it on a Native profile:\n\n```ts\nimport { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig(() => ({\n  pulse: { entry: 'src/index.ts', defaultProfile: 'local' },\n  local: {\n    host: 'node',\n    target: 'native',\n    nativeOptimization: 'native-shrink0',\n  },\n}))\n```\n\nSet `nativeOptimization` to `native-bounded-size`, or remove it, to return that\nprofile to the ordinary default. The field accepts all four recipe identities\nin the table. See [project configuration](./project-config.md#nativeoptimization).\n\nJavaScript profiles reject `nativeOptimization`, and JavaScript `pulse build`\nrejects these flags. `pulse compile` always requests Native compilation, even\nwhen the selected profile otherwise targets JavaScript, and still requires\nNative-compatible source.\n\nConvergence asks the optimizer to continue seeking a stable result; it can add\ncompilation work without reducing the final artifact. Smaller Wasm does not by\nitself prove lower request latency or memory use. Compare completed builds and\nrepresentative workloads before adopting an override. Guest-linked builds also\nhave their own prebuilt inputs and final-link optimization; a primary compiler\nrecipe does not replace those steps.\n\n## Optional json-as cache arena setting\n\n`--elide-json-cache-arena` is an independent Native option. It omits json-as's\n1 MiB string-cache arena **only when string caching is disabled**. The default\nkeeps that allocation. Enabled caches retain their arena, and schema-free\nartifacts are unchanged. It can be combined with one recipe flag:\n\n```bash\npulse build --elide-json-cache-arena\npulse compile --native-shrink0 --elide-json-cache-arena\n```\n\nThe option reaches portable, Node Native and Fastly Native compilation.\nJavaScript builds reject it. This is a targeted json-as allocation setting,\nnot a general AssemblyScript optimizer or garbage-collection switch. It does\nnot change schema semantics or reclaim retained values.\n\n**Peak memory can increase for allocation-heavy workloads**, even though the\neager arena allocation is removed. A retained escaped-string stress observation\nincreased linear-memory capacity from 110 MiB to 148 MiB with this option;\nthat observation is not a prediction for another application. Measure startup\nand peak memory for the workload you intend to run. The adapter is pinned to\njson-as 1.5.0 and fails if the expected dependency source changes.\n\n## Inspect the result\n\nBuild manifests and retained reports record the selected recipe. Use a completed\nbuild's `pulse report` or `pulse report --html` to inspect the actual artifacts;\nkeep the source, target, toolchain and recipe identified when comparing results.\nHistorical absent recipe metadata and `default` report identities keep their\noriginal meaning; they are not reinterpreted as today's bounded default.\n\nThe arena selection is recorded as `elideJsonCacheArena` in the report recipe and\n`jsonAs.elideDisabledCacheArena` in schema-active Native manifests. Applied build\nobservations identify `schema-cache-arena-transform.cjs`. Historical reports\nwithout the field did not record the setting.\n\nSee the generated [CLI reference](./cli.md) for exact command syntax and the\n[JSON schema guide](../guides/json-schemas.md) for schema admission and limits.\n",
       "contentSha256": "ae67d78fa1ccdbfed3c3133ab0db0a4fd44e6f4015461f0673320deb7c09523f",
       "id": "contract/native-build-optimization",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 107,
         "path": "docs/reference/native-build-optimization.md",
@@ -745,7 +745,7 @@ export const contextCorpus = freeze({
       "content": "## Opaque response pass-through\n\nSome responses should cross Pulse without being copied, decoded, or exposed to userland—archives, media, streaming responses, and provider-owned hold responses are examples. Return the fetch response directly:\n\n<!-- pulse-doc-source: examples/07-opaque-proxy/src/index.ts -->\n```ts\nimport { Pulse } from '@pulse-compute/pulse'\n\nconst app = new Pulse({ auto: true })\n\napp.get('/archive', async (ctx) => {\n  return ctx.fetch('https://assets.example.com/archive.bin')\n})\n\nexport default app\n```\n<!-- /pulse-doc-source -->\n\n<!-- pulse-doc-run {\"args\":[\"inspect\",\"examples/07-opaque-proxy\",\"--json\"],\"display\":\"pulse inspect examples/07-opaque-proxy --json\"} -->\n```bash\npulse inspect examples/07-opaque-proxy --json\n```\n```json\n{\n  \"status\": \"ok\",\n  \"provider\": {\n    \"id\": \"fastly\"\n  },\n  \"compiler\": {\n    \"effectCount\": 1,\n    \"continuationCount\": 1,\n    \"opaqueReturnCount\": 1,\n    \"providerLowering\": {\n      \"requirements\": [\n        \"fetch\",\n        \"opaque.pass-through\"\n      ]\n    }\n  }\n}\n```\n\nOpaque pass-through preserves host ownership. Pulse may carry status and headers needed to complete the response, but application code cannot inspect chunks, decode the body, concatenate it, or retain it beyond the request lifecycle.\n\nThe JavaScript runtime cancels fetched bodies left behind when execution ends,\nincluding successful siblings of a failed effect group and bodies rejected\nbefore structured reading begins. Only the final returned body transfers to the\nhost; normal execution cleanup preserves it. A response arriving after request\ncancellation or an operation timeout is cancelled without resuming application\nwork. Body cancellation is best effort: a rejecting or stalled provider cleanup\ncallback does not delay completion, including body suppression for `HEAD`.\n\nAttempting to inspect an opaque body fails with [`PULSE_OPAQUE_BODY_INSPECTION`](../reference/diagnostics.md#pulse-opaque-body-inspection). A missing or already-consumed structured body can fail with [`PULSE_BODY_UNAVAILABLE`](../reference/diagnostics.md#pulse-body-unavailable).\n",
       "contentSha256": "5ecf000eb48f724953d1b1034ba21cf26580c76a31e4a2bd83f218dfb0562424",
       "id": "contract/opaque-bodies",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 161,
         "path": "docs/concepts/bodies.md",
@@ -788,14 +788,14 @@ export const contextCorpus = freeze({
       "content": "## Package-owned capabilities\n\nNormal package roots are canonical for application authors. JavaScript targets\nexecute the package implementation; supported Native targets recognize the\nsame root symbols and lower the accepted subset into canonical package\noperations. Compatibility subpaths do not define the recommended surface.\n\nProduct metadata, application exports, executable compiler authority, and\nprovider realization are separate owners:\n\n- `pulse.package.json` describes product, target, ownership, and conformance\n  metadata and cannot execute compiler code;\n- a trusted compiler manifest and builder own static recognition, diagnostics,\n  payloads, and optional sidecar ABI;\n- shared contracts own versioned operation and result semantics;\n- providers own host realization.\n\nThe feature-to-compiler seam is exact. The library kit constructs a versioned,\nimmutable builder invocation from documented source-recognition inputs; it\ndoes not forward caller option bags. The builder's package-owned artifact and\ncontributions are normalized into a versioned result envelope before compiler\norchestration. Shared package contracts reject unknown fields, owner/version\nmismatches, nondeterministic order, and mutable canonical operations.\n\nPackage builders emit provider-neutral capability and crypto requirements.\nThey do not receive provider drivers, target descriptors, runtime objects,\nresolved secrets, raw CLI configuration, compiler caches, or arbitrary\nTypeScript programs/services. Target eligibility begins after canonical\nrequirements exist.\n\nPackage effects require an explicit `PulseContext` and use the same\nrequest-owned bridge as core effects. There is no ambient current request,\nmutable global registration, or package-specific scheduler.\n\nPackage lowerers are trusted build dependencies. A resolved workspace or npm\npackage may declare static `pulse.package.json` product metadata and the\nversioned `pulsewasm.manifest.cjs` compiler contract. Admission depends on\nmatching supported protocol versions and package ownership, not a package-name\nallowlist, a monorepo registration, or equality with Pulse's release version.\nUse `compiler.trust: 'build-dependency'` and matching `lowering.trust`;\n`first-party` remains a compatible alias with the same execution authority.\n\nThe project graph discovers declarations from the package resolved at each\nimport, including nested dependencies. Unrelated installed manifests are not\nexecuted by graph compilation. Explicit catalog inspection may enumerate\nworkspace and installed declarations. Recognition runs only for graph-selected\npackage contracts. Conflicting contract/import ownership fails closed.\nManifest, builder, sidecar, and product metadata paths must stay inside their\npackage after realpath resolution; package-root links such as pnpm's are valid.\n\nManifests and builders run ordinary CommonJS in the compiler process with its\nfilesystem, environment, and Node authority. This is an explicit trust model,\nnot sandboxing, signature verification, resource isolation, or failure\ncontainment. Applications choose and maintain their build dependencies.\nProtocol validation occurs after loading the trusted manifest and before\nloading its builder. Unknown protocol versions are rejected, not guessed from\nnpm semver. Builder results, canonical operations, and provider requirements\nstill pass their existing versioned validators. Package admission does not\ncreate a host capability or expand the separate prebuilt-guest contract.\nA general compiler-plugin hook API remains deferred; the scoped external\nlowerer contract is available independently of that readiness gate.\n\nSee [Package-owned lowering](../concepts/package-owned-lowering.md), the\n[package lowerer contract](../contributing/package-lowerer-contract.md), and\n[plugin readiness](../maintainers/plugin-readiness.md).\n",
       "contentSha256": "eb942ff4794dec589318c6267302440b720f2ffd62b680f94e1b42134e6c7aec",
       "id": "contract/package-authority",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 2320,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Package-owned capabilities",
-        "sha256": "c3ff22faa36bb33b413307c6e9ac61a4abac41f320a64682bd7620d380c5346e",
+        "sha256": "cdb53476458eb2b6f141ce477d626078725b87b0cdfeaaf435326714f0bac9e1",
         "startLine": 2255,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98440d825d5d5ba6ad41dedccc1052bf625aa2e2"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0bf5c837b793cfc7ed418f66ae781c72cbb3ddd9"
       },
       "status": "candidate",
       "tags": [
@@ -831,7 +831,7 @@ export const contextCorpus = freeze({
       "content": "## Explicit portable groups with `ctx.parallel`\n\nNative Pulse may discover independent adjacent effects and place them in one group\nfor performance. Direct JavaScript execution does not rewrite ordinary `await`\nsemantics, so separate awaits remain sequential there. Use `ctx.parallel({ ... })`\nwhen concurrency is required application behavior across targets:\n\n```ts\nconst { profile, flags } = await ctx.parallel({\n  profile: ctx.fetch(profileUrl).json<Profile>(),\n  flags: ctx.fetch(flagsUrl).json<Flags>(),\n})\n```\n\nThe first contract accepts a nonempty inline object literal with fixed,\nnon-index string keys and Pulse effect expressions as values. Property order owns\ndispatch identity, trace order, deterministic primary-failure selection, and keyed\nresult reconstruction. Providers may complete members in any order, but every\nmember settles before the continuation resumes.\n\nOn JavaScript, all members execute through one execution-owned shared effect adapter.\nOn Native, lowering erases `ctx.parallel`, emits the member operations into one\ncanonical effect group, and reconstructs the ordinary keyed result object after\none continuation. Arrays, spreads, computed keys, dynamic records, arbitrary\npromises, reused roots, and nested groups are outside the initial portable shape.\n",
       "contentSha256": "e7f6233d04b4480248ea80e7662ffb85ef8860152f5f4ecd7ea37bd2b104e641",
       "id": "contract/parallel",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 251,
         "path": "docs/concepts/effects-and-continuations.md",
@@ -874,14 +874,14 @@ export const contextCorpus = freeze({
       "content": "## Project configuration\n\nCanonical configuration is one synchronous deferred factory:\n\n```ts\nimport { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig((scope) => ({\n  pulse: {\n    entry: 'src/index.ts',\n    tests: 'tests/pulse.harness.ts',\n    defaultProfile: 'local',\n    strict: true,\n    reporting: 'info',\n  },\n  local: {\n    host: 'node',\n    target: 'native',\n    apiBase: scope.config('API_BASE'),\n    token: scope.secret('API_TOKEN'),\n  },\n}))\n```\n\nThe scope produces symbolic configuration and secret references only. It does\nnot expose selected-profile state, resolved values, commands, or ambient\nenvironment authority.\n",
       "contentSha256": "84005c508bfa3e837ffac74e879cdaf9a3d9eddca61f21343b0f4f2724481dfb",
       "id": "contract/project-configuration",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 107,
         "path": "docs/packages/pulse.md",
         "selection": "heading:Project configuration",
-        "sha256": "1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e",
+        "sha256": "370c2303dbde4ba64d5c4a9d3e8f8734a1b293103aeb3add640431749220e0ea",
         "startLine": 80,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9ba92233413041f3946dacd8fe06593033a55929"
       },
       "status": "candidate",
       "tags": [
@@ -918,14 +918,14 @@ export const contextCorpus = freeze({
       "content": "## Provider and target realization\n\nThe application-facing source form stays the same across these cells. Text in a\ncell names the provider-owned binding or artifact that realizes it.\n\n| Capability | Node JS | Fastly JS | Node Native | Fastly Native | Notes |\n|---|---:|---:|---:|---:|---|\n| Canonical handler and Router execution | Yes | Yes | Yes | Yes | Shared handler, Router, context, effect, and result contracts. |\n| Request and structured responses | Yes | Yes | Yes | Yes | Provider adapters preserve the canonical request/response model. |\n| Single, sequential, and keyed-parallel fetch | Yes | Yes | Yes | Yes | Fetch is a `ctx` effect; no ambient fetch authority is implied. |\n| Explicit JSON schemas and bounded generic JSON | Yes | Yes | Yes | Yes | Schema policy is project-owned and target-neutral. |\n| Config reads | Test/dev binding | Config Store | Test/dev binding | Config Store | Exact names are resolved from the selected profile; no ambient fallback. |\n| Secret reads | Test/dev binding | Secret Store | Test/dev binding | Secret Store | Secret values remain provider-owned and are redacted from diagnostics and logs. |\n| KV `get` and `put` | In-memory binding | KV Store | In-memory binding | KV Store | Namespaces are explicit profile bindings. |\n| KV versioned/conditional operations | In-memory reference | No | In-memory reference | Native KV hostcalls | Opaque generation tokens; uncertain writes may have committed. No implicit retry or durable Node storage claim. |\n| KV listing and deletion | In-memory reference | No | In-memory reference | Native KV hostcalls | One bounded page per list; opaque cursor, provider-defined visibility and uncertain delete outcomes. Deployed acceptance remains separate. |\n| Opaque pass-through | Yes | Yes | Yes | Yes | Bodies remain host-owned in all four modes. |\n| S3 `head`, `getText`, `getBody`, `putText` | Yes | No | Yes | Yes | Bounded exact-key operations. `getBody` returns an opaque binary response with the documented HTTP subset; Fastly JS lacks required raw-header metadata. See [S3](../packages/s3.md). |\n| Embedded Assets bytes | Node middleware | Unqualified | Native lookup | Native lookup | JavaScript `createAssets` embedded middleware is tested on Node; Native uses literal `embeddedManifest`. Fastly Native evidence is injected ABI proof, not deployment. See [Assets](../packages/assets.md). |\n| Finite production HTTP launcher | `/server` | No | `/server` | No | Explicit supported export of `@pulse-compute/provider-node`. Forwarding/output/transforms/S3-body/blob-specific launcher qualification remains separate. See [Node deployment](../guides/deploying-node.md). |\n| GRIP framing and configured broadcast | Yes | Yes | Yes | Yes | The package-root contract owns the portable operation shape. |\n| `ctx.log` and redaction | Yes | Yes | Yes | Yes | Provider output format may differ; the level and redaction contract does not. |\n| Reference event ingress and `ctx.emit` acceptance | Bounded Node adapter | No | Bounded Node adapter | No | Direct parity evidence only: FIFO ingress, exact-frame acceptance, no loopback, delivery promise, public bus, call surface, or automatic fallback. |\n| Local execution evidence | Node lifecycle | Provider emulation | Canonical host | Controlled ABI host | Local proof is not production provider activation. |\n| Deployment candidate | Source package | Source package plus downstream runtime Wasm | Node build | `bin/main.wasm` | A candidate records the selected target and does not contain an automatic fallback artifact. |\n| Production deployment and activation | Host-operated | Human-operated | Host-operated | Human-operated | The Node launcher does not create infrastructure or supervise processes; Fastly reality, deployment, and activation remain explicit external gates. |\n",
       "contentSha256": "f0e23e20f0f0e56444f9636e25d46b584b1d4ccc4d5206449886d409103a270c",
       "id": "contract/provider-compatibility",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 79,
         "path": "docs/reference/compatibility-matrix.md",
         "selection": "heading:Provider and target realization",
-        "sha256": "76ae19ba63891ef0d679758acb539fba2b44b7383ca93fd1ca9792ba74008ceb",
+        "sha256": "9064f060248a2bd5bc83864af5a1380bd4ead9d0ab22a5fe7149407b0da8fc28",
         "startLine": 53,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/68de782b66cc65c7f2a8b10b41ce732519605554"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/61b3daeff8b81fd7dfe16045f9e164a112c04ef7"
       },
       "status": "candidate",
       "tags": [
@@ -953,14 +953,14 @@ export const contextCorpus = freeze({
       "content": "## Report comparison contract\n\nCMP8-01 owns the internal, pure `pulse.report-comparison` v1 result and\n`pulse.report-matching.v1` identity policy. The CLI, HTML and MCP adapters must\nconsume that shared result rather than implement their own matching or arithmetic.\nCMP8-02 adds the offline HTML presentation. Command/MCP adapters remain separate\nintegration work. No new public CLI option or package export is introduced here.\n\n`compareCapsules(before, after)` admits two validated Report v1 capsules and\nreturns immutable evidence without IO, project loading, compilation or execution.\n`parseComparison`, `validateComparison` and `serializeComparison` own bounded\nwire admission, canonical JSON and the comparison hash. Both input capsule\nhashes, project names, selected contexts, primary artifacts, producer versions,\nprovenance and recorded build metadata remain available in `sources`. These are\nhistorical claims from the input capsules, not proof of current project freshness,\ncommon repository lineage, signatures, or original artifact-byte verification.\nMatching project names alone do not establish that two builds belong together.\n\nThe summary always preserves primary artifact bytes and all inventory counts,\nincluding zero-net route/schema changes with separate added and removed counts.\nDetails contain only changed fields and added, removed, modified, coverage-changed\nor unresolved records; unchanged records and empty sections are omitted. Build\ntiming and provenance changes remain separate metadata changes. Sparse records\nretain full before/after capsule-local IDs for lookup in the original capsules.\n\n| Inventory | Matching policy |\n| --- | --- |\n| Routes | Unique exact method/path slot. Duplicate slots require a unique exact canonical ID; otherwise retain ambiguity. No matching by row ordinal, shortened ID or handler display name. |\n| Entries | Route entries follow the route match. Other entries use a unique recorded kind/name/source-file/router-scope/method/path key. Source line movement changes provenance without deleting the logical record. |\n| Schemas | Unique declared schema ID. |\n| Bindings and declarations | Unique kind/name pair. |\n| Resources | Unique kind/generator-scope/producer-name/resource-name key. Numbered response-payload labels are excluded as unstable identities. |\n| Implementations | Named compiler identity within artifact stage/host/target; dedicated bodies follow matched entries. Dispatcher chunk/function indices never establish cross-artifact identity. |\n| References | Recorded kind/binding-kind/canonical reference identity; unresolved references without a canonical identity remain unmatched. |\n| Evidence | Kind, producer name, method and exact corpus/cases/target scope. Result and producer-version changes are visible. |\n| Observations | Code, producer name and resolved comparison subject keys; unresolved subjects cannot establish identity. |\n\nA unique exact canonical ID may disambiguate a duplicated logical key, but never\nsupplies a fuzzy rename or source-code equivalence claim. For records without a\nlogical key, exact record IDs can join only inside the same primary artifact.\nAmbiguous or unavailable identities remain explicit unresolved groups containing\nevery record ID. Relative ordering compares matched route/entry records, so\ninserting a new registration does not manufacture modifications to all later\nordinals. Recorded composition, flow, consumers and declarations use the matched\nkeys, not artifact-bound IDs. Handler IDs, physical function indices, evidence\nhash churn and timestamps on unrelated evidence do not imply code changes.\nComparison describes retained facts; equal reported size or behavior labels\ncannot prove unchanged handler implementation.\n\nA missing row is an addition/removal only when the opposite inventory is complete.\nFor generated resources, the exact producer scope may establish completeness even\nwhen aggregate resource coverage is partial. Missing optional telemetry, ambiguous\nidentity, or partial inventories produce unresolved evidence, never a zero or a\nproven deletion. Coverage state is retained even when no detail row changes.\n\nCompatibility checks distinguish **compatible**, **different-build**,\n**incompatible**, and **unknown**. Host, target, representation and artifact-stage\nmismatches block size deltas. Profile, Pulse/reporter/toolchain versions, recipe\nand effective compiler-setting changes qualify the result as different-build;\nphysical byte differences remain arithmetic, not attributed savings. Missing\nsettings or unsupported defaults stay unknown. Changed checks and unknown checks\nremain individually visible even when another check determines the overall state.\n\nPer-subject byte deltas require available exact evidence with matching basis,\nmethod and stage, plus compatible artifact domains. Missing/conflicting measures,\nbounds, incomplete ownership or incompatible artifacts retain both observations\nand a null delta with its reason. Prelink-only evidence is never promoted to a\nprimary final measurement. Whole containing-body measurements remain non-additive;\nthe comparison does not sum route/helper deltas into an artifact total or infer\nperformance regressions from one build duration.\n\nAN9-06 extends comparison to retained authored analytics. When either input has\nan analytics block, `pulse.report-matching.v2` adds handlers, registrations, use\nsites, helper calls and associations to the summary and changed sections. Each\nsemantic inventory has separate before/after `identityCoverage`: resolved\ncomparison keys out of observed records. This does not certify a complete source\ninventory or prove unchanged implementation. Missing analytics keeps unavailable\ncoverage and cannot establish additions/removals. Comparing two legacy capsules\nstill emits the original matching-v1 result; existing v1 comparison bytes remain\nreadable and hash-preserving. V2 results require a reader that supports this policy.\n\n| Authored inventory | Comparison policy after exact retained-ID matching |\n| --- | --- |\n| Definitions | Unique kind plus authored file and exact UTF-16 start/end offset slot. Names and similar bodies never establish a match. |\n| Registrations | Authored source slot, kind, router path, resolved definition and ordered enclosing mount instances. Parent mounts match before children. |\n| Use sites | Resolved definition owner and authored source slot; repeated operations stay distinct. Capability, operation and binding are compared values, not identity guesses. |\n| Helper calls | Resolved caller/callee definitions and authored call slot; consumer registrations use resolved keys. |\n| Associations | Resolved consumer, use site and ordered typed explanation hops. Lane, conditionality and coverage remain compared facts. |\n\n`retained-identity`, `authored-source-slot` and `semantic-links` matching bases are\nexplicit in changed records. Source-slot matching is an exact location comparison,\nnot a claim that the same code survives an edit. Original source ranges/hashes and\npackage provenance remain visible as values. Ambiguous locations and missing\nprerequisite identities remain unresolved. Bilateral unmatched source records\nare conservatively unresolved, including moves/renames that cannot be connected;\nthey are not guessed deletion/addition pairs. One-sided records require complete\nopposite inventory coverage before claiming an addition/removal. Association path\nchanges require resolved reference keys. Unavailable dependencies retain explicit\npartial link coverage rather than acquiring identity from artifact bytes.\n\nThese semantic projections contain no byte measurements, execution counts or\ninferred grants. Default/bounded-size recipe changes can affect the physical\nartifact and build compatibility without changing authored capability/binding\ninventories. A source hash change is provenance, not by itself a capability change.\nDynamic/unknown binding state, unavailable source/capability and lost control or\nassociation coverage remain qualified evidence changes. Ordered mount and helper\npaths, normal/error/event lanes and direct-versus-conditional ownership survive\ncomparison. Legacy physical entry and authored registration keys live in separate\nnamespaces so one cannot overwrite the other.\n\nThe offline comparison HTML adds authored inventory summaries, identity coverage,\nmatching bases and semantic changed fields. Existing search, local links, native\ndisclosures and complete JSON export include the new sections. It remains passive\nand self-contained; command/MCP integration and graph visualization are separate.\n\nThe canonical schema and generated TypeScript declaration share the report fixture\nwriter. The report-capsule-contract task includes comparison regressions for\nidentity churn, ambiguity, coverage loss/gain, settings/provenance, exact and\nunavailable deltas, sparse ordering, deterministic bytes and compiler-free replay.\n\nThe internal `renderComparison(result)` renderer consumes this validated result;\nit does not perform matching, recalculate deltas, compile or load projects. The\nself-contained HTML keeps project names, before/after artifact bytes, route and\nschema counts, zero-net additions/removals and artifact provenance visible.\nBoth full capsule hashes, artifact identities, recorded recipes, compiler flags,\ntoolchains and build metadata remain available in native disclosures. Compatibility\nis qualified next to the summaries, including unknown historical build settings.\n\nOnly changed inventories and fields appear in detail, with text and `+`/`−`\nmarkers alongside color. Unresolved identities and coverage changes retain their\nreasons; partial counts are labeled observed and missing measurements never read\nas zero or measured savings. Whole-body measurements remain non-additive.\nChanged settings and provenance appear separately from application records.\nUnchanged details and empty inventory sections are omitted, while all inventory\ncoverage stays inspectable even in a no-change comparison.\n\nThe summary, provenance and native disclosure controls remain readable without\nJavaScript. Optional search/status filters, local anchors and theme changes are\npresentation state only; export retains the exact canonical comparison JSON,\nincluding hidden and filtered evidence. This is a comparison export, not either\noriginal capsule. Rendering escapes all retained text, admits a bounded validated\ncomparison, uses hash-bound inline assets and makes no network requests. Mobile\nbefore/after fields stack in the same explicit order as the desktop columns.\nThe `cli-report-viewer` task covers this renderer alongside the single-capsule view.\n",
       "contentSha256": "9e5ffc53f170c86abc9f0aaf1b398732f104eb2313335f41a9044f979bde57c0",
       "id": "contract/report-comparison",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 1658,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Report comparison contract",
-        "sha256": "c3ff22faa36bb33b413307c6e9ac61a4abac41f320a64682bd7620d380c5346e",
+        "sha256": "cdb53476458eb2b6f141ce477d626078725b87b0cdfeaaf435326714f0bac9e1",
         "startLine": 1514,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98440d825d5d5ba6ad41dedccc1052bf625aa2e2"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0bf5c837b793cfc7ed418f66ae781c72cbb3ddd9"
       },
       "status": "candidate",
       "tags": [
@@ -999,7 +999,7 @@ export const contextCorpus = freeze({
       "content": "## Structured request bodies\n\n`ctx.req.text()` and `ctx.req.json()` read a bounded request body. JSON can be decoded generically or against an explicitly compiled schema. Repeated schema reads are deterministic within one request.\n\nOn Node Native, Node JavaScript and Fastly Native, request text is strict UTF-8.\nThe original encoded-byte limit is enforced before decoding. Malformed,\ntruncated, overlong, surrogate and out-of-range encodings fail with\n`PULSE_REQUEST_BODY_INVALID_UTF8` before text reaches the application. Valid\nreplacement characters, a leading U+FEFF, and scalars split across transport\nchunks are preserved without normalization. An application error handler may\nmap this request-data failure to its own bounded 400 response. Without that\nhandler, Node JavaScript retains its exhausted-error-lane 500 response; the\nNative HTTP boundaries reject malformed request text with 400. Transport size\nfailures remain 413. A schema projection does not establish rejection of\nduplicate or unknown properties; that validation policy remains application-owned.\n\nThe schema example decodes one body twice and proves that the request-local decoded value is reused:\n\n<!-- pulse-doc-source: examples/02-request-schema/src/index.ts -->\n```ts\nimport { Pulse } from '@pulse-compute/pulse'\nimport type { CreateUserInput, CreateUserOutput } from './schemas.js'\n\nconst app = new Pulse({ auto: true })\n\napp.post('/users', async (ctx) => {\n  const first = await ctx.req.json<CreateUserInput>('app.CreateUserInput')\n  const second = await ctx.req.json<CreateUserInput>('app.CreateUserInput')\n  const output: CreateUserOutput = {\n    id: 7,\n    name: first.name,\n    active: first.active,\n    sameReference: first === second,\n  }\n  return ctx.json(output, { status: 201, schema: 'app.CreateUserOutput' })\n})\n\nexport default app\n```\n<!-- /pulse-doc-source -->\n\n```bash\npulse test examples/02-request-schema --case valid-user --json\n```\n\nStructured body limits are configured through `schemas.maxBytes`, `dev.maxBodyBytes`, or a test case’s `maxBodyBytes`, depending on the read path. Oversized or invalid input fails before unbounded materialization with diagnostics such as:\n\n- [`PULSE_REQUEST_BODY_TOO_LARGE`](../reference/diagnostics.md#pulse-request-body-too-large);\n- [`PULSE_BODY_TOO_LARGE`](../reference/diagnostics.md#pulse-body-too-large);\n- [`PULSE_BODY_DECODE`](../reference/diagnostics.md#pulse-body-decode);\n- [`PULSE_SCHEMA_DECODE`](../reference/diagnostics.md#pulse-schema-decode).\n\nA successful schema decode returns a normalized, deeply immutable value.\nRepeated request reads with the same schema ID reuse that request-local decoded\nvalue. Generic JSON is also bounded, but it does not gain a typed schema\ncontract.\n",
       "contentSha256": "1930633d636b881aa246869144bfdce5e5731577885c818d04e0d42910515273",
       "id": "contract/request-json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 91,
         "path": "docs/concepts/bodies.md",
@@ -1043,14 +1043,14 @@ export const contextCorpus = freeze({
       "content": "## Schema declarations\n\n```ts\nimport {\n  defineSchemaRegistry,\n  response,\n  schema,\n} from '@pulse-compute/pulse/schema'\n\ninterface User {\n  id: number\n  name: string\n}\n\nexport default defineSchemaRegistry({\n  schemas: {\n    'app.User': schema<User>(),\n  },\n  responses: {\n    'app.UserResponse': response(200, 'app.User'),\n  },\n})\n```\n\nSchema calls are static declarations consumed by the compiler. They do not add\nruntime reflection or generic JSON parsing to the guest module.\n",
       "contentSha256": "f4e8f3f7341de2b13a48cec0481929775de34fb99145237ee8206e1b0fc6e8d3",
       "id": "contract/schema-declarations",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 134,
         "path": "docs/packages/pulse.md",
         "selection": "heading:Schema declarations",
-        "sha256": "1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e",
+        "sha256": "370c2303dbde4ba64d5c4a9d3e8f8734a1b293103aeb3add640431749220e0ea",
         "startLine": 108,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9ba92233413041f3946dacd8fe06593033a55929"
       },
       "status": "candidate",
       "tags": [
@@ -1086,14 +1086,14 @@ export const contextCorpus = freeze({
       "content": "## Source-form compatibility\n\n| Source form | Node JS | Fastly JS | Node Native | Fastly Native | Notes |\n|---|---:|---:|---:|---:|---|\n| Async-shaped managed handler | Yes | Yes | Yes | Yes | Native erases the authoring wrapper; it does not link Promise, JSPI, or Asyncify semantics. |\n| Static `Router` topology and terminal `next()` | Yes | Yes | Yes | Yes | Covers static `get`, `head`, `post`, `put`, `patch`, `delete`, middleware, mounts, parameters, trailing wildcard, fallthrough, and the error lane. |\n| Root-only `Pulse.on` and non-HTTP event context | Yes | No | Yes | No | Node owns the bounded reference ingress. Fastly source remains inspectable but execution/build eligibility fails closed. |\n| Awaited one-way `ctx.emit` acceptance | Yes | No | Yes | No | Static schema-bound frames only; no delivery, loopback, public bus, call surface, or target fallback. |\n| Sequential awaits of trusted Pulse effects | Yes | Yes | Yes | Yes | JavaScript preserves source order. Native lowers effects and continuations and may group adjacent independent effects without changing results. |\n| `await ctx.parallel({ fixed: effect })` | Yes | Yes | Yes | Yes | Requires a nonempty inline object with fixed non-index keys and fresh request-owned Pulse effects. |\n| Bounded `ctx.effects({ max })` collection and flush | Yes | Yes | Yes | Yes | Literal capacity 1–32; one bounded build region and one explicit flush. Provider capability restrictions still apply. |\n| Synchronous schema-bound `ctx.call` | Yes | No | Yes | Yes | Named imported project computation; selected HTTP/Router/managed callers only. No effects, nested calls or event dispatch. |\n| Static `@pulse-compute/mcp/pulse` binding | Yes | No | Yes | Yes | Local Entities dispatch and bounded HTTP framing; Fastly JS cannot satisfy the required request deadline. Separate root and `/node` host adapters do not change this matrix. |\n| Request metadata, route parameters, request state, logging, and response construction | Yes | Yes | Yes | Yes | These are synchronous managed surfaces; awaiting a proven synchronous value is redundant and may warn. |\n| Schema-bound request, fetch, and response JSON | Yes | Yes | Yes | Yes | Schema and response-case IDs are literal project declarations. |\n| Generic bounded JSON with `pulse.strict: false` | Yes | Yes | Yes | Yes | The plan records the generic host parser. Strict mode requires a declared schema. |\n| Direct opaque response pass-through | Yes | Yes | Yes | Yes | Returnable, but not inspectable, iterable, buffered, transformed, or retained in userland. |\n| Supported package-root Assets and GRIP calls | Yes | Yes | Yes | Yes | JavaScript runs the package implementation. Native accepts the package's synchronized, bounded lowerable subset. |\n| Ordinary target-compatible JavaScript package API | Yes | Yes | No | No | JavaScript packaging must include a provider-compatible dependency. Native requires a trusted package-owned lowerer. |\n| Arbitrary Promise construction or library await | JS only | JS only | No | No | Never valid inside `ctx.parallel`; Native reports the first eligibility boundary and never falls back. |\n| Ambient `fetch`, timers, environment/process access, filesystem, sockets, or provider SDK | No | No | No | No | Use `ctx` effects and configured provider bindings. |\n| General userland body streams, binary transforms, or background work | No | No | No | No | Structured reads are bounded, opaque bodies stay host-owned, and work ends with the request. |\n| Incoming opaque request forwarding | Yes | No | Yes | Experimental | Explicit provider `bodyForwarding` and request deadline. Fastly Native admits one terminal static-backend POST with separate request/response limits. See [transport limits](../concepts/bodies.md#current-transport-limits). |\n| Finite generated UTF-8 output | Experimental | No | Experimental | No | Explicit `generatedOutput` and deadline; installed Node output evidence remains separate from production-launcher qualification. |\n| Finite incoming UTF-8 transforms | Experimental | No | Experimental | No | Explicit `bodyTransform` plus generated output/deadline; 64 KiB input, 256 KiB output, at most 4× expansion. Installed transform qualification is pending. |\n",
       "contentSha256": "97c70a57b8aae0169ed2360545e52d3430b1ea634751fd6cb087d98174deaa8d",
       "id": "contract/source-compatibility",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 52,
         "path": "docs/reference/compatibility-matrix.md",
         "selection": "heading:Source-form compatibility",
-        "sha256": "76ae19ba63891ef0d679758acb539fba2b44b7383ca93fd1ca9792ba74008ceb",
+        "sha256": "9064f060248a2bd5bc83864af5a1380bd4ead9d0ab22a5fe7149407b0da8fc28",
         "startLine": 27,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/68de782b66cc65c7f2a8b10b41ce732519605554"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/61b3daeff8b81fd7dfe16045f9e164a112c04ef7"
       },
       "status": "candidate",
       "tags": [
@@ -1127,17 +1127,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "contract",
-      "content": "## Current Beta targets\n\n`1.0.0-beta.9` exercises four explicit modes through one conformance corpus:\n\n| Host | Target | Current release status | Build shape |\n|---|---|---|---|\n| Node | Native | Beta candidate | Provider-neutral application Wasm with the Node host runtime. |\n| Node | JavaScript | Beta candidate | Explicit Node JavaScript source package. |\n| Fastly | Native | Beta candidate | Provider-neutral application Wasm plus deployable `bin/main.wasm`. |\n| Fastly | JavaScript | Beta candidate | Explicit Fastly JavaScript package. |\n\nTarget selection is part of the active project profile. Pulse does not switch\ntargets automatically when source crosses a Native boundary. The\n[compatibility matrix](../reference/compatibility-matrix.md) owns exact\ncapability differences, and [Beta scope](../preview-scope.md) owns the release\nclaim.\n\nThe `none` selector is compile-only: it can inspect and emit canonical Native\nartifacts without claiming an executable host.\n",
-      "contentSha256": "3e057a23bad0e97465ee6ddfed30c493bbd7dc43982ea69f6ee8d491ed31d158",
+      "content": "## Current Beta targets\n\n`1.0.0-beta.10` exercises four explicit modes through one conformance corpus:\n\n| Host | Target | Current release status | Build shape |\n|---|---|---|---|\n| Node | Native | Beta candidate | Provider-neutral application Wasm with the Node host runtime. |\n| Node | JavaScript | Beta candidate | Explicit Node JavaScript source package. |\n| Fastly | Native | Beta candidate | Provider-neutral application Wasm plus deployable `bin/main.wasm`. |\n| Fastly | JavaScript | Beta candidate | Explicit Fastly JavaScript package. |\n\nTarget selection is part of the active project profile. Pulse does not switch\ntargets automatically when source crosses a Native boundary. The\n[compatibility matrix](../reference/compatibility-matrix.md) owns exact\ncapability differences, and [Beta scope](../preview-scope.md) owns the release\nclaim.\n\nThe `none` selector is compile-only: it can inspect and emit canonical Native\nartifacts without claiming an executable host.\n",
+      "contentSha256": "8626a7976c7bd47fe97e501715461aa17be711423e4d0371c19d4dee169eaf72",
       "id": "contract/targets",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 36,
         "path": "docs/concepts/targets-and-hosts.md",
         "selection": "heading:Current Beta targets",
-        "sha256": "3a6a393bad0526b0c4f86072a4f8c75b4e31b35b4ae05e10716d4e05c4b62177",
+        "sha256": "ba5dd830334b00563d6d4b50e037c493b47f235eccbcd26cb3c6fa3f4aa74359",
         "startLine": 17,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a644f6ef180e8fb06bb38cac5f7e2724cf0e7019"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/d5c6e9a8dc1efa26447d177925880896dcb5a9e6"
       },
       "status": "candidate",
       "tags": [
@@ -1174,7 +1174,7 @@ export const contextCorpus = freeze({
       "content": "## Current transport limits\n\nFastly Native has an experimental opt-in forwarding path. Configure\n`fastly.bodyForwarding: { requestMaxBytes: 1048576, responseMaxBytes: 1048576 }`\nand `fastly.maxDurationMs` (1–30,000). Each independent byte limit is required\nand may be 1–1,048,576. The initial application shape contains one terminal\n`return ctx.fetch(url, { method: 'POST', body: ctx.req.body() })` with a literal\nURL mapped to a static backend. Optional literal headers and `timeoutMs` are\naccepted. Additional effects, groups, duplicate consumers, dynamic backends,\nbody decoding and transforms are outside this initial path.\n\nThe provider meters actual bytes through fixed 16 KiB raw scratch, handles\npartial writes and early origin responses, and filters response framing and\nhop-by-hop headers within 64 pairs/16 KiB. Omitted limits never mean unbounded.\nThe request deadline and any earlier fetch timeout cover both pumps until the\nfinal pre-close check. Fastly accepts queued delivery when close succeeds;\nPulse cannot then await a drain receipt, cancel delivery, or guarantee client\nreceipt. Failures after headers abandon the stream. This is a provider-specific\nhost-handoff contract. FWD9-03 checks exact installed packages and Viceroy 0.21.1\nwith binary, limit, deadline, framing and abort cases. A fixed guest scratch\nbuffer does not establish a bound on host queues. Deployed Fastly qualification\nremains separate. Fastly JavaScript still rejects incoming forwarding.\n\nNode Native forwarding uses\nthe emitted Wasm, with no JavaScript fallback. Its request text/JSON host calls\nare synchronous, so a Native forwarding application cannot also declare\nstructured request reads; use a separate application for those endpoints.\nJavaScript retains per-request read/forward exclusion. Without the Node opt-in, existing\nbounded request buffering is unchanged. Input chunks remain opaque; the separate\nexperimental generated-output API above accepts only application-owned text.\n\nHandler completion, response-header commitment and stream completion are\ndifferent boundaries. The Node JavaScript response writer waits for its local\npipeline; the Native CLI opaque writer can return after starting a pipe. Neither\nfact alone establishes a portable queue bound, client receipt, or a deadline\ncovering post-handoff streaming. The\n[bounded HTTP deadline contract](../architecture/current-contracts.md#selected-bounded-http-deadline-contract)\nretains its explicit streaming exclusions for the pre-existing paths. The\nopted-in Node forwarding path above has its own completion-aware deadline.\n",
       "contentSha256": "4303206952991794cf9c0323678250843d5027374d7f36e9de1990bbcedb896a",
       "id": "contract/transport-limits",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 330,
         "path": "docs/concepts/bodies.md",
@@ -1217,7 +1217,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Keep the configured application entry import-safe and move provider lifecycle startup to a separate runner.\",\n    \"Use the provider lifecycle through CLI delegation rather than starting infrastructure during application import.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The configured application entry graph starts a known provider lifecycle during module evaluation.\",\n  \"title\": \"Application Entry Lifecycle Side Effect\"\n}",
       "contentSha256": "44b69a0e8cad7d1745cc5af5011de10ce63e3b26748339b24a7dc6d1d0264b00",
       "id": "diagnostic/PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
@@ -1259,7 +1259,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"usage\",\n  \"code\": \"PULSE_ARGUMENT_MISSING\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Provide the missing flag value and rerun the command.\",\n    \"Run `pulse --help` for the command signature.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A command-line option that requires a value was supplied without one.\",\n  \"title\": \"Argument Missing\"\n}",
       "contentSha256": "24a5aaf8f59ca34749fc6380111353c72e0cb73add2b2bf4e4674f491a2d2a4f",
       "id": "diagnostic/PULSE_ARGUMENT_MISSING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_ARGUMENT_MISSING",
@@ -1301,7 +1301,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"usage\",\n  \"code\": \"PULSE_ARGUMENT_UNEXPECTED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Remove the unsupported argument or use the documented flag.\",\n    \"Run `pulse --help` for the command signature.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The command received an option or positional argument it does not accept.\",\n  \"title\": \"Argument Unexpected\"\n}",
       "contentSha256": "9c7f2742112b8ef38c9f10535fc64e287d0d4e5d570bea19f18b38ab0b6a0f3f",
       "id": "diagnostic/PULSE_ARGUMENT_UNEXPECTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_ARGUMENT_UNEXPECTED",
@@ -1343,7 +1343,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_BINARY_RESOURCE_INVALID\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Declare finite resource admission budgets; use literal const views and in-bounds scalar reads within the owning execution.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Binary resource declaration, view, or scalar read is invalid.\",\n  \"title\": \"Binary Resource Invalid\"\n}",
       "contentSha256": "e2928bb7300f1f22fface32d823f488d491d379db0515bb0b9eafdd9f227241d",
       "id": "diagnostic/PULSE_BINARY_RESOURCE_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BINARY_RESOURCE_INVALID",
@@ -1385,7 +1385,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_BODY_DECODE\",\n  \"exitCode\": 4,\n  \"httpStatus\": 400,\n  \"remediation\": [\n    \"Send valid JSON or text matching the documented request shape.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A structured request body could not be decoded in the requested representation.\",\n  \"title\": \"Body Decode\"\n}",
       "contentSha256": "ea142069f60508eff4fd97d18f0e9d92ab69222b82aeb00c063a52c849a486d6",
       "id": "diagnostic/PULSE_BODY_DECODE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BODY_DECODE",
@@ -1427,7 +1427,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_BODY_TOO_LARGE\",\n  \"exitCode\": 4,\n  \"httpStatus\": 413,\n  \"remediation\": [\n    \"Reduce the request payload or increase the configured structured-body limit deliberately.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A structured body exceeded the configured bounded-body limit.\",\n  \"title\": \"Body Too Large\"\n}",
       "contentSha256": "9b8085cb105a1ef259e07510642650724c3e39e57a247168d7e6ae1c4f99163c",
       "id": "diagnostic/PULSE_BODY_TOO_LARGE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BODY_TOO_LARGE",
@@ -1469,7 +1469,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_BODY_UNAVAILABLE\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Ensure the provider supplied a structured body snapshot before decoding it.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A structured body was requested when the provider had not supplied one.\",\n  \"title\": \"Body Unavailable\"\n}",
       "contentSha256": "58dc5b5cac6bbb8fef8e2b291f7d018c090a57a433e8a9a454bf3170649c6daa",
       "id": "diagnostic/PULSE_BODY_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BODY_UNAVAILABLE",
@@ -1511,7 +1511,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"safety\",\n  \"code\": \"PULSE_BUILD_OUT_UNSAFE\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Choose an output directory that is a real child of the project root.\",\n    \"Do not use `..`, external absolute paths, or symbolic-link traversal.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The resolved build output can escape or alias outside the project root.\",\n  \"title\": \"Build Out Unsafe\"\n}",
       "contentSha256": "5d52da6849f0465e6e9e6c6ae70abfcc8118bb7fa634f54e8c7290370d23fb4f",
       "id": "diagnostic/PULSE_BUILD_OUT_UNSAFE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BUILD_OUT_UNSAFE",
@@ -1553,7 +1553,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_BUILD_PROVIDER_REQUIRED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select an executable host in the active `.pulse/config.ts` profile.\",\n    \"Use `pulse compile` when only provider-neutral Wasm is required.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"pulse build requires a configured deployment provider; provider-neutral output belongs to pulse compile.\",\n  \"title\": \"Build Provider Required\"\n}",
       "contentSha256": "ba24b6b8d20603a3f9f0c4a0a5f476002c939e915a7c85152565997665a69e30",
       "id": "diagnostic/PULSE_BUILD_PROVIDER_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BUILD_PROVIDER_REQUIRED",
@@ -1595,7 +1595,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_CALL_BOUNDARY_INVALID\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Rebuild the application from admitted source; use each computation only within its request, static call count and invocation-owned view lifetime.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A computation call violated its target, schema, count or lifetime boundary.\",\n  \"title\": \"Call Boundary Invalid\"\n}",
       "contentSha256": "5ab9bd46660633064f82e3b63c917574c4fd565a11f75c23e39ad3e9b393b13d",
       "id": "diagnostic/PULSE_CALL_BOUNDARY_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_BOUNDARY_INVALID",
@@ -1637,7 +1637,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_BINDING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Keep direct context and imported target references unshadowed and unwritten; do not alias or pass the context.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The computation context or target binding escapes or changes.\",\n  \"title\": \"Call Source Binding\"\n}",
       "contentSha256": "d56350e9445a1e129d2d9fd5e69a7d94869912335f0447a28d118d4e76c09dbf",
       "id": "diagnostic/PULSE_CALL_SOURCE_BINDING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_BINDING",
@@ -1679,7 +1679,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_CALLEE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Inspect the nested compiler error. Use bounded synchronous computation, admitted pure helpers, resource reads and workspaces; remove effects, HTTP/state, mutation of borrowed input, escaping views and nested calls.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The computation body failed canonical admission.\",\n  \"title\": \"Call Source Callee\"\n}",
       "contentSha256": "a909f62a5401b777fbf65a007d85c30cbc306b42ad79d71bb36a4bd5ed677534",
       "id": "diagnostic/PULSE_CALL_SOURCE_CALLEE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_CALLEE",
@@ -1721,7 +1721,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_CONTEXT\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use a simple named context parameter at the selected caller position.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The computation caller context parameter is unsupported.\",\n  \"title\": \"Call Source Context\"\n}",
       "contentSha256": "68a76adaf61312363565858f55a2472ea88f1c6156dff2690e4646d8ef83d73d",
       "id": "diagnostic/PULSE_CALL_SOURCE_CONTEXT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_CONTEXT",
@@ -1763,7 +1763,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_ENTRY\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Place the call in a named plain handler, a reachable Router handler, or a selected managed operation.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Computation calls need a selected project HTTP caller.\",\n  \"title\": \"Call Source Entry\"\n}",
       "contentSha256": "93c6477c70a0b23f0790a938608abcc550c63a67a0ca0e50124f063edb843ef2",
       "id": "diagnostic/PULSE_CALL_SOURCE_ENTRY",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_ENTRY",
@@ -1805,7 +1805,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_FORM\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use ctx.call(importedFunction, input, { inputSchema: 'app.Input', outputSchema: 'app.Output' }) without aliases, computed access, type arguments or spreads.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Computation call syntax is not a direct static call.\",\n  \"title\": \"Call Source Form\"\n}",
       "contentSha256": "4d879ac0137cdf09a424681e946847425098e3cbfac73ac1215e36629559edc0",
       "id": "diagnostic/PULSE_CALL_SOURCE_FORM",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_FORM",
@@ -1847,7 +1847,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_LIMIT\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Reduce reachable call occurrences to at most sixteen; reused Router handlers count per reachable occurrence.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The application exceeds sixteen reachable computation call occurrences.\",\n  \"title\": \"Call Source Limit\"\n}",
       "contentSha256": "edc2eaf8a88b9bda951c41efdf612d5f689e84821102cb30b621951f31e3ddfc",
       "id": "diagnostic/PULSE_CALL_SOURCE_LIMIT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_LIMIT",
@@ -1889,7 +1889,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_PLACEMENT\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Call synchronously in the selected caller body, outside loops, nested calls and nested functions.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The computation call is awaited, nested or inside a loop/function.\",\n  \"title\": \"Call Source Placement\"\n}",
       "contentSha256": "34274154440df4171ecd75b6070c50abe1a73d87e6ee0808e10ad03525450735",
       "id": "diagnostic/PULSE_CALL_SOURCE_PLACEMENT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_PLACEMENT",
@@ -1931,7 +1931,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_PROVIDER\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Select explicit Node JavaScript, or a supported Native provider; there is no automatic target fallback.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Computation calls are unavailable on this JavaScript provider.\",\n  \"title\": \"Call Source Provider\"\n}",
       "contentSha256": "7e7a13f8b703dc1672dbd48510a63fff7aa2ac3bd82a1181b8e3acebbf6b2b60",
       "id": "diagnostic/PULSE_CALL_SOURCE_PROVIDER",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_PROVIDER",
@@ -1973,7 +1973,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_SCHEMAS\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Supply exactly inputSchema and outputSchema as literal string properties in an inline object.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Computation calls require two literal schema IDs.\",\n  \"title\": \"Call Source Schemas\"\n}",
       "contentSha256": "aca5564958dc210775ced436cf3f4d0ff73d4ad70b815b7f8cd53b409cf5da2a",
       "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMAS",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_SCHEMAS",
@@ -2015,7 +2015,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_SCHEMA_CONFLICT\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use one consistent input/output schema pair for every reachable occurrence of a target.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The same computation target uses conflicting schema pairs.\",\n  \"title\": \"Call Source Schema Conflict\"\n}",
       "contentSha256": "80240de0b4c1de6fc73c521557b4067b46f0de60de16fab48a7666a8f3b8c10f",
       "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
@@ -2057,7 +2057,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_SCHEMA_UNKNOWN\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Register both object schemas in the project schema registry and use their exact literal IDs.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A computation schema ID is absent from the project registry.\",\n  \"title\": \"Call Source Schema Unknown\"\n}",
       "contentSha256": "2650d599dc5940a26d799d7795601856a790600a7ec76b7359a958d6759daf71",
       "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
@@ -2099,7 +2099,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_TARGET\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Import a named synchronous function from a contained project module. Factories, dynamic targets and arbitrary package functions are unsupported.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The computation target is not an imported synchronous project function.\",\n  \"title\": \"Call Source Target\"\n}",
       "contentSha256": "bd4c6f02fe78d5dd43197074bf664ebf3e58d2366d6dfcd3f1c13f884ca856d0",
       "id": "diagnostic/PULSE_CALL_SOURCE_TARGET",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_TARGET",
@@ -2141,7 +2141,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CALL_SOURCE_TARGET_LIMIT\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Reduce the number of reachable imported computation targets to at most sixteen.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The application exceeds sixteen computation targets.\",\n  \"title\": \"Call Source Target Limit\"\n}",
       "contentSha256": "dcf139a4554f7433c840aa32fc1c918d4a6549edca935d72b531fdd9df8bdc20",
       "id": "diagnostic/PULSE_CALL_SOURCE_TARGET_LIMIT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_TARGET_LIMIT",
@@ -2183,7 +2183,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CANONICAL_COMPILE_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Rewrite the handler using the documented canonical API subset.\",\n    \"Run `pulse inspect --json` to see unsupported source forms.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The handler uses a source form outside the canonical Beta authoring subset.\",\n  \"title\": \"Canonical Compile Failed\"\n}",
       "contentSha256": "a62a47e0f87de6c2f043c8de09dda0324d3fedd0708c61ab13b57f35a3eae875",
       "id": "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_COMPILE_FAILED",
@@ -2225,7 +2225,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use one local const collection with literal max 1–32, one direct for-of/add, then one awaited flush.\",\n    \"Keep helper calls, mutation, filtering, nesting and escaping handles outside the collection build region.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The source does not satisfy the bounded collection build/flush contract.\",\n  \"title\": \"Canonical Effect Collection Unsupported\"\n}",
       "contentSha256": "aaf1fc5e054fe37e0c6820045bcf2a51bb28cf41af5745527b1bd5720298f1f3",
       "id": "diagnostic/PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED",
@@ -2267,7 +2267,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Inspect the generated-native diagnostic and rewrite unsupported canonical expressions.\",\n    \"Retain the plan hash and diagnostic detail when reporting a compiler defect.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The validated native plan could not be rendered into the bounded AssemblyScript state-machine source.\",\n  \"title\": \"Canonical Native As Generation Failed\"\n}",
       "contentSha256": "143f1b4fe50d198727a9503b21ed0486599a11037105b5e0d454e896173f67f0",
       "id": "diagnostic/PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED",
@@ -2309,7 +2309,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_CANONICAL_NATIVE_COMPILE_FAILED\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Restore the lockfile-pinned AssemblyScript dependency and rerun `pulse doctor`.\",\n    \"Retain the generated diagnostic detail if AssemblyScript rejects valid Pulse output.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The provider-neutral native plan could not be compiled into Pulse-owned WebAssembly.\",\n  \"title\": \"Canonical Native Compile Failed\"\n}",
       "contentSha256": "bd06e6eb9311256fd971209bc1f0e709a3dd663fa2c5f8242499c7422e02b353",
       "id": "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
@@ -2351,7 +2351,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CANONICAL_NATIVE_PLAN_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Inspect the native-plan diagnostics and rewrite unsupported canonical control flow.\",\n    \"Run `pulse inspect --json` to view the provider-neutral plan boundary.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The canonical handler could not be represented by the provider-neutral native execution-plan contract.\",\n  \"title\": \"Canonical Native Plan Failed\"\n}",
       "contentSha256": "c074bb186ae506d520859226532ac68a348f7377056fca0efba9a7d7f7b0c6ec",
       "id": "diagnostic/PULSE_CANONICAL_NATIVE_PLAN_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_NATIVE_PLAN_FAILED",
@@ -2393,7 +2393,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use a let counter starting at zero, a literal cap first, and an increment of one.\",\n    \"Keep the body within bounded pure value operations and move context operations outside the loop.\",\n    \"Respect the documented per-loop and nested iteration limits.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The loop does not satisfy the bounded pure-value control-flow contract.\",\n  \"title\": \"Canonical Pure Loop Unsupported\"\n}",
       "contentSha256": "b7847b356127e65dcf1a4f345a2a7f06f0d63e6de8a0ed545ddb526b323ddb46",
       "id": "diagnostic/PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
@@ -2435,7 +2435,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_CANONICAL_READ_LOOP_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use a let counter starting at zero, a literal cap from 0 through 64 first, and an increment of one.\",\n    \"Use sequential s3.getText, kv.getVersioned or crypto.digestText calls directly bound to one local or discarded.\",\n    \"Keep nested loops pure; avoid parallel effects, writes, callbacks, counter mutation and labelled transfers.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The loop does not satisfy the bounded sequential read control-flow contract.\",\n  \"title\": \"Canonical Read Loop Unsupported\"\n}",
       "contentSha256": "6c5513eb0cc152cb433869de9129e6c066ec03dafa4c28bca1bc0ae827b77863",
       "id": "diagnostic/PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
@@ -2477,7 +2477,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use a static string literal for the schema ID.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema operation uses a value that is not a static string literal ID.\",\n  \"title\": \"Canonical Schema Id Literal Required\"\n}",
       "contentSha256": "25dbd64c63e49eda8911e6d39f9bcdf3a96d7b8cf047733bbac08efa05a60c84",
       "id": "diagnostic/PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED",
@@ -2519,7 +2519,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_CANONICAL_SCHEMA_MISSING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Declare the referenced schema ID in the default-exported registry selected by pulse.schema.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The handler references a schema ID that is absent from project configuration.\",\n  \"title\": \"Canonical Schema Missing\"\n}",
       "contentSha256": "a331334ede9410c552465cde4c1820010951221ba0631d7e5d3c6f20ea1a2fdf",
       "id": "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_SCHEMA_MISSING",
@@ -2561,7 +2561,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"usage\",\n  \"code\": \"PULSE_COMMAND_UNKNOWN\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Run `pulse --help` and choose one of the documented commands.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The requested pulse command is not part of the supported CLI.\",\n  \"title\": \"Command Unknown\"\n}",
       "contentSha256": "d3fb542df4635dc3eaab79d9eb731f9c80931f99229415812aeac25145097af5",
       "id": "diagnostic/PULSE_COMMAND_UNKNOWN",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_COMMAND_UNKNOWN",
@@ -2603,7 +2603,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_CONFIG_IMPLICIT\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Run `pulse init` or create `.pulse/config.ts` to make workspace ownership explicit.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A command is relying on an implicit project shape instead of an explicit configuration.\",\n  \"title\": \"Config Implicit\"\n}",
       "contentSha256": "160d3bb7c61af5a7254543085183c6d8298861af67715b280e7fa81789b62c95",
       "id": "diagnostic/PULSE_CONFIG_IMPLICIT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONFIG_IMPLICIT",
@@ -2645,7 +2645,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_CONFIG_LOAD_FAILED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Fix the config import or runtime error.\",\n    \"Use `pulse doctor --json` to inspect the underlying cause.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected project configuration threw or failed while being loaded.\",\n  \"title\": \"Config Load Failed\"\n}",
       "contentSha256": "07aad1c3f71292c189abdde8dddf7d93382fa2cad8d2d2aa2c7c430686879a08",
       "id": "diagnostic/PULSE_CONFIG_LOAD_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONFIG_LOAD_FAILED",
@@ -2687,7 +2687,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_CONFIG_NOT_FOUND\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Run `pulse init` to create `.pulse/config.ts`.\",\n    \"Ensure the command runs inside the intended project directory.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Project discovery did not find an explicit Pulse configuration file.\",\n  \"title\": \"Config Not Found\"\n}",
       "contentSha256": "675269a9f307c9b0fa552e487e1995434749ee7090fbeba058bcef58a08a3856",
       "id": "diagnostic/PULSE_CONFIG_NOT_FOUND",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONFIG_NOT_FOUND",
@@ -2729,7 +2729,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_CONFIG_PLAN_PARITY_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Keep the config factory within the sealed static grammar and report the divergent plan hashes.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Static and runtime configuration normalization produced different canonical plans.\",\n  \"title\": \"Config Plan Parity Failed\"\n}",
       "contentSha256": "6d6a9bd29dd30ea7d1b89501329496aa703bb941bf4b0f458998034a2ec15e60",
       "id": "diagnostic/PULSE_CONFIG_PLAN_PARITY_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONFIG_PLAN_PARITY_FAILED",
@@ -2771,7 +2771,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_CONTINUATION_DOUBLE_RESUME\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Report this as a Pulse runtime/provider bug with the continuation trace.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A provider attempted to resume the same continuation more than once.\",\n  \"title\": \"Continuation Double Resume\"\n}",
       "contentSha256": "8fdf90cf9fc24f317505170a4cd79d7477e4bc7f6cb616bce2395fbf3f82e4be",
       "id": "diagnostic/PULSE_CONTINUATION_DOUBLE_RESUME",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONTINUATION_DOUBLE_RESUME",
@@ -2813,7 +2813,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_CONTINUATION_EXPIRED\",\n  \"exitCode\": 4,\n  \"httpStatus\": 504,\n  \"remediation\": [\n    \"Increase the continuation TTL only if the provider operation is expected to take longer.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A pending continuation exceeded its configured lifetime before resumption.\",\n  \"title\": \"Continuation Expired\"\n}",
       "contentSha256": "1f80be5716c83885173a293efa7487265a9a43aab6ab54daee8e17bea2f885d6",
       "id": "diagnostic/PULSE_CONTINUATION_EXPIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONTINUATION_EXPIRED",
@@ -2855,7 +2855,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_DEV_PROVIDER_UNSUPPORTED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select an executable provider for `pulse dev`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The development server requires an executable provider.\",\n  \"title\": \"Dev Provider Unsupported\"\n}",
       "contentSha256": "129ff8a537c53b81caabe4771db58027d02eafda98eee3de5c3849e293cf4b99",
       "id": "diagnostic/PULSE_DEV_PROVIDER_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_DEV_PROVIDER_UNSUPPORTED",
@@ -2897,7 +2897,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_DOCS_INVALID\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Restore the unmodified documentation index shipped with the executing @pulse-compute/cli package.\",\n    \"The index must be a readable, nonempty UTF-8 file contained in the package documentation directory.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The executing CLI package documentation index has an invalid type, location or text format.\",\n  \"title\": \"Docs Invalid\"\n}",
       "contentSha256": "6f337df54d95e6541b9a76554d0b07be6c78cf93cdc4dfa502df57054af2e319",
       "id": "diagnostic/PULSE_DOCS_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_DOCS_INVALID",
@@ -2939,7 +2939,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_DOCS_UNAVAILABLE\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Restore the documentation shipped with the executing @pulse-compute/cli package.\",\n    \"Reinstall that CLI version using your package manager; pulse docs does not install or download files.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The executing CLI package documentation index is missing or unreadable.\",\n  \"title\": \"Docs Unavailable\"\n}",
       "contentSha256": "164fbc347eed7366ce7f54e43b8e7a22241778b36e931f516c9264661c49f59e",
       "id": "diagnostic/PULSE_DOCS_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_DOCS_UNAVAILABLE",
@@ -2981,7 +2981,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_EFFECT_COLLECTION_CAPACITY\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use fresh execution-owned effects within capacity and flush the collection exactly once.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Collection capacity must be an integer from 1 to 32.\",\n  \"title\": \"Effect Collection Capacity\"\n}",
       "contentSha256": "4d3110f2b9250507a0ace7fb906b7c0974d52883b13a741f1c1b37f51f346ae6",
       "id": "diagnostic/PULSE_EFFECT_COLLECTION_CAPACITY",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_CAPACITY",
@@ -3023,7 +3023,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_EFFECT_COLLECTION_CLAIMED\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use fresh execution-owned effects within capacity and flush the collection exactly once.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"An effect root was already started or claimed.\",\n  \"title\": \"Effect Collection Claimed\"\n}",
       "contentSha256": "57d43836c1bda3047671495057049fb605150db31c12620d23a83a35e05357da",
       "id": "diagnostic/PULSE_EFFECT_COLLECTION_CLAIMED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_CLAIMED",
@@ -3065,7 +3065,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_EFFECT_COLLECTION_MEMBER\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use fresh execution-owned effects within capacity and flush the collection exactly once.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A collection member is not a fresh parallel-eligible Pulse effect.\",\n  \"title\": \"Effect Collection Member\"\n}",
       "contentSha256": "51c585a99964fd3b4232256c5471f0bb2b6cf2560b7918b9658f0c11626acc2e",
       "id": "diagnostic/PULSE_EFFECT_COLLECTION_MEMBER",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_MEMBER",
@@ -3107,7 +3107,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_EFFECT_COLLECTION_OVERFLOW\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use fresh execution-owned effects within capacity and flush the collection exactly once.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Collection capacity was exceeded before dispatch.\",\n  \"title\": \"Effect Collection Overflow\"\n}",
       "contentSha256": "5abd8da64fdb8e60d3b32b322dd1751d41e27b48092e8ad18d831e29f87c7c2d",
       "id": "diagnostic/PULSE_EFFECT_COLLECTION_OVERFLOW",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_OVERFLOW",
@@ -3149,7 +3149,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_EFFECT_COLLECTION_OWNER\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use fresh execution-owned effects within capacity and flush the collection exactly once.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A collection or member belongs to another execution or overlaps an open collection.\",\n  \"title\": \"Effect Collection Owner\"\n}",
       "contentSha256": "96629561098c04a36c88b0c679e3d5f232bdb808448a6fd06ec56a3281333005",
       "id": "diagnostic/PULSE_EFFECT_COLLECTION_OWNER",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_OWNER",
@@ -3191,7 +3191,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_EFFECT_COLLECTION_SEALED\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use fresh execution-owned effects within capacity and flush the collection exactly once.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Collection membership is already sealed.\",\n  \"title\": \"Effect Collection Sealed\"\n}",
       "contentSha256": "11ef5cd888439c5ec320580fd97952627ece503f8080198142cc4a1f02483626",
       "id": "diagnostic/PULSE_EFFECT_COLLECTION_SEALED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_SEALED",
@@ -3233,7 +3233,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_EFFECT_COLLECTION_UNFLUSHED\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use fresh execution-owned effects within capacity and flush the collection exactly once.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A nonempty collection reached handler completion without an explicit flush.\",\n  \"title\": \"Effect Collection Unflushed\"\n}",
       "contentSha256": "62a56181a2f36a717b9efb2c117fe1a69a5a5391b04c577f737ba942a8dedf6a",
       "id": "diagnostic/PULSE_EFFECT_COLLECTION_UNFLUSHED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_UNFLUSHED",
@@ -3275,7 +3275,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_ENTRY_NOT_FOUND\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Create the configured entry file or correct `pulse.entry` in `.pulse/config.ts`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The configured canonical handler entry file does not exist.\",\n  \"title\": \"Entry Not Found\"\n}",
       "contentSha256": "aed9441b38468e22032ab597a284f4f5e3c233436e1e102dfb59f0d92659875e",
       "id": "diagnostic/PULSE_ENTRY_NOT_FOUND",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_ENTRY_NOT_FOUND",
@@ -3317,7 +3317,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_EVENT_TARGET_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"httpStatus\": 501,\n  \"remediation\": [\n    \"Select a target whose descriptor and provider event driver satisfy every reachable event requirement.\",\n    \"Use `pulse inspect --json` to review event target support; Pulse will not select another target automatically.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected provider target cannot realize or test the reachable event plane.\",\n  \"title\": \"Event Target Unsupported\"\n}",
       "contentSha256": "97ffbca185e8998d55430efd4815c5f1dab927cde16a171b1e69bb20c480df23",
       "id": "diagnostic/PULSE_EVENT_TARGET_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EVENT_TARGET_UNSUPPORTED",
@@ -3359,7 +3359,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select a profile with `target: \\\"native\\\"` or use `pulse compile`.\",\n    \"Remove Native recipe flags (`--native-shrink0`, `--experimental-native-size`, `--experimental-native-bounded-size`) for JavaScript build output.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Native optimization selections cannot be used for a JavaScript build target.\",\n  \"title\": \"Experimental Native Size Unsupported\"\n}",
       "contentSha256": "14ccdbe13045416acff80a2f616f18afcc8e0561e64ba807c11704e6f5b5f46e",
       "id": "diagnostic/PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
@@ -3401,7 +3401,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_FASTLY_BACKEND_BINDINGS_INVALID\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Correct the Fastly `backends` map in the active `.pulse/config.ts` profile.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The Fastly backend binding map is not a valid string-to-string mapping.\",\n  \"title\": \"Fastly Backend Bindings Invalid\"\n}",
       "contentSha256": "62ba3e3263d61c68402cbd2a9c522e95d67c1cdf5ccb74dff5025d63cc5b94bf",
       "id": "diagnostic/PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
@@ -3443,7 +3443,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_FASTLY_BACKEND_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Declare a static Fastly backend binding for the requested origin, or explicitly enable dynamic backends.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A static Fastly outbound origin has no configured backend and dynamic backends are disabled.\",\n  \"title\": \"Fastly Backend Required\"\n}",
       "contentSha256": "d3890dcc30538fc06ae3dba41cb1e7f618759af326297a7d3d1ba7fe38ca8540",
       "id": "diagnostic/PULSE_FASTLY_BACKEND_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_BACKEND_REQUIRED",
@@ -3485,7 +3485,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_FASTLY_CLI_INSPECTION_FAILED\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Run `fastly version` directly and fix the Fastly CLI installation.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Pulse could not inspect the installed Fastly CLI version.\",\n  \"title\": \"Fastly CLI Inspection Failed\"\n}",
       "contentSha256": "f76ecfca47e456e832f6846f1891b8c071652fd0e0773c112d74305b7c447adc",
       "id": "diagnostic/PULSE_FASTLY_CLI_INSPECTION_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_CLI_INSPECTION_FAILED",
@@ -3527,7 +3527,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_FASTLY_CLI_UNAVAILABLE\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Install the Fastly CLI with Homebrew, a supported package manager, or an official release.\",\n    \"Ensure `fastly` is on PATH, or set `PULSE_FASTLY_BIN` in CI.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The Fastly executable required for local target execution is unavailable.\",\n  \"title\": \"Fastly CLI Unavailable\"\n}",
       "contentSha256": "479f85b7f43505a18297acef5217b74460262a7623a1adc58f0148e22463103e",
       "id": "diagnostic/PULSE_FASTLY_CLI_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_CLI_UNAVAILABLE",
@@ -3569,7 +3569,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"httpStatus\": 501,\n  \"remediation\": [\n    \"Remove the reachable event.emit requirement or select Node JavaScript or Node Native.\",\n    \"Pulse will not substitute logging, HTTP, GRIP, or another target.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Fastly does not expose the host-neutral event acceptance operation required by the application.\",\n  \"title\": \"Fastly Event Emit Unsupported\"\n}",
       "contentSha256": "ed613225a84fbc2eb897ace567420d326305ef17f5263cf7e268d6544d81a5a2",
       "id": "diagnostic/PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED",
@@ -3611,7 +3611,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"httpStatus\": 501,\n  \"remediation\": [\n    \"Select Node JavaScript or Node Native for event execution, or use `none` for compile-only inspection.\",\n    \"Do not map event ingress through HTTP or GRIP.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Fastly does not expose the host-neutral event ingress required by the application.\",\n  \"title\": \"Fastly Event Ingress Unsupported\"\n}",
       "contentSha256": "01d48ae8ea7c6bd9a395c1196e16dd2cc0dd5c8accd6a1f939f1eb278a46a89d",
       "id": "diagnostic/PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED",
@@ -3653,7 +3653,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Configure the Fastly Fanout backend required by `grip.hold`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A GRIP hold operation requires a configured Fastly Fanout backend.\",\n  \"title\": \"Fastly GRIP Fanout Backend Required\"\n}",
       "contentSha256": "577bcead05db79ad3bfe95b9e8bde6dc4324087fd9a2b1d0a61531c178365625",
       "id": "diagnostic/PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED",
@@ -3695,7 +3695,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Configure the Fastly GRIP publish backend and URL binding.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A GRIP publish operation requires configured Fastly publish URL and backend bindings.\",\n  \"title\": \"Fastly GRIP Publish Binding Required\"\n}",
       "contentSha256": "1d935e72e95fbef0d293c8c01172926285b2454506741f11799cc2e838f99a86",
       "id": "diagnostic/PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED",
@@ -3737,7 +3737,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_FASTLY_KV_BINDINGS_INVALID\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Correct the Fastly `kv` binding map in the active `.pulse/config.ts` profile.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The Fastly KV binding map is not a valid string-to-string mapping.\",\n  \"title\": \"Fastly KV Bindings Invalid\"\n}",
       "contentSha256": "c8fa545bfcd9b5f7de8c054457933287753254b9511793cfaedd2787459a0e7c",
       "id": "diagnostic/PULSE_FASTLY_KV_BINDINGS_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_KV_BINDINGS_INVALID",
@@ -3779,7 +3779,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_FASTLY_LOG_ENDPOINT_INVALID\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Configure fastly.bindings.logEndpoint (or fastly({logEndpoint})) with a non-reserved endpoint name of 1–255 UTF-8 bytes.\",\n    \"Omit logEndpoint to retain stdout; create the named stream separately on the selected Fastly service.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The configured Fastly named logging endpoint is invalid or reserved.\",\n  \"title\": \"Fastly Log Endpoint Invalid\"\n}",
       "contentSha256": "cac2e7eefc632a27c001ec6879d360374ae4870051c2eeadea9d640d05488b63",
       "id": "diagnostic/PULSE_FASTLY_LOG_ENDPOINT_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_LOG_ENDPOINT_INVALID",
@@ -3821,7 +3821,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_FASTLY_REQUEST_TIMEOUT\",\n  \"exitCode\": 5,\n  \"httpStatus\": 504,\n  \"remediation\": [\n    \"Inspect the local Fastly Compute service and backend fixture before retrying.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A request to the local Fastly Compute service exceeded its timeout.\",\n  \"title\": \"Fastly Request Timeout\"\n}",
       "contentSha256": "a8493981ba7fdcaa017c66b029be3974ee63da99db2d9a4a5a67cd4965100b3b",
       "id": "diagnostic/PULSE_FASTLY_REQUEST_TIMEOUT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_REQUEST_TIMEOUT",
@@ -3863,7 +3863,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_FASTLY_SERVE_START_FAILED\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Run `fastly compute serve` directly in the generated package and inspect its output.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The Fastly local Compute service failed before becoming ready.\",\n  \"title\": \"Fastly Serve Start Failed\"\n}",
       "contentSha256": "b102d5edee70eaa51d5ef65839c736ece2cb02fb6e3d32da8716d96f3bb22611",
       "id": "diagnostic/PULSE_FASTLY_SERVE_START_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_SERVE_START_FAILED",
@@ -3905,7 +3905,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_FASTLY_SERVE_START_TIMEOUT\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Inspect Fastly CLI output and local port availability, then retry.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The Fastly local Compute service did not become ready before its startup timeout.\",\n  \"title\": \"Fastly Serve Start Timeout\"\n}",
       "contentSha256": "aebfaf507202161dc87ef6ed3e453535aac4bdef546bae0c2e99224f6cbbcae6",
       "id": "diagnostic/PULSE_FASTLY_SERVE_START_TIMEOUT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_SERVE_START_TIMEOUT",
@@ -3947,7 +3947,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Use a Node.js version matching `^22.14.0 || ^24.0.0`, or disable live network fetch and configure deterministic fetch fixtures.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"No supported local fetch implementation is available for the requested operation.\",\n  \"title\": \"Fetch Implementation Unavailable\"\n}",
       "contentSha256": "d401324e3f5d6d299cdf07b031cef0285521bb994dba6198c3360072a5a67fcf",
       "id": "diagnostic/PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
@@ -3989,7 +3989,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_FETCH_NETWORK\",\n  \"exitCode\": 4,\n  \"httpStatus\": 502,\n  \"remediation\": [\n    \"Check the origin URL, backend binding, and local network access.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"An outbound fetch failed because the origin or network was unavailable.\",\n  \"title\": \"Fetch Network\"\n}",
       "contentSha256": "6dfa281a53c5cc12e9ab23f5dc536dbe125c38d9272acb7d4a3ba3d03d3ceeca",
       "id": "diagnostic/PULSE_FETCH_NETWORK",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_NETWORK",
@@ -4031,7 +4031,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_FETCH_SCHEMA_WITHOUT_JSON\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use schema only together with the outbound fetch json field.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"An outbound fetch schema was supplied without a semantic JSON payload.\",\n  \"title\": \"Fetch Schema Without JSON\"\n}",
       "contentSha256": "c3ab67d58a77de7e27bda9ad012d4ca8f267a0cdbb3bff8400dd78e5d51de77c",
       "id": "diagnostic/PULSE_FETCH_SCHEMA_WITHOUT_JSON",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_SCHEMA_WITHOUT_JSON",
@@ -4073,7 +4073,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_FETCH_TIMEOUT\",\n  \"exitCode\": 4,\n  \"httpStatus\": 504,\n  \"remediation\": [\n    \"Check the origin and timeout policy, then retry.\",\n    \"Use a configured fetch fixture in tests for deterministic reproduction.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"An outbound fetch did not complete before its timeout.\",\n  \"title\": \"Fetch Timeout\"\n}",
       "contentSha256": "7287de023b539a871ddf84fa6fb9d995cb6ace838cf70369b9053f29b0a137fa",
       "id": "diagnostic/PULSE_FETCH_TIMEOUT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_TIMEOUT",
@@ -4115,7 +4115,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_FETCH_URL_INVALID\",\n  \"exitCode\": 4,\n  \"httpStatus\": 400,\n  \"remediation\": [\n    \"Use an absolute supported URL or a correctly configured provider backend.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"An outbound fetch uses an invalid or unsupported URL.\",\n  \"title\": \"Fetch URL Invalid\"\n}",
       "contentSha256": "b338402de0b9e7c7bb7d8366456ccac2fa68fd49383f9754075511a645e0e2aa",
       "id": "diagnostic/PULSE_FETCH_URL_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_URL_INVALID",
@@ -4157,7 +4157,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_HANDLER_ASYNC_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Declare every managed handler, middleware function, and error handler with `async`.\",\n    \"Native lowering erases the wrapper; no Promise runtime or Asyncify support is added.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A managed handler in a conventional Pulse project is missing its required async wrapper.\",\n  \"title\": \"Handler Async Required\"\n}",
       "contentSha256": "2d571c960b9c7c0c2660c4dddb3aa316d60daf43a9a8f6c0cbd9886bf1e5af2f",
       "id": "diagnostic/PULSE_HANDLER_ASYNC_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HANDLER_ASYNC_REQUIRED",
@@ -4199,7 +4199,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_INIT_FILE_EXISTS\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Remove the conflicting file or choose another target directory.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Project initialization would replace an existing file that is not safe to overwrite.\",\n  \"title\": \"Init File Exists\"\n}",
       "contentSha256": "d5b74cc4ad1b279c760be8670594e2edf064633babda8eb8c5dca66b28b96a32",
       "id": "diagnostic/PULSE_INIT_FILE_EXISTS",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_INIT_FILE_EXISTS",
@@ -4241,7 +4241,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_INIT_NOT_EMPTY\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Choose an empty directory or pass `--force` only when overwriting is intentional.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Project initialization would write into a non-empty directory without explicit force.\",\n  \"title\": \"Init Not Empty\"\n}",
       "contentSha256": "b27f47cae969fb76e8c01f3ad24dca86bc6e46fc68322c23a7517043c7fddffd",
       "id": "diagnostic/PULSE_INIT_NOT_EMPTY",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_INIT_NOT_EMPTY",
@@ -4283,7 +4283,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Default-export a Router, Pulse application, or managed handler from a project-owned entry module.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The JavaScript plan entry is not a project-owned application module.\",\n  \"title\": \"Javascript Application Entry Invalid\"\n}",
       "contentSha256": "13ff2c25feb3a628a40db7ad26372cdf0ec376806179f9caeab9b13732895755",
       "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID",
@@ -4325,7 +4325,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Default-export a Router, Pulse application, or managed handler.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The JavaScript entry does not export a managed Pulse application.\",\n  \"title\": \"Javascript Application Export Invalid\"\n}",
       "contentSha256": "280dcb8e08560d74c0086b0f212c9381081382ea70d5393ff6643276b47c6c2a",
       "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID",
@@ -4367,7 +4367,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Fix the first reachable-graph diagnostic before loading the JavaScript application.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The sealed reachable graph could not be built for JavaScript application loading.\",\n  \"title\": \"Javascript Application Graph Failed\"\n}",
       "contentSha256": "ddd55ac2d3d4764be9494e7dfcbba6db9b0c9b7db79e9dec35ec88f212eceda7",
       "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED",
@@ -4409,7 +4409,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Rebuild the JavaScript application plan from the configured entry and sealed reachable graph.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The JavaScript loader received a value outside the normalized application-plan contract.\",\n  \"title\": \"Javascript Application Plan Invalid\"\n}",
       "contentSha256": "41258ce59ebbd59ad39fcb338d0e01eb71c5123568a43602d43426219888e7ca",
       "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
@@ -4451,7 +4451,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Inspect the application-plan blockers and select only explicitly realized package and provider capabilities.\",\n    \"Pulse will not fall back to native or another target automatically.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected JavaScript application has one or more explicit target blockers.\",\n  \"title\": \"Javascript Application Unavailable\"\n}",
       "contentSha256": "4ed3ff5ceb25de2e365336c85e2fbf4d1e82842adc8b542fab600b01bff17f02",
       "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE",
@@ -4493,7 +4493,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Install or explicitly declare the external module required by the JavaScript target.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A declared external module is unavailable to the JavaScript application loader.\",\n  \"title\": \"Javascript External Module Unavailable\"\n}",
       "contentSha256": "7ba3040fa7ffda5598a858e6721991f0e17e1b74384672a8364cffd89bd1e758",
       "id": "diagnostic/PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE",
@@ -4535,7 +4535,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"internal\",\n  \"code\": \"PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Retain the graph manifest and report the duplicate runtime edge.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The sealed JavaScript graph contains more than one runtime edge for the same import.\",\n  \"title\": \"Javascript Graph Edge Ambiguous\"\n}",
       "contentSha256": "7b4c79922b4c181bd168d342de5277d0456f29486f1fc795af45bba1840c9061",
       "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS",
@@ -4577,7 +4577,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"internal\",\n  \"code\": \"PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Rebuild the JavaScript plan from the exact source tree and retain the graph manifest.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A JavaScript graph edge or entry references a missing graph module.\",\n  \"title\": \"Javascript Graph Module Missing\"\n}",
       "contentSha256": "da0751d3f78891e27d99dbc10c099ce2bfcfadbf1f8de63557356fbd956f2e96",
       "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING",
@@ -4619,7 +4619,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Keep runtime imports within the sealed reachable graph and avoid evaluation-time dynamic loading.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Runtime evaluation requested an import absent from the sealed reachable graph.\",\n  \"title\": \"Javascript Import Not In Graph\"\n}",
       "contentSha256": "4176aad92a9eab6ebe2cc1a07f75279a43c3429717b349919e8f87c85ceaca12",
       "id": "diagnostic/PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH",
@@ -4661,7 +4661,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Fix the TypeScript or JavaScript syntax in the graph-owned project module.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A graph-owned TypeScript or JavaScript module could not be transpiled for the Node loader.\",\n  \"title\": \"Javascript Module Compile Failed\"\n}",
       "contentSha256": "46a973042b1d6d4de2b641d28b53d1ed53f89700973578ee5c984d709ad471cc",
       "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
@@ -4703,7 +4703,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"internal\",\n  \"code\": \"PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Retain the application plan and report the unsupported module kind.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The JavaScript loader encountered a module kind outside its sealed contract.\",\n  \"title\": \"Javascript Module Kind Unsupported\"\n}",
       "contentSha256": "a9c9a14e2b5af346b6dfd31bf12c07f0cd4df8ab61adb95ed748b3311ba34f4e",
       "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED",
@@ -4745,7 +4745,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_JAVASCRIPT_MODULE_NOT_FOUND\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Restore the graph-owned project module or rebuild the plan after the source change.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A graph-owned project module is absent at JavaScript load time.\",\n  \"title\": \"Javascript Module Not Found\"\n}",
       "contentSha256": "39bf5364d33f2a04ff8f4fd5be209a684aa49f76a15c5af1ed9c67f7c9c8f066",
       "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_NOT_FOUND",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_NOT_FOUND",
@@ -4787,7 +4787,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"safety\",\n  \"code\": \"PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Keep every graph-owned project module inside the authoritative Pulse workspace.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A graph-owned project module escapes the authoritative workspace.\",\n  \"title\": \"Javascript Module Outside Workspace\"\n}",
       "contentSha256": "f026a134c35789efe442d067379effd419c8c62957e6abf6553296bb1e3d591b",
       "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE",
@@ -4829,7 +4829,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"safety\",\n  \"code\": \"PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Rebuild the JavaScript application plan after changing a project module.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A graph-owned project module changed after the JavaScript plan was created.\",\n  \"title\": \"Javascript Module Source Changed\"\n}",
       "contentSha256": "67366322f609d4b41702769a851ff0f45aca0d2077b3d77297fe21bee9400b07",
       "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED",
@@ -4871,7 +4871,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use a CommonJS-compatible package entry for the current Node loader or defer the package to a later JavaScript bundling contract.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The current graph-backed Node loader cannot require the selected ESM-only package entry.\",\n  \"title\": \"Javascript Package Esm Unsupported\"\n}",
       "contentSha256": "03d9e80cf8b1b708e5702cbd256cfb538a7c35032059ba18a7a107a86914af02",
       "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED",
@@ -4913,7 +4913,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Install the exact package selected by the reachable graph in the application workspace.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The graph-selected JavaScript package module cannot be loaded from the application workspace.\",\n  \"title\": \"Javascript Package Module Unavailable\"\n}",
       "contentSha256": "7671a69e009f63e59584c95c3a8128ab5f7c10dc0551fea7e7a2786ae347a2ab",
       "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
@@ -4955,7 +4955,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"internal\",\n  \"code\": \"PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Rebuild the JavaScript plan and retain the graph and plan hashes when reporting the inconsistency.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The graph selected a package module that is absent from the JavaScript application plan.\",\n  \"title\": \"Javascript Package Plan Missing\"\n}",
       "contentSha256": "cf0d81eed4cc718d921210b91fca38ccb5cf7a5932828e848fc83017b8fb9c13",
       "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING",
@@ -4997,7 +4997,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use a package with an explicit JavaScript realization or select a native target.\",\n    \"Inspect package target support with `pulse inspect --json`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A reachable Pulse-aware package has no JavaScript realization for the selected target.\",\n  \"title\": \"Javascript Package Realization Unavailable\"\n}",
       "contentSha256": "5b2d4e62e32e202d4a49b9eb282200898cff9573635ae4575207debf98607939",
       "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE",
@@ -5039,7 +5039,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_MCP_STATIC_BINDING_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Declare one module-level MCP binding with literal protocol options, one local EntityRouter and a direct terminal handle(ctx) return.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The MCP binding is dynamic, invalid or outside the supported static protocol and Entities composition contract.\",\n  \"title\": \"Mcp Static Binding Required\"\n}",
       "contentSha256": "f4822b7be9e3991a273b100cc83a4116c51df2ae8b6a3f295d06d1287d9c0e33",
       "id": "diagnostic/PULSE_MCP_STATIC_BINDING_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_MCP_STATIC_BINDING_REQUIRED",
@@ -5081,7 +5081,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_NATIVE_EXPANSION_REPEATED\",\n  \"exitCode\": 1,\n  \"remediation\": [\n    \"Inspect the named owners and registration counts in `pulse doctor --json`.\",\n    \"Compare their observed shapes with the current retained HTTP-stage contract before changing generated wiring.\",\n    \"Measure a full target build before claiming Wasm savings; preserve explicit inputs, outputs and continuation ownership.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A repeated HTTP owner has multiple Native plan body instances and at least 1,024 additional lowered-source bytes across registrations.\",\n  \"title\": \"Native Expansion Repeated\"\n}",
       "contentSha256": "d81e0b3adf7dd9182360742ee86e88491f16fa4faefde3b467e6014ab6304eeb",
       "id": "diagnostic/PULSE_NATIVE_EXPANSION_REPEATED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NATIVE_EXPANSION_REPEATED",
@@ -5123,7 +5123,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_NATIVE_IMPORT_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use an exact declared ESM source export in the bounded handler/helper subset, a trusted Pulse capability, or an explicit JavaScript target.\",\n    \"Pulse will not change targets automatically.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A reachable runtime import has neither supported static source nor a trusted Pulse native contract.\",\n  \"title\": \"Native Import Unsupported\"\n}",
       "contentSha256": "08bfce3828d6c6703ce54891288b3f9f66fb261ea9cd41b85520fd8d730d05aa",
       "id": "diagnostic/PULSE_NATIVE_IMPORT_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NATIVE_IMPORT_UNSUPPORTED",
@@ -5165,7 +5165,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_NATIVE_TEXT_UNSUPPORTED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select a Native build profile or use `pulse compile --emit-wat`.\",\n    \"Remove `--emit-wat` for JavaScript builds.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Diagnostic WebAssembly text is available only for Native compilation.\",\n  \"title\": \"Native Text Unsupported\"\n}",
       "contentSha256": "4524f75df902980def25d6f754b782dde98ee90b7ac39e86bf27933abb645f90",
       "id": "diagnostic/PULSE_NATIVE_TEXT_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NATIVE_TEXT_UNSUPPORTED",
@@ -5207,7 +5207,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_NODE_VERSION_UNSUPPORTED\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Use a Node.js version matching `^22.14.0 || ^24.0.0` and rerun `pulse doctor`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The active Node.js version is outside the supported release range.\",\n  \"title\": \"Node Version Unsupported\"\n}",
       "contentSha256": "a84be985a967e26748e59364e3a1a737535fd2b3e2706f304f4c62e931bc5e2f",
       "id": "diagnostic/PULSE_NODE_VERSION_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NODE_VERSION_UNSUPPORTED",
@@ -5249,7 +5249,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_NUMERIC_WORKSPACE_INVALID\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Create const numeric workspaces with literal capacity 1..1024 outside loops; use direct in-bounds indexed reads and finite numeric writes within the owning execution.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Numeric workspace construction, ownership, index, or value is invalid.\",\n  \"title\": \"Numeric Workspace Invalid\"\n}",
       "contentSha256": "8045826e83a9d8df69742d1197560dbf78e025ec7a40e27dd513a62b213558c5",
       "id": "diagnostic/PULSE_NUMERIC_WORKSPACE_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NUMERIC_WORKSPACE_INVALID",
@@ -5291,7 +5291,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_OPAQUE_BODY_INSPECTION\",\n  \"exitCode\": 4,\n  \"httpStatus\": 400,\n  \"remediation\": [\n    \"Return or proxy the opaque response directly; do not call JSON, text, bytes, or transform helpers.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Application code attempted to inspect or transform an opaque host-owned body.\",\n  \"title\": \"Opaque Body Inspection\"\n}",
       "contentSha256": "fb34f1ef73c774a2384d0af79253be91a0824edd716d090b15d4afa8a76b6cd2",
       "id": "diagnostic/PULSE_OPAQUE_BODY_INSPECTION",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_OPAQUE_BODY_INSPECTION",
@@ -5333,7 +5333,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"configuration\",\n  \"code\": \"PULSE_PACKAGE_BINDING_INVALID\",\n  \"exitCode\": 2,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Correct the explicit package runtime host grant: package, contract, artifact, operations, named secret, key identity, trust domain and HTTPS origin.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A package runtime host binding is not a valid explicit grant.\",\n  \"title\": \"Package Binding Invalid\"\n}",
       "contentSha256": "547e342e407972f4031aa5154c3142e76d588036e3dd32009c31e0fac08ffc37",
       "id": "diagnostic/PULSE_PACKAGE_BINDING_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_BINDING_INVALID",
@@ -5375,7 +5375,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Remove the ambiguous re-export or give each package-owned helper one unambiguous source owner.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A project binding or re-export resolves to more than one package-owned symbol.\",\n  \"title\": \"Package Binding Ownership Ambiguous\"\n}",
       "contentSha256": "072875f779e60c1a0aa98ef049cb1ed1bd351097e0fa4331e5cd002f2ff267a6",
       "id": "diagnostic/PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS",
@@ -5417,7 +5417,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_PACKAGE_CAPABILITY_UNAVAILABLE\",\n  \"exitCode\": 3,\n  \"httpStatus\": 501,\n  \"remediation\": [\n    \"Supply the exact compiled package artifact and matching host operation grant, including the selected crypto realization.\",\n    \"Package declarations and wire metadata cannot grant host authority.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The package invocation lacks its exact artifact, operation grant or selected host capability.\",\n  \"title\": \"Package Capability Unavailable\"\n}",
       "contentSha256": "33d29db3b95cf8f26f43008cdcb03764751afcff5e080a12d34ed27bf02c01e1",
       "id": "diagnostic/PULSE_PACKAGE_CAPABILITY_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_CAPABILITY_UNAVAILABLE",
@@ -5459,7 +5459,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Verify the trusted package manifest and direct facade import, then retain the graph and package diagnostics when reporting the issue.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The graph selected a trusted package contract that the package recognizer did not recover from its owning source module.\",\n  \"title\": \"Package Contract Not Recognized\"\n}",
       "contentSha256": "1a218fe9f88fb1c18e610fe6ab92bfdf31b000f09ea59fbbe0066417c1c35b6d",
       "id": "diagnostic/PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED",
@@ -5501,7 +5501,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Select the native target for this package or wait for its declared JavaScript realization.\",\n    \"No automatic fallback occurs.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A reachable Pulse-aware package explicitly declares that its JavaScript realization is not implemented.\",\n  \"title\": \"Package Javascript Realization Not Implemented\"\n}",
       "contentSha256": "40afcd28f69300cc36b5f5c5d4d5ddc22362062e9124b3d602352957d3b56686",
       "id": "diagnostic/PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED",
@@ -5543,7 +5543,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_PACKAGE_LOWERING_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Fix the package-owned API call shape reported in the nested diagnostic.\",\n    \"Keep package effects in the documented static positions.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A package-owned API call could not be lowered into its canonical effect contract.\",\n  \"title\": \"Package Lowering Failed\"\n}",
       "contentSha256": "09d41678adb6d2792ca93d4bb330566fae05d85ac7f39568385aff97cc64a501",
       "id": "diagnostic/PULSE_PACKAGE_LOWERING_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_LOWERING_FAILED",
@@ -5585,7 +5585,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_PACKAGE_OPERATION_FAILED\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Check the versioned package Wasm ABI, resource limits and named host key binding.\",\n    \"Keep keys, message bytes and backend failure details out of diagnostics.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The bounded package operation failed; private provider and protocol data are withheld.\",\n  \"title\": \"Package Operation Failed\"\n}",
       "contentSha256": "0baf4ccc0fd3873c58d683158c03d21c4921fce3a6bc4e951fe55b0749f56071",
       "id": "diagnostic/PULSE_PACKAGE_OPERATION_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_OPERATION_FAILED",
@@ -5627,7 +5627,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Import the package-owned facade directly until helper/re-export lowering is enabled by the package contract.\",\n    \"The graph records the owning package; no fallback occurs.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A package-owned helper is graph-owned but reaches application code through a project re-export whose lowering remains deferred.\",\n  \"title\": \"Package Reexport Lowering Deferred\"\n}",
       "contentSha256": "c0d7ebd7508fba9d27073822fbce73f379de94436e70cd1f029ee2fe8c9f9b56",
       "id": "diagnostic/PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED",
@@ -5669,7 +5669,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_PACKAGE_SNAPSHOT_INVALID\",\n  \"exitCode\": 4,\n  \"httpStatus\": 400,\n  \"remediation\": [\n    \"Capture an original origin-form HTTP target, ordered ASCII fields and at most 65536 exact body bytes at the trusted host boundary.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The host cannot capture the supplied HTTP inputs within the supported representation and bounds.\",\n  \"title\": \"Package Snapshot Invalid\"\n}",
       "contentSha256": "298e23bf659b409cc5f2dad384ccfef21dfad43f8a68be8c908d4d1f2ab9efe6",
       "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_SNAPSHOT_INVALID",
@@ -5711,7 +5711,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Supply a live provider-owned HTTP capture for the configured trusted origin.\",\n    \"Do not reconstruct captures from normalized URLs or application records.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A live authoritative HTTP capture for this package binding is unavailable.\",\n  \"title\": \"Package Snapshot Unavailable\"\n}",
       "contentSha256": "1eeb33d18cdbd169de007508806725228560aa31c46efd530cc09f62b36a5703",
       "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE",
@@ -5753,7 +5753,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_PACKAGE_SUBPATH_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Import the package through its documented Pulse lowerable facade, or keep the package behind a JavaScript-only boundary.\",\n    \"Run `pulse inspect --json` to review package ownership and native eligibility.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A Pulse-aware package was imported through a subpath that is not native-lowerable.\",\n  \"title\": \"Package Subpath Unsupported\"\n}",
       "contentSha256": "10a727645c873fab649e1a5619957f1b7ac2fd19a31e8d886e1269d2024813d7",
       "id": "diagnostic/PULSE_PACKAGE_SUBPATH_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_SUBPATH_UNSUPPORTED",
@@ -5795,7 +5795,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_PROFILE_SELECTION_REQUIRED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Pass `--profile`, set `PULSE_PROFILE`, or configure `pulse.defaultProfile`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"No project profile was selected by CLI, environment, or default configuration.\",\n  \"title\": \"Profile Selection Required\"\n}",
       "contentSha256": "c74af27f76e2551905520b5fc0a7f252ded1c21b80af165090001b6f44a87ef7",
       "id": "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROFILE_SELECTION_REQUIRED",
@@ -5837,7 +5837,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_PROFILE_UNKNOWN\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select one of the profiles declared next to the reserved `pulse` object.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected profile is absent from the project declaration.\",\n  \"title\": \"Profile Unknown\"\n}",
       "contentSha256": "e114bcbecee2ea16d700936e5f8ef83b89929ee89aa52fe36d35b31fa4de125c",
       "id": "diagnostic/PULSE_PROFILE_UNKNOWN",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROFILE_UNKNOWN",
@@ -5879,7 +5879,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_PROJECT_COMPILE_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Read the nested diagnostics and fix the first reported source or schema error.\",\n    \"Run `pulse inspect --json` or `pulse doctor --json` for structured diagnostics.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Whole-project compilation failed and contains one or more nested diagnostics.\",\n  \"title\": \"Project Compile Failed\"\n}",
       "contentSha256": "b89dfc7eb490e1863b13a3903cd844504d377a93b5b8d07893f5c421d36968b2",
       "id": "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROJECT_COMPILE_FAILED",
@@ -5921,7 +5921,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_PROJECT_ROOT_MISSING\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Create or correct the positional project directory.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected project directory does not exist.\",\n  \"title\": \"Project Root Missing\"\n}",
       "contentSha256": "7a2c8de7afb1bf6867a2cc14f81165fa476f681f44b51acedfe5d21e93c3a614",
       "id": "diagnostic/PULSE_PROJECT_ROOT_MISSING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROJECT_ROOT_MISSING",
@@ -5963,7 +5963,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_PROVIDER_CAPABILITY_MISSING\",\n  \"exitCode\": 3,\n  \"httpStatus\": 501,\n  \"remediation\": [\n    \"Configure the required provider binding or select a provider that implements the capability.\",\n    \"Run `pulse inspect --json` to view required capabilities and bindings.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected provider lacks a binding required by the compiled application.\",\n  \"title\": \"Provider Capability Missing\"\n}",
       "contentSha256": "c428ecc1f5bc3bad57cb2e862cfbb24c634d21a989e6ebcf83580d2684ba4409",
       "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_MISSING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_CAPABILITY_MISSING",
@@ -6005,7 +6005,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_PROVIDER_CAPABILITY_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"httpStatus\": 501,\n  \"remediation\": [\n    \"Remove the unsupported capability or select a compatible provider.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected provider cannot realize a capability required by the application.\",\n  \"title\": \"Provider Capability Unsupported\"\n}",
       "contentSha256": "a82e29817299bd028a33361538032a84fec78a340db9c5fc399ca8d81faed6dc",
       "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
@@ -6047,7 +6047,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_PROVIDER_COMPILE_ONLY\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select an executable provider before running `pulse dev` or `pulse test`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The none provider cannot execute development-server or project-test behavior.\",\n  \"title\": \"Provider Compile Only\"\n}",
       "contentSha256": "9c22944e9042f530656820801c05f5741345b956a6de4e23641b9f79afd58360",
       "id": "diagnostic/PULSE_PROVIDER_COMPILE_ONLY",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_COMPILE_ONLY",
@@ -6089,7 +6089,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"usage\",\n  \"code\": \"PULSE_PROVIDER_FLAG_REMOVED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select `host` and `target` in a `.pulse/config.ts` profile.\",\n    \"Use `pulse compile` for provider-neutral Wasm or `pulse build` for the configured deployment target.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Provider selection is project configuration, not a command-line override.\",\n  \"title\": \"Provider Flag Removed\"\n}",
       "contentSha256": "d5033de56fb448c80ac7bb53c9e739658cd792c3bcc0f540fceb0c42b64264ca",
       "id": "diagnostic/PULSE_PROVIDER_FLAG_REMOVED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_FLAG_REMOVED",
@@ -6131,7 +6131,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_PROVIDER_PACKAGE_NOT_FOUND\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Install the exact configured provider package in the project.\",\n    \"Confirm that its package manifest exports `./toolchain`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The exact configured provider package does not expose a resolvable toolchain entry.\",\n  \"title\": \"Provider Package Not Found\"\n}",
       "contentSha256": "185faef8aa4885f08d16e5b68e0d6f0b896b7379cdb6269bcce5ee80cebd661f",
       "id": "diagnostic/PULSE_PROVIDER_PACKAGE_NOT_FOUND",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_PACKAGE_NOT_FOUND",
@@ -6173,7 +6173,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_PROVIDER_TOOLCHAIN_INVALID\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use a provider package implementing `pulse.provider-toolchain.v1` at `./toolchain`.\",\n    \"Confirm the declared package name, provider id, and driver shape.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected provider package does not satisfy the versioned toolchain contract.\",\n  \"title\": \"Provider Toolchain Invalid\"\n}",
       "contentSha256": "3de5f361f272a8021892b01b86e7239dcb98b6509de2e2503b77b063c8f8d4b6",
       "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_TOOLCHAIN_INVALID",
@@ -6215,7 +6215,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Inspect the selected provider package and its dependency installation.\",\n    \"Treat provider toolchains as trusted project build code.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected provider package toolchain failed while loading.\",\n  \"title\": \"Provider Toolchain Load Failed\"\n}",
       "contentSha256": "e566be4e5978a76199a42568dbb0038535fa8ddb0245f49214651799c44f7d51",
       "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
@@ -6257,7 +6257,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"provider\",\n  \"code\": \"PULSE_PROVIDER_UNSUPPORTED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select a bare provider id or an exact installed scoped provider package name.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected provider value is not a supported shorthand or package selection.\",\n  \"title\": \"Provider Unsupported\"\n}",
       "contentSha256": "ca3fbad0c6db3c2cbd77caef77f7aa4f4d66930308d482b7e4e998c0d6982c35",
       "id": "diagnostic/PULSE_PROVIDER_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_UNSUPPORTED",
@@ -6299,7 +6299,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_EVIDENCE_MISSING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Run pulse compile or pulse build with the selected Native profile, then retry report; report never builds automatically.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A matching completed Wasm build and its required retained evidence are missing.\",\n  \"title\": \"Report Evidence Missing\"\n}",
       "contentSha256": "a56f7742f16abf0029e67ca27890e66a0f5e4014390210b104c31ec5bd0198b9",
       "id": "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_EVIDENCE_MISSING",
@@ -6341,7 +6341,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_HTML_UNAVAILABLE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use the terminal overview or --json; HTML output requires a build with the offline viewer.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The offline Report HTML renderer is not available in this build.\",\n  \"title\": \"Report Html Unavailable\"\n}",
       "contentSha256": "cea758383db8e94f9e00391bd4158e81e224bf4b025f87d75d78d6fae475a6d5",
       "id": "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_HTML_UNAVAILABLE",
@@ -6383,7 +6383,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_INCOMPATIBLE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use a supported Report v1 capsule or completed Native Wasm manifest; bare Wasm and JavaScript builds are not Report inputs.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The Report input version or output representation is unsupported.\",\n  \"title\": \"Report Incompatible\"\n}",
       "contentSha256": "f05936af9d511780c82a32f402896c92e829eee021568e7b963db7fa74aeca0c",
       "id": "diagnostic/PULSE_REPORT_INCOMPATIBLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_INCOMPATIBLE",
@@ -6425,7 +6425,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_INPUT_INVALID\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use an unmodified supported Report capsule or a completed-Wasm manifest with its matching local files.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Report evidence is malformed, unsafe, or fails integrity validation.\",\n  \"title\": \"Report Input Invalid\"\n}",
       "contentSha256": "c43e87b97c4ee3ed17cbf4957cff417ab5f649a3d95f8b4df4637a6991a22cd4",
       "id": "diagnostic/PULSE_REPORT_INPUT_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_INPUT_INVALID",
@@ -6467,7 +6467,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_OUTPUT_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Check destination permissions and available disk space, then retry with a safe .html path.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The HTML report could not be written atomically.\",\n  \"title\": \"Report Output Failed\"\n}",
       "contentSha256": "7c1f2197c9ff2f14cb43a26ebd9a233b4dd5d5b020a5844f99be085b5b442fe9",
       "id": "diagnostic/PULSE_REPORT_OUTPUT_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_OUTPUT_FAILED",
@@ -6509,7 +6509,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_OUTPUT_UNSAFE\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Choose a .html file within the selected project root or artifact JSON parent, without symbolic links or parent traversal.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The HTML output path is not a contained regular .html file.\",\n  \"title\": \"Report Output Unsafe\"\n}",
       "contentSha256": "4d9dad04d653f8e204f4cead1f4c59f59c381791a33cb9e8e7682aa06bc83e36",
       "id": "diagnostic/PULSE_REPORT_OUTPUT_UNSAFE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_OUTPUT_UNSAFE",
@@ -6551,7 +6551,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_STALE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Rebuild the selected Native profile after inputs settle, or replay a saved capsule explicitly as historical evidence.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Retained Report evidence does not match the selected inputs or changed during collection.\",\n  \"title\": \"Report Stale\"\n}",
       "contentSha256": "4355ae6421aaf80da9cf1e240a15ef7010038a45525b5416fa406018f6cf2612",
       "id": "diagnostic/PULSE_REPORT_STALE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_STALE",
@@ -6593,7 +6593,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_REQUEST_BODY_INVALID_UTF8\",\n  \"exitCode\": 4,\n  \"httpStatus\": 400,\n  \"remediation\": [\n    \"Send well-formed UTF-8 request bytes; Pulse does not repair malformed input.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Request bytes are not well-formed UTF-8; no repaired text is exposed to the application.\",\n  \"title\": \"Request Body Invalid Utf8\"\n}",
       "contentSha256": "fad7ba7bf66dde3ae9135b75a18a2fe6c79f1d5a471692797c24855575552c19",
       "id": "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_BODY_INVALID_UTF8",
@@ -6635,7 +6635,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_REQUEST_BODY_OWNERSHIP\",\n  \"exitCode\": 4,\n  \"remediation\": [\n    \"Read or forward the incoming body once; never combine the two.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The incoming request body already belongs to another consumer.\",\n  \"title\": \"Request Body Ownership\"\n}",
       "contentSha256": "f7f12a35f0fefd08bb960ebeceb21b661110046355f13fb7d4cf00736e222aa3",
       "id": "diagnostic/PULSE_REQUEST_BODY_OWNERSHIP",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_BODY_OWNERSHIP",
@@ -6677,7 +6677,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_REQUEST_BODY_TOO_LARGE\",\n  \"exitCode\": 4,\n  \"httpStatus\": 413,\n  \"remediation\": [\n    \"Reduce the payload or deliberately adjust dev.maxBodyBytes for buffered input, or node.bodyForwarding.maxBytes for forwarding.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A request or forwarded body exceeded its configured byte limit.\",\n  \"title\": \"Request Body Too Large\"\n}",
       "contentSha256": "ed0aa5fbb30bc2f10e7de8be3956bd57417c39f0fbef3fdb9cf8a2ce75ee4143",
       "id": "diagnostic/PULSE_REQUEST_BODY_TOO_LARGE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_BODY_TOO_LARGE",
@@ -6719,7 +6719,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_REQUEST_CLOCK_INVALID\",\n  \"exitCode\": 4,\n  \"httpStatus\": 504,\n  \"remediation\": [\n    \"Restore the provider monotonic clock before retrying. Reconcile any dispatched writes.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The provider monotonic request clock failed or regressed.\",\n  \"title\": \"Request Clock Invalid\"\n}",
       "contentSha256": "a865addecd2db297125d2fcc289e2fad3bf794a9a76a437af23f3d8b4aae4025",
       "id": "diagnostic/PULSE_REQUEST_CLOCK_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_CLOCK_INVALID",
@@ -6761,7 +6761,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_REQUEST_DEADLINE_EXCEEDED\",\n  \"exitCode\": 4,\n  \"httpStatus\": 504,\n  \"remediation\": [\n    \"Split the work into bounded invocations or deliberately adjust the provider maxDurationMs profile. A timeout does not prove rollback of dispatched writes.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The provider-owned total request budget expired.\",\n  \"title\": \"Request Deadline Exceeded\"\n}",
       "contentSha256": "1d65dd4919ffa3071af64fc4c7e63384290ea00c09c5b9702e665875e2a7afbb",
       "id": "diagnostic/PULSE_REQUEST_DEADLINE_EXCEEDED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_DEADLINE_EXCEEDED",
@@ -6803,7 +6803,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Rebuild the Fastly Native artifact using the selected profile.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The Fastly artifact deadline differs from the selected profile.\",\n  \"title\": \"Request Duration Artifact Mismatch\"\n}",
       "contentSha256": "c71ebf75e9a2a7ca68bfbabca08d3bc7414dbf1ece3866fbc824a5f3d14167b5",
       "id": "diagnostic/PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH",
@@ -6845,7 +6845,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_REQUEST_DURATION_INVALID\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Set provider maxDurationMs to an integer from 1 through 30000, or omit it.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The configured request duration is outside its supported range.\",\n  \"title\": \"Request Duration Invalid\"\n}",
       "contentSha256": "b311d361248fa98dcbb50042286989547cd1b304b69cce8126e24c5cb70b0561",
       "id": "diagnostic/PULSE_REQUEST_DURATION_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_DURATION_INVALID",
@@ -6887,7 +6887,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_REQUEST_DURATION_UNSUPPORTED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select Fastly Native for a provider-owned request deadline.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected target cannot enforce the configured request deadline.\",\n  \"title\": \"Request Duration Unsupported\"\n}",
       "contentSha256": "80396a5764122e5b8bffdd52253713c9793bb058fb8a214df1e0cfcf50e481db",
       "id": "diagnostic/PULSE_REQUEST_DURATION_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_DURATION_UNSUPPORTED",
@@ -6929,7 +6929,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_REQUEST_FORWARDING_CHUNK_INVALID\",\n  \"exitCode\": 4,\n  \"remediation\": [\n    \"Supply host chunks and backing allocations at most 65536 bytes; do not fall back to buffering.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A provider body chunk exceeds the admitted host chunk bound.\",\n  \"title\": \"Request Forwarding Chunk Invalid\"\n}",
       "contentSha256": "a7818d31b8c3a9bdc224ec865a5c5260f9f10001ca919d2eb30884ed0cf79119",
       "id": "diagnostic/PULSE_REQUEST_FORWARDING_CHUNK_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_CHUNK_INVALID",
@@ -6971,7 +6971,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"config\",\n  \"code\": \"PULSE_REQUEST_FORWARDING_CONFIG_INVALID\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Set node.bodyForwarding.maxBytes to a positive safe integer and node.maxDurationMs to 1–30000.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Incoming forwarding configuration is invalid.\",\n  \"title\": \"Request Forwarding Config Invalid\"\n}",
       "contentSha256": "556f35a39226dad2d7fb3624ca03acfd1c426addd813c04f4f0dbc9f37b47f1e",
       "id": "diagnostic/PULSE_REQUEST_FORWARDING_CONFIG_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_CONFIG_INVALID",
@@ -7013,7 +7013,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use body: ctx.req.body() directly in a literal outbound POST fetch.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The incoming body marker appears outside its supported inline POST position.\",\n  \"title\": \"Request Forwarding Form Unsupported\"\n}",
       "contentSha256": "d758de1f88260b862b8a8bc1bc568ca4a9bf3098b13bdd6c413dfa134a3a3142",
       "id": "diagnostic/PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED",
@@ -7055,7 +7055,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_REQUEST_FORWARDING_HEADERS_INVALID\",\n  \"exitCode\": 4,\n  \"remediation\": [\n    \"Leave framing and hop-by-hop headers to the provider.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Forwarding headers contain invalid length or transport-owned framing.\",\n  \"title\": \"Request Forwarding Headers Invalid\"\n}",
       "contentSha256": "677ca4f0912abd67150120e6c3ec116cba73c5ae1d1c36371501d5f5cf1546e9",
       "id": "diagnostic/PULSE_REQUEST_FORWARDING_HEADERS_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_HEADERS_INVALID",
@@ -7097,7 +7097,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_REQUEST_FORWARDING_REDIRECT\",\n  \"exitCode\": 4,\n  \"remediation\": [\n    \"Use the final authorized origin URL directly; automatic redirect replay is disabled.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A single-use body cannot be replayed on redirect.\",\n  \"title\": \"Request Forwarding Redirect\"\n}",
       "contentSha256": "0d584d5b7797abe4a454304188a279b30c65472ec0673046ffad3fefd9b9e5b9",
       "id": "diagnostic/PULSE_REQUEST_FORWARDING_REDIRECT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_REDIRECT",
@@ -7139,7 +7139,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"compile\",\n  \"code\": \"PULSE_REQUEST_FORWARDING_UNAVAILABLE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Select Node with node.bodyForwarding and node.maxDurationMs.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Incoming forwarding is not enabled on this target.\",\n  \"title\": \"Request Forwarding Unavailable\"\n}",
       "contentSha256": "368be48c3f46a45174917a3bc47477d4d1c3c6b9dc7422897641597ffdbc97de",
       "id": "diagnostic/PULSE_REQUEST_FORWARDING_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_UNAVAILABLE",
@@ -7181,7 +7181,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_RESPONSE_CASE_MISSING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Declare the referenced response case in pulse.schema.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The handler references a response case absent from pulse.schema.\",\n  \"title\": \"Response Case Missing\"\n}",
       "contentSha256": "b6c321f54da659bcacd4084c052416be626536a6a6cb71fdd9be7c5eabaf5dfc",
       "id": "diagnostic/PULSE_RESPONSE_CASE_MISSING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_CASE_MISSING",
@@ -7223,7 +7223,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_RESPONSE_CASE_REFERENCE\",\n  \"exitCode\": 3,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use a response-case ID declared by pulse.schema.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A runtime JSON response references an unknown compiled response case.\",\n  \"title\": \"Response Case Reference\"\n}",
       "contentSha256": "76660cfe7db4d98f2d56342e5d049b2f788cce0762c082b16711fec21cf17993",
       "id": "diagnostic/PULSE_RESPONSE_CASE_REFERENCE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_CASE_REFERENCE",
@@ -7265,7 +7265,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_RESPONSE_DESCRIPTOR_INVALID\",\n  \"exitCode\": 3,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Pass an object descriptor or a registered response-case string to ctx.json.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A runtime JSON response received an invalid descriptor.\",\n  \"title\": \"Response Descriptor Invalid\"\n}",
       "contentSha256": "715cea12628cd81314a52fad4c925ea0ff110da16f646252c26719478506afb4",
       "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_DESCRIPTOR_INVALID",
@@ -7307,7 +7307,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use an object literal or a registered response-case string literal as the ctx.json response descriptor.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A JSON response descriptor cannot be resolved statically.\",\n  \"title\": \"Response Descriptor Literal Required\"\n}",
       "contentSha256": "4e9fe5857819d6875af2b648d870d08e911a14716eb05caa7843cec7f2a2a469",
       "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED",
@@ -7349,7 +7349,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_RESPONSE_ENCODE\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Return a value supported by the selected response or schema encoder.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected response encoder cannot represent the returned value.\",\n  \"title\": \"Response Encode\"\n}",
       "contentSha256": "9e1b6ff2ccd29a72147fb13d2b983ec47729c8ee2519975df6ee2bf3b43a6350",
       "id": "diagnostic/PULSE_RESPONSE_ENCODE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_ENCODE",
@@ -7391,7 +7391,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"project\",\n  \"code\": \"PULSE_RUNTIME_APPLICATION_EXPORT_INVALID\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Default-export a Router, Pulse application, or managed handler.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The application value is not a Router, Pulse application, or managed handler.\",\n  \"title\": \"Runtime Application Export Invalid\"\n}",
       "contentSha256": "e51c382cbcd7851af72e06b2338dc979ca734573a8791b1219ad2e65bee49ca8",
       "id": "diagnostic/PULSE_RUNTIME_APPLICATION_EXPORT_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RUNTIME_APPLICATION_EXPORT_INVALID",
@@ -7433,7 +7433,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_CODECS_UNAVAILABLE\",\n  \"exitCode\": 3,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Rebuild or redeploy the application with its generated schema codec table.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema-bound JSON operation has no compiled codec table.\",\n  \"title\": \"Schema Codecs Unavailable\"\n}",
       "contentSha256": "138616b15c58914976dfcf3115ed1eb4b2410b651520b23e91cf37058b5e2489",
       "id": "diagnostic/PULSE_SCHEMA_CODECS_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_CODECS_UNAVAILABLE",
@@ -7475,7 +7475,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_CODEC_REALIZATION_PENDING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Rebuild from the authoritative pulse.schema registry with a compiler that realizes the declared shape on both targets.\",\n    \"Pulse will not fall back to generic JSON automatically.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected schema shape cannot be realized by every configured execution target.\",\n  \"title\": \"Schema Codec Realization Pending\"\n}",
       "contentSha256": "111c11e2af073868a188b1659da3dde5d4e66732b63b3b4645fbe8bc3adad9c2",
       "id": "diagnostic/PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
@@ -7517,7 +7517,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_COMPILE_FAILED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Fix the declared schema source, exported type, or supported field shape.\",\n    \"Run `pulse doctor --json` to inspect schema diagnostics.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"An explicitly declared JSON schema could not be compiled.\",\n  \"title\": \"Schema Compile Failed\"\n}",
       "contentSha256": "0bb90858364de5e3f7482cf701759582bf20d85336fd6e65eab7128aedaec229",
       "id": "diagnostic/PULSE_SCHEMA_COMPILE_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_COMPILE_FAILED",
@@ -7559,7 +7559,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_SCHEMA_CONTENT_TYPE\",\n  \"exitCode\": 4,\n  \"httpStatus\": 415,\n  \"remediation\": [\n    \"Send a JSON content type accepted by the configured schema policy.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema-bound JSON input uses a content type rejected by policy.\",\n  \"title\": \"Schema Content Type\"\n}",
       "contentSha256": "e3a8b667c7cf4f37f2225dda0d56d3bb8489b3143be0e60f4d31c93475f5a363",
       "id": "diagnostic/PULSE_SCHEMA_CONTENT_TYPE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_CONTENT_TYPE",
@@ -7601,7 +7601,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_SCHEMA_DECODE\",\n  \"exitCode\": 4,\n  \"httpStatus\": 400,\n  \"remediation\": [\n    \"Send JSON with the required content type and schema fields.\",\n    \"Use `pulse test` with a failing case to reproduce the validation error locally.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"JSON input did not satisfy the explicitly declared schema and content-type policy.\",\n  \"title\": \"Schema Decode\"\n}",
       "contentSha256": "217598322e64623e8ed2708fce541efda18773ed15f3ab07e11fc03888cc558d",
       "id": "diagnostic/PULSE_SCHEMA_DECODE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_DECODE",
@@ -7643,7 +7643,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_SCHEMA_ENCODE\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Return a value that satisfies the declared response schema.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The returned value does not satisfy its declared response schema.\",\n  \"title\": \"Schema Encode\"\n}",
       "contentSha256": "e19e96393e8b2e72b2217e3b27fcd3a72cdde8b7f830a6cfeb0e935b40ac421d",
       "id": "diagnostic/PULSE_SCHEMA_ENCODE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_ENCODE",
@@ -7685,7 +7685,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_ID_DUPLICATE\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Give every declared schema a unique stable ID.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Two or more configured schema declarations use the same stable ID.\",\n  \"title\": \"Schema Id Duplicate\"\n}",
       "contentSha256": "124757396d5454c331c7ff7a4818e6476d3871886115c785647c3a41eac9fe5a",
       "id": "diagnostic/PULSE_SCHEMA_ID_DUPLICATE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_ID_DUPLICATE",
@@ -7727,7 +7727,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_ID_INVALID\",\n  \"exitCode\": 3,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use a non-empty schema ID declared by the authoritative pulse.schema registry.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema-bound operation received an invalid schema ID.\",\n  \"title\": \"Schema Id Invalid\"\n}",
       "contentSha256": "c642948ebd1ba2facbd99d8f9fd2fb8b5ce1eaacebf8f985f2705eda2fc9dad8",
       "id": "diagnostic/PULSE_SCHEMA_ID_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_ID_INVALID",
@@ -7769,7 +7769,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Move schema declarations into a default-exported defineSchemaRegistry(...) module.\",\n    \"Point pulse.schema at that workspace-relative module.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Legacy jsonSchemas declarations are no longer accepted as schema authority.\",\n  \"title\": \"Schema JSON Declarations Retired\"\n}",
       "contentSha256": "d4cc83760ad0cb9080c13756d6b4f6a8074a85d9de340ab7fac7cfd97465257a",
       "id": "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
@@ -7811,7 +7811,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Set the schema maxDepth limit to at most 128 for Native compilation.\",\n    \"Pulse does not clamp limits or select another target automatically.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema depth limit exceeds the Native parser capacity of 128 container levels.\",\n  \"title\": \"Schema JSON Depth Unsupported\"\n}",
       "contentSha256": "c4b82edc1fcfcf167395e0eadbef1ded06ce904b91ce099d082145d0c3aa82d8",
       "id": "diagnostic/PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED",
@@ -7853,7 +7853,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_JSON_LIMITS_INVALID\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Use only documented JSON limit names with positive safe-integer values.\",\n    \"Set maxDepth to at most 128 for a Native target.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema JSON admission policy contains an unknown limit or an invalid bounded integer.\",\n  \"title\": \"Schema JSON Limits Invalid\"\n}",
       "contentSha256": "1955d18710b469f147ff51e0f2377964dbbbaced6f90b5e7efb57df429bed176",
       "id": "diagnostic/PULSE_SCHEMA_JSON_LIMITS_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_LIMITS_INVALID",
@@ -7895,7 +7895,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Write JSON limits as numeric literals inside schema<T>({ json: { ... } }).\",\n    \"Remove computed values, spreads, and accessors from schema options.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema JSON limit cannot be resolved from a static numeric literal.\",\n  \"title\": \"Schema JSON Limit Literal Required\"\n}",
       "contentSha256": "3f3e48910de4d0f042d9e30c6a72f15a4f312186b55772b671538d1eeeac9a6c",
       "id": "diagnostic/PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED",
@@ -7937,7 +7937,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_SCHEMA_JSON_MALFORMED\",\n  \"exitCode\": 4,\n  \"httpStatus\": 400,\n  \"remediation\": [\n    \"Send syntactically valid JSON before schema validation.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema-bound JSON input is not syntactically valid JSON.\",\n  \"title\": \"Schema JSON Malformed\"\n}",
       "contentSha256": "f8f490f46219dcaf3e0b79741a6396b7bb34022071fc6b81d6b87bee29afad36",
       "id": "diagnostic/PULSE_SCHEMA_JSON_MALFORMED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_MALFORMED",
@@ -7979,7 +7979,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_REFERENCE\",\n  \"exitCode\": 3,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Reference an ID declared by the authoritative pulse.schema registry.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A JSON operation references a schema absent from the compiled codec table.\",\n  \"title\": \"Schema Reference\"\n}",
       "contentSha256": "5d3e57ff0f162e84ed9b9345f00e1698ce23460d5274c7d88d81a10872c7916f",
       "id": "diagnostic/PULSE_SCHEMA_REFERENCE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_REFERENCE",
@@ -8021,7 +8021,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_REQUIRED\",\n  \"exitCode\": 3,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Supply a statically declared schema ID at every strict JSON boundary.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Strict JSON operation omitted its required registered schema ID.\",\n  \"title\": \"Schema Required\"\n}",
       "contentSha256": "dfd7f51bb5a47fa9f4db2c6bb2092a1d06ab4670298cda757f569f7aef87701a",
       "id": "diagnostic/PULSE_SCHEMA_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_REQUIRED",
@@ -8063,7 +8063,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_SOURCE_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Set the schema declaration `source` to a project-relative TypeScript file.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema declaration is missing its project-relative TypeScript source file.\",\n  \"title\": \"Schema Source Required\"\n}",
       "contentSha256": "0e5bb0c4a9c388932c40daa88d5ad334d4b1e4511c23dc2492346914ca55c631",
       "id": "diagnostic/PULSE_SCHEMA_SOURCE_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_SOURCE_REQUIRED",
@@ -8105,7 +8105,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"schema\",\n  \"code\": \"PULSE_SCHEMA_TYPE_REQUIRED\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Set the schema declaration `type` to an exported TypeScript type name.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A schema declaration is missing its exported TypeScript type name.\",\n  \"title\": \"Schema Type Required\"\n}",
       "contentSha256": "34c29e55fbbe0a1d7a1ef25daf75f0f38cf5d283697c13addb41dc2dc379db79",
       "id": "diagnostic/PULSE_SCHEMA_TYPE_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_TYPE_REQUIRED",
@@ -8147,7 +8147,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"usage\",\n  \"code\": \"PULSE_SOURCE_ONLY_REMOVED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Run `pulse build`; native builds emit generated source and provider Wasm together.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The former source-only JavaScript packaging mode is no longer part of native builds.\",\n  \"title\": \"Source Only Removed\"\n}",
       "contentSha256": "56868a589e9f363dbd890413c03ac8da2dee4fbe91fbc63510d9326b09622d31",
       "id": "diagnostic/PULSE_SOURCE_ONLY_REMOVED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SOURCE_ONLY_REMOVED",
@@ -8189,7 +8189,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_TARGET_IMPLEMENTATION_PENDING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Inspect the selected provider and target; use supportedCommands from the diagnostic detail when present.\",\n    \"Choose an explicitly implemented command/profile combination; inspect or doctor may retain the selected target for analysis. No target fallback is automatic.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected execution target is explicit but not implemented for this command.\",\n  \"title\": \"Target Implementation Pending\"\n}",
       "contentSha256": "e9ee4b218d96e49bc233159abe5840e8e22adde7abf1f770d5b491933127f5ac",
       "id": "diagnostic/PULSE_TARGET_IMPLEMENTATION_PENDING",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TARGET_IMPLEMENTATION_PENDING",
@@ -8231,7 +8231,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"test\",\n  \"code\": \"PULSE_TEST_EVENT_INVALID\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Use a discriminated `kind: \\\"event\\\"` case with one bounded type, schema or schemaId, and schema-dependent payload.\",\n    \"Inspect the event catalog with `pulse inspect --json`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A discriminated event test case is missing or violates the canonical bounded event-frame shape.\",\n  \"title\": \"Test Event Invalid\"\n}",
       "contentSha256": "50f99465fa7def2b6cd4201356137904b50b3107c0cebf7b4d6d4159bb09fcfc",
       "id": "diagnostic/PULSE_TEST_EVENT_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_EVENT_INVALID",
@@ -8273,7 +8273,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"test\",\n  \"code\": \"PULSE_TEST_EXPECT_INVALID\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Use the documented expectation shape for the selected HTTP or event case.\",\n    \"Event emitted-frame expectations must be ordered arrays of canonical frames.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A project test case uses an invalid expectation shape for its HTTP or event discriminant.\",\n  \"title\": \"Test Expect Invalid\"\n}",
       "contentSha256": "71f7dd8f3eec9a7bfe4f46c77506c2a423b34b4c3b2e531726fa53a52c9c79d8",
       "id": "diagnostic/PULSE_TEST_EXPECT_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_EXPECT_INVALID",
@@ -8315,7 +8315,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"test\",\n  \"code\": \"PULSE_TEST_HARNESS_EXPORT_INVALID\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Export an ordered case array or an object containing a `cases` array.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The configured harness does not export the required ordered case collection.\",\n  \"title\": \"Test Harness Export Invalid\"\n}",
       "contentSha256": "f30f735f23140aa97bc3a100c1dd6d70b12c00ad708983120cae0eb86f4f0a00",
       "id": "diagnostic/PULSE_TEST_HARNESS_EXPORT_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_HARNESS_EXPORT_INVALID",
@@ -8357,7 +8357,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"test\",\n  \"code\": \"PULSE_TEST_HARNESS_NOT_FOUND\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Create the workspace-relative file configured by `pulse.tests`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The configured workspace-relative test harness does not exist.\",\n  \"title\": \"Test Harness Not Found\"\n}",
       "contentSha256": "eb7e79ec2bbed660dae654016e9323af7713ed38f6b338a75fea68b3691be476",
       "id": "diagnostic/PULSE_TEST_HARNESS_NOT_FOUND",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_HARNESS_NOT_FOUND",
@@ -8399,7 +8399,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_TEST_PROVIDER_REQUIRED\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Select an executable provider for `pulse test`.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Project tests require an executable provider.\",\n  \"title\": \"Test Provider Required\"\n}",
       "contentSha256": "f1e5793687b75de156c7ef7d45c8b5678fe85edd44f783844404ed1806402894",
       "id": "diagnostic/PULSE_TEST_PROVIDER_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_PROVIDER_REQUIRED",
@@ -8441,7 +8441,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_TRANSFORM_CHUNK_INVALID\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Use a provider source whose chunks and backing allocations are each at most 65536 bytes.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A provider transform chunk or backing allocation exceeded its bound.\",\n  \"title\": \"Transform Chunk Invalid\"\n}",
       "contentSha256": "99b468dd614509f692a8a195d25133ed04438b4967b7cc650878a30cf1fada21",
       "id": "diagnostic/PULSE_TRANSFORM_CHUNK_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_CHUNK_INVALID",
@@ -8483,7 +8483,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_TRANSFORM_CLOSED\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Do not read after EOF, cancellation or request completion.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Transform input was read after EOF, cancellation or request completion.\",\n  \"title\": \"Transform Closed\"\n}",
       "contentSha256": "52f3b40fe7de461292ff2c6af530f7aa87e84ae2e6fedc8e5a855f4a58b4c4e8",
       "id": "diagnostic/PULSE_TRANSFORM_CLOSED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_CLOSED",
@@ -8525,7 +8525,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"config\",\n  \"code\": \"PULSE_TRANSFORM_CONFIG_INVALID\",\n  \"exitCode\": 2,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Enable bodyTransform together with generatedOutput and maxDurationMs (1–30000); remove bodyForwarding.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The Node UTF-8 transform configuration is invalid.\",\n  \"title\": \"Transform Config Invalid\"\n}",
       "contentSha256": "97d73b92ffe3e642705968b0b179dc4a72a7e28a1b5092eb794f53b652fbcdaf",
       "id": "diagnostic/PULSE_TRANSFORM_CONFIG_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_CONFIG_INVALID",
@@ -8567,7 +8567,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_TRANSFORM_EOF_REQUIRED\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Read transform input through its EOF result before returning output.close().\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Transform output was closed before input EOF was observed.\",\n  \"title\": \"Transform Eof Required\"\n}",
       "contentSha256": "dc4d28d2149ce8dcee8b60386b4e60737a955f23d02df25a45607e4f8c602704",
       "id": "diagnostic/PULSE_TRANSFORM_EOF_REQUIRED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_EOF_REQUIRED",
@@ -8609,7 +8609,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_TRANSFORM_HEADERS_INVALID\",\n  \"exitCode\": 4,\n  \"httpStatus\": 400,\n  \"remediation\": [\n    \"Send a valid non-negative Content-Length or omit it for chunked input.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The transform request has invalid Content-Length metadata.\",\n  \"title\": \"Transform Headers Invalid\"\n}",
       "contentSha256": "56e87050258bfb7d2936a316664a3dc94298adc6c206a6958fca839ae5ed0956",
       "id": "diagnostic/PULSE_TRANSFORM_HEADERS_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_HEADERS_INVALID",
@@ -8651,7 +8651,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_TRANSFORM_INPUT_LIMIT\",\n  \"exitCode\": 4,\n  \"httpStatus\": 413,\n  \"remediation\": [\n    \"Reduce transform input to at most 65536 UTF-8 bytes.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Transform input exceeded its bounded byte limit.\",\n  \"title\": \"Transform Input Limit\"\n}",
       "contentSha256": "873e781ff61a606cfffe6f3f7f1f9fade355fbcf284b6ce73e39837f7be60fb2",
       "id": "diagnostic/PULSE_TRANSFORM_INPUT_LIMIT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_INPUT_LIMIT",
@@ -8693,7 +8693,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_TRANSFORM_OUTPUT_LIMIT\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Keep output within 262144 bytes and four times the input bytes delivered so far.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Transform output exceeded its total-byte or expansion limit.\",\n  \"title\": \"Transform Output Limit\"\n}",
       "contentSha256": "89f8aa4f64afe3dc8279bdbce96be81f784cf1abd7a0dd95afe613ff976f8a67",
       "id": "diagnostic/PULSE_TRANSFORM_OUTPUT_LIMIT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_OUTPUT_LIMIT",
@@ -8735,7 +8735,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"runtime\",\n  \"code\": \"PULSE_TRANSFORM_READ_LIMIT\",\n  \"exitCode\": 4,\n  \"httpStatus\": 500,\n  \"remediation\": [\n    \"Stop after the EOF result; at most 18 reads are admitted.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The transform exceeded its admitted read count.\",\n  \"title\": \"Transform Read Limit\"\n}",
       "contentSha256": "7f9d2da32612c33d76ecbc16938f4906fb161903b37a6cef92173c12e16d451f",
       "id": "diagnostic/PULSE_TRANSFORM_READ_LIMIT",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_READ_LIMIT",
@@ -8777,7 +8777,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"capability\",\n  \"code\": \"PULSE_TRANSFORM_UNAVAILABLE\",\n  \"exitCode\": 3,\n  \"httpStatus\": 501,\n  \"remediation\": [\n    \"Select Node and configure node.bodyTransform, node.generatedOutput and node.maxDurationMs.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The selected target cannot realize the configured UTF-8 transform.\",\n  \"title\": \"Transform Unavailable\"\n}",
       "contentSha256": "45559d3cbe1aeb29eda087061ac8d37a4e7446b3f7bcce045cdaf2bcb8f6db9f",
       "id": "diagnostic/PULSE_TRANSFORM_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_UNAVAILABLE",
@@ -8819,7 +8819,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"request\",\n  \"code\": \"PULSE_TRANSFORM_UTF8_INVALID\",\n  \"exitCode\": 4,\n  \"httpStatus\": 400,\n  \"remediation\": [\n    \"Send valid, complete UTF-8 text; use opaque forwarding for binary bodies.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Transform input is not complete, well-formed UTF-8.\",\n  \"title\": \"Transform Utf8 Invalid\"\n}",
       "contentSha256": "7600bce40205fc2a674bfb0647111d06e27243e762faf9a446ff242cf12fd675",
       "id": "diagnostic/PULSE_TRANSFORM_UTF8_INVALID",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_UTF8_INVALID",
@@ -8861,7 +8861,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_VICEROY_INSPECTION_FAILED\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Inspect or replace the explicitly selected Viceroy override, or unset it to restore Fastly CLI ownership.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Pulse could not inspect the explicitly selected Viceroy override.\",\n  \"title\": \"Viceroy Inspection Failed\"\n}",
       "contentSha256": "091daebd5c229b88d37ce23c113c4bd33436ee536f569cf3e6903c41b6755fdb",
       "id": "diagnostic/PULSE_VICEROY_INSPECTION_FAILED",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_VICEROY_INSPECTION_FAILED",
@@ -8903,7 +8903,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"category\": \"toolchain\",\n  \"code\": \"PULSE_VICEROY_UNAVAILABLE\",\n  \"exitCode\": 5,\n  \"remediation\": [\n    \"Unset `PULSE_VICEROY_BIN` to let the Fastly CLI manage its local Compute engine.\",\n    \"If an override is required, point `PULSE_VICEROY_BIN` at an executable Viceroy binary.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The explicitly selected Viceroy override is unavailable.\",\n  \"title\": \"Viceroy Unavailable\"\n}",
       "contentSha256": "41541f325d8b5788d1763e5697b6b600c754d976ec8be4d924dfbb9e5e567f12",
       "id": "diagnostic/PULSE_VICEROY_UNAVAILABLE",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_VICEROY_UNAVAILABLE",
@@ -8929,7 +8929,7 @@ export const contextCorpus = freeze({
       "content": "import { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig((_scope) => ({\n  pulse: {\n    entry: 'src/index.ts',\n    tests: 'tests/pulse.harness.ts',\n    defaultProfile: 'local',\n    strict: true,\n  },\n  local: {\n    host: 'node',\n    target: 'native',\n    outDir: 'dist',\n    dev: { host: '127.0.0.1', port: 8787 },\n  },\n}))\n",
       "contentSha256": "9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61",
       "id": "example/01-hello-json/.pulse/config.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/01-hello-json/.pulse/config.ts",
         "selection": "file",
@@ -8951,15 +8951,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "example",
-      "content": "{\n  \"name\": \"@pulse-examples/01-hello-json\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"doctor\": \"pulse doctor\",\n    \"inspect\": \"pulse inspect\",\n    \"test\": \"pulse test\",\n    \"dev\": \"pulse dev\",\n    \"build\": \"pulse build\"\n  },\n  \"dependencies\": {\n    \"@pulse-compute/pulse\": \"1.0.0-beta.9\"\n  },\n  \"devDependencies\": {\n    \"@pulse-compute/cli\": \"1.0.0-beta.9\",\n    \"typescript\": \"5.9.3\"\n  }\n}\n",
-      "contentSha256": "f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0",
+      "content": "{\n  \"name\": \"@pulse-examples/01-hello-json\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"doctor\": \"pulse doctor\",\n    \"inspect\": \"pulse inspect\",\n    \"test\": \"pulse test\",\n    \"dev\": \"pulse dev\",\n    \"build\": \"pulse build\"\n  },\n  \"dependencies\": {\n    \"@pulse-compute/pulse\": \"1.0.0-beta.10\"\n  },\n  \"devDependencies\": {\n    \"@pulse-compute/cli\": \"1.0.0-beta.10\",\n    \"typescript\": \"5.9.3\"\n  }\n}\n",
+      "contentSha256": "2cc8652fe6eeddfc7c8a6f127047b6f79d5bf33cf113190775b1dfe9c4c1fe49",
       "id": "example/01-hello-json/package.json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/01-hello-json/package.json",
         "selection": "file",
-        "sha256": "f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9a3749fb6ed09ef23dd354da424a73c5147f9f67"
+        "sha256": "2cc8652fe6eeddfc7c8a6f127047b6f79d5bf33cf113190775b1dfe9c4c1fe49",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/f3de99d806d4f6fbaad7186a069bd8d520a3356c"
       },
       "status": "candidate",
       "tags": [
@@ -8979,7 +8979,7 @@ export const contextCorpus = freeze({
       "content": "import { Pulse } from '@pulse-compute/pulse'\n\nconst app = new Pulse({ auto: true })\n\napp.get('/health', async (ctx) => ctx.json({ ok: true }))\napp.get('/hello', async (ctx) => ctx.json({ message: 'hello from Pulse' }))\napp.get('/*', async (ctx) => ctx.text('not found', { status: 404 }))\n\nexport default app\n",
       "contentSha256": "906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b",
       "id": "example/01-hello-json/src/index.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/01-hello-json/src/index.ts",
         "selection": "file",
@@ -9004,7 +9004,7 @@ export const contextCorpus = freeze({
       "content": "export default {\n  cases: [\n    {\n      name: 'health',\n      request: { path: '/health' },\n      expect: { status: 200, json: { ok: true } },\n    },\n    {\n      name: 'hello',\n      request: { path: '/hello' },\n      expect: {\n        status: 200,\n        json: { message: 'hello from Pulse' },\n      },\n    },\n    {\n      name: 'missing',\n      request: { path: '/missing' },\n      expect: { status: 404, text: 'not found' },\n    },\n  ],\n}\n",
       "contentSha256": "1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa",
       "id": "example/01-hello-json/tests/pulse.harness.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/01-hello-json/tests/pulse.harness.ts",
         "selection": "file",
@@ -9029,7 +9029,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"NodeNext\",\n    \"moduleResolution\": \"NodeNext\",\n    \"strict\": true,\n    \"noEmit\": true\n  },\n  \"include\": [\n    \"src/**/*.ts\",\n    \".pulse/**/*.ts\",\n    \"tests/**/*.ts\"\n  ]\n}\n",
       "contentSha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052",
       "id": "example/01-hello-json/tsconfig.json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/01-hello-json/tsconfig.json",
         "selection": "file",
@@ -9054,7 +9054,7 @@ export const contextCorpus = freeze({
       "content": "## Workflow\n\nRun commands from this example directory after installing the repository dependencies.\nThe npm scripts use the project-local CLI; Inspect and Doctor commands are shown with their results above.\n\n```bash\nnpm test\nnpm run dev\n```\n\nWhile the foreground server is running, request `http://127.0.0.1:8787/health`\nor `/hello`. Stop it with **Ctrl+C** before building:\n\n```bash\nnpm run build\n```\n",
       "contentSha256": "0908ca90c1b70b9a5bc35f5d234fbb855f3f1405df58fb9d0a18ebce2646b2a6",
       "id": "example/01-hello-json/workflow",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 150,
         "path": "examples/01-hello-json/README.md",
@@ -9082,7 +9082,7 @@ export const contextCorpus = freeze({
       "content": "import { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig((_scope) => ({\n  pulse: {\n    entry: 'src/index.ts',\n    schema: 'src/schemas.ts',\n    tests: 'tests/pulse.harness.ts',\n    defaultProfile: 'local',\n    strict: true,\n  },\n  local: {\n    host: 'node',\n    target: 'native',\n    outDir: 'dist',\n    schemas: { contentTypePolicy: 'require-json', maxBytes: 1024 },\n  },\n}))\n",
       "contentSha256": "93d844c6637690510a51c8f105ac179aca0d2ff788d90ec3e68ec9c4927fdc90",
       "id": "example/02-request-schema/.pulse/config.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/02-request-schema/.pulse/config.ts",
         "selection": "file",
@@ -9104,15 +9104,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "example",
-      "content": "{\n  \"name\": \"@pulse-examples/02-request-schema\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"doctor\": \"pulse doctor\",\n    \"inspect\": \"pulse inspect\",\n    \"test\": \"pulse test\",\n    \"dev\": \"pulse dev\",\n    \"build\": \"pulse build\"\n  },\n  \"dependencies\": {\n    \"@pulse-compute/pulse\": \"1.0.0-beta.9\"\n  },\n  \"devDependencies\": {\n    \"@pulse-compute/cli\": \"1.0.0-beta.9\",\n    \"typescript\": \"5.9.3\"\n  }\n}\n",
-      "contentSha256": "86f09de55ca7c3c4e7afe7de7bebf2b0f911240af6a0cb090e8ed2dc69efdcab",
+      "content": "{\n  \"name\": \"@pulse-examples/02-request-schema\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"doctor\": \"pulse doctor\",\n    \"inspect\": \"pulse inspect\",\n    \"test\": \"pulse test\",\n    \"dev\": \"pulse dev\",\n    \"build\": \"pulse build\"\n  },\n  \"dependencies\": {\n    \"@pulse-compute/pulse\": \"1.0.0-beta.10\"\n  },\n  \"devDependencies\": {\n    \"@pulse-compute/cli\": \"1.0.0-beta.10\",\n    \"typescript\": \"5.9.3\"\n  }\n}\n",
+      "contentSha256": "23bd8e12009c767e091d5a82d78cf275f816c80cc2e95a20bf1cbceabd0ee88a",
       "id": "example/02-request-schema/package.json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/02-request-schema/package.json",
         "selection": "file",
-        "sha256": "86f09de55ca7c3c4e7afe7de7bebf2b0f911240af6a0cb090e8ed2dc69efdcab",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/140647598e84fe2493c84dfb50b716ca100ca4ea"
+        "sha256": "23bd8e12009c767e091d5a82d78cf275f816c80cc2e95a20bf1cbceabd0ee88a",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0d4da680fd19233efcd5bc51899e3fe76297ae46"
       },
       "status": "candidate",
       "tags": [
@@ -9132,7 +9132,7 @@ export const contextCorpus = freeze({
       "content": "import { Pulse } from '@pulse-compute/pulse'\nimport type { CreateUserInput, CreateUserOutput } from './schemas.js'\n\nconst app = new Pulse({ auto: true })\n\napp.post('/users', async (ctx) => {\n  const first = await ctx.req.json<CreateUserInput>('app.CreateUserInput')\n  const second = await ctx.req.json<CreateUserInput>('app.CreateUserInput')\n  const output: CreateUserOutput = {\n    id: 7,\n    name: first.name,\n    active: first.active,\n    sameReference: first === second,\n  }\n  return ctx.json(output, { status: 201, schema: 'app.CreateUserOutput' })\n})\n\nexport default app\n",
       "contentSha256": "746e47b02bfb401fd375c271df96fb3e3bef386592598137975196e2a233abd1",
       "id": "example/02-request-schema/src/index.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/02-request-schema/src/index.ts",
         "selection": "file",
@@ -9157,7 +9157,7 @@ export const contextCorpus = freeze({
       "content": "import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'\n\nexport interface CreateUserInput {\n  name: string\n  active: boolean\n}\n\nexport interface CreateUserOutput {\n  id: number\n  name: string\n  active: boolean\n  sameReference: boolean\n}\n\nexport default defineSchemaRegistry({\n  schemas: {\n    'app.CreateUserInput': schema<CreateUserInput>(),\n    'app.CreateUserOutput': schema<CreateUserOutput>(),\n  },\n})\n",
       "contentSha256": "2b69359585e52a2e332e821f0379505a37d652b3040b40524594f2ab102a52f8",
       "id": "example/02-request-schema/src/schemas.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/02-request-schema/src/schemas.ts",
         "selection": "file",
@@ -9182,7 +9182,7 @@ export const contextCorpus = freeze({
       "content": "export default {\n  cases: [\n    {\n      name: 'create-user',\n      request: {\n        method: 'POST',\n        path: '/users',\n        headers: { 'content-type': 'application/json' },\n        body: JSON.stringify({ name: 'Ada', active: true }),\n      },\n      expect: {\n        status: 201,\n        json: {\n          id: 7,\n          name: 'Ada',\n          active: true,\n          sameReference: true,\n        },\n      },\n    },\n    {\n      name: 'invalid-user',\n      request: {\n        method: 'POST',\n        path: '/users',\n        headers: { 'content-type': 'application/json' },\n        body: JSON.stringify({ name: 12, active: true }),\n      },\n      expect: {\n        error: {\n          name: 'SchemaDecodeError',\n          code: 'PULSE_SCHEMA_DECODE',\n        },\n      },\n    },\n  ],\n}\n",
       "contentSha256": "6b55edf4563de2cc1fbde2850b0d3748f1627b9d4435d350998d93bcdfba4bba",
       "id": "example/02-request-schema/tests/pulse.harness.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/02-request-schema/tests/pulse.harness.ts",
         "selection": "file",
@@ -9207,7 +9207,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"NodeNext\",\n    \"moduleResolution\": \"NodeNext\",\n    \"strict\": true,\n    \"noEmit\": true\n  },\n  \"include\": [\n    \"src/**/*.ts\",\n    \".pulse/**/*.ts\",\n    \"tests/**/*.ts\"\n  ]\n}\n",
       "contentSha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052",
       "id": "example/02-request-schema/tsconfig.json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/02-request-schema/tsconfig.json",
         "selection": "file",
@@ -9232,7 +9232,7 @@ export const contextCorpus = freeze({
       "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse build\n```\n\nThe documented test result below is executed by the documentation gate.\n",
       "contentSha256": "15a8175a42dbc4f0f0c6627952850119ea554d2cf571db473faf3ceebc6880af",
       "id": "example/02-request-schema/workflow",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 161,
         "path": "examples/02-request-schema/README.md",
@@ -9260,7 +9260,7 @@ export const contextCorpus = freeze({
       "content": "import { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig((_scope) => ({\n  pulse: {\n    entry: 'src/index.ts',\n    tests: 'tests/pulse.harness.ts',\n    defaultProfile: 'local',\n    strict: true,\n  },\n  local: {\n    host: 'node',\n    target: 'native',\n    outDir: 'dist',\n    dev: {\n      fetches: {\n        'https://users.example.test/users/123': {\n          value: { id: 123, name: 'Ada' },\n          delayMs: 15,\n        },\n        'https://stats.example.test/users/123': {\n          value: { score: 42 },\n          delayMs: 5,\n        },\n        'https://flags.example.test/users/123': {\n          value: { enabled: true },\n          delayMs: 1,\n        },\n      },\n    },\n  },\n}))\n",
       "contentSha256": "c5df387372687e0b834acdd9263795222e5a92b2b4040813501027351cf78951",
       "id": "example/03-fetch-composition/.pulse/config.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/03-fetch-composition/.pulse/config.ts",
         "selection": "file",
@@ -9282,15 +9282,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "example",
-      "content": "{\n  \"name\": \"@pulse-examples/03-fetch-composition\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"doctor\": \"pulse doctor\",\n    \"inspect\": \"pulse inspect\",\n    \"test\": \"pulse test\",\n    \"dev\": \"pulse dev\",\n    \"build\": \"pulse build\"\n  },\n  \"dependencies\": {\n    \"@pulse-compute/pulse\": \"1.0.0-beta.9\"\n  },\n  \"devDependencies\": {\n    \"@pulse-compute/cli\": \"1.0.0-beta.9\",\n    \"typescript\": \"5.9.3\"\n  }\n}\n",
-      "contentSha256": "3fbde4e7443a7de23cd5a83540239a766a023eb104240d3abcbc58b4df587c6c",
+      "content": "{\n  \"name\": \"@pulse-examples/03-fetch-composition\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"doctor\": \"pulse doctor\",\n    \"inspect\": \"pulse inspect\",\n    \"test\": \"pulse test\",\n    \"dev\": \"pulse dev\",\n    \"build\": \"pulse build\"\n  },\n  \"dependencies\": {\n    \"@pulse-compute/pulse\": \"1.0.0-beta.10\"\n  },\n  \"devDependencies\": {\n    \"@pulse-compute/cli\": \"1.0.0-beta.10\",\n    \"typescript\": \"5.9.3\"\n  }\n}\n",
+      "contentSha256": "705e0fe175cba84d3aa17e62bfea479cc35e11e2f59382716b1c89ca4ad92bb0",
       "id": "example/03-fetch-composition/package.json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/03-fetch-composition/package.json",
         "selection": "file",
-        "sha256": "3fbde4e7443a7de23cd5a83540239a766a023eb104240d3abcbc58b4df587c6c",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/f1cf7fa9f90b1662bec7adc412ebcd5e1f94f34a"
+        "sha256": "705e0fe175cba84d3aa17e62bfea479cc35e11e2f59382716b1c89ca4ad92bb0",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ed8591e13fb06a2bbc837b105020b689b57c00d5"
       },
       "status": "candidate",
       "tags": [
@@ -9310,7 +9310,7 @@ export const contextCorpus = freeze({
       "content": "import { Pulse } from '@pulse-compute/pulse'\n\ninterface User {\n  id: number\n  name: string\n}\n\ninterface Stats {\n  score: number\n}\n\ninterface Flags {\n  enabled: boolean\n}\n\nconst app = new Pulse({ auto: true })\n\n// One structured origin.\napp.get('/user', async (ctx) => {\n  const user = await ctx\n    .fetch('https://users.example.test/users/123')\n    .json<User>()\n  return ctx.json({ found: true, user })\n})\n\n// Multiple origins with explicit sequential awaits.\napp.get('/user-summary', async (ctx) => {\n  const user = await ctx\n    .fetch('https://users.example.test/users/123')\n    .json<User>()\n  const stats = await ctx\n    .fetch('https://stats.example.test/users/123')\n    .json<Stats>()\n  const flags = await ctx\n    .fetch('https://flags.example.test/users/123')\n    .json<Flags>()\n  return ctx.json({\n    id: user.id,\n    name: user.name,\n    score: stats.score,\n    enabled: flags.enabled,\n  })\n})\n\n// Multiple origins with explicit portable concurrency.\napp.get('/user-summary-parallel', async (ctx) => {\n  const { user, stats, flags } = await ctx.parallel({\n    user: ctx.fetch('https://users.example.test/users/123').json<User>(),\n    stats: ctx.fetch('https://stats.example.test/users/123').json<Stats>(),\n    flags: ctx.fetch('https://flags.example.test/users/123').json<Flags>(),\n  })\n  return ctx.json({\n    id: user.id,\n    name: user.name,\n    score: stats.score,\n    enabled: flags.enabled,\n  })\n})\n\nexport default app\n",
       "contentSha256": "97c2e1fe82e2bb8cde5a05ed5adc7db73ead9199553c0adcf143c7f660a95fc1",
       "id": "example/03-fetch-composition/src/index.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/03-fetch-composition/src/index.ts",
         "selection": "file",
@@ -9335,7 +9335,7 @@ export const contextCorpus = freeze({
       "content": "const fetches = {\n  'https://users.example.test/users/123': {\n    value: { id: 123, name: 'Ada' },\n    delayMs: 15,\n  },\n  'https://stats.example.test/users/123': {\n    value: { score: 42 },\n    delayMs: 5,\n  },\n  'https://flags.example.test/users/123': {\n    value: { enabled: true },\n    delayMs: 1,\n  },\n}\n\nconst summary = {\n  id: 123,\n  name: 'Ada',\n  score: 42,\n  enabled: true,\n}\n\nexport default {\n  cases: [\n    {\n      name: 'single',\n      request: { path: '/user' },\n      fetches,\n      expect: {\n        status: 200,\n        json: { found: true, user: { id: 123, name: 'Ada' } },\n      },\n    },\n    {\n      name: 'sequential',\n      request: { path: '/user-summary' },\n      fetches,\n      expect: { status: 200, json: summary },\n    },\n    {\n      name: 'parallel',\n      request: { path: '/user-summary-parallel' },\n      fetches,\n      expect: { status: 200, json: summary },\n    },\n  ],\n}\n",
       "contentSha256": "efb50c5547f1741abc52e1398b7939074bbf9f53e054e656165882ddda7a001f",
       "id": "example/03-fetch-composition/tests/pulse.harness.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/03-fetch-composition/tests/pulse.harness.ts",
         "selection": "file",
@@ -9360,7 +9360,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"NodeNext\",\n    \"moduleResolution\": \"NodeNext\",\n    \"strict\": true,\n    \"noEmit\": true\n  },\n  \"include\": [\n    \"src/**/*.ts\",\n    \".pulse/**/*.ts\",\n    \"tests/**/*.ts\"\n  ]\n}\n",
       "contentSha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052",
       "id": "example/03-fetch-composition/tsconfig.json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/03-fetch-composition/tsconfig.json",
         "selection": "file",
@@ -9385,7 +9385,7 @@ export const contextCorpus = freeze({
       "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse build\n```\n\nThe documented test result below is executed by the documentation gate.\n",
       "contentSha256": "15a8175a42dbc4f0f0c6627952850119ea554d2cf571db473faf3ceebc6880af",
       "id": "example/03-fetch-composition/workflow",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 216,
         "path": "examples/03-fetch-composition/README.md",
@@ -9413,7 +9413,7 @@ export const contextCorpus = freeze({
       "content": "import { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig((_scope) => ({\n  pulse: {\n    entry: 'src/index.ts',\n    tests: 'tests/pulse.harness.ts',\n    defaultProfile: 'local',\n    strict: true,\n  },\n  local: {\n    host: 'node',\n    target: 'native',\n    outDir: 'dist',\n    dev: {\n      fetches: {\n        'https://users.example.test/users/7': {\n          value: { id: 7, name: 'Ada' },\n        },\n      },\n    },\n  },\n}))\n",
       "contentSha256": "be7fb9e3f668225cf69d139746790cfcf5755050ea1fc25cf36ebd8c47b97859",
       "id": "example/09-router-lowering/.pulse/config.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/09-router-lowering/.pulse/config.ts",
         "selection": "file",
@@ -9435,15 +9435,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "example",
-      "content": "{\n  \"name\": \"@pulse-examples/09-router-lowering\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"doctor\": \"pulse doctor\",\n    \"inspect\": \"pulse inspect\",\n    \"test\": \"pulse test\",\n    \"dev\": \"pulse dev\",\n    \"compile\": \"pulse compile\",\n    \"build\": \"pulse build\"\n  },\n  \"dependencies\": {\n    \"@pulse-compute/runtime\": \"1.0.0-beta.9\",\n    \"@pulse-compute/pulse\": \"1.0.0-beta.9\"\n  },\n  \"devDependencies\": {\n    \"@pulse-compute/cli\": \"1.0.0-beta.9\",\n    \"typescript\": \"5.9.3\"\n  }\n}\n",
-      "contentSha256": "243eca97152204a52b5e9b7f7eb41ab9448d460bc28658552cf769cfe3f035e8",
+      "content": "{\n  \"name\": \"@pulse-examples/09-router-lowering\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"doctor\": \"pulse doctor\",\n    \"inspect\": \"pulse inspect\",\n    \"test\": \"pulse test\",\n    \"dev\": \"pulse dev\",\n    \"compile\": \"pulse compile\",\n    \"build\": \"pulse build\"\n  },\n  \"dependencies\": {\n    \"@pulse-compute/runtime\": \"1.0.0-beta.10\",\n    \"@pulse-compute/pulse\": \"1.0.0-beta.10\"\n  },\n  \"devDependencies\": {\n    \"@pulse-compute/cli\": \"1.0.0-beta.10\",\n    \"typescript\": \"5.9.3\"\n  }\n}\n",
+      "contentSha256": "e18308b0861615806ecf773a3252093d8590aced9db7da5482abdcea2014775d",
       "id": "example/09-router-lowering/package.json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/09-router-lowering/package.json",
         "selection": "file",
-        "sha256": "243eca97152204a52b5e9b7f7eb41ab9448d460bc28658552cf769cfe3f035e8",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4a3df7a67537808e26bfa61875776b5d1d0b5f6b"
+        "sha256": "e18308b0861615806ecf773a3252093d8590aced9db7da5482abdcea2014775d",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8dec56713a41d85e1fd07de9d6e530a8307ad5b3"
       },
       "status": "candidate",
       "tags": [
@@ -9463,7 +9463,7 @@ export const contextCorpus = freeze({
       "content": "import { Router } from '@pulse-compute/runtime'\n\ninterface User {\n  id: number\n  name: string\n}\n\nconst users = new Router()\nconst api = new Router()\nconst app = new Router()\n\napp.use(async (ctx, next) => {\n  if (ctx.req.header('x-pulse-deny') === '1') {\n    return ctx.json(\n      { error: 'denied by middleware' },\n      { status: 401 },\n    )\n  }\n  return next()\n})\n\napi.use(async (ctx, next) => {\n  if (ctx.req.header('x-api-state') === 'closed') {\n    return ctx.text('api closed', { status: 503 })\n  }\n  return next()\n})\n\nusers.get('/:id', async (ctx) => {\n  const id = ctx.param('id')\n  const user = await ctx\n    .fetch('https://users.example.test/users/' + id)\n    .json<User>()\n  return ctx.json({ route: 'user', id, user })\n})\n\napi.get('/health', async (ctx, next) => {\n  if (ctx.req.header('x-health-handler') === 'fallback') {\n    return next()\n  }\n  return ctx.json({ ok: true, handler: 'primary' })\n})\napi.get('/health', async (ctx) => ctx.json({ ok: true, handler: 'fallback' }))\napi.head('/health', async (ctx) => ctx.text('', {\n  status: 204,\n  headers: [['x-pulse-route', 'health']],\n}))\napi.post('/users', async (ctx) => ctx.json(\n  { route: 'create', method: ctx.req.method },\n  { status: 201 },\n))\napi.get('/files/*', async (ctx) => ctx.text(ctx.req.path))\napi.get('/failure', async (ctx, next) => next('documented-failure'))\n\napi.mount('/users', users)\napp.mount('/api', api)\n\napp.error(async (error, ctx, next) => {\n  if (error === 'documented-failure') {\n    return ctx.json({ error: 'handled' }, { status: 418 })\n  }\n  return next(error)\n})\n\nexport default app\n",
       "contentSha256": "f9950548685c3a719774dd8065c3be505bc5d22b8ad4759f4b38953276d8710d",
       "id": "example/09-router-lowering/src/index.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/09-router-lowering/src/index.ts",
         "selection": "file",
@@ -9488,7 +9488,7 @@ export const contextCorpus = freeze({
       "content": "export default {\n  cases: [\n    {\n      name: 'mounted-health',\n      request: { method: 'GET', path: '/api/health' },\n      expect: {\n        status: 200,\n        json: { ok: true, handler: 'primary' },\n      },\n    },\n    {\n      name: 'middleware-short-circuit',\n      request: {\n        method: 'GET',\n        path: '/api/health',\n        headers: { 'x-pulse-deny': '1' },\n      },\n      expect: {\n        status: 401,\n        json: { error: 'denied by middleware' },\n      },\n    },\n    {\n      name: 'scoped-middleware-short-circuit',\n      request: {\n        method: 'GET',\n        path: '/api/health',\n        headers: { 'x-api-state': 'closed' },\n      },\n      expect: { status: 503, text: 'api closed' },\n    },\n    {\n      name: 'route-fallthrough',\n      request: {\n        method: 'GET',\n        path: '/api/health',\n        headers: { 'x-health-handler': 'fallback' },\n      },\n      expect: {\n        status: 200,\n        json: { ok: true, handler: 'fallback' },\n      },\n    },\n    {\n      name: 'error-middleware',\n      request: { method: 'GET', path: '/api/failure' },\n      expect: { status: 418, json: { error: 'handled' } },\n    },\n    {\n      name: 'parameter-and-fetch',\n      request: { method: 'GET', path: '/api/users/7' },\n      fetches: {\n        'https://users.example.test/users/7': {\n          value: { id: 7, name: 'Ada' },\n        },\n      },\n      expect: {\n        status: 200,\n        json: {\n          route: 'user',\n          id: '7',\n          user: { id: 7, name: 'Ada' },\n        },\n      },\n    },\n    {\n      name: 'method-specific-post',\n      request: { method: 'POST', path: '/api/users' },\n      expect: {\n        status: 201,\n        json: { route: 'create', method: 'POST' },\n      },\n    },\n    {\n      name: 'trailing-wildcard',\n      request: {\n        method: 'GET',\n        path: '/api/files/guides/start',\n      },\n      expect: {\n        status: 200,\n        text: '/api/files/guides/start',\n      },\n    },\n    {\n      name: 'default-not-found',\n      request: { method: 'GET', path: '/missing' },\n      expect: { status: 404, text: 'Not Found' },\n    },\n  ],\n}\n",
       "contentSha256": "c162ee20de3c1ab929b296fa4a9620be3008cf5b119c86125028a7827767c1c2",
       "id": "example/09-router-lowering/tests/pulse.harness.ts",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/09-router-lowering/tests/pulse.harness.ts",
         "selection": "file",
@@ -9513,7 +9513,7 @@ export const contextCorpus = freeze({
       "content": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"NodeNext\",\n    \"moduleResolution\": \"NodeNext\",\n    \"strict\": true,\n    \"noEmit\": true\n  },\n  \"include\": [\n    \"src/**/*.ts\",\n    \".pulse/**/*.ts\",\n    \"tests/**/*.ts\"\n  ]\n}\n",
       "contentSha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052",
       "id": "example/09-router-lowering/tsconfig.json",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "examples/09-router-lowering/tsconfig.json",
         "selection": "file",
@@ -9538,7 +9538,7 @@ export const contextCorpus = freeze({
       "content": "## Workflow\n\n```bash\npulse doctor\npulse inspect\npulse test\npulse dev\npulse compile\npulse build\n```\n\nThe inspect result exposes Router execution entries and route/middleware\nownership for effects and continuations. `return next()` terminates the current\nhandler and advances dispatch; it never resumes.\n\n<!-- pulse-doc-run {\"project\":\"examples/09-router-lowering\",\"args\":[\"inspect\",\"--json\"]} -->\n```bash\npulse inspect --json\n```\n```json\n{\n  \"status\": \"ok\",\n  \"provider\": {\n    \"id\": \"node\"\n  },\n  \"compiler\": {\n    \"authoring\": {\n      \"kind\": \"router\"\n    },\n    \"routing\": {\n      \"version\": \"pulse.router-authoring.v2\",\n      \"routes\": [\n        {\n          \"method\": \"GET\",\n          \"path\": \"/api/health\"\n        }\n      ]\n    },\n    \"effectCount\": 1,\n    \"continuationCount\": 1\n  }\n}\n```\n\nThe documented test result below is also executed by the documentation gate.\n",
       "contentSha256": "cb39319a0c0eaa036041d2345d2d6bf247f9bd593585a0a6f0e16835c1232ad3",
       "id": "example/09-router-lowering/workflow",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 254,
         "path": "examples/09-router-lowering/README.md",
@@ -9570,7 +9570,7 @@ export const contextCorpus = freeze({
       "content": "## Configure the Node provider\n\nThe hello example is a source-bound Node Native project:\n\n<!-- pulse-doc-source: examples/01-hello-json/.pulse/config.ts -->\n```ts\nimport { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig((_scope) => ({\n  pulse: {\n    entry: 'src/index.ts',\n    tests: 'tests/pulse.harness.ts',\n    defaultProfile: 'local',\n    strict: true,\n  },\n  local: {\n    host: 'node',\n    target: 'native',\n    outDir: 'dist',\n    dev: { host: '127.0.0.1', port: 8787 },\n  },\n}))\n```\n<!-- /pulse-doc-source -->\n\nSelect JavaScript deliberately by changing only the target:\n\n```ts\nlocal: {\n  host: 'node',\n  target: 'javascript',\n  outDir: 'dist',\n}\n```\n\nTarget choice belongs to the profile. Pulse does not retry a failed Native\nselection as JavaScript.\n",
       "contentSha256": "806c624eb08a9199596eeed1ff0c0b93edd502fdbebdc63c743fccffd800f999",
       "id": "node/configure",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 45,
         "path": "docs/guides/deploying-node.md",
@@ -9597,7 +9597,7 @@ export const contextCorpus = freeze({
       "content": "## Node JavaScript candidate\n\nWith `target: 'javascript'`, `pulse build` emits a deterministic CommonJS\npackage containing:\n\n```text\nindex.cjs\npackage.json\napplication/\npulse-build.json\npulse-javascript-application-plan.json\npulse-javascript-source-package.json\nschema-json-registry.json       # when schemas are active\nschema-json-codecs.cjs          # when schemas are active\n```\n\nThe package contains the reachable application graph and exact reachable Pulse\ndependencies. It contains no Pulse Native Wasm, AssemblyScript source, Native\nplan, or automatic fallback.\n\n`index.cjs` exports the packaged Pulse application. The production launcher\nloads it and its schema codecs through the Node provider. Build inputs and\nJavaScript dependencies are trusted executable code; this is not a sandbox.\n",
       "contentSha256": "db5e09b04e6a5a50a9bce13a7262492c6092982e96eb660a451448d0862d370b",
       "id": "node/javascript",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 105,
         "path": "docs/guides/deploying-node.md",
@@ -9624,7 +9624,7 @@ export const contextCorpus = freeze({
       "content": "## Node Native candidate\n\nWith `target: 'native'`, `pulse build` emits:\n\n```text\ncanonical-program.json\ncanonical-handler.cjs\ncanonical-native-plan.json\ncanonical-native.wasm\npulse-build.json\n```\n\nThe Wasm imports the provider-neutral `pulse_host` contract. The build manifest\nrecords the Node Native target, compiler identity, imports/exports,\noptimization profile, provider requirements, and artifact hashes.\n\nThe production launcher loads the build manifest, verifies the plan, Wasm and\npackage artifact hashes, and validates the Native ABI before readiness. Each\nrequest executes the built Wasm; it never loads `canonical-handler.cjs` or\nfalls back to JavaScript.\n",
       "contentSha256": "fca15624391eee00ff9ceecd05905b5beefb860651431a8635425a8b716469c6",
       "id": "node/native",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 81,
         "path": "docs/guides/deploying-node.md",
@@ -9655,7 +9655,7 @@ export const contextCorpus = freeze({
       "content": "## Production launcher (NODE-01)\n\nInstall the exact matching `@pulse-compute/provider-node` version alongside the\nbuild and its dependencies. Launch using only the public integration export:\n\n```js\n// server.cjs — host integration, outside the Pulse application graph\nconst { createNodeLauncher } = require('@pulse-compute/provider-node/server');\nconst launcher = createNodeLauncher({\n  target: 'native', // or 'javascript', matching pulse build\n  buildDir: require('node:path').resolve(__dirname, 'dist'),\n  host: '0.0.0.0', port: 8080,\n  maxDurationMs: 10000, shutdownTimeoutMs: 10000,\n  config: { environment: 'production' },\n  secrets: { apiToken: process.env.APP_API_TOKEN || '' },\n  networkFetch: true,\n});\nasync function main() {\n  await launcher.start();\n  for (const signal of ['SIGTERM', 'SIGINT']) {\n    process.once(signal, async () => {\n      const result = await launcher.close();\n      if (result.forced) process.exitCode = 1;\n    });\n  }\n}\nmain().catch(() => { console.error('Node launcher startup failed'); process.exitCode = 1; });\n```\n\n`node server.cjs` is the production entry. It does not compile, watch source,\nload `.pulse/config.ts`, or copy `dev` credentials. Pass production bindings and\nbudgets explicitly. Unknown options and invalid bounds fail before listening.\nThere are no hidden environment defaults, installed signal handlers, or calls\nto `process.exit` in the launcher.\n\n| Option | Default | Bounds / meaning |\n| --- | --- | --- |\n| `target`, `buildDir` | Required | Exact `native` or `javascript` build directory |\n| `host`, `port` | `127.0.0.1`, `8787` | Explicit bind address; port 0–65535 (0 is ephemeral) |\n| `readinessPath` | `/_pulse/ready` | Reserved GET/HEAD path, outside application routing |\n| `maxDurationMs` | 10000 | 1–30000 ms across body admission, effects, continuations and response completion |\n| `shutdownTimeoutMs` | 10000 | 1–30000 ms drain deadline |\n| `headersTimeoutMs`, `keepAliveTimeoutMs` | 10000, 5000 | 1–30000 ms, Node HTTP admission / idle connection timers |\n| `maxRequestBodyBytes`, `maxFetchBodyBytes` | 65536 each | 1–2097152 bytes, structured ingress / structured fetch |\n| `maxEffects` | 128 | 1–65536 request-owned effects |\n| `maxConcurrentRequests`, `maxConnections` | 128, 512 | 1–65536 per process; overload receives 503 or connection rejection |\n| `networkFetch` | false | Explicit outbound HTTP effect authorization |\n| `strict` | true | Strict structured JSON policy; profile values are not loaded |\n| `config`, `secrets` | Empty | Host-owned string records; never derived from request headers |\n| `kv` | Empty | Process-local reference KV seed; reset on restart, not durable storage |\n\n`createNodeLauncher` validates and snapshots the trusted build. `start()` resolves\nonly after listening; `status()` reports lifecycle, address, build identity and\nactive request count without credentials. The readiness endpoint returns 200\nonly while ready, and bypasses the application concurrency limit. Bind failure\nrejects startup without claiming readiness. Readiness proves local initialization,\nnot availability of downstream services.\n\n`close()` immediately withdraws readiness and stops new connections. It drains\nadmitted requests, then aborts remaining request authority and destroys sockets\nat the shutdown deadline. Its result distinguishes graceful from forced close.\nRepeated start/close calls are idempotent in their respective states; start while\ndraining rejects. After close resolves, `start()` opens a fresh host generation\nfor the same build and resets reference KV. This is not hot reload: use a new\nprocess for a new build, credentials or application module state. A process\nsupervisor owns crash restart, activation and rollback.\n\nBudgets and drain revoke Pulse-owned asynchronous work; they cannot preempt\nsynchronous JavaScript/Wasm, stop arbitrary JavaScript dependency side effects,\nor prove rollback of an already dispatched write. Use process-level resource\nlimits and a supervisor kill deadline as well. The launcher sends generic HTTP\nerrors and never returns exception messages or secrets to the client.\n\nNODE-01 qualifies finite HTTP applications. Generated output, incoming body\nforwarding/transforms, S3 body bindings, and blob-specific production qualification\nremain separate launcher extensions. Unsupported launcher options fail closed.\nThe HTTP host preserves existing opaque responses without implicit text decoding.\nNo event transport, TLS termination, automatic environment loading, hot reload,\nor durable KV backend is added by this launcher.\n",
       "contentSha256": "3aeed04f5845790515dd503dc7898c3d702dd214d2f795d6b49d053552e15930",
       "id": "node/production",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 201,
         "path": "docs/guides/deploying-node.md",
@@ -9695,15 +9695,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Applications using JavaScript asset middleware or the package-owned lowerable asset lookup capability.\",\n  \"dir\": \"packages/assets\",\n  \"directInstall\": \"Yes, only when the application uses the assets capability.\",\n  \"documentation\": \"docs/packages/assets.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/assets\"\n  ],\n  \"name\": \"@pulse-compute/assets\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root is the supported JavaScript API and canonical Native authoring surface, including bounded embedded Assets bytes on their qualified targets. /pulsewasm remains a compatibility subpath; manifest/compiler subpaths are toolchain integration. No application binary inspection is exposed.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "ac894d48b4257f081ea7ae2e93a90626683d476b8bb60a5cc952a4018937b689",
+      "content": "{\n  \"audience\": \"Applications using JavaScript asset middleware or the package-owned lowerable asset lookup capability.\",\n  \"dir\": \"packages/assets\",\n  \"directInstall\": \"Yes, only when the application uses the assets capability.\",\n  \"documentation\": \"docs/packages/assets.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/assets\"\n  ],\n  \"name\": \"@pulse-compute/assets\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root is the supported JavaScript API and canonical Native authoring surface, including bounded embedded Assets bytes on their qualified targets. /pulsewasm remains a compatibility subpath; manifest/compiler subpaths are toolchain integration. No application binary inspection is exposed.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "422a4b200b1e35b300ffa86fc1b6618dd4c08299e5110d758b7a565d8fcc3950",
       "id": "package/assets",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/assets]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -9737,15 +9737,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Pulse application authors, CI workflows, and tooling integrations.\",\n  \"dir\": \"wasm/packages/cli\",\n  \"directInstall\": \"Yes. Install the package globally or as a project development dependency.\",\n  \"documentation\": \"docs/packages/cli.md\",\n  \"entryPoints\": [\n    \"pulse binary\",\n    \"@pulse-compute/cli\",\n    \"@pulse-compute/cli/workflow\",\n    \"@pulse-compute/cli/project-config\",\n    \"@pulse-compute/cli/project-execution\",\n    \"@pulse-compute/cli/project-config-schema\",\n    \"@pulse-compute/cli/diagnostics\",\n    \"@pulse-compute/cli/project-config.schema.json\",\n    \"@pulse-compute/cli/cli-spec.json\",\n    \"@pulse-compute/cli/release-manifest.json\",\n    \"@pulse-compute/cli/documentation-versions.json\",\n    \"@pulse-compute/cli/documentation-site.json\"\n  ],\n  \"name\": \"@pulse-compute/cli\",\n  \"role\": \"public-cli\",\n  \"stability\": \"Supported Beta workflow and project-configuration contract.\",\n  \"tier\": \"canonical-application\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "40d8e16186f57c1eb19620f3362ca83af8aeba7c8f82457d8f1b42186014af46",
+      "content": "{\n  \"audience\": \"Pulse application authors, CI workflows, and tooling integrations.\",\n  \"dir\": \"wasm/packages/cli\",\n  \"directInstall\": \"Yes. Install the package globally or as a project development dependency.\",\n  \"documentation\": \"docs/packages/cli.md\",\n  \"entryPoints\": [\n    \"pulse binary\",\n    \"@pulse-compute/cli\",\n    \"@pulse-compute/cli/workflow\",\n    \"@pulse-compute/cli/project-config\",\n    \"@pulse-compute/cli/project-execution\",\n    \"@pulse-compute/cli/project-config-schema\",\n    \"@pulse-compute/cli/diagnostics\",\n    \"@pulse-compute/cli/project-config.schema.json\",\n    \"@pulse-compute/cli/cli-spec.json\",\n    \"@pulse-compute/cli/release-manifest.json\",\n    \"@pulse-compute/cli/documentation-versions.json\",\n    \"@pulse-compute/cli/documentation-site.json\"\n  ],\n  \"name\": \"@pulse-compute/cli\",\n  \"role\": \"public-cli\",\n  \"stability\": \"Supported Beta workflow and project-configuration contract.\",\n  \"tier\": \"canonical-application\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "a51e24ba52d56c6a4e06825cfdbf27e9173aa80f18ddc9d71840467ea5dafbe0",
       "id": "package/cli",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/cli]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -9779,15 +9779,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Applications and first-party packages using provider-neutral verification and exact-text SHA-256.\",\n  \"dir\": \"packages/crypto\",\n  \"directInstall\": \"Yes, when an application uses verification or digestText directly; JWT applications receive it transitively.\",\n  \"documentation\": \"docs/packages/crypto.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/crypto\"\n  ],\n  \"name\": \"@pulse-compute/crypto\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root supports bounded verification and request-owned exact-text digests; provider, manifest/compiler and Native integration subpaths remain toolchain-only.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "7a56840b6513c5d784c9581d3bd3d2dd18d1696672c2a0ad2dfe68d43a89baf7",
+      "content": "{\n  \"audience\": \"Applications and first-party packages using provider-neutral verification and exact-text SHA-256.\",\n  \"dir\": \"packages/crypto\",\n  \"directInstall\": \"Yes, when an application uses verification or digestText directly; JWT applications receive it transitively.\",\n  \"documentation\": \"docs/packages/crypto.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/crypto\"\n  ],\n  \"name\": \"@pulse-compute/crypto\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root supports bounded verification and request-owned exact-text digests; provider, manifest/compiler and Native integration subpaths remain toolchain-only.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "41190666da56530cf5a1cdb67f86ed42a28aedf4f264a172220426a87fdb8c8d",
       "id": "package/crypto",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/crypto]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -9821,15 +9821,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Applications declaring bounded schema-backed entity operations through the first-party JSON-RPC adapter.\",\n  \"dir\": \"packages/entities\",\n  \"directInstall\": \"Yes, when an application declares entity operations.\",\n  \"documentation\": \"docs/packages/entities.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/entities\"\n  ],\n  \"name\": \"@pulse-compute/entities\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root and first-party JSON-RPC adapter are supported Beta contracts; compiler integration subpaths remain toolchain-only.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "60b6ff9d974d094c4dad03cf171e8c60b5f148760da7561a0f372e03ef0d5ced",
+      "content": "{\n  \"audience\": \"Applications declaring bounded schema-backed entity operations through the first-party JSON-RPC adapter.\",\n  \"dir\": \"packages/entities\",\n  \"directInstall\": \"Yes, when an application declares entity operations.\",\n  \"documentation\": \"docs/packages/entities.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/entities\"\n  ],\n  \"name\": \"@pulse-compute/entities\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root and first-party JSON-RPC adapter are supported Beta contracts; compiler integration subpaths remain toolchain-only.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "64f66751309fc864ede0d7aebc31b8db83e7e20ccb14883247a75937fbebb45f",
       "id": "package/entities",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/entities]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -9863,15 +9863,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Applications using stateless GRIP/Fanout HTTP framing and request-bound broadcast behavior.\",\n  \"dir\": \"packages/grip\",\n  \"directInstall\": \"Yes, only when the application uses GRIP/Fanout behavior.\",\n  \"documentation\": \"docs/packages/grip.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/grip\"\n  ],\n  \"name\": \"@pulse-compute/grip\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root has bounded JavaScript and Native HTTP-framing realization plus configured Node/Fastly broadcast; /pulsewasm remains compatibility-only.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "65dcddaab25bd6d968ea33a4c2be1d3052996ede41cdf2009d9ad81b2d19c929",
+      "content": "{\n  \"audience\": \"Applications using stateless GRIP/Fanout HTTP framing and request-bound broadcast behavior.\",\n  \"dir\": \"packages/grip\",\n  \"directInstall\": \"Yes, only when the application uses GRIP/Fanout behavior.\",\n  \"documentation\": \"docs/packages/grip.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/grip\"\n  ],\n  \"name\": \"@pulse-compute/grip\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root has bounded JavaScript and Native HTTP-framing realization plus configured Node/Fastly broadcast; /pulsewasm remains compatibility-only.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "826d4b1aac0d55af9cfc03ad51aa5102d76798628b79aa23cfe57a094bb5f753",
       "id": "package/grip",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/grip]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -9905,15 +9905,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Applications verifying JWT credentials and issuing bounded HS256/ES256/RS256 worker tokens through Pulse providers.\",\n  \"dir\": \"packages/jwt\",\n  \"directInstall\": \"Yes, when an application verifies or signs JWTs.\",\n  \"documentation\": \"docs/packages/jwt.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/jwt\"\n  ],\n  \"name\": \"@pulse-compute/jwt\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root supports provider-neutral verification and bounded HS256/ES256/RS256 signing; provider and compiler integration subpaths are not application APIs.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "4a2d151f456dd33786d3b6f202af9134a763a9d7fa2ae7fe9a2166e12b963de2",
+      "content": "{\n  \"audience\": \"Applications verifying JWT credentials and issuing bounded HS256/ES256/RS256 worker tokens through Pulse providers.\",\n  \"dir\": \"packages/jwt\",\n  \"directInstall\": \"Yes, when an application verifies or signs JWTs.\",\n  \"documentation\": \"docs/packages/jwt.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/jwt\"\n  ],\n  \"name\": \"@pulse-compute/jwt\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root supports provider-neutral verification and bounded HS256/ES256/RS256 signing; provider and compiler integration subpaths are not application APIs.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "1657c9750536f3eaa693288cfcae63501a9258073426ce32d620476d8b8c125b",
       "id": "package/jwt",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/jwt]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -9931,15 +9931,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Host applications and Pulse handlers exposing bounded MCP HTTP tools.\",\n  \"dir\": \"packages/mcp\",\n  \"directInstall\": \"Yes, for the host adapters or the static /pulse binding.\",\n  \"documentation\": \"docs/packages/mcp.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/mcp\",\n    \"@pulse-compute/mcp/node\",\n    \"@pulse-compute/mcp/pulse\"\n  ],\n  \"name\": \"@pulse-compute/mcp\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The root Fetch handler and /node HTTP bridge retain fixed-backend host behavior. /pulse supplies a static package-owned Native binding with local Entities dispatch, strict HTTP admission and no fallback. Protocol resources, prompts, sessions and stdio are unsupported.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "c982444b27de59f5d0eb4f87f541117181f25eab7fa9916dc0bf56e846238f79",
+      "content": "{\n  \"audience\": \"Host applications and Pulse handlers exposing bounded MCP HTTP tools.\",\n  \"dir\": \"packages/mcp\",\n  \"directInstall\": \"Yes, for the host adapters or the static /pulse binding.\",\n  \"documentation\": \"docs/packages/mcp.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/mcp\",\n    \"@pulse-compute/mcp/node\",\n    \"@pulse-compute/mcp/pulse\"\n  ],\n  \"name\": \"@pulse-compute/mcp\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The root Fetch handler and /node HTTP bridge retain fixed-backend host behavior. /pulse supplies a static package-owned Native binding with local Entities dispatch, strict HTTP admission and no fallback. Protocol resources, prompts, sessions and stdio are unsupported.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "a32c0704ac1f76cda11f0861b31d74db6d84e9801954a4c4b31209834ddadc79",
       "id": "package/mcp",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/mcp]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -9961,15 +9961,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Applications targeting Fastly Compute and Pulse provider maintainers.\",\n  \"dir\": \"packages/provider-fastly\",\n  \"directInstall\": \"Yes, for Fastly projects. Node-only projects do not need to import it directly.\",\n  \"documentation\": \"docs/packages/provider-fastly.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/provider-fastly\",\n    \"@pulse-compute/provider-fastly/contract\",\n    \"@pulse-compute/provider-fastly/toolchain\",\n    \"@pulse-compute/provider-fastly/config-schema\",\n    \"@pulse-compute/provider-fastly/runtime/canonical-api-runtime\",\n    \"@pulse-compute/provider-fastly/build/canonical-target\",\n    \"@pulse-compute/provider-fastly/testing/fastly-cli\"\n  ],\n  \"name\": \"@pulse-compute/provider-fastly\",\n  \"role\": \"public-provider\",\n  \"stability\": \"The listed entry points are supported for the Beta; all other exported subpaths are implementation-only.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "fef5bf2e6bd88d410cb112e1d75a5aa1d65f7cf59c1d72e78ffcf8105dd0eaad",
+      "content": "{\n  \"audience\": \"Applications targeting Fastly Compute and Pulse provider maintainers.\",\n  \"dir\": \"packages/provider-fastly\",\n  \"directInstall\": \"Yes, for Fastly projects. Node-only projects do not need to import it directly.\",\n  \"documentation\": \"docs/packages/provider-fastly.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/provider-fastly\",\n    \"@pulse-compute/provider-fastly/contract\",\n    \"@pulse-compute/provider-fastly/toolchain\",\n    \"@pulse-compute/provider-fastly/config-schema\",\n    \"@pulse-compute/provider-fastly/runtime/canonical-api-runtime\",\n    \"@pulse-compute/provider-fastly/build/canonical-target\",\n    \"@pulse-compute/provider-fastly/testing/fastly-cli\"\n  ],\n  \"name\": \"@pulse-compute/provider-fastly\",\n  \"role\": \"public-provider\",\n  \"stability\": \"The listed entry points are supported for the Beta; all other exported subpaths are implementation-only.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "6dd426cd775efb34c4e9f27f33d2d98029175b0bec229baa0259600862b72586",
       "id": "package/provider-fastly",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/provider-fastly]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -9991,15 +9991,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Node deployment integrators and Pulse provider maintainers.\",\n  \"dir\": \"packages/provider-node\",\n  \"directInstall\": \"Yes for the production Node launcher; application handlers remain provider-neutral.\",\n  \"documentation\": \"docs/packages/implementation-packages.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/provider-node/toolchain\",\n    \"@pulse-compute/provider-node/server\"\n  ],\n  \"name\": \"@pulse-compute/provider-node\",\n  \"role\": \"implementation\",\n  \"stability\": \"The /server export is an explicit supported-entry-point exception within this implementation package: finite production HTTP for explicit Node Native and JavaScript builds. Forwarding, generated output, transforms, S3-body bindings and blob-specific production qualification remain separate. /toolchain serves the CLI; all other provider subpaths remain internal.\",\n  \"tier\": \"implementation\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "82e28833ddcda4ed7df8d29caf8748a12426209e4313a7adfe5a49595937d746",
+      "content": "{\n  \"audience\": \"Node deployment integrators and Pulse provider maintainers.\",\n  \"dir\": \"packages/provider-node\",\n  \"directInstall\": \"Yes for the production Node launcher; application handlers remain provider-neutral.\",\n  \"documentation\": \"docs/packages/implementation-packages.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/provider-node/toolchain\",\n    \"@pulse-compute/provider-node/server\"\n  ],\n  \"name\": \"@pulse-compute/provider-node\",\n  \"role\": \"implementation\",\n  \"stability\": \"The /server export is an explicit supported-entry-point exception within this implementation package: finite production HTTP for explicit Node Native and JavaScript builds. Forwarding, generated output, transforms, S3-body bindings and blob-specific production qualification remain separate. /toolchain serves the CLI; all other provider subpaths remain internal.\",\n  \"tier\": \"implementation\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "73f85893b143548772654466e1e20fb09d4f0762cc4c6311f8b16366b410e8c4",
       "id": "package/provider-node",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/provider-node]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -10032,15 +10032,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Pulse application authors using the conventional project root, configuration factory, and schema declarations.\",\n  \"dir\": \"packages/pulse\",\n  \"directInstall\": \"Yes. Install it in every conventional Pulse project.\",\n  \"documentation\": \"docs/packages/pulse.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/pulse\",\n    \"@pulse-compute/pulse/schema\"\n  ],\n  \"name\": \"@pulse-compute/pulse\",\n  \"role\": \"public-api\",\n  \"stability\": \"Supported conventional application, project-configuration, and schema-authoring contract.\",\n  \"tier\": \"canonical-application\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "5b747a7842221699f569078a6f9f8ae946701cd96bd9fa1b7703a61b2dd3afd4",
+      "content": "{\n  \"audience\": \"Pulse application authors using the conventional project root, configuration factory, and schema declarations.\",\n  \"dir\": \"packages/pulse\",\n  \"directInstall\": \"Yes. Install it in every conventional Pulse project.\",\n  \"documentation\": \"docs/packages/pulse.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/pulse\",\n    \"@pulse-compute/pulse/schema\"\n  ],\n  \"name\": \"@pulse-compute/pulse\",\n  \"role\": \"public-api\",\n  \"stability\": \"Supported conventional application, project-configuration, and schema-authoring contract.\",\n  \"tier\": \"canonical-application\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "7a329bbe78f494f4069751359dd3b91a3f920c50aad7ad0c00c04e74ad114916",
       "id": "package/pulse",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/pulse]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -10074,15 +10074,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Pulse application authors and library authors who type portable handlers and static routers.\",\n  \"dir\": \"packages/runtime\",\n  \"directInstall\": \"Yes. Install it in every Pulse application.\",\n  \"documentation\": \"docs/packages/runtime.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/runtime\"\n  ],\n  \"name\": \"@pulse-compute/runtime\",\n  \"role\": \"public-runtime\",\n  \"stability\": \"Supported application authoring and execution contract.\",\n  \"tier\": \"canonical-application\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "3db20be3204dc2f66ec782a611acf09331443f846de3f651bdbc3d81e70fa330",
+      "content": "{\n  \"audience\": \"Pulse application authors and library authors who type portable handlers and static routers.\",\n  \"dir\": \"packages/runtime\",\n  \"directInstall\": \"Yes. Install it in every Pulse application.\",\n  \"documentation\": \"docs/packages/runtime.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/runtime\"\n  ],\n  \"name\": \"@pulse-compute/runtime\",\n  \"role\": \"public-runtime\",\n  \"stability\": \"Supported application authoring and execution contract.\",\n  \"tier\": \"canonical-application\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "19666c209a2882f982395991df529296b98cb7bbec0e3ea07fafd3507df058be",
       "id": "package/runtime",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/runtime]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -10116,15 +10116,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "package",
-      "content": "{\n  \"audience\": \"Applications using bounded exact-key object reads and writes through Pulse effects.\",\n  \"dir\": \"packages/s3\",\n  \"directInstall\": \"Yes, when an application uses S3 object operations.\",\n  \"documentation\": \"docs/packages/s3.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/s3\"\n  ],\n  \"name\": \"@pulse-compute/s3\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.9\"\n}",
-      "contentSha256": "9a2f1f3666b90b91f9ef1e7dd62a0e4ec38149d1478af2c58c640928c2b00bee",
+      "content": "{\n  \"audience\": \"Applications using bounded exact-key object reads and writes through Pulse effects.\",\n  \"dir\": \"packages/s3\",\n  \"directInstall\": \"Yes, when an application uses S3 object operations.\",\n  \"documentation\": \"docs/packages/s3.md\",\n  \"entryPoints\": [\n    \"@pulse-compute/s3\"\n  ],\n  \"name\": \"@pulse-compute/s3\",\n  \"role\": \"public-extension\",\n  \"stability\": \"The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate.\",\n  \"tier\": \"supported-extension\",\n  \"version\": \"1.0.0-beta.10\"\n}",
+      "contentSha256": "a840548156593f7f8beaf4b314186d21b07571cdc7cb0d97eb4e1978f622ee08",
       "id": "package/s3",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "packages[name=@pulse-compute/s3]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -10149,12 +10149,12 @@ export const contextCorpus = freeze({
       "content": "{\n  \"id\": \"fastly\",\n  \"label\": \"Fastly Compute\",\n  \"mode\": \"execute-and-build\",\n  \"summary\": \"Explicit Native direct-host-ABI Wasm and generally available JavaScript source/deployment candidates.\"\n}",
       "contentSha256": "b9238a23f82224362737b811fc2961c235d19143db3724c298f213685cd5fed9",
       "id": "provider/fastly",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "runtimeTargets[id=fastly]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -10178,12 +10178,12 @@ export const contextCorpus = freeze({
       "content": "{\n  \"id\": \"node\",\n  \"label\": \"Node\",\n  \"mode\": \"execute\",\n  \"summary\": \"Explicit Native and generally available JavaScript execution over one canonical application contract.\"\n}",
       "contentSha256": "1e27ba5e6cb6787b9267c7169a0778da3c9264419ec8c0a0ed957274d27e42b6",
       "id": "provider/node",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "runtimeTargets[id=node]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -10203,12 +10203,12 @@ export const contextCorpus = freeze({
       "content": "{\n  \"id\": \"none\",\n  \"label\": \"Compile only\",\n  \"mode\": \"compile\",\n  \"summary\": \"Compilation and inspection without a runnable provider target.\"\n}",
       "contentSha256": "155e461afc67fcf9282b759c129328c59873e6250bb9eaf4ce2f6e87ab198a36",
       "id": "provider/none",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "release/pulse-release-manifest.json",
         "selection": "runtimeTargets[id=none]",
-        "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+        "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
       },
       "status": "candidate",
       "tags": [
@@ -10244,7 +10244,7 @@ export const contextCorpus = freeze({
       "content": "## Bind every JSON boundary\n\n<!-- pulse-doc-source: examples/02-request-schema/src/index.ts -->\n```ts\nimport { Pulse } from '@pulse-compute/pulse'\nimport type { CreateUserInput, CreateUserOutput } from './schemas.js'\n\nconst app = new Pulse({ auto: true })\n\napp.post('/users', async (ctx) => {\n  const first = await ctx.req.json<CreateUserInput>('app.CreateUserInput')\n  const second = await ctx.req.json<CreateUserInput>('app.CreateUserInput')\n  const output: CreateUserOutput = {\n    id: 7,\n    name: first.name,\n    active: first.active,\n    sameReference: first === second,\n  }\n  return ctx.json(output, { status: 201, schema: 'app.CreateUserOutput' })\n})\n\nexport default app\n```\n<!-- /pulse-doc-source -->\n\nThe schema-boundary forms are:\n\n| Boundary | Authoring form | Operation |\n|---|---|---|\n| Incoming request | `await ctx.req.json<T>('app.Input')` | Decode |\n| Fetched response | `await ctx.fetch(url).json<T>('app.Output')` | Decode |\n| Outbound fetch body | `ctx.fetch(url, { json: value, schema: 'app.Input' })` | Encode |\n| Application response | `ctx.json(value, { schema: 'app.Output' })` | Encode |\n| Application-owned text | `ctx.encodeJson(value, 'app.Output')` | Encode |\n| Application-owned text | `ctx.decodeJson<T>(text, 'app.Input')` | Decode |\n\nA registered response case is shorthand for response status plus schema:\n\n```ts\nreturn ctx.json(user, 'user.created')\n```\n\nIDs must be string literals. An outbound `schema` property is valid only with\nthe semantic `json` property; a raw string `body` and `json` are mutually\nexclusive.\n",
       "contentSha256": "b3fc3b359f85f1f7b0f0048e44539aebc2a85c87fa7245c9dfcd3c965d5e7038",
       "id": "schema/boundaries",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 152,
         "path": "docs/guides/json-schemas.md",
@@ -10288,7 +10288,7 @@ export const contextCorpus = freeze({
       "content": "## Declare the registry\n\n<!-- pulse-doc-source: examples/02-request-schema/src/schemas.ts -->\n```ts\nimport { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'\n\nexport interface CreateUserInput {\n  name: string\n  active: boolean\n}\n\nexport interface CreateUserOutput {\n  id: number\n  name: string\n  active: boolean\n  sameReference: boolean\n}\n\nexport default defineSchemaRegistry({\n  schemas: {\n    'app.CreateUserInput': schema<CreateUserInput>(),\n    'app.CreateUserOutput': schema<CreateUserOutput>(),\n  },\n})\n```\n<!-- /pulse-doc-source -->\n\nThe string keys are the contract. TypeScript type names help authoring, but they\nare not discovered automatically and do not become runtime schema IDs.\n\nThe schema subset is intentionally portable:\n\n- an object root with required or question-mark optional property signatures;\n- `string`, `boolean`, and finite JSON `number`;\n- `Int32`, `Uint32`, `ScalarRecord`, `JsonValue`, `JsonObject`, and `OpenObject<T>` marker types imported with `import type`;\n- nested object types and arrays;\n- string-literal enums such as `'admin' | 'member'`;\n- one supported type unioned with `null`.\n\nExplicit `undefined` types/unions, recursive or user-defined generic types, interface inheritance,\narbitrary unions, computed registry keys, runtime registry code, and public\n`json-as` decorators or imports are not supported. Relative type-only imports\nand re-exports can organize the type graph inside the project.\n",
       "contentSha256": "0b582fe814ff0da4a2d1b803d47e83252cb5cefda1137b4e59d0c7b1a82e0666",
       "id": "schema/registry",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 66,
         "path": "docs/guides/json-schemas.md",
@@ -10331,7 +10331,7 @@ export const contextCorpus = freeze({
       "content": "## Understand strict mode\n\n`pulse.strict` defaults to `true`. When the project declares schemas, strict\nmode requires a schema ID for request JSON, fetched-response JSON, outbound\nfetch JSON, and application JSON responses. A response may use either a literal\n`schema` descriptor or a registered response-case ID.\n\nSetting `pulse.strict: false` allows schema-less generic JSON at reachable\nrequest and fetch-response reads and at JSON encode boundaries. It does not\nmake an unknown ID valid: supplying an ID always requests that exact compiled\ncodec. Pulse does not try schemas in sequence, infer a codec from the value, or\nfall back to generic JSON when an ID is missing from the registry.\n\nGeneric JSON remains bounded and appears as an explicit host-generic JSON\ncapability in Native inspection. It is a deliberate compatibility choice, not\nautomatic JavaScript fallback.\n",
       "contentSha256": "227f435580f5c1e83646c497a5a50dd8b2abbf656cadb484f0e1026299f333ac",
       "id": "schema/strict",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 169,
         "path": "docs/guides/json-schemas.md",
@@ -10374,7 +10374,7 @@ export const contextCorpus = freeze({
       "content": "## Create a project\n\nThe command and documented result below are executed by the documentation test lane.\n\n<!-- pulse-doc-run {\"temp\":true,\"args\":[\"init\",\"hello-pulse\",\"--json\"],\"display\":\"pnpm pulse -- init ./hello-pulse --json\"} -->\n```bash\npnpm pulse -- init ./hello-pulse --json\n```\n```json\n{\n  \"status\": \"initialized\",\n  \"files\": [\n    \".gitignore\",\n    \".pulse/.gitignore\",\n    \".pulse/config.ts\",\n    \"README.md\",\n    \"package.json\",\n    \"src/index.ts\",\n    \"tests/pulse.harness.ts\",\n    \"tsconfig.json\"\n  ]\n}\n```\n\nThen enter the project and install the exact dependencies written by `pulse init`:\n\n```bash\ncd ./hello-pulse\nnpm install\n```\n\n`pulse init` never runs a package manager or performs hidden network work.\n\nThe generated project uses the conventional `.pulse/config.ts` workspace,\nan async `Pulse` application root from `@pulse-compute/pulse`, and a dedicated\n`tests/pulse.harness.ts` case module. The `.pulse/.gitignore` keeps generated\nworkspace artifacts out of version control while retaining the project config.\n",
       "contentSha256": "98f87aaa4267c01621217d4dcd6cc36224c7b86d15eb7f7a2f50cc3b8f9f4345",
       "id": "start/create",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 52,
         "path": "docs/getting-started.md",
@@ -10417,7 +10417,7 @@ export const contextCorpus = freeze({
       "content": "## Requirements\n\n- Node.js `22.14.0` or newer on the 22.x line, or Node.js 24.x (`^22.14.0 || ^24.0.0`).\n- npm 10 or another npm-compatible package manager.\n- A repository checkout with its lockfile-pinned dependencies restored, using `pnpm pulse -- <command>`, or the synchronized public package set produced by release acceptance.\n- A Fastly local execution engine only when running the external Fastly Compute reality workflow. Native compilation and configured-provider builds do not require one. The gate accepts the Fastly CLI through `PATH`/`PULSE_FASTLY_BIN` or direct Viceroy through `PULSE_VICEROY_BIN`.\n",
       "contentSha256": "243c42ab80794eec4d8e6a758dd62ece76331aec5ca70baa7eebc4fd4c07f41d",
       "id": "start/requirements",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 14,
         "path": "docs/getting-started.md",
@@ -10460,7 +10460,7 @@ export const contextCorpus = freeze({
       "content": "## Verify the project\n\n```bash\nnpm run doctor\nnpm test\n```\n\n- `doctor` validates configuration, entry resolution, schema declarations, provider support, output safety, and required toolchains.\n- `test` executes the configured cases through the selected provider’s local runtime.\n\nUse `npm run inspect` when you need the capabilities, effects, continuations,\nschemas, target-support decision, or provider lowering required by the handler.\nIt is observability, not a required lifecycle stage.\n",
       "contentSha256": "389b4974efea030f151bc4c6f903208a279e25e2a8ed1fd603802e433e902aaf",
       "id": "start/verify",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 66,
         "path": "docs/getting-started.md",
@@ -10503,7 +10503,7 @@ export const contextCorpus = freeze({
       "content": "## 5. Build the selected target\n\n```bash\npulse build\n```\n\n`build` realizes the exact provider and target in the active profile:\n\n- Node Native emits Pulse-owned Wasm and the Node host-contract metadata.\n- Node JavaScript emits a deterministic executable CommonJS source package.\n- Fastly Native emits compact direct-host-ABI `bin/main.wasm`.\n- Fastly JavaScript emits a deterministic source/deployment closure and\n  downstream runtime candidate.\n\nA successful build produces a candidate artifact. It does not publish a\npackage, deploy documentation, create provider resources, deploy a service, or\nactivate traffic.\n\nContinue with the separate [Node build and execution\nguide](./deploying-node.md) or [Fastly deployment-candidate\nguide](./deploying-fastly.md). For a complete resource-backed application, follow\nthe [context MCP workflow](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow):\nselect a profile, check and build its package, then run the exact Native module\nlocally. Its compatibility Node host has a separate startup command.\n",
       "contentSha256": "1c4482447e7a2f98d348c1f0f25f97f2449a93304fdb5f0449c5eec0cf5dc4aa",
       "id": "workflow/build",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 102,
         "path": "docs/guides/project-lifecycle.md",
@@ -10546,7 +10546,7 @@ export const contextCorpus = freeze({
       "content": "## 1. Initialize\n\n```bash\npulse init ./my-app\ncd ./my-app\nnpm install\n```\n\n`pulse init` writes a conventional application, project configuration, test\nharness, package manifest, and TypeScript configuration. It pins the\nsynchronized Pulse package versions but does not run a package manager or make\nan installation network request.\n",
       "contentSha256": "6b1d12f4b6af7588c903bc5308b65230001664c7b3ac18a135aec75ffbfd42f8",
       "id": "workflow/init",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 30,
         "path": "docs/guides/project-lifecycle.md",
@@ -10589,7 +10589,7 @@ export const contextCorpus = freeze({
       "content": "## Inspect when you need the plan\n\n`pulse inspect` is an observability command, not a required lifecycle stage:\n\n```bash\npulse inspect --json\n```\n\nUse it to examine target support, project eligibility, the reachable graph,\neffects, continuations, schemas, package-owned lowering, provider requirements,\nbindings, and Native plan identity.\n",
       "contentSha256": "81a607efdb1a602e0db4aa64dfbfdcafb016ed8a8744dfb050a1d530d067995c",
       "id": "workflow/inspect",
-      "pulseVersion": "1.0.0-beta.9",
+      "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 114,
         "path": "docs/guides/project-lifecycle.md",
@@ -10610,8 +10610,8 @@ export const contextCorpus = freeze({
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",
-      "sha256": "c3ff22faa36bb33b413307c6e9ac61a4abac41f320a64682bd7620d380c5346e",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98440d825d5d5ba6ad41dedccc1052bf625aa2e2"
+      "sha256": "cdb53476458eb2b6f141ce477d626078725b87b0cdfeaaf435326714f0bac9e1",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0bf5c837b793cfc7ed418f66ae781c72cbb3ddd9"
     },
     {
       "path": "docs/concepts/bodies.md",
@@ -10625,8 +10625,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/concepts/targets-and-hosts.md",
-      "sha256": "3a6a393bad0526b0c4f86072a4f8c75b4e31b35b4ae05e10716d4e05c4b62177",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a644f6ef180e8fb06bb38cac5f7e2724cf0e7019"
+      "sha256": "ba5dd830334b00563d6d4b50e037c493b47f235eccbcd26cb3c6fa3f4aa74359",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/d5c6e9a8dc1efa26447d177925880896dcb5a9e6"
     },
     {
       "path": "docs/getting-started.md",
@@ -10650,13 +10650,13 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/packages/pulse.md",
-      "sha256": "1a46dd9c9aa7eab3c52d85f43c00aafb68c80f7633da538541fd4a11c42fc56e",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/e203110a76979d9a3cc8b7f909f4e3b333ad941b"
+      "sha256": "370c2303dbde4ba64d5c4a9d3e8f8734a1b293103aeb3add640431749220e0ea",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9ba92233413041f3946dacd8fe06593033a55929"
     },
     {
       "path": "docs/reference/compatibility-matrix.md",
-      "sha256": "76ae19ba63891ef0d679758acb539fba2b44b7383ca93fd1ca9792ba74008ceb",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/68de782b66cc65c7f2a8b10b41ce732519605554"
+      "sha256": "9064f060248a2bd5bc83864af5a1380bd4ead9d0ab22a5fe7149407b0da8fc28",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/61b3daeff8b81fd7dfe16045f9e164a112c04ef7"
     },
     {
       "path": "docs/reference/native-build-optimization.md",
@@ -10675,8 +10675,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/01-hello-json/package.json",
-      "sha256": "f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9a3749fb6ed09ef23dd354da424a73c5147f9f67"
+      "sha256": "2cc8652fe6eeddfc7c8a6f127047b6f79d5bf33cf113190775b1dfe9c4c1fe49",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/f3de99d806d4f6fbaad7186a069bd8d520a3356c"
     },
     {
       "path": "examples/01-hello-json/src/index.ts",
@@ -10705,8 +10705,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/02-request-schema/package.json",
-      "sha256": "86f09de55ca7c3c4e7afe7de7bebf2b0f911240af6a0cb090e8ed2dc69efdcab",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/140647598e84fe2493c84dfb50b716ca100ca4ea"
+      "sha256": "23bd8e12009c767e091d5a82d78cf275f816c80cc2e95a20bf1cbceabd0ee88a",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0d4da680fd19233efcd5bc51899e3fe76297ae46"
     },
     {
       "path": "examples/02-request-schema/src/index.ts",
@@ -10740,8 +10740,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/03-fetch-composition/package.json",
-      "sha256": "3fbde4e7443a7de23cd5a83540239a766a023eb104240d3abcbc58b4df587c6c",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/f1cf7fa9f90b1662bec7adc412ebcd5e1f94f34a"
+      "sha256": "705e0fe175cba84d3aa17e62bfea479cc35e11e2f59382716b1c89ca4ad92bb0",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ed8591e13fb06a2bbc837b105020b689b57c00d5"
     },
     {
       "path": "examples/03-fetch-composition/src/index.ts",
@@ -10770,8 +10770,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/09-router-lowering/package.json",
-      "sha256": "243eca97152204a52b5e9b7f7eb41ab9448d460bc28658552cf769cfe3f035e8",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4a3df7a67537808e26bfa61875776b5d1d0b5f6b"
+      "sha256": "e18308b0861615806ecf773a3252093d8590aced9db7da5482abdcea2014775d",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8dec56713a41d85e1fd07de9d6e530a8307ad5b3"
     },
     {
       "path": "examples/09-router-lowering/src/index.ts",
@@ -10790,8 +10790,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "release/pulse-release-manifest.json",
-      "sha256": "16dfd40d1a2755e29935f1d2b51e210e03237d1e861ed0c5cc5e04a7e6b13cf6",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/64fc0974529a13d67560395d15e43f996965e276"
+      "sha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/eb81214ec37cc65d8531d22fcfeff10f1e18ffc0"
     },
     {
       "path": "wasm/packages/cli/src/command-spec.js",

@@ -61,7 +61,7 @@ rpc.on('pulse.diagnostic', {
 }, diagnostic)
 const server = mcp({
   router: rpc,
-  serverInfo: {"name":"pulse-context","version":"1.0.0-beta.9"},
+  serverInfo: {"name":"pulse-context","version":"1.0.0-beta.10"},
   limits: {"maxRequestBytes":32768,"maxResponseBytes":131072,"maxDepth":32,"deadlineMs":5000},
 })
 export default async function handler(ctx: PulseContext) {

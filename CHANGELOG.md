@@ -4,6 +4,8 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+## 1.0.0-beta.10 — Beta (2026-10-21)
+
 - Add bounded dynamic effect collections and `ctx.call` for shared authored
   computations across Router and MCP applications on Native and JavaScript.
   Effect scheduling, cancellation and deadlines remain explicit and bounded.

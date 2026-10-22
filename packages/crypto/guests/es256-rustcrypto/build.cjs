@@ -133,7 +133,7 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
     id: 'pulse.crypto.es256.rustcrypto-p256.v1',
     module: 'pulse_crypto_es256',
     owner: '@pulse-compute/crypto',
-    packageVersion: '1.0.0-beta.9',
+    packageVersion: '1.0.0-beta.10',
     abi: 'pulse.crypto.es256-rs256.verify-and-sign.v3',
     origin: 'package-prebuilt',
     artifact: Object.freeze({

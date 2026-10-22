@@ -13,7 +13,7 @@ Use Node.js 22.14 or newer on the 22.x line, or Node.js 24.x, with npm.
 Create a project with the published Beta CLI:
 
 ```bash
-npm exec --package=@pulse-compute/cli@1.0.0-beta.9 -- pulse init ./my-app
+npm exec --package=@pulse-compute/cli@1.0.0-beta.10 -- pulse init ./my-app
 cd ./my-app
 npm install
 npm run doctor
@@ -131,7 +131,7 @@ their documented limits and qualification status; see [body handling](docs/conce
 
 ## Public packages
 
-The public `1.0.0-beta.9` catalog is defined by the release manifest.
+The public `1.0.0-beta.10` catalog is defined by the release manifest.
 
 
 | Package | Role |
@@ -156,7 +156,7 @@ never changes targets automatically.
 
 ## Documentation
 
-The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-beta.9/) is release-pinned; repository Markdown remains the reviewable source.
+The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-beta.10/) is release-pinned; repository Markdown remains the reviewable source.
 
 - [Documentation index](./docs/README.md)
 - [Changelog](./CHANGELOG.md)

@@ -45,7 +45,7 @@ Never re-enable that writer as part of routine website delivery.
 
 ## Object classes
 
-The `1.0.0-beta.9` layout is:
+The `1.0.0-beta.10` layout is:
 
 ```text
 <bucket>/pulse/
@@ -55,8 +55,8 @@ The `1.0.0-beta.9` layout is:
   versions.json                      mutable
   site-manifest.json                 mutable
   public-site-manifest.json          mutable
-  v1.0.0-beta.9/**                         immutable
-  deployments/v1.0.0-beta.9.json           immutable receipt
+  v1.0.0-beta.10/**                         immutable
+  deployments/v1.0.0-beta.10.json           immutable receipt
 ```
 
 The exact-version tree is the archival release. Root and `latest` are convenience surfaces promoted only after exact-version verification and matching npm package verification.
@@ -88,7 +88,7 @@ an already retained candidate locally:
 npm run docs:deployment:verify
 ```
 
-`.pulse-documentation-deployment/documentation-deployment-manifest.json` records every object key, local source, byte length, SHA-256, content type, cache class, mutability, source commit, public documentation route, and independent storage prefix. Its deterministic deployment receipt records the complete generated-site digest and the exact-version object inventory and tree digest for `deployments/v1.0.0-beta.9.json`. Candidate verification checks the full sealed inventory, including historical preview files, before any storage operation and rejects any root or site file outside that inventory. Sealing also rejects paths outside the approved object classes.
+`.pulse-documentation-deployment/documentation-deployment-manifest.json` records every object key, local source, byte length, SHA-256, content type, cache class, mutability, source commit, public documentation route, and independent storage prefix. Its deterministic deployment receipt records the complete generated-site digest and the exact-version object inventory and tree digest for `deployments/v1.0.0-beta.10.json`. Candidate verification checks the full sealed inventory, including historical preview files, before any storage operation and rejects any root or site file outside that inventory. Sealing also rejects paths outside the approved object classes.
 
 `npm run publication:check` now exercises the historical reader with synthetic
 v1 fixtures: missing or altered bytes, unexpected site/root files, incomplete

@@ -23,7 +23,7 @@ readers into `/latest/` for current browsing.
 ## Exact release URLs
 
 Diagnostics, package status blocks and package metadata use exact-version
-URLs, such as `https://pulsecompute.io/v1.0.0-beta.9/`. This binds guidance to
+URLs, such as `https://pulsecompute.io/v1.0.0-beta.10/`. This binds guidance to
 its release rather than silently opening a newer contract. Historical rendered
 bytes and their assets retain their original delivery identities; current
 source cleanup does not rebuild or restyle those snapshots.

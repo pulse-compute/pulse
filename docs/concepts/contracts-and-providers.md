@@ -102,7 +102,7 @@ For Fastly, `pulse build` additionally emits a real Compute target. The explicit
 
 ## Current extension boundary
 
-There is no automatic provider plugin registry in `1.0.0-beta.9`. Configuration
+There is no automatic provider plugin registry in `1.0.0-beta.10`. Configuration
 selects a bare host ID, internal `none`, or an exact scoped project-installed
 package name. Bare IDs resolve by the `@pulse-compute/provider-<id>` convention.
 A package is loadable only when selected and when it exports the versioned

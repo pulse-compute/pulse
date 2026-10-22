@@ -4,7 +4,7 @@
 
 > **Decision:** Deferred for general compiler hooks and isolated untrusted plugins. Trusted external lowerers are available.
 
-Pulse 1.0.0-beta.9 supports versioned trusted package lowerers independently of npm package versions. Provider bootstrap is explicit and exact. The current boundaries are:
+Pulse 1.0.0-beta.10 supports versioned trusted package lowerers independently of npm package versions. Provider bootstrap is explicit and exact. The current boundaries are:
 
 - **Lowerers:** trusted first-party and third-party build dependencies admitted by versioned contracts; import-resolved package ownership; no package allowlist or compiler-release version equality; no sandbox.
 - **Providers:** explicit package selection through pulse.provider-toolchain.v1; bare host IDs use the @pulse-compute/provider-<id> convention, scoped names are exact, and none is internal; no scanning or self-registration.

@@ -2389,7 +2389,7 @@ without moving package semantics into the compiler or widening the trust model.
 
 ## JWT verification
 
-The synchronized `1.0.0-beta.9` JWT/crypto packages compose
+The synchronized `1.0.0-beta.10` JWT/crypto packages compose
 `@pulse-compute/jwt` over the lower-level, provider-neutral verification
 contract owned by `@pulse-compute/crypto`. The executable algorithm set is
 HS256 and ES256. Crypto verifies a MAC or signature over caller-supplied bytes
@@ -2514,7 +2514,7 @@ publish, promote, deploy, or activate the release.
 
 ## Support, release, and authority
 
-Pulse `1.0.0-beta.9` is a Beta intended for the `beta` channel.
+Pulse `1.0.0-beta.10` is a Beta intended for the `beta` channel.
 Documented, evidence-backed behavior is intentional, but public surfaces may
 change deliberately before a compatibility-bearing release. Unsupported
 behavior fails explicitly, historical and implementation subpaths gain no

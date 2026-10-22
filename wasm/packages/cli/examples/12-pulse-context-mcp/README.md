@@ -28,7 +28,7 @@ With the server running, ask for a Node Native starter. Run this from
 `application/` in a second terminal:
 
 ```bash
-node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.start '{"version":"1.0.0-beta.9","goal":"json-api","provider":"node","target":"native"}'
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.start '{"version":"1.0.0-beta.10","goal":"json-api","provider":"node","target":"native"}'
 ```
 
 Selected fields from the successful response:
@@ -125,7 +125,7 @@ rpc.on('pulse.diagnostic', {
 }, diagnostic)
 const server = mcp({
   router: rpc,
-  serverInfo: {"name":"pulse-context","version":"1.0.0-beta.9"},
+  serverInfo: {"name":"pulse-context","version":"1.0.0-beta.10"},
   limits: {"maxRequestBytes":32768,"maxResponseBytes":131072,"maxDepth":32,"deadlineMs":5000},
 })
 export default async function handler(ctx: PulseContext) {
@@ -205,7 +205,7 @@ cd application
 npm install
 ```
 
-This source preview uses the exact `1.0.0-beta.9` candidate dependencies. Obtain
+This source preview uses the exact `1.0.0-beta.10` candidate dependencies. Obtain
 matching candidate packages from the release owner; a matching version string
 alone does not identify the same build. The bundled corpus needs no upstream
 service or credentials.
@@ -230,10 +230,10 @@ the included request helper from another terminal:
 
 ```bash
 node ../client/request.cjs --url http://127.0.0.1:8787/mcp tools/list
-node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.search '{"version":"1.0.0-beta.9","query":"schema","limit":2}'
-node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.read '{"version":"1.0.0-beta.9","id":"contract/application"}'
-node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.example '{"version":"1.0.0-beta.9","id":"01-hello-json"}'
-node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.diagnostic '{"version":"1.0.0-beta.9","code":"PULSE_CALL_SOURCE_LIMIT"}'
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.search '{"version":"1.0.0-beta.10","query":"schema","limit":2}'
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.read '{"version":"1.0.0-beta.10","id":"contract/application"}'
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.example '{"version":"1.0.0-beta.10","id":"01-hello-json"}'
+node ../client/request.cjs --url http://127.0.0.1:8787/mcp pulse.diagnostic '{"version":"1.0.0-beta.10","code":"PULSE_CALL_SOURCE_LIMIT"}'
 ```
 
 Use the corpus's exact version and check each tool's `structuredContent.status`.

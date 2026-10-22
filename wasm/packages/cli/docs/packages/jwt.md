@@ -6,7 +6,7 @@
 Pulse handlers.
 
 ```bash
-npm install @pulse-compute/jwt@1.0.0-beta.9
+npm install @pulse-compute/jwt@1.0.0-beta.10
 ```
 
 ## Verify a bearer token

@@ -10,9 +10,9 @@ Project configuration lives in `.pulse/config.ts`.
 > **Supported entry points:** `pulse binary`, `@pulse-compute/cli`, `@pulse-compute/cli/workflow`, `@pulse-compute/cli/project-config`, `@pulse-compute/cli/project-execution`, `@pulse-compute/cli/project-config-schema`, `@pulse-compute/cli/diagnostics`, `@pulse-compute/cli/project-config.schema.json`, `@pulse-compute/cli/cli-spec.json`, `@pulse-compute/cli/release-manifest.json`, `@pulse-compute/cli/documentation-versions.json`, `@pulse-compute/cli/documentation-site.json`<br>
 > **Stability:** Supported Beta workflow and project-configuration contract.<br>
 > **npm:** [`@pulse-compute/cli`](https://www.npmjs.com/package/@pulse-compute/cli)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.9/packages/cli/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.10/packages/cli/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.9` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.10` package policy.
 <!-- pulse-package-status:end -->
 
 ## Install and create a project
@@ -20,7 +20,7 @@ Project configuration lives in `.pulse/config.ts`.
 Use Node.js 22.14 or newer on the 22.x line, or Node.js 24.x, with npm.
 
 ```bash
-npm exec --package=@pulse-compute/cli@1.0.0-beta.9 -- pulse init ./my-app
+npm exec --package=@pulse-compute/cli@1.0.0-beta.10 -- pulse init ./my-app
 cd ./my-app
 npm install
 npm run doctor

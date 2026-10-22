@@ -6,7 +6,7 @@
 operations through the first-party JSON-RPC adapter.
 
 ```bash
-npm install @pulse-compute/entities@1.0.0-beta.9
+npm install @pulse-compute/entities@1.0.0-beta.10
 ```
 
 ## Declare an entity router

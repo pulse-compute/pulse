@@ -35,7 +35,7 @@ For Native build settings, see [Native build optimization](../reference/native-b
 ## Install
 
 ```bash
-npm install @pulse-compute/provider-fastly@1.0.0-beta.9
+npm install @pulse-compute/provider-fastly@1.0.0-beta.10
 ```
 
 ## Configure a project

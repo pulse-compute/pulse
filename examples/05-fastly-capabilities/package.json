@@ -11,12 +11,12 @@
     "build": "pulse build"
   },
   "dependencies": {
-    "@pulse-compute/grip": "1.0.0-beta.9",
-    "@pulse-compute/provider-fastly": "1.0.0-beta.9",
-    "@pulse-compute/pulse": "1.0.0-beta.9"
+    "@pulse-compute/grip": "1.0.0-beta.10",
+    "@pulse-compute/provider-fastly": "1.0.0-beta.10",
+    "@pulse-compute/pulse": "1.0.0-beta.10"
   },
   "devDependencies": {
-    "@pulse-compute/cli": "1.0.0-beta.9",
+    "@pulse-compute/cli": "1.0.0-beta.10",
     "typescript": "5.9.3"
   }
 }

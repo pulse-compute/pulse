@@ -15,17 +15,17 @@ configuration; the provider realizes that choice.
 | Validate or inspect a project | [Project workflow](#project-workflow) |
 
 For source eligibility, use [Managed handler TypeScript and
-JavaScript](https://pulsecompute.io/v1.0.0-beta.9/reference/handler-authoring/). For provider and target
+JavaScript](https://pulsecompute.io/v1.0.0-beta.10/reference/handler-authoring/). For provider and target
 differences, use the [compatibility
-matrix](https://pulsecompute.io/v1.0.0-beta.9/reference/compatibility-matrix/). For CLI and runtime failures,
+matrix](https://pulsecompute.io/v1.0.0-beta.10/reference/compatibility-matrix/). For CLI and runtime failures,
 use the stable codes in the [diagnostics
-reference](https://pulsecompute.io/v1.0.0-beta.9/reference/diagnostics/).
+reference](https://pulsecompute.io/v1.0.0-beta.10/reference/diagnostics/).
 
 This document describes the provider-neutral TypeScript application contract compiled by Pulse. Low-level authoring types and the static `Router` come from `@pulse-compute/runtime`. The public `@pulse-compute/pulse` package owns the conventional `Pulse` application root, deferred project configuration, and schema declarations, while `@pulse-compute/cli` owns workspace orchestration.
 
 `@pulse-compute/runtime` is the low-level portable application surface and
 `@pulse-compute/pulse` is the conventional project surface. Both belong to the
-[public release catalog](https://pulsecompute.io/v1.0.0-beta.9/maintainers/release-manifest/). Native and JavaScript execution remain
+[public release catalog](https://pulsecompute.io/v1.0.0-beta.10/maintainers/release-manifest/). Native and JavaScript execution remain
 explicitly selected targets over the same canonical runtime contract.
 
 ## Context at a glance
@@ -71,7 +71,7 @@ Every managed handler is async-shaped:
 type Handler = (ctx: PulseContext) => Promise<PulseResult | PulseFetchResponse>
 ```
 
-For native targets the compiler erases the async wrapper. Awaited Pulse effects lower into the existing explicit effect and continuation state machine; no Promise runtime or Asyncify transform is linked. Awaiting a proven synchronous `ctx` expression is redundant and may warn, while arbitrary non-Pulse awaits mark the native eligibility boundary. The canonical [handler authoring reference](https://pulsecompute.io/v1.0.0-beta.9/reference/handler-authoring/) defines the static language subset; the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.9/reference/compatibility-matrix/) owns the tested four-mode claims.
+For native targets the compiler erases the async wrapper. Awaited Pulse effects lower into the existing explicit effect and continuation state machine; no Promise runtime or Asyncify transform is linked. Awaiting a proven synchronous `ctx` expression is redundant and may warn, while arbitrary non-Pulse awaits mark the native eligibility boundary. The canonical [handler authoring reference](https://pulsecompute.io/v1.0.0-beta.10/reference/handler-authoring/) defines the static language subset; the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.10/reference/compatibility-matrix/) owns the tested four-mode claims.
 
 ## Static `Router`
 
@@ -159,9 +159,9 @@ eligibility. Fastly targets fail closed because no event ingress/emit adapter is
 claimed. There is no public event injection command, no event-aware development
 listener, no HTTP/GRIP translation, and no automatic target fallback.
 
-The [static events guide](https://pulsecompute.io/v1.0.0-beta.9/guides/events/) owns the complete frame,
+The [static events guide](https://pulsecompute.io/v1.0.0-beta.10/guides/events/) owns the complete frame,
 queue, target-eligibility, diagnostic, and Native-extension contract. The
-source-bound [event example](https://pulsecompute.io/v1.0.0-beta.9/examples/11-events/) runs the same mixed project
+source-bound [event example](https://pulsecompute.io/v1.0.0-beta.10/examples/11-events/) runs the same mixed project
 on Node JavaScript and Node Native.
 
 ## `ctx.req`
@@ -186,10 +186,10 @@ Structured request bodies are bounded runtime-owned snapshots. Repeated `text()`
 it grants no reader or binary inspection. `readTextChunk()` belongs only to the
 experimental Node `bodyTransform` opt-in, with generated output and a finite
 deadline. It excludes forwarding and structured body reads. Both Fastly targets
-reject these capabilities. The [bodies guide](https://pulsecompute.io/v1.0.0-beta.9/concepts/bodies/) owns the
+reject these capabilities. The [bodies guide](https://pulsecompute.io/v1.0.0-beta.10/concepts/bodies/) owns the
 byte/read/write limits and separates installed output qualification from pending
 installed transform qualification. The production `/server` launcher remains
-qualified for finite HTTP, as described in [Node deployment](https://pulsecompute.io/v1.0.0-beta.9/guides/deploying-node/).
+qualified for finite HTTP, as described in [Node deployment](https://pulsecompute.io/v1.0.0-beta.10/guides/deploying-node/).
 
 ### Request metadata and headers
 
@@ -264,12 +264,12 @@ ctx.fetch(url: string, init?: PulseFetchInit): PulseFetchOperation
 Choose text/opaque `body` or `json`, never both. `schema` describes a JSON
 request body; it is invalid without `json`. `PulseIncomingBody` is the opaque
 request-forwarding handle under the explicit Node opt-in, not an arbitrary
-stream or buffer. See [incoming forwarding](https://pulsecompute.io/v1.0.0-beta.9/concepts/bodies/#incoming-forwarding-on-node).
+stream or buffer. See [incoming forwarding](https://pulsecompute.io/v1.0.0-beta.10/concepts/bodies/#incoming-forwarding-on-node).
 
 HTTP status is response data. Network and timeout failures are runtime failures.
 The [Router recovery contract](./guides/routing.md#next-is-a-terminal-transfer)
 owns which failures enter application error handling; the
-[deadline contract](https://pulsecompute.io/v1.0.0-beta.9/concepts/effects-and-continuations/#timeouts-have-two-scopes)
+[deadline contract](https://pulsecompute.io/v1.0.0-beta.10/concepts/effects-and-continuations/#timeouts-have-two-scopes)
 distinguishes per-fetch timeouts from terminal request deadlines.
 
 ```ts
@@ -513,7 +513,7 @@ capacity does not replace schema, request or cumulative-effect limits.
 
 The portable source shape is deliberately bounded: one local collection, one
 direct `for...of` with one inline `add`, then one awaited flush. Keep the full
-[collection grammar, ownership and failure rules](https://pulsecompute.io/v1.0.0-beta.9/concepts/effects-and-continuations/#bounded-dynamic-collections)
+[collection grammar, ownership and failure rules](https://pulsecompute.io/v1.0.0-beta.10/concepts/effects-and-continuations/#bounded-dynamic-collections)
 with their owner rather than treating this as an arbitrary Promise collection.
 
 ## `ctx.emit`
@@ -641,9 +641,9 @@ API. Writes cannot join `ctx.parallel`; Fastly output and Native output with lin
 guests remain unsupported. After start commits headers, failures terminate the
 transport rather than sending a second response.
 
-The [generated-output contract](https://pulsecompute.io/v1.0.0-beta.9/concepts/bodies/#experimental-generated-output-on-node)
+The [generated-output contract](https://pulsecompute.io/v1.0.0-beta.10/concepts/bodies/#experimental-generated-output-on-node)
 owns opt-ins, byte/write limits, lifecycle and qualification. The separate input
-transform has its own [experimental boundary](https://pulsecompute.io/v1.0.0-beta.9/concepts/bodies/#experimental-bounded-utf-8-transforms-on-node).
+transform has its own [experimental boundary](https://pulsecompute.io/v1.0.0-beta.10/concepts/bodies/#experimental-bounded-utf-8-transforms-on-node).
 
 ## `ctx.time`
 
@@ -653,7 +653,7 @@ its matching UTC string. A failed sample has `status: 'failed'` and reason
 `'unavailable'` or `'invalid-clock'`. Direct awaited calls and keyed parallel
 members are supported on Node/Fastly Native and JavaScript. Wall time can regress
 and is separate from monotonic deadlines and exact commit timestamps. See the
-[complete result contract](https://pulsecompute.io/v1.0.0-beta.9/packages/runtime/#wall-time).
+[complete result contract](https://pulsecompute.io/v1.0.0-beta.10/packages/runtime/#wall-time).
 
 ## Config and secrets
 
@@ -716,7 +716,7 @@ not prove the key previously existed.
 
 Both are awaitable effects and keyed `ctx.parallel` members on Node JavaScript,
 Node Native and Fastly Native. Fastly JavaScript rejects them during eligibility
-inspection. See [KV listing and deletion](https://pulsecompute.io/v1.0.0-beta.9/concepts/effects-and-continuations/#kv-listing-and-deletion)
+inspection. See [KV listing and deletion](https://pulsecompute.io/v1.0.0-beta.10/concepts/effects-and-continuations/#kv-listing-and-deletion)
 for byte limits, cursor ownership, deadlines and failure semantics.
 
 ### KV limits and ownership
@@ -751,7 +751,7 @@ projects the value, then returns detached JSON text bounded by `schemas.maxBytes
 in UTF-8 bytes. It does not create a response or dispatch an effect. Invalid
 values and oversized text fail before subsequent writes. Declaration order and
 array order are preserved; cross-target parity is semantic, not a universal
-canonical-byte format. See [application-owned encoding](https://pulsecompute.io/v1.0.0-beta.9/guides/json-schemas/#encode-application-owned-text).
+canonical-byte format. See [application-owned encoding](https://pulsecompute.io/v1.0.0-beta.10/guides/json-schemas/#encode-application-owned-text).
 
 ## `ctx.decodeJson`
 
@@ -764,7 +764,7 @@ be a string within `schemas.maxBytes` UTF-8 bytes. Decoding returns a detached,
 deeply immutable value with declared fields only. It performs no effect and
 does not apply HTTP content-type policy. Keep the original text for hashing,
 verification and retries; decoding does not establish byte canonicalization or
-storage acceptance. See [application text decoding](https://pulsecompute.io/v1.0.0-beta.9/guides/json-schemas/#decode-application-owned-text).
+storage acceptance. See [application text decoding](https://pulsecompute.io/v1.0.0-beta.10/guides/json-schemas/#decode-application-owned-text).
 
 ## Explicit JSON schemas
 
@@ -807,12 +807,12 @@ forms lower into canonical package operations; JavaScript targets execute the
 real package implementation.
 
 Older `/pulsewasm` imports are compatibility-only and are isolated in the
-[migration guide](https://pulsecompute.io/v1.0.0-beta.9/guides/compatibility-imports/). See the
-[GRIP package guide](https://pulsecompute.io/v1.0.0-beta.9/packages/grip/) for the complete current surface.
+[migration guide](https://pulsecompute.io/v1.0.0-beta.10/guides/compatibility-imports/). See the
+[GRIP package guide](https://pulsecompute.io/v1.0.0-beta.10/packages/grip/) for the complete current surface.
 
 ## Entities API
 
-`@pulse-compute/entities` is part of the synchronized `1.0.0-beta.9` package
+`@pulse-compute/entities` is part of the synchronized `1.0.0-beta.10` package
 set. The application surface has two runtime values:
 
 ```ts
@@ -874,9 +874,9 @@ Registrations and the terminal binding must use the supported static form. The
 first-party JSON-RPC adapter accepts bounded JSON-RPC 2.0 request objects and
 named params, validates declared schemas, uses stable error framing, and
 acknowledges notifications with HTTP `204`. See the [package
-guide](https://pulsecompute.io/v1.0.0-beta.9/packages/entities/), [entity/adapter
-model](https://pulsecompute.io/v1.0.0-beta.9/concepts/entities-and-adapters/), and [executable
-example](https://pulsecompute.io/v1.0.0-beta.9/examples/10-entities-tools/).
+guide](https://pulsecompute.io/v1.0.0-beta.10/packages/entities/), [entity/adapter
+model](https://pulsecompute.io/v1.0.0-beta.10/concepts/entities-and-adapters/), and [executable
+example](https://pulsecompute.io/v1.0.0-beta.10/examples/10-entities-tools/).
 
 ## Project workflow
 
@@ -893,5 +893,5 @@ selected profile, handler entry, schema declarations, provider bindings, and
 output directory through `.pulse/config.ts`. `pulse inspect` is optional
 observability, and `pulse compile` is the advanced provider-neutral Native
 artifact command; neither is required before `pulse build`. See the [project
-lifecycle guide](https://pulsecompute.io/v1.0.0-beta.9/guides/project-lifecycle/) and [CLI
-reference](https://pulsecompute.io/v1.0.0-beta.9/reference/cli/).
+lifecycle guide](https://pulsecompute.io/v1.0.0-beta.10/guides/project-lifecycle/) and [CLI
+reference](https://pulsecompute.io/v1.0.0-beta.10/reference/cli/).

@@ -17,9 +17,9 @@ or ends with `return next()` so the next registered handler can run.
 | Select a mounted group from request state | [Selected groups](#selected-groups) |
 | Inspect the resulting route graph | [Inspect the lowering](#inspect-the-lowering) |
 
-Keep [managed handler restrictions](https://pulsecompute.io/v1.0.0-beta.9/reference/handler-authoring/) and
-[provider/target limits](https://pulsecompute.io/v1.0.0-beta.9/reference/compatibility-matrix/) alongside these
-routing rules. [Express migration](https://pulsecompute.io/v1.0.0-beta.9/guides/migrating-from-express/) explains the
+Keep [managed handler restrictions](https://pulsecompute.io/v1.0.0-beta.10/reference/handler-authoring/) and
+[provider/target limits](https://pulsecompute.io/v1.0.0-beta.10/reference/compatibility-matrix/) alongside these
+routing rules. [Express migration](https://pulsecompute.io/v1.0.0-beta.10/guides/migrating-from-express/) explains the
 behavior changes for an existing service.
 
 ## Follow a routed request
@@ -220,7 +220,7 @@ A per-fetch `timeoutMs` header deadline enters the same error lane as
 `PULSE_FETCH_TIMEOUT`, with an explicit 504 when no error handler is registered.
 The whole-request `maxDurationMs` cutoff remains terminal. Invalid timeout options
 fail before dispatch with HTTP 400. See [fetch deadline semantics and resource
-ownership](https://pulsecompute.io/v1.0.0-beta.9/concepts/effects-and-continuations/#timeouts-have-two-scopes).
+ownership](https://pulsecompute.io/v1.0.0-beta.10/concepts/effects-and-continuations/#timeouts-have-two-scopes).
 These Fastly-specific recoveries do not change other targets' recovery catalogs.
 
 Recovery moves forward in registration order, including through mounted

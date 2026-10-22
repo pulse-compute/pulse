@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-npm install @pulse-compute/grip@1.0.0-beta.9
+npm install @pulse-compute/grip@1.0.0-beta.10
 ```
 
 ## Package-root API
