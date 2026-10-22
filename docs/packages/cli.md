@@ -107,7 +107,8 @@ disassembly. Inspect the named owner and its observed registration/effect shapes
 against the retained-stage contract, then measure a full target build before
 adopting a generator rewrite for size.
 
-For Native builds, `--experimental-native-bounded-size` selects AssemblyScript O3/shrink2 without convergence. The existing `--experimental-native-size` flag retains O3/shrink2 with convergence. Both are opt-in and mutually exclusive; build manifests record the chosen recipe.
+See [Native build optimization](../reference/native-build-optimization.md) for the
+ordinary default, shrink0 fallback and optional build settings.
 
 See the generated [CLI reference](../reference/cli.md) for every option, positional form, output, side effect, and exit behavior.
 

@@ -389,7 +389,7 @@ export default { cases: [
 
 ## Wasm size
 
+For build settings, see [Native build optimization](../../docs/reference/native-build-optimization.md).
+
 The default `node-javascript` profile emits **no application Wasm artifact**.
-Select `node-native` to emit an application guest. `--experimental-native-size`
-is meaningful only on that Native profile; the default JavaScript build has
-no application guest to optimize.
+Select `node-native` to emit an application guest.

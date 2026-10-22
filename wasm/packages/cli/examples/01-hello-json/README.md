@@ -208,6 +208,8 @@ export default {
 
 ## Wasm size
 
+For build settings, see [Native build optimization](../../docs/reference/native-build-optimization.md).
+
 | Artifact | Default build | `--experimental-native-size` | Reduction |
 |---|---:|---:|---:|
 | `canonical-native.wasm` | 2.3 KiB (2,353 bytes) | 2.2 KiB (2,270 bytes) | 3.5% |

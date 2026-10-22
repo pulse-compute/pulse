@@ -77,6 +77,7 @@ const STATUS_END = '<!-- pulse-package-status:end -->';
 
 const PRODUCT_DOCUMENTS = Object.freeze([
   'docs/reference/README.md',
+  'docs/reference/native-build-optimization.md',
   'docs/preview-scope.md',
   'docs/guides/project-lifecycle.md',
   'docs/guides/events.md',

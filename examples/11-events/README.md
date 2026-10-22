@@ -281,6 +281,8 @@ frame, queue, target, diagnostic, and Native-extension contracts.
 
 ## Wasm size
 
+For build settings, see [Native build optimization](../../docs/reference/native-build-optimization.md).
+
 | Artifact | Default build | `--experimental-native-size` | Reduction |
 |---|---:|---:|---:|
 | `canonical-native.wasm` | 39.7 KiB (40,667 bytes) | 31.7 KiB (32,460 bytes) | 20.2% |

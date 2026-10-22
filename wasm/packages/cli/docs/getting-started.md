@@ -98,18 +98,8 @@ npm run build
 
 The public CLI does not accept provider overrides. Use `pulse compile` when only the portable `pulse_host` module is needed; use `pulse build` when the configured deployment realization is needed. Native builds always preserve generated source and Wasm together.
 
-Provider-neutral compilation and Native provider builds may opt into the
-explicitly experimental size optimizer:
-
-```bash
-pulse compile --experimental-native-size
-pulse build --experimental-native-size
-```
-
-The Native compiler resolves that intent to its experimental size profile. The
-current runtime and export surface remain unchanged, the default build is
-unaffected, and portable and provider manifests record the resolved profile.
-JavaScript build targets reject the flag.
+For the Native default, fallback and optional build settings, see
+[Native build optimization](./reference/native-build-optimization.md).
 
 For candidate-specific output and proof boundaries, continue with [Node build
 and execution](./guides/deploying-node.md) or [Fastly deployment

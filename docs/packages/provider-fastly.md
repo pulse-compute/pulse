@@ -30,6 +30,8 @@ and the observed/configured byte counts; modules within it still require valid
 Wasm and the expected host ABI. No unlimited setting or runtime allocation
 change is implied. The option does not control JavaScript-target packaging.
 
+For Native build settings, see [Native build optimization](../reference/native-build-optimization.md).
+
 ## Install
 
 ```bash

@@ -310,6 +310,9 @@ ${GENERATED_NOTICE}
 
 The ${inlineCode('pulse')} CLI in ${inlineCode('@pulse-compute/cli@' + RELEASE_VERSION)} is the supported project workflow. One command specification generates this page, installed help, and the shipped Bash, Zsh, and Fish completion scripts, so a public command or option cannot drift between those surfaces.
 
+For Native defaults, escape hatches and optional memory settings, see
+[Native build optimization](./native-build-optimization.md).
+
 ## Quick start
 
 Use ${inlineCode('pulse')} to create, check, run and build a project. The general shape is:

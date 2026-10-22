@@ -249,6 +249,8 @@ cd dist-fastly-native
 fastly compute serve --file bin/main.wasm --addr 127.0.0.1:8787
 ```
 
+For build settings, see [Native build optimization](../../docs/reference/native-build-optimization.md).
+
 This runs Fastly locally. See [Deploying to Fastly](../../docs/guides/deploying-fastly.md)
 for deployment. The example serves public documentation without authentication
 and rejects requests with an Origin header. See the [MCP package guide](../../docs/packages/mcp.md)
