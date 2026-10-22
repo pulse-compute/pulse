@@ -245,6 +245,32 @@ async function main() {
     write('dirty.txt', 'dirty'); assert.throws(() => source.verify(repo, file, digest), /clean candidate/); fs.unlinkSync(path.join(repo, 'dirty.txt'));
     assert.throws(() => source.verify(root, file, digest), /another checkout/);
   } finally { Module._load = original; }
-  console.log('ok - pre-main identity, explicit qualification, live-source invalidation, terminal seal, merge/squash/linear-rebase binding and pinned source checks');
+  // Website-owned history is hashed as stored, including its final newline.
+  // Exercise identify() with real Git blobs, not only the standalone checker.
+  git('checkout', '-q', '--detach', base);
+  git('tag', 'v1.0.0-beta.7', base);
+  prepare('1.0.0-beta.8');
+  const historicalPath = 'release/documentation-release-history/v1.0.0-beta.7.json';
+  const historicalBytes = `${JSON.stringify(manifest('1.0.0-beta.7'), null, 2)}\n`;
+  write(historicalPath, historicalBytes);
+  write('release/documentation-versions.json', { latest: '1.0.0-beta.8', versions: [
+    { version: '1.0.0-beta.8', segment: 'v1.0.0-beta.8', status: 'current' },
+    { version: '1.0.0-beta.7', segment: 'v1.0.0-beta.7', status: 'archived',
+      deliveryOwner: 'website', sourceTag: 'v1.0.0-beta.7', sourceCommit: base,
+      sourceManifest: historicalPath,
+      sourceManifestSha256: crypto.createHash('sha256').update(historicalBytes).digest('hex') }
+  ] });
+  const identifyHistory = message => {
+    const historyHead = commit(message);
+    const historyTree = git('rev-parse', 'HEAD^{tree}');
+    const historyMerge = git('commit-tree', historyTree, '-p', base, '-p', historyHead, '-m', message);
+    git('checkout', '-q', '--detach', historyMerge);
+    return identify({ ...event, pull_request: { ...event.pull_request,
+      head: { ...event.pull_request.head, sha: historyHead } } }, { ...env, GITHUB_SHA: historyMerge });
+  };
+  assert.equal(identifyHistory('website history with newline').preparation.preparedRelease, true);
+  write(historicalPath, historicalBytes.slice(0, -1));
+  assert.throws(() => identifyHistory('tampered historical bytes'), /historical release metadata digest differs/);
+  console.log('ok - pre-main identity, exact historical metadata bytes, explicit qualification, live-source invalidation, terminal seal, merge/squash/linear-rebase binding and pinned source checks');
 }
 main().finally(() => fs.rmSync(root, { recursive: true, force: true })).catch(error => { console.error(error.stack || error); process.exitCode = 1; });

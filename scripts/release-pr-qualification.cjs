@@ -64,7 +64,9 @@ function identify({ root, event, env = process.env }) {
   const base = sha(pr.base.sha, 'base SHA'), head = sha(pr.head.sha, 'head SHA');
   const parents = git(root, ['show', '-s', '--format=%P', candidate.sourceRevision]).split(' ');
   assert.deepEqual(parents, [base, head], 'Merge candidate parents differ from the PR base/head');
-  const read = (ref, file) => git(root, ['show', `${ref}:${file}`]);
+  // File content participates in byte digests; only Git metadata may be trimmed.
+  const read = (ref, file) => execFileSync('git', ['show', `${ref}:${file}`],
+    { cwd: root, encoding: 'utf8', timeout: 10000, maxBuffer: 16 * 1024 * 1024 });
   const preparation = checkReleasePr({
     baseManifest: JSON.parse(read(base, 'release/pulse-release-manifest.json')),
     headManifest: JSON.parse(read(candidate.sourceRevision, 'release/pulse-release-manifest.json')),
