@@ -19,7 +19,7 @@ const loggingContract = require('@pulse-compute/wasm-contracts/logging');
 const cryptoContract = require('@pulse-compute/wasm-contracts/crypto/contracts');
 const eventContract = require('@pulse-compute/wasm-contracts/events');
 const pureValues = require('./pure-helper-values');
-const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v10';
+const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v11';
 const { lowerSharedStages, validateSharedStages } = require('./shared-stage-plan');
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';
@@ -199,7 +199,7 @@ function resultKindForEffect(site, decoder, continuation, resultMode) {
   if (site.kind === 'time.now') return 'json';
   if (site.kind === 'kv.get') return 'json-or-undefined';
   if (site.kind === 'kv.put') return 'ack';
-  if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(site.kind)) return 'json';
+  if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete'].includes(site.kind)) return 'json';
   if (site.kind === 'event.emit') return 'ack';
   return 'unknown';
 }
@@ -290,9 +290,16 @@ class NativePlanBuilder {
     }
 
     this.metadata = compiled.metadata;
+    this.callableSource = compiled.callableSource;
+    this.loweredCallableSites = new Set();
+    this.callableSites = 0;
+    this.resources = options.binaryResources || compiled.binaryResources;
+    if (this.resources) require('@pulse-compute/wasm-contracts/resources/embedded').validateResourceCatalogue(this.resources);
+    this.usedResources = new Set();
+    this.numericWorkspaces = [];
     this.pureTypes = new Map();
     this.pureTypes.schemas = compiled.metadata.schemaRegistry;
-    this.helperBodies = new Map((this.metadata.router?.helpers || []).map(helper => [helper.name, helper]));
+    this.helperBodies = new Map((this.metadata.sourceHelpers || this.metadata.router?.helpers || []).map(helper => [helper.name, helper]));
     if (this.metadata.capabilities?.some(id => ['request.body.forward', 'request.body.transform'].includes(id))
       && this.metadata.capabilities.some(id => ['request.text', 'request.json'].includes(id))) {
       throw new CanonicalNativePlanError('Native incoming forwarding/transforms cannot be combined with structured request reads.', [
@@ -364,14 +371,30 @@ class NativePlanBuilder {
     }
     if (current.kind === ts.SyntaxKind.NullKeyword) return Object.freeze({ kind: 'literal', value: null, valueKind: 'null' });
 
+    const workspace = node => ts.isIdentifier(node) && scope.get(node.text)?.workspaceId;
+    if (ts.isPropertyAccessExpression(current) && workspace(current.expression)) {
+      if (current.name.text !== 'length') this.fail(current, 'PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace property is unsupported.');
+      return Object.freeze({ kind: 'workspace-read', version: 'pulse.numeric-workspace.v1', workspaceId: workspace(current.expression), valueKind: 'number' });
+    }
+    if (ts.isElementAccessExpression(current) && workspace(current.expression)) return Object.freeze({
+      kind: 'workspace-read', version: 'pulse.numeric-workspace.v1', workspaceId: workspace(current.expression), offset: this.expression(current.argumentExpression, scope), valueKind: 'number'
+    });
+    if (ts.isBinaryExpression(current) && ts.isElementAccessExpression(current.left) && workspace(current.left.expression)
+      && current.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && current.operatorToken.kind <= ts.SyntaxKind.LastAssignment) {
+      if (current.operatorToken.kind !== ts.SyntaxKind.EqualsToken) this.fail(current, 'PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace writes require simple assignment.');
+      return Object.freeze({ kind: 'workspace-write', version: 'pulse.numeric-workspace.v1', workspaceId: workspace(current.left.expression),
+        offset: this.expression(current.left.argumentExpression, scope), value: this.expression(current.right, scope), valueKind: 'number' });
+    }
     if (ts.isIdentifier(current)) {
       if (current.text === 'undefined') return Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
       if (current.text === this.ctxName) return Object.freeze({ kind: 'context-read', path: Object.freeze([]), valueKind: 'unknown' });
+      if (scope.get(current.text)?.workspaceId) this.fail(current, 'PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace cannot escape.');
       const local = scope.get(current.text);
       if (!local) {
         this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.LOCAL_UNRESOLVED, `Generated canonical expression references unresolved local ${current.text}.`, { local: current.text });
         return Object.freeze({ kind: 'local', id: `unresolved:${current.text}`, name: current.text, valueKind: 'unknown' });
       }
+      if (local.resourceId) this.fail(current, 'PULSE_BINARY_RESOURCE_INVALID', 'Resource views cannot escape their direct scalar reads.');
       return Object.freeze({ kind: 'local', id: local.id, name: local.name, valueKind: local.valueKind });
     }
 
@@ -397,6 +420,7 @@ class NativePlanBuilder {
             this.fail(property, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.LOCAL_UNRESOLVED, `Object shorthand references unresolved local ${property.name.text}.`, { local: property.name.text });
             continue;
           }
+          if (local.resourceId) this.fail(property, 'PULSE_BINARY_RESOURCE_INVALID', 'Resource views cannot be stored in objects.');
           entries.push(Object.freeze({
             kind: 'property',
             key: Object.freeze({ kind: 'literal', value: property.name.text }),
@@ -492,6 +516,11 @@ class NativePlanBuilder {
         }
         return Object.freeze({ kind: 'context-read', path: Object.freeze(ctxPath), valueKind: contextValueKind(ctxPath) });
       }
+      const resource = ts.isIdentifier(current.expression) && scope.get(current.expression.text)?.resourceId;
+      if (resource) {
+        if (current.name.text !== 'byteLength') this.fail(current, 'PULSE_BINARY_RESOURCE_INVALID', 'Resource views expose byteLength and direct scalar reads only.');
+        return Object.freeze({ kind: 'resource-read', version: 'pulse.binary-resource-read.v1', resourceId: resource, operation: 'byteLength', valueKind: 'number' });
+      }
       const object = this.expression(current.expression, scope);
       let valueKind = 'unknown';
       if (object.valueKind === 'fetch-response') {
@@ -539,6 +568,15 @@ class NativePlanBuilder {
   callExpression(call, scope) {
     if (call.questionDotToken) this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Optional calls are outside the canonical native value model.');
     const target = unwrap(call.expression);
+    const resource = ts.isPropertyAccessExpression(target) && ts.isIdentifier(target.expression) && scope.get(target.expression.text)?.resourceId;
+    if (resource) {
+      const utf8 = target.name.text === 'readUtf8';
+      if (!['readU8', 'readU32LE', 'readF32LE', 'readUtf8'].includes(target.name.text) || call.arguments.length !== (utf8 ? 2 : 1) || target.questionDotToken || call.typeArguments?.length) {
+        this.fail(call, 'PULSE_BINARY_RESOURCE_INVALID', 'Resource reads require numeric byte offset/length arguments.');
+      }
+      return Object.freeze({ kind: 'resource-read', version: utf8 ? 'pulse.binary-resource-utf8.v1' : 'pulse.binary-resource-read.v1', resourceId: resource, operation: target.name.text,
+        offset: this.expression(call.arguments[0], scope), ...(utf8 ? { length: this.expression(call.arguments[1], scope) } : {}), valueKind: utf8 ? 'string' : 'number' });
+    }
     const helper = ts.isIdentifier(target) && this.helperBodies.get(target.text);
     if (helper?.pure) {
       if (this.activeHelper || this.pureCallDepth) {
@@ -556,6 +594,27 @@ class NativePlanBuilder {
     }
     const ctxPath = contextPath(target, this.ctxName);
     if (ctxPath) {
+      if (ctxPath.length === 1 && ctxPath[0] === 'call' && this.callableSource) {
+        const name = ts.isIdentifier(call.arguments[0]) && call.arguments[0].text;
+        const site = this.callableSource.sites.find(site => site.marker === name)
+          || this.callableSource.sites.filter(site => !site.managed && !site.marker)[this.callableSites];
+        const index = this.callableSource.callees.findIndex(callee => callee.identity === site?.target);
+        const schemas = call.arguments[2];
+        const pair = schemas && ts.isObjectLiteralExpression(schemas) && schemas.properties.length === 2
+          && Object.fromEntries(schemas.properties.filter(ts.isPropertyAssignment).map(property =>
+            [propertyName(this.sourceFile, property.name), ts.isStringLiteral(property.initializer) && property.initializer.text]));
+        if (!site || (site.marker || site.localName) !== name || index < 0 || call.arguments.length !== 3 || call.typeArguments?.length
+          || !pair || pair.inputSchema !== site.inputSchema || pair.outputSchema !== site.outputSchema) {
+          this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Callable source binding does not match admitted target and schemas.');
+          return Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
+        }
+        const argument = this.expression(call.arguments[1], scope);
+        if (!['object', 'json', 'unknown'].includes(argument.valueKind)) this.fail(call.arguments[1],
+          contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Callable input must be a schema-bound object.');
+        this.callableSites++;
+        this.loweredCallableSites.add(site);
+        return Object.freeze({ kind: 'callable-call', index, argument, valueKind: 'object', source: site.source });
+      }
       const intrinsic = intrinsicForContextCall(ctxPath);
       if (!intrinsic) {
         this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Context call ctx.${ctxPath.join('.')} is not part of the canonical native intrinsic set.`, { path: ctxPath });
@@ -666,7 +725,7 @@ class NativePlanBuilder {
     if (!call || !ts.isCallExpression(call) || !ts.isPropertyAccessExpression(unwrap(call.expression))) return undefined;
     const target = unwrap(call.expression);
     if (!ts.isIdentifier(unwrap(target.expression)) || unwrap(target.expression).text !== PULSE_RUNTIME_PARAMETER) return undefined;
-    if (!['effect', 'group'].includes(target.name.text)) return undefined;
+    if (!['effect', 'group', 'collection'].includes(target.name.text)) return undefined;
     return Object.freeze({ mode: target.name.text, call, decoder });
   }
 
@@ -771,6 +830,30 @@ class NativePlanBuilder {
     for (let index = 0; index < statement.declarationList.declarations.length; index += 1) {
       const item = statement.declarationList.declarations[index];
       const itemPath = formatStatementPath(statement.declarationList.declarations.length === 1 ? pathParts : [...pathParts, 'declaration', index]);
+      const initializer = item.initializer && unwrap(item.initializer);
+      if (initializer && ts.isCallExpression(initializer) && contextPath(initializer.expression, this.ctxName)?.join('.') === 'resources.map') {
+        const id = literalString(initializer.arguments[0]);
+        if (declaration !== 'const' || !ts.isIdentifier(item.name) || initializer.arguments.length !== 1
+          || initializer.typeArguments?.length || initializer.questionDotToken || !id || !this.resources?.records.some(record => record.id === id)) {
+          this.fail(item, 'PULSE_BINARY_RESOURCE_INVALID', 'Resource mapping requires a const binding and one declared literal identity.'); continue;
+        }
+        this.usedResources.add(id);
+        scope.set(item.name.text, Object.freeze({ name: item.name.text, resourceId: id, declaration: 'const' }));
+        continue;
+      }
+      if (initializer && ts.isCallExpression(initializer) && contextPath(initializer.expression, this.ctxName)?.join('.') === 'workspace.numbers') {
+        const arg = initializer.arguments[0], capacity = arg && ts.isNumericLiteral(arg) ? Number(arg.text) : 0;
+        if (declaration !== 'const' || !ts.isIdentifier(item.name) || initializer.arguments.length !== 1 || this.activeHelper
+          || this.pureLoopDepth || this.readLoopDepth || !Number.isInteger(capacity) || capacity < 1 || capacity > 1024
+          || this.numericWorkspaces.length >= 4 || initializer.typeArguments?.length || initializer.questionDotToken) {
+          this.fail(item, 'PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace requires a literal capacity 1..1024, outside loops/helpers, at most four per plan.'); continue;
+        }
+        const workspaceId = 'workspace-' + this.numericWorkspaces.length;
+        this.numericWorkspaces.push(Object.freeze({ id: workspaceId, capacity }));
+        scope.set(item.name.text, Object.freeze({ name: item.name.text, workspaceId, declaration: 'const' }));
+        out.push(Object.freeze({ kind: 'expression', expression: Object.freeze({ kind: 'workspace-init', version: 'pulse.numeric-workspace.v1', workspaceId, valueKind: 'undefined' }), statementPath: itemPath }));
+        continue;
+      }
       const helperYield = item.initializer && unwrap(item.initializer);
       const helperCall = helperYield && ts.isYieldExpression(helperYield) && helperYield.asteriskToken && unwrap(helperYield.expression);
       const helper = helperCall && ts.isCallExpression(helperCall) && ts.isIdentifier(helperCall.expression) && this.helperBodies.get(helperCall.expression.text);
@@ -789,6 +872,39 @@ class NativePlanBuilder {
         continue;
       }
       const yielded = item.initializer ? this.pulseYield(item.initializer) : undefined;
+
+      if (yielded && yielded.mode === 'collection') {
+        const [factories, continuation, input, capacity, decoders] = yielded.call.arguments;
+        const max = capacity && ts.isNumericLiteral(capacity) && Number(capacity.text);
+        const continuationId = literalString(continuation);
+        if (!ts.isIdentifier(item.name) || !continuationId || !Number.isInteger(max) || max < 1 || max > 32
+          || !ts.isArrayLiteralExpression(factories) || factories.elements.length !== max
+          || !ts.isArrayLiteralExpression(decoders) || decoders.elements.length !== max) {
+          this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Invalid bounded collection marker.'); continue;
+        }
+        const inputValue = this.expression(input, scope);
+        const output = this.allocateLocal(item.name.text, 'array', itemPath, declaration);
+        const results = [], prepared = [];
+        for (let slot = 0; slot < max; slot++) {
+          const factory = factories.elements[slot], decode = decoders.elements[slot];
+          if (!ts.isArrowFunction(factory) || factory.parameters.length || !ts.isArrayLiteralExpression(decode)) {
+            this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Invalid collection template.'); continue;
+          }
+          const marker = unwrap(factory.body);
+          const effectId = literalString(this.markerFields(marker).get('id'));
+          const site = this.effectSites.get(effectId);
+          const decoder = decode.elements.length ? this.decoderPlan({ kind: literalString(decode.elements[0]), arguments: [...decode.elements].slice(1) }, scope) : undefined;
+          const local = this.allocateLocal(`${item.name.text}__slot${slot}`, resultKindForEffect(site || {}, decoder), itemPath, declaration);
+          const result = Object.freeze({ mode: 'bind', localId: local.id, localName: local.name, valueKind: local.valueKind, decoder });
+          prepared.push(this.prepareEffect(marker, continuationId, scope, itemPath, result, slot));
+          results.push(Object.freeze({ effectId, localId: local.id, localName: local.name, valueKind: local.valueKind }));
+        }
+        scope.set(output.name, output);
+        out.push(Object.freeze({ kind: 'effect-collection', version: 'pulse.effect-collection.v1', max,
+          input: inputValue, localId: output.id, continuationId, effectIds: Object.freeze(prepared.map(e => e.id)),
+          results: Object.freeze(results), statementPath: itemPath }));
+        continue;
+      }
 
       if (yielded && yielded.mode === 'group') {
         if (!ts.isArrayBindingPattern(item.name) || statement.declarationList.declarations.length !== 1) {
@@ -863,9 +979,14 @@ class NativePlanBuilder {
         this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.BINDING_UNSUPPORTED, 'Canonical native locals require simple identifier bindings outside compiler-owned effect groups.', { binding: item.name.getText(this.sourceFile) });
         continue;
       }
-      const value = item.initializer ? this.expression(item.initializer, scope) : Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
+      let value = item.initializer ? this.expression(item.initializer, scope) : Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
+      const callableInput = this.options.callableBoundary && this.metadata.sourceHelpers?.length && !this.activeHelper
+        && item.name.text === this.options.callableBoundary.inputName && value.kind === 'undefined';
+      if (callableInput) value = Object.freeze({ kind: 'callable-input', valueKind: 'object' });
       const local = this.allocateLocal(item.name.text, value.valueKind || 'unknown', itemPath, declaration);
-      const type = pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
+      const type = callableInput
+        ? pureValues.schemaType(this.pureTypes.schemas.schemas.find(s => s.id === this.options.callableBoundary.inputSchema)?.root)
+        : pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
       if (type) this.pureTypes.set(local.id, type);
       scope.set(local.name, local);
       out.push(Object.freeze({ kind: 'local', localId: local.id, name: local.name, declaration, valueKind: local.valueKind, value, statementPath: itemPath }));
@@ -992,7 +1113,7 @@ class NativePlanBuilder {
       const readLoop = containsYield(statement);
       const loop = readLoop
         ? inspectBoundedReadLoop(statement, { ctxName: this.ctxName, headerOnly: true })
-        : inspectBoundedPureLoop(statement, { ctxName: this.ctxName, pureHelper: this.activeHelper?.pure === true,
+        : inspectBoundedPureLoop(statement, { resourceReadForCall: call => ts.isPropertyAccessExpression(call.expression) && ts.isIdentifier(call.expression.expression) && scope.get(call.expression.expression.text)?.resourceId && ['readU8', 'readU32LE', 'readF32LE', 'readUtf8'].includes(call.expression.name.text), ctxName: this.ctxName, pureHelper: this.activeHelper?.pure === true,
           pureHelperForCall: call => ts.isIdentifier(call.expression) && this.helperBodies.get(call.expression.text)?.pure });
       for (const error of loop.errors) this.fail(error.node, readLoop ? 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED' : 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
       if (loop.errors.length) return [];
@@ -1152,6 +1273,11 @@ class NativePlanBuilder {
       throw new CanonicalNativePlanError(`Native-plan lowering failed for ${this.metadata.file}.`, this.diagnostics);
     }
     const body = this.statementList(this.handler.body.statements, new Map(), ['entry', 'body'], 0);
+    if (this.callableSource && this.loweredCallableSites.size !== this.callableSource.sites.filter(site => !site.managed).length) this.fail(this.handler,
+      contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Every admitted callable source site must be lowered exactly once.');
+    for (const callee of this.callableSource?.callees || []) {
+      for (const record of callee.plan.binaryResources?.records || []) this.usedResources.add(record.id);
+    }
     this.reconcile();
     if (this.diagnostics.length > 0) throw new CanonicalNativePlanError(`Native-plan lowering failed for ${this.metadata.file}.`, this.diagnostics);
 
@@ -1188,6 +1314,9 @@ class NativePlanBuilder {
 
     let unsigned = {
       version: contract.CANONICAL_NATIVE_PLAN_VERSION,
+      ...(this.callableSource ? { callables: Object.freeze(this.callableSource.callees.map(callee => callee.plan)) } : {}),
+      ...(this.numericWorkspaces.length ? { numericWorkspaces: Object.freeze(this.numericWorkspaces) } : {}),
+      ...(this.resources && this.usedResources.size ? { binaryResources: require('@pulse-compute/wasm-contracts/resources/embedded').selectResourceCatalogue(this.resources, [...this.usedResources]) } : {}),
       compilerVersion: CANONICAL_NATIVE_PLAN_COMPILER_VERSION,
       hashAlgorithm: contract.CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,
       canonical: Object.freeze({
@@ -1270,6 +1399,7 @@ class NativePlanBuilder {
     };
     if (this.options.sharedStages !== false) unsigned = lowerSharedStages(unsigned);
     unsigned.summary = summarizeNativePlan(unsigned.entry.body, unsigned.locals, unsigned.effects, continuations, [...unsigned.handlers, ...(unsigned.stages || []), ...(unsigned.helpers || [])]);
+    if (this.options.callableBoundary) unsigned = require('./callable-plan').attachCallableBoundary(unsigned, this.options.callableBoundary);
     const planHash = stableHash(stableStringify(unsigned));
     const plan = deepFreeze({ ...unsigned, planHash });
     assertCanonicalNativePlan(plan);
@@ -1281,6 +1411,16 @@ function walkExpression(expression, visit) {
   if (!expression || typeof expression !== 'object') return;
   visit(expression);
   switch (expression.kind) {
+    case 'callable-call':
+      walkExpression(expression.argument, visit);
+      break;
+    case 'workspace-write':
+      walkExpression(expression.value, visit);
+    case 'workspace-read':
+    case 'resource-read':
+      if (expression.offset) walkExpression(expression.offset, visit);
+      if (expression.length) walkExpression(expression.length, visit);
+      break;
     case 'array':
       for (const item of expression.items || []) walkExpression(item, visit);
       break;
@@ -1342,6 +1482,7 @@ function walkStatements(statements, visitor) {
   for (const statement of statements || []) {
     visitor(statement);
     if (statement.kind === 'helper-call') for (const arg of statement.arguments || []) walkExpression(arg, visitor.expression);
+    else if (statement.kind === 'effect-collection') walkExpression(statement.input, visitor.expression);
     else if (statement.kind === 'local') walkExpression(statement.value, visitor.expression);
     else if (statement.kind === 'if') {
       walkExpression(statement.test, visitor.expression);
@@ -1401,7 +1542,7 @@ function summarizeNativePlan(body, locals, effects, continuations, handlers = []
         summary.expressionCount += countExpression(statement.expression);
       } else if (statement.kind === 'effect') {
         if (statement.result && statement.result.mode === 'return') summary.returnCount += 1;
-      } else if (statement.kind === 'effect-group') {
+      } else if (['effect-group', 'effect-collection'].includes(statement.kind)) {
         summary.effectGroupCount += 1;
       }
     }
@@ -1438,6 +1579,28 @@ function validateResult(result, fail, localIds, detail = {}) {
   }
 }
 
+function validateResourceReads(plan, fail) {
+  if (plan.binaryResources) {
+    try { require('@pulse-compute/wasm-contracts/resources/embedded').validateResourceCatalogue(plan.binaryResources); }
+    catch { fail('resource catalogue integrity is invalid'); }
+  }
+  const resourceVisitor = () => {};
+  resourceVisitor.expression = node => {
+    if (node.kind !== 'resource-read') return;
+    const utf8 = node.operation === 'readUtf8';
+    if (node.version !== (utf8 ? 'pulse.binary-resource-utf8.v1' : 'pulse.binary-resource-read.v1') || node.valueKind !== (utf8 ? 'string' : 'number')
+      || !(Array.isArray(plan.binaryResources?.records) && plan.binaryResources.records.some(record => record.id === node.resourceId))
+      || !['byteLength', 'readU8', 'readU32LE', 'readF32LE', 'readUtf8'].includes(node.operation)
+      || (utf8 ? !node.length : node.length !== undefined)
+      || (node.operation === 'byteLength' ? node.offset !== undefined : !node.offset)) fail('resource read contract is invalid');
+  };
+  for (const body of [plan.entry?.body, ...(plan.handlers || []).map(x => x.body), ...(plan.helpers || []).map(x => x.body), ...(plan.stages || []).map(x => x.body)]) walkStatements(body, resourceVisitor);
+  for (const effect of plan.effects || []) {
+    for (const input of effect.inputs || []) walkExpression(input.value, resourceVisitor.expression);
+    for (const argument of effect.result?.decoder?.arguments || []) walkExpression(argument, resourceVisitor.expression);
+  }
+}
+
 function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
   const effects = new Map((plan.effects || []).map(effect => [effect.id, effect]));
   const helpers = new Map((plan.helpers || []).map(helper => [helper.id, helper]));
@@ -1462,7 +1625,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
     validateHelperLoopProduct(helper, callerProduct, 'read loop helper');
     let sites = 0;
     const visit = statement => {
-      if (['read-loop', 'helper-call', 'handler-call', 'stage-call', 'effect-group'].includes(statement.kind)) fail('read loop helper cannot nest effect loops, calls or groups');
+      if (['read-loop', 'helper-call', 'handler-call', 'stage-call', 'effect-group', 'effect-collection'].includes(statement.kind)) fail('read loop helper cannot nest effect loops, calls or groups');
       if (statement.kind === 'effect') {
         const effect = effects.get(statement.effectId); sites++;
         if (!effect || !contract.CANONICAL_READ_LOOP_CONTRACT.effectKinds.includes(effect.kind)) fail('read loop helper effect kind is not admitted');
@@ -1484,7 +1647,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
       const helper = helpers.get(node.helperId);
       if (helper?.version !== contract.CANONICAL_NATIVE_PURE_HELPER_VERSION) { fail('pure loop call requires a pure helper'); return; }
       for (const argument of node.arguments || []) walkExpression(argument, child => {
-        if (['assignment', 'update'].includes(child.kind)) fail('pure loop call inputs must be read-only');
+        if (['assignment', 'update', 'workspace-write', 'workspace-init'].includes(child.kind)) fail('pure loop call inputs must be read-only');
       });
       validateHelperLoopProduct(helper, product, 'pure loop helper');
     });
@@ -1560,7 +1723,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
   }
   function checkPureExpression(expression, counters, test = false) {
     walkExpression(expression, node => {
-      if (node.kind === 'intrinsic' || node.kind === 'context-read' || (node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length))) fail('pure loop contains a non-value call or context read');
+      if (node.kind === 'workspace-init' || test && node.kind === 'workspace-write' || node.kind === 'intrinsic' || node.kind === 'context-read' || (node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length))) fail('pure loop contains a non-value call or context read');
       if (['assignment', 'update'].includes(node.kind) && (test || (node.target?.kind === 'local' && counters.has(node.target.id)))) fail('pure loop test or counter mutation is invalid');
     });
   }
@@ -1568,7 +1731,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
     walkExpression(expression, node => {
       if (node.kind === 'context-read' || node.kind === 'intrinsic' && !contract.CANONICAL_READ_LOOP_CONTRACT.valueIntrinsics.includes(node.name)
         || node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length)) fail('read loop contains an unsupported value operation');
-      if (['assignment', 'update'].includes(node.kind) && (readonly || node.target?.kind === 'local' && counters.has(node.target.id))) fail('read loop counter or effect input mutation is invalid');
+      if (['assignment', 'update', 'workspace-write'].includes(node.kind) && (readonly || node.target?.kind === 'local' && counters.has(node.target.id))) fail('read loop counter or effect input mutation is invalid');
     });
   }
   for (const body of [plan.entry && plan.entry.body, ...[...(plan.handlers || []), ...(plan.stages || [])].map(handler => handler.body)]) validateLoops(body);
@@ -1581,7 +1744,16 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
       if (!continuationIds.has(statement.continuationId)) fail('effect statement references unknown continuation', { continuationId: statement.continuationId });
       validateResult(statement.result, fail, localIds, { effectId: statement.effectId });
     }
-    if (statement.kind === 'effect-group') {
+    if (statement.kind === 'effect-collection') {
+      const continuation = plan.continuations.find(c => c.id === statement.continuationId);
+      if (statement.version !== 'pulse.effect-collection.v1' || !Number.isInteger(statement.max) || statement.max < 1 || statement.max > 32
+        || statement.effectIds?.length !== statement.max || new Set(statement.effectIds).size !== statement.max
+        || statement.results?.length !== statement.max || !localIds.has(statement.localId)
+        || continuation?.kind !== 'effect-collection-v1' || stableStringify(continuation.effectIds) !== stableStringify(statement.effectIds)) fail('invalid collection slot bank');
+      const safeInput = node => node?.kind === 'local' || node?.kind === 'property' && safeInput(node.object);
+      if (!safeInput(statement.input)) fail('collection input must be a local array path');
+    }
+    if (['effect-group', 'effect-collection'].includes(statement.kind)) {
       if (!continuationIds.has(statement.continuationId)) fail('effect group references unknown continuation', { continuationId: statement.continuationId });
       for (const effectId of statement.effectIds || []) if (!effectIds.has(effectId)) fail('effect group references unknown effect', { effectId });
       for (const result of statement.results || []) if (!localIds.has(result.localId)) fail('effect group result references unknown local', { localId: result.localId });
@@ -1639,7 +1811,7 @@ function validateHandlerBodies(plan, fail) {
         calls.set(statement.handlerId, (calls.get(statement.handlerId) || 0) + 1);
       }
       if (statement.kind === 'effect') checkEffect(statement.effectId);
-      if (statement.kind === 'effect-group') for (const id of statement.effectIds || []) checkEffect(id);
+      if (['effect-group', 'effect-collection'].includes(statement.kind)) for (const id of statement.effectIds || []) checkEffect(id);
     };
     visitor.expression = expression => {
       if (expression.kind === 'local' && !owned.has(expression.id)) fail('expression crosses a lexical boundary', { localId: expression.id, owner });
@@ -1774,7 +1946,14 @@ function assertCanonicalNativePlan(plan) {
     for (const handler of plan.handlers || []) walkStatements(handler.body, packageVisitor);
     if (application) {
       const terminal = plan.entry?.body?.[0];
-      if (application.version !== 'pulse.package-native-application.v1' || application.automaticFallback !== false
+      if (application.version === 'pulse.package-native-application.v2' && (application.terminalFailure !== 'package-http-v1' || !application.requestLimits)) fail('package application v2 requires bounded HTTP completion');
+      if (application.version === 'pulse.package-native-application.v1' && (application.terminalFailure !== undefined || application.requestLimits !== undefined)) fail('package HTTP completion requires application v2');
+      if (application.terminalFailure !== undefined && application.terminalFailure !== 'package-http-v1') fail('unsupported package terminal failure contract');
+      if (application.requestLimits !== undefined && (!application.requestLimits
+        || Object.keys(application.requestLimits).some(key => !['maxDurationMs', 'maxRequestBytes'].includes(key))
+        || !Number.isSafeInteger(application.requestLimits.maxDurationMs) || application.requestLimits.maxDurationMs < 1 || application.requestLimits.maxDurationMs > 30000
+        || !Number.isSafeInteger(application.requestLimits.maxRequestBytes) || application.requestLimits.maxRequestBytes < 1 || application.requestLimits.maxRequestBytes > 1048576)) fail('invalid package request limits');
+      if (!['pulse.package-native-application.v1', 'pulse.package-native-application.v2'].includes(application.version) || application.automaticFallback !== false
         || typeof application.contractId !== 'string' || !application.contractId
         || typeof application.package !== 'string' || !application.package
         || typeof application.intrinsic !== 'string' || !application.intrinsic
@@ -1827,7 +2006,10 @@ function assertCanonicalNativePlan(plan) {
     if (plan.entry && Array.isArray(plan.entry.body)) validatePlanTree(plan, fail, localIds, effectIds, continuationIds);
     if (Array.isArray(plan.handlers)) validateHandlerBodies(plan, fail);
     validateSharedStages(plan, fail, walkStatements, walkExpression, stableStringify);
+    validateResourceReads(plan, fail);
+    require('./numeric-workspace-plan').validateNumericWorkspaces(plan, fail, walkExpression);
     require("./source-helper-plan").validateHelpers(plan, fail, walkStatements, walkExpression);
+    require('./callable-plan.js').validateCallables(plan, fail, walkStatements, assertCanonicalNativePlan);
 
     const states = Array.isArray(plan.states) ? plan.states : [];
     if (states.length !== continuations.length + 1) fail('state table must contain entry plus one state per continuation', { expected: continuations.length + 1, actual: states.length });
@@ -1847,7 +2029,16 @@ function assertCanonicalNativePlan(plan) {
         if (record && stableStringify(statement.result) !== stableStringify(record.result)) fail('effect statement result differs from effect record', { effectId: statement.effectId });
         if (record && statement.continuationId !== record.continuationId) fail('effect statement continuation differs from effect record', { effectId: statement.effectId });
       }
-      if (statement.kind === 'effect-group') {
+      if (statement.kind === 'effect-collection') {
+        const resultIds = (statement.results || []).map(item => item.effectId);
+        if (stableStringify(resultIds) !== stableStringify(statement.effectIds)) fail('collection results must match the ordered slot bank');
+        if (new Set((statement.results || []).map(item => item.localId)).size !== statement.max) fail('collection result locals must be unique');
+        if (statement.results?.some(item => item.localId === statement.localId)) fail('collection output cannot alias a member result');
+        for (const id of statement.effectIds || []) {
+          if (effectById.get(id)?.continuationId !== statement.continuationId) fail('collection slot continuation differs from its owner', { effectId: id });
+        }
+      }
+      if (['effect-group', 'effect-collection'].includes(statement.kind)) {
         for (const item of statement.results || []) {
           const record = effectById.get(item.effectId);
           if (!record || !record.result || record.result.localId !== item.localId) fail('effect-group result differs from effect record', { effectId: item.effectId, localId: item.localId });

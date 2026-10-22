@@ -1,0 +1,11 @@
+{
+  "report-capsule-contract": "assert-report-capsule-contract invokes semanticCases -> report-handler-viewer-cases.fixture -> compileNativeProjectInMemory; real Native artifacts precede passive comparison.",
+  "cli-report-viewer": "assert-report-viewer invokes handler, relationship and navigation viewer cases; their fixture/graphFixture compiles Native Wasm.",
+  "cli-report-retained-evidence": "compileNativeProjectInMemory and compileNativeProject compare independently built bytes; buildProject additionally realizes Node and Fastly Native artifacts.",
+  "cli-report-relationships": "graphFixture and fixture from report-handler-viewer-cases compile Native artifacts before graph projection assertions.",
+  "cli-report-resource-inventory": "Control and observed compileNativeProjectInMemory calls produce Native bytes; executeCanonicalNativeModule checks behavior.",
+  "cli-report-graph-diagnostics": "In-process Binaryen parseText/emitBinary and the production capture transform construct and inspect real Wasm; no asc subprocess, but reserve the compiler resource conservatively.",
+  "entities-orchestration-demo": "compileNative invokes asc.js twice for independent deterministic package-owned Native artifacts; JavaScript facade assertions do not replace these constructions.",
+  "s3-body-read": "workspaceToolchain -> compileNativeProjectInMemory and compileFastly -> compileFastlyNativePlatformCapabilitiesPlan, followed by Native and JavaScript execution.",
+  "shared-stage-o19": "compileCanonicalNativePlan and compileFastlyNativePlatformCapabilitiesPlan compile Node and Fastly Native outputs; o18 helpers also construct named Wasm for proof."
+}

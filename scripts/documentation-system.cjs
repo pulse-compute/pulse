@@ -23,17 +23,7 @@ function cleanAnchor(value) {
   return `#${String(value).replace(/^#/, '')}`;
 }
 
-// Repository-only instructions and evidence are never delivery inputs, regardless
-// of whether the file would otherwise become a page, asset, or installed copy.
-function isPublicDocumentationSource(sourcePath) {
-  const source = slash(sourcePath).replace(/^\.\//, '');
-  const parts = source.split('/');
-  return source.startsWith('docs/')
-    && !parts.includes('..')
-    && !parts.includes('internal')
-    && parts.at(-1) !== 'AGENTS.md'
-    && !source.startsWith('docs/architecture/decisions/');
-}
+const { isPublicDocumentationSource } = require('./documentation-sources.cjs');
 
 function sourceToRoute(sourcePath) {
   const source = slash(sourcePath).replace(/^\.\//, '');
@@ -120,6 +110,11 @@ function loadDocumentationVersions(file = VERSIONS_FILE) {
     if (segments.has(entry.segment)) fail(`duplicate documentation segment ${entry.segment}`);
     if (entry.segment !== `v${entry.version}`) fail(`documentation segment ${entry.segment} must match version ${entry.version}`);
     if (!['current', 'archived'].includes(entry.status)) fail(`documentation version ${entry.version} uses unsupported status ${entry.status}`);
+    if (entry.deliveryOwner !== undefined) {
+      const checks = require('./release-pr-check.cjs');
+      (entry.deliveryOwner === 'legacy-pulse' ? checks.validateRetainedArchiveHistory : checks.validateWebsiteHistory)(entry,
+        name => fs.readFileSync(path.resolve(__dirname, '..', name), 'utf8'));
+    }
     if (entry.status === 'current') currentEntries += 1;
     versions.add(entry.version);
     segments.add(entry.segment);

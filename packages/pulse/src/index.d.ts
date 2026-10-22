@@ -5,6 +5,7 @@ export type {
   PulseEffect,
   PulseTimeResult,
   PulseParallelEffect,
+  PulseEffects,
   PulseEffectResult,
   PulseParallelResult,
   PulseRequest,
@@ -20,6 +21,9 @@ export type {
   PulseState,
   PulseLogger,
   PulseKvNamespace,
+  PulseKvListOptions,
+  PulseKvListResult,
+  PulseKvDeleteResult,
   PulseKvGeneration,
   PulseKvVersionedResult,
   PulseKvReadFailureReason,
@@ -27,6 +31,12 @@ export type {
   PulseKvNotStoredReason,
   PulseEmitEvent,
   PulseExecutionContext,
+  PulseBinaryResourceView,
+  PulseNumericWorkspace,
+  PulseReadonly,
+  PulseComputationContext,
+  PulseComputation,
+  PulseCallSchemas,
   PulseContext,
   PulseRouteContext,
   PulseEvent,
@@ -85,7 +95,15 @@ export interface PulseConfigScope {
   secret<const Name extends string>(name: Name): PulseSecretReference<Name>;
 }
 
+export interface PulseBinaryResources {
+  /** Canonical serialized embedded manifest, supplied explicitly at build time. */
+  readonly manifest: string;
+  readonly bindings: Readonly<Record<string, string>>;
+  readonly budgets: Readonly<{ files: number; fileBytes: number; totalBytes: number; serializedBytes: number; bindings: number }>;
+}
+
 export interface PulseProjectOptions {
+  readonly binaryResources?: PulseBinaryResources;
   /** Workspace-relative application entry. Defaults to src/index.ts. */
   readonly entry?: string;
   /** Optional workspace-relative schema pointer. */
@@ -105,6 +123,8 @@ export interface PulseProjectOptions {
 export type PulseProfile = Readonly<{
   host: string;
   target: PulseExecutionTarget;
+  /** Native-only recipe; defaults to bounded O3/shrink2 without convergence. CLI recipe flags override it. */
+  nativeOptimization?: 'native-bounded-size' | 'native-shrink0' | 'experimental-native-size' | 'experimental-native-bounded-size';
   /** Flat profile override for pulse.reporting. */
   reporting?: PulseReportingLevel;
   /** Required crypto algorithms for this profile. Replaces pulse.crypto rather than merging. */

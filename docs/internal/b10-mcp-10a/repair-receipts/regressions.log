@@ -1,0 +1,224 @@
+
+[pulsewasm:providers] fastly-native-http-shell
+[pulsewasm] direct Fastly HTTP request and response shell (timeout 180.00s)
+{
+  "version": "pulse.fastly-native-http-shell.v1",
+  "plans": [
+    {
+      "name": "hello",
+      "planHash": "7e6efa9651499b6245649da9b62fa83d44dd97256a904f0a8d51fc02f425e130",
+      "bytes": 5345,
+      "sha256": "daea6cf9bfee389fb42bff4fb4a22e451b9335a625164a9d796ec9e5fa8cd3d3"
+    },
+    {
+      "name": "request-echo",
+      "planHash": "5495367837688e87d14742206112f3d28f3117a390ace8a47fa07026b120907b",
+      "bytes": 5626,
+      "sha256": "cfd9a07044bb0945f60307a4d603b8b8fd7059dc6657f9b34f0554ad8c408175"
+    }
+  ],
+  "imports": [
+    {
+      "module": "fastly_http_resp",
+      "name": "status_set",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "send_downstream",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "new",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "header_append",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "uri_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "method_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "header_value_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "body_downstream_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_body",
+      "name": "write",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_body",
+      "name": "new",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_abi",
+      "name": "init",
+      "kind": "function"
+    }
+  ],
+  "exports": [
+    {
+      "name": "__pulse_fastly_abort",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_plan_hash_ptr",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_plan_hash_length",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_last_error",
+      "kind": "function"
+    },
+    {
+      "name": "_start",
+      "kind": "function"
+    },
+    {
+      "name": "memory",
+      "kind": "memory"
+    }
+  ],
+  "assertions": {
+    "directFastlyImports": true,
+    "startExport": true,
+    "methodUriHeaderReads": true,
+    "downstreamResponse": true,
+    "repeatedResponseHeaders": true,
+    "deterministic": true,
+    "effectsDeferred": true,
+    "javascriptRuntime": false
+  }
+}
+ok - native Fastly HTTP compiles effect-free native plans into deterministic direct Fastly HTTP Wasm and executes request/response behavior through the controlled ABI host
+[pulsewasm] fastly-native-http-shell: passed in 6.09s
+
+[pulsewasm:providers] fastly-native-http-effects
+[pulsewasm] Fastly outbound HTTP effects and continuations (timeout 300.00s)
+{"schemaVersion":"pulse.r06-dynamic-backend-proof.v1","status":"passed","claim":"standalone ABI experiment; Pulse Native support remains R07","compiler":"0.28.18","strictCells":13,"dynamic":{"bytes":8677,"sha256":"a3baa524a43899dde4350ee1c76190331cf1529e57e3b8caec5df19add3c5d4e"},"staticControl":{"bytes":7533,"sha256":"443755e58fe7c09f7108e9a21f53f7b0185b78416ff23a911f3cf382337f60a2"},"standaloneProbeDeltaBytes":1144,"local":{"status":"not-selected","hosted":"not-run"}}
+[pulsewasm] Running fastly-native-http-effects (execution); elapsed 10.00s
+[pulsewasm] Running fastly-native-http-effects (execution); elapsed 20.00s
+[pulsewasm] Running fastly-native-http-effects (execution); elapsed 30.01s
+ok - Native dynamic backends: 65 compiled provider checks
+[pulsewasm] Running fastly-native-http-effects (execution); elapsed 40.01s
+ok - Fastly http D2 value parity: UTF-16 ordering/indexing and exact numeric remainder
+[pulsewasm] Running fastly-native-http-effects (execution); elapsed 50.01s
+{
+  "version": "pulse.fastly-native-http-effects.v1",
+  "plans": [
+    {
+      "name": "fetch-composition",
+      "planHash": "74106905f087fa823118495853490dce0dd8b5b24d239cc9e7b1333c0bb6126a",
+      "bytes": 40779,
+      "sha256": "b2b46c9087b7fb0fd54c9e2318134b7f32de3d4860d0589dd54a4971d163fb23"
+    },
+    {
+      "name": "dependent-continuation",
+      "planHash": "4ec7c5bdca9fca868776780de504f89cd1d761fc3aa5f41f8f90109dad33a480",
+      "bytes": 36335,
+      "sha256": "43c7bde111b04029c4fcfa430f4b85d1750dae51b357859b9cec92bdf16e8048"
+    },
+    {
+      "name": "opaque-pass-through",
+      "planHash": "17f96921a8fd59142aababe2c652ffcea81bc5ade918256829cc9f55219d7d6d",
+      "bytes": 32412,
+      "sha256": "a2d87fee82eeacff03d081c1959fdc116b2c80a9d2664c7520f33ea203a209fd"
+    },
+    {
+      "name": "schema-fetch",
+      "planHash": "6b9e7142f749414632e58e09460028a5617f3098e40b9bcfb009508f39a77160",
+      "bytes": 77288,
+      "sha256": "f85e01019fb913cd66212410461dbd13e0cb5a2648389b6660e039f07c8fbe98"
+    }
+  ],
+  "assertions": {
+    "directFastlyImports": true,
+    "fetchAsyncWait": true,
+    "groupedStartsBeforeWait": true,
+    "dependentContinuation": true,
+    "originStatusHeadersBody": true,
+    "schemaDecode": true,
+    "strictJsonDecode": true,
+    "opaquePassThrough": true,
+    "transportVsHttpError": true,
+    "deterministic": true,
+    "platformCapabilitiesDeferred": true,
+    "zeroValuedOpaqueHandles": true,
+    "javascriptRuntime": false
+  }
+}
+ok - native Fastly effect realizes consolidated fetch composition, grouped and dependent continuations, schema decode, opaque pass-through, and explicit transport-error behavior
+[pulsewasm] fastly-native-http-effects: passed in 47.01s
+
+[pulsewasm:providers] fastly-request-headers
+[pulsewasm] Fastly Native bounded request-header snapshots, duplicates and fail-closed enumeration (timeout 180.00s)
+[pulsewasm] Running fastly-request-headers (execution); elapsed 60.01s
+ok - Fastly Native request headers: 68 compiled checks (workspace)
+skip - header lookup Viceroy replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+skip - header lookup Viceroy replay requires PULSE_VICEROY_BIN; ABI fixture is not provider reality
+ok - Fastly header lookups: 100 compiled ABI checks
+[pulsewasm] fastly-request-headers: passed in 15.98s
+
+[pulsewasm:native] callable-lifetime
+[pulsewasm] 05F callable failure, fresh-request recovery, cumulative deadlines and allocation evidence (timeout 300.00s)
+[pulsewasm] Running callable-lifetime (execution); elapsed 70.01s
+[pulsewasm] Running callable-lifetime (execution); elapsed 80.02s
+[pulsewasm] Running callable-lifetime (execution); elapsed 90.02s
+[pulsewasm] Running callable-lifetime (execution); elapsed 100.03s
+[pulsewasm] Running callable-lifetime (execution); elapsed 110.03s
+[pulsewasm] Running callable-lifetime (execution); elapsed 120.04s
+[pulsewasm] Running callable-lifetime (execution); elapsed 130.04s
+{"status":"passed","requests":114,"faults":18,"artifacts":8}
+[pulsewasm] callable-lifetime: passed in 69.96s
+
+[pulsewasm:conformance] application-errors
+[pulsewasm] public schema and JWT application error recovery across targets (timeout 240.00s)
+[pulsewasm] Running application-errors (execution); elapsed 140.04s
+ok - javascript: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - native: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+[pulsewasm] Running application-errors (execution); elapsed 150.05s
+[pulsewasm] Running application-errors (execution); elapsed 160.05s
+ok - fastly: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - fastlyjs: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - built JavaScript consumer preserves application errors and encoded bytes
+[pulsewasm] application-errors: passed in 24.21s
+
+[pulsewasm:external] jwt-native-reality
+[pulsewasm] shared JWT corpus through Local and real Fastly Native guest-source artifacts (timeout 1200.00s)
+Error: ENOENT: no such file or directory, open '/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/.test-results/jwt-d4/jwt-phase-d-seal.json'
+    at Object.readFileSync (node:fs:441:20)
+    at predecessorRecord (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/jwt/assert-jwt-native-reality.cjs:832:31)
+    at main (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/jwt/assert-jwt-native-reality.cjs:855:9)
+[pulsewasm] jwt-native-reality: failed in 614ms
+
+[pulsewasm] test summary
+  passed         6.09s  fastly-native-http-shell  (/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/fastly-native-http-shell.log)
+  passed        47.01s  fastly-native-http-effects  (/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/fastly-native-http-effects.log)
+  passed        15.98s  fastly-request-headers  (/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/fastly-request-headers.log)
+  passed        69.96s  callable-lifetime  (/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/callable-lifetime.log)
+  passed        24.21s  application-errors  (/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/application-errors.log)
+  failed         614ms  jwt-native-reality  (/tmp/runs/2026-10-21T06-27-48-775Z--5/tasks/jwt-native-reality.log)
+  report       /tmp/pulse-10a-error-regressions.json
+  run logs     /tmp/runs/2026-10-21T06-27-48-775Z--5
+  total        163.89s

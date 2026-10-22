@@ -2,6 +2,10 @@
 
 Pulse handlers are async-shaped TypeScript, but native targets do not execute them with a JavaScript Promise runtime. The `pulse` CLI compiles the whole project into a provider-neutral program, records every trusted host operation the program requires, and then asks the selected provider to realize those operations.
 
+The compilation path below describes the Native target. JavaScript builds retain
+the validated original source graph; Native eligibility is a separate observation.
+See [Targets and host work](./targets-and-hosts.md) before choosing a lane.
+
 This page explains that process. Start with [Getting started](../getting-started.md) when you only need to run an application.
 
 ## The compilation path
@@ -210,6 +214,9 @@ pulse inspect examples/03-fetch-composition --json
 
 The selected fields below are copied from that inspection result. Paths, hashes, source offsets, and unrelated schema detail are intentionally omitted so the example remains stable and readable.
 
+<details>
+<summary>Selected inspection fields for the fetch example</summary>
+
 <!-- pulse-doc-source: docs/fixtures/inspect-fetch-composition.selected.json -->
 ```json
 {
@@ -396,6 +403,8 @@ The selected fields below are copied from that inspection result. Paths, hashes,
 ```
 <!-- /pulse-doc-source -->
 
+</details>
+
 The source call becomes a canonical `fetch-1` effect. The code after the call becomes `continuation-1`. The provider plan then maps that effect to `node.fetch.dispatch`. Application source does not import Node APIs, a Fastly SDK, or provider objects.
 
 
@@ -476,7 +485,7 @@ for conditional exports, containment and qualification limits.
 
 ### Canonical handler lowering
 
-Calls on `PulseContext`, such as `ctx.fetch`, `ctx.config.get`, `ctx.secret.get`, `ctx.kv.get`, and response constructors, are part of the canonical API contract. The central compiler recognizes them and emits canonical operations.
+Calls on `PulseContext`, such as `ctx.fetch`, `ctx.config.get`, `ctx.secret.get`, `ctx.kv('store').get`, and response constructors, are part of the canonical API contract. The central compiler recognizes them and emits canonical operations.
 
 ### Package-owned lowering
 
@@ -489,7 +498,12 @@ generic loader handles reachable-graph discovery and trusted invocation. Older
 `/pulsewasm` imports are isolated in the
 [compatibility migration guide](../guides/compatibility-imports.md).
 
-In Pulse `1.0.0-beta.9`, package-owned builders must declare `compiler.trust: 'first-party'` and ship in the synchronized release set. This is an internal contributor mechanism, not a general third-party plugin API. See [Add a first-party package-owned lowerer](../contributing/adding-first-party-lowerer.md).
+Package-owned builders declare `compiler.trust: 'build-dependency'`; `first-party`
+remains a compatibility alias. External packages may implement the versioned
+contract without monorepo registration or a matching Pulse release version.
+Builders execute trusted code with the compiler process's authority, without a
+sandbox. Ownership, protocol and provider capability checks still apply. See
+[Package-owned lowering](./package-owned-lowering.md#discovery-and-trust).
 
 ## Provider lowering is a second contract
 

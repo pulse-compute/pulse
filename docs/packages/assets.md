@@ -1,5 +1,7 @@
 # `@pulse-compute/assets`
 
+**npm:** [`@pulse-compute/assets`](https://www.npmjs.com/package/@pulse-compute/assets)
+
 `@pulse-compute/assets` is the supported application entry point for both direct JavaScript execution and supported Native lowering.
 
 The package root exposes the complete JavaScript asset implementation—local files, hosted origins, S3-compatible buckets, and SigV4 support—plus the narrow request-bound surface that Native compilation can recognize.
@@ -7,7 +9,7 @@ The package root exposes the complete JavaScript asset implementation—local fi
 ## Install
 
 ```bash
-npm install @pulse-compute/assets@1.0.0-beta.9
+npm install @pulse-compute/assets@1.0.0-beta.10
 ```
 
 ## Portable lookup surface

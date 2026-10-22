@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "pulse.b10-mcp-10b-summary.v1",
+  "status": "passed",
+  "base": "8fc66ed2f2a17af3e68b33f941ebe5c968310791",
+  "branch": "codex/b10-mcp-10b",
+  "testedHead": "abb77482e004cd8e09e82064e76a22a55f0053f9",
+  "testedTree": "cbd0be7add1f1c9efcc299b7f4d3a0b4ad62af81",
+  "testedWorkingTree": "",
+  "runner": "2026-10-21T07-00-12-146Z--5",
+  "counts": {
+    "requiredClientProfiles": 4,
+    "clientToolCalls": 20,
+    "clientHttpExchanges": 45,
+    "directWireChecks": 89
+  },
+  "scope": "Five successful independently computed tool samples per client/profile plus direct protocol/admission checks. The host receipt expected field describes the full 546-case generated oracle inventory, not execution of every inventory case in client mode. Full workload execution remains the separate 10A task.",
+  "sourceUnchanged": true,
+  "installedPulsePackagesUnchanged": true,
+  "clientsUnchanged": true,
+  "cleanup": "passed"
+}

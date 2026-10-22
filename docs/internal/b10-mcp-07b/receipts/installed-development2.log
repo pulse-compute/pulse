@@ -1,0 +1,24 @@
+[
+  '/workspace/scratch/0174bfde4d1e/07a-debug/generic-consumer/node_modules/@pulse-compute/cli/bin/pulse.js',
+  'build',
+  '--profile',
+  'native'
+]
+Error: command failed 5
+
+ }\n function __call_1_pulse_program_counter(): i32 { return __call_1___pulse_pc }\n function __call_1_pulse_continuation_state(): i32 { return __call_1___pulse_state }\n function __call_1_pulse_last_error_code(): i32 { return __call_1___pulse_error }\n function __call_1_pulse_pending_count(): i32 { return __call_1___pulse_pending }\nlet __call_1___pulse_schema_result: string = ''\n function __call_1_pulse_schema_string_id(): i32 { return idof<string>() }\n function __call_1_pulse_schema_decode(schemaIndex: i32, inputPointer: i32): i32 {\n  const input = changetype<string>(inputPointer)\n  switch (schemaIndex) {\n    case 0: __call_1___pulse_schema_result = __call_1___pulse_schema_decode_0(input); break\n    case 1: __call_1___pulse_schema_result = __call_1___pulse_schema_decode_1(input); break\n    case 2: __call_1___pulse_schema_result = __call_1___pulse_schema_decode_2(input); break\n    default: abort('Unknown Pulse schema codec index', 'pulse-schema-codecs', 0, 0)\n  }\n  return changetype<i32>(__call_1___pulse_schema_result)\n}\n function __call_1_pulse_schema_encode(schemaIndex: i32, inputPointer: i32): i32 {\n  const input = changetype<string>(inputPointer)\n  switch (schemaIndex) {\n    case 0: __call_1___pulse_schema_result = __call_1___pulse_schema_encode_0(input); break\n    case 1: __call_1___pulse_schema_result = __call_1___pulse_schema_encode_1(input); break\n    case 2: __call_1___pulse_schema_result = __call_1___pulse_schema_encode_2(input); break\n    default: abort('Unknown Pulse schema codec index', 'pulse-schema-codecs', 0, 0)\n  }\n  return changetype<i32>(__call_1___pulse_schema_result)\n}\n\n\n\nlet __pulse_callable_active_1: bool = false\nfunction __pulse_callable_1(input: i32): i32 {\n  if (__pulse_callable_active_1) abort('Recursive callable', 'callable', 0, 0)\n  if (host_resource_check(0.0, 0, 0) < 0) return 0\n  __pulse_callable_active_1 = true\n  __call_1___pulse_callable_close()\n  // A bounded schema round trip gives the callee an owned input graph. No HTTP.\n  const inputText = host_schema_encode(input, __pulse_callable_string(\"proof.Input\"))\n  __call_1___pulse_callable_input = host_schema_decode(inputText, __pulse_callable_string(\"proof.Input\"))\n  __call_1___pulse_started = 0\n  const status = __call_1_pulse_start()\n  if (status != 0) abort('Callable failed', 'callable', 0, 0)\n  const resultText = host_schema_encode(__call_1_pulse_result_handle(), __pulse_callable_string(\"proof.Output\"))\n  const result = host_schema_decode(resultText, __pulse_callable_string(\"proof.Output\"))\n  __call_1___pulse_callable_close()\n  __pulse_callable_active_1 = false\n  if (host_resource_check(0.0, 0, 0) < 0) return 0\n  return result\n}\nfunction __pulse_callable_json_1(input: string): string {\n  const value = host_schema_decode(__pulse_callable_string(input), __pulse_callable_string(\"proof.Input\"))\n  return changetype<string>(host_value_json(__pulse_callable_1(value)))\n}\n",
+      "durationMs": 1008
+    }
+  }
+}
+
+    at run (/tmp/07b-installed-debug.cjs:5:313)
+    at Object.qualify (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/mcp/generic-resource-installed.cjs:14:53)
+    at Object.<anonymous> (/tmp/07b-installed-debug.cjs:6:63)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47

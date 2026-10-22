@@ -73,6 +73,7 @@ export type PulsePackageSchemaReadonly<Value> =
         : Value;
 
 export interface PulsePackageSchemaCodecBridge {
+  describe(): readonly { readonly id: string; readonly root: unknown }[];
   decodeEmbeddedJson<Value = unknown>(schemaId: string, packageOwnedText: string): PulsePackageSchemaReadonly<Value>;
   encodeEmbeddedJson(schemaId: string, packageOwnedValue: unknown): string;
 }
@@ -88,6 +89,10 @@ export interface PulsePackageSchemaCodecRuntimeDefinition {
   readonly package: string;
   readonly contractId: string;
 }
+
+export declare function createPackageHttpRuntime(definition: { readonly version: 'pulse.package-http-runtime.v1'; readonly package: string; readonly contractId: string }): {
+  bind(ctx: PulseContext, options: { readonly maxDurationMs: number; readonly failure: (kind: number) => Response }): PulsePackageRuntimeContext;
+};
 
 export declare const TRUSTED_PACKAGE_EFFECT_CATALOG: Readonly<Record<string, {
   readonly contractId: string;
@@ -121,6 +126,7 @@ declare const packageRuntime: Readonly<{
   PACKAGE_SCHEMA_CODEC_BRIDGE_VERSION: typeof PACKAGE_SCHEMA_CODEC_BRIDGE_VERSION;
   TRUSTED_PACKAGE_EFFECT_CATALOG: typeof TRUSTED_PACKAGE_EFFECT_CATALOG;
   clonePackageEffectPayload: typeof clonePackageEffectPayload;
+  createPackageHttpRuntime: typeof createPackageHttpRuntime;
   createPackageRuntime: typeof createPackageRuntime;
   createPackageSchemaCodecRuntime: typeof createPackageSchemaCodecRuntime;
 }>;

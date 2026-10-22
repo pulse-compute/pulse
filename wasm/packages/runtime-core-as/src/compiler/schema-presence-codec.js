@@ -57,9 +57,11 @@ function generateSchemaPresenceCodec(root, schemaIndex) {
       lines.push('  if (value.type == JSON.Types.Null) return JSON.Value.empty()', `  return ${child}(value)`);
     } else if (node.kind === 'string' || node.kind === 'string-enum') {
       check('value.type == JSON.Types.String');
-      lines.push('  const text = value.get<string>()');
+      lines.push('  const text = JSON.parse<string>(JSON.stringify<JSON.Value>(value))');
       if (node.kind === 'string-enum') check(node.values.map(text => `text == ${quote(text)}`).join(' || '));
-      lines.push('  return JSON.Value.from<string>(text)');
+      // JSON.Value strings retain their serialized spelling. Rewrapping get<string>()
+      // escapes that spelling again; preserve the validated scalar from this fresh parse.
+      lines.push('  return value');
     } else if (node.kind === 'boolean') {
       check('value.type == JSON.Types.Bool');
       lines.push('  return JSON.Value.from<bool>(value.get<bool>())');

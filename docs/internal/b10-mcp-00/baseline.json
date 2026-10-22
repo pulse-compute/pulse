@@ -1,0 +1,1255 @@
+{
+  "schemaVersion": "pulse.b10-mcp-baseline.v1",
+  "source": {
+    "revision": "3ce6a740226434e013f2ba517129679de0f1fd08",
+    "tree": "0e69bac826907cd7d4b7d2bef65c4f7475c1c0f2"
+  },
+  "classification": "source-inspection-not-runtime-qualification",
+  "corpus": {
+    "schemaVersion": "pulse.context-corpus.v1",
+    "pulseVersion": "1.0.0-beta.9",
+    "status": "candidate",
+    "corpusHash": "3476598caee665b829e1b5a32c1263716e84cc2fa8ac4dc36137c07a264d2165",
+    "records": 244,
+    "sources": 38,
+    "snapshotBytes": 515764,
+    "moduleBytes": 516102,
+    "limits": {
+      "maxRecords": 256,
+      "maxContentBytes": 24576,
+      "maxSnapshotBytes": 524288
+    },
+    "remainingRecords": 12,
+    "remainingSnapshotBytes": 8524,
+    "installedMirror": "byte-identical"
+  },
+  "vectorSearch": {
+    "scope": "Pinned tracked filenames; content in context example, MCP package, scripts and B10-07/08 evidence",
+    "matchingBinaryPaths": [],
+    "mentions": [
+      {
+        "path": "docs/internal/b10-07/MEASUREMENTS.md",
+        "line": 10,
+        "text": "sweep; they do not qualify the actual MCP `vector.bin`, larger inputs or production"
+      },
+      {
+        "path": "docs/internal/b10-07/MEASUREMENTS.md",
+        "line": 32,
+        "text": "At 256 KiB, raw embedding saves **437,191 artifact bytes** versus the base64-string"
+      },
+      {
+        "path": "docs/internal/b10-07/README.md",
+        "line": 17,
+        "text": "The recommendation is raw embedding; the local Fastly-server check has no"
+      },
+      {
+        "path": "docs/internal/b10-07/README.md",
+        "line": 68,
+        "text": "bindings: { vectors: '/vector.bin', payload: '/payload.bin' },"
+      },
+      {
+        "path": "docs/internal/b10-07/README.md",
+        "line": 133,
+        "text": "The first acceptance workload is the real MCP `vector.bin`. The operator recalls"
+      },
+      {
+        "path": "docs/internal/b10-07/README.md",
+        "line": 140,
+        "text": "Embedding intentionally adds payload bytes to the artifact. Report that cost"
+      },
+      {
+        "path": "docs/internal/b10-07/README.md",
+        "line": 159,
+        "text": "| Base64 embedded strings | Reuses serialized transport, but representation expansion and decoding are material in a Native guest. Serializing input as base64 does not require keeping base64 in the final artifact | Build input only; decode before Native embedding |"
+      },
+      {
+        "path": "docs/internal/b10-07/README.md",
+        "line": 174,
+        "text": "generated `vector.bin`, generic binary payloads, manifests, guest sources,"
+      },
+      {
+        "path": "docs/internal/b10-07/README.md",
+        "line": 252,
+        "text": "artifact overhead. Qualify the actual MCP `vector.bin`, measured growth headroom"
+      },
+      {
+        "path": "docs/internal/b10-07/proof.cjs",
+        "line": 99,
+        "text": "fs.writeFileSync(path.join(out, 'vector.bin'), vectors); fs.writeFileSync(path.join(out, 'payload.bin'), generic);"
+      },
+      {
+        "path": "docs/internal/b10-07/proof.cjs",
+        "line": 100,
+        "text": "const manifest = await createEmbeddedManifest([{ path: '/vector.bin', bytes: vectors },"
+      },
+      {
+        "path": "docs/internal/b10-07/proof.cjs",
+        "line": 103,
+        "text": "const declarations = [{ id: 'vectors', path: '/vector.bin' }, { id: 'payload', path: '/payload.bin' }, { id: 'empty', path: '/empty.bin' }];"
+      },
+      {
+        "path": "docs/internal/b10-07/proof.cjs",
+        "line": 129,
+        "text": "assert.throws(() => catalogue(serialized, [{ id: '../secret', path: '/vector.bin' }]), { code: 'RESOURCE_DECLARATION' });"
+      },
+      {
+        "path": "docs/internal/b10-08/README.md",
+        "line": 4,
+        "text": "The reviewed [B10-07 contract](../b10-07/README.md) treats embedding as intentional"
+      },
+      {
+        "path": "docs/internal/b10-08/README.md",
+        "line": 80,
+        "text": "These generated inputs are **not the actual MCP `vector.bin`**. It was not found"
+      },
+      {
+        "path": "docs/internal/b10-08/README.md",
+        "line": 126,
+        "text": "the real MCP `vector.bin`. Package installation and full report work stay in #412."
+      }
+    ],
+    "conclusion": "No original MCP vector or encoder recovered in this scope; B10-07 generates synthetic proof data."
+  },
+  "tasks": [
+    {
+      "id": "binary-resource-admission",
+      "args": [
+        "wasm/test/contracts/assert-binary-resource-admission.cjs"
+      ],
+      "evidence": "unit",
+      "timeoutMs": 30000,
+      "profiles": [
+        "unit",
+        "release"
+      ],
+      "description": "B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy"
+    },
+    {
+      "id": "binary-resource-execution",
+      "args": [
+        "wasm/test/runtime/assert-binary-resource-execution.cjs"
+      ],
+      "evidence": "conformance",
+      "timeoutMs": 300000,
+      "profiles": [
+        "conformance",
+        "release"
+      ],
+      "description": "execution-owned binary views and raw-byte Native parity"
+    },
+    {
+      "id": "docs-example-12-pulse-context-mcp",
+      "args": [
+        "wasm/test/docs/assert-executable-documentation.cjs",
+        "--example",
+        "12-pulse-context-mcp"
+      ],
+      "evidence": "cli",
+      "timeoutMs": 240000,
+      "profiles": [
+        "cli",
+        "release"
+      ],
+      "description": "documented 12-pulse-context-mcp workflow"
+    },
+    {
+      "id": "mcp-authorization",
+      "args": [
+        "wasm/test/mcp/assert-mcp-authorization.cjs"
+      ],
+      "evidence": "unit",
+      "timeoutMs": 30000,
+      "profiles": [
+        "unit",
+        "release"
+      ],
+      "description": "MCP-04 resource metadata, token introspection, scoped admission and credential isolation"
+    },
+    {
+      "id": "mcp-authorization-sdk",
+      "args": [
+        "wasm/test/mcp/assert-mcp-http-sdk.cjs",
+        "--authorization"
+      ],
+      "evidence": "external",
+      "timeoutMs": 180000,
+      "profiles": [],
+      "description": "MCP-04 independent OAuth client with controlled issuer, PKCE and protected backend"
+    },
+    {
+      "id": "mcp-claude",
+      "args": [
+        "wasm/test/mcp/assert-mcp-claude.cjs"
+      ],
+      "evidence": "external",
+      "timeoutMs": 240000,
+      "profiles": [],
+      "description": "PMCP-01B locked Claude Code host against packed modern adapter with scoped tools and fresh authorization"
+    },
+    {
+      "id": "mcp-codex",
+      "args": [
+        "wasm/test/mcp/assert-mcp-codex.cjs"
+      ],
+      "evidence": "external",
+      "timeoutMs": 240000,
+      "profiles": [],
+      "description": "PMCP-01A locked Codex host against packed adapter with scoped discovery and one governed HTTP call"
+    },
+    {
+      "id": "mcp-compatibility",
+      "args": [
+        "wasm/test/mcp/assert-mcp-compatibility.cjs"
+      ],
+      "evidence": "unit",
+      "timeoutMs": 30000,
+      "profiles": [
+        "unit",
+        "release"
+      ],
+      "description": "PMCP-01A opt-in 2025-06-18 framing, modern isolation and shared bounded/authenticated tools"
+    },
+    {
+      "id": "mcp-http",
+      "args": [
+        "wasm/test/mcp/assert-mcp-http.cjs"
+      ],
+      "evidence": "unit",
+      "timeoutMs": 30000,
+      "profiles": [
+        "unit",
+        "release"
+      ],
+      "description": "MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge"
+    },
+    {
+      "id": "mcp-http-sdk",
+      "args": [
+        "wasm/test/mcp/assert-mcp-http-sdk.cjs"
+      ],
+      "evidence": "external",
+      "timeoutMs": 180000,
+      "profiles": [],
+      "description": "MCP-02 real pinned official client against the private first-party HTTP adapter"
+    },
+    {
+      "id": "mcp-installed",
+      "args": [
+        "wasm/test/mcp/assert-mcp-installed.cjs"
+      ],
+      "evidence": "external",
+      "timeoutMs": 600000,
+      "profiles": [],
+      "description": "PMCP-07 exact CLI-shipped context app, production host, official client and pinned Codex onboarding; one release-owned gate"
+    },
+    {
+      "id": "mcp-package",
+      "args": [
+        "wasm/test/mcp/assert-mcp-package.cjs"
+      ],
+      "evidence": "external",
+      "timeoutMs": 180000,
+      "profiles": [],
+      "description": "PMCP-01 packed CJS/ESM imports, strict declarations, legal layout and pinned official client"
+    },
+    {
+      "id": "mcp-tools",
+      "args": [
+        "wasm/test/mcp/assert-mcp-tools.cjs"
+      ],
+      "evidence": "unit",
+      "timeoutMs": 30000,
+      "profiles": [
+        "unit",
+        "release"
+      ],
+      "description": "MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures"
+    },
+    {
+      "id": "mcp-tools-sdk",
+      "args": [
+        "wasm/test/mcp/assert-mcp-wire-proof.cjs",
+        "--adapter"
+      ],
+      "evidence": "external",
+      "timeoutMs": 300000,
+      "profiles": [],
+      "description": "MCP-03 independent client against the actual adapter and ordinary Pulse HTTP backend"
+    },
+    {
+      "id": "mcp-wire-proof",
+      "args": [
+        "wasm/test/mcp/assert-mcp-wire-proof.cjs"
+      ],
+      "evidence": "external",
+      "timeoutMs": 300000,
+      "profiles": [],
+      "description": "MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary"
+    },
+    {
+      "id": "pulse-context-application",
+      "args": [
+        "wasm/test/mcp/assert-context-application.cjs"
+      ],
+      "evidence": "unit",
+      "timeoutMs": 30000,
+      "profiles": [
+        "unit",
+        "release"
+      ],
+      "description": "PMCP-03 five read-only Entities context operations, real Node JavaScript build, schemas/catalog and bounded MCP projection"
+    },
+    {
+      "id": "pulse-context-corpus",
+      "args": [
+        "wasm/test/mcp/assert-context-corpus.cjs"
+      ],
+      "evidence": "unit",
+      "timeoutMs": 30000,
+      "profiles": [
+        "unit",
+        "release"
+      ],
+      "description": "PMCP-02 immutable bounded context snapshot, deterministic generation, source identity and version mismatch"
+    },
+    {
+      "id": "pulse-context-host",
+      "args": [
+        "wasm/test/mcp/assert-context-host.cjs"
+      ],
+      "evidence": "unit",
+      "timeoutMs": 30000,
+      "profiles": [
+        "unit",
+        "release"
+      ],
+      "description": "PMCP-04 built-only loopback host, build/corpus identity, bounded MCP readiness, interruption and shutdown"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/architecture/current-contracts.md",
+      "bytes": 178879,
+      "sha256": "50268af8188e0c6d61dfc03eac993c4a77e1ed5119472e78222dabe45b2267ea",
+      "gitBlob": "4651db6a5251e5a8f9d3e9ac6ef26a43f996a0b6"
+    },
+    {
+      "path": "docs/concepts/bodies.md",
+      "bytes": 20603,
+      "sha256": "9485aa3e1ceaa5ff86d5ff1c63441c16361fb535fd8bc13273cd2d919d4a027a",
+      "gitBlob": "a50e73aa1ca6b69ff55ccc35494f237df3faa7a5"
+    },
+    {
+      "path": "docs/concepts/effects-and-continuations.md",
+      "bytes": 23706,
+      "sha256": "9aca4d57b526fba807810b12e1f97c58fa1f2316c7cc9f368ff0077c9efc8396",
+      "gitBlob": "5933f92b03d482b8420132d5deede023dae59401"
+    },
+    {
+      "path": "docs/concepts/targets-and-hosts.md",
+      "bytes": 3536,
+      "sha256": "3a6a393bad0526b0c4f86072a4f8c75b4e31b35b4ae05e10716d4e05c4b62177",
+      "gitBlob": "a644f6ef180e8fb06bb38cac5f7e2724cf0e7019"
+    },
+    {
+      "path": "docs/getting-started.md",
+      "bytes": 5685,
+      "sha256": "a52a9412e7697d5fb35f53a4a509b2d0c608976b9a342489d3c5881abaca9027",
+      "gitBlob": "3e0323d3acf44796b8876b2e97c0c65748f099b8"
+    },
+    {
+      "path": "docs/guides/deploying-node.md",
+      "bytes": 9571,
+      "sha256": "774e87b5b6198a9ee0193af37bcc27173c01e2285dff55c38958688629623ffe",
+      "gitBlob": "813d779ee927d118b9fce7910f7de81929a842fb"
+    },
+    {
+      "path": "docs/guides/json-schemas.md",
+      "bytes": 26285,
+      "sha256": "f47f6e76ddae327051a45e4d536f5b29855be7a2ea08403aae10f2c310b2b308",
+      "gitBlob": "cf1c861ad9b90f166ee23ca7523c8f6c93bae309"
+    },
+    {
+      "path": "docs/guides/project-lifecycle.md",
+      "bytes": 4586,
+      "sha256": "628efab0d0ec7e82c123254644ad8311783d2b6eb45a2e0dbd54ec28ee5a0c51",
+      "gitBlob": "24f9cfb364be5bf649969beacc77d98648dcd1b7"
+    },
+    {
+      "path": "docs/internal/b10-07/MEASUREMENTS.md",
+      "bytes": 6585,
+      "sha256": "293a4c2a3479491d099439612d78eee4e406aa025ecc0d45872c5d025fa821d9",
+      "gitBlob": "7865d12fc876a929b7d6df4d0f97e0b3b2cb824e"
+    },
+    {
+      "path": "docs/internal/b10-07/README.md",
+      "bytes": 22519,
+      "sha256": "5fef00c160a91380f253e8bc332b4b4c9983f007447456d1c09db9eabc6cf90f",
+      "gitBlob": "403d81db506a07f4eb6ab6f17bf07f6546585bac"
+    },
+    {
+      "path": "docs/internal/b10-07/guest.as.ts",
+      "bytes": 2648,
+      "sha256": "9de4ea6c057edad14ac2822d95a6a2d98d20fa5d8b9cb147e099c7a4fe2599d8",
+      "gitBlob": "e1bc11ed9a7a088fb2873544e0a7edb3ac3c0a5d"
+    },
+    {
+      "path": "docs/internal/b10-07/model.cjs",
+      "bytes": 3781,
+      "sha256": "0084321961398ea4edad32901b6584fceef978ce699db1ceeb1e63eb3dab0a65",
+      "gitBlob": "930a091c7af16cedfc2aee215bc0a8a13fc29844"
+    },
+    {
+      "path": "docs/internal/b10-07/proof.cjs",
+      "bytes": 19541,
+      "sha256": "1516c76acadea1ed122a76e43a0fe70a0340fadbe2c29b8fb0f1b45101bbe0cb",
+      "gitBlob": "d8d2649df2540be468019b7c54bcd5df6f982213"
+    },
+    {
+      "path": "docs/internal/b10-07/results.json",
+      "bytes": 71157,
+      "sha256": "90bdb14ec5d8c0aee1e9d9943b977d00c5366b253e734a86cf897710721e2714",
+      "gitBlob": "57f1a51b5270790a696fe4b7c03f8fdf39cf3f8f"
+    },
+    {
+      "path": "docs/internal/b10-07/sample.cjs",
+      "bytes": 2535,
+      "sha256": "a9da9500590a2d470540156792ad87542689628faf1271d284d2ea5f72619da8",
+      "gitBlob": "af183efc385322b1c397a8978d8f22ca0c01288f"
+    },
+    {
+      "path": "docs/internal/b10-08/README.md",
+      "bytes": 9155,
+      "sha256": "1f83c939224efa1f2c9a1a36dcdf81ab2d6110c55ad309888649ceb36f300dc9",
+      "gitBlob": "c515cd76e2281a6b975896ab4eddde8ee175fac9"
+    },
+    {
+      "path": "docs/packages/pulse.md",
+      "bytes": 4923,
+      "sha256": "a4e551f500c9cf7a9bf154bfefa4027694d5181435444c8d7ba035accb5745a2",
+      "gitBlob": "14e800db3e918aa170f0064b3ed02b591e86f860"
+    },
+    {
+      "path": "docs/reference/compatibility-matrix.md",
+      "bytes": 16327,
+      "sha256": "3dd9cbe24ac59a86ea20193ff92cd429232ee352022b7823f97790b749da3bde",
+      "gitBlob": "0588d6042420c21cb45d503f277f0bc408d0b35a"
+    },
+    {
+      "path": "examples/01-hello-json/.pulse/config.ts",
+      "bytes": 347,
+      "sha256": "9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61",
+      "gitBlob": "3c81bdab5869b21461b3bb3164cf3da751b9f946"
+    },
+    {
+      "path": "examples/01-hello-json/README.md",
+      "bytes": 5775,
+      "sha256": "a39336a65f9afb18bea54f7f2e53e940017117771a2c61cef1ae10f180a970d8",
+      "gitBlob": "ae7ded8b4fcb9b0147fcde04e16402d15ea1d8be"
+    },
+    {
+      "path": "examples/01-hello-json/package.json",
+      "bytes": 430,
+      "sha256": "f0f99cdebc3c6a3386ecd25d9f7fc5af60d47611127aaec22347c94d43986ab0",
+      "gitBlob": "9a3749fb6ed09ef23dd354da424a73c5147f9f67"
+    },
+    {
+      "path": "examples/01-hello-json/src/index.ts",
+      "bytes": 308,
+      "sha256": "906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b",
+      "gitBlob": "241c1539af35f74de5b9e5a975af29c3c0cea9ec"
+    },
+    {
+      "path": "examples/01-hello-json/tests/pulse.harness.ts",
+      "bytes": 442,
+      "sha256": "1b9a261da47ec283df0acd8d911385872c589200acb2eab339778e66f0f78faa",
+      "gitBlob": "c4ad09e7cd99c0ad54a9dc0885bf19c5329b28aa"
+    },
+    {
+      "path": "examples/01-hello-json/tsconfig.json",
+      "bytes": 237,
+      "sha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052",
+      "gitBlob": "bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"
+    },
+    {
+      "path": "examples/02-request-schema/.pulse/config.ts",
+      "bytes": 401,
+      "sha256": "93d844c6637690510a51c8f105ac179aca0d2ff788d90ec3e68ec9c4927fdc90",
+      "gitBlob": "c81ea322657c3719d041a555b8f323cd6701bd67"
+    },
+    {
+      "path": "examples/02-request-schema/README.md",
+      "bytes": 6447,
+      "sha256": "423e861c3943025e44ca44b067122eb8b43d14183d5a3555b2c6ca2eeddb7133",
+      "gitBlob": "ba46ada49807b050de29682a13a4bb7da7e648ac"
+    },
+    {
+      "path": "examples/02-request-schema/package.json",
+      "bytes": 434,
+      "sha256": "86f09de55ca7c3c4e7afe7de7bebf2b0f911240af6a0cb090e8ed2dc69efdcab",
+      "gitBlob": "140647598e84fe2493c84dfb50b716ca100ca4ea"
+    },
+    {
+      "path": "examples/02-request-schema/src/index.ts",
+      "bytes": 577,
+      "sha256": "746e47b02bfb401fd375c271df96fb3e3bef386592598137975196e2a233abd1",
+      "gitBlob": "f4f2ff8df73aae8a48579d74839c52abb8857388"
+    },
+    {
+      "path": "examples/02-request-schema/src/schemas.ts",
+      "bytes": 426,
+      "sha256": "2b69359585e52a2e332e821f0379505a37d652b3040b40524594f2ab102a52f8",
+      "gitBlob": "8dbea35f6437a5bc91780f014e6275adcc5bdffc"
+    },
+    {
+      "path": "examples/02-request-schema/tests/pulse.harness.ts",
+      "bytes": 794,
+      "sha256": "6b55edf4563de2cc1fbde2850b0d3748f1627b9d4435d350998d93bcdfba4bba",
+      "gitBlob": "40ea134ceebe29c1777f5c72716d2323e31ef8a6"
+    },
+    {
+      "path": "examples/02-request-schema/tsconfig.json",
+      "bytes": 237,
+      "sha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052",
+      "gitBlob": "bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"
+    },
+    {
+      "path": "examples/03-fetch-composition/.pulse/config.ts",
+      "bytes": 708,
+      "sha256": "c5df387372687e0b834acdd9263795222e5a92b2b4040813501027351cf78951",
+      "gitBlob": "21dcbf6280b612774ceab7e7f725ae6d25ed1b14"
+    },
+    {
+      "path": "examples/03-fetch-composition/README.md",
+      "bytes": 7764,
+      "sha256": "c16f9a8f150c0f46fbf9bc6167592bb1e8086312be64ffafede9b0219885423b",
+      "gitBlob": "3af2fa0056daffe136e14d4f3d5c8402ea7c7720"
+    },
+    {
+      "path": "examples/03-fetch-composition/package.json",
+      "bytes": 437,
+      "sha256": "3fbde4e7443a7de23cd5a83540239a766a023eb104240d3abcbc58b4df587c6c",
+      "gitBlob": "f1cf7fa9f90b1662bec7adc412ebcd5e1f94f34a"
+    },
+    {
+      "path": "examples/03-fetch-composition/src/index.ts",
+      "bytes": 1439,
+      "sha256": "97c2e1fe82e2bb8cde5a05ed5adc7db73ead9199553c0adcf143c7f660a95fc1",
+      "gitBlob": "4d353e1df104bc09e31f1378a81f377cb04691f0"
+    },
+    {
+      "path": "examples/03-fetch-composition/tests/pulse.harness.ts",
+      "bytes": 906,
+      "sha256": "efb50c5547f1741abc52e1398b7939074bbf9f53e054e656165882ddda7a001f",
+      "gitBlob": "f4c6b7eff06c306e45fa0166918dc5af5d941c9d"
+    },
+    {
+      "path": "examples/03-fetch-composition/tsconfig.json",
+      "bytes": 237,
+      "sha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052",
+      "gitBlob": "bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"
+    },
+    {
+      "path": "examples/09-router-lowering/.pulse/config.ts",
+      "bytes": 447,
+      "sha256": "be7fb9e3f668225cf69d139746790cfcf5755050ea1fc25cf36ebd8c47b97859",
+      "gitBlob": "9550079ef17b87f5493d627b8a7a9b487c496c25"
+    },
+    {
+      "path": "examples/09-router-lowering/README.md",
+      "bytes": 10519,
+      "sha256": "d1036524243026b2ace98f06a4e1369d500375a0310784f2c7a3c967b3f6ef5f",
+      "gitBlob": "7a6b0e91aa072bfc98a94bd918a6036915c9e8a9"
+    },
+    {
+      "path": "examples/09-router-lowering/package.json",
+      "bytes": 513,
+      "sha256": "243eca97152204a52b5e9b7f7eb41ab9448d460bc28658552cf769cfe3f035e8",
+      "gitBlob": "4a3df7a67537808e26bfa61875776b5d1d0b5f6b"
+    },
+    {
+      "path": "examples/09-router-lowering/src/index.ts",
+      "bytes": 1586,
+      "sha256": "f9950548685c3a719774dd8065c3be505bc5d22b8ad4759f4b38953276d8710d",
+      "gitBlob": "3a6998a256f7b8a94c6a77bd5a7b7fbaaf7b49f7"
+    },
+    {
+      "path": "examples/09-router-lowering/tests/pulse.harness.ts",
+      "bytes": 2121,
+      "sha256": "c162ee20de3c1ab929b296fa4a9620be3008cf5b119c86125028a7827767c1c2",
+      "gitBlob": "de0e455e4a55d0d9dc6a6d9ba7826926437bce37"
+    },
+    {
+      "path": "examples/09-router-lowering/tsconfig.json",
+      "bytes": 237,
+      "sha256": "29bdd2e80958848fde5cbee001cabf73317526f60af5c45509d0e7b095a8b052",
+      "gitBlob": "bb7e6ec6d0b2da18d71732a71b03f516bfb7a71b"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/.gitignore",
+      "bytes": 51,
+      "sha256": "d244370f47222decd3a49031dd368bea7bdd34521dcf95c431dd50bcf5cb6d9a",
+      "gitBlob": "0919bf09178e4a5b1fde62c1767dfaf37a9d9ea3"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/.pulse/config.ts",
+      "bytes": 462,
+      "sha256": "b8313e95b4390e5dd5970158a95aab4767eacd68ad333a89f184a1083f22f62b",
+      "gitBlob": "24de458467d7fdf535ea7a9622ad823dd73a45bb"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/README.md",
+      "bytes": 18526,
+      "sha256": "9b8465f60886d89d7ad7824ed15c669528e0a1a4754728c87f7bcb0ae42280f0",
+      "gitBlob": "e1b154a915b1ad3955f4e9b448aab16d1483e666"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/client/request.cjs",
+      "bytes": 2042,
+      "sha256": "c5aaa7b6822c1242384c5beb736b81af2296e6214d7e1e05dc41eb97c6c34da1",
+      "gitBlob": "57cff4d089f935edf6ccfa65af1dbf7c725c0dd8"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-corpus.ts",
+      "bytes": 516102,
+      "sha256": "8dbd2cba000e682dfc82f6b87c90915bacfe1286fbbb2916a1d765d9a2950a15",
+      "gitBlob": "00a26d5e9d4900ccc2d678d23016f50ce5452f92"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/corpus-version.ts",
+      "bytes": 469,
+      "sha256": "fdc6e3805c5964bde7785a5bab19bdb266479a8b540a4654d3471523fdc66097",
+      "gitBlob": "3578d091ef9bae973311c3f2811d34c4e49246fa"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/host/artifacts.cjs",
+      "bytes": 5245,
+      "sha256": "ef3aee628b6d82ccfcfcf6a7259b530c2ebb829ee23e00060187592c5c9346aa",
+      "gitBlob": "4730c48d970e2223da030b5c4d8f8c50e2a0595a"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/host/prepare.cjs",
+      "bytes": 1575,
+      "sha256": "d28abbb22398a158e8a79c0308bfea3c76a0af3cc084762fca472727ee0c475d",
+      "gitBlob": "2c727a763f7cc6db0863cfe5dc4bfbc9d3d20a5b"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/host/server.cjs",
+      "bytes": 9638,
+      "sha256": "18ef205a4799ce1560e8fccbd855303a2e339363119d486cf6d5ba06987ed7ee",
+      "gitBlob": "bb44730319e38f0314ecc7f92b6f1df5a593f9a5"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/host/start.cjs",
+      "bytes": 2064,
+      "sha256": "17f8e25c8775511c32304a20dcddcbc3e72d896c967f80ce50214249bb21875b",
+      "gitBlob": "32008d511d6336cfcfdc34ddd1064ba29a9e3e0d"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/package.json",
+      "bytes": 636,
+      "sha256": "5452546457ceee79db17e1aa6cf01b8a51b7d2341bcc1c7c1d8f5ba7f9003a54",
+      "gitBlob": "d2fce7f7a494586fac06ea86cbcce20d51b9b6c3"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/src/handlers.ts",
+      "bytes": 20742,
+      "sha256": "da7e1c3f9b814c98133434ef0f484ead845806c87bb48945fcea477f90471552",
+      "gitBlob": "028015576c401ffb8ac1b5050afc59cb09110d4b"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/src/index.ts",
+      "bytes": 2436,
+      "sha256": "1a27446f8e363a88b12d20ea425ec9c274d28f5828d394a45b6b24fa7072a7a0",
+      "gitBlob": "db37843bde025bd01e5e150ee1f0dc6377ec3393"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/src/schemas.ts",
+      "bytes": 4565,
+      "sha256": "a8e742d9e527c8522306d5f4f1c82b179576d5c3c8833d21fd7434cbc58347a9",
+      "gitBlob": "b6caae02413a2a742537ba35dfc313f133421eeb"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/tests/pulse.harness.ts",
+      "bytes": 1673,
+      "sha256": "c847398188aa6b35da31f78ae02b606f268a642b22555e035ae544d851fc9173",
+      "gitBlob": "7a64cf3f15469b272765349318f8a655d3f69dba"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/tsconfig.json",
+      "bytes": 266,
+      "sha256": "7eff017e26e75fae8f4fd78d16cee1ef99ed3778381daee64ba5fa83eb3113c1",
+      "gitBlob": "9c62183be553bfc3c619cfedcedc61811cb175b4"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2824,
+      "sha256": "5aced9049b319b812cc50f326e54234d5af675a5a35e6550c2c049a05f7eecb4",
+      "gitBlob": "90e3b51d710e94c6cec528deff5786e25b01a588"
+    },
+    {
+      "path": "packages/mcp/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "gitBlob": "d645695673349e3947e8e5ae42332d0ac3164cd7"
+    },
+    {
+      "path": "packages/mcp/NOTICE",
+      "bytes": 7399,
+      "sha256": "8af1d352fb8a9d3ba372767b310fa53e28f2424ee052ead7cabbce547186bb6f",
+      "gitBlob": "4be2906238bd8d635d33958a72c4616dc2d88c2c"
+    },
+    {
+      "path": "packages/mcp/README.md",
+      "bytes": 30148,
+      "sha256": "92bbb2094fd858a3cd223af74117a5849943e54f60f18b69cd56f1a33af81577",
+      "gitBlob": "615d2e9731499c598e5833837b28e943300d17fc"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/.pulse/config.ts",
+      "bytes": 484,
+      "sha256": "d006a837e06f8716b7026a975c7b0fc44778a3853d38b3a81c76515273c675f3",
+      "gitBlob": "79e4bbdfd859449f3fd3dfe2d7e974de94902951"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/README.md",
+      "bytes": 1353,
+      "sha256": "51ba3285e3eff2d7bb32ee29b50494131ee9ff189fbec1ee77530689e689db87",
+      "gitBlob": "586471c2e9821db593bc0603df086c2bc961e972"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/directory-service.cjs",
+      "bytes": 2634,
+      "sha256": "16a23cbc2e806c1d20fc47dd28d9d7a5258393f5033cafda88cc2727f78d9ad1",
+      "gitBlob": "9a36004ca9e30598253b4a14766220b43cda77b6"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/mcp-server.cjs",
+      "bytes": 1710,
+      "sha256": "36cb7e89e6af94a27e278808f23596ff71b8a286a3eaeac5a5d01a48e5545978",
+      "gitBlob": "93cb4a2bc016e59437b6170f7c1541b376a1bfaa"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/package.json",
+      "bytes": 756,
+      "sha256": "690b4df1992573701906f74f39c0ef9cb53b0ae9a288276956013ca4a1470c34",
+      "gitBlob": "aa4c50f9143afeaefd7b9198b23cd54a86579329"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/src/handlers.ts",
+      "bytes": 1265,
+      "sha256": "fc34f2c032df33a0410d09c0c473281b2a813acfb04e2783e21a43674787820c",
+      "gitBlob": "d42e2ebe30adb674c4a595c554cb785c4bee30b5"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/src/index.ts",
+      "bytes": 1083,
+      "sha256": "4a2f45ba63af01adf8c175b251bf3702a2bef836a2c8b436376cd8d667560f52",
+      "gitBlob": "15771689368aff958c84a1ac0499c3a3d686ce0d"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/src/schemas.ts",
+      "bytes": 891,
+      "sha256": "3f96174dd77c79b1670347b9b0e3f94f0aeed69e4e4ef59eb1bb0a7a1cb63ce5",
+      "gitBlob": "4186cf528da0be3b94e46d6f6db8068e2538613d"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/tests/pulse.harness.ts",
+      "bytes": 947,
+      "sha256": "879d2e787c881eff5dc778ac827e195397d284969764d6d1c4eb496fe621875a",
+      "gitBlob": "d8c6981664db931c3b6c6cc0e2a89f0613c5b789"
+    },
+    {
+      "path": "packages/mcp/examples/resource-directory/tsconfig.json",
+      "bytes": 216,
+      "sha256": "eb61a0677072afdc95bd50810cc0314f06a731cde7b4a2e2231de4910caa27dd",
+      "gitBlob": "62d82857208b9f14ca0413cc4c3f5ab41a6e13ad"
+    },
+    {
+      "path": "packages/mcp/package.json",
+      "bytes": 922,
+      "sha256": "1c43d62914dd0618d1def508558a62b8fc42d4284dd5ea9985cafd1370fcf743",
+      "gitBlob": "6e92a4aa4b0a0d2df8b7811f66f89a344450f184"
+    },
+    {
+      "path": "packages/mcp/src/authorization.js",
+      "bytes": 7145,
+      "sha256": "c76a6a98539a60d4693fa520343839b73c85c005801e0d31328d2d2e825ef369",
+      "gitBlob": "3bbf97d3a2c6f0ce5e668a33bb0d0e3cc7867851"
+    },
+    {
+      "path": "packages/mcp/src/bounded.js",
+      "bytes": 2121,
+      "sha256": "03075112bf6b2b876e6eff453f9e3cdeeb1394842466e47fdab744adf369290b",
+      "gitBlob": "cd4f0c307d59fc4ea169e8009897952248480669"
+    },
+    {
+      "path": "packages/mcp/src/catalog.js",
+      "bytes": 7085,
+      "sha256": "a89fdf0f26db2f4411386909a5ec6139f39048629355b87c473642f20573137c",
+      "gitBlob": "6d65adff3f99d7f485fb46e80ee54364eabd361f"
+    },
+    {
+      "path": "packages/mcp/src/index.d.ts",
+      "bytes": 2655,
+      "sha256": "6c836fc9e1da2c91474edc05b3bf0a37a208da5c9181b677fd585d3abff9741c",
+      "gitBlob": "6ba05e6c841e55493b53934812acfe6e286e7923"
+    },
+    {
+      "path": "packages/mcp/src/index.js",
+      "bytes": 13527,
+      "sha256": "239f8957e5d1310fe518b847710e28c8e8e8ed9a0edcebb2cffbcd759526297c",
+      "gitBlob": "6bd80ea5400421398156b2d28236acdfd427df70"
+    },
+    {
+      "path": "packages/mcp/src/node.d.ts",
+      "bytes": 261,
+      "sha256": "484ac899a550abc882305340204421a4b028bf75d5e3bc66dff1b94e2789d6b1",
+      "gitBlob": "c0cd1cf2dd628027dedec1e29274d16f9b320d6c"
+    },
+    {
+      "path": "packages/mcp/src/node.js",
+      "bytes": 3138,
+      "sha256": "210698dcbe6642a0ab09ae11e5db49bba6bad93dbfaa96e66cbfac63cc2738a0",
+      "gitBlob": "bcdca633b2d16fc0d2d087adac8818acefc77876"
+    },
+    {
+      "path": "packages/mcp/src/tools.js",
+      "bytes": 4021,
+      "sha256": "674666110ece55bcd2ed85e14642d69ec3381190744e9b4dac39992b7bf51544",
+      "gitBlob": "a374b4f696d91ff604d879a492ecc418818afcf1"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 114343,
+      "sha256": "f250e7b18d68b439e7b7ba765241f2443f4de71cf3b3fa4ff2ec7537aacdf00d",
+      "gitBlob": "9be3677dee1f69af47b60792cfb2171283d9de7e"
+    },
+    {
+      "path": "release/maintenance-policy.json",
+      "bytes": 24878,
+      "sha256": "0f1302fae42fb239ec4915280a3212613169d7973dd8a2dd204a6777c04ffd20",
+      "gitBlob": "fc33047b9062d7656f9c7c83d15ed93a37b8934e"
+    },
+    {
+      "path": "release/pulse-release-manifest.json",
+      "bytes": 21023,
+      "sha256": "b0375c179d283499d00667a7126aa10bb91e73d97946940d382bf614b7469378",
+      "gitBlob": "87632b12d4a5a29c47f64a72b0400bfe7c4d4a90"
+    },
+    {
+      "path": "scripts/documentation-release.cjs",
+      "bytes": 70400,
+      "sha256": "ca3492cef67fa9dc490da380e268a998e1a0e79ced8f3022c42e4ddb0ad71abb",
+      "gitBlob": "0762e2fcbd6d7d525fec7992108c1ebcf778e414"
+    },
+    {
+      "path": "scripts/maintainer-fast-validation.cjs",
+      "bytes": 12680,
+      "sha256": "b720d00d9d49702528d6cee7fe302fc88195298bb4415fe2349ed528e9aac206",
+      "gitBlob": "732c0ef1458a47ea6e1a5a5461af80d44f12d857"
+    },
+    {
+      "path": "scripts/pack-release.cjs",
+      "bytes": 16105,
+      "sha256": "4edfd6ebbcfa1cafba82b598222273c42136ad85335116e885803aaeabfce120",
+      "gitBlob": "60ccb54fb809622bdd8516a83059e3985959e0cb"
+    },
+    {
+      "path": "scripts/pulse-context-corpus.cjs",
+      "bytes": 13042,
+      "sha256": "90a4518763348257458df31c5cd23d6f356b1d3bd64d7f9547c8c7838f4638ad",
+      "gitBlob": "398c3d5be3cd926e1a9470af5f97ead66826eaaa"
+    },
+    {
+      "path": "scripts/pulse-context-inputs.json",
+      "bytes": 10616,
+      "sha256": "187222c8efdd9d455f39e6de73fa9e4fbae9121305dd39dacd7b60e4c4cf0a87",
+      "gitBlob": "9ae0ed98f615e9448f134756425560aacc272ce4"
+    },
+    {
+      "path": "scripts/release-checkpoints.cjs",
+      "bytes": 18847,
+      "sha256": "f1ff6034b409b851fce63b0deebc9d8e42de83a56088e92ec19e004caecc48d4",
+      "gitBlob": "66074db8a22b79d3cee8964085302f30282b1bb0"
+    },
+    {
+      "path": "scripts/release-evidence-bundle.cjs",
+      "bytes": 58112,
+      "sha256": "85c822e75ca0b8e5faef080d978062c434b8c0fd7d1851c1fa5acfad280ba047",
+      "gitBlob": "4ee363cdb1d8fb47540c64577e8666fe21913606"
+    },
+    {
+      "path": "scripts/release-feature-acceptance.cjs",
+      "bytes": 11069,
+      "sha256": "a253ddc5243b0a28b0389f02120de1f2659605e6b57d317ad22e41813a2a504c",
+      "gitBlob": "160a9d075566144839f683a8656ce00591443ba7"
+    },
+    {
+      "path": "scripts/release-recovery.cjs",
+      "bytes": 23052,
+      "sha256": "88f0b37a241ae21e14457a9ef516517bcd17aae9124707022dba2f6e7c0c14e2",
+      "gitBlob": "607106a6d18461ab674e6fb673153649136e717d"
+    },
+    {
+      "path": "scripts/release-source-checks.cjs",
+      "bytes": 5069,
+      "sha256": "3690f1ec4950d5d00311deb9c118b164f1039787cb4e6d6d6cbf4c05e1a68377",
+      "gitBlob": "89832468a2e21c1240d18a35311c367e857171ca"
+    },
+    {
+      "path": "scripts/validate-release.cjs",
+      "bytes": 27637,
+      "sha256": "f8bab0b28342b1e2374ca0d2d748bd5d296ae626685140548e6c5dba5ae3777f",
+      "gitBlob": "8ecd9653e6de1d22f26a0bb01b0f075cc06fbd35"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/.gitignore",
+      "bytes": 51,
+      "sha256": "d244370f47222decd3a49031dd368bea7bdd34521dcf95c431dd50bcf5cb6d9a",
+      "gitBlob": "0919bf09178e4a5b1fde62c1767dfaf37a9d9ea3"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/.pulse/config.ts",
+      "bytes": 462,
+      "sha256": "b8313e95b4390e5dd5970158a95aab4767eacd68ad333a89f184a1083f22f62b",
+      "gitBlob": "24de458467d7fdf535ea7a9622ad823dd73a45bb"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/README.md",
+      "bytes": 18526,
+      "sha256": "9b8465f60886d89d7ad7824ed15c669528e0a1a4754728c87f7bcb0ae42280f0",
+      "gitBlob": "e1b154a915b1ad3955f4e9b448aab16d1483e666"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/client/request.cjs",
+      "bytes": 2042,
+      "sha256": "c5aaa7b6822c1242384c5beb736b81af2296e6214d7e1e05dc41eb97c6c34da1",
+      "gitBlob": "57cff4d089f935edf6ccfa65af1dbf7c725c0dd8"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+      "bytes": 516102,
+      "sha256": "8dbd2cba000e682dfc82f6b87c90915bacfe1286fbbb2916a1d765d9a2950a15",
+      "gitBlob": "00a26d5e9d4900ccc2d678d23016f50ce5452f92"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/corpus-version.ts",
+      "bytes": 469,
+      "sha256": "fdc6e3805c5964bde7785a5bab19bdb266479a8b540a4654d3471523fdc66097",
+      "gitBlob": "3578d091ef9bae973311c3f2811d34c4e49246fa"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/host/artifacts.cjs",
+      "bytes": 5245,
+      "sha256": "ef3aee628b6d82ccfcfcf6a7259b530c2ebb829ee23e00060187592c5c9346aa",
+      "gitBlob": "4730c48d970e2223da030b5c4d8f8c50e2a0595a"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/host/prepare.cjs",
+      "bytes": 1575,
+      "sha256": "d28abbb22398a158e8a79c0308bfea3c76a0af3cc084762fca472727ee0c475d",
+      "gitBlob": "2c727a763f7cc6db0863cfe5dc4bfbc9d3d20a5b"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/host/server.cjs",
+      "bytes": 9638,
+      "sha256": "18ef205a4799ce1560e8fccbd855303a2e339363119d486cf6d5ba06987ed7ee",
+      "gitBlob": "bb44730319e38f0314ecc7f92b6f1df5a593f9a5"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/host/start.cjs",
+      "bytes": 2064,
+      "sha256": "17f8e25c8775511c32304a20dcddcbc3e72d896c967f80ce50214249bb21875b",
+      "gitBlob": "32008d511d6336cfcfdc34ddd1064ba29a9e3e0d"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/package.json",
+      "bytes": 636,
+      "sha256": "5452546457ceee79db17e1aa6cf01b8a51b7d2341bcc1c7c1d8f5ba7f9003a54",
+      "gitBlob": "d2fce7f7a494586fac06ea86cbcce20d51b9b6c3"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/src/handlers.ts",
+      "bytes": 20742,
+      "sha256": "da7e1c3f9b814c98133434ef0f484ead845806c87bb48945fcea477f90471552",
+      "gitBlob": "028015576c401ffb8ac1b5050afc59cb09110d4b"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/src/index.ts",
+      "bytes": 2436,
+      "sha256": "1a27446f8e363a88b12d20ea425ec9c274d28f5828d394a45b6b24fa7072a7a0",
+      "gitBlob": "db37843bde025bd01e5e150ee1f0dc6377ec3393"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/src/schemas.ts",
+      "bytes": 4565,
+      "sha256": "a8e742d9e527c8522306d5f4f1c82b179576d5c3c8833d21fd7434cbc58347a9",
+      "gitBlob": "b6caae02413a2a742537ba35dfc313f133421eeb"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/tests/pulse.harness.ts",
+      "bytes": 1673,
+      "sha256": "c847398188aa6b35da31f78ae02b606f268a642b22555e035ae544d851fc9173",
+      "gitBlob": "7a64cf3f15469b272765349318f8a655d3f69dba"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/tsconfig.json",
+      "bytes": 266,
+      "sha256": "7eff017e26e75fae8f4fd78d16cee1ef99ed3778381daee64ba5fa83eb3113c1",
+      "gitBlob": "9c62183be553bfc3c619cfedcedc61811cb175b4"
+    },
+    {
+      "path": "wasm/packages/cli/src/command-spec.js",
+      "bytes": 23812,
+      "sha256": "9cb098c45f7358aed2a16cc4215a6e79093a7c59b40e4a52c83d1fc21352992d",
+      "gitBlob": "ee4b23bd41421e629e798f9a7df0ee972e5b7b1e"
+    },
+    {
+      "path": "wasm/packages/cli/src/diagnostics.js",
+      "bytes": 58596,
+      "sha256": "206dbb8cd3e31afb12ab73ec46c5be8ec8185e411c16d03a40557964e5ba9119",
+      "gitBlob": "c33b3f9bba8b1ed79cdf3f6a0982846e26c95c1f"
+    },
+    {
+      "path": "wasm/packages/contracts/src/handler/canonical-native-plan.js",
+      "bytes": 7225,
+      "sha256": "e0084c903610750a8afe2099694210c2b5da7314d008b178a00d08f3b856fc67",
+      "gitBlob": "a7e2b26db8479d18a47978ce7fd92b0b46bab111"
+    },
+    {
+      "path": "wasm/packages/contracts/src/resources/embedded.js",
+      "bytes": 11584,
+      "sha256": "798acf6dd485f0bb7903636e3c0dda5302d1d59e48f9cdb916d1146b03aecb16",
+      "gitBlob": "024f8484268fdaeeb15f1e3faf2b65295345ffd6"
+    },
+    {
+      "path": "wasm/scripts/sync-doc-snippets.cjs",
+      "bytes": 8013,
+      "sha256": "15f034614f1ac131ebf9edd9e52e1d6c858913692da08c17fd99e3b93be626a0",
+      "gitBlob": "7d6b6071833fb857d49ed3d8423776e984dd8afe"
+    },
+    {
+      "path": "wasm/test/contracts/assert-binary-resource-admission.cjs",
+      "bytes": 9408,
+      "sha256": "4bb1a5d5fd85ede491656aeb203531f27b127e042d98f2fcac086f1d9bb35203",
+      "gitBlob": "d85b289c1773ab82bbd322c8d91a8b5d2cb4eb5f"
+    },
+    {
+      "path": "wasm/test/mcp/MCP-01.md",
+      "bytes": 15021,
+      "sha256": "6be77e47af6820d085cfd066765a1bef04b199adfd682fc749ada857341b5fe5",
+      "gitBlob": "2293bef65694417caea755914be931a9f5adbca7"
+    },
+    {
+      "path": "wasm/test/mcp/assert-context-application.cjs",
+      "bytes": 14084,
+      "sha256": "a0fe6cb25dd7e082b193f25ac45a6c2bddabdcf4b65794ff72de7003ab00772a",
+      "gitBlob": "a5e1aef6e607a00695625e159d531fc27902ba2e"
+    },
+    {
+      "path": "wasm/test/mcp/assert-context-corpus.cjs",
+      "bytes": 10253,
+      "sha256": "4d56f43c590bb13730d70df220197473b292be0415ae5333a2b3d371095c5cb1",
+      "gitBlob": "36da920bb1be23f5ed8718e168248ad6046555b8"
+    },
+    {
+      "path": "wasm/test/mcp/assert-context-host.cjs",
+      "bytes": 15181,
+      "sha256": "01b078c76945f2d104071fb1371087778dcb6fdf2f0aec5b6b6e6e04c8565b94",
+      "gitBlob": "780dfb2862399da1c420cd6aea46526347cd51f6"
+    },
+    {
+      "path": "wasm/test/mcp/assert-directory-authorization.cjs",
+      "bytes": 3450,
+      "sha256": "1e59e77247de932be4a1fb09e5eece3eb68c35218e93a4d07d89986926912e0c",
+      "gitBlob": "570c4be375f510e35eaafb45f7d00d166acff965"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-authorization.cjs",
+      "bytes": 9056,
+      "sha256": "24e1a49e0f9f8604ad174a8a969bce097306af59d31239508cc8a3bbf09c2d75",
+      "gitBlob": "7ce08b26cbfd54e13414057c9bdcb1a60f7b9a8d"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-claude.cjs",
+      "bytes": 2007,
+      "sha256": "3e6e0ce84a25aeba95222282e018a143e877f8d01386d985dce15aa95c8a91a9",
+      "gitBlob": "6a105f96cada6acb499abc9a8a1da766dbd35715"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-codex.cjs",
+      "bytes": 1837,
+      "sha256": "9a4a3d2094d96aba6e0f9f89815f444d4eb9dafc12935e4260674cb3609ef406",
+      "gitBlob": "24907388fb1d33cbcc90b51e525dc9c90b4e89fc"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-compatibility.cjs",
+      "bytes": 7942,
+      "sha256": "de6d9988190d66227f0783a9ad2c3676adb8843f39a2333a709ce5747add4141",
+      "gitBlob": "308335fb6b65a62307ecb991f8bd99876974cc94"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-http-sdk.cjs",
+      "bytes": 3505,
+      "sha256": "52fd4724109260869fdd3bbf16af3726ea9435371d755ca5eb493c1e7311e3a6",
+      "gitBlob": "4809210638fa44dc2130dee7db13fbf10990eddd"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-http.cjs",
+      "bytes": 14163,
+      "sha256": "3330ff867afd7afe7505c286ad60611ba4f9fd03098c18eaee2b476f873e2c3f",
+      "gitBlob": "9be3f222408a096806d42f3b78d78d905ee64653"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-installed.cjs",
+      "bytes": 10902,
+      "sha256": "2ef76b8dd9da08a6095e026984ae2f088f24edeca84d88290f57ef395e7edf0a",
+      "gitBlob": "0f8b5cf9757b2adb64102ad4c8e7def11ec7a0bc"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-package.cjs",
+      "bytes": 10415,
+      "sha256": "889f44c1552b20d66e4b8807b5c4b11cbca7de62202d4ab4cf69987229352c8c",
+      "gitBlob": "caa2508b8882616442939396eea7ee628c2192e4"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-tools.cjs",
+      "bytes": 11134,
+      "sha256": "1fe02050c19f1def7e37e5af48f5ef54fa6c998ff998e79d5a0af7977511514e",
+      "gitBlob": "cea52616418e500f1893888f07855c37c7a92b56"
+    },
+    {
+      "path": "wasm/test/mcp/assert-mcp-wire-proof.cjs",
+      "bytes": 8885,
+      "sha256": "5401531675d59d32bcf1453c936ea2c0d3d6348436d045e14429e1d1d7fc3cb8",
+      "gitBlob": "f7c45ea6309b8ca149a8d0b32342f3b00d336965"
+    },
+    {
+      "path": "wasm/test/mcp/authorization-fixture.cjs",
+      "bytes": 8177,
+      "sha256": "62189ee9f579ab8fad952389ff5c3fe47eabd6cf85285acb2d731795312afe92",
+      "gitBlob": "6ba5f80fc95b6b9e12a8d205cf5a5b69652ae83d"
+    },
+    {
+      "path": "wasm/test/mcp/claude-reference/package.json",
+      "bytes": 130,
+      "sha256": "f1c8daeefb26b042f6478ab10362e7f69f185dfacbb6bd1295d8efdb42e0c2b9",
+      "gitBlob": "e55ae2220cd9d237b2c040c12398ad1531b9af01"
+    },
+    {
+      "path": "wasm/test/mcp/claude-reference/pnpm-lock.yaml",
+      "bytes": 3283,
+      "sha256": "07cef3b91676f0414c81cc8d6c6570a6f67a415229026af0a4e655f90ee87941",
+      "gitBlob": "5f4970f25293ff2a3bdcaac70b585f0013fdf793"
+    },
+    {
+      "path": "wasm/test/mcp/codex-reference/package.json",
+      "bytes": 117,
+      "sha256": "a395fbd050a562c8445c847aef593a7d4b6749795a845d82ef5035ef7cb86065",
+      "gitBlob": "fed1f6b248866e3731696267b5efe251d97162bd"
+    },
+    {
+      "path": "wasm/test/mcp/codex-reference/pnpm-lock.yaml",
+      "bytes": 2595,
+      "sha256": "3716d46a6b6f50423dc9f82e949aae096ce9f990662a81f37c5a964970d19dd9",
+      "gitBlob": "822371f1e6edc1a85a6779db736f9ec550a5537d"
+    },
+    {
+      "path": "wasm/test/mcp/package-context.cjs",
+      "bytes": 947,
+      "sha256": "e4c5d952bc17665c0e4d0da7b05df60fa830b9f85627559715ef000055f51842",
+      "gitBlob": "468d06d19f51bc6189cd88ed5a78e06782df5e09"
+    },
+    {
+      "path": "wasm/test/mcp/probe-mcp-claude.cjs",
+      "bytes": 10748,
+      "sha256": "fd05ad82b8600bedf4422892293db4937f6d0941bfd56a9ee6e142d7673ac4f2",
+      "gitBlob": "d4626add876ef80a8a2fe84b37bdfe9cd5e7fcd1"
+    },
+    {
+      "path": "wasm/test/mcp/probe-mcp-codex.cjs",
+      "bytes": 10302,
+      "sha256": "f3e327ae5ccd9344a595bfec99b838993d7b3356401d70e4c60af825c5e7951d",
+      "gitBlob": "6b07faea7ddcabc6c67e33e42ee9af415f8fb83a"
+    },
+    {
+      "path": "wasm/test/mcp/profile.json",
+      "bytes": 1252,
+      "sha256": "260fe9b98c1b274f7e581adf0178928d294bb325d4b7f54e6d67e7b38683dccd",
+      "gitBlob": "edad03022217a331a050c8f9f6046470b32eeac3"
+    },
+    {
+      "path": "wasm/test/mcp/reference/adapter-proof.mjs",
+      "bytes": 2766,
+      "sha256": "ef727e35c9c83ba6fc247ca3be08c3bbd3e2ae25ba79555f834ed933e0b844e2",
+      "gitBlob": "0ac6018b7065350b8c5a57b1ce6daa5d6f9b75f4"
+    },
+    {
+      "path": "wasm/test/mcp/reference/authorization-proof.mjs",
+      "bytes": 4314,
+      "sha256": "d2904e784145ad6d016eee376790630631e1ef263d51cf024f46dc99e85f90c6",
+      "gitBlob": "a7c46a2331a55f77cd1b36a26de55ed1778e0112"
+    },
+    {
+      "path": "wasm/test/mcp/reference/context-agent-proof.cjs",
+      "bytes": 5772,
+      "sha256": "5bdc4eac194525ca93d95ccdf2d78821f399d99f8f2c7a3a0b4dd81d0e277d33",
+      "gitBlob": "d59fe5ab38501deeb578d65df153e989b5dda6bf"
+    },
+    {
+      "path": "wasm/test/mcp/reference/context-proof.mjs",
+      "bytes": 13468,
+      "sha256": "7aada7bc6f0ba018e23beb9b335987f0acc42779fc9c0fe47d05ab14099ccb52",
+      "gitBlob": "db703acf93b396f6b4b1dabb5d019f826ac25d2f"
+    },
+    {
+      "path": "wasm/test/mcp/reference/package.json",
+      "bytes": 263,
+      "sha256": "6c6cae0d3573edb0bbc2daf0883024222d00cdec3fdf65b6c845146364d9c7e8",
+      "gitBlob": "996941d13a795b8f9e9186eee0a6cb7928140e5b"
+    },
+    {
+      "path": "wasm/test/mcp/reference/pnpm-lock.yaml",
+      "bytes": 4893,
+      "sha256": "a0aba23bc44c940d415d557da8ceb2592d36cbe4db4ce2de6e5a7b01d95adad2",
+      "gitBlob": "d6a64e6566a110879864ba48324f7b0bd46160f4"
+    },
+    {
+      "path": "wasm/test/mcp/reference/proof.mjs",
+      "bytes": 6798,
+      "sha256": "3fd76da129540e9577116e6dc5adc18a04919d96c1750a6b9a29390d1140ecc7",
+      "gitBlob": "5fdc2b86b21011a9dd418189b94f95462bb74902"
+    },
+    {
+      "path": "wasm/test/mcp/reference/tools-handlers.ts",
+      "bytes": 413,
+      "sha256": "a0f013a825f92c835bceff253ff01f58e7ad628c14fdcab2fc4c4cefbcda8533",
+      "gitBlob": "7bc4572610ce14e092c361502951a353d5edf049"
+    },
+    {
+      "path": "wasm/test/mcp/reference/tools-proof.mjs",
+      "bytes": 3660,
+      "sha256": "eca6df541e66360096343bf54c0468b48f6e51a37aa1dfea42de15cf7598aafa",
+      "gitBlob": "a743ef335e4dd5affbed51bc5e8ec0a8aa0cdc02"
+    },
+    {
+      "path": "wasm/test/mcp/smoke-context-registry.cjs",
+      "bytes": 6975,
+      "sha256": "2bf7dba3f4b1b80eead927207699548502730715475b9569f2d21f8e6e2cdbe9",
+      "gitBlob": "38c6dc69d9af94aa5d4cba3114bc1b1cee5e944b"
+    },
+    {
+      "path": "wasm/test/runtime/assert-binary-resource-execution.cjs",
+      "bytes": 9720,
+      "sha256": "d3c87cc186465a3f01c56b67a8555d9cd8cff013b297c303efe5ce60f565551e",
+      "gitBlob": "8ef1cb88ebc4d948c9457fcd9fbefe4d5ec671f1"
+    },
+    {
+      "path": "wasm/test/suite/registry.cjs",
+      "bytes": 79272,
+      "sha256": "f32b73b5458701b233a4adb59903a976b4fcead9700b174c7ca4f18fab9f5ac6",
+      "gitBlob": "650842efa6d2970e0b45ce4a0fd59af78e6adae6"
+    }
+  ]
+}

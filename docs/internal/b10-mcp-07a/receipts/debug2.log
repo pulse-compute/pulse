@@ -1,0 +1,67 @@
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/worker.cjs',
+  'guard',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/settings.json'
+]
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/typescript/bin/tsc',
+  '--project',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/application/tsconfig.json'
+]
+DEVELOPMENT ONLY: already checked types skipped
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/bin/pulse.js',
+  'build',
+  '--profile',
+  'node-native'
+]
+Error: code 1
+
+denied filesystem API: /workspace/scratch/0174bfde4d1e/07a-debug/package.json Error: Access to this API has been restricted. Use --allow-fs-read to manage permissions.
+    at Object.existsSync (node:fs:291:18)
+    at Object.wrapped [as existsSync] (/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/trace.cjs:1:105)
+    at workspaceControls (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/report/snapshot.js:48:15)
+    at Object.resolutionStart (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/report/snapshot.js:71:51)
+    at loadConventionalProject (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/project-config.js:528:40)
+    at Object.resolveProject (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/project-config.js:634:34)
+    at resolveProjectContext (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/project-context.js:119:51)
+    at runPulseWorkflowCli (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workflow.js:47:9)
+    at Object.<anonymous> (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/bin/pulse.js:6:1)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+denied filesystem API:  Error [ERR_ACCESS_DENIED]: fsync API is disabled when Permission Model is enabled.
+    at Object.fsyncSync (node:fs:1283:11)
+    at Object.wrapped [as fsyncSync] (/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/trace.cjs:1:105)
+    at atomicWrite (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/report/files.js:69:37)
+    at Object.acquireBuildLock (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/report/retained.js:35:3)
+    at withReportBuild (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/project-execution.js:705:26)
+    at Object.buildProject (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/project-execution.js:722:10)
+    at selected.<computed> [as buildProject] (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/command-executor.js:16:62)
+    at executeCommandPlan (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/command-executor.js:104:26)
+    at runPulseWorkflowCli (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workflow.js:54:29)
+    at Object.<anonymous> (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/bin/pulse.js:6:1)
+(node:105) SecurityWarning: The flag --allow-child-process must be used with extreme caution. It could invalidate the permission model.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:105) SecurityWarning: The flag --allow-worker must be used with extreme caution. It could invalidate the permission model.
+{
+  "status": "error",
+  "version": "1.0.0-beta.9",
+  "error": {
+    "name": "Error",
+    "code": "ERR_ACCESS_DENIED",
+    "title": "Uncatalogued Pulse diagnostic",
+    "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",
+    "category": "internal",
+    "message": "fsync API is disabled when Permission Model is enabled.",
+    "remediation": [
+      "Rerun with `--json` and retain the complete diagnostic for investigation."
+    ],
+    "stability": "internal-or-forward-compatible",
+    "scope": "fallback",
+    "docs": "https://pulsecompute.io/v1.0.0-beta.9/reference/diagnostics/"
+  }
+}
+
+    at ChildProcess.<anonymous> (/tmp/07a-debug.cjs:7:557)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:306:5)

@@ -125,6 +125,9 @@ const releaseSeal = {
     code: 'PULSE_FASTLY_CLI_UNAVAILABLE'
   }
 };
+const contextDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-evidence-context-'));
+process.once('exit', () => fs.rmSync(contextDirectory, { recursive: true, force: true }));
+require('./context-freshness-fixture.cjs').attach(releaseSeal, contextDirectory);
 const fourMode = {
   sourceRevision,
   status: 'passed',
@@ -280,11 +283,15 @@ try {
     const recovery = { schemaVersion: 'pulse.release-recovery.v1', directory: recoveryDirectory,
       previousDirectory: previousRecoveryDirectory, context, contextSha256: fingerprint(context), artifacts };
     const packFile = path.join(recoveryDirectory, 'packages/candidate.tgz');
-    write(packFile, { package: 'fixture' });
+    const contextPack = require('./context-freshness-fixture.cjs').pack(path.dirname(packFile),
+      { sourceRevision, sourceTree: 'b'.repeat(40), workingTree: '' });
+    const sourceChecksFile = path.join(recoveryDirectory, 'source-checks.json');
+    write(sourceChecksFile, contextPack.checked);
     const packLog = path.join(recoveryDirectory, 'shared-pack.log');
     write(packLog, { package: 'built' });
     const packStore = createCheckpointStore({ directory: path.join(recoveryDirectory, 'checkpoints/pack'), context });
-    const pack = packStore.record({ id: 'shared-pack', definition: sharedPackDefinition(), dependencies: {},
+    const pack = packStore.record({ id: 'shared-pack', definition: sharedPackDefinition(),
+      dependencies: require('../../../scripts/release-context-freshness.cjs').checkpointDependencies(contextPack.checked),
       artifacts: { pack: path.dirname(packFile), log: packLog }, result: { id: 'shared-pack', status: 'passed', exitCode: 0, cleanup: { status: 'passed' } } });
     recovery.sharedPack = { execution: 'executed', proofId: pack.proofId, receiptPath: pack.receiptPath, receiptSha256: pack.receiptSha256 };
     write(artifacts.fourMode, fourMode);
@@ -337,6 +344,9 @@ try {
       featureAcceptance: recoveredFeatures, recovery, steps: [...releaseSeal.steps,
         ...(workers > 1 ? [{ id: 'workspaces', status: 'passed' }] : []),
         { id: 'dependencies', status: 'passed' }, { id: 'production-dependency-audit', status: 'passed' }, { id: 'shared-pack', status: 'passed' }].map(step => ({ ...step, exitCode: 0 })) };
+    recoveredSeal.sourceChecks = { file: sourceChecksFile, sha256: crypto.createHash('sha256').update(fs.readFileSync(sourceChecksFile)).digest('hex') };
+    recoveredSeal.contextEvidence = { packManifest: path.join(recoveryDirectory, 'packages/pulse-release-manifest.json'), featureTasks: artifacts.featureTasks };
+    recoveredSeal.contextQualification = require('../../../scripts/release-context-freshness.cjs').qualify(contextPack.checked, contextPack.manifest, featureTasks, recoveredFeatures);
     validateRecoveryEvidence(recoveredSeal, { taskReport: recoveredTasks, fourMode, candidates });
     assert.equal(aggregateValidation({ sourceRevision, releaseSeal: recoveredSeal, taskReport: recoveredTasks, fourMode, candidates, replay }).status, 'passed');
     assert.equal(resolveEvidencePaths({ explicitArtifacts: [] }, recoveredSeal).taskReport, artifacts.taskReport);

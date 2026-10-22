@@ -343,6 +343,9 @@ async function main() {
     assert.equal(JSON.stringify(proof).includes(secret), false, 'Fastly reality evidence must never contain secret plaintext');
     writeEvidence(process.env.PULSE_FASTLY_REALITY_EVIDENCE, proof);
 
+    await require('./assert-fastly-native-dynamic-backends.cjs').local({
+      binary: process.env.PULSE_FASTLY_BIN, viceroyBinary: process.env.PULSE_VICEROY_BIN
+    });
     console.log(`ok - the native Pulse Fastly module executed through ${launcher.kind} ${inspection.version || 'unknown'} with config, secret, KV persistence, named backend fetch, schemas, opaque bytes, repeated headers, and GRIP hold/publish`);
   } finally {
     if (server) await server.stop();

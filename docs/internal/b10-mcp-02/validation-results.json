@@ -1,0 +1,1697 @@
+{
+  "version": "pulse.b10-mcp-02.development-validation.v1",
+  "claim": "Separate development attempts; no passing aggregate or release seal. Passing tasks are not pooled into same-candidate qualification.",
+  "implementationCommit": "5327ee1d4ac0b709c373a251f5e155930c751053",
+  "implementationTree": "9c48552e7cca467a0da0d33baa6c268432733d1a",
+  "earlierBase": "7a0de3e58ef8a0033cbf0e70970593ba6bd8d61f",
+  "proofBase": "47d32866d80fd068957d57688a7226896b06073a",
+  "finalParent": "40438c3d6ac2d3d54724c113e876196ff74890c4",
+  "node": "v24.19.0",
+  "distinctTasksWithPassingReceipts": 153,
+  "passingTaskNames": [
+    "api-surface",
+    "arc01-installed",
+    "assets-javascript-runtime",
+    "assets-lowering-plan",
+    "assets-native-embedded",
+    "assets-package-owned-lowering",
+    "ast01-installed",
+    "ast02b-installed",
+    "ast02d-installed",
+    "binary-resource-admission",
+    "binary-resource-execution",
+    "boundaries",
+    "bounded-app-logic",
+    "bounded-loop-helpers",
+    "bounded-read-loops",
+    "canonical-api-lowering",
+    "canonical-api-runtime",
+    "canonical-native-plan",
+    "canonical-native-wasm",
+    "canonical-opaque-node-emission",
+    "canonical-router-lowering",
+    "canonical-router-terminal-middleware",
+    "cli-command-spec",
+    "cli-dev-workflow",
+    "cli-diagnostics",
+    "cli-expansion-doctor",
+    "cli-init-workflow",
+    "cli-javascript-target-compilation",
+    "cli-project-guards",
+    "cli-project-workflow",
+    "cli-report-capture-proof",
+    "cli-report-graph-diagnostics",
+    "cli-report-relationships",
+    "cli-report-resource-inventory",
+    "cli-report-retained-evidence",
+    "cli-report-viewer",
+    "cli-report-workflow",
+    "cli-schema-json-workflow",
+    "context-native-proof",
+    "continuation-registry",
+    "crypto-config-planning",
+    "crypto-digest-text-contract",
+    "crypto-es256-signing",
+    "crypto-native-guest-source",
+    "crypto-rs256",
+    "crypto-runtime-builtin",
+    "effect-collection-providers",
+    "effect-collections",
+    "entities-catalog",
+    "entities-contracts",
+    "entities-envelope-feasibility",
+    "entities-hardening",
+    "entities-inspection",
+    "entities-javascript-runtime",
+    "entities-json-rpc-corpus",
+    "entities-managed-handler",
+    "entities-managed-handler-effects",
+    "entities-native-runtime",
+    "entities-node-native-workflow",
+    "entities-orchestration-demo",
+    "entities-package-owned-lowering",
+    "entities-schema-bridge",
+    "events-cli-workflow",
+    "external-lowerers",
+    "fastly-driver-behavior-o09",
+    "fastly-entities-native-workflow",
+    "fastly-handle-frames",
+    "fastly-handle-ownership",
+    "fastly-incoming-body-forwarding",
+    "fastly-javascript-runtime",
+    "fastly-native-http-effects",
+    "fastly-native-http-shell",
+    "fastly-native-platform-capabilities",
+    "fastly-numeric-budgets",
+    "fastly-numeric-regions",
+    "grip-package-owned-lowering",
+    "grip-package-runtime",
+    "guest-json-roundtrip",
+    "guest-link-audit-diagnostics",
+    "guest-link-materialization-stage",
+    "guest-link-package",
+    "hidden-contracts",
+    "javascript-effect-adapter",
+    "json-as-compatibility",
+    "jwt-es256-signing",
+    "jwt-installed-workflow",
+    "jwt-javascript-admission",
+    "jwt-package-owned-lowering",
+    "jwt-rs256",
+    "jwt-signing",
+    "kv-conditional-gates",
+    "kv-conditional-runtime",
+    "kv-design-contract",
+    "kv-native-abi-feasibility",
+    "logging-contract",
+    "logging-lowering",
+    "logging-runtime",
+    "mcp-authorization",
+    "mcp-compatibility",
+    "mcp-http",
+    "mcp-installed",
+    "mcp-tools",
+    "multifile-source-indexes",
+    "native-context-primitives",
+    "node01-installed",
+    "npm-source-imports",
+    "package-exports",
+    "package-reachability",
+    "package-root-native",
+    "package-runtime",
+    "project-modules",
+    "provider-fastly-apps",
+    "provider-fastly-package",
+    "provider-toolchain",
+    "pulse-context-application",
+    "pulse-context-corpus",
+    "pulse-context-host",
+    "pure-argument-helpers",
+    "pure-field-projection",
+    "pure-guarded-arguments",
+    "pure-helper-contract",
+    "pure-helper-vocabulary",
+    "pure-loop-helpers",
+    "pure-record-helpers",
+    "pure-source-helpers",
+    "pure-string-index",
+    "reachable-graph",
+    "release-artifact-determinism",
+    "release-checkpoints",
+    "release-feature-acceptance",
+    "release-runtime-policy",
+    "release-seal-lifecycle",
+    "report-capsule-contract",
+    "router-selected-groups",
+    "s3-body-installed",
+    "s3-body-read",
+    "s3-design-contract",
+    "s3-native-read",
+    "s3-node-transport",
+    "s3-read-contract",
+    "s3-write-contract",
+    "schema-registry",
+    "shared-stage-o19",
+    "str02-installed",
+    "str02b-installed",
+    "str02b-node-native",
+    "str03a-generated-output",
+    "str03b-installed",
+    "str03c-bounded-transforms",
+    "suite-shape",
+    "target-support",
+    "test-orchestration",
+    "workspace-hygiene"
+  ],
+  "remainingRunningChecks": [],
+  "attempts": [
+    {
+      "attempt": "regressions",
+      "exitCode": 1,
+      "terminalRunnerSummary": true,
+      "logSha256": "56dae20627df6b09e30271644d4856d69cc8006d471e12fb9b18935c40d16112",
+      "results": [
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "367ms"
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "duration": "12.44s"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "1.18s"
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "duration": "509ms"
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "failed",
+          "duration": "398ms"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "Error: Release tasks are not mapped to a shard: context-native-proof, native-context-primitives",
+        "    at async verifySealOrchestration (/workspace/scratch/3471f7320bf6/pulse-mcp00/wasm/test/release/assert-release-feature-acceptance.cjs:124:5) {",
+        "  generatedMessage: true,",
+        "  code: 'ERR_ASSERTION',",
+        "  actual: [Error],",
+        "  expected: [Function (anonymous)],",
+        "  operator: 'rejects',",
+        "  diff: 'simple'",
+        "}",
+        "[pulsewasm] release-feature-acceptance: failed in 398ms",
+        "",
+        "[pulsewasm] test summary",
+        "  passed         367ms  suite-shape",
+        "  passed        12.44s  package-exports",
+        "  passed         1.18s  boundaries",
+        "  passed         509ms  workspace-hygiene",
+        "  failed         398ms  release-feature-acceptance",
+        "  total        14.95s"
+      ]
+    },
+    {
+      "attempt": "regressions-retry",
+      "exitCode": 124,
+      "terminalRunnerSummary": true,
+      "logSha256": "d6b154912884936275f7a4dce46e8c599a2b886f7c03bd650a68476790235b6b",
+      "results": [
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "250ms"
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "duration": "338ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "799ms"
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "duration": "427ms"
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "passed",
+          "duration": "951ms"
+        },
+        {
+          "task": "release-runtime-policy",
+          "status": "passed",
+          "duration": "4.72s"
+        },
+        {
+          "task": "binary-resource-admission",
+          "status": "passed",
+          "duration": "471ms"
+        },
+        {
+          "task": "report-capsule-contract",
+          "status": "timeout",
+          "duration": "35.93s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 10.00s",
+        "{\"comparison\":\"passed\",\"checks\":49,\"version\":1,\"deterministic\":true,\"missingIsNotZero\":true}",
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 20.01s",
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 30.02s",
+        "[pulsewasm] report-capsule-contract: timeout; process group 425 contains 0 process(es)",
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 40.02s",
+        "[pulsewasm] report-capsule-contract: timeout in 35.93s",
+        "",
+        "[pulsewasm] test summary",
+        "  passed         471ms  binary-resource-admission",
+        "  timeout       35.93s  report-capsule-contract",
+        "  passed         250ms  suite-shape",
+        "  passed         338ms  package-exports",
+        "  passed         799ms  boundaries",
+        "  passed         427ms  workspace-hygiene",
+        "  passed         951ms  release-feature-acceptance",
+        "  passed         4.72s  release-runtime-policy",
+        "  total        43.91s"
+      ]
+    },
+    {
+      "attempt": "report-retry",
+      "exitCode": 124,
+      "terminalRunnerSummary": true,
+      "logSha256": "fc8be0f089b9d9b257c28c6675c19b9b06183fd3b5d3037752261205e2409acc",
+      "results": [
+        {
+          "task": "report-capsule-contract",
+          "status": "timeout",
+          "duration": "35.87s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "",
+        "[pulsewasm:unit] report-capsule-contract",
+        "[pulsewasm] PRPT-01 capsule identity, schema projection, completion and attribution contracts (timeout 30.00s)",
+        "ok - AN9-09 normalized storage, canonical compatibility, browser codec, semantic validation and bounded hostile expansion",
+        "{\"comparison\":\"passed\",\"checks\":49,\"version\":1,\"deterministic\":true,\"missingIsNotZero\":true}",
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 10.00s",
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 20.00s",
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 30.01s",
+        "[pulsewasm] report-capsule-contract: timeout; process group 14 contains 0 process(es)",
+        "[pulsewasm] report-capsule-contract: timeout in 35.87s",
+        "",
+        "[pulsewasm] test summary",
+        "  timeout       35.87s  report-capsule-contract",
+        "  total        35.88s"
+      ]
+    },
+    {
+      "attempt": "regressions-rest",
+      "exitCode": 124,
+      "terminalRunnerSummary": true,
+      "logSha256": "7444518f8cc02ec5e8c13fe61b359ff324430090489546ed9c8e9f8441906408",
+      "results": [
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "417ms"
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "duration": "518ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "1.24s"
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "duration": "681ms"
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "passed",
+          "duration": "1.31s"
+        },
+        {
+          "task": "release-runtime-policy",
+          "status": "passed",
+          "duration": "5.75s"
+        },
+        {
+          "task": "cli-report-workflow",
+          "status": "passed",
+          "duration": "8.08s"
+        },
+        {
+          "task": "cli-report-viewer",
+          "status": "passed",
+          "duration": "23.73s"
+        },
+        {
+          "task": "cli-report-retained-evidence",
+          "status": "timeout",
+          "duration": "66.17s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 70.02s",
+        "[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 80.03s",
+        "[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 90.03s",
+        "[pulsewasm] Running cli-report-retained-evidence (execution); elapsed 100.03s",
+        "[pulsewasm] cli-report-retained-evidence: timeout; process group 749 contains 0 process(es)",
+        "[pulsewasm] cli-report-retained-evidence: timeout in 66.17s",
+        "",
+        "[pulsewasm] test summary",
+        "  passed         8.08s  cli-report-workflow",
+        "  passed        23.73s  cli-report-viewer",
+        "  timeout       66.17s  cli-report-retained-evidence",
+        "  passed         417ms  suite-shape",
+        "  passed         518ms  package-exports",
+        "  passed         1.24s  boundaries",
+        "  passed         681ms  workspace-hygiene",
+        "  passed         1.31s  release-feature-acceptance",
+        "  passed         5.75s  release-runtime-policy",
+        "  total        107.93s"
+      ]
+    },
+    {
+      "attempt": "unit-core",
+      "exitCode": 1,
+      "terminalRunnerSummary": true,
+      "logSha256": "e3b9d32f18b9226cab6ad371e872c3d71c272ddf22133aa686a4bf893072fccc",
+      "results": [
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "245ms"
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "duration": "336ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "732ms"
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "duration": "396ms"
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "passed",
+          "duration": "1.04s"
+        },
+        {
+          "task": "release-runtime-policy",
+          "status": "passed",
+          "duration": "4.89s"
+        },
+        {
+          "task": "multifile-source-indexes",
+          "status": "passed",
+          "duration": "672ms"
+        },
+        {
+          "task": "guest-json-roundtrip",
+          "status": "passed",
+          "duration": "302ms"
+        },
+        {
+          "task": "pure-helper-contract",
+          "status": "passed",
+          "duration": "2.38s"
+        },
+        {
+          "task": "test-orchestration",
+          "status": "passed",
+          "duration": "16.90s"
+        },
+        {
+          "task": "hidden-contracts",
+          "status": "passed",
+          "duration": "735ms"
+        },
+        {
+          "task": "release-seal-lifecycle",
+          "status": "failed",
+          "duration": "5.01s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "  path: '/tmp/pulse-suite-task-release-seal-lifecycle-5TcJQn/pulse-seal-lifecycle-Ni47zY/descendant.pid'",
+        "}",
+        "[pulsewasm] release-seal-lifecycle: failed in 5.01s",
+        "",
+        "[pulsewasm] test summary",
+        "  passed         672ms  multifile-source-indexes",
+        "  passed         302ms  guest-json-roundtrip",
+        "  passed         2.38s  pure-helper-contract",
+        "  passed         245ms  suite-shape",
+        "  passed        16.90s  test-orchestration",
+        "  passed         336ms  package-exports",
+        "  passed         732ms  boundaries",
+        "  passed         396ms  workspace-hygiene",
+        "  passed         735ms  hidden-contracts",
+        "  passed         1.04s  release-feature-acceptance",
+        "  passed         4.89s  release-runtime-policy",
+        "  failed         5.01s  release-seal-lifecycle",
+        "  total        33.65s"
+      ]
+    },
+    {
+      "attempt": "unit-rest",
+      "exitCode": 124,
+      "terminalRunnerSummary": true,
+      "logSha256": "b94ee77d68c5aa863d8be95c96eab99337dd7d1633205fd9ebffee2af24725f5",
+      "results": [
+        {
+          "task": "release-checkpoints",
+          "status": "passed",
+          "duration": "546ms"
+        },
+        {
+          "task": "str02b-installed",
+          "status": "passed",
+          "duration": "607ms"
+        },
+        {
+          "task": "jwt-installed-workflow",
+          "status": "passed",
+          "duration": "777ms"
+        },
+        {
+          "task": "node01-installed",
+          "status": "passed",
+          "duration": "1.12s"
+        },
+        {
+          "task": "arc01-installed",
+          "status": "passed",
+          "duration": "885ms"
+        },
+        {
+          "task": "str02-installed",
+          "status": "passed",
+          "duration": "665ms"
+        },
+        {
+          "task": "str03b-installed",
+          "status": "passed",
+          "duration": "615ms"
+        },
+        {
+          "task": "ast01-installed",
+          "status": "passed",
+          "duration": "594ms"
+        },
+        {
+          "task": "ast02b-installed",
+          "status": "passed",
+          "duration": "710ms"
+        },
+        {
+          "task": "ast02d-installed",
+          "status": "passed",
+          "duration": "592ms"
+        },
+        {
+          "task": "mcp-installed",
+          "status": "passed",
+          "duration": "570ms"
+        },
+        {
+          "task": "s3-body-installed",
+          "status": "failed",
+          "duration": "680ms"
+        },
+        {
+          "task": "s3-body-installed",
+          "status": "passed",
+          "duration": "602ms"
+        },
+        {
+          "task": "str02b-installed",
+          "status": "passed",
+          "duration": "587ms"
+        },
+        {
+          "task": "jwt-installed-workflow",
+          "status": "passed",
+          "duration": "618ms"
+        },
+        {
+          "task": "node01-installed",
+          "status": "passed",
+          "duration": "644ms"
+        },
+        {
+          "task": "arc01-installed",
+          "status": "passed",
+          "duration": "688ms"
+        },
+        {
+          "task": "str02-installed",
+          "status": "passed",
+          "duration": "675ms"
+        },
+        {
+          "task": "str03b-installed",
+          "status": "passed",
+          "duration": "658ms"
+        },
+        {
+          "task": "ast01-installed",
+          "status": "passed",
+          "duration": "677ms"
+        },
+        {
+          "task": "ast02b-installed",
+          "status": "passed",
+          "duration": "565ms"
+        },
+        {
+          "task": "ast02d-installed",
+          "status": "passed",
+          "duration": "600ms"
+        },
+        {
+          "task": "mcp-installed",
+          "status": "passed",
+          "duration": "608ms"
+        },
+        {
+          "task": "s3-body-installed",
+          "status": "passed",
+          "duration": "600ms"
+        },
+        {
+          "task": "str02b-installed",
+          "status": "passed",
+          "duration": "617ms"
+        },
+        {
+          "task": "node01-installed",
+          "status": "passed",
+          "duration": "732ms"
+        },
+        {
+          "task": "jwt-installed-workflow",
+          "status": "passed",
+          "duration": "639ms"
+        },
+        {
+          "task": "str02-installed",
+          "status": "passed",
+          "duration": "591ms"
+        },
+        {
+          "task": "arc01-installed",
+          "status": "passed",
+          "duration": "703ms"
+        },
+        {
+          "task": "str03b-installed",
+          "status": "passed",
+          "duration": "625ms"
+        },
+        {
+          "task": "ast01-installed",
+          "status": "passed",
+          "duration": "754ms"
+        },
+        {
+          "task": "ast02b-installed",
+          "status": "passed",
+          "duration": "727ms"
+        },
+        {
+          "task": "ast02d-installed",
+          "status": "passed",
+          "duration": "753ms"
+        },
+        {
+          "task": "mcp-installed",
+          "status": "passed",
+          "duration": "632ms"
+        },
+        {
+          "task": "s3-body-installed",
+          "status": "passed",
+          "duration": "831ms"
+        },
+        {
+          "task": "report-capsule-contract",
+          "status": "passed",
+          "duration": "394ms"
+        },
+        {
+          "task": "api-surface",
+          "status": "passed",
+          "duration": "413ms"
+        },
+        {
+          "task": "cli-report-viewer",
+          "status": "passed",
+          "duration": "432ms"
+        },
+        {
+          "task": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "467ms"
+        },
+        {
+          "task": "cli-report-relationships",
+          "status": "passed",
+          "duration": "542ms"
+        },
+        {
+          "task": "cli-report-resource-inventory",
+          "status": "passed",
+          "duration": "408ms"
+        },
+        {
+          "task": "cli-report-graph-diagnostics",
+          "status": "passed",
+          "duration": "451ms"
+        },
+        {
+          "task": "entities-orchestration-demo",
+          "status": "passed",
+          "duration": "448ms"
+        },
+        {
+          "task": "s3-body-read",
+          "status": "passed",
+          "duration": "516ms"
+        },
+        {
+          "task": "shared-stage-o19",
+          "status": "passed",
+          "duration": "448ms"
+        },
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "375ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "379ms"
+        },
+        {
+          "task": "jwt-rs256",
+          "status": "passed",
+          "duration": "400ms"
+        },
+        {
+          "task": "release-artifact-determinism",
+          "status": "passed",
+          "duration": "373ms"
+        },
+        {
+          "task": "suite-shape",
+          "status": "failed",
+          "duration": "603ms"
+        },
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "437ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "436ms"
+        },
+        {
+          "task": "release-artifact-determinism",
+          "status": "passed",
+          "duration": "455ms"
+        },
+        {
+          "task": "jwt-rs256",
+          "status": "passed",
+          "duration": "474ms"
+        },
+        {
+          "task": "suite-shape",
+          "status": "failed",
+          "duration": "395ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "interrupted",
+          "duration": "448ms"
+        },
+        {
+          "task": "str02b-installed",
+          "status": "passed",
+          "duration": "409ms"
+        },
+        {
+          "task": "jwt-installed-workflow",
+          "status": "passed",
+          "duration": "850ms"
+        },
+        {
+          "task": "release-artifact-determinism",
+          "status": "passed",
+          "duration": "475ms"
+        },
+        {
+          "task": "cli-report-capture-proof",
+          "status": "passed",
+          "duration": "475ms"
+        },
+        {
+          "task": "ast02d-installed",
+          "status": "passed",
+          "duration": "510ms"
+        },
+        {
+          "task": "release-recovery-runner",
+          "status": "timeout",
+          "duration": "95.92s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "[pulsewasm] fixture-94: interrupted in 272ms",
+        "[pulsewasm] Recovery: 94/150 completed, 0 verified reuses, 94 executed, 56 remaining.",
+        "[development] interrupted: 94/150; input checks 0ms; report /tmp/pulse-suite-task-release-recovery-runner-sE6JZa/pulse-development-test-bvbgnZ/.pulse-development/attempts/2026-10-19T20-15-11-324Z-0de148c8-1756-467b-a1b6-257c4a831df7/report.json",
+        "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+        "+ actual - expected",
+        "",
+        "+ 'interrupted'",
+        "- 'failed'",
+        "",
+        "    at Object.verifyDevelopmentRecovery (/workspace/scratch/3471f7320bf6/pulse-mcp00/wasm/test/ci/assert-development-recovery.cjs:41:12)",
+        "    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+        "    at async main (/workspace/scratch/3471f7320bf6/pulse-mcp00/wasm/test/release/assert-release-recovery-runner.cjs:203:5)",
+        "[pulsewasm] release-recovery-runner: timeout in 95.92s",
+        "",
+        "[pulsewasm] test summary",
+        "  passed         546ms  release-checkpoints",
+        "  timeout       95.92s  release-recovery-runner",
+        "  total        96.48s"
+      ]
+    },
+    {
+      "attempt": "unit-contracts",
+      "exitCode": 0,
+      "terminalRunnerSummary": true,
+      "logSha256": "6d517b115e7f4793d7c056e2a66d73027f76b30515cc328834f1f1ae4d2c747a",
+      "results": [
+        {
+          "task": "api-surface",
+          "status": "passed",
+          "duration": "2.36s"
+        },
+        {
+          "task": "logging-contract",
+          "status": "passed",
+          "duration": "429ms"
+        },
+        {
+          "task": "s3-design-contract",
+          "status": "passed",
+          "duration": "3.37s"
+        },
+        {
+          "task": "kv-design-contract",
+          "status": "passed",
+          "duration": "3.62s"
+        },
+        {
+          "task": "kv-conditional-runtime",
+          "status": "passed",
+          "duration": "3.33s"
+        },
+        {
+          "task": "kv-conditional-gates",
+          "status": "passed",
+          "duration": "1.10s"
+        },
+        {
+          "task": "s3-read-contract",
+          "status": "passed",
+          "duration": "5.22s"
+        },
+        {
+          "task": "s3-write-contract",
+          "status": "passed",
+          "duration": "890ms"
+        },
+        {
+          "task": "crypto-config-planning",
+          "status": "passed",
+          "duration": "1.78s"
+        },
+        {
+          "task": "crypto-es256-signing",
+          "status": "passed",
+          "duration": "302ms"
+        },
+        {
+          "task": "crypto-rs256",
+          "status": "passed",
+          "duration": "3.69s"
+        },
+        {
+          "task": "crypto-digest-text-contract",
+          "status": "passed",
+          "duration": "1.07s"
+        },
+        {
+          "task": "reachable-graph",
+          "status": "passed",
+          "duration": "381ms"
+        },
+        {
+          "task": "project-modules",
+          "status": "passed",
+          "duration": "2.62s"
+        },
+        {
+          "task": "package-reachability",
+          "status": "passed",
+          "duration": "2.46s"
+        },
+        {
+          "task": "external-lowerers",
+          "status": "passed",
+          "duration": "3.59s"
+        },
+        {
+          "task": "package-runtime",
+          "status": "passed",
+          "duration": "314ms"
+        },
+        {
+          "task": "provider-toolchain",
+          "status": "passed",
+          "duration": "210ms"
+        },
+        {
+          "task": "schema-registry",
+          "status": "passed",
+          "duration": "2.31s"
+        },
+        {
+          "task": "continuation-registry",
+          "status": "passed",
+          "duration": "210ms"
+        },
+        {
+          "task": "entities-contracts",
+          "status": "passed",
+          "duration": "365ms"
+        },
+        {
+          "task": "entities-schema-bridge",
+          "status": "passed",
+          "duration": "809ms"
+        },
+        {
+          "task": "entities-javascript-runtime",
+          "status": "passed",
+          "duration": "1.92s"
+        },
+        {
+          "task": "entities-json-rpc-corpus",
+          "status": "passed",
+          "duration": "213ms"
+        },
+        {
+          "task": "mcp-http",
+          "status": "passed",
+          "duration": "631ms"
+        },
+        {
+          "task": "pulse-context-corpus",
+          "status": "passed",
+          "duration": "1.79s"
+        },
+        {
+          "task": "pulse-context-application",
+          "status": "passed",
+          "duration": "11.81s"
+        },
+        {
+          "task": "pulse-context-host",
+          "status": "passed",
+          "duration": "5.99s"
+        },
+        {
+          "task": "mcp-compatibility",
+          "status": "passed",
+          "duration": "566ms"
+        },
+        {
+          "task": "mcp-tools",
+          "status": "passed",
+          "duration": "463ms"
+        },
+        {
+          "task": "mcp-authorization",
+          "status": "passed",
+          "duration": "4.19s"
+        },
+        {
+          "task": "entities-package-owned-lowering",
+          "status": "passed",
+          "duration": "725ms"
+        },
+        {
+          "task": "entities-catalog",
+          "status": "passed",
+          "duration": "738ms"
+        },
+        {
+          "task": "entities-inspection",
+          "status": "passed",
+          "duration": "28.23s"
+        },
+        {
+          "task": "entities-orchestration-demo",
+          "status": "passed",
+          "duration": "14.57s"
+        }
+      ]
+    },
+    {
+      "attempt": "cli-core",
+      "exitCode": 124,
+      "terminalRunnerSummary": true,
+      "logSha256": "5bbb2f18500c872fc50eb0c513336097e0cc3537272fe226527beae9060c2aef",
+      "results": [
+        {
+          "task": "cli-command-spec",
+          "status": "passed",
+          "duration": "292ms"
+        },
+        {
+          "task": "cli-init-workflow",
+          "status": "passed",
+          "duration": "49.08s"
+        },
+        {
+          "task": "cli-project-workflow",
+          "status": "passed",
+          "duration": "144.51s"
+        },
+        {
+          "task": "cli-expansion-doctor",
+          "status": "passed",
+          "duration": "21.80s"
+        },
+        {
+          "task": "cli-project-guards",
+          "status": "passed",
+          "duration": "22.54s"
+        },
+        {
+          "task": "cli-dev-workflow",
+          "status": "passed",
+          "duration": "25.56s"
+        },
+        {
+          "task": "cli-schema-json-workflow",
+          "status": "passed",
+          "duration": "129.62s"
+        },
+        {
+          "task": "entities-node-native-workflow",
+          "status": "passed",
+          "duration": "41.51s"
+        },
+        {
+          "task": "fastly-entities-native-workflow",
+          "status": "passed",
+          "duration": "154.49s"
+        },
+        {
+          "task": "events-cli-workflow",
+          "status": "passed",
+          "duration": "123.69s"
+        },
+        {
+          "task": "cli-diagnostics",
+          "status": "passed",
+          "duration": "9.24s"
+        },
+        {
+          "task": "docs-executable-contracts",
+          "status": "timeout",
+          "duration": "245.90s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "[pulsewasm] Running docs-executable-contracts (execution); elapsed 961.06s",
+        "[pulsewasm] docs-executable-contracts: timeout; process group 3598 contains 0 process(es)",
+        "[pulsewasm] docs-executable-contracts: timeout in 245.90s",
+        "",
+        "[pulsewasm] test summary",
+        "  passed         292ms  cli-command-spec",
+        "  passed        49.08s  cli-init-workflow",
+        "  passed       144.51s  cli-project-workflow",
+        "  passed        21.80s  cli-expansion-doctor",
+        "  passed        22.54s  cli-project-guards",
+        "  passed        25.56s  cli-dev-workflow",
+        "  passed       129.62s  cli-schema-json-workflow",
+        "  passed        41.51s  entities-node-native-workflow",
+        "  passed       154.49s  fastly-entities-native-workflow",
+        "  passed       123.69s  events-cli-workflow",
+        "  passed         9.24s  cli-diagnostics",
+        "  timeout      245.90s  docs-executable-contracts",
+        "  total        968.25s"
+      ]
+    },
+    {
+      "attempt": "runtime-profiles",
+      "exitCode": 1,
+      "terminalRunnerSummary": true,
+      "logSha256": "1d90cdd3da1157e3cda029f97fadebefd24463ce4d7301afc1eaf4e59e5f65b7",
+      "results": [
+        {
+          "task": "context-native-proof",
+          "status": "passed",
+          "duration": "45.78s"
+        },
+        {
+          "task": "npm-source-imports",
+          "status": "passed",
+          "duration": "8.91s"
+        },
+        {
+          "task": "fastly-numeric-regions",
+          "status": "failed",
+          "duration": "34.93s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "",
+        "    at qualify (/workspace/scratch/3471f7320bf6/pulse-mcp00/wasm/test/provider/assert-fastly-numeric-runtimes.cjs:62:42)",
+        "    at Object.main (/workspace/scratch/3471f7320bf6/pulse-mcp00/wasm/test/provider/assert-fastly-numeric-runtimes.cjs:140:55)",
+        "    at main (/workspace/scratch/3471f7320bf6/pulse-mcp00/wasm/test/provider/assert-fastly-numeric-regions.cjs:109:57) {",
+        "  generatedMessage: false,",
+        "  code: 'ERR_ASSERTION',",
+        "  actual: true,",
+        "  expected: false,",
+        "  operator: 'strictEqual',",
+        "  diff: 'simple'",
+        "}",
+        "[pulsewasm] fastly-numeric-regions: failed in 34.93s",
+        "",
+        "[pulsewasm] test summary",
+        "  passed        45.78s  context-native-proof",
+        "  passed         8.91s  npm-source-imports",
+        "  failed        34.93s  fastly-numeric-regions",
+        "  total        89.64s"
+      ]
+    },
+    {
+      "attempt": "runtime-rest",
+      "exitCode": 130,
+      "terminalRunnerSummary": false,
+      "logSha256": "58222201d9bdc162c5bfad98a31f5df787bb279b315f8d016430f7515d35c2c5",
+      "results": [
+        {
+          "task": "fastly-numeric-regions",
+          "status": "passed",
+          "duration": "120.80s"
+        },
+        {
+          "task": "fastly-numeric-budgets",
+          "status": "passed",
+          "duration": "85.10s"
+        },
+        {
+          "task": "fastly-handle-ownership",
+          "status": "passed",
+          "duration": "78.43s"
+        },
+        {
+          "task": "fastly-handle-frames",
+          "status": "passed",
+          "duration": "175.24s"
+        },
+        {
+          "task": "pure-helper-vocabulary",
+          "status": "passed",
+          "duration": "8.60s"
+        },
+        {
+          "task": "pure-string-index",
+          "status": "passed",
+          "duration": "8.87s"
+        },
+        {
+          "task": "pure-field-projection",
+          "status": "passed",
+          "duration": "24.97s"
+        },
+        {
+          "task": "pure-guarded-arguments",
+          "status": "passed",
+          "duration": "96.56s"
+        },
+        {
+          "task": "pure-source-helpers",
+          "status": "passed",
+          "duration": "18.56s"
+        },
+        {
+          "task": "pure-record-helpers",
+          "status": "passed",
+          "duration": "30.76s"
+        },
+        {
+          "task": "pure-argument-helpers",
+          "status": "passed",
+          "duration": "37.45s"
+        },
+        {
+          "task": "pure-loop-helpers",
+          "status": "passed",
+          "duration": "11.12s"
+        },
+        {
+          "task": "fastly-driver-behavior-o09",
+          "status": "passed",
+          "duration": "60.83s"
+        },
+        {
+          "task": "kv-native-abi-feasibility",
+          "status": "passed",
+          "duration": "1.91s"
+        },
+        {
+          "task": "s3-native-read",
+          "status": "passed",
+          "duration": "41.29s"
+        },
+        {
+          "task": "s3-body-read",
+          "status": "passed",
+          "duration": "14.72s"
+        },
+        {
+          "task": "s3-node-transport",
+          "status": "passed",
+          "duration": "473ms"
+        },
+        {
+          "task": "canonical-api-lowering",
+          "status": "passed",
+          "duration": "2.26s"
+        },
+        {
+          "task": "canonical-native-plan",
+          "status": "passed",
+          "duration": "11.04s"
+        },
+        {
+          "task": "shared-stage-o19",
+          "status": "passed",
+          "duration": "10.00s"
+        },
+        {
+          "task": "str02b-node-native",
+          "status": "passed",
+          "duration": "12.77s"
+        },
+        {
+          "task": "fastly-incoming-body-forwarding",
+          "status": "passed",
+          "duration": "15.48s"
+        },
+        {
+          "task": "str03a-generated-output",
+          "status": "passed",
+          "duration": "25.90s"
+        },
+        {
+          "task": "str03c-bounded-transforms",
+          "status": "passed",
+          "duration": "18.26s"
+        },
+        {
+          "task": "bounded-app-logic",
+          "status": "passed",
+          "duration": "66.92s"
+        },
+        {
+          "task": "bounded-read-loops",
+          "status": "passed",
+          "duration": "92.24s"
+        },
+        {
+          "task": "bounded-loop-helpers",
+          "status": "passed",
+          "duration": "15.18s"
+        },
+        {
+          "task": "logging-lowering",
+          "status": "passed",
+          "duration": "5.72s"
+        },
+        {
+          "task": "canonical-router-lowering",
+          "status": "passed",
+          "duration": "14.57s"
+        },
+        {
+          "task": "canonical-router-terminal-middleware",
+          "status": "passed",
+          "duration": "17.52s"
+        },
+        {
+          "task": "router-selected-groups",
+          "status": "passed",
+          "duration": "9.50s"
+        },
+        {
+          "task": "json-as-compatibility",
+          "status": "passed",
+          "duration": "6.95s"
+        },
+        {
+          "task": "entities-envelope-feasibility",
+          "status": "passed",
+          "duration": "5.24s"
+        },
+        {
+          "task": "entities-managed-handler",
+          "status": "passed",
+          "duration": "1.88s"
+        },
+        {
+          "task": "entities-managed-handler-effects",
+          "status": "passed",
+          "duration": "3.75s"
+        },
+        {
+          "task": "entities-native-runtime",
+          "status": "passed",
+          "duration": "24.24s"
+        },
+        {
+          "task": "entities-hardening",
+          "status": "passed",
+          "duration": "77.93s"
+        },
+        {
+          "task": "entities-node-native-workflow",
+          "status": "passed",
+          "duration": "48.66s"
+        },
+        {
+          "task": "fastly-entities-native-workflow",
+          "status": "passed",
+          "duration": "141.11s"
+        },
+        {
+          "task": "crypto-native-guest-source",
+          "status": "passed",
+          "duration": "7.68s"
+        },
+        {
+          "task": "guest-link-package",
+          "status": "passed",
+          "duration": "11.57s"
+        },
+        {
+          "task": "guest-link-materialization-stage",
+          "status": "passed",
+          "duration": "66.42s"
+        },
+        {
+          "task": "guest-link-audit-diagnostics",
+          "status": "passed",
+          "duration": "24.85s"
+        },
+        {
+          "task": "assets-lowering-plan",
+          "status": "passed",
+          "duration": "716ms"
+        },
+        {
+          "task": "assets-package-owned-lowering",
+          "status": "passed",
+          "duration": "590ms"
+        },
+        {
+          "task": "assets-native-embedded",
+          "status": "passed",
+          "duration": "25.10s"
+        },
+        {
+          "task": "grip-package-owned-lowering",
+          "status": "passed",
+          "duration": "637ms"
+        },
+        {
+          "task": "jwt-package-owned-lowering",
+          "status": "passed",
+          "duration": "967ms"
+        },
+        {
+          "task": "canonical-api-runtime",
+          "status": "passed",
+          "duration": "2.08s"
+        },
+        {
+          "task": "canonical-opaque-node-emission",
+          "status": "passed",
+          "duration": "2.40s"
+        },
+        {
+          "task": "grip-package-runtime",
+          "status": "passed",
+          "duration": "1.12s"
+        },
+        {
+          "task": "package-root-native",
+          "status": "passed",
+          "duration": "2.99s"
+        },
+        {
+          "task": "canonical-native-wasm",
+          "status": "passed",
+          "duration": "96.67s"
+        },
+        {
+          "task": "cli-javascript-target-compilation",
+          "status": "passed",
+          "duration": "29.86s"
+        },
+        {
+          "task": "target-support",
+          "status": "passed",
+          "duration": "1.93s"
+        },
+        {
+          "task": "jwt-javascript-admission",
+          "status": "passed",
+          "duration": "14.68s"
+        },
+        {
+          "task": "crypto-runtime-builtin",
+          "status": "passed",
+          "duration": "1.07s"
+        },
+        {
+          "task": "javascript-effect-adapter",
+          "status": "passed",
+          "duration": "864ms"
+        },
+        {
+          "task": "logging-runtime",
+          "status": "passed",
+          "duration": "219ms"
+        },
+        {
+          "task": "assets-javascript-runtime",
+          "status": "passed",
+          "duration": "1.53s"
+        },
+        {
+          "task": "native-context-primitives",
+          "status": "passed",
+          "duration": "14.97s"
+        },
+        {
+          "task": "binary-resource-execution",
+          "status": "passed",
+          "duration": "35.59s"
+        },
+        {
+          "task": "effect-collections",
+          "status": "passed",
+          "duration": "4.70s"
+        },
+        {
+          "task": "effect-collection-providers",
+          "status": "passed",
+          "duration": "23.48s"
+        },
+        {
+          "task": "jwt-signing",
+          "status": "passed",
+          "duration": "22.05s"
+        },
+        {
+          "task": "jwt-es256-signing",
+          "status": "passed",
+          "duration": "58.22s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "",
+        "[pulsewasm:conformance] jwt-rs256",
+        "[pulsewasm] RS256 issuance and verification through all four targets and normal CLI builds (timeout 600.00s)",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1901.56s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1913.85s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1923.90s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1934.05s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1944.69s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1954.70s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1964.70s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1974.71s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1984.71s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 1994.72s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 2004.72s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 2014.72s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 2024.73s",
+        "[pulsewasm] Running jwt-rs256 (execution); elapsed 2034.73s",
+        "{\"status\":\"passed\",\"bits\":2048,\"executions\":146,\"targets\":[\"node-native\",\"node-javascript\",\"fastly-native\",\"fastly-javascript\"],\"providerReality\":false,\"durationMs\":144889,\"compilation\":{\"invocations\":10,\"failed\":0,\"durationMs\":31907},\"operations\":[{\"command\":\"inspectProject\",\"form\":\"combined\",\"profile\":\"node-javascript\",\"status\":\"passed\",\"durationMs\":8614,\"compilation\":{\"invocations\":1,\"failed\":0,\"durationMs\":1394}},{\"command\":\"inspectProject\",\"form\":\"combined\",\"profile\":\"fastly-javascript\",\"status\":\"passed\",\"durationMs\":46360,\"compilation\":{\"invocations\":1,\"failed\":0,\"durationMs\":4172}},{\"command\":\"buildProject\",\"form\":\"signing-only\",\"profile\":\"fastly-native\",\"status\":\"passed\",\"durationMs\":25516,\"compilation\":{\"invocations\":2,\"failed\":0,\"durationMs\":9107}},{\"command\":\"buildProject\",\"form\":\"verification-only\",\"profile\":\"fastly-native\",\"status\":\"passed\",\"durationMs\":21954,\"compilation\":{\"invocations\":2,\"failed\":0,\"durationMs\":6685}},{\"command\":\"compileNativeProjectInMemory\",\"form\":\"combined\",\"profile\":\"node-native\",\"status\":\"passed\",\"durationMs\":12127,\"compilation\":{\"invocations\":1,\"failed\":0,\"durationMs\":1506}},{\"command\":\"buildProject\",\"form\":\"combined\",\"profile\":\"fastly-native\",\"status\":\"passed\",\"durationMs\":23862,\"compilation\":{\"invocations\":2,\"failed\":0,\"durationMs\":7191}},{\"command\":\"prepareJavascriptApplication\",\"form\":\"combined\",\"profile\":\"node-javascript\",\"status\":\"passed\",\"durationMs\":48,\"compilation\":{\"invocations\":0,\"failed\":0,\"durationMs\":0}},{\"command\":\"compileNativeProjectInMemory\",\"form\":\"combined\",\"profile\":\"node-native\",\"status\":\"failed\",\"durationMs\":4533,\"compilation\":{\"invocations\":1,\"failed\":0,\"durationMs\":1852}},{\"command\":\"inspectProject\",\"form\":\"combined\",\"profile\":\"node-native\",\"status\":\"failed\",\"durationMs\":30,\"compilation\":{\"invocations\":0,\"failed\":0,\"durationMs\":0}},{\"command\":\"inspectProject\",\"form\":\"combined\",\"profile\":\"node-javascript\",\"status\":\"failed\",\"durationMs\":22,\"compilation\":{\"invocations\":0,\"failed\":0,\"durationMs\":0}},{\"command\":\"inspectProject\",\"form\":\"combined\",\"profile\":\"fastly-native\",\"status\":\"failed\",\"durationMs\":24,\"compilation\":{\"invocations\":0,\"failed\":0,\"durationMs\":0}},{\"command\":\"inspectProject\",\"form\":\"combined\",\"profile\":\"fastly-javascript\",\"status\":\"failed\",\"durationMs\":18,\"compilation\":{\"invocations\":0,\"failed\":0,\"durationMs\":0}}]}"
+      ]
+    },
+    {
+      "attempt": "expanded-proof",
+      "exitCode": 0,
+      "terminalRunnerSummary": true,
+      "logSha256": "a5ca51b734f73772acd7e16d87c122b1a9a6ef6ebc922bcad82e1afb2f51255f",
+      "results": [
+        {
+          "task": "context-native-proof",
+          "status": "passed",
+          "duration": "57.36s"
+        },
+        {
+          "task": "native-context-primitives",
+          "status": "passed",
+          "duration": "23.53s"
+        }
+      ]
+    },
+    {
+      "attempt": "final-focused",
+      "exitCode": 0,
+      "terminalRunnerSummary": true,
+      "logSha256": "d8e78d794af22c8084b6c80081f7c4e2d2b6fe469b884e016b6215bdf604d338",
+      "results": [
+        {
+          "task": "context-native-proof",
+          "status": "passed",
+          "duration": "55.31s"
+        },
+        {
+          "task": "native-context-primitives",
+          "status": "passed",
+          "duration": "19.01s"
+        },
+        {
+          "task": "canonical-native-plan",
+          "status": "passed",
+          "duration": "12.52s"
+        },
+        {
+          "task": "bounded-app-logic",
+          "status": "passed",
+          "duration": "97.18s"
+        },
+        {
+          "task": "bounded-loop-helpers",
+          "status": "passed",
+          "duration": "9.60s"
+        },
+        {
+          "task": "binary-resource-execution",
+          "status": "passed",
+          "duration": "45.23s"
+        },
+        {
+          "task": "cli-diagnostics",
+          "status": "passed",
+          "duration": "10.21s"
+        }
+      ]
+    },
+    {
+      "attempt": "final-proof-clean",
+      "exitCode": 0,
+      "terminalRunnerSummary": true,
+      "logSha256": "de02305dafc53bcfcc166e04c2cb3670f5fcb528defbfb649f8b8fd5aec2e54d",
+      "results": [
+        {
+          "task": "context-native-proof",
+          "status": "passed",
+          "duration": "77.01s"
+        }
+      ]
+    },
+    {
+      "attempt": "final-provider-schema",
+      "exitCode": 124,
+      "terminalRunnerSummary": true,
+      "logSha256": "6594e76a87672f0daa66080116f3d49bdf9d96455069620aa3839e0165c10dac",
+      "results": [
+        {
+          "task": "schema-codecs",
+          "status": "timeout",
+          "duration": "185.87s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "[pulsewasm] Running schema-codecs (execution); elapsed 100.10s",
+        "ok - application text decoding: 16 compiler negatives, 32 successful and 40 rejected HTTP executions, plus JavaScript/Native event contexts",
+        "[pulsewasm] Running schema-codecs (execution); elapsed 110.11s",
+        "[pulsewasm] Running schema-codecs (execution); elapsed 120.11s",
+        "ok - optional schema properties preserve absence, nullability, nested/array values and edit merges across JavaScript, Node Native and both Fastly Native paths",
+        "[pulsewasm] Running schema-codecs (execution); elapsed 130.11s",
+        "[pulsewasm] Running schema-codecs (execution); elapsed 140.12s",
+        "ok - ScalarRecord bounds, duplicates, immutable projection and round-trip parity (112 executions plus direct guest codec checks)",
+        "[pulsewasm] Running schema-codecs (execution); elapsed 150.12s",
+        "[pulsewasm] Running schema-codecs (execution); elapsed 160.12s",
+        "[pulsewasm] Running schema-codecs (execution); elapsed 170.13s",
+        "[pulsewasm] schema-codecs: timeout; process group 14 contains 0 process(es)",
+        "[pulsewasm] Running schema-codecs (execution); elapsed 180.13s",
+        "[pulsewasm] schema-codecs: timeout in 185.87s",
+        "",
+        "[pulsewasm] test summary",
+        "  timeout      185.87s  schema-codecs",
+        "  total        185.89s"
+      ]
+    },
+    {
+      "attempt": "final-provider",
+      "exitCode": 0,
+      "terminalRunnerSummary": true,
+      "logSha256": "7007fee9af5187f34cbfb91f8e6bebbe767ebcb3ed3910fa432e94a4277f8c99",
+      "results": [
+        {
+          "task": "provider-fastly-package",
+          "status": "passed",
+          "duration": "23.14s"
+        },
+        {
+          "task": "provider-fastly-apps",
+          "status": "passed",
+          "duration": "1.74s"
+        },
+        {
+          "task": "fastly-javascript-runtime",
+          "status": "passed",
+          "duration": "313ms"
+        },
+        {
+          "task": "fastly-native-http-shell",
+          "status": "passed",
+          "duration": "10.51s"
+        },
+        {
+          "task": "fastly-native-http-effects",
+          "status": "passed",
+          "duration": "25.69s"
+        },
+        {
+          "task": "fastly-native-platform-capabilities",
+          "status": "passed",
+          "duration": "273.40s"
+        }
+      ]
+    },
+    {
+      "attempt": "baseline-report",
+      "exitCode": 124,
+      "terminalRunnerSummary": true,
+      "logSha256": "5a48041922e0ca68d8506e684c72e8f2ac8566f62335a14fe0ab5e42b4317546",
+      "results": [
+        {
+          "task": "report-capsule-contract",
+          "status": "timeout",
+          "duration": "35.91s"
+        }
+      ],
+      "failureOrInterruptionTail": [
+        "",
+        "[pulsewasm:unit] report-capsule-contract",
+        "[pulsewasm] PRPT-01 capsule identity, schema projection, completion and attribution contracts (timeout 30.00s)",
+        "ok - AN9-09 normalized storage, canonical compatibility, browser codec, semantic validation and bounded hostile expansion",
+        "{\"comparison\":\"passed\",\"checks\":49,\"version\":1,\"deterministic\":true,\"missingIsNotZero\":true}",
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 10.01s",
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 20.01s",
+        "[pulsewasm] Running report-capsule-contract (execution); elapsed 30.01s",
+        "[pulsewasm] report-capsule-contract: timeout; process group 14 contains 0 process(es)",
+        "[pulsewasm] report-capsule-contract: timeout in 35.91s",
+        "",
+        "[pulsewasm] test summary",
+        "  timeout       35.91s  report-capsule-contract",
+        "  total        35.93s"
+      ]
+    },
+    {
+      "attempt": "baseline-lifecycle",
+      "exitCode": 0,
+      "terminalRunnerSummary": true,
+      "logSha256": "cf683a8b17caf86230fa7fcc229f5f8d6a60cb5d3145dfa579309df186a4d3de",
+      "results": [
+        {
+          "task": "release-seal-lifecycle",
+          "status": "passed",
+          "duration": "7.96s"
+        }
+      ]
+    },
+    {
+      "attempt": "lifecycle-retry",
+      "exitCode": 0,
+      "terminalRunnerSummary": true,
+      "logSha256": "8f4b40ac82cf4f38b0a3f47c808742850eb8e831e2dc3d8bf19211c213ea7d62",
+      "results": [
+        {
+          "task": "release-seal-lifecycle",
+          "status": "passed",
+          "duration": "5.21s"
+        }
+      ]
+    },
+    {
+      "attempt": "schema-direct",
+      "exitCode": 0,
+      "terminalRunnerSummary": false,
+      "logSha256": "8153a37530b318967b2d445d144b972602d9d23798544c4efbe48019807dc391",
+      "results": []
+    }
+  ]
+}

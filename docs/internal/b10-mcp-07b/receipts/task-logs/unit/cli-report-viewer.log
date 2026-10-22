@@ -1,0 +1,5 @@
+ok - CMP8-02 comparison rendering: sparse details, zero-net anchors, missing evidence, compatibility, full provenance, exact payload and CSP
+ok - VIS-07 graph-backed binding/registration/site navigation, admission and exact export
+ok - VIS-08 six journeys: mixed entry points, binding consumers, exact details and Explorer return, source/unknown evidence, identity and historical compatibility
+RPT8-12 combined reconciliation: {"routes":2,"schemas":3,"helperRows":4,"distinctHelperBytes":6,"dispatcherBytes":4,"responseSites":8,"resolvedResponseSizes":6,"physicalBytes":36}
+ok - offline HTML encoding/CSP, exact export, route/schema projections, unknown states, safe repeatable outputs; browser qualification remains separate

@@ -84,7 +84,14 @@ async function main(options={}){
     assert.equal(tools.executeFastlyNativePlatformCapabilities(largeFastly,{request}).response.bodyBytes.length,262144);count+=2;
     const portable=await import(pathToFileURL(path.join(assetsRoot,'dist/portable.js')));
     assert.throws(()=>portable.lookup({},'embedded','/image.bin',{embeddedManifest:serialized}),/Native-only/);
-    if(options.packedRoot) for(const file of Object.keys(require.cache)) if(file.startsWith(path.join(root,'packages')+path.sep)||file.startsWith(path.join(root,'wasm/packages')+path.sep)) assert.equal(file,path.join(root,'packages/provider-fastly/src/testing/native-platform-capabilities-host.js'));
+    if (options.packedRoot) {
+      const hostFixtures = new Set(['native-platform-capabilities-host.js', 'native-dynamic-backends-host.js']
+        .map(file => path.join(root, 'packages/provider-fastly/src/testing', file)));
+      for (const file of Object.keys(require.cache)) {
+        if (file.startsWith(path.join(root, 'packages') + path.sep) || file.startsWith(path.join(root, 'wasm/packages') + path.sep))
+          assert.ok(hostFixtures.has(file), `Workspace product module loaded: ${file}`);
+      }
+    }
     console.log(`ok - AST-02D ${count} real Node/Fastly Native binary response executions, manifest identity, bounds, HTTP subset and no store dispatch`);
   }finally{const cleanup=()=>{if(!options.packedRoot)fs.rmSync(cwd,{recursive:true,force:true});};cleanup();process.once('exit',cleanup);}
 }

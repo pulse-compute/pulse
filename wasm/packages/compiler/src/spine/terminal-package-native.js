@@ -29,11 +29,17 @@ function terminalPackageNativeForCompiled(compiled) {
     managedHandlerNativeBundle: compileManagedHandlerNativeBundle(managedHandlers),
     schemaBundle
   });
-  if (result.version !== 'pulse.package-native-application.v1' || result.contractId !== selected.contractId
+  if (!['pulse.package-native-application.v1', 'pulse.package-native-application.v2'].includes(result.version) || result.contractId !== selected.contractId
     || result.package !== selected.package || result.intrinsic !== application.intrinsic || result.automaticFallback !== false) {
     throw new TypeError('Trusted Native application result does not match its selected package.');
   }
-  return result;
+  if (!compiled.callableSource) return result;
+  const callableIndices = [...new Set(compiled.callableSource.sites.filter(site => site.managed)
+    .map(site => compiled.callableSource.callees.findIndex(callee => callee.identity === site.target)))].sort((a, b) => a - b);
+  const source = result.source + '\n' + require('@pulse-compute/wasm-runtime-core-as/compiler/canonical-native')
+    .generateCallableSources(compiled.callableSource.callees.map(callee => callee.plan), { packageApplication: true });
+  return Object.freeze({ ...result, source, sourceHash: require('node:crypto').createHash('sha256').update(source).digest('hex'),
+    callableIndices: Object.freeze(callableIndices) });
 }
 
 module.exports = { attachTerminalPackageNative, terminalPackageNativeForCompiled };

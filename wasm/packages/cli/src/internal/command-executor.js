@@ -7,7 +7,7 @@ const { normalizeCommandRequest } = require('./command-request.js');
 const { isCommandPlan } = require('./command-plan.js');
 const { resolvedProjectForContext, isProjectContext } = require('./project-context.js');
 
-const EXECUTOR_IDS = Object.freeze(['meta', 'init', 'report', 'artifact', 'compile', 'build', 'test', 'inspect', 'doctor', 'dev']);
+const EXECUTOR_IDS = Object.freeze(['meta', 'init', 'report', 'docs', 'artifact', 'compile', 'build', 'test', 'inspect', 'doctor', 'dev']);
 
 function selectOperations(overrides = {}) {
   const selected = {};
@@ -77,6 +77,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
     if (invocation === 'version') return { status: 0, version: cliVersion };
     return { status: 0, completion: request.shell };
   }
+  if (request.command === 'docs') return { status: 0, result: require('./docs-locator.js').locateDocumentation() };
   if (request.command === 'report') return { status: 0, result: require('./report/command.js').executeReport(plan, request, options) };
   if (request.command === 'init') {
     return { status: 0, result: operations.initProject(plan.target, { name: request.name, force: request.force }) };
@@ -90,6 +91,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
       result: operations.compileNativeProject(project, {
         clean: request.clean,
         outDir: request.outDir,
+        nativeShrink0: request.nativeShrink0,
         experimentalNativeSize: request.experimentalNativeSize,
         experimentalNativeBoundedSize: request.experimentalNativeBoundedSize,
         elideJsonCacheArena: request.elideJsonCacheArena,
@@ -103,6 +105,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
       result: operations.buildProject(project, {
         clean: request.clean,
         outDir: request.outDir,
+        nativeShrink0: request.nativeShrink0,
         experimentalNativeSize: request.experimentalNativeSize,
         experimentalNativeBoundedSize: request.experimentalNativeBoundedSize,
         elideJsonCacheArena: request.elideJsonCacheArena,

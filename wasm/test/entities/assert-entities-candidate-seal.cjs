@@ -146,7 +146,7 @@ function validateTarball(candidate) {
   assert.ok(entries.has('package/README.md'), `${manifest.name} tarball is missing README.md`);
 
   if (manifest.name === '@pulse-compute/entities') {
-    assert.deepEqual(Object.keys(manifest.exports), ['.', './pulsewasm/manifest', './pulsewasm/compiler', './pulsewasm-native']);
+    assert.deepEqual(Object.keys(manifest.exports), ['.', './pulsewasm/manifest', './pulsewasm/compiler', './pulsewasm-native', './internal/transport']);
     for (const required of [
       'package/dist/index.js',
       'package/dist/index.d.ts',

@@ -1,0 +1,15 @@
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
++   'pulse.diagnostic',
++   'pulse.example',
++   'pulse.read',
+    'pulse.start',
+-   'pulse.read',
+-   'pulse.example',
+-   'pulse.diagnostic'
+  ]
+
+    at main (/workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:120:33)
+    at async /workspace/scratch/803e6bf46c14/pulse/wasm/test/mcp/assert-context-tools.cjs:200:12 undefined undefined

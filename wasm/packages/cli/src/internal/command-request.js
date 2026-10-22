@@ -34,10 +34,11 @@ function allowedRequestKeys(command) {
 }
 
 function finishCommandRequest(request) {
-  if (request.command === 'report') require('./report/command.js').validateReportRequest(request);
-  if (request.experimentalNativeSize === true && request.experimentalNativeBoundedSize === true) {
-    throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'Select only one experimental Native size mode.', { flags: ['--experimental-native-size', '--experimental-native-bounded-size'] });
+  if (request.evidenceStatus && request.html) {
+    throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', '--evidence-status emits JSON and cannot be combined with --html.');
   }
+  if (request.command === 'report') require('./report/command.js').validateReportRequest(request);
+  if (request.command === 'compile' || request.command === 'build') require('./native-optimization').selectedNativeOptimization(request);
   if (request.elideJsonCacheArena !== undefined && typeof request.elideJsonCacheArena !== 'boolean') throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'elideJsonCacheArena must be a boolean.');
   const allowed = allowedRequestKeys(request.command);
   for (const key of Object.keys(request)) {
@@ -112,7 +113,7 @@ function parseCommandRequest(argv) {
         request.target = token;
         continue;
       }
-      if (command !== 'init' && !request.directory) {
+      if (command !== 'init' && !request.directory && COMMAND_SPECS[command].positionals.some(entry => entry.key === 'directory')) {
         request.directory = token;
         continue;
       }

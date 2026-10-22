@@ -81,7 +81,7 @@ node wasm/scripts/run-wasm-tests.cjs --task suite-shape --task cli-report-handle
 
 `cli-report-handler-topology` uses the product-owned
 `wasm/test/fixtures/projects/report-analytics` fixture. HTTP/error and HTTP/event
-variants each run under default and `experimental-native-bounded-size` recipes.
+variants each run under explicit `native-shrink0` and `experimental-native-bounded-size` recipes.
 The same cells qualify authored definitions, mount/registration instances, repeated
 use sites, helper calls and bounded associations through retained completion,
 source-free passive replay, offline HTML and semantic comparison. Observation on/off
@@ -489,6 +489,15 @@ their filenames do not mention schemas. Unknown paths and empty diffs keep it
 too. A mixed change uses full coverage if any path requires it. Full coverage
 replaces the smoke; it does not run both.
 
+The exact generated context data mirror at
+`wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts` is an exception
+to the CLI rule, like installed documentation. The required documentation preview
+still checks canonical inputs against the generated corpus, then checks the
+installed mirror byte-for-byte. Selection alone is not an integrity receipt:
+stale or manually edited output fails those checks. Executable example neighbors
+remain CLI dependencies, and any other schema-sensitive path or additional
+trusted-base owner in the same diff retains full schema coverage.
+
 The smoke defers the extended admission, value/text encoding, optional-field,
 scalar-record and nested/open JSON corpus to schema-sensitive changes and
 main/release. The conformance profile, schema shard and release profile still
@@ -606,3 +615,19 @@ for the currently unresolved gates.
 - Keep compiler goldens, runtime traces, provider results, CLI subprocess output, build manifests, and executable docs at their owning boundary.
 - Do not derive expected constants from the implementation being tested.
 - Remove a weaker fixture when a stronger oracle covers the same claim.
+
+## Context resource reconstruction
+
+`npm run context:build` is an explicit author operation using Node 24.18.0,
+matching the release producer. `npm run context:check` independently reconstructs
+and compares the committed corpus/vector/text/metadata closure and installed
+mirrors without repair. Repository build and documentation validation run this
+check. Documentation PR CI also runs `pulse-context-build`'s owned test script:
+independent clean roots, reordered enumeration, locale/timezone variation,
+strict binary admission and non-mutating source/output drift rejection.
+
+These are development checks. They do not issue the candidate-bound seal or
+installed-closure receipts assigned to B10-MCP-09/07, and do not replace the
+full release selection. `docs:sync` copies emitted resource files but never
+regenerates vectors; after changing canonical inputs, run explicit generation
+and finish with the read-only check.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.public-site.v1",
-  "releaseVersion": "1.0.0-beta.9",
+  "releaseVersion": "1.0.0-beta.10",
   "product": {
     "name": "Pulse",
     "eyebrow": "TypeScript in / inspectable Wasm out",
@@ -152,6 +152,10 @@
     "mcp-package": {
       "source": "docs/packages/mcp.md",
       "label": "MCP HTTP host extension"
+    },
+    "native-build-optimization": {
+      "source": "docs/reference/native-build-optimization.md",
+      "label": "Native build optimization"
     }
   },
   "sourceAliases": {
@@ -476,6 +480,9 @@
       },
       "docs/packages/s3.md": {
         "order": 68
+      },
+      "docs/reference/native-build-optimization.md": {
+        "order": 45
       }
     }
   },

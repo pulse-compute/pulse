@@ -5,6 +5,7 @@ const {
   PACKAGE_SCHEMA_CODEC_BRIDGE_VERSION,
   TRUSTED_PACKAGE_EFFECT_CATALOG,
   clonePackageEffectPayload,
+  createPackageHttpRuntime,
   createPackageRuntime,
   createPackageSchemaCodecRuntime
 } = require('./internal/package-runtime.js');
@@ -14,6 +15,7 @@ module.exports = Object.freeze({
   PACKAGE_SCHEMA_CODEC_BRIDGE_VERSION,
   TRUSTED_PACKAGE_EFFECT_CATALOG,
   clonePackageEffectPayload,
+  createPackageHttpRuntime,
   createPackageRuntime,
   createPackageSchemaCodecRuntime
 });

@@ -743,7 +743,7 @@ async function verifyRouterProject(tarballs, packageNames) {
   copyTree(path.join(repoRoot, 'examples', '09-router-lowering'), projectRoot);
   const cli = installPackedPackages(projectRoot, tarballs);
   assertPackedInstallIsolated(projectRoot, packageNames);
-  const runtimeSmoke = run(process.execPath, ['-e', `const runtime = require('@pulse-compute/runtime'); if (runtime.RUNTIME_API_VERSION !== 'pulse.runtime-authoring.v4' || runtime.ROUTER_API_VERSION !== 'pulse.router-authoring.v2' || typeof runtime.Router !== 'function' || Object.prototype.hasOwnProperty.call(runtime, 'defineHandler')) process.exit(1); process.stdout.write('ok');`], { cwd: projectRoot });
+  const runtimeSmoke = run(process.execPath, ['-e', `const runtime = require('@pulse-compute/runtime'); if (runtime.RUNTIME_API_VERSION !== 'pulse.runtime-authoring.v5' || runtime.ROUTER_API_VERSION !== 'pulse.router-authoring.v2' || typeof runtime.Router !== 'function' || Object.prototype.hasOwnProperty.call(runtime, 'defineHandler')) process.exit(1); process.stdout.write('ok');`], { cwd: projectRoot });
   assert.equal(runtimeSmoke.stdout, 'ok');
   assert.equal(runPulse(cli, projectRoot, ['doctor']).status, 'passed');
   const inspect = runPulse(cli, projectRoot, ['inspect']);
@@ -786,6 +786,18 @@ async function verifyGripProject(tarballs, packageNames) {
   const build = runPulse(cli, projectRoot, ['build'], 360000);
   assert.equal(build.manifest.providerTarget.compiledWasmPresent, true);
 }
+
+const phaseObserver = require('../support/phase-observer.cjs');
+// Test-owned boundaries; disabled observation returns each original function.
+snapshotFiles = phaseObserver.wrap('evidence.snapshotFiles', snapshotFiles);
+assertPackedInstallIsolated = phaseObserver.wrap('evidence.assertPackedInstallIsolated', assertPackedInstallIsolated);
+installPackedPackages = phaseObserver.wrap('preparation.installPackedPackages', installPackedPackages);
+replayCorpus = phaseObserver.wrap('execution.installedCorpus', replayCorpus);
+verifyInitializedProject = phaseObserver.wrap('workflow.initializedProject', verifyInitializedProject);
+verifyNodeJavascriptProject = phaseObserver.wrap('workflow.nodeJavascript', verifyNodeJavascriptProject);
+verifyFastlyJavascriptProject = phaseObserver.wrap('workflow.fastlyJavascript', verifyFastlyJavascriptProject);
+verifyRouterProject = phaseObserver.wrap('workflow.router', verifyRouterProject);
+verifyGripProject = phaseObserver.wrap('workflow.grip', verifyGripProject);
 
 async function main() {
   console.log('acceptance - pack release candidate');
@@ -833,6 +845,23 @@ async function main() {
     `], { cwd: toolRoot });
     assert.equal(packageRootSmoke.stdout, 'ok');
     assert.equal(run(toolCli, ['--version'], { cwd: toolRoot }).stdout.trim(), RELEASE_VERSION);
+
+    console.log('acceptance - bounded collections through installed public CLI on four targets');
+    const collectionRoot = path.join(toolRoot, 'effect-collections');
+    copyTree(path.join(repoRoot, 'examples/03-fetch-composition/dynamic-probes'), collectionRoot);
+    for (const profile of ['node-native', 'node-javascript', 'fastly-native', 'fastly-javascript']) {
+      const tested = runPulse(toolCli, collectionRoot, ['test', '--profile', profile]);
+      assert.equal(tested.status, 'passed');
+      assert.equal(tested.summary.passed, 3);
+      assert.equal(tested.summary.failed, 0);
+      if (profile.endsWith('-native')) {
+        assert(tested.cases.every(item => item.executionEvidence?.wasmSha256), 'installed Native cases require exact Wasm evidence');
+      }
+    }
+    const collectionBuilt = runPulse(toolCli, collectionRoot, ['compile', '--profile', 'node-native']);
+    assert.equal(collectionBuilt.status, 'compiled');
+    corpusReport.effectCollections = { status: 'passed', targets: 4, casesPerTarget: 3, publicApi: true, independentInstalledConsumer: true };
+    saveCorpusReport();
 
     console.log('acceptance - replay S3 read/write failure corpus from exact installed tarballs');
     const s3 = replayCorpus('s3', 'wasm/test/s3/assert-packed-consumer.cjs', toolRoot, s3 => {

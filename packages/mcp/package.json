@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/mcp",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.10",
   "license": "Apache-2.0",
   "type": "commonjs",
   "description": "Bounded MCP HTTP adapter for Pulse host applications.",
@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.9/packages/mcp/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.10/packages/mcp/",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "files": [
@@ -23,7 +23,11 @@
     "src/*.d.ts",
     "README.md",
     "LICENSE",
-    "NOTICE"
+    "NOTICE",
+    "pulse.package.json",
+    "pulsewasm.*.cjs",
+    "as",
+    "conformance"
   ],
   "exports": {
     ".": {
@@ -33,9 +37,31 @@
     "./node": {
       "types": "./src/node.d.ts",
       "default": "./src/node.js"
+    },
+    "./pulse": {
+      "types": "./src/pulse.d.ts",
+      "default": "./src/pulse.js"
+    },
+    "./pulsewasm/manifest": {
+      "require": "./pulsewasm.manifest.cjs",
+      "default": "./pulsewasm.manifest.cjs"
+    },
+    "./pulsewasm/compiler": {
+      "require": "./pulsewasm.compiler.cjs",
+      "default": "./pulsewasm.compiler.cjs"
     }
   },
   "publishConfig": {
     "access": "public"
+  },
+  "pulse": {
+    "contract": "./pulse.package.json"
+  },
+  "pulsewasm": {
+    "manifest": "./pulsewasm.manifest.cjs"
+  },
+  "dependencies": {
+    "@pulse-compute/entities": "workspace:*",
+    "@pulse-compute/runtime": "workspace:*"
   }
 }

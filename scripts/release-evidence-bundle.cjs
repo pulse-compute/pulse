@@ -24,8 +24,10 @@ const SHARD_DEFINITIONS = Object.freeze([
     id: 'historical-contracts',
     title: 'Historical contracts',
     tasks: Object.freeze([
+      'binary-resource-admission',
       'report-capsule-contract',
       'pure-helper-contract',
+      'callable-source-admission',
       'suite-shape',
       'test-orchestration',
       'package-exports',
@@ -41,6 +43,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-json-rpc-corpus',
       'mcp-http',
       'pulse-context-corpus',
+      'pulse-context-build',
       'pulse-context-application',
       'pulse-context-host',
       'mcp-compatibility',
@@ -119,6 +122,18 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-native-runtime',
       'entities-hardening',
       'entities-node-native-workflow',
+      'pulse-context-tools',
+      'pulse-context-quality-actual',
+      'pulse-context-quality-growth',
+      'pulse-context-quality-repeat',
+      'callable-public-contract',
+      'callable-composition-proof',
+      'callable-authored-native',
+      'callable-authored-composition',
+      'callable-authored-javascript',
+      'callable-authored-routed',
+      'callable-lifetime',
+      'mcp-native-binding',
       'fastly-entities-native-workflow',
       'crypto-native-guest-source',
       'guest-json-roundtrip',
@@ -212,6 +227,11 @@ const SHARD_DEFINITIONS = Object.freeze([
       'schema-kv-parity',
       'text-capacity-conformance',
       'entities-schema-bridge',
+      'binary-resource-execution',
+      'native-context-primitives',
+      'context-native-proof',
+      'effect-collections',
+      'effect-collection-providers',
       'fetch-projections-request-bodies',
       'config-secrets-kv-redaction',
       'kv-conditional-runtime',
@@ -654,8 +674,12 @@ function validateRecoveryEvidence(releaseSeal, supplied = {}) {
   const pack = recovery.sharedPack;
   assert(pack && typeof pack.receiptPath === 'string', 'Shared package prerequisite proof missing');
   assert.equal(path.dirname(pack.receiptPath), path.join(recovery.directory, 'checkpoints', 'pack'), 'Shared package proof belongs to another attempt');
+  const sourceChecksBytes = fs.readFileSync(path.join(recovery.directory, 'source-checks.json'));
+  assert.equal(sha256(sourceChecksBytes), releaseSeal.sourceChecks?.sha256, 'Sealed source-check receipt changed');
+  const { repoRoot: _root, ...sourceCandidate } = recovery.context.candidate;
+  const packDependencies = require('./release-context-freshness.cjs').checkpointDependencies(JSON.parse(sourceChecksBytes), sourceCandidate);
   const verifiedPack = readCheckpointReceipt({ receiptPath: pack.receiptPath, context: recovery.context,
-    definition: sharedPackDefinition(), dependencies: {} });
+    definition: sharedPackDefinition(), dependencies: packDependencies });
   assert.equal(verifiedPack.receipt.id, 'shared-pack', 'Shared package checkpoint identity differs');
   assert.equal(verifiedPack.proofId, pack.proofId, 'Shared package proof identity differs');
   assert.equal(verifiedPack.receiptSha256, pack.receiptSha256, 'Shared package proof digest differs');
@@ -674,6 +698,11 @@ function validateRecoveryEvidence(releaseSeal, supplied = {}) {
   }
   validateCheckpointTasks(taskReport, expandProfile('release'), releaseSeal, 'release');
   validateCheckpointTasks(featureTasks, REQUIRED_TASKS, releaseSeal, 'features');
+  const context = require('./release-context-freshness.cjs');
+  assert.equal(releaseSeal.sourceChecks?.file, path.join(recovery.directory, 'source-checks.json'), 'Source checks belong to another attempt');
+  assert.equal(releaseSeal.contextEvidence?.packManifest, path.join(recovery.directory, 'packages/pulse-release-manifest.json'), 'Context pack belongs to another attempt');
+  assert.equal(releaseSeal.contextEvidence?.featureTasks, recovery.artifacts.featureTasks, 'Context runner differs');
+  context.verifySeal(releaseSeal);
   return recovery;
 }
 
@@ -698,6 +727,7 @@ function aggregateValidation(input) {
   validateReport(taskReport, expectedTasks, sourceRevision);
   if (releaseSeal.recovery) validateRecoveryEvidence(releaseSeal, { taskReport, fourMode, candidates });
   else {
+    require('./release-context-freshness.cjs').verifySeal(releaseSeal);
     assert(!taskReport.recovery && !taskReport.results.some(result => result.execution === 'reused' || result.checkpoint),
       'Recovered task evidence requires a recovery-aware release seal');
   }
@@ -1099,6 +1129,9 @@ function createEvidenceBundle(options) {
     fs.cpSync(options.candidates, candidateRoot, { recursive: true });
     for (const [name, file] of Object.entries({
       'release-seal.json': options.releaseSeal,
+      'source-checks.json': releaseSeal.sourceChecks.file,
+      'context-pack-manifest.json': releaseSeal.contextEvidence.packManifest,
+      'context-feature-tasks.json': releaseSeal.contextEvidence.featureTasks,
       'release-tasks.json': options.taskReport,
       'four-mode-conformance.json': options.fourMode,
       'deployment-candidates.json': options.candidateReport,

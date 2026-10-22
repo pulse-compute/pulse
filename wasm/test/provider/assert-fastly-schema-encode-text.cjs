@@ -7,6 +7,7 @@ const { root } = require('../runtime/compiler-efficiency/schema-cost-profile.cjs
 const { normalizeSchemaRegistry } = require('../../packages/contracts/src/schema-json/registry');
 const { buildCanonicalSchemaBundle } = require('../../packages/schema-json/src/compiler/canonical-schema-codecs');
 const { compileCanonicalSource } = require('../../packages/compiler/src/canonical-api-compiler');
+const { compileCanonicalRouterSource } = require('../../packages/compiler/src/canonical-router-compiler');
 const { buildCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
 const options = { cwd: root, canonicalBuild: true, requirePlatformCapability: false, bindings: { configStore: 'mem03', kv: { proof: 'proof' } } };
 
@@ -40,6 +41,47 @@ function eligibilityChecks() {
   assert.match(source, /function __pulse_memory_charge/);
   assert.doesNotMatch(source, /textResult: bool/, 'PS3 plan preserves original charges and error points');
   return loop;
+}
+
+function applicationErrorSignatures() {
+  const source = `import { Router } from '@pulse-compute/runtime';
+    const app = new Router();
+    app.post('/', async (ctx) => {
+      const text = await ctx.req.text();
+      const value = ctx.decodeJson(text, 'proof.Value');
+      return ctx.text(ctx.encodeJson(value, 'proof.Value'));
+    });
+    app.error(async (error, ctx, next) => ctx.text(error.code, { status: 400 }));
+    export default app;`;
+  const router = compileCanonicalRouterSource(source, { fileName: 'schema-error-encoding.ts', rootDir: root });
+  for (const family of ['closed-optional', 'text-only']) {
+    const registry = planFor(family).schemas.registry;
+    const schemaBundle = buildCanonicalSchemaBundle(normalizeSchemaRegistry({
+      source: registry.schemas[0].source, schemas: registry.schemas
+    }), { maxBytes: registry.maxBytes });
+    const plan = buildCanonicalNativePlan(compileCanonicalSource(router.sourceText, {
+      fileName: 'schema-error-encoding.ts', rootDir: root, schemaBundle,
+      compilerPrelude: router.compilerPrelude, compilerOwnedCalls: router.compilerOwnedCalls,
+      internalGeneratedHandler: true, metadataExtensions: { router: router.metadata }
+    }));
+    const artifact = platform.compileFastlyNativePlatformCapabilitiesPlan(plan, options);
+    if (family === 'text-only') {
+      assert.match(artifact.source, /function __pulse_fastly_schema_apply\(schemaId: string, valueHandle: i32, encode: bool, textResult: bool = false\): i32/);
+      assert.match(artifact.source, /__pulse_application_impl___pulse_fastly_schema_apply\(schemaId, valueHandle, encode, textResult\)/);
+      assert.match(artifact.source, /__pulse_fastly_schema_apply\(id.text, value, true, textResult\)/);
+    } else {
+      assert.match(artifact.source, /function __pulse_fastly_schema_apply\(schemaId: string, valueHandle: i32, encode: bool\): i32/);
+      assert.doesNotMatch(artifact.source, /textResult/);
+    }
+    for (const test of corpus(family).slice(0, 3)) {
+      const observed = outcome(artifact.wasm, test).summary;
+      assert.equal(observed.status, 200, family + ': defaulted decode and explicit encode arguments');
+      assert.equal(observed.body, JSON.stringify(test.expected), family + ': exact encoded bytes');
+    }
+    const recovered = outcome(artifact.wasm, { body: '{"text":false}' }).summary;
+    assert.equal(recovered.status, 400);
+    assert.equal(recovered.body, 'PULSE_SCHEMA_DECODE', family + ': preserve recovery classification');
+  }
 }
 
 function textCases() {
@@ -128,11 +170,12 @@ function checkOutcome(test, observed) {
 
 function main() {
   eligibilityChecks();
+  applicationErrorSignatures();
   for (const fixture of fixtures()) {
     const artifact = platform.compileFastlyNativePlatformCapabilitiesPlan(fixture.plan, options);
     for (const test of fixture.cases) checkOutcome(test, outcome(artifact.wasm, test).summary);
   }
   console.log('ok - explicit Fastly text encode preserves exact bytes, Unicode, projection, alias mutation, admission and pre-effect failures');
 }
-module.exports = { fixtures, textCases, options, outcome, checkOutcome, eligibilityChecks, main };
+module.exports = { fixtures, textCases, options, outcome, checkOutcome, eligibilityChecks, applicationErrorSignatures, main };
 if (require.main === module) main();

@@ -13,10 +13,12 @@ An effect is an explicit request for host authority. Each effect has an identity
 - sampling provider-owned wall time through `ctx.time.now()`;
 - getting or putting a KV value;
 - accepting one outbound event through `ctx.emit`;
-- declaring a GRIP channel;
-- holding or publishing through GRIP.
+- broadcasting through `grip.broadcast(ctx, message)`.
 
-Pure value construction, branching, property reads, and arithmetic are not effects.
+Pure value construction, branching, property reads and arithmetic are not effects.
+Neither are synchronous logging or the GRIP root framing helpers (`isWebSocket`,
+`subscribe` and `handoff`). Older channel/hold/publish forms belong to the
+[compatibility facade](../guides/compatibility-imports.md#grip).
 
 ## Continuation
 
@@ -72,9 +74,11 @@ to 1,024; canonical Fastly Native fixes that ceiling at 1,024. An inherited requ
 deadline covers the whole traversal. See the
 [PS2 lifecycle contract](../architecture/current-contracts.md#read-loop-invocation-lifecycle-ps2).
 
-A bound limits iteration count, not retained memory. PS3 memory containment and
-PS4 production qualification remain open. Compiler and fixture parity do not
-constitute production acceptance, and a chain that reaches its cap is incomplete.
+A loop bound limits iteration count, not retained memory. Native read-loop plans
+also activate [PS3 retention and linear-memory ceilings](../architecture/current-contracts.md#native-read-loop-memory-containment-ps3).
+Those counters do not bound process RSS or ordinary JavaScript dependency memory.
+PS4 still owns packed-consumer and production qualification. Compiler/fixture
+parity is not production acceptance; a chain that reaches its cap is incomplete.
 
 ## Bounded HTTP deadline work
 
@@ -167,6 +171,57 @@ The compiler can issue those fetches as one effect group because none depends on
 
 Grouping provides concurrency without linking a general Promise runtime into Native artifacts. Source declaration order remains deterministic for identities and result binding, but providers may perform independent operations concurrently.
 
+
+## Bounded dynamic collections
+
+Use a collection when the number of requests is known only at runtime:
+
+```ts
+const input = await ctx.req.json<ProbeInput>('probe.Input')
+const effects = ctx.effects<ProbeResult>({ max: 32 })
+for (const endpoint of input.endpoints) {
+  effects.add(ctx.fetch(endpoint).json<ProbeResult>('probe.Result'))
+}
+const results = await ctx.parallel(effects)
+return ctx.json({ results }, { schema: 'probe.Output' })
+```
+
+The [dynamic probe example](https://github.com/pulse-compute/pulse/tree/latest/examples/03-fetch-composition/dynamic-probes)
+includes the bounded input/output schemas and four explicit target profiles.
+
+`max` is a literal integer from 1 through 32. The portable build region is one
+local `const` collection, one direct `for...of` over an available array local or
+property, and one immediately following awaited flush bound to a `const` result.
+Each iteration contains one inline `add` of the same recognized effect template.
+No awaits, filtering, nested loops, mutations, helper calls or escaping collection
+handles are admitted inside that region. A homogeneous generic result type is
+optional; the default element type is `unknown`.
+
+Adding captures fresh effects owned by this execution without dispatching them.
+The explicit flush seals membership and releases the group. Results preserve
+insertion order even when completion order differs. An empty input returns `[]`
+without external effects or Native suspension. Overflow fails before dispatch;
+there is no truncation. Collection capacity does not replace request, schema,
+response-byte or cumulative effect limits. Roots count once against the existing
+1,024-effect default. A second flush, duplicate root, foreign member or add after
+flush fails. A nonempty unflushed collection fails at handler completion.
+
+Ordinary failures settle the group before continuation; no partial result array
+is delivered. Terminal failures take priority over application failures, then
+insertion order selects the primary failure. Cancellation invalidates outstanding
+work and suppresses continuation, including late completions. A per-fetch timeout
+starts at flush dispatch; the request deadline also includes construction time.
+Fastly Native retires pending handles but cannot promise remote wire cancellation.
+
+Node and Fastly retain their provider capability restrictions. Fastly Native
+runtime URLs use existing static bindings unless
+`fastly.bindings.dynamicBackends: true` explicitly enables bounded multi-origin
+selection. Configured origins take precedence; a request may attempt at most 32
+dynamic registrations across all collections, with canonical-origin reuse.
+The [Native dynamic-backend policy](../packages/provider-fastly.md#native-dynamic-backends)
+defines URL eligibility, Host/TLS behavior and service prerequisites. A collection
+does not independently grant origin authority. Static keyed
+`ctx.parallel({ ... })` remains available.
 
 ## Explicit portable groups with `ctx.parallel`
 
@@ -391,6 +446,82 @@ the key. Pending KV operations have no cancellation hostcall; an expired operati
 is abandoned to invocation teardown and may still commit. Host termination never
 resumes an inactive handler. Local Wasm evidence is separate from K4's deployed
 cross-location acceptance.
+
+## KV listing and deletion
+
+`ctx.kv('catalog').list({ limit: 10, prefix: 'user/', cursor })` requests exactly
+one page. `limit` is required and must be an integer from 1 through 100. Omit
+`cursor` for the first page; pass back the returned opaque string for the next
+page with the same store, prefix and provider. A successful result is
+`{ status: 'listed', keys: [...], cursor: string | null }`. `null` marks the final
+page. An empty page is valid; use the cursor to determine completion. Pulse
+never fetches another page automatically or decodes/translates provider cursors.
+
+```ts
+const page = await ctx.kv('catalog').list({ limit: 10, prefix: 'user/' });
+if (page.status === 'listed') {
+  return ctx.json({ keys: page.keys, nextCursor: page.cursor });
+}
+return ctx.json(page, { status: 503 });
+```
+
+Listing failure is `{ status: 'failed', reason }`. Invalid option shapes, limits
+or prefixes return `invalid-options`; malformed or provider-rejected cursors
+return `invalid-cursor`. Keys and prefixes have a 1,024-byte UTF-8 ceiling
+(prefix may be empty), and cursors have an 8,192-byte ceiling. Strings must be
+Unicode scalar text without control characters. Each returned page contains at
+most the requested number of distinct keys matching the prefix. Acquired response
+bodies are bounded to 262,144 bytes, checked as strict UTF-8/JSON, and closed on
+success or failure. Oversized or malformed provider responses return `too-large`
+or `protocol`; they never produce a partial successful page. Cursors, prefixes
+and returned keys are redacted in managed traces and errors.
+
+Ordering and visibility are provider-defined. Node's local reference maintains
+a UTF-8 byte-ordered key index and seeks after the cursor key, including when
+that key was deleted. Its signed cursors are scoped to the reference instance,
+store and prefix. Fastly Native requests the provider's strong list mode and
+passes its cursor through unchanged. Neither target promises a snapshot across
+pages, globally ordered results, or stable visibility under concurrent mutation.
+An insertion before the current cursor can be missed; later pages may reflect
+deletions and new writes. Do not use a listing to establish absence, perform an
+atomic bulk operation, or prove a cross-location consistency guarantee.
+
+```ts
+const result = await ctx.kv('catalog').delete('user/123');
+return ctx.json(result);
+```
+
+Delete returns `deleted` when the provider acknowledges deletion and `not-found`
+when it explicitly reports absence, including repeated deletion. An idempotent
+provider may acknowledge an already absent key as `deleted`; that acknowledgement
+does not prove the key previously existed. A definite validation/binding
+failure or provider rejection is `not-deleted` with a reason. Timeout or transport
+failure after dispatch is `unknown`: deletion may have happened. There is no
+preflight get, retry, rollback, generation condition, or physical-delete/recreate
+guarantee. Existing versioned and conditional operations retain their semantics;
+deleting a key invalidates the prior current value, and later creation receives
+a new Node generation.
+
+Both methods are awaited effects and may be keyed members of `ctx.parallel`.
+They share conditional KV's monotonic ten-second/request deadline, cancellation
+and pending-handle cleanup rules. Expired Fastly pending handles are left to
+invocation teardown; acquired list bodies are closed, and no late completion
+resumes an inactive handler. Fastly-specific key restrictions remain explicit
+`invalid-key` failures.
+
+Node JavaScript and Native implement both methods. Fastly Native uses direct
+`fastly_kv_store.list/list_wait` and `delete/delete_wait` hostcalls. Fastly
+JavaScript blocks these capabilities during target-support evaluation rather
+than substituting get/put or silently returning an empty page. Final-Wasm ABI
+fault tests and installed-package Viceroy tests are local evidence. Production
+acceptance still requires a configured Fastly KV binding: verify multi-page
+prefix listing, rejected cursor handling, present/absent/repeated deletion and
+observed concurrent-mutation behavior on the deployed service. Local Viceroy
+does not qualify hosted consistency, propagation or cross-location visibility.
+Viceroy 0.21.1's `delete_wait` discards its internal existence boolean and returns
+success for absent keys. Its installed-package receipt records that limitation;
+explicit host `NotFound` normalization is exercised by the enforcing ABI host
+and must be checked on the deployed binding.
 
 ## Native dispatcher containment
 

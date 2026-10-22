@@ -52,6 +52,14 @@ function collectExpressions(plan) {
     seen.add(expression);
     expressions.push(expression);
     switch (expression.kind) {
+      case 'callable-call': add(expression.argument); break;
+      case 'workspace-write':
+        add(expression.value);
+      case 'workspace-read':
+      case 'resource-read':
+        if (expression.offset) add(expression.offset);
+        if (expression.length) add(expression.length);
+        break;
       case 'array':
         for (const item of expression.items || []) add(item.kind === 'spread' ? item.value : item);
         break;
@@ -113,6 +121,7 @@ function collectExpressions(plan) {
   function walkStatements(statements) {
     for (const statement of statements || []) {
       if (statement.kind === 'helper-call') for (const arg of statement.arguments) add(arg);
+      else if (statement.kind === 'effect-collection') add(statement.input);
       else if (statement.kind === 'local') add(statement.value);
       else if (statement.kind === 'expression') add(statement.expression);
       else if (statement.kind === 'return') add(statement.value);

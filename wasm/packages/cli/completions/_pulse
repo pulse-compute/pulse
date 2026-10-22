@@ -8,8 +8,9 @@ commands=(
     'test:Run configured cases through the selected provider local-conformance runtime.'
     'dev:Start the foreground local server with the selected provider conformance runtime.'
     'compile:Compile the canonical project into provider-neutral Pulse-owned WebAssembly.'
-    'build:Compile the canonical project and realize the deployment provider selected by the active project profile.'
+    'build:Build the Native or JavaScript target for the deployment provider selected by the active project profile.'
     'report:Review retained evidence from a completed Native build without rebuilding or executing project code.'
+    'docs:Locate the offline documentation shipped with the executing CLI package.'
     'completion:Print a generated shell completion script'
     'help:Print public help'
     'version:Print the installed CLI version'
@@ -31,6 +32,7 @@ case $words[2] in
     init)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -40,6 +42,7 @@ case $words[2] in
     doctor)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -49,6 +52,7 @@ case $words[2] in
     inspect)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -58,6 +62,7 @@ case $words[2] in
     test)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -80,6 +85,7 @@ case $words[2] in
     compile)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -87,14 +93,16 @@ case $words[2] in
       '--no-clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
       '--elide-json-cache-arena[Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads.]' \
       '--emit-wat[Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.]' \
-      '--experimental-native-bounded-size[Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.]' \
-      '--experimental-native-size[Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.]' \
+      '--native-shrink0[Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag.]' \
+      '--experimental-native-bounded-size[Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag.]' \
+      '--experimental-native-size[Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag.]' \
       '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
       '--out[Override the project-relative artifact output directory.]:directory:_directories'
       ;;
     build)
       _arguments -s       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
@@ -102,8 +110,9 @@ case $words[2] in
       '--no-clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
       '--elide-json-cache-arena[Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads.]' \
       '--emit-wat[Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.]' \
-      '--experimental-native-bounded-size[Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.]' \
-      '--experimental-native-size[Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.]' \
+      '--native-shrink0[Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag.]' \
+      '--experimental-native-bounded-size[Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag.]' \
+      '--experimental-native-size[Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag.]' \
       '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
       '--out[Override the project-relative artifact output directory.]:directory:_directories'
       ;;
@@ -111,12 +120,21 @@ case $words[2] in
       _arguments -s       '--html[Write a self-contained offline HTML report; mutually exclusive with --json.]' \
       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
       '--dry-run[Resolve and report the command plan without executing it.]' \
       '--plan[Resolve and report the command plan without executing it.]' \
       '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
       '--out[HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html.]:directory:_directories' \
       '--artifact[Replay a saved Report capsule or supported completed-Wasm manifest without loading project code.]:file:_files'
+      ;;
+    docs)
+      _arguments -s       '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--evidence-status[Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]'
       ;;
   *)
     _describe 'pulse command' commands

@@ -1,0 +1,1 @@
+{"status":"passed","executions":14,"schemaOutputRejections":4,"sourceRejections":["mutation","HTTP","effect","codec authority","async","nested","loop","indirect","context escape","await"],"ownershipChecks":20,"packaged":true}

@@ -272,7 +272,7 @@ function nativeEffect(planEffect, payload) {
   }
   if (planEffect.kind === 'config.get' || planEffect.kind === 'secret.get') return { ...base, name: payload.name };
   if (planEffect.kind === 'kv.get' || planEffect.kind === 'kv.put') return { ...base, store: kvStoreName(payload.store), key: payload.key, value: planEffect.kind === 'kv.put' ? payload.value : undefined };
-  if (portableKv.isConditionalKv(planEffect.kind)) return { ...base, store: kvStoreName(payload.store), key: payload.key, value: payload.value, generation: payload.generation };
+  if (portableKv.isConditionalKv(planEffect.kind)) return { ...base, store: kvStoreName(payload.store), key: payload.key, value: payload.value, generation: payload.generation, options: payload.options };
   if (planEffect.kind === 'event.emit') {
     return {
       ...base,
@@ -369,6 +369,9 @@ function validateNativeModule(module, plan) {
   const missing = runtimeContract.CANONICAL_NATIVE_EXPORT_NAMES.filter((name) => !exportNames.has(name));
   if (missing.length > 0) throw new CanonicalNativeHostError('Native module is missing required ABI exports.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH', { missing });
   if (!plan || typeof plan !== 'object' || !plan.planHash) throw new TypeError('Native module execution requires its canonical native plan.');
+  if (plan.packages?.application?.terminalFailure === 'package-http-v1' && !exports.some(entry => entry.name === 'pulse_package_http_failure' && entry.kind === 'function')) {
+    throw new CanonicalNativeHostError('Package HTTP completion export is missing.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH');
+  }
   if (plan.packages?.application?.effectFailure === 'package-completion' && !exports.some(entry => entry.name === 'pulse_package_set_effect_failure' && entry.kind === 'function')) {
     throw new CanonicalNativeHostError('Native package application is missing its effect failure ABI.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH');
   }
@@ -395,10 +398,13 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   const moduleShape = validateNativeModule(module, plan);
   const adapter = normalizeProviderAdapter(options.providerAdapter || options.provider);
   const executionPlane = options.executionPlane === 'event' ? 'event' : 'http';
-  const memoryBudget = (runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
+  const memoryBudget = (plan.callables?.length || runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
     ? new NativeValueBudget(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, close) : undefined;
   const heap = new ValueHeap(memoryBudget);
   const pending = [];
+  // Retain the admitted arguments until settlement, including for hosts that
+  // take pending tickets and prepare their results manually.
+  const kvAdmissions = new Map();
   const invocations = createEffectInvocations(() => {
     options.requestBudget?.check();
     if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
@@ -406,6 +412,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   function close() {
     invocations.close();
     pending.length = 0;
+    kvAdmissions.clear();
     options.signal?.removeEventListener('abort', close);
   }
   function run(operation) {
@@ -615,6 +622,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     return Object.freeze(headers.map((pair) => Object.freeze(pair)));
   }
 
+  let collectionAdmission;
   const pulseHost = {
     value_json(handle) {
       const text = JSON.stringify(value(handle) ?? null);
@@ -629,7 +637,41 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     value_null() { return put(null); },
     value_boolean(input) { return put(Number(input) !== 0); },
     value_number(input) { return put(Number(input)); },
+    workspace_number_value(handle) {
+      const input = value(handle);
+      if (typeof input !== 'number') throw new portableKv.PulseRuntimeContractError('PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace cell/index must be numeric.');
+      return input;
+    },
+    workspace_check(offset, capacity, input) {
+      options.requestBudget?.check(); options.signal?.throwIfAborted();
+      if (!Number.isInteger(offset) || offset < 0 || offset >= capacity || capacity < 1 || capacity > 1024 || !Number.isFinite(input)) {
+        throw new portableKv.PulseRuntimeContractError('PULSE_NUMERIC_WORKSPACE_INVALID', 'Workspace index/value is invalid.');
+      }
+      return offset;
+    },
+    resource_offset_value(handle) {
+      const input = value(handle);
+      if (typeof input !== 'number') throw new portableKv.PulseRuntimeContractError('PULSE_BINARY_RESOURCE_INVALID', 'Binary resource offset requires a number.');
+      return input;
+    },
+    resource_check(offset, length, width) {
+      options.requestBudget?.check();
+      options.signal?.throwIfAborted();
+      if (!Number.isSafeInteger(offset) || offset < 0 || length < 0 || width < 0 || offset > length || width > length - offset) {
+        throw new portableKv.PulseRuntimeContractError('PULSE_BINARY_RESOURCE_INVALID', 'Binary resource read is invalid.');
+      }
+      return offset;
+    },
     value_string(pointer, length) { return put(decodeAssemblyScriptString(memory(), pointer, length)); },
+    effect_collection_count(handle, max, stateIndex) {
+      const continuation = plan.continuations.find(c => c.stateIndex === stateIndex);
+      if (collectionAdmission || continuation?.kind !== "effect-collection-v1" || continuation.effectIds.length !== max) throw new CanonicalNativeHostError("Invalid collection admission identity.", "PULSE_CANONICAL_NATIVE_CONTINUATION_MISMATCH");
+      const input = value(handle);
+      if (!Array.isArray(input) || !Number.isInteger(max) || max < 1 || max > 32) throw new portableKv.PulseRuntimeContractError('PULSE_EFFECT_COLLECTION_CAPACITY', 'Collection requires a bounded array and capacity 1–32.');
+      if (input.length > max) throw new portableKv.PulseRuntimeContractError('PULSE_EFFECT_COLLECTION_OVERFLOW', 'Collection capacity exceeded.');
+      if (input.length) collectionAdmission = { stateIndex, count: input.length };
+      return input.length;
+    },
     value_array() { return put([]); },
     value_array_push(arrayHandle, valueHandle) {
       const target = value(arrayHandle);
@@ -725,6 +767,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     request_method() { requireHttpSurface('ctx.req.method'); return put(context.ctx.req.method); },
     request_url() { requireHttpSurface('ctx.req.url'); return put(context.ctx.req.url); },
     request_path() { requireHttpSurface('ctx.req.path'); return put(context.ctx.req.path); },
+    package_http_version() { return 1; },
     request_headers() { requireHttpSurface('ctx.req.headers'); return put(context.ctx.req.headers); },
     request_header(nameHandle) {
       requireHttpSurface('ctx.req.header');
@@ -833,13 +876,14 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const payload = value(payloadHandle);
       // Admission happens while the guest builds its suspension group. A bad
       // later member throws before the host dispatch loop starts any member.
-      if (effect.kind === 'fetch' && options.incomingBody) {
+      if (effect.kind === 'fetch' && (options.incomingBody || plan.continuations.find(c => c.id === effect.continuationId)?.kind === 'effect-collection-v1')) {
         const admitted = canonicalRuntime.normalizeProviderEffect(nativeEffect(effect, payload), schemaCodecs, { ...options, strict, target: 'native', provider: adapter.id });
-        if (admitted.init.bodyMode === 'incoming-request-v1') options.incomingBody.claim(admitted.init.body, admitted.init);
+        if (admitted.init.bodyMode === 'incoming-request-v1') options.incomingBody?.claim(admitted.init.body, admitted.init);
       }
       const kvAdmission = portableKv.isConditionalKv(effect.kind) ? portableKv.admitConditionalKv(nativeEffect(effect, payload), options) : undefined;
       if (kvAdmission) portableKv.registerKvRedactions(kvAdmission, (value) => sensitiveValues.add(value));
       const ticket = invocations.open(index, effect.id);
+      if (kvAdmission) kvAdmissions.set(index, kvAdmission);
       pending.push(Object.freeze({ index, effect, payload, ticket, ...(kvAdmission ? { kvAdmission } : {}) }));
     }
   };
@@ -917,7 +961,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       throw new CanonicalNativeHostError(`Native host cannot prepare an unknown effect index ${effectIndex}.`, 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex });
     }
 
-    let result = portableKv.isConditionalKv(effect.kind) ? portableKv.normalizeConditionalKvResult(effect, rawResult, options) : rawResult;
+    let result = portableKv.isConditionalKv(effect.kind) ? portableKv.normalizeConditionalKvResult(kvAdmissions.get(effectIndex) || effect, rawResult, options) : rawResult;
     if (effect.kind === 'time.now') result = require('@pulse-compute/runtime/host').normalizeTimeResult(rawResult);
     if (effect.kind === 'event.emit' && result !== undefined) {
       throw new canonicalRuntime.CanonicalRuntimeError(
@@ -963,6 +1007,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
         close();
         throw new CanonicalNativeHostError('Native module rejected an invocation result.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: ticket.slot, errorCode: instance.exports.pulse_last_error_code() });
       }
+      kvAdmissions.delete(ticket.slot);
       return handle;
     });
   }
@@ -973,6 +1018,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
         close();
         throw new CanonicalNativeHostError('Native package rejected an invocation failure.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID');
       }
+      kvAdmissions.delete(ticket.slot);
     });
   }
 
@@ -1043,6 +1089,10 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     pendingEffects: takePending,
     prepareEffectResult,
     captureApplicationError,
+    consumeCollectionAdmission(stateIndex, count) {
+      if (!collectionAdmission || collectionAdmission.stateIndex !== stateIndex || collectionAdmission.count !== count) throw new CanonicalNativeHostError('Collection active count differs from admitted input.', 'PULSE_CANONICAL_NATIVE_CONTINUATION_MISMATCH');
+      collectionAdmission = undefined;
+    },
     setEffectResult,
     setEffectFailure,
     resultValue,
@@ -1136,8 +1186,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       const continuationState = controller.continuationState();
       const continuation = controller.plan.continuations.find((entry) => Number(entry.stateIndex) === Number(continuationState));
       if (!continuation) throw new CanonicalNativeHostError('Native suspension references an unknown continuation state.', 'PULSE_CANONICAL_NATIVE_CONTINUATION_MISMATCH', { continuationState });
+      if (continuation.kind === 'effect-collection-v1') controller.consumeCollectionAdmission(continuationState, pending.length);
       const pendingEffectIds = pending.map((entry) => entry.effect.id);
-      if (JSON.stringify(pendingEffectIds) !== JSON.stringify(continuation.effectIds)) {
+      if (JSON.stringify(pendingEffectIds) !== JSON.stringify(continuation.kind === 'effect-collection-v1' && pendingEffectIds.length > 0 ? continuation.effectIds.slice(0, pendingEffectIds.length) : continuation.effectIds)) {
         throw new CanonicalNativeHostError('Native pending effects do not match the continuation contract.', 'PULSE_CANONICAL_NATIVE_CONTINUATION_MISMATCH', { continuationId: continuation.id, expected: continuation.effectIds, actual: pendingEffectIds });
       }
       activeContinuation = {
@@ -1226,6 +1277,20 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       if (!eventMode && options.signal?.aborted) throw nativeRequestCancelled(options.signal);
       const failures = settled.filter(entry => entry.status === 'rejected');
       const failed = failures.find(entry => !portableKv.isApplicationError(entry.reason)) || failures[0];
+      if (failed && continuation.kind === 'effect-collection-v1') {
+        const evidence = Object.freeze(settled.flatMap((item, index) => item.status === 'rejected' ? [Object.freeze({
+          key: String(index), index, effectId: pending[index].effect.id, kind: pending[index].effect.kind,
+          name: typeof item.reason?.name === 'string' ? item.reason.name : typeof item.reason,
+          code: typeof item.reason?.code === 'string' ? item.reason.code : undefined
+        })] : []));
+        let primary = failed.reason instanceof Error ? failed.reason : new Error(String(failed.reason));
+        try { Object.defineProperty(primary, 'effectFailures', { configurable: true, value: evidence }); }
+        catch (_) {
+          primary = new portableKv.PulseRuntimeContractError('PULSE_RUNTIME_PARALLEL_FAILED', 'One or more ctx.parallel effects failed.', { cause: primary });
+          Object.defineProperty(primary, 'effectFailures', { value: evidence });
+        }
+        failed.reason = primary;
+      }
       const packageFailure = controller.plan.packages?.application?.effectFailure === 'package-completion';
       if (failed && !packageFailure && (!failures.every(entry => portableKv.isApplicationError(entry.reason))
         || !controller.captureApplicationError(failed.reason))) {
@@ -1294,7 +1359,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       wasmSha256: controller.wasmSha256,
       response,
       effectCount,
-      ...((options.incomingBody || options.outputExecution) ? {guestMemoryBytes:controller.exports.memory.buffer.byteLength} : {}),
+      ...((options.incomingBody || options.outputExecution || controller.plan.callables?.length) ? {guestMemoryBytes:controller.exports.memory.buffer.byteLength} : {}),
       resolutionOrder: Object.freeze([...resolutionOrder]),
       continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
       trace: Object.freeze([...controller.trace]),
@@ -1308,12 +1373,39 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       activeContinuation.states.push('failed');
     }
     Object.defineProperty(executionFailure, 'execution', { configurable: true, value: Object.freeze({
+      ...(controller.plan.callables?.length ? { guestMemoryBytes: controller.exports.memory.buffer.byteLength,
+        valueHandleCount: controller.heap.size(), memory: controller.heap.budget.snapshot() } : {}),
       executionId,
       planHash: controller.plan.planHash,
       trace: Object.freeze([...controller.trace]),
       resolutionOrder: Object.freeze([...resolutionOrder]),
       continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) })))
     }) });
+    const kind = (options.signal?.aborted || ['PULSE_REQUEST_DEADLINE_EXCEEDED', 'PULSE_REQUEST_CLOCK_INVALID'].includes(error?.code) ? 1 : ['PULSE_BODY_TOO_LARGE', 'PULSE_REQUEST_BODY_TOO_LARGE'].includes(error?.code) ? 2 : error?.code === 'PULSE_REQUEST_BODY_INVALID_UTF8' ? 3 : 0);
+    if (!eventMode && kind && controller.plan.packages?.application?.terminalFailure === 'package-http-v1') {
+      const pointer = controller.exports.pulse_package_http_failure(kind);
+      const response = canonicalRuntime.finalResponse(JSON.parse(decodeManagedAssemblyScriptString(controller.exports.memory, pointer)), controller.context.ctx.req.method);
+      if (![400,408,413].includes(response.status) || typeof response.body !== 'string' || Buffer.byteLength(response.body) > 131072) throw new TypeError('Invalid package terminal response');
+      return Object.freeze({
+        status: 'completed',
+        version: runtimeContract.CANONICAL_NATIVE_HOST_VERSION,
+        abiVersion: runtimeContract.CANONICAL_NATIVE_ABI_VERSION,
+        provider: adapter.id,
+        providerVersion: adapter.version,
+        providerMetadata: adapter.resultMetadata({ ...options, executionId, metadata: controller.plan.canonical, plan: controller.plan }),
+        executionId,
+        planHash: controller.plan.planHash,
+        wasmSha256: controller.wasmSha256,
+        response,
+        effectCount,
+        ...((options.incomingBody || options.outputExecution || controller.plan.callables?.length) ? { guestMemoryBytes: controller.exports.memory.buffer.byteLength } : {}),
+        resolutionOrder: Object.freeze([...resolutionOrder]),
+        continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
+        trace: Object.freeze([...controller.trace]),
+        valueHandleCount: controller.heap.size(),
+        ...(controller.heap.budget ? { memory: controller.heap.budget.snapshot() } : {})
+      });
+    }
     throw executionFailure;
   } finally {
     invocationClosed = true;
@@ -1326,9 +1418,11 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
 }
 
 async function executeCanonicalNativeModule(compiled, options = {}) {
-  const budget = portableKv.createRequestBudget(options);
+  const duration = compiled?.plan?.packages?.application?.requestLimits?.maxDurationMs;
+  const budget = portableKv.createRequestBudget(duration === undefined ? options : { ...options, maxDurationMs: Math.min(options.maxDurationMs ?? duration, duration) });
+  if (duration !== undefined && !budget.signal.aborted) budget.limitDuration(duration);
   try {
-    budget.check();
+    if (compiled?.plan?.packages?.application?.terminalFailure !== 'package-http-v1') budget.check();
     return await executeCanonicalNativeInvocation(compiled, { ...options, responseSignal: options.signal, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock }, Object.freeze({ plane: 'http' }));
   } finally { if (!options.requestBudget) budget.close(); }
 }

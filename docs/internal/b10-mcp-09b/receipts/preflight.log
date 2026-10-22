@@ -1,0 +1,6 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> release:preflight
+> node scripts/release-preflight.cjs --check
+
+ok - release preflight classified 21 gate(s) (11 proven, 10 pending, 0 blocked) and 682 documentation source(s); 16 release shards mapped

@@ -1,0 +1,41 @@
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+ok - release context freshness: exact package binding and 26 fail-closed cases
+ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity
+[pulsewasm] release-feature-acceptance: passed in 9.02s
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+[pulsewasm] Running release-runtime-policy (execution); elapsed 10.00s
+[pulse:pack] Reused 1 verified packages from this seal
+ok - shared release packages are source-bound, hash-checked, private copies; tampering, dirty/stale source and overlapping paths fail closed
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 4.26s
+
+[pulsewasm:release] release-evidence-authority
+[pulsewasm] sixteen-shard aggregation and exact evidence boundary (timeout 30.00s)
+ok - release evidence authority aggregates sixteen shards and preserves the no-deploy/no-publish boundary
+[pulsewasm] release-evidence-authority: passed in 2.79s
+
+[pulsewasm:unit] release-seal-lifecycle
+[pulsewasm] durable seal heartbeat, terminal receipts and bounded process/cleanup lifecycle (timeout 60.00s)
+ok - dependency-free seal reaches restoration; setup failures terminalize; clean candidate and required tools fail early; parent deadline cancels work and preserves cleanup
+
+[pulsewasm:unit] cleanup-stall-fixture
+[pulsewasm] successful task with deliberately stalled cleanup (timeout 3.00s)
+[pulsewasm] cleanup-stall-fixture: failed in 465ms
+ok - seal heartbeat and immutable terminal receipts; failure, interruption, stubborn owned descendants and stalled cleanup return bounded results
+[pulsewasm] release-seal-lifecycle: passed in 3.58s
+
+[pulsewasm] test summary
+  passed         9.02s  release-feature-acceptance  (/tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5/tasks/release-feature-acceptance.log)
+  passed         2.79s  release-evidence-authority  (/tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5/tasks/release-evidence-authority.log)
+  passed         4.26s  release-runtime-policy  (/tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5/tasks/release-runtime-policy.log)
+  passed         3.58s  release-seal-lifecycle  (/tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5/tasks/release-seal-lifecycle.log)
+  report       /tmp/pulse-09a-validation/release-tests.json
+  run logs     /tmp/pulse-09a-validation/runs/2026-10-21T05-30-44-419Z--5
+  total        19.68s

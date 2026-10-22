@@ -9,7 +9,7 @@ const LINKED_POLICY = 'fastly-linked-numeric-regions-v1';
 const HOST_POLICY = 'host-numeric-regions-v1';
 const arithmetic = new Set(['+', '-', '*', '/', '%']);
 const comparisons = new Set(['===', '!==', '==', '!=', '<', '<=', '>', '>=']);
-function prepareNumericRegions({ plan, policy, schemaActive, budgeted, readLoopBudget = false, localName }) {
+function prepareNumericRegions({ plan, resources, policy, schemaActive, budgeted, readLoopBudget = false, localName }) {
   if (policy !== undefined && policy !== POLICY && policy !== LINKED_POLICY && policy !== HOST_POLICY) throw new TypeError('Unknown private numeric-region emission policy');
   // MEM9-06 qualifies allocation avoidance without a collector for Fastly stub
   // builds. Linked fixed-memory builds remain excluded when codecs are active,
@@ -23,6 +23,11 @@ function prepareNumericRegions({ plan, policy, schemaActive, budgeted, readLoopB
   const localIds = new Set((plan.locals || []).map(x => x.id));
   function proveExpression(e, definite) {
     if (!e) return null;
+    if (e.kind === 'workspace-read') return resources?.workspaces && e.version === 'pulse.numeric-workspace.v1' && plan.numericWorkspaces?.some(r => r.id === e.workspaceId) && (!e.offset || proveExpression(e.offset, definite) === 'number') ? 'number' : null;
+    if (e.kind === 'resource-read') return resources && e.version === 'pulse.binary-resource-read.v1'
+      && plan.binaryResources?.records.some(record => record.id === e.resourceId)
+      && ['byteLength', 'readU8', 'readU32LE', 'readF32LE'].includes(e.operation)
+      && (!e.offset || proveExpression(e.offset, definite) === 'number') ? 'number' : null;
     if (e.kind === 'literal') return typeof e.value === 'number' && Number.isFinite(e.value) ? 'number' : null;
     if (e.kind === 'local') return definite.has(e.id) ? 'number' : null;
     if (e.kind === 'binary' && proveExpression(e.left, definite) === 'number' && proveExpression(e.right, definite) === 'number') {
@@ -41,6 +46,7 @@ function prepareNumericRegions({ plan, policy, schemaActive, budgeted, readLoopB
     if (s.kind === 'local') return proveExpression(s.value, definite) === 'number' && write(s.localId);
     if (s.kind === 'expression') {
       const e = s.expression, target = e?.target;
+      if (e?.kind === 'workspace-write') return proveExpression(e.offset, definite) === 'number' && proveExpression(e.value, definite) === 'number';
       if (target?.kind !== 'local') return false;
       if (e.kind === 'assignment' && (e.operator === '=' || arithmetic.has(e.operator.slice(0, -1)) && e.operator.endsWith('=') && definite.has(target.id))) {
         return proveExpression(e.value, definite) === 'number' && write(target.id);
@@ -95,6 +101,8 @@ function prepareNumericRegions({ plan, policy, schemaActive, budgeted, readLoopB
       ? expression(e) : accounting ? `__pulse_numeric_truthy(${expression(e)})`
         : `(${expression(e)} != 0.0 && !isNaN(${expression(e)}))`;
     function expression(e) {
+      if (e.kind === 'workspace-read') return number(resources.workspaces.read(e, e.offset ? expression(e.offset) : '0.0'));
+      if (e.kind === 'resource-read') return number(resources.read(e, e.offset ? expression(e.offset) : '0.0'));
       if (e.kind === 'literal') return number(Object.is(e.value, -0) ? '(-0.0)' : `(<f64>${e.value})`);
       if (e.kind === 'local') return name(e.id);
       if (e.kind === 'binary') {
@@ -112,7 +120,9 @@ function prepareNumericRegions({ plan, policy, schemaActive, budgeted, readLoopB
       const set = (id, value) => [`${name(id)} = ${value}`, `${name(id)}_written = true`];
       if (s.kind === 'local') return set(s.localId, expression(s.value));
       if (s.kind === 'expression') {
-        const e = s.expression, id = e.target.id;
+        const e = s.expression;
+        if (e.kind === 'workspace-write') return [resources.workspaces.write(e, expression(e.offset), expression(e.value))];
+        const id = e.target.id;
         if (e.kind === 'update') {
           const value = `${name(id)} ${e.operator === '++' ? '+' : '-'} ${number('1.0')}`;
           return set(id, accounting ? number(`(${value})`) : value);

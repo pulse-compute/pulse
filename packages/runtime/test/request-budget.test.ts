@@ -15,6 +15,16 @@ function clock() {
 }
 const exceeded = { code: 'PULSE_REQUEST_DEADLINE_EXCEEDED' }
 describe('provider-owned request budget', () => {
+  it('only shortens a running budget and replaces its timer', () => {
+    const c = clock(), budget = host.createRequestBudget({ maxDurationMs: 10000, requestClock: c })
+    c.advance(4000); budget.limitDuration(5000)
+    expect(budget.deadlineMonotonicMs).toBe(5000); expect(c.pending()).toBe(1)
+    budget.limitDuration(9000); expect(budget.deadlineMonotonicMs).toBe(5000)
+    expect(() => budget.limitDuration(undefined)).toThrow()
+    c.advance(1000); expect(() => budget.check()).toThrow(expect.objectContaining(exceeded))
+    budget.close(); expect(c.pending()).toBe(0)
+  })
+
   it.each(['return', 'throw', 'parallel failure'])('cancels abandoned fetched bodies on %s without closing an inherited budget', async (exit) => {
     const budget = host.createRequestBudget(); let cancelled = 0, disposed = 0
     const response = await host.executeApplication(async (ctx: any) => {

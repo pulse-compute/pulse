@@ -1,0 +1,3 @@
+ERROR: error during execution process (see 'command output' above): signal: terminated.
+
+If you believe this error is the result of a bug, please file an issue: https://github.com/fastly/cli/issues/new?labels=bug&template=bug_report.md

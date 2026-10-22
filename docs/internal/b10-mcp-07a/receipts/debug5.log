@@ -1,0 +1,186 @@
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/worker.cjs',
+  'guard',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/settings.json'
+]
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/typescript/bin/tsc',
+  '--project',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/application/tsconfig.json'
+]
+DEVELOPMENT ONLY: already checked types skipped
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/bin/pulse.js',
+  'build',
+  '--profile',
+  'node-native'
+]
+Error: code 3
+
+",
+            "owner": "pulse-runtime",
+            "runtime": false,
+            "contractId": null,
+            "lowerableSubpath": null,
+            "facadeSymbols": [],
+            "importSources": [
+              {
+                "file": "src/schemas.ts",
+                "line": 1,
+                "column": 46
+              }
+            ],
+            "reExportSources": [],
+            "nativeStatus": "core-authoring"
+          }
+        ],
+        "bindings": [
+          {
+            "version": "pulse.package-binding-ownership.v1",
+            "moduleId": "module_project_a34d6ea7bc439f1a77a90b66256277d4",
+            "localName": "defineSchemaRegistry",
+            "exportName": null,
+            "importedName": "defineSchemaRegistry",
+            "packageModuleId": "module_package_adcb40de9acf2bcfb45dafe42345cc7c",
+            "packageName": "@pulse-compute/pulse",
+            "contractId": null,
+            "source": {
+              "file": "src/schemas.ts",
+              "line": 1,
+              "column": 46
+            },
+            "via": "direct-import",
+            "direct": true,
+            "used": true,
+            "id": "pkgbinding_ff65e76df55dc86c28fb653b44a5e9df"
+          },
+          {
+            "version": "pulse.package-binding-ownership.v1",
+            "moduleId": "module_project_a34d6ea7bc439f1a77a90b66256277d4",
+            "localName": "schema",
+            "exportName": null,
+            "importedName": "schema",
+            "packageModuleId": "module_package_adcb40de9acf2bcfb45dafe42345cc7c",
+            "packageName": "@pulse-compute/pulse",
+            "contractId": null,
+            "source": {
+              "file": "src/schemas.ts",
+              "line": 1,
+              "column": 46
+            },
+            "via": "direct-import",
+            "direct": true,
+            "used": true,
+            "id": "pkgbinding_0d6d1a06c3aa3442e9aa1cb71b3d385a"
+          },
+          {
+            "version": "pulse.package-binding-ownership.v1",
+            "moduleId": "module_project_dc21f81d1da688e8aca8fdf85a794714",
+            "localName": "EntityRouter",
+            "exportName": null,
+            "importedName": "EntityRouter",
+            "packageModuleId": "module_package_3a647832226edc90a9ff72b6e04a6db0",
+            "packageName": "@pulse-compute/mcp",
+            "contractId": null,
+            "source": {
+              "file": "src/index.ts",
+              "line": 1,
+              "column": 44
+            },
+            "via": "direct-import",
+            "direct": true,
+            "used": true,
+            "id": "pkgbinding_96f10876ace8cf2486866441e20f6121"
+          },
+          {
+            "version": "pulse.package-binding-ownership.v1",
+            "moduleId": "module_project_dc21f81d1da688e8aca8fdf85a794714",
+            "localName": "jsonRpc",
+            "exportName": null,
+            "importedName": "jsonRpc",
+            "packageModuleId": "module_package_3a647832226edc90a9ff72b6e04a6db0",
+            "packageName": "@pulse-compute/mcp",
+            "contractId": null,
+            "source": {
+              "file": "src/index.ts",
+              "line": 1,
+              "column": 44
+            },
+            "via": "direct-import",
+            "direct": true,
+            "used": true,
+            "id": "pkgbinding_7e645f33980e0b7222c608e990a1884d"
+          },
+          {
+            "version": "pulse.package-binding-ownership.v1",
+            "moduleId": "module_project_dc21f81d1da688e8aca8fdf85a794714",
+            "localName": "mcp",
+            "exportName": null,
+            "importedName": "mcp",
+            "packageModuleId": "module_package_3a647832226edc90a9ff72b6e04a6db0",
+            "packageName": "@pulse-compute/mcp",
+            "contractId": null,
+            "source": {
+              "file": "src/index.ts",
+              "line": 1,
+              "column": 44
+            },
+            "via": "direct-import",
+            "direct": true,
+            "used": true,
+            "id": "pkgbinding_497768aa7477504c1ed2ee61f88da04c"
+          }
+        ],
+        "selectedContracts": [],
+        "policy": {
+          "packageUseFromResolvedReachabilityOnly": true,
+          "typeOnlyImportsActivateContracts": false,
+          "substringSelection": false,
+          "trustedBuildDependencies": true,
+          "publicPluginApi": false
+        },
+        "projectionHash": "f19debc7c661148ae6fb338233a3814896467397125aa03b71bb3b97cba07582"
+      },
+      "automaticFallback": false
+    },
+    "diagnostics": [
+      {
+        "code": "PULSE_NATIVE_IMPORT_UNSUPPORTED",
+        "kind": "CanonicalProjectCompileDiagnostic",
+        "severity": "error",
+        "message": "Runtime package import @pulse-compute/mcp/pulse has no trusted Pulse native contract.",
+        "file": "src/index.ts",
+        "position": {
+          "line": 1,
+          "column": 44
+        },
+        "detail": {
+          "blockerId": "eligibility_49b5264dab7f3d6aa943171570f4154c",
+          "blockerKind": "unsupported-package",
+          "moduleId": "module_project_dc21f81d1da688e8aca8fdf85a794714",
+          "handlerIds": [],
+          "packageName": "@pulse-compute/mcp",
+          "packageSubpath": "./pulse",
+          "contractId": null,
+          "specifier": "@pulse-compute/mcp/pulse",
+          "automaticFallback": false
+        },
+        "title": "Native Import Unsupported",
+        "summary": "A reachable runtime import has neither supported static source nor a trusted Pulse native contract.",
+        "category": "compile",
+        "remediation": [
+          "Use an exact declared ESM source export in the bounded handler/helper subset, a trusted Pulse capability, or an explicit JavaScript target.",
+          "Pulse will not change targets automatically."
+        ],
+        "stability": "preview-stable",
+        "scope": "public",
+        "docs": "https://pulsecompute.io/v1.0.0-beta.9/reference/diagnostics/#pulse-native-import-unsupported"
+      }
+    ]
+  }
+}
+
+    at ChildProcess.<anonymous> (/tmp/07a-debug.cjs:7:557)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:306:5)

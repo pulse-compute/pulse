@@ -11,6 +11,8 @@ const {
 } = require('@pulse-compute/wasm-contracts/crypto/contracts');
 const { providerIds, providerConfigReferences } = require('./provider-drivers.js');
 
+const { NATIVE_OPTIMIZATION_MODES } = require('@pulse-compute/wasm-contracts/project/native-optimization');
+
 const PROJECT_CONFIG_SCHEMA_VERSION = 'pulse.project-config-schema.v1';
 const PROJECT_CONFIG_REFERENCE_VERSION = PROJECT_CONFIG_SCHEMA_VERSION;
 const builtinProviderIds = providerIds();
@@ -36,15 +38,17 @@ function field(value) {
 
 const CONFIG_SECTIONS = Object.freeze([
   Object.freeze({ id: 'project', title: 'Project and provider selection', description: 'Select the canonical entry, provider, and build output.' }),
-  Object.freeze({ id: 'crypto', title: 'Cryptographic requirements', description: 'Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.9 package set.' }),
+  Object.freeze({ id: 'crypto', title: 'Cryptographic requirements', description: 'Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.10 package set.' }),
   Object.freeze({ id: 'schemas', title: 'JSON schema policy', description: 'Configure bounded schema-body policy. Conventional projects declare registry identity only through pulse.schema.' }),
   Object.freeze({ id: 'dev', title: 'Local development', description: 'Configure the foreground local server and local-only provider inputs.' }),
   ...providerConfigSections
 ]);
 
 const CONFIG_FIELDS = Object.freeze([
+  field({ section: 'project', path: 'pulse.binaryResources', type: 'PulseBinaryResources', default: 'absent', scope: 'all targets', description: 'Explicit canonical serialized manifest, logical bindings and mandatory nonnegative safe-integer budgets: files, fileBytes, totalBytes, serializedBytes and bindings. Build-time data hoisting; no runtime loading or read-byte quota.', security: 'All manifest records are integrity-checked before selection; views are immutable and execution-owned. HTTP Assets limits are unchanged.', diagnostics: ['PULSE_BINARY_RESOURCE_INVALID'] }),
   field({ section: 'project', path: 'entry', type: 'string', default: '`./src/index.ts`', scope: 'all project commands', description: 'Project-relative TypeScript handler entry.', precedence: '`pulse.entry` in `.pulse/config.ts`.', security: 'Must resolve to an existing file.', diagnostics: ['PULSE_ENTRY_NOT_FOUND'] }),
   field({ section: 'project', path: 'provider', type: `${providerIdType} | provider configuration`, default: '`node`', allowed: `${providerIdList}, another bare host id, or an exact scoped package name`, scope: 'compile/build/dev/test', description: 'Selects provider validation, local conformance, and build realization through the provider package toolchain contract.', precedence: 'Bare host ids resolve to `@pulse-compute/provider-<id>`; scoped package names are loaded exactly from the project.', security: 'Package loading is explicit and limited to the selected package `./toolchain` export; there is no scanning or fallback discovery.', diagnostics: ['PULSE_PROVIDER_PACKAGE_NOT_FOUND', 'PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED', 'PULSE_PROVIDER_TOOLCHAIN_INVALID', 'PULSE_PROVIDER_UNSUPPORTED', 'PULSE_PROVIDER_COMPILE_ONLY', 'PULSE_TEST_PROVIDER_REQUIRED', 'PULSE_DEV_PROVIDER_UNSUPPORTED'] }),
+  field({ section: 'project', path: 'nativeOptimization', type: NATIVE_OPTIMIZATION_MODES.map(mode => `'${mode}'`).join(' | '), default: '`native-bounded-size` for Native compilation', allowed: NATIVE_OPTIMIZATION_MODES.join(', '), scope: 'Native profile', description: 'Native compiler recipe. native-bounded-size is O3/shrink2/no convergence; native-shrink0 restores O3/shrink0/no convergence. experimental-native-size enables convergence; experimental-native-bounded-size retains the bounded compatibility identity.', precedence: 'An explicit compile/build recipe flag overrides the selected profile; otherwise use the bounded Native default.', diagnostics: ['PULSE_ARGUMENT_UNEXPECTED'] }),
   field({ section: 'project', path: 'outDir', type: 'string', default: '`./dist`', scope: 'compile/build', description: 'Project-relative artifact output directory.', precedence: '`--out` overrides this field for the current command.', security: 'Must remain a real child of the project root; absolute, parent-traversal, and symbolic-link traversal outside the project root is rejected.', diagnostics: ['PULSE_BUILD_OUT_UNSAFE'] }),
   field({ section: 'project', path: 'reporting', type: "'off' | 'error' | 'warn' | 'info' | 'debug'", default: '`info`', allowed: '`off`, `error`, `warn`, `info`, `debug`', scope: 'compile/build/dev/test', description: 'Resolved synchronous logging threshold after the flat profile override is applied.', precedence: 'Selected-profile `reporting`, then `pulse.reporting`, then `info`.', security: 'Known request-owned secret values are redacted before provider emission.', diagnostics: ['PULSE_REPORTING_LEVEL_UNSUPPORTED'] }),
 
@@ -88,6 +92,7 @@ function deepFreeze(value) {
 const CONFIG_RUNTIME_RULES = Object.freeze({
   entry: Object.freeze({ kind: 'string', default: './src/index.ts', nonEmpty: true }),
   provider: Object.freeze({ kind: 'provider-package', default: 'node', builtinValues: builtinProviderIds }),
+  nativeOptimization: Object.freeze({ kind: 'enum', optional: true, values: NATIVE_OPTIMIZATION_MODES }),
   outDir: Object.freeze({ kind: 'string', default: './dist', nonEmpty: true }),
   reporting: Object.freeze({ kind: 'enum', default: DEFAULT_REPORTING_LEVEL, values: REPORTING_LEVEL_NAMES }),
   crypto: Object.freeze({ kind: 'crypto-configuration', optional: true }),
@@ -105,6 +110,18 @@ const PROJECT_CONFIG_JSON_SCHEMA = deepFreeze({
   $schema: 'https://json-schema.org/draft/2020-12/schema',
   $id: 'urn:pulse:project-config:v1',
   title: 'Pulse project configuration',
+  $defs: {
+    binaryResources: {
+      description: 'Reserved pulse.binaryResources in conventional configuration.',
+      type: 'object', additionalProperties: false, required: ['manifest', 'bindings', 'budgets'],
+      properties: {
+        manifest: { type: 'string' },
+        bindings: { type: 'object', propertyNames: { pattern: '^[a-z][a-z0-9.-]{0,63}$' }, additionalProperties: { type: 'string' } },
+        budgets: { type: 'object', additionalProperties: false, required: ['files', 'fileBytes', 'totalBytes', 'serializedBytes', 'bindings'],
+          properties: Object.fromEntries(['files', 'fileBytes', 'totalBytes', 'serializedBytes', 'bindings'].map(key => [key, { type: 'integer', minimum: 0, maximum: 9007199254740991 }])) }
+      }
+    }
+  },
   type: 'object',
   additionalProperties: false,
   properties: {
@@ -121,6 +138,7 @@ const PROJECT_CONFIG_JSON_SCHEMA = deepFreeze({
       ],
       default: 'node'
     },
+    nativeOptimization: { enum: [...NATIVE_OPTIMIZATION_MODES] },
     outDir: { type: 'string', minLength: 1, default: './dist' },
     reporting: { enum: [...REPORTING_LEVEL_NAMES], default: DEFAULT_REPORTING_LEVEL },
     crypto: {
@@ -173,7 +191,7 @@ const PROJECT_CONFIG_JSON_SCHEMA = deepFreeze({
 });
 
 const CONFIG_CONTAINER_KEYS = deepFreeze({
-  '$': ['entry', 'provider', 'outDir', 'reporting', 'crypto', 'schemas', 'dev'],
+  '$': ['entry', 'provider', 'nativeOptimization', 'outDir', 'reporting', 'crypto', 'schemas', 'dev'],
   'schemas': ['contentTypePolicy', 'maxBytes'],
   'dev': ['host', 'port', 'watch', 'maxBodyBytes', 'networkFetch', 'config', 'secrets', 'kv', 'fetches']
 });

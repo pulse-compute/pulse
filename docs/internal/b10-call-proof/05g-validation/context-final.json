@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-20T20-23-19-787Z--5",
+  "sourceRevision": "1555a51887749f78500978287fa3b93ee67a1305",
+  "sourceIdentity": {
+    "sourceRevision": "1555a51887749f78500978287fa3b93ee67a1305",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-20T20:23:19.792Z",
+  "updatedAt": "2026-10-20T20:23:43.084Z",
+  "finishedAt": "2026-10-20T20:23:43.084Z",
+  "durationMs": 23292,
+  "profiles": [],
+  "requestedTasks": [
+    "pulse-context-corpus",
+    "pulse-context-build"
+  ],
+  "selectedTasks": [
+    "pulse-context-corpus",
+    "pulse-context-build"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 2,
+  "results": [
+    {
+      "name": "pulse-context-corpus",
+      "evidence": "unit",
+      "description": "PMCP-02 immutable bounded context snapshot, deterministic generation, source identity and version mismatch",
+      "commandSignature": "c95d8645599fc580f51b7a9dbf2ea62b75e4343c3fea670c91c511bd9d351120",
+      "timeoutMs": 30000,
+      "durationMs": 1439,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-19-787Z--5/tasks/pulse-context-corpus.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "pulse-context-build",
+      "evidence": "unit",
+      "description": "B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection",
+      "commandSignature": "203a0cc711468a68d3817742297cf988c7d4f8680f27c7c307c05c76e1f14704",
+      "timeoutMs": 60000,
+      "durationMs": 21826,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-19-787Z--5/tasks/pulse-context-build.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05g/runs/2026-10-20T20-23-19-787Z--5"
+}

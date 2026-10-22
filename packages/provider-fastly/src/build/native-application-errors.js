@@ -44,7 +44,7 @@ ${jwt.map((code, i) => `      case ${i + 1}: return "PULSE_JWT_${code}"`).join('
 }
 function __pulse_application_clear(): void {
   __pulse_fastly_last_error = 0; __pulse_fastly_error_stage = 0; __pulse_fastly_error_effect = -1
-  __pulse_fastly_jwt_error = 0; __pulse_application_failed_schema = 0
+  __pulse_fastly_jwt_error = 0; __pulse_application_failed_schema = 0; __pulse_transport_error = null
 }
 ${(plan?.effects || []).length > 0 ? settlementSource(plan) : ''}
 function host_router_error_take(): i32 {
@@ -54,11 +54,13 @@ function host_router_error_take(): i32 {
   // Never abandon a dispatched sibling to run application recovery.
   for (let i = 0; i < PULSE_FASTLY_EFFECT_COUNT; i += 1)
     if (unchecked(__pulse_fastly_pending_mode[i]) != PULSE_FASTLY_PENDING_NONE) return 0
+  const transport = __pulse_transport_error
   __pulse_application_clear()
   const error = host_value_object()
   host_value_object_set(error, __pulse_fastly_string_value("code"), __pulse_fastly_string_value(code))
   host_value_object_set(error, __pulse_fastly_string_value("name"), __pulse_fastly_string_value("PulseApplicationError"))
   host_value_object_set(error, __pulse_fastly_string_value("message"), __pulse_fastly_string_value(code == "PULSE_FETCH_TIMEOUT" ? "Fetch header deadline exceeded." : code == "PULSE_FETCH_NETWORK" ? "Fetch transport failed." : "Pulse application data validation failed."))
+  if (transport != null) host_value_object_set(error, __pulse_fastly_string_value('detail'), __pulse_transport_value(transport))
   return error
 }
 `;
@@ -76,6 +78,7 @@ function __pulse_application_settle_effect(index: i32, fatal: bool): i32 {
   let effect = __pulse_fastly_error_effect
   let jwt = __pulse_fastly_jwt_error
   let schema = __pulse_application_failed_schema
+  let transport = __pulse_transport_error
   const invocation = unchecked(__pulse_invocation_tickets[index])
   __pulse_application_clear()
   let result = host_value_undefined()
@@ -87,7 +90,7 @@ function __pulse_application_settle_effect(index: i32, fatal: bool): i32 {
     const terminal = ${enabled(plan) ? '__pulse_application_code().length == 0' : 'true'}
     if (failure == 0 || (!fatal && terminal)) {
       failure = __pulse_fastly_last_error; stage = __pulse_fastly_error_stage; effect = __pulse_fastly_error_effect
-      jwt = __pulse_fastly_jwt_error; schema = __pulse_application_failed_schema; fatal = terminal
+      jwt = __pulse_fastly_jwt_error; schema = __pulse_application_failed_schema; transport = __pulse_transport_error; fatal = terminal
     }
     __pulse_application_clear()
     result = host_value_undefined()
@@ -96,13 +99,14 @@ function __pulse_application_settle_effect(index: i32, fatal: bool): i32 {
     __pulse_fastly_fail(PULSE_ERROR_STATE, 101, index); __pulse_fastly_jwt_send_error(); return -1
   }
   __pulse_fastly_last_error = failure; __pulse_fastly_error_stage = stage; __pulse_fastly_error_effect = effect
-  __pulse_fastly_jwt_error = jwt; __pulse_application_failed_schema = schema
+  __pulse_fastly_jwt_error = jwt; __pulse_application_failed_schema = schema; __pulse_transport_error = transport
   return fatal ? 1 : 0
 }
 `;
 }
 
-// Preserve the fatal-return boundary consumed by request-budget instrumentation.
+// Fatal settlement uses the same response hook as synchronous failure; its
+// instrumentation preserves deadline and transport-specific precedence.
 function driverLoop(plan) {
   return `  while (runStatus == 1) {
     let fatal = __pulse_fastly_last_error != 0${enabled(plan) ? ' && __pulse_application_code().length == 0' : ''}
@@ -111,7 +115,7 @@ ${(plan.effects || []).map((_, index) => `    if (__pulse_effect_pending_${index
       if (settled < 0) return
       fatal = settled != 0
     }`).join('\n')}
-    ${enabled(plan) ? 'if (fatal) return' : 'if (fatal) { __pulse_fastly_jwt_send_error(); return }'}
+    if (fatal) { __pulse_fastly_jwt_send_error(); return }
     runStatus = pulse_resume()
   }`;
 }
@@ -121,7 +125,7 @@ function instrument(source) {
   // failure suppression on all imports so a failed expression has no effects.
   source = source.replace(/function (host_\w+)\(([^)]*)\): (i32|void) \{/g,
     (declaration, name, _args, result) => name === 'host_router_error_take' ? declaration
-      : `${declaration} if (__pulse_fastly_last_error != 0) return${result === 'void' ? '' : ' 0'};`);
+      : `${declaration} if (__pulse_fastly_last_error != 0) return${result === 'void' ? '' : ['host_resource_check', 'host_workspace_check'].includes(name) ? ' -1' : ' 0'};`);
   const wrappers = [
     ['host_request_json', 'schema: i32', 'schema', '1'],
     ['host_schema_decode', 'text: i32, schema: i32', 'text, schema', '1'],
@@ -130,7 +134,16 @@ function instrument(source) {
     ['host_response_json', 'value: i32, options: i32', 'value, options', '2'],
     ['__pulse_fastly_schema_apply', 'schemaId: string, valueHandle: i32, encode: bool', 'schemaId, valueHandle, encode', 'encode ? 2 : 1']
   ];
-  for (const [name, params, args, mode] of wrappers) {
+  for (let [name, params, args, mode] of wrappers) {
+    if (name === '__pulse_fastly_schema_apply') {
+      // Text-result specialization adds an optional parameter. Preserve the
+      // compiler-owned declaration (including defaults) and forward every value.
+      const declaration = source.match(/function __pulse_fastly_schema_apply\(([^)]*)\): i32 \{/);
+      if (declaration) {
+        params = declaration[1];
+        args = params.split(',').map(parameter => parameter.split(':')[0].trim()).join(', ');
+      }
+    }
     source = source.replace(`function ${name}(`, `function __pulse_application_impl_${name}(`);
     source += `\nfunction ${name}(${params}): i32 {
   const previous = __pulse_application_schema; __pulse_application_schema = ${mode}

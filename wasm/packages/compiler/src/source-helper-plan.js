@@ -51,7 +51,8 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
     if (expression.kind !== 'local' && values.scalar(inputType(expression))) scalarArgumentKind(expression,locals,fail,true,projectionType);
     // Schema decoders and typed effect results establish their own boundary;
     // the encoded input need not itself have the decoded shape.
-    if (expression.kind === 'intrinsic' && ['request.json','schema.decode.text'].includes(expression.name)) return;
+    if (expression.kind === 'intrinsic' && ['request.json','schema.decode.text'].includes(expression.name)
+      || expression.kind === 'callable-input' && plan.callable) return;
     if (expression.kind === 'object') { for (const field of expression.entries) proveInputs(field.value, visiting); return; }
     if (expression.kind !== 'local') {
       for (const child of Object.values(expression)) {
@@ -181,7 +182,9 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
       const type = candidates.length && candidates[0] && candidates.every(t=>values.same(candidates[0],t)) ? candidates[0] : undefined;
       return guarded && locals.get(id)?.declaration === 'const' && type === 'string-or-undefined' ? 'string' : type;
     }};
-    const type=values.readType(e,types);
+    const type=e.kind === 'callable-input' && plan.callable
+      ? values.schemaType(plan.schemas?.registry?.schemas?.find(s => s.id === plan.callable.inputSchema)?.root)
+      : values.readType(e,types);
     if(type && !seen.size)inputTypes.set(e,type);
     return type;
   }
@@ -189,46 +192,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   function readonlyInput(e) {
     if(!e || readonlyChecked.has(e))return;
     readonlyChecked.add(e);
-    const aliases = new Set(), visited=new Set();
-    const scalarType=t=>typeof t==='string';
-    function collect(value) {
-      if(!value || typeof value!=='object')return;
-      if(value.kind==='intrinsic')return;
-      if(value.kind==='local') {
-        if(visited.has(value.id))return;visited.add(value.id);
-        if(!scalarType(inputType(value)))aliases.add(value.id);
-        collect(definitions.get(value.id));
-        for(const write of writes.get(value.id)||[])collect(write.value);
-        return;
-      }
-      if(value.kind==='object') {
-        for(const field of value.entries||[])if(!scalarType(inputType(field.value)))collect(field.value);
-        return;
-      }
-      for(const child of Object.values(value)) {
-        if(Array.isArray(child))for(const item of child)collect(item);
-        else if(child && typeof child==='object')collect(child);
-      }
-    }
-    collect(e);
-    function references(value) {
-      if(!value || typeof value!=='object')return false;
-      if(value.kind==='local')return aliases.has(value.id);
-      if(['property','element'].includes(value.kind))return !scalarType(inputType(value)) && references(value.object);
-      if(value.kind==='conditional')return references(value.whenTrue)||references(value.whenFalse);
-      if(value.kind==='binary' && ['&&','||','??'].includes(value.operator))return references(value.left)||references(value.right);
-      if(value.kind==='object')return value.entries.some(f=>references(f.value));
-      if(value.kind==='array')return value.items.some(references);
-      return false;
-    }
-    let changed=true;
-    while(changed) {
-      changed=false;
-      const add=(id,value)=>{if(!aliases.has(id) && references(value)){aliases.add(id);changed=true;}};
-      for(const [id,value] of definitions)add(id,value);
-      for(const [id,updates] of writes)for(const update of updates)add(id,update.value);
-    }
-    for(const write of memberWrites)if(references(write.target.object))fail('borrowed caller shape is mutated through an alias');
+    validateReadonlyInput(e, { definitions, writes, memberWrites, inputType }, fail);
   }
   function projectionType(e) {
     const type=inputType(e);
@@ -258,6 +222,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   }
   const admittedCalls = new Map();
   const admit = (body, owner) => { const visit = s => { if (s.kind === 'helper-call') admittedCalls.set(s, owner); }; visit.expression = e => { if (e.kind === 'pure-helper-call') admittedCalls.set(e, owner); }; walkStatements(body, visit); };
+  if (plan.callable) admit(plan.entry.body, 'entry');
   const cursor = plan.locals.find(l => l.scopeId === 'entry' && l.name === '__pulse_router_cursor')?.id;
   for (const entry of plan.routing?.entries || []) {
     if (!['route', 'use'].includes(entry.kind)) continue;
@@ -343,7 +308,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   for (const effect of plan.effects) if (effect.helperId && (!helpers.has(effect.helperId) || sites.get(effect.id) !== 1)) fail('helper effect requires one owning site');
   for (const c of plan.continuations) for (const id of c.effectIds) if (effects.get(id)?.helperId !== c.helperId) fail('helper continuation ownership mismatch');
 }
-module.exports = { validateHelpers };
+module.exports = { validateHelpers, validateReadonlyInput };
 
 // Independently prove the bounded value grammar after deserialization, rather than
 // trusting valueKind tags or a recomputed hash. No external owner is reachable.
@@ -440,6 +405,18 @@ function scalarArgumentKind(e, locals, fail, bound = false, projectionType) {
   const child = v => scalarArgumentKind(v, locals, fail, bound, projectionType);
   let kind = 'unknown';
   if (e.kind === 'literal' && values.scalar(typeof e.value)) kind = typeof e.value;
+  else if (e.kind === 'workspace-read' && e.version === 'pulse.numeric-workspace.v1') {
+    if (e.offset && child(e.offset) !== 'number') fail('workspace helper input requires numeric index');
+    kind = 'number';
+  }
+  else if (e.kind === 'resource-read' && e.version === 'pulse.binary-resource-utf8.v1' && e.operation === 'readUtf8') {
+    if (child(e.offset) !== 'number' || child(e.length) !== 'number') fail('UTF-8 helper input requires numeric offset/length');
+    kind = 'string';
+  }
+  else if (e.kind === 'resource-read' && e.version === 'pulse.binary-resource-read.v1' && ['byteLength', 'readU8', 'readU32LE', 'readF32LE'].includes(e.operation)) {
+    if (e.offset && child(e.offset) !== 'number') fail('resource helper input requires a numeric offset');
+    kind = 'number';
+  }
   else if (e.kind === 'local') {
     kind = locals.get(e.id)?.valueKind;
     if (kind === 'string-or-undefined' && e.valueKind === 'string' && projectionType?.(e) === 'string') kind = 'string';
@@ -479,4 +456,48 @@ function scalarArgumentKind(e, locals, fail, bound = false, projectionType) {
   } else fail('pure helper argument requires a proven scalar expression or request scalar read');
   if (!values.scalar(kind) && kind !== 'string-or-undefined' || e.valueKind !== kind) fail('pure argument kind mismatch');
   return kind;
+}
+
+// Shared alias/borrow ownership analysis for helpers and internal call boundaries.
+function validateReadonlyInput(e, { definitions, writes, memberWrites, inputType }, fail) {
+    const aliases = new Set(), visited=new Set();
+    const scalarType=t=>typeof t==='string';
+    function collect(value) {
+      if(!value || typeof value!=='object')return;
+      if(value.kind==='intrinsic')return;
+      if(value.kind==='local') {
+        if(visited.has(value.id))return;visited.add(value.id);
+        if(!scalarType(inputType(value)))aliases.add(value.id);
+        collect(definitions.get(value.id));
+        for(const write of writes.get(value.id)||[])collect(write.value);
+        return;
+      }
+      if(value.kind==='object') {
+        for(const field of value.entries||[])if(!scalarType(inputType(field.value)))collect(field.value);
+        return;
+      }
+      for(const child of Object.values(value)) {
+        if(Array.isArray(child))for(const item of child)collect(item);
+        else if(child && typeof child==='object')collect(child);
+      }
+    }
+    collect(e);
+    function references(value) {
+      if(!value || typeof value!=='object')return false;
+      if(value.kind==='local')return aliases.has(value.id);
+      if(['property','element'].includes(value.kind))return !scalarType(inputType(value)) && references(value.object);
+      if(value.kind==='conditional')return references(value.whenTrue)||references(value.whenFalse);
+      if(value.kind==='binary' && ['&&','||','??'].includes(value.operator))return references(value.left)||references(value.right);
+      if(value.kind==='object')return value.entries.some(f=>references(f.value));
+      if(value.kind==='array')return value.items.some(references);
+      return false;
+    }
+    let changed=true;
+    while(changed) {
+      changed=false;
+      const add=(id,value)=>{if(!aliases.has(id) && references(value)){aliases.add(id);changed=true;}};
+      for(const [id,value] of definitions)add(id,value);
+      for(const [id,updates] of writes)for(const update of updates)add(id,update.value);
+    }
+    for(const write of memberWrites)if(references(write.target.object))fail('borrowed caller shape is mutated through an alias');
 }

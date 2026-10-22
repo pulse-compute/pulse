@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.cli-command-spec.v5",
-  "cliVersion": "1.0.0-beta.9",
+  "cliVersion": "1.0.0-beta.10",
   "completionShells": [
     "bash",
     "zsh",
@@ -77,6 +77,17 @@
       ],
       "options": [
         {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
+        {
           "id": "force",
           "key": "force",
           "flags": [
@@ -133,6 +144,17 @@
         }
       ],
       "options": [
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
         {
           "id": "strict",
           "key": "strict",
@@ -194,6 +216,17 @@
       ],
       "options": [
         {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
+        {
           "id": "profile",
           "key": "profile",
           "flags": [
@@ -251,6 +284,17 @@
         }
       ],
       "options": [
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
         {
           "id": "profile",
           "key": "profile",
@@ -397,7 +441,7 @@
       "name": "compile",
       "summary": "Compile the canonical project into provider-neutral Pulse-owned WebAssembly.",
       "usage": [
-        "pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]"
+        "pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--native-shrink0|--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]"
       ],
       "positionals": [
         {
@@ -407,6 +451,17 @@
         }
       ],
       "options": [
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
         {
           "id": "clean",
           "key": "clean",
@@ -446,6 +501,17 @@
           "description": "Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity."
         },
         {
+          "id": "native-shrink0",
+          "key": "nativeShrink0",
+          "flags": [
+            {
+              "name": "--native-shrink0"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag."
+        },
+        {
           "id": "experimental-native-bounded-size",
           "key": "experimentalNativeBoundedSize",
           "flags": [
@@ -454,7 +520,7 @@
             }
           ],
           "kind": "boolean",
-          "description": "Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag."
+          "description": "Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag."
         },
         {
           "id": "experimental-native-size",
@@ -465,7 +531,7 @@
             }
           ],
           "kind": "boolean",
-          "description": "Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag."
+          "description": "Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag."
         },
         {
           "id": "profile",
@@ -506,7 +572,7 @@
       "outputs": [
         "Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, and native manifest; --emit-wat adds diagnostic WAT.",
         "The output is provider-neutral and does not package a deployment provider runtime.",
-        "Experimental size builds record the exact non-default Native compiler optimization settings.",
+        "Native builds default to O3/shrink2/no convergence and record the explicit compiler recipe.",
         "With --json, emits one compile result object containing exact artifact paths and native metadata."
       ],
       "sideEffects": [
@@ -518,9 +584,9 @@
     },
     {
       "name": "build",
-      "summary": "Compile the canonical project and realize the deployment provider selected by the active project profile.",
+      "summary": "Build the Native or JavaScript target for the deployment provider selected by the active project profile.",
       "usage": [
-        "pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]"
+        "pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--native-shrink0|--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]"
       ],
       "positionals": [
         {
@@ -530,6 +596,17 @@
         }
       ],
       "options": [
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        },
         {
           "id": "clean",
           "key": "clean",
@@ -569,6 +646,17 @@
           "description": "Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity."
         },
         {
+          "id": "native-shrink0",
+          "key": "nativeShrink0",
+          "flags": [
+            {
+              "name": "--native-shrink0"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag."
+        },
+        {
           "id": "experimental-native-bounded-size",
           "key": "experimentalNativeBoundedSize",
           "flags": [
@@ -577,7 +665,7 @@
             }
           ],
           "kind": "boolean",
-          "description": "Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag."
+          "description": "Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag."
         },
         {
           "id": "experimental-native-size",
@@ -588,7 +676,7 @@
             }
           ],
           "kind": "boolean",
-          "description": "Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag."
+          "description": "Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag."
         },
         {
           "id": "profile",
@@ -629,14 +717,14 @@
         "PULSE_CANONICAL_NATIVE_COMPILE_FAILED"
       ],
       "outputs": [
-        "Writes pulse-build.json, the provider-neutral native module, and the configured provider realization; Native --emit-wat builds also write diagnostic WAT.",
-        "Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.",
-        "Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.",
-        "With --json, emits one build result object containing exact portable and provider artifact paths."
+        "Writes pulse-build.json and the configured provider realization. Native builds include the provider-neutral native module; JavaScript builds emit a deterministic source package. Native --emit-wat builds also write diagnostic WAT.",
+        "Fastly Native builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm without a JavaScript runtime image. Fastly JavaScript builds emit a source/deployment package with exact downstream compiler pins and deployment-candidate metadata.",
+        "Native builds default to O3/shrink2/no convergence and record the explicit compiler recipe in portable, provider, and build metadata.",
+        "With --json, emits one build result object containing exact artifact paths for the selected target and provider."
       ],
       "sideEffects": [
         "Cleans the output directory by default.",
-        "Invokes the native compiler and configured provider realization.",
+        "Native builds invoke the native compiler and configured provider realization. JavaScript builds validate and package the reachable application graph without invoking the Pulse Native compiler.",
         "Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root."
       ],
       "exit": "0 on success; 2–5 according to the emitted stable diagnostic."
@@ -666,6 +754,17 @@
           ],
           "kind": "boolean",
           "description": "Write a self-contained offline HTML report; mutually exclusive with --json."
+        },
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
         },
         {
           "id": "profile",
@@ -718,6 +817,7 @@
       ],
       "outputs": [
         "Default output is a bounded terminal overview; --json emits one complete authoritative Report capsule.",
+        "--evidence-status wraps the unchanged capsule in pulse.command-evidence v1; --json alone remains the authoritative capsule.",
         "Historical capsule replay preserves evidence identity without claiming current-project freshness.",
         "--html writes an offline route-first viewer with expandable schemas and full-capsule JSON export; it does not open a browser."
       ],
@@ -729,6 +829,45 @@
         "Reports are build-review artifacts; review contents before sharing publicly."
       ],
       "exit": "0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence or an output write failure."
+    },
+    {
+      "name": "docs",
+      "summary": "Locate the offline documentation shipped with the executing CLI package.",
+      "usage": [
+        "pulse docs [--json]"
+      ],
+      "positionals": [],
+      "options": [
+        {
+          "id": "evidence-status",
+          "key": "evidenceStatus",
+          "flags": [
+            {
+              "name": "--evidence-status"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html."
+        }
+      ],
+      "examples": [
+        "pulse docs",
+        "pulse docs --json"
+      ],
+      "diagnostics": [
+        "PULSE_DOCS_UNAVAILABLE",
+        "PULSE_DOCS_INVALID"
+      ],
+      "outputs": [
+        "Human output prints the installed CLI version and absolute documentation index path.",
+        "With --json, emits {status: \"ok\", version, docs: {root, index}} with the executing CLI version and absolute physical paths."
+      ],
+      "sideEffects": [
+        "Reads only the executing package documentation index; does not discover a project, compile code, install dependencies, contact the network, launch a server or open a browser.",
+        "Validates the index type, containment, readability and nonempty UTF-8 text; does not audit every document or establish package integrity.",
+        "--plan and --dry-run describe the locator without reading or validating documentation."
+      ],
+      "exit": "0 on success; 2 for invalid arguments; 5 when packaged documentation is unavailable or the index is invalid."
     }
   ]
 }

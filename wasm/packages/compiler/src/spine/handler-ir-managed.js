@@ -604,6 +604,9 @@ function createExpressionCompiler(state) {
     }
 
     if (ts.isCallExpression(current)) {
+      const callable = state.callableSource?.forCall(current);
+      if (callable) return Object.freeze({ kind: 'callable-call', index: callable.index,
+        argument: compile(current.arguments[1], scope) });
       const callee = unwrap(current.expression);
       const calleeName = callee && ts.isIdentifier(callee) ? callee.text : undefined;
       const inputEscapes = containsIdentifier(current.expression, inputName)
@@ -841,6 +844,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     return undefined;
   }
 
+  const callableSites = options.callableSource?.admit({ modulePath: resolved.sourceModule.path,
+    sourceFile, functionNode: original, identity: `${resolved.sourceModule.path}#${resolved.symbol}` }, { managed: true }) || [];
   const ctxName = original.parameters[0].name.text;
   const inputName = original.parameters[1].name.text;
   if (ctxName === inputName) {
@@ -929,7 +934,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     ctxName,
     inputName,
     handlerTargets,
-    currentSymbol: resolved.symbol
+    currentSymbol: resolved.symbol,
+    callableSource: options.callableSource
   });
 
   const state = {
@@ -988,6 +994,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
       } else if (provider.providerKind === 'kv') {
         add('store', provider.store || provider.resource);
         add('key', provider.key);
+        add('options', provider.options);
         add('generation', provider.generation);
         add('value', provider.value);
       } else if (provider.providerKind === 'event') {
@@ -1195,6 +1202,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     return Object.freeze({
       operation: createOperation('parallel', {
         strategy,
+        ...(operation.kind === "effect-collection" ? { collection: { version: "pulse.effect-collection.v1", max: operation.candidate.max, result: "ordered-array" } } : {}),
         effects: operation.sites,
         continuation: operation.continuation,
         bindings: parallelBindings(operation.candidate, scope),
@@ -1292,6 +1300,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
       });
     }
     if (operation.kind === 'fetch-group') return compileParallel(operation, scope, 'implicit-independent-fetch-group');
+    if (operation.kind === 'effect-collection') return compileParallel(operation, scope, 'bounded-collection-v1');
     if (operation.kind === 'parallel-group') return compileParallel(operation, scope, 'explicit-keyed');
     if (operation.kind === 'opaque-fetch-return') {
       fail(operation.statement, 'PULSE_MANAGED_HANDLER_RESPONSE_RESULT_UNSUPPORTED', 'Managed schema operations cannot return an opaque fetch Response; the adapter owns completion framing.');
@@ -1430,6 +1439,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     || deepFreeze({ effectId: site.id, inputs: Object.freeze([]) })
   )));
   const nativeSemantic = {
+    ...(callableSites.length ? { callableCount: Math.max(...callableSites.map(site => site.index)) + 1 } : {}),
     version: managedHandlerNativeFactsVersion,
     handlerIrVersion: managedHandlerIrVersion,
     id: record.id,
@@ -1478,7 +1488,7 @@ function compileManagedHandlerDescriptors(inputs = {}) {
   const resolved = resolveDescriptors(inputs.graphBuild, descriptors, diagnostics);
   const handlers = [];
   for (const entry of resolved) {
-    const handler = compileHandler(entry, inputs.graphBuild, resolved, diagnostics, packageRecognition, { target: inputs.target });
+    const handler = compileHandler(entry, inputs.graphBuild, resolved, diagnostics, packageRecognition, { target: inputs.target, callableSource: inputs.callableSource });
     if (handler) handlers.push(handler);
   }
   if (diagnostics.length > 0) {

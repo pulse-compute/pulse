@@ -1,13 +1,16 @@
 <!-- pulse-doc-meta:start
 owner: docs-platform
 status: active
-last-reviewed: 2026-10-09
-review-by: 2027-04-09
+last-reviewed: 2026-10-21
+review-by: 2027-04-21
 pulse-doc-meta:end -->
 
 # Contributing to Pulse
 
-These pages describe changes to the synchronized Pulse repository. They are not application-author extension APIs.
+These pages cover Pulse repository maintenance and the supported contracts for trusted package lowerers and explicitly selected provider toolchains. Application authors should start with the [package guides](../packages/README.md).
+
+> Before changing a shared boundary, consult the
+> [Architecture contracts](../architecture/current-contracts.md) for ownership rules and invariants.
 
 ## Contributor workflow
 
@@ -50,11 +53,11 @@ and target set. Human maintainers retain merge, settings and release authority.
 
 - [Package support policy](../packages/README.md)
 - [Architecture overview](../architecture/overview.md)
-- [Current architecture contracts](../architecture/current-contracts.md)
 - [Reference overview](../reference/README.md)
 
-The current release executes only trusted first-party lowerer builders. Built-in
-provider shorthand is release-owned, while an exact scoped project provider may
+Declared lowerer builders execute as trusted build dependencies, including
+external packages admitted through the versioned contract. This is not a sandbox.
+Built-in provider shorthand is release-owned, while an exact scoped project provider may
 export the versioned `./toolchain` contract without self-registration or
 dependency scanning. Changes that widen either executable trust boundary
 require an explicit security and compatibility design, not only another

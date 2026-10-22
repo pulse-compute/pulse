@@ -1,0 +1,3081 @@
+{
+  "schemaVersion": "pulse.context-quality-evidence.v1",
+  "mode": "repeat",
+  "status": "completed",
+  "acceptance": "passed",
+  "source": {
+    "revision": "d34ebaeeb1c973644b847993d4afdff4fcb5a166",
+    "tree": "6b06b0a510ce7fbf02ce72730d27a92b017fafe5",
+    "status": "",
+    "modifiedFiles": []
+  },
+  "frozenCasesSha256": "b62bb7dd5f3cd77f5271aca0d9da9dd33b1b84c47abd6bb8c14aeceb625745ce",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0"
+  },
+  "budgets": {
+    "requestMs": 5000,
+    "compileMs": 120000,
+    "artifactBytes": 8388608,
+    "guestCommittedBytes": 134217728,
+    "nodeValueHandles": 1048576,
+    "retainedBytes": 67108864,
+    "toolBytes": 24576,
+    "mcpBytes": 131072,
+    "warmSamples": 9
+  },
+  "queries": [],
+  "failures": [],
+  "timing": [
+    {
+      "target": "node",
+      "input": {
+        "version": "1.0.0-beta.9",
+        "query": "schema",
+        "offset": 0,
+        "limit": 5
+      },
+      "cold": {
+        "wallMs": 64.368574,
+        "cpuMs": 106.391,
+        "status": 200,
+        "responseBytes": 12081,
+        "responseSha256": "767262778abb0c44b442a7d19379a2959d2f64fdaa8adb1227ff578554c0d46d",
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 522170,
+          "values": 15671
+        },
+        "guestMemoryBytes": 3932160,
+        "valueHandleCount": 6567,
+        "processPeakRssBytes": 143208448
+      },
+      "warm": [
+        {
+          "wallMs": 52.123772999999346,
+          "cpuMs": 96.772,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 522170,
+            "values": 15671
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6567,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 27.60783800000354,
+          "cpuMs": 66.519,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 522170,
+            "values": 15671
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6567,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 36.64660799999547,
+          "cpuMs": 84.391,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 522170,
+            "values": 15671
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6567,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 27.582280000002356,
+          "cpuMs": 44.731,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 522170,
+            "values": 15671
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6567,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 29.695636999997078,
+          "cpuMs": 43.401,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 522170,
+            "values": 15671
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6567,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 30.333661999997275,
+          "cpuMs": 44.129,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 522170,
+            "values": 15671
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6567,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 27.634808000002522,
+          "cpuMs": 30.326,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 522170,
+            "values": 15671
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6567,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 39.78503300000011,
+          "cpuMs": 52.613,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 522170,
+            "values": 15671
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6567,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 33.118593999999575,
+          "cpuMs": 37.501,
+          "memory": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 522170,
+            "values": 15671
+          },
+          "guestMemoryBytes": 3932160,
+          "valueHandleCount": 6567,
+          "responseBytes": 12081
+        }
+      ],
+      "medianWallMs": 30.333661999997275,
+      "medianCpuMs": 44.731
+    },
+    {
+      "target": "fastly",
+      "input": {
+        "version": "1.0.0-beta.9",
+        "query": "schema",
+        "offset": 0,
+        "limit": 5
+      },
+      "cold": {
+        "wallMs": 39.160945,
+        "cpuMs": 68.629,
+        "status": 200,
+        "responseBytes": 12081,
+        "responseSha256": "767262778abb0c44b442a7d19379a2959d2f64fdaa8adb1227ff578554c0d46d",
+        "memory": {
+          "bytes": 644246,
+          "values": 17273
+        },
+        "guestMemoryBytes": 7864320,
+        "processPeakRssBytes": 131510272
+      },
+      "warm": [
+        {
+          "wallMs": 44.57123800000409,
+          "cpuMs": 70.686,
+          "memory": {
+            "bytes": 644246,
+            "values": 17273
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 28.749407000002975,
+          "cpuMs": 53.702,
+          "memory": {
+            "bytes": 644246,
+            "values": 17273
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 52.251877999995486,
+          "cpuMs": 147.126,
+          "memory": {
+            "bytes": 644246,
+            "values": 17273
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 28.426519000000553,
+          "cpuMs": 44.238,
+          "memory": {
+            "bytes": 644246,
+            "values": 17273
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 17.10298799999873,
+          "cpuMs": 29.856,
+          "memory": {
+            "bytes": 644246,
+            "values": 17273
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 15.438462999998592,
+          "cpuMs": 19.648,
+          "memory": {
+            "bytes": 644246,
+            "values": 17273
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 15.677406999995583,
+          "cpuMs": 23.323,
+          "memory": {
+            "bytes": 644246,
+            "values": 17273
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 16.75810199999978,
+          "cpuMs": 24.573,
+          "memory": {
+            "bytes": 644246,
+            "values": 17273
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        },
+        {
+          "wallMs": 16.04079400000046,
+          "cpuMs": 21.771,
+          "memory": {
+            "bytes": 644246,
+            "values": 17273
+          },
+          "guestMemoryBytes": 7864320,
+          "responseBytes": 12081
+        }
+      ],
+      "medianWallMs": 17.10298799999873,
+      "medianCpuMs": 29.856
+    }
+  ],
+  "faults": [
+    {
+      "phase": "request",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 2,
+          "charges": 0,
+          "chargedBytes": 0,
+          "chargedValues": 0,
+          "imports": 0
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 0,
+        "hostToGuestUtf16Bytes": 0,
+        "hostToGuestAllocations": 0,
+        "hostExportedAllocations": 0,
+        "hostExportedAllocatedBytes": 0
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "request",
+        "kind": "deadline"
+      },
+      "error": {
+        "code": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+        "message": "Pulse request exceeded its total execution deadline."
+      }
+    },
+    {
+      "phase": "request",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 3,
+          "charges": 1,
+          "chargedBytes": 32,
+          "chargedValues": 1,
+          "imports": 0
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 0,
+        "hostToGuestUtf16Bytes": 0,
+        "hostToGuestAllocations": 0,
+        "hostExportedAllocations": 0,
+        "hostExportedAllocatedBytes": 0
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "request",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_EFFECT_INVOCATION_INVALID",
+        "message": "Effect invocation is stale, already settled, foreign, or closed."
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 0,
+        "values": 0
+      }
+    },
+    {
+      "phase": "callable-input",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 1,
+          "charges": 550,
+          "chargedBytes": 6040,
+          "chargedValues": 170,
+          "imports": 431
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 2974,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 8,
+        "hostExportedAllocatedBytes": 1514
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-input",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14450,
+        "values": 385
+      }
+    },
+    {
+      "phase": "callable-input",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 64,
+          "chargedValues": 2,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 204,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 7,
+        "hostExportedAllocatedBytes": 1386
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-input",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 4572,
+        "values": 123
+      }
+    },
+    {
+      "phase": "computation",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 1,
+          "charges": 550,
+          "chargedBytes": 6040,
+          "chargedValues": 170,
+          "imports": 431
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 2974,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 8,
+        "hostExportedAllocatedBytes": 1514
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "computation",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 14450,
+        "values": 385
+      }
+    },
+    {
+      "phase": "computation",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 16,
+          "chargedValues": 1,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 242,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 8,
+        "hostExportedAllocatedBytes": 1514
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "computation",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 1966080,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 8410,
+        "values": 215
+      }
+    },
+    {
+      "phase": "callable-output",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20108,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 11,
+        "hostExportedAllocatedBytes": 35438
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-output",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 388182,
+        "values": 14202
+      }
+    },
+    {
+      "phase": "callable-output",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 0,
+          "charges": 2,
+          "chargedBytes": 64,
+          "chargedValues": 2,
+          "imports": 1
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20068,
+        "hostToGuestUtf16Bytes": 1002,
+        "hostToGuestAllocations": 4,
+        "hostExportedAllocations": 10,
+        "hostExportedAllocatedBytes": 24130
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "callable-output",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 358170,
+        "values": 13836
+      }
+    },
+    {
+      "phase": "mcp-serialization",
+      "kind": "deadline",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 1,
+          "charges": 67,
+          "chargedBytes": 2030,
+          "chargedValues": 51,
+          "imports": 5
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20274,
+        "hostToGuestUtf16Bytes": 12310,
+        "hostToGuestAllocations": 5,
+        "hostExportedAllocations": 13,
+        "hostExportedAllocatedBytes": 46874
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "mcp-serialization",
+        "kind": "deadline"
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 390212,
+        "values": 14253
+      }
+    },
+    {
+      "phase": "mcp-serialization",
+      "kind": "allocation",
+      "enforced": true,
+      "noPartialSuccess": true,
+      "phases": {
+        "request": {
+          "clockChecks": 5,
+          "charges": 155,
+          "chargedBytes": 4572,
+          "chargedValues": 123,
+          "imports": 14
+        },
+        "callable-input": {
+          "clockChecks": 0,
+          "charges": 120,
+          "chargedBytes": 3838,
+          "chargedValues": 92,
+          "imports": 3
+        },
+        "computation": {
+          "clockChecks": 7367,
+          "charges": 64653,
+          "chargedBytes": 349760,
+          "chargedValues": 13621,
+          "imports": 75596
+        },
+        "callable-output": {
+          "clockChecks": 1,
+          "charges": 461,
+          "chargedBytes": 30012,
+          "chargedValues": 366,
+          "imports": 4
+        },
+        "mcp-serialization": {
+          "clockChecks": 0,
+          "charges": 4,
+          "chargedBytes": 64,
+          "chargedValues": 2,
+          "imports": 4
+        }
+      },
+      "transfers": {
+        "guestToHostUtf16Bytes": 20274,
+        "hostToGuestUtf16Bytes": 12310,
+        "hostToGuestAllocations": 5,
+        "hostExportedAllocations": 13,
+        "hostExportedAllocatedBytes": 46874
+      },
+      "triggered": true,
+      "fault": {
+        "phase": "mcp-serialization",
+        "kind": "allocation"
+      },
+      "error": {
+        "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+        "message": "Native read-loop execution exceeded its retained-value budget."
+      },
+      "guestCommittedBytes": 3932160,
+      "retained": {
+        "version": "pulse.native-read-loop-memory.v1",
+        "bytes": 388182,
+        "values": 14202
+      }
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0,
+      "baselineClockChecks": 14749,
+      "clockChecks": 2,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.25,
+      "baselineClockChecks": 14749,
+      "clockChecks": 3688,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.5,
+      "baselineClockChecks": 14749,
+      "clockChecks": 7375,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.75,
+      "baselineClockChecks": 14749,
+      "clockChecks": 11062,
+      "status": 408,
+      "noPartialSuccess": true
+    },
+    {
+      "target": "fastly",
+      "kind": "deadline",
+      "fraction": 0.99,
+      "baselineClockChecks": 14749,
+      "clockChecks": 14602,
+      "status": 408,
+      "noPartialSuccess": true
+    }
+  ],
+  "executions": 23,
+  "limitations": [
+    "Injected Fastly ABI; not CLI/Viceroy or provider reality.",
+    "Warm samples reuse artifacts with fresh request instances; not retained-instance execution.",
+    "Node CPU is process CPU for the complete host execution and serialization, not isolated guest instructions.",
+    "Committed Wasm pages are monotonic high-water capacity, not live heap.",
+    "Retained bytes/values are conservative cumulative budget charges, not exact allocation counts.",
+    "Exact internal guest and JS allocation counts and peak live-object heap are unavailable through current evidence surfaces.",
+    "Frozen relevance cases are proposed for review; independent human relevance review is not claimed."
+  ],
+  "artifact": {
+    "repeat": 2,
+    "corpusHash": "a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97",
+    "dimensions": {
+      "rows": 263,
+      "dimension": 2506,
+      "nonzeros": 15313,
+      "dictionarySha256": "973fe863a4fdf0a5227648978158a71c6f0c738684d3ee201a6759797645c961",
+      "manifestId": "44ce962dc41e007f8401e266f66b5956052aab6dc75d3eda020506dd0953a875",
+      "catalogueIdentity": "19a443454a2e6e4d4d350994be5973251d2c7d7fd7ff3f6176751adbffaa9610",
+      "rawBytes": 599957,
+      "serializedBytes": 800598,
+      "budgets": {
+        "files": 3,
+        "fileBytes": 5242880,
+        "totalBytes": 8388608,
+        "serializedBytes": 16777216,
+        "bindings": 3
+      }
+    },
+    "planHash": "b2520754065db3227a466fdd6777048c944de97add83dade5675b7a794d8de1a",
+    "sourceSha256": "3ad2bf6625026772e045d2c2e2d2ec97a06cc8b3cb1a3c7f757a3fd4b4833a79",
+    "node": {
+      "bytes": 991520,
+      "sha256": "dc9fbd2faacebbd12227399288c8442d821eb7014cd84bf414394140264b9aa4",
+      "compileMs": 11004.946840999999,
+      "initialGuestBytes": 1966080,
+      "citationHashBackings": [
+        {
+          "id": "command/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/compile",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/dev",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/docs",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/doctor",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/inspect",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/report",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/test",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application-root",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/build-metadata",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/effects",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/eligibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/fetch-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/managed-async",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/opaque-bodies",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/package-authority",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/parallel",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/project-configuration",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/provider-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/report-comparison",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/request-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/schema-declarations",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/source-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/targets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/transport-limits",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_UNEXPECTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BINARY_RESOURCE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_OUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_BOUNDARY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_BINDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CALLEE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CONTEXT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_ENTRY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_FORM",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PLACEMENT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PROVIDER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMAS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_COMMAND_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_IMPLICIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_PLAN_PARITY_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_DOUBLE_RESUME",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_EXPIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DEV_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CAPACITY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CLAIMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_MEMBER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OVERFLOW",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OWNER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_SEALED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_UNFLUSHED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ENTRY_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EVENT_TARGET_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_KV_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_REQUEST_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_NETWORK",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_SCHEMA_WITHOUT_JSON",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_URL_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_HANDLER_ASYNC_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_FILE_EXISTS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_NOT_EMPTY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_MCP_STATIC_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_EXPANSION_REPEATED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_IMPORT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_TEXT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NODE_VERSION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NUMERIC_WORKSPACE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_OPAQUE_BODY_INSPECTION",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CAPABILITY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_LOWERING_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_OPERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SUBPATH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_ROOT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_COMPILE_ONLY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_FLAG_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_PACKAGE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INCOMPATIBLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INPUT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_STALE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_OWNERSHIP",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_CLOCK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DEADLINE_EXCEEDED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_REDIRECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RUNTIME_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODECS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CONTENT_TYPE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_DUPLICATE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMITS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_MALFORMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_SOURCE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_TYPE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SOURCE_ONLY_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TARGET_IMPLEMENTATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EVENT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EXPECT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CLOSED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_EOF_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_INPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_OUTPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_READ_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UTF8_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/schemas.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/configure",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/javascript",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/native",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/production",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/assets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/cli",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/crypto",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/entities",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/grip",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/jwt",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/mcp",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/pulse",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/runtime",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/s3",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/none",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/boundaries",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/registry",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/strict",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/create",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/requirements",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/verify",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/inspect",
+          "utf16LiteralCopies": 1
+        }
+      ],
+      "resourceBackings": [
+        {
+          "id": "context.vector",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.text",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.metadata",
+          "physicalFullCopies": 0
+        }
+      ]
+    },
+    "fastly": {
+      "bytes": 1043445,
+      "sha256": "079554e395f75634115d3e0407e93141af79ed4684c3670b2cbec8b349b4912c",
+      "compileMs": 20158.458657999996,
+      "initialGuestBytes": 3932160,
+      "citationHashBackings": [
+        {
+          "id": "command/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/compile",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/dev",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/docs",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/doctor",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/inspect",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/report",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "command/test",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/application-root",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/build-metadata",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/effects",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/eligibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/fetch-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/managed-async",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/opaque-bodies",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/package-authority",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/parallel",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/project-configuration",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/provider-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/report-comparison",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/request-json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/schema-declarations",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/source-compatibility",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/targets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "contract/transport-limits",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ARGUMENT_UNEXPECTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BINARY_RESOURCE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BODY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_OUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_BUILD_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_BOUNDARY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_BINDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CALLEE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_CONTEXT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_ENTRY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_FORM",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PLACEMENT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_PROVIDER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMAS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CALL_SOURCE_TARGET_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CANONICAL_SCHEMA_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_COMMAND_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_IMPLICIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONFIG_PLAN_PARITY_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_DOUBLE_RESUME",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_CONTINUATION_EXPIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DEV_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_DOCS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CAPACITY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_CLAIMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_MEMBER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OVERFLOW",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_OWNER",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_SEALED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EFFECT_COLLECTION_UNFLUSHED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_ENTRY_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EVENT_TARGET_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_CLI_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_KV_BINDINGS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_REQUEST_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FASTLY_SERVE_START_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_NETWORK",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_SCHEMA_WITHOUT_JSON",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_TIMEOUT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_FETCH_URL_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_HANDLER_ASYNC_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_FILE_EXISTS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_INIT_NOT_EMPTY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_MCP_STATIC_BINDING_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_EXPANSION_REPEATED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_IMPORT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NATIVE_TEXT_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NODE_VERSION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_NUMERIC_WORKSPACE_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_OPAQUE_BODY_INSPECTION",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CAPABILITY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_LOWERING_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_OPERATION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PACKAGE_SUBPATH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_SELECTION_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROFILE_UNKNOWN",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROJECT_ROOT_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_COMPILE_ONLY",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_FLAG_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_PACKAGE_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_PROVIDER_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_HTML_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INCOMPATIBLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_INPUT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_OUTPUT_UNSAFE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REPORT_STALE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_INVALID_UTF8",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_OWNERSHIP",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_BODY_TOO_LARGE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_CLOCK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DEADLINE_EXCEEDED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_DURATION_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_REDIRECT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_REQUEST_FORWARDING_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_MISSING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_CASE_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RESPONSE_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_RUNTIME_APPLICATION_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODECS_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_COMPILE_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_CONTENT_TYPE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_DECODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ENCODE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_DUPLICATE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_ID_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMITS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_JSON_MALFORMED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REFERENCE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_SOURCE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SCHEMA_TYPE_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_SOURCE_ONLY_REMOVED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TARGET_IMPLEMENTATION_PENDING",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EVENT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_EXPECT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_EXPORT_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_HARNESS_NOT_FOUND",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TEST_PROVIDER_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CHUNK_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CLOSED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_CONFIG_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_EOF_REQUIRED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_HEADERS_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_INPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_OUTPUT_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_READ_LIMIT",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_TRANSFORM_UTF8_INVALID",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_INSPECTION_FAILED",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "diagnostic/PULSE_VICEROY_UNAVAILABLE",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/01-hello-json/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/src/schemas.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/02-request-schema/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/03-fetch-composition/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/.pulse/config.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/package.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/src/index.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tests/pulse.harness.ts",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/tsconfig.json",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "example/09-router-lowering/workflow",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/configure",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/javascript",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/native",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "node/production",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/assets",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/cli",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/crypto",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/entities",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/grip",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/jwt",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/mcp",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/provider-node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/pulse",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/runtime",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "package/s3",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/fastly",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/node",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "provider/none",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/boundaries",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/registry",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "schema/strict",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/create",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/requirements",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "start/verify",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/build",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/init",
+          "utf16LiteralCopies": 1
+        },
+        {
+          "id": "workflow/inspect",
+          "utf16LiteralCopies": 1
+        }
+      ],
+      "resourceBackings": [
+        {
+          "id": "context.vector",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.text",
+          "physicalFullCopies": 1
+        },
+        {
+          "id": "context.metadata",
+          "physicalFullCopies": 0
+        }
+      ]
+    },
+    "resources": [
+      {
+        "id": "context.vector",
+        "bytes": 167106,
+        "sha256": "24a777606a4563ab24b6f29e31c56b5d00519c4f4054e009cd1a988b0d42ca43"
+      },
+      {
+        "id": "context.text",
+        "bytes": 221650,
+        "sha256": "8071cb624870d9e6036f3c3fc7e7b74b89faa06f8ede700cc87ac56c73860232"
+      },
+      {
+        "id": "context.metadata",
+        "bytes": 211201,
+        "sha256": "b64d9ae1e8eec72b86e252cd4e8ba4a51e25b33a1f2dec160ee68b388643fd97"
+      }
+    ]
+  },
+  "observation": {
+    "phases": {
+      "request": {
+        "clockChecks": 5,
+        "charges": 155,
+        "chargedBytes": 4572,
+        "chargedValues": 123,
+        "imports": 14
+      },
+      "callable-input": {
+        "clockChecks": 0,
+        "charges": 240,
+        "chargedBytes": 7676,
+        "chargedValues": 184,
+        "imports": 6
+      },
+      "computation": {
+        "clockChecks": 14734,
+        "charges": 116435,
+        "chargedBytes": 384552,
+        "chargedValues": 14510,
+        "imports": 151192
+      },
+      "callable-output": {
+        "clockChecks": 2,
+        "charges": 919,
+        "chargedBytes": 48668,
+        "chargedValues": 730,
+        "imports": 8
+      },
+      "mcp-serialization": {
+        "clockChecks": 2,
+        "charges": 172,
+        "chargedBytes": 76704,
+        "chargedValues": 124,
+        "imports": 24
+      }
+    },
+    "transfers": {
+      "guestToHostUtf16Bytes": 64510,
+      "hostToGuestUtf16Bytes": 23618,
+      "hostToGuestAllocations": 6,
+      "hostExportedAllocations": 20,
+      "hostExportedAllocatedBytes": 92490
+    },
+    "triggered": false,
+    "guestCommittedBytes": 3932160,
+    "retained": {
+      "version": "pulse.native-read-loop-memory.v1",
+      "bytes": 522172,
+      "values": 15671
+    },
+    "faultMethod": "Deadline elapsed at named phase entry (checked at next existing checkpoint); allocation ceiling reduced at the next real charge. Production policy unchanged. Request-phase zero-headroom fault preserves any masking diagnostic."
+  }
+}

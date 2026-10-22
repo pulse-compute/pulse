@@ -7,8 +7,8 @@ const producer = { name: 'pulse-report-size', version: '1' };
 const unique = values => [...new Set(values)];
 const unavailable = (reason, evidenceIds) => ({ state: 'unavailable', basis: 'measured', coverage: 'partial', value: null, reason, evidenceIds });
 const measured = (value, evidenceIds, coverage = 'exact') => ({ state: 'available', basis: 'measured', coverage, value, reason: null, evidenceIds });
-function census(bytes) {
-  try { return inspectWasm(bytes); } catch { fail('REPORT_INVALID_WASM'); }
+function census(bytes, options) {
+  try { return inspectWasm(bytes, options); } catch { fail('REPORT_INVALID_WASM'); }
 }
 function verifyAttribution(input, artifact, bytes) {
   const capture = validateAttribution(input), physical = census(bytes);
@@ -29,7 +29,8 @@ function addSizeEvidence(input, files, attribution = null) {
   for (const artifact of capsule.artifacts) {
     const bytes = files.get(artifact.id);
     if (!bytes || bytes.length !== artifact.bytes || sha256(bytes) !== artifact.sha256) fail('REPORT_ARTIFACT_HASH');
-    const physical = census(bytes), evidenceId = id('evidence', 'size:' + artifact.id), evidenceIds = [evidenceId];
+    const physical = census(bytes, { dataRanges: Boolean(capsule.binaryResources) }), evidenceId = id('evidence', 'size:' + artifact.id), evidenceIds = [evidenceId];
+    const binaryBytes = require('./resource-bytes').verifyResourceBytes(capsule.binaryResources, artifact, bytes, physical);
     capsule.evidence.push({ id: evidenceId, kind: 'measurement', producer, method: 'retained-wasm-ledger-and-attribution-v1',
       artifactIds: [artifact.id], source: null, subjectIds: [], result: 'observed',
       scope: { corpus: null, cases: [], targets: ['native'] }, recordedAt: null });
@@ -40,7 +41,8 @@ function addSizeEvidence(input, files, attribution = null) {
     const dataFact = physical.dataPayloadBytes === null ? unavailable('unsupported-mapping', evidenceIds) : measured(physical.dataPayloadBytes, evidenceIds);
     artifact.ledger = { headerBytes: 8, codeBodyBytes: bodyBytes,
       codeFramingBytes: physical.sections.filter(row => row.id === 10).reduce((n, row) => n + row.bytes, 0) - bodyBytes,
-      dataPayloadBytes: dataFact, unattributedDataPayloadBytes: { ...dataFact } };
+      dataPayloadBytes: dataFact, unattributedDataPayloadBytes: { ...dataFact,
+        value: dataFact.value === null ? null : dataFact.value - binaryBytes } };
     capsule.bodies.push(...physical.functions.map(row => ({ ...row, id: bodyId(artifact.sha256, row.index), artifactId: artifact.id })));
     const capture = attribution?.artifactId === artifact.id ? verifyAttribution(attribution, artifact, bytes) : null;
     function graphObservation(diagnostic) {

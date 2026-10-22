@@ -29,6 +29,7 @@ export type NormalizedCommandRequest = Readonly<CommonNormalizedRequest & {
   readonly once?: boolean;
   readonly outDir?: string;
   readonly clean?: boolean;
+  readonly nativeShrink0?: boolean;
   readonly experimentalNativeSize?: boolean;
   readonly experimentalNativeBoundedSize?: boolean;
 }>;

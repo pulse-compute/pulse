@@ -8,13 +8,13 @@ function reader(bytes) {
     skip(n) { assert.ok(n <= bytes.length - this.at, 'truncated payload'); this.at += n; },
     text() { const n = this.uint(), start = this.at; this.skip(n); return bytes.subarray(start, this.at).toString('utf8'); } };
 }
-function inspectWasm(input) {
+function inspectWasm(input, options = {}) {
   const bytes = Buffer.from(input);
   assert.ok(bytes.length <= MAX_BYTES && WebAssembly.validate(bytes), 'invalid or oversized Wasm');
   const module = new WebAssembly.Module(bytes);
   const importedFunctions = WebAssembly.Module.imports(module).filter(row => row.kind === 'function').length;
   const r = reader(bytes); r.at = 8;
-  const sections = [], functions = []; let dataPayloadBytes = 0, dataSupported = true;
+  const sections = [], functions = [], dataRanges = []; let dataPayloadBytes = 0, dataSupported = true;
   while (r.at < bytes.length) {
     assert.ok(sections.length < MAX_RECORDS, 'section limit');
     const offset = r.at, id = r.byte(), size = r.uint(), payload = r.at;
@@ -38,14 +38,17 @@ function inspectWasm(input) {
             for (let j = 0; j < 5; j++) if (!(part.byte() & 128)) { ended = true; break; }
             assert.ok(ended); assert.equal(part.byte(), 0x0b);
           }
-          const n = part.uint(); part.skip(n); dataPayloadBytes += n;
+          const n = part.uint();
+          if (options.dataRanges) dataRanges.push({ offset: payload + part.at, bytes: n });
+          part.skip(n); dataPayloadBytes += n;
         }
         assert.equal(part.at, size);
       } catch { dataSupported = false; }
     }
     sections.push({ index: sections.length, id, bytes: end - offset, payloadBytes: size, offset });
   }
-  return { sections, importedFunctions, functions, dataPayloadBytes: dataSupported ? dataPayloadBytes : null };
+  return { sections, importedFunctions, functions, dataPayloadBytes: dataSupported ? dataPayloadBytes : null,
+    ...(options.dataRanges ? { dataRanges: dataSupported ? dataRanges : null } : {}) };
 }
 function functionNames(bytes) {
   const r = reader(bytes), names = new Map();

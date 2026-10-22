@@ -1,0 +1,367 @@
+{
+  "version": "pulse.callable-composition-evidence.v1",
+  "status": "passed",
+  "providerReality": false,
+  "executions": 6,
+  "sourceRejections": [
+    "borrowed input mutation",
+    "borrowed helper mutation",
+    "helper capture",
+    "helper recursion",
+    "helper bound product",
+    "borrowed record helper mutation",
+    "constant reassignment",
+    "mutable scalar import",
+    "nonliteral scalar import",
+    "helper alias write",
+    "awaited helper",
+    "nested helper arguments",
+    "nested callable",
+    "workspace return",
+    "resource return",
+    "17 targets/sites"
+  ],
+  "planRejections": [
+    "forged target index",
+    "unreachable target",
+    "target count overflow",
+    "conflicting schema",
+    "conflicting resource",
+    "cross-owner helper local",
+    "forged helper bound",
+    "forged borrowed helper mutation",
+    "forged callable input mutation",
+    "workspace escape",
+    "resource escape"
+  ],
+  "artifacts": {
+    "node": {
+      "bytes": 45310,
+      "sha256": "310d1080851dfbad5ddbbd0ac81bf1a6a4de1535c8166e2c02874da7b66f3061",
+      "imports": [
+        {
+          "module": "env",
+          "name": "abort",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "value_number",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "value_object_set",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "value_binary",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "resource_check",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "workspace_number_value",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "value_object",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "resource_offset_value",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "workspace_check",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "schema_encode",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "schema_decode",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "value_truthy",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "value_property",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "value_undefined",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "value_string",
+          "kind": "function"
+        },
+        {
+          "module": "pulse_host",
+          "name": "response_json",
+          "kind": "function"
+        }
+      ]
+    },
+    "fastly": {
+      "bytes": 88679,
+      "sha256": "170d14ae3c59405edd733f675b42ee40f21a05eb841d038e6fc439a4b4e1e976",
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    }
+  },
+  "plan": {
+    "hash": "4a60517dc8ed59f9bb1ae0d4b928d96358a74d9c4d7c116168c43d6c07b78eff",
+    "targets": 2,
+    "sites": 3,
+    "helperOwners": 3,
+    "resources": [
+      {
+        "id": "distinct",
+        "path": "/distinct"
+      },
+      {
+        "id": "shared",
+        "path": "/shared"
+      },
+      {
+        "id": "shared-alias",
+        "path": "/shared"
+      }
+    ]
+  },
+  "additionalCompositionCases": [
+    "helper re-export identity",
+    "same-module helper"
+  ],
+  "maxTargets": 16,
+  "source": {
+    "revision": "c34e8a6484b429ae1f6b1c710eba4d00e1421b2a",
+    "status": "M docs/internal/b10-call-proof/PR.md\n M docs/internal/b10-call-proof/README.md\n M examples/12-pulse-context-mcp/README.md\n M examples/12-pulse-context-mcp/application/src/index.template.ts\n M examples/12-pulse-context-mcp/application/src/index.ts\n M examples/12-pulse-context-mcp/context-data/context-manifest.json\n M scripts/pulse-context-build.cjs\n M scripts/pulse-context-start.cjs\n M scripts/release-evidence-bundle.cjs\n M wasm/packages/cli/examples/12-pulse-context-mcp/README.md\n M wasm/packages/cli/examples/12-pulse-context-mcp/application/src/index.template.ts\n M wasm/packages/cli/examples/12-pulse-context-mcp/application/src/index.ts\n M wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json\n M wasm/packages/runtime-core-as/src/compiler/canonical-native-callable.js\n M wasm/packages/runtime-core-as/src/compiler/canonical-native-resources.js\n M wasm/packages/runtime-core-as/src/compiler/canonical-native.js\n M wasm/test/callables/assert-callable-composition.cjs\n M wasm/test/docs/assert-executable-documentation.cjs\n M wasm/test/mcp/assert-context-build.cjs\n M wasm/test/mcp/assert-context-start.cjs\n M wasm/test/suite/registry.cjs\n?? docs/internal/b10-call-proof/05I.md\n?? examples/12-pulse-context-mcp/application/src/diagnostic.ts\n?? examples/12-pulse-context-mcp/application/src/example.ts\n?? examples/12-pulse-context-mcp/application/src/read.template.ts\n?? examples/12-pulse-context-mcp/application/src/read.ts\n?? examples/12-pulse-context-mcp/application/src/scalars.ts\n?? scripts/pulse-context-tools.cjs\n?? scripts/pulse-context-tools.json\n?? wasm/packages/cli/examples/12-pulse-context-mcp/application/src/diagnostic.ts\n?? wasm/packages/cli/examples/12-pulse-context-mcp/application/src/example.ts\n?? wasm/packages/cli/examples/12-pulse-context-mcp/application/src/read.template.ts\n?? wasm/packages/cli/examples/12-pulse-context-mcp/application/src/read.ts\n?? wasm/packages/cli/examples/12-pulse-context-mcp/application/src/scalars.ts\n?? wasm/test/mcp/assert-context-tools.cjs",
+    "files": [
+      {
+        "path": "docs/internal/b10-call-proof/05I.md",
+        "sha256": "5d00833a053eb385a231a4e690f581e4e1dcd7d951eeeae0054083db4393d95b"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/diagnostic.ts",
+        "sha256": "fbef1908be722d05fe7c175cf754dc17e7acb7371c18bac31a90aee40f1a6f02"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/example.ts",
+        "sha256": "da44f01acc7011255c1a6e37268df333d01e3c539b1839317edc678fc315494a"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/read.template.ts",
+        "sha256": "b78ad73faf50a5b7bd43a2918fa7af0a3e9feed3e3cd6902e42594ede3abef93"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/read.ts",
+        "sha256": "b091c60e24001f859aefe7caab61c9886aaa2c4896921e062b62fd429a17db49"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/scalars.ts",
+        "sha256": "951c280c99e61c5c3780ed74ebe6a8c93f022de8961a82481fb311f1d4a983e0"
+      },
+      {
+        "path": "scripts/pulse-context-tools.cjs",
+        "sha256": "7a0eca8babeb610643e0941ef5ffe2a5e8bc9af1747f53f1cf108bb797d477db"
+      },
+      {
+        "path": "scripts/pulse-context-tools.json",
+        "sha256": "bda4775eb8c3be04f5520ef79a823d00de89046d5db62b24c53f0989ceb69236"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/diagnostic.ts",
+        "sha256": "fbef1908be722d05fe7c175cf754dc17e7acb7371c18bac31a90aee40f1a6f02"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/example.ts",
+        "sha256": "da44f01acc7011255c1a6e37268df333d01e3c539b1839317edc678fc315494a"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/read.template.ts",
+        "sha256": "b78ad73faf50a5b7bd43a2918fa7af0a3e9feed3e3cd6902e42594ede3abef93"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/read.ts",
+        "sha256": "b091c60e24001f859aefe7caab61c9886aaa2c4896921e062b62fd429a17db49"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/scalars.ts",
+        "sha256": "951c280c99e61c5c3780ed74ebe6a8c93f022de8961a82481fb311f1d4a983e0"
+      },
+      {
+        "path": "wasm/test/mcp/assert-context-tools.cjs",
+        "sha256": "816fb45b943b0e7d63dce79defbc8a59692aa62f878e3efc2fe5a6dce578f5f4"
+      },
+      {
+        "path": "docs/internal/b10-call-proof/PR.md",
+        "sha256": "fb056344fb87ebad608a7cd54c0ad871323e8747a7d86caf30df62308610dfcf"
+      },
+      {
+        "path": "docs/internal/b10-call-proof/README.md",
+        "sha256": "874b802e8baec6884bd65fba8523e555a1f817d4f0f45cf569f752d4fd92cf67"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/README.md",
+        "sha256": "258650f55eb586606b6b323ffa92c6b6bbe4ec92f7358e30488f03d5d5635ecc"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/index.template.ts",
+        "sha256": "bf800462df5f2d6e95667e2efd982ac06e7238fabc73ccaba7c5f43e764aea02"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/index.ts",
+        "sha256": "c24977a287c82fc08548bb8e112970ae4b117b4e8f70e761035ef69295a9eec0"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/context-data/context-manifest.json",
+        "sha256": "c6114ff33d3759e66da3fb83289d4042f0b50bb138eaddde5a95389e83ad6922"
+      },
+      {
+        "path": "scripts/pulse-context-build.cjs",
+        "sha256": "515ea335e801d57ad534f71bc0e501b5a22a4f42cf1fd212259c764b3ad90ab9"
+      },
+      {
+        "path": "scripts/pulse-context-start.cjs",
+        "sha256": "6eb0a251a6e3eeb5736abbcbd69438e0b270b6782fbd265e07ad99b6a53dd6e2"
+      },
+      {
+        "path": "scripts/release-evidence-bundle.cjs",
+        "sha256": "1373087ff6d4b98f56a1f15ca8e9e6e5b1a3683a20f37e3358bfd7809ba4fbbd"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/README.md",
+        "sha256": "258650f55eb586606b6b323ffa92c6b6bbe4ec92f7358e30488f03d5d5635ecc"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/index.template.ts",
+        "sha256": "bf800462df5f2d6e95667e2efd982ac06e7238fabc73ccaba7c5f43e764aea02"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/index.ts",
+        "sha256": "c24977a287c82fc08548bb8e112970ae4b117b4e8f70e761035ef69295a9eec0"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json",
+        "sha256": "c6114ff33d3759e66da3fb83289d4042f0b50bb138eaddde5a95389e83ad6922"
+      },
+      {
+        "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-callable.js",
+        "sha256": "1ef327fdbc520372b6ddbf8475ebb83b1ea048f6772513366cee2e65fb30e3d0"
+      },
+      {
+        "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-resources.js",
+        "sha256": "cf745f49b59d8d9280b1177d5079ae8e8204ce1ef6f58d4cbf9ac3af2f72705e"
+      },
+      {
+        "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native.js",
+        "sha256": "1340c6b52ac9e703929517fd9872441a1733071dbb5558b8cea271c00136fc8c"
+      },
+      {
+        "path": "wasm/test/callables/assert-callable-composition.cjs",
+        "sha256": "19d0742ef988b0947d32343423745e7a3e4640b97fad45876cf2686cef332b4d"
+      },
+      {
+        "path": "wasm/test/docs/assert-executable-documentation.cjs",
+        "sha256": "f4408694020990fbee762aa019c1bdd6a5d87ff17a4fb21bae809c2789bf068b"
+      },
+      {
+        "path": "wasm/test/mcp/assert-context-build.cjs",
+        "sha256": "073a64592c85f9f0599df24f9a8d2526822eb9132341ec8da623a1b48e2c7190"
+      },
+      {
+        "path": "wasm/test/mcp/assert-context-start.cjs",
+        "sha256": "7b0ae608d8b6820ebcad3fa617683c66e5848fe54ebde04e033a0bd77c18265d"
+      },
+      {
+        "path": "wasm/test/suite/registry.cjs",
+        "sha256": "bedcbe1bc43ad8944633a08fd708d205890c9f5ac45f089f667aad2ad1bd32ef"
+      }
+    ]
+  }
+}

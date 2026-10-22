@@ -4,14 +4,15 @@ Pulse Entities separates governed operation semantics from the protocol that
 selects an operation and from any facade that presents those operations to an
 external ecosystem.
 
-## The four layers
+<a id="the-four-layers"></a>
+
+## The three layers
 
 | Layer | Owns | Does not own |
 |---|---|---|
 | Entity engine | Static operation names, schema declarations, handler identity, governed execution, deterministic catalog | HTTP/JSON-RPC syntax, MCP lifecycle, provider SDKs |
 | JSON-RPC adapter | Bounded envelope parsing, request/notification selection, named params, stable JSON-RPC result/error framing | Handler semantics, schema registry authority, direct provider access |
 | Tools or MCP facade | Catalog projection, external tool naming/annotations, transport-facing invocation policy | Direct handler calls, runtime registry mutation, hidden Pulse authority |
-| Worker/event adapter (future) | A separately specified event/request binding and response/acknowledgement mapping | Changes to entity declarations or handler effect authority |
 
 The entity engine is therefore not a server. `EntityRouter` records a static
 registry and binds it to one governed request. `jsonRpc()` is the only current
@@ -47,42 +48,42 @@ it never authorizes JavaScript fallback.
 
 ## MCP/tools boundary
 
-The [Entities tools example](../../examples/10-entities-tools/) demonstrates a
-small facade that projects static metadata and invokes JSON-RPC. It is
-intentionally not a complete MCP implementation. Pulse runtime core does not
-gain SSE, sessions, tasks, resources, prompts, sampling, authorization,
-transport negotiation, or MCP lifecycle state from this candidate.
+[`@pulse-compute/mcp`](../packages/mcp.md) provides two explicit ways to expose
+governed tools. Both keep protocol framing outside the entity engine.
 
-A complete MCP server could be built outside the entity engine if it preserves
-these rules: static discovery comes from an emitted catalog, invocation crosses
-a governed adapter boundary, external protocol state stays outside runtime
-core, and MCP behavior never becomes a source of provider or schema authority.
+| Binding | How a tool is invoked | Where it runs |
+| --- | --- | --- |
+| Static `@pulse-compute/mcp/pulse` facade | Admits the MCP request and dispatches the selected Entities operation inside the same invocation. | Node Native, Fastly Native or explicit Node JavaScript. |
+| Host `@pulse-compute/mcp` or `/node` adapter | Projects an emitted catalog and sends one request to a fixed governed Entities HTTP endpoint. | Ordinary JavaScript host code. |
 
-The repository's private `packages/mcp` candidate implements the MCP
-2026-07-28 HTTP protocol shell and a catalog-backed tools facade. Tools are
-projected from one explicitly selected emitted router and its schema registry;
-each admitted call makes one request to a fixed governed Entities HTTP endpoint.
-The facade imports no handlers, executable codecs or runtime registry. Discovery
-advertises tools only when that configuration is present. Optional MCP-04
-authorization uses an explicitly configured external OAuth issuer, resource
-metadata/challenges, bounded introspection and default-deny operation scopes.
-Tool catalogs are filtered per request; unauthorized calls never reach the
-governed endpoint. Separate backend credentials cannot be supplied by the MCP
-client. This candidate does not change the released package set or add an
-Entities adapter. Backend placement and matching build artifacts remain
-application responsibilities. The private MCP resource-directory acceptance app
-packages search, retrieve and propose-update tools and verifies the installed Node
-JavaScript composition with the pinned official OAuth client. It measures real
-local HTTP effects, denials, invalid input, failures, deadlines and cancellation;
-it does not qualify deployment, Native/Fastly MCP or a production Node launcher.
+The static facade is the path used by the
+[compiled Pulse context server](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow).
+It dispatches a statically declared set of tools without an internal HTTP hop. Entities
+owns input/output validation and operation invocation; MCP owns admission,
+discovery and result framing. Reusable computation runs through the same
+[`ctx.call`](../../API.md#ctxcall) boundary available to admitted HTTP handlers,
+with shared request budgets and no extra host authority.
 
-## Future adapters
+The separate host adapter retains optional external OAuth admission and
+backend credentials. Those options do not apply to the static facade. Its
+fixed endpoint, matching catalog/schema artifacts and deployment protection
+are application responsibilities. See the [MCP package guide](../packages/mcp.md)
+for exact imports, limits and authorization boundaries.
 
-A Worker, queue, scheduled-event, or other event adapter would be a new
-first-party adapter contract. It would define bounded selection and completion
-for that event shape while retaining the same static declaration, schema,
-handler, effect, catalog, and no-fallback rules. The current package does not
-open third-party adapter registration or claim those adapters exist.
+The [Entities tools example](../../examples/10-entities-tools/) remains a small
+JSON-RPC/tool-projection example. Use the context server for a complete bounded
+MCP application. Neither binding introduces a mutable runtime registry or
+provider authority through tool metadata.
+
+<a id="future-adapters"></a>
+
+## Adapter scope
+
+`jsonRpc()` is the supported Entities adapter. Queue, scheduled-event and other
+adapter shapes require separately defined selection, completion and lifecycle
+contracts; there is no third-party adapter registration surface. Pulse's
+[static event handlers](../guides/events.md) are a separate application entry
+plane, not an Entities adapter.
 
 See the [Entities package guide](../packages/entities.md) for current behavior
 and [Entities lowering](../contributing/entities-lowering.md) for the trusted

@@ -26,6 +26,7 @@ function parseArgs(argv) {
       assert(value && !value.startsWith('-'), `${token} requires a value`);
       options.sealArgs.push(token, value);
     } else if (token === '--skip-install') options.sealArgs.push(token);
+    else if (token === '--process-tree') options.processTree = true;
     else if (token === '--verify-resume') options.verifyResume = true;
     else if (token === '--help' || token === '-h') options.help = true;
     else throw new Error(`Unknown measurement option: ${token}`);
@@ -42,7 +43,11 @@ function parseArgs(argv) {
 function observerSource(events) {
   return `'use strict';
 const fs = require('node:fs'), path = require('node:path'), cp = require('node:child_process');
-const emit = value => fs.appendFileSync(${JSON.stringify(events)}, JSON.stringify(value) + '\\n');
+// Own the diagnostic sink before workload tests install filesystem guards.
+// Keep their guarded functions untouched; observer writes are outside the app.
+const sink = fs.openSync(${JSON.stringify(events)}, 'a'), write = fs.writeSync.bind(fs);
+const emit = value => write(sink, JSON.stringify(value) + '\\n');
+let sequence = 0;
 for (const method of ['spawn', 'spawnSync', 'execFile', 'execFileSync']) {
   const original = cp[method];
   cp[method] = function(command, args, ...rest) {
@@ -51,8 +56,21 @@ for (const method of ['spawn', 'spawnSync', 'execFile', 'execFileSync']) {
     const category = argv.some(arg => /[/\\\\]assemblyscript[/\\\\]bin[/\\\\]asc\\.js$/.test(arg)) ? 'asc'
       : /^(pnpm|npm)(\\.cmd)?$/.test(binary) && argv.includes('pack') ? 'pack'
       : /^(pnpm|npm)(\\.cmd)?$/.test(binary) && (argv.includes('install') || argv.includes('i')) ? 'install' : null;
-    if (category) emit({kind: 'launch', category});
-    return original.call(this, command, args, ...rest);
+    if (!category) return original.call(this, command, args, ...rest);
+    const id = process.pid + ':' + (++sequence), started = process.hrtime.bigint();
+    emit({kind: 'launch', category, id, pid: process.pid, at: Date.now()});
+    let result, ended = false;
+    const end = () => {
+      if (ended) return; ended = true;
+      emit({kind: 'launch-end', category, id, pid: process.pid, at: Date.now(),
+        durationMs: Number(process.hrtime.bigint() - started) / 1e6});
+    };
+    try {
+      result = original.call(this, command, args, ...rest);
+      if (method.endsWith('Sync')) end();
+      else result.once('close', end);
+      return result;
+    } catch (error) { end(); throw error; }
   };
   // Preserve Node's custom promisified execFile result ({stdout, stderr}) and
   // child handle. Its native custom implementation bypasses launch observation.
@@ -65,7 +83,7 @@ process.on('exit', () => {
 `;
 }
 
-function summarize(report, wallMs, events) {
+function summarize(report, wallMs, events, processTree = null) {
   const reports = Object.entries(report?.recovery?.artifacts || {}).filter(([key]) => ['taskReport', 'featureTasks'].includes(key))
     .map(([, file]) => fs.existsSync(file) ? read(file) : null).filter(Boolean);
   const tasks = reports.flatMap(item => item.results || []);
@@ -85,7 +103,9 @@ function summarize(report, wallMs, events) {
     workerCpuMs: null, peakProcessTreeRSSKiB: null,
     resourceLimit: 'Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer',
     observedNodeCpuMs: sum(events.filter(event => event.kind === 'node-exit'), 'cpuMicros') / 1000,
-    peakObservedNodeRSSKiB: Math.max(0, ...events.filter(event => event.kind === 'node-exit').map(event => event.maxRSSKiB))
+    peakObservedNodeRSSKiB: Math.max(0, ...events.filter(event => event.kind === 'node-exit').map(event => event.maxRSSKiB)),
+    processTree,
+    observedCompilerElapsedMs: sum(events.filter(event => event.kind === 'launch-end' && event.category === 'asc'), 'durationMs')
   };
 }
 
@@ -98,7 +118,7 @@ function readyToInterrupt(phase, current, runner, task) {
 async function main(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   if (options.help) {
-    console.log('Usage: node scripts/release-seal-measure.cjs --out .pulse-seal/measurements/<new-name> [--skip-install | --dependency-bundle <file>] [--timeout-minutes N] [--interrupt-at <installed-task> | --verify-resume]');
+    console.log('Usage: node scripts/release-seal-measure.cjs --out .pulse-seal/measurements/<new-name> [--skip-install | --dependency-bundle <file>] [--timeout-minutes N] [--workers N --compiler-workers N --memory-budget-mib N] [--process-tree] [--interrupt-at <installed-task> | --verify-resume]');
     return;
   }
   assert(options.out, '--out is required');
@@ -140,6 +160,9 @@ async function main(argv = process.argv.slice(2)) {
       const previousRunId = fs.existsSync(previousAlias) ? read(previousAlias).runId : null;
       const eventOffset = fs.statSync(eventsFile).size, attemptStarted = performance.now();
       let child, interrupted = false, timer, result, report = null, terminalFile = null, outputTail = '';
+      let observer, processTree = null;
+      const processDirectory = path.join(out, `${phase}-processes`);
+      if (options.processTree) fs.mkdirSync(processDirectory);
       try {
         if (phase.startsWith('interrupted-')) timer = setInterval(() => {
           try {
@@ -158,7 +181,10 @@ async function main(argv = process.argv.slice(2)) {
         result = await runCommand(process.execPath, ['scripts/validate-release.cjs', ...sealArgs], {
           cwd: ROOT, env, signal: controller.signal,
           timeoutMs: require('./validate-release.cjs').parseArgs(sealArgs).timeoutMs + 60000,
-          onChild: value => { child = value; },
+          onChild: value => {
+            child = value;
+            if (value && options.processTree) observer = require('./release-resource-observer.cjs').startObserver(value.pid, processDirectory, ROOT);
+          },
           onOutput(name, chunk) {
             fs.writeSync(log, chunk); process[name].write(chunk);
             outputTail = (outputTail + chunk.toString()).slice(-8192);
@@ -181,9 +207,15 @@ async function main(argv = process.argv.slice(2)) {
           }
         }
         assert.deepEqual(require('./release-feature-acceptance.cjs').candidateIdentity(ROOT), candidate, 'Source changed during measurement');
-      } finally { clearInterval(timer); }
+      } finally {
+        clearInterval(timer);
+        if (observer) {
+          processTree = await observer.stop();
+          atomicJson(path.join(processDirectory, 'observer-result.json'), processTree);
+        }
+      }
       const events = fs.readFileSync(eventsFile).subarray(eventOffset).toString('utf8').trim().split('\n').filter(Boolean).map(line => JSON.parse(line));
-      const attempt = { phase, report, interruptionSent: interrupted, metrics: summarize(report, Math.round(performance.now() - attemptStarted), events) };
+      const attempt = { phase, report, interruptionSent: interrupted, metrics: summarize(report, Math.round(performance.now() - attemptStarted), events, processTree) };
       attempts.push(attempt);
       if (phase === 'interrupted-resume' && report.status === 'interrupted') {
         assert.deepEqual(report.recovery.context, prior.report.recovery.context, 'Interrupted retry context changed');
@@ -204,6 +236,7 @@ async function main(argv = process.argv.slice(2)) {
     status: failure ? 'invalid' : final?.report.status || 'failed', qualificationPassed: !failure && final?.report.status === 'passed',
     error: failure || final?.report.error || null, attemptDirectory: final?.report.runDirectory || null,
     commandOptions: options.sealArgs, interruptionRequested: options.verifyResume ? 'final-validation after checkpoint restoration' : options.interruptAt,
+    processObservationRequested: Boolean(options.processTree),
     recoveryDemonstrated: !failure && final?.phase === 'resume' && final?.report.status === 'passed',
     environment: { node: process.version, platform: process.platform, arch: process.arch, osRelease: os.release(),
       dependencyProvenance: options.sealArgs.includes('--skip-install') ? 'Existing graph; provenance must be supplied by the operator' : 'Controller restoration',

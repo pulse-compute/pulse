@@ -54,7 +54,7 @@ function prepareNativeRuntimeSupport({
     `      return ${runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED}`
   ].join('\n')).join('\n');
   const readyCases = [...resumeRequirements.entries()].map(([pc, required]) => {
-    const condition = required.length > 0 ? required.map((index) => stages.has(blocks[pc].handlerId)
+    const condition = required.length > 0 ? required.map((index, slot) => blocks[pc].collection ? `(__pulse_pending <= ${slot} || __pulse_effect_ready_${index} != 0)` : stages.has(blocks[pc].handlerId)
       ? `__pulse_stage_ready(__pulse_stage_effect_${stageSites.get(index).site}) != 0` : `__pulse_effect_ready_${index} != 0`).join(' && ') : 'true';
     return `    case ${pc}: return ${condition}`;
   }).join('\n');

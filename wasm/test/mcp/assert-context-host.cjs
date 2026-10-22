@@ -75,7 +75,6 @@ async function main() {
   fs.cpSync(built, path.join(runtime, 'dist-node-javascript'), { recursive: true });
   fs.cpSync(path.join(fixture, 'host'), path.join(runtime, 'host'), { recursive: true });
   fs.cpSync(path.join(fixture, 'client'), path.join(runtime, 'client'), { recursive: true });
-  fs.copyFileSync(path.join(fixture, 'README.md'), path.join(runtime, 'README.md'));
   fs.copyFileSync(path.join(fixture, 'package.json'), path.join(runtime, 'package.json'));
   // Copy candidate package bytes, not source-checkout links. PMCP-07 owns tarball installation.
   const packageMap = new Map();
@@ -110,14 +109,25 @@ async function main() {
   const listed = await rpc(ready.endpoint, 'tools/list', {});
   assert.equal(listed.status, 200); assert.equal(listed.reply.result.tools.length, 5);
   const version = ready.corpus.pulseVersion;
-  // Replay the public README's exact requests using its included client outside the checkout.
-  // This extends the existing one-build host proof rather than adding a campaign.
-  const readme = fs.readFileSync(path.join(runtime, 'README.md'), 'utf8');
-  const requests = [...readme.matchAll(/^node client\/request\.cjs (\S+)(?: '([^'\n]+)')?$/gm)];
-  assert.equal(requests.length, 12, 'Public client walkthrough selection changed.');
-  const results = requests.map(([, operation, json]) => {
+  // Keep the v1 compatibility request corpus independent of the public page,
+  // which now teaches the compiled application and is replayed by docs gates.
+  const requests = [
+    ['server/discover', null],
+    ['tools/list', null],
+    ['pulse.start', {"version":version,"goal":"json-api","provider":"node","target":"native"}],
+    ['pulse.example', {"version":version,"id":"01-hello-json"}],
+    ['pulse.start', {"version":version,"goal":"schema-api","provider":"node","target":"native"}],
+    ['pulse.start', {"version":version,"goal":"schema-api","provider":"node","target":"javascript"}],
+    ['pulse.read', {"version":version,"id":"contract/eligibility"}],
+    ['pulse.read', {"version":version,"id":"node/javascript"}],
+    ['pulse.explain_diagnostic', {"version":version,"code":"PULSE_SCHEMA_COMPILE_FAILED"}],
+    ['pulse.read', {"version":version,"id":"schema/boundaries"}],
+    ['pulse.explain_diagnostic', {"version":version,"code":"PULSE_PACKAGE_LOWERING_FAILED"}],
+    ['pulse.read', {"version":version,"id":"contract/effects"}],
+  ];
+  const results = requests.map(([operation, args]) => {
     const result = JSON.parse(execFileSync(process.execPath,
-      [path.join(runtime, 'client/request.cjs'), '--url', ready.endpoint, operation, ...(json ? [json] : [])], {
+      [path.join(runtime, 'client/request.cjs'), '--url', ready.endpoint, operation, ...(args ? [JSON.stringify(args)] : [])], {
         cwd: runtime, encoding: 'utf8', timeout: 10000,
         env: { ...process.env, NODE_PATH: '', NODE_OPTIONS: '' },
       }));

@@ -2,8 +2,8 @@
 
 const { HANDLER_SURFACE_DEFINITIONS, HANDLER_SURFACE_CONTRACT_VERSION } = require('./surface-contract.js');
 
-const HANDLER_TYPES_CONTRACT_VERSION = 'pulse.handler-types.v4';
-const RUNTIME_AUTHORING_VERSION = 'pulse.runtime-authoring.v4';
+const HANDLER_TYPES_CONTRACT_VERSION = 'pulse.handler-types.v5';
+const RUNTIME_AUTHORING_VERSION = 'pulse.runtime-authoring.v5';
 
 function defaultHandlerTypesContract() {
   return Object.freeze({
@@ -20,8 +20,9 @@ function defaultHandlerTypesContract() {
       set: 'void'
     }),
     executionContexts: Object.freeze({
+      computation: Object.freeze(['resources', 'workspace']),
       shared: Object.freeze(['state', 'log', 'time', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit', 'encodeJson', 'decodeJson']),
-      http: Object.freeze(['req', 'json', 'text', 'response']),
+      http: Object.freeze(['req', 'json', 'text', 'response', 'call']),
       route: Object.freeze(['param']),
       event: Object.freeze(['event.type', 'event.payload']),
       emitPublished: true

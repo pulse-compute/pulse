@@ -1,10 +1,12 @@
 # `@pulse-compute/crypto`
 
+**npm:** [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto)
+
 `@pulse-compute/crypto` provides bounded, provider-neutral cryptographic
 verification and exact-text SHA-256 for Pulse applications and first-party capability packages.
 
 ```bash
-npm install @pulse-compute/crypto@1.0.0-beta.9
+npm install @pulse-compute/crypto@1.0.0-beta.10
 ```
 
 ## Exact-text digest

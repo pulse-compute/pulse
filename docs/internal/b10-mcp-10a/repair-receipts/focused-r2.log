@@ -1,0 +1,208 @@
+/workspace/scratch/d3826bbd4bf5/pulse-10a/packages/provider-fastly/src/testing/native-platform-capabilities-host.js:829
+    throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module reported an execution error.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED', { ...callableEvidence(), lastError, errorStage, errorEffect, pulseLastError, trace });
+    ^
+
+FastlyNativePlatformCapabilitiesMockError: Fastly native platform capabilities module reported an execution error.
+    at executeFastlyNativePlatformCapabilities (/workspace/scratch/d3826bbd4bf5/pulse-10a/packages/provider-fastly/src/testing/native-platform-capabilities-host.js:829:11)
+    at main (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-terminal-errors.cjs:55:23)
+    at Object.<anonymous> (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/test/provider/assert-fastly-terminal-errors.cjs:62:30)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED',
+  detail: {
+    lastError: 1003,
+    errorStage: 261,
+    errorEffect: 1,
+    pulseLastError: 0,
+    trace: [
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      { module: 'fastly_abi', name: 'init', version: '1' },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      { module: 'fastly_http_req', name: 'body_downstream_get' },
+      { module: 'fastly_http_req', name: 'method_get', handle: 1 },
+      { module: 'fastly_http_req', name: 'uri_get', handle: 1 },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'fastly_config_store',
+        name: 'open',
+        store: 'expected',
+        found: true
+      },
+      {
+        module: 'fastly_config_store',
+        name: 'get',
+        handle: 10,
+        key: 'VALUE',
+        found: true
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'fastly_kv_store',
+        name: 'open',
+        store: 'proof',
+        found: true
+      },
+      { module: 'fastly_http_body', name: 'new', handle: 12 },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'fastly_http_body',
+        name: 'write',
+        handle: 12,
+        bytes: 28,
+        end: 0
+      },
+      {
+        module: 'fastly_kv_store',
+        name: 'insert',
+        store: 'proof',
+        key: 'later',
+        pendingHandle: 13,
+        bytes: 28,
+        configMask: 0
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      { module: 'fastly_http_resp', name: 'new', handle: 14 },
+      { module: 'fastly_http_body', name: 'new', handle: 15 },
+      {
+        module: 'fastly_http_resp',
+        name: 'status_set',
+        handle: 14,
+        status: 500
+      },
+      {
+        module: 'fastly_http_resp',
+        name: 'header_append',
+        handle: 14,
+        header: [ 'content-type', 'text/plain; charset=utf-8' ]
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'fastly_http_body',
+        name: 'write',
+        handle: 15,
+        bytes: 21,
+        end: 0
+      },
+      {
+        module: 'wasi_snapshot_preview1',
+        name: 'clock_time_get',
+        clockId: 1,
+        precision: '1',
+        unixEpochSeconds: 1792564075
+      },
+      {
+        module: 'fastly_http_resp',
+        name: 'send_downstream',
+        handle: 14,
+        bodyHandle: 15,
+        streaming: 0,
+        origin: false
+      }
+    ]
+  }
+}
+
+Node.js v24.18.0

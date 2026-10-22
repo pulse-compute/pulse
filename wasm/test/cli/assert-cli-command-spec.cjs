@@ -71,6 +71,7 @@ const {
   OPTION_SPECS,
   META_INVOCATIONS,
   publicCommandSpecDocument,
+  publicOptionsForCommand,
   optionDisplay,
   optionDescription
 } = require(commandSpecPath);
@@ -81,8 +82,8 @@ const reference = fs.readFileSync(referencePath, 'utf8');
 const publicOptions = OPTION_SPECS.filter((option) => option.visibility === 'public');
 
 assert.deepEqual(workflow.COMMANDS, COMMANDS, 'workflow command surface must use the canonical command specification');
-assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report']);
-assert.equal(publicOptions.length, 20, 'the CLI must expose exactly 20 documented option contracts');
+assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report', 'docs']);
+assert.equal(publicOptions.length, 22, 'the CLI must expose exactly 22 documented option contracts');
 assert.equal(OPTION_SPECS.every((option) => option.visibility === 'public'), true, 'the product parser must not retain repository-only controls');
 
 for (const command of PUBLIC_COMMAND_ORDER) {
@@ -98,6 +99,37 @@ for (const command of PUBLIC_COMMAND_ORDER) {
     assert.ok(reference.includes(`diagnostics.md#${code.toLowerCase().replace(/_/g, '-')}`), `CLI reference is missing ${command} diagnostic: ${code}`);
   }
 }
+// Every catalog command has exactly one index link and an existing detail anchor.
+const commandIndex = reference.split('## Command index\n')[1]?.split('\n## Meta invocations')[0];
+assert.ok(commandIndex, 'CLI reference must have a compact command index before the detail sections');
+assert.deepEqual([...commandIndex.matchAll(/\[\x60pulse (\w+)\x60\]\(#pulse-(\w+)\)/g)].map((match) => {
+  assert.equal(match[1], match[2], 'command index links must resolve to their command headings');
+  assert.ok(reference.includes(`## \x60pulse ${match[1]}\x60\n`));
+  return match[1];
+}), [...PUBLIC_COMMAND_ORDER]);
+for (const name of PUBLIC_COMMAND_ORDER) {
+  const section = reference.split(`## \x60pulse ${name}\x60\n`)[1].split('\n## ')[0];
+  for (const detail of [...COMMAND_SPECS[name].outputs, ...COMMAND_SPECS[name].sideEffects, COMMAND_SPECS[name].exit]) {
+    assert.ok(section.includes(detail), `${name} must retain its output, side-effect and exit contracts`);
+  }
+}
+const buildDescription = COMMAND_SPECS.build.outputs.join(' ') + ' ' + COMMAND_SPECS.build.sideEffects.join(' ');
+assert.match(buildDescription, /Native builds include the provider-neutral native module/);
+assert.match(buildDescription, /JavaScript builds emit a deterministic source package/);
+assert.match(buildDescription, /Fastly Native builds.*without a JavaScript runtime image/);
+assert.match(buildDescription, /Fastly JavaScript builds.*downstream compiler pins/);
+assert.match(buildDescription, /JavaScript builds.*without invoking the Pulse Native compiler/);
+const providerTable = reference.split('## Provider restrictions and build products')[1].split('## Exit classes')[0];
+for (const provider of ['node', 'fastly']) {
+  for (const target of ['Native', 'JavaScript']) {
+    assert.ok(providerTable.includes(`| \x60${provider}\x60 | ${target} | Yes | Yes |`), `${provider} ${target} needs its own build row`);
+  }
+}
+assert.ok(providerTable.includes('| `none` | Compile-only Native | Yes | No | No |'));
+assert.match(providerTable, /Diagnostic WAT is opt-in/);
+assert.match(COMMAND_SPECS.compile.outputs.join(' '), /--emit-wat adds diagnostic WAT/);
+assert.equal(parseCommandRequest(['compile']).emitWat, undefined, 'WAT remains opt-in');
+
 for (const invocation of META_INVOCATIONS) assert.ok(help.includes(invocation.syntax), `public help is missing meta invocation: ${invocation.syntax}`);
 
 function valueFor(option) {
@@ -105,24 +137,44 @@ function valueFor(option) {
   if (option.id === 'artifact') return { source: 'artifact.json', expected: 'artifact.json' };
   if (option.id === 'case') return { source: 'smoke', expected: 'smoke' };
   if (option.id === 'name') return { source: '@example/pulse-app', expected: '@example/pulse-app' };
+  if (option.id === 'out') return { source: 'report.html', expected: 'report.html' };
   return { source: 'sample-value', expected: 'sample-value' };
 }
 
-for (const option of publicOptions) {
-  const command = option.commands === 'all' ? 'build' : option.commands[0];
-  for (const flag of option.flags) {
-    let token = flag.name;
-    let expected = true;
-    if (option.kind === 'boolean-value') expected = flag.value;
-    if (option.kind === 'value') {
-      const value = valueFor(option);
-      token = `${flag.name}=${value.source}`;
-      expected = value.expected;
+// Audit every command/flag pair, including aliases, negative booleans and both
+// value syntaxes. Scope-specific option descriptions must reach help and docs.
+const globalIds = new Set(['help', 'json', 'dry-run']);
+const globalReference = reference.split('## Global options\n')[1].split('\n## ')[0];
+for (const command of PUBLIC_COMMAND_ORDER) {
+  const section = reference.split(`## \x60pulse ${command}\x60\n`)[1].split('\n## ')[0];
+  const declared = publicOptions.filter(option => option.commands === 'all' || option.commands.includes(command));
+  assert.deepEqual(publicOptionsForCommand(command).map(option => option.id), declared.map(option => option.id),
+    `${command} must expose every parser-allowed option in its public catalog`);
+  for (const option of publicOptions) {
+    const allowed = declared.includes(option);
+    for (const flag of option.flags) {
+      const value = option.kind === 'value' ? valueFor(option) : null;
+      const forms = value ? [[flag.name, value.source], [`${flag.name}=${value.source}`]] : [[flag.name]];
+      for (const form of forms) {
+        // --out on report is intentionally valid only together with --html.
+        const argv = [command, ...form, ...(command === 'report' && option.id === 'out' ? ['--html'] : [])];
+        if (!allowed) {
+          assert.throws(() => parseCommandRequest(argv), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED',
+            `${command} must reject ${flag.name}`);
+          continue;
+        }
+        const expected = value ? value.expected : option.kind === 'boolean-value' ? flag.value : true;
+        assert.equal(parseCommandRequest(argv)[option.key], expected, `${command} ${form.join(' ')} must parse`);
+      }
     }
-    const parsed = parseCommandRequest([command, token]);
-    assert.equal(parsed[option.key], expected, `${flag.name} must parse into ${option.key}`);
-    assert.ok(help.includes(flag.name), `public help is missing ${flag.name}`);
-    assert.ok(reference.includes(flag.name), `CLI reference is missing ${flag.name}`);
+    if (allowed) {
+      const display = optionDisplay(option, command);
+      const description = optionDescription(option, command);
+      assert.ok(help.includes(display), `public help is missing ${command} ${display}`);
+      assert.ok(help.includes(description), `public help is missing ${command} option limits: ${option.id}`);
+      assert.ok((globalIds.has(option.id) ? globalReference : section).includes(`| \x60${display}\x60 | ${description} |`),
+        `reference must retain ${command} ${option.id} flags, value form and full description`);
+    }
   }
 }
 
@@ -214,4 +266,36 @@ assert.throws(
   (error) => error instanceof PulseProjectError && error.code === 'PULSE_ARGUMENT_UNEXPECTED'
 );
 
+console.log('ok - offline documentation locator ' + JSON.stringify(require('./docs-locator-cases.cjs').runDocsLocatorCases(cliRoot)));
 console.log(`ok - CLI parser, help, machine spec, and ${COMPLETION_SHELLS.length} completions agree on ${COMMANDS.length} commands and ${publicOptions.length} public options with no hidden product controls`);
+
+// #495: recipe defaults, escape hatch, compatibility identity and Native-only config.
+const nativePolicy = require('../../packages/build-support/src/native-optimization');
+const nativeModes = require('../../packages/contracts/src/project/native-optimization');
+assert.equal(parseCommandRequest(['build', '--native-shrink0']).nativeShrink0, true);
+for (const flag of ['--experimental-native-size', '--experimental-native-bounded-size']) {
+  assert.throws(() => parseCommandRequest(['compile', '--native-shrink0', flag]), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED');
+}
+assert.throws(() => parseCommandRequest(['inspect', '--native-shrink0']), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED');
+assert.throws(() => nativeModes.selectNativeOptimizationMode({ nativeShrink0: 'yes' }));
+for (const [mode, shrink, converge, experimental] of [
+  [undefined, 2, false, false], ['native-shrink0', 0, false, false],
+  ['experimental-native-bounded-size', 2, false, true], ['experimental-native-size', 2, true, true]
+]) {
+  const args = [];
+  const recipe = nativePolicy.appendAssemblyScriptOptimizationArgs(args, mode);
+  assert.equal(recipe.assemblyScript.shrinkLevel, shrink);
+  assert.equal(recipe.assemblyScript.converge, converge);
+  assert.equal(recipe.experimental, experimental);
+  assert.equal(args[args.indexOf('--shrinkLevel') + 1], String(shrink));
+  assert.equal(args.includes('--converge'), converge);
+  assert.ok(args.includes('merge-similar-functions'));
+  const linked = [];
+  nativePolicy.appendAssemblyScriptOptimizationArgs(linked, mode, { guestLinked: true });
+  assert.equal(linked.includes('merge-similar-functions'), false, 'guest-link owns final merging');
+  assert.ok(linked.includes('--transform'), 'retention remains active');
+}
+assert.equal(nativeModes.selectNativeOptimizationMode({ nativeShrink0: true }, 'experimental-native-size'), 'native-shrink0');
+const configPlan495 = require('../../packages/contracts/src/project/config-plan');
+assert.throws(() => configPlan495.normalizeProjectDeclaration({ pulse: { defaultProfile: 'js' }, js: { host: 'node', target: 'javascript', nativeOptimization: 'native-shrink0' } }), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED');
+assert.throws(() => configPlan495.normalizeProjectDeclaration({ pulse: { defaultProfile: 'native' }, native: { host: 'node', target: 'native', nativeOptimization: 'default' } }), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED');

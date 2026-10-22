@@ -1,0 +1,7 @@
+Expected values to be strictly equal:
++ actual - expected
+
++ 'PULSE_SCHEMA_DECODE'
+- 'PULSE_SCHEMA_ENCODE'
+                ^
+ ERR_ASSERTION undefined undefined

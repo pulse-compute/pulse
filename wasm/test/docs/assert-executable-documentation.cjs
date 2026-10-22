@@ -14,39 +14,53 @@ const wasmRoot = path.resolve(__dirname, '..', '..');
 const repoRoot = path.resolve(wasmRoot, '..');
 const pulseCli = path.join(wasmRoot, 'scripts', 'pulse.cjs');
 const BUILD_DIR = '.pulse-docs-build';
-const OPTIMIZED_BUILD_DIR = '.pulse-docs-build-size';
 
 const examples = Object.freeze([
   Object.freeze({
+  "id": "03-fetch-composition/dynamic-probes",
+  "provider": "node",
+  "guestWasmBytes": 71947,
+  "capabilities": [
+    "fetch",
+    "request.json",
+    "response.json",
+    "response.text",
+    "schema.decode",
+    "schema.encode",
+    "state.set"
+  ],
+  "schemas": [
+    "probe.Input",
+    "probe.Result",
+    "probe.Output"
+  ]
+}),
+  Object.freeze({
     id: '01-hello-json',
     provider: 'node',
-    guestWasmBytes: 2353,
-    optimizedGuestWasmBytes: 2270,
+    guestWasmBytes: 2273,
     capabilities: ['response.json', 'response.text']
   }),
   Object.freeze({
     id: '02-request-schema',
     provider: 'node',
-    guestWasmBytes: 41086,
-    optimizedGuestWasmBytes: 32708,
+    guestWasmBytes: 32707,
     capabilities: ['request.json', 'response.json'],
     schemas: ['app.CreateUserInput', 'app.CreateUserOutput']
   }),
   Object.freeze({
     id: '03-fetch-composition',
     provider: 'node',
-    guestWasmBytes: 5272,
-    optimizedGuestWasmBytes: 4570,
+    guestWasmBytes: 4572,
     capabilities: ['fetch', 'response.json'],
     grouped: true
   }),
   Object.freeze({
     id: '05-fastly-capabilities',
     provider: 'fastly',
-    guestWasmBytes: 5695,
-    optimizedGuestWasmBytes: 5181,
-    providerWasmBytes: 53833,
-    optimizedProviderWasmBytes: 42780,
+    guestWasmBytes: 5181,
+    providerWasmBytes: 46209,
+    wasiImports: ['clock_time_get', 'fd_write'],
     capabilities: [
       'config.get',
       'secret.get',
@@ -60,18 +74,16 @@ const examples = Object.freeze([
   Object.freeze({
     id: '07-opaque-proxy',
     provider: 'fastly',
-    guestWasmBytes: 2304,
-    optimizedGuestWasmBytes: 2205,
-    providerWasmBytes: 40291,
-    optimizedProviderWasmBytes: 33191,
+    guestWasmBytes: 2205,
+    providerWasmBytes: 36637,
+    wasiImports: ['clock_time_get', 'fd_write'],
     capabilities: ['fetch'],
     opaque: true
   }),
   Object.freeze({
     id: '09-router-lowering',
     provider: 'node',
-    guestWasmBytes: 8014,
-    optimizedGuestWasmBytes: 7407,
+    guestWasmBytes: 7407,
     capabilities: ['fetch', 'response.json', 'response.text'],
     routes: 7
   }),
@@ -88,8 +100,7 @@ const examples = Object.freeze([
   Object.freeze({
     id: '11-events',
     provider: 'node',
-    guestWasmBytes: 40667,
-    optimizedGuestWasmBytes: 32460,
+    guestWasmBytes: 32458,
     capabilities: ['event.emit', 'logging', 'response.text'],
     schemas: ['events.DeviceReading', 'events.DeviceReadingAccepted'],
     events: Object.freeze({
@@ -105,26 +116,17 @@ const examples = Object.freeze([
   }),
   Object.freeze({
     id: '12-pulse-context-mcp',
-    runtimePackages: ['entities'],
+    project: '12-pulse-context-mcp/application',
+    runtimePackages: ['entities', 'mcp'],
     provider: 'node',
-    target: 'javascript',
-    noApplicationWasm: true,
-    capabilities: ['schema.decode', 'schema.encode'],
-    schemas: ['context.StartInput', 'context.StartOutput'],
-    entities: ['pulse.example', 'pulse.explain_diagnostic', 'pulse.read', 'pulse.search', 'pulse.start'],
-    handlerEffects: 0,
-    doctorWarnings: ['canonical-native-plan'],
-    prepareHost: true
+    compiledMcp: true
   }),
   Object.freeze({
     id: '13-jwt-es256',
     provider: 'node',
-    guestWasmBytes: 36100,
-    optimizedGuestWasmBytes: 35926,
-    applicationInputBytes: 3030,
-    optimizedApplicationInputBytes: 2848,
+    guestWasmBytes: 35926,
+    applicationInputBytes: 2848,
     linkedGuestInputBytes: 36378,
-    optimizedLinkedGuestInputBytes: 36378,
     capabilities: ['jwt.verify', 'response.text'],
     crypto: Object.freeze({
       algorithm: 'ES256',
@@ -198,9 +200,22 @@ function assertExampleFormatting() {
   visit(examplesRoot);
   for (const file of files) {
     const relativeFile = slash(path.relative(repoRoot, file));
-    // Generated snapshot strings preserve complete canonical document/file bytes.
-    // Determinism and content budgets are checked by pulse-context-corpus.
-    if (relativeFile === 'examples/12-pulse-context-mcp/context-corpus.ts') continue;
+    // Generated snapshot strings and bounded application output preserve canonical bytes.
+    // Determinism and content budgets are checked by pulse-context-corpus
+    // and pulse-context-build; generated data is not an authored example.
+    if ([
+      'examples/12-pulse-context-mcp/context-corpus.ts',
+      'examples/12-pulse-context-mcp/context-data/context-manifest.json',
+      'examples/12-pulse-context-mcp/context-data/context-metadata.ts',
+      'examples/12-pulse-context-mcp/context-data/resource-manifest.json',
+      'examples/12-pulse-context-mcp/application/.pulse/config.ts',
+      'examples/12-pulse-context-mcp/application/src/start.ts',
+      'examples/12-pulse-context-mcp/application/src/search.ts',
+      'examples/12-pulse-context-mcp/application/src/read.ts',
+      'examples/12-pulse-context-mcp/application/src/example.ts',
+      'examples/12-pulse-context-mcp/application/src/diagnostic.ts',
+      'examples/12-pulse-context-mcp/application/src/index.ts'
+    ].includes(relativeFile)) continue;
     const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
     for (let index = 0; index < lines.length; index += 1) {
       assert.ok(
@@ -291,8 +306,9 @@ function parseRunBindings() {
   return bindings;
 }
 
-function verifyRunBindings(bindings) {
-  assert.ok(bindings.length >= 10, `expected at least 10 executable command/result bindings, found ${bindings.length}`);
+function verifyRunBindings(bindings, selectedExample = null) {
+  const minimum = selectedExample ? 1 : 10;
+  assert.ok(bindings.length >= minimum, `expected at least ${minimum} executable command/result bindings, found ${bindings.length}`);
   const exampleCoverage = new Set();
   for (const binding of bindings) {
     const { config } = binding;
@@ -308,9 +324,9 @@ function verifyRunBindings(bindings) {
       assert.ok(projectRoot.startsWith(`${repoRoot}${path.sep}`), `pulse-doc-run project escapes repository: ${config.project}`);
       assert.ok(fs.existsSync(projectRoot), `pulse-doc-run project is missing: ${config.project}`);
       cwd = projectRoot;
-      const example = config.project.match(/^examples\/([^/]+)$/)?.[1];
-      if (example) exampleCoverage.add(example);
-      if (config.args[0] === 'build') {
+      const example = config.project.startsWith('examples/') ? config.project.slice('examples/'.length) : null;
+      if (example) exampleCoverage.add(examples.find(entry => (entry.project || entry.id) === example)?.id || example);
+      if (config.args[0] === 'build' || config.prepare) {
         const dist = path.join(projectRoot, BUILD_DIR);
         fs.rmSync(dist, { recursive: true, force: true });
         cleanup = () => fs.rmSync(dist, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
@@ -321,6 +337,13 @@ function verifyRunBindings(bindings) {
     }
 
     try {
+      if (config.prepare) {
+        assert.equal(config.args[0], 'report', 'Only retained report evidence requires preparation');
+        const profileArgs = config.prepare.length === 6 ? ['--profile', config.prepare[2]] : [];
+        assert.deepEqual(config.prepare, ['build', ...profileArgs, '--out', BUILD_DIR, '--json'], 'Report preparation stays in the documentation build directory');
+        const prepared = runJson(config.prepare, cwd);
+        assert.equal(prepared.status, 'built');
+      }
       const value = runJson(config.args, cwd, {
         timeoutMs: config.timeoutMs || 300000,
         expectedStatus: config.expectedStatus ?? 0,
@@ -331,7 +354,7 @@ function verifyRunBindings(bindings) {
       if (cleanup) cleanup();
     }
   }
-  const lifecycleExamples = examples.map((entry) => entry.id).sort();
+  const lifecycleExamples = selectedExample ? [selectedExample] : examples.map((entry) => entry.id).sort();
   assert.deepEqual([...exampleCoverage].sort(), lifecycleExamples, 'every lifecycle example must have a documented executable command/result pair');
 }
 
@@ -408,6 +431,43 @@ function assertSecretsRedacted(outputs, secrets, exampleId) {
   for (const secret of secrets) assert.equal(combined.includes(secret), false, `${exampleId} leaked a configured secret into CLI output`);
 }
 
+function assertFastlyExampleImports(imports, exampleId) {
+  const example = examples.find((entry) => entry.id === exampleId);
+  assert.ok(example?.provider === 'fastly' && Array.isArray(example.wasiImports), `${exampleId} needs an explicit Fastly WASI import expectation`);
+  assert.ok(imports.some((entry) => entry.module === 'fastly_abi' && entry.name === 'init' && entry.kind === 'function'), `${exampleId} native Fastly Wasm is missing fastly_abi.init`);
+  assert.equal(imports.some((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, `${exampleId} native Fastly Wasm contains a forbidden runtime import`);
+  // Both examples fetch upstreams: bounded transport diagnostics use stdout
+  // even without an authored ctx.log statement. Keep each fixture's WASI
+  // imports exact rather than inheriting a broader provider-wide allowlist.
+  assert.deepEqual(
+    imports.filter((entry) => /wasi/i.test(entry.module)).map((entry) => `${entry.module}:${entry.name}:${entry.kind}`).sort(),
+    example.wasiImports.map((name) => `wasi_snapshot_preview1:${name}:function`).sort(),
+    `${exampleId} WASI imports must match its bounded clock/stdout contract`
+  );
+}
+
+function verifyFastlyImportAssertions() {
+  for (const example of examples.filter((entry) => entry.provider === 'fastly')) {
+    const init = { module: 'fastly_abi', name: 'init', kind: 'function' };
+    const wasi = example.wasiImports.map((name) => ({ module: 'wasi_snapshot_preview1', name, kind: 'function' }));
+    const valid = [init, ...wasi];
+    assertFastlyExampleImports(valid, example.id);
+    for (const name of ['fd_read', 'random_get', 'path_open']) {
+      assert.throws(() => assertFastlyExampleImports([...valid, { module: 'wasi_snapshot_preview1', name, kind: 'function' }], example.id), /WASI imports/);
+    }
+    assert.throws(() => assertFastlyExampleImports([...valid, { module: 'wasi_unstable', name: 'fd_write', kind: 'function' }], example.id), /WASI imports/);
+    for (const entry of wasi) {
+      assert.throws(() => assertFastlyExampleImports(valid.filter((item) => item !== entry), example.id), /WASI imports/);
+      assert.throws(() => assertFastlyExampleImports(valid.map((item) => item === entry ? { ...item, kind: 'memory' } : item), example.id), /WASI imports/);
+      assert.throws(() => assertFastlyExampleImports([...valid, entry], example.id), /WASI imports/);
+    }
+    for (const module of ['pulse_host', 'js_compute']) {
+      assert.throws(() => assertFastlyExampleImports([...valid, { module, name: 'invoke', kind: 'function' }], example.id), /forbidden runtime import/);
+    }
+    assert.throws(() => assertFastlyExampleImports(wasi, example.id), /missing fastly_abi.init/);
+  }
+}
+
 function inspectWasm(file, exampleId) {
   assert.ok(fs.existsSync(file), `${exampleId} did not produce bin/main.wasm`);
   const bytes = fs.readFileSync(file);
@@ -415,10 +475,7 @@ function inspectWasm(file, exampleId) {
   assert.equal(bytes.subarray(0, 8).toString('hex'), '0061736d01000000', `${exampleId} produced an invalid Wasm header`);
   assert.equal(WebAssembly.validate(bytes), true, `${exampleId} produced invalid WebAssembly`);
   const imports = WebAssembly.Module.imports(new WebAssembly.Module(bytes));
-  assert.ok(imports.some((entry) => entry.module === 'fastly_abi' && entry.name === 'init'), `${exampleId} native Fastly Wasm is missing fastly_abi.init`);
-  assert.equal(imports.some((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, `${exampleId} native Fastly Wasm contains a forbidden runtime import`);
-  assert.equal(imports.some(entry => /wasi/i.test(entry.module)
-    && !(entry.module === 'wasi_snapshot_preview1' && entry.name === 'clock_time_get')), false, `${exampleId} permits only the bounded WASI clock import`);
+  assertFastlyExampleImports(imports, exampleId);
   return bytes.length;
 }
 
@@ -446,22 +503,25 @@ function assertExampleReadme(example, project, syncResult) {
       ? 'pulse build && node host/prepare.cjs' : `pulse ${command}`, `${example.id} documented script must invoke the ordinary CLI`);
   }
   assert.match(text, /^## Wasm size$/m, `${example.id} README must document its Wasm size baseline`);
+  assert.ok(text.includes('docs/reference/native-build-optimization.md'),
+    `${example.id} README must link to the shared optimization reference`);
+  assert.ok(!text.includes('--experimental-native-'),
+    `${example.id} README must present the default build without experimental comparisons`);
+  const index = fs.readFileSync(path.join(repoRoot, 'docs/examples.md'), 'utf8');
+  const guestSize = example.noApplicationWasm ? 'No application Wasm' : documentedByteCount(example.guestWasmBytes);
+  const providerSize = example.providerWasmBytes ? documentedByteCount(example.providerWasmBytes) : '—';
+  assert.ok(index.includes(`| \`${example.id}\` | ${guestSize} | ${providerSize} |`),
+    `${example.id} example index must match the measured artifact sizes`);
   if (example.noApplicationWasm) {
     assert.ok(text.includes('**no application Wasm artifact**'), `${example.id} README must explicitly document that its default profile emits no application Wasm`);
-    assert.ok(text.includes('`--experimental-native-size`'), `${example.id} README must explain why experimental Native size is not applicable`);
   } else {
     assert.ok(text.includes(documentedByteCount(example.guestWasmBytes)), `${example.id} README application guest Wasm size is stale`);
-    assert.ok(text.includes(documentedByteCount(example.optimizedGuestWasmBytes)), `${example.id} README optimized application guest Wasm size is stale`);
-    assert.ok(text.includes('`--experimental-native-size`'), `${example.id} README must identify the experimental Native-size build`);
     if (example.providerWasmBytes) {
       assert.ok(text.includes(documentedByteCount(example.providerWasmBytes)), `${example.id} README provider Wasm size is stale`);
-      assert.ok(text.includes(documentedByteCount(example.optimizedProviderWasmBytes)), `${example.id} README optimized provider Wasm size is stale`);
     }
     if (example.linkedGuestInputBytes) {
       assert.ok(text.includes(documentedByteCount(example.applicationInputBytes)), `${example.id} README application input size is stale`);
-      assert.ok(text.includes(documentedByteCount(example.optimizedApplicationInputBytes)), `${example.id} README optimized application input size is stale`);
       assert.ok(text.includes(documentedByteCount(example.linkedGuestInputBytes)), `${example.id} README linked guest input size is stale`);
-      assert.ok(text.includes(documentedByteCount(example.optimizedLinkedGuestInputBytes)), `${example.id} README optimized linked guest input size is stale`);
     }
   }
   const relativeReadme = slash(path.relative(repoRoot, readme));
@@ -473,51 +533,16 @@ function assertExampleReadme(example, project, syncResult) {
   assert.ok(syncResult.references.some((entry) => entry.markdown === relativeReadme && entry.source === harness), `${example.id} README must derive its harness block from ${harness}`);
 }
 
-function verifyOptimizedNativeBuild(example, projectDir, outputs) {
-  if (example.noApplicationWasm) return Object.freeze({ guestWasmBytes: 0, providerWasmBytes: 0 });
-  const buildDir = path.join(projectDir, OPTIMIZED_BUILD_DIR);
-  fs.rmSync(buildDir, { recursive: true, force: true });
-  cleanupPaths.add(buildDir);
-  const build = runPulse(
-    'build',
-    projectDir,
-    ['--out', OPTIMIZED_BUILD_DIR, '--experimental-native-size'],
-    360000
-  );
-  outputs.push(build);
-  assert.equal(build.json.status, 'built', `${example.id} optimized pulse build failed`);
-  assert.equal(build.json.provider, example.provider, `${example.id} optimized build provider mismatch`);
-  assert.equal(path.resolve(build.json.outDir), buildDir, `${example.id} optimized build output mismatch`);
-
-  const manifest = JSON.parse(fs.readFileSync(path.join(buildDir, 'pulse-build.json'), 'utf8'));
-  assert.equal(manifest.portable.optimization.version, 'pulse.native-optimization.v1', `${example.id} optimized build policy version mismatch`);
-  assert.equal(manifest.portable.optimization.mode, 'experimental-native-size', `${example.id} optimized build mode mismatch`);
-  assert.equal(manifest.portable.optimization.experimental, true, `${example.id} optimized build must remain explicitly experimental`);
-  assert.deepEqual(manifest.portable.optimization.assemblyScript, {
+function assertDefaultOptimization(optimization, location) {
+  assert.equal(optimization.version, 'pulse.native-optimization.v1', location);
+  assert.equal(optimization.mode, 'native-bounded-size', location);
+  assert.equal(optimization.experimental, false, location);
+  assert.deepEqual(optimization.assemblyScript, {
     optimize: true,
     optimizeLevel: 3,
     shrinkLevel: 2,
-    converge: true
-  }, `${example.id} optimized AssemblyScript policy mismatch`);
-
-  const guestWasmBytes = inspectGuestWasm(path.join(buildDir, 'canonical-native.wasm'), example.id);
-  assert.equal(guestWasmBytes, example.optimizedGuestWasmBytes, `${example.id} documented optimized application guest Wasm size changed`);
-  if (example.linkedGuestInputBytes) {
-    const report = JSON.parse(fs.readFileSync(path.join(buildDir, 'guest-link-report.json'), 'utf8'));
-    assert.equal(report.inputs.primary.bytes, example.optimizedApplicationInputBytes, `${example.id} optimized primary guest-link input changed`);
-    assert.equal(report.inputs.guest.bytes, example.optimizedLinkedGuestInputBytes, `${example.id} optimized linked guest input changed`);
-    assert.equal(report.finalArtifact.bytes, example.optimizedGuestWasmBytes, `${example.id} optimized linked output size changed`);
-  }
-
-  let providerWasmBytes = 0;
-  if (example.provider === 'fastly') {
-    providerWasmBytes = inspectWasm(path.join(buildDir, 'bin', 'main.wasm'), example.id);
-    assert.equal(providerWasmBytes, example.optimizedProviderWasmBytes, `${example.id} documented optimized provider Wasm size changed`);
-    assert.equal(manifest.providerTarget.optimization.mode, 'experimental-native-size', `${example.id} provider output lost the optimized build policy`);
-  } else {
-    assert.equal(fs.existsSync(path.join(buildDir, 'bin', 'main.wasm')), false, `${example.id} optimized Node build must not claim a Fastly provider target`);
-  }
-  return Object.freeze({ guestWasmBytes, providerWasmBytes });
+    converge: false
+  }, `${location} AssemblyScript policy mismatch`);
 }
 
 function verifyDefaultNativeSizes(example, buildDir, build) {
@@ -527,6 +552,8 @@ function verifyDefaultNativeSizes(example, buildDir, build) {
     }
     return Object.freeze({ guestWasmBytes: 0, wasmBytes: 0 });
   }
+  const manifest = JSON.parse(fs.readFileSync(path.join(buildDir, 'pulse-build.json'), 'utf8'));
+  assertDefaultOptimization(manifest.portable.optimization, `${example.id} portable default`);
   const guestWasmBytes = inspectGuestWasm(path.join(buildDir, 'canonical-native.wasm'), example.id);
   assert.equal(guestWasmBytes, example.guestWasmBytes, `${example.id} documented application guest Wasm size changed`);
   if (example.linkedGuestInputBytes) {
@@ -537,6 +564,7 @@ function verifyDefaultNativeSizes(example, buildDir, build) {
   }
   let wasmBytes = 0;
   if (example.provider === 'fastly') {
+    assertDefaultOptimization(manifest.providerTarget.optimization, `${example.id} Fastly default`);
     wasmBytes = inspectWasm(path.join(buildDir, 'bin', 'main.wasm'), example.id);
     assert.equal(wasmBytes, example.providerWasmBytes, `${example.id} documented provider Wasm size changed`);
     assert.equal(build.json.manifest.providerTarget.compiledWasmPresent, true, `${example.id} did not report compiled Wasm`);
@@ -556,6 +584,10 @@ function verifyDocumentationSizes() {
   const syncResult = verifySourceContracts();
   for (const [index, example] of examples.entries()) {
     console.log(`docs sizes - ${index + 1}/${examples.length}: ${example.id}`);
+    if (example.compiledMcp) {
+      console.log(`ok - docs sizes ${example.id}: corpus-dependent measurements verified by the Report binding`);
+      continue;
+    }
     const projectDir = path.join(repoRoot, 'examples', example.id);
     const project = resolveProject({ cwd: projectDir });
     assertExampleReadme(example, project, syncResult);
@@ -573,14 +605,13 @@ function verifyDocumentationSizes() {
     const build = runPulse('build', projectDir, ['--out', BUILD_DIR], 360000);
     assert.equal(build.json.status, 'built', `${example.id} size preflight build failed`);
     const defaults = verifyDefaultNativeSizes(example, buildDir, build);
-    console.log(`docs sizes - ${example.id}: optimized build`);
-    const optimized = verifyOptimizedNativeBuild(example, projectDir, []);
-    console.log(`ok - docs sizes ${example.id}: guest=${defaults.guestWasmBytes}/${optimized.guestWasmBytes} provider=${defaults.wasmBytes}/${optimized.providerWasmBytes}`);
+    console.log(`ok - docs sizes ${example.id}: guest=${defaults.guestWasmBytes} provider=${defaults.wasmBytes}`);
   }
   console.log(`ok - documentation size preflight checked ${examples.length} examples; full replay still required`);
 }
 
 function verifyExampleWorkflow(example, syncResult) {
+  if (example.compiledMcp) return verifyCompiledMcpWorkflow(example, syncResult);
   console.log(`docs - verify canonical example ${example.id}`);
   const projectDir = path.join(repoRoot, 'examples', example.id);
   const guestCacheDir = path.join(projectDir, '.pulse', 'guests');
@@ -718,7 +749,6 @@ function verifyExampleWorkflow(example, syncResult) {
     assert.ok(fs.existsSync(path.join(buildDir, 'schema-json-registry.json')), `${example.id} schema build is missing the registry`);
     assert.ok(fs.existsSync(path.join(buildDir, 'schema-json-codecs.cjs')), `${example.id} schema build is missing generated codecs`);
   }
-  const optimized = verifyOptimizedNativeBuild(example, projectDir, outputs);
   assertSecretsRedacted(outputs, secretValues(project), example.id);
   const summary = Object.freeze({
     id: example.id,
@@ -727,13 +757,10 @@ function verifyExampleWorkflow(example, syncResult) {
     capabilities: inspect.json.compiler.capabilities.length,
     schemas: inspect.json.project.schemas.count,
     guestWasmBytes,
-    optimizedGuestWasmBytes: optimized.guestWasmBytes,
-    wasmBytes,
-    optimizedWasmBytes: optimized.providerWasmBytes
+    wasmBytes
   });
   for (const target of [
     buildDir,
-    path.join(projectDir, OPTIMIZED_BUILD_DIR),
     guestCacheDir
   ]) {
     fs.rmSync(target, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
@@ -743,8 +770,10 @@ function verifyExampleWorkflow(example, syncResult) {
   return summary;
 }
 
-function verifyEveryExampleWorkflow(syncResult) {
-  return examples.map((example) => verifyExampleWorkflow(example, syncResult));
+async function verifyEveryExampleWorkflow(syncResult) {
+  const summaries = [];
+  for (const example of examples) summaries.push(await verifyExampleWorkflow(example, syncResult));
+  return summaries;
 }
 
 function verifyInitWorkflow() {
@@ -762,10 +791,10 @@ function verifyInitWorkflow() {
   }
 }
 
-function waitForReady(child, stderrText) {
+function waitForReady(child, stderrText, timeoutMs = 20000) {
   return new Promise((resolve, reject) => {
     let buffer = '';
-    const timer = setTimeout(() => finish(new Error(`timed out waiting for documented pulse dev readiness; stderr=${stderrText()}`)), 20000);
+    const timer = setTimeout(() => finish(new Error(`timed out waiting for documented pulse dev readiness; stderr=${stderrText()}`)), timeoutMs);
     function finish(error, value) {
       clearTimeout(timer);
       child.stdout.off('data', onData);
@@ -825,6 +854,49 @@ function waitForClose(child, stderrText) {
   });
 }
 
+// The public MCP page describes the compiled application, not the retained root
+// host. Replay its actual helper commands and verify its selected success JSON.
+async function verifyCompiledMcpWorkflow(example, syncResult) {
+  const projectRoot = path.join(repoRoot, 'examples', example.project);
+  const relativeReadme = `examples/${example.id}/README.md`;
+  const markdown = fs.readFileSync(path.join(repoRoot, relativeReadme), 'utf8');
+  const manifest = JSON.parse(fs.readFileSync(path.join(projectRoot, 'package.json')));
+  for (const command of ['doctor', 'inspect', 'build', 'dev']) {
+    assert.equal(manifest.scripts[command], `pulse ${command}`);
+    assert.match(markdown, new RegExp(`^npm run ${command}$`, 'm'));
+  }
+  assert.ok(syncResult.references.some(entry => entry.markdown === relativeReadme
+    && entry.source === `examples/${example.project}/src/index.ts`));
+  const commands = [...markdown.matchAll(/^node \.\.\/client\/request\.cjs --url http:\/\/127\.0\.0\.1:8787\/mcp ([a-z.\/]+)(?: '([^'\n]+)')?$/gm)];
+  assert.deepEqual(commands.map(match => match[1]), ['pulse.start', 'tools/list', 'pulse.search', 'pulse.read', 'pulse.example', 'pulse.diagnostic']);
+  const selected = JSON.parse(/Selected fields[\s\S]*?```json\n([\s\S]*?)\n```/.exec(markdown)[1]);
+  const child = spawn(process.execPath, [pulseCli, 'dev', '--host', '127.0.0.1', '--port', '0', '--no-watch', '--json'], {
+    cwd: projectRoot, env: process.env, stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  let stderr = '';
+  child.stderr.setEncoding('utf8'); child.stderr.on('data', chunk => { stderr += chunk; });
+  const closed = new Promise(resolve => child.once('close', resolve));
+  try {
+    const ready = await waitForReady(child, () => stderr, 120000);
+    assert.equal(ready.provider, 'node');
+    for (const [, operation, args] of commands) {
+      const result = JSON.parse(runNode([path.join(projectRoot, '../client/request.cjs'), '--url', `${ready.url}/mcp`, operation, args || '{}'], { cwd: projectRoot, timeoutMs: 15000 }).stdout);
+      if (operation === 'tools/list') {
+        assert.deepEqual(result.tools.map(tool => tool.name).sort(), ['pulse.start', 'pulse.search', 'pulse.read', 'pulse.example', 'pulse.diagnostic'].sort());
+      } else {
+        assert.equal(result.structuredContent.status, 'ok', operation);
+        if (operation === 'pulse.start') assertPartial(result, selected, 'documented MCP starter response');
+      }
+    }
+    console.log('ok - compiled Node Native MCP: five documented tools, discovery and selected starter response');
+  } finally {
+    child.kill('SIGTERM');
+    const timer = setTimeout(() => child.kill('SIGKILL'), 5000);
+    await closed; clearTimeout(timer);
+  }
+  return { id: example.id, provider: 'node', tests: commands.length, capabilities: 'compiled MCP' };
+}
+
 async function verifyDocumentedDevWorkflow() {
   const projectRoot = path.join(repoRoot, 'examples', '01-hello-json');
   const child = spawn(process.execPath, [pulseCli, 'dev', '--host', '127.0.0.1', '--port', '0', '--no-watch', '--once', '--json'], {
@@ -854,7 +926,7 @@ async function verifyDocumentedDevWorkflow() {
 // runtime dependencies for source-checkout checks; exercise real public exports.
 function prepareExampleRuntimePackages(example) {
   for (const name of example.runtimePackages || []) {
-    const scope = path.join(repoRoot, 'examples', example.id, 'node_modules', '@pulse-compute');
+    const scope = path.join(repoRoot, 'examples', example.project || example.id, 'node_modules', '@pulse-compute');
     const destination = path.join(scope, name);
     if (fs.existsSync(destination)) continue;
     for (const directory of [path.dirname(scope), scope]) {
@@ -869,12 +941,13 @@ function prepareExampleRuntimePackages(example) {
 }
 
 function verifySourceContracts() {
+  verifyFastlyImportAssertions();
   console.log('docs - verify canonical example formatting');
   assertExampleFormatting();
   console.log('docs - verify source-backed Markdown');
   const syncResult = synchronizeDocSnippets({ write: false });
   assert.ok(syncResult.blockCount >= 24, `expected at least 24 source-derived documentation blocks, found ${syncResult.blockCount}`);
-  const covered = new Set(syncResult.references.map((entry) => entry.source.match(/^examples\/([^/]+)\//)?.[1]).filter(Boolean));
+  const covered = new Set(syncResult.references.map((entry) => entry.markdown.match(/^examples\/(.+)\/README\.md$/)?.[1]).filter(Boolean));
   assert.deepEqual([...covered].sort(), examples.map((entry) => entry.id).sort(), 'every canonical example must supply exact source-derived documentation');
   return syncResult;
 }
@@ -892,7 +965,8 @@ async function main() {
     if (options.example) {
       const syncResult = verifySourceContracts();
       const example = examples.find((entry) => entry.id === options.example);
-      const summary = verifyExampleWorkflow(example, syncResult);
+      verifyRunBindings(parseRunBindings().filter(binding => binding.config.project === `examples/${example.project || example.id}`), example.id);
+      const summary = await verifyExampleWorkflow(example, syncResult);
       if (summary.provider === 'fastly') assert.ok(summary.wasmBytes > 1024 && summary.wasmBytes < 1024 * 1024, `${summary.id} must produce compact native provider Wasm`);
       console.log(`ok - docs example ${summary.id}: provider=${summary.provider} tests=${summary.tests} capabilities=${summary.capabilities}${summary.schemas ? ` schemas=${summary.schemas}` : ''}${summary.wasmBytes ? ` wasm=${summary.wasmBytes}` : ''}`);
       return;
@@ -930,7 +1004,7 @@ async function main() {
     console.log('docs - execute live dev workflow');
     await verifyDocumentedDevWorkflow();
     console.log('docs - execute every canonical example workflow');
-    const summaries = verifyEveryExampleWorkflow(syncResult);
+    const summaries = await verifyEveryExampleWorkflow(syncResult);
     const fastly = summaries.filter((entry) => entry.provider === 'fastly');
     assert.equal(fastly.length, 2, 'expected two documented Fastly examples');
     assert.ok(fastly.every((entry) => entry.wasmBytes > 1024 && entry.wasmBytes < 1024 * 1024), 'every Fastly example must produce compact native provider Wasm');

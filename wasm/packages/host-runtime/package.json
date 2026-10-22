@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/wasm-host-runtime",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.10",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -25,7 +25,8 @@
     "./runtime/kv-provider": "./src/runtime/kv-provider.js",
     "./runtime/continuation-registry": "./src/runtime/continuation-registry.js",
     "./runtime/canonical-api-runtime": "./src/runtime/canonical-api-runtime.js",
-    "./runtime/canonical-native-host": "./src/runtime/canonical-native-host.js"
+    "./runtime/canonical-native-host": "./src/runtime/canonical-native-host.js",
+    "./compiler/binary-resources": "./src/compiler/binary-resources.js"
   },
   "dependencies": {
     "@pulse-compute/wasm-build-support": "workspace:*",
@@ -46,7 +47,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "wasm/packages/host-runtime"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.9/packages/implementation-packages/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.10/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

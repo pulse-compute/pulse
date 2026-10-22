@@ -13,11 +13,12 @@ Release files are protected human-authority surfaces.
 - **Beta.6 exception, 2026-10-05:** the release owner explicitly accepted the local Viceroy multi-winner CAS failure as non-blocking and deferred deployed Pulse cross-location K4 for the sealed `0da09bba3a806b04ee6ef0e6f98d196e3a2232c1` candidate. `beta6-kv-cas-disposition.json` records the exact authority, source identity and retained evidence. This supersedes the K4 blocking requirements above for this candidate only. Preserve raw failed/not-run statuses; do not rerun the completed seal merely to record this decision. The diagnostic command may still fail under its general policy. This is not a semantic pass, permanent test removal, public-contract change, or permission to merge, tag, publish or deploy. Future release candidates require their own qualification or explicit disposition.
 - Authoritative release evidence requires complete ordered coverage on the clean candidate source, terminal passing reports and exact package/artifact identities. The release controller may recover passed tasks and shared packages from unexpired checkpoints in the same checkout only after verifying the identical source/tree, dependency and toolchain bytes, build outputs, options, provider/environment identity, task definition, prerequisite proofs, artifact hashes and successful cleanup. The controller may schedule tasks in bounded, controller-owned local worktrees of that identical candidate, with private dependency/build/output paths and bound worker input identities. These workers are execution children of one checkout and one aggregate, not independent proof sources; source and input identity are rechecked before terminal cleanup. Bootstrap, source checks, dependency restoration, build, control-plane checks, documentation, workspace unit tests, audit/license refresh, Fastly reality and final cleanup execute on every attempt. Failed, incomplete or invalid proofs execute again. Each attempt retains its own reports and provenance. Development reruns, partial task ranges, hand-combined reports, cross-source or foreign-checkout proofs and remote caches cannot be pooled into a seal. This recovery policy does not change the candidate-specific KV disposition above or authorize publication.
 
-- Ready release PRs into `main` qualify the exact PR merge candidate through `release-qualify.yml`. Preserve its base/head/tree and original source identity. A later merge/squash binding requires the same tree and base (plus the head parent for a two-parent merge). A linear rebase binding additionally requires the original and rewritten chains to start at that exact base, contain the same number of commits (at most 1000), and preserve every ordered tree; merge-heavy histories and merge queues remain unsupported. Never rewrite qualified artifacts to claim a different source. A PR may explicitly request a fresh full qualification with `Release qualification: required` in its body, including a same-version release-control repair; this cannot bypass version preparation or permit replacing already published immutable bytes. Exact-tag npm publication and documentation deployment consume that verified pre-main qualification and revalidate its merge binding after protected-environment approval. Required-check settings are a human action.
+- Ready release PRs into `main` qualify the exact PR merge candidate through `release-qualify.yml`. Preserve its base/head/tree and original source identity. A later merge/squash binding requires the same tree and base (plus the head parent for a two-parent merge). A linear rebase binding additionally requires the original and rewritten chains to start at that exact base, contain the same number of commits (at most 1000), and preserve every ordered tree; merge-heavy histories and merge queues remain unsupported. Never rewrite qualified artifacts to claim a different source. A PR may explicitly request a fresh full qualification with `Release qualification: required` in its body, including a same-version release-control repair; this cannot bypass version preparation or permit replacing already published immutable bytes. Exact-tag npm publication consumes that verified pre-main qualification; historical v1 documentation deployment also requires its retained documentation candidate. New v2 qualifications contain source-only documentation evidence and cannot authorize the old documentation deployer. Consumers revalidate the merge binding after protected-environment approval. Required-check settings are a human action.
 - One fresh `source-checks` stage owns maintainer/publication and documentation validation per seal attempt. Shared packing may verify that attempt's hash-pinned receipt against unchanged source, dependency, Node and environment inputs; standalone packing must still validate independently. This does not allow skipping fresh checks on a resumed attempt.
 
 - `pulse-release-manifest.json#publication` owns npm registry, channel tag, trusted-publisher identity, toolchain, and canonical smoke package.
-- `documentation-deployment.json` owns Object Storage prefixes, immutable and mutable classes, deployment receipts, cache classes, and public verification routes.
+- Historical HTML is not retained in the current checkout. `documentation-release-history/` keeps product manifests and the original beta.1 capture record; version entries bind retained manifests by digest and historical Git source. New releases use website-managed source metadata. Historical v1 candidate/receipt verification still requires explicitly supplied sealed artifacts; never replace it with metadata-only approval.
+- `documentation-deployment.json` retains the historical v1 receipt contract. `documentation-writer-retirement.json` records source retirement only; main/tags/historical refs still require live disabled-and-idle verification in the website guard. Never infer retirement from missing workflow files.
 - Exact npm tarballs and exact-version documentation objects are immutable release artifacts. Never replace an existing same-version artifact with different bytes.
 - Production publication and documentation promotion require the exact reviewed release tag plus human approval of the corresponding protected environment.
 
@@ -45,7 +46,7 @@ supply-chain evidence, and mandatory provider reality.
 - `package.json`
 - `.github/workflows/validate.yml`
 - `.github/workflows/npm-publish.yml`
-- `.github/workflows/documentation-deploy.yml`
+- `release/documentation-writer-retirement.json`
 
 **Write**
 
@@ -63,7 +64,7 @@ supply-chain evidence, and mandatory provider reality.
 - `.gitignore`
 - `.github/workflows/validate.yml`
 - `.github/workflows/npm-publish.yml`
-- `.github/workflows/documentation-deploy.yml`
+- `release/documentation-writer-retirement.json`
 - `.github/ISSUE_TEMPLATE/**`
 - `.github/PULL_REQUEST_TEMPLATE.md`
 - `.github/CODEOWNERS`
@@ -153,7 +154,6 @@ documentation, and versioned site inputs.
 - `docs/reference/**`
 - `wasm/packages/cli/release-manifest.json`
 - `wasm/packages/cli/docs/**`
-- `.pulse-docs-site/**`
 
 **Derived**
 
@@ -161,7 +161,6 @@ documentation, and versioned site inputs.
 - `wasm/packages/cli/release-manifest.json`
 - `wasm/packages/cli/docs/**`
 - generated package README status blocks
-- `.pulse-docs-site/**`
 
 **Read**
 
@@ -210,7 +209,6 @@ evidence only.
 - `wasm/.test-results/**`
 - `.pulse-release/**`
 - `.pulse-seal/**`
-- `.pulse-docs-site/**`
 - `.pulse-publication/**`
 - `.pulse-documentation-deployment/**`
 - no tracked source by default; route fixes through the relevant implementation Entry Point

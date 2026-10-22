@@ -14,6 +14,7 @@ try {
   assert.throws(() => parseArgs(['--skip-install', '--dependency-bundle', 'bundle']), /cannot be combined/);
   assert.throws(() => parseArgs(['--resume', 'attempt']), /Unknown/);
   assert.equal(parseArgs(['--verify-resume']).verifyResume, true);
+  assert.equal(parseArgs(['--process-tree']).processTree, true);
   assert.deepEqual(parseArgs(['--workers', '4', '--compiler-workers', '2', '--memory-budget-mib', '6144']).sealArgs,
     ['--require-fastly', '--workers', '4', '--compiler-workers', '2', '--memory-budget-mib', '6144']);
   assert.throws(() => parseArgs(['--verify-resume', '--interrupt-at', 's3-body-installed']), /cannot be combined/);
@@ -28,6 +29,13 @@ try {
   fs.writeFileSync(preload, observerSource(events));
   const result = spawnSync(process.execPath, ['--require', preload, '-e', `
     const cp = require('node:child_process');
+    // Read-only report tests guard app writes. Diagnostic events must neither
+    // invoke these guards nor replace them, including during process exit.
+    const fs = require('node:fs');
+    for (const key of ['writeFileSync', 'appendFileSync', 'unlinkSync', 'renameSync', 'mkdirSync', 'rmSync']) {
+      fs[key] = () => { throw new Error('Unexpected app write: ' + key); };
+    }
+    require('node:assert/strict').throws(() => fs.appendFileSync('forbidden', ''), /Unexpected app write/);
     // Failed launches still count; the observer must preserve their outcome.
     const a = cp.spawnSync('pnpm', ['pack', 'private-value'], {env: {PATH: ''}});
     const b = cp.execFileSync.bind(cp, 'npm', ['install'], {env: {PATH: ''}});
@@ -52,6 +60,9 @@ try {
   const rows = bytes.trim().split('\n').map(line => JSON.parse(line));
   assert.deepEqual(rows.filter(row => row.kind === 'launch').map(row => row.category), ['pack', 'install', 'asc']);
   assert(rows.some(row => row.kind === 'node-exit' && row.maxRSSKiB > 0));
+  const launches = rows.filter(row => row.kind === 'launch');
+  assert(launches.every(row => Number.isInteger(row.at) && row.pid > 0));
+  assert(launches.every(row => rows.some(end => end.kind === 'launch-end' && end.id === row.id && end.durationMs >= 0)));
   const tasks = path.join(temporary, 'tasks.json');
   fs.writeFileSync(tasks, JSON.stringify({results: [
     {status: 'passed', execution: 'reused', durationMs: 0, reusedDurationMs: 2000},

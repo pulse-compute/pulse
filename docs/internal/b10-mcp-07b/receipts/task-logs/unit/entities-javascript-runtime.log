@@ -1,0 +1,9 @@
+
+ RUN  v4.1.10 /workspace/scratch/0174bfde4d1e/pulse-06b-final
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  21:58:20
+   Duration  485ms (transform 78ms, setup 0ms, import 124ms, tests 206ms, environment 0ms)
+

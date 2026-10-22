@@ -29,12 +29,10 @@ const {
   diagnosticAnchor
 } = require('../packages/cli/src/diagnostics.js');
 const {
-  CONFIG_SECTIONS,
-  CONFIG_FIELDS,
   CONFIG_DISCOVERY,
-  CONFIG_PRECEDENCE,
   projectConfigSchemaDocument
 } = require('../packages/cli/src/project-config-reference.js');
+const { CONFIG_DOCUMENTATION_FIELDS, CONFIG_DOCUMENTATION_SECTIONS, anchor: configAnchor, legacyAnchor: configLegacyAnchor } = require('../../scripts/documentation-project-config.cjs');
 const {
   COMPLETION_SHELLS,
   renderCompletion,
@@ -110,13 +108,45 @@ function withStatusBlock(source, entry, manifest) {
   return stable(`${match[0]}\n${block}\n\n${source.slice(match[0].length).replace(/^\s+/, '')}`);
 }
 
+// Editorial chooser text; release support promises remain in PACKAGE_SET below.
+const PACKAGE_SUMMARIES = Object.freeze({
+  pulse: ['Application root, config and schemas.', 'Start a Pulse project.'],
+  cli: ['Project commands and build workflow.', 'Develop locally or run CI.'],
+  runtime: ['Portable handlers, contexts and routers.', 'Type handlers and libraries.'],
+  assets: ['Asset lookup and response delivery.', 'Serve files, origins or buckets.'],
+  crypto: ['Signature verification and text digests.', 'Verify signatures or hash exact text.'],
+  entities: ['Static, schema-backed entity dispatch.', 'Expose bounded JSON-RPC operations.'],
+  grip: ['GRIP framing and broadcast effects.', 'Use an external Fanout gateway.'],
+  jwt: ['JWT verification and token issuance.', 'Verify credentials or issue worker tokens.'],
+  mcp: ['Bounded MCP HTTP host adapter.', 'Expose Entities tools to MCP clients.'],
+  'provider-fastly': ['Fastly configuration and target builds.', 'Run on Fastly Compute.'],
+  s3: ['Exact-key object reads and writes.', 'Access S3 through bounded effects.'],
+  'wasm-build-support': ['Shared build helpers.', 'Maintain package-owned builders.'],
+  'wasm-compiler': ['Native compiler implementation.', 'Maintain the compiler.'],
+  'wasm-guest-link': ['Guest-unit validation and Wasm linking.', 'Maintain first-party guest composition.'],
+  'wasm-contracts': ['Shared compiler and provider contracts.', 'Build toolchains or maintain protocols.'],
+  'wasm-host-runtime': ['Host builders and runtime helpers.', 'Maintain host execution.'],
+  'wasm-library-kit': ['Package lowerer and sidecar builders.', 'Maintain package lowering.'],
+  'provider-node': ['Node provider and HTTP launcher.', 'Serve Node builds or maintain the provider.'],
+  'wasm-runtime-core-as': ['AssemblyScript runtime generation.', 'Maintain Native runtime code generation.'],
+  'wasm-schema-json': ['Schema registry and codec builders.', 'Maintain schema compilation.'],
+});
+
 function renderPackagePolicy() {
-  const rows = PACKAGE_SET.map((entry) => {
+  const coreNames = ['@pulse-compute/pulse', '@pulse-compute/cli', '@pulse-compute/runtime'];
+  const core = coreNames.map(name => PACKAGE_SET.find(entry => entry.name === name));
+  const capabilities = PACKAGE_SET.filter(entry => entry.tier === 'supported-extension').sort((a, b) => a.name.localeCompare(b.name));
+  const implementation = PACKAGE_SET.filter(entry => entry.tier === 'implementation');
+  const index = entries => `| Package | Purpose | When to use |\n|---|---|---|\n${entries.map(entry => {
     const manifest = packageManifest(entry);
-    const tier = SUPPORT_TIERS[entry.tier];
-    const direct = entry.directInstall.startsWith('Yes') ? 'Yes' : 'No';
-    const guide = `./${path.basename(entry.documentation)}`;
-    return `| [${inlineCode(manifest.name)}](${npmPackageUrl(manifest.name)}) | [Guide](${guide}) | ${tier.label} | ${direct} | ${entry.stability} |`;
+    const name = manifest.name.replace('@pulse-compute/', '');
+    const summary = PACKAGE_SUMMARIES[name];
+    if (!summary) throw new Error(`Missing package chooser summary: ${manifest.name}`);
+    return `| [${inlineCode(name)}](./${path.basename(entry.documentation)}) | ${tableCell(summary[0])} | ${tableCell(summary[1])} |`;
+  }).join('\n')}`;
+  const rows = [...core, ...capabilities, ...implementation].map(entry => {
+    const manifest = packageManifest(entry), tier = SUPPORT_TIERS[entry.tier];
+    return `| [${inlineCode(manifest.name)}](${npmPackageUrl(manifest.name)}) | [Guide](./${path.basename(entry.documentation)}) | ${tier.label} | ${entry.directInstall} | ${entry.stability} |`;
   });
   return stable(`# Package support policy
 
@@ -124,9 +154,32 @@ ${GENERATED_NOTICE}
 
 Pulse ${RELEASE_VERSION} publishes one synchronized ${PACKAGE_SET.length}-package release set. Publication does not make every package an application-author SDK: the support tier and listed entry points define the release promise.
 
+## Core packages
+
+All short names below use the ${inlineCode('@pulse-compute/')} npm scope. Full names and installation guidance are retained in the support contracts below.
+
+${index(core)}
+
+## Capability packages
+
+Choose a package for the capability you need; its guide owns supported targets and limitations.
+
+${index(capabilities)}
+
+## Implementation packages
+
+These packages are mostly transitive implementation dependencies. Explicit supported entry points, including the Node provider's server entry, retain their documented exceptions; consult the [implementation guide](./implementation-packages.md).
+
+${index(implementation)}
+
+<details>
+<summary>Full support contracts, installation guidance, and npm links</summary>
+
 | Package on npm | Guide | Support tier | Install directly | Release promise |
-|---|---|---|---:|---|
+|---|---|---|---|---|
 ${rows.join('\n')}
+
+</details>
 
 ## Tier definitions
 
@@ -138,14 +191,11 @@ Every packed README begins with a generated status block covering audience, dire
 
 ## Extension and provider boundary in ${RELEASE_VERSION}
 
-Pulse supports the documented package-owned assets and GRIP facades and the documented Fastly provider entry points. Their implementation demonstrates the internal contract, but ${inlineCode(RELEASE_VERSION)} does **not** expose a general third-party plugin registry:
+Package roots are the application APIs. Older Assets and GRIP ${inlineCode('/pulsewasm')} imports remain bounded [migration surfaces](../guides/compatibility-imports.md).
 
-- lowerer manifests are accepted only from trusted first-party release packages;
-- arbitrary external lowerer discovery and execution are not supported;
-- provider selection is limited to ${inlineCode('node')}, ${inlineCode('fastly')}, and compile-only ${inlineCode('none')};
-- adding a new lowerer or provider currently means changing and testing the synchronized Pulse release set.
+[Package-owned lowerers](../concepts/package-owned-lowering.md) may come from external packages under the versioned contract. They execute as trusted build dependencies with the compiler process's authority, without a sandbox. Reachable imports select declared lowerers; package ownership, protocol validation and provider capability checks still apply. No publisher allowlist or matching compiler release version is required.
 
-Documentation may explain lowering and the internal contract, but it must not promise that an external npm package can self-register a lowerer or provider. A future public plugin API requires an explicit trust model, discovery, version negotiation, security policy, and compatibility contract.
+Providers are explicitly selected by a bare host ID or exact scoped package name and must export the versioned ${inlineCode('./toolchain')} contract. Bare IDs use the ${inlineCode('@pulse-compute/provider-<id>')} convention; ${inlineCode('none')} is compile-only. There is no scanning, self-registration or fallback. See the [current provider contract](../architecture/current-contracts.md).
 
 ## Installed documentation
 
@@ -172,18 +222,35 @@ function renderImplementationPackages() {
   );
 }
 
+function tableCell(value) {
+  return String(value).replace(/\|/g, '&#124;').replace(/\n/g, ' ');
+}
+
 function renderEnvironmentReference() {
-  const categoryOrder = ['tooling', 'contributor'];
-  const summaryRows = ENVIRONMENT_VARIABLES.map((entry) => {
-    const category = ENVIRONMENT_CATEGORIES[entry.category];
-    return `| [${inlineCode(entry.name)}](#${entry.name.toLowerCase().replace(/_/g, '-')}) | ${category.title} | ${entry.stability} |`;
-  });
-  const sections = categoryOrder.map((categoryId) => {
-    const category = ENVIRONMENT_CATEGORIES[categoryId];
-    const entries = ENVIRONMENT_VARIABLES.filter((entry) => entry.category === categoryId).map((entry) => `<a id="${entry.name.toLowerCase().replace(/_/g, '-')}"></a>\n\n### ${inlineCode(entry.name)}\n\n${entry.description}\n\n| Property | Contract |\n|---|---|\n| Value | ${entry.value} |\n| Default | ${entry.default} |\n| Precedence | ${entry.precedence} |\n| Consumer | ${entry.consumer} |\n| Secret safety | ${entry.secretSafety} |\n| Stability | ${entry.stability} |\n| Source owners | ${entry.sourceFiles.map(inlineCode).join(', ')} |`).join('\n\n');
-    return `## ${category.title}\n\n${category.summary}\n\n${entries}`;
+  const groups = [
+    { title: 'Supported tooling configuration', summary: 'Public Pulse project configuration. These inputs configure tools, not handler authority.', entries: ENVIRONMENT_VARIABLES.filter(e => e.category === 'tooling' && !['PULSE_FASTLY_BIN', 'PULSE_VICEROY_BIN'].includes(e.name)) },
+    { title: 'Fastly and Viceroy tooling', summary: 'Provider-specific executable overrides; separate from public Pulse project selection.', entries: ENVIRONMENT_VARIABLES.filter(e => e.category === 'tooling' && ['PULSE_FASTLY_BIN', 'PULSE_VICEROY_BIN'].includes(e.name)) },
+    { ...ENVIRONMENT_CATEGORIES.contributor, entries: ENVIRONMENT_VARIABLES.filter(e => e.category === 'contributor') },
+  ];
+  const groupAnchor = title => title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const renderEntries = (entries, level = '###') => {
+    const rows = entries.map(e => `| [${inlineCode(e.name)}](#${e.name.toLowerCase().replace(/_/g, '-')}) | ${tableCell(e.description)} | ${tableCell(e.default)} |`).join('\n');
+    const details = entries.map(entry => `<a id="${entry.name.toLowerCase().replace(/_/g, '-')}"></a>\n\n${level} ${inlineCode(entry.name)}\n\n${entry.description}\n\n| Property | Contract |\n|---|---|\n| Value | ${entry.value} |\n| Default | ${entry.default} |\n| Precedence | ${entry.precedence} |\n| Consumer | ${entry.consumer} |\n| Secret safety | ${entry.secretSafety} |\n| Stability | ${entry.stability} |\n| Source owners | ${entry.sourceFiles.map(inlineCode).join(', ')} |`).join('\n\n');
+    return `| Variable | Purpose | Default |\n|---|---|---|\n${rows}\n\n${details}`;
+  };
+  const sections = groups.map(group => {
+    let content;
+    if (group.entries.some(entry => entry.category === 'contributor')) {
+      const titles = [...new Set(group.entries.map(entry => entry.group))];
+      if (titles.some(title => !title)) throw new Error('Every contributor environment input needs a lookup group');
+      const index = titles.map(title => `- [${title}](#${groupAnchor(title)})`).join('\n');
+      content = index + '\n\n' + titles.map(title => `### ${title}\n\n${renderEntries(group.entries.filter(entry => entry.group === title), '####')}`).join('\n\n');
+    } else {
+      content = renderEntries(group.entries);
+    }
+    return `## ${group.title}\n\n${group.summary}\n\n${content}`;
   }).join('\n\n');
-  return stable(`# Environment-variable reference\n\n${GENERATED_NOTICE}\n\nPulse canonical handlers do not receive ambient process environment access. Handler authority comes only through the documented \`ctx\` capabilities and project/provider bindings. The variables here configure release tooling, compatibility helpers, or repository tests.\n\nDo not use these variables as a substitute for \`ctx.config\`, \`ctx.secret\`, or provider bindings. Secret-bearing compatibility URIs must be handled as credentials and must not be copied into diagnostics.\n\n## Index\n\n| Variable | Scope | Stability |\n|---|---|---|\n${summaryRows.join('\n')}\n\n${sections}\n\n## Standard process variables\n\nPulse also observes normal operating-system inputs such as \`PATH\` while locating external tools. Standard process variables are not renamed as Pulse configuration and are outside this catalog.\n`);
+  return stable(`# Environment-variable reference\n\n${GENERATED_NOTICE}\n\nPulse canonical handlers do not receive ambient process environment access. Handler authority comes only through the documented \`ctx\` capabilities and project/provider bindings. The variables here configure public Pulse project selection, provider tooling, or repository tests.\n\nDo not use these variables as a substitute for \`ctx.config\`, \`ctx.secret\`, or provider bindings. Secret-bearing compatibility URIs must be handled as credentials and must not be copied into diagnostics.\n\n## Choose a project profile\n\nSet \`PULSE_PROFILE\` to a profile declared in \`.pulse/config.ts\`, or use \`--profile\` for one command:\n\n\`\`\`sh\nPULSE_PROFILE=local pulse doctor\npulse doctor --profile local\n\`\`\`\n\nThese examples assume a profile named \`local\`. An explicit \`--profile\` wins over \`PULSE_PROFILE\`; otherwise the configured \`pulse.defaultProfile\` is used. See [profile selection](project-config.md#conventional-pulseconfigts) for the full selection rules. Handler configuration and secrets still come through [explicit bindings](../../API.md#config-and-secrets), not ambient environment reads.\n\n## Index\n\n1. [Public Pulse project configuration](#supported-tooling-configuration)\n2. [Fastly and Viceroy tooling](#fastly-and-viceroy-tooling)\n3. [Contributor and test-only configuration](#contributor-and-test-only-configuration)\n\n${sections}\n\n## Standard process variables\n\nPulse also observes normal operating-system inputs such as \`PATH\` while locating external tools. Standard process variables are not renamed as Pulse configuration and are outside this catalog.\n`);
 }
 
 function renderOptions(options, command) {
@@ -243,6 +310,43 @@ ${GENERATED_NOTICE}
 
 The ${inlineCode('pulse')} CLI in ${inlineCode('@pulse-compute/cli@' + RELEASE_VERSION)} is the supported project workflow. One command specification generates this page, installed help, and the shipped Bash, Zsh, and Fish completion scripts, so a public command or option cannot drift between those surfaces.
 
+For Native defaults, escape hatches and optional memory settings, see
+[Native build optimization](./native-build-optimization.md).
+
+## Quick start
+
+Use ${inlineCode('pulse')} to create, check, run and build a project. The general shape is:
+
+\`\`\`text
+pulse <command> [directory] [options]
+\`\`\`
+
+Project commands use the current directory when ${inlineCode('[directory]')} is
+omitted. Provider and target come from the selected profile in
+${inlineCode('.pulse/config.ts')}; ${inlineCode('--profile <name>')} selects another profile.
+
+Common usage in an initialized project:
+
+\`\`\`bash
+pulse doctor
+pulse test
+pulse dev
+# Stop the foreground server with Ctrl-C before building.
+pulse build
+\`\`\`
+
+Use ${inlineCode('pulse inspect')} for project details and ${inlineCode('pulse report')}
+for retained Native build evidence. [Global options](#global-options) and each
+command's options below retain the complete flags, limits and exit behavior.
+
+## Command index
+
+| Command | Purpose |
+|---|---|
+${PUBLIC_COMMAND_ORDER.map((name) => `| [${inlineCode(`pulse ${name}`)}](#pulse-${name}) | ${COMMAND_SPECS[name].summary} |`).join('\n')}
+
+Use ${inlineCode('build')} for the configured target and provider. ${inlineCode('compile')} is advanced provider-neutral Native output, not a prerequisite for ${inlineCode('build')}. See [Provider restrictions and build products](#provider-restrictions-and-build-products) for target differences.
+
 ## Meta invocations
 
 ${META_INVOCATIONS.map((entry) => `- ${inlineCode(entry.syntax)} — ${entry.description}`).join('\n')}
@@ -283,11 +387,21 @@ Raw configured secret values are not included in project JSON, diagnostics, or r
 
 ## Provider restrictions and build products
 
-| Provider | inspect/build | test/dev | Build result |
-|---|---:|---:|---|
-| ${inlineCode('node')} | Yes | Yes | Portable Pulse Wasm plus the configured Node-native realization and ${inlineCode('pulse-build.json')}. |
-| ${inlineCode('fastly')} | Yes | Yes, through local conformance | Portable Pulse Wasm plus generated AssemblyScript and compact direct-host-ABI ${inlineCode('bin/main.wasm')}. |
-| ${inlineCode('none')} | Compile only | No | ${inlineCode('pulse compile')} emits portable Pulse Wasm; ${inlineCode('pulse build')} rejects the missing deployment provider. |
+| Provider | Target | inspect | build | test/dev | Build result |
+|---|---|---|---|---|---|
+| ${inlineCode('node')} | Native | Yes | Yes | Node host | Portable Pulse Wasm, configured Node-native realization and ${inlineCode('pulse-build.json')}. |
+| ${inlineCode('node')} | JavaScript | Yes | Yes | Live JavaScript runtime | Deterministic reachable application source package and ${inlineCode('pulse-build.json')}; no Pulse Native compilation. |
+| ${inlineCode('fastly')} | Native | Yes | Yes | Local conformance | Portable Pulse Wasm, generated AssemblyScript, direct-host-ABI ${inlineCode('bin/main.wasm')} and ${inlineCode('pulse-build.json')}; no JavaScript runtime image. |
+| ${inlineCode('fastly')} | JavaScript | Yes | Yes | Provider emulation | Deterministic source/deployment package with exact downstream compiler pins, deployment-candidate metadata and ${inlineCode('pulse-build.json')}. |
+| ${inlineCode('none')} | Compile-only Native | Yes | No | No | ${inlineCode('pulse compile')} emits portable Pulse Wasm; ${inlineCode('pulse build')} rejects the missing deployment provider. |
+
+Target selection is explicit and never falls back automatically. Project eligibility
+and provider capability restrictions still apply; see [Provider and target compatibility](compatibility-matrix.md).
+${inlineCode('pulse compile')} requires Native-compatible source regardless of the
+configured target. Diagnostic WAT is opt-in with ${inlineCode('--emit-wat')}; JavaScript
+builds reject that flag. Fastly JavaScript downstream runtime compilation and
+candidate validation are separate from source packaging; a build does not deploy
+or publish. See [Fastly deployment candidates](../guides/deploying-fastly.md).
 
 Build output is cleaned by default. ${inlineCode('--no-clean')} preserves the directory, but output safety still rejects absolute, parent-traversal, and symbolic-link traversal outside the project root.
 
@@ -337,7 +451,7 @@ ${rows.join('\n')}
 - **Zsh:** copy \`completions/_pulse\` into a directory on \`$fpath\`, then run \`compinit\`.
 - **Fish:** copy \`completions/pulse.fish\` into \`~/.config/fish/completions/\`.
 
-Completion candidates include the seven project commands, help/version/completion invocations, public flags, provider values, and completion shell names. The machine-readable owner is [\`cli-spec.json\`](./cli-spec.json).
+Completion candidates include the public project commands, help/version/completion invocations, public flags, and completion shell names. The machine-readable owner is [\`cli-spec.json\`](./cli-spec.json).
 `);
 }
 
@@ -454,28 +568,63 @@ function configDiagnosticLinks(codes) {
 }
 
 function renderConfigField(field) {
-  const requiredDefault = field.required ? 'Required.' : `Optional; default ${field.default}.`;
-  return `### ${inlineCode(field.path)}
+  const requiredDefault = field.required ? 'Required when the containing object is configured.' : `Optional; default ${field.default}.`;
+  const facts = [
+    ['Type', field.type],
+    ['Required/default', requiredDefault],
+    ['Allowed values or constraints', field.allowed !== '—' && field.allowed],
+    ['Scope', field.scope !== 'conventional project configuration' && field.scope],
+    ['Precedence', field.precedence !== 'Configuration value.' && field.precedence],
+    ['Security and safety', field.security !== 'No special handling.' && field.security],
+    ['Related diagnostics', field.diagnostics.length && configDiagnosticLinks(field.diagnostics)]
+  ].filter(([, value]) => value).map(([label, value]) => `- **${label}:** ${value}`).join('\n');
+  const aliases = field.sourcePath && field.sourcePath !== field.path ? `<a id="${configLegacyAnchor(field.sourcePath)}"></a>\n` : '';
+  return `${aliases}<a id="${configAnchor(field.path)}"></a>
+
+### ${inlineCode(field.path)}
 
 ${field.description}
 
-- **Type:** ${field.type}
-- **Required/default:** ${requiredDefault}
-- **Allowed values or constraints:** ${field.allowed}
-- **Scope:** ${field.scope}
-- **Precedence:** ${field.precedence}
-- **Security and safety:** ${field.security}
-- **Related diagnostics:** ${configDiagnosticLinks(field.diagnostics)}`;
+${facts}`;
 }
 
 function renderProjectConfigReference() {
-  const sections = CONFIG_SECTIONS.map((section) => {
-    const fields = CONFIG_FIELDS.filter((field) => field.section === section.id);
+  const sections = CONFIG_DOCUMENTATION_SECTIONS.map((section) => {
+    const fields = CONFIG_DOCUMENTATION_FIELDS.filter((field) => field.section === section.id);
     return `## ${section.title}\n\n${section.description}\n\n${fields.map(renderConfigField).join('\n\n')}`;
+  }).join('\n\n');
+  const groups = new Map();
+  for (const field of CONFIG_DOCUMENTATION_FIELDS) {
+    if (field.section === 'facade') continue;
+    const split = field.path.lastIndexOf('.');
+    const parent = field.path.slice(0, split);
+    if (!groups.has(parent)) groups.set(parent, []);
+    groups.get(parent).push(`[${inlineCode(field.path.slice(split + 1))}](#${configAnchor(field.path)})`);
+  }
+  const mapGroups = [
+    ['Project and profiles', parent => !/^<profile>\.(node|fastly)(\.|$)/.test(parent)],
+    ['Node options', parent => /^<profile>\.node(\.|$)/.test(parent)],
+    ['Fastly options', parent => /^<profile>\.fastly(\.|$)/.test(parent)]
+  ];
+  const propertyMap = mapGroups.map(([title, includes]) => {
+    const rows = [...groups].filter(([parent]) => includes(parent))
+      .sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)
+      .map(([parent, links]) => `| ${inlineCode(parent)} | ${links.join(', ')} |`).join('\n');
+    return `### ${title}\n\n| Object | Properties — select for details |\n| --- | --- |\n${rows}`;
   }).join('\n\n');
   return stable(`# Project configuration reference
 
 ${GENERATED_NOTICE}
+
+A conventional project uses ${inlineCode('.pulse/config.ts')}. Start with the property map, then select a property for its type, default, constraints, and diagnostics.
+
+## Property map
+
+${inlineCode('pulse')} holds project-wide settings. Every other top-level key names a profile, such as ${inlineCode('local')} or ${inlineCode('production')}. Below, ${inlineCode('<profile>')} means that profile name and ${inlineCode('<name>')} means a logical binding name you choose. At least one profile is required; each profile must set ${inlineCode('host')} and ${inlineCode('target')}. Optional objects can have required members when configured.
+
+${propertyMap}
+
+Provider options belong under the selected provider namespace. For example, a Fastly KV binding is ${inlineCode('production.fastly.bindings.kv')}, while local test data belongs in ${inlineCode('production.dev.kv')}.
 
 ## Conventional ${inlineCode('.pulse/config.ts')}
 
@@ -508,7 +657,7 @@ Project pointers are workspace-relative. Profile selection is explicit and deter
 
 Project commands accept one optional positional directory and otherwise start from the current directory. Discovery searches upward only for ${inlineCode('.pulse/config.ts')}. Public entry, config-file, workspace, provider, and target overrides are not supported.
 
-${CONFIG_PRECEDENCE.map((entry, index) => `${index + 1}. ${entry}`).join('\n')}
+Command-line output, listener host, port, and watch options override the corresponding selected-profile value for that command. Harness case inputs replace development inputs for that case. Neither changes deployed resource bindings.
 
 ${sections}
 
@@ -552,6 +701,7 @@ Deployment resource names configure provider bindings; local ${inlineCode('dev.c
 }
 
 const CATEGORY_RELATED = Object.freeze({
+  report: '[Retained build reports](cli.md#pulse-report)',
   usage: '[CLI reference](cli.md)',
   project: '[Project configuration](project-config.md)',
   safety: '[CLI build behavior](cli.md#pulse-build)',
@@ -590,8 +740,17 @@ function renderDiagnosticsReference() {
   const categories = [...new Set(Object.values(DIAGNOSTIC_CATALOG).map((entry) => entry.category))];
   const catalog = categories.map((category) => {
     const entries = Object.entries(DIAGNOSTIC_CATALOG).filter(([, entry]) => entry.category === category);
-    return `## ${category.charAt(0).toUpperCase() + category.slice(1)} diagnostics\n\n${entries.map(([code, entry]) => renderDiagnostic(code, entry)).join('\n\n')}`;
+    const rows = entries.map(([code]) => {
+      const descriptor = describeDiagnostic(code);
+      return `| [${inlineCode(code)}](#${diagnosticAnchor(code)}) | ${tableCell(descriptor.summary)} | ${inlineCode(descriptor.exitCode)} |`;
+    }).join('\n');
+    return `## ${category.charAt(0).toUpperCase() + category.slice(1)} diagnostics\n\n| Code | Meaning | CLI exit |\n|---|---|---|\n${rows}\n\n${entries.map(([code, entry]) => renderDiagnostic(code, entry)).join('\n\n')}`;
   }).join('\n\n');
+  const categoryIndex = categories.map(category => {
+    const title = `${category.charAt(0).toUpperCase() + category.slice(1)} diagnostics`;
+    const count = Object.values(DIAGNOSTIC_CATALOG).filter(entry => entry.category === category).length;
+    return `| [${title}](#${category}-diagnostics) | ${count} | ${CATEGORY_RELATED[category] || CATEGORY_RELATED.internal} |`;
+  }).join('\n');
   const httpGroups = new Map();
   for (const [code, entry] of Object.entries(DIAGNOSTIC_CATALOG)) {
     if (entry.httpStatus === undefined) continue;
@@ -600,7 +759,7 @@ function renderDiagnosticsReference() {
   }
   const httpRows = [...httpGroups.entries()]
     .sort(([left], [right]) => left - right)
-    .map(([status, codes]) => `| ${inlineCode(status)} | ${codes.map((code) => inlineCode(code)).join(', ')} |`)
+    .map(([status, codes]) => `| ${inlineCode(status)} | ${codes.map((code) => `[${inlineCode(code)}](#${diagnosticAnchor(code)})`).join(', ')} |`)
     .join('\n');
   const exampleDocs = `${DIAGNOSTICS_REFERENCE}#pulse-build-out-unsafe`;
   const schemaDocs = `${DIAGNOSTICS_REFERENCE}#pulse-schema-decode`;
@@ -622,6 +781,24 @@ shape, Router terminal transfer, and body ownership are centralized in
 target claims are centralized in [Provider and target
 compatibility](compatibility-matrix.md).
 A Native eligibility diagnostic never authorizes automatic JavaScript fallback.
+
+## Find a diagnostic
+
+Start with the exact ${inlineCode('error.code')} from CLI JSON or the terminal
+message. Follow its link for remediation and limits; a code identifies the
+failure, while its category groups related problems. CLI exit classes and HTTP
+response statuses are separate contracts.
+
+1. Find the code below or choose a category in the index.
+2. Apply its full remediation steps, retaining the selected provider/target.
+3. Use [CLI JSON output](cli.md#json-and-stream-contracts) for automation and
+   [Router recovery](../guides/routing.md#next-is-a-terminal-transfer) for
+   application error handling. A diagnostic HTTP mapping alone does not promise
+   application recovery, retry or rollback.
+
+| Category | Codes | Related guidance |
+|---|---:|---|
+${categoryIndex}
 
 ## JSON failure envelope
 
@@ -698,6 +875,9 @@ pulse test examples/02-request-schema --case invalid-user --json
 
 ## Complete public catalog
 
+The compact rows identify codes and CLI exit classes. Each linked entry below
+retains every remediation step, HTTP mapping, stability and scope qualification.
+
 ${catalog}
 `);
 }
@@ -721,12 +901,25 @@ function transformCliCopy(sourceRelative, content) {
     );
     out = out.replaceAll('../wasm/docs/PACKAGE-BOUNDARIES.md', './packages/README.md');
   }
+  // Keep pointers to repository-only evidence without publishing dead local
+  // links or copying excluded material into the installed documentation set.
+  out = out.replace(/(```[\s\S]*?```|~~~[\s\S]*?~~~|`[^`\n]*`)|(?<!!)\[([^\]]+)\]\((\.\.?\/[^)\s]+)\)/g,
+    (link, code, label, target) => {
+      if (code) return code;
+      const hash = target.indexOf('#');
+      const pathname = hash < 0 ? target : target.slice(0, hash);
+      const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(sourceRelative), decodeURIComponent(pathname)));
+      if (!resolved.startsWith('docs/') || isPublicDocumentationSource(resolved)) return link;
+      return `${label} (repository-only: ${inlineCode(resolved + (hash < 0 ? '' : target.slice(hash)))})`;
+    });
   return stable(out);
 }
 
 function transformApiCopy(sourceRelative, content) {
   if (sourceRelative === 'API.md') {
     return stable(content
+      .replaceAll('./docs/maintainers/release-manifest.md', publicCliDoc('docs/maintainers/release-manifest.md'))
+      .replaceAll('./docs/concepts/effects-and-continuations.md', publicCliDoc('docs/concepts/effects-and-continuations.md'))
       .replaceAll('./docs/reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))
       .replaceAll('./docs/reference/compatibility-matrix.md', publicCliDoc('docs/reference/compatibility-matrix.md'))
       .replaceAll('./docs/reference/diagnostics.md', publicCliDoc('docs/reference/diagnostics.md'))
@@ -755,6 +948,7 @@ function transformApiCopy(sourceRelative, content) {
   }
   if (sourceRelative === 'docs/guides/routing.md') {
     return stable(content
+      .replaceAll('./migrating-from-express.md', publicCliDoc('docs/guides/migrating-from-express.md'))
       .replaceAll('../concepts/effects-and-continuations.md', publicCliDoc('docs/concepts/effects-and-continuations.md'))
       .replaceAll('../reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))
       .replaceAll('../reference/compatibility-matrix.md', publicCliDoc('docs/reference/compatibility-matrix.md')));
@@ -829,6 +1023,11 @@ function buildExpectedFiles() {
   for (const sourceRelative of [...publicDocRelatives].sort()) {
     const targetRelative = `wasm/packages/cli/${sourceRelative}`;
     expected.set(targetRelative, transformCliCopy(sourceRelative, canonicalContent(sourceRelative, generatedCanonical)));
+  }
+  // Diagrams keep the same relative URL in hosted and installed Markdown.
+  for (const file of filesUnder(path.join(repoRoot, 'docs'), (file) => file.endsWith('.svg')
+    && isPublicDocumentationSource(relative(file)))) {
+    expected.set(`wasm/packages/cli/${relative(file)}`, fs.readFileSync(file));
   }
   expected.set('wasm/packages/cli/src/documentation.js', renderInstalledDocumentationModule());
   for (const shell of COMPLETION_SHELLS) expected.set(`wasm/packages/cli/completions/${completionFile(shell)}`, renderCompletion(shell));
@@ -938,11 +1137,13 @@ module.exports = Object.freeze({
   repoRoot,
   renderStatusBlock,
   renderPackagePolicy,
+  PACKAGE_SUMMARIES,
   renderImplementationPackages,
   renderEnvironmentReference,
   renderCliReference,
   renderProjectConfigReference,
   renderDiagnosticsReference,
+  transformCliCopy,
   buildExpectedFiles,
   synchronizeReferenceDocs
 });

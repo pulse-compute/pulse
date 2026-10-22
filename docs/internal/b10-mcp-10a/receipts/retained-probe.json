@@ -1,0 +1,50 @@
+{
+  "artifact": "/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/.test-results/mcp-installed-Q6FBan/fastly-local/resources/bin/main.wasm",
+  "sha256": "07eeba200c57a93c6fb7c54f3fd514a764740bcf75b98cca93624c362bbe7687",
+  "requests": [
+    {
+      "mode": "",
+      "status": 200,
+      "body": "{\"parent\":82,\"a\":{\"value\":4275878602,\"length\":1048577,\"empty\":0},\"b\":{\"value\":4276002008,\"length\":1048577,\"empty\":0},\"again\":{\"value\":4275878602,\"length\":1048577,\"empty\":0}}"
+    },
+    {
+      "mode": "bounds",
+      "status": 200,
+      "body": ""
+    },
+    {
+      "mode": "",
+      "status": 200,
+      "body": "{\"parent\":82,\"a\":{\"value\":4275878602,\"length\":1048577,\"empty\":0},\"b\":{\"value\":4276002008,\"length\":1048577,\"empty\":0},\"again\":{\"value\":4275878602,\"length\":1048577,\"empty\":0}}"
+    },
+    {
+      "mode": "resource-bounds",
+      "status": 200,
+      "body": ""
+    },
+    {
+      "mode": "",
+      "status": 200,
+      "body": "{\"parent\":82,\"a\":{\"value\":4275878602,\"length\":1048577,\"empty\":0},\"b\":{\"value\":4276002008,\"length\":1048577,\"empty\":0},\"again\":{\"value\":4275878602,\"length\":1048577,\"empty\":0}}"
+    },
+    {
+      "mode": "single",
+      "status": 200,
+      "body": "{\"value\":4194304}"
+    },
+    {
+      "mode": "allocation",
+      "status": 500,
+      "body": "error while executing at wasm backtrace:\n    0:   0x323c - <unknown>!<wasm function 59>\n    1:   0x276c - <unknown>!<wasm function 43>\n    2:   0x1373 - <unknown>!<wasm function 25>\n    3:   0x20f7 - <unknown>!<wasm function 35>\n    4:   0xc145 - <unknown>!<wasm function 172>\n    5:   0x6c01 - <unknown>!<wasm function 116>\n    6:   0xc735 - <unknown>!<wasm function 174>\n    7:   0xbcaa - <unknown>!<wasm function 171>\n\nCaused by:\n    wasm trap: wasm `unreachable` instruction executed"
+    },
+    {
+      "mode": "",
+      "status": 200,
+      "body": "{\"parent\":82,\"a\":{\"value\":4275878602,\"length\":1048577,\"empty\":0},\"b\":{\"value\":4276002008,\"length\":1048577,\"empty\":0},\"again\":{\"value\":4275878602,\"length\":1048577,\"empty\":0}}"
+    }
+  ],
+  "logs": {
+    "stdout": "| Running local server...\n✓ Running local server\n\nINFO: Command output:\n--------------------------------------------------------------------------------\n2026-10-21T06:14:30.344228Z  WARN no backend definitions found in /workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/.test-results/mcp-installed-Q6FBan/fastly-local/resources/fastly.toml\n2026-10-21T06:14:30.344296Z  INFO Listening on http://127.0.0.1:33935\n2026-10-21T06:14:30.365809Z  INFO request{id=0}: handling request GET http://127.0.0.1:33935/\n2026-10-21T06:14:30.367435Z  INFO request{id=0}: request completed using 4.7 MB of WebAssembly heap\n2026-10-21T06:14:30.367472Z  INFO request{id=0}: request completed in 2ms\n2026-10-21T06:14:30.367739Z  INFO request{id=0}: response status: 200\n2026-10-21T06:14:30.370369Z  INFO request{id=1}: handling request GET http://127.0.0.1:33935/\n2026-10-21T06:14:30.371156Z  INFO request{id=1}: request completed using 4.7 MB of WebAssembly heap\n2026-10-21T06:14:30.371170Z  INFO request{id=1}: request completed in 760µs\n2026-10-21T06:14:30.371361Z  INFO request{id=1}: response status: 200\n2026-10-21T06:14:30.371861Z  INFO request{id=2}: handling request GET http://127.0.0.1:33935/\n2026-10-21T06:14:30.372917Z  INFO request{id=2}: request completed using 4.7 MB of WebAssembly heap\n2026-10-21T06:14:30.372931Z  INFO request{id=2}: request completed in 1ms\n2026-10-21T06:14:30.373008Z  INFO request{id=2}: response status: 200\n2026-10-21T06:14:30.373990Z  INFO request{id=3}: handling request GET http://127.0.0.1:33935/\n2026-10-21T06:14:30.374671Z  INFO request{id=3}: request completed using 4.7 MB of WebAssembly heap\n2026-10-21T06:14:30.374683Z  INFO request{id=3}: request completed in 668µs\n2026-10-21T06:14:30.374804Z  INFO request{id=3}: response status: 200\n2026-10-21T06:14:30.375447Z  INFO request{id=4}: handling request GET http://127.0.0.1:33935/\n2026-10-21T06:14:30.376439Z  INFO request{id=4}: request completed using 4.7 MB of WebAssembly heap\n2026-10-21T06:14:30.376452Z  INFO request{id=4}: request completed in 976µs\n2026-10-21T06:14:30.376524Z  INFO request{id=4}: response status: 200\n2026-10-21T06:14:30.377149Z  INFO request{id=5}: handling request GET http://127.0.0.1:33935/\n2026-10-21T06:14:30.378119Z  INFO request{id=5}: request completed using 4.7 MB of WebAssembly heap\n2026-10-21T06:14:30.378135Z  INFO request{id=5}: request completed in 952µs\n2026-10-21T06:14:30.378402Z  INFO request{id=5}: response status: 200\n2026-10-21T06:14:30.379273Z  INFO request{id=6}: handling request GET http://127.0.0.1:33935/\n2026-10-21T06:14:30.380124Z ERROR request{id=6}: WebAssembly trapped: error while executing at wasm backtrace:\n    0:   0x323c - <unknown>!<wasm function 59>\n    1:   0x276c - <unknown>!<wasm function 43>\n    2:   0x1373 - <unknown>!<wasm function 25>\n    3:   0x20f7 - <unknown>!<wasm function 35>\n    4:   0xc145 - <unknown>!<wasm function 172>\n    5:   0x6c01 - <unknown>!<wasm function 116>\n    6:   0xc735 - <unknown>!<wasm function 174>\n    7:   0xbcaa - <unknown>!<wasm function 171>\n\nCaused by:\n    wasm trap: wasm `unreachable` instruction executed\n2026-10-21T06:14:30.380174Z  INFO request{id=6}: request completed using 4.7 MB of WebAssembly heap\n2026-10-21T06:14:30.380177Z  INFO request{id=6}: request completed in 887µs\n2026-10-21T06:14:30.380308Z  INFO request{id=6}: response status: 500\n2026-10-21T06:14:30.381077Z  INFO request{id=7}: handling request GET http://127.0.0.1:33935/\n2026-10-21T06:14:30.381919Z  INFO request{id=7}: request completed using 4.7 MB of WebAssembly heap\n2026-10-21T06:14:30.381932Z  INFO request{id=7}: request completed in 836µs\n2026-10-21T06:14:30.382079Z  INFO request{id=7}: response status: 200\n--------------------------------------------------------------------------------\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 16.2.0\nRun `fastly update` to get the latest version.\n\n\n",
+    "stderr": "ERROR: error during execution process (see 'command output' above): signal: terminated.\n\nIf you believe this error is the result of a bug, please file an issue: https://github.com/fastly/cli/issues/new?labels=bug&template=bug_report.md\n"
+  }
+}

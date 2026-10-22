@@ -53,7 +53,7 @@ async function assertSchemaValueEncoding() {
   for (const artifact of [fastlyHttp, fastlyPlatform]) {
     assert.ok(!artifact.inspection.imports.some((entry) => /env|pulse_host|js[_-]?compute/.test(entry.module)));
     assert.deepEqual(artifact.inspection.imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
-      artifact === fastlyPlatform ? ['wasi_snapshot_preview1:clock_time_get'] : [], 'only the platform fetch deadline clock is permitted');
+      artifact === fastlyPlatform ? ['wasi_snapshot_preview1:clock_time_get', 'wasi_snapshot_preview1:fd_write'] : [], 'only the platform fetch deadline clock and transport diagnostic writer are permitted');
   }
 
   async function execute(lane, value, mode = '') {

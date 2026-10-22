@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "pulse.b10-mcp-03.development-validation.v1",
+  "base": "014496136a5357747efd08c32094ca9830f5bb01",
+  "manifestSha256": "2c3c0971353d39ad7db8f0667a4839d57c2c48d52ee92346a4214da73d9aabca",
+  "checks": [
+    {
+      "name": "focused-final",
+      "exitCode": 0,
+      "logSha256": "592e21fc84312816446bdcd3956b1ad35363088ac9aa25c20e7e33ed2cf0a702",
+      "terminalTail": [
+        "",
+        "[pulsewasm] test summary",
+        "  passed        24.40s  pulse-context-build",
+        "  passed         1.58s  pulse-context-corpus",
+        "  passed        10.67s  pulse-context-application",
+        "  passed         6.24s  pulse-context-host",
+        "  passed        48.20s  context-native-proof",
+        "  total        91.11s"
+      ]
+    },
+    {
+      "name": "pinned-builder",
+      "exitCode": 0,
+      "logSha256": "51ab9318c47c77ee9f327e9efbfe851fd6a75aa0a76acc9d3523d1c8a630a494",
+      "terminalTail": [
+        "ok - 93 deterministic context build and strict admission cases"
+      ]
+    },
+    {
+      "name": "pinned-check",
+      "exitCode": 0,
+      "logSha256": "65888577ac91d3618b6626956383c2fe37fd1e397f43859be2bbe55faa68a9c7",
+      "terminalTail": [
+        "{\"schemaVersion\":\"pulse.context-build-receipt.v1\",\"status\":\"ok\",\"mode\":\"check\",\"executionNode\":\"24.18.0\",\"pinnedProducerNode\":\"24.18.0\",\"manifestSha256\":\"2c3c0971353d39ad7db8f0667a4839d57c2c48d52ee92346a4214da73d9aabca\",\"corpusHash\":\"b4787f34f98f7b875e1faf0afdb3ae9d209dc6ce0d9fd15bda3038b52c6a2c46\",\"dimensions\":{\"rows\":245,\"dimension\":2456,\"nonzeros\":14410,\"dictionarySha256\":\"d639422c3232c68af3d887e36b333192c20f0f925038c76aa6ea476e8d24f679\",\"manifestId\":\"00e538335186925edd610d98dda991a532c36bb9e1b853137e24dd7d4da1a886\",\"catalogueIdentity\":\"cfd09eeb01f3dc252a5813d621e92cfbafba0dd685f51e1056bd29258d18ab70\",\"rawBytes\":564085,\"serializedBytes\":752766,\"budgets\":{\"files\":3,\"fileBytes\":5242880,\"totalBytes\":8388608,\"serializedBytes\":16777216,\"bindings\":3}},\"changedFiles\":0,\"comparedFiles\":12}"
+      ]
+    },
+    {
+      "name": "typescript-build",
+      "exitCode": 0,
+      "logSha256": "d5b383b65a9e4b74ee1610a1775bfaa7f18cb29bfe0e2238313d7b36b84641e0",
+      "terminalTail": [
+        "{\"schemaVersion\":\"pulse.context-build-receipt.v1\",\"status\":\"ok\",\"mode\":\"check\",\"executionNode\":\"24.19.0\",\"pinnedProducerNode\":\"24.18.0\",\"manifestSha256\":\"2c3c0971353d39ad7db8f0667a4839d57c2c48d52ee92346a4214da73d9aabca\",\"corpusHash\":\"b4787f34f98f7b875e1faf0afdb3ae9d209dc6ce0d9fd15bda3038b52c6a2c46\",\"dimensions\":{\"rows\":245,\"dimension\":2456,\"nonzeros\":14410,\"dictionarySha256\":\"d639422c3232c68af3d887e36b333192c20f0f925038c76aa6ea476e8d24f679\",\"manifestId\":\"00e538335186925edd610d98dda991a532c36bb9e1b853137e24dd7d4da1a886\",\"catalogueIdentity\":\"cfd09eeb01f3dc252a5813d621e92cfbafba0dd685f51e1056bd29258d18ab70\",\"rawBytes\":564085,\"serializedBytes\":752766,\"budgets\":{\"files\":3,\"fileBytes\":5242880,\"totalBytes\":8388608,\"serializedBytes\":16777216,\"bindings\":3}},\"changedFiles\":0,\"comparedFiles\":12}"
+      ]
+    },
+    {
+      "name": "maintenance",
+      "exitCode": 0,
+      "logSha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2",
+      "terminalTail": [
+        "ok - 7 change classes, 11 protected boundaries, 9 AGENTS files, 42 documented test commands, 9 workflows, 14 documentation deployment objects, and 17 scope cases validated"
+      ]
+    },
+    {
+      "name": "documentation",
+      "exitCode": 0,
+      "logSha256": "77d715837aa6ed9a7a511a777b72cd93fc80618790293cbb72b254beb5fd6a20",
+      "terminalTail": [
+        "}"
+      ]
+    },
+    {
+      "name": "documentation-release",
+      "exitCode": 0,
+      "logSha256": "131150012e7085e29ff668011e57076e42fb314ec48f98226259b0616e40f8d0",
+      "terminalTail": [
+        "}"
+      ]
+    },
+    {
+      "name": "documentation-contract",
+      "exitCode": 0,
+      "logSha256": "9dc66314612a0f8342b221517a68f2162e877505f47a0d90ea2267221b159f5d",
+      "terminalTail": [
+        "ok - shared example template preserves fences/anchors, handles all eleven harnesses, HTTP/event cases and unavailable Report views"
+      ]
+    },
+    {
+      "name": "publication-control-plane",
+      "exitCode": 0,
+      "logSha256": "55787b7287b1dc33d7c00e5236e677f76ce8190ca6c0e6de70c20d13bbd0ea28",
+      "terminalTail": [
+        "ok - 20 npm packages, 498 documentation sources, 14 documentation objects, 3 publication workflows, and 6 Fastly infrastructure files validated"
+      ]
+    },
+    {
+      "name": "release-preflight",
+      "exitCode": 0,
+      "logSha256": "ea9175588083561744c6f3aa9fceb9c87a382ff70ce709f6067564e4b27fef8c",
+      "terminalTail": [
+        "ok - release preflight classified 21 gate(s) (11 proven, 10 pending, 0 blocked) and 498 documentation source(s); 16 release shards mapped"
+      ]
+    },
+    {
+      "name": "initial-invalid-task-selection",
+      "exitCode": 1,
+      "logSha256": "780d39cb383594cca432eb9965909f7dbd18f4b3383d2cbc2f89d60e40779cf5",
+      "reason": "Included nonexistent documentation-check task; runner failed before executing tasks. Corrected selection passed, documentation script ran directly.",
+      "terminalTail": [
+        "TypeError: Cannot read properties of undefined (reading 'scheduling')",
+        "    at scheduling (/workspace/scratch/3471f7320bf6/pulse-mcp03/scripts/release-parallel.cjs:245:22)",
+        "    at /workspace/scratch/3471f7320bf6/pulse-mcp03/wasm/scripts/run-wasm-tests.cjs:746:82",
+        "    at Array.map (<anonymous>)",
+        "    at runSelectedTasks (/workspace/scratch/3471f7320bf6/pulse-mcp03/wasm/scripts/run-wasm-tests.cjs:746:42)",
+        "    at main (/workspace/scratch/3471f7320bf6/pulse-mcp03/wasm/scripts/run-wasm-tests.cjs:938:11)"
+      ]
+    }
+  ],
+  "fullAggregate": "not-run",
+  "releaseQualification": "not-claimed"
+}

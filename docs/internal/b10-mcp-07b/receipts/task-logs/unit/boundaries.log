@@ -1,0 +1,2 @@
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages

@@ -1,0 +1,12 @@
+ok - resource size budgets are independent; HTTP Assets stays fixed
+ok - independent construction agrees with existing Assets identity
+ok - existing Assets constructor identity cross-check
+ok - snapshot and deeply immutable transport
+ok - all budgets are required finite safe integers; no inherited defaults or read quota
+ok - exact budgets pass; every smaller budget fails before selection
+ok - identity ignores declaration order; alias backing is not counted twice
+ok - selected and unselected corruption, length, identity and base64 are rejected
+ok - binding identity and path grammar are explicit
+ok - constructor rejects ambiguous inputs and accounts escaped UTF-8 metadata exactly
+ok - report projection omits payload and manifest paths; errors omit supplied content
+{"status":"passed","cases":11,"generatedInputMaximumBytes":2097152,"actualMcpFixture":"not-qualified"}

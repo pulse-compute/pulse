@@ -1,0 +1,42 @@
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/worker.cjs',
+  'guard',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/settings.json'
+]
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/typescript/bin/tsc',
+  '--project',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/application/tsconfig.json'
+]
+DEVELOPMENT ONLY: already checked types skipped
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/bin/pulse.js',
+  'build',
+  '--profile',
+  'node-native'
+]
+Error: code 1
+
+{
+  "status": "error",
+  "version": "1.0.0-beta.9",
+  "error": {
+    "name": "Error",
+    "code": "ERR_ACCESS_DENIED",
+    "title": "Uncatalogued Pulse diagnostic",
+    "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",
+    "category": "internal",
+    "message": "Installed build read outside consumer: /workspace/scratch/0174bfde4d1e/07a-debug/package.json",
+    "remediation": [
+      "Rerun with `--json` and retain the complete diagnostic for investigation."
+    ],
+    "stability": "internal-or-forward-compatible",
+    "scope": "fallback",
+    "docs": "https://pulsecompute.io/v1.0.0-beta.9/reference/diagnostics/"
+  }
+}
+
+    at ChildProcess.<anonymous> (/tmp/07a-debug.cjs:7:557)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1124:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:306:5)

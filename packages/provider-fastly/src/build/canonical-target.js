@@ -8,6 +8,7 @@ const { CANONICAL_NATIVE_PLAN_VERSION } = require('@pulse-compute/wasm-contracts
 const {
   FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
   compileFastlyNativePlatformCapabilitiesPlan,
+  resolveCapabilityBindings,
   writeFastlyNativePlatformCapabilitiesModule
 } = require('./native-platform-capabilities.js');
 
@@ -249,6 +250,9 @@ function inspectFastlyCanonicalTarget(options = {}) {
         emitWat: options.emitWat,
         timeoutMs: options.compileTimeoutMs
       });
+  if (native.manifest.bindings?.logEndpoint !== require('../toolchain/logging.js').normalizeFastlyLogEndpoint(bindings.logEndpoint)) {
+    throw providerBuildError('PULSE_FASTLY_NATIVE_ARTIFACT_INVALID', 'Fastly artifact logging destination does not match the selected provider profile; rebuild the Native artifact.');
+  }
   const duration = require('@pulse-compute/runtime/host').normalizeRequestDuration(providerConfig.maxDurationMs);
   if (native.manifest.bindings?.maxDurationMs !== duration) {
     throw providerBuildError('PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH', 'Fastly artifact request deadline does not match the selected provider profile.');
@@ -256,6 +260,15 @@ function inspectFastlyCanonicalTarget(options = {}) {
   const forwarding = require('../toolchain/body-forwarding.js').normalizeBodyForwarding(providerConfig.bodyForwarding, duration);
   if (JSON.stringify(native.manifest.bindings?.bodyForwarding) !== JSON.stringify(forwarding)) {
     throw providerBuildError('PULSE_FASTLY_BODY_FORWARDING_ARTIFACT_MISMATCH', 'Fastly artifact forwarding bounds do not match the selected provider profile.');
+  }
+  if (native.manifest.dynamicBackends || (isFastlyNativeArtifact(options.native) && bindings.dynamicBackends === true)) {
+    const dynamic = require('./native-dynamic-backends.js');
+    const expected = resolveCapabilityBindings(plan, { bindings, maxDurationMs: duration, bodyForwarding: forwarding });
+    const expectedPolicy = dynamic.active(expected) ? dynamic.describe(bindings.backends) : undefined;
+    if (JSON.stringify(native.manifest.dynamicBackends) !== JSON.stringify(expectedPolicy)
+      || JSON.stringify(native.manifest.backends) !== JSON.stringify(expected.backends)) {
+      throw providerBuildError('PULSE_FASTLY_NATIVE_ARTIFACT_INVALID', 'Fastly artifact backend selection does not match the selected provider profile; rebuild the Native artifact.');
+    }
   }
   return Object.freeze({
     target: FASTLY_CANONICAL_TARGET,

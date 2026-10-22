@@ -1,0 +1,1 @@
+ok - guest manifest/plan JSON roundtrip preserves values, trust checks and ordered arrays

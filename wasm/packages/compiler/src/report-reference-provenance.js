@@ -111,7 +111,16 @@ function collectCanonicalReportReferences(compiled, plan) {
   // effect payloads, binding values, resource bodies or expression text survives.
   const routeBehaviors = require('./report-route-behavior').routeBehaviorForMetadata(compiled.metadata.router);
   const topology = require('./report-handler-topology').collectHandlerTopology(compiled);
+  const computation = require('./report-computation').collectComputationReport(compiled, plan);
+  for (const callee of computation.callees) for (const schema of [callee.inputSchema, callee.outputSchema]) {
+    add('schema', schema, null, callee.entryIds, 'callable:' + callee.index, { unresolved: !schemas.has(schema) });
+    if (!callee.entriesComplete) {
+      const row = rows.get(JSON.stringify(['schema', null, schemas.has(schema) ? 'resolved' : 'unknown', schemas.has(schema) ? schema : 'callable:' + callee.index]));
+      if (row) row.entriesComplete = false;
+    }
+  }
   return Object.freeze({ version: 'pulse.compiler-report-references.v1',
+    computation,
     ...(topology ? { topology } : {}),
     ...(routeBehaviors ? { routeBehaviors } : {}),
     responsePayloads: require('./report-response-payloads').collectResponsePayloads(plan, entries, helpers),

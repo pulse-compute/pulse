@@ -25,6 +25,45 @@ function fixture(version = next) {
 }
 
 assert.equal(checkReleasePr(fixture()).preparedRelease, true);
+function websiteFixture() {
+  const f = fixture();
+  const catalog = JSON.parse(f.files['release/documentation-versions.json']);
+  const archived = catalog.versions[1];
+  const manifest = { releaseVersion: previous, documentation: { version: `v${previous}` } };
+  const bytes = JSON.stringify(manifest);
+  Object.assign(archived, { segment: `v${previous}`, deliveryOwner: 'website', sourceTag: `v${previous}`,
+    sourceCommit: 'a'.repeat(40), sourceManifest: `release/documentation-release-history/v${previous}.json`,
+    sourceManifestSha256: require('node:crypto').createHash('sha256').update(bytes).digest('hex') });
+  f.files[archived.sourceManifest] = bytes;
+  f.files['release/documentation-versions.json'] = JSON.stringify(catalog);
+  delete f.files[`release/documentation-site-archives/v${previous}/release-manifest.json`];
+  f.readHistoricalSource = () => ({ commit: 'a'.repeat(40), manifest });
+  return f;
+}
+// Current metadata-only legacy history needs no current-tree HTML or tag claim.
+{
+  const f = websiteFixture();
+  const catalog = JSON.parse(f.files['release/documentation-versions.json']);
+  const entry = catalog.versions[1];
+  entry.deliveryOwner = 'legacy-pulse';
+  entry.archiveSource = { commit: 'b'.repeat(40), path: `release/documentation-site-archives/v${previous}/release-manifest.json` };
+  delete entry.sourceCommit; delete entry.sourceTag; delete f.readHistoricalSource;
+  f.files['release/documentation-versions.json'] = JSON.stringify(catalog);
+  assert.equal(checkReleasePr(f).preparedRelease, true);
+  f.files[entry.sourceManifest] += ' ';
+  assert.throws(() => checkReleasePr(f), /metadata digest/);
+  delete f.files[entry.sourceManifest];
+  assert.throws(() => checkReleasePr(f));
+}
+assert.equal(checkReleasePr(websiteFixture()).preparedRelease, true);
+for (const mutate of [
+  f => { delete f.readHistoricalSource; },
+  f => { f.readHistoricalSource = () => ({ commit: 'b'.repeat(40), manifest: {} }); },
+  f => { delete f.files[`release/documentation-release-history/v${previous}.json`]; },
+  f => { f.files[`release/documentation-release-history/v${previous}.json`] += ' '; },
+  f => { const c = JSON.parse(f.files['release/documentation-versions.json']); c.versions[1].sourceTag = `v${next}`; f.files['release/documentation-versions.json'] = JSON.stringify(c); },
+  f => { const c = JSON.parse(f.files['release/documentation-versions.json']); c.versions[1].deliveryOwner = 'unknown'; f.files['release/documentation-versions.json'] = JSON.stringify(c); }
+]) { const f = websiteFixture(); mutate(f); assert.throws(() => checkReleasePr(f)); }
 const decision = { version: previous, sourceTag: `v${previous}`, sourceCommit: 'a'.repeat(40), npmPublished: true,
   exactLinkPolicy: 'preserve-exact-no-redirect', evidence: 'wasm/test/release/hosted-history.md', reason: 'Reviewed unpublished hosted docs; retain npm history.' };
 function unpublishedFixture() {
@@ -45,19 +84,40 @@ for (const mutate of [
   f => { f.headManifest.readiness.versionPreparation.unpublishedDocumentationReleases[0].exactLinkPolicy = 'redirect-to-latest'; },
   f => { f.files[decision.evidence] = 'unbound evidence'; }
 ]) { const f = unpublishedFixture(); mutate(f); assert.throws(() => checkReleasePr(f)); }
-assert.deepEqual(parseArgs([next]), { version: next, mode: 'archive-current' });
+assert.deepEqual(parseArgs([next]), { version: next, mode: 'website-managed' });
 assert.deepEqual(parseArgs([next, '--documentation-history', 'replace-unpublished-docs']), { version: next, mode: 'replace-unpublished-docs' });
-for (const args of [[next, '--documentation-history', 'replace-unpublished'], [next, '--documentation-history', 'unknown'], [next, '--documentation-history']]) assert.throws(() => parseArgs(args));
+for (const args of [[next, '--documentation-history', 'archive-current'], [next, '--documentation-history', 'replace-unpublished'], [next, '--documentation-history', 'unknown'], [next, '--documentation-history']]) assert.throws(() => parseArgs(args));
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-docs-history-'));
 try {
   const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: 'pipe' }).trim();
   git(['init']); git(['config', 'user.name', 'Test']); git(['config', 'user.email', 'test@example.invalid']);
   fs.writeFileSync(path.join(root, 'source.txt'), 'published source\n');
+  fs.mkdirSync(path.join(root, 'release'));
+  fs.writeFileSync(path.join(root, 'release/pulse-release-manifest.json'), JSON.stringify({ releaseVersion: previous, documentation: { version: `v${previous}` } }));
   git(['add', '.']); git(['commit', '-m', 'published']); git(['tag', decision.sourceTag]);
   const manifest = unpublishedFixture().headManifest;
   manifest.releaseVersion = previous;
   manifest.readiness.versionPreparation.unpublishedDocumentationReleases[0].sourceCommit = git(['rev-parse', 'HEAD']);
   const before = git(['show-ref', '--tags']);
+  // The prior source intentionally contains no renderer, package manager or dependencies.
+  const sandboxModule = { exports: {} };
+  const preparationFile = require.resolve('../../../scripts/release-prepare-pr.cjs');
+  require('node:vm').runInNewContext(fs.readFileSync(preparationFile, 'utf8'), {
+    module: sandboxModule, process, console,
+    require: name => name === 'node:child_process' ? { execFileSync(command, args, options) {
+      assert.equal(command, 'git', 'prior release preparation must never invoke a package manager or renderer');
+      assert.ok(['rev-parse', 'show'].includes(args[0]), 'prior release preparation must only read Git');
+      return execFileSync(command, args, options);
+    } } : require(require('node:module').createRequire(preparationFile).resolve(name))
+  }, { filename: preparationFile });
+  const source = sandboxModule.exports.preparePreviousDocumentation(root, manifest, 'website-managed');
+  assert.equal(source.tag, git(['rev-parse', 'HEAD']));
+  assert.equal(source.sourceTag, decision.sourceTag);
+  assert.equal(source.manifest.releaseVersion, previous);
+  assert.equal(source.archive, null);
+  assert.equal(git(['status', '--porcelain']), '');
+  assert.throws(() => preparePreviousDocumentation(root, { releaseVersion: next }, 'website-managed'));
+
   const result = preparePreviousDocumentation(root, manifest, 'replace-unpublished-docs');
   assert.equal(result.archive, null);
   assert.equal(fs.existsSync(path.join(root, 'release/documentation-site-archives')), false);

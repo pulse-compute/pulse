@@ -1,0 +1,1347 @@
+{
+  "schemaVersion": "pulse.b10-ci01.evidence.v1",
+  "control": {
+    "schemaVersion": "pulse.b10-ci01.log-close-diagnostic.v1",
+    "candidate": {
+      "revision": "f4f130e49db68abccfc2781cd66ce827311dd624",
+      "tree": "7673689323386162c96ecc1dad12b119f5ca3595",
+      "workingTree": "clean"
+    },
+    "node": "v24.18.0",
+    "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+    "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+    "runnerSha256": "c0f69e8cea1e3c8478fd8c55b6f5764949bb94bb23f827ba516af0918480be95",
+    "functionSha256": "abeb9dfd19268b055a617dd5b14495ab95a33a14dac4f81392646588a8cf7e5d",
+    "driverSha256": "273eaf806d7a1fc964d0e3f67dbc11c40998c5c247dcbe437b67b2c034ea3d41",
+    "scope": "Built-in-only fixtures; 2 diagnostic task directories, 1 compiler token, no compiler workload, checkpoint reuse or release qualification. Warm tools and filesystem; sequential control/changed runs.",
+    "primitive": [
+      {
+        "blockMs": 0,
+        "error": null,
+        "elapsedMs": 1,
+        "closed": true,
+        "writableFinished": true,
+        "completeBytes": true,
+        "sha256": "b463cbc540fc1ba02b82e8546a7e5a1f75e06a1c5358aa522701f06be9b86df2"
+      },
+      {
+        "blockMs": 1200,
+        "error": "task log close exceeded its deadline",
+        "elapsedMs": 1200,
+        "closed": true,
+        "writableFinished": true,
+        "completeBytes": true,
+        "sha256": "b463cbc540fc1ba02b82e8546a7e5a1f75e06a1c5358aa522701f06be9b86df2"
+      },
+      {
+        "blockMs": 1200,
+        "error": "task log close exceeded its deadline",
+        "elapsedMs": 1200,
+        "closed": true,
+        "writableFinished": true,
+        "completeBytes": true,
+        "sha256": "b463cbc540fc1ba02b82e8546a7e5a1f75e06a1c5358aa522701f06be9b86df2"
+      },
+      {
+        "blockMs": 1200,
+        "error": "task log close exceeded its deadline",
+        "elapsedMs": 1200,
+        "closed": true,
+        "writableFinished": true,
+        "completeBytes": true,
+        "sha256": "b463cbc540fc1ba02b82e8546a7e5a1f75e06a1c5358aa522701f06be9b86df2"
+      }
+    ],
+    "concurrent": [
+      {
+        "blockMs": 0,
+        "elapsedMs": 332,
+        "overlappingExecution": true,
+        "activeTasksAfter": [],
+        "streamsClosed": true,
+        "results": [
+          {
+            "name": "a",
+            "status": "passed",
+            "error": null,
+            "durationMs": 326,
+            "cleanup": {
+              "status": "passed"
+            },
+            "retainedTaskRoot": null,
+            "remainingProcessTree": [],
+            "log": "a: complete task log\n",
+            "logSha256": "c4656c3cae326676aab179a06e588a16790b115dfff165b4da23872cf4678032"
+          },
+          {
+            "name": "b",
+            "status": "passed",
+            "error": null,
+            "durationMs": 317,
+            "cleanup": {
+              "status": "passed"
+            },
+            "retainedTaskRoot": null,
+            "remainingProcessTree": [],
+            "log": "b: complete task log\n",
+            "logSha256": "082521b6eb951ee78ecb29a66a9c66fc74a15d74b60d57b78676c64a685ff8d2"
+          }
+        ]
+      },
+      {
+        "blockMs": 1200,
+        "elapsedMs": 2729,
+        "overlappingExecution": true,
+        "activeTasksAfter": [],
+        "streamsClosed": false,
+        "results": [
+          {
+            "name": "a",
+            "status": "interrupted",
+            "error": "task cleanup failed: task log close exceeded its deadline",
+            "durationMs": 2728,
+            "cleanup": {
+              "status": "failed"
+            },
+            "retainedTaskRoot": null,
+            "remainingProcessTree": [],
+            "log": "a: complete task log\n",
+            "logSha256": "c4656c3cae326676aab179a06e588a16790b115dfff165b4da23872cf4678032"
+          },
+          {
+            "name": "b",
+            "status": "failed",
+            "error": "task cleanup failed: task log close exceeded its deadline",
+            "durationMs": 1526,
+            "cleanup": {
+              "status": "failed"
+            },
+            "retainedTaskRoot": null,
+            "remainingProcessTree": [],
+            "log": "b: complete task log\n",
+            "logSha256": "082521b6eb951ee78ecb29a66a9c66fc74a15d74b60d57b78676c64a685ff8d2"
+          }
+        ]
+      }
+    ],
+    "observer": {
+      "schemaVersion": "pulse.seal-process-observation.v1",
+      "status": "observed",
+      "error": null,
+      "rootProcess": "254341:5723402",
+      "controllerNamespacePid": 5,
+      "intervalMs": 200,
+      "samples": 35,
+      "maxGapMs": 202,
+      "readErrors": 0,
+      "sampledCpuMs": 6730,
+      "peakSimultaneousProcessRSSKiB": 262156,
+      "peakProcessCount": 4,
+      "remainingObservedProcesses": [
+        {
+          "pid": 254341,
+          "namespacePid": 5,
+          "parent": 254338,
+          "group": 254337,
+          "key": "254341:5723402",
+          "state": "S",
+          "cpuTicks": 630,
+          "rssKiB": 68972,
+          "asc": false
+        },
+        {
+          "pid": 254358,
+          "namespacePid": 22,
+          "parent": 254341,
+          "group": 254337,
+          "key": "254358:5723443",
+          "state": "R",
+          "cpuTicks": 10,
+          "rssKiB": 67508,
+          "asc": false
+        }
+      ],
+      "elapsedMs": 6622,
+      "scope": "Linux /proc snapshots of controller and observed descendants, including detached children and known surviving identities; sampler excluded",
+      "limits": "Sampled lower bounds: short-lived processes, exit CPU tails and unseen reparenting can be missed. RSS sums include shared pages in each process; not unique physical or cgroup memory. Idle/wait states are sampled report observations, not compiler CPU or precise admission events."
+    },
+    "terminalWorkingTree": "",
+    "status": "completed"
+  },
+  "changed": {
+    "schemaVersion": "pulse.b10-ci01.log-close-diagnostic.v1",
+    "candidate": {
+      "revision": "7cd8669c89c6dbd7b39acbcf253acb2b71c0f770",
+      "tree": "1574e7acadfb1ad7dede24dfe2a4f12805d764df",
+      "workingTree": "clean"
+    },
+    "node": "v24.18.0",
+    "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+    "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+    "runnerSha256": "a922d2d0a6bcf85d8ecbc74d7a79e4a9f9363c9a27bb62519c5fff92f93d9c6c",
+    "functionSha256": "3a11d696638ee35b35e66db33f00320225a415f884bd4aa441fed42cc6ee52fb",
+    "driverSha256": "273eaf806d7a1fc964d0e3f67dbc11c40998c5c247dcbe437b67b2c034ea3d41",
+    "scope": "Built-in-only fixtures; 2 diagnostic task directories, 1 compiler token, no compiler workload, checkpoint reuse or release qualification. Warm tools and filesystem; sequential control/changed runs.",
+    "primitive": [
+      {
+        "blockMs": 0,
+        "error": null,
+        "elapsedMs": 1,
+        "closed": true,
+        "writableFinished": true,
+        "completeBytes": true,
+        "sha256": "b463cbc540fc1ba02b82e8546a7e5a1f75e06a1c5358aa522701f06be9b86df2"
+      },
+      {
+        "blockMs": 1200,
+        "error": null,
+        "elapsedMs": 1200,
+        "closed": true,
+        "writableFinished": true,
+        "completeBytes": true,
+        "sha256": "b463cbc540fc1ba02b82e8546a7e5a1f75e06a1c5358aa522701f06be9b86df2"
+      },
+      {
+        "blockMs": 1200,
+        "error": null,
+        "elapsedMs": 1200,
+        "closed": true,
+        "writableFinished": true,
+        "completeBytes": true,
+        "sha256": "b463cbc540fc1ba02b82e8546a7e5a1f75e06a1c5358aa522701f06be9b86df2"
+      },
+      {
+        "blockMs": 1200,
+        "error": null,
+        "elapsedMs": 1200,
+        "closed": true,
+        "writableFinished": true,
+        "completeBytes": true,
+        "sha256": "b463cbc540fc1ba02b82e8546a7e5a1f75e06a1c5358aa522701f06be9b86df2"
+      }
+    ],
+    "concurrent": [
+      {
+        "blockMs": 0,
+        "elapsedMs": 343,
+        "overlappingExecution": true,
+        "activeTasksAfter": [],
+        "streamsClosed": true,
+        "results": [
+          {
+            "name": "a",
+            "status": "passed",
+            "error": null,
+            "durationMs": 330,
+            "cleanup": {
+              "status": "passed"
+            },
+            "retainedTaskRoot": null,
+            "remainingProcessTree": [],
+            "log": "a: complete task log\n",
+            "logSha256": "c4656c3cae326676aab179a06e588a16790b115dfff165b4da23872cf4678032"
+          },
+          {
+            "name": "b",
+            "status": "passed",
+            "error": null,
+            "durationMs": 329,
+            "cleanup": {
+              "status": "passed"
+            },
+            "retainedTaskRoot": null,
+            "remainingProcessTree": [],
+            "log": "b: complete task log\n",
+            "logSha256": "082521b6eb951ee78ecb29a66a9c66fc74a15d74b60d57b78676c64a685ff8d2"
+          }
+        ]
+      },
+      {
+        "blockMs": 1200,
+        "elapsedMs": 2728,
+        "overlappingExecution": true,
+        "activeTasksAfter": [],
+        "streamsClosed": true,
+        "results": [
+          {
+            "name": "a",
+            "status": "passed",
+            "error": null,
+            "durationMs": 1527,
+            "cleanup": {
+              "status": "passed"
+            },
+            "retainedTaskRoot": null,
+            "remainingProcessTree": [],
+            "log": "a: complete task log\n",
+            "logSha256": "c4656c3cae326676aab179a06e588a16790b115dfff165b4da23872cf4678032"
+          },
+          {
+            "name": "b",
+            "status": "passed",
+            "error": null,
+            "durationMs": 2724,
+            "cleanup": {
+              "status": "passed"
+            },
+            "retainedTaskRoot": null,
+            "remainingProcessTree": [],
+            "log": "b: complete task log\n",
+            "logSha256": "082521b6eb951ee78ecb29a66a9c66fc74a15d74b60d57b78676c64a685ff8d2"
+          }
+        ]
+      }
+    ],
+    "observer": {
+      "schemaVersion": "pulse.seal-process-observation.v1",
+      "status": "observed",
+      "error": null,
+      "rootProcess": "254484:5725582",
+      "controllerNamespacePid": 5,
+      "intervalMs": 200,
+      "samples": 34,
+      "maxGapMs": 202,
+      "readErrors": 0,
+      "sampledCpuMs": 6690,
+      "peakSimultaneousProcessRSSKiB": 367300,
+      "peakProcessCount": 4,
+      "remainingObservedProcesses": [
+        {
+          "pid": 254484,
+          "namespacePid": 5,
+          "parent": 254481,
+          "group": 254480,
+          "key": "254484:5725582",
+          "state": "S",
+          "cpuTicks": 627,
+          "rssKiB": 188564,
+          "asc": false
+        },
+        {
+          "pid": 254502,
+          "namespacePid": 22,
+          "parent": 254484,
+          "group": 254480,
+          "key": "254502:5725603",
+          "state": "R",
+          "cpuTicks": 9,
+          "rssKiB": 67300,
+          "asc": false
+        }
+      ],
+      "elapsedMs": 6626,
+      "scope": "Linux /proc snapshots of controller and observed descendants, including detached children and known surviving identities; sampler excluded",
+      "limits": "Sampled lower bounds: short-lived processes, exit CPU tails and unseen reparenting can be missed. RSS sums include shared pages in each process; not unique physical or cgroup memory. Idle/wait states are sampled report observations, not compiler CPU or precise admission events."
+    },
+    "terminalWorkingTree": "",
+    "status": "completed"
+  },
+  "publishedImplementation": {
+    "revision": "88238f7147214ab3598e0f38c6770ae2b8d51792",
+    "tree": "1574e7acadfb1ad7dede24dfe2a4f12805d764df",
+    "relationship": "GitHub commit has the exact measured local commit tree; original measured source identities are retained, not rewritten."
+  },
+  "inputFiles": {
+    "docs/internal/b10-ci01/diagnose.cjs": "273eaf806d7a1fc964d0e3f67dbc11c40998c5c247dcbe437b67b2c034ea3d41",
+    "wasm/scripts/run-wasm-tests.cjs": "a922d2d0a6bcf85d8ecbc74d7a79e4a9f9363c9a27bb62519c5fff92f93d9c6c",
+    "wasm/test/release/assert-release-parallel.cjs": "772e79b0c2464757a9ded398e877bbb56600c41acc41442c8849034e98d58475",
+    "wasm/test/release/assert-release-recovery-runner.cjs": "f1ce6d6befbc8ca229fa9b8c808ff88d52945737a46ed9cb7082b318279d138f",
+    "wasm/test/suite/assert-task-log-close.cjs": "6693852464d6c9060416ea2ac36de2911e6ff60533b82cafc58fc60a3ae9b0c9",
+    "wasm/test/suite/assert-test-orchestration.cjs": "8c19cff76212e68941f91e0f435df8d9448b0276db5a8b43a8c11f5c8f3c218f"
+  },
+  "observerCaveat": "The unchanged observer includes its own sampler in these process/RSS/CPU totals despite its scope label. The terminal sample contains the diagnostic controller and sampler; sampled short-lived children/exit CPU can be missed. No memory admission or performance claim follows.",
+  "unit": {
+    "sourceRevision": "7cd8669c89c6dbd7b39acbcf253acb2b71c0f770",
+    "sourceTree": "1574e7acadfb1ad7dede24dfe2a4f12805d764df",
+    "workingTreeAtStart": "clean",
+    "exitCode": 0,
+    "status": "passed",
+    "durationMs": 310342,
+    "selectedTasks": [
+      "report-capsule-contract",
+      "cli-report-workflow",
+      "cli-report-viewer",
+      "cli-report-retained-evidence",
+      "cli-report-size-evidence",
+      "cli-report-capture-proof",
+      "cli-report-entry-proof",
+      "cli-report-reference-provenance",
+      "cli-report-handler-topology",
+      "cli-report-handler-associations",
+      "cli-report-relationships",
+      "cli-report-imported-inputs",
+      "cli-report-resource-inventory",
+      "cli-report-graph-diagnostics",
+      "multifile-source-indexes",
+      "guest-json-roundtrip",
+      "pure-helper-contract",
+      "suite-shape",
+      "test-orchestration",
+      "package-exports",
+      "boundaries",
+      "workspace-hygiene",
+      "hidden-contracts",
+      "release-feature-acceptance",
+      "release-runtime-policy",
+      "release-seal-lifecycle",
+      "release-checkpoints",
+      "release-recovery-runner",
+      "release-recovery",
+      "release-tag",
+      "api-surface",
+      "logging-contract",
+      "s3-design-contract",
+      "kv-design-contract",
+      "kv-conditional-runtime",
+      "kv-conditional-gates",
+      "s3-read-contract",
+      "s3-write-contract",
+      "crypto-config-planning",
+      "crypto-es256-signing",
+      "crypto-rs256",
+      "crypto-digest-text-contract",
+      "reachable-graph",
+      "project-modules",
+      "package-reachability",
+      "external-lowerers",
+      "package-runtime",
+      "provider-toolchain",
+      "schema-registry",
+      "continuation-registry",
+      "entities-contracts",
+      "entities-schema-bridge",
+      "entities-javascript-runtime",
+      "entities-json-rpc-corpus",
+      "mcp-http",
+      "pulse-context-corpus",
+      "pulse-context-application",
+      "pulse-context-host",
+      "mcp-compatibility",
+      "mcp-tools",
+      "mcp-authorization",
+      "entities-package-owned-lowering",
+      "entities-catalog",
+      "entities-inspection",
+      "entities-orchestration-demo"
+    ],
+    "completedTasks": 65,
+    "orderedComplete": true,
+    "reportSha256": "65972b2a6a0115ff9f0700e650f55aabe4b22e118eca01c2d55a40df9200a231",
+    "results": [
+      {
+        "name": "report-capsule-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 15561,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-workflow",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 2260,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-viewer",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 10282,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-retained-evidence",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 31023,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-size-evidence",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 818,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-capture-proof",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 8063,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-entry-proof",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 30332,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-reference-provenance",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 12233,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-handler-topology",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 47386,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-handler-associations",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 883,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-relationships",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 5020,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-imported-inputs",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 12171,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-resource-inventory",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 5768,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "cli-report-graph-diagnostics",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 4922,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "multifile-source-indexes",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 277,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "guest-json-roundtrip",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 127,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "pure-helper-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 1081,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "suite-shape",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 142,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "test-orchestration",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 15712,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "package-exports",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 192,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "boundaries",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 358,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "workspace-hygiene",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 381,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "hidden-contracts",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 299,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "release-feature-acceptance",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 488,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "release-runtime-policy",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 2143,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "release-seal-lifecycle",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 3454,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "release-checkpoints",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 236,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "release-recovery-runner",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 48471,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "release-recovery",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 2373,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "release-tag",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 568,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "api-surface",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 837,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "logging-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 122,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "s3-design-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 1246,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "kv-design-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 1178,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "kv-conditional-runtime",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 1127,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "kv-conditional-gates",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 506,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "s3-read-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 1719,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "s3-write-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 303,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "crypto-config-planning",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 562,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "crypto-es256-signing",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 123,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "crypto-rs256",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 1724,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "crypto-digest-text-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 456,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "reachable-graph",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 174,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "project-modules",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 892,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "package-reachability",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 941,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "external-lowerers",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 1515,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "package-runtime",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 161,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "provider-toolchain",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 122,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "schema-registry",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 909,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "continuation-registry",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 116,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "entities-contracts",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 165,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "entities-schema-bridge",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 307,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "entities-javascript-runtime",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 776,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "entities-json-rpc-corpus",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 108,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "mcp-http",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 349,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "pulse-context-corpus",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 871,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "pulse-context-application",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 5492,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "pulse-context-host",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 3027,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "mcp-compatibility",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 234,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "mcp-tools",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 262,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "mcp-authorization",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 3044,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "entities-package-owned-lowering",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 353,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "entities-catalog",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 355,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "entities-inspection",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 11312,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      },
+      {
+        "name": "entities-orchestration-demo",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 5853,
+        "cleanup": {
+          "status": "passed"
+        },
+        "remainingProcessTree": [],
+        "retainedTaskRoot": null
+      }
+    ]
+  },
+  "finalRecovery": {
+    "schemaVersion": 2,
+    "runId": "2026-10-18T15-51-20-287Z--6",
+    "sourceRevision": "7cd8669c89c6dbd7b39acbcf253acb2b71c0f770",
+    "sourceIdentity": {
+      "sourceRevision": "7cd8669c89c6dbd7b39acbcf253acb2b71c0f770",
+      "sourceIdentityKind": "git-commit",
+      "sourceDigestSha256": null,
+      "sourceFiles": null
+    },
+    "status": "passed",
+    "startedAt": "2026-10-18T15:51:20.291Z",
+    "updatedAt": "2026-10-18T15:52:10.672Z",
+    "finishedAt": "2026-10-18T15:52:10.672Z",
+    "durationMs": 50381,
+    "profiles": [],
+    "requestedTasks": [
+      "release-recovery-runner"
+    ],
+    "selectedTasks": [
+      "release-recovery-runner"
+    ],
+    "currentTask": null,
+    "currentTaskPhase": null,
+    "activeChildPid": null,
+    "activeChildPids": [],
+    "currentTasks": [],
+    "currentTaskPhases": {},
+    "completedTasks": 1,
+    "results": [
+      {
+        "name": "release-recovery-runner",
+        "evidence": "unit",
+        "description": "Real subprocess late-failure recovery and fail-closed reruns",
+        "commandSignature": "bd133bcebaacf7eaeea4959a182d3cf634fe4b48b56542310cd8f38ee726e3a3",
+        "timeoutMs": 90000,
+        "durationMs": 50373,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "interruptedBy": null,
+        "error": null,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logPath": "/workspace/scratch/15c3ad7c5dc3/b10-ci01-tools/runs/2026-10-18T15-51-20-287Z--6/tasks/release-recovery-runner.log",
+        "retainedTaskRoot": null,
+        "diagnosticReports": [],
+        "failureArtifacts": [],
+        "processTree": [],
+        "remainingProcessTree": []
+      }
+    ],
+    "runDirectory": "/workspace/scratch/15c3ad7c5dc3/b10-ci01-tools/runs/2026-10-18T15-51-20-287Z--6"
+  },
+  "largeLog": {
+    "result": {
+      "name": "large-log",
+      "evidence": "unit",
+      "description": "complete large subprocess log",
+      "commandSignature": "62054f553f054392a747ffff1d5325393cc1a30785fd03ded29330d8bd29f06d",
+      "timeoutMs": 5000,
+      "durationMs": 116,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/15c3ad7c5dc3/b10-ci01-tools/large-log/tasks/large-log.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    "bytes": 262144,
+    "complete": true,
+    "sha256": "d509bff642a353f88582e8a846ecae041c333b79c57a7a24ff310fbdb7e914e9"
+  },
+  "unitResidue": {
+    "path": "wasm/test/s3/.text-state-4rE3DV",
+    "files": [
+      {
+        "path": "index.ts",
+        "bytes": 524,
+        "sha256": "5602f7fe8c503a5aac8c9655f40592f443f85df6d14e4291129490fb07aa655b"
+      },
+      {
+        "path": ".pulse/config.ts",
+        "bytes": 500,
+        "sha256": "7258d0d80017ba47b657458e79ae79e68ac2f3e969d0ab41864c3fecb6185779"
+      }
+    ],
+    "disposition": "Owned residue from unit S3 planning fixture; recorded and removed after terminal unit completion. Same known residue class as B10-01; no source fix in this issue."
+  },
+  "unitConsoleLimit": "The aggregate console capture and nested recovery log ended before their final markers despite the complete terminal unit report. No completeness claim is made for those captures. A fresh standalone final-candidate recovery run passed with its final assertion and runner markers. A separate real subprocess log preserved all 262144 expected bytes.",
+  "preliminaryDevelopmentAttempts": [
+    {
+      "name": "orchestration",
+      "status": "passed",
+      "completedTasks": 1,
+      "selected": 1,
+      "reportSha256": "d2b8471387aa6a760bf20678781f4dab8fd8908383bd1ab242e9305e41a799ad",
+      "sourceIdentity": "Uncommitted development bytes on f4f130e4; not final candidate qualification.",
+      "results": [
+        {
+          "name": "test-orchestration",
+          "status": "passed",
+          "durationMs": 14657
+        }
+      ]
+    },
+    {
+      "name": "recovery",
+      "status": "failed",
+      "completedTasks": 1,
+      "selected": 3,
+      "reportSha256": "1ac69165ef76b350080878f925a074adabe5b2866fa0795ff2a3290ca5edb29e",
+      "sourceIdentity": "Uncommitted development bytes on f4f130e4; not final candidate qualification.",
+      "results": [
+        {
+          "name": "release-recovery-runner",
+          "status": "failed",
+          "durationMs": 1558
+        }
+      ]
+    },
+    {
+      "name": "focused-v2",
+      "status": "failed",
+      "completedTasks": 1,
+      "selected": 4,
+      "reportSha256": "b8ff7082949c76576d63c9740a5e0d5120b17057b71d083631ddb376e245e805",
+      "sourceIdentity": "Uncommitted development bytes on f4f130e4; not final candidate qualification.",
+      "results": [
+        {
+          "name": "release-recovery-runner",
+          "status": "failed",
+          "durationMs": 1594
+        }
+      ]
+    },
+    {
+      "name": "focused-v3",
+      "status": "failed",
+      "completedTasks": 4,
+      "selected": 4,
+      "reportSha256": "57a5d816d43da9ce0494b423575ae5658fa8b02b5e2921e7b9ca703584b8b9ff",
+      "sourceIdentity": "Uncommitted development bytes on f4f130e4; not final candidate qualification.",
+      "results": [
+        {
+          "name": "release-recovery-runner",
+          "status": "passed",
+          "durationMs": 51639
+        },
+        {
+          "name": "release-seal-lifecycle",
+          "status": "passed",
+          "durationMs": 3524
+        },
+        {
+          "name": "release-checkpoints",
+          "status": "passed",
+          "durationMs": 242
+        },
+        {
+          "name": "test-orchestration",
+          "status": "failed",
+          "durationMs": 3731
+        }
+      ]
+    },
+    {
+      "name": "orchestration-v4",
+      "status": "passed",
+      "completedTasks": 1,
+      "selected": 1,
+      "reportSha256": "3306559d6a8d8e603fc4eb1028095e2b1606a440e40d8c590073e27c2456c57f",
+      "sourceIdentity": "Uncommitted development bytes on f4f130e4; not final candidate qualification.",
+      "results": [
+        {
+          "name": "test-orchestration",
+          "status": "passed",
+          "durationMs": 15736
+        }
+      ]
+    }
+  ],
+  "authority": "Development diagnostic and unit evidence only. No complete release qualification, compiler setting adoption, historical-pass reuse or pooling of failed attempts.",
+  "preliminaryDevelopmentNotes": [
+    "Early recovery assertions incorrectly expected no receipt for a failed task, then read the envelope at the wrong level. Corrected to require a failed receipt and fresh execution.",
+    "The one-I/O-turn-only prototype passed the initial regression but later failed one stalled-stream case. The final repair separately supervises drain and close; the failed prototype is not counted as passing final evidence.",
+    "The final full unit run uses the committed two-phase implementation and replaces no historical failed evidence."
+  ]
+}

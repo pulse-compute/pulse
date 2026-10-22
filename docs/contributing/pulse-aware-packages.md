@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: docs-platform
 status: active
-last-reviewed: 2026-07-25
-review-by: 2027-01-25
+last-reviewed: 2026-10-21
+review-by: 2027-04-21
 pulse-doc-meta:end -->
 
 # Pulse-aware package authoring
@@ -28,7 +28,7 @@ ordinary package API
 | Provide ordinary library behavior on JavaScript targets | Publish a normal target-compatible JavaScript package API. |
 | Add package-root Native lowering | Implement the versioned trusted package-lowerer contract, including for independently released external packages. |
 | Add a project-owned execution provider | Export the versioned provider `./toolchain` contract from an exact scoped package. |
-| Load an arbitrary npm compiler plugin or lowerer | Not supported. |
+| Add arbitrary compiler hooks or execute an untrusted plugin in isolation | Not supported; the versioned trusted package-lowerer contract above is the supported extension seam. |
 | Self-register a provider by scanning dependencies or package metadata | Not supported. |
 
 Provider toolchains and package lowerers are separate extension systems. A

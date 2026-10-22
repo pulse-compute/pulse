@@ -60,7 +60,12 @@ function filesUnder(root, predicate = () => true, out = []) {
 
 function policyFor(relativeFile) {
   const file = slash(relativeFile);
-  const reviewed = CURRENT_REVIEWED_FILES.has(file)
+  const reviewed = ['docs/maintainers/documentation-system.md', 'docs/maintainers/public-site.md',
+    'docs/maintainers/documentation-deployment.md', 'docs/maintainers/documentation-versioning.md',
+    'docs/maintainers/npm-publishing.md',
+    'docs/contributing/README.md', 'docs/contributing/pulse-aware-packages.md'].includes(file)
+    ? { lastReviewed: '2026-10-21', reviewBy: '2027-04-21' }
+    : CURRENT_REVIEWED_FILES.has(file)
     ? { lastReviewed: '2026-10-09', reviewBy: '2027-04-09' }
     : AUTHORITY_REVIEWED_FILES.has(file)
     ? { lastReviewed: AUTHORITY_REVIEWED_ON, reviewBy: AUTHORITY_REVIEW_BY }

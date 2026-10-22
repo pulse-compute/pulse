@@ -4,7 +4,7 @@
 // declaration rendering remains deferred until final source assembly.
 function prepareNativeExpressions({
   expressions, expressionIndex, pureHelpers, localIndex, binaryIndex, unaryIndex,
-  fail, localName, stringHandle, numeric
+  fail, localName, stringHandle, numeric, resources
 }) {
   const expressionAlias = new Map();
   const retainedExpressions = new Set();
@@ -54,6 +54,28 @@ function prepareNativeExpressions({
     const lines = [];
     const emit = (line) => lines.push(`  ${line}`);
     switch (expression.kind) {
+      case 'callable-input':
+        emit('return __pulse_callable_input');
+        break;
+      case 'callable-call':
+        emit(`return __pulse_callable_${expression.index}(${exprName(expression.argument)}())`);
+        break;
+      case 'workspace-init':
+        emit(resources.workspaces.init(expression));
+        emit('return host_value_undefined()');
+        break;
+      case 'workspace-read':
+        emit(`return host_value_number(${resources.workspaces.read(expression, expression.offset ? `host_workspace_number_value(${exprName(expression.offset)}())` : '0.0')})`);
+        break;
+      case 'workspace-write':
+        emit(`const at = host_workspace_number_value(${exprName(expression.offset)}())`);
+        emit(`const value = host_workspace_number_value(${exprName(expression.value)}())`);
+        emit(`return host_value_number(${resources.workspaces.write(expression, 'at', 'value')})`);
+        break;
+      case 'resource-read':
+        if (expression.operation === 'readUtf8') emit(`return ${resources.utf8(expression, `host_resource_offset_value(${exprName(expression.offset)}())`, `host_resource_offset_value(${exprName(expression.length)}())`)}`);
+        else emit(`return host_value_number(${resources.read(expression, expression.offset ? `host_resource_offset_value(${exprName(expression.offset)}())` : '0.0')})`);
+        break;
       case 'literal':
         if (expression.value === null) emit('return host_value_null()');
         else if (typeof expression.value === 'boolean') emit(`return host_value_boolean(${expression.value ? 1 : 0})`);

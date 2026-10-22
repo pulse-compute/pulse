@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-20T18-10-28-751Z--5",
+  "sourceRevision": "145b7e4e6fdaa971985feb6e503f78bf66a9806c",
+  "sourceIdentity": {
+    "sourceRevision": "145b7e4e6fdaa971985feb6e503f78bf66a9806c",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-20T18:10:28.756Z",
+  "updatedAt": "2026-10-20T18:11:44.279Z",
+  "finishedAt": "2026-10-20T18:11:44.279Z",
+  "durationMs": 75523,
+  "profiles": [],
+  "requestedTasks": [
+    "cli-project-workflow"
+  ],
+  "selectedTasks": [
+    "cli-project-workflow"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "cli-project-workflow",
+      "evidence": "cli",
+      "description": "doctor, test, inspect, compile, and build workflow",
+      "commandSignature": "d3bf9df4038c58d23cf26fae0e4da578b660c76a5c5c1a8fd5435f1b3dd46750",
+      "timeoutMs": 180000,
+      "durationMs": 75514,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-10-28-751Z--5/tasks/cli-project-workflow.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/803e6bf46c14/pulse/.pulse-development/05b/runs/2026-10-20T18-10-28-751Z--5"
+}

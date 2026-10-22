@@ -1,0 +1,1 @@
+ok - explicit Fastly text encode preserves exact bytes, Unicode, projection, alias mutation, admission and pre-effect failures

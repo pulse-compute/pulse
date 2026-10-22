@@ -40,10 +40,25 @@ const REASONS = ['missing-evidence', 'unsupported-mapping', 'incomplete-mapping'
   ...new Set(Object.values(GRAPH_DIAGNOSTICS).filter(reason => !['missing-evidence', 'prelink-only'].includes(reason)))];
 const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 'dispatcher-carrier'];
 const ENTRY_ROLES = ['route', 'middleware', 'fallback', 'error', 'event', 'startup', 'export', 'other'];
-const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support', 'canonical-text-responses'];
+const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support', 'canonical-text-responses', 'binary-resources'];
 const analyticsFact = value => object({ state: en('available', 'unavailable', 'not-applicable'),
   value: nullable(value), reason: nullable(en('not-recorded', 'not-applicable')) });
 const defs = {
+  Computation: object({ version: fixed('pulse.report-computation.v1'),
+    callees: array(object({ id, name: text, source: analyticsFact(ref('AnalyticsSpan')),
+      helpers: array(object({ name: text, source: analyticsFact(ref('AnalyticsSpan')) })),
+      inputSchema: text, outputSchema: text, entryIds: ids, entryCoverage: ref('Coverage'), resourceIds: ids,
+      bodyBytes: ref('Fact') })),
+    sites: array(object({ calleeId: id, source: analyticsFact(ref('AnalyticsSpan')), entryIds: ids, managed: bool })),
+    coverage: ref('Coverage'), evidenceIds: ids }),
+  BinaryResources: object({ version: fixed('pulse.report-binary-resources.v1'), identity: hash, manifestId: hash,
+    budgets: object(Object.fromEntries(['files', 'fileBytes', 'totalBytes', 'serializedBytes', 'bindings'].map(k => [k, uint]))),
+    source: object({ recordCount: uint, decodedBytes: uint, serializedBytes: uint }),
+    bindingCount: uint, uniqueBackingCount: uint, selectedBindingCount: uint, selectedUniqueBackingCount: uint,
+    declaredBackingBytes: ref('Fact'), selectedBackingBytes: ref('Fact'),
+    observedBackingBytes: ref('Fact'), observedArtifactId: nullable(id), observedRanges: array(object({ backingId: text, offset: uint, bytes: uint })),
+    instanceMemoryBytes: ref('Fact'), processMemoryBytes: ref('Fact'),
+    backings: array(object({ id: text, sha256: hash, byteLength: uint, resourceIds: ids, selected: bool })), evidenceIds: ids }),
   AnalyticsPosition: object({ offset: uint, line: { ...uint, minimum: 1 }, column: { ...uint, minimum: 1 } }),
   AnalyticsSpan: object({ file: text, sha256: hash, start: ref('AnalyticsPosition'), end: ref('AnalyticsPosition') }),
   AnalyticsEvidence: object({ basis: en('handler-table', 'router-topology', 'authored-recognition', 'validated-helper-call', 'derived-association'),
@@ -85,7 +100,7 @@ const defs = {
     providerArtifactReuse: en('reused', 'not-reused', 'not-recorded', 'not-applicable'), cache: fixed('not-recorded') }),
   ResourceProducer: object({ scope: en(...RESOURCE_SCOPES), producer: ref('Producer'), coverage: ref('Coverage'), resourceIds: ids, evidenceIds: ids }),
   ResourceGenerator: object({ scope: en(...RESOURCE_SCOPES), producer: ref('Producer'),
-    representation: en('base64-text', 'pulse.report-schema-shape.v1', 'package-guest-unit', 'native-string'),
+    representation: en('base64-text', 'pulse.report-schema-shape.v1', 'package-guest-unit', 'native-string', 'native-immutable-data'),
     representationBytes: ref('Fact'), schemaId: nullable(id), entryCoverage: ref('Coverage') }),
   GraphDiagnostic: object({ reason: en(...new Set(Object.values(GRAPH_DIAGNOSTICS))), code: en(...Object.keys(GRAPH_DIAGNOSTICS)),
     functionIndex: nullable(uint), observed: nullable(uint), expected: nullable(uint) }),
@@ -99,7 +114,7 @@ const defs = {
   Producer: object({ name: text, version: text }),
   File: object({ file: text, bytes: uint, sha256: hash }),
   Context: object({ profile: text, host: text, target: fixed('native'), representation: fixed('canonical-native-wasm'), primaryArtifactId: id }),
-  Recipe: object({ name: text, version: text, optimization: en('default', 'experimental-native-size', 'experimental-native-bounded-size', 'unavailable'), guestLinked: bool, elideJsonCacheArena: bool }, ['elideJsonCacheArena']),
+  Recipe: object({ name: text, version: text, optimization: en('native-bounded-size', 'native-shrink0', 'default', 'experimental-native-size', 'experimental-native-bounded-size', 'unavailable'), guestLinked: bool, elideJsonCacheArena: bool }, ['elideJsonCacheArena']),
   Route: object({ id, canonicalId: text, order: uint, method: text, path: str, handlerId: id,
     behavior: object({ kind: en('terminal', 'continuing'), basis: fixed('canonical-handler-ir') }),
     handlerName: nullable(str), entryId: id, source: nullable(ref('Source')), composition: ids,
@@ -134,9 +149,10 @@ const defs = {
     canonicalId: nullable(text), state: en('resolved', 'dynamic', 'unknown'), reason: nullable(en(...REASONS)),
     targetId: nullable(id), entryIds: ids, entryCoverage: ref('Coverage'), evidenceIds: ids,
     externalPackages: { ...array(text), minItems: 1, uniqueItems: true } }, ['externalPackages']),
-  Resource: object({ id, name: text, kind: en('embedded-asset', 'schema-validator', 'helper', 'other', 'response-payload'),
+  Resource: object({ id, name: text, kind: en('embedded-asset', 'schema-validator', 'helper', 'other', 'response-payload', 'binary-resource'),
     mediaType: nullable(text), artifactId: nullable(id), inputBytes: ref('Fact'), retainedPayloadBytes: ref('Fact'),
-    routeIds: ids, entryIds: ids, evidenceIds: ids, generator: ref('ResourceGenerator') }, ['generator']),
+    routeIds: ids, entryIds: ids, evidenceIds: ids, generator: ref('ResourceGenerator'),
+    binary: object({ backingId: text, sha256: hash, selected: bool, calleeIds: ids }) }, ['generator', 'binary']),
   Section: object({ index: uint, id: { ...uint, maximum: 13 }, bytes: uint, payloadBytes: uint }),
   Artifact: object({ id, representation: fixed('canonical-native-wasm'), stage: en('final', 'prelink'),
     host: text, target: text, bytes: { ...uint, minimum: 8 }, sha256: hash, sections: array(ref('Section')),
@@ -174,10 +190,10 @@ const capsule = object({ kind: fixed('pulse.application-report'), reportVersion:
   declarations: array(ref('Declaration')), schemas: array(ref('Schema')), bindings: array(ref('Binding')),
   resources: array(ref('Resource')), artifacts: array(ref('Artifact')), bodies: array(ref('Body')),
   references: array(ref('Reference')),
-  resourceProducers: array(ref('ResourceProducer')),
+  resourceProducers: array(ref('ResourceProducer')), computation: ref('Computation'), binaryResources: ref('BinaryResources'),
   implementations: array(ref('Implementation')),
   rootSets: array(ref('RootSet')), measurements: array(ref('Measurement')), observations: array(ref('Observation')),
-  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }), analytics: ref('Analytics') }, ['references', 'resourceProducers', 'implementations', 'build', 'analytics']);
+  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }), analytics: ref('Analytics') }, ['references', 'resourceProducers', 'implementations', 'build', 'analytics', 'computation', 'binaryResources']);
 const completion = object({ kind: fixed('pulse.report-completion'), completionVersion: fixed(1), status: fixed('complete'),
   operation: en('compile', 'native-build'), manifestVersion: fixed('pulse.project-execution.v10'), context: ref('Context'),
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),

@@ -6,8 +6,14 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+// Both standalone pack paths must remain independent of rendered presentation.
+const Module = require('node:module');
+const load = Module._load;
+Module._load = function(request, ...args) {
+  assert(!/build-docs-site|highlight-code-blocks/.test(request), 'Package determinism must not load the renderer');
+  return load.call(this, request, ...args);
+};
 const { packRelease } = require('../../../scripts/pack-release.cjs');
-const { buildDocumentationSite } = require('../../../scripts/build-docs-site.cjs');
 
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
 const tempRoot = process.env.PULSEWASM_TEST_TMP_ROOT || fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-artifact-determinism-'));
@@ -47,10 +53,4 @@ assert.deepEqual(
 );
 assert.deepEqual(treeIdentity(firstPackages), treeIdentity(secondPackages), 'release package output trees must be byte-identical');
 
-const firstSite = path.join(tempRoot, 'site-a');
-const secondSite = path.join(tempRoot, 'site-b');
-buildDocumentationSite({ output: firstSite, clean: true });
-buildDocumentationSite({ output: secondSite, clean: true });
-assert.deepEqual(treeIdentity(firstSite), treeIdentity(secondSite), 'documentation site output trees must be byte-identical');
-
-console.log(`ok - independent release package and documentation site builds are byte-identical (${treeIdentity(firstPackages).length} package files, ${treeIdentity(firstSite).length} site files)`);
+console.log(`ok - independent release package builds are byte-identical (${treeIdentity(firstPackages).length} package files)`);

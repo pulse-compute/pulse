@@ -27,6 +27,10 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     localIndex, effectIndex, continuationIndex, expressions, expressionIndex,
     stateEnabled, binaryIndex, unaryIndex, fail, localName, stringHandle
   } = prepareNativePlan(plan);
+  const resources = require('./canonical-native-resources.js').prepareNativeResources(plan, options.resourceReferences);
+  const workspaces = require('./canonical-native-workspaces.js').prepareNativeWorkspaces(plan);
+  resources.source.push(...workspaces.source);
+  resources.workspaces = workspaces;
   const nativeSchemaCodecs = nativeSchemaCodecSource(plan);
   const nativeCrypto = buildNativeCryptoGuestSources(plan);
   const { eventEntries, eventReachable } = prepareNativeEmissionInputs(plan);
@@ -35,12 +39,12 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const ownership = prepareHandleOwnership({ plan, policy: options.handleOwnership,
     schemaActive: nativeSchemaCodecs.active, budgeted: readLoopBudget || streamBudget,
     expressions, eventReachable });
-  const numeric = prepareNumericRegions({ plan, policy: options.numericRegions,
+  const numeric = prepareNumericRegions({ plan, resources, policy: options.numericRegions,
     schemaActive: nativeSchemaCodecs.active,
     budgeted: readLoopBudget || streamBudget, readLoopBudget: readLoopBudget && !streamBudget, localName });
   const expressionEmitter = prepareNativeExpressions({
     expressions, expressionIndex, pureHelpers, localIndex, binaryIndex, unaryIndex,
-    fail, localName, stringHandle, numeric
+    fail, localName, stringHandle, numeric, resources
   });
   const { applicationErrors, helpers, handlers, routerLocal, routerCursor } = prepareNativeFlow(plan, pureHelpers);
   const control = buildNativeControl({
@@ -61,7 +65,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     plan, blocks: control.blocks, handlers, helpers, stages, fail
   });
   const source = assembleNativeSource({
-    plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership,
+    plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership, resources,
     stages, stageSites, stateEnabled, binaryIndex, eventReachable,
     entryBlock: control.entryBlock, layout, guardStateCount
   });
@@ -74,7 +78,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
 }
 
 function assembleNativeSource({
-  plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership,
+  plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership, resources,
   stages, stageSites, stateEnabled, binaryIndex, eventReachable,
   entryBlock, layout, guardStateCount
 }) {
@@ -88,9 +92,18 @@ function assembleNativeSource({
     `const PULSE_ABI_VERSION: i32 = ${runtimeContract.CANONICAL_NATIVE_ABI_VERSION}`,
     `const PULSE_PLAN_HASH: string = ${quote(plan.planHash)}`,
     `const PULSE_ENTRY_PC: i32 = ${entryBlock}`,
+    ...(plan.callable ? ['let __pulse_callable_input: i32 = 0'] : []),
     ...support.executionGlobals,
     ...support.globals,
     ...numeric.globals,
+    ...resources.source,
+    ...(plan.callable ? [
+      'function __pulse_callable_close(): void {',
+      ...support.valueRoots.map(name => `  ${name} = 0`),
+      '  __pulse_callable_input = 0',
+      ...resources.workspaces.clear().map(line => `  ${line}`),
+      '}'
+    ] : []),
     ...(ownership.enabled ? [
       'function __pulse_handle_guest_roots(): void {',
       ...support.valueRoots.map(name => `  __pulse_handle_mark(${name})`),
@@ -107,6 +120,7 @@ function assembleNativeSource({
     ...renderNativeRun({ guardStateCount, partitioned, renderedBlocks, invalidProgramCounter }),
     ...renderNativeExports({ eventReachable, stateEnabled, eventExports: support.eventExports, setterCases: support.setterCases }),
     ...nativeSchemaCodecs.exports,
+    ...(plan.callables?.length ? [require('./canonical-native-callable.js').generateCallableSources(plan.callables, { resourceReferences: resources.references })] : []),
     ''
   ].join('\n');
 }
@@ -221,5 +235,6 @@ function assembleNativeResult({
 module.exports = Object.freeze({
   CANONICAL_NATIVE_AS_GENERATOR_VERSION,
   CanonicalNativeAssemblyScriptError,
-  generateCanonicalNativeAssemblyScript
+  generateCanonicalNativeAssemblyScript,
+  generateCallableSources: (...args) => require('./canonical-native-callable').generateCallableSources(...args)
 });

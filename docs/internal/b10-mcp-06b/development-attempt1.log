@@ -1,0 +1,28 @@
+
+[pulsewasm:native] pulse-context-quality-actual
+[pulsewasm] 06B actual retrieval evidence; receipt acceptance is separate from completed measurement (timeout 240.00s)
+[pulsewasm] Running pulse-context-quality-actual (execution); elapsed 10.00s
+[pulsewasm] Running pulse-context-quality-actual (execution); elapsed 20.01s
+[pulsewasm] Running pulse-context-quality-actual (execution); elapsed 30.02s
+[pulsewasm] Running pulse-context-quality-actual (execution); elapsed 40.02s
+[pulsewasm] Running pulse-context-quality-actual (execution); elapsed 50.02s
+{"checkpoint":"compiled","mode":"actual","artifact":{"repeat":1,"corpusHash":"a722a32539c9c31bb3887a9ac829a2a240a7bdbdb1e8e4116fd8ad75b8d3fa97","dimensions":{"rows":263,"dimension":2506,"nonzeros":15313,"dictionarySha256":"973fe863a4fdf0a5227648978158a71c6f0c738684d3ee201a6759797645c961","manifestId":"44ce962dc41e007f8401e266f66b5956052aab6dc75d3eda020506dd0953a875","catalogueIdentity":"19a443454a2e6e4d4d350994be5973251d2c7d7fd7ff3f6176751adbffaa9610","rawBytes":599957,"serializedBytes":800598,"budgets":{"files":3,"fileBytes":5242880,"totalBytes":8388608,"serializedBytes":16777216,"bindings":3}},"planHash":"b2d12963461e5b12570f6a1b794339c43744288fbc45f21dca1d205645f5d05d","sourceSha256":"1d74a09aabd8357b02f51e9cbd118a1e10b8721f5b81fb30a2129cd94f9c017a","node":{"bytes":991442,"sha256":"349ed4eff3da0f41911af21040b94415079c234f3d5365667fd5d55c0e021028","compileMs":11282.027243,"initialGuestBytes":1966080,"resourceBackings":[{"id":"context.vector","physicalFullCopies":1},{"id":"context.text","physicalFullCopies":1},{"id":"context.metadata","physicalFullCopies":0}]},"fastly":{"bytes":1043352,"sha256":"5c561fb031d3c205bccf2cf15d41c08b453bc8d926ee2b19db1f9d520d7e67a5","compileMs":20894.450995,"initialGuestBytes":3932160,"resourceBackings":[{"id":"context.vector","physicalFullCopies":1},{"id":"context.text","physicalFullCopies":1},{"id":"context.metadata","physicalFullCopies":0}]},"resources":[{"id":"context.vector","bytes":167106,"sha256":"24a777606a4563ab24b6f29e31c56b5d00519c4f4054e009cd1a988b0d42ca43"},{"id":"context.text","bytes":221650,"sha256":"8071cb624870d9e6036f3c3fc7e7b74b89faa06f8ede700cc87ac56c73860232"},{"id":"context.metadata","bytes":211201,"sha256":"b64d9ae1e8eec72b86e252cd4e8ba4a51e25b33a1f2dec160ee68b388643fd97"}]}}
+[pulsewasm] Running pulse-context-quality-actual (execution); elapsed 60.03s
+AssertionError [ERR_ASSERTION]: Fastly expired request must not return partial success
+    at phases (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/mcp/assert-context-quality.cjs:67:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async main (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/mcp/assert-context-quality.cjs:93:4) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+} undefined
+[pulsewasm] pulse-context-quality-actual: failed in 67.44s
+
+[pulsewasm] test summary
+  failed        67.44s  pulse-context-quality-actual  (/workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-31-55-775Z--8/tasks/pulse-context-quality-actual.log)
+  report       /workspace/scratch/0174bfde4d1e/evidence-06b/attempt1.json
+  run logs     /workspace/scratch/0174bfde4d1e/evidence-06b/runs/2026-10-21T02-31-55-775Z--8
+  total        67.45s

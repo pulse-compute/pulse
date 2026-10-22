@@ -50,7 +50,8 @@ export default defineConfig((_scope) => ({
   write('src/schemas.ts', `import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema';
 import type {JsonObject,ScalarRecord} from '@pulse-compute/pulse/schema';
 export interface Input { id: string; version: number }
-export default defineSchemaRegistry({ schemas: { 'app.Input': schema<Input>(), 'app.Nested': schema<{value:JsonObject}>({json:{maxArrayItems:2}}), 'app.Scalar': schema<{value:ScalarRecord}>() } });`);
+export interface TextValue { text: string; active: boolean; note?: string | null }
+export default defineSchemaRegistry({ schemas: { 'app.Input': schema<Input>(), 'app.TextValue': schema<TextValue>(), 'app.Nested': schema<{value:JsonObject}>({json:{maxArrayItems:2}}), 'app.Scalar': schema<{value:ScalarRecord}>() } });`);
   write('src/index.ts', `import { Pulse } from '@pulse-compute/pulse';
 import { Router } from '@pulse-compute/runtime';
 import { jwt } from '@pulse-compute/jwt';
@@ -61,6 +62,17 @@ const child = new Router();
 child.post('/request', async (ctx) => {
   const input = await ctx.req.json<Input>('app.Input');
   return ctx.text(ctx.encodeJson(input, 'app.Input'));
+});
+// Optional closed text/boolean fields select the Native text-result codec.
+child.post('/text-encode', async (ctx) => {
+  const raw = await ctx.req.text();
+  const input = ctx.decodeJson(raw, 'app.TextValue');
+  return ctx.text(ctx.encodeJson(input, 'app.TextValue'));
+});
+child.get('/text-encode-invalid', async (ctx) => {
+  const encoded = ctx.encodeJson({ text: false, active: true }, 'app.TextValue');
+  const forbidden = await ctx.config.get('MUST_NOT_RUN');
+  return ctx.text(encoded + forbidden);
 });
 child.get('/decode', async (ctx) => {
   const input = ctx.decodeJson<Input>(ctx.req.header('x-input'), 'app.Input');
@@ -138,6 +150,14 @@ export default app;`);
     expect: { status: 400, text: code }
   });
   const cases = [
+    errorCase('text-result encode before effect', 'text-encode-invalid', 'PULSE_SCHEMA_ENCODE'),
+    errorCase('text-result decode recovery', 'text-encode', 'PULSE_SCHEMA_DECODE', {}, '{"text":false,"active":true}'),
+    ...[
+      { text: '雪😀 \"quote\" \\ slash\n', active: true, note: null },
+      { text: '', active: false },
+      { text: 'optional', active: true, note: 'present' }
+    ].map(value => ({ ...errorCase('text-result exact bytes ' + value.text, 'text-encode', '', {}, JSON.stringify({ ...value, drop: true })),
+      expect: { status: 200, text: JSON.stringify(value) } })),
     errorCase('nested array budget', 'nested', 'PULSE_SCHEMA_DECODE', {}, '{"value":{"items":[1,2,3]}}'),
     errorCase('nested duplicate', 'nested', 'PULSE_SCHEMA_DECODE', {}, '{"value":{"key":1,"key":2}}'),
     errorCase('scalar nested rejection', 'scalar', 'PULSE_SCHEMA_DECODE', {}, '{"value":{"nested":{}}}'),

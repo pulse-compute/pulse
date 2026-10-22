@@ -1,41 +1,45 @@
 # Pulse documentation
 
-Pulse documentation is organized in layers so you can stop when you have enough detail. The `1.0.0-beta.9` candidate uses async-shaped managed handlers, trusted Pulse effects, a conventional `.pulse/config.ts` workspace, and the `pulse` CLI. The synchronized release catalog remains the authority for npm availability and support tiers.
+Start with a working project, then follow the guides and concepts as you need
+more detail. Pulse uses TypeScript handlers, explicit schemas and capabilities,
+a `.pulse/config.ts` project profile, and the `pulse` CLI. The synchronized
+[release catalog](./reference/release-manifest.json) defines package versions
+and support tiers.
 
 ## 1. Start and ship a first project
 
 1. [Getting started](./getting-started.md) — install and create a first project.
 2. [Project lifecycle](./guides/project-lifecycle.md) — the normal `init → doctor → test → dev → build` journey and the advanced `inspect`/`compile` branches.
 3. [Beta scope](./preview-scope.md) — what the release guarantees and deliberately excludes.
-4. [Canonical examples](./examples.md) — nine source-bound projects,
-   including focused Entities, events, and MCP proxy shapes.
+4. [Canonical examples](./examples.md) — source-bound projects,
+   including Entities, events, and the resource-backed Pulse context MCP server.
 
 ## 2. Follow a task-oriented guide
 
-- [Migrate an Express service](./guides/migrating-from-express.md)
-- [Fetching and composing data](./guides/fetching-and-composition.md)
-- [Explicit JSON schemas](./guides/json-schemas.md)
-- [Static events and outbound emission](./guides/events.md)
-- [Fastly config, secrets, and KV](./guides/fastly-capabilities.md)
-- [GRIP and Fanout](./guides/grip.md)
-- [Compatibility imports and migration](./guides/compatibility-imports.md)
 - [Static Router authoring](./guides/routing.md)
+- [Explicit JSON schemas](./guides/json-schemas.md)
+- [Fetching and composing data](./guides/fetching-and-composition.md)
+- [Project lifecycle](./guides/project-lifecycle.md)
+- [Static events and outbound emission](./guides/events.md)
+- [Migrate an Express service](./guides/migrating-from-express.md)
 - [Node build and execution](./guides/deploying-node.md)
-- [Fastly deployment candidates](./guides/deploying-fastly.md)
+- [Fastly deployment candidates](./guides/deploying-fastly.md) — including links to bindings and GRIP/Fanout.
 - [Troubleshooting](./guides/troubleshooting.md)
 
 ## 3. Understand the model
 
-- [Compilation and lowering](./concepts/compilation-and-lowering.md)
-- [Effects and continuations](./concepts/effects-and-continuations.md)
-- [Structured and opaque bodies](./concepts/bodies.md)
-- [Contracts and providers](./concepts/contracts-and-providers.md)
-- [Targets and host work](./concepts/targets-and-hosts.md)
-- [Package-owned lowering](./concepts/package-owned-lowering.md)
-- [Entity engine, adapters, and facades](./concepts/entities-and-adapters.md)
-- [Architecture overview](./architecture/overview.md)
-- [Current architecture contracts](./architecture/current-contracts.md)
-- [Architecture vision](./architecture/vision.md)
+1. [Architecture overview](./architecture/overview.md) — application, compiler, runtime and provider responsibilities.
+2. [Targets and host work](./concepts/targets-and-hosts.md) — choose a target and distinguish current support from future hosts.
+3. [Contracts and providers](./concepts/contracts-and-providers.md) — bindings, eligibility and host realization.
+4. [Effects and continuations](./concepts/effects-and-continuations.md) — execution ownership, concurrency and failure.
+5. [Structured and opaque bodies](./concepts/bodies.md) — data ownership and bounded reads.
+6. [Compilation and lowering](./concepts/compilation-and-lowering.md) — how eligible Native source becomes Wasm.
+7. [Entity engine, adapters, and facades](./concepts/entities-and-adapters.md) — protocol boundaries around governed operations.
+8. [Package-owned lowering](./concepts/package-owned-lowering.md) — advanced extension and trust details.
+
+For deeper implementation invariants, see the linked
+[Architecture contracts](./architecture/current-contracts.md). [Architecture vision](./architecture/vision.md) describes
+direction rather than release support.
 
 ## 4. Use a package directly
 
@@ -48,6 +52,8 @@ Pulse documentation is organized in layers so you can stop when you have enough 
 - [`@pulse-compute/crypto`](./packages/crypto.md)
 - [`@pulse-compute/jwt`](./packages/jwt.md)
 - [`@pulse-compute/entities`](./packages/entities.md)
+- [`@pulse-compute/mcp`](./packages/mcp.md)
+- [`@pulse-compute/s3`](./packages/s3.md)
 - [All package support tiers](./packages/README.md)
 - [Implementation packages](./packages/implementation-packages.md)
 
@@ -57,13 +63,15 @@ Pulse documentation is organized in layers so you can stop when you have enough 
 - [Canonical API](../API.md)
 - [Provider and target compatibility](./reference/compatibility-matrix.md)
 - [Managed handler TypeScript and JavaScript](./reference/handler-authoring.md)
+- [Native build optimization](./reference/native-build-optimization.md) — default recipe, fallback and optional build settings.
 - [CLI](./reference/cli.md)
 - [Project configuration](./reference/project-config.md)
 - [Diagnostics and remediation](./reference/diagnostics.md)
 - [Environment variables](./reference/environment.md)
 - [Shell completion](./reference/shell-completion.md)
+- [Compatibility import migration](./guides/compatibility-imports.md) — for projects using older package subpaths.
 - [CLI machine specification](./reference/cli-spec.json)
-- [Project configuration JSON Schema bundle](./reference/project-config.schema.json)
+- [Normalized configuration JSON Schema bundle](./reference/project-config.schema.json) — resolved CLI/provider options; use the authored property map above for `.pulse/config.ts`.
 
 ## 6. Authors and contributors
 
@@ -75,3 +83,20 @@ Pulse documentation is organized in layers so you can stop when you have enough 
 - [Add a core provider](./contributing/adding-core-provider.md)
 - [Changelog](../CHANGELOG.md)
 - [Package support and extension boundaries](./packages/README.md)
+
+## Entry points for tools and agents
+
+For an application task, start with this index, the installed package guides and
+[project lifecycle](./guides/project-lifecycle.md). Pin the selected package
+version, project root and profile before interpreting commands. The CLI ships
+this documentation under its package's `docs/` directory, plus `API.md` and
+`cli-spec.json`; use `pulse --help` for the supported command list.
+
+For a change to Pulse itself, first read the repository's root and nearest
+`AGENTS.md`, then choose one named Entry Point and its canonical owners. Installed
+application documentation is not a substitute for repository maintenance policy.
+See the [contributor workflow](./contributing/README.md#contributor-workflow).
+
+[Diagnosing command results](./guides/troubleshooting.md#reading-command-results)
+explains JSON streams, evidence limits and recovery. A release number alone does
+not identify uncommitted source or prove that a local artifact matches it.

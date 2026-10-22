@@ -1,5 +1,7 @@
 # `@pulse-compute/pulse`
 
+**npm:** [`@pulse-compute/pulse`](https://www.npmjs.com/package/@pulse-compute/pulse)
+
 `@pulse-compute/pulse` is the conventional application-authoring package for a
 Pulse project. It owns the project-aware `Pulse` application root, deferred
 configuration factory, and static schema declarations while reusing the
@@ -8,7 +10,7 @@ provider-neutral runtime contract.
 ## Install
 
 ```bash
-npm install @pulse-compute/pulse@1.0.0-beta.9
+npm install @pulse-compute/pulse@1.0.0-beta.10
 ```
 
 The package exposes two supported entry points:

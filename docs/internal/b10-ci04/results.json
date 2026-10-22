@@ -1,0 +1,398 @@
+{
+  "schema": "pulse.b10-ci04.bounded-comparison.v1",
+  "qualification": false,
+  "scope": "Ten real tasks, two isolated workers, one compiler, 6144 MiB admission; no checkpoints. Setup and final worker removal excluded from elapsed task stage. Normal task cleanup; full input scans at experiment barriers only. Warm sequential control then corrected; one pair, no hosted speedup claim.",
+  "limits": "Sampled CPU is a lower bound; summed RSS double-counts shared pages. Raw observer includes its sampler despite its label: derived metrics exclude the final sole non-controller observer process and subtract initial controller CPU. Sampling includes final input/cleanup checks. asc parent/relaunch pairs are actual processes, not independent logical compilations. Projections use only the ten corrected measured durations, omit controller overhead/contention, and do not forecast 190+11 release qualification.",
+  "observations": {
+    "control": {
+      "candidate": {
+        "sourceRevision": "9dd16775642ea3ac16fb355d7d459e8735625521",
+        "sourceTree": "ccdd499d9bb08aa909fff0e1fbd589e2b0d12229",
+        "workingTree": ""
+      },
+      "reportSha256": "d3d10dced12e5c3accebb4b34e1c86ff899af201e7373b9210d31f9e8a15530e",
+      "elapsedMs": 55860.553255,
+      "driverSha256": "4fd6c6c4f46dcdadfa0203d1b8db4aa07413c40efbf6eefe54f86d464ab7b39c",
+      "node": "v24.18.0",
+      "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "inputs": {
+        "dependenciesSha256": "2ccdaa549b19c902e5473fabb7b56ba3403ac039aa27bf4bda68004184d8514c",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      },
+      "passed": 10,
+      "cleanup": [
+        {
+          "status": "passed",
+          "removed": [
+            "wasm/test/s3/.body-sZFvF7/.pulse/config.ts",
+            "wasm/test/s3/.body-sZFvF7/src/index.ts"
+          ]
+        },
+        {
+          "status": "passed",
+          "removed": []
+        }
+      ],
+      "logs": [
+        {
+          "name": "report-capsule-contract",
+          "bytes": 557,
+          "sha256": "dac2e9a284d88e4e4f1dcf55cbca9892684aed1963d70b36780de7c937e000f3"
+        },
+        {
+          "name": "cli-report-viewer",
+          "bytes": 726,
+          "sha256": "da234ef9b3a32d8567eddc9f1020f27c3dbdee04db3f53868ff7d64c49010243"
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "bytes": 821,
+          "sha256": "65fad6d23597f38b97a96d6ab25402549b44b6e9105665d890af16c72749f110"
+        },
+        {
+          "name": "cli-report-relationships",
+          "bytes": 133,
+          "sha256": "2c38b92730d4b88a46db6a18c6df88595a98d8ebdb3ba60b4f88fd27e9e6b470"
+        },
+        {
+          "name": "cli-report-resource-inventory",
+          "bytes": 430,
+          "sha256": "4742b59fe4a0c7068263ccfef725b715ba92ec7fd4833f4e936968f6b9666cb4"
+        },
+        {
+          "name": "cli-report-graph-diagnostics",
+          "bytes": 380,
+          "sha256": "2ad31100ba59d47d6f3a246aa6457e5abbcff8404e9dfa0cb3d2e6a2380a0833"
+        },
+        {
+          "name": "entities-orchestration-demo",
+          "bytes": 467,
+          "sha256": "22a18d182f96ad8818f61b4e47eb930e3fd6966cfbaa10d1aefe28aaee7eb8ca"
+        },
+        {
+          "name": "s3-body-read",
+          "bytes": 289,
+          "sha256": "653993e8a02e58ba2686dc8167cf45e854012cd1f2ad0cce8181bd45f4645ea2"
+        },
+        {
+          "name": "shared-stage-o19",
+          "bytes": 226,
+          "sha256": "052e85b4e67340af8d7c21e01f240d879aeb444a7a928c7ca54292cbe02e2e96"
+        },
+        {
+          "name": "cli-report-capture-proof",
+          "bytes": 1352,
+          "sha256": "fb1fa097d92c26c528c14f941c3512e38cd05b97c8fcbf4e7384be39dd60f24d"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "report-capsule-contract",
+          "durationMs": 17061,
+          "compiler": false
+        },
+        {
+          "id": "cli-report-viewer",
+          "durationMs": 11089,
+          "compiler": false
+        },
+        {
+          "id": "cli-report-retained-evidence",
+          "durationMs": 33890,
+          "compiler": false
+        },
+        {
+          "id": "cli-report-relationships",
+          "durationMs": 5220,
+          "compiler": false
+        },
+        {
+          "id": "cli-report-resource-inventory",
+          "durationMs": 6171,
+          "compiler": false
+        },
+        {
+          "id": "cli-report-graph-diagnostics",
+          "durationMs": 5789,
+          "compiler": false
+        },
+        {
+          "id": "entities-orchestration-demo",
+          "durationMs": 6866,
+          "compiler": false
+        },
+        {
+          "id": "s3-body-read",
+          "durationMs": 7008,
+          "compiler": false
+        },
+        {
+          "id": "shared-stage-o19",
+          "durationMs": 5713,
+          "compiler": false
+        },
+        {
+          "id": "cli-report-capture-proof",
+          "durationMs": 7743,
+          "compiler": true
+        }
+      ],
+      "compilerTaskOccupancyMs": 7743,
+      "observer": {
+        "rawReportSha256": "0d62e9f73af7ad99b014a4a7886374a767706f3d45a86672825e3e53c27c2202",
+        "rawSamplesSha256": "99a37b5a3749b0fb56a9e56eb7fc65b59b07b3d4ed1b4380bc45f98767b7dd53",
+        "samplerExcluded": "334358:6258166",
+        "controllerInitialTicksSubtracted": 925,
+        "ticksPerSecond": 100,
+        "sampledCpuMs": 166510,
+        "peakSummedRssKiB": 1655348,
+        "peakRecognizedAscProcesses": 4,
+        "samples": 298,
+        "maxGapMs": 205,
+        "readErrors": 0,
+        "remainingWorkloadDescendants": []
+      }
+    },
+    "corrected": {
+      "candidate": {
+        "sourceRevision": "a09d96582e5c238cfc9675041658af344af2c634",
+        "sourceTree": "bfff4ac987e6ef9414ea3813a1e26248175ffe44",
+        "workingTree": ""
+      },
+      "reportSha256": "b2897bb6e0dd2665009acf4d234a78ec35936f822a71e84302cedc03ddde9804",
+      "elapsedMs": 95577.421548,
+      "driverSha256": "4fd6c6c4f46dcdadfa0203d1b8db4aa07413c40efbf6eefe54f86d464ab7b39c",
+      "node": "v24.18.0",
+      "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "inputs": {
+        "dependenciesSha256": "2ccdaa549b19c902e5473fabb7b56ba3403ac039aa27bf4bda68004184d8514c",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      },
+      "passed": 10,
+      "cleanup": [
+        {
+          "status": "passed",
+          "removed": []
+        },
+        {
+          "status": "passed",
+          "removed": []
+        }
+      ],
+      "logs": [
+        {
+          "name": "report-capsule-contract",
+          "bytes": 557,
+          "sha256": "dac2e9a284d88e4e4f1dcf55cbca9892684aed1963d70b36780de7c937e000f3"
+        },
+        {
+          "name": "cli-report-viewer",
+          "bytes": 726,
+          "sha256": "da234ef9b3a32d8567eddc9f1020f27c3dbdee04db3f53868ff7d64c49010243"
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "bytes": 821,
+          "sha256": "8bc1e8281c9d338e31fe5f52d3407dea23bad327c874a8eb28c0d8911955c32b"
+        },
+        {
+          "name": "cli-report-relationships",
+          "bytes": 133,
+          "sha256": "2c38b92730d4b88a46db6a18c6df88595a98d8ebdb3ba60b4f88fd27e9e6b470"
+        },
+        {
+          "name": "cli-report-resource-inventory",
+          "bytes": 430,
+          "sha256": "4742b59fe4a0c7068263ccfef725b715ba92ec7fd4833f4e936968f6b9666cb4"
+        },
+        {
+          "name": "cli-report-graph-diagnostics",
+          "bytes": 380,
+          "sha256": "815a69d259f12dae5063417ff4f05bf3a89ee4f02e5a035d220ca2593497fbc3"
+        },
+        {
+          "name": "entities-orchestration-demo",
+          "bytes": 467,
+          "sha256": "22a18d182f96ad8818f61b4e47eb930e3fd6966cfbaa10d1aefe28aaee7eb8ca"
+        },
+        {
+          "name": "s3-body-read",
+          "bytes": 289,
+          "sha256": "653993e8a02e58ba2686dc8167cf45e854012cd1f2ad0cce8181bd45f4645ea2"
+        },
+        {
+          "name": "shared-stage-o19",
+          "bytes": 226,
+          "sha256": "052e85b4e67340af8d7c21e01f240d879aeb444a7a928c7ca54292cbe02e2e96"
+        },
+        {
+          "name": "cli-report-capture-proof",
+          "bytes": 1352,
+          "sha256": "dccf31b0378a6a7c25e684ffdf9b92f473cd97539639bd6810432065f00585fa"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "report-capsule-contract",
+          "durationMs": 14839,
+          "compiler": true
+        },
+        {
+          "id": "cli-report-viewer",
+          "durationMs": 9744,
+          "compiler": true
+        },
+        {
+          "id": "cli-report-retained-evidence",
+          "durationMs": 30484,
+          "compiler": true
+        },
+        {
+          "id": "cli-report-relationships",
+          "durationMs": 5025,
+          "compiler": true
+        },
+        {
+          "id": "cli-report-resource-inventory",
+          "durationMs": 6077,
+          "compiler": true
+        },
+        {
+          "id": "cli-report-graph-diagnostics",
+          "durationMs": 4940,
+          "compiler": true
+        },
+        {
+          "id": "entities-orchestration-demo",
+          "durationMs": 6141,
+          "compiler": true
+        },
+        {
+          "id": "s3-body-read",
+          "durationMs": 6330,
+          "compiler": true
+        },
+        {
+          "id": "shared-stage-o19",
+          "durationMs": 4979,
+          "compiler": true
+        },
+        {
+          "id": "cli-report-capture-proof",
+          "durationMs": 7009,
+          "compiler": true
+        }
+      ],
+      "compilerTaskOccupancyMs": 95568,
+      "observer": {
+        "rawReportSha256": "49b4de54c801d0a9dd0609d7aea494e5720f051a2b236a5db18d410d720cc40c",
+        "rawSamplesSha256": "f3847386512dc27fcdc3396b0dc5843960fb9c012238ca5067d7e1b0bd60ce02",
+        "samplerExcluded": "345170:6282504",
+        "controllerInitialTicksSubtracted": 774,
+        "ticksPerSecond": 100,
+        "sampledCpuMs": 154240,
+        "peakSummedRssKiB": 1014636,
+        "peakRecognizedAscProcesses": 2,
+        "samples": 498,
+        "maxGapMs": 205,
+        "readErrors": 0,
+        "remainingWorkloadDescendants": []
+      }
+    }
+  },
+  "observedAddedWallMs": 39716.868293,
+  "projections": {
+    "corrected-2-1": {
+      "wallMs": 95568.0,
+      "workerOccupancyMs": 95568.0,
+      "compilerTaskOccupancyMs": 95568.0,
+      "idleWorkerMs": 95568.0,
+      "floorMs": 95568.0,
+      "coverage": {
+        "expected": 10,
+        "scheduled": 10,
+        "unique": 10,
+        "idsSha256": "4089317235f8bb2a374c7d286f2e87896cc8fd5be53854d8b6e86b66bc02f0c8"
+      }
+    },
+    "corrected-2-2": {
+      "wallMs": 50361.0,
+      "workerOccupancyMs": 95568.0,
+      "compilerTaskOccupancyMs": 95568.0,
+      "idleWorkerMs": 5154.0,
+      "floorMs": 47784.0,
+      "coverage": {
+        "expected": 10,
+        "scheduled": 10,
+        "unique": 10,
+        "idsSha256": "4089317235f8bb2a374c7d286f2e87896cc8fd5be53854d8b6e86b66bc02f0c8"
+      }
+    }
+  }
+}

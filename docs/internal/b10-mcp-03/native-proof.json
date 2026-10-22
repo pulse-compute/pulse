@@ -1,0 +1,1706 @@
+{
+  "version": "pulse.context-native-proof.v1",
+  "claim": "isolated Native query-to-citation; Fastly injected ABI, not CLI/Viceroy or MCP transport",
+  "node": "v24.19.0",
+  "base": "014496136a5357747efd08c32094ca9830f5bb01",
+  "lockfileSha256": "f250e7b18d68b439e7b7ba765241f2443f4de71cf3b3fa4ff2ec7537aacdf00d",
+  "dirtySources": [
+    {
+      "path": ".github/workflows/documentation.yml",
+      "sha256": "3dcfbfce22979ccadc836c2168dfa3bb6a114af6a9457a72be6ff16fd34ec3f9"
+    },
+    {
+      "path": "docs/architecture/current-contracts.md",
+      "sha256": "15067379e5a49d11d17025b4479b80e067bd3d2937455dcbe504bee0c6e79b21"
+    },
+    {
+      "path": "docs/maintainers/testing.md",
+      "sha256": "7404775edb7cb65bcc5f3d450914b370ac8cbf8e58ae8bc5e36a54c3c6e91b6c"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/README.md",
+      "sha256": "1df5039fb30a1036d3116470fbe92cac58ff144d22705938367f1cab949ec915"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "fa7a648cd4575408ee178730e37d3f1b4be318862b8ce38c5e4510d167800bb6"
+    },
+    {
+      "path": "package.json",
+      "sha256": "c5630fccdd7233802f493997783e2af1a574241c3d7761d5048bbcd735c36e5d"
+    },
+    {
+      "path": "scripts/documentation-check.cjs",
+      "sha256": "f4d655d344b1a51f3ea091fb209b7512678480c2ac9bb35d4eeeaf86d854b06a"
+    },
+    {
+      "path": "scripts/pulse-context-corpus.cjs",
+      "sha256": "079f1c047d9b820c74e1272f0b6dfb3286e9a12c8ec86686dea6df537138aaff"
+    },
+    {
+      "path": "scripts/release-evidence-bundle.cjs",
+      "sha256": "e45af3c8f41fff8903ae87d942fa358709d970e42717fca060cc314fc688a502"
+    },
+    {
+      "path": "wasm/packages/cli/docs/architecture/current-contracts.md",
+      "sha256": "15067379e5a49d11d17025b4479b80e067bd3d2937455dcbe504bee0c6e79b21"
+    },
+    {
+      "path": "wasm/packages/cli/docs/maintainers/testing.md",
+      "sha256": "7404775edb7cb65bcc5f3d450914b370ac8cbf8e58ae8bc5e36a54c3c6e91b6c"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/README.md",
+      "sha256": "1df5039fb30a1036d3116470fbe92cac58ff144d22705938367f1cab949ec915"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "fa7a648cd4575408ee178730e37d3f1b4be318862b8ce38c5e4510d167800bb6"
+    },
+    {
+      "path": "wasm/test/docs/assert-documentation-check.cjs",
+      "sha256": "debf819c7fbb681d5a0554f306f6baa8fbb7c6b2e9988f1d0fee6597b1446e7d"
+    },
+    {
+      "path": "wasm/test/suite/registry.cjs",
+      "sha256": "7f23c52ec850e6aafaf1577a2f758080bb50d4f178939dbe1c17705494700001"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/context-manifest.json",
+      "sha256": "2c3c0971353d39ad7db8f0667a4839d57c2c48d52ee92346a4214da73d9aabca"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+      "sha256": "19d5a90d02b476fa51a543fa4c047c2b3e1118c62f0fff64770a8f334031cb5a"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/metadata.bin",
+      "sha256": "c2cdc93da80cca5df2f4e87e1b5b2c8829eaffc1b0e8c6c79b62d95df3354fde"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/text.bin",
+      "sha256": "a457a9b39ecf6b57e867268a5ee5815e1f3a685c50065e8e404272c5822da173"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/vector.bin",
+      "sha256": "bc2255e1c6b8cf997020c03dbf490448078a3e3ff39890d9a9921d1c8730ea40"
+    },
+    {
+      "path": "scripts/pulse-context-build.cjs",
+      "sha256": "389c43f9d11d2fae78ac602fec887d3b998e4961086376104f40556630e96a85"
+    },
+    {
+      "path": "scripts/pulse-context-build.json",
+      "sha256": "ed3c0f57acb2fb7ac5cb58f4fb210cc244f80d0fe07b0c29e10f53d006f430dd"
+    },
+    {
+      "path": "scripts/pulse-context-format.cjs",
+      "sha256": "6a1ed826508796210140b59835359a0213406b0edf55f9ad0555a9dcf6134835"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json",
+      "sha256": "2c3c0971353d39ad7db8f0667a4839d57c2c48d52ee92346a4214da73d9aabca"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+      "sha256": "19d5a90d02b476fa51a543fa4c047c2b3e1118c62f0fff64770a8f334031cb5a"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin",
+      "sha256": "c2cdc93da80cca5df2f4e87e1b5b2c8829eaffc1b0e8c6c79b62d95df3354fde"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin",
+      "sha256": "a457a9b39ecf6b57e867268a5ee5815e1f3a685c50065e8e404272c5822da173"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin",
+      "sha256": "bc2255e1c6b8cf997020c03dbf490448078a3e3ff39890d9a9921d1c8730ea40"
+    },
+    {
+      "path": "wasm/test/mcp/assert-context-build.cjs",
+      "sha256": "365633e67f6bac4256f325fe44f21eec103651aa3aad6356366f2d1e0c3aad3b"
+    }
+  ],
+  "acceptance": {
+    "requestMs": 5000,
+    "compileMs": 120000,
+    "artifactBytes": 8388608,
+    "guestCommittedBytes": 134217728,
+    "nodeValueHandles": 1048576,
+    "toolBytes": 24576,
+    "mcpWrappedBytes": 131072
+  },
+  "workloads": [
+    {
+      "name": "actual",
+      "catalogueSha256": "fd9b7b9d7d1d326b124746549ed3c83a50773973d1c8676dbf52d6dc765c1093",
+      "fastlyDeadlineClockChecks": 16177,
+      "deadlineClockChecks": 16175,
+      "deadlineFractions": [
+        0,
+        0.25,
+        0.5,
+        0.75
+      ],
+      "corpusHash": "b4787f34f98f7b875e1faf0afdb3ae9d209dc6ce0d9fd15bda3038b52c6a2c46",
+      "sourceSha256": "73f15a210e60c2ce0b6b9b00a164e6707f478570db23532ff6b26708f998822a",
+      "planHash": "4b087d7629cf1319da1e31052bf2f84b709f4b8138c702de2364962947290bc3",
+      "records": 245,
+      "dimensions": 2456,
+      "nonzeros": 14410,
+      "handles": 3,
+      "workspaceSlots": 1040,
+      "resourceBudgets": {
+        "files": 3,
+        "bindings": 3,
+        "fileBytes": 5242880,
+        "totalBytes": 8388608,
+        "serializedBytes": 16777216
+      },
+      "sourceWorkCounters": "instrumented JavaScript execution of the identical source; result equality against both Native paths",
+      "files": [
+        {
+          "id": "context.vector",
+          "bytes": 158593,
+          "sha256": "bc2255e1c6b8cf997020c03dbf490448078a3e3ff39890d9a9921d1c8730ea40"
+        },
+        {
+          "id": "context.text",
+          "bytes": 209031,
+          "sha256": "a457a9b39ecf6b57e867268a5ee5815e1f3a685c50065e8e404272c5822da173"
+        },
+        {
+          "id": "context.metadata",
+          "bytes": 196461,
+          "sha256": "c2cdc93da80cca5df2f4e87e1b5b2c8829eaffc1b0e8c6c79b62d95df3354fde"
+        }
+      ],
+      "native": {
+        "bytes": 657634,
+        "sha256": "ed6eb6370a658fdb4dbbcc92410bd89b0d92f476e635337d9388aeb3fd993444",
+        "compileMs": 5352.193235999999
+      },
+      "fastly": {
+        "bytes": 703522,
+        "sha256": "61f4a192fcb33e4164b3345fbac0e8c3830d20dfa3babf23b4a083a368b1d8f9",
+        "compileMs": 13112.99138,
+        "numericRegions": {
+          "policy": "fastly-numeric-regions-v2",
+          "enabled": true,
+          "reason": "proven-regions-only",
+          "regions": [],
+          "declined": [
+            {
+              "statementPath": "entry.body[26]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[30]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[35]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[40]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[42]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[52]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[49].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[48].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[47].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[46].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[45].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[16].then[4]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[16].then[8]",
+              "reason": "unsupported-operation-or-live-in"
+            }
+          ]
+        }
+      },
+      "executions": 81,
+      "pages": 2,
+      "runs": [
+        {
+          "headers": {
+            "query": "schema declarations"
+          },
+          "work": {
+            "resourceReads": 3330,
+            "resourceBytes": 19297,
+            "utf8Reads": 30,
+            "utf8Bytes": 6109,
+            "workspaceReads": 6118,
+            "workspaceWrites": 549,
+            "metadataDecodes": 5,
+            "metadataBytes": 4097,
+            "serializationCalls": 5,
+            "serializedBytes": 6251
+          },
+          "nodeMs": 371.4048010000006,
+          "fastlyMs": 142.46669900000052,
+          "nodeValueHandles": 174374,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 6463,
+          "wrappedBytes": 46487,
+          "status": "ok",
+          "comparisons": 2678,
+          "heapSteps": 25,
+          "dictionaryComparisons": 20,
+          "dictionaryBytes": 146
+        },
+        {
+          "headers": {
+            "query": "compile"
+          },
+          "work": {
+            "resourceReads": 1918,
+            "resourceBytes": 13621,
+            "utf8Reads": 22,
+            "utf8Bytes": 6052,
+            "workspaceReads": 3549,
+            "workspaceWrites": 619,
+            "metadataDecodes": 5,
+            "metadataBytes": 4026,
+            "serializationCalls": 5,
+            "serializedBytes": 6302
+          },
+          "nodeMs": 209.8313159999998,
+          "fastlyMs": 77.20526299999983,
+          "nodeValueHandles": 140872,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 6515,
+          "wrappedBytes": 46707,
+          "status": "ok",
+          "comparisons": 1313,
+          "heapSteps": 97,
+          "dictionaryComparisons": 12,
+          "dictionaryBytes": 106
+        },
+        {
+          "headers": {
+            "query": "PULSE_BINARY_RESOURCE_INVALID"
+          },
+          "work": {
+            "resourceReads": 1896,
+            "resourceBytes": 8916,
+            "utf8Reads": 14,
+            "utf8Bytes": 1391,
+            "workspaceReads": 3479,
+            "workspaceWrites": 518,
+            "metadataDecodes": 1,
+            "metadataBytes": 829,
+            "serializationCalls": 1,
+            "serializedBytes": 1285
+          },
+          "nodeMs": 61.3852650000008,
+          "fastlyMs": 35.977514000001975,
+          "nodeValueHandles": 71502,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 1492,
+          "wrappedBytes": 36031,
+          "status": "ok",
+          "comparisons": 1359,
+          "heapSteps": 0,
+          "dictionaryComparisons": 12,
+          "dictionaryBytes": 178
+        },
+        {
+          "headers": {
+            "query": "parallel"
+          },
+          "work": {
+            "resourceReads": 1918,
+            "resourceBytes": 13720,
+            "utf8Reads": 21,
+            "utf8Bytes": 6147,
+            "workspaceReads": 3504,
+            "workspaceWrites": 543,
+            "metadataDecodes": 5,
+            "metadataBytes": 4152,
+            "serializationCalls": 5,
+            "serializedBytes": 6293
+          },
+          "nodeMs": 151.22285799999736,
+          "fastlyMs": 64.78047000000151,
+          "nodeValueHandles": 139893,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 6504,
+          "wrappedBytes": 46468,
+          "status": "ok",
+          "comparisons": 1349,
+          "heapSteps": 20,
+          "dictionaryComparisons": 11,
+          "dictionaryBytes": 75
+        },
+        {
+          "headers": {
+            "query": "fetch json"
+          },
+          "work": {
+            "resourceReads": 3339,
+            "resourceBytes": 18393,
+            "utf8Reads": 33,
+            "utf8Bytes": 5181,
+            "workspaceReads": 6031,
+            "workspaceWrites": 568,
+            "metadataDecodes": 5,
+            "metadataBytes": 3269,
+            "serializationCalls": 5,
+            "serializedBytes": 5366
+          },
+          "nodeMs": 164.34530200000154,
+          "fastlyMs": 71.5053540000008,
+          "nodeValueHandles": 161198,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 5579,
+          "wrappedBytes": 44629,
+          "status": "ok",
+          "comparisons": 2635,
+          "heapSteps": 43,
+          "dictionaryComparisons": 23,
+          "dictionaryBytes": 139
+        },
+        {
+          "headers": {
+            "query": "pulse"
+          },
+          "work": {
+            "resourceReads": 1919,
+            "resourceBytes": 12645,
+            "utf8Reads": 19,
+            "utf8Bytes": 5057,
+            "workspaceReads": 3481,
+            "workspaceWrites": 741,
+            "metadataDecodes": 5,
+            "metadataBytes": 3072,
+            "serializationCalls": 5,
+            "serializedBytes": 5210
+          },
+          "nodeMs": 102.51218900000094,
+          "fastlyMs": 57.8015639999976,
+          "nodeValueHandles": 126466,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 5424,
+          "wrappedBytes": 44141,
+          "status": "ok",
+          "comparisons": 1237,
+          "heapSteps": 218,
+          "dictionaryComparisons": 9,
+          "dictionaryBytes": 102
+        },
+        {
+          "headers": {
+            "query": "pulse",
+            "offset": "10"
+          },
+          "work": {
+            "resourceReads": 1920,
+            "resourceBytes": 13123,
+            "utf8Reads": 19,
+            "utf8Bytes": 5534,
+            "workspaceReads": 3732,
+            "workspaceWrites": 807,
+            "metadataDecodes": 5,
+            "metadataBytes": 3512,
+            "serializationCalls": 5,
+            "serializedBytes": 5771
+          },
+          "nodeMs": 155.0923670000011,
+          "fastlyMs": 57.595078000002104,
+          "nodeValueHandles": 135847,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 5985,
+          "wrappedBytes": 45603,
+          "status": "ok",
+          "comparisons": 1237,
+          "heapSteps": 284,
+          "dictionaryComparisons": 9,
+          "dictionaryBytes": 102
+        },
+        {
+          "headers": {
+            "query": "schema",
+            "category": "contract",
+            "provider": "fastly",
+            "target": "native"
+          },
+          "work": {
+            "resourceReads": 245,
+            "resourceBytes": 6812,
+            "utf8Reads": 22,
+            "utf8Bytes": 5935,
+            "workspaceReads": 1074,
+            "workspaceWrites": 551,
+            "metadataDecodes": 5,
+            "metadataBytes": 3931,
+            "serializationCalls": 5,
+            "serializedBytes": 6079
+          },
+          "nodeMs": 103.8070209999969,
+          "fastlyMs": 36.982734000001074,
+          "nodeValueHandles": 100452,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 6289,
+          "wrappedBytes": 46034,
+          "status": "ok",
+          "comparisons": 126,
+          "heapSteps": 27,
+          "dictionaryComparisons": 12,
+          "dictionaryBytes": 84
+        },
+        {
+          "headers": {
+            "query": "PARALLEL parallel"
+          },
+          "work": {
+            "resourceReads": 1951,
+            "resourceBytes": 13883,
+            "utf8Reads": 32,
+            "utf8Bytes": 6222,
+            "workspaceReads": 3505,
+            "workspaceWrites": 543,
+            "metadataDecodes": 5,
+            "metadataBytes": 4152,
+            "serializationCalls": 5,
+            "serializedBytes": 6293
+          },
+          "nodeMs": 153.60481000000073,
+          "fastlyMs": 31.345625999998447,
+          "nodeValueHandles": 140881,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 6505,
+          "wrappedBytes": 46470,
+          "status": "ok",
+          "comparisons": 1349,
+          "heapSteps": 20,
+          "dictionaryComparisons": 22,
+          "dictionaryBytes": 150
+        },
+        {
+          "headers": {
+            "query": "@pulse-compute/pulse"
+          },
+          "work": {
+            "resourceReads": 3328,
+            "resourceBytes": 18537,
+            "utf8Reads": 35,
+            "utf8Bytes": 5377,
+            "workspaceReads": 5895,
+            "workspaceWrites": 616,
+            "metadataDecodes": 5,
+            "metadataBytes": 3230,
+            "serializationCalls": 5,
+            "serializedBytes": 5384
+          },
+          "nodeMs": 99.56278799999927,
+          "fastlyMs": 41.14755399999922,
+          "nodeValueHandles": 160887,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 5597,
+          "wrappedBytes": 44562,
+          "status": "ok",
+          "comparisons": 2554,
+          "heapSteps": 90,
+          "dictionaryComparisons": 25,
+          "dictionaryBytes": 264
+        },
+        {
+          "headers": {
+            "query": "zzzz_missing"
+          },
+          "work": {
+            "resourceReads": 37,
+            "resourceBytes": 171,
+            "utf8Reads": 12,
+            "utf8Bytes": 71,
+            "workspaceReads": 0,
+            "workspaceWrites": 1,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 13.856185999997251,
+          "fastlyMs": 5.471723999999085,
+          "nodeValueHandles": 855,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 45,
+          "wrappedBytes": 32961,
+          "status": "ok"
+        },
+        {
+          "headers": {
+            "query": "schema declarations"
+          },
+          "work": {
+            "resourceReads": 3330,
+            "resourceBytes": 19297,
+            "utf8Reads": 30,
+            "utf8Bytes": 6109,
+            "workspaceReads": 6118,
+            "workspaceWrites": 549,
+            "metadataDecodes": 5,
+            "metadataBytes": 4097,
+            "serializationCalls": 5,
+            "serializedBytes": 6251
+          },
+          "nodeMs": 147.3743779999968,
+          "fastlyMs": 41.70508399999744,
+          "nodeValueHandles": 174374,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 6463,
+          "wrappedBytes": 46487,
+          "status": "ok",
+          "comparisons": 2678,
+          "heapSteps": 25,
+          "dictionaryComparisons": 20,
+          "dictionaryBytes": 146
+        },
+        {
+          "headers": {
+            "query": "schema declarations"
+          },
+          "work": {
+            "resourceReads": 3330,
+            "resourceBytes": 19297,
+            "utf8Reads": 30,
+            "utf8Bytes": 6109,
+            "workspaceReads": 6118,
+            "workspaceWrites": 549,
+            "metadataDecodes": 5,
+            "metadataBytes": 4097,
+            "serializationCalls": 5,
+            "serializedBytes": 6251
+          },
+          "nodeMs": 65.45531400000255,
+          "fastlyMs": 24.61475900000005,
+          "nodeValueHandles": 174374,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 6463,
+          "wrappedBytes": 46487,
+          "status": "ok",
+          "comparisons": 2678,
+          "heapSteps": 25,
+          "dictionaryComparisons": 20,
+          "dictionaryBytes": 146
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "version": "wrong"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 4.790017999999691,
+          "fastlyMs": 3.5241429999987304,
+          "nodeValueHandles": 32,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 29,
+          "wrappedBytes": 32925,
+          "status": "version-mismatch"
+        },
+        {
+          "headers": {
+            "query": ""
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 7.085194999999658,
+          "fastlyMs": 5.2081079999989015,
+          "nodeValueHandles": 42,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "é"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 5.891661000001477,
+          "fastlyMs": 3.3527130000002217,
+          "nodeValueHandles": 173,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a "
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 8.768750999999611,
+          "fastlyMs": 3.1318710000014107,
+          "nodeValueHandles": 46,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "..."
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 6.324680999998236,
+          "fastlyMs": 20.45012200000201,
+          "nodeValueHandles": 210,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "a b c d e f g h i"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 19.0424090000015,
+          "fastlyMs": 8.850052999998297,
+          "nodeValueHandles": 690,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 6.927793999999267,
+          "fastlyMs": 4.461543999997957,
+          "nodeValueHandles": 1897,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "limit": "6"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 3.874456999998074,
+          "fastlyMs": 3.5362700000005134,
+          "nodeValueHandles": 57,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "offset": "513"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 3.304757999998401,
+          "fastlyMs": 3.067394999998214,
+          "nodeValueHandles": 49,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "provider": "fastly"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 3.0940559999980906,
+          "fastlyMs": 2.5358479999995325,
+          "nodeValueHandles": 95,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 34,
+          "wrappedBytes": 32935,
+          "status": "unsupported-selection"
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "category": "unknown"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 3.153863999999885,
+          "fastlyMs": 2.8309430000008433,
+          "nodeValueHandles": 79,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "zzzz_missing",
+            "offset": "1"
+          },
+          "work": {
+            "resourceReads": 37,
+            "resourceBytes": 171,
+            "utf8Reads": 12,
+            "utf8Bytes": 71,
+            "workspaceReads": 0,
+            "workspaceWrites": 1,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 3.5414399999972375,
+          "fastlyMs": 2.8928220000016154,
+          "nodeValueHandles": 850,
+          "fastlyGuestCommittedBytes": 3670016,
+          "responseBytes": 27,
+          "wrappedBytes": 32921,
+          "status": "invalid-offset"
+        },
+        {
+          "headers": {
+            "read-row": "12",
+            "read-offset": "0"
+          },
+          "work": {
+            "resourceReads": 12292,
+            "resourceBytes": 24588,
+            "utf8Reads": 1,
+            "utf8Bytes": 12288,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 1,
+            "serializedBytes": 12531
+          },
+          "nodeMs": 157.94212400000106,
+          "fastlyMs": 70.4478479999998,
+          "nodeValueHandles": 370053,
+          "fastlyGuestCommittedBytes": 7340032,
+          "responseBytes": 12531,
+          "wrappedBytes": 58115,
+          "status": "page"
+        },
+        {
+          "headers": {
+            "read-row": "12",
+            "read-offset": "12288"
+          },
+          "work": {
+            "resourceReads": 24475,
+            "resourceBytes": 36670,
+            "utf8Reads": 1,
+            "utf8Bytes": 12187,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 1,
+            "serializedBytes": 12430
+          },
+          "nodeMs": 282.49422799999957,
+          "fastlyMs": 66.76229500000045,
+          "nodeValueHandles": 551302,
+          "fastlyGuestCommittedBytes": 14680064,
+          "responseBytes": 12430,
+          "wrappedBytes": 57914,
+          "status": "page"
+        }
+      ]
+    },
+    {
+      "name": "growth",
+      "catalogueSha256": "58aa3a63590176c4fba930a83f747113b2f8068e599cc279c8b57f68601df310",
+      "fastlyDeadlineClockChecks": 70292,
+      "deadlineClockChecks": 70290,
+      "deadlineFractions": [
+        0,
+        0.25,
+        0.5,
+        0.75
+      ],
+      "corpusHash": "af7a6c6ec9f42ebb3c09ff112d540379be8d896b5f281c09a32fa2133085cd7d",
+      "sourceSha256": "c0c9aad2f3173d6faebb460bb50542c3389543fe28378c2db1945919d6f5ddbf",
+      "planHash": "ea90c00efe9b931019fc1ed523698a7f82a8d4bc7477616c6306684d39c7d568",
+      "records": 512,
+      "dimensions": 4096,
+      "nonzeros": 168967,
+      "handles": 3,
+      "workspaceSlots": 1040,
+      "resourceBudgets": {
+        "files": 3,
+        "bindings": 3,
+        "fileBytes": 5242880,
+        "totalBytes": 8388608,
+        "serializedBytes": 16777216
+      },
+      "sourceWorkCounters": "instrumented JavaScript execution of the identical source; result equality against both Native paths",
+      "files": [
+        {
+          "id": "context.vector",
+          "bytes": 1421432,
+          "sha256": "a5d78b8c7f4e7d28fa35d840125e08924f7c8d83a24631d8b553ddc9152e1dea"
+        },
+        {
+          "id": "context.text",
+          "bytes": 1538592,
+          "sha256": "04c4bc41c739484829410fd0e4e41f825ebb50daab256611c303aee08db8547d"
+        },
+        {
+          "id": "context.metadata",
+          "bytes": 283602,
+          "sha256": "73ad7f62a45f4a727e9394234a41104e70c887a7f892ee29fcd5a493251f857c"
+        }
+      ],
+      "native": {
+        "bytes": 3325614,
+        "sha256": "e185e25845b9d74190a120119fc3256e9bd23923ae85da657e5461bfc93b840f",
+        "compileMs": 7741.690974999998
+      },
+      "fastly": {
+        "bytes": 3371686,
+        "sha256": "8392bab83ac1cd9bd52513d71f6657f9e0f03d8ca0d0a00494944d0231ebdd01",
+        "compileMs": 10662.158265000005,
+        "numericRegions": {
+          "policy": "fastly-numeric-regions-v2",
+          "enabled": true,
+          "reason": "proven-regions-only",
+          "regions": [],
+          "declined": [
+            {
+              "statementPath": "entry.body[26]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[30]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[35]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[40]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[42]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[52]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[49].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[48].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[47].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[46].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[45].then[3]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[16].then[4]",
+              "reason": "unsupported-operation-or-live-in"
+            },
+            {
+              "statementPath": "entry.body[16].then[8]",
+              "reason": "unsupported-operation-or-live-in"
+            }
+          ]
+        }
+      },
+      "executions": 72,
+      "pages": 5,
+      "runs": [
+        {
+          "headers": {
+            "query": "term0000 term0001 term0002 term0003 term0004 term0005 term0006 term0007"
+          },
+          "work": {
+            "resourceReads": 25617,
+            "resourceBytes": 107409,
+            "utf8Reads": 99,
+            "utf8Bytes": 5352,
+            "workspaceReads": 38029,
+            "workspaceWrites": 1085,
+            "metadataDecodes": 5,
+            "metadataBytes": 2720,
+            "serializationCalls": 5,
+            "serializedBytes": 4815
+          },
+          "nodeMs": 336.055892999997,
+          "fastlyMs": 127.78455199999735,
+          "nodeValueHandles": 629660,
+          "fastlyGuestCommittedBytes": 26738688,
+          "responseBytes": 5031,
+          "wrappedBytes": 43255,
+          "status": "ok",
+          "comparisons": 20192,
+          "heapSteps": 556,
+          "dictionaryComparisons": 89,
+          "dictionaryBytes": 712
+        },
+        {
+          "headers": {
+            "query": "term0000",
+            "offset": "507"
+          },
+          "work": {
+            "resourceReads": 4541,
+            "resourceBytes": 21257,
+            "utf8Reads": 22,
+            "utf8Bytes": 3181,
+            "workspaceReads": 21218,
+            "workspaceWrites": 4805,
+            "metadataDecodes": 5,
+            "metadataBytes": 2730,
+            "serializationCalls": 5,
+            "serializedBytes": 3255
+          },
+          "nodeMs": 74.96485199999734,
+          "fastlyMs": 44.77372099999775,
+          "nodeValueHandles": 246909,
+          "fastlyGuestCommittedBytes": 13369344,
+          "responseBytes": 3470,
+          "wrappedBytes": 40133,
+          "status": "ok",
+          "comparisons": 2936,
+          "heapSteps": 4283,
+          "dictionaryComparisons": 12,
+          "dictionaryBytes": 96
+        },
+        {
+          "headers": {
+            "query": "term0000",
+            "offset": "512"
+          },
+          "work": {
+            "resourceReads": 4511,
+            "resourceBytes": 18092,
+            "utf8Reads": 12,
+            "utf8Bytes": 96,
+            "workspaceReads": 21213,
+            "workspaceWrites": 4800,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 65.97772099999565,
+          "fastlyMs": 55.578605000002426,
+          "nodeValueHandles": 201035,
+          "fastlyGuestCommittedBytes": 13369344,
+          "responseBytes": 211,
+          "wrappedBytes": 33305,
+          "status": "ok",
+          "comparisons": 2936,
+          "heapSteps": 4283,
+          "dictionaryComparisons": 12,
+          "dictionaryBytes": 96
+        },
+        {
+          "headers": {
+            "query": "term0000",
+            "offset": "511",
+            "limit": "1"
+          },
+          "work": {
+            "resourceReads": 4517,
+            "resourceBytes": 18725,
+            "utf8Reads": 14,
+            "utf8Bytes": 713,
+            "workspaceReads": 21214,
+            "workspaceWrites": 4801,
+            "metadataDecodes": 1,
+            "metadataBytes": 546,
+            "serializationCalls": 1,
+            "serializedBytes": 651
+          },
+          "nodeMs": 77.62377399999968,
+          "fastlyMs": 43.62955199999851,
+          "nodeValueHandles": 210203,
+          "fastlyGuestCommittedBytes": 13369344,
+          "responseBytes": 862,
+          "wrappedBytes": 34669,
+          "status": "ok",
+          "comparisons": 2936,
+          "heapSteps": 4283,
+          "dictionaryComparisons": 12,
+          "dictionaryBytes": 96
+        },
+        {
+          "headers": {
+            "query": "term0000 term0001 term0002 term0003 term0004 term0005 term0006 term0007"
+          },
+          "work": {
+            "resourceReads": 25617,
+            "resourceBytes": 107409,
+            "utf8Reads": 99,
+            "utf8Bytes": 5352,
+            "workspaceReads": 38029,
+            "workspaceWrites": 1085,
+            "metadataDecodes": 5,
+            "metadataBytes": 2720,
+            "serializationCalls": 5,
+            "serializedBytes": 4815
+          },
+          "nodeMs": 291.94549299999926,
+          "fastlyMs": 108.64289299999655,
+          "nodeValueHandles": 629660,
+          "fastlyGuestCommittedBytes": 26738688,
+          "responseBytes": 5031,
+          "wrappedBytes": 43255,
+          "status": "ok",
+          "comparisons": 20192,
+          "heapSteps": 556,
+          "dictionaryComparisons": 89,
+          "dictionaryBytes": 712
+        },
+        {
+          "headers": {
+            "query": "term0000 term0001 term0002 term0003 term0004 term0005 term0006 term0007"
+          },
+          "work": {
+            "resourceReads": 25617,
+            "resourceBytes": 107409,
+            "utf8Reads": 99,
+            "utf8Bytes": 5352,
+            "workspaceReads": 38029,
+            "workspaceWrites": 1085,
+            "metadataDecodes": 5,
+            "metadataBytes": 2720,
+            "serializationCalls": 5,
+            "serializedBytes": 4815
+          },
+          "nodeMs": 249.79919700000028,
+          "fastlyMs": 116.92556700000569,
+          "nodeValueHandles": 629660,
+          "fastlyGuestCommittedBytes": 26738688,
+          "responseBytes": 5031,
+          "wrappedBytes": 43255,
+          "status": "ok",
+          "comparisons": 20192,
+          "heapSteps": 556,
+          "dictionaryComparisons": 89,
+          "dictionaryBytes": 712
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "version": "wrong"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 11.265830999996979,
+          "fastlyMs": 8.86717199999839,
+          "nodeValueHandles": 32,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 29,
+          "wrappedBytes": 32925,
+          "status": "version-mismatch"
+        },
+        {
+          "headers": {
+            "query": ""
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 10.277925000002142,
+          "fastlyMs": 6.5429129999974975,
+          "nodeValueHandles": 42,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "é"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 8.932570999997552,
+          "fastlyMs": 10.133390000002692,
+          "nodeValueHandles": 173,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a "
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 10.709847999998601,
+          "fastlyMs": 19.06322000000364,
+          "nodeValueHandles": 46,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "..."
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 9.191085999998904,
+          "fastlyMs": 5.691630000001169,
+          "nodeValueHandles": 210,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "a b c d e f g h i"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 8.938530999999784,
+          "fastlyMs": 6.986979000001156,
+          "nodeValueHandles": 690,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 9.032076999996207,
+          "fastlyMs": 5.090937000000849,
+          "nodeValueHandles": 1897,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "limit": "6"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 8.087811999997939,
+          "fastlyMs": 5.695926000000327,
+          "nodeValueHandles": 57,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "offset": "513"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 11.363133999999263,
+          "fastlyMs": 7.447168999999121,
+          "nodeValueHandles": 49,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "provider": "fastly"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 19.522870999993756,
+          "fastlyMs": 6.132825000000594,
+          "nodeValueHandles": 95,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 34,
+          "wrappedBytes": 32935,
+          "status": "unsupported-selection"
+        },
+        {
+          "headers": {
+            "query": "compile",
+            "category": "unknown"
+          },
+          "work": {
+            "resourceReads": 0,
+            "resourceBytes": 0,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 8.842165999994904,
+          "fastlyMs": 5.409665999999561,
+          "nodeValueHandles": 79,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 26,
+          "wrappedBytes": 32919,
+          "status": "invalid-input"
+        },
+        {
+          "headers": {
+            "query": "zzzz_missing",
+            "offset": "1"
+          },
+          "work": {
+            "resourceReads": 40,
+            "resourceBytes": 212,
+            "utf8Reads": 13,
+            "utf8Bytes": 104,
+            "workspaceReads": 0,
+            "workspaceWrites": 1,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 8.942415000004985,
+          "fastlyMs": 6.324835999999777,
+          "nodeValueHandles": 874,
+          "fastlyGuestCommittedBytes": 6684672,
+          "responseBytes": 27,
+          "wrappedBytes": 32921,
+          "status": "invalid-offset"
+        },
+        {
+          "headers": {
+            "read-row": "0",
+            "read-offset": "0"
+          },
+          "work": {
+            "resourceReads": 10414,
+            "resourceBytes": 20831,
+            "utf8Reads": 1,
+            "utf8Bytes": 10409,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 1,
+            "serializedBytes": 16442
+          },
+          "nodeMs": 132.72738599999866,
+          "fastlyMs": 34.437221000000136,
+          "nodeValueHandles": 325599,
+          "fastlyGuestCommittedBytes": 13369344,
+          "responseBytes": 16442,
+          "wrappedBytes": 66951,
+          "status": "page"
+        },
+        {
+          "headers": {
+            "read-row": "0",
+            "read-offset": "10409"
+          },
+          "work": {
+            "resourceReads": 13144,
+            "resourceBytes": 15882,
+            "utf8Reads": 1,
+            "utf8Bytes": 2730,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 1,
+            "serializedBytes": 16443
+          },
+          "nodeMs": 114.72254699999758,
+          "fastlyMs": 44.410068000004685,
+          "nodeValueHandles": 268271,
+          "fastlyGuestCommittedBytes": 13369344,
+          "responseBytes": 16443,
+          "wrappedBytes": 68489,
+          "status": "page"
+        },
+        {
+          "headers": {
+            "read-row": "0",
+            "read-offset": "13139"
+          },
+          "work": {
+            "resourceReads": 15874,
+            "resourceBytes": 18612,
+            "utf8Reads": 1,
+            "utf8Bytes": 2730,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 1,
+            "serializedBytes": 16443
+          },
+          "nodeMs": 92.09213399999862,
+          "fastlyMs": 35.37661600000138,
+          "nodeValueHandles": 309231,
+          "fastlyGuestCommittedBytes": 13369344,
+          "responseBytes": 16443,
+          "wrappedBytes": 68489,
+          "status": "page"
+        },
+        {
+          "headers": {
+            "read-row": "0",
+            "read-offset": "15869"
+          },
+          "work": {
+            "resourceReads": 20415,
+            "resourceBytes": 28159,
+            "utf8Reads": 1,
+            "utf8Bytes": 7736,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 1,
+            "serializedBytes": 16446
+          },
+          "nodeMs": 129.48291400000016,
+          "fastlyMs": 46.52150000000256,
+          "nodeValueHandles": 396339,
+          "fastlyGuestCommittedBytes": 13369344,
+          "responseBytes": 16446,
+          "wrappedBytes": 70306,
+          "status": "page"
+        },
+        {
+          "headers": {
+            "read-row": "0",
+            "read-offset": "21049"
+          },
+          "work": {
+            "resourceReads": 20900,
+            "resourceBytes": 21879,
+            "utf8Reads": 1,
+            "utf8Bytes": 971,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 1,
+            "serializedBytes": 1324
+          },
+          "nodeMs": 95.22666000000027,
+          "fastlyMs": 59.05404699999781,
+          "nodeValueHandles": 327108,
+          "fastlyGuestCommittedBytes": 13369344,
+          "responseBytes": 1324,
+          "wrappedBytes": 36006,
+          "status": "page"
+        },
+        {
+          "headers": {
+            "read-row": "0",
+            "read-offset": "17218"
+          },
+          "work": {
+            "resourceReads": 17221,
+            "resourceBytes": 17230,
+            "utf8Reads": 0,
+            "utf8Bytes": 0,
+            "workspaceReads": 0,
+            "workspaceWrites": 0,
+            "metadataDecodes": 0,
+            "metadataBytes": 0,
+            "serializationCalls": 0,
+            "serializedBytes": 0
+          },
+          "nodeMs": 71.3938879999987,
+          "fastlyMs": 27.95117699999537,
+          "nodeValueHandles": 258438,
+          "fastlyGuestCommittedBytes": 13369344,
+          "responseBytes": 27,
+          "wrappedBytes": 32921,
+          "status": "invalid-offset"
+        }
+      ]
+    }
+  ],
+  "processPeakRssBytes": 631201792,
+  "limitations": [
+    "Packed/installed and seal gates remain 03/07/09",
+    "MCP transport/client and real Fastly CLI/Viceroy remain 04/10",
+    "Guest committed memory is a Wasm page high-water measure, not live-object memory",
+    "Process RSS includes compiler, fixture and harness allocations",
+    "MCP wrapper byte accounting is calculated outside the prototype transport"
+  ]
+}

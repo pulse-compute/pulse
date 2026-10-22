@@ -1,68 +1,26 @@
 # Static events
 
+<!-- pulse-example-template:v1 -->
+
 This mixed Node project keeps HTTP and event entries in separate planes. Two
 schema-bound `Pulse.on` registrations accept canonical event frames and use the
 one-way `ctx.emit` effect. The harness proves exact outbound acceptance; it
 does not claim delivery or invoke a matching local handler.
 
-## Workflow
+## Request and response
 
-```bash
-pulse doctor
-pulse inspect
-pulse test
-pulse dev
-pulse build
-```
+Generated from the executable test harness below; these are tested requests or event frames, not an exhaustive application specification. Expected errors and emitted events are included; fixtures and provider setup remain in the harness.
 
-`pulse test` executes both HTTP and event cases on the selected Node target.
-`pulse dev` serves only the HTTP portion; Pulse does not expose a public event
-listener or injection command.
+| Request | Expected response |
+|---|---|
+| http health remains separate<br><code>GET /health</code> | <code>{"status":200,"text":"ok"}</code> |
+| schema event emits an accepted frame<br>Event: <code>{"version":"pulse.event-frame.v1","type":"device.reading","schemaId":"events.DeviceReading","payload":{"deviceId":"sensor-7","temperatureC":21}}</code> | <code>{"status":"completed","emitted":[{"version":"pulse.event-frame.v1","type":"device.reading.accepted","schemaId":"events.DeviceReadingAccepted","payload":{"accepted":true,"deviceId":"sensor-7"}}]}</code> |
+| no-payload event emits a no-payload frame<br>Event: <code>{"version":"pulse.event-frame.v1","type":"system.tick","schemaId":null}</code> | <code>{"status":"completed","emitted":[{"version":"pulse.event-frame.v1","type":"system.heartbeat","schemaId":null}]}</code> |
 
-The documented result below is executed by the documentation gate.
+<!-- pulse-example-view:code -->
+## Code
 
-<!-- pulse-doc-run {"project":"examples/11-events","args":["test","--json"],"timeoutMs":240000} -->
-```bash
-pulse test --json
-```
-```json
-{
-  "status": "passed",
-  "provider": "node",
-  "summary": {
-    "total": 3,
-    "passed": 3,
-    "failed": 0
-  },
-  "cases": [
-    {
-      "name": "http health remains separate",
-      "status": "passed",
-      "response": {
-        "status": 200
-      }
-    },
-    {
-      "name": "schema event emits an accepted frame",
-      "status": "passed",
-      "kind": "event",
-      "emittedFrameCount": 1
-    }
-  ]
-}
-```
-
-## Wasm size
-
-| Artifact | Default build | `--experimental-native-size` | Reduction |
-|---|---:|---:|---:|
-| `canonical-native.wasm` | 39.7 KiB (40,667 bytes) | 31.7 KiB (32,460 bytes) | 20.2% |
-
-The executable documentation gate rebuilds and measures both variants on
-`1.0.0-beta.9`. These are uncompressed on-disk sizes, not transfer sizes or
-platform limits.
-
-## Application
+### Application
 
 <!-- pulse-doc-source: examples/11-events/src/index.ts -->
 ```ts
@@ -95,32 +53,7 @@ export default app
 ```
 <!-- /pulse-doc-source -->
 
-## Schemas
-
-<!-- pulse-doc-source: examples/11-events/src/schemas.ts -->
-```ts
-import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'
-
-export interface DeviceReading {
-  deviceId: string
-  temperatureC: number
-}
-
-export interface DeviceReadingAccepted {
-  deviceId: string
-  accepted: boolean
-}
-
-export default defineSchemaRegistry({
-  schemas: {
-    'events.DeviceReading': schema<DeviceReading>(),
-    'events.DeviceReadingAccepted': schema<DeviceReadingAccepted>(),
-  },
-})
-```
-<!-- /pulse-doc-source -->
-
-## Project config
+### Project config
 
 <!-- pulse-doc-source: examples/11-events/.pulse/config.ts -->
 ```ts
@@ -149,6 +82,159 @@ export default defineConfig((_scope) => ({
 }))
 ```
 <!-- /pulse-doc-source -->
+
+### Schemas
+
+<!-- pulse-doc-source: examples/11-events/src/schemas.ts -->
+```ts
+import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'
+
+export interface DeviceReading {
+  deviceId: string
+  temperatureC: number
+}
+
+export interface DeviceReadingAccepted {
+  deviceId: string
+  accepted: boolean
+}
+
+export default defineSchemaRegistry({
+  schemas: {
+    'events.DeviceReading': schema<DeviceReading>(),
+    'events.DeviceReadingAccepted': schema<DeviceReadingAccepted>(),
+  },
+})
+```
+<!-- /pulse-doc-source -->
+
+## Inspect
+
+The selected profile is `node-native`; this checked excerpt identifies its target, provider and recognized capabilities. Paths, hashes and additional inspection fields are omitted.
+
+<!-- pulse-doc-run {"project":"examples/11-events","args":["inspect","--json"],"display":"npm run inspect -- --json"} -->
+```bash
+npm run inspect -- --json
+```
+```json
+{
+  "status": "ok",
+  "project": {
+    "target": "native"
+  },
+  "provider": {
+    "id": "node"
+  },
+  "compiler": {
+    "capabilities": [
+      "event.emit",
+      "logging",
+      "response.text"
+    ]
+  }
+}
+```
+
+## Doctor
+
+Check this project and its local toolchain before execution. This selected result is verified by the documentation gate; another machine may report different prerequisite checks.
+
+<!-- pulse-doc-run {"project":"examples/11-events","args":["doctor","--json"],"display":"npm run doctor -- --json"} -->
+```bash
+npm run doctor -- --json
+```
+```json
+{
+  "status": "passed",
+  "summary": {
+    "warnings": 0,
+    "failed": 0
+  }
+}
+```
+
+## Report
+
+Build once into a separate directory, then replay the retained artifact without running or rebuilding the application. This checked excerpt accounts for registered handlers in the build evidence; it is not runtime request coverage.
+
+<!-- pulse-doc-run {"project":"examples/11-events","args":["report","--artifact",".pulse-docs-build/pulse-build.json","--json"],"prepare":["build","--out",".pulse-docs-build","--json"],"display":"npm run build -- --out .pulse-docs-build\nnpm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --json"} -->
+```bash
+npm run build -- --out .pulse-docs-build
+npm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --json
+```
+```json
+{
+  "kind": "pulse.application-report",
+  "reportVersion": 1,
+  "analytics": {
+    "coverage": {
+      "handlers": {
+        "expected": 3,
+        "observed": 3,
+        "reason": null,
+        "status": "complete"
+      }
+    }
+  }
+}
+```
+
+Optional offline HTML uses the same retained evidence:
+
+```bash
+npm exec -- pulse report --artifact .pulse-docs-build/pulse-build.json --html
+```
+
+Review reports before sharing. Missing, stale or incompatible evidence is an error; timings, paths and hashes are not presented as stable output.
+
+## Workflow
+
+```bash
+pulse doctor
+pulse inspect
+pulse test
+pulse dev
+pulse build
+```
+
+`pulse test` executes both HTTP and event cases on the selected Node target.
+`pulse dev` serves only the HTTP portion; Pulse does not expose a public event
+listener or injection command.
+
+The documented result below is executed by the documentation gate.
+
+## Test result
+
+<!-- pulse-doc-run {"project":"examples/11-events","args":["test","--json"],"timeoutMs":240000} -->
+```bash
+pulse test --json
+```
+```json
+{
+  "status": "passed",
+  "provider": "node",
+  "summary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0
+  },
+  "cases": [
+    {
+      "name": "http health remains separate",
+      "status": "passed",
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "name": "schema event emits an accepted frame",
+      "status": "passed",
+      "kind": "event",
+      "emittedFrameCount": 1
+    }
+  ]
+}
+```
 
 ## Test harness
 
@@ -192,3 +278,15 @@ export default { cases: [
 
 See [Static events and outbound emission](../../docs/guides/events.md) for the
 frame, queue, target, diagnostic, and Native-extension contracts.
+
+## Wasm size
+
+For build settings, see [Native build optimization](../../docs/reference/native-build-optimization.md).
+
+| Artifact | Default build |
+|---|---:|
+| Portable guest `canonical-native.wasm` | 31.7 KiB (32,458 bytes) |
+
+The executable documentation gate rebuilds and measures the default artifact.
+Measured with Node 24.18.0 and lockfile-pinned AssemblyScript 0.28.18. These are uncompressed on-disk sizes, not transfer sizes or
+platform limits.

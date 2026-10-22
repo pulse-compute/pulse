@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
+const { selectedNativeOptimization, hasNativeOptimization } = require('./internal/native-optimization');
 const http = require('node:http');
 const path = require('node:path');
 const { once } = require('node:events');
@@ -304,6 +305,7 @@ function compileProject(project, options = {}) {
     workspaceRoot: undefined,
     configFile: project.configFile,
     schemas: project.schemas,
+    ...(project.binaryResources ? { binaryResources: project.binaryResources } : {}),
     strict: project.strict !== false,
     emitJsonPolicy: true,
     handlerAuthoring,
@@ -366,11 +368,7 @@ function compileNativeProjectInMemory(project, options = {}) {
     elideJsonCacheArena: options.elideJsonCacheArena,
     emitWat: options.emitWat,
     reportCapture: options.reportCapture,
-    nativeOptimization: options.experimentalNativeBoundedSize === true
-      ? 'experimental-native-bounded-size'
-      : options.experimentalNativeSize === true
-        ? 'experimental-native-size'
-        : options.nativeOptimization
+    nativeOptimization: selectedNativeOptimization(options, project)
   });
   const reportReferences = collectCanonicalReportReferences(compiled, plan);
   return Object.freeze({ compiled, plan, native, reportReferences });
@@ -430,6 +428,9 @@ function prepareJavascriptApplication(project, options = {}) {
   const descriptor = targetDescriptor(project, 'javascript');
   const javascript = providerDriver(project).javascript;
   const plan = buildJavascriptApplicationPlan(project.entryFile, {
+    schemas: project.schemas,
+    schemaBundle: options.schemaBundle,
+    binaryResources: project.binaryResources,
     rootDir: project.root,
     workspaceRoot: undefined,
     configFile: project.configFile,
@@ -467,8 +468,10 @@ function prepareJavascriptApplication(project, options = {}) {
           : loadJavascriptApplication(plan, {
               workspaceRoot: project.root,
               validateApplication: javascript.validateApplication,
+              bindCallables: javascript.bindCallables,
               allowedPackages: options.allowedPackages
             });
+        if (project.binaryResources && loaded?.application) require('@pulse-compute/wasm-host-runtime/runtime/canonical-api-runtime').bindBinaryResourceCatalogue(project.binaryResources, loaded.application);
       } catch (error) {
         if (options.captureLoadError !== true) throw error;
         loadError = javascriptLoadFailure(error);
@@ -528,13 +531,14 @@ function providerExecutionOptions(project, values = {}) {
 function requiresExactNativeExecution(compiled) {
   const algorithms = compiled.cryptoRealizationPlan && compiled.cryptoRealizationPlan.algorithms || [];
   const operations = compiled.metadata && compiled.metadata.providerOperations || [];
-  return Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+  return Boolean(compiled.binaryResources) || Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+    || compiled.metadata?.continuationSites?.some(site => site.kind === 'effect-collection-v1')
     || compiled.metadata?.capabilities?.includes('package.invoke')
     || compiled.metadata?.capabilities?.includes('response.output')
     || compiled.metadata?.capabilities?.includes('request.body.forward')
     || compiled.metadata?.capabilities?.includes('request.body.transform')
     || (compiled.metadata?.router?.entries || []).some((entry) => entry.kind === 'error')
-    || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(entry.capability));
+    || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete'].includes(entry.capability));
 }
 
 function prepareNativeExecution(project, compiled, native) {
@@ -692,6 +696,7 @@ function cleanOutputDirectory(project, outDir) {
 }
 
 function withReportBuild(project, options, operation, execute) {
+  selectedNativeOptimization(options, project);
   const report = require('./internal/report/retained');
   const outDir = resolveOutputDirectory(project, options.outDir || project.outDir);
   const timing = require('./internal/report/build').startBuild();
@@ -730,10 +735,10 @@ function buildProjectWithReport(project, options, reportAttempt) {
   if (options.emitWat === true && (project.target || 'native') !== 'native') {
     throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: project.target || 'native' });
   }
-  if ((options.experimentalNativeSize === true || options.experimentalNativeBoundedSize === true) && (project.target || 'native') !== 'native') {
+  if (hasNativeOptimization(options) && (project.target || 'native') !== 'native') {
     throw new PulseProjectError(
       'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED',
-      'Experimental Native size flags are available only for Native compilation.',
+      'Native optimization flags are available only for Native compilation.',
       {
         target: project.target || 'native',
         required: Object.freeze({ target: 'native' })
@@ -806,6 +811,7 @@ function buildProjectWithReport(project, options, reportAttempt) {
         outDir,
         javascript: Object.freeze({
           schemaBundle: compiled.schema.bundle,
+          binaryResources: project.binaryResources,
           packageArtifacts: packageRealizationArtifactsForCompiled(compiled),
           reporting: project.reporting,
           strict: project.strict !== false,

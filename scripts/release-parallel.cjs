@@ -171,14 +171,50 @@ function cleanupWorker(binding) {
     assert.equal(fs.realpathSync(path.dirname(target)), path.dirname(target), 'Worker output traverses a symlink');
     const stat = fs.lstatSync(target);
     assert(stat.isFile() || stat.isSymbolicLink(), 'Worker output is not an ordinary file or symlink');
-    // Delete in this process, not through a child Git process. The controller
-    // must observe the actual removal before accepting the cleanup receipt.
+    // Delete and observe removal in the verifying process, not through Git.
+    // Its owner must await successful terminal reconciliation before reuse.
     fs.rmSync(target, { force: true });
     assert(!fs.existsSync(target), 'Worker output remains after removal');
   }
   verifyWorker(binding);
   return { status: 'passed', removed };
 }
+async function runWorkerVerification(operation, binding, options = {}) {
+  // A fresh, supervised invocation, never a cached proof. The caller continues
+  // owning the scheduler slot until this promise settles, including escalation.
+  const request = { id: require('node:crypto').randomUUID(), operation, binding };
+  const output = [];
+  let outputBytes = 0, diagnostic = '';
+  const completed = await require('./release-process.cjs').runCommand(process.execPath, ['-e', `
+    const request = JSON.parse(process.argv[2]);
+    const worker = require(process.argv[1]);
+    const result = request.operation === 'verify'
+      ? (worker.verifyWorker(request.binding), { status: 'passed', removed: [] })
+      : worker.cleanupWorker(request.binding);
+    process.stdout.write(JSON.stringify({ request, result }));
+  `, __filename, JSON.stringify(request)], {
+    timeoutMs: 30000, ...options,
+    onOutput(name, chunk) {
+      if (name === 'stdout') {
+        outputBytes += chunk.length;
+        assert(outputBytes <= 1024 * 1024, 'Worker verification output exceeds its bound');
+        output.push(chunk);
+      } else diagnostic = (diagnostic + chunk).slice(-16000);
+    }
+  });
+  assert(completed.status === 0 && !completed.error && !completed.timedOut &&
+    !completed.interruptedBy && !completed.forcedCompletion,
+  `Worker ${operation} did not complete: ${completed.error?.message || completed.interruptedBy ||
+    (completed.timedOut ? 'timeout' : completed.signal || completed.status)}${diagnostic ? `; ${diagnostic.trim()}` : ''}`);
+  const receipt = JSON.parse(Buffer.concat(output).toString('utf8'));
+  assert.deepEqual(receipt.request, request, 'Foreign or stale worker verification result');
+  assert.equal(receipt.result?.status, 'passed', 'Missing worker verification result');
+  assert(Array.isArray(receipt.result.removed) && receipt.result.removed.every(item => typeof item === 'string'),
+    'Invalid worker cleanup result');
+  return receipt.result;
+}
+const verifyWorkerAsync = (binding, options) => runWorkerVerification('verify', binding, options);
+const cleanupWorkerAsync = (binding, options) => runWorkerVerification('cleanup', binding, options);
 function assertManagedWorker(directory, owner, candidate, layoutFile) {
   assert(typeof layoutFile === 'string' && path.isAbsolute(layoutFile), 'Shared pack belongs to another checkout');
   const supplied = JSON.parse(fs.readFileSync(layoutFile, 'utf8'));
@@ -187,7 +223,7 @@ function assertManagedWorker(directory, owner, candidate, layoutFile) {
   assert(layout.workspaces.some(workspace => workspace.directory === fs.realpathSync(directory)), 'Unowned shared-pack consumer');
 }
 
-// Scheduling hints affect order only. The registry remains coverage authority.
+// Scheduling hints affect order and resource admission, never coverage authority.
 // Ordering weights are not deadlines or reported durations. Check independent
 // worker packaging early, before spending the compiler lane.
 const EARLY_CHECKS = new Set(['suite-shape', 'package-exports', 'boundaries', 'workspace-hygiene',
@@ -196,17 +232,26 @@ const ORDER_WEIGHT = { 'release-artifact-determinism': 1000, 'jwt-rs256': 284, '
   'schema-codecs': 95, 'fastly-native-platform-capabilities': 75, 'cli-entities-installed-workflow': 69,
   'fastly-entities-native-workflow': 57, 'cli-project-workflow': 50, 'cli-schema-json-workflow': 47,
   'events-cli-workflow': 42, 'canonical-native-wasm': 40, 'bounded-read-loops': 36, 'pure-guarded-arguments': 34 };
+// Evidence categories describe assertions, not transitive compiler demand.
+// These unit tasks construct Native artifacts through helpers, direct asc, or
+// in-process Binaryen. Reserve one token for the entire task, including cleanup;
+// this is not a count of asc processes. Audit: docs/internal/b10-ci04/ledger.json.
+const COMPILER_TASKS = new Set([
+  'report-capsule-contract', 'cli-report-viewer', 'cli-report-retained-evidence',
+  'cli-report-relationships', 'cli-report-resource-inventory', 'cli-report-graph-diagnostics',
+  'entities-orchestration-demo', 's3-body-read', 'shared-stage-o19'
+]);
 function scheduling(name, task) {
   const hints = task.scheduling || {};
   return { priority: EARLY_CHECKS.has(name) ? 2 : name === 'str02b-installed' ? 1 : 0,
     cost: hints.cost || ORDER_WEIGHT[name] || 10, resources: hints.resources || [],
-    compiler: hints.compiler === undefined ? !['unit', 'javascript'].includes(task.evidence) : hints.compiler,
+    compiler: hints.compiler === undefined ? COMPILER_TASKS.has(name) || !['unit', 'javascript'].includes(task.evidence) : hints.compiler,
     exclusive: hints.exclusive === true || /benchmark|measure|timing/i.test(`${name} ${task.description}`),
     after: hints.after || [] };
 }
 
 module.exports = { workerCount, compilerCount, workspaceRoot, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker,
-  verifyWorker, cleanupWorker, scheduling, WORKER_MIB };
+  verifyWorker, cleanupWorker, verifyWorkerAsync, cleanupWorkerAsync, scheduling, WORKER_MIB };
 if (require.main === module) {
   const [root, requested, memory, compilers = '2'] = process.argv.slice(2);
   const layout = prepareWorkspaces(root, candidateIdentity(root), Number(requested), Number(memory), Number(compilers));

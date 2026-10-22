@@ -1,0 +1,325 @@
+{
+  "archive": "receipts.tar.gz",
+  "archiveBytes": 453169,
+  "archiveSha256": "b58fcb84cfe2a2b33a404328b271244ec220cdaa16e18bca267e5e70cc9034e5",
+  "files": [
+    {
+      "path": "context-check.json",
+      "bytes": 796,
+      "sha256": "5861b2f19725c91abf1ae0149b6d2c9e9f98d23a2cc844eeb7129cf41cfd2306"
+    },
+    {
+      "path": "docs.log",
+      "bytes": 314665,
+      "sha256": "98b722c5cc5d27df482004e4adb935a00568adce74c4a3a4a9056887ee632657"
+    },
+    {
+      "path": "documentation-release.log",
+      "bytes": 301784,
+      "sha256": "787f81b18abcc897f2d95d5a040d4136e3a36d55a2f689517eb80a8e0fd20254"
+    },
+    {
+      "path": "fastly-local/deadline/fastly-build.json",
+      "bytes": 11938,
+      "sha256": "6bf33302b0194d265a448fcb45440a2c0a440724daad4a7d6106ab405784a65c"
+    },
+    {
+      "path": "fastly-local/deadline/fastly-native-manifest.json",
+      "bytes": 14290,
+      "sha256": "ab973956bce0a16c219121768b9ce5f5479aea344432fefacacf23d1c19eda82"
+    },
+    {
+      "path": "fastly-local/deadline/fastly.toml",
+      "bytes": 138,
+      "sha256": "29b077a808fa226955db96524ccd50367d8c307b145d5abd4a796a76245b9286"
+    },
+    {
+      "path": "fastly-local/deadline/pulse-build.json",
+      "bytes": 40947,
+      "sha256": "f6d26dd8763d7108c57552636052607629a38011f08187ebe80df57cdbd074f8"
+    },
+    {
+      "path": "fastly-local/deadline/stderr.log",
+      "bytes": 236,
+      "sha256": "4e92dab9140865cd79b09cb951af2168b7af418f9b501e7339e0fb453a498225"
+    },
+    {
+      "path": "fastly-local/deadline/stdout.log",
+      "bytes": 2678,
+      "sha256": "f564af7285bde13d70462cbfedcc9ac1466258538c681021f4f1f2d27a363c77"
+    },
+    {
+      "path": "fastly-local/growth/fastly-build.json",
+      "bytes": 11938,
+      "sha256": "ef303c1fbb0a72707b38d0c9f8fe4d9a95c0fe97a076a406af4ef994a41370cf"
+    },
+    {
+      "path": "fastly-local/growth/fastly-native-manifest.json",
+      "bytes": 14293,
+      "sha256": "6e35ef8e091bc529bac118641ccedfe48ca45baca27f5c960e245675a36c7518"
+    },
+    {
+      "path": "fastly-local/growth/fastly.toml",
+      "bytes": 136,
+      "sha256": "5b3ac4f3fd654692d35a38f3e776ee5d8233ad3923d4d750f4cb4eb82dd59918"
+    },
+    {
+      "path": "fastly-local/growth/pulse-build.json",
+      "bytes": 40694,
+      "sha256": "795f8c70ac2f26fda0bbe2d914ab8871b4f19e83cd2613cc1d8b6c65c109f1e1"
+    },
+    {
+      "path": "fastly-local/growth/stderr.log",
+      "bytes": 236,
+      "sha256": "4e92dab9140865cd79b09cb951af2168b7af418f9b501e7339e0fb453a498225"
+    },
+    {
+      "path": "fastly-local/growth/stdout.log",
+      "bytes": 284249,
+      "sha256": "54f3c24c0c83f176cba7cdf0e280e1fb9a42c225fd50fd0e63d997016c1499d8"
+    },
+    {
+      "path": "fastly-local/qualification.json",
+      "bytes": 364225,
+      "sha256": "e0c7916ca5fc9e5c0afb4cd0c14cbc1e85f4a6ff96f6c00d35692a3aa70e4682"
+    },
+    {
+      "path": "fastly-local/resources/fastly-build.json",
+      "bytes": 8474,
+      "sha256": "41b006fdcdb85a1b130f4eb1e5b9234ceda1d8e8c17e3f4ed72835e4f0637f1d"
+    },
+    {
+      "path": "fastly-local/resources/fastly-native-manifest.json",
+      "bytes": 14643,
+      "sha256": "236898f3dcd3f7cc5c20d63a54be998aafda703fc4aa328fd53ebad7f56d0278"
+    },
+    {
+      "path": "fastly-local/resources/fastly.toml",
+      "bytes": 139,
+      "sha256": "8c0c7758971d575eecebbc9ba89401c283f0a83a9d4369eecf2186bc92ccc978"
+    },
+    {
+      "path": "fastly-local/resources/pulse-build.json",
+      "bytes": 33441,
+      "sha256": "386e62ee6da388aa3e4687381c56d7a182c01ad8e5f0556f90b4a892918e8ecd"
+    },
+    {
+      "path": "fastly-local/resources/stderr.log",
+      "bytes": 236,
+      "sha256": "4e92dab9140865cd79b09cb951af2168b7af418f9b501e7339e0fb453a498225"
+    },
+    {
+      "path": "fastly-local/resources/stdout.log",
+      "bytes": 9064,
+      "sha256": "7aef99185e140c797efecc159f519a6d7ae7dc1a3694eae6be42f3db1435aced"
+    },
+    {
+      "path": "fastly-local/shipped/fastly-build.json",
+      "bytes": 11938,
+      "sha256": "b76e1f6e2fc178ef5687eee7e76cdccab7a60a732f75dc9226603b4f5ddd2bca"
+    },
+    {
+      "path": "fastly-local/shipped/fastly-native-manifest.json",
+      "bytes": 14293,
+      "sha256": "b66ac65edf0fca2553a76571ee5d9366b5f48e5e696bf3b23fa51287abfabbd7"
+    },
+    {
+      "path": "fastly-local/shipped/fastly.toml",
+      "bytes": 137,
+      "sha256": "a22a591be19d3855274ca492282b081244c551ec948baf207b7c95be5958cee6"
+    },
+    {
+      "path": "fastly-local/shipped/pulse-build.json",
+      "bytes": 40947,
+      "sha256": "e6c24956240350ea754b3fc82680d409716103a17019c678646c93552f968978"
+    },
+    {
+      "path": "fastly-local/shipped/stderr.log",
+      "bytes": 236,
+      "sha256": "4e92dab9140865cd79b09cb951af2168b7af418f9b501e7339e0fb453a498225"
+    },
+    {
+      "path": "fastly-local/shipped/stdout.log",
+      "bytes": 212056,
+      "sha256": "87a9964dcd8cc08a97e579a2ca86ec9fab75135d3d6277b2ac7a9b4cad00457c"
+    },
+    {
+      "path": "fastly-runner.json",
+      "bytes": 1763,
+      "sha256": "66eb06dce637ff04da9ca949ed374d635464a35ecbed4a9e19ee8b871dc99801"
+    },
+    {
+      "path": "fastly.log",
+      "bytes": 5117,
+      "sha256": "a006e99ad7f6d22927b9690a64202064f20524bbfb0ba4e6e55b50957428fe83"
+    },
+    {
+      "path": "focused-runner.json",
+      "bytes": 11348,
+      "sha256": "43acde55d459e36846d83c705bb41384c7d8a6d91e89a2669db06d8c06213f19"
+    },
+    {
+      "path": "focused-task-logs/binary-resource-admission.log",
+      "bytes": 876,
+      "sha256": "7d1ac8f627cfe758eb39f2b2aeecba641aeccbf37da21525856f4755079916a7"
+    },
+    {
+      "path": "focused-task-logs/binary-resource-execution.log",
+      "bytes": 2464,
+      "sha256": "bd4b7b0d3af6fd2310f74028cc9ac006e2f709784539afaf2c8182ae5435ad03"
+    },
+    {
+      "path": "focused-task-logs/callable-authored-composition.log",
+      "bytes": 3355,
+      "sha256": "157ac61ca88a73617995b7b0ffae33c19c7e668e6fed95fd458968eba5c0b0ff"
+    },
+    {
+      "path": "focused-task-logs/callable-lifetime.log",
+      "bytes": 61,
+      "sha256": "c8371fcb618f628d0a7e3f68efe7f13e4c06d7be855060a417c0c91ce43e5c1e"
+    },
+    {
+      "path": "focused-task-logs/cli-report-handler-topology.log",
+      "bytes": 2028,
+      "sha256": "c4bea5aebfed6e9ba980a47be787ba64e14033e57b129a27cee757b32de7437e"
+    },
+    {
+      "path": "focused-task-logs/cli-report-resource-inventory.log",
+      "bytes": 748,
+      "sha256": "5c4d70b7940b5c2c76519bd71953557b7d3029b903e71cee9bea8d42e8d4ddc5"
+    },
+    {
+      "path": "focused-task-logs/cli-report-retained-evidence.log",
+      "bytes": 821,
+      "sha256": "635ab283f4ecba4df697a9f828475344b73d811797204e01dead5682f473f4d1"
+    },
+    {
+      "path": "focused-task-logs/pulse-context-build.log",
+      "bytes": 8293,
+      "sha256": "6b7e686a40246b79b60e6c9139b5c31d1a76cb34da6f39cff546e275c80e6d36"
+    },
+    {
+      "path": "focused-task-logs/pulse-context-corpus.log",
+      "bytes": 114,
+      "sha256": "0f2cab7af060013cbf3fb1b07fa0a5558afcdb6089b547a8f002567ba723bcaf"
+    },
+    {
+      "path": "focused-task-logs/pulse-context-quality-actual.log",
+      "bytes": 237,
+      "sha256": "6e15e9dfd8167fa0df01248a18e8ba076d345a9df4076143e543b643eac9ca98"
+    },
+    {
+      "path": "focused-task-logs/pulse-context-quality-growth.log",
+      "bytes": 236,
+      "sha256": "7d70fff694e5af9dc5e0e46814e17232e1fa24d8c9abef3609308b9863094ce6"
+    },
+    {
+      "path": "focused-task-logs/pulse-context-quality-repeat.log",
+      "bytes": 235,
+      "sha256": "e1c9ac3d053bfd120b0e1f96b2a249ea67d997b492ea3ddd40c36a47032ec855"
+    },
+    {
+      "path": "focused.log",
+      "bytes": 27790,
+      "sha256": "5990c441b7109c37cc5dc095a3da216fb135794769be76bc4c1ca0b46436867a"
+    },
+    {
+      "path": "installed-reports/mcp-fastly-local-installed.json",
+      "bytes": 1087665,
+      "sha256": "91cbb1237190a8847efbc91c7d67e2d656fb47ff858d7a9fd4df551d97c3c4b7"
+    },
+    {
+      "path": "installed-reports/mcp-installed.json",
+      "bytes": 714198,
+      "sha256": "c8fbabacc496b802a028813ffc3509d2cd613d0b8a654435a9d87ef12b0a0948"
+    },
+    {
+      "path": "installed-runner.json",
+      "bytes": 1742,
+      "sha256": "4754ccf770c01eb11c0cfdf88f902708cdc2d037d7438bda0b587b29c4202c3e"
+    },
+    {
+      "path": "installed.log",
+      "bytes": 4549,
+      "sha256": "e200159f2ef8ed09d8fac893262ee51c35e9e71f31cb8c9f0146ba180ee7efaa"
+    },
+    {
+      "path": "interrupted-installed-attempt/disposition.json",
+      "bytes": 226,
+      "sha256": "c1b6306340f0579884aaf978b456b6a3f4cba1e5843ac20fcdd52e720f1b02ab"
+    },
+    {
+      "path": "interrupted-installed-attempt/installed-reports/mcp-installed.json",
+      "bytes": 650,
+      "sha256": "1907d61787e99340cdcf2bade5ec1363b65135cb68bfd928e1bbff91e9a082fc"
+    },
+    {
+      "path": "interrupted-installed-attempt/installed-runner.json",
+      "bytes": 944,
+      "sha256": "979aeceda4f60f88262181e6c2dc142b94cfc96a064f27eb8290e1de989b7e6f"
+    },
+    {
+      "path": "interrupted-installed-attempt/installed.log",
+      "bytes": 2907,
+      "sha256": "9255d2ca3685899a26c9d9add9219d2de743579ed60730ff6966d9d4749729f4"
+    },
+    {
+      "path": "maintainer.log",
+      "bytes": 345,
+      "sha256": "c4ba4757de8427dc4e62528f6b6dd88a399ef2ed0f17aa7018b9765fcbc5e1d6"
+    },
+    {
+      "path": "mcp-fastly-local-installed.task.log",
+      "bytes": 2927,
+      "sha256": "39c8d0db7ec5842c7be93a585f6fb264313216f2708d67dc34df9f0f263fd641"
+    },
+    {
+      "path": "mcp-installed.task.log",
+      "bytes": 2965,
+      "sha256": "3505e46cacd76f98efcb69952a41990e703d71384dd7ea08a6f995a86e7079e9"
+    },
+    {
+      "path": "quality/actual.json",
+      "bytes": 108263,
+      "sha256": "282a1630efc01543460685a2c0b4edf7de1af6aa2cd487cf8d68cbd32db42fa0"
+    },
+    {
+      "path": "quality/growth.json",
+      "bytes": 128628,
+      "sha256": "63e0e30d1d8b28bb450fb73a4c5e1010f0d3bd1f9838507580b13ab8e07f54e4"
+    },
+    {
+      "path": "quality/repeat.json",
+      "bytes": 85259,
+      "sha256": "b8334fc67e689aa4b0cd0966450d37a47e35909399f4772853a2a50b008d9f92"
+    },
+    {
+      "path": "selection.json",
+      "bytes": 1223,
+      "sha256": "ca8bba5b51e6bf12e2709ed5d37098ec4e6d73743f2114c604aa07c32e8ee64b"
+    }
+  ],
+  "generatedModulesOmitted": [
+    {
+      "path": "fastly-local/deadline/bin/main.wasm",
+      "bytes": 1047207,
+      "sha256": "514436a96bfe2b6dc9c97cae382b0fea85f16ef00948312dbdbe33b417d246b0"
+    },
+    {
+      "path": "fastly-local/growth/bin/main.wasm",
+      "bytes": 2146986,
+      "sha256": "76bb77c109f61c11c2f40068b5f3c563c438d25a965a434964290e8985749608"
+    },
+    {
+      "path": "fastly-local/resources/bin/main.wasm",
+      "bytes": 1142104,
+      "sha256": "b749fd7cffb14054f07dbfe80dd9ca5daca4902f5783017afaa82fcbe3d114fa"
+    },
+    {
+      "path": "fastly-local/shipped/bin/main.wasm",
+      "bytes": 1047209,
+      "sha256": "b96b03b616655eed07fa4a6036f59bf559b5805881704e84ae558a9403f5fa0d"
+    }
+  ],
+  "moduleRetention": "Generated Wasm modules are identified by exact size/hash in this index and original provider receipts; executable binaries are not included in this documentation bundle."
+}

@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/wasm-contracts",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.10",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -111,7 +111,8 @@
     "./project/javascript-core-capabilities": "./src/project/javascript-core-capabilities.js",
     "./project/native-optimization": "./src/project/native-optimization.js",
     "./s3/contracts": "./src/s3/contracts.js",
-    "./package/runtime-binding": "./src/package/runtime-binding.js"
+    "./package/runtime-binding": "./src/package/runtime-binding.js",
+    "./resources/embedded": "./src/resources/embedded.js"
   },
   "publishConfig": {
     "access": "public"
@@ -125,7 +126,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "wasm/packages/contracts"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.9/packages/implementation-packages/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.10/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

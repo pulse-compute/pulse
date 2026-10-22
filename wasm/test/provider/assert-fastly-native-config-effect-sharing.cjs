@@ -62,7 +62,8 @@ export default app
   assert.throws(() => mock.executeFastlyNativePlatformCapabilities(native, { request }),
     error => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED'
       && error.detail.lastError !== 0
-      && !error.detail.trace.some(entry => entry.name === 'send_downstream'));
+      && error.detail.trace.filter(entry => entry.name === 'send_downstream').length === 1
+      && error.detail.trace.some(entry => entry.name === 'status_set' && entry.status === 500));
   const cancellation = new Error('GEN04 cancellation');
   assert.throws(() => mock.executeFastlyNativePlatformCapabilities(native, {
     request, configStore: 'gen04', config: { GEN0: 'A' }, signal: { aborted: true, reason: cancellation }

@@ -21,7 +21,7 @@ jobs:
     env:
       SEAL_WORKERS: '2'
       SEAL_MEMORY_MIB: '6144'
-      SEAL_COMPILER_WORKERS: '1'
+      SEAL_COMPILER_WORKERS: '2'
     steps:
       - name: Start candidate work deadline
         id: deadline

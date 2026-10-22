@@ -1,0 +1,34 @@
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+[pulsewasm] Running release-feature-acceptance (execution); elapsed 10.00s
+ok - release context freshness: exact package binding and 26 fail-closed cases
+ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity
+[pulsewasm] release-feature-acceptance: passed in 12.43s
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+ok - shared release packages are source-bound, hash-checked, private copies; tampering, dirty/stale source and overlapping paths fail closed
+Error: ENOENT: no such file or directory, open '/tmp/pulse-suite-task-release-runtime-policy-e2EOXK/pulse-release-seal-package-manager-im11mc/packages/pulse-release-manifest.json'
+    at readFileSync (node:fs:484:20)
+    at fs.readFileSync (/workspace/scratch/d3826bbd4bf5/pulse-09a/wasm/test/release/assert-release-runtime-policy.cjs:194:16)
+    at Object.main (/workspace/scratch/d3826bbd4bf5/pulse-09a/scripts/validate-release.cjs:444:40)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async verifySealOrchestration (/workspace/scratch/d3826bbd4bf5/pulse-09a/wasm/test/release/assert-release-runtime-policy.cjs:198:23) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/tmp/pulse-suite-task-release-runtime-policy-e2EOXK/pulse-release-seal-package-manager-im11mc/packages/pulse-release-manifest.json'
+}
+[pulsewasm] release-runtime-policy: failed in 3.19s
+
+[pulsewasm] test summary
+  passed        12.43s  release-feature-acceptance  (/tmp/runs/2026-10-21T05-26-48-077Z--5/tasks/release-feature-acceptance.log)
+  failed         3.19s  release-runtime-policy  (/tmp/runs/2026-10-21T05-26-48-077Z--5/tasks/release-runtime-policy.log)
+  report       /tmp/pulse-09a-release-tests.json
+  run logs     /tmp/runs/2026-10-21T05-26-48-077Z--5
+  total        15.64s

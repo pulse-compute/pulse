@@ -19,6 +19,8 @@ and diagnostic contracts.
   accepted authoring language and Native eligibility boundary.
 - [CLI reference](./cli.md) — commands, flags, and machine-readable command
   specification.
+- [Native build optimization](./native-build-optimization.md) — the default recipe,
+  shrink0 fallback, experimental selections and optional json-as arena setting.
 - [Project configuration](./project-config.md) — profiles, providers, targets,
   bindings, and schemas.
 - [Diagnostics and remediation](./diagnostics.md) — stable public diagnostic

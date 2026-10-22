@@ -28,6 +28,12 @@ function fullSchemaReason(file, rules, match) {
   // those copies are documentation, not CLI execution dependencies.
   if (match(file, 'wasm/packages/cli/docs/**') &&
       rules.every((rule) => ['documentation', 'cli-and-diagnostics'].includes(rule.id))) return null;
+  // This exact module is generated data, copied byte-for-byte from the canonical
+  // context corpus by sync-reference-docs. The required documentation preview
+  // checks both source -> corpus and corpus -> mirror integrity before passing.
+  // Do not exempt executable example neighbors or override another base owner.
+  if (file === 'wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts' &&
+      rules.every((rule) => ['documentation', 'cli-and-diagnostics'].includes(rule.id))) return null;
   // Only these known owners can use the subset. Compiler/runtime/provider,
   // dependency and configuration changes keep the full corpus, even when the
   // filename does not contain "schema". Use the trusted base's classifications.

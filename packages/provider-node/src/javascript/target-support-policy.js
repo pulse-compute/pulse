@@ -84,6 +84,13 @@ function classifyNodeJavascriptCapability(id, options = {}) {
 
 function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, options = {}) {
   const requirement = String(id);
+  // Package contracts name provider responsibilities, separately from the
+  // individual compiler capabilities they may exercise. Keep this list exact:
+  // admitting a responsibility does not admit unknown effects or capabilities.
+  if (requirement === 'effect-execution') return decision(requirement, 'eligible', 'javascript-effect-adapter', 'runtime');
+  if (requirement === 'logging') return classifyNodeJavascriptCapability(requirement, options);
+  if (requirement === 'response-transport') return decision(requirement, 'eligible', 'node-response-ownership', 'provider-node');
+  if (requirement === 'request.deadline') return decision(requirement, 'eligible', 'node-provider-request-deadline', 'provider-node');
   if (requirement === 'request.body.transform') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'response.output') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'request.body.forward') return classifyNodeJavascriptCapability(requirement, options);
@@ -102,7 +109,7 @@ function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, opt
   if (requirement === 'fetch' || requirement === 'opaque.pass-through' || ['body', 'headers', 'result'].includes(requirement)) {
     return decision(requirement, 'eligible', 'javascript-fetch-projection-realization', 'runtime');
   }
-  if (['config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(requirement)) {
+  if (['config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete'].includes(requirement)) {
     return options.bindingsRedaction === true
       ? decision(requirement, 'eligible', 'javascript-binding-redaction-implemented', 'provider-node')
       : decision(requirement, 'pending', 'javascript-binding-effect-pending', 'provider-node');

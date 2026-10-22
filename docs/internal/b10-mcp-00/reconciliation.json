@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "pulse.b10-mcp-reconciliation.v1",
+  "observedDate": "2026-10-19",
+  "sourceRevision": "3ce6a740226434e013f2ba517129679de0f1fd08",
+  "taskIssue": 423,
+  "issues": [
+    {
+      "issue": 410,
+      "url": "https://github.com/pulse-compute/pulse/issues/410",
+      "before": {
+        "state": "open",
+        "updatedAt": "2026-10-19T00:47:27Z"
+      },
+      "after": {
+        "state": "closed",
+        "stateReason": "completed",
+        "updatedAt": "2026-10-19T19:12:22Z"
+      },
+      "disposition": "completed-via-413",
+      "mergeCommit": "1f53a7fc06ab946ece2926b8a23127382a823c5c"
+    },
+    {
+      "issue": 411,
+      "url": "https://github.com/pulse-compute/pulse/issues/411",
+      "before": {
+        "state": "open",
+        "updatedAt": "2026-10-19T00:54:18Z"
+      },
+      "after": {
+        "state": "closed",
+        "stateReason": "completed",
+        "updatedAt": "2026-10-19T19:12:24Z"
+      },
+      "disposition": "completed-via-418",
+      "mergeCommit": "fefa1242e3dd1a8d905cd25074fd61b42a88f688"
+    },
+    {
+      "issue": 381,
+      "url": "https://github.com/pulse-compute/pulse/issues/381",
+      "before": {
+        "state": "open",
+        "updatedAt": "2026-10-19T00:51:24Z"
+      },
+      "after": {
+        "state": "open",
+        "stateReason": null,
+        "updatedAt": "2026-10-19T19:12:25Z"
+      },
+      "disposition": "retained-open",
+      "mergeCommit": null
+    },
+    {
+      "issue": 412,
+      "url": "https://github.com/pulse-compute/pulse/issues/412",
+      "before": {
+        "state": "open",
+        "updatedAt": "2026-10-19T00:51:26Z"
+      },
+      "after": {
+        "state": "open",
+        "stateReason": null,
+        "updatedAt": "2026-10-19T19:12:27Z"
+      },
+      "disposition": "retained-open",
+      "mergeCommit": null
+    }
+  ]
+}

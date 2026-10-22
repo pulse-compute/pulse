@@ -20,4 +20,4 @@ Bash, Zsh, and Fish completion are generated from the same public command specif
 - **Zsh:** copy `completions/_pulse` into a directory on `$fpath`, then run `compinit`.
 - **Fish:** copy `completions/pulse.fish` into `~/.config/fish/completions/`.
 
-Completion candidates include the seven project commands, help/version/completion invocations, public flags, provider values, and completion shell names. The machine-readable owner is [`cli-spec.json`](./cli-spec.json).
+Completion candidates include the public project commands, help/version/completion invocations, public flags, and completion shell names. The machine-readable owner is [`cli-spec.json`](./cli-spec.json).

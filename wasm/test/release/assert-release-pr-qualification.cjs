@@ -85,19 +85,19 @@ async function main() {
   const output = path.join(repo, '.pulse-qualification/accepted');
   const captureSeal = { ...seal, recovery: { ...seal.recovery, directory: path.join(root, 'attempt'), contextSha256: 'a'.repeat(64) },
     featureAcceptance: { separateGates: [{ task: 'kv-k4', status: 'not-run' }] } };
-  const docsDir = path.join(root, 'attempt/documentation');
-  fs.mkdirSync(docsDir, { recursive: true });
-  fs.writeFileSync(path.join(docsDir, 'documentation-deployment-manifest.json'), JSON.stringify({ source: { commit: merge, ref: identity.sourceRef } }));
   const checksFile = path.join(root, 'attempt/source-checks.json');
-  fs.writeFileSync(checksFile, JSON.stringify({ candidate: identity.candidate,
-    documentationCandidate: { directory: docsDir, ...require('../../../scripts/release-recovery.cjs').describeArtifact(docsDir) } }));
+  fs.mkdirSync(path.dirname(checksFile), { recursive: true });
+  const sourceChecks = { contextFreshness: require('./context-freshness-fixture.cjs').freshness(identity.candidate), schemaVersion: require('../../../scripts/release-source-checks.cjs').SCHEMA, status: 'passed', candidate: identity.candidate,
+    snippets: { status: 'ok' }, documentation: { status: 'ok', validationKind: 'package-source',
+      maintenance: { status: 'ok', publication: { status: 'ok' } } } };
+  fs.writeFileSync(checksFile, JSON.stringify(sourceChecks));
   captureSeal.sourceChecks = { file: checksFile, sha256: crypto.createHash('sha256').update(fs.readFileSync(checksFile)).digest('hex') };
   write('wasm/.test-results/release-seal.json', captureSeal);
   loader._load = function(request, parent, ...rest) {
     if (parent?.filename.endsWith('/scripts/release-pr-qualification.cjs')) {
       if (request === './release-evidence-bundle.cjs') return { validateRecoveryEvidence() { if (rejectEvidence) throw new Error('incomplete installed gate'); } };
       if (request === './release-shared-pack.cjs') return { sharedPackEnv() { return {}; }, copySharedPack() { copied++; } };
-      if (request === './documentation-deployment.cjs') return { verifyDocumentationCandidate() { return { source: { commit: merge, ref: identity.sourceRef } }; } };
+      if (request === './documentation-deployment.cjs') throw new Error('v2 capture must not load documentation deployment');
       if (request === './release-publication.cjs') return {
         preparePublicationBundle(options) { assert.equal(options.sourceCommit, merge); assert.equal(options.sourceRef, identity.sourceRef);
           fs.mkdirSync(options.outDir, { recursive: true }); fs.writeFileSync(path.join(options.outDir, 'pulse-publication-manifest.json'), '{"fixture":true}'); },
@@ -109,7 +109,14 @@ async function main() {
   try {
     assert.throws(() => owner.capture(repo, identity, output), /incomplete installed gate/); assert.equal(copied, 0);
     rejectEvidence = false;
+    assert.throws(() => owner.capture(repo, { ...identity, schemaVersion: owner.LEGACY_SCHEMA }, output), /requires v2 identity/);
     const captured = owner.capture(repo, identity, output);
+    assert.equal(captured.schemaVersion, owner.SCHEMA);
+    assert.equal(captured.documentationMode, 'source-only');
+    assert.equal(Object.hasOwn(captured, 'documentationManifestSha256'), false);
+    assert.equal(fs.existsSync(path.join(output, 'documentation')), false);
+    assert.equal(captured.sourceChecksSha256, captureSeal.sourceChecks.sha256);
+    assert.deepEqual(fs.readFileSync(path.join(output, 'source-checks.json')), fs.readFileSync(checksFile));
     assert.equal(copied, 1); assert.equal(captured.artifact, 'pulse-pr-release-qualification-123-2');
     assert.match(captured.bundleManifestSha256, /^[a-f0-9]{64}$/);
     assert.equal(captured.sealSha256, crypto.createHash('sha256').update(fs.readFileSync(path.join(output, 'release-seal.json'))).digest('hex'));
@@ -117,7 +124,7 @@ async function main() {
     assert.deepEqual(JSON.parse(fs.readFileSync(path.join(output, 'qualification.json'))), captured);
   } finally { loader._load = load; }
 
-  const receipt = { ...identity, status: 'passed' };
+  const receipt = { ...identity, status: 'passed', documentationMode: 'source-only' };
   const mergedPr = { ...event.pull_request, merged: true, merge_commit_sha: merge };
   git('tag', identity.releaseTag, merge);
   const bind = (r = receipt, pr = mergedPr) => owner.verifyMergeBinding({ root: repo, receipt: r, pullRequest: pr, repository, tag: identity.releaseTag });
@@ -196,27 +203,74 @@ async function main() {
   const calls = [];
   Module._load = function(request, parent, ...rest) {
     if (parent?.filename.endsWith('/scripts/release-source-checks.cjs')) {
-      if (request === './documentation-deployment.cjs') return { sealDocumentationCandidate(options) {
-        fs.mkdirSync(options.outDir, { recursive: true }); fs.writeFileSync(path.join(options.outDir, 'site.json'), '{}');
-      } };
+      if (request === './release-context-freshness.cjs') return { ...require('../../../scripts/release-context-freshness.cjs'), check(_root, candidate) { calls.push('context'); return require('./context-freshness-fixture.cjs').freshness(candidate); } };
+      if (request === './documentation-deployment.cjs') throw new Error('v2 source checks must not seal documentation');
       if (request === './documentation-ownership.cjs') return { synchronizeDocumentationMetadata() { calls.push('metadata'); } };
       if (request.endsWith('/sync-doc-snippets.cjs')) return { synchronizeDocSnippets() { calls.push('snippets'); return { status: 'ok' }; } };
-      if (request === './documentation-release.cjs') return { validateDocumentationSource(options) { calls.push('documentation'); options.onValidatedSite(path.join(root, 'site'));  return { status: 'ok', maintenance: { status: 'ok', publication: { status: 'ok' } }, site: { generatedFiles: 1 } }; } };
+      if (request === './documentation-release.cjs') return { validatePackageDocumentation(options) { calls.push('documentation'); assert.equal(options.onValidatedSite, undefined); return { status: 'ok', validationKind: 'package-source', maintenance: { status: 'ok', publication: { status: 'ok' } } }; } };
     }
     return original.call(this, request, parent, ...rest);
   };
   try {
     const file = path.join(root, 'source-checks.json'); source.check(repo, file);
     const bytes = fs.readFileSync(file), digest = crypto.createHash('sha256').update(bytes).digest('hex');
-    source.verify(repo, file, digest); assert.deepEqual(calls, ['metadata', 'snippets', 'documentation']);
-    const retained = path.join(root, 'documentation/site.json');
-    fs.writeFileSync(retained, 'tampered'); assert.throws(() => source.verify(repo, file, digest), /documentation changed/);
-    fs.writeFileSync(retained, '{}');
+    source.verify(repo, file, digest); assert.deepEqual(calls, ['context', 'metadata', 'snippets', 'documentation']);
+    const report = JSON.parse(bytes);
+    assert.equal(report.schemaVersion, source.SCHEMA);
+    assert.equal(Object.hasOwn(report, 'documentationCandidate'), false);
+    for (const mutate of [r => { r.schemaVersion = 'unknown'; }, r => { r.documentation.validationKind = 'site'; },
+      r => { r.documentationCandidate = {}; }, r => { r.documentation.site = {}; }, r => { r.snippets.status = 'failed'; }]) {
+      const bad = structuredClone(report); mutate(bad); fs.writeFileSync(file, JSON.stringify(bad));
+      assert.throws(() => source.verify(repo, file, crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')));
+    }
+    // Supported v1 receipts still require their retained, hash-pinned site.
+    const retainedDir = path.join(root, 'legacy-documentation'); fs.mkdirSync(retainedDir);
+    const retained = path.join(retainedDir, 'site.json'); fs.writeFileSync(retained, '{}');
+    const legacy = { ...report, schemaVersion: source.LEGACY_SCHEMA,
+      documentation: { ...report.documentation, site: { generatedFiles: 1 } },
+      documentationCandidate: { directory: retainedDir, ...require('../../../scripts/release-recovery.cjs').describeArtifact(retainedDir) } };
+    delete legacy.documentation.validationKind;
+    const legacyBytes = JSON.stringify(legacy), legacyDigest = crypto.createHash('sha256').update(legacyBytes).digest('hex');
+    fs.writeFileSync(file, legacyBytes); source.verify(repo, file, legacyDigest);
+    fs.writeFileSync(retained, 'tampered'); assert.throws(() => source.verify(repo, file, legacyDigest), /documentation changed/);
+    fs.unlinkSync(retained); assert.throws(() => source.verify(repo, file, legacyDigest));
+    fs.writeFileSync(file, bytes);
     fs.appendFileSync(file, ' '); assert.throws(() => source.verify(repo, file, digest), /receipt changed/); fs.writeFileSync(file, bytes);
+    const oldEnvironment = process.env.SOURCE_CHECK_RECEIPT_TEST;
+    process.env.SOURCE_CHECK_RECEIPT_TEST = 'changed';
+    assert.throws(() => source.verify(repo, file, digest), /inputs changed/);
+    if (oldEnvironment === undefined) delete process.env.SOURCE_CHECK_RECEIPT_TEST;
+    else process.env.SOURCE_CHECK_RECEIPT_TEST = oldEnvironment;
     write('node_modules/input.js', 'two'); assert.throws(() => source.verify(repo, file, digest), /inputs changed/); write('node_modules/input.js', 'one');
     write('dirty.txt', 'dirty'); assert.throws(() => source.verify(repo, file, digest), /clean candidate/); fs.unlinkSync(path.join(repo, 'dirty.txt'));
     assert.throws(() => source.verify(root, file, digest), /another checkout/);
   } finally { Module._load = original; }
-  console.log('ok - pre-main identity, explicit qualification, live-source invalidation, terminal seal, merge/squash/linear-rebase binding and pinned source checks');
+  // Website-owned history is hashed as stored, including its final newline.
+  // Exercise identify() with real Git blobs, not only the standalone checker.
+  git('checkout', '-q', '--detach', base);
+  git('tag', 'v1.0.0-beta.7', base);
+  prepare('1.0.0-beta.8');
+  const historicalPath = 'release/documentation-release-history/v1.0.0-beta.7.json';
+  const historicalBytes = `${JSON.stringify(manifest('1.0.0-beta.7'), null, 2)}\n`;
+  write(historicalPath, historicalBytes);
+  write('release/documentation-versions.json', { latest: '1.0.0-beta.8', versions: [
+    { version: '1.0.0-beta.8', segment: 'v1.0.0-beta.8', status: 'current' },
+    { version: '1.0.0-beta.7', segment: 'v1.0.0-beta.7', status: 'archived',
+      deliveryOwner: 'website', sourceTag: 'v1.0.0-beta.7', sourceCommit: base,
+      sourceManifest: historicalPath,
+      sourceManifestSha256: crypto.createHash('sha256').update(historicalBytes).digest('hex') }
+  ] });
+  const identifyHistory = message => {
+    const historyHead = commit(message);
+    const historyTree = git('rev-parse', 'HEAD^{tree}');
+    const historyMerge = git('commit-tree', historyTree, '-p', base, '-p', historyHead, '-m', message);
+    git('checkout', '-q', '--detach', historyMerge);
+    return identify({ ...event, pull_request: { ...event.pull_request,
+      head: { ...event.pull_request.head, sha: historyHead } } }, { ...env, GITHUB_SHA: historyMerge });
+  };
+  assert.equal(identifyHistory('website history with newline').preparation.preparedRelease, true);
+  write(historicalPath, historicalBytes.slice(0, -1));
+  assert.throws(() => identifyHistory('tampered historical bytes'), /historical release metadata digest differs/);
+  console.log('ok - pre-main identity, exact historical metadata bytes, explicit qualification, live-source invalidation, terminal seal, merge/squash/linear-rebase binding and pinned source checks');
 }
 main().finally(() => fs.rmSync(root, { recursive: true, force: true })).catch(error => { console.error(error.stack || error); process.exitCode = 1; });

@@ -12,29 +12,30 @@ function enabled(plan) { return Boolean(plan.packages && plan.packages.applicati
 // binds its canonical host imports to the same Fastly runtime as ordinary handlers.
 function portable(plan) {
   const application = plan.packages.application;
-  if (application.contractId !== 'pulse.entities'
-    || application.version !== 'pulse.package-native-application.v1'
+  if (!['pulse.entities', 'pulse.mcp'].includes(application.contractId)
+    || !['pulse.package-native-application.v1', 'pulse.package-native-application.v2'].includes(application.version)
     || application.effectFailure !== 'package-completion'
     || application.automaticFallback !== false
     || crypto.createHash('sha256').update(application.source).digest('hex') !== application.sourceHash) {
     throw new Error('Unsupported or invalid Fastly package Native application.');
   }
   const source = application.source.replace(
-    /^@external\("pulse_host", "([a-z_]+)"\) declare function (\w+)\(([^)]*)\): (i32|void)$/gm,
+    /^@external\("pulse_host", "([a-z_]+)"\) declare function (\w+)\(([^)]*)\): (i32|f64|void)$/gm,
     (_declaration, name, symbol, parameters, result) => {
       if (!CANONICAL_NATIVE_IMPORT_NAMES.includes(name)) throw new Error('Unsupported package host import: ' + name);
       const args = parameters ? parameters.split(',').map(parameter => parameter.trim().split(':')[0]).join(', ') : '';
+      if (name === 'package_http_version') return `function ${symbol}(): i32 { return 1 }`;
       if (name === 'value_json') return `function ${symbol}(${parameters}): i32 {
   // A failed request read must reach the provider's terminal error response,
   // without trapping JSON.parse<string> in the guest first.
-  if (handle <= 0) return changetype<i32>('""')
-  const text = __pulse_fastly_json(handle, 0)
+  if (${args} <= 0) return changetype<i32>('""')
+  const text = __pulse_fastly_json(${args}, 0)
   if (String.UTF8.byteLength(text) > ${CANONICAL_NATIVE_VALUE_TRANSFER_MAX_BYTES}) {
     __pulse_fastly_fail(PULSE_ERROR_VALUE, 172, -1); return changetype<i32>('null')
   }
   return changetype<i32>(text)
 }`;
-      const guard = name === 'log' ? `if (level <= 0 || level > ${Number(plan.logging.reporting.level)}) return; ` : '';
+      const guard = name === 'log' ? `if (${args.split(',')[0]} <= 0 || ${args.split(',')[0]} > ${Number(plan.logging.reporting.level)}) return; ` : '';
       return `function ${symbol}(${parameters}): ${result} { ${guard}${result === 'void' ? '' : 'return '}host_${name}(${args}) }`;
     }
   );
@@ -91,4 +92,23 @@ function driverLoop() {
   }`;
 }
 
-module.exports = { enabled, portable, instrument, driverLoop };
+function terminalFailure(source, plan) {
+  if (plan.packages?.application?.terminalFailure !== 'package-http-v1') return source;
+  const helper = `
+function __pulse_package_http_failure_send(kind: i32): void {
+  __request_error_response = true;
+  __pulse_fastly_last_error = 0; __pulse_fastly_error_stage = 0; __pulse_fastly_error_effect = -1;
+  const value = JSON.parse<JSON.Value>(changetype<string>(pulse_package_http_failure(kind)))
+  const response = host_response_custom(__pulse_package_value(value))
+  __pulse_fastly_send_result(response)
+}
+`;
+  const bodyMarker = '  output.status = __pulse_fastly_error_stage == 21 ? 413 : 400;';
+  if (!source.includes(bodyMarker)) throw new Error('Package HTTP body completion boundary drift');
+  source = source.replace(bodyMarker, '  const kind = __pulse_fastly_error_stage == 21 ? 2 : 3; __pulse_package_http_failure_send(kind); return true;\n' + bodyMarker);
+  const timeoutMarker = 'function __request_send_timeout(): void {';
+  if (!source.includes(timeoutMarker)) throw new Error('Package HTTP deadline completion boundary drift');
+  source = source.replace(timeoutMarker, timeoutMarker + '\n  __pulse_package_http_failure_send(1); return;');
+  return source + helper;
+}
+module.exports = { enabled, portable, instrument, driverLoop, terminalFailure };

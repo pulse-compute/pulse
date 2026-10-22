@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 'use strict';
+const assert = require('node:assert/strict');
 
 const crypto = require('node:crypto');
 const fs = require('node:fs');
@@ -20,7 +21,7 @@ const {
   PUBLICATION
 } = require('./package-support.cjs');
 const {
-  validateDocumentationSource,
+  validatePackageDocumentation,
   validatePackedDocumentationSet
 } = require('./documentation-release.cjs');
 
@@ -241,9 +242,17 @@ function packRelease(options = {}) {
   const progress = (message) => process.stderr.write(`[pulse:pack] ${message}\n`);
   try {
     progress('Checking documentation source');
+    const contextOwner = require('./release-context-freshness.cjs');
+    const candidate = require('./release-feature-acceptance.cjs').candidateIdentity(repoRoot);
+    let contextFreshness;
     if (options.sourceChecks) {
-      require('./release-source-checks.cjs').verify(repoRoot, options.sourceChecks.file, options.sourceChecks.sha256);
-    } else validateDocumentationSource({ repoRoot });
+      const checked = require('./release-source-checks.cjs').verify(repoRoot, options.sourceChecks.file, options.sourceChecks.sha256);
+      require('./release-source-checks.cjs').assertPackageSourceChecks(checked);
+      contextFreshness = checked.contextFreshness;
+    } else {
+      contextFreshness = contextOwner.check(repoRoot, candidate);
+      validatePackageDocumentation({ repoRoot });
+    }
     const legalBytes = new Map();
     for (const legalFile of LEGAL.packageFiles) {
       const source = path.join(repoRoot, legalFile);
@@ -285,6 +294,10 @@ function packRelease(options = {}) {
         if (!packageNames.has(dependency.name)) fail(`Packed ${entry.name} depends on missing release package ${dependency.name}`);
       }
     }
+    const context = contextOwner.verifyPacked(contextFreshness,
+      documentationArchives.find(entry => entry.name === '@pulse-compute/cli').entries);
+    assert.deepEqual(require('./release-feature-acceptance.cjs').candidateIdentity(repoRoot), candidate,
+      'Candidate changed while packing context');
     const sourceCatalogBytes = fs.readFileSync(RELEASE_MANIFEST_FILE);
     const manifest = Object.freeze({
       schemaVersion: RELEASE_SCHEMA,
@@ -298,6 +311,7 @@ function packRelease(options = {}) {
         sha256: sha256(sourceCatalogBytes)
       }),
       documentation: DOCUMENTATION,
+      context,
       packageCount: packages.length,
       packages: Object.freeze(packages),
     });

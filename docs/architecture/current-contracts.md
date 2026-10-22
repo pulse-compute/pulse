@@ -9,36 +9,36 @@ are authoritative together. Git and sealed release checkpoints preserve why the
 contracts changed; numbered decision records are not part of the active
 documentation system.
 
-## Contract precedence
+## Bounded computation calls
 
-The private, unreleased `packages/mcp` component owns MCP HTTP admission and
-protocol framing outside Entities. With emitted catalog/schema artifacts and a
-fixed governed HTTP endpoint configured, its MCP-03 facade supports tools/list
-and tools/call, schema projection and finite tool results. Otherwise discovery
-advertises no optional capabilities. It has no Pulse runtime/compiler dependency
-or direct application-handler seam. MCP-04 optionally authenticates through a
-configured external OAuth issuer using bounded token introspection, checks the
-resource audience and scopes, filters tool discovery, and denies unauthorized
-operations before governed dispatch. Backend credentials are distinct from
-client tokens; the deploying application owns TLS and backend protection.
-PMCP-01A adds an explicit `legacyProtocol: '2025-06-18'` host option for stateless
-initialize/ping/tools compatibility with measured Codex CLI 0.160.1. The modern
-profile remains the default; mixed modern framing cannot downgrade to legacy.
-Both profiles share bounded admission, fresh per-request authority and governed
-HTTP dispatch. Initialization retains no session, capability grant or principal;
-notifications do not execute or coordinate cancellation. No SSE, Resources,
-Prompts, stdio or direct-handler boundary is added.
-PMCP-01B qualifies the unchanged modern default with Claude Code 2.1.292:
-packed Node HTTP discovery, scoped tools, separate backend credentials and fresh
-request authority, including denied writer access and token revocation. This
-local no-inference control-channel proof does not establish Desktop, claude.ai,
-browser OAuth, deployed or other client-version support.
-MCP-05 qualifies the Node JavaScript composition through an independent packaged
-resource-directory consumer and the pinned official client, including controlled
-OAuth, real local HTTP effects and bounded failure/cancellation. Installed local
-acceptance does not establish deployed or Native/Fastly MCP support.
-A same-artifact Native binding requires a separate owner review; this component
-does not widen the released package set or the guest authoring API.
+Selected plain HTTP handlers, reachable Router handlers and managed MCP
+operations may synchronously call a named imported project computation through
+`ctx.call(target, input, { inputSchema, outputSchema })`. Both IDs are literal
+registered object schemas; a target identity has one pair. Node Native, Fastly
+Native and explicit Node JavaScript support this boundary. Fastly JavaScript
+and event contexts do not. The [canonical API](../../API.md#ctxcall) owns the
+source-bound example and full restrictions.
+
+The callee receives a recursively readonly validated input and only resource
+and workspace authority. Output conversion returns an independently owned,
+validated result. Existing pure helper admission, bounds, codec, resource,
+workspace, request-budget and error owners apply. There are at most sixteen
+reachable static occurrences, with no nested/recursive calls, call in a loop,
+await, dynamic target, arbitrary package target, effect or context escape.
+Entities uses this shared machinery; it owns only its invocation adapter.
+
+`PulseComputationContext`, `PulseReadonly`, `PulseComputation` and
+`PulseCallSchemas` belong to runtime declarations and are re-exported by Pulse.
+Runtime authoring, handler types and context inventories are version 5.
+Per-computation descriptors and JavaScript callable tables use
+`pulse.computation-call.v1`; independent validators reject stale proof-era or
+unversioned callable metadata even after a plan is rehashed. Optional callable
+metadata leaves call-free Native plan version/identity unchanged. No-call and
+imported-unused Wasm equality remains a gate; used calls pay conversion cost.
+No new runtime registration, package export entry point, dependency, provider,
+continuation ABI or release package-set change is introduced.
+
+## Contract precedence
 
 When two surfaces appear to disagree, use this order:
 
@@ -59,6 +59,54 @@ disabled-cache arena allocation in pinned json-as 1.5.0. Defaults, enabled-cache
 behavior, schema semantics, GC policy and provider authority remain unchanged.
 The setting propagates from portable compilation to provider realization and is
 bound into retained report recipes; it is independent of scalar handle lifetime.
+
+## MCP protocol and operation ownership
+
+`@pulse-compute/mcp/pulse` owns static MCP admission, discovery and tool-result
+framing. Its selected Entities router owns schema-bound operation invocation
+inside the same request; shared `ctx.call` owns reusable computation. Node
+Native, Fastly Native and explicit Node JavaScript support this facade. Fastly
+JavaScript does not satisfy its request-deadline requirement. The binding
+retains finite request/result limits, explicit protocol selection and no
+internal HTTP hop. It adds no OAuth callback, dynamic registry or ambient host
+authority.
+
+The package root and `/node` are separate JavaScript host adapters. They project
+an emitted catalog and schema registry and forward admitted calls to a fixed
+governed HTTP endpoint. Their optional OAuth admission uses an external issuer,
+resource audience/scopes and bounded introspection; backend credentials remain
+separate from client tokens. These host options do not widen the static facade.
+
+Both paths keep MCP protocol state outside runtime core. Their explicit legacy
+protocol option does not permit automatic downgrade from modern framing.
+Initialization creates no retained session or capability grant. Notifications
+do not invoke tools. Neither path provides SSE, MCP Resources, Prompts or stdio.
+[The package guide](../packages/mcp.md) owns the public construction and limits;
+[Entities and adapters](../concepts/entities-and-adapters.md#mcptools-boundary)
+explains the invocation boundary. Local installed and actual-host receipts are
+separate from deployed-service qualification.
+
+## Bounded effect collections (B10-06)
+
+`ctx.effects<T>({ max })`, inline `add`, and awaited `ctx.parallel(collection)`
+form one execution-owned, single-use collection contract. Literal capacity 1–32,
+straight-line build/flush source admission, argument capture, ordered results,
+whole-cohort effect-budget admission and cancellation are defined in
+[effects and continuations](../concepts/effects-and-continuations.md#bounded-dynamic-collections).
+This adds no arbitrary Promise scheduler, callback admission or target fallback.
+
+JavaScript privately claims queued roots before provider dispatch. Native plan
+v10 records `effect-collection` v1 with a fixed bank of unique slots and an active
+prefix. The optional `effect_collection_count` host import binds input length,
+capacity and continuation identity; old hosts reject that required import/plan.
+Static groups keep exact-list validation. Empty collections do not suspend.
+The same invocation-ticket owners authenticate completion and retire terminal
+work. Code and slot metadata grow linearly with the declared maximum.
+
+The CLI uses exact Native execution for collection plans in `test` and `dev`.
+The registered collection corpora cover source/runtime and provider contracts;
+clean-machine acceptance reuses its independently installed candidate packages
+for the public example. Full release qualification remains a separate gate.
 
 ## One application contract and one compiler spine
 
@@ -165,7 +213,7 @@ implies delivery, a receipt, persistence, retry, a public provider listener, or
 automatic target fallback. Router lifecycle `on`, channel, and
 connect/disconnect semantics remain retired.
 
-The event contract reserves no `call` surface: there is no `ctx.call`,
+The event contract reserves no `call` surface: event contexts have no `ctx.call`,
 application call method, generic call effect, adapter operation, compiler
 opcode, or runtime capability. `ctx.emit` is strictly one-way and cannot enter
 local dispatch. Any request/reply or reflexive routing mechanism must arrive as
@@ -410,7 +458,7 @@ not a hard limit on the number of parameters or on the size of every function.
 ## Synchronous pure source helpers (PF-02/PF-03/PF-04/PF-06)
 
 The integrated Native plan compiler identity is
-`pulse.canonical-native-plan-compiler.v10`. It combines the existing helper
+`pulse.canonical-native-plan-compiler.v11`. It combines the existing helper
 lowering with terminal package applications and the bounded Node body/output
 extensions. The plan schema, helper contracts and host ABI retain their own
 versions; this compiler identity does not widen their admission rules.
@@ -773,7 +821,7 @@ executions with the same caller-supplied execution label. Node Native effect and
 continuation traces include invocation IDs while retaining static site IDs.
 Original-source JavaScript continues to use its per-call effect identities.
 
-The managed Native controller (`pulse.canonical-native-host.v4`) accepts a pending effect's opaque ticket in
+The managed Native controller (`pulse.canonical-native-host.v6`) accepts a pending effect's opaque ticket in
 `setEffectResult(ticket, result)`. Object identity authenticates the ticket;
 copied fields, foreign executions, old loop visits and duplicate settlement fail
 with `PULSE_EFFECT_INVOCATION_INVALID` before allocating a result handle or
@@ -898,6 +946,15 @@ with lossless generations, conditional options, bounded metadata/body reads and
 readiness deadlines. Its AssemblyScript limits come from the runtime owner; the
 shared corpus checks its wire and outcome semantics. Fastly JavaScript remains
 incomplete capability mapping. Deployed acceptance remains a separate gate. See [conditional KV](../concepts/effects-and-continuations.md#conditional-kv).
+
+The same bounded KV lifecycle owns `kv.list({ limit, prefix?, cursor? })` and
+`kv.delete(key)`. Listing exposes exactly one provider page, at most 100 keys,
+with an opaque continuation cursor or `null` at the end. It never traverses the
+store implicitly. Delete distinguishes deletion, absence, explicit rejection and
+uncertain acceptance without a preflight read. Both operations support Node
+JavaScript/Native and Fastly Native; Fastly JavaScript reports them unsupported.
+See [KV listing and deletion](../concepts/effects-and-continuations.md#kv-listing-and-deletion)
+for bounds, live-page semantics and local versus hosted evidence.
 
 `ctx.parallel({ ... })` is the explicit cross-target concurrency form. Router
 `next()` and `next(error)` are terminal cursor transfers, not onion-style calls:
@@ -2332,7 +2389,7 @@ without moving package semantics into the compiler or widening the trust model.
 
 ## JWT verification
 
-The synchronized `1.0.0-beta.9` JWT/crypto packages compose
+The synchronized `1.0.0-beta.10` JWT/crypto packages compose
 `@pulse-compute/jwt` over the lower-level, provider-neutral verification
 contract owned by `@pulse-compute/crypto`. The executable algorithm set is
 HS256 and ES256. Crypto verifies a MAC or signature over caller-supplied bytes
@@ -2457,7 +2514,7 @@ publish, promote, deploy, or activate the release.
 
 ## Support, release, and authority
 
-Pulse `1.0.0-beta.9` is a Beta intended for the `beta` channel.
+Pulse `1.0.0-beta.10` is a Beta intended for the `beta` channel.
 Documented, evidence-backed behavior is intentional, but public surfaces may
 change deliberately before a compatibility-bearing release. Unsupported
 behavior fails explicitly, historical and implementation subpaths gain no
@@ -2637,3 +2694,123 @@ process. Deployment owners wire signals and retain supervisor/release authority.
 Reference KV resets for each host generation and is not durable production KV.
 The core finite-response contract is separate from stream/blob launcher extensions.
 See [Node build and execution](../guides/deploying-node.md) for defaults and limits.
+
+## Embedded binary resource reads
+
+`pulse.binaryResources` owns explicit build-time admission of an immutable
+manifest and logical bindings, using mandatory finite application budgets.
+The resource catalogue reuses embedded-manifest integrity validation without
+changing HTTP Assets admission. `ctx.resources.map` creates an execution-owned
+view with checked byte/scalar reads; it does not grant filesystem or network
+authority. The [runtime contract](../../API.md#ctxresources) defines the source
+subset, lifecycle, numeric rules and unchanged loop bounds.
+
+Native plans carry `pulse.binary-resource-read.v1` expressions and a validated
+`pulse.binary-resource-catalogue.v1` selection. An optional host extension checks
+numeric offsets and execution deadlines before any i32 conversion. Wasm owns
+raw immutable data and little-endian loads. No resource view is stored in a
+continuation or exported as a general byte buffer. JavaScript uses private
+snapshot backing and execution-branded views. Same-candidate artifact identity
+includes the selected bytes; passing historical results never substitutes for
+execution qualification. B10-MCP-02 adds strict bounded `readUtf8` expressions
+(`pulse.binary-resource-utf8.v1`) and fixed-capacity request-local numeric
+workspaces (`pulse.numeric-workspace.v1`). Plan/compiler v11 and AS generator
+v10 invalidate earlier generated artifacts; guest ABI 2 has optional workspace
+number/check imports. Node host v5 and Fastly Native implement those checks.
+The independent plan validator proves allocation identity, initialization
+ownership and checked operation shape. Each Native allocation uses raw f64
+storage, zeroed on entry; no pointer or workspace handle escapes into effects.
+JavaScript uses private zeroed numeric backing and execution-checked views.
+The public bounds and source restrictions are in
+[`ctx.workspace`](../../API.md#ctxworkspace). Existing pure-loop limits remain
+unchanged. Workspace-only artifacts also retain synchronous deadline checks.
+
+The isolated actual-corpus and capacity-bound query-to-citation proof is in
+[B10-MCP-02](../internal/b10-mcp-02/README.md). It uses injected Fastly ABI
+execution, not CLI/Viceroy or a completed MCP transport.
+
+`scripts/pulse-context-build.cjs` owns explicit offline context resource generation
+and read-only reconstruction. It uses the existing corpus extractor/allowlist and
+writes the corpus module, three v1 binary resources, scalar metadata and canonical
+`pulse.context-build-manifest.v1`, with byte-identical installed CLI mirrors.
+Generation requires the release-pinned Node producer. The manifest binds source
+selections/citation blobs, finite producer source closure, config/lockfile,
+version/status, row/dictionary identities, outputs and simultaneous byte budgets.
+Its hash is external; no candidate tree, clock, cache or absolute path enters the
+tracked output. Checks reconstruct into a fresh temporary directory, compare all
+outputs, and reject drift without changing the checkout. The receipt identifies
+the verifier Node separately from the pinned producer.
+
+Repository build and documentation checks require fresh context outputs;
+documentation synchronization copies emitted resources but never generates the
+vectors. The focused PR test covers independent reconstruction and negative
+format/freshness cases. The existing JavaScript host retains its v1 corpus module;
+the new resources are the sparse lexical inputs for Native migration. See the
+[explicit build workflow](../../examples/12-pulse-context-mcp/README.md#maintaining-the-snapshot).
+The compiled application now uses these resources through shared `ctx.call`.
+Its [current workflow](../../examples/12-pulse-context-mcp/README.md#compiled-application-workflow)
+documents installed execution, reporting and local Fastly/client qualification.
+These checks do not substitute for a fresh candidate-bound release seal or
+deployed-service acceptance.
+
+## Shared computation and binary resource reporting
+
+The optional `pulse.report-computation.v1` inventory retains shared callee
+definitions, original authored call-site and helper spans with source hashes,
+schema pairs, and canonical entry consumers. Adapted computation coordinates
+are never presented as original source. Repeated calls share one definition;
+Router registrations remain distinct consumers. Managed callers and helpers
+without a retained entry join stay partial. Per-callee final code-body bytes
+remain unavailable: source ownership is not final instruction ownership.
+These observations are collected outside executable plans and hashes, through
+the ordinary callable source collection and report projection.
+
+The optional `pulse.report-binary-resources.v1` inventory uses the existing safe
+resource catalogue summary. It records admission budgets, original manifest
+decoded/serialized sizes, logical bindings and shared backing identities.
+Selection is Native plan selection, including callees; it is not execution
+frequency. Unselected aliases may share backing with selected aliases. A unique
+backing is counted once even when several callables or logical bindings use it.
+The `binary-resources` producer can be complete while overall resource coverage
+remains partial. No resource payloads or manifest paths enter the capsule.
+
+Resolved selected backing bytes are separate from observed artifact bytes.
+Build-time raw-data proof accepts only a single complete match per nonempty
+selected backing in parsed Wasm data payloads, with disjoint ranges and at least
+32 bytes per nonempty pattern. Empty backing adds zero bytes. Ambiguous, repeated,
+overlapping, transformed or missing patterns, unsupported data expressions, and
+exhausted scan budgets stay unavailable. The proof is bound to the exact artifact
+hash and stage; retained-byte replay verifies ranges and hashes again. Its union
+is subtracted once from that artifact's unattributed data ledger. Logical rows
+never add their shared input lengths to physical totals. This is raw-data
+placement evidence, not a runtime backing-copy count, heap census, initial
+memory size or process measurement; instance/process memory stays unknown.
+
+Existing JSON, terminal and resource-detail HTML projections expose these facts.
+Historical capsules lacking the optional records preserve their identity; no
+historical 06B/07B measurement is imported as fresh build evidence. Their bounded
+performance/lifetime receipts remain separate; actual local Fastly observations also do not establish
+deployed-service acceptance. This does not implement command-aware evidence
+summaries from #440 or resolve the historical `REPORT_ARTIFACT_HASH` uncertainty.
+
+
+## Native optimization recipe selection
+
+New Native compilation uses `native-bounded-size`: O3, shrink level 2,
+without convergence. `--native-shrink0` restores O3/shrink0/no convergence.
+A Native profile may set `nativeOptimization` to either recipe or the existing
+`experimental-native-size` and `experimental-native-bounded-size` modes.
+An explicit compile/build flag overrides the profile. The three recipe flags
+are mutually exclusive and JavaScript builds reject them; JavaScript profiles
+reject `nativeOptimization`. Portable `compile` still explicitly compiles Native.
+
+`--experimental-native-size` remains convergence-enabled opt-in.
+`--experimental-native-bounded-size` retains its exact bounded behavior and
+historical experimental recipe identity, although its optimizer settings now
+match the ordinary default. All new Native manifests and retained evidence
+record the explicit selected identity. Historical absent metadata and report
+`default` identities keep their historical meaning; passive replay never
+resolves them through the current build default or invents compiler measurements.
+Guest linking retains its independent final optimizer, retention and merging
+posture; bounded and shrink0 primary compilation both use `native-default`
+link posture. This does not change the guest prebuilt recipe.

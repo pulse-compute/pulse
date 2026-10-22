@@ -2,6 +2,8 @@
 
 const HANDLER_SURFACE_CONTRACT_VERSION = 'pulse.handler-surface.v4';
 const HANDLER_SURFACE_CONTRACT_ID = 'pulse.handler-surface';
+// Optional extension: call-free plans retain their existing format and identity.
+const CALLABLE_COMPUTATION_VERSION = 'pulse.computation-call.v1';
 
 const HANDLER_SURFACE_CLASSES = Object.freeze([
   'handler-wrapper',
@@ -317,15 +319,64 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     status: 'supported-when-nonstrict'
   }),
   surface({
+    id: 'ctx.call',
+    class: 'sync',
+    canonicalOperation: 'computation.call',
+    publicForms: ["ctx.call(target, input, { inputSchema: 'app.Input', outputSchema: 'app.Output' })"],
+    awaitPolicy: 'forbidden',
+    validPositions: ['selected-http-caller-outside-loops-and-nested-calls'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'shared-bounded-computation-with-schema-conversion',
+    schemaPolicy: 'literal-registered-input-output-object-pair',
+    shapePolicy: CALLABLE_COMPUTATION_VERSION,
+    status: 'supported',
+  }),
+  surface({
+    id: 'ctx.resources',
+    class: 'sync',
+    canonicalOperation: 'resource.map-and-read',
+    publicForms: ["const view = ctx.resources.map('logical-id')", 'view.byteLength', 'view.readU8(offset)', 'view.readU32LE(offset)', 'view.readF32LE(offset)', 'view.readUtf8(offset, byteLength)'],
+    awaitPolicy: 'forbidden',
+    validPositions: ['const-view-and-direct-scalar-read'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'immutable-raw-data-and-checked-scalar-load',
+    shapePolicy: 'pulse.binary-resource-read.v1',
+    status: 'supported',
+  }),
+  surface({
+    id: 'ctx.workspace',
+    class: 'sync',
+    canonicalOperation: 'workspace.create-read-write',
+    publicForms: ['const cells = ctx.workspace.numbers(capacity)', 'cells.length', 'cells[index]', 'cells[index] = value'],
+    awaitPolicy: 'forbidden',
+    validPositions: ['const-workspace-and-direct-index-access'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'zeroed-bounded-f64-storage-and-checked-index-access',
+    shapePolicy: 'pulse.numeric-workspace.v1',
+    status: 'supported',
+  }),
+  surface({
+    id: 'ctx.effects',
+    class: 'sync',
+    canonicalOperation: 'effect.collection.create',
+    publicForms: ['ctx.effects<T>({ max: 32 })', 'effects.add(pulseEffect)'],
+    awaitPolicy: 'forbidden',
+    validPositions: ['bounded-collection-build-region'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'emit-bounded-slot-bank',
+    shapePolicy: 'single-local-const-direct-for-of-immediate-awaited-flush-v1',
+    status: 'supported'
+  }),
+  surface({
     id: 'ctx.parallel',
     class: 'effect',
     canonicalOperation: 'effect.group.parallel',
-    publicForms: ['ctx.parallel({ key: pulseEffect, ... })'],
+    publicForms: ['ctx.parallel({ key: pulseEffect, ... })', 'ctx.parallel(effects)'],
     awaitPolicy: 'required-when-consumed',
     validPositions: ['await-expression'],
     targetSupport: { javascript: true, native: true },
     nativeBehavior: 'emit-explicit-effect-group-and-continuation',
-    shapePolicy: 'static-nonempty-object-literal-with-fixed-non-index-string-keys-and-pulse-effect-values',
+    shapePolicy: 'static-keyed-record-or-single-use-bounded-effect-collection-v1',
     status: 'supported'
   }),
   surface({
@@ -406,9 +457,9 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     nativeBehavior: 'emit-kv-put-effect',
     status: 'supported'
   }),
-  ...['getVersioned', 'insertIfAbsent', 'compareAndSwap'].map((method) => surface({
+  ...['getVersioned', 'insertIfAbsent', 'compareAndSwap', 'list', 'delete'].map((method) => surface({
     id: `ctx.kv.${method}`, class: 'effect', canonicalOperation: `effect.kv.${method}`,
-    publicForms: [`ctx.kv<T>('namespace').${method}(${method === 'getVersioned' ? 'key' : method === 'compareAndSwap' ? 'key, generation, value' : 'key, value'})`],
+    publicForms: [`ctx.kv<T>('namespace').${method}(${method === 'list' ? '{ limit, prefix?, cursor? }' : method === 'getVersioned' || method === 'delete' ? 'key' : method === 'compareAndSwap' ? 'key, generation, value' : 'key, value'})`],
     awaitPolicy: 'required-when-consumed', validPositions: ['await-expression', 'parallel-member'],
     targetSupport: { javascript: true, native: true }, nativeBehavior: 'emit-conditional-kv-effect-and-continuation',
     redaction: 'key-generation-value-required', status: 'supported'
@@ -643,6 +694,7 @@ function defaultHandlerSurfaceContract() {
 }
 
 module.exports = {
+  CALLABLE_COMPUTATION_VERSION,
   HANDLER_SURFACE_CONTRACT_VERSION,
   HANDLER_AUTHORING_POLICY_VERSION,
   HANDLER_AUTHORING_MODES,

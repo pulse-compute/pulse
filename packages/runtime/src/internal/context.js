@@ -175,6 +175,7 @@ function createContext(frame) {
 
   const eventContext = frame.event !== undefined;
   const ctx = {
+    ...(!eventContext && options.callableTable ? { call: require('./callable.js').createCallBoundary(effects, options) } : {}),
     encodeJson(value, schemaId) {
       const id = requireExplicitSchemaId(schemaId, options, 'application-value');
       return encodeSchemaValue(id, value, options, { source: 'application-value' }).text;
@@ -185,6 +186,8 @@ function createContext(frame) {
     },
     ...(eventContext ? {} : { req }),
     state,
+    get workspace() { return require('./workspace.js').createNumericWorkspaceContext(effects); },
+    get resources() { return require('./resources.js').createResourceContext(options.binaryResources, effects); },
     log,
     fetch(url, init) {
       const fetchSequence = (fetchSequences.get(effects) || 0) + 1;
@@ -222,6 +225,7 @@ function createContext(frame) {
         return effects.dispatch({ kind: 'time.now', providerKind: 'time', operation: 'now', capability: 'time.wall-clock' });
       }
     }),
+    effects(options) { return effects.effects(options); },
     parallel(record) { return effects.parallel(record); },
     config: Object.freeze({
       get(name) {
@@ -250,6 +254,8 @@ function createContext(frame) {
     kv(name) {
       const namespace = normalizeKvNamespace(name, options);
       return Object.freeze({
+        list(options) { return effects.dispatch({ kind: 'kv.list', providerKind: 'kv', operation: 'list', capability: 'kv.list', namespace, options }); },
+        delete(key) { return effects.dispatch({ kind: 'kv.delete', providerKind: 'kv', operation: 'delete', capability: 'kv.delete', namespace, key }); },
         ...Object.fromEntries(['getVersioned', 'insertIfAbsent', 'compareAndSwap'].map((operation) => [operation, (key, generationOrValue, value) => effects.dispatch({
           kind: `kv.${operation}`, providerKind: 'kv', operation, capability: `kv.${operation}`, namespace, key,
           ...(operation === 'compareAndSwap' ? { generation: generationOrValue, value } : operation === 'insertIfAbsent' ? { value: generationOrValue } : {})

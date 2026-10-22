@@ -73,7 +73,18 @@ try {
   const file = path.join(sizeRoot, 'canonical-native.wasm');
   const example = { id: 'size-regression', provider: 'node', guestWasmBytes: 1035 };
   fs.writeFileSync(file, wasm);
+  const manifestFile = path.join(sizeRoot, 'pulse-build.json');
+  const manifest = { portable: { optimization: {
+    version: 'pulse.native-optimization.v1', mode: 'native-bounded-size', experimental: false,
+    assemblyScript: { optimize: true, optimizeLevel: 3, shrinkLevel: 2, converge: false }
+  } } };
+  fs.writeFileSync(manifestFile, JSON.stringify(manifest));
   assert.deepEqual(verifyDefaultNativeSizes(example, sizeRoot), { guestWasmBytes: 1035, wasmBytes: 0 });
+  manifest.portable.optimization.assemblyScript.shrinkLevel = 0;
+  fs.writeFileSync(manifestFile, JSON.stringify(manifest));
+  assert.throws(() => verifyDefaultNativeSizes(example, sizeRoot), /AssemblyScript policy mismatch/);
+  manifest.portable.optimization.assemblyScript.shrinkLevel = 2;
+  fs.writeFileSync(manifestFile, JSON.stringify(manifest));
   assert.throws(() => verifyDefaultNativeSizes({ ...example, guestWasmBytes: 1034 }, sizeRoot), /documented application guest Wasm size changed/);
   fs.writeFileSync(file, Buffer.alloc(1024 * 1024));
   assert.throws(() => verifyDefaultNativeSizes(example, sizeRoot), /unexpected size/);
@@ -112,6 +123,8 @@ async function verifySealOrchestration() {
   let failFastly = false;
   let failRelease = true;
   let mutateFastly = false;
+  let featureFixture;
+  const contextFixture = require('./context-freshness-fixture.cjs');
   try {
     process.env.PULSE_FASTLY_BIN = fastlyBinary;
     // A controller fixture must not claim the enclosing seal's checkout lock.
@@ -127,16 +140,23 @@ async function verifySealOrchestration() {
     supervisor.runCommand = async (command, args, options) => {
       if (args[0] === '-e') return originalRun(command, args, options); // real bounded cleanup
       commands.push([command, ...args]);
-      if (args.includes('scripts/release-source-checks.cjs')) fs.writeFileSync(args[args.indexOf('--out') + 1], '{}');
+      if (args.includes('scripts/release-source-checks.cjs')) fs.writeFileSync(args[args.indexOf('--out') + 1], JSON.stringify(contextFixture.sourceChecks(acceptance.candidateIdentity())));
       if (command !== process.execPath && (args.includes('version') || args.includes('--version'))) return { status: 1, stdout: '', stderr: '' };
       if (!failPack && args.includes('scripts/release-shared-pack.cjs')) {
         const directory = args[args.indexOf('--out') + 1];
         fs.mkdirSync(directory, { recursive: true });
+        contextFixture.pack(directory, acceptance.candidateIdentity());
         fs.writeFileSync(path.join(directory, 'pulse-shared-pack.json'), '{}');
       }
       if (args.includes('--profile')) {
         assert(options.env.PULSE_RELEASE_SHARED_PACK);
         assert.match(options.env.PULSE_RELEASE_SHARED_PACK_SHA256, /^[a-f0-9]{64}$/);
+      }
+      if (args.includes('scripts/release-feature-acceptance.cjs')) {
+        featureFixture = { schemaVersion: acceptance.SCHEMA, ...acceptance.candidateIdentity(), status: 'passed',
+          gates: acceptance.REQUIRED_TASKS.map(task => ({ task, status: 'passed', reportSha256: 'c'.repeat(64), packages: [] })) };
+        contextFixture.attach({ sourceRevision: featureFixture.sourceRevision, featureAcceptance: featureFixture }, options.env.PULSE_RELEASE_SHARED_PACK);
+        featureFixture.directory = options.env.PULSE_RELEASE_SHARED_PACK;
       }
       if (mutateFastly && args.includes('scripts/release-feature-acceptance.cjs')) fs.appendFileSync(fastlyBinary, '\n// changed after early proof\n');
       const fail = failSource ? args.includes('scripts/release-source-checks.cjs') : failFastly ? args.includes('provider-fastly-compute-reality') : failPack ? args.includes('scripts/release-shared-pack.cjs') : failRelease && args.includes('--profile');
@@ -191,8 +211,7 @@ async function verifySealOrchestration() {
     // that changing the CLI after its early proof prevents terminal acceptance.
     failRelease = false;
     fs.readFileSync = (file, ...args) => String(file) === path.resolve(__dirname, '../../.test-results/release-feature-acceptance.json')
-      ? '{}' : originalRead(file, ...args);
-    acceptance.validateSummary = () => ({ status: 'passed' });
+      ? JSON.stringify(featureFixture) : originalRead(file, ...args);
     require.cache[preflightModule].exports = { ...originalPreflight, validatePreflight: () => ({ shards: 16 }) };
     commands.length = 0;
     const completed = await seal.main(['--skip-install', '--no-report', '--require-fastly']);

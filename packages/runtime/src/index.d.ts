@@ -2,6 +2,7 @@ export type HeaderPair = readonly [name: string, value: string];
 
 declare const pulseEffectBrand: unique symbol;
 declare const pulseParallelEffectBrand: unique symbol;
+declare const pulseEffectsBrand: unique symbol;
 declare const incomingBodyBrand: unique symbol;
 
 /** Single-use opaque marker, admitted only inline as a configured Node fetch body. */
@@ -14,6 +15,12 @@ export interface PulseEffect<T> extends Promise<T> {
 /** An externally dispatched Pulse effect that may be a member of ctx.parallel(). */
 export interface PulseParallelEffect<T> extends PulseEffect<T> {
   readonly [pulseParallelEffectBrand]: true;
+}
+
+/** Single-use execution-owned bounded collection. Add inline effects, then explicitly flush. */
+export interface PulseEffects<T> {
+  readonly [pulseEffectsBrand]: T;
+  add(effect: PulseParallelEffect<T>): void;
 }
 
 export type PulseEffectResult<T> = T extends PulseEffect<infer Result> ? Result : never;
@@ -128,7 +135,25 @@ export type PulseKvConditionalResult =
   | { readonly status: 'not-stored'; readonly reason: PulseKvNotStoredReason }
   | { readonly status: 'unknown'; readonly reason: 'transport' | 'timeout' | 'unavailable' | 'protocol' };
 
+export interface PulseKvListOptions {
+  /** Required page size, an integer from 1 through 100. No automatic traversal. */
+  readonly limit: number;
+  readonly prefix?: string;
+  /** Opaque provider cursor; reuse only with the same store, prefix and provider. */
+  readonly cursor?: string;
+}
+export type PulseKvListResult =
+  | { readonly status: 'listed'; readonly keys: readonly string[]; readonly cursor: string | null }
+  | { readonly status: 'failed'; readonly reason: PulseKvReadFailureReason | 'invalid-options' | 'invalid-cursor' };
+export type PulseKvDeleteResult =
+  | { readonly status: 'deleted' }
+  | { readonly status: 'not-found' }
+  | { readonly status: 'not-deleted'; readonly reason: PulseKvNotStoredReason }
+  | { readonly status: 'unknown'; readonly reason: 'transport' | 'timeout' | 'unavailable' | 'protocol' };
+
 export interface PulseKvNamespace<T = unknown> {
+  list(options: PulseKvListOptions): PulseParallelEffect<PulseKvListResult>;
+  delete(key: string): PulseParallelEffect<PulseKvDeleteResult>;
   getVersioned(key: string): PulseParallelEffect<PulseKvVersionedResult<T>>;
   insertIfAbsent(key: string, value: T): PulseParallelEffect<PulseKvConditionalResult>;
   compareAndSwap(key: string, generation: PulseKvGeneration, value: T): PulseParallelEffect<PulseKvConditionalResult>;
@@ -146,7 +171,50 @@ export type PulseTimeResult =
   | { readonly status: 'failed'; readonly reason: 'unavailable' | 'invalid-clock' };
 
 /** Plane-neutral authority shared by one isolated HTTP request or event invocation. */
+declare const binaryResourceView: unique symbol;
+export interface PulseBinaryResourceView {
+  readonly [binaryResourceView]: true;
+  readonly byteLength: number;
+  readU8(offset: number): number;
+  readU32LE(offset: number): number;
+  readF32LE(offset: number): number;
+  /** Strict UTF-8 scalar slice, at most 12,288 bytes, owned by this execution. */
+  readUtf8(offset: number, byteLength: number): string;
+}
+
+export interface PulseNumericWorkspace {
+  readonly length: number;
+  [index: number]: number;
+}
+
+/** Schema-bound input borrowed read-only for one synchronous computation. */
+export type PulseReadonly<Input> = Input extends object
+  ? { readonly [Key in keyof Input]: PulseReadonly<Input[Key]> }
+  : Input;
+
+/** A computation has only invocation-owned resource views and numeric workspaces. */
+export interface PulseComputationContext {
+  readonly resources: PulseExecutionContext['resources'];
+  readonly workspace: PulseExecutionContext['workspace'];
+}
+
+/** Imported named project function; the compiler validates its bounded body. */
+export type PulseComputation<Input extends object, Output extends object> = (
+  ctx: PulseComputationContext,
+  input: PulseReadonly<Input>
+) => Output extends PromiseLike<unknown> ? never : Output;
+
+/** Both IDs must be literal strings registered in the project schema registry. */
+export interface PulseCallSchemas {
+  readonly inputSchema: string;
+  readonly outputSchema: string;
+}
+
 export interface PulseExecutionContext {
+  /** Fresh zero-initialized cells; literal capacity 1..1024, at most four per execution. */
+  readonly workspace: { numbers(capacity: number): PulseNumericWorkspace };
+  /** Literal logical identity; the immutable view must not escape this execution. */
+  readonly resources: { map(id: string): PulseBinaryResourceView };
   /** Validate/project a value through a literal registered schema and return bounded JSON text. */
   encodeJson(value: unknown, schemaId: string): string;
   /** Decode bounded application-owned JSON text through a literal registered schema. */
@@ -156,6 +224,9 @@ export interface PulseExecutionContext {
   readonly state: PulseState;
   readonly log: PulseLogger;
   fetch(url: string, init?: PulseFetchInit): PulseFetchOperation;
+  /** Portable capacity is a literal integer from 1 to 32. */
+  effects<T = unknown>(options: { readonly max: number }): PulseEffects<T>;
+  parallel<T>(effects: PulseEffects<T>): PulseEffect<readonly T[]>;
   /** Dispatches a statically keyed group of independent Pulse effects and rejoins in property order. */
   parallel<const T extends Readonly<Record<string, PulseParallelEffect<unknown>>>>(effects: T): PulseEffect<PulseParallelResult<T>>;
   readonly config: { get(name: string): PulseParallelEffect<string | undefined> };
@@ -173,6 +244,15 @@ export interface PulseExecutionContext {
 
 /** HTTP request execution context. */
 export interface PulseContext extends PulseExecutionContext {
+  /**
+   * Synchronously validate/copy input, run an imported computation and return its
+   * owned validated result. Node Native, Fastly Native and explicit Node JavaScript.
+   * Up to 16 static sites; no await, nested calls, call-in-loop or dynamic targets.
+   * Source admission enforces literal schemas, target identity and body restrictions.
+   */
+  call<Input extends object, Output extends object>(
+    target: PulseComputation<Input, Output>, input: Input, schemas: PulseCallSchemas
+  ): Output;
   /** Experimental Node output: opt-in, finite, request-owned UTF-8 writes. */
   readonly output: {
     start(options?: PulseResponseOptions): PulseEffect<void>;
@@ -236,5 +316,5 @@ export declare class Router {
   error(handler: RouterErrorHandler): this;
 }
 
-export declare const RUNTIME_API_VERSION: 'pulse.runtime-authoring.v4';
+export declare const RUNTIME_API_VERSION: 'pulse.runtime-authoring.v5';
 export declare const ROUTER_API_VERSION: 'pulse.router-authoring.v2';

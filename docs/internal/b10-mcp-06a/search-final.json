@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T01-33-24-818Z--58",
+  "sourceRevision": "afe635c1820c78da1bf4df00f3d8eb207ac1c0c0",
+  "sourceIdentity": {
+    "sourceRevision": "afe635c1820c78da1bf4df00f3d8eb207ac1c0c0",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T01:33:24.829Z",
+  "updatedAt": "2026-10-21T01:37:55.234Z",
+  "finishedAt": "2026-10-21T01:37:55.234Z",
+  "durationMs": 270405,
+  "profiles": [],
+  "requestedTasks": [
+    "pulse-context-tools",
+    "pulse-context-build"
+  ],
+  "selectedTasks": [
+    "pulse-context-tools",
+    "pulse-context-build"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 2,
+  "results": [
+    {
+      "name": "pulse-context-tools",
+      "evidence": "native",
+      "description": "06A five-tool MCP parity, independent lexical oracle, Unicode pagination and response bounds",
+      "commandSignature": "98740d255a945a062570d2ea169e08844450f12423f9f590dcaecb26e185df98",
+      "timeoutMs": 300000,
+      "durationMs": 199235,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence/runs/2026-10-21T01-33-24-818Z--58/tasks/pulse-context-tools.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "pulse-context-build",
+      "evidence": "unit",
+      "description": "B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection",
+      "commandSignature": "1bc8920d3999e204c913a94aa6059c2e742f9b426e5827dcc8a0a4bd408c6df1",
+      "timeoutMs": 120000,
+      "durationMs": 71157,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence/runs/2026-10-21T01-33-24-818Z--58/tasks/pulse-context-build.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/0174bfde4d1e/evidence/runs/2026-10-21T01-33-24-818Z--58"
+}

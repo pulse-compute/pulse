@@ -24,6 +24,7 @@ interface RouterState {
   readonly adapter: EntityAdapter;
   readonly registrations: Map<string, RouterRegistration>;
   readonly activeContexts: WeakSet<object>;
+  sealed?: boolean;
 }
 
 const routerStates = new WeakMap<EntityRouter, RouterState>();
@@ -144,6 +145,7 @@ export class EntityRouter {
   ): this {
     const state = routerStates.get(this);
     if (!state) throw routerError('PULSE_ENTITIES_ROUTER_INVALID', 'EntityRouter state is unavailable.');
+    if (state.sealed) throw routerError('PULSE_ENTITIES_REGISTRY_SEALED', 'A composed transport registry cannot change after binding.');
     const registration = entitiesRuntime.normalizeEntityRegistration({
       discriminator,
       declaration,
@@ -241,47 +243,9 @@ export class EntityRouter {
         return completeFailure(ctx, state.adapter.limits, selection, 'invalid-input');
       }
 
-      let bridge: ReturnType<typeof bindEntitySchemaCodecBridge>;
-      try {
-        bridge = bindEntitySchemaCodecBridge(ctx, registration.declaration);
-      } catch {
-        return completeFailure(ctx, state.adapter.limits, selection, 'adapter-failed');
-      }
-
-      let input: unknown;
-      if (registration.declaration.input !== null) {
-        try {
-          input = bridge.decodeEmbeddedJson(
-            registration.declaration.input,
-            selection.paramsRaw!,
-          );
-        } catch {
-          return completeFailure(ctx, state.adapter.limits, selection, 'invalid-input');
-        }
-      }
-
-      let output: unknown;
-      try {
-        output = await registration.handler(ctx, input);
-      } catch {
-        return completeFailure(ctx, state.adapter.limits, selection, 'execution-failed');
-      }
-
-      let encodedOutput = 'null';
-      if (registration.declaration.output === null) {
-        if (output !== undefined) {
-          return completeFailure(ctx, state.adapter.limits, selection, 'invalid-output');
-        }
-      } else {
-        try {
-          encodedOutput = bridge.encodeEmbeddedJson(registration.declaration.output, output);
-        } catch {
-          return completeFailure(ctx, state.adapter.limits, selection, 'invalid-output');
-        }
-      }
-      if (entitiesRuntime.utf8ByteLength(encodedOutput) > state.adapter.limits.maxOutputBytes) {
-        return completeFailure(ctx, state.adapter.limits, selection, 'output-too-large');
-      }
+      const result = await invokeRegistration(state, registration, ctx, selection.paramsRaw || '{}');
+      if (!result.ok) return completeFailure(ctx, state.adapter.limits, selection, result.failure);
+      const encodedOutput = result.text;
       if (!selection.idPresent) return acknowledgement();
       return jsonResponse(`{"jsonrpc":"2.0","result":${encodedOutput},"id":${selection.idRaw}}`);
     } finally {
@@ -316,4 +280,80 @@ export function snapshotEntityRouterCatalog(
       entities,
     })]),
   });
+}
+
+/** Internal transport composition: same request-owned schema and operation pipeline. */
+export async function invokeEntityOperation(router: EntityRouter, ctx: PulseContext, name: string, args: Record<string, unknown>): Promise<{ ok: true; text: string; noOutput: boolean } | { ok: false; failure: string }> {
+  const state = routerStates.get(router);
+  if (!state) throw routerError('PULSE_ENTITIES_ROUTER_INVALID', 'Invalid EntityRouter.');
+  const registration = state.registrations.get(name);
+  if (!registration) return { ok: false, failure: 'unknown-entity' };
+  if (registration.declaration.input === null && Object.keys(args).length) return { ok: false, failure: 'invalid-input' };
+  if (state.activeContexts.has(ctx)) return { ok: false, failure: 'adapter-failed' };
+  state.activeContexts.add(ctx);
+  try { return await invokeRegistration(state, registration, ctx, JSON.stringify(args)); }
+  finally { state.activeContexts.delete(ctx); }
+}
+
+type OperationResult = { ok: true; text: string; noOutput: boolean } | { ok: false; failure: EntityFailureKind };
+async function invokeRegistration(state: RouterState, registration: RouterRegistration, ctx: PulseContext, paramsRaw: string): Promise<OperationResult> {
+      let bridge: ReturnType<typeof bindEntitySchemaCodecBridge>;
+      try {
+        bridge = bindEntitySchemaCodecBridge(ctx, registration.declaration);
+      } catch {
+        return { ok: false, failure: 'adapter-failed' };
+      }
+
+      let input: unknown;
+      if (registration.declaration.input !== null) {
+        try {
+          input = bridge.decodeEmbeddedJson(
+            registration.declaration.input,
+            paramsRaw,
+          );
+        } catch {
+          return { ok: false, failure: 'invalid-input' };
+        }
+      }
+
+      let output: unknown;
+      try {
+        output = await registration.handler(ctx, input);
+      } catch {
+        return { ok: false, failure: 'execution-failed' };
+      }
+
+      let encodedOutput = 'null';
+      if (registration.declaration.output === null) {
+        if (output !== undefined) {
+          return { ok: false, failure: 'invalid-output' };
+        }
+      } else {
+        try {
+          encodedOutput = bridge.encodeEmbeddedJson(registration.declaration.output, output);
+        } catch {
+          return { ok: false, failure: 'invalid-output' };
+        }
+      }
+      if (entitiesRuntime.utf8ByteLength(encodedOutput) > state.adapter.limits.maxOutputBytes) {
+        return { ok: false, failure: 'output-too-large' };
+      }
+  return { ok: true, text: encodedOutput, noOutput: registration.declaration.output === null };
+}
+
+export function describeEntityRouter(router: EntityRouter, ctx: PulseContext) {
+  const state = routerStates.get(router);
+  if (!state) throw routerError('PULSE_ENTITIES_ROUTER_INVALID', 'Invalid EntityRouter.');
+  const schemas = new Map<string, unknown>();
+  for (const registration of state.registrations.values()) {
+    for (const schema of bindEntitySchemaCodecBridge(ctx, registration.declaration).describe()) schemas.set(schema.id, schema);
+  }
+  return { catalog: snapshotEntityRouterCatalog(router, 'tools'), schemas: [...schemas.values()] };
+}
+
+/** Internal composition: fixes the operation set before a transport can serve it. */
+export function sealEntityRouter(router: EntityRouter): void {
+  const state = routerStates.get(router);
+  if (!state || state.sealed) throw routerError('PULSE_ENTITIES_REGISTRY_SEALED', 'An EntityRouter may be bound to one composed transport.');
+  state.sealed = true;
 }

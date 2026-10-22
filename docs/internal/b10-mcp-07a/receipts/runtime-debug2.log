@@ -1,0 +1,15 @@
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ '93a44bbb96c751218e4c00d479e4c14358122a389acca16205b1e4d0dc5f9476'
+- '8ebb6b2c1ca586aeb7c77e3a05c577762953645926fd1ee7140ad313caf491ef'
+
+    at main (/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/worker.cjs:62:42)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '93a44bbb96c751218e4c00d479e4c14358122a389acca16205b1e4d0dc5f9476',
+  expected: '8ebb6b2c1ca586aeb7c77e3a05c577762953645926fd1ee7140ad313caf491ef',
+  operator: 'strictEqual',
+  diff: 'simple'
+}

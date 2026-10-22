@@ -29,13 +29,15 @@ function assertNativePlatformModule(name, compiled, expectedModules, forbiddenMo
   assert.equal(compiled.manifest.policy.javascriptRuntime, false, `${name} no JavaScript runtime`);
   assert.equal(compiled.manifest.policy.jsComputeRuntime, false, `${name} no js-compute-runtime`);
   const fetchClock = compiled.plan.effects.some(effect => effect.kind === 'fetch');
-  assert.equal(compiled.manifest.policy.wasi, fetchClock ? 'clock_time_get only' : false, `${name} bounded WASI policy`);
+  const transportLog = compiled.plan.effects.some(effect => ['fetch', 'grip.publish', 'grip.broadcast'].includes(effect.kind));
+  const wasiNames = [...(fetchClock ? ['clock_time_get'] : []), ...(transportLog ? ['fd_write'] : [])];
+  assert.equal(compiled.manifest.policy.wasi, wasiNames.length ? wasiNames.join(', ') + ' only' : false, `${name} bounded WASI policy`);
   assert.equal(compiled.inspection.valid, true, `${name} valid Wasm`);
   assert.equal(compiled.inspection.magic, '0061736d01000000', `${name} Wasm magic`);
   assert.ok(compiled.wasm.length > 1024 && compiled.wasm.length < platform.FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES, `${name} compact native Wasm`);
   assert.equal(compiled.inspection.imports.some((entry) => entry.module === 'env' || /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, `${name} excludes env.abort, the portable host, and JavaScript runtime imports`);
   assert.deepEqual(compiled.inspection.imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
-    fetchClock ? ['wasi_snapshot_preview1:clock_time_get'] : [], `${name} imports only the required fetch deadline clock`);
+    wasiNames.map(name => 'wasi_snapshot_preview1:' + name), `${name} imports only the required deadline clock and failure sink`);
   for (const moduleName of expectedModules) assert.ok(compiled.inspection.importModules.includes(moduleName), `${name} imports ${moduleName}`);
   for (const moduleName of forbiddenModules) assert.equal(compiled.inspection.importModules.includes(moduleName), false, `${name} excludes unrelated ${moduleName} imports`);
   const exportNames = new Set(compiled.inspection.exports.map((entry) => entry.name));
@@ -46,8 +48,10 @@ function assertNativePlatformModule(name, compiled, expectedModules, forbiddenMo
 
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-fastly-platform-capabilities-'));
 try {
+  require('./assert-fastly-terminal-errors.cjs').main();
   require('./assert-fastly-native-config-effect-sharing.cjs').main();
   require('./assert-fastly-request-budget.cjs');
+  require('./assert-fastly-string-assembly.cjs').main();
   require('./assert-fastly-bounded-concatenation.cjs').main();
   require('./assert-fastly-schema-allocation.cjs').main();
   require('./assert-fastly-scalar-sharing.cjs').main();
@@ -181,7 +185,10 @@ try {
   assert.equal(configFirst.wat, configSecond.wat, 'config/secret WAT must be deterministic across cwd');
   assert.deepEqual(configFirst.manifest, configSecond.manifest, 'config/secret manifest must be deterministic across cwd');
   assert.deepEqual(configExperimentalFirst.wasm, configExperimentalSecond.wasm, 'experimental size module must be byte deterministic across cwd');
-  assert.ok(configExperimentalFirst.wasm.length < configFirst.wasm.length, 'experimental O3z optimization must reduce the representative Fastly Native module');
+  const configShrink0 = platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, { cwd: repoRoot, bindings: configBindings, nativeOptimization: 'native-shrink0' });
+  assert.equal(configShrink0.manifest.optimization.assemblyScript.shrinkLevel, 0);
+  assert.equal(configShrink0.manifest.optimization.assemblyScript.converge, false);
+  assert.ok(configExperimentalFirst.wasm.length < configShrink0.wasm.length, 'experimental size optimization is compared against shrink0');
   assert.deepEqual(configExperimentalFirst.inspection.imports, configFirst.inspection.imports, 'experimental size optimization must preserve the Fastly host import surface');
   assert.deepEqual(configExperimentalFirst.inspection.exports, configFirst.inspection.exports, 'experimental size optimization must preserve the required export surface');
   assert.deepEqual(configExperimentalFirst.manifest.optimization, platform.FASTLY_NATIVE_SIZE_OPTIMIZATION);
@@ -190,7 +197,9 @@ try {
   assert.deepEqual(configBounded.inspection.exports, configFirst.inspection.exports);
   assert.equal(configBounded.manifest.optimization.mode, 'experimental-native-bounded-size');
   assert.equal(configBounded.manifest.optimization.assemblyScript.converge, false);
-  assert.equal(configFirst.manifest.optimization, undefined, 'default Fastly Native artifacts must not opt into experimental optimization');
+  assert.equal(configFirst.manifest.optimization.mode, 'native-bounded-size');
+  assert.equal(configFirst.manifest.optimization.experimental, false);
+  assert.deepEqual(configFirst.wasm, configBounded.wasm, 'bounded compatibility and ordinary default use identical optimizer settings');
 
   const secretValue = 'platform-capability-secret';
   let result = mock.executeFastlyNativePlatformCapabilities(configFirst, {
@@ -423,4 +432,7 @@ try {
 
 require('./assert-fastly-transport-recovery.cjs').main()
   .then(() => require('./assert-fastly-fetch-deadlines.cjs').main())
+  .then(() => require('./assert-fastly-named-logging.cjs').main())
+  .then(() => require('./assert-fastly-send-error-detail.cjs').main())
+  .then(() => require('./assert-fastly-transport-details.cjs').main())
   .catch(error => { console.error(error); process.exitCode = 1; });

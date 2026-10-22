@@ -1,0 +1,21 @@
+{
+  "name": "@pulse-fixtures/mcp-native",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "doctor": "pulse doctor",
+    "inspect": "pulse inspect",
+    "test": "pulse test",
+    "dev": "pulse dev",
+    "build": "pulse build"
+  },
+  "dependencies": {
+    "@pulse-compute/pulse": "1.0.0-beta.10",
+    "@pulse-compute/mcp": "1.0.0-beta.10"
+  },
+  "devDependencies": {
+    "@pulse-compute/cli": "1.0.0-beta.10",
+    "typescript": "5.9.3"
+  }
+}

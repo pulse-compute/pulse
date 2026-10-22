@@ -1,0 +1,124 @@
+{
+  "version": "pulse.callable-routed-checkpoint.v1",
+  "status": "passed",
+  "testedRevision": "88b62fc5f9b4fb74a0e2d38203987fcfd34593af",
+  "testedTree": "e68f2b42c1252fd25c986cb062828e5f1b242f8e",
+  "testedDirtyState": "",
+  "publishedImplementation": "d5a335aeb395db912a7208a2198464405340ea73",
+  "publishedTree": "e68f2b42c1252fd25c986cb062828e5f1b242f8e",
+  "node": "v24.19.0",
+  "checks": [
+    {
+      "log": "build.log",
+      "exitCode": 0,
+      "bytes": 986,
+      "sha256": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95",
+      "retained": true
+    },
+    {
+      "log": "maintainer-check.log",
+      "exitCode": 0,
+      "bytes": 345,
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2",
+      "retained": true
+    },
+    {
+      "log": "docs-check.log",
+      "exitCode": 0,
+      "bytes": 229158,
+      "sha256": "3b0d3fa571a3594cc72f4cf0ceb25189031fb5f076ac061301a370c7953a1908",
+      "retained": false
+    },
+    {
+      "log": "documentation-release.log",
+      "exitCode": 0,
+      "bytes": 219315,
+      "sha256": "599603b7126b607d554afa0111227356248cf36c6fbfc1f5aba927de32bc22a6",
+      "retained": false
+    },
+    {
+      "log": "scope.log",
+      "exitCode": 0,
+      "bytes": 1107,
+      "sha256": "499c66cfe5404803c3e223b33ac4b9b0cd1b0ab186c8d43abb95cde41d7582f4",
+      "retained": true
+    },
+    {
+      "log": "focused.log",
+      "exitCode": 0,
+      "bytes": 4305,
+      "sha256": "15f8811770a1853d985e26f221dfcbb4fa8373c6c574ab8bf8ddf689fae1b78d",
+      "retained": true,
+      "completeConsoleCapture": false,
+      "terminalEvidence": "exec session 51669 completed with exit_code 0; all sixteen selected tasks completed"
+    },
+    {
+      "log": "routed-baseline.log",
+      "exitCode": 0,
+      "bytes": 249,
+      "sha256": "97366595c55a7d950901af093e538a4a6972246b3d04dc47364b3353d9b7220f",
+      "retained": true
+    }
+  ],
+  "focusedTasks": [
+    "callable-source-admission",
+    "callable-authored-composition",
+    "callable-authored-javascript",
+    "callable-authored-routed",
+    "callable-authored-native",
+    "pure-source-helpers",
+    "entities-managed-handler",
+    "entities-managed-handler-effects",
+    "entities-native-runtime",
+    "entities-javascript-runtime",
+    "entities-schema-bridge",
+    "entities-package-owned-lowering",
+    "mcp-native-binding",
+    "mcp-http",
+    "cli-javascript-target-compilation",
+    "suite-shape"
+  ],
+  "routed": {
+    "successfulExecutions": 28,
+    "sourceRejections": 12,
+    "additionalCompatibilityCases": "no-call computed JavaScript context access; rejection of two non-simple callable context forms on both targets",
+    "packaged": true
+  },
+  "baseline": "8a51d705025c69ae306004215cb6cb48248d68e1",
+  "developmentAttempts": "Development exposed Router helper over-selection, changed unsupported-import diagnostic precedence, eager no-call JavaScript admission and a compiled-schema/IR mismatch. These were corrected; superseded development runs are not the final evidence. The final selected checks and baseline replay run on the clean tested revision.",
+  "publication": "Exact local blob SHAs and full Git tree checked before connector commit. Different commit metadata does not change source.",
+  "runningChecks": [],
+  "fullProfiles": "deferred by explicit user checkpoint direction",
+  "releaseQualified": false,
+  "next": "05F / #447",
+  "handoffChecks": [
+    {
+      "log": "handoff-docs-sync.log",
+      "exitCode": 0,
+      "bytes": 303,
+      "sha256": "67673d7b687a6ec332773da387a6f2a83f8e0b8c085bb35fe0dc71fc6a845b2e",
+      "retained": false
+    },
+    {
+      "log": "handoff-docs-check.log",
+      "exitCode": 0,
+      "bytes": 229959,
+      "sha256": "1a3eff636d0b5007dfb74644b2975b5acd9a20d85a2ff32df9a6fd0e9edb25ae",
+      "retained": false
+    },
+    {
+      "log": "handoff-maintainer-check.log",
+      "exitCode": 0,
+      "bytes": 345,
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2",
+      "retained": false
+    },
+    {
+      "log": "handoff-documentation-release.log",
+      "exitCode": 0,
+      "bytes": 220088,
+      "sha256": "5948d97054b44eb1f3d3a7af2b3699c5938e9e7254a0b7ae5ab37941798e85c3",
+      "retained": false
+    }
+  ]
+}

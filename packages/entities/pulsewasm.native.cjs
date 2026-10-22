@@ -241,6 +241,7 @@ function collectExpression(expression, list, indexes) {
   else if (expression.kind === 'property') add(expression.object);
   else if (expression.kind === 'element') { add(expression.object); add(expression.index); }
   else if (expression.kind === 'provider-namespace') add(expression.resource);
+  else if (expression.kind === 'callable-call') add(expression.argument);
 }
 
 function createHandlerCompiler(route, context) {
@@ -279,6 +280,9 @@ function createHandlerCompiler(route, context) {
       else if (typeof expression.value === 'boolean') emit(`return JSON.Value.from<bool>(${expression.value ? 'true' : 'false'})`);
       else if (typeof expression.value === 'number' && Number.isFinite(expression.value)) emit(`return JSON.Value.from<f64>(${Number(expression.value)})`);
       else fail('PULSE_ENTITIES_NATIVE_LITERAL_UNSUPPORTED', 'Native managed literals must be finite JSON primitives.', { expression });
+    } else if (expression.kind === 'callable-call') {
+      if (!Number.isInteger(expression.index) || expression.index < 0 || expression.index >= (handler.callableCount || 0)) fail('PULSE_ENTITIES_NATIVE_CALL_TARGET', 'Invalid callable slot.');
+      emit(`return JSON.parse<JSON.Value>(__pulse_callable_json_${expression.index}(JSON.stringify<JSON.Value>(${expressionName(expression.argument)}())))`);
     } else if (expression.kind === 'undefined') emit('return __pulse_entities_null()');
     else if (expression.kind === 'input') emit('return __pulse_entities_input');
     else if (expression.kind === 'local') emit(`return unchecked(__pulse_entities_locals[${localIndex(expression.id)}])`);
@@ -794,7 +798,7 @@ function buildEntitiesNativeSource(input) {
   });
 }
 
-function buildEntitiesCanonicalNativeApplication(input) {
+function buildEntitiesNativeComponents(input) {
   const model = normalizeInputs(input);
   const artifact = buildEntitiesNativeSource(input);
   const effects = [];
@@ -867,7 +871,14 @@ ${effects.map((effect, index) => `    case ${index}: return ${continuations.find
   });
 }
 
+function buildEntitiesCanonicalNativeApplication(input) {
+  const components = buildEntitiesNativeComponents(input);
+  const source = components.source + '\n' + fs.readFileSync(path.join(__dirname, 'as/transport-json-rpc.as.ts'), 'utf8');
+  return deepFreeze({ ...components, source, sourceHash: sha256(source) });
+}
+
 module.exports = Object.freeze({
+  buildEntitiesNativeComponents,
   buildEntitiesCanonicalNativeApplication,
   ENTITIES_NATIVE_SOURCE_VERSION,
   MANAGED_NATIVE_BUNDLE_VERSION,

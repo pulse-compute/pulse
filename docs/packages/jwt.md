@@ -1,10 +1,12 @@
 # `@pulse-compute/jwt`
 
+**npm:** [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt)
+
 `@pulse-compute/jwt` provides bounded, provider-neutral JWT verification and signing for
 Pulse handlers.
 
 ```bash
-npm install @pulse-compute/jwt@1.0.0-beta.9
+npm install @pulse-compute/jwt@1.0.0-beta.10
 ```
 
 ## Verify a bearer token

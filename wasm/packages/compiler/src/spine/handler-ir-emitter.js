@@ -63,7 +63,8 @@ function providerEffectExpression(factory, sourceFile, site, providerOperation) 
     properties.push(literalProperty(factory, 'name', providerOperation.name));
   } else if (providerOperation.providerKind === 'kv') {
     properties.push(literalProperty(factory, 'store', providerOperation.store));
-    properties.push(literalProperty(factory, 'key', providerOperation.key));
+    if (providerOperation.key) properties.push(literalProperty(factory, 'key', providerOperation.key));
+    if (providerOperation.options) properties.push(literalProperty(factory, 'options', providerOperation.options));
     if (providerOperation.generation) properties.push(literalProperty(factory, 'generation', providerOperation.generation));
     if (providerOperation.value) properties.push(literalProperty(factory, 'value', providerOperation.value));
   } else if (providerOperation.providerKind === 'output') {
@@ -320,6 +321,19 @@ function emitCanonicalHandlerGenerator(ir) {
           ], declarationFlags(candidate.statement)));
         });
         return [groupDeclaration, ...declarations];
+      }
+      case 'effect-collection': {
+        const { candidate, sites, continuation } = entry;
+        const factories = sites.map((site, index) => factory.createArrowFunction(undefined, undefined, [], undefined,
+          factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), parallelMemberEffectExpression(factory, sourceFile, site, candidate.members[index], rewritePackageIntrinsics)));
+        const decoders = candidate.members.map(member => factory.createArrayLiteralExpression(member.kind === 'fetch' && member.chain.decoder
+          ? [factory.createStringLiteral(member.chain.decoder), ...member.chain.decoderArgs] : []));
+        const yielded = factory.createYieldExpression(undefined, callPulse(factory, 'collection', [
+          factory.createArrayLiteralExpression(factories), stringLiteral(factory, continuation.id), candidate.input,
+          factory.createNumericLiteral(candidate.max), factory.createArrayLiteralExpression(decoders)]));
+        return factory.createVariableStatement(undefined, factory.createVariableDeclarationList([
+          factory.createVariableDeclaration(candidate.result.name, undefined, undefined, yielded)
+        ], ts.NodeFlags.Const));
       }
       case 'parallel-group': {
         const { candidate, sites, continuation } = entry;

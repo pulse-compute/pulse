@@ -1,14 +1,26 @@
 {
   "schemaVersion": "pulse.documentation-versions.v1",
-  "latest": "1.0.0-beta.9",
+  "latest": "1.0.0-beta.10",
   "versions": [
+    {
+      "version": "1.0.0-beta.10",
+      "segment": "v1.0.0-beta.10",
+      "channel": "beta",
+      "releasedAt": "2026-10-21",
+      "status": "current",
+      "sourceManifest": "release/pulse-release-manifest.json"
+    },
     {
       "version": "1.0.0-beta.9",
       "segment": "v1.0.0-beta.9",
       "channel": "beta",
       "releasedAt": "2026-10-15",
-      "status": "current",
-      "sourceManifest": "release/pulse-release-manifest.json"
+      "status": "archived",
+      "sourceManifest": "release/documentation-release-history/v1.0.0-beta.9.json",
+      "deliveryOwner": "website",
+      "sourceTag": "v1.0.0-beta.9",
+      "sourceCommit": "fda16de1b3520c65cc62574878727e753ade850c",
+      "sourceManifestSha256": "b0375c179d283499d00667a7126aa10bb91e73d97946940d382bf614b7469378"
     },
     {
       "version": "1.0.0-beta.8",
@@ -16,7 +28,13 @@
       "channel": "beta",
       "releasedAt": "2026-10-12",
       "status": "archived",
-      "sourceManifest": "release/documentation-site-archives/v1.0.0-beta.8/release-manifest.json"
+      "sourceManifest": "release/documentation-release-history/v1.0.0-beta.8.json",
+      "deliveryOwner": "legacy-pulse",
+      "sourceManifestSha256": "106de8aa75d749580369ce9b641cd8ca03c1181c2e241b7ee78cc980e3bd171b",
+      "archiveSource": {
+        "commit": "f393e238a529212c8e8217a4ccd41d1646fd4f6b",
+        "path": "release/documentation-site-archives/v1.0.0-beta.8/release-manifest.json"
+      }
     },
     {
       "version": "1.0.0-beta.7",
@@ -24,7 +42,13 @@
       "channel": "beta",
       "releasedAt": "2026-10-07",
       "status": "archived",
-      "sourceManifest": "release/documentation-site-archives/v1.0.0-beta.7/release-manifest.json"
+      "sourceManifest": "release/documentation-release-history/v1.0.0-beta.7.json",
+      "deliveryOwner": "legacy-pulse",
+      "sourceManifestSha256": "389ffca6e6c6e0ad2612f8ddc42533179ed14935ee99a17f2546bb1fd1cd9e0f",
+      "archiveSource": {
+        "commit": "f393e238a529212c8e8217a4ccd41d1646fd4f6b",
+        "path": "release/documentation-site-archives/v1.0.0-beta.7/release-manifest.json"
+      }
     },
     {
       "version": "1.0.0-beta.6",
@@ -32,7 +56,13 @@
       "channel": "beta",
       "releasedAt": "2026-10-04",
       "status": "archived",
-      "sourceManifest": "release/documentation-site-archives/v1.0.0-beta.6/release-manifest.json"
+      "sourceManifest": "release/documentation-release-history/v1.0.0-beta.6.json",
+      "deliveryOwner": "legacy-pulse",
+      "sourceManifestSha256": "89f948d6959cb4810690bac3a8dfa69432a082b7b3c7c0a9f520f74eefa77cc1",
+      "archiveSource": {
+        "commit": "f393e238a529212c8e8217a4ccd41d1646fd4f6b",
+        "path": "release/documentation-site-archives/v1.0.0-beta.6/release-manifest.json"
+      }
     },
     {
       "version": "1.0.0-beta.4",
@@ -40,7 +70,13 @@
       "channel": "beta",
       "releasedAt": "2026-09-14",
       "status": "archived",
-      "sourceManifest": "release/documentation-site-archives/v1.0.0-beta.4/release-manifest.json"
+      "sourceManifest": "release/documentation-release-history/v1.0.0-beta.4.json",
+      "deliveryOwner": "legacy-pulse",
+      "sourceManifestSha256": "de39261e27519cc0a452a8dc0e96fb4376a130c12178645ca0eefde009d133ba",
+      "archiveSource": {
+        "commit": "f393e238a529212c8e8217a4ccd41d1646fd4f6b",
+        "path": "release/documentation-site-archives/v1.0.0-beta.4/release-manifest.json"
+      }
     },
     {
       "version": "1.0.0-beta.3",
@@ -48,7 +84,13 @@
       "channel": "beta",
       "releasedAt": "2026-09-14",
       "status": "archived",
-      "sourceManifest": "release/documentation-site-archives/v1.0.0-beta.3/release-manifest.json"
+      "sourceManifest": "release/documentation-release-history/v1.0.0-beta.3.json",
+      "deliveryOwner": "legacy-pulse",
+      "sourceManifestSha256": "bf7fd7a2b83ec5a6f9bc4bf47edf774079236a26e2bfa3e9c60d32e6fb48372d",
+      "archiveSource": {
+        "commit": "f393e238a529212c8e8217a4ccd41d1646fd4f6b",
+        "path": "release/documentation-site-archives/v1.0.0-beta.3/release-manifest.json"
+      }
     },
     {
       "version": "1.0.0-beta.2",
@@ -56,7 +98,13 @@
       "channel": "beta",
       "releasedAt": "2026-09-13",
       "status": "archived",
-      "sourceManifest": "release/documentation-site-archives/v1.0.0-beta.2/release-manifest.json"
+      "sourceManifest": "release/documentation-release-history/v1.0.0-beta.2.json",
+      "deliveryOwner": "legacy-pulse",
+      "sourceManifestSha256": "d8d1b56dfefabd1efe08b7ed38283600d1fee6ece7603e59284a75b6704bc626",
+      "archiveSource": {
+        "commit": "f393e238a529212c8e8217a4ccd41d1646fd4f6b",
+        "path": "release/documentation-site-archives/v1.0.0-beta.2/release-manifest.json"
+      }
     },
     {
       "version": "1.0.0-beta.1",
@@ -64,7 +112,13 @@
       "channel": "beta",
       "releasedAt": "2026-08-01",
       "status": "archived",
-      "sourceManifest": "release/documentation-site-archives/v1.0.0-beta.1/release-manifest.json"
+      "sourceManifest": "release/documentation-release-history/v1.0.0-beta.1.json",
+      "deliveryOwner": "legacy-pulse",
+      "sourceManifestSha256": "9602bcfbef2085493f46e1709daebf6f7cfd2f1aa441d611691be33ac7dadbfb",
+      "archiveSource": {
+        "commit": "f393e238a529212c8e8217a4ccd41d1646fd4f6b",
+        "path": "release/documentation-site-archives/v1.0.0-beta.1/release-manifest.json"
+      }
     }
   ]
 }

@@ -56,6 +56,7 @@ async function main() {
   fs.mkdirSync(path.join(runDir, 'tasks'), { recursive: true });
   fs.mkdirSync(path.join(runDir, 'diagnostics'), { recursive: true });
   try {
+    await require('./assert-task-log-close.cjs').verifyTaskLogClose(root, runDir);
     const reportPath = path.join(root, 'report.json');
     writeReportAtomic(reportPath, { schemaVersion: REPORT_SCHEMA, status: 'running', currentTask: 'fixture' });
     assert.deepEqual(JSON.parse(fs.readFileSync(reportPath, 'utf8')), { schemaVersion: REPORT_SCHEMA, status: 'running', currentTask: 'fixture' });

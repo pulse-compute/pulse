@@ -1,5 +1,7 @@
 # `@pulse-compute/provider-fastly`
 
+**npm:** [`@pulse-compute/provider-fastly`](https://www.npmjs.com/package/@pulse-compute/provider-fastly)
+
 `@pulse-compute/provider-fastly` supplies typed Fastly project configuration,
 canonical capability lowering, direct JavaScript execution, local conformance
 runtimes, Native and JavaScript Compute target generation, and an explicit
@@ -28,10 +30,12 @@ and the observed/configured byte counts; modules within it still require valid
 Wasm and the expected host ABI. No unlimited setting or runtime allocation
 change is implied. The option does not control JavaScript-target packaging.
 
+For Native build settings, see [Native build optimization](../reference/native-build-optimization.md).
+
 ## Install
 
 ```bash
-npm install @pulse-compute/provider-fastly@1.0.0-beta.9
+npm install @pulse-compute/provider-fastly@1.0.0-beta.10
 ```
 
 ## Configure a project
@@ -114,6 +118,52 @@ The root `fastly()` helper supports:
 
 See [Project configuration](../reference/project-config.md#fastly-provider-options) for field-level defaults, precedence, and constraints.
 
+### Native dynamic backends
+
+Set `fastly.bindings.dynamicBackends: true` to allow ordinary Native fetches to
+select runtime origins. This uses the existing opt-in and requires the Fastly
+Dynamic Backends service capability on a deployed service. Configured canonical
+origin mappings take precedence; internal explicit effect bindings take first
+precedence. With the opt-in disabled, existing static selection is unchanged.
+With it enabled, an unmapped runtime origin never falls back to a different
+configured backend. S3, GRIP control endpoints and experimental body forwarding
+retain their static binding requirements.
+
+Native dynamic selection accepts absolute ASCII HTTP/HTTPS URLs with DNS names,
+and canonical dotted-decimal IPv4 over HTTP. Ports must be 1–65535. Credentials,
+IPv6, HTTPS IP literals, Unicode/IDNA (including `xn--` labels), numeric host
+aliases, backslashes, whitespace and malformed authorities are rejected before
+dispatch. Runtime origin lookup uses this same parser; a statically bound effect
+retains its existing URL handling. JavaScript uses the SDK/WHATWG URL path and
+may admit additional host forms.
+
+Scheme and DNS case and default ports are normalized. A DNS trailing dot remains
+part of identity. Paths and queries are preserved; fragments are removed. Host
+comes from the URL authority, including a nondefault port, and overrides an
+authored Host header for dynamic destinations. HTTPS uses the URL DNS hostname
+for certificate verification and SNI with normal platform trust. This opt-in adds
+no certificate bypass, custom CA, redirect following or retry policy.
+
+At most 32 registrations may be attempted per request, including failures and
+successive effect collections. Repeated requests to a canonical origin reuse its
+registered name without spending another attempt. This limit is separate from
+the existing 32-member collection limit. The registry survives continuation
+resumption and is cleared at invocation completion. Host-side network resources
+remain owned by the platform; no unregister or remote cancellation is promised.
+Registration runs inside the existing request/fetch deadline, before outbound
+request/body handles are allocated. Failure never falls back to another backend
+or target. Invalid/unsupported dynamic URLs produce a bounded 400 response;
+unavailable capability, registration failure or exhausted attempts produce a
+bounded 500 response with remediation text, without echoing the URL.
+
+Native artifact inspection records the active policy, static runtime mappings,
+required registration import and eligibility limits. Reusing an artifact with
+different dynamic selection bindings requires rebuilding. Disabled builds, and
+builds in which all fetches are statically bound, emit no dynamic helper, registry
+or registration import. Public/installed multi-origin acceptance, deployed
+entitlement, connection reuse and production overhead qualification remain
+separate release gates; local or injected-host success does not establish them.
+
 ## Build outputs
 
 The active `.pulse/config.ts` profile selects one target explicitly:
@@ -128,8 +178,12 @@ pulse build ./my-app
 `src/main.as.ts` plus compact `bin/main.wasm` importing the required `fastly_*`
 hostcalls directly. It contains no JavaScript runtime image or `pulse_host`.
 Clock-dependent capabilities import WASI `clock_time_get`; enabled Native logging
-imports `fd_write` for redacted, best-effort stdout. Named logging endpoints are
-not used. See [logging behavior](../guides/fastly-capabilities.md).
+imports `fd_write` for redacted, best-effort stdout by default. Configure
+`fastly.bindings.logEndpoint` (or `fastly({logEndpoint: 'application-events'})`)
+to select a named production stream through `fastly_log`; JavaScript uses the
+SDK Logger for the same provider configuration. Named records are bounded at
+65,536 UTF-8 bytes, with no retries or stdout fallback. Create the endpoint
+separately and verify receipt at its destination. See [logging behavior](../guides/fastly-capabilities.md).
 
 The compiler avoids boxed arithmetic temporaries in proven numeric loop regions
 for schema and stub builds without linked guests, and for schema-inactive builds

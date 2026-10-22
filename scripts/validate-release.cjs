@@ -310,11 +310,13 @@ async function main(argv = process.argv.slice(2)) {
     }
 
     const sourceChecksFile = path.join(progress.directory || packageManagerCache, 'source-checks.json');
-    await runStep(steps, 'source-checks', 'Validate control planes, catalog, generated docs and site before compilation',
+    await runStep(steps, 'source-checks', 'Validate control planes, catalog, source and installed docs before compilation',
       process.execPath, ['scripts/release-source-checks.cjs', '--out', sourceChecksFile],
       { timeoutMs: 10 * 60 * 1000, env: packageManagerEnv });
     assertCandidateSource(sourceIdentity);
     const sourceChecksSha256 = require('node:crypto').createHash('sha256').update(fs.readFileSync(sourceChecksFile)).digest('hex');
+    const packDependencies = require('./release-context-freshness.cjs').checkpointDependencies(
+      JSON.parse(fs.readFileSync(sourceChecksFile, 'utf8')), candidate);
     progress.persist({ sourceChecks: { file: sourceChecksFile, sha256: sourceChecksSha256 } });
     await runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
     if (progress.directory) artifactFiles = recoveryTools.artifactPaths(progress.directory);
@@ -380,9 +382,11 @@ async function main(argv = process.argv.slice(2)) {
       progress.persist({ recovery });
       packStore = createCheckpointStore({ directory: path.join(progress.directory, 'checkpoints/pack'),
         previousDirectory: previousDirectory ? path.join(previousDirectory, 'checkpoints/pack') : undefined, context });
-      packSpec = { id: 'shared-pack', definition: recoveryTools.sharedPackDefinition(), dependencies: {},
+      packSpec = { id: 'shared-pack', definition: recoveryTools.sharedPackDefinition(), dependencies: packDependencies,
         artifacts: { pack: sharedPackDirectory, log: path.join(progress.directory, 'shared-pack.log') } };
     }
+    assert.equal(require('./release-context-freshness.cjs').hash(fs.readFileSync(sourceChecksFile)), sourceChecksSha256,
+      'Source checks changed before package checkpoint admission');
     const reusedPack = packStore?.tryReuse(packSpec);
     let packProof;
     if (reusedPack?.reused) {
@@ -437,6 +441,20 @@ async function main(argv = process.argv.slice(2)) {
       JSON.parse(fs.readFileSync(artifactFiles?.featureReport || path.join(resultsRoot, 'release-feature-acceptance.json'), 'utf8')),
       revision
     );
+
+    const contextOwner = require('./release-context-freshness.cjs');
+    const sourceChecks = JSON.parse(fs.readFileSync(sourceChecksFile, 'utf8'));
+    assert.equal(contextOwner.hash(fs.readFileSync(sourceChecksFile)), sourceChecksSha256, 'Source checks changed during qualification');
+    const packManifest = JSON.parse(fs.readFileSync(path.join(sharedPackDirectory, 'pulse-release-manifest.json'), 'utf8'));
+    const featureTasks = JSON.parse(fs.readFileSync(artifactFiles?.featureTasks || path.join(featureAcceptance.directory, 'tasks.json'), 'utf8'));
+    const contextQualification = contextOwner.qualify(sourceChecks, packManifest, featureTasks, featureAcceptance);
+    const contextEvidence = {
+      packManifest: path.join(sharedPackDirectory, 'pulse-release-manifest.json'),
+      featureTasks: artifactFiles?.featureTasks || path.join(featureAcceptance.directory, 'tasks.json')
+    };
+    contextOwner.verifySeal({ sourceRevision: revision, sourceChecks: { file: sourceChecksFile, sha256: sourceChecksSha256 },
+      contextQualification, contextEvidence, featureAcceptance });
+    progress.persist({ contextQualification, contextEvidence });
 
     if (options.requireFastly || externalFastly.status === 'passed') {
       const provenGates = [

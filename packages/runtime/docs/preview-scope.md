@@ -1,6 +1,6 @@
 # Beta scope
 
-Pulse `1.0.0-beta.9` is a Beta of one provider-neutral application contract
+Pulse `1.0.0-beta.10` is a Beta of one provider-neutral application contract
 with explicit Native and JavaScript execution targets. The intended 1.0
 surface is present, but deliberate corrections may still occur before the
 stable `1.0.0` release.
@@ -19,17 +19,22 @@ targets.
   wildcards, and acyclic mounts.
 - Basic branching and structured object, array, and scalar manipulation.
 - Literal-capped pure `for` loops and zero-argument string `.trim()` across
-  Native and JavaScript; see [bounded application values](https://pulsecompute.io/v1.0.0-beta.9/concepts/compilation-and-lowering/#bounded-application-values).
+  Native and JavaScript; see [bounded application values](https://pulsecompute.io/v1.0.0-beta.10/concepts/compilation-and-lowering/#bounded-application-values).
 - Request method, URL, path, headers, text, and JSON access.
 - Bounded, memoized structured body decoding.
 - Explicit TypeScript JSON schema declarations and literal schema IDs.
 - GET, HEAD, and POST fetch effects.
 - Independent Native effect grouping, dependent continuation chains, and
-  explicit cross-target `ctx.parallel({ ... })` keyed groups.
+  explicit cross-target `ctx.parallel({ ... })` keyed groups and bounded
+  `ctx.effects({ max })` collections.
+- Schema-bound synchronous `ctx.call` computations on Node Native, Fastly Native
+  and explicit Node JavaScript; event contexts have no call surface.
+- Explicit embedded binary resources and request-owned numeric workspaces.
 - HTTP status and headers as ordinary response data.
 - JSON, text, custom, and direct pass-through responses.
 - Exact-name config and secret reads.
-- Named KV `get` and `put`.
+- Named KV `get` and `put`; conditional operations, bounded listing and deletion
+  on Node JavaScript, Node Native and Fastly Native.
 - Opaque host-owned binary and stream pass-through.
 - Stateless package-root GRIP request classification, response subscription and
   handoff framing, and configured request-bound broadcast.
@@ -71,7 +76,8 @@ mandatory external Fastly CLI-managed reality lane. Neither result authorizes a
 service deployment or activation.
 
 There is no automatic fallback. An operator must select the target through
-project configuration or an explicitly permitted CLI target selection. A
+a named project profile (`--profile` selects that profile). There is no public
+`--target` override. A
 successful provider-neutral compile does not silently change a
 JavaScript-selected project into a Native one.
 
@@ -79,7 +85,7 @@ JavaScript-selected project into a Native one.
 
 - Unbounded loops, arbitrary callback transformations and Native helper shapes
   outside the supported bounded subset. Effectful loops are limited to the
-  experimental finite Node output/transform forms in the [bodies guide](https://pulsecompute.io/v1.0.0-beta.9/concepts/bodies/);
+  experimental finite Node output/transform forms in the [bodies guide](https://pulsecompute.io/v1.0.0-beta.10/concepts/bodies/);
   other loop bodies must stay within the admitted pure forms.
 
 - Automatic fallback from Native lowering to JavaScript execution.
@@ -107,21 +113,21 @@ JavaScript-selected project into a Native one.
   `ctx.resolved`.
 - Third-party provider or lowerer self-registration.
 - A public event listener, production event transport, delivery/retry
-  guarantee, automatic loopback or reentrancy, generic bus, `ctx.call`, or
-  request/reply event routing.
+  guarantee, automatic loopback or reentrancy, generic bus, event-context
+  `ctx.call`, or request/reply event routing.
 - Fastly, browser, or ESP32 event ingress/emit realization. Fastly fails closed
   with exact eligibility diagnostics; browser and ESP32 remain unclaimed.
 
 ## Compatibility authority
 
 The single source-form, provider-binding, artifact, and deployment-boundary
-table is [Provider and target compatibility](https://pulsecompute.io/v1.0.0-beta.9/reference/compatibility-matrix/).
+table is [Provider and target compatibility](https://pulsecompute.io/v1.0.0-beta.10/reference/compatibility-matrix/).
 It uses one public target order—Node JavaScript, Fastly JavaScript, Node Native,
 and Fastly Native—and links every row to a focused proof or canonical contract.
 
 The exact portable language subset and the JavaScript-only Native eligibility
 boundaries are defined in
-[Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.9/reference/handler-authoring/).
+[Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.10/reference/handler-authoring/).
 
 ## Body model
 

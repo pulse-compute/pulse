@@ -68,7 +68,7 @@ function __pulse_numeric_box(value: f64): i32 {
 }
 
 function instrument(source, plan) {
-  if (!hasBoundedReadLoop(plan)) return source;
+  if (!plan.callables?.length && !hasBoundedReadLoop(plan)) return source;
   function insert(needle, extra) {
     if (source.split(needle).length !== 2) throw new Error('Native value budget instrumentation mismatch: ' + needle);
     source = source.replace(needle, needle + extra);

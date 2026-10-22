@@ -38,7 +38,8 @@ const packageManifest = require('../../package.json');
 const reportingTargetCapability = Object.freeze({
   supported: true,
   default: 'info',
-  levels: Object.freeze(['off', 'error', 'warn', 'info', 'debug'])
+  levels: Object.freeze(['off', 'error', 'warn', 'info', 'debug']),
+  destinations: Object.freeze(['stdout', 'configured-named-endpoint'])
 });
 
 const fastlyFinalWasmPolicy = defineFinalWasmPolicy({
@@ -124,6 +125,7 @@ function createDriver() {
           projectRoot: invocation.project.root,
           outDir: invocation.project.outDir,
           schemaBundle: invocation.javascript.schemaBundle,
+          binaryResources: invocation.javascript.binaryResources,
           providerConfig: invocation.providerConfig,
           reporting: invocation.javascript.reporting,
           strict: invocation.javascript.strict,
@@ -170,7 +172,7 @@ function createDriver() {
         status: 'supported',
         capabilities: Object.freeze([
           's3.head', 's3.getText', 's3.getBody',
-          'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap',
+          'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete',
           'jwt.verify',
           'jwt.sign',
           'jwt.verify.hs256',
@@ -185,6 +187,13 @@ function createDriver() {
             kind: 'package-native-application',
             contractId: 'pulse.entities',
             implementation: 'pulse.package-native-application.v1',
+            implemented: true,
+            automaticFallback: false
+          }),
+          Object.freeze({
+            kind: 'package-native-application',
+            contractId: 'pulse.mcp',
+            implementation: 'pulse.package-native-application.v2',
             implemented: true,
             automaticFallback: false
           }),

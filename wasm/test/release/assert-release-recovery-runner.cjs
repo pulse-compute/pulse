@@ -160,6 +160,20 @@ async function main() {
     assert.equal(afterCleanup.state.results[0].execution, 'executed');
     assert.equal(afterCleanup.state.results[0].status, 'passed');
 
+    // An early log-open error must be reported, never persisted as a reusable
+    // task pass, even when the child and its artifact cleanup succeed.
+    const blockedLog = path.join(root, 'failed-log', 'run', 'tasks', 'first.log');
+    fs.mkdirSync(blockedLog, { recursive: true });
+    const failedLog = await attempt('failed-log', null, { names: ['first'] });
+    assert.equal(failedLog.state.results[0].status, 'failed');
+    assert.equal(failedLog.state.results[0].cleanup.status, 'failed');
+    assert.match(failedLog.state.results[0].error, /EISDIR/);
+    const failedLogReceipt = JSON.parse(fs.readFileSync(failedLog.state.results[0].checkpoint.receiptPath, 'utf8'));
+    assert.equal(failedLogReceipt.receipt.result.status, 'failed', 'retain failure evidence without authorizing reuse');
+    const afterLog = await attempt('after-log', failedLog, { names: ['first'] });
+    assert.equal(afterLog.state.results[0].execution, 'executed');
+    assert.equal(afterLog.state.results[0].status, 'passed');
+
     const write = fs.writeFileSync;
     let diskFailure;
     try {

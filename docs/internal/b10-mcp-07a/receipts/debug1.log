@@ -1,0 +1,66 @@
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/worker.cjs',
+  'guard',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/settings.json'
+]
+DEBUG RUN [
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/typescript/bin/tsc',
+  '--project',
+  '/workspace/scratch/0174bfde4d1e/07a-debug/consumer/application/tsconfig.json'
+]
+DEVELOPMENT ONLY: already checked types skipped
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /PULSE_BINARY_RESOURCE_INVALID/. Input:
+
+'denied filesystem API: /workspace/scratch/0174bfde4d1e/07a-debug/.git Error: Access to this API has been restricted. Use --allow-fs-read to manage permissions.\n' +
+  '    at Object.existsSync (node:fs:291:18)\n' +
+  '    at Object.wrapped [as existsSync] (/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/trace.cjs:1:105)\n' +
+  '    at findWorktreeBoundary (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workspace.js:29:12)\n' +
+  '    at discoverConventionalWorkspace (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workspace.js:37:20)\n' +
+  '    at resolveWorkspace (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workspace.js:67:10)\n' +
+  '    at Object.resolveProject (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/project-config.js:621:17)\n' +
+  '    at resolveProjectContext (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/project-context.js:119:51)\n' +
+  '    at runPulseWorkflowCli (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workflow.js:47:9)\n' +
+  '    at Object.<anonymous> (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/bin/pulse.js:6:1)\n' +
+  '    at Module._compile (node:internal/modules/cjs/loader:1871:14)\n' +
+  '{\n' +
+  '  "status": "error",\n' +
+  '  "version": "1.0.0-beta.9",\n' +
+  '  "error": {\n' +
+  '    "name": "PulseProjectError",\n' +
+  '    "code": "ERR_ACCESS_DENIED",\n' +
+  '    "title": "Uncatalogued Pulse diagnostic",\n' +
+  '    "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",\n' +
+  '    "category": "internal",\n' +
+  '    "message": "Access to this API has been restricted. Use --allow-fs-read to manage permissions.",\n' +
+  '    "remediation": [\n' +
+  '      "Rerun with `--json` and retain the complete diagnostic for investigation."\n' +
+  '    ],\n' +
+  '    "stability": "internal-or-forward-compatible",\n' +
+  '    "scope": "fallback",\n' +
+  '    "docs": "https://pulsecompute.io/v1.0.0-beta.9/reference/diagnostics/",\n' +
+  '    "detail": {}\n' +
+  '  }\n' +
+  '}\n' +
+  '(node:21) SecurityWarning: The flag --allow-child-process must be used with extreme caution. It could invalidate the permission model.\n' +
+  '(Use `node --trace-warnings ...` to show where the warning was created)\n' +
+  '(node:21) SecurityWarning: The flag --allow-worker must be used with extreme caution. It could invalidate the permission model.\n'
+
+    at Object.qualify (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/mcp/context-installed-closure.cjs:81:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'denied filesystem API: /workspace/scratch/0174bfde4d1e/07a-debug/.git Error: Access to this API has been restricted. Use --allow-fs-read to manage permissions.\n' +
+    '    at Object.existsSync (node:fs:291:18)\n' +
+    '    at Object.wrapped [as existsSync] (/workspace/scratch/0174bfde4d1e/07a-debug/native-proof/trace.cjs:1:105)\n' +
+    '    at findWorktreeBoundary (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workspace.js:29:12)\n' +
+    '    at discoverConventionalWorkspace (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workspace.js:37:20)\n' +
+    '    at resolveWorkspace (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workspace.js:67:10)\n' +
+    '    at Object.resolveProject (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/project-config.js:621:17)\n' +
+    '    at resolveProjectContext (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/internal/project-context.js:119:51)\n' +
+    '    at runPulseWorkflowCli (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/src/workflow.js:47:9)\n' +
+    '    at Object.<anonymous> (/workspace/scratch/0174bfde4d1e/07a-debug/consumer/node_modules/@pulse-compute/cli/bin/pulse.js:6:1)\n' +
+    '...',
+  expected: /PULSE_BINARY_RESOURCE_INVALID/,
+  operator: 'match',
+  diff: 'simple'
+}

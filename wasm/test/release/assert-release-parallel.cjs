@@ -21,9 +21,19 @@ async function verifyParallel() {
     assert.equal(compilerCount(4, 2), 2);
     assert.throws(() => compilerCount(0, 2), /compiler-workers/);
     const registry = require('../suite/registry.cjs').tasks;
+    const correctedCompilers = ['report-capsule-contract', 'cli-report-viewer', 'cli-report-retained-evidence',
+      'cli-report-relationships', 'cli-report-resource-inventory', 'cli-report-graph-diagnostics',
+      'entities-orchestration-demo', 's3-body-read', 'shared-stage-o19'];
     for (const name of ['jwt-rs256', 'clean-machine-acceptance', 'schema-codecs', 'fastly-native-platform-capabilities',
-      'cli-report-capture-proof', 'node-launcher', 'node01-installed', 'ast02d-installed', 'assets-native-embedded', 's3-body-installed']) {
+      'cli-report-capture-proof', 'node-launcher', 'node01-installed', 'ast02d-installed', 'assets-native-embedded', 's3-body-installed',
+      ...correctedCompilers]) {
       assert.equal(scheduling(name, registry[name]).compiler, true, `${name} must consume a compiler slot`);
+    }
+    // Selected invocation matters: these inspect plans, build JavaScript, or run
+    // prebuilt Wasm. A helper import or Native-looking name is insufficient.
+    for (const name of ['multifile-source-indexes', 'pure-helper-contract', 's3-read-contract',
+      'crypto-es256-signing', 'crypto-rs256', 'cli-report-size-evidence', 'pulse-context-application']) {
+      assert.equal(scheduling(name, registry[name]).compiler, false, `${name} must retain its reviewed hint`);
     }
     assert.equal(scheduling('release-artifact-determinism', registry['release-artifact-determinism']).compiler, false);
     const candidateRoot = path.join(root, 'candidate');
@@ -96,6 +106,7 @@ async function verifyParallel() {
     fs.symlinkSync(outside, path.join(worker.directory, 'generated-link'));
     cleanupWorker(binding);
     assert.equal(fs.readFileSync(outside, 'utf8'), 'preserve');
+    await require('./assert-worker-verification.cjs').verifyWorkerVerification({ root, binding });
 
     // Exercise the production worker/checkpoint integration with lightweight
     // subprocess fixtures, never real qualification claims or a sliced seal.
@@ -115,14 +126,15 @@ async function verifyParallel() {
       `], evidence: 'unit', description: 'worker cleanup recovery fixture', timeoutMs: 5000,
       scheduling: index === names.length - 1 ? { after: names.slice(0, -1) } : {}
     }]));
-    async function managedAttempt(label, previous) {
+    async function managedAttempt(label, previous, options = {}) {
       const directory = path.join(root, label), artifacts = recovery.artifactPaths(directory);
       const config = recovery.recoveryConfig({ directory, previousDirectory: previous?.directory,
         context, artifacts, sharedPack: { proofId: 'fixture-pack' } }, 'features', names);
       const state = { results: [], runDir: path.join(directory, 'runs'), sourceEnv: {} };
       fs.mkdirSync(path.join(state.runDir, 'tasks'), { recursive: true });
       await runSelectedTasks({ state, selection: { selected: names, requested: names }, recoveryConfig: config,
-        taskMap: fixtureTasks, workspaces: layout.workspaces });
+        taskMap: fixtureTasks, workspaces: layout.workspaces, ...options,
+        persist() { options.persist?.(state); } });
       return { state, directory };
     }
     put(failureFlag, 'fail');
@@ -138,6 +150,48 @@ async function verifyParallel() {
     assert.equal(recovered.state.results.at(-1).execution, 'executed');
     assert.deepEqual(candidateIdentity(worker.directory), candidate);
 
+    // Delayed owned operations hold both worker slots, including the interval
+    // before their result is consumed. No checkpoint or next task may sneak in.
+    const parallelModule = require('../../../scripts/release-parallel.cjs');
+    for (const operation of ['verifyWorkerAsync', 'cleanupWorkerAsync']) {
+      const original = parallelModule[operation];
+      let release, ready, count = 0, snapshot, pendingState;
+      const gate = new Promise(resolve => { release = resolve; });
+      const waiting = new Promise(resolve => { ready = resolve; });
+      parallelModule[operation] = async (...args) => {
+        const result = await original(...args);
+        // str02b-installed is the priority barrier; hold the following pair.
+        if (++count === 2 || count === 3) { if (count === 3) ready(); await gate; }
+        return result;
+      };
+      let attempt;
+      try {
+        attempt = managedAttempt(`held-${operation}`, null, { persist(state) { pendingState = state; },
+          onChild(child, name) { if (child) (snapshot ||= new Set()).add(name); } });
+        await waiting;
+        assert.equal(snapshot.size, 3, 'a verifying worker must remain exclusive after the priority task');
+        assert.equal(pendingState.results.length, 1);
+        const checkpoints = pendingState.recovery.directory;
+        if (fs.existsSync(checkpoints)) assert.equal(fs.readdirSync(checkpoints).filter(name => name.endsWith('.json')).length, 1,
+          'pending verification must not produce a checkpoint');
+      } finally { release(); parallelModule[operation] = original; }
+      const held = await attempt;
+      assert(held.state.results.every(item => item.status === 'passed'));
+    }
+    // A previous valid checkpoint cannot bypass current worker verification.
+    put(path.join(worker.directory, 'node_modules/external/index.js'), 'changed before replay');
+    const rejectedReplay = await managedAttempt('managed-mutated-replay', recovered);
+    assert.equal(rejectedReplay.state.results.length, 0);
+    assert.match(rejectedReplay.state.error.message, /dependency\/build inputs changed/);
+    put(path.join(worker.directory, 'node_modules/external/index.js'), 'dependency');
+    const admissionAbort = new AbortController();
+    const cancelledAdmission = await managedAttempt('managed-aborted-admission', recovered, {
+      signal: admissionAbort.signal, taskRunOptions: { cleanupGraceMs: 25 },
+      onChild(child) { if (child) admissionAbort.abort('SIGTERM'); }
+    });
+    assert.equal(cancelledAdmission.state.results.length, 0, 'interrupted verification must not replay a checkpoint');
+    assert.deepEqual(cancelledAdmission.state.currentTasks, []);
+
     // Reconcile residue still visible to the controller after a cleanup receipt.
     const temporaryRootRecord = path.join(root, 'cleanup-fixture-root');
     const falseReceipt = await runTask('worker-false-cleanup', { command: process.execPath,
@@ -152,6 +206,19 @@ async function verifyParallel() {
     assert.equal(falseReceipt.cleanup.worker.status, 'passed');
     assert.deepEqual(falseReceipt.cleanup.worker.removed, ['wasm/late-output']);
     verifyWorker(binding);
+
+    const falseInputReceipt = await runTask('worker-false-input-cleanup', { command: process.execPath,
+      args: ['-e', `require('node:fs').writeFileSync(${JSON.stringify(temporaryRootRecord)},process.env.PULSEWASM_TEST_TMP_ROOT);`],
+      evidence: 'unit', description: 'late input mutation receipt fixture', timeoutMs: 5000 },
+    { cwd: path.join(worker.directory, 'wasm'), workerCleanup: binding,
+      cleanupCommand: { command: process.execPath, args: ['-e', `const fs=require('node:fs');
+        fs.rmSync(fs.readFileSync(${JSON.stringify(temporaryRootRecord)},'utf8'),{recursive:true,force:true});
+        fs.writeFileSync(${JSON.stringify(path.join(worker.directory, 'node_modules/external/index.js'))},'late mutation');
+        process.stdout.write(JSON.stringify({worker:{status:'passed',removed:[]},failureArtifacts:[]}));`] } });
+    assert.equal(falseInputReceipt.status, 'failed');
+    assert.equal(falseInputReceipt.cleanup.worker.status, 'failed');
+    assert.equal(falseInputReceipt.cleanup.worker.retainedPath, worker.directory);
+    put(path.join(worker.directory, 'node_modules/external/index.js'), 'dependency');
 
     // A failed cleanup is not recorded as a reusable task pass.
     const changed = await runTask('worker-input-mutation', { command: process.execPath,
@@ -195,6 +262,7 @@ async function verifyParallel() {
     const trace = path.join(root, 'trace');
     const source = `const fs=require('node:fs');const [name,trace,fail,delay]=process.argv.slice(1);
       fs.appendFileSync(trace,JSON.stringify({name,event:'start',at:Date.now(),cwd:process.cwd()})+'\\n');
+      process.stdout.write(name+': complete task log\\n');
       fs.writeFileSync('shared-output',name);
       setTimeout(()=>{fs.appendFileSync(trace,JSON.stringify({name,event:'end',at:Date.now()})+'\\n');process.exitCode=fs.existsSync(fail)?9:0;},Number(delay));`;
     function task(name, scheduling = {}, delay = 160) {
@@ -217,6 +285,22 @@ async function verifyParallel() {
     // Use production names/hints with lightweight subprocesses: execution order
     // may change, but report order, coverage, recovery and slot limits must not.
     const hinted = name => task(name, { compiler: scheduling(name, registry[name]).compiler, ...registry[name].scheduling });
+    fs.writeFileSync(trace, '');
+    const corrected = await attempt('corrected-compiler-admission', Object.fromEntries(
+      [...correctedCompilers, 'api-surface'].map(name => [name, hinted(name)])));
+    assert.deepEqual(corrected.state.results.map(r => [r.name, r.status]),
+      [...correctedCompilers, 'api-surface'].map(name => [name, 'passed']));
+    const correctedRows = fs.readFileSync(trace, 'utf8').trim().split('\n').map(JSON.parse);
+    let admitted = 0;
+    for (const row of correctedRows) {
+      if (!correctedCompilers.includes(row.name)) continue;
+      admitted += row.event === 'start' ? 1 : -1;
+      assert(admitted >= 0 && admitted <= 1, 'corrected Native tasks must share the single compiler slot');
+    }
+    assert.equal(admitted, 0);
+    const correctedAt = (name, event) => correctedRows.find(r => r.name === name && r.event === event).at;
+    assert(correctedCompilers.some(name => correctedAt(name, 'start') < correctedAt('api-surface', 'end') &&
+      correctedAt('api-surface', 'start') < correctedAt(name, 'end')), 'non-compiler work must still use the other worker');
     const early = { 'jwt-rs256': hinted('jwt-rs256'), 'suite-shape': hinted('suite-shape'),
       'release-artifact-determinism': hinted('release-artifact-determinism'), 'boundaries': hinted('boundaries') };
     for (const parallel of [false, true]) {
@@ -268,6 +352,42 @@ async function verifyParallel() {
     fs.writeFileSync(trace, '');
     const serial = await attempt('serial', tasks, null, false);
     assert.deepEqual(serial.state.results.map(item => [item.name, item.status]), parallel.state.results.map(item => [item.name, item.status]));
+    // Exercise actual task log streams under overlapping scheduler work. A
+    // finished writer's close notification must beat an overdue timer after a
+    // bounded controller stall; neither a deadline extension nor a fake close.
+    const createWriteStream = fs.createWriteStream;
+    const stalledStreams = [];
+    let stalled;
+    try {
+      fs.createWriteStream = function(file, ...args) {
+        const stream = createWriteStream.call(this, file, ...args);
+        if (String(file).startsWith(path.join(root, 'stalled-log-close', 'runs', 'tasks'))) {
+          stalledStreams.push(stream);
+          const end = stream.end;
+          stream.end = function(...endArgs) {
+            const result = end.apply(this, endArgs);
+            const until = performance.now() + 1200;
+            while (performance.now() < until) { /* synchronous controller verification stand-in */ }
+            return result;
+          };
+        }
+        return stream;
+      };
+      fs.writeFileSync(trace, '');
+      stalled = await attempt('stalled-log-close', { a: task('a'), b: task('b') });
+    } finally { fs.createWriteStream = createWriteStream; }
+    assert.equal(stalledStreams.length, 2);
+    assert(stalledStreams.every(stream => stream.writableFinished && stream.closed && !stream.errored));
+    assert.deepEqual(stalled.state.results.map(item => item.status), ['passed', 'passed']);
+    for (const result of stalled.state.results) {
+      assert.equal(result.cleanup.status, 'passed');
+      assert.deepEqual(result.remainingProcessTree, []);
+      assert.equal(fs.readFileSync(path.resolve(__dirname, '../..', result.logPath), 'utf8'), `${result.name}: complete task log\n`);
+      assert(result.checkpoint?.proofId, 'only complete closed logs may accompany a checkpoint pass');
+    }
+    const stalledEvents = fs.readFileSync(trace, 'utf8').trim().split('\n').map(JSON.parse);
+    assert(Math.max(...stalledEvents.filter(row => row.event === 'start').map(row => row.at)) <
+      Math.min(...stalledEvents.filter(row => row.event === 'end').map(row => row.at)), 'diagnostic must overlap two task executions');
     fs.writeFileSync(trace, '');
     const late = { a: task('a'), b: task('b'), late: task('late', { after: ['a', 'b'] }) };
     fs.writeFileSync(path.join(root, 'fail-late'), 'fail');
@@ -290,6 +410,10 @@ async function verifyParallel() {
     clearTimeout(timer);
     assert.equal(interrupted.state.results.length, 2);
     assert(interrupted.state.results.every(item => item.status === 'interrupted' && item.cleanup.status === 'passed'));
+    for (const result of interrupted.state.results) {
+      assert.deepEqual(result.remainingProcessTree, []);
+      assert.match(fs.readFileSync(path.resolve(__dirname, '../..', result.logPath), 'utf8'), /interrupted by SIGTERM/);
+    }
     assert.deepEqual(interrupted.state.currentTasks, []);
     const observer = await runTask('observer', task('observer', {}, 2000), {
       cwd: path.join(workspaces[0].directory, 'wasm'), terminationGraceMs: 25, killGraceMs: 25,

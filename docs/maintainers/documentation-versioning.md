@@ -1,45 +1,53 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-16
-review-by: 2027-01-16
+last-reviewed: 2026-10-21
+review-by: 2027-04-21
 pulse-doc-meta:end -->
 
 # Documentation versions, search, and installed copies
 
-Pulse publishes a generated product homepage at the configured base path, exact documentation snapshots, and a moving `latest` alias.
+The website repository owns the homepage, hosted documentation, search and
+rendered assets. Pulse owns canonical source pages and release identities.
+The source version catalog records intended exact-version destinations; it
+does not prove that those bytes have been deployed.
 
 ## Public product homepage
 
-The base route for this repository is:
-
-```text
-https://pulsecompute.io/
-```
-
-It is a generated product homepage, not an alias or redirect. Its copy, named actions, section order, and navigation come from `release/documentation-site.json`; release facts and runtime targets come from `release/pulse-release-manifest.json`; CLI workflow summaries come from the public command specification. The homepage links into `latest` for browsing, while diagnostics and package metadata continue to use exact-version URLs.
-
-The homepage and exact current documentation load the same assets under `/v<version>/assets/`. This keeps the visual system consistent and ensures a release snapshot retains the CSS, JavaScript, favicon, no-JavaScript fallback, and hero-graph implementation it shipped with.
+The base route is `https://pulsecompute.io/`. Homepage copy, navigation and
+presentation live in `pulse-compute/website`; `release/documentation-site.json`
+is retained CLI compatibility metadata, not the active homepage renderer.
+The website imports release facts from its selected Pulse commit and links
+readers into `/latest/` for current browsing.
 
 ## Exact release URLs
 
-The canonical URL for this release begins with:
+Diagnostics, package status blocks and package metadata use exact-version
+URLs, such as `https://pulsecompute.io/v1.0.0-beta.10/`. This binds guidance to
+its release rather than silently opening a newer contract. Historical rendered
+bytes and their assets retain their original delivery identities; current
+source cleanup does not rebuild or restyle those snapshots.
 
-```text
-https://pulsecompute.io/v1.0.0-beta.9/
-```
-
-Diagnostics, package status blocks, and package metadata use exact-version URLs. This prevents a diagnostic emitted by an older CLI from silently opening instructions for a newer contract.
-
-Each exact release subtree carries its HTML, release-local search data, public machine-readable references, design tokens, CSS, JavaScript, favicon, editorial site manifest, and version manifest under the same `v<version>/` segment. The release remains renderable and searchable without mutable assets. A small root `versions.json` index may refresh the cross-version selector as newer releases are added; it cannot change the archived page content, styling, or search index.
+The website owns asset layout and version navigation. Do not assume that the
+current Astro assets or search bundles use the legacy `/v<version>/assets/`
+layout. A published source pin and reviewed delivery evidence are separate
+requirements; a version catalog entry alone is not hosted availability.
 
 ## The `latest` alias
 
-`/latest/` redirects to the release marked current in `release/documentation-versions.json`. It is convenient for browsing, but tools and emitted diagnostics should use the exact release segment.
+`/latest/` is the website's current-documentation namespace. Its importer emits
+pages there from `source-lock.json`, which binds a released tag, full commit
+SHA and version. It does not follow the Pulse `latest` branch automatically.
+Unreleased source previews use `/preview/` and are labeled accordingly.
+A merge into Pulse cannot move production documentation by itself.
 
 ## Search
 
-Every published release has its own generated `search-index.json`. Navigation grouping, breadcrumbs, previous/next order, and the on-page outline are generated from the same editorial navigation model. Search runs locally in the browser and never mixes pages from different release versions. Page titles, headings, text, owner, and review status are indexed.
+The website owns rendered search indexing, navigation grouping, breadcrumbs
+and page outlines. Hidden maintainer sources remain directly routable but are
+excluded from navigation and search by the import contract. Historical release
+search remains part of its retained rendered artifact. There is no requirement
+for new website builds to emit the former Pulse `search-index.json` format.
 
 ## Installed and offline documentation
 
@@ -47,26 +55,53 @@ Every published release has its own generated `search-index.json`. Navigation gr
 
 ## Adding a documentation version
 
-The **Release preparation** workflow defaults to `documentation_history=archive-current`: it rebuilds and snapshots the previous
-version from its exact release tag before changing the release manifest. This
-prevents newer integration-branch documentation from being archived as an old
-release. For manual preparation, run the following in a checkout of the
-published tag:
+The **Release preparation** workflow defaults to `documentation_history=website-managed`.
+It reads the previous release manifest from its exact Git tag and retains that
+metadata under `release/documentation-release-history/`, bound to the tag commit
+and a content digest. It never installs the prior release, builds its website,
+or creates a new historical HTML archive. Local preparation uses
+`release:prepare -- <version> --channel beta --website-managed`.
+
+Product versions, package ranges, changelog history, CLI metadata and generated
+references still advance together. Historical catalog entries keep their exact
+version URLs and `archived` status for the website importer, with an explicit
+`deliveryOwner: website`. This is product history, not proof of hosted availability.
+Website delivery receipts and the existing owner-managed recovery remain the
+authority for actual published bytes and metadata. No new backup is required.
+
+Historical HTML is no longer checked into `latest`. The seven former trees'
+release manifests were moved byte-for-byte into `release/documentation-release-history/`.
+Their catalog entries retain `archived` status and exact URLs, with
+`deliveryOwner: legacy-pulse`, `sourceManifestSha256` and `archiveSource` pointing
+to the immutable Git commit/path from which those metadata bytes were retained.
+This identifies a historical repository input, not deployed bytes or a new
+release-tag assertion. Future website-managed entries keep their existing
+separate tag/SHA binding. The beta.1 capture JSON is retained unchanged alongside
+the manifests; its paths describe its historical artifact, not current files.
+
+`--archive-current` is retired rather than requiring new committed HTML. Use
+`--website-managed` for release preparation. For local read-only validation of
+an old artifact supplied by the owner:
 
 ```bash
-pnpm docs:site -- --snapshot
+node scripts/documentation-archives.cjs --directory /path/to/old/site --version 1.0.0-beta.8
 ```
 
-This writes `release/documentation-site-archives/v<current-version>/`. Copy
-that directory unchanged into the preparation branch and commit it. Then use
-`release:prepare` with `--archive-current` to:
+This structural check is not receipt authentication. The separate historical
+v1 candidate/receipt verifier still requires all sealed bytes and checksums.
+Neither reader falls back to missing repository copies or fabricates evidence.
 
-1. add the new release to `release/documentation-versions.json` and leave the old entry in place;
-2. update `release/pulse-release-manifest.json` with the new version and exact segment;
-3. run the generated-documentation and site gates;
-4. prepare the combined site artifact for separately authorized deployment.
-
-The builder copies every non-current version from `release/documentation-site-archives/` and validates its version manifest, release manifest, public-site manifest, search index, pages, and versioned assets before deployment. The moving root homepage is regenerated for the current release; the archived exact subtree preserves the old release’s presentation and routes. A version bump therefore fails rather than silently dropping or rebuilding an older exact release. Existing archive directories are never overwritten unless the snapshot command is given `--force` deliberately.
+The website importer projects version, segment, channel, date and status; those
+fields are unchanged. Catalog bytes do change when metadata pointers move: a
+future reviewed released-source pin must refresh the website version-links
+`source.commit` and `source.sha256` provenance, even if version URLs are unchanged.
+The existing beta.9 website pin keeps its original catalog hash; do not substitute
+unreleased `latest` metadata under that pin. Its normal build and recovery do not read Pulse checkout
+archives. Its recovery plan and historical v1 baselines retain their original
+hashes and source identities. Historical capture uses the pinned beta.9 checkout,
+where those files still exist; native source-contract capture needs no archives.
+The owner's existing backup and Git history provide recovery. No storage, tags,
+released `main`, published versions or CLI compatibility export is changed.
 
 The release gate also rejects a current release that is missing from the versions manifest or whose version segment does not match the release manifest.
 

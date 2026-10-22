@@ -70,7 +70,7 @@ The intended handler shape is async:
 ```ts
 app.get('/users/:id', async (ctx) => {
   const user = await ctx
-    .fetch(`/origin/users/${ctx.param('id')}`)
+    .fetch(`https://users.example.com/users/${ctx.param('id')}`)
     .json<User>('app.User')
 
   return ctx.json({ user })
@@ -135,7 +135,7 @@ Terminal middleware avoids onion-style resumption:
 
 ```ts
 app.use(async (ctx, next) => {
-  const session = await ctx.kv.get('sessions', ctx.req.header('x-session'))
+  const session = await ctx.kv('sessions').get(ctx.req.header('x-session'))
 
   if (!session) {
     return ctx.json({ error: 'unauthorized' }, { status: 401 })
@@ -416,14 +416,15 @@ Reference repository:
 
 [pulsecompute/pulse-esp32-host](https://github.com/pulsecompute/pulse-esp32-host)
 
-A device-oriented application might look like:
+The following is **directional pseudocode**, not a supported Pulse application.
+There is no public `ctx.gpio` capability or qualified ESP32 event adapter:
 
 ```ts
 app.on('gpio:button', async (ctx) => {
-  const enabled = await ctx.kv.get<boolean>('device', 'enabled')
+  const enabled = await ctx.kv<boolean>('device').get('enabled')
 
   await ctx.gpio.write('status-led', !enabled)
-  await ctx.kv.put('device', 'enabled', !enabled)
+  await ctx.kv<boolean>('device').put('enabled', !enabled)
 })
 ```
 

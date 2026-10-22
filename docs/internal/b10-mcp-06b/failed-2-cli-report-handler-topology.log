@@ -1,0 +1,17 @@
+[analytics parity] http/default: control and observed compilation
+[analytics parity] http/experimental-native-bounded-size: control and observed compilation
+[analytics parity] event/default: control and observed compilation
+TypeError: Report input rejected (REPORT_ARTIFACT_HASH).
+    at fail (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/data.js:7:17)
+    at ensure (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:18:55)
+    at /workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:63:5
+    at Array.map (<anonymous>)
+    at artifactRecords (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:60:21)
+    at Object.publishBuild (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:80:21)
+    at compileNativeProjectWithReport (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/project-execution.js:1244:52)
+    at /workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/project-execution.js:1119:66
+    at withReportBuild (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/project-execution.js:711:12)
+    at Object.compileNativeProject (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/project-execution.js:1119:10) {
+  code: 'REPORT_ARTIFACT_HASH',
+  field: '$'
+}

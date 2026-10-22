@@ -79,6 +79,7 @@ export default app;`;
     const reportMs = Date.now() - reportStarted;
     const saved = capsule.serializeCapsule(collected.capsule), c = collected.capsule;
     assert.equal(c.build.operation, 'compile');
+    assert.equal(c.provenance.recipe.optimization, 'native-bounded-size');
     assert.equal(c.build.providerArtifactReuse, 'not-applicable');
     assert.equal(c.build.cache, 'not-recorded');
     assert.equal(c.build.totalDurationMs, c.build.stages.reduce((sum, row) => sum + row.durationMs, 0));
@@ -91,7 +92,7 @@ export default app;`;
     assert.equal(portableCompiler.flagsComplete, true);
     assert.equal(portableCompiler.timeoutMs, 120000);
     assert.ok(portableCompiler.toolchain.some(row => row.name === 'Binaryen (asc)'));
-    assert.deepEqual(portableCompiler.optimization, { optimizeLevel: 3, shrinkLevel: 0, converge: false });
+    assert.deepEqual(portableCompiler.optimization, { optimizeLevel: 3, shrinkLevel: 2, converge: false });
     assert.ok(portableCompiler.flags.some(row => row.name === '--transform' && row.value === 'native-retention-transform.cjs'));
     assert.ok(portableCompiler.toolchain.some(row => row.name === 'json-as' && row.version === '1.5.0'));
     assert.ok(!JSON.stringify(c.build).includes(directory));
@@ -102,9 +103,16 @@ export default app;`;
     const json = args => JSON.parse(execFileSync(process.execPath, [binary, 'report', ...args, '--json'], {
       cwd: directory, encoding: 'utf8', env: { ...process.env, PULSE_PROFILE: 'native' }
     }));
-    assert.deepEqual(json([]), c);
+    const status = json(['--evidence-status']);
+    assert.deepEqual(status.result, c);
     assert.deepEqual(json(['--profile', 'native']), c);
     assert.deepEqual(json(['--artifact', path.join(directory, 'dist/pulse-compile.json')]), c);
+    assert.equal(status.evidence.state, 'verified-completed-artifact');
+    assert.equal(status.evidence.snapshot, 'current-inputs-matched');
+    assert.equal(status.evidence.artifactBytes, 'verified');
+    assert.equal(status.evidence.source.revision.value, null);
+    assert.equal(status.evidence.source.sourceFingerprint.value, null);
+    assert.equal(status.evidence.coverage.inventory.resources.status, c.coverage.resources.status);
 
     const html = out => execFileSync(process.execPath, [binary, 'report', '--html', ...(out ? ['--out', out] : [])], {cwd:directory,encoding:'utf8',env:{...process.env,PULSE_PROFILE:'native'}});
     for (const destination of ['.pulse/reports/pulse-report.html', 'reviews/custom.html']) {
@@ -209,6 +217,13 @@ export default app;`;
     assert.equal(nodeBuild.providerArtifactReuse, 'reused');
     assert.equal(nodeBuild.compilers.length, 1, 'Node packaging does not double-count portable compilation');
     assert.equal(nodeBuild.compilationDurationMs, nodeBuild.compilers[0].durationMs);
+    execution.buildProject(resolve({ profile: 'fastly' }), { nativeShrink0: true });
+    const shrink0Report = report.collectProjectReport({ cwd: directory, profile: 'fastly', optimization: 'native-shrink0' }).capsule;
+    assert.equal(shrink0Report.provenance.recipe.optimization, 'native-shrink0');
+    for (const compiler of shrink0Report.build.compilers) {
+      assert.deepEqual(compiler.optimization, { optimizeLevel: 3, shrinkLevel: 0, converge: false });
+    }
+    assert.equal(capsule.serializeCapsule(capsule.parseCapsule(capsule.serializeCapsule(shrink0Report))), capsule.serializeCapsule(shrink0Report));
     const fastly = execution.buildProject(resolve({ profile: 'fastly' }), { experimentalNativeBoundedSize: true, elideJsonCacheArena: true });
     const provider = report.collectProjectReport({ cwd: directory, profile: 'fastly' });
     assert.equal(provider.capsule.context.host, 'fastly');
@@ -241,7 +256,7 @@ export default app;`;
     // The in-memory inventory mutation corpus is a separate workspace test;
     // installed mode exercises the real build/collection/command path above.
     const inventoryCases = installed ? null : require('./report-inventory-cases.cjs')();
-    const summary = { mode: installed ? 'installed' : 'workspace', inventoryCases, status: 'passed', negativeCases: negative, nativeCompiles: 4, portableGuestUnchanged: true,
+    const summary = { mode: installed ? 'installed' : 'workspace', inventoryCases, status: 'passed', negativeCases: negative, nativeCompiles: 5, portableGuestUnchanged: true,
       routes: c.routes.length, entries: c.entries.length, schemas: c.schemas.length, bindings: c.bindings.length, resources: c.resources.length,
       providerArtifacts: provider.capsule.artifacts.length, buildMs, reportMs,
       capsuleBytes: Buffer.byteLength(saved), inputSidecarBytes: fs.statSync(path.join(fastly.outDir, report.INPUTS_FILE)).size,

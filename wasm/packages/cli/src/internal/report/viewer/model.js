@@ -248,8 +248,8 @@ function createReportViewModel(P) {
       : P.references ? 'No observed use · not proven unused' : 'Usage tracing not recorded';
     return { label, externalPackages };
   }
-  const representationLabels = {'base64-text':'Packed base64 text', 'pulse.report-schema-shape.v1':'Normalized descriptor', 'package-guest-unit':'Package guest unit', 'native-string':'Native string storage (unmapped)'};
-  const resourceScopes = {'selected-embedded-assets':'Selected embedded assets', 'schema-codecs':'Generated schema codecs',
+  const representationLabels = {'base64-text':'Packed base64 text', 'pulse.report-schema-shape.v1':'Normalized descriptor', 'package-guest-unit':'Package guest unit', 'native-string':'Native string storage (unmapped)', 'native-immutable-data':'Native immutable data (selected plan)'};
+  const resourceScopes = {'binary-resources':'Admitted binary resources', 'selected-embedded-assets':'Selected embedded assets', 'schema-codecs':'Generated schema codecs',
     'package-guest-units':'Package guest units', 'package-realizations':'Package realization records', 'generated-support':'Other generated support', 'canonical-text-responses':'Canonical text-response sites'};
   const metrics = {'handler-body':'Handler body', own:'Own (exclusive)', reachable:'Reachable', shared:'Shared'};
   const measurementIndex = new Map();

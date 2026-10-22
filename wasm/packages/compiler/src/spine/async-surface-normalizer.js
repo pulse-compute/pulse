@@ -94,6 +94,10 @@ function normalizeManagedHandler(functionNode, options = {}) {
   // dispatcher can contain markers from several mutually exclusive routes.
   const diagnostics = options.internalGeneratedHandler === true ? []
     : require('./incoming-body-source.js').validateIncomingBodySource(functionNode, { ...options, ctxName, frontend, sourceFile });
+  const collectionSource = require('./effect-collection-source.js').collectRegions(functionNode.body, ctxName, { requireAwait: options.internalGeneratedHandler !== true });
+  for (const error of collectionSource.errors) diagnostics.push(createCanonicalDiagnostic({ frontend, sourceFile, node: error.node,
+    code: 'PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED', message: error.message }));
+  const collectionAdds = new Set(collectionSource.regions.map(region => region.add));
   const warnings = [];
   const changes = [];
   let kvAliases = new Map();
@@ -132,6 +136,7 @@ function normalizeManagedHandler(functionNode, options = {}) {
 
   const transformer = (context) => {
     function visit(node) {
+      if (collectionAdds.has(node)) return node;
       if (ts.isBlock(node)) {
         const inherited = kvAliases; kvAliases = new Map(inherited);
         try { return ts.visitEachChild(node, visit, context); } finally { kvAliases = inherited; }

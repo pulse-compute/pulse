@@ -1,0 +1,2267 @@
+[analytics parity] http/default: control and observed compilation
+[analytics parity] http/experimental-native-bounded-size: control and observed compilation
+[analytics parity] event/default: control and observed compilation
+[analytics parity] event/experimental-native-bounded-size: control and observed compilation
+[analytics parity] full/default: control and observed compilation
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+... Skipped lines
+
+  {
+    application: {
+      kind: 'pulse.application-ir',
+      project: {
+        configPlanHash: 'd000c71c90d3507f74faf26706b22201171a327af3d14300a54335465bf28a04',
+...
+            nextIndex: 3,
++           order: 9,
+-           order: 11,
+            path: '/api/scoped',
+            pattern: '/api/scoped/*',
+            plane: 'http',
+            router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            routerPath: [
+...
+            scoped: true,
++           stableId: 'router_entry_173c8fbac442375cb06896ec'
+-           stableId: 'router_entry_10465b01172a41f582126663'
+          },
+          {
+            generatedBlockRange: {
+              end: 2031,
+              start: 1562
+...
+              family: 'terminal-route',
++             name: '__pulse_body_router_entry_854fac8dfbb3fc8f2faf90e3',
+-             name: '__pulse_body_router_entry_66b0698815d78086574ce6ba',
+              source: {
+                end: {
+                  column: 81,
+                  line: 28,
+                  offset: 988
+...
+            nextIndex: 4,
++           order: 10,
+-           order: 12,
+            path: '/api/scoped',
+            pattern: '/api/scoped',
+            plane: 'http',
+            routeRuntimeId: 0,
+            routeStableId: 'route_d8f6fc8d580c13192d7012b5',
+...
+            scoped: false,
++           stableId: 'router_entry_854fac8dfbb3fc8f2faf90e3'
+-           stableId: 'router_entry_66b0698815d78086574ce6ba'
+          },
+          {
+            generatedBlockRange: {
+              end: 2470,
+              start: 2031
+...
+              family: 'terminal-route',
++             name: '__pulse_body_router_entry_f70e582a46cbdab8dade253b',
+-             name: '__pulse_body_router_entry_a3e5e027ce1c337d6c2a838a',
+              source: {
+                end: {
+                  column: 51,
+                  line: 29,
+                  offset: 1041
+...
+            nextIndex: 5,
++           order: 11,
+-           order: 13,
+            path: '/api/plain',
+            pattern: '/api/plain',
+            plane: 'http',
+            routeRuntimeId: 1,
+            routeStableId: 'route_a75c770ae016fffdc2a97032',
+...
+            scoped: false,
++           stableId: 'router_entry_f70e582a46cbdab8dade253b'
+-           stableId: 'router_entry_a3e5e027ce1c337d6c2a838a'
+          },
+          {
+            childRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            childStartIndex: 6,
+            generatedBlockRange: {
+...
+            nextIndex: 7,
++           order: 9,
+-           order: 11,
+            path: '/v2/scoped',
+            pattern: '/v2/scoped/*',
+            plane: 'http',
+            router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            routerPath: [
+...
+            scoped: true,
++           stableId: 'router_entry_6942a56490ae35028649e566'
+-           stableId: 'router_entry_e2b9e124cf8bb92431d62046'
+          },
+          {
+            generatedBlockRange: {
+              end: 3577,
+              start: 3109
+...
+              family: 'terminal-route',
++             name: '__pulse_body_router_entry_e51c9c0047a3dd037e4d1707',
+-             name: '__pulse_body_router_entry_e5097d83211b5dad8a727073',
+              source: {
+                end: {
+                  column: 81,
+                  line: 28,
+                  offset: 988
+...
+            nextIndex: 8,
++           order: 10,
+-           order: 12,
+            path: '/v2/scoped',
+            pattern: '/v2/scoped',
+            plane: 'http',
+            routeRuntimeId: 2,
+            routeStableId: 'route_99eb228686c8342e1799c5ec',
+...
+            scoped: false,
++           stableId: 'router_entry_e51c9c0047a3dd037e4d1707'
+-           stableId: 'router_entry_e5097d83211b5dad8a727073'
+          },
+          {
+            generatedBlockRange: {
+              end: 4015,
+              start: 3577
+...
+              family: 'terminal-route',
++             name: '__pulse_body_router_entry_87f3f4481219f8397538689e',
+-             name: '__pulse_body_router_entry_ce3ae1b3d4579985f424f285',
+              source: {
+                end: {
+                  column: 51,
+                  line: 29,
+                  offset: 1041
+...
+            nextIndex: 9,
++           order: 11,
+-           order: 13,
+            path: '/v2/plain',
+            pattern: '/v2/plain',
+            plane: 'http',
+            routeRuntimeId: 3,
+            routeStableId: 'route_63c2b214ec10f38eebb93c8c',
+...
+            scoped: false,
++           stableId: 'router_entry_87f3f4481219f8397538689e'
+-           stableId: 'router_entry_ce3ae1b3d4579985f424f285'
+          },
+          {
+            generatedBlockRange: {
+              end: 4611,
+              start: 4015
+...
+          {
+-           generatedBlockRange: {
+-             end: 7651,
+-             start: 7219
+-           },
+-           generatedRange: {
+-             end: 7594,
+-             start: 7370
+-           },
+-           handlerId: 'handler_5df7d4476cf1f4f304d278d0',
+-           index: 15,
+-           kind: 'route',
+-           method: 'GET',
+-           nextIndex: 16,
+-           order: 9,
+-           path: '/error',
+-           pattern: '/error',
+-           plane: 'http',
+-           routeRuntimeId: 10,
+-           routeStableId: 'route_f6b0a959de9d3e0a0cd13f7a',
+-           router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-           routerPath: [
+-             'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-           ],
+-           scoped: false,
+-           stableId: 'router_entry_1057260956a2b57af67bf18f'
+-         },
+-         {
+-           generatedBlockRange: {
+-             end: 7961,
+-             start: 7651
+-           },
+-           generatedRange: {
+-             end: 7904,
+-             start: 7726
+-           },
+-           handlerId: 'handler_45e7ae5791817a01349293ae',
+-           index: 16,
+-           kind: 'error',
+-           nextIndex: 17,
+-           order: 10,
+-           plane: 'http',
+-           router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-           routerPath: [
+-             'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-           ],
+-           scoped: false,
+-           stableId: 'router_entry_ea2bc0132c16c380abccd34b'
+-         },
+-         {
+            eventRuntimeId: 0,
+            eventSchemaId: null,
+            eventStableId: 'event_9ce749984ef4a1b419e5478a',
+            eventType: 'analytics.tick',
+            generatedBlockRange: {
+...
+            handlerId: 'handler_e727f1955ea04362ea5552d5',
++           index: 15,
+-           index: 17,
+            kind: 'event',
++           order: 12,
+-           order: 14,
+            plane: 'event',
+            router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+            routerPath: [
+              'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+            ],
+...
+            nextIndex: 3,
++           order: 9,
+-           order: 11,
+            path: '/api/scoped',
+            pattern: '/api/scoped/*',
+            plane: 'http',
+            router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            routerPath: [
+...
+            scoped: true,
++           stableId: 'router_entry_173c8fbac442375cb06896ec'
+-           stableId: 'router_entry_10465b01172a41f582126663'
+          },
+          {
+            generatedBlockRange: {
+              end: 2031,
+              start: 1562
+...
+              family: 'terminal-route',
++             name: '__pulse_body_router_entry_854fac8dfbb3fc8f2faf90e3',
+-             name: '__pulse_body_router_entry_66b0698815d78086574ce6ba',
+              source: {
+                end: {
+                  column: 81,
+                  line: 28,
+                  offset: 988
+...
+            nextIndex: 4,
++           order: 10,
+-           order: 12,
+            path: '/api/scoped',
+            pattern: '/api/scoped',
+            plane: 'http',
+            routeRuntimeId: 0,
+            routeStableId: 'route_d8f6fc8d580c13192d7012b5',
+...
+            scoped: false,
++           stableId: 'router_entry_854fac8dfbb3fc8f2faf90e3'
+-           stableId: 'router_entry_66b0698815d78086574ce6ba'
+          },
+          {
+            generatedBlockRange: {
+              end: 2470,
+              start: 2031
+...
+              family: 'terminal-route',
++             name: '__pulse_body_router_entry_f70e582a46cbdab8dade253b',
+-             name: '__pulse_body_router_entry_a3e5e027ce1c337d6c2a838a',
+              source: {
+                end: {
+                  column: 51,
+                  line: 29,
+                  offset: 1041
+...
+            nextIndex: 5,
++           order: 11,
+-           order: 13,
+            path: '/api/plain',
+            pattern: '/api/plain',
+            plane: 'http',
+            routeRuntimeId: 1,
+            routeStableId: 'route_a75c770ae016fffdc2a97032',
+...
+            scoped: false,
++           stableId: 'router_entry_f70e582a46cbdab8dade253b'
+-           stableId: 'router_entry_a3e5e027ce1c337d6c2a838a'
+          },
+          {
+            childRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            childStartIndex: 6,
+            generatedBlockRange: {
+...
+            nextIndex: 7,
++           order: 9,
+-           order: 11,
+            path: '/v2/scoped',
+            pattern: '/v2/scoped/*',
+            plane: 'http',
+            router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            routerPath: [
+...
+            scoped: true,
++           stableId: 'router_entry_6942a56490ae35028649e566'
+-           stableId: 'router_entry_e2b9e124cf8bb92431d62046'
+          },
+          {
+            generatedBlockRange: {
+              end: 3577,
+              start: 3109
+...
+              family: 'terminal-route',
++             name: '__pulse_body_router_entry_e51c9c0047a3dd037e4d1707',
+-             name: '__pulse_body_router_entry_e5097d83211b5dad8a727073',
+              source: {
+                end: {
+                  column: 81,
+                  line: 28,
+                  offset: 988
+...
+            nextIndex: 8,
++           order: 10,
+-           order: 12,
+            path: '/v2/scoped',
+            pattern: '/v2/scoped',
+            plane: 'http',
+            routeRuntimeId: 2,
+            routeStableId: 'route_99eb228686c8342e1799c5ec',
+...
+            scoped: false,
++           stableId: 'router_entry_e51c9c0047a3dd037e4d1707'
+-           stableId: 'router_entry_e5097d83211b5dad8a727073'
+          },
+          {
+            generatedBlockRange: {
+              end: 4015,
+              start: 3577
+...
+              family: 'terminal-route',
++             name: '__pulse_body_router_entry_87f3f4481219f8397538689e',
+-             name: '__pulse_body_router_entry_ce3ae1b3d4579985f424f285',
+              source: {
+                end: {
+                  column: 51,
+                  line: 29,
+                  offset: 1041
+...
+            nextIndex: 9,
++           order: 11,
+-           order: 13,
+            path: '/v2/plain',
+            pattern: '/v2/plain',
+            plane: 'http',
+            routeRuntimeId: 3,
+            routeStableId: 'route_63c2b214ec10f38eebb93c8c',
+...
+            scoped: false,
++           stableId: 'router_entry_87f3f4481219f8397538689e'
+-           stableId: 'router_entry_ce3ae1b3d4579985f424f285'
+          },
+          {
+            generatedBlockRange: {
+              end: 4611,
+              start: 4015
+...
+          {
+-           generatedBlockRange: {
+-             end: 7651,
+-             start: 7219
+-           },
+-           generatedRange: {
+-             end: 7594,
+-             start: 7370
+-           },
+-           handlerId: 'handler_5df7d4476cf1f4f304d278d0',
+-           index: 15,
+-           kind: 'route',
+-           method: 'GET',
+-           nextIndex: 16,
+-           order: 9,
+-           path: '/error',
+-           pattern: '/error',
+-           plane: 'http',
+-           routeRuntimeId: 10,
+-           routeStableId: 'route_f6b0a959de9d3e0a0cd13f7a',
+-           router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-           routerPath: [
+-             'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-           ],
+-           scoped: false,
+-           stableId: 'router_entry_1057260956a2b57af67bf18f'
+-         },
+-         {
+-           generatedBlockRange: {
+-             end: 7961,
+-             start: 7651
+-           },
+-           generatedRange: {
+-             end: 7904,
+-             start: 7726
+-           },
+-           handlerId: 'handler_45e7ae5791817a01349293ae',
+-           index: 16,
+-           kind: 'error',
+-           nextIndex: 17,
+-           order: 10,
+-           plane: 'http',
+-           router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-           routerPath: [
+-             'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-           ],
+-           scoped: false,
+-           stableId: 'router_entry_ea2bc0132c16c380abccd34b'
+-         },
+-         {
+            eventRuntimeId: 0,
+            eventSchemaId: null,
+            eventStableId: 'event_9ce749984ef4a1b419e5478a',
+            eventType: 'analytics.tick',
+            generatedBlockRange: {
+...
+            handlerId: 'handler_e727f1955ea04362ea5552d5',
++           index: 15,
+-           index: 17,
+            kind: 'event',
++           order: 12,
+-           order: 14,
+            plane: 'event',
+            router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+            routerPath: [
+              'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+            ],
+...
+        normalization: {
++         awaitCount: 14,
++         effectAwaitCount: 12,
++         handlerCount: 14,
+-         awaitCount: 15,
+-         effectAwaitCount: 13,
+-         handlerCount: 16,
+          syncAwaitCount: 0,
+          userAuthoredAsync: true
+        },
+        routePlanVersion: 'pulsewasm.route-plan.v4',
+        routes: [
+...
+            handlerId: 'handler_cf606d5342ee27e6b815c3f4',
++           handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:10>',
+-           handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:12>',
+            method: 'GET',
++           order: 10,
+-           order: 12,
+            params: [],
+            path: '/api/scoped',
+            pathPattern: {
+              grammarVersion: 'pulsewasm.path-grammar.v1',
+              normalized: '/api/scoped',
+...
+            routerEntryIndex: 3,
++           routerEntryStableId: 'router_entry_854fac8dfbb3fc8f2faf90e3',
+-           routerEntryStableId: 'router_entry_66b0698815d78086574ce6ba',
+            runtimeId: 0,
+            sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            stableId: 'route_d8f6fc8d580c13192d7012b5'
+          },
+          {
+...
+            handlerId: 'handler_767e501187f71894a5e41570',
++           handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:11>',
+-           handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:13>',
+            method: 'GET',
++           order: 11,
+-           order: 13,
+            params: [],
+            path: '/api/plain',
+            pathPattern: {
+              grammarVersion: 'pulsewasm.path-grammar.v1',
+              normalized: '/api/plain',
+...
+            routerEntryIndex: 4,
++           routerEntryStableId: 'router_entry_f70e582a46cbdab8dade253b',
+-           routerEntryStableId: 'router_entry_a3e5e027ce1c337d6c2a838a',
+            runtimeId: 1,
+            sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            stableId: 'route_a75c770ae016fffdc2a97032'
+          },
+          {
+...
+            handlerId: 'handler_cf606d5342ee27e6b815c3f4',
++           handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:10>',
+-           handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:12>',
+            method: 'GET',
++           order: 10,
+-           order: 12,
+            params: [],
+            path: '/v2/scoped',
+            pathPattern: {
+              grammarVersion: 'pulsewasm.path-grammar.v1',
+              normalized: '/v2/scoped',
+...
+            routerEntryIndex: 7,
++           routerEntryStableId: 'router_entry_e51c9c0047a3dd037e4d1707',
+-           routerEntryStableId: 'router_entry_e5097d83211b5dad8a727073',
+            runtimeId: 2,
+            sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            stableId: 'route_99eb228686c8342e1799c5ec'
+          },
+          {
+...
+            handlerId: 'handler_767e501187f71894a5e41570',
++           handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:11>',
+-           handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:13>',
+            method: 'GET',
++           order: 11,
+-           order: 13,
+            params: [],
+            path: '/v2/plain',
+            pathPattern: {
+              grammarVersion: 'pulsewasm.path-grammar.v1',
+              normalized: '/v2/plain',
+...
+            routerEntryIndex: 8,
++           routerEntryStableId: 'router_entry_87f3f4481219f8397538689e',
+-           routerEntryStableId: 'router_entry_ce3ae1b3d4579985f424f285',
+            runtimeId: 3,
+            sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+            stableId: 'route_63c2b214ec10f38eebb93c8c'
+          },
+          {
+...
+          },
+-         {
+-           generatedRange: {
+-             end: 7594,
+-             start: 7370
+-           },
+-           handlerId: 'handler_5df7d4476cf1f4f304d278d0',
+-           handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::app:9>',
+-           method: 'GET',
+-           order: 9,
+-           params: [],
+-           path: '/error',
+-           pathPattern: {
+-             grammarVersion: 'pulsewasm.path-grammar.v1',
+-             normalized: '/error',
+-             params: [],
+-             scoped: false,
+-             segments: [
+-               {
+-                 kind: 'literal',
+-                 value: 'error'
+-               }
+-             ],
+-             wildcard: false
+-           },
+-           routerEntryIndex: 15,
+-           routerEntryStableId: 'router_entry_1057260956a2b57af67bf18f',
+-           runtimeId: 10,
+-           sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-           stableId: 'route_f6b0a959de9d3e0a0cd13f7a'
+-         }
+        ],
+        semantics: {
+          errorExhaustionStatus: 500,
+          explicitErrorTransfer: 'return next(error)',
+          nextIsTerminal: true,
+...
+        nextIndex: 3,
++       order: 9,
+-       order: 11,
+        path: '/api/scoped',
+        pattern: '/api/scoped/*',
+        plane: 'http',
+        router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+        routerPath: [
+...
+        scoped: true,
++       stableId: 'router_entry_173c8fbac442375cb06896ec'
+-       stableId: 'router_entry_10465b01172a41f582126663'
+      },
+      {
+        generatedBlockRange: {
+          end: 2031,
+          start: 1562
+...
+          family: 'terminal-route',
++         name: '__pulse_body_router_entry_854fac8dfbb3fc8f2faf90e3',
+-         name: '__pulse_body_router_entry_66b0698815d78086574ce6ba',
+          source: {
+            end: {
+              column: 81,
+              line: 28,
+              offset: 988
+...
+        nextIndex: 4,
++       order: 10,
+-       order: 12,
+        path: '/api/scoped',
+        pattern: '/api/scoped',
+        plane: 'http',
+        routeRuntimeId: 0,
+        routeStableId: 'route_d8f6fc8d580c13192d7012b5',
+...
+        scoped: false,
++       stableId: 'router_entry_854fac8dfbb3fc8f2faf90e3'
+-       stableId: 'router_entry_66b0698815d78086574ce6ba'
+      },
+      {
+        generatedBlockRange: {
+          end: 2470,
+          start: 2031
+...
+          family: 'terminal-route',
++         name: '__pulse_body_router_entry_f70e582a46cbdab8dade253b',
+-         name: '__pulse_body_router_entry_a3e5e027ce1c337d6c2a838a',
+          source: {
+            end: {
+              column: 51,
+              line: 29,
+              offset: 1041
+...
+        nextIndex: 5,
++       order: 11,
+-       order: 13,
+        path: '/api/plain',
+        pattern: '/api/plain',
+        plane: 'http',
+        routeRuntimeId: 1,
+        routeStableId: 'route_a75c770ae016fffdc2a97032',
+...
+        scoped: false,
++       stableId: 'router_entry_f70e582a46cbdab8dade253b'
+-       stableId: 'router_entry_a3e5e027ce1c337d6c2a838a'
+      },
+      {
+        childRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+        childStartIndex: 6,
+        generatedBlockRange: {
+...
+        nextIndex: 7,
++       order: 9,
+-       order: 11,
+        path: '/v2/scoped',
+        pattern: '/v2/scoped/*',
+        plane: 'http',
+        router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+        routerPath: [
+...
+        scoped: true,
++       stableId: 'router_entry_6942a56490ae35028649e566'
+-       stableId: 'router_entry_e2b9e124cf8bb92431d62046'
+      },
+      {
+        generatedBlockRange: {
+          end: 3577,
+          start: 3109
+...
+          family: 'terminal-route',
++         name: '__pulse_body_router_entry_e51c9c0047a3dd037e4d1707',
+-         name: '__pulse_body_router_entry_e5097d83211b5dad8a727073',
+          source: {
+            end: {
+              column: 81,
+              line: 28,
+              offset: 988
+...
+        nextIndex: 8,
++       order: 10,
+-       order: 12,
+        path: '/v2/scoped',
+        pattern: '/v2/scoped',
+        plane: 'http',
+        routeRuntimeId: 2,
+        routeStableId: 'route_99eb228686c8342e1799c5ec',
+...
+        scoped: false,
++       stableId: 'router_entry_e51c9c0047a3dd037e4d1707'
+-       stableId: 'router_entry_e5097d83211b5dad8a727073'
+      },
+      {
+        generatedBlockRange: {
+          end: 4015,
+          start: 3577
+...
+          family: 'terminal-route',
++         name: '__pulse_body_router_entry_87f3f4481219f8397538689e',
+-         name: '__pulse_body_router_entry_ce3ae1b3d4579985f424f285',
+          source: {
+            end: {
+              column: 51,
+              line: 29,
+              offset: 1041
+...
+        nextIndex: 9,
++       order: 11,
+-       order: 13,
+        path: '/v2/plain',
+        pattern: '/v2/plain',
+        plane: 'http',
+        routeRuntimeId: 3,
+        routeStableId: 'route_63c2b214ec10f38eebb93c8c',
+...
+        scoped: false,
++       stableId: 'router_entry_87f3f4481219f8397538689e'
+-       stableId: 'router_entry_ce3ae1b3d4579985f424f285'
+      },
+      {
+        generatedBlockRange: {
+          end: 4611,
+          start: 4015
+...
+      {
+-       generatedBlockRange: {
+-         end: 7651,
+-         start: 7219
+-       },
+-       generatedRange: {
+-         end: 7594,
+-         start: 7370
+-       },
+-       handlerId: 'handler_5df7d4476cf1f4f304d278d0',
+-       index: 15,
+-       kind: 'route',
+-       method: 'GET',
+-       nextIndex: 16,
+-       order: 9,
+-       path: '/error',
+-       pattern: '/error',
+-       plane: 'http',
+-       routeRuntimeId: 10,
+-       routeStableId: 'route_f6b0a959de9d3e0a0cd13f7a',
+-       router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-       routerPath: [
+-         'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-       ],
+-       scoped: false,
+-       stableId: 'router_entry_1057260956a2b57af67bf18f'
+-     },
+-     {
+-       generatedBlockRange: {
+-         end: 7961,
+-         start: 7651
+-       },
+-       generatedRange: {
+-         end: 7904,
+-         start: 7726
+-       },
+-       handlerId: 'handler_45e7ae5791817a01349293ae',
+-       index: 16,
+-       kind: 'error',
+-       nextIndex: 17,
+-       order: 10,
+-       plane: 'http',
+-       router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-       routerPath: [
+-         'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-       ],
+-       scoped: false,
+-       stableId: 'router_entry_ea2bc0132c16c380abccd34b'
+-     },
+-     {
+        eventRuntimeId: 0,
+        eventSchemaId: null,
+        eventStableId: 'event_9ce749984ef4a1b419e5478a',
+        eventType: 'analytics.tick',
+        generatedBlockRange: {
+...
+        handlerId: 'handler_e727f1955ea04362ea5552d5',
++       index: 15,
+-       index: 17,
+        kind: 'event',
++       order: 12,
+-       order: 14,
+        plane: 'event',
+        router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+        routerPath: [
+          'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+        ],
+...
+      {
++       applicationEntryIndex: 15,
+-       applicationEntryIndex: 17,
+        applicationEntryKind: 'event',
+        applicationEntryPlane: 'event',
+        applicationEntryStableId: 'event_9ce749984ef4a1b419e5478a',
+        effectIds: [
+          'config-1'
+...
+        applicationEntryPlane: 'http',
++       applicationEntryStableId: 'router_entry_173c8fbac442375cb06896ec',
+-       applicationEntryStableId: 'router_entry_10465b01172a41f582126663',
+        effectIds: [
+          'config-3'
+        ],
+        eventRuntimeId: undefined,
+        eventSchemaId: undefined,
+...
+        routerEntryPath: '/api/scoped',
++       routerEntryStableId: 'router_entry_173c8fbac442375cb06896ec',
+-       routerEntryStableId: 'router_entry_10465b01172a41f582126663',
+        source: {
+          column: 7,
+          file: 'src/index.ts',
+          line: 39,
+          offset: 1315
+...
+        applicationEntryPlane: 'http',
++       applicationEntryStableId: 'router_entry_6942a56490ae35028649e566',
+-       applicationEntryStableId: 'router_entry_e2b9e124cf8bb92431d62046',
+        effectIds: [
+          'config-4'
+        ],
+        eventRuntimeId: undefined,
+        eventSchemaId: undefined,
+...
+        routerEntryPath: '/v2/scoped',
++       routerEntryStableId: 'router_entry_6942a56490ae35028649e566',
+-       routerEntryStableId: 'router_entry_e2b9e124cf8bb92431d62046',
+        source: {
+          column: 7,
+          file: 'src/index.ts',
+          line: 80,
+          offset: 2862
+...
+      },
+-     {
+-       applicationEntryIndex: 16,
+-       applicationEntryKind: 'error',
+-       applicationEntryPlane: 'http',
+-       applicationEntryStableId: 'router_entry_ea2bc0132c16c380abccd34b',
+-       effectIds: [
+-         'config-13'
+-       ],
+-       eventRuntimeId: undefined,
+-       eventSchemaId: undefined,
+-       eventStableId: undefined,
+-       eventType: undefined,
+-       id: 'continuation-14',
+-       kind: 'config.get',
+-       routeMethod: undefined,
+-       routePath: undefined,
+-       routeRuntimeId: undefined,
+-       routeStableId: undefined,
+-       routerEntryIndex: 16,
+-       routerEntryKind: 'error',
+-       routerEntryPath: undefined,
+-       routerEntryStableId: 'router_entry_ea2bc0132c16c380abccd34b',
+-       source: {
+-         column: 7,
+-         file: 'src/index.ts',
+-         line: 202,
+-         offset: 7781
+-       },
+-       stateIndex: 14,
+-       statementPath: 'entry.body[21].then[0].then[1]'
+-     }
+    ],
+    crypto: {
+      algorithms: [],
+      automaticFallback: false,
+      planHash: '2655c2d2d422c19ff95172ce1fee4385da81a9a49c063eac6b30def1efe0ebb5',
+...
+      {
++       applicationEntryIndex: 15,
+-       applicationEntryIndex: 17,
+        applicationEntryKind: 'event',
+        applicationEntryPlane: 'event',
+        applicationEntryStableId: 'event_9ce749984ef4a1b419e5478a',
+        capability: 'config.get',
+        continuationId: 'continuation-2',
+...
+        applicationEntryPlane: 'http',
++       applicationEntryStableId: 'router_entry_173c8fbac442375cb06896ec',
+-       applicationEntryStableId: 'router_entry_10465b01172a41f582126663',
+        capability: 'config.get',
+        continuationId: 'continuation-4',
+        contractId: undefined,
+        declaredResult: undefined,
+        decoder: null,
+...
+        routerEntryPath: '/api/scoped',
++       routerEntryStableId: 'router_entry_173c8fbac442375cb06896ec',
+-       routerEntryStableId: 'router_entry_10465b01172a41f582126663',
+        source: {
+          column: 21,
+          file: 'src/index.ts',
+          line: 39,
+          offset: 1329
+...
+        applicationEntryPlane: 'http',
++       applicationEntryStableId: 'router_entry_6942a56490ae35028649e566',
+-       applicationEntryStableId: 'router_entry_e2b9e124cf8bb92431d62046',
+        capability: 'config.get',
+        continuationId: 'continuation-5',
+        contractId: undefined,
+        declaredResult: undefined,
+        decoder: null,
+...
+        routerEntryPath: '/v2/scoped',
++       routerEntryStableId: 'router_entry_6942a56490ae35028649e566',
+-       routerEntryStableId: 'router_entry_e2b9e124cf8bb92431d62046',
+        source: {
+          column: 21,
+          file: 'src/index.ts',
+          line: 80,
+          offset: 2876
+...
+      },
+-     {
+-       applicationEntryIndex: 16,
+-       applicationEntryKind: 'error',
+-       applicationEntryPlane: 'http',
+-       applicationEntryStableId: 'router_entry_ea2bc0132c16c380abccd34b',
+-       capability: 'config.get',
+-       continuationId: 'continuation-14',
+-       contractId: undefined,
+-       declaredResult: undefined,
+-       decoder: null,
+-       eventRuntimeId: undefined,
+-       eventSchemaId: undefined,
+-       eventStableId: undefined,
+-       eventType: undefined,
+-       groupIndex: undefined,
+-       grouped: false,
+-       id: 'config-13',
+-       inputs: [
+-         {
+-           name: 'name',
+-           value: {
+-             kind: 'literal',
+-             value: 'RECOVERY',
+-             valueKind: 'string'
+-           }
+-         }
+-       ],
+-       kind: 'config.get',
+-       operation: 'get',
+-       order: 14,
+-       package: undefined,
+-       providerKind: 'config',
+-       resource: {
+-         kind: 'literal',
+-         value: 'RECOVERY'
+-       },
+-       result: {
+-         decoder: undefined,
+-         localId: 'local-36',
+-         localName: 'value',
+-         mode: 'bind',
+-         valueKind: 'string-or-undefined'
+-       },
+-       routeMethod: undefined,
+-       routePath: undefined,
+-       routeRuntimeId: undefined,
+-       routeStableId: undefined,
+-       routerEntryIndex: 16,
+-       routerEntryKind: 'error',
+-       routerEntryPath: undefined,
+-       routerEntryStableId: 'router_entry_ea2bc0132c16c380abccd34b',
+-       source: {
+-         column: 21,
+-         file: 'src/index.ts',
+-         line: 202,
+-         offset: 7795
+-       },
+-       statementPath: 'entry.body[21].then[0].then[1]'
+-     }
+    ],
+    entry: {
+      body: [
+        {
+          else: [],
+...
+                {
++                 handlerId: 'router_entry_854fac8dfbb3fc8f2faf90e3',
+-                 handlerId: 'router_entry_66b0698815d78086574ce6ba',
+                  kind: 'handler-call'
+                }
+              ]
+            }
+          ]
+...
+                {
++                 handlerId: 'router_entry_f70e582a46cbdab8dade253b',
+-                 handlerId: 'router_entry_a3e5e027ce1c337d6c2a838a',
+                  kind: 'handler-call'
+                }
+              ]
+            }
+          ]
+...
+                {
++                 handlerId: 'router_entry_e51c9c0047a3dd037e4d1707',
+-                 handlerId: 'router_entry_e5097d83211b5dad8a727073',
+                  kind: 'handler-call'
+                }
+              ]
+            }
+          ]
+...
+                {
++                 handlerId: 'router_entry_87f3f4481219f8397538689e',
+-                 handlerId: 'router_entry_ce3ae1b3d4579985f424f285',
+                  kind: 'handler-call'
+                }
+              ]
+            }
+          ]
+...
+            left: {
+-             id: 'local-4',
+-             kind: 'local',
+-             name: '__pulse_router_cursor',
+-             valueKind: 'number'
+-           },
+-           operator: '===',
+-           right: {
+-             kind: 'literal',
+-             value: 15,
+-             valueKind: 'number'
+-           },
+-           valueKind: 'boolean'
+-         },
+-         then: [
+-           {
+-             else: [
+-               {
+-                 expression: {
+-                   kind: 'assignment',
+-                   operator: '=',
+-                   target: {
+-                     id: 'local-4',
+-                     kind: 'local',
+-                     name: '__pulse_router_cursor',
+-                     valueKind: 'number'
+-                   },
+-                   value: {
+-                     kind: 'literal',
+-                     value: 16,
+-                     valueKind: 'number'
+-                   },
+-                   valueKind: 'number'
+-                 },
+-                 kind: 'expression',
+-                 statementPath: 'entry.body[20].then[0].else[0]'
+-               }
+-             ],
+-             kind: 'if',
+-             statementPath: 'entry.body[20].then[0]',
+-             test: {
+-               kind: 'binary',
+-               left: {
+-                 kind: 'binary',
+-                 left: {
+-                   kind: 'binary',
+-                   left: {
+-                     id: 'local-5',
+-                     kind: 'local',
+-                     name: '__pulse_router_mode',
+-                     valueKind: 'number'
+-                   },
+-                   operator: '===',
+-                   right: {
+-                     kind: 'literal',
+-                     value: 0,
+-                     valueKind: 'number'
+-                   },
+-                   valueKind: 'boolean'
+-                 },
+-                 operator: '&&',
+-                 right: {
+-                   kind: 'binary',
+-                   left: {
+-                     kind: 'context-read',
+-                     path: [
+-                       'req',
+-                       'method'
+-                     ],
+-                     valueKind: 'string'
+-                   },
+-                   operator: '===',
+-                   right: {
+-                     kind: 'literal',
+-                     value: 'GET',
+-                     valueKind: 'string'
+-                   },
+-                   valueKind: 'boolean'
+-                 },
+-                 valueKind: 'boolean'
+-               },
+-               operator: '&&',
+-               right: {
+-                 arguments: [
+-                   {
+-                     kind: 'context-read',
+-                     path: [
+-                       'req',
+-                       'path'
+-                     ],
+-                     valueKind: 'string'
+-                   },
+-                   {
+-                     kind: 'literal',
+-                     value: '/error',
+-                     valueKind: 'string'
+-                   }
+-                 ],
+-                 kind: 'intrinsic',
+-                 name: 'router.match',
+-                 valueKind: 'boolean'
+-               },
+-               valueKind: 'boolean'
+-             },
+-             then: [
+-               {
+-                 declaration: 'let',
+-                 kind: 'local',
+-                 localId: 'local-34',
+-                 name: '__pulse_router_transferred_15',
+-                 statementPath: 'entry.body[20].then[0].then[0]',
+-                 value: {
+-                   kind: 'literal',
+-                   value: false,
+-                   valueKind: 'boolean'
+-                 },
+-                 valueKind: 'boolean'
+-               },
+-               {
+-                 expression: {
+-                   kind: 'assignment',
+-                   operator: '=',
+-                   target: {
+-                     id: 'local-6',
+-                     kind: 'local',
+-                     name: '__pulse_router_error',
+-                     valueKind: 'undefined'
+-                   },
+-                   value: {
+-                     entries: [
+-                       {
+-                         key: {
+-                           kind: 'literal',
+-                           value: 'code'
+-                         },
+-                         kind: 'property',
+-                         value: {
+-                           kind: 'literal',
+-                           value: 'AN9',
+-                           valueKind: 'string'
+-                         }
+-                       },
+-                       {
+-                         key: {
+-                           kind: 'literal',
+-                           value: 'message'
+-                         },
+-                         kind: 'property',
+-                         value: {
+-                           kind: 'literal',
+-                           value: 'recover',
+-                           valueKind: 'string'
+-                         }
+-                       }
+-                     ],
+-                     kind: 'object',
+-                     valueKind: 'object'
+-                   },
+-                   valueKind: 'object'
+-                 },
+-                 kind: 'expression',
+-                 statementPath: 'entry.body[20].then[0].then[1]'
+-               },
+-               {
+-                 expression: {
+-                   kind: 'assignment',
+-                   operator: '=',
+-                   target: {
+-                     id: 'local-5',
+-                     kind: 'local',
+-                     name: '__pulse_router_mode',
+-                     valueKind: 'number'
+-                   },
+-                   value: {
+-                     kind: 'literal',
+-                     value: 1,
+-                     valueKind: 'number'
+-                   },
+-                   valueKind: 'number'
+-                 },
+-                 kind: 'expression',
+-                 statementPath: 'entry.body[20].then[0].then[2]'
+-               },
+-               {
+-                 expression: {
+-                   kind: 'assignment',
+-                   operator: '=',
+-                   target: {
+-                     id: 'local-4',
+-                     kind: 'local',
+-                     name: '__pulse_router_cursor',
+-                     valueKind: 'number'
+-                   },
+-                   value: {
+-                     kind: 'literal',
+-                     value: 16,
+-                     valueKind: 'number'
+-                   },
+-                   valueKind: 'number'
+-                 },
+-                 kind: 'expression',
+-                 statementPath: 'entry.body[20].then[0].then[3]'
+-               },
+-               {
+-                 expression: {
+-                   kind: 'assignment',
+-                   operator: '=',
+-                   target: {
+-                     id: 'local-34',
+-                     kind: 'local',
+-                     name: '__pulse_router_transferred_15',
+-                     valueKind: 'boolean'
+-                   },
+-                   value: {
+-                     kind: 'literal',
+-                     value: true,
+-                     valueKind: 'boolean'
+-                   },
+-                   valueKind: 'boolean'
+-                 },
+-                 kind: 'expression',
+-                 statementPath: 'entry.body[20].then[0].then[4]'
+-               }
+-             ]
+-           }
+-         ]
+-       },
+-       {
+-         else: [],
+-         kind: 'if',
+-         statementPath: 'entry.body[21]',
+-         test: {
+-           kind: 'binary',
+-           left: {
+-             id: 'local-4',
+-             kind: 'local',
+-             name: '__pulse_router_cursor',
+-             valueKind: 'number'
+-           },
+-           operator: '===',
+-           right: {
+-             kind: 'literal',
+-             value: 16,
+-             valueKind: 'number'
+-           },
+-           valueKind: 'boolean'
+-         },
+-         then: [
+-           {
+-             else: [
+-               {
+-                 expression: {
+-                   kind: 'assignment',
+-                   operator: '=',
+-                   target: {
+-                     id: 'local-4',
+-                     kind: 'local',
+-                     name: '__pulse_router_cursor',
+-                     valueKind: 'number'
+-                   },
+-                   value: {
+-                     kind: 'literal',
+-                     value: 17,
+-                     valueKind: 'number'
+-                   },
+-                   valueKind: 'number'
+-                 },
+-                 kind: 'expression',
+-                 statementPath: 'entry.body[21].then[0].else[0]'
+-               }
+-             ],
+-             kind: 'if',
+-             statementPath: 'entry.body[21].then[0]',
+-             test: {
+-               kind: 'binary',
+-               left: {
+-                 id: 'local-5',
+-                 kind: 'local',
+-                 name: '__pulse_router_mode',
+-                 valueKind: 'number'
+-               },
+-               operator: '===',
+-               right: {
+-                 kind: 'literal',
+-                 value: 1,
+-                 valueKind: 'number'
+-               },
+-               valueKind: 'boolean'
+-             },
+-             then: [
+-               {
+-                 declaration: 'let',
+-                 kind: 'local',
+-                 localId: 'local-35',
+-                 name: '__pulse_router_transferred_16',
+-                 statementPath: 'entry.body[21].then[0].then[0]',
+-                 value: {
+-                   kind: 'literal',
+-                   value: false,
+-                   valueKind: 'boolean'
+-                 },
+-                 valueKind: 'boolean'
+-               },
+-               {
+-                 continuationId: 'continuation-14',
+-                 effectId: 'config-13',
+-                 kind: 'effect',
+-                 result: {
+-                   decoder: undefined,
+-                   localId: 'local-36',
+-                   localName: 'value',
+-                   mode: 'bind',
+-                   valueKind: 'string-or-undefined'
+-                 },
+-                 statementPath: 'entry.body[21].then[0].then[1]'
+-               },
+-               {
+-                 kind: 'return',
+-                 statementPath: 'entry.body[21].then[0].then[2]',
+-                 value: {
+-                   arguments: [
+-                     {
+-                       kind: 'binary',
+-                       left: {
+-                         kind: 'binary',
+-                         left: {
+-                           kind: 'property',
+-                           object: {
+-                             id: 'local-6',
+-                             kind: 'local',
+-                             name: '__pulse_router_error',
+-                             valueKind: 'undefined'
+-                           },
+-                           property: 'code',
+-                           valueKind: 'string'
+-                         },
+-                         operator: '+',
+-                         right: {
+-                           kind: 'literal',
+-                           value: ':',
+-                           valueKind: 'string'
+-                         },
+-                         valueKind: 'string'
+-                       },
+-                       operator: '+',
+-                       right: {
+-                         id: 'local-36',
+-                         kind: 'local',
+-                         name: 'value',
+-                         valueKind: 'string-or-undefined'
+-                       },
+-                       valueKind: 'string'
+-                     },
+-                     {
+-                       entries: [
+-                         {
+-                           key: {
+-                             kind: 'literal',
+-                             value: 'status'
+-                           },
+-                           kind: 'property',
+-                           value: {
+-                             kind: 'literal',
+-                             value: 418,
+-                             valueKind: 'number'
+-                           }
+-                         }
+-                       ],
+-                       kind: 'object',
+-                       valueKind: 'object'
+-                     }
+-                   ],
+-                   kind: 'intrinsic',
+-                   name: 'response.text',
+-                   valueKind: 'pulse-result'
+-                 }
+-               }
+-             ]
+-           }
+-         ]
+-       },
+-       {
+-         else: [],
+-         kind: 'if',
+-         statementPath: 'entry.body[22]',
+-         test: {
+-           kind: 'binary',
+-           left: {
+              id: 'local-5',
+              kind: 'local',
+              name: '__pulse_router_mode',
+              valueKind: 'number'
+            },
+...
+              kind: 'return',
++             statementPath: 'entry.body[20].then[0]',
+-             statementPath: 'entry.body[22].then[0]',
+              value: {
+                arguments: [
+                  {
+                    kind: 'literal',
+                    value: 'Internal Server Error',
+...
+          kind: 'return',
++         statementPath: 'entry.body[21]',
+-         statementPath: 'entry.body[23]',
+          value: {
+            arguments: [
+              {
+                kind: 'literal',
+                value: 'Not Found',
+...
+            kind: 'local',
++           localId: 'local:router_entry_854fac8dfbb3fc8f2faf90e3:1',
+-           localId: 'local:router_entry_66b0698815d78086574ce6ba:1',
+            name: '__pulse_router_transferred_3',
++           statementPath: 'handlers.router_entry_854fac8dfbb3fc8f2faf90e3.body[0]',
+-           statementPath: 'handlers.router_entry_66b0698815d78086574ce6ba.body[0]',
+            value: {
+              kind: 'literal',
+              value: false,
+              valueKind: 'boolean'
+            },
+...
+            kind: 'return',
++           statementPath: 'handlers.router_entry_854fac8dfbb3fc8f2faf90e3.body[1]',
+-           statementPath: 'handlers.router_entry_66b0698815d78086574ce6ba.body[1]',
+            value: {
+              arguments: [
+                {
+                  kind: 'binary',
+                  left: {
+...
+        handlerId: 'handler_cf606d5342ee27e6b815c3f4',
++       id: 'router_entry_854fac8dfbb3fc8f2faf90e3',
+-       id: 'router_entry_66b0698815d78086574ce6ba',
+        localIds: [
++         'local:router_entry_854fac8dfbb3fc8f2faf90e3:1'
+-         'local:router_entry_66b0698815d78086574ce6ba:1'
+        ],
+        source: {
+          end: {
+            column: 81,
+            line: 28,
+...
+            kind: 'local',
++           localId: 'local:router_entry_f70e582a46cbdab8dade253b:1',
+-           localId: 'local:router_entry_a3e5e027ce1c337d6c2a838a:1',
+            name: '__pulse_router_transferred_4',
++           statementPath: 'handlers.router_entry_f70e582a46cbdab8dade253b.body[0]',
+-           statementPath: 'handlers.router_entry_a3e5e027ce1c337d6c2a838a.body[0]',
+            value: {
+              kind: 'literal',
+              value: false,
+              valueKind: 'boolean'
+            },
+...
+            kind: 'return',
++           statementPath: 'handlers.router_entry_f70e582a46cbdab8dade253b.body[1]',
+-           statementPath: 'handlers.router_entry_a3e5e027ce1c337d6c2a838a.body[1]',
+            value: {
+              arguments: [
+                {
+                  kind: 'literal',
+                  value: 'plain',
+...
+        handlerId: 'handler_767e501187f71894a5e41570',
++       id: 'router_entry_f70e582a46cbdab8dade253b',
+-       id: 'router_entry_a3e5e027ce1c337d6c2a838a',
+        localIds: [
++         'local:router_entry_f70e582a46cbdab8dade253b:1'
+-         'local:router_entry_a3e5e027ce1c337d6c2a838a:1'
+        ],
+        source: {
+          end: {
+            column: 51,
+            line: 29,
+...
+            kind: 'local',
++           localId: 'local:router_entry_e51c9c0047a3dd037e4d1707:1',
+-           localId: 'local:router_entry_e5097d83211b5dad8a727073:1',
+            name: '__pulse_router_transferred_7',
++           statementPath: 'handlers.router_entry_e51c9c0047a3dd037e4d1707.body[0]',
+-           statementPath: 'handlers.router_entry_e5097d83211b5dad8a727073.body[0]',
+            value: {
+              kind: 'literal',
+              value: false,
+              valueKind: 'boolean'
+            },
+...
+            kind: 'return',
++           statementPath: 'handlers.router_entry_e51c9c0047a3dd037e4d1707.body[1]',
+-           statementPath: 'handlers.router_entry_e5097d83211b5dad8a727073.body[1]',
+            value: {
+              arguments: [
+                {
+                  kind: 'binary',
+                  left: {
+...
+        handlerId: 'handler_cf606d5342ee27e6b815c3f4',
++       id: 'router_entry_e51c9c0047a3dd037e4d1707',
+-       id: 'router_entry_e5097d83211b5dad8a727073',
+        localIds: [
++         'local:router_entry_e51c9c0047a3dd037e4d1707:1'
+-         'local:router_entry_e5097d83211b5dad8a727073:1'
+        ],
+        source: {
+          end: {
+            column: 81,
+            line: 28,
+...
+            kind: 'local',
++           localId: 'local:router_entry_87f3f4481219f8397538689e:1',
+-           localId: 'local:router_entry_ce3ae1b3d4579985f424f285:1',
+            name: '__pulse_router_transferred_8',
++           statementPath: 'handlers.router_entry_87f3f4481219f8397538689e.body[0]',
+-           statementPath: 'handlers.router_entry_ce3ae1b3d4579985f424f285.body[0]',
+            value: {
+              kind: 'literal',
+              value: false,
+              valueKind: 'boolean'
+            },
+...
+            kind: 'return',
++           statementPath: 'handlers.router_entry_87f3f4481219f8397538689e.body[1]',
+-           statementPath: 'handlers.router_entry_ce3ae1b3d4579985f424f285.body[1]',
+            value: {
+              arguments: [
+                {
+                  kind: 'literal',
+                  value: 'plain',
+...
+        handlerId: 'handler_767e501187f71894a5e41570',
++       id: 'router_entry_87f3f4481219f8397538689e',
+-       id: 'router_entry_ce3ae1b3d4579985f424f285',
+        localIds: [
++         'local:router_entry_87f3f4481219f8397538689e:1'
+-         'local:router_entry_ce3ae1b3d4579985f424f285:1'
+        ],
+        source: {
+          end: {
+            column: 51,
+            line: 29,
+...
+        declaration: 'let',
++       id: 'local:router_entry_854fac8dfbb3fc8f2faf90e3:1',
+-       id: 'local:router_entry_66b0698815d78086574ce6ba:1',
+        name: '__pulse_router_transferred_3',
++       routerEntryStableId: 'router_entry_854fac8dfbb3fc8f2faf90e3',
++       scopeId: 'router_entry_854fac8dfbb3fc8f2faf90e3',
++       statementPath: 'handlers.router_entry_854fac8dfbb3fc8f2faf90e3.body[0]',
+-       routerEntryStableId: 'router_entry_66b0698815d78086574ce6ba',
+-       scopeId: 'router_entry_66b0698815d78086574ce6ba',
+-       statementPath: 'handlers.router_entry_66b0698815d78086574ce6ba.body[0]',
+        valueKind: 'boolean'
+      },
+      {
+        declaration: 'let',
++       id: 'local:router_entry_f70e582a46cbdab8dade253b:1',
+-       id: 'local:router_entry_a3e5e027ce1c337d6c2a838a:1',
+        name: '__pulse_router_transferred_4',
++       routerEntryStableId: 'router_entry_f70e582a46cbdab8dade253b',
++       scopeId: 'router_entry_f70e582a46cbdab8dade253b',
++       statementPath: 'handlers.router_entry_f70e582a46cbdab8dade253b.body[0]',
+-       routerEntryStableId: 'router_entry_a3e5e027ce1c337d6c2a838a',
+-       scopeId: 'router_entry_a3e5e027ce1c337d6c2a838a',
+-       statementPath: 'handlers.router_entry_a3e5e027ce1c337d6c2a838a.body[0]',
+        valueKind: 'boolean'
+      },
+      {
+        declaration: 'let',
+        id: 'local-13',
+...
+        declaration: 'let',
++       id: 'local:router_entry_e51c9c0047a3dd037e4d1707:1',
+-       id: 'local:router_entry_e5097d83211b5dad8a727073:1',
+        name: '__pulse_router_transferred_7',
++       routerEntryStableId: 'router_entry_e51c9c0047a3dd037e4d1707',
++       scopeId: 'router_entry_e51c9c0047a3dd037e4d1707',
++       statementPath: 'handlers.router_entry_e51c9c0047a3dd037e4d1707.body[0]',
+-       routerEntryStableId: 'router_entry_e5097d83211b5dad8a727073',
+-       scopeId: 'router_entry_e5097d83211b5dad8a727073',
+-       statementPath: 'handlers.router_entry_e5097d83211b5dad8a727073.body[0]',
+        valueKind: 'boolean'
+      },
+      {
+        declaration: 'let',
++       id: 'local:router_entry_87f3f4481219f8397538689e:1',
+-       id: 'local:router_entry_ce3ae1b3d4579985f424f285:1',
+        name: '__pulse_router_transferred_8',
++       routerEntryStableId: 'router_entry_87f3f4481219f8397538689e',
++       scopeId: 'router_entry_87f3f4481219f8397538689e',
++       statementPath: 'handlers.router_entry_87f3f4481219f8397538689e.body[0]',
+-       routerEntryStableId: 'router_entry_ce3ae1b3d4579985f424f285',
+-       scopeId: 'router_entry_ce3ae1b3d4579985f424f285',
+-       statementPath: 'handlers.router_entry_ce3ae1b3d4579985f424f285.body[0]',
+        valueKind: 'boolean'
+      },
+      {
+        declaration: 'let',
+        id: 'local:router_entry_929cc7c205653d25c209f92f:1',
+...
+      },
+-     {
+-       declaration: 'let',
+-       id: 'local-34',
+-       name: '__pulse_router_transferred_15',
+-       scopeId: 'entry',
+-       statementPath: 'entry.body[20].then[0].then[0]',
+-       valueKind: 'boolean'
+-     },
+-     {
+-       declaration: 'let',
+-       id: 'local-35',
+-       name: '__pulse_router_transferred_16',
+-       scopeId: 'entry',
+-       statementPath: 'entry.body[21].then[0].then[0]',
+-       valueKind: 'boolean'
+-     },
+-     {
+-       declaration: 'const',
+-       id: 'local-36',
+-       name: 'value',
+-       scopeId: 'entry',
+-       statementPath: 'entry.body[21].then[0].then[1]',
+-       valueKind: 'string-or-undefined'
+-     }
+    ],
+    logging: {
+      abi: {
+        continuation: false,
+        effect: false,
+...
+    },
++   planHash: '03344ca168634dbebe163a96de8c896d8f610ba4d9b51f4d59545002a54ce007',
+-   planHash: '205923be6f150fe6d67be2d2e6c21ad59f1b520ab653ec56ba869a4f3065a3d2',
+    requestState: {
+      enabled: true,
+      persistence: 'invocation-only',
+      representation: 'guest-string-map',
+      reset: 'invocation-start'
+...
+          nextIndex: 3,
++         order: 9,
+-         order: 11,
+          path: '/api/scoped',
+          pattern: '/api/scoped/*',
+          plane: 'http',
+          router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          routerPath: [
+...
+          scoped: true,
++         stableId: 'router_entry_173c8fbac442375cb06896ec'
+-         stableId: 'router_entry_10465b01172a41f582126663'
+        },
+        {
+          generatedBlockRange: {
+            end: 2031,
+            start: 1562
+...
+            family: 'terminal-route',
++           name: '__pulse_body_router_entry_854fac8dfbb3fc8f2faf90e3',
+-           name: '__pulse_body_router_entry_66b0698815d78086574ce6ba',
+            source: {
+              end: {
+                column: 81,
+                line: 28,
+                offset: 988
+...
+          nextIndex: 4,
++         order: 10,
+-         order: 12,
+          path: '/api/scoped',
+          pattern: '/api/scoped',
+          plane: 'http',
+          routeRuntimeId: 0,
+          routeStableId: 'route_d8f6fc8d580c13192d7012b5',
+...
+          scoped: false,
++         stableId: 'router_entry_854fac8dfbb3fc8f2faf90e3'
+-         stableId: 'router_entry_66b0698815d78086574ce6ba'
+        },
+        {
+          generatedBlockRange: {
+            end: 2470,
+            start: 2031
+...
+            family: 'terminal-route',
++           name: '__pulse_body_router_entry_f70e582a46cbdab8dade253b',
+-           name: '__pulse_body_router_entry_a3e5e027ce1c337d6c2a838a',
+            source: {
+              end: {
+                column: 51,
+                line: 29,
+                offset: 1041
+...
+          nextIndex: 5,
++         order: 11,
+-         order: 13,
+          path: '/api/plain',
+          pattern: '/api/plain',
+          plane: 'http',
+          routeRuntimeId: 1,
+          routeStableId: 'route_a75c770ae016fffdc2a97032',
+...
+          scoped: false,
++         stableId: 'router_entry_f70e582a46cbdab8dade253b'
+-         stableId: 'router_entry_a3e5e027ce1c337d6c2a838a'
+        },
+        {
+          childRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          childStartIndex: 6,
+          generatedBlockRange: {
+...
+          nextIndex: 7,
++         order: 9,
+-         order: 11,
+          path: '/v2/scoped',
+          pattern: '/v2/scoped/*',
+          plane: 'http',
+          router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          routerPath: [
+...
+          scoped: true,
++         stableId: 'router_entry_6942a56490ae35028649e566'
+-         stableId: 'router_entry_e2b9e124cf8bb92431d62046'
+        },
+        {
+          generatedBlockRange: {
+            end: 3577,
+            start: 3109
+...
+            family: 'terminal-route',
++           name: '__pulse_body_router_entry_e51c9c0047a3dd037e4d1707',
+-           name: '__pulse_body_router_entry_e5097d83211b5dad8a727073',
+            source: {
+              end: {
+                column: 81,
+                line: 28,
+                offset: 988
+...
+          nextIndex: 8,
++         order: 10,
+-         order: 12,
+          path: '/v2/scoped',
+          pattern: '/v2/scoped',
+          plane: 'http',
+          routeRuntimeId: 2,
+          routeStableId: 'route_99eb228686c8342e1799c5ec',
+...
+          scoped: false,
++         stableId: 'router_entry_e51c9c0047a3dd037e4d1707'
+-         stableId: 'router_entry_e5097d83211b5dad8a727073'
+        },
+        {
+          generatedBlockRange: {
+            end: 4015,
+            start: 3577
+...
+            family: 'terminal-route',
++           name: '__pulse_body_router_entry_87f3f4481219f8397538689e',
+-           name: '__pulse_body_router_entry_ce3ae1b3d4579985f424f285',
+            source: {
+              end: {
+                column: 51,
+                line: 29,
+                offset: 1041
+...
+          nextIndex: 9,
++         order: 11,
+-         order: 13,
+          path: '/v2/plain',
+          pattern: '/v2/plain',
+          plane: 'http',
+          routeRuntimeId: 3,
+          routeStableId: 'route_63c2b214ec10f38eebb93c8c',
+...
+          scoped: false,
++         stableId: 'router_entry_87f3f4481219f8397538689e'
+-         stableId: 'router_entry_ce3ae1b3d4579985f424f285'
+        },
+        {
+          generatedBlockRange: {
+            end: 4611,
+            start: 4015
+...
+        {
+-         generatedBlockRange: {
+-           end: 7651,
+-           start: 7219
+-         },
+-         generatedRange: {
+-           end: 7594,
+-           start: 7370
+-         },
+-         handlerId: 'handler_5df7d4476cf1f4f304d278d0',
+-         index: 15,
+-         kind: 'route',
+-         method: 'GET',
+-         nextIndex: 16,
+-         order: 9,
+-         path: '/error',
+-         pattern: '/error',
+-         plane: 'http',
+-         routeRuntimeId: 10,
+-         routeStableId: 'route_f6b0a959de9d3e0a0cd13f7a',
+-         router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-         routerPath: [
+-           'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-         ],
+-         scoped: false,
+-         stableId: 'router_entry_1057260956a2b57af67bf18f'
+-       },
+-       {
+-         generatedBlockRange: {
+-           end: 7961,
+-           start: 7651
+-         },
+-         generatedRange: {
+-           end: 7904,
+-           start: 7726
+-         },
+-         handlerId: 'handler_45e7ae5791817a01349293ae',
+-         index: 16,
+-         kind: 'error',
+-         nextIndex: 17,
+-         order: 10,
+-         plane: 'http',
+-         router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-         routerPath: [
+-           'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-         ],
+-         scoped: false,
+-         stableId: 'router_entry_ea2bc0132c16c380abccd34b'
+-       },
+-       {
+          eventRuntimeId: 0,
+          eventSchemaId: null,
+          eventStableId: 'event_9ce749984ef4a1b419e5478a',
+          eventType: 'analytics.tick',
+          generatedBlockRange: {
+...
+          handlerId: 'handler_e727f1955ea04362ea5552d5',
++         index: 15,
+-         index: 17,
+          kind: 'event',
++         order: 12,
+-         order: 14,
+          plane: 'event',
+          router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+          routerPath: [
+            'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+          ],
+...
+          nextIndex: 3,
++         order: 9,
+-         order: 11,
+          path: '/api/scoped',
+          pattern: '/api/scoped/*',
+          plane: 'http',
+          router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          routerPath: [
+...
+          scoped: true,
++         stableId: 'router_entry_173c8fbac442375cb06896ec'
+-         stableId: 'router_entry_10465b01172a41f582126663'
+        },
+        {
+          generatedBlockRange: {
+            end: 2031,
+            start: 1562
+...
+            family: 'terminal-route',
++           name: '__pulse_body_router_entry_854fac8dfbb3fc8f2faf90e3',
+-           name: '__pulse_body_router_entry_66b0698815d78086574ce6ba',
+            source: {
+              end: {
+                column: 81,
+                line: 28,
+                offset: 988
+...
+          nextIndex: 4,
++         order: 10,
+-         order: 12,
+          path: '/api/scoped',
+          pattern: '/api/scoped',
+          plane: 'http',
+          routeRuntimeId: 0,
+          routeStableId: 'route_d8f6fc8d580c13192d7012b5',
+...
+          scoped: false,
++         stableId: 'router_entry_854fac8dfbb3fc8f2faf90e3'
+-         stableId: 'router_entry_66b0698815d78086574ce6ba'
+        },
+        {
+          generatedBlockRange: {
+            end: 2470,
+            start: 2031
+...
+            family: 'terminal-route',
++           name: '__pulse_body_router_entry_f70e582a46cbdab8dade253b',
+-           name: '__pulse_body_router_entry_a3e5e027ce1c337d6c2a838a',
+            source: {
+              end: {
+                column: 51,
+                line: 29,
+                offset: 1041
+...
+          nextIndex: 5,
++         order: 11,
+-         order: 13,
+          path: '/api/plain',
+          pattern: '/api/plain',
+          plane: 'http',
+          routeRuntimeId: 1,
+          routeStableId: 'route_a75c770ae016fffdc2a97032',
+...
+          scoped: false,
++         stableId: 'router_entry_f70e582a46cbdab8dade253b'
+-         stableId: 'router_entry_a3e5e027ce1c337d6c2a838a'
+        },
+        {
+          childRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          childStartIndex: 6,
+          generatedBlockRange: {
+...
+          nextIndex: 7,
++         order: 9,
+-         order: 11,
+          path: '/v2/scoped',
+          pattern: '/v2/scoped/*',
+          plane: 'http',
+          router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          routerPath: [
+...
+          scoped: true,
++         stableId: 'router_entry_6942a56490ae35028649e566'
+-         stableId: 'router_entry_e2b9e124cf8bb92431d62046'
+        },
+        {
+          generatedBlockRange: {
+            end: 3577,
+            start: 3109
+...
+            family: 'terminal-route',
++           name: '__pulse_body_router_entry_e51c9c0047a3dd037e4d1707',
+-           name: '__pulse_body_router_entry_e5097d83211b5dad8a727073',
+            source: {
+              end: {
+                column: 81,
+                line: 28,
+                offset: 988
+...
+          nextIndex: 8,
++         order: 10,
+-         order: 12,
+          path: '/v2/scoped',
+          pattern: '/v2/scoped',
+          plane: 'http',
+          routeRuntimeId: 2,
+          routeStableId: 'route_99eb228686c8342e1799c5ec',
+...
+          scoped: false,
++         stableId: 'router_entry_e51c9c0047a3dd037e4d1707'
+-         stableId: 'router_entry_e5097d83211b5dad8a727073'
+        },
+        {
+          generatedBlockRange: {
+            end: 4015,
+            start: 3577
+...
+            family: 'terminal-route',
++           name: '__pulse_body_router_entry_87f3f4481219f8397538689e',
+-           name: '__pulse_body_router_entry_ce3ae1b3d4579985f424f285',
+            source: {
+              end: {
+                column: 51,
+                line: 29,
+                offset: 1041
+...
+          nextIndex: 9,
++         order: 11,
+-         order: 13,
+          path: '/v2/plain',
+          pattern: '/v2/plain',
+          plane: 'http',
+          routeRuntimeId: 3,
+          routeStableId: 'route_63c2b214ec10f38eebb93c8c',
+...
+          scoped: false,
++         stableId: 'router_entry_87f3f4481219f8397538689e'
+-         stableId: 'router_entry_ce3ae1b3d4579985f424f285'
+        },
+        {
+          generatedBlockRange: {
+            end: 4611,
+            start: 4015
+...
+        {
+-         generatedBlockRange: {
+-           end: 7651,
+-           start: 7219
+-         },
+-         generatedRange: {
+-           end: 7594,
+-           start: 7370
+-         },
+-         handlerId: 'handler_5df7d4476cf1f4f304d278d0',
+-         index: 15,
+-         kind: 'route',
+-         method: 'GET',
+-         nextIndex: 16,
+-         order: 9,
+-         path: '/error',
+-         pattern: '/error',
+-         plane: 'http',
+-         routeRuntimeId: 10,
+-         routeStableId: 'route_f6b0a959de9d3e0a0cd13f7a',
+-         router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-         routerPath: [
+-           'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-         ],
+-         scoped: false,
+-         stableId: 'router_entry_1057260956a2b57af67bf18f'
+-       },
+-       {
+-         generatedBlockRange: {
+-           end: 7961,
+-           start: 7651
+-         },
+-         generatedRange: {
+-           end: 7904,
+-           start: 7726
+-         },
+-         handlerId: 'handler_45e7ae5791817a01349293ae',
+-         index: 16,
+-         kind: 'error',
+-         nextIndex: 17,
+-         order: 10,
+-         plane: 'http',
+-         router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-         routerPath: [
+-           'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+-         ],
+-         scoped: false,
+-         stableId: 'router_entry_ea2bc0132c16c380abccd34b'
+-       },
+-       {
+          eventRuntimeId: 0,
+          eventSchemaId: null,
+          eventStableId: 'event_9ce749984ef4a1b419e5478a',
+          eventType: 'analytics.tick',
+          generatedBlockRange: {
+...
+          handlerId: 'handler_e727f1955ea04362ea5552d5',
++         index: 15,
+-         index: 17,
+          kind: 'event',
++         order: 12,
+-         order: 14,
+          plane: 'event',
+          router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+          routerPath: [
+            'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'
+          ],
+...
+      normalization: {
++       awaitCount: 14,
++       effectAwaitCount: 12,
++       handlerCount: 14,
+-       awaitCount: 15,
+-       effectAwaitCount: 13,
+-       handlerCount: 16,
+        syncAwaitCount: 0,
+        userAuthoredAsync: true
+      },
+      routePlanVersion: 'pulsewasm.route-plan.v4',
+      routes: [
+...
+          handlerId: 'handler_cf606d5342ee27e6b815c3f4',
++         handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:10>',
+-         handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:12>',
+          method: 'GET',
++         order: 10,
+-         order: 12,
+          params: [],
+          path: '/api/scoped',
+          pathPattern: {
+            grammarVersion: 'pulsewasm.path-grammar.v1',
+            normalized: '/api/scoped',
+...
+          routerEntryIndex: 3,
++         routerEntryStableId: 'router_entry_854fac8dfbb3fc8f2faf90e3',
+-         routerEntryStableId: 'router_entry_66b0698815d78086574ce6ba',
+          runtimeId: 0,
+          sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          stableId: 'route_d8f6fc8d580c13192d7012b5'
+        },
+        {
+...
+          handlerId: 'handler_767e501187f71894a5e41570',
++         handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:11>',
+-         handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:13>',
+          method: 'GET',
++         order: 11,
+-         order: 13,
+          params: [],
+          path: '/api/plain',
+          pathPattern: {
+            grammarVersion: 'pulsewasm.path-grammar.v1',
+            normalized: '/api/plain',
+...
+          routerEntryIndex: 4,
++         routerEntryStableId: 'router_entry_f70e582a46cbdab8dade253b',
+-         routerEntryStableId: 'router_entry_a3e5e027ce1c337d6c2a838a',
+          runtimeId: 1,
+          sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          stableId: 'route_a75c770ae016fffdc2a97032'
+        },
+        {
+...
+          handlerId: 'handler_cf606d5342ee27e6b815c3f4',
++         handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:10>',
+-         handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:12>',
+          method: 'GET',
++         order: 10,
+-         order: 12,
+          params: [],
+          path: '/v2/scoped',
+          pathPattern: {
+            grammarVersion: 'pulsewasm.path-grammar.v1',
+            normalized: '/v2/scoped',
+...
+          routerEntryIndex: 7,
++         routerEntryStableId: 'router_entry_e51c9c0047a3dd037e4d1707',
+-         routerEntryStableId: 'router_entry_e5097d83211b5dad8a727073',
+          runtimeId: 2,
+          sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          stableId: 'route_99eb228686c8342e1799c5ec'
+        },
+        {
+...
+          handlerId: 'handler_767e501187f71894a5e41570',
++         handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:11>',
+-         handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::child:13>',
+          method: 'GET',
++         order: 11,
+-         order: 13,
+          params: [],
+          path: '/v2/plain',
+          pathPattern: {
+            grammarVersion: 'pulsewasm.path-grammar.v1',
+            normalized: '/v2/plain',
+...
+          routerEntryIndex: 8,
++         routerEntryStableId: 'router_entry_87f3f4481219f8397538689e',
+-         routerEntryStableId: 'router_entry_ce3ae1b3d4579985f424f285',
+          runtimeId: 3,
+          sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::child',
+          stableId: 'route_63c2b214ec10f38eebb93c8c'
+        },
+        {
+...
+        },
+-       {
+-         generatedRange: {
+-           end: 7594,
+-           start: 7370
+-         },
+-         handlerId: 'handler_5df7d4476cf1f4f304d278d0',
+-         handlerName: '<inline:route:module_project_dc21f81d1da688e8aca8fdf85a794714::router::app:9>',
+-         method: 'GET',
+-         order: 9,
+-         params: [],
+-         path: '/error',
+-         pathPattern: {
+-           grammarVersion: 'pulsewasm.path-grammar.v1',
+-           normalized: '/error',
+-           params: [],
+-           scoped: false,
+-           segments: [
+-             {
+-               kind: 'literal',
+-               value: 'error'
+-             }
+-           ],
+-           wildcard: false
+-         },
+-         routerEntryIndex: 15,
+-         routerEntryStableId: 'router_entry_1057260956a2b57af67bf18f',
+-         runtimeId: 10,
+-         sourceRouter: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',
+-         stableId: 'route_f6b0a959de9d3e0a0cd13f7a'
+-       }
+      ],
+      semantics: {
+        errorExhaustionStatus: 500,
+        explicitErrorTransfer: 'return next(error)',
+        nextIsTerminal: true,
+...
+      file: 'src/index.ts',
++     projectSourceHash: 'f6a31125d264c79cd8881c9695029e74adff6140041adbd5938065951b8a02a9',
++     sourceHash: 'a1e45a6cb5c913888bf36aedc27711d3846249741a1e8916ee7c0197704542bc'
+-     projectSourceHash: 'b87113d8ed741032a430d0136e17cc652514eaff87c9a92bece24d10145480ef',
+-     sourceHash: '03b16077afcea680dd9f4b182d1b0c242f0da1be9af3ee9cfb8535e5d143ff09'
+    },
+    states: [
+      {
+        id: 'entry',
+        kind: 'entry',
+...
+      },
+-     {
+-       continuationKind: 'config.get',
+-       effectIds: [
+-         'config-13'
+-       ],
+-       id: 'continuation-14',
+-       kind: 'continuation',
+-       stateIndex: 14
+-     }
+    ],
+    summary: {
++     branchCount: 33,
++     continuationCount: 13,
++     effectCount: 13,
+-     branchCount: 37,
+-     continuationCount: 14,
+-     effectCount: 14,
+      effectGroupCount: 0,
++     expressionCount: 385,
++     localCount: 33,
+-     expressionCount: 437,
+-     localCount: 36,
+      maxStatementDepth: 3,
++     returnCount: 15,
++     statementCount: 120
+-     returnCount: 16,
+-     statementCount: 134
+    },
+    version: 'pulse.canonical-native-plan.v11'
+  }
+
+    at main (/workspace/scratch/0174bfde4d1e/pulse-06b-final/wasm/test/cli/assert-report-handler-topology.cjs:286:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [Object],
+  expected: [Object],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}

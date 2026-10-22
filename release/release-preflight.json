@@ -2,28 +2,28 @@
   "schemaVersion": "pulse.release-preflight.v1",
   "checkpoint": "sprint-7a-release-preflight",
   "baselineCheckpoint": "2d8468f",
-  "reviewedAt": "2026-10-15",
+  "reviewedAt": "2026-10-21",
   "statusVocabulary": [
     "proven",
     "pending",
     "blocked"
   ],
   "releaseCandidate": {
-    "version": "1.0.0-beta.9",
+    "version": "1.0.0-beta.10",
     "label": "Beta",
     "publicationTag": "latest",
     "latestTagAllowed": true,
     "currentSnapshotChannel": "beta",
     "applicationStage": "documentation-release",
     "snapshotStatus": "applied",
-    "snapshotAppliedAt": "2026-10-15",
-    "readinessLedger": "docs/internal/beta8/README.md"
+    "snapshotAppliedAt": "2026-10-21",
+    "readinessLedger": "docs/internal/beta10/README.md"
   },
   "releaseVocabulary": {
     "schemaVersion": "pulse.release-vocabulary.v1",
     "productName": "Pulse",
     "displayLabel": "Beta",
-    "displayName": "Pulse 1.0.0-beta.9 — Beta",
+    "displayName": "Pulse 1.0.0-beta.10 — Beta",
     "npmDistTag": "latest",
     "disallowedCurrentLabels": [
       "alpha",
@@ -44,7 +44,7 @@
     "kind": "repository",
     "expectedRepository": "pulse-compute/pulse",
     "expectedWeb": "https://github.com/pulse-compute/pulse",
-    "expectedReleaseTag": "v1.0.0-beta.9",
+    "expectedReleaseTag": "v1.0.0-beta.10",
     "externalVerification": "pending"
   },
   "documentationInventory": {
@@ -289,8 +289,8 @@
       "Publish each inert tarball with public access and the bootstrap dist-tag through a human 2FA-protected session.",
       "Verify that every package name exists, bootstrap points to 0.0.0, and latest is absent, points to the inert 0.0.0 bootstrap, or resolves to a published version listed in the documentation release history.",
       "Configure the exact pulse-compute/pulse, npm-publish.yml, and npm-publish trusted-publisher identity on every package.",
-      "Revoke and remove the temporary bootstrap credential before the 1.0.0-beta.9 release candidate is published through OIDC.",
-      "Publish the synchronized 1.0.0-beta.9 candidate under the manifest-owned npm tag only after protected human approval."
+      "Revoke and remove the temporary bootstrap credential before the 1.0.0-beta.10 release candidate is published through OIDC.",
+      "Publish the synchronized 1.0.0-beta.10 candidate under the manifest-owned npm tag only after protected human approval."
     ],
     "releasedLatestPolicy": "documented-published-version"
   },
@@ -368,7 +368,7 @@
       "status": "proven",
       "requiredBy": "documentation-release",
       "owner": "human-release",
-      "summary": "The intended public candidate remains Pulse 1.0.0-beta.9 Beta; future releases publish directly under the explicitly configured latest npm tag.",
+      "summary": "The intended public candidate remains Pulse 1.0.0-beta.10 Beta; future releases publish directly under the explicitly configured latest npm tag.",
       "evidence": [
         "release/release-preflight.json#releaseCandidate"
       ],
@@ -478,7 +478,7 @@
       "status": "pending",
       "requiredBy": "documentation-deployment",
       "owner": "human-release-infrastructure",
-      "summary": "The source contract names https://pulsecompute.io with immutable /v1.0.0-beta.9 routes, but the final origin and Fastly route are not externally proven.",
+      "summary": "The source contract names https://pulsecompute.io with immutable /v1.0.0-beta.10 routes, but the final origin and Fastly route are not externally proven.",
       "nextAction": "Verify origin ownership, immutable version routing, latest promotion, and the protected documentation-production environment.",
       "verification": "Documentation origin and Fastly route review"
     },
@@ -501,7 +501,7 @@
       "status": "proven",
       "requiredBy": "documentation-release",
       "owner": "release-engineering",
-      "summary": "The historical Sprint 7D implementation ledger has zero release-blocking and zero unclassified items; beta.8 preparation, final candidate evidence and separate KV/CAS decisions are tracked in the candidate readiness ledger.",
+      "summary": "The historical Sprint 7D implementation ledger has zero release-blocking and zero unclassified items; beta.10 preparation, final candidate evidence and separate KV/CAS decisions are tracked in the candidate readiness ledger.",
       "evidence": [
         "release/release-preflight.json#conformanceLedger"
       ],
@@ -513,7 +513,7 @@
       "status": "proven",
       "requiredBy": "release-seal",
       "owner": "release-engineering",
-      "summary": "The 1.0.0-beta.9 Beta snapshot is atomically aligned across release authority, documentation versions, package metadata, changelog, and generated references.",
+      "summary": "The 1.0.0-beta.10 Beta snapshot is atomically aligned across release authority, documentation versions, package metadata, changelog, and generated references.",
       "evidence": [
         "release/pulse-release-manifest.json",
         "release/documentation-versions.json",
@@ -551,7 +551,7 @@
       "status": "pending",
       "requiredBy": "release-seal",
       "owner": "release-engineering",
-      "summary": "Production advisory status for the frozen beta.8 candidate is pending; historical observations do not establish the current dependency closure's vulnerability status.",
+      "summary": "Production advisory status for the frozen beta.10 candidate is pending; historical observations do not establish the current dependency closure's vulnerability status.",
       "nextAction": "Refresh the production audit once in the final seal from the frozen checkout; block unresolved critical/high advisories and obtain release-owner dispositions for remaining advisories before publication.",
       "verification": "node scripts/pnpm-toolchain.cjs -- audit --prod --json"
     },
@@ -573,7 +573,7 @@
       "status": "pending",
       "requiredBy": "release-seal",
       "owner": "human-release",
-      "summary": "Production license closure for the frozen beta.8 candidate is pending; the existing root NOTICE disposition is retained but is not proof of the final installed, packed or generated closure.",
+      "summary": "Production license closure for the frozen beta.10 candidate is pending; the existing root NOTICE disposition is retained but is not proof of the final installed, packed or generated closure.",
       "nextAction": "Refresh the license inventory in the final seal, inspect redistributed material and retain explicit release-owner dispositions for any non-allowlisted, missing or custom license; preserve the exact root LICENSE and NOTICE in every release tarball.",
       "verification": "node scripts/audit-production-dependencies.cjs"
     },

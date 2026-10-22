@@ -94,6 +94,7 @@ function withoutProjection() {
   owner._compile(fs.readFileSync(file, 'utf8'), file); return owner.exports;
 }
 async function main() {
+  require('./report-computation-cases.cjs')();
   const responseCases = require('./report-response-payload-cases.cjs')();
   negatives += responseCases.negatives;
   const responseJson = capsule.serializeCapsule(responseCases.capsule);
@@ -115,8 +116,8 @@ async function main() {
 app.get('/inline/const',async ctx=>{const payload=${JSON.stringify(inline.html)};return ctx.text(payload,{headers:{'content-type':'text/html; charset=utf-8'}});});
 app.get('/inline/dynamic',async ctx=>ctx.text(ctx.req.header('x-body')||''));export default app;`);
     const project = resolveProject({cwd:directory,metadataOnly:true}), controlOwner = withoutProjection();
-    for (const optimization of ['default','experimental-native-bounded-size']) {
-      const options = {emitWat:false,nativeOptimization:optimization==='default'?undefined:optimization};
+    for (const optimization of ['native-shrink0','experimental-native-bounded-size']) {
+      const options = {emitWat:false,nativeOptimization:optimization};
       const control = controlOwner.compileNativeProjectInMemory(project,options), observed = execution.compileNativeProjectInMemory(project,options);
       assert.deepEqual(observed.plan,control.plan);assert.equal(observed.native.source,control.native.source);assert.deepEqual(observed.native.wasm,control.native.wasm);
       for (const compiled of [control,observed]) for (const [url,expected] of [['/a.css',css],['/b.css',css],['/app.js',js]]) {

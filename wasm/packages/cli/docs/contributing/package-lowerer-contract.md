@@ -587,3 +587,26 @@ Focused evidence: `node wasm/scripts/run-wasm-tests.cjs --task package-runtime
 --task provider-toolchain --task external-lowerers --task package-exports` and
 `packages/runtime/test/package-runtime.test.ts`. Protocol-specific parity and
 host integration fixtures remain in the independent protocol package.
+
+## Bounded package HTTP completion
+
+`pulse.package-native-application.v2` extends the terminal application contract
+with `terminalFailure: 'package-http-v1'` and finite `requestLimits`
+(`maxDurationMs`, `maxRequestBytes`). The selected provider must explicitly
+realize that package. Its duration may only shorten the host request budget.
+The required `pulse_host.package_http_version` import returns 1; older managed
+hosts reject the import. The v1 Entities application remains unchanged.
+
+A v2 guest exports `pulse_package_http_failure(kind)`, returning a pointer to
+bounded JSON response data. Kinds 1/2/3 mean interruption, oversized input and
+invalid input encoding. The function performs no I/O or effect settlement.
+Providers retain cancellation, close pending invocations and deliver this
+package-owned terminal framing. They never pass exception detail to the guest.
+The ordinary result/continuation ABI remains version 2.
+
+Entities' trusted compiler composition seam validates original AST registrations
+and the supplied terminal binding, preserving source ranges and schema/handler
+ownership. Its Native component builder contributes dispatch, codecs and managed
+continuations with package-owned transport hooks. MCP supplies its HTTP protocol
+at those hooks. The internal JavaScript transport export uses the same Entities
+operation pipeline; detached schema descriptions include declared IDs only.

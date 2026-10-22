@@ -1,11 +1,13 @@
 # `@pulse-compute/runtime`
 
+**npm:** [`@pulse-compute/runtime`](https://www.npmjs.com/package/@pulse-compute/runtime)
+
 `@pulse-compute/runtime` is the canonical, provider-neutral TypeScript authoring surface for Pulse applications. Install it in every canonical project and import handler types or the static `Router` marker from the package root.
 
 ## Install
 
 ```bash
-npm install @pulse-compute/runtime@1.0.0-beta.9
+npm install @pulse-compute/runtime@1.0.0-beta.10
 ```
 
 A project created by `pulse init` depends on the public
@@ -42,12 +44,15 @@ The package exports:
 - structured and opaque response types;
 - `PulseExecutionContext`, shared by HTTP and event handlers, with state, logging,
   provider wall time, fetch, config, secret, KV, keyed parallel, and one-way event emission;
-- `PulseContext` with the shared authority plus HTTP request and response construction;
+- `PulseContext` with shared authority, HTTP request/response construction and bounded `call`;
+- `PulseComputationContext`, `PulseReadonly`, `PulseComputation` and `PulseCallSchemas`
+  for [synchronous imported computations](../../API.md#ctxcall), with resource/workspace
+  authority, readonly input and an owned validated result;
 - `PulseEvent`, `PulseEventContext`, and `PulseEventHandler` for exact type,
   immutable schema payload, non-HTTP authority, and void completion;
 - `PulseResult`, `Handler`, `PulseRouteContext`, `RouteHandler`, `RouterMiddleware`, `RouterErrorHandler`, and `RouterNext`;
 - `Router`, the compile-time marker for static route topology;
-- `RUNTIME_API_VERSION`, currently `pulse.runtime-authoring.v4`, and `ROUTER_API_VERSION`, currently `pulse.router-authoring.v2`.
+- `RUNTIME_API_VERSION`, currently `pulse.runtime-authoring.v5`, and `ROUTER_API_VERSION`, currently `pulse.router-authoring.v2`.
 
 The complete type-by-type reference is in [Canonical API](../../API.md).
 
@@ -160,8 +165,9 @@ records exact accepted frames independently from its FIFO ingress queue, so it
 never performs automatic loopback. It does not deliver a receipt, persistence,
 retry, or public provider transport.
 
-`ctx.emit` is not a call operation. The runtime exposes no request/reply
-correlation, automatic local dispatch, `ctx.call`, or reserved call capability.
+`ctx.emit` is not a call operation. Event contexts expose no `ctx.call`,
+request/reply correlation or automatic local dispatch. HTTP `ctx.call` invokes
+a bounded computation and does not dispatch events.
 See [Static events and outbound emission](../guides/events.md) for the frame,
 queue, target, and Native-extension details.
 
@@ -260,6 +266,10 @@ committed). Pulse snapshots candidates, preserves tokens without numeric
 coercion, and performs no automatic retry. Fastly JavaScript remains incomplete;
 K4 retains the deployed acceptance gate.
 The detailed contract is in [Effects and continuations](../concepts/effects-and-continuations.md#conditional-kv).
+
+The same targets support bounded `list({ limit, prefix?, cursor? })` and
+`delete(key)` effects. Listing returns one page and an opaque continuation;
+delete can return an uncertain outcome after dispatch. See [listing and deletion](../concepts/effects-and-continuations.md#kv-listing-and-deletion).
 
 Those calls are compiled into explicit effects and validated against the selected provider. See [Compilation and lowering](../concepts/compilation-and-lowering.md).
 

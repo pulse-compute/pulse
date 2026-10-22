@@ -44,6 +44,7 @@ const HANDLER_IR_OPERATION_KINDS = Object.freeze([
 ]);
 const HANDLER_IR_EXTENSION_OPERATION_KINDS = Object.freeze([
   'parallel-group',
+  'effect-collection',
   'router-body',
   'router-body-call',
   'helper-body',
@@ -189,11 +190,15 @@ function buildPlainHandlerIr(frontend, options = {}) {
     node: handler
   }));
 
+  const resourceViews = require('./resource-views.js').inspectResourceViews(handler, ctxName);
+  if (options.resourceIds) for (const id of resourceViews.identities) if (!options.resourceIds.includes(id)) diagnostics.push(diagnostic(sourceFile, handler, 'PULSE_BINARY_RESOURCE_INVALID', 'Resource identity is not declared in project configuration.'));
+  for (const error of resourceViews.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_BINARY_RESOURCE_INVALID', error.message));
+  for (const error of require('./numeric-workspaces.js').inspectNumericWorkspaces(handler, ctxName)) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_NUMERIC_WORKSPACE_INVALID', error.message));
   const effectSites = [];
   const continuationSites = [];
   const effectCounters = new Map();
   let continuationIndex = 0;
-  const helperBodies = new Map((options.internalGeneratedHandler && options.metadataExtensions?.router?.helpers || []).map(helper => [helper.name, helper]));
+  const helperBodies = new Map((options.internalGeneratedHandler && (options.metadataExtensions?.sourceHelpers || options.metadataExtensions?.router?.helpers) || []).map(helper => [helper.name, helper]));
   const pureHelperBounds = new Map();
   for (const declaration of handler.body.statements || []) {
     if (!ts.isFunctionDeclaration(declaration) || !helperBodies.get(declaration.name?.text)?.pure) continue;
@@ -543,6 +548,24 @@ function buildPlainHandlerIr(frontend, options = {}) {
     const out = [];
     for (let index = 0; index < statements.length;) {
       const statement = statements[index];
+      const region = require('./effect-collection-source.js').inspectCollection(statements, index, ctxName);
+      if (region && !region.error) {
+        const members = [];
+        for (let slot = 0; slot < region.max; slot++) {
+          const expression = require('./effect-collection-source.js').substituteItem(region.add.arguments[0], region.item, region.input, slot);
+          const record = ts.factory.createObjectLiteralExpression([ts.factory.createPropertyAssignment(`slot${slot}`, expression)]);
+          const candidate = parallelCandidate({ statement: region.flush, declaration: region.result, call: region.parallel.call, record, discard: false }, aliases);
+          if (candidate) members.push(candidate.members[0]);
+        }
+        if (members.length === region.max) {
+          const sites = Object.freeze(members.map(member => member.kind === 'fetch' ? nextFetchEffectSite(member.chain, true, member.key)
+            : member.kind === 'provider' ? nextProviderEffectSite(member.operation, true, member.key) : nextPackageEffectSite(member.effect, member.call, true, member.key)));
+          const continuation = nextContinuationSite(sites.map(site => site.id), 'effect-collection-v1', region.parallel.call);
+          out.push(createHandlerOperation('effect-collection', { candidate: { ...region, members, statement: region.flush, declaration: region.result }, sites, continuation }));
+        }
+        index += 3;
+        continue;
+      }
       const parallelInvocation = parallelInvocationStatement(statement, ctxName);
       if (parallelInvocation) {
         const candidate = parallelCandidate(parallelInvocation, aliases);
@@ -720,7 +743,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
           initializer: statement.initializer, test: statement.condition, increment: statement.incrementor,
           body: buildStatement(statement.statement, new Map(aliases)) });
       }
-      const loop = inspectBoundedPureLoop(statement, { ctxName, pureHelper: activePureHelper, pureHelperForCall });
+      const loop = inspectBoundedPureLoop(statement, { resourceReadForCall: call => resourceViews.calls.has(call), ctxName, pureHelper: activePureHelper, pureHelperForCall });
       for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message));
       return createHandlerOperation('source-statement', { statement, role: 'bounded-pure-loop' });
     }
@@ -776,6 +799,8 @@ function buildPlainHandlerIr(frontend, options = {}) {
       }
       const namespace = extractKvNamespaceDeclaration(statement, ctxName);
       if (namespace) { aliases.set(namespace.variableName, namespace.store); continue; }
+      const region = require('./effect-collection-source.js').inspectCollection(statements, index, ctxName);
+      if (region && !region.error) { index += 2; continue; }
       if (parallelInvocationStatement(statement, ctxName)) continue;
       if (packageVariableStatement(statement)) continue;
       if (fetchVariableStatement(statement, ctxName)) continue;

@@ -1,0 +1,7 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> docs:sync
+> node wasm/scripts/sync-doc-snippets.cjs --write
+
+ok - 266 generated documentation/package file(s), 5 maintenance-policy output(s), 64 source block(s), and 19 owned page(s) are synchronized; updated 4 file(s)
+{"schemaVersion":"pulse.context-build-receipt.v1","status":"ok","mode":"write","executionNode":"24.18.0","pinnedProducerNode":"24.18.0","manifestSha256":"cbc86d66fe5d2c59e17139e27020a2b49958cd3bc2e099df71ce4fceee1a0da9","corpusHash":"c84709676333ae576c6fe217c6ce651b1b442069a8a6bbe1cd8cd845de6c8060","dimensions":{"rows":264,"dimension":2509,"nonzeros":15363,"dictionarySha256":"2701a6c5731e54385ecb1eadb368cc338102cd0331b20697340e70c41681a288","manifestId":"046dc1b850ab50444b2286a6987941a7966d2d4007d72ebc148e2ae21c442716","catalogueIdentity":"0b5f9742a827af81f39366207c36c2f8a0b3a5b4f111051874bd198bfe8e748a","rawBytes":601847,"serializedBytes":803118,"budgets":{"files":3,"fileBytes":5242880,"totalBytes":8388608,"serializedBytes":16777216,"bindings":3}},"changedFiles":24,"comparedFiles":30}

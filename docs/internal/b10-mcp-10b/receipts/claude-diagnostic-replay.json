@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "kind": "claude",
+  "profile": "2026-07-28",
+  "inferenceRequests": 0,
+  "calls": [
+    {
+      "tool": "pulse.diagnostic",
+      "status": "ok",
+      "bytes": 8576
+    },
+    {
+      "tool": "pulse.example",
+      "status": "ok",
+      "bytes": 11869
+    },
+    {
+      "tool": "pulse.read",
+      "status": "ok",
+      "bytes": 15850
+    },
+    {
+      "tool": "pulse.search",
+      "status": "ok",
+      "bytes": 14014
+    },
+    {
+      "tool": "pulse.start",
+      "status": "ok",
+      "bytes": 16994
+    }
+  ],
+  "client": "2.1.292 (Claude Code)",
+  "process": {
+    "code": null,
+    "signal": "SIGTERM"
+  },
+  "cleanup": "passed"
+}

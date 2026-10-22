@@ -31,7 +31,7 @@ function withoutProjection() {
 function inventory(project, prepared) {
   const artifact = { id: capsule.artifactId(prepared.native.manifest.wasm.sha256), ...prepared.native.manifest.wasm,
     stage: 'final', target: 'portable-native-wasm' };
-  return collectInventory(project, prepared, [artifact], artifact.id, 'default');
+  return collectInventory(project, prepared, [artifact], artifact.id, 'native-shrink0');
 }
 async function main() {
   require('./report-schema-consumer-cases.cjs')();
@@ -64,8 +64,8 @@ app.get('/helper-b',async ctx=>{const value=await lookup(ctx,'b');return ctx.tex
     const project = resolveProject({ cwd: directory, metadataOnly: true });
     const controlOwner = withoutProjection(), cells = [];
     let saved, prepared;
-    for (const optimization of ['default', 'experimental-native-bounded-size']) {
-      const options = { nativeOptimization: optimization === 'default' ? undefined : optimization, emitWat: false };
+    for (const optimization of ['native-shrink0', 'experimental-native-bounded-size']) {
+      const options = { nativeOptimization: optimization, emitWat: false };
       const control = controlOwner.compileNativeProjectInMemory(project, options);
       prepared = execution.compileNativeProjectInMemory(project, options);
       assert.equal(control.reportReferences, undefined);

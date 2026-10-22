@@ -1,10 +1,12 @@
 'use strict';
 
+const dynamicBackends = require('./native-dynamic-backends.js');
+
 const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
 
 const crypto = require('node:crypto');
-const { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
+const { nativeStringAssembly, nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -76,6 +78,7 @@ const FASTLY_NATIVE_HTTP_EFFECTS_REQUIRED_IMPORTS = Object.freeze([
 ]);
 
 const FASTLY_NATIVE_HTTP_EFFECTS_ALLOWED_IMPORTS = new Set([
+  'fastly_http_req:register_dynamic_backend',
   ...FASTLY_NATIVE_HTTP_EFFECTS_IMPORTS.map(([moduleName, name]) => `${moduleName}:${name}`)
 ]);
 
@@ -154,8 +157,9 @@ function literalOriginFromExpression(expression) {
 }
 
 function resolveBackendBindings(plan, options = {}) {
-  const byEffect = options.effectBackends || {};
-  const byOrigin = options.backends || {};
+  const source = options.bindings || options;
+  const byEffect = source.effectBackends || {};
+  const byOrigin = source.backends || {};
   const bindings = [];
   for (const [index, effect] of (plan.effects || []).entries()) {
     const urlInput = (effect.inputs || []).find((entry) => entry.name === 'url');
@@ -165,7 +169,7 @@ function resolveBackendBindings(plan, options = {}) {
     const backend = byEffect[effect.id]
       || (origin && byOrigin[origin])
       || (effect.resource && effect.resource.value && byOrigin[effect.resource.value]);
-    if (typeof backend !== 'string' || backend.trim() === '') {
+    if ((typeof backend !== 'string' || backend.trim() === '') && source.dynamicBackends !== true) {
       fail(`Fastly native effect ${effect.id} has no static backend binding.`, 'PULSE_FASTLY_NATIVE_HTTP_BACKEND_MISSING', {
         effectId: effect.id,
         effectIndex: index,
@@ -173,7 +177,7 @@ function resolveBackendBindings(plan, options = {}) {
         hint: `Provide options.effectBackends[${JSON.stringify(effect.id)}] or options.backends[${JSON.stringify(origin || '<origin>')}].`
       });
     }
-    bindings.push(Object.freeze({ index, effectId: effect.id, origin: origin || null, backend: backend.trim() }));
+    bindings.push(Object.freeze({ index, effectId: effect.id, origin: origin || null, backend: typeof backend === 'string' ? backend.trim() : '', ...(typeof backend !== 'string' || !backend.trim() ? { dynamic: true } : {}) }));
   }
   return Object.freeze(bindings);
 }
@@ -590,6 +594,7 @@ function __pulse_fastly_json(handle: i32, depth: i32): string {
   if (value.kind == PULSE_VALUE_OBJECT) { let out = "{"; for (let i = 0; i < value.keys.length; i += 1) { if (i > 0) out += ","; out += __pulse_fastly_quote(unchecked(value.keys[i])) + ":" + __pulse_fastly_json(unchecked(value.values[i]), depth + 1) } return out + "}" }
   return "null"
 }
+${nativeStringAssembly}
 ${nativeStringConcat}
 ${nativeStringTrim}
 ${nativeStringIndex}
@@ -605,8 +610,15 @@ function __pulse_fastly_fetch_body(value: __PulseFastlyValue): string { if (valu
 function host_value_undefined(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_UNDEFINED; return __pulse_fastly_put(item) }
 function host_value_null(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_NULL; return __pulse_fastly_put(item) }
 function host_value_boolean(value: i32): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_BOOLEAN; item.boolean = value != 0 ? 1 : 0; return __pulse_fastly_put(item) }
+${plan.binaryResources || plan.numericWorkspaces?.length ? require('./native-binary-resources.js').source() : ''}
 function host_value_number(value: f64): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_NUMBER; item.number = value; return __pulse_fastly_put(item) }
 function host_value_string(pointer: i32, length: i32): i32 { return __pulse_fastly_string_value(changetype<string>(pointer)) }
+function host_effect_collection_count(handle: i32, max: i32, stateIndex: i32): i32 {
+  const input = __pulse_fastly_value(handle)
+  if (__pulse_fastly_last_error != 0 || input.kind != PULSE_VALUE_ARRAY || max < 1 || max > 32) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 173, -1); return -1 }
+  if (input.values.length > max) { __pulse_fastly_fail(PULSE_ERROR_STATE, 172, -1); return -1 }
+  return input.values.length
+}
 function host_value_array(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_ARRAY; return __pulse_fastly_put(item) }
 function host_value_array_push(target: i32, value: i32): void { const item = __pulse_fastly_value(target); if (item.kind != PULSE_VALUE_ARRAY || item.immutable) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 30, -1); return } item.values.push(value) }
 function host_value_array_spread(target: i32, source: i32): void { const from = __pulse_fastly_value(source); if (from.kind != PULSE_VALUE_ARRAY) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 31, -1); return } for (let i = 0; i < from.values.length; i += 1) host_value_array_push(target, unchecked(from.values[i])) }
@@ -739,7 +751,7 @@ function generateFastlyNativeHttpEffectsAssemblyScript(plan, options = {}) {
   const bindings = resolveBackendBindings(plan, options);
   const portable = generateCanonicalNativeAssemblyScript(plan, options);
   const portableSource = stripPulseHostImports(portable.source);
-  const source = [
+  let source = [
     '/* Generated by Pulse Pass97 Fastly native HTTP effects compiler. */',
     'export function __pulse_fastly_abort(message: string | null, fileName: string | null = null, line: u32 = 0, column: u32 = 0): void { unreachable() }',
     '',
@@ -748,6 +760,7 @@ function generateFastlyNativeHttpEffectsAssemblyScript(plan, options = {}) {
     driverSource(plan),
     ''
   ].join('\n');
+  source = dynamicBackends.instrument(source, bindings, false, (options.bindings || options).backends);
   const manifest = Object.freeze({
     version: FASTLY_NATIVE_HTTP_EFFECTS_VERSION,
     generatorVersion: FASTLY_NATIVE_HTTP_EFFECTS_GENERATOR_VERSION,
@@ -762,7 +775,10 @@ function generateFastlyNativeHttpEffectsAssemblyScript(plan, options = {}) {
     continuationCount: (plan.continuations || []).length,
     groupedContinuationCount: (plan.continuations || []).filter((entry) => (entry.effectIds || []).length > 1).length,
     backends: bindings,
-    allowedImports: FASTLY_NATIVE_HTTP_EFFECTS_IMPORTS,
+    ...(dynamicBackends.active(bindings) ? { dynamicBackends: dynamicBackends.describe((options.bindings || options).backends) } : {}),
+    allowedImports: dynamicBackends.active(bindings)
+      ? Object.freeze([...FASTLY_NATIVE_HTTP_EFFECTS_IMPORTS, Object.freeze(['fastly_http_req', 'register_dynamic_backend'])])
+      : FASTLY_NATIVE_HTTP_EFFECTS_IMPORTS,
     requiredExports: Object.freeze([
       '_start',
       'pulse_fastly_last_error',

@@ -44,7 +44,7 @@ else {
   fs.writeFileSync(path.join(directory, '.pulse/config.ts'), config);
   const project = require('../../../packages/cli/src/project-config.js').resolveProject({ cwd: directory, profile: 'proof' });
   const built = require('../../../packages/cli/src/project-execution.js').buildProject(project,
-    name === 'bounded' ? { experimentalNativeBoundedSize: true } : {});
+    name === 'bounded' ? { experimentalNativeBoundedSize: true } : { nativeShrink0: true });
   assert.equal(built.status, 'built');
   artifact = { ...q.artifact(path.join(built.outDir, 'bin/main.wasm')), configurationSha256: require('./measurement-protocol.cjs').hash(config) };
   const generated = path.join(built.outDir, 'src/main.as.ts');
@@ -59,7 +59,7 @@ if (name !== 'rust') {
     if (name === 'bounded') {
       assert.equal(recipe.args[recipe.args.indexOf('--optimizeLevel') + 1], '3');
       assert.equal(recipe.args[recipe.args.indexOf('--shrinkLevel') + 1], '2');
-    } else assert(!recipe.args.includes('--shrinkLevel'));
+    } else assert.equal(recipe.args[recipe.args.indexOf('--shrinkLevel') + 1], '0');
     assert(!recipe.args.some(x => String(x).includes('schema-cache-arena-transform')));
   }
 }
@@ -68,6 +68,6 @@ fs.writeFileSync(resultFile, JSON.stringify({ name, variant, artifact, generated
     peakIndividualRssBytes: Math.max(...recipes.map(x => x.peakIndividualRssBytes)),
     domain: 'Maximum individual AssemblyScript process RSS, including ASC source-map re-exec; not total build-tree RSS'
   }, workerPeakRssBytes: process.resourceUsage().maxRSS * 1024,
-  options: name === 'bounded' ? { experimentalNativeBoundedSize: true } : {},
+  options: name === 'bounded' ? { experimentalNativeBoundedSize: true } : { nativeShrink0: true },
   noCacheArenaElision: true
 }, null, 2) + '\n');

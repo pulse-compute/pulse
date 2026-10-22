@@ -1,8 +1,8 @@
 'use strict';
 
 const COMMAND_SPEC_VERSION = 'pulse.cli-command-spec.v5';
-const COMMANDS = Object.freeze(['init', 'dev', 'test', 'inspect', 'compile', 'build', 'doctor', 'report']);
-const PUBLIC_COMMAND_ORDER = Object.freeze(['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report']);
+const COMMANDS = Object.freeze(['init', 'dev', 'test', 'inspect', 'compile', 'build', 'doctor', 'report', 'docs']);
+const PUBLIC_COMMAND_ORDER = Object.freeze(['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report', 'docs']);
 
 function freezeOption(value) {
   return Object.freeze({
@@ -17,6 +17,7 @@ function freezeOption(value) {
 const OPTION_SPECS = Object.freeze([
   freezeOption({ id: 'html', key: 'html', flags: ['--html'], kind: 'boolean', commands: ['report'], visibility: 'public', description: 'Write a self-contained offline HTML report; mutually exclusive with --json.' }),
   freezeOption({ id: 'help', key: 'help', flags: ['--help', '-h'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Print public CLI help and exit.' }),
+  freezeOption({ id: 'evidence-status', key: 'evidenceStatus', flags: ['--evidence-status'], kind: 'boolean', commands: ['init', 'doctor', 'inspect', 'test', 'compile', 'build', 'report', 'docs'], visibility: 'public', description: 'Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.' }),
   freezeOption({ id: 'json', key: 'json', flags: ['--json'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Emit machine-readable JSON. pulse dev emits one JSON event per line.' }),
   freezeOption({ id: 'dry-run', key: 'dryRun', flags: ['--dry-run', '--plan'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Resolve and report the command plan without executing it.' }),
   freezeOption({ id: 'force', key: 'force', flags: ['--force'], kind: 'boolean', commands: ['init'], visibility: 'public', description: 'Allow generated files to replace entries in a non-empty target directory.' }),
@@ -26,8 +27,9 @@ const OPTION_SPECS = Object.freeze([
   freezeOption({ id: 'clean', key: 'clean', flags: [{ name: '--clean', value: true }, { name: '--no-clean', value: false }], kind: 'boolean-value', commands: ['compile', 'build'], visibility: 'public', description: 'Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.' }),
   freezeOption({ id: 'elide-json-cache-arena', key: 'elideJsonCacheArena', flags: ['--elide-json-cache-arena'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads.' }),
   freezeOption({ id: 'emit-wat', key: 'emitWat', flags: ['--emit-wat'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.' }),
-  freezeOption({ id: 'experimental-native-bounded-size', key: 'experimentalNativeBoundedSize', flags: ['--experimental-native-bounded-size'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.' }),
-  freezeOption({ id: 'experimental-native-size', key: 'experimentalNativeSize', flags: ['--experimental-native-size'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.' }),
+  freezeOption({ id: 'native-shrink0', key: 'nativeShrink0', flags: ['--native-shrink0'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag.' }),
+  freezeOption({ id: 'experimental-native-bounded-size', key: 'experimentalNativeBoundedSize', flags: ['--experimental-native-bounded-size'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag.' }),
+  freezeOption({ id: 'experimental-native-size', key: 'experimentalNativeSize', flags: ['--experimental-native-size'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag.' }),
 
   freezeOption({ id: 'profile', key: 'profile', flags: ['--profile'], kind: 'value', valueName: '<profile>', commands: ['doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report'], visibility: 'public', description: 'Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.' }),
   freezeOption({ id: 'out', key: 'outDir', flags: ['--out'], kind: 'value', valueName: '<dir>', valueNameByCommand: { report: '<file.html>' }, descriptionByCommand: { report: 'HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html.' }, commands: ['compile', 'build', 'report'], visibility: 'public', description: 'Override the project-relative artifact output directory.' }),
@@ -52,15 +54,26 @@ function freezeCommand(value) {
 }
 
 const COMMAND_SPECS = Object.freeze({
+  docs: freezeCommand({
+    name: 'docs',
+    summary: 'Locate the offline documentation shipped with the executing CLI package.',
+    usage: ['pulse docs [--json]'],
+    optionIds: ['evidence-status'],
+    examples: ['pulse docs', 'pulse docs --json'],
+    diagnostics: ['PULSE_DOCS_UNAVAILABLE', 'PULSE_DOCS_INVALID'],
+    outputs: ['Human output prints the installed CLI version and absolute documentation index path.', 'With --json, emits {status: "ok", version, docs: {root, index}} with the executing CLI version and absolute physical paths.'],
+    sideEffects: ['Reads only the executing package documentation index; does not discover a project, compile code, install dependencies, contact the network, launch a server or open a browser.', 'Validates the index type, containment, readability and nonempty UTF-8 text; does not audit every document or establish package integrity.', '--plan and --dry-run describe the locator without reading or validating documentation.'],
+    exit: '0 on success; 2 for invalid arguments; 5 when packaged documentation is unavailable or the index is invalid.'
+  }),
   report: freezeCommand({
     name: 'report',
     summary: 'Review retained evidence from a completed Native build without rebuilding or executing project code.',
     usage: ['pulse report [directory] [--profile <name>] [--json | --html] [--out <file.html>]', 'pulse report --artifact <file.json> [--json | --html] [--out <file.html>]'],
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
-    optionIds: ['profile', 'artifact', 'html', 'out'],
+    optionIds: ['evidence-status', 'profile', 'artifact', 'html', 'out'],
     examples: ['pulse report ./my-pulse-app', 'pulse report --artifact ./dist/pulse-compile.json --json'],
     diagnostics: ['PULSE_REPORT_INPUT_INVALID', 'PULSE_REPORT_EVIDENCE_MISSING', 'PULSE_REPORT_STALE', 'PULSE_REPORT_INCOMPATIBLE', 'PULSE_REPORT_OUTPUT_UNSAFE', 'PULSE_REPORT_OUTPUT_FAILED'],
-    outputs: ['Default output is a bounded terminal overview; --json emits one complete authoritative Report capsule.', 'Historical capsule replay preserves evidence identity without claiming current-project freshness.', '--html writes an offline route-first viewer with expandable schemas and full-capsule JSON export; it does not open a browser.'],
+    outputs: ['Default output is a bounded terminal overview; --json emits one complete authoritative Report capsule.', '--evidence-status wraps the unchanged capsule in pulse.command-evidence v1; --json alone remains the authoritative capsule.', 'Historical capsule replay preserves evidence identity without claiming current-project freshness.', '--html writes an offline route-first viewer with expandable schemas and full-capsule JSON export; it does not open a browser.'],
     sideEffects: ['Reads retained local evidence only; does not build, run tests, load project code, access secrets or contact the network.', '--plan and --dry-run describe intent without collecting or writing a report.', '--out requires --html; destinations must be contained regular .html files. Artifact roots are the input JSON parent directory.', 'HTML writes a bounded .pulse-report-outputs receipt beside its destination; only matching generated bytes are excluded from project input scans. Recorded build inputs cannot be overwritten.', 'Reports are build-review artifacts; review contents before sharing publicly.'],
     exit: '0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence or an output write failure.'
   }),
@@ -69,7 +82,7 @@ const COMMAND_SPECS = Object.freeze({
     summary: 'Create a conventional .pulse workspace with an async Pulse application and dedicated test harness.',
     usage: ['pulse init [directory] [--name <package-name>] [--force]'],
     positionals: [{ name: 'directory', key: 'target', description: 'Target directory. Defaults to the current directory.' }],
-    optionIds: ['name', 'force'],
+    optionIds: ['evidence-status', 'name', 'force'],
     examples: ['pulse init ./my-pulse-app', 'pulse init ./edge-app --name @example/edge-app'],
     diagnostics: ['PULSE_INIT_NOT_EMPTY', 'PULSE_INIT_FILE_EXISTS', 'PULSE_PROVIDER_UNSUPPORTED'],
     outputs: ['Human output lists generated files and next steps.', 'With --json, emits one initialization result object.'],
@@ -81,7 +94,7 @@ const COMMAND_SPECS = Object.freeze({
     summary: 'Audit project shape, compilation, schemas, provider bindings, output safety, and required tools.',
     usage: ['pulse doctor [directory] [--profile <name>] [--strict]'],
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
-    optionIds: ['profile', 'strict'],
+    optionIds: ['evidence-status', 'profile', 'strict'],
     examples: ['pulse doctor ./my-pulse-app', 'pulse doctor ./edge-app --strict --json'],
     diagnostics: ['PULSE_CONFIG_NOT_FOUND', 'PULSE_PROJECT_COMPILE_FAILED', 'PULSE_NODE_VERSION_UNSUPPORTED', 'PULSE_CANONICAL_NATIVE_COMPILE_FAILED', 'PULSE_NATIVE_EXPANSION_REPEATED'],
     outputs: ['Human output prints every check.', 'With --json, emits one completed audit object including failed and warning checks.'],
@@ -96,7 +109,7 @@ const COMMAND_SPECS = Object.freeze({
       'pulse inspect --artifact <file.json>'
     ],
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
-    optionIds: ['profile', 'artifact'],
+    optionIds: ['evidence-status', 'profile', 'artifact'],
     examples: ['pulse inspect ./my-pulse-app --json', 'pulse inspect --artifact ./dist/pulse-build.json'],
     diagnostics: ['PULSE_CONFIG_NOT_FOUND', 'PULSE_PROJECT_COMPILE_FAILED', 'PULSE_CANONICAL_COMPILE_FAILED'],
     outputs: ['Human output prints a compact project/compiler summary.', 'With --json, emits one inspection or artifact object.'],
@@ -108,7 +121,7 @@ const COMMAND_SPECS = Object.freeze({
     summary: 'Run configured cases through the selected provider local-conformance runtime.',
     usage: ['pulse test [directory] [--profile <name>] [--case <name>]'],
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
-    optionIds: ['profile', 'case'],
+    optionIds: ['evidence-status', 'profile', 'case'],
     examples: ['pulse test ./my-pulse-app', 'pulse test ./my-pulse-app --case smoke --json'],
     diagnostics: ['PULSE_TEST_PROVIDER_REQUIRED', 'PULSE_PROVIDER_CAPABILITY_MISSING', 'PULSE_SCHEMA_DECODE'],
     outputs: ['Human output uses TAP-like case lines and a summary.', 'With --json, emits one test-run object; expected stable errors remain inside their case results.'],
@@ -130,25 +143,25 @@ const COMMAND_SPECS = Object.freeze({
   compile: freezeCommand({
     name: 'compile',
     summary: 'Compile the canonical project into provider-neutral Pulse-owned WebAssembly.',
-    usage: ['pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]'],
+    usage: ['pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--native-shrink0|--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]'],
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
-    optionIds: ['profile', 'out', 'clean', 'experimental-native-size', 'experimental-native-bounded-size', 'emit-wat', 'elide-json-cache-arena'],
+    optionIds: ['evidence-status', 'profile', 'out', 'clean', 'native-shrink0', 'experimental-native-size', 'experimental-native-bounded-size', 'emit-wat', 'elide-json-cache-arena'],
     examples: ['pulse compile ./my-pulse-app', 'pulse compile ./edge-app --out ./dist --json', 'pulse compile ./edge-app --experimental-native-size', 'pulse compile ./edge-app --experimental-native-bounded-size'],
     diagnostics: ['PULSE_BUILD_OUT_UNSAFE', 'PULSE_CANONICAL_NATIVE_PLAN_FAILED', 'PULSE_CANONICAL_NATIVE_COMPILE_FAILED'],
-    outputs: ['Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, and native manifest; --emit-wat adds diagnostic WAT.', 'The output is provider-neutral and does not package a deployment provider runtime.', 'Experimental size builds record the exact non-default Native compiler optimization settings.', 'With --json, emits one compile result object containing exact artifact paths and native metadata.'],
+    outputs: ['Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, and native manifest; --emit-wat adds diagnostic WAT.', 'The output is provider-neutral and does not package a deployment provider runtime.', 'Native builds default to O3/shrink2/no convergence and record the explicit compiler recipe.', 'With --json, emits one compile result object containing exact artifact paths and native metadata.'],
     sideEffects: ['Cleans the output directory by default.', 'Invokes the lockfile-pinned AssemblyScript compiler.', 'Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.'],
     exit: '0 on success; 2–5 according to the emitted stable diagnostic.'
   }),
   build: freezeCommand({
     name: 'build',
-    summary: 'Compile the canonical project and realize the deployment provider selected by the active project profile.',
-    usage: ['pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]'],
+    summary: 'Build the Native or JavaScript target for the deployment provider selected by the active project profile.',
+    usage: ['pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--native-shrink0|--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]'],
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
-    optionIds: ['profile', 'out', 'clean', 'experimental-native-size', 'experimental-native-bounded-size', 'emit-wat', 'elide-json-cache-arena'],
+    optionIds: ['evidence-status', 'profile', 'out', 'clean', 'native-shrink0', 'experimental-native-size', 'experimental-native-bounded-size', 'emit-wat', 'elide-json-cache-arena'],
     examples: ['pulse build ./my-pulse-app', 'pulse build ./edge-app --out ./dist --json', 'pulse build ./edge-app --experimental-native-size', 'pulse build ./edge-app --experimental-native-bounded-size'],
     diagnostics: ['PULSE_BUILD_OUT_UNSAFE', 'PULSE_BUILD_PROVIDER_REQUIRED', 'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED', 'PULSE_NATIVE_TEXT_UNSUPPORTED', 'PULSE_CANONICAL_NATIVE_COMPILE_FAILED'],
-    outputs: ['Writes pulse-build.json, the provider-neutral native module, and the configured provider realization; Native --emit-wat builds also write diagnostic WAT.', 'Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.', 'Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.', 'With --json, emits one build result object containing exact portable and provider artifact paths.'],
-    sideEffects: ['Cleans the output directory by default.', 'Invokes the native compiler and configured provider realization.', 'Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.'],
+    outputs: ['Writes pulse-build.json and the configured provider realization. Native builds include the provider-neutral native module; JavaScript builds emit a deterministic source package. Native --emit-wat builds also write diagnostic WAT.', 'Fastly Native builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm without a JavaScript runtime image. Fastly JavaScript builds emit a source/deployment package with exact downstream compiler pins and deployment-candidate metadata.', 'Native builds default to O3/shrink2/no convergence and record the explicit compiler recipe in portable, provider, and build metadata.', 'With --json, emits one build result object containing exact artifact paths for the selected target and provider.'],
+    sideEffects: ['Cleans the output directory by default.', 'Native builds invoke the native compiler and configured provider realization. JavaScript builds validate and package the reachable application graph without invoking the Pulse Native compiler.', 'Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.'],
     exit: '0 on success; 2–5 according to the emitted stable diagnostic.'
   })
 });

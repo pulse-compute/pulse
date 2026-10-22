@@ -282,7 +282,6 @@ function validateWorkflowSecurity() {
     '.github/workflows/maintainer-labels.yml',
     '.github/workflows/documentation.yml',
     '.github/workflows/npm-publish.yml',
-    '.github/workflows/documentation-deploy.yml',
     '.github/workflows/release-prepare.yml'
   ];
   requireFiles(required, 'GitHub workflow set');
@@ -352,15 +351,14 @@ function validateWorkflowSecurity() {
   includes(documentation, 'name: Documentation', 'documentation workflow');
   includes(documentation, 'build:', 'documentation workflow');
   includes(documentation, 'ready_for_review', 'release PR documentation activation');
-  includes(documentation, 'Upload generated preview', 'documentation workflow');
-  require('./documentation-preview.cjs').validatePreviewWorkflow(documentation);
+  require('./documentation-check.cjs').validateSourceWorkflow(documentation);
   if (documentation.includes('deploy-pages') || documentation.includes('upload-pages-artifact') || documentation.includes('pages: write') || documentation.includes('github-pages')) fail('documentation validation workflow must not deploy to GitHub Pages');
 
   const preparation = read('.github/workflows/release-prepare.yml');
   includes(preparation, 'workflow_dispatch:', 'release preparation workflow');
   includes(preparation, "if: github.ref == 'refs/heads/main'", 'release preparation workflow');
   includes(preparation, 'node scripts/release-prepare-pr.cjs "$RELEASE_VERSION"', 'release preparation workflow');
-  for (const needle of ['documentation_history:', 'default: archive-current', 'replace-unpublished-docs', 'DOCUMENTATION_HISTORY: ${{ inputs.documentation_history }}', '--documentation-history "$DOCUMENTATION_HISTORY"']) includes(preparation, needle, 'explicit documentation history selection');
+  for (const needle of ['documentation_history:', 'default: website-managed', 'replace-unpublished-docs', 'DOCUMENTATION_HISTORY: ${{ inputs.documentation_history }}', '--documentation-history "$DOCUMENTATION_HISTORY"']) includes(preparation, needle, 'explicit documentation history selection');
   includes(preparation, 'needs: prepare', 'release preparation writer isolation');
   const writer = preparation.indexOf('\n  open-pr:');
   if (writer < 0 || /(?:contents|pull-requests): write/.test(preparation.slice(0, writer))) fail('preparation must run before and outside the write-token job');
@@ -374,13 +372,7 @@ function validateWorkflowSecurity() {
   includes(npmPublication, 'publish-release.cjs publish', 'npm publication workflow');
   if (npmPublication.includes('NODE_AUTH_TOKEN') || npmPublication.includes('NPM_TOKEN')) fail('npm publication workflow must not use a long-lived registry token');
 
-  const documentationDeployment = read('.github/workflows/documentation-deploy.yml');
-  includes(documentationDeployment, 'name: Documentation deployment', 'documentation deployment workflow');
-  includes(documentationDeployment, `environment: ${MAINTENANCE_POLICY.github.protectedEnvironments['documentation-production'] ? 'documentation-production' : '__missing__'}`, 'documentation deployment workflow');
-  includes(documentationDeployment, '--phase immutable', 'documentation deployment workflow');
-  includes(documentationDeployment, '--phase promote', 'documentation deployment workflow');
-  includes(documentationDeployment, 'documentation-deployment.cjs verify-public', 'documentation deployment workflow');
-  if (documentationDeployment.includes('--delete') || documentationDeployment.includes('delete-object')) fail('documentation deployment workflow must never delete Object Storage history');
+  require('./documentation-writer-retirement.cjs').validateWriterRetirement();
 
   const codex = read('.github/workflows/codex-maintainer-review.yml');
   includes(codex, 'name: Codex maintainer review', 'Codex workflow');

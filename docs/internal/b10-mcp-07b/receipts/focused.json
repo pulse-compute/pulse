@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T03-51-39-335Z--5",
+  "sourceRevision": "e6aa287bb32f718198b562d191d8001d250add3f",
+  "sourceIdentity": {
+    "sourceRevision": "e6aa287bb32f718198b562d191d8001d250add3f",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T03:51:39.340Z",
+  "updatedAt": "2026-10-21T03:54:29.444Z",
+  "finishedAt": "2026-10-21T03:54:29.444Z",
+  "durationMs": 170104,
+  "profiles": [],
+  "requestedTasks": [
+    "binary-resource-admission",
+    "binary-resource-execution",
+    "callable-authored-composition",
+    "callable-lifetime"
+  ],
+  "selectedTasks": [
+    "binary-resource-admission",
+    "binary-resource-execution",
+    "callable-authored-composition",
+    "callable-lifetime"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 4,
+  "results": [
+    {
+      "name": "binary-resource-admission",
+      "evidence": "unit",
+      "description": "B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy",
+      "commandSignature": "3181509c4256e14139f7723da99702fd80d9e3ee1606b3e58435c6b47d13e157",
+      "timeoutMs": 30000,
+      "durationMs": 325,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-07b/runs/2026-10-21T03-51-39-335Z--5/tasks/binary-resource-admission.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "binary-resource-execution",
+      "evidence": "conformance",
+      "description": "07B generic four-target resource matrix, callable backing deduplication, reachability and source-deleted closure",
+      "commandSignature": "1899f8911af13f8adda6a1eafbbda5a3ecccdbe784a4013972eb2028cd14308d",
+      "timeoutMs": 300000,
+      "durationMs": 84002,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-07b/runs/2026-10-21T03-51-39-335Z--5/tasks/binary-resource-execution.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "callable-authored-composition",
+      "evidence": "native",
+      "description": "05C authored helper/import composition, multiple callable owners and independent ownership rejection",
+      "commandSignature": "28bd32ffb7681540ab0f9bf1cfa8da0ce24e6583fd16ed0b4399948d96fad102",
+      "timeoutMs": 180000,
+      "durationMs": 11985,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-07b/runs/2026-10-21T03-51-39-335Z--5/tasks/callable-authored-composition.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "callable-lifetime",
+      "evidence": "native",
+      "description": "05F callable failure, fresh-request recovery, cumulative deadlines and allocation evidence",
+      "commandSignature": "bcbc2b74ae3d0451937d88171cafd1d78fc516e1546b8571c2fe13b4ef8d098f",
+      "timeoutMs": 300000,
+      "durationMs": 73776,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/workspace/scratch/0174bfde4d1e/evidence-07b/runs/2026-10-21T03-51-39-335Z--5/tasks/callable-lifetime.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/0174bfde4d1e/evidence-07b/runs/2026-10-21T03-51-39-335Z--5"
+}

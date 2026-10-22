@@ -1,0 +1,67 @@
+{
+  "kind": "development-checkpoint",
+  "releaseQualified": false,
+  "publishedImplementation": "c8fa3a1379ac2d1636fdd586a27448eb934d7071",
+  "profiles": {
+    "unit": {
+      "status": "running",
+      "completed": 29,
+      "selected": 68,
+      "report": "/tmp/pulse-08-recovery/unit.json",
+      "updatedAt": "2026-10-21T05:15:35.639Z",
+      "currentTask": "release-recovery-runner",
+      "sessionId": 53344,
+      "checkout": "/workspace/scratch/d3826bbd4bf5/pulse-08"
+    },
+    "native": {
+      "status": "running",
+      "completed": 9,
+      "selected": 67,
+      "report": "/tmp/pulse-08-recovery/native.json",
+      "updatedAt": "2026-10-21T05:15:37.388Z",
+      "currentTask": "pure-guarded-arguments",
+      "sessionId": 78246,
+      "checkout": "/workspace/scratch/d3826bbd4bf5/pulse-08-native"
+    },
+    "targets": {
+      "status": "running",
+      "completed": 13,
+      "selected": 40,
+      "report": "/tmp/pulse-08-recovery/targets.json",
+      "updatedAt": "2026-10-21T05:15:37.415Z",
+      "currentTask": "jwt-rs256",
+      "sessionId": 11173,
+      "checkout": "/workspace/scratch/d3826bbd4bf5/pulse-08-targets"
+    },
+    "cli": {
+      "status": "running",
+      "completed": 17,
+      "selected": 40,
+      "report": "/tmp/pulse-08-recovery/cli.json",
+      "updatedAt": "2026-10-21T05:15:37.447Z",
+      "currentTask": "cli-expansion-doctor",
+      "sessionId": 52307,
+      "checkout": "/workspace/scratch/d3826bbd4bf5/pulse-08-cli"
+    }
+  },
+  "ci": {
+    "commit": "c8fa3a1379ac2d1636fdd586a27448eb934d7071",
+    "workflows": [
+      {
+        "name": "Maintainer scope",
+        "runId": 39548097753,
+        "conclusion": "success"
+      },
+      {
+        "name": "Documentation",
+        "runId": 39548097780,
+        "conclusion": "success"
+      },
+      {
+        "name": "Repository validation",
+        "runId": 39548097808,
+        "conclusion": "success"
+      }
+    ]
+  }
+}

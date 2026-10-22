@@ -21,8 +21,48 @@ const ENVIRONMENT_CATEGORIES = Object.freeze({
 
 const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
+    name: 'PULSE_CONTEXT_QUALITY_DIR',
+    category: 'contributor',
+    group: 'Test execution and output',
+    value: 'Writable receipt directory path',
+    default: 'wasm/.test-results/context-quality in the source checkout.',
+    precedence: 'The environment value selects the output directory for each quality task.',
+    consumer: 'The internal B10-MCP-06B complete-request quality and cost proof.',
+    secretSafety: 'Not a secret. Contains fixture queries, source/artifact identities, timing, allocation counters and failure evidence.',
+    stability: 'Contributor/test-only; no application compatibility or seal authority.',
+    description: 'Routes incremental actual, growth and repeated-call receipts. Does not change cases, acceptance criteria or runtime budgets.',
+    sourceFiles: ['wasm/test/mcp/assert-context-quality.cjs']
+  }),
+  entry({
+    name: 'PULSE_CALLABLE_LIFETIME_RECEIPT',
+    category: 'contributor',
+    group: 'Test execution and output',
+    value: 'Writable JSON receipt file path',
+    default: 'Unset; the callable lifetime proof only prints its terminal summary.',
+    precedence: 'The proof script positional output path takes precedence.',
+    consumer: 'The internal B10-MCP-05F callable lifetime proof.',
+    secretSafety: 'Not a secret. Records fixture artifact hashes, source identity, failure codes and memory measurements.',
+    stability: 'Contributor/test-only; no application compatibility or seal authority.',
+    description: 'Retains an incremental receipt when the proof runs through the shared test runner. Does not change test coverage or runtime limits.',
+    sourceFiles: ['wasm/test/callables/assert-callable-lifetime.cjs']
+  }),
+  entry({
+    name: 'PULSEWASM_TEST_PHASE_DIR',
+    category: 'contributor',
+    group: 'Test execution and output',
+    value: 'Existing diagnostic output directory',
+    default: 'Unset; phase observation is disabled.',
+    precedence: 'The operator supplies a fresh directory to the test-only preload.',
+    consumer: 'Bounded B10-01 phase attribution, including the copied installed JWT helper.',
+    secretSafety: 'Not a secret. Records timing, counters and artifact digests; no argument, source or environment contents.',
+    stability: 'Contributor/test-only; no qualification or cache authority.',
+    description: 'Enables optional compiler/test phase spans and nested filesystem/hash counters. Does not change task coverage or authorize reuse.',
+    sourceFiles: ['wasm/test/support/phase-observer.cjs', 'wasm/test/jwt/assert-jwt-installed-workflow.cjs']
+  }),
+  entry({
     name: 'PULSEWASM_SEAL_WORKER_LAYOUT',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: 'Absolute controller-owned layout path',
     default: 'Unset; shared packages belong only to their original checkout.',
     precedence: 'The release controller supplies the registered layout to each isolated worker.',
@@ -35,6 +75,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_RELEASE_SHARED_PACK',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: 'Directory path',
     default: 'Unset; packing constructs fresh packages.',
     precedence: 'The seal supplies its own attempt-local directory to consumer tasks.',
@@ -47,6 +88,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_RELEASE_SHARED_PACK_SHA256',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: 'SHA-256 digest',
     default: 'Unset; required when a shared package directory is supplied.',
     precedence: 'The seal pins the receipt digest before launching consumer tasks.',
@@ -59,6 +101,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_RELEASE_FEATURE_REPORT_DIR',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: 'Directory path',
     default: 'Unset; focused installed tests use their own report directories.',
     precedence: 'The complete feature replay assigns a fresh directory to its child runner.',
@@ -71,6 +114,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSEWASM_SUITE_TASK',
     category: 'contributor',
+    group: 'Test execution and output',
     value: 'Registered task ID',
     default: 'Assigned by the test runner for each task.',
     precedence: 'The runner overrides any inherited task identity.',
@@ -83,6 +127,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_B02_BASELINE_ROOT',
     category: 'contributor',
+    group: 'Manual proof reproduction',
     value: 'Directory path',
     default: 'Unset; the manual B02 benchmark requires an explicit baseline checkout.',
     precedence: 'Selects the baseline; the candidate is the checkout containing the harness.',
@@ -95,6 +140,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_B02_USAGE_DIR',
     category: 'contributor',
+    group: 'Manual proof reproduction',
     value: 'Directory path',
     default: 'Created separately for each sample by the B02 benchmark harness.',
     precedence: 'The harness supplies and overrides this value in each child process.',
@@ -107,6 +153,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_B03_USAGE_DIR',
     category: 'contributor',
+    group: 'Manual proof reproduction',
     value: 'Directory path',
     default: 'Created separately for each sample by the B03 benchmark harness.',
     precedence: 'The harness supplies and overrides this value in each compiler child process.',
@@ -155,6 +202,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_RELEASE_REF',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: 'Full Git ref (`refs/tags/v<version>`)',
     default: 'Unset; the protected npm workflow derives it from the sealed candidate.',
     precedence: "When set by the workflow, it must exactly equal GitHub's native release-tag ref.",
@@ -167,6 +215,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_RELEASE_SHA',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: 'Full lowercase 40-character Git commit SHA',
     default: 'Unset; the protected npm workflow derives it from the sealed candidate.',
     precedence: "When set by the workflow, it must exactly equal GitHub's native release-tag commit.",
@@ -179,6 +228,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSEWASM_ARTIFACTS_DIR',
     category: 'contributor',
+    group: 'Test execution and output',
     value: 'Directory path',
     default: '`wasm/artifacts`.',
     precedence: 'Overrides the repository artifact root for scripts that opt into it.',
@@ -195,6 +245,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSEWASM_TEST_TMP_ROOT',
     category: 'contributor',
+    group: 'Test execution and output',
     value: 'Directory path',
     default: 'A suite-specific temporary directory.',
     precedence: 'When set, tests create their working directories beneath this root.',
@@ -207,6 +258,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_FASTLY_REALITY_EVIDENCE',
     category: 'contributor',
+    group: 'Provider test evidence and fixtures',
     value: 'File path',
     default: 'Unset; the reality gate prints its normal test result without retaining a proof file.',
     precedence: 'When set, the real-host gate writes its redacted machine-readable proof to this path.',
@@ -219,6 +271,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_FOUR_MODE_EVIDENCE',
     category: 'contributor',
+    group: 'Provider test evidence and fixtures',
     value: 'File path',
     default: '`wasm/.test-results/four-mode-conformance.json`.',
     precedence: 'When set, the four-mode conformance suite writes its revision-bound proof to this path.',
@@ -231,6 +284,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_SOURCE_REVISION',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: '40-character lowercase source identity',
     default: 'Current Git commit, or a deterministic archive-tree identity outside a Git checkout.',
     precedence: 'When set by the release runner, every child evidence shard validates and reuses this exact identity.',
@@ -243,6 +297,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_SOURCE_IDENTITY_KIND',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: 'Source identity classification',
     default: '`git-commit` in a checkout or `archive-tree-sha256-160` for an extracted source tree.',
     precedence: 'Meaningful only with `PULSE_SOURCE_REVISION`; the release runner supplies both together.',
@@ -255,6 +310,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_SOURCE_DIGEST_SHA256',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: '64-character lowercase SHA-256 digest',
     default: 'Unset for Git commits; the full archive-tree digest outside a Git checkout.',
     precedence: 'The release runner supplies it with an archive-tree source identity.',
@@ -267,6 +323,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_SOURCE_FILE_COUNT',
     category: 'contributor',
+    group: 'Release evidence and source identity',
     value: 'Non-negative integer',
     default: 'Unset for Git commits; the deterministic archive-tree inventory count otherwise.',
     precedence: 'The release runner supplies it with an archive-tree source identity.',
@@ -279,6 +336,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_FAKE_FASTLY_CAPTURE',
     category: 'contributor',
+    group: 'Provider test evidence and fixtures',
     value: 'File path',
     default: 'Unset.',
     precedence: 'Used only by the fake Fastly CLI fixture when present.',
@@ -291,6 +349,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_FAKE_VICEROY_CAPTURE',
     category: 'contributor',
+    group: 'Provider test evidence and fixtures',
     value: 'File path',
     default: 'Unset.',
     precedence: 'Used only by the fake direct-Viceroy fixture when present.',
@@ -303,6 +362,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_ES256_REPRODUCTION_ROOT',
     category: 'contributor',
+    group: 'Manual proof reproduction',
     value: 'Directory path',
     default: 'Unset; the G5 seal still performs its required local maintainer reconstruction.',
     precedence: 'The `--reproduction-root` G5 option wins, then `PULSE_ES256_REPRODUCTION_ROOT`.',
@@ -315,6 +375,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_ES256_REPRODUCTION_ARCHIVE',
     category: 'contributor',
+    group: 'Manual proof reproduction',
     value: 'File path',
     default: 'Unset; no external archive identity is recorded.',
     precedence: 'The `--reproduction-archive` G5 option wins, then `PULSE_ES256_REPRODUCTION_ARCHIVE`.',
@@ -327,6 +388,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_RUST_CARGO',
     category: 'contributor',
+    group: 'Manual proof reproduction',
     value: 'Absolute or relative executable path',
     default: 'No explicit path; discover `cargo` on `PATH`.',
     precedence: '`PULSE_RUST_CARGO` overrides `PATH` discovery in the guest-link proof harnesses.',
@@ -343,6 +405,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSE_RUSTC',
     category: 'contributor',
+    group: 'Manual proof reproduction',
     value: 'Absolute or relative executable path',
     default: 'No explicit path; discover `rustc` on `PATH`.',
     precedence: '`PULSE_RUSTC` overrides `PATH` discovery in the guest-link proof harnesses.',
@@ -359,6 +422,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
     name: 'PULSEWASM_MEM03_BASE',
     category: 'contributor',
+    group: 'Manual proof reproduction',
     value: 'Git commit or ref',
     default: 'Merged GEN01 commit `8a6f2ff`.',
     precedence: 'When set, selects the baseline generator source loaded from git; all other dependencies come from the candidate checkout.',

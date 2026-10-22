@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-10-09
-review-by: 2027-04-09
+last-reviewed: 2026-10-21
+review-by: 2027-04-21
 pulse-doc-meta:end -->
 
 # npm publishing
@@ -13,7 +13,7 @@ The release path is:
 
 ```text
 prepared release PR into main
-→ Release qualification: build, acceptance and retained docs candidate
+→ Release qualification: build, acceptance and source-only docs receipt
 → review, verified merge/squash/linear rebase and exact v<version> tag
 → operation=publish: automatic qualified artifact discovery
 → blocking read-only name audit and publication plan
@@ -33,16 +33,17 @@ history choice, prepares the version metadata, validates
 the result, and opens a draft release PR into `main`.
 
 ```bash
-gh workflow run release-prepare.yml --ref main -f version="$NEXT_VERSION" -f documentation_history=archive-current
+gh workflow run release-prepare.yml --ref main -f version="$NEXT_VERSION" -f documentation_history=website-managed
 ```
 
 Set `NEXT_VERSION` to the release you intend to prepare and write its notes in
 `CHANGELOG.md` under `Unreleased` first. Preparation moves those notes into the
 new version section and preserves published changelog history. Existing
-archives are compared with the tagged source and never silently overwritten.
+archives remain unchanged; new historical HTML is owned by website delivery.
 
-The default `archive-current` rebuilds the previous documentation snapshot from
-its exact tag. For the reviewed npm-published release whose hosted docs are not
+The default `website-managed` retains the previous release manifest from its
+exact tag, with source identity and a digest; it never installs or renders that
+release. For the reviewed npm-published release whose hosted docs are not
 a recovery target, deliberately select `documentation_history=replace-unpublished-docs`.
 That choice skips snapshot construction and checks the preserved tag commit
 against `readiness.versionPreparation.unpublishedDocumentationReleases` in the
@@ -75,12 +76,12 @@ HEAD matches the current remote `main` commit and the checkout is clean:
 git fetch origin main --tags
 git switch main
 git pull --ff-only origin main
-npm run release:tag -- 1.0.0-beta.9
-npm run release:tag -- 1.0.0-beta.9 --write
+npm run release:tag -- 1.0.0-beta.10
+npm run release:tag -- 1.0.0-beta.10 --write
 ```
 
 The first invocation checks and prints the plan. `--write` creates an annotated
-local `v1.0.0-beta.9` tag and prints the exact push and workflow commands for the
+local `v1.0.0-beta.10` tag and prints the exact push and workflow commands for the
 release owner. It never pushes, dispatches publication, claims a seal, or replaces
 an existing tag. A matching tag is idempotent; conflicting commits, lightweight
 tags and differing local/remote tag objects fail closed. Run those printed
@@ -117,19 +118,24 @@ workflow code.
 
 The controller runs one fresh `source-checks` stage after dependency setup and
 before compilation: maintainer and publication controls, package/catalog and
-source documentation validation, generated snippets/references and the site.
-It seals and retains that validated site before removing its temporary build;
-there is no second docs build for capture or deployment.
+source and installed documentation validation, and generated snippets/references.
+New `pulse.release-source-checks.v2` receipts record `package-source` validation
+without building or sealing a website candidate. Existing control-plane checks
+and historical receipt verification remain separate from rendered output.
 Packing verifies this attempt's pinned result against the same clean source,
-Node and dependency bytes. Standalone packing still performs its own validation.
+Node, environment and dependency bytes. Standalone packing performs the same
+source-only documentation validation and retains packed-documentation link checks.
+Package artifact determinism compares independently constructed package bytes;
+site rendering belongs to the separate `pulse-compute/website` build and preview workflows.
 Build, audit/license refresh, workspace tests, all release tasks, installed
 feature gates, required Fastly reality and cleanup retain their coverage.
 
 Successful release qualification uploads
 `pulse-pr-release-qualification-<run-id>-<attempt>` for 30 days. It contains the
-accepted publication bundle, prebuilt documentation candidate, original seal
-report and `qualification.json` with
-PR/base/head/merge/tree identity, run/attempt, package/docs manifest and seal hashes, the full
+accepted publication bundle, hash-pinned `source-checks.json`, original seal
+report and `qualification.json` (`pulse.release-pr-qualification.v2`,
+`documentationMode: source-only`) with PR/base/head/merge/tree identity,
+run/attempt, package manifest, source-check and seal hashes, the full
 qualification-context digest, and separate feature-gate status. The full seal
 and recovery evidence is retained in the matching evidence artifact. Qualification
 is not permission to publish and does not waive dedicated K4 evidence or review.
@@ -149,13 +155,18 @@ reports and bundles stays unchanged; a consumer records a separate merge binding
 A different base, tree, head or tag fails even when some file contents match.
 Rebases of merge-heavy PR histories and merge queues remain outside this contract.
 
-Both tagged consumers resolve the merged PR automatically. The latest run and
+The tagged npm consumer resolves the merged PR automatically. Historical v1
+documentation consumption uses the same authenticated selection. The latest run and
 its current attempt must pass; an older success never masks a newer failure.
 The run must belong to this repository and `release-qualify.yml`, with both
 candidate and qualification jobs passing and one unexpired accepted artifact.
 Selection records run/attempt/job/artifact IDs and the Actions digest. After
 download and again after protected approval, the consumer rechecks eligibility
-and verifies both candidates against the original receipt. `qualification-binding.json`
+and verifies the package candidate and source-check receipt against the original
+seal. Supported v1 qualifications still require their documentation candidate,
+manifest digest and original source identity: absent or tampered historical
+bytes fail verification. A v2 qualification cannot authorize the old documentation
+deployer; current website delivery belongs to `pulse-compute/website`. `qualification-binding.json`
 records the original qualified source separately from the merged/tagged authority.
 The dispatch and checkout must match the exact release tag. Missing, ambiguous,
 expired, superseded, failed or mismatched evidence blocks consumption; there is
@@ -182,7 +193,7 @@ Step                  Status     Evidence / run, report, or blocker
 PR checks             ____       <full main PR checks at merge SHA>
 Release seal          ____       <qualify run ID / terminal seal report>
 npm publish           ____       <protected publish run / exact package receipts>
-Docs candidate        ____       <qualified docs candidate / manifest digest>
+Docs evidence         ____       <v2 source-check digest; v1 docs candidate digest>
 Immutable upload      ____       <deploy + verify-storage reports / object count>
 npm gate              ____       <registry-catalog verification / package count>
 Alias promotion       ____       <root/latest deployment + storage verification>
@@ -210,7 +221,7 @@ reviewed bundle; publication rechecks live registry state before uploading.
 A missing name or integrity/dist-tag conflict blocks approval. Owner-reviewed
 trusted-publisher and protected-environment setup remains a prerequisite.
 
-Qualification uses Ubuntu 24.04, two isolated workers, one compiler slot and a
+Qualification uses Ubuntu 24.04, two isolated workers, two compiler slots and a
 6,144 MiB admission budget. Its work deadline is 90 minutes, with additional
 step/job time for supervised cleanup and evidence upload. This budget permits
 completion; it is not a performance improvement. Same-checkout recovery rules
@@ -232,8 +243,10 @@ the same tag:
 
 ```bash
 RELEASE_TAG=v<version>
+# Historical v1 qualifications only; v2 uses the website delivery owner.
 gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=false
 # After npm verification and review:
+# Historical v1 qualifications only; v2 uses the website delivery owner.
 gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=true
 ```
 
@@ -251,10 +264,12 @@ from different tags or run attempts into one passing record.
 For local preparation, the underlying command remains available:
 
 ```bash
-node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --archive-current
+node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --website-managed
 ```
 
-`--archive-current` requires the committed immutable documentation snapshot.
+`--website-managed` requires the previous release tag and retains product metadata
+without generating HTML. `--archive-current` is retired; historical readers
+accept supplied old artifacts without requiring checked-in HTML snapshots.
 Use `--replace-unpublished` only when replacing a candidate that has not shipped.
 For the reviewed hosted-docs exception, use `--replace-unpublished-docs` instead:
 the old release shipped on npm and its changelog must be preserved. See
@@ -275,8 +290,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.9 \
-  -f release_tag=v1.0.0-beta.9 \
+  --ref v1.0.0-beta.10 \
+  -f release_tag=v1.0.0-beta.10 \
   -f operation=publish -f run_smoke=true
 ```
 
@@ -396,7 +411,7 @@ release selects `run_smoke=true` to execute both. For a manual replay, use the
 checkout for the exact published release:
 
 ```bash
-node wasm/test/mcp/smoke-context-registry.cjs 1.0.0-beta.9
+node wasm/test/mcp/smoke-context-registry.cjs 1.0.0-beta.10
 ```
 
 This smoke installs the exact published CLI into a fresh temporary directory,

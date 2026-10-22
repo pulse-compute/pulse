@@ -5,25 +5,15 @@ const { PulseProjectError } = require('./project-error.js');
 const { normalizeCommandRequest } = require('./command-request.js');
 const { isProjectContext, projectDocumentForContext } = require('./project-context.js');
 
-const EXPERIMENTAL_NATIVE_SIZE_PLAN = Object.freeze({
-  mode: 'experimental-native-size',
-  experimental: true,
-  goal: 'size',
-  owner: 'native-compiler'
-});
+const { selectedNativeOptimization, hasNativeOptimization } = require('./native-optimization');
 
-const EXPERIMENTAL_NATIVE_BOUNDED_SIZE_PLAN = Object.freeze({
-  mode: 'experimental-native-bounded-size',
-  experimental: true,
-  goal: 'size',
-  owner: 'native-compiler'
-});
+function optimizationPlan(mode) {
+  const recipe = require('@pulse-compute/wasm-build-support/native-optimization').resolveNativeOptimization(mode);
+  return Object.freeze({ mode: recipe.mode, experimental: recipe.experimental, goal: recipe.goal, owner: 'native-compiler' });
+}
 
 function createCommandPlan(requestValue, options = {}) {
   const request = normalizeCommandRequest(requestValue);
-  if (request.experimentalNativeSize === true && request.experimentalNativeBoundedSize === true) {
-    throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'Select only one experimental Native size mode.', { flags: ['--experimental-native-size', '--experimental-native-bounded-size'] });
-  }
   const cwd = path.resolve(options.cwd || process.cwd());
   const version = String(options.version || require('../../package.json').version);
 
@@ -32,6 +22,7 @@ function createCommandPlan(requestValue, options = {}) {
     if (request.invocation === 'version') return Object.freeze({ ok: true, command: 'version', version });
     return Object.freeze({ ok: true, command: 'completion', shell: request.shell, generatedFrom: 'pulse.command-spec' });
   }
+  if (request.command === 'docs') return Object.freeze({ ok: true, command: 'docs', mode: 'installed-documentation', backgroundWork: false });
   if (request.command === 'report') return require('./report/command.js').planReport(request, { cwd });
   if (request.command === 'init') {
     return Object.freeze({ ok: true, command: 'init', target: path.resolve(cwd, request.target || '.'), backgroundWork: false });
@@ -52,10 +43,10 @@ function createCommandPlan(requestValue, options = {}) {
   if (request.emitWat === true && request.command === 'build' && projectContext.target !== 'native') {
     throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: projectContext.target });
   }
-  if ((request.experimentalNativeSize === true || request.experimentalNativeBoundedSize === true) && request.command === 'build' && projectContext.target !== 'native') {
+  if (hasNativeOptimization(request) && request.command === 'build' && projectContext.target !== 'native') {
     throw new PulseProjectError(
       'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED',
-      'Experimental Native size flags are available only for Native compilation.',
+      'Native optimization flags are available only for Native compilation.',
       {
         target: projectContext.target,
         required: Object.freeze({ target: 'native' })
@@ -75,9 +66,9 @@ function createCommandPlan(requestValue, options = {}) {
           ? ((projectContext.target || project.target || 'native') === 'javascript' ? 'javascript-source-package' : 'native-provider')
           : undefined),
     ...(request.command === 'compile' || request.command === 'build' ? { textArtifacts: { wat: request.emitWat === true }, elideJsonCacheArena: request.elideJsonCacheArena === true } : {}),
-    optimization: request.experimentalNativeBoundedSize === true
-      ? EXPERIMENTAL_NATIVE_BOUNDED_SIZE_PLAN
-      : request.experimentalNativeSize === true ? EXPERIMENTAL_NATIVE_SIZE_PLAN : undefined,
+    optimization: request.command === 'compile' || (request.command === 'build' && projectContext.target === 'native')
+      ? optimizationPlan(selectedNativeOptimization(request, project))
+      : undefined,
     backgroundWork: false,
     foregroundServer: request.command === 'dev'
   });

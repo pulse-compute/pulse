@@ -65,6 +65,8 @@ const externalTasks = new Set([
   // MCP-01 is a reference SDK/design proof, not Pulse adapter release acceptance.
   'mcp-wire-proof',
   'mcp-installed',
+  'mcp-fastly-local-installed', // 10A explicit local provider qualification; not a portable seal task.
+  'mcp-fastly-clients-installed', // 10B explicit pinned-client qualification; not a portable seal task.
   // PMCP-01 qualifies the private packed surface before PMCP-06 release membership.
   'mcp-package',
   'mcp-codex',
@@ -75,6 +77,7 @@ const externalTasks = new Set([
   'str02b-installed',
   'fwd9-03-installed',
   'fastly-stdio-installed',
+  'fastly-dynamic-backends-installed', // R08 explicit installed/local Compute acceptance
   // Beta.9 comparison preflight is explicitly selected, never a release gate.
   'perf9-01a-parity', 'perf9-01b-measurements',
   'str03b-installed', 'node01-installed', 'arc01-installed',

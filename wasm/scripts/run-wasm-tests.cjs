@@ -254,10 +254,48 @@ function appendNodeReportOptions(existing, diagnosticsDir) {
 function finishLog(stream) {
   if (!stream) return Promise.resolve();
   return new Promise(resolve => {
-    const timer = setTimeout(() => { stream.destroy(); resolve('task log close exceeded its deadline'); }, 1000);
-    stream.once('close', () => { clearTimeout(timer); resolve(); });
-    stream.once('error', error => { clearTimeout(timer); stream.destroy(); resolve(error.message); });
-    stream.end();
+    let settled = false, timer, deadlineCheck;
+    const settle = error => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      clearImmediate(deadlineCheck);
+      stream.removeListener('finish', written);
+      resolve(error);
+    };
+    const failed = error => { settle(error.message); stream.destroy(); };
+    const closed = () => {
+      stream.removeListener('error', failed);
+      settle(stream.errored?.message || (stream.writableFinished && stream.closed
+        ? undefined : 'task log closed before all writes finished'));
+    };
+    const armDeadline = () => {
+      timer = setTimeout(() => {
+        // Let an already-ready I/O callback run before the overdue watchdog.
+        // Elapsed time alone never supplies positive completion evidence.
+        deadlineCheck = setImmediate(() => {
+          settle('task log close exceeded its deadline');
+          stream.destroy();
+        });
+      }, 1000);
+    };
+    const written = () => {
+      if (settled) return;
+      // fs.WriteStream starts closing only after finish. A synchronous
+      // controller stall can delay that transition until after the first
+      // deadline. Give each phase one bounded I/O budget, never retry/reset a
+      // phase on timer lateness: at most 1s to drain, then 1s to close.
+      clearTimeout(timer);
+      clearImmediate(deadlineCheck);
+      armDeadline();
+    };
+    stream.once('close', closed);
+    stream.once('error', failed);
+    stream.once('finish', written);
+    if (stream.closed) { closed(); stream.removeListener('close', closed); return; }
+    if (stream.errored) { failed(stream.errored); return; }
+    armDeadline();
+    try { stream.end(); } catch (error) { failed(error); }
   });
 }
 
@@ -280,6 +318,10 @@ async function runTask(name, task, options = {}) {
   fs.mkdirSync(diagnosticsDir, { recursive: true });
   const logPath = taskRunDir ? path.join(taskRunDir, `${safeName(name)}.log`) : null;
   const logStream = logPath ? fs.createWriteStream(logPath, { flags: 'w' }) : null;
+  // Errors can arrive while the child is still running, before finishLog owns
+  // closure. Retain them as cleanup failures instead of an unhandled event.
+  let logWriteError = null;
+  logStream?.on('error', error => { logWriteError ||= error; });
   let child = null;
   let cleanupError = null;
   let failureEvidenceError = null;
@@ -437,9 +479,14 @@ async function runTask(name, task, options = {}) {
       workerCleanup = result.worker || null;
       if (options.workerCleanup) {
         assert.equal(workerCleanup?.status, 'passed', 'Missing worker cleanup proof');
-        // Reconcile from the controller after the cleanup process exits. Its
-        // receipt alone cannot prove that no output reappeared at that boundary.
-        const finalCleanup = require('../../scripts/release-parallel.cjs').cleanupWorker(options.workerCleanup);
+        // Independently reconcile after the first cleanup process exits. Keep
+        // this worker reserved through both full scans and actual removal.
+        // Cleanup still runs after cancellation, under its own bounded deadline.
+        const finalCleanup = await require('../../scripts/release-parallel.cjs').cleanupWorkerAsync(options.workerCleanup, {
+          timeoutMs: options.cleanupTimeoutMs || 30000,
+          ...(options.cleanupGraceMs === undefined ? {} : { termGraceMs: options.cleanupGraceMs, killGraceMs: options.cleanupGraceMs }),
+          onChild: options.onChild
+        });
         workerCleanup = { ...finalCleanup, removed: [...new Set([...workerCleanup.removed, ...finalCleanup.removed])].sort() };
       }
       failureArtifacts = result.failureArtifacts;
@@ -447,9 +494,9 @@ async function runTask(name, task, options = {}) {
       if (failureArtifacts.length) writeLine(`[pulsewasm] ${name}: copied ${failureArtifacts.length} task-owned failure log(s) into the durable run report`);
     } catch (error) { cleanupError = error; }
   }
-  if (options.signal?.aborted) interruptedBy ||= String(options.signal.reason || 'SIGTERM');
   const logError = await finishLog(logStream);
-  if (logError) cleanupError ||= new Error(logError);
+  if (logWriteError || logError) cleanupError ||= logWriteError || new Error(logError);
+  if (options.signal?.aborted) interruptedBy ||= String(options.signal.reason || 'SIGTERM');
   if (typeof options.onChild === 'function') options.onChild(null);
 
   const durationMs = Date.now() - startedAt;
@@ -633,7 +680,18 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       layoutFile: path.join(path.dirname(workspace.directory), 'layout.json'),
       inputs: context.scheduling.workspaces.find(item => item.id === workspace.id)?.inputs
     } : null;
-    if (workerCleanup) require('../../scripts/release-parallel.cjs').verifyWorker(workerCleanup);
+    if (workerCleanup) {
+      running.get(name).phase = 'verification';
+      refresh();
+      await require('../../scripts/release-parallel.cjs').verifyWorkerAsync(workerCleanup, {
+        timeoutMs: taskRunOptions.cleanupTimeoutMs || 30000,
+        ...(taskRunOptions.cleanupGraceMs === undefined ? {} : { termGraceMs: taskRunOptions.cleanupGraceMs, killGraceMs: taskRunOptions.cleanupGraceMs }),
+        signal: control.signal, onChild(child) { onChild?.(child, name); }
+      });
+    }
+    // Cancellation may arrive while a verifier's terminal result is delivered.
+    // Neither execution nor checkpoint replay may cross that admission boundary.
+    assert(!control.signal.aborted, `Worker admission interrupted: ${control.signal.reason}`);
     const reuse = store && (allowReuse(name, task) ? store.tryReuse(spec) : { reused: false, reason: 'task requires fresh development execution' });
     let result;
     if (reuse?.reused) {
@@ -719,7 +777,7 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
                 control.abort('sibling-failure');
               }
             }).catch(error => {
-              state.error = { code: error.code || null, message: error.message };
+              state.error ||= { code: error.code || null, message: error.message };
               control.abort('sibling-failure');
             }).finally(() => {
               item.resources.forEach(resource => held.delete(resource));
@@ -860,14 +918,21 @@ async function main() {
     }
     let workspaces = null;
     if (recoveryConfig?.context.scheduling) {
-      const { readLayout } = require('../../scripts/release-parallel.cjs');
+      const { readLayout, verifyWorkerAsync } = require('../../scripts/release-parallel.cjs');
       const root = path.resolve(wasmRoot, '..'), options = recoveryConfig.context.options;
       const layout = readLayout(root, recoveryConfig.context.candidate, options.workers, options.memoryBudgetMiB, options.compilerWorkers);
       workspaces = layout.workspaces;
       for (const workspace of workspaces) {
-        const input = require('../../scripts/release-recovery.cjs').inputIdentity(workspace.directory);
-        assert.deepEqual(input, recoveryConfig.context.scheduling.workspaces.find(item => item.id === workspace.id).inputs,
-          'Worker dependency/build inputs changed before execution');
+        await verifyWorkerAsync({ root, candidate: recoveryConfig.context.candidate, directory: workspace.directory,
+          layoutFile: path.join(path.dirname(workspace.directory), 'layout.json'),
+          inputs: recoveryConfig.context.scheduling.workspaces.find(item => item.id === workspace.id).inputs }, {
+          signal: controller.signal,
+          onChild(child) {
+            if (child) activeChildren.set(workspace.id, child); else activeChildren.delete(workspace.id);
+            state.activeChildPids = [...activeChildren.values()].map(value => value.pid);
+            state.activeChildPid = state.activeChildPids[0] || null; persist();
+          }
+        });
       }
     }
     await runSelectedTasks({ state, selection, recoveryConfig, persist, signal: controller.signal, workspaces,
@@ -922,6 +987,7 @@ module.exports = Object.freeze({
   processGroupRows,
   signalTaskTree,
   copyTaskFailureLogs,
+  finishLog,
   cleanupTaskOutputs,
   runTask,
   reportSnapshot,

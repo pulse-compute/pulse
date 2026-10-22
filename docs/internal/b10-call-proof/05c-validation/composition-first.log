@@ -1,0 +1,19 @@
+/workspace/scratch/803e6bf46c14/pulse/wasm/packages/contracts/src/resources/embedded.js:19
+  throw Object.assign(new TypeError(`Binary resource admission failed: ${reason}.`), { reason });
+  ^
+
+TypeError: Binary resource admission failed: logical-id.
+    at fail (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/contracts/src/resources/embedded.js:19:23)
+    at validId (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/contracts/src/resources/embedded.js:49:70)
+    at /workspace/scratch/803e6bf46c14/pulse/wasm/packages/contracts/src/resources/embedded.js:106:16
+    at Array.map (<anonymous>)
+    at Object.admitResourceCatalogue (/workspace/scratch/803e6bf46c14/pulse/wasm/packages/contracts/src/resources/embedded.js:104:32)
+    at Object.<anonymous> (/workspace/scratch/803e6bf46c14/pulse/wasm/test/callables/assert-callable-composition.cjs:33:19)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12) {
+  reason: 'logical-id'
+}
+
+Node.js v24.19.0

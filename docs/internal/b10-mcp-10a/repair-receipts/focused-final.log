@@ -1,0 +1,39 @@
+/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/cli/src/project-execution.js:341
+    if ((project.target || 'native') !== 'javascript' || !Array.isArray(error.diagnostics)) throw error;
+                                                                                            ^
+
+CanonicalRouterCompileError: Canonical Router lowering failed for src/index.ts.
+    at prepareCanonicalRouterHandlers (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/router-handler-frontend.js:534:11)
+    at Object.run (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/canonical-router.js:90:26)
+    at Object.run (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalRouterSpine (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/canonical-router.js:115:41)
+    at compileCanonicalRouterSource (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/canonical-router-compiler.js:14:10)
+    at Object.compileCanonicalProjectLegacy [as compileLegacy] (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/canonical-project-compiler.js:1151:34)
+    at Object.run (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/canonical-project.js:55:24)
+    at Object.run (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalProjectSpine (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/spine/canonical-project.js:63:42)
+    at compileCanonicalProject (/workspace/scratch/d3826bbd4bf5/pulse-10a/wasm/packages/compiler/src/canonical-project-compiler.js:1293:10) {
+  code: 'PULSE_CANONICAL_ROUTER_COMPILE_FAILED',
+  diagnostics: [
+    {
+      code: 'PULSE_HANDLER_ASYNC_REQUIRED',
+      kind: 'CanonicalRouterCompileDiagnostic',
+      severity: 'error',
+      message: 'Managed Pulse route must be declared async. Native lowering erases the wrapper and does not include a Promise runtime.',
+      file: 'src/index.ts',
+      position: { line: 5, column: 20, offset: 317 },
+      detail: { role: 'route', handlerAuthoring: 'async-required' }
+    },
+    {
+      code: 'PULSE_HANDLER_ASYNC_REQUIRED',
+      kind: 'CanonicalRouterCompileDiagnostic',
+      severity: 'error',
+      message: 'Managed Pulse route must be declared async. Native lowering erases the wrapper and does not include a Promise runtime.',
+      file: 'src/index.ts',
+      position: { line: 6, column: 21, offset: 436 },
+      detail: { role: 'route', handlerAuthoring: 'async-required' }
+    }
+  ]
+}
+
+Node.js v24.18.0

@@ -196,7 +196,10 @@ function compileFastlyEvidence(native) {
   assert.equal(first.source.includes('GRIP_TOKEN'), true);
   assert.equal(first.source.includes(SECRET_VALUE), false);
   assert.equal(first.inspection.importModules.includes('fastly_secret_store'), true);
-  assert.equal(first.inspection.importModules.some((entry) => /pulse_host|wasi|js/i.test(entry)), false);
+  assert.equal(first.inspection.importModules.some((entry) => /pulse_host|js/i.test(entry)), false);
+  assert.deepEqual(first.inspection.imports.filter(entry => /wasi/i.test(entry.module))
+    .map(entry => `${entry.module}:${entry.name}:${entry.kind}`),
+  ['wasi_snapshot_preview1:fd_write:function'], 'GRIP permits only the bounded transport diagnostic writer');
   return { bindings, first, second };
 }
 

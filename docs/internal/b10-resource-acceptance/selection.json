@@ -1,0 +1,44 @@
+{
+  "revision": "b509b5dc64e14bd2f92d54747b3ea57619fb5c42",
+  "tree": "cdc280076d818d7dfc9755ba870438fdb7a6fb01",
+  "workingTree": "",
+  "node": "v24.19.0",
+  "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0",
+  "tasks": [
+    "pulse-context-build",
+    "pulse-context-corpus",
+    "binary-resource-admission",
+    "binary-resource-execution",
+    "callable-authored-composition",
+    "callable-lifetime",
+    "cli-report-resource-inventory",
+    "cli-report-handler-topology",
+    "cli-report-retained-evidence",
+    "pulse-context-quality-actual",
+    "pulse-context-quality-growth",
+    "pulse-context-quality-repeat"
+  ],
+  "externalTasks": [
+    "mcp-installed",
+    "mcp-fastly-local-installed"
+  ],
+  "releaseSeal": false,
+  "classification": "evidence",
+  "scope": "resource-acceptance-checkpoint",
+  "issues": [
+    412,
+    381
+  ],
+  "fullReleaseOwner": 382,
+  "producerNode": "v24.18.0",
+  "tools": {
+    "fastlyCli": {
+      "version": "16.1.0",
+      "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+    },
+    "viceroy": {
+      "version": "0.21.1",
+      "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+    }
+  }
+}

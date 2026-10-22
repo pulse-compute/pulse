@@ -2,9 +2,9 @@
 
 const CANONICAL_NATIVE_WASM_VERSION = 'pulse.canonical-native-wasm.v2';
 const CANONICAL_NATIVE_ABI_VERSION = 2;
-const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v9';
+const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v10';
 const CANONICAL_NATIVE_COMPILER_VERSION = 'pulse.canonical-native-wasm-compiler.v3';
-const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v4';
+const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v6';
 
 // Execution-wide containment for plans with bounded storage-read loops. These
 // are accounting limits, not a JavaScript process/RSS limit. Native providers
@@ -69,12 +69,19 @@ const CANONICAL_NATIVE_ASSIGNMENT_OPERATORS = Object.freeze([
 const CANONICAL_NATIVE_IMPORT_MODULE = 'pulse_host';
 const CANONICAL_NATIVE_ALLOWED_ENV_IMPORTS = Object.freeze(['abort', 'seed']);
 const CANONICAL_NATIVE_IMPORTS = Object.freeze([
+  // Optional package-http-v1: older hosts reject the required import.
+  ['package_http_version', [], ['i32']],
   // Optional, bounded JSON transfer into a managed guest string; no host authority.
   ['value_json', ['i32'], ['i32']],
   ['value_undefined', [], ['i32']],
   ['value_null', [], ['i32']],
   ['value_boolean', ['i32'], ['i32']],
   ['value_number', ['f64'], ['i32']],
+  // Optional binary-resource-read.v1: numeric extraction and checked byte offsets.
+  ['resource_offset_value', ['i32'], ['f64']],
+  ['resource_check', ['f64', 'i32', 'i32'], ['i32']],
+  ['workspace_number_value', ['i32'], ['f64']],
+  ['workspace_check', ['f64', 'i32', 'f64'], ['i32']],
   ['value_string', ['i32', 'i32'], ['i32']],
   ['value_array', [], ['i32']],
   ['value_array_push', ['i32', 'i32'], []],
@@ -120,6 +127,8 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['fetch_json', ['i32', 'i32'], ['i32']],
   ['fetch_text', ['i32'], ['i32']],
   ['fetch_header', ['i32', 'i32'], ['i32']],
+  // Optional v1 collection admission: older hosts reject the required import.
+  ['effect_collection_count', ['i32', 'i32', 'i32'], ['i32']],
   ['effect_begin', ['i32', 'i32'], []]
 ]);
 

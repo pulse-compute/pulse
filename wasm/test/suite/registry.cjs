@@ -34,6 +34,9 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'binary-resource-admission': nodeTask('test/contracts/assert-binary-resource-admission.cjs', {
+    description: 'B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy'
+  }),
   'cli-report-viewer': nodeTask('test/cli/assert-report-viewer.cjs', { description: 'PRPT-05 offline encoding, view projections and generated-output receipts' }),
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-graph-diagnostics': nodeTask('test/cli/assert-report-graph-diagnostics.cjs', {
@@ -67,7 +70,7 @@ const tasks = Object.freeze({
     description: 'RPT8-02 resolved reference identities, shared consumers, unknowns, privacy and byte-preserving capture'
   }),
   'cli-report-resource-inventory': nodeTask('test/cli/assert-report-resource-inventory.cjs', {
-    timeoutMs: 120000, description: 'RPT8-04 resource producer coverage, byte representations, privacy and unchanged asset responses'
+    timeoutMs: 120000, description: 'Resource/callable source ownership, binary alias and raw-data proof, producer coverage, privacy and unchanged responses'
   }),
   'cli-report-retained-evidence': nodeTask('test/cli/assert-report-retained-evidence.cjs', {
     description: 'PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm', timeoutMs: 60000
@@ -110,6 +113,9 @@ const tasks = Object.freeze({
   }),
   'pure-helper-contract': nodeTask('test/lowering/assert-pure-helper-contract.cjs', {
     description: 'Pure-helper source oracles and scalar/record admission'
+  }),
+  'callable-source-admission': nodeTask('test/callables/assert-callable-source-admission.cjs', {
+    description: 'Private callable target/schema admission and authored plain Native plan handoff'
   }),
   'array-demand-n01': nodeTask('test/runtime/compiler-efficiency/n01/array-demand.cjs', {
     evidence: 'external', timeoutMs: 120000,
@@ -508,6 +514,15 @@ const tasks = Object.freeze({
     evidence: 'conformance',
     timeoutMs: 300000,
     description: 'Catalog original verb probe and 14 mutation routes across Node/Fastly Native/JavaScript'
+  }),
+  'effect-collection-providers': nodeTask('test/runtime/assert-effect-collection-providers.cjs', {
+    evidence: 'conformance', timeoutMs: 180000, description: 'schema-bound bounded collection parity on four explicit targets'
+  }),
+  'native-context-primitives': nodeTask('test/runtime/assert-native-context-primitives.cjs', { evidence: 'conformance', timeoutMs: 300000, description: 'bounded UTF-8 and execution-owned numeric workspace parity and rejection' }),
+  'context-native-proof': nodeTask('test/runtime/assert-context-native-proof.cjs', { evidence: 'native', timeoutMs: 300000, description: 'actual and capacity-bound context query-to-citation Native proof' }),
+  'binary-resource-execution': nodeTask('test/runtime/assert-binary-resource-execution.cjs', { evidence: 'conformance', timeoutMs: 300000, description: '07B generic four-target resource matrix, callable backing deduplication, reachability and source-deleted closure' }),
+  'effect-collections': nodeTask('test/runtime/assert-effect-collections.cjs', {
+    evidence: 'conformance', timeoutMs: 180000, description: 'bounded dynamic collection ownership and JS/Native parity'
   }),
   'javascript-effect-adapter': nodeTask('test/contracts/assert-javascript-effect-adapter.cjs', {
     evidence: 'javascript',
@@ -1141,6 +1156,7 @@ const tasks = Object.freeze({
   }),
   ...Object.fromEntries([
     ['01-hello-json', 180000],
+    ['03-fetch-composition/dynamic-probes', 240000],
     ['02-request-schema', 240000],
     ['03-fetch-composition', 180000],
     ['05-fastly-capabilities', 360000],
@@ -1151,7 +1167,7 @@ const tasks = Object.freeze({
     ['12-pulse-context-mcp', 240000],
     ['13-jwt-es256', 300000]
   ].map(([name, timeoutMs]) => [
-    `docs-example-${name}`,
+    `docs-example-${name.replaceAll('/', '-')}`,
     nodeTask('test/docs/assert-executable-documentation.cjs', {
       evidence: 'cli',
       timeoutMs,
@@ -1166,10 +1182,10 @@ const tasks = Object.freeze({
     description: 'publishable package manifests and tarballs'
   }),
   'release-artifact-determinism': nodeTask('test/release/assert-artifact-determinism.cjs', {
-    scheduling: { compiler: false }, // Independent packing/site builds use existing compiled outputs.
+    scheduling: { compiler: false }, // Independent package builds use existing compiled outputs.
     evidence: 'release',
     timeoutMs: 600000,
-    description: 'byte-identical package and documentation artifacts'
+    description: 'byte-identical package artifacts'
   }),
   'mcp-package': nodeTask('test/mcp/assert-mcp-package.cjs', {
     evidence: 'external', timeoutMs: 180000,
@@ -1185,15 +1201,72 @@ const tasks = Object.freeze({
   }),
   'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
     evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
-    description: 'PMCP-07 exact CLI-shipped context app, production host, official client and pinned Codex onboarding; one release-owned gate'
+    description: '07A/07B exact packed source-free MCP and generic resource closures, production host, official client and pinned Codex onboarding; one release-owned gate'
+  }),
+  'mcp-fastly-local-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
+    args: ['--fastly-local'], evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
+    description: '10A exact installed Native context, growth, deadlines and resource lifetime through actual Fastly CLI/Viceroy; local only'
+  }),
+  'mcp-fastly-clients-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
+    args: ['--fastly-clients'], evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
+    description: '10B exact installed Native Viceroy endpoint with pinned SDK both profiles, Claude 2026-07-28 and Codex 2025-06-18; individual terminal receipts'
   }),
   'mcp-wire-proof': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
     evidence: 'external', timeoutMs: 300000,
     description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'
   }),
+  'callable-public-contract': nodeTask('test/callables/assert-callable-public.cjs', {
+    evidence: 'native', timeoutMs: 300000,
+    description: 'packed public computation types, checked example, diagnostics and stale callable rejection'
+  }),
+  'callable-composition-proof': nodeTask('test/callables/assert-callable-proof.cjs', {
+    evidence: 'native', timeoutMs: 300000, description: 'Internal shared callable body, route/MCP composition, reachability and bounded rejection proof'
+  }),
+  'callable-authored-composition': nodeTask('test/callables/assert-callable-composition.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: '05C authored helper/import composition, multiple callable owners and independent ownership rejection'
+  }),
+  'callable-authored-javascript': nodeTask('test/callables/assert-callable-javascript.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: '05D static Node JavaScript calls, packaged source, Native parity and request-owned boundary rejection'
+  }),
+  'callable-lifetime': nodeTask('test/callables/assert-callable-lifetime.cjs', {
+    evidence: 'native', timeoutMs: 300000,
+    description: '05F callable failure, fresh-request recovery, cumulative deadlines and allocation evidence'
+  }),
+  'callable-authored-routed': nodeTask('test/callables/assert-callable-routed.cjs', {
+    evidence: 'native', timeoutMs: 300000,
+    description: '05E reachable Router and managed MCP calls, shared computation parity and unused emission'
+  }),
+  'callable-authored-native': nodeTask('test/callables/assert-callable-authored.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: '05B authored plain Native call, full caller validation, HTTP parity and unused-import elimination'
+  }),
+  'mcp-native-binding': nodeTask('test/mcp/assert-mcp-native-binding.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'B10-MCP-04 static binding and Node JavaScript/Native/Fastly Native protocol parity with direct Entities dispatch'
+  }),
   'mcp-http': nodeTask('test/mcp/assert-mcp-http.cjs', {
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
+  }),
+  'pulse-context-quality-actual': nodeTask('test/mcp/assert-context-quality.cjs', {
+    args: ['actual'], evidence: 'native', timeoutMs: 240000, isolatedArtifacts: true,
+    description: '06B actual retrieval evidence; receipt acceptance is separate from completed measurement'
+  }),
+  'pulse-context-quality-growth': nodeTask('test/mcp/assert-context-quality.cjs', {
+    args: ['growth'], evidence: 'native', timeoutMs: 240000, isolatedArtifacts: true,
+    description: '06B growth retrieval evidence; receipt acceptance is separate from completed measurement'
+  }),
+  'pulse-context-quality-repeat': nodeTask('test/mcp/assert-context-quality.cjs', {
+    args: ['repeat'], evidence: 'native', timeoutMs: 240000, isolatedArtifacts: true,
+    description: '06B repeat retrieval evidence; receipt acceptance is separate from completed measurement'
+  }),
+  'pulse-context-tools': nodeTask('test/mcp/assert-context-tools.cjs', {
+    evidence: 'native', timeoutMs: 300000, description: '06A five-tool MCP parity, independent lexical oracle, Unicode pagination and response bounds'
+  }),
+  'pulse-context-build': nodeTask('test/mcp/assert-context-build.cjs', {
+    evidence: 'unit', timeoutMs: 120000, description: 'B10-MCP-03 independent deterministic resource rebuild, strict formats and non-mutating freshness rejection'
   }),
   'pulse-context-corpus': nodeTask('test/mcp/assert-context-corpus.cjs', {
     evidence: 'unit', timeoutMs: 30000,
@@ -1285,6 +1358,10 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'repository-bound guest-unit contracts, ownership, and pipeline design'
   }),
+  'fastly-dynamic-backends-installed': nodeTask('test/provider/assert-fastly-dynamic-backends-installed.cjs', {
+    evidence: 'external', timeoutMs: 600000, scheduling: { compiler: true },
+    description: 'R08 exact installed Native/JavaScript multi-origin parity, lifecycle, local Compute and 1/4/16/32 overhead'
+  }),
   'fastly-stdio-installed': nodeTask('test/provider/assert-fastly-stdio-installed.cjs', {
     evidence: 'external', timeoutMs: 600000,
     description: 'exact installed Native stdout, strict ABI failures and real Viceroy delivery'
@@ -1344,6 +1421,7 @@ const installedCorpusOwners = Object.freeze({
 
 const profiles = Object.freeze({
   unit: Object.freeze([
+    'binary-resource-admission',
     'report-capsule-contract',
     'cli-report-workflow',
     'cli-report-viewer',
@@ -1361,6 +1439,7 @@ const profiles = Object.freeze({
     'multifile-source-indexes',
     'guest-json-roundtrip',
     'pure-helper-contract',
+    'callable-source-admission',
     'suite-shape',
     'test-orchestration',
     'package-exports',
@@ -1400,6 +1479,7 @@ const profiles = Object.freeze({
     'entities-json-rpc-corpus',
     'mcp-http',
     'pulse-context-corpus',
+    'pulse-context-build',
     'pulse-context-application',
     'pulse-context-host',
     'mcp-compatibility',
@@ -1411,6 +1491,7 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'context-native-proof',
     'npm-source-imports',
     'fastly-numeric-regions',
     'fastly-numeric-budgets',
@@ -1450,6 +1531,18 @@ const profiles = Object.freeze({
     'entities-native-runtime',
     'entities-hardening',
     'entities-node-native-workflow',
+    'pulse-context-tools',
+    'pulse-context-quality-actual',
+    'pulse-context-quality-growth',
+    'pulse-context-quality-repeat',
+    'callable-public-contract',
+    'callable-composition-proof',
+    'callable-authored-native',
+    'callable-authored-composition',
+    'callable-authored-javascript',
+    'callable-authored-routed',
+    'callable-lifetime',
+    'mcp-native-binding',
     'fastly-entities-native-workflow',
     'crypto-native-guest-source',
     'guest-link-package',
@@ -1476,6 +1569,10 @@ const profiles = Object.freeze({
     'assets-javascript-runtime'
   ]),
   conformance: Object.freeze([
+    'native-context-primitives',
+    'binary-resource-execution',
+    'effect-collections',
+    'effect-collection-providers',
     'jwt-signing',
     'jwt-es256-signing',
     'jwt-rs256',
@@ -1529,6 +1626,7 @@ const profiles = Object.freeze({
     'cli-dev-workflow',
     'cli-schema-json-workflow',
     'entities-node-native-workflow',
+    'mcp-native-binding',
     'fastly-entities-native-workflow',
     'events-cli-workflow',
     'cli-diagnostics',
@@ -1536,6 +1634,7 @@ const profiles = Object.freeze({
     'docs-executable-init-dev',
     'docs-migration-schema-lowering',
     'docs-example-01-hello-json',
+    'docs-example-03-fetch-composition-dynamic-probes',
     'docs-example-02-request-schema',
     'docs-example-03-fetch-composition',
     'docs-example-05-fastly-capabilities',

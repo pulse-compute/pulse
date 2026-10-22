@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.project-config-schema-bundle.v1",
-  "releaseVersion": "1.0.0-beta.9",
+  "releaseVersion": "1.0.0-beta.10",
   "project": {
     "schemaVersion": "pulse.project-config-schema.v1",
     "discovery": [
@@ -23,7 +23,7 @@
       {
         "id": "crypto",
         "title": "Cryptographic requirements",
-        "description": "Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.9 package set."
+        "description": "Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.10 package set."
       },
       {
         "id": "schemas",
@@ -47,6 +47,21 @@
       }
     ],
     "fields": [
+      {
+        "required": false,
+        "default": "absent",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "All manifest records are integrity-checked before selection; views are immutable and execution-owned. HTTP Assets limits are unchanged.",
+        "diagnostics": [
+          "PULSE_BINARY_RESOURCE_INVALID"
+        ],
+        "section": "project",
+        "path": "pulse.binaryResources",
+        "type": "PulseBinaryResources",
+        "scope": "all targets",
+        "description": "Explicit canonical serialized manifest, logical bindings and mandatory nonnegative safe-integer budgets: files, fileBytes, totalBytes, serializedBytes and bindings. Build-time data hoisting; no runtime loading or read-byte quota."
+      },
       {
         "required": false,
         "default": "`./src/index.ts`",
@@ -82,6 +97,21 @@
         "type": "'node' | 'fastly' | 'none' | scoped package name | provider configuration",
         "scope": "compile/build/dev/test",
         "description": "Selects provider validation, local conformance, and build realization through the provider package toolchain contract."
+      },
+      {
+        "required": false,
+        "default": "`native-bounded-size` for Native compilation",
+        "allowed": "native-bounded-size, native-shrink0, experimental-native-size, experimental-native-bounded-size",
+        "precedence": "An explicit compile/build recipe flag overrides the selected profile; otherwise use the bounded Native default.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_ARGUMENT_UNEXPECTED"
+        ],
+        "section": "project",
+        "path": "nativeOptimization",
+        "type": "'native-bounded-size' | 'native-shrink0' | 'experimental-native-size' | 'experimental-native-bounded-size'",
+        "scope": "Native profile",
+        "description": "Native compiler recipe. native-bounded-size is O3/shrink2/no convergence; native-shrink0 restores O3/shrink0/no convergence. experimental-native-size enables convergence; experimental-native-bounded-size retains the bounded compatibility identity."
       },
       {
         "required": false,
@@ -412,6 +442,21 @@
         "scope": "Node Native and JavaScript S3",
         "section": "node",
         "type": "Readonly<Record<string, S3Binding>>"
+      },
+      {
+        "required": false,
+        "default": "omitted (stdout)",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_LOG_ENDPOINT_INVALID"
+        ],
+        "description": "One case-sensitive named production log stream, 1–255 UTF-8 bytes, excluding stdout, stderr, fst_managed_ names and control characters. Records above 65536 UTF-8 bytes are dropped. One lookup and at most one write per record; errors and zero/short writes are dropped without retry or stdout fallback. Host acceptance does not prove downstream delivery.",
+        "path": "fastly.logEndpoint",
+        "scope": "fastly() facade; conventional profiles use fastly.bindings.logEndpoint",
+        "section": "fastly",
+        "type": "string"
       },
       {
         "required": false,
@@ -788,6 +833,16 @@
           "none"
         ]
       },
+      "nativeOptimization": {
+        "kind": "enum",
+        "optional": true,
+        "values": [
+          "native-bounded-size",
+          "native-shrink0",
+          "experimental-native-size",
+          "experimental-native-bounded-size"
+        ]
+      },
       "outDir": {
         "kind": "string",
         "default": "./dist",
@@ -852,6 +907,70 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "$id": "urn:pulse:project-config:v1",
       "title": "Pulse project configuration",
+      "$defs": {
+        "binaryResources": {
+          "description": "Reserved pulse.binaryResources in conventional configuration.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "manifest",
+            "bindings",
+            "budgets"
+          ],
+          "properties": {
+            "manifest": {
+              "type": "string"
+            },
+            "bindings": {
+              "type": "object",
+              "propertyNames": {
+                "pattern": "^[a-z][a-z0-9.-]{0,63}$"
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "budgets": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "files",
+                "fileBytes",
+                "totalBytes",
+                "serializedBytes",
+                "bindings"
+              ],
+              "properties": {
+                "files": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "fileBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "totalBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "serializedBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "bindings": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              }
+            }
+          }
+        }
+      },
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -881,6 +1000,14 @@
             }
           ],
           "default": "node"
+        },
+        "nativeOptimization": {
+          "enum": [
+            "native-bounded-size",
+            "native-shrink0",
+            "experimental-native-size",
+            "experimental-native-bounded-size"
+          ]
         },
         "outDir": {
           "type": "string",
@@ -1161,6 +1288,9 @@
           "kind": "integer",
           "minimum": 1,
           "maximum": 1048576
+        },
+        "fastly.logEndpoint": {
+          "kind": "optional-string"
         }
       }
     }

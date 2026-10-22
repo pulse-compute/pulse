@@ -1,0 +1,25 @@
+TypeError: Report input rejected (REPORT_MISSING_ARTIFACT).
+    at fail (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/data.js:7:17)
+    at checkedPath (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/files.js:22:79)
+    at readFile (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/files.js:36:27)
+    at read (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:129:20)
+    at readCompleted (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:139:34)
+    at Object.collectArtifactReport (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/packages/cli/src/internal/report/retained.js:159:21)
+    at /workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/cli/assert-report-retained-evidence.cjs:194:26
+    at getActual (node:assert:611:5)
+    at strict.throws (node:assert:759:24)
+    at rejects (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/cli/assert-report-retained-evidence.cjs:30:49)
+AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+
+Caught error:
+
+TypeError: Report input rejected (REPORT_MISSING_ARTIFACT).
+    at rejects (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/cli/assert-report-retained-evidence.cjs:30:49)
+    at main (/workspace/scratch/0174bfde4d1e/pulse-06b/wasm/test/cli/assert-report-retained-evidence.cjs:194:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [TypeError],
+  expected: [Function (anonymous)],
+  operator: 'throws',
+  diff: 'simple'
+}

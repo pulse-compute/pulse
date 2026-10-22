@@ -35,7 +35,7 @@ export default defineConfig(_ => ({pulse:{entry:'src/index.ts',strict:false,defa
       fs.writeFileSync(path.join(dir,'src/index.ts'),source(mode));
       const native = tc.compileFastly(tc.resolveProject({cwd:dir,profile:'proof'}));
       const run = (route,fixture,extra={}) => tc.executeFastlyNativePlatformCapabilities(native,{request:{path:route},
-        fixtures:{[`${base}/origin`]:{...ack,...fixture}},kvStores:{proof:{}},allowHandledFetchDeadlineError:true,allowHandledTransportError:true,...extra});
+        fixtures:{[`${base}/origin`]:{...ack,...fixture}},kvStores:{proof:{}},sendErrorDetailLayout:'managed',allowHandledFetchDeadlineError:true,allowHandledTransportError:true,...extra});
       const expired = mode === 'budget' ? 600 : 1000;
       const failureStatus = mode === 'recover' ? 200 : 504;
       const failureBody = mode === 'recover' ? 'PULSE_FETCH_TIMEOUT' : 'Gateway Timeout';

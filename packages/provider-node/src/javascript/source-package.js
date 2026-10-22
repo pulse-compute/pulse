@@ -307,7 +307,8 @@ function writeNodeJavascriptSourcePackage(options = {}) {
     const kind = sourceKind(module.path);
     const output = kind === 'json'
       ? sourceBytes
-      : Buffer.from(transpileModule(sourceBytes.toString('utf8'), module.path));
+      : Buffer.from(transpileModule(require('@pulse-compute/wasm-contracts/project/javascript-application')
+        .javascriptCallableSource(plan, module.path, sourceBytes.toString('utf8')), module.path));
     const record = writeFile(outDir, `application/${outputPath}`, output);
     moduleRecords.push(Object.freeze({
       moduleId: module.id,
@@ -326,6 +327,7 @@ function writeNodeJavascriptSourcePackage(options = {}) {
   const baseDependencies = reachableDependencies(plan, projectRoot);
   const dependencies = Object.freeze({
     ...baseDependencies,
+    ...(options.binaryResources || plan.callables ? { '@pulse-compute/runtime': normalizeDependencyVersion(projectRoot, projectPackageManifest(projectRoot), '@pulse-compute/runtime') } : {}),
     ...(schemaActive
       ? {
           '@pulse-compute/wasm-contracts': normalizeDependencyVersion(
@@ -345,7 +347,9 @@ function writeNodeJavascriptSourcePackage(options = {}) {
     dependencies
   });
   const packageRecord = writeFile(outDir, 'package.json', stableJson(packageJson));
-  const entryRecord = writeFile(outDir, 'index.cjs', defaultExportLoader(entryOutput));
+  const resourceSource = options.binaryResources ? require('@pulse-compute/wasm-host-runtime/compiler/binary-resources').resourceJavascriptSource(options.binaryResources, 'module.exports') : '';
+  const callableSource = plan.callables ? `require('@pulse-compute/runtime/host').bindCallableApplication(application, [${plan.callables.bindings.map((binding, index) => `require(${JSON.stringify(`./application/${outputModulePath(binding.modulePath || plan.callables.modulePath)}`)})[${JSON.stringify(plan.callables.exportName)}][${index}]`).join(',')}], ${JSON.stringify(plan.callables.bindings)});\n` : '';
+  const entryRecord = writeFile(outDir, 'index.cjs', defaultExportLoader(entryOutput) + resourceSource + callableSource);
   const planRecord = writeFile(outDir, 'pulse-javascript-application-plan.json', stableJson(plan));
   const schemaRegistryRecord = schemaActive
     ? writeFile(outDir, 'schema-json-registry.json', stableJson(schemaBundle.registry))

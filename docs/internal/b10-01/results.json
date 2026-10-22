@@ -1,0 +1,2620 @@
+{
+  "schema": "pulse.b10-01.results.v1",
+  "base": "57e8a25cd857f960e4c5f607ef720cd5ba95ce82",
+  "scope": "Diagnostic evidence, not a release seal or cache/reuse authority",
+  "provenance": {
+    "candidate": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+    "tree": "6fc0ccd355feddf06cda36e0e13baec201a9d8de",
+    "workingTree": "",
+    "node": "v24.18.0",
+    "npm": "11.15.0",
+    "pnpm": "12.4.2",
+    "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+    "commands": [
+      "node",
+      "wasm/scripts/run-wasm-tests.cjs",
+      "--task",
+      "jwt-rs256",
+      "--task",
+      "jwt-installed-workflow",
+      "--task",
+      "clean-machine-acceptance",
+      "--task",
+      "schema-codecs",
+      "--report",
+      "/tmp/pulse-b10-01-trials/.pulse-seal/b10-01/tasks.json"
+    ],
+    "tasks": [
+      "jwt-rs256",
+      "jwt-installed-workflow",
+      "clean-machine-acceptance",
+      "schema-codecs"
+    ],
+    "sharedPackReceiptSha256": "e0d139652a404ff89092edc82f5ada9df4362e11a00075ac06c3b1b45cdc453b",
+    "deadlineSeconds": 1800,
+    "status": "passed",
+    "coldWarm": "Warm pinned dependencies/build/tool caches; private consumer npm caches; no checkpoint reuse",
+    "exitCode": 0,
+    "elapsedMs": 929078,
+    "terminalWorkingTree": ""
+  },
+  "terminal": {
+    "candidate": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+    "tree": "6fc0ccd355feddf06cda36e0e13baec201a9d8de",
+    "workingTree": "",
+    "registeredWorktrees": "worktree /tmp/pulse-b10-01-trials\nHEAD 804c69afe743a3f31d2033aa8cf1b121f2dafb21\nbranch refs/heads/codex/b10-01-phase-attribution\n\n",
+    "activeSealLock": false,
+    "cpuMax": "800000 100000",
+    "memoryMax": "8589934592",
+    "command": "Four-task diagnostic followed by independent inspection and worker-barrier probes; no release seal"
+  },
+  "phaseMethod": "Union of observed absolute intervals across processes, with priority asc > Binaryen > named verification > execution/Wasm > package preparation > other realization > frontend/lowering > module evaluation. Nested counters are subsets. Residual remains unattributed. Incomplete traces retained.",
+  "tasks": [
+    {
+      "task": "jwt-rs256",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 296364,
+      "cleanup": {
+        "status": "passed"
+      },
+      "processes": 104,
+      "incompleteProcesses": 1,
+      "phaseUnionMs": {
+        "7 module evaluation / top-level setup": 850.91748046875,
+        "6 frontend / planning / lowering": 3315.119384765625,
+        "5 realization excluding tools": 11414.472412109375,
+        "0 AssemblyScript launch interval": 86137.49560546875,
+        "3 execution or Wasm construction": 2593.17919921875,
+        "1 Binaryen tool interval": 185386.96948242188,
+        "2 evidence verification": 34.78564453125
+      },
+      "residualMs": 6631.060791015625,
+      "outerAscCalls": 51,
+      "outerAscElapsedMs": 86137.49689399991,
+      "binaryen": {
+        "subprocess.wasm-opt": {
+          "calls": 297,
+          "elapsedMs": 106151.88565199994
+        },
+        "subprocess.wasm-dis": {
+          "calls": 249,
+          "elapsedMs": 56321.249330999904
+        },
+        "subprocess.wasm-merge": {
+          "calls": 64,
+          "elapsedMs": 19926.88519300011
+        },
+        "subprocess.wasm-as": {
+          "calls": 16,
+          "elapsedMs": 2986.945727999988
+        }
+      },
+      "nestedCounters": {
+        "fs.realpathSync": {
+          "calls": 13310,
+          "elapsedMs": 314.46809799833966
+        },
+        "fs.readFileSync": {
+          "calls": 11655,
+          "elapsedMs": 4390.436870001968
+        },
+        "fs.statSync": {
+          "calls": 2731,
+          "elapsedMs": 18.066484999382254
+        },
+        "hash.update": {
+          "calls": 63155,
+          "elapsedMs": 6687.751567998922
+        },
+        "hash.digest": {
+          "calls": 47294,
+          "elapsedMs": 59.52706900210279
+        },
+        "fs.writeFileSync": {
+          "calls": 758,
+          "elapsedMs": 93.48941399970272
+        },
+        "fs.existsSync": {
+          "calls": 17502,
+          "elapsedMs": 51.15338200072813
+        },
+        "fs.lstatSync": {
+          "calls": 203359,
+          "elapsedMs": 401.19799400348984
+        },
+        "fs.readdirSync": {
+          "calls": 10059,
+          "elapsedMs": 109.87158599934787
+        },
+        "fs.rmSync": {
+          "calls": 276,
+          "elapsedMs": 48.94981700001699
+        },
+        "assert.equal": {
+          "calls": 17420,
+          "elapsedMs": 11.528486999763459
+        },
+        "assert.deepEqual": {
+          "calls": 252,
+          "elapsedMs": 39.234200999912105
+        },
+        "assert.match": {
+          "calls": 84,
+          "elapsedMs": 0.4777929999108892
+        },
+        "assert.ok": {
+          "calls": 159454,
+          "elapsedMs": 73.93992200004766
+        }
+      },
+      "repeatedAscGroups": [
+        {
+          "count": 5,
+          "sourceSha256": "7284c9165ed2cd2795de2e8493ca84a5fe65ec849962ad07f4b882da8dd55690",
+          "optionsSha256": "bf823f8b8f0063ec9b8f18a697ff1363da4bd5370cc56e97bee1455834c9292a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "dc9a4e70ac49a1107716a296b1e5b43ce01b5362bc462a98a0618157b4c39a57",
+          "elapsedMs": 4611.415761999993,
+          "duplicateElapsedUpperBoundMs": 3724.2084949999917,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 5,
+          "sourceSha256": "3753c1e71ea565d9ae2d671bf9bb43a27ad1e6abdc8d027ca1cae816e361560c",
+          "optionsSha256": "1eca7948c292a835edf0a2e732eb1ea773c7a8dfa06c0d24e52517cd3fddd6a2",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "a1a819edbc6dd7e21c2ae150fa3cd94c03210f7cf4eaff0ad59090c3dda15c24",
+          "elapsedMs": 15704.025164999992,
+          "duplicateElapsedUpperBoundMs": 12698.86057199999,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 3,
+          "sourceSha256": "b07203c78218296d8f252c5a4f04ddc193e28ea44891e781614e07c317dd1755",
+          "optionsSha256": "bf823f8b8f0063ec9b8f18a697ff1363da4bd5370cc56e97bee1455834c9292a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "10d4e8f4760c233a14969388d5ca7e647e2edb517208c635577e9ce1a922d8a1",
+          "elapsedMs": 2549.2541270000074,
+          "duplicateElapsedUpperBoundMs": 1749.9445059999998,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 3,
+          "sourceSha256": "09bd22724c070804b603b94ec146e23df0bcb5e610ca81bd3d09c25f7935f541",
+          "optionsSha256": "1eca7948c292a835edf0a2e732eb1ea773c7a8dfa06c0d24e52517cd3fddd6a2",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "4a49e0d3616b845510745426766e3300afdb56162305916e2c92ad4a168272a5",
+          "elapsedMs": 10126.41111299998,
+          "duplicateElapsedUpperBoundMs": 6842.6048469999805,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "a6238e9b91ca81fdfe41f97d416c7c342bf5749be87de155ea0d371823fa64da",
+          "optionsSha256": "bf823f8b8f0063ec9b8f18a697ff1363da4bd5370cc56e97bee1455834c9292a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "8cb44f5cceda0bc08b3b4ac769ff769f61951d1a2a0885cc36aee55e271a268c",
+          "elapsedMs": 3541.182020999986,
+          "duplicateElapsedUpperBoundMs": 2680.6011439999857,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "8235426ea973cf37554e2a85a93395c66249502624f1292bed829214b90d3387",
+          "optionsSha256": "bf823f8b8f0063ec9b8f18a697ff1363da4bd5370cc56e97bee1455834c9292a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "4e9f644389207b088709181ec27b37e33e1b8d1b546a9c97d1750520db0118ba",
+          "elapsedMs": 3593.334833000001,
+          "duplicateElapsedUpperBoundMs": 2745.1664190000156,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "ebcd998d12109fbe70c5d5541d511e1672686327a6f6b0c40e202c7d7b3a0ca3",
+          "optionsSha256": "1eca7948c292a835edf0a2e732eb1ea773c7a8dfa06c0d24e52517cd3fddd6a2",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "3ce009d9efa0848da59ce37dabc0e26a405c5b982a5e3f7262b9baa6f1ad2cd6",
+          "elapsedMs": 15598.415121999977,
+          "duplicateElapsedUpperBoundMs": 11738.334634999977,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "1dcd6373d3b366c1695045cad5b432a2d16aff932c3f7be54514d7fe73bdc2f0",
+          "optionsSha256": "bf823f8b8f0063ec9b8f18a697ff1363da4bd5370cc56e97bee1455834c9292a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "1ca5a0177dbf57e6f3cf8cd0ccc0124e866afc9b4e90145858870f1d9ce54867",
+          "elapsedMs": 1930.2043240000203,
+          "duplicateElapsedUpperBoundMs": 944.2535930000013,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "cc876b8274382dd64b2bac50b4e673b89e4fc8e6592c83cf27db1d107be691d9",
+          "optionsSha256": "bf823f8b8f0063ec9b8f18a697ff1363da4bd5370cc56e97bee1455834c9292a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "e46323f97bb76eb465c7bf2cfaddb0974281ff5a5571c8d32bed74a03f9072f6",
+          "elapsedMs": 1629.5695989999804,
+          "duplicateElapsedUpperBoundMs": 843.2022169999836,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        }
+      ]
+    },
+    {
+      "task": "jwt-installed-workflow",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 290824,
+      "cleanup": {
+        "status": "passed"
+      },
+      "processes": 65,
+      "incompleteProcesses": 0,
+      "phaseUnionMs": {
+        "7 module evaluation / top-level setup": 41500.423583984375,
+        "4 package preparation / install": 56.917236328125,
+        "2 evidence verification": 231.649169921875,
+        "6 frontend / planning / lowering": 10941.9453125,
+        "5 realization excluding tools": 9548.825439453125,
+        "0 AssemblyScript launch interval": 74819.017578125,
+        "3 execution or Wasm construction": 835.655029296875,
+        "1 Binaryen tool interval": 133811.70483398438
+      },
+      "residualMs": 19077.86181640625,
+      "outerAscCalls": 48,
+      "outerAscElapsedMs": 74819.01809700001,
+      "binaryen": {
+        "subprocess.wasm-opt": {
+          "calls": 216,
+          "elapsedMs": 76339.21737299999
+        },
+        "subprocess.wasm-dis": {
+          "calls": 183,
+          "elapsedMs": 42313.97478200001
+        },
+        "subprocess.wasm-merge": {
+          "calls": 42,
+          "elapsedMs": 13474.307187000006
+        },
+        "subprocess.wasm-as": {
+          "calls": 9,
+          "elapsedMs": 1684.2086949999975
+        }
+      },
+      "nestedCounters": {
+        "fs.realpathSync": {
+          "calls": 75958,
+          "elapsedMs": 1108.9508249999892
+        },
+        "fs.readFileSync": {
+          "calls": 34496,
+          "elapsedMs": 4790.157056999397
+        },
+        "fs.statSync": {
+          "calls": 2646,
+          "elapsedMs": 36.4367479999747
+        },
+        "hash.update": {
+          "calls": 83140,
+          "elapsedMs": 6803.433350001393
+        },
+        "hash.digest": {
+          "calls": 70991,
+          "elapsedMs": 90.58769399981765
+        },
+        "fs.existsSync": {
+          "calls": 18609,
+          "elapsedMs": 76.05030799958601
+        },
+        "fs.lstatSync": {
+          "calls": 367249,
+          "elapsedMs": 977.421819000281
+        },
+        "fs.readdirSync": {
+          "calls": 9784,
+          "elapsedMs": 175.5094290001495
+        },
+        "fs.rmSync": {
+          "calls": 270,
+          "elapsedMs": 77.27922299999057
+        },
+        "fs.writeFileSync": {
+          "calls": 831,
+          "elapsedMs": 76.02993800023705
+        },
+        "assert.equal": {
+          "calls": 1959,
+          "elapsedMs": 1.613815998968164
+        },
+        "assert.ok": {
+          "calls": 8102,
+          "elapsedMs": 1.994512999918129
+        },
+        "assert.match": {
+          "calls": 9,
+          "elapsedMs": 0.535559999996849
+        },
+        "assert.deepEqual": {
+          "calls": 1990,
+          "elapsedMs": 8.385187000168457
+        },
+        "fs.copyFileSync": {
+          "calls": 25,
+          "elapsedMs": 4.141965999999684
+        }
+      },
+      "repeatedAscGroups": [
+        {
+          "count": 4,
+          "sourceSha256": "a64a5c254d7a75248c314080da5257886284c8a895efcc61310583893a940a7c",
+          "optionsSha256": "9e045060d7902b2346189d2ba373cb9eca80d069042bf26810dfc1f66ec3c92a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "60f96aa799eb8cad976d5a3a847262cf2d9d806a83260efbfa89c2ecc4b2a527",
+          "elapsedMs": 3544.512,
+          "duplicateElapsedUpperBoundMs": 2678.602347,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "328a9f18d7306c958335beb643b12dc10f9f60509fe07d49fd7e0091890db6c5",
+          "optionsSha256": "9e045060d7902b2346189d2ba373cb9eca80d069042bf26810dfc1f66ec3c92a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "9c72a0fde4ce60132d462f2561baa449e61ff5e22f22e70d22b3a45029233bbe",
+          "elapsedMs": 2032.46613,
+          "duplicateElapsedUpperBoundMs": 1007.965408,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "21c7378fadd231f80373be5bad66c6cf7882b5f90bd9b23c6f6b19c17d299af9",
+          "optionsSha256": "9e045060d7902b2346189d2ba373cb9eca80d069042bf26810dfc1f66ec3c92a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "c4ba09e973eb0cf64b536f7a04673ae1a97bb53a74d037fa6879c72b0df77300",
+          "elapsedMs": 3794.433653,
+          "duplicateElapsedUpperBoundMs": 2806.6804389999998,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "b43054f8514568b7b605500cee27d6b4a976f8cf8aeafccab8e252dc44ff1a6c",
+          "optionsSha256": "5b58586fead947db200f81b8a981b70a63c7f55fb74c1e518b54097496b27b5a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "2a7b28e99185a99922bf25224515a1ae70ea9db30e3f57dde9bacef575c26bc2",
+          "elapsedMs": 15639.312434,
+          "duplicateElapsedUpperBoundMs": 11597.150160000001,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "ede5dcf450bd2288ae2a5d24b25f78e4162af159a02c8dac17a1936387beef30",
+          "optionsSha256": "b9871586474209bb2a3ae842586b54c444ee7a0a676cfc3e8c6fd81a490be2cd",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "973cebf11803909eac7a33d45bbb26f7303fac1910b0b0f5dbfc998ad6189ad2",
+          "elapsedMs": 2051.517859,
+          "duplicateElapsedUpperBoundMs": 979.941941,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "e586cb8103408f7331774f4fc692cf6d094bc246e3d89e58b95983f4b89e1610",
+          "optionsSha256": "b9871586474209bb2a3ae842586b54c444ee7a0a676cfc3e8c6fd81a490be2cd",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "f0edcc9bef25923d209ae9c36e583ea7ccafdba4cbdcc12a60edd52006de9d68",
+          "elapsedMs": 2136.456455,
+          "duplicateElapsedUpperBoundMs": 1042.773901,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "24074eb5e12ed4df86680cb9e55429e3f26204fb030b70f567408805eeca50a3",
+          "optionsSha256": "06ae5fbab548cfea2a93053edb10874b3ba141841ef9f438bae47d362dd9bd02",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "15acf78108689c4405454f19a4d75ba5f7af5cee5a56b47ab8adce9b34d88e28",
+          "elapsedMs": 4613.965794,
+          "duplicateElapsedUpperBoundMs": 2314.6034499999996,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "e152c03ab56c14c4bcdd5d4b210f7cc0a13b453a5fda93723e724d1552893e02",
+          "optionsSha256": "9e045060d7902b2346189d2ba373cb9eca80d069042bf26810dfc1f66ec3c92a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "8739875bef28f7e391541715ec704126743093deb239d3a97ddb447debacd253",
+          "elapsedMs": 1792.202996,
+          "duplicateElapsedUpperBoundMs": 870.4898,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "51df6dcdab42bae3a47c272667c9e49c26db6abac826aab8f7c0fd7557904a38",
+          "optionsSha256": "9e045060d7902b2346189d2ba373cb9eca80d069042bf26810dfc1f66ec3c92a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "36d277fe2771491ba9c2f1d84d0899cb42dbf89d805d18baa936e5e6ad37eb7b",
+          "elapsedMs": 1932.3274790000003,
+          "duplicateElapsedUpperBoundMs": 913.2312220000001,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "2061e69fb95ff1796b4c118011ee53b85e8f50b94f9116ca314b5fba0c16d070",
+          "optionsSha256": "5b58586fead947db200f81b8a981b70a63c7f55fb74c1e518b54097496b27b5a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "315ebdd50ca559a07400e74d14f574b3b158c218b19d2654d0b7e64010cad5e8",
+          "elapsedMs": 6557.202832,
+          "duplicateElapsedUpperBoundMs": 3254.466138,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "c8af636d0d3b8564cc23d025dde4498953e8e7eb6c2a0671d9ee097595f7c499",
+          "optionsSha256": "9e045060d7902b2346189d2ba373cb9eca80d069042bf26810dfc1f66ec3c92a",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "d18d9d1fe8cd9b9268ccaaed79d05ec1dd0f03912b451d9cfaa2a365ffef8d6d",
+          "elapsedMs": 1784.64137,
+          "duplicateElapsedUpperBoundMs": 869.4590140000001,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        }
+      ]
+    },
+    {
+      "task": "clean-machine-acceptance",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 235460,
+      "cleanup": {
+        "status": "passed"
+      },
+      "processes": 262,
+      "incompleteProcesses": 4,
+      "phaseUnionMs": {
+        "7 module evaluation / top-level setup": 50260.114990234375,
+        "4 package preparation / install": 28741.72119140625,
+        "2 evidence verification": 82.501220703125,
+        "6 frontend / planning / lowering": 8566.4326171875,
+        "5 realization excluding tools": 919.90087890625,
+        "0 AssemblyScript launch interval": 131750.61352539062,
+        "3 execution or Wasm construction": 9437.603271484375
+      },
+      "residualMs": 5701.1123046875,
+      "outerAscCalls": 95,
+      "outerAscElapsedMs": 131750.614072,
+      "binaryen": {},
+      "nestedCounters": {
+        "fs.realpathSync": {
+          "calls": 90980,
+          "elapsedMs": 1283.727395000042
+        },
+        "fs.readFileSync": {
+          "calls": 46712,
+          "elapsedMs": 2433.5583910001415
+        },
+        "fs.existsSync": {
+          "calls": 24153,
+          "elapsedMs": 66.0742860003025
+        },
+        "fs.statSync": {
+          "calls": 4421,
+          "elapsedMs": 29.38609800004366
+        },
+        "hash.update": {
+          "calls": 149560,
+          "elapsedMs": 8165.7025490001515
+        },
+        "hash.digest": {
+          "calls": 142441,
+          "elapsedMs": 125.6697329998523
+        },
+        "assert.ok": {
+          "calls": 566127,
+          "elapsedMs": 218.8393919994719
+        },
+        "fs.writeFileSync": {
+          "calls": 967,
+          "elapsedMs": 70.8643339999505
+        },
+        "assert.match": {
+          "calls": 18,
+          "elapsedMs": 0.8062870000189264
+        },
+        "assert.equal": {
+          "calls": 107757,
+          "elapsedMs": 50.30345600038764
+        },
+        "assert.deepEqual": {
+          "calls": 18534,
+          "elapsedMs": 116.55251400011342
+        },
+        "fs.lstatSync": {
+          "calls": 930915,
+          "elapsedMs": 2037.558186998529
+        },
+        "fs.readdirSync": {
+          "calls": 21530,
+          "elapsedMs": 335.8934650000627
+        },
+        "fs.rmSync": {
+          "calls": 479,
+          "elapsedMs": 30.289750000002414
+        },
+        "fs.copyFileSync": {
+          "calls": 42,
+          "elapsedMs": 4.940074999964921
+        },
+        "assert.notEqual": {
+          "calls": 16,
+          "elapsedMs": 0.343341000016153
+        },
+        "fs.cpSync": {
+          "calls": 9,
+          "elapsedMs": 8.871354000019664
+        }
+      },
+      "repeatedAscGroups": [
+        {
+          "count": 2,
+          "sourceSha256": "9394e1769bd1c02251c7ad3fd4fa84bfe1dda563eb145e1c387111f67cc22d13",
+          "optionsSha256": "6ff7eed827070a77cd6fcddedac496bb4244b512211edffd4f73d339867c23db",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "6a242a610f99e47f806896fc40c384a6684cfec75387251db8a30a7dc2c07db1",
+          "elapsedMs": 2157.988245,
+          "duplicateElapsedUpperBoundMs": 1077.1763620000002,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "1bb719a9218943d9d0c0648eb87c355d961ea3fa9f22b9d7f682341359882c30",
+          "optionsSha256": "6ff7eed827070a77cd6fcddedac496bb4244b512211edffd4f73d339867c23db",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "8e3d1c6f5a47cff8aa5024cd3fa7e15dcd8a0b61f920f0f6117d760df7f57c08",
+          "elapsedMs": 2128.327741,
+          "duplicateElapsedUpperBoundMs": 1055.593962,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "1e47a56b5d7725965891e58fc841743f158aee730eecf728aad29304cfc4428d",
+          "optionsSha256": "bdb245c928c8bccba4a80148cf652937eee74b01a1bba0912772a2c84c9a2f91",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "82584d70592736c11f0970ef943c6eaf20e608d63536f33a9ea723bb84d46535",
+          "elapsedMs": 4924.602260999999,
+          "duplicateElapsedUpperBoundMs": 2470.3421469999994,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "d850d771898c14e15cf90c85b60c0c61e4fce1401368b99fa25a1a3379fa9146",
+          "optionsSha256": "6ff7eed827070a77cd6fcddedac496bb4244b512211edffd4f73d339867c23db",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "cd15467164d1a8cfc1351a80c441bc0d78a0ced5c0018cb9e036d893251f879e",
+          "elapsedMs": 1885.465862000001,
+          "duplicateElapsedUpperBoundMs": 1012.5090720000007,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "d55275d38a7ed8627b193898e36e420233785ac4acb739323bbe19b277195444",
+          "optionsSha256": "bdb245c928c8bccba4a80148cf652937eee74b01a1bba0912772a2c84c9a2f91",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "246cc58ea47e035ce1f863033c99108a30d309b3ca963d1abf36d229be345b79",
+          "elapsedMs": 5386.097841000001,
+          "duplicateElapsedUpperBoundMs": 2738.7077609999997,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "45472629615b3169ea9810c164b0a9e0b93b86a2ebe3d76e9110df8e7f1470ed",
+          "optionsSha256": "6ff7eed827070a77cd6fcddedac496bb4244b512211edffd4f73d339867c23db",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "791c53b33d2e5250e50f29f2c4843d8a18455e029881dfd0283b91d50fa8b7b2",
+          "elapsedMs": 3810.9512190000005,
+          "duplicateElapsedUpperBoundMs": 2808.8295070000004,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "eaebf63d3d47737fa7cc63d40f054c70452e96f942594406d9c03c8ee459ff67",
+          "optionsSha256": "6ff7eed827070a77cd6fcddedac496bb4244b512211edffd4f73d339867c23db",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "3a772977c7c7dda06b1e80b44c7b205cff86d7ba67d5fafe9cf93a5c248cf12a",
+          "elapsedMs": 3908.216372000001,
+          "duplicateElapsedUpperBoundMs": 2935.308753000001,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "f5a20a4aebec505ebdb60c39a27197940e8e75738133b0aa6851a07e42796b84",
+          "optionsSha256": "bdb245c928c8bccba4a80148cf652937eee74b01a1bba0912772a2c84c9a2f91",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "b6ddb7ef370f4db806a1ebd0aa300d0452f5922c7af43827c5bbc26a6d8c62f7",
+          "elapsedMs": 7148.750847000001,
+          "duplicateElapsedUpperBoundMs": 5455.996704000001,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "164400053c9ca11aea90b2238eb45b7f3b03737ff42064af7db3bdfa443da830",
+          "optionsSha256": "6ff7eed827070a77cd6fcddedac496bb4244b512211edffd4f73d339867c23db",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "a9d1f216f081630d24b0c7a8088c9f1f785c06b5e22e9f5de92348c6e9bddd61",
+          "elapsedMs": 3703.488000000005,
+          "duplicateElapsedUpperBoundMs": 2686.310363000004,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "c6a8196b62491102d388db5fcc17e5b9a0f70f5140f5c73003f81f6a6c58306b",
+          "optionsSha256": "6ff7eed827070a77cd6fcddedac496bb4244b512211edffd4f73d339867c23db",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "3e706615238f294e3b3c9eb0b97388b6d8e61d5e8e3c1882dde34817e85808b9",
+          "elapsedMs": 3680.2570920000035,
+          "duplicateElapsedUpperBoundMs": 2742.8797350000023,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "ba7c3de7bf71ffbae73ac8162f1c622b1a07eb564f74effb86ace8a11db4a30e",
+          "optionsSha256": "bdb245c928c8bccba4a80148cf652937eee74b01a1bba0912772a2c84c9a2f91",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "4a675bdf7890d5b895591e4ee6733babd793485a289921d2d41f1181c6ca1d70",
+          "elapsedMs": 7185.098592999999,
+          "duplicateElapsedUpperBoundMs": 5415.084097999999,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 2,
+          "sourceSha256": "85d07c536e5d273d8bf244fa46c397260f656c1a7728a337b978011ffa3afdfe",
+          "optionsSha256": "a909cac55ce8ea972a8c22e40ee468c1782c8331de8dfe7ccfc6e8b02fcffc39",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "ce5813add0150d57ee8fd73cc39f36165c86d72ed301673c1146dde846352f39",
+          "elapsedMs": 2265.1079650000006,
+          "duplicateElapsedUpperBoundMs": 1128.3591050000005,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "8161508e2e9eabaa29210565d4a2caa766ab61fe47f413ff0662a0285e610149",
+          "optionsSha256": "ea88d7f7b1351227c7ede657ab3dca07d1285a68f2bce31727c46108947e9eeb",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "99d12a94d5f277bbac2d15885e2085105eccf1d01cc35fa82931b75edfc70c3b",
+          "elapsedMs": 3072.105951,
+          "duplicateElapsedUpperBoundMs": 2321.533649,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 3,
+          "sourceSha256": "62e4ff506ae4d270dce11f579cfd12a163b79058605cbec061c8e2262dad46fe",
+          "optionsSha256": "171ec5f4f428e4d1f6373d5d363d9fbbd8e9543bd8d6636fae2e9cf888dafcc0",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "01922a799b5486f5c65d1c59d1439f662a36e5f085cb57a481bbb48f53108832",
+          "elapsedMs": 2397.228595,
+          "duplicateElapsedUpperBoundMs": 1603.252923,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 4,
+          "sourceSha256": "9fbe73deb5f9ad66cfd81071bc1f870b72860bfdf759f959f7f2919e77f04e07",
+          "optionsSha256": "e0183cb6c831a6172e6d2d83815a68aacadc452de2a71264d3b5671475eee109",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "571bf6124872d32f7b119138a237aa6e2b68eeb5a3c5b75c785abedba01ac24d",
+          "elapsedMs": 3428.1398179999997,
+          "duplicateElapsedUpperBoundMs": 2501.800891,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 3,
+          "sourceSha256": "2434c3e00488d8b18e9c4b406ac0b445caf4379257031dace31878383121a045",
+          "optionsSha256": "99cbda64cfcedcad8dbbf372bad0dd9e8a76ddaf67e3be35e73f0b3b450db92f",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "a43aa5f38c80f4add6ca8ecb232813a42dae88bdfcf86fbbda4ea9f954772e17",
+          "elapsedMs": 5011.286007999999,
+          "duplicateElapsedUpperBoundMs": 3210.7593009999996,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 3,
+          "sourceSha256": "5595c72d0c704d6ba9923c9316112a559e7f517d5391a4ce87b18d7ef7d3064e",
+          "optionsSha256": "a055f7c660aa7b39942793841859e6013288acd1c1b575c6a2e88426d6401e17",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "9259a9e0d13bc04a75c57389213ad3c907de57fdcd9cf4028cd1e2beadf9b470",
+          "elapsedMs": 2417.610534,
+          "duplicateElapsedUpperBoundMs": 1639.064307,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 3,
+          "sourceSha256": "545eed0898256376e00ff3607537a4bcfdaf1a5ffccb54639794165a9289d97c",
+          "optionsSha256": "f2b79c662c588059414b16255676f1fd9a54187191a65b8fdb9b4753288bcd68",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "ff7c7b3b462e597a3a07cd4d497494776c618c3761c2e95051b95146a9f1a66e",
+          "elapsedMs": 2618.475573,
+          "duplicateElapsedUpperBoundMs": 1751.274691,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 3,
+          "sourceSha256": "620ad87872ef647106e8e8f40bd56d8f7214a9b4840d100d8fd41b5a2f0c18c1",
+          "optionsSha256": "abcbbe3aefc9dc913dbe9ff0890d11525f4a70aaee25cb0e00c9483a416fb9ec",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "c627f31aa1b40459e863045c35740ca2d2689b9124e6e361d1e1cd725cdc0bcb",
+          "elapsedMs": 6653.771736,
+          "duplicateElapsedUpperBoundMs": 4483.146449,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        },
+        {
+          "count": 5,
+          "sourceSha256": "5ffe20641023a447ba0f329bbb244684851e477b290b69d48c71d097c02c1f2c",
+          "optionsSha256": "bf0c896f7667539efc8234d4365952f3f1c3f8d6b38f2124d0d1703843aa0296",
+          "ascSha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44",
+          "wasmSha256": "2173f2a9f90aa0e2cd1de57b845b4179ed1a26f10e89963cbf6056b9f98ffdce",
+          "elapsedMs": 4817.070418,
+          "duplicateElapsedUpperBoundMs": 3931.524468,
+          "scope": "Partial input/output match; not full compile-input equivalence or permission to reuse"
+        }
+      ]
+    },
+    {
+      "task": "schema-codecs",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 106228,
+      "cleanup": {
+        "status": "passed"
+      },
+      "processes": 59,
+      "incompleteProcesses": 0,
+      "phaseUnionMs": {
+        "7 module evaluation / top-level setup": 486.603515625,
+        "6 frontend / planning / lowering": 889.25634765625,
+        "0 AssemblyScript launch interval": 101539.73706054688,
+        "3 execution or Wasm construction": 2217.161376953125,
+        "5 realization excluding tools": 133.61767578125,
+        "2 evidence verification": 11.54638671875
+      },
+      "residualMs": 950.07763671875,
+      "outerAscCalls": 29,
+      "outerAscElapsedMs": 101539.73672400002,
+      "binaryen": {},
+      "nestedCounters": {
+        "fs.realpathSync": {
+          "calls": 2548,
+          "elapsedMs": 53.54756300000845
+        },
+        "fs.readFileSync": {
+          "calls": 1112,
+          "elapsedMs": 260.97886699997446
+        },
+        "fs.statSync": {
+          "calls": 42,
+          "elapsedMs": 0.9057490000061534
+        },
+        "hash.update": {
+          "calls": 990,
+          "elapsedMs": 43.79537200001269
+        },
+        "hash.digest": {
+          "calls": 990,
+          "elapsedMs": 2.9061410001228865
+        },
+        "assert.deepEqual": {
+          "calls": 993,
+          "elapsedMs": 24.748619000042083
+        },
+        "assert.notEqual": {
+          "calls": 22,
+          "elapsedMs": 0.16948299999194205
+        },
+        "assert.equal": {
+          "calls": 30118,
+          "elapsedMs": 18.45933299983369
+        },
+        "assert.ok": {
+          "calls": 174412,
+          "elapsedMs": 61.52144999976605
+        },
+        "fs.existsSync": {
+          "calls": 412,
+          "elapsedMs": 2.556814999957794
+        },
+        "fs.writeFileSync": {
+          "calls": 73,
+          "elapsedMs": 13.747150999975133
+        },
+        "fs.lstatSync": {
+          "calls": 100,
+          "elapsedMs": 0.9253889999963576
+        },
+        "fs.rmSync": {
+          "calls": 44,
+          "elapsedMs": 4.855460000027961
+        },
+        "assert.match": {
+          "calls": 4,
+          "elapsedMs": 0.12185199998566532
+        },
+        "fs.readdirSync": {
+          "calls": 77,
+          "elapsedMs": 1.1197480000137148
+        }
+      },
+      "repeatedAscGroups": []
+    }
+  ],
+  "jwtFixtureMetrics": [
+    {
+      "status": "passed",
+      "bits": 2048,
+      "executions": 146,
+      "targets": [
+        "node-native",
+        "node-javascript",
+        "fastly-native",
+        "fastly-javascript"
+      ],
+      "providerReality": false,
+      "durationMs": 54589,
+      "compilation": {
+        "invocations": 10,
+        "failed": 0,
+        "durationMs": 15603
+      },
+      "operations": [
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 4490,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 911
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-javascript",
+          "status": "passed",
+          "durationMs": 4309,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 877
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "signing-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 12401,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3894
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "verification-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 11955,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3622
+          }
+        },
+        {
+          "command": "compileNativeProjectInMemory",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 4348,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 875
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "combined",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 12869,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4182
+          }
+        },
+        {
+          "command": "prepareJavascriptApplication",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 20,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "compileNativeProjectInMemory",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "failed",
+          "durationMs": 2943,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1242
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "failed",
+          "durationMs": 18,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "failed",
+          "durationMs": 16,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-native",
+          "status": "failed",
+          "durationMs": 17,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-javascript",
+          "status": "failed",
+          "durationMs": 14,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        }
+      ]
+    },
+    {
+      "status": "passed",
+      "bits": 3072,
+      "executions": 146,
+      "targets": [
+        "node-native",
+        "node-javascript",
+        "fastly-native",
+        "fastly-javascript"
+      ],
+      "providerReality": false,
+      "durationMs": 56123,
+      "compilation": {
+        "invocations": 10,
+        "failed": 0,
+        "durationMs": 16492
+      },
+      "operations": [
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 4961,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1037
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-javascript",
+          "status": "passed",
+          "durationMs": 4811,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1015
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "signing-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 12822,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4115
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "verification-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 12249,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3964
+          }
+        },
+        {
+          "command": "compileNativeProjectInMemory",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 4349,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 795
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "combined",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 13114,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4512
+          }
+        },
+        {
+          "command": "prepareJavascriptApplication",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 17,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "compileNativeProjectInMemory",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "failed",
+          "durationMs": 2609,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1054
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "failed",
+          "durationMs": 15,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "failed",
+          "durationMs": 13,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-native",
+          "status": "failed",
+          "durationMs": 12,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-javascript",
+          "status": "failed",
+          "durationMs": 12,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        }
+      ]
+    },
+    {
+      "status": "passed",
+      "bits": 4096,
+      "executions": 146,
+      "targets": [
+        "node-native",
+        "node-javascript",
+        "fastly-native",
+        "fastly-javascript"
+      ],
+      "providerReality": false,
+      "durationMs": 185467,
+      "compilation": {
+        "invocations": 31,
+        "failed": 0,
+        "durationMs": 54061
+      },
+      "operations": [
+        {
+          "command": "buildProject",
+          "form": "signing-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 12558,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4064
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "verification-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 12490,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4084
+          }
+        },
+        {
+          "command": "compileNativeProjectInMemory",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 4329,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 860
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "combined",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 13375,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4709
+          }
+        },
+        {
+          "command": "prepareJavascriptApplication",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 23,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "signing-only",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 5446,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 987
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "signing-only",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 4620,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 944
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "signing-only",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 43,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "signing-only",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 40,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "signing-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 13520,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4164
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "signing-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 12714,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4084
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "signing-only",
+          "profile": "fastly-javascript",
+          "status": "passed",
+          "durationMs": 150,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "signing-only",
+          "profile": "fastly-javascript",
+          "status": "passed",
+          "durationMs": 70,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "verification-only",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 4964,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 786
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "verification-only",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 4422,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 844
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "verification-only",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 38,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "verification-only",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 29,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "verification-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 13456,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4144
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "verification-only",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 13409,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4450
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "verification-only",
+          "profile": "fastly-javascript",
+          "status": "passed",
+          "durationMs": 74,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "verification-only",
+          "profile": "fastly-javascript",
+          "status": "passed",
+          "durationMs": 55,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 4563,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 886
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 5208,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 882
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "passed",
+          "durationMs": 4520,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 913
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 4668,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 858
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 40,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "passed",
+          "durationMs": 40,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 14037,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4860
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "combined",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 14439,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4954
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "combined",
+          "profile": "fastly-native",
+          "status": "passed",
+          "durationMs": 13284,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4671
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-javascript",
+          "status": "passed",
+          "durationMs": 4460,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 901
+          }
+        },
+        {
+          "command": "buildProject",
+          "form": "combined",
+          "profile": "fastly-javascript",
+          "status": "passed",
+          "durationMs": 71,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "runProjectTests",
+          "form": "combined",
+          "profile": "fastly-javascript",
+          "status": "passed",
+          "durationMs": 67,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "compileNativeProjectInMemory",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "failed",
+          "durationMs": 2485,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1016
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-native",
+          "status": "failed",
+          "durationMs": 17,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "node-javascript",
+          "status": "failed",
+          "durationMs": 12,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-native",
+          "status": "failed",
+          "durationMs": 12,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "inspectProject",
+          "form": "combined",
+          "profile": "fastly-javascript",
+          "status": "failed",
+          "durationMs": 12,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        }
+      ]
+    }
+  ],
+  "installedJWT": {
+    "status": "passed",
+    "durationMs": 290358,
+    "installed": {
+      "packages": [
+        {
+          "name": "@pulse-compute/cli",
+          "version": "1.0.0-beta.9",
+          "sha256": "719ec03d98e7d7ee54fe83ff4a0cfe355f9ab75a24d8cfd2048a29ad411140f6"
+        },
+        {
+          "name": "@pulse-compute/crypto",
+          "version": "1.0.0-beta.9",
+          "sha256": "43048741db816e5ed11f529194cc46a09212ed887cc41d9a8f5126873abac06a"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "version": "1.0.0-beta.9",
+          "sha256": "f52e9ab038b066ed8409e8f731457c2b1013a8050ffd98c7d922fc52940392fd"
+        },
+        {
+          "name": "@pulse-compute/provider-fastly",
+          "version": "1.0.0-beta.9",
+          "sha256": "97b26c43f261be87c9768b375d08cefa44e19a3e8f025927173420dd51c1fe51"
+        },
+        {
+          "name": "@pulse-compute/provider-node",
+          "version": "1.0.0-beta.9",
+          "sha256": "f9a3cfc50051798a6c99c9bdb9a9dbb1d51ffd7632dbfa3369fc9282f91c3d1e"
+        },
+        {
+          "name": "@pulse-compute/pulse",
+          "version": "1.0.0-beta.9",
+          "sha256": "6bd70212b52d4613aa65352d7e83ae5d335f106f9eb273df0ab8c2e21c6157fb"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "version": "1.0.0-beta.9",
+          "sha256": "c7a9cc9b14c60f02e9dc33464a33334ae1ca4103a544f84cac2d5770ad6fc471"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "version": "1.0.0-beta.9",
+          "sha256": "314c8ab3f4417c47b927aef7c4f310f0b4b651e53b170fca4e652b239ed90374"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "version": "1.0.0-beta.9",
+          "sha256": "99970a789f861c04b2a884ac16353bb54739727fee589e213e7ee4ca9e70b696"
+        },
+        {
+          "name": "@pulse-compute/wasm-compiler",
+          "version": "1.0.0-beta.9",
+          "sha256": "6ed69ec7c8894cae0f3252cd2fbe12577b7c09932c81f1173d16a28aacfc2ef6"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "version": "1.0.0-beta.9",
+          "sha256": "8fbcfe76bcc26b7640cf329a4e997548077d5ce5cb9255cd7b7d38257b9161f3"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "version": "1.0.0-beta.9",
+          "sha256": "97ecf5b87a81d4808446518f31066b66d8371acc92e15bdbc3a61bfe0b6e2695"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "version": "1.0.0-beta.9",
+          "sha256": "e6431b32b468483dc64905cd09d7fdfc4ab6a592ef2666ad1a576400137b2417"
+        },
+        {
+          "name": "@pulse-compute/wasm-library-kit",
+          "version": "1.0.0-beta.9",
+          "sha256": "c7dd2073f1abadbb34d8df2ee4afde4e17232ccf48be426ba45aafcd6bf178b5"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "version": "1.0.0-beta.9",
+          "sha256": "5727840e18bc7208d9c9074f1a76db6938f96229acbdbe7f627988c1200e0dfc"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "version": "1.0.0-beta.9",
+          "sha256": "e82f4b256bf6814987edb46ac2bcc0e9ec72ed2426ba0a774a5b5f090f0f40d4"
+        }
+      ],
+      "files": 993,
+      "sha256": "4d41cd1b062ed8e23af1d7099039be9989be8fcff97bf7b7be2bff54a3f901a8",
+      "unchanged": true
+    },
+    "cells": [
+      {
+        "algorithm": "HS256",
+        "profile": "node-javascript",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "javascript-source-package",
+        "commands": [
+          "test",
+          "build",
+          "dev"
+        ],
+        "devExit": 0
+      },
+      {
+        "algorithm": "HS256",
+        "profile": "node-native",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "native-provider",
+        "commands": [
+          "test",
+          "build",
+          "dev"
+        ],
+        "wasmSha256": "973cebf11803909eac7a33d45bbb26f7303fac1910b0b0f5dbfc998ad6189ad2",
+        "devExit": 0
+      },
+      {
+        "algorithm": "HS256",
+        "profile": "fastly-javascript",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "javascript-source-package",
+        "commands": [
+          "test",
+          "build",
+          "dev"
+        ],
+        "devExit": 0
+      },
+      {
+        "algorithm": "HS256",
+        "profile": "fastly-native",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "native-provider",
+        "commands": [
+          "test",
+          "build",
+          "dev"
+        ],
+        "wasmSha256": "15acf78108689c4405454f19a4d75ba5f7af5cee5a56b47ab8adce9b34d88e28",
+        "devExit": 0
+      },
+      {
+        "algorithm": "ES256",
+        "profile": "node-javascript",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "javascript-source-package",
+        "commands": [
+          "test",
+          "build",
+          "dev"
+        ],
+        "devExit": 0
+      },
+      {
+        "algorithm": "ES256",
+        "profile": "node-native",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "native-provider",
+        "commands": [
+          "test",
+          "build",
+          "dev"
+        ],
+        "wasmSha256": "8b9ae825914be5709e0c6e15baf761402b313698ba72867b4922014aac92a8a9",
+        "devExit": 0
+      },
+      {
+        "algorithm": "ES256",
+        "profile": "fastly-javascript",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "javascript-source-package",
+        "commands": [
+          "test",
+          "build",
+          "dev"
+        ],
+        "devExit": 0
+      },
+      {
+        "algorithm": "ES256",
+        "profile": "fastly-native",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "native-provider",
+        "commands": [
+          "test",
+          "build",
+          "dev"
+        ],
+        "wasmSha256": "efb7ec48f4d15dbc5170531c058f177a24f2dd4e84fab567530c84ed45522ab6",
+        "devExit": 0
+      },
+      {
+        "algorithm": "RS256",
+        "profile": "node-javascript",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "javascript-source-package",
+        "commands": [
+          "doctor",
+          "inspect",
+          "test",
+          "build",
+          "dev"
+        ],
+        "devExit": 0
+      },
+      {
+        "algorithm": "RS256",
+        "profile": "node-native",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "native-provider",
+        "commands": [
+          "doctor",
+          "inspect",
+          "test",
+          "build",
+          "dev"
+        ],
+        "wasmSha256": "a5b63ce32ad2b5ec8b0d9f78b879ecc0468e0b509d5158901c07ab78dc2107a5",
+        "devExit": 0
+      },
+      {
+        "algorithm": "RS256",
+        "profile": "fastly-javascript",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "javascript-source-package",
+        "commands": [
+          "doctor",
+          "inspect",
+          "test",
+          "build",
+          "dev"
+        ],
+        "devExit": 0
+      },
+      {
+        "algorithm": "RS256",
+        "profile": "fastly-native",
+        "cases": {
+          "total": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "buildMode": "native-provider",
+        "commands": [
+          "doctor",
+          "inspect",
+          "test",
+          "build",
+          "dev"
+        ],
+        "wasmSha256": "9724a334dddae3a7d28874ad21319e961b7ea072f4728fd317545d56f5806fd4",
+        "devExit": 0
+      }
+    ],
+    "composition": [
+      {
+        "name": "signature + SHA-256",
+        "profile": "node-javascript",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "signature + SHA-256",
+        "profile": "node-native",
+        "status": "ineligible",
+        "diagnosticCodes": [
+          "PULSE_GUEST_UNIT_START_MISMATCH"
+        ]
+      },
+      {
+        "name": "signature + SHA-256",
+        "profile": "fastly-javascript",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "signature + SHA-256",
+        "profile": "fastly-native",
+        "status": "ineligible",
+        "diagnosticCodes": [
+          "PULSE_GUEST_UNIT_START_MISMATCH"
+        ]
+      },
+      {
+        "name": "signature + HMAC",
+        "profile": "node-javascript",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "signature + HMAC",
+        "profile": "node-native",
+        "status": "ineligible",
+        "diagnosticCodes": [
+          "PULSE_GUEST_UNIT_START_MISMATCH"
+        ]
+      },
+      {
+        "name": "signature + HMAC",
+        "profile": "fastly-javascript",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "signature + HMAC",
+        "profile": "fastly-native",
+        "status": "ineligible",
+        "diagnosticCodes": [
+          "PULSE_GUEST_UNIT_START_MISMATCH"
+        ]
+      },
+      {
+        "name": "signature + S3",
+        "profile": "node-javascript",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "signature + S3",
+        "profile": "node-native",
+        "status": "ineligible",
+        "diagnosticCodes": [
+          "PULSE_GUEST_UNIT_START_MISMATCH"
+        ]
+      },
+      {
+        "name": "signature + S3",
+        "profile": "fastly-javascript",
+        "status": "ineligible",
+        "diagnosticCodes": [
+          "PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
+          "PULSE_JWT_PROVIDER_CAPABILITY_REQUIRED"
+        ]
+      },
+      {
+        "name": "signature + S3",
+        "profile": "fastly-native",
+        "status": "ineligible",
+        "diagnosticCodes": [
+          "PULSE_GUEST_UNIT_START_MISMATCH"
+        ]
+      },
+      {
+        "name": "ES256 + RS256 signing",
+        "profile": "node-javascript",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "ES256 + RS256 signing",
+        "profile": "node-native",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "ES256 + RS256 signing",
+        "profile": "fastly-javascript",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "ES256 + RS256 signing",
+        "profile": "fastly-native",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "ES256 + RS256 verification",
+        "profile": "node-javascript",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "ES256 + RS256 verification",
+        "profile": "node-native",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "ES256 + RS256 verification",
+        "profile": "fastly-javascript",
+        "status": "built",
+        "diagnosticCodes": []
+      },
+      {
+        "name": "ES256 + RS256 verification",
+        "profile": "fastly-native",
+        "status": "ineligible",
+        "diagnosticCodes": [
+          "PULSE_FASTLY_NATIVE_JWT_CRYPTO_REALIZATION_INVALID"
+        ]
+      }
+    ],
+    "cleanup": {
+      "status": "passed",
+      "checks": 12,
+      "algorithms": [
+        "HS256",
+        "ES256",
+        "RS256"
+      ],
+      "provider": "node-javascript",
+      "injectedCryptoFailure": true
+    },
+    "fixtures": {
+      "installed-fixture.cjs": "30c01361bb53f66d758ee4aa22653c249e850f2b7f49212fc5c28e69b2df4430",
+      "installed-cleanup.mjs": "d158572bf00bbeb315207ee67e4266c0735116f394a4f7bf9305cf15d8c97551",
+      "compile-metrics.cjs": "8c6baecb2f39b9b5083d3d1f424cfcfeabb1c60fd7b74500128883059020e1c4"
+    }
+  },
+  "installedCommandCount": 66,
+  "immutableInspection": {
+    "candidate": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+    "tree": "6fc0ccd355feddf06cda36e0e13baec201a9d8de",
+    "workingTree": "",
+    "input": {
+      "relative": "packages/crypto/guests/es256-rustcrypto/prebuilt/es256-verifier.wasm",
+      "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+      "bytes": 36378
+    },
+    "toolchain": {
+      "name": "binaryen",
+      "version": "129.0.0-nightly.20260428",
+      "tools": [
+        {
+          "name": "wasm-as",
+          "sha256": "de7e6f417519fdd1498903829741c64bf0ea5d59965a6b33249b1db2e34ffc47"
+        },
+        {
+          "name": "wasm-dis",
+          "sha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae"
+        },
+        {
+          "name": "wasm-merge",
+          "sha256": "2e917a96093675895515c8b5677a4f21200488a6dc5ce3590c4acd9cbf577ba2"
+        },
+        {
+          "name": "wasm-opt",
+          "sha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56"
+        }
+      ]
+    },
+    "environmentSha256": "ac55228dad677404c1a9b7c1d5067a149822ddc7f4bb23d184478db21e018930",
+    "inspectorSha256": "8c0169b499dbdc4cf3304ba224270c27bf6e3d455c4f51a42cfe1a7eca0fbbea",
+    "samples": [
+      {
+        "elapsedMs": 574.640677,
+        "inspectionSha256": "d01cdb26f4b70c43ab85f7a73bf97a8503ca86909a9631223461e725ab989728",
+        "projectedSha256": "cf363decd014212d8c90beac9cab397c94163bfbe4e617445e99e45e821505de"
+      },
+      {
+        "elapsedMs": 547.9831909999998,
+        "inspectionSha256": "d01cdb26f4b70c43ab85f7a73bf97a8503ca86909a9631223461e725ab989728",
+        "projectedSha256": "cf363decd014212d8c90beac9cab397c94163bfbe4e617445e99e45e821505de"
+      },
+      {
+        "elapsedMs": 522.6343239999997,
+        "inspectionSha256": "d01cdb26f4b70c43ab85f7a73bf97a8503ca86909a9631223461e725ab989728",
+        "projectedSha256": "cf363decd014212d8c90beac9cab397c94163bfbe4e617445e99e45e821505de"
+      }
+    ],
+    "calls": [
+      {
+        "name": "wasm-opt",
+        "args": [
+          "--version"
+        ],
+        "inputFiles": [],
+        "toolSha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56",
+        "status": 0,
+        "elapsedMs": 159.515985
+      },
+      {
+        "name": "wasm-dis",
+        "args": [
+          "--version"
+        ],
+        "inputFiles": [],
+        "toolSha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae",
+        "status": 0,
+        "elapsedMs": 157.677688
+      },
+      {
+        "name": "wasm-opt",
+        "args": [
+          "<wasm-input>",
+          "--mvp-features",
+          "--print-features",
+          "-o",
+          "<output>"
+        ],
+        "inputFiles": [
+          {
+            "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+            "bytes": 36378
+          }
+        ],
+        "toolSha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56",
+        "status": 0,
+        "elapsedMs": 281.022788
+      },
+      {
+        "name": "wasm-dis",
+        "args": [
+          "<wasm-input>",
+          "--mvp-features",
+          "-o",
+          "<output>"
+        ],
+        "inputFiles": [
+          {
+            "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+            "bytes": 36378
+          }
+        ],
+        "toolSha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae",
+        "status": 0,
+        "elapsedMs": 245.62400100000002
+      },
+      {
+        "name": "wasm-opt",
+        "args": [
+          "--version"
+        ],
+        "inputFiles": [],
+        "toolSha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56",
+        "status": 0,
+        "elapsedMs": 156.87554099999988
+      },
+      {
+        "name": "wasm-dis",
+        "args": [
+          "--version"
+        ],
+        "inputFiles": [],
+        "toolSha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae",
+        "status": 0,
+        "elapsedMs": 139.9148909999999
+      },
+      {
+        "name": "wasm-opt",
+        "args": [
+          "<wasm-input>",
+          "--mvp-features",
+          "--print-features",
+          "-o",
+          "<output>"
+        ],
+        "inputFiles": [
+          {
+            "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+            "bytes": 36378
+          }
+        ],
+        "toolSha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56",
+        "status": 0,
+        "elapsedMs": 285.82336599999985
+      },
+      {
+        "name": "wasm-dis",
+        "args": [
+          "<wasm-input>",
+          "--mvp-features",
+          "-o",
+          "<output>"
+        ],
+        "inputFiles": [
+          {
+            "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+            "bytes": 36378
+          }
+        ],
+        "toolSha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae",
+        "status": 0,
+        "elapsedMs": 222.63186399999995
+      },
+      {
+        "name": "wasm-opt",
+        "args": [
+          "--version"
+        ],
+        "inputFiles": [],
+        "toolSha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56",
+        "status": 0,
+        "elapsedMs": 159.92640699999993
+      },
+      {
+        "name": "wasm-dis",
+        "args": [
+          "--version"
+        ],
+        "inputFiles": [],
+        "toolSha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae",
+        "status": 0,
+        "elapsedMs": 153.88362899999993
+      },
+      {
+        "name": "wasm-opt",
+        "args": [
+          "<wasm-input>",
+          "--mvp-features",
+          "--print-features",
+          "-o",
+          "<output>"
+        ],
+        "inputFiles": [
+          {
+            "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+            "bytes": 36378
+          }
+        ],
+        "toolSha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56",
+        "status": 0,
+        "elapsedMs": 258.42749399999957
+      },
+      {
+        "name": "wasm-dis",
+        "args": [
+          "<wasm-input>",
+          "--mvp-features",
+          "-o",
+          "<output>"
+        ],
+        "inputFiles": [
+          {
+            "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+            "bytes": 36378
+          }
+        ],
+        "toolSha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae",
+        "status": 0,
+        "elapsedMs": 219.3870340000003
+      }
+    ],
+    "byteChecks": [
+      0.20407499999964784,
+      0.11991900000020905,
+      0.06480699999974604,
+      0.13168699999960154,
+      0.06683000000020911,
+      0.08263400000032561,
+      0.06042999999999665,
+      0.1097740000000158,
+      0.07427199999983713,
+      0.08780099999967206,
+      0.0846969999997782,
+      0.05604399999992893,
+      0.05261900000004971,
+      0.05002500000000509,
+      0.05541300000004412,
+      0.0829039999998713,
+      0.08344499999975596,
+      0.13569300000017392,
+      0.06127100000003338,
+      0.12463600000000952
+    ],
+    "scope": "Three independent inspections of one exact immutable prebuilt input with identical options and pinned tools. Version calls are a startup proxy, not an additive removable-cost measurement. No inspection is skipped."
+  },
+  "workerBarrier": {
+    "control": {
+      "candidate": {
+        "sourceRevision": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+        "sourceTree": "6fc0ccd355feddf06cda36e0e13baec201a9d8de",
+        "workingTree": ""
+      },
+      "inputs": {
+        "dependenciesSha256": "90fa2d722af4729073badfc40bd3d51b50eb9ff6c649184c9c2d3a8a7bae1ec0",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      },
+      "rows": [
+        {
+          "name": "inputIdentity.first",
+          "elapsedMs": 793.466416
+        },
+        {
+          "name": "inputIdentity.repeat",
+          "elapsedMs": 716.6408019999999
+        },
+        {
+          "name": "inputIdentity.repeat",
+          "elapsedMs": 788.6832430000002
+        },
+        {
+          "name": "prepareWorkspaces",
+          "elapsedMs": 3173.1311090000004
+        },
+        {
+          "name": "worker.inputIdentity",
+          "elapsedMs": 820.9928989999999
+        },
+        {
+          "name": "preTask.verifyWorker",
+          "elapsedMs": 836.3036199999997
+        },
+        {
+          "name": "cleanup.first",
+          "elapsedMs": 1772.6157470000007
+        },
+        {
+          "name": "cleanup.reconcile",
+          "elapsedMs": 1708.4113579999994
+        },
+        {
+          "name": "preTask.verifyWorker",
+          "elapsedMs": 846.2505600000004
+        },
+        {
+          "name": "cleanup.first",
+          "elapsedMs": 1686.3811589999987
+        },
+        {
+          "name": "cleanup.reconcile",
+          "elapsedMs": 1734.085142
+        },
+        {
+          "name": "preTask.verifyWorker",
+          "elapsedMs": 892.509693
+        },
+        {
+          "name": "cleanup.first",
+          "elapsedMs": 1751.1478060000009
+        },
+        {
+          "name": "cleanup.reconcile",
+          "elapsedMs": 1710.6839809999983
+        },
+        {
+          "name": "cleanupWorkspaces",
+          "elapsedMs": 339.5965099999994
+        }
+      ],
+      "scope": "Bounded empty-worker barrier diagnostic; no tasks skipped, no seal qualification, all byte checks retained",
+      "clean": {
+        "sourceRevision": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+        "sourceTree": "6fc0ccd355feddf06cda36e0e13baec201a9d8de",
+        "workingTree": ""
+      }
+    },
+    "observed": {
+      "candidate": {
+        "sourceRevision": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+        "sourceTree": "6fc0ccd355feddf06cda36e0e13baec201a9d8de",
+        "workingTree": ""
+      },
+      "inputs": {
+        "dependenciesSha256": "90fa2d722af4729073badfc40bd3d51b50eb9ff6c649184c9c2d3a8a7bae1ec0",
+        "dependencyFiles": 9496,
+        "buildSha256": "240b05e99fcc3cf020eef63aafaa41ce9cb322c26b074746f075363d57586676",
+        "build": [
+          {
+            "path": "packages/assets/dist",
+            "kind": "directory",
+            "sha256": "6c9c973e6b28a0b0a901f74a84cc919cc7f4ccf5a1012d384c29c395c4acddf7"
+          },
+          {
+            "path": "packages/crypto/dist",
+            "kind": "directory",
+            "sha256": "90b9d5c5374122d69c5bc3ccb82e35a912617f740c8d89dcddbed627f784f25a"
+          },
+          {
+            "path": "packages/entities/dist",
+            "kind": "directory",
+            "sha256": "96ea2cd471f4fa02a4fada0bcd63265d6dee172bc5a3b2d2b2f7b8cdf4c8af85"
+          },
+          {
+            "path": "packages/grip/dist",
+            "kind": "directory",
+            "sha256": "79c4f05100478d18bc1adc4e19f9c4a2881817e57c94013f90c852d2c30d7f60"
+          },
+          {
+            "path": "packages/jwt/dist",
+            "kind": "directory",
+            "sha256": "ca13b8cd8a6067be796b9ee0940e55a793d57469cd2c43b2ef87f5a552d87561"
+          },
+          {
+            "path": "packages/provider-fastly/dist",
+            "kind": "directory",
+            "sha256": "4935c3fe391baeb753200c5740b600724df3a10c2bfb0fecd831b40c87eeb967"
+          }
+        ]
+      },
+      "rows": [
+        {
+          "name": "inputIdentity.first",
+          "elapsedMs": 797.745852
+        },
+        {
+          "name": "inputIdentity.repeat",
+          "elapsedMs": 790.556691
+        },
+        {
+          "name": "inputIdentity.repeat",
+          "elapsedMs": 774.5373910000001
+        },
+        {
+          "name": "prepareWorkspaces",
+          "elapsedMs": 4376.958804
+        },
+        {
+          "name": "worker.inputIdentity",
+          "elapsedMs": 896.6636980000003
+        },
+        {
+          "name": "preTask.verifyWorker",
+          "elapsedMs": 909.4866490000004
+        },
+        {
+          "name": "cleanup.first",
+          "elapsedMs": 1726.8129869999993
+        },
+        {
+          "name": "cleanup.reconcile",
+          "elapsedMs": 1698.7967250000002
+        },
+        {
+          "name": "preTask.verifyWorker",
+          "elapsedMs": 849.0402599999998
+        },
+        {
+          "name": "cleanup.first",
+          "elapsedMs": 1744.9571830000004
+        },
+        {
+          "name": "cleanup.reconcile",
+          "elapsedMs": 1723.9400850000002
+        },
+        {
+          "name": "preTask.verifyWorker",
+          "elapsedMs": 872.5668480000004
+        },
+        {
+          "name": "cleanup.first",
+          "elapsedMs": 1733.8721940000032
+        },
+        {
+          "name": "cleanup.reconcile",
+          "elapsedMs": 1781.6108849999982
+        },
+        {
+          "name": "cleanupWorkspaces",
+          "elapsedMs": 351.88603299999886
+        }
+      ],
+      "scope": "Bounded empty-worker barrier diagnostic; no tasks skipped, no seal qualification, all byte checks retained",
+      "clean": {
+        "sourceRevision": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+        "sourceTree": "6fc0ccd355feddf06cda36e0e13baec201a9d8de",
+        "workingTree": ""
+      }
+    },
+    "scope": "One ordered microcomparison, no global overhead confidence or full-release wall saving claim."
+  },
+  "unitValidation": {
+    "status": "passed",
+    "completedTasks": 65,
+    "durationMs": 297257,
+    "runId": "2026-10-18T07-34-32-602Z--45"
+  },
+  "qualificationLimitations": [
+    "Original checkout attempt failed cleanliness; preserved separately.",
+    "Five auxiliary fresh child traces lack terminal records.",
+    "Final analyzer and trace-cap fix postdate measured candidate; focused checks and unit suite cover final code.",
+    "Unit validation passed 65 tasks but left one S3 fixture directory; hashes retained and owned directory removed."
+  ],
+  "sourceIdentities": [
+    {
+      "path": "wasm/test/support/phase-observer.cjs",
+      "sha256": "cdd3a148553ed466ed368afad49eabe28c872d59bfca09231bf6cf3f8cc96b92"
+    },
+    {
+      "path": "wasm/test/jwt/assert-jwt-rs256.cjs",
+      "sha256": "11db2d9feae680be121740b37aefdc6de322d7b48dc59ddb06a3ed28707b569a"
+    },
+    {
+      "path": "wasm/test/jwt/assert-jwt-installed-workflow.cjs",
+      "sha256": "a3a0c9d6ff731447193dd8a63265648a873122fb688f7e9984d11ef2dbb563c4"
+    },
+    {
+      "path": "wasm/test/release/assert-clean-machine-acceptance.cjs",
+      "sha256": "8c7be5b8ea502155d95c2eb44fad187d3b383a759d3204871c42a088984f3d43"
+    },
+    {
+      "path": "scripts/release-parallel.cjs",
+      "sha256": "cb5b1f46fc8aa0ab45f71d3f48df05cc11cbf5da2c66a58a8459cdebab63274d"
+    },
+    {
+      "path": "scripts/release-checkpoints.cjs",
+      "sha256": "f1ff6034b409b851fce63b0deebc9d8e42de83a56088e92ec19e004caecc48d4"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3"
+    }
+  ]
+}

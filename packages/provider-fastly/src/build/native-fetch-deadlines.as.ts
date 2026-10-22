@@ -73,10 +73,11 @@ function __pulse_fetch_retire_all(): void {
   for (let i = 0; i < PULSE_FASTLY_EFFECT_COUNT; i++) if (__pulse_fetch_active(i)) __pulse_fetch_retire(i, -2)
 }
 function __pulse_fetch_reap(): void {
-  const detail = new StaticArray<i32>(4), done = new StaticArray<i32>(1)
+  const detail = new StaticArray<i32>(__PULSE_SEND_ERROR_DETAIL_WORDS), done = new StaticArray<i32>(1)
   const response = new StaticArray<i32>(1), body = new StaticArray<i32>(1)
   for (let i = __pulse_fetch_retired.length - 1; i >= 0; i--) {
     done[0] = 0
+    __pulse_send_error_detail_reset(changetype<usize>(detail))
     const status = __pulse_fetch_poll(__pulse_fetch_retired[i], changetype<usize>(detail), changetype<usize>(done), changetype<usize>(response), changetype<usize>(body))
     if (status == 0 && done[0] == 0) continue
     if (status == 0 && done[0] == 1) { __pulse_fetch_close_response(response[0]); __pulse_fetch_close_body(body[0]) }
@@ -99,7 +100,7 @@ function __pulse_fetch_take(index: i32): i32 {
 }
 function __pulse_fetch_wait(index: i32): i32 {
   const handles = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT), selected = new StaticArray<i32>(1)
-  const detail = new StaticArray<i32>(4), done = new StaticArray<i32>(1)
+  const detail = new StaticArray<i32>(__PULSE_SEND_ERROR_DETAIL_WORDS), done = new StaticArray<i32>(1)
   const response = new StaticArray<i32>(1), body = new StaticArray<i32>(1)
   while (!__pulse_fetch_completed[index]) {
     if (!__pulse_fetch_request_check(index)) { __pulse_fetch_retire_all(); return 0 }
@@ -112,9 +113,11 @@ function __pulse_fetch_wait(index: i32): i32 {
       if (!__pulse_fetch_active(i)) continue
       if (__pulse_fetch_remaining(i, now) <= 0) { __pulse_fetch_retire(i, -1); continue }
       done[0] = 0
+      __pulse_send_error_detail_reset(changetype<usize>(detail))
       const status = __pulse_fetch_poll(__pulse_fastly_pending[i], changetype<usize>(detail), changetype<usize>(done), changetype<usize>(response), changetype<usize>(body))
       now = __pulse_fetch_clock(i)
       if (status != 0) {
+        __pulse_transport_capture(i, status, 'poll', changetype<usize>(detail))
         __pulse_fetch_complete(i, now < 0 ? -2 : __pulse_fetch_remaining(i, now) <= 0 ? -1 : status)
         if (now < 0) { __pulse_fetch_retire_all(); return 0 }
         continue

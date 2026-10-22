@@ -1,0 +1,1079 @@
+{
+  "schemaVersion": "pulse.context-fastly-local.v1",
+  "status": "passed",
+  "providerReality": "actual-local-fastly-cli-and-viceroy",
+  "deployed": false,
+  "injectedAbiExecution": false,
+  "limitations": [
+    "Local acceptance only; not deployed service qualification.",
+    "RSS samples cover CLI/Viceroy processes, not guest allocations or peak live heap.",
+    "Guest live allocation counts, retained-byte counters and peak committed pages are unavailable through this host HTTP surface.",
+    "Each Viceroy request uses a fresh instance; repeated requests do not claim retained-instance execution."
+  ],
+  "variants": [
+    {
+      "name": "shipped",
+      "configSha256": "fcd5491ef0175118542ec7c49fa2479502962b4f22dd2826efc0a5dada90fc4f",
+      "moduleSha256": "25349f157dd40e14b5c9b28d3badfcf115ed89b0d24ee98a9c95c8f2817722e2",
+      "moduleBytes": 1046697,
+      "compileMs": 40369.649613,
+      "applicationEntrySha256": "77108139b770d957434a55dc736cf31a938b1dae685d4a6ec97820778fb43dfd",
+      "receipts": {
+        "pulse-build.json": "e12499f6ccdfc3a4ae942f1d717d5fa111a91dceadf3a8f6dbb6ac952bf27579",
+        "fastly-build.json": "99e72fd30044159b015f49537c363cbe21abbcad9ec8243769bbc5a83e20ca5f",
+        "fastly-native-manifest.json": "f3672424da2173f40bb893502e38d5d791f8e63320310ed1612ec35428f45e1a"
+      },
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "header_values_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "header_names_get",
+          "kind": "function"
+        }
+      ],
+      "memory": {
+        "initialBytes": 786432,
+        "maximumBytes": 268435456,
+        "runtimePeakBytes": null,
+        "liveAllocationCount": null,
+        "retainedBudgetBytes": null
+      },
+      "servingDirectory": "/workspace/scratch/d3826bbd4bf5/pulse-10b/wasm/.test-results/mcp-installed-0rawzi/fastly-local/shipped",
+      "sourceFreeServingDirectory": true,
+      "configuredBackends": 0,
+      "dynamicBackends": false,
+      "buildReadGuard": "trusted-tooling content reads and CommonJS resolution restricted to installed consumer; not a hostile-code sandbox",
+      "launch": {
+        "command": "/tmp/pulse-10a-tools/fastly",
+        "args": [
+          "compute",
+          "serve",
+          "--dir",
+          "/workspace/scratch/d3826bbd4bf5/pulse-10b/wasm/.test-results/mcp-installed-0rawzi/fastly-local/shipped",
+          "--file",
+          "/workspace/scratch/d3826bbd4bf5/pulse-10b/wasm/.test-results/mcp-installed-0rawzi/fastly-local/shipped/bin/main.wasm",
+          "--addr",
+          "127.0.0.1:33995",
+          "--viceroy-path",
+          "/tmp/467-recovery-tools/viceroy"
+        ],
+        "rssBefore": null,
+        "rssAfter": null
+      },
+      "requests": 44,
+      "latencyMs": {
+        "first": 5.450137000007089,
+        "median": 1.5918260000034934,
+        "maximum": 31.490533999996842
+      },
+      "logs": {
+        "stdout": "470f7bc3ac469c9e1343fc04a8235e59dd83e9cfefa297a143c1291e80b2e404",
+        "stderr": "4e92dab9140865cd79b09cb951af2168b7af418f9b501e7339e0fb453a498225"
+      },
+      "engineCompletionHeap": {
+        "meaning": "Viceroy rounded completed-request WebAssembly heap log; not peak live heap or allocation count",
+        "samples": 60,
+        "distribution": {
+          "3.9 MB": 50,
+          "7.9 MB": 10
+        }
+      },
+      "cleanup": {
+        "status": "passed",
+        "exitCode": 1,
+        "signal": null,
+        "descendantProcessObservation": "unavailable"
+      }
+    },
+    {
+      "name": "legacy-opt-in",
+      "configSha256": "fcd5491ef0175118542ec7c49fa2479502962b4f22dd2826efc0a5dada90fc4f",
+      "moduleSha256": "247be27293f61b121eac5e522eb6ffe615c2b7fbdcbafb8bc29e87b2e08164c8",
+      "moduleBytes": 1047410,
+      "compileMs": 42630.37573299999,
+      "applicationEntrySha256": "37652b26a79f5e6aad4f98f29e27dabf17933a684aae42f9f5a85e08a064b1d3",
+      "receipts": {
+        "pulse-build.json": "8215d438d9c555557492e8ccc45129f014707e9b7f4f8ea495baf4e2d69ce450",
+        "fastly-build.json": "7c80409bf36fce9d339d18f31acbaa57ec5ac1f04ca19fee91a6ff380872bbeb",
+        "fastly-native-manifest.json": "a94cbd4a7de6f53a41d462811686796f192986c942ce259bb5460810daad251b"
+      },
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "header_values_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "header_names_get",
+          "kind": "function"
+        }
+      ],
+      "memory": {
+        "initialBytes": 786432,
+        "maximumBytes": 268435456,
+        "runtimePeakBytes": null,
+        "liveAllocationCount": null,
+        "retainedBudgetBytes": null
+      },
+      "servingDirectory": "/workspace/scratch/d3826bbd4bf5/pulse-10b/wasm/.test-results/mcp-installed-0rawzi/fastly-local/legacy-opt-in",
+      "sourceFreeServingDirectory": true,
+      "configuredBackends": 0,
+      "dynamicBackends": false,
+      "buildReadGuard": "trusted-tooling content reads and CommonJS resolution restricted to installed consumer; not a hostile-code sandbox",
+      "launch": {
+        "command": "/tmp/pulse-10a-tools/fastly",
+        "args": [
+          "compute",
+          "serve",
+          "--dir",
+          "/workspace/scratch/d3826bbd4bf5/pulse-10b/wasm/.test-results/mcp-installed-0rawzi/fastly-local/legacy-opt-in",
+          "--file",
+          "/workspace/scratch/d3826bbd4bf5/pulse-10b/wasm/.test-results/mcp-installed-0rawzi/fastly-local/legacy-opt-in/bin/main.wasm",
+          "--addr",
+          "127.0.0.1:35995",
+          "--viceroy-path",
+          "/tmp/467-recovery-tools/viceroy"
+        ],
+        "rssBefore": null,
+        "rssAfter": null
+      },
+      "requests": 45,
+      "latencyMs": {
+        "first": 3.898341000007349,
+        "median": 1.887243999997736,
+        "maximum": 24.662629000013112
+      },
+      "logs": {
+        "stdout": "f682d0bc46e62b3d315a5f4f93dbb8fd4124d263c655f0fa83c1c879fa05b6f7",
+        "stderr": "4e92dab9140865cd79b09cb951af2168b7af418f9b501e7339e0fb453a498225"
+      },
+      "engineCompletionHeap": {
+        "meaning": "Viceroy rounded completed-request WebAssembly heap log; not peak live heap or allocation count",
+        "samples": 74,
+        "distribution": {
+          "3.9 MB": 65,
+          "7.9 MB": 9
+        }
+      },
+      "cleanup": {
+        "status": "passed",
+        "exitCode": 1,
+        "signal": null,
+        "descendantProcessObservation": "unavailable"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:legacy-explicit",
+      "status": 400,
+      "bytes": 146,
+      "sha256": "874d6a87fe79352cb87cc824a20c090c0a06aeda58035a56043acad773532616",
+      "wallMs": 5.450137000007089
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:modern-discovery",
+      "status": 200,
+      "bytes": 271,
+      "sha256": "11bf512c7552ff61cdb640ecddee6101aa5c8ace456a54d5e88e04ce5c8f4a0a",
+      "wallMs": 2.0443469999881927
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:id:0",
+      "status": 200,
+      "bytes": 17596,
+      "sha256": "b3b086a33d9d1a8c82aafce40b69de3754b5c010135a6044b83e0f7acc3551a0",
+      "wallMs": 2.596634000001359
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:id:-1",
+      "status": 200,
+      "bytes": 17597,
+      "sha256": "475d55cb5eddca4d54d0710869645fb680b8b01a7e8bb2cdc99c3313025e2d58",
+      "wallMs": 1.727578000005451
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:id:9007199254740991",
+      "status": 200,
+      "bytes": 17611,
+      "sha256": "1b1bd16ecbe70aaddb2ba8f1e03fa3dfc0aab8e9b644dcbc9882eeb17f2beef2",
+      "wallMs": 1.754216000001179
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:id:\"\"",
+      "status": 200,
+      "bytes": 17597,
+      "sha256": "728fc779105687d622fa996153756307b454b5de2c17a77c73085f6c361c31be",
+      "wallMs": 1.6976230000000214
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:id:\"雪\"",
+      "status": 200,
+      "bytes": 17600,
+      "sha256": "60c9606b0e7344abdd7dc00a4f50c5d65baf0f83ce5a1bd8268b6a8d3a8fa39d",
+      "wallMs": 1.8814749999874039
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:id:\"quote\\\"\\\\\\n\"",
+      "status": 200,
+      "bytes": 17608,
+      "sha256": "1be1c9cde6a346473dcbf1ab67c7bd5c380e75949fa4c49b1d7f7fc4a2462dc4",
+      "wallMs": 1.9303280000021914
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:invalid-id:null",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.6601580000133254
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:invalid-id:true",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.613337999995565
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:invalid-id:{}",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.3607740000006743
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:invalid-id:[]",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.5141419999999925
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:invalid-id:1.5",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.3823259999917354
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:invalid-id:9007199254740992",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.6677740000013728
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:notification:notifications/initialized",
+      "status": 202,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.5918260000034934
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:notification:tools/call",
+      "status": 202,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.6405490000033751
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:notification:unknown",
+      "status": 202,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.4646080000093207
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:disabled:unknown",
+      "status": 404,
+      "bytes": 86,
+      "sha256": "32762d253fda1cc1abbcde6444bf125dd58e30cb3bcccab370796b3fb1cee9ed",
+      "wallMs": 1.4228059999877587
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:disabled:resources/list",
+      "status": 404,
+      "bytes": 86,
+      "sha256": "32762d253fda1cc1abbcde6444bf125dd58e30cb3bcccab370796b3fb1cee9ed",
+      "wallMs": 1.5136810000112746
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:disabled:prompts/list",
+      "status": 404,
+      "bytes": 86,
+      "sha256": "32762d253fda1cc1abbcde6444bf125dd58e30cb3bcccab370796b3fb1cee9ed",
+      "wallMs": 1.2546170000132406
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:disabled:logging/setLevel",
+      "status": 404,
+      "bytes": 86,
+      "sha256": "32762d253fda1cc1abbcde6444bf125dd58e30cb3bcccab370796b3fb1cee9ed",
+      "wallMs": 1.4504170000000158
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:origin",
+      "status": 403,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.554230000008829
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:accept",
+      "status": 406,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.1030219999956898
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:type",
+      "status": 415,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.1372139999875799
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:encoding",
+      "status": 415,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.5479409999970812
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:oversize",
+      "status": 413,
+      "bytes": 81,
+      "sha256": "de935f2b8358b08c129a945dc13dce9f60800fcbf41238cdd23cbadafba7cf0b",
+      "wallMs": 1.1879979999939678
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:malformed",
+      "status": 400,
+      "bytes": 65,
+      "sha256": "f58f90c8659b85de7412f391e0e14a52f20f7f0d6e0d1437ad82c2809149f8a2",
+      "wallMs": 1.2350179999921238
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:batch",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.6412299999938114
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:depth",
+      "status": 400,
+      "bytes": 84,
+      "sha256": "eb763752181c29ffdbc7a1bce1a58545414b61295f88e1fd1132b06e3fd42d0e",
+      "wallMs": 1.3413759999966715
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:get",
+      "status": 405,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.4540730000007898
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:path",
+      "status": 404,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.5658129999937955
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:no-fallback:missing-meta",
+      "status": 400,
+      "bytes": 85,
+      "sha256": "70d0c50de0a5ccb36466183fe9163c737a1b9302dddc3d725a693c701f8aabdc",
+      "wallMs": 1.216590999989421
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:no-fallback:wrong-meta",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 1.4222660000086762
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:no-fallback:missing-method",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 1.7726190000103088
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:no-fallback:wrong-method",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 1.7756079999962822
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:no-fallback:wrong-protocol",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 1.9359649999969406
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:no-fallback:mixed-legacy",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 1.4408280000061495
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:unknown-tool",
+      "status": 400,
+      "bytes": 73,
+      "sha256": "635a18027ba9f3c98af95e41c623e9d56fb9a3be7daf70c6cc564565e5305f28",
+      "wallMs": 1.530666000006022
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:tool-schema-error",
+      "status": 200,
+      "bytes": 237,
+      "sha256": "4cdf4968e03e63cdb27345ba115482d87b257740fe30b10761572bc7366f85c5",
+      "wallMs": 1.5840590000007069
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:recovery:pulse.diagnostic",
+      "status": 200,
+      "bytes": 8675,
+      "sha256": "99ea4100265c638a0ced8ca92663da3a5b37f7f8a09e5bcc0529ab2ff33727f3",
+      "wallMs": 4.242740999994567
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:recovery:pulse.example",
+      "status": 200,
+      "bytes": 11968,
+      "sha256": "4ebc6ce9b17aaa5114e60c4b06e5b639039e366c1b69f07bb8580c9909133e98",
+      "wallMs": 5.247077000007266
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:recovery:pulse.read",
+      "status": 200,
+      "bytes": 15949,
+      "sha256": "3a1758bb5494c80e358b697c66aafa5cc050d44c2d19e9718be6f4ad609fcf68",
+      "wallMs": 31.490533999996842
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:recovery:pulse.search",
+      "status": 200,
+      "bytes": 14113,
+      "sha256": "fbbcb4dd289455d8c458b90e9e8356387d0ce7f7c2859547a869f43043f47eb0",
+      "wallMs": 8.912723999994341
+    },
+    {
+      "variant": "shipped",
+      "label": "2026-07-28:recovery:pulse.start",
+      "status": 200,
+      "bytes": 17093,
+      "sha256": "096df3066ff63be3ac2472635aded58dc6f84ce792d31e9aeb3a49872bf12faf",
+      "wallMs": 8.950088000012329
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:legacy-explicit",
+      "status": 200,
+      "bytes": 181,
+      "sha256": "60f82907427898716074ecbdd1872b7cca1e1f90b74a8171267d078e10c6e410",
+      "wallMs": 3.898341000007349
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:modern-discovery",
+      "status": 200,
+      "bytes": 271,
+      "sha256": "11bf512c7552ff61cdb640ecddee6101aa5c8ace456a54d5e88e04ce5c8f4a0a",
+      "wallMs": 2.2665059999999357
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:legacy-ping",
+      "status": 200,
+      "bytes": 36,
+      "sha256": "fcd8c77a7e0a0e2c93bf89cbf8b02c66255a80aca8114b348de69523a4f6d640",
+      "wallMs": 1.8854710000014165
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:id:0",
+      "status": 200,
+      "bytes": 17442,
+      "sha256": "c01df846a9c110ee8a4178b0b27c14c795edd32d70a3b9143ea438854d924a9f",
+      "wallMs": 2.170853999996325
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:id:-1",
+      "status": 200,
+      "bytes": 17443,
+      "sha256": "9fdb775d3055cedef54a114462f3c01fa9bb53add56f27c17da27697ad0849ce",
+      "wallMs": 1.9247290000057546
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:id:9007199254740991",
+      "status": 200,
+      "bytes": 17457,
+      "sha256": "0c50ea3f4ff529b26108336357088576f1bce9e1d697374baadf87ea02f984d1",
+      "wallMs": 1.871780999994371
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:id:\"\"",
+      "status": 200,
+      "bytes": 17443,
+      "sha256": "8a489855a599915c899ef00f15632edd606689d8ce13d1b206689059af77bc02",
+      "wallMs": 1.545587999993586
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:id:\"雪\"",
+      "status": 200,
+      "bytes": 17446,
+      "sha256": "c1c275facc32a205a2623febd04df83d37dddb1b48650fc4f2b8178f44718219",
+      "wallMs": 1.71585999999661
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:id:\"quote\\\"\\\\\\n\"",
+      "status": 200,
+      "bytes": 17454,
+      "sha256": "db728d9477118d3920018671ba73b8ce74f579cd3b9de299890c7ec95af99a6a",
+      "wallMs": 1.891631000005873
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:invalid-id:null",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 2.3465540000033798
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:invalid-id:true",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 3.821777999997721
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:invalid-id:{}",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.9786439999879804
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:invalid-id:[]",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.7506870000070194
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:invalid-id:1.5",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.7436909999960335
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:invalid-id:9007199254740992",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 2.103763999999501
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:notification:notifications/initialized",
+      "status": 202,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.617694999993546
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:notification:tools/call",
+      "status": 202,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.6659359999903245
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:notification:unknown",
+      "status": 202,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.5209619999950519
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:disabled:unknown",
+      "status": 404,
+      "bytes": 86,
+      "sha256": "32762d253fda1cc1abbcde6444bf125dd58e30cb3bcccab370796b3fb1cee9ed",
+      "wallMs": 2.9993950000061886
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:disabled:resources/list",
+      "status": 404,
+      "bytes": 86,
+      "sha256": "32762d253fda1cc1abbcde6444bf125dd58e30cb3bcccab370796b3fb1cee9ed",
+      "wallMs": 7.4432640000013635
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:disabled:prompts/list",
+      "status": 404,
+      "bytes": 86,
+      "sha256": "32762d253fda1cc1abbcde6444bf125dd58e30cb3bcccab370796b3fb1cee9ed",
+      "wallMs": 1.887243999997736
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:disabled:logging/setLevel",
+      "status": 404,
+      "bytes": 86,
+      "sha256": "32762d253fda1cc1abbcde6444bf125dd58e30cb3bcccab370796b3fb1cee9ed",
+      "wallMs": 2.8504200000024866
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:origin",
+      "status": 403,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.45096800000465
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:accept",
+      "status": 406,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 2.1123070000030566
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:type",
+      "status": 415,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.5483119999989867
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:encoding",
+      "status": 415,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.2686680000042543
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:oversize",
+      "status": 413,
+      "bytes": 81,
+      "sha256": "de935f2b8358b08c129a945dc13dce9f60800fcbf41238cdd23cbadafba7cf0b",
+      "wallMs": 1.466190999999526
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:malformed",
+      "status": 400,
+      "bytes": 65,
+      "sha256": "f58f90c8659b85de7412f391e0e14a52f20f7f0d6e0d1437ad82c2809149f8a2",
+      "wallMs": 1.59733899999992
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:batch",
+      "status": 400,
+      "bytes": 69,
+      "sha256": "c47a5ab50a5874749255ed682dfca09a2c6277763db812f1d25b8440827e5100",
+      "wallMs": 1.3530029999965336
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:depth",
+      "status": 400,
+      "bytes": 84,
+      "sha256": "eb763752181c29ffdbc7a1bce1a58545414b61295f88e1fd1132b06e3fd42d0e",
+      "wallMs": 1.5055380000121659
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:get",
+      "status": 405,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.522754999998142
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:path",
+      "status": 404,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wallMs": 1.3770080000103917
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:no-fallback:missing-meta",
+      "status": 400,
+      "bytes": 85,
+      "sha256": "70d0c50de0a5ccb36466183fe9163c737a1b9302dddc3d725a693c701f8aabdc",
+      "wallMs": 1.581852000002982
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:no-fallback:wrong-meta",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 6.926703000004636
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:no-fallback:missing-method",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 1.6835619999910705
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:no-fallback:wrong-method",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 1.569513000009465
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:no-fallback:wrong-protocol",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 3.2919830000028014
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:no-fallback:mixed-legacy",
+      "status": 400,
+      "bytes": 141,
+      "sha256": "6c150cc7ad895ee0fec0ceadbade6a73ed6362ee449f12356a616a9777818f0c",
+      "wallMs": 1.522423999995226
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:unknown-tool",
+      "status": 400,
+      "bytes": 73,
+      "sha256": "635a18027ba9f3c98af95e41c623e9d56fb9a3be7daf70c6cc564565e5305f28",
+      "wallMs": 2.100575000004028
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:tool-schema-error",
+      "status": 200,
+      "bytes": 116,
+      "sha256": "a3ad895513fcdbdf6eaf1532fb96e69e137d560b62763393ab5dc76c35c54bbf",
+      "wallMs": 6.86040600000706
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:recovery:pulse.diagnostic",
+      "status": 200,
+      "bytes": 8554,
+      "sha256": "0dbe06ae343e8afbe860b1138a2042fcfcf04d70248ceb15aafd6319c8efdef7",
+      "wallMs": 5.580700999998953
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:recovery:pulse.example",
+      "status": 200,
+      "bytes": 11847,
+      "sha256": "16c91e54c6a67a69a09c77f8bdc07576e42e4a9e542bb993489641054bd5f1c8",
+      "wallMs": 6.758394999997108
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:recovery:pulse.read",
+      "status": 200,
+      "bytes": 15828,
+      "sha256": "e5a347e56f75d907171a0a5764f21d0293c3f57ea688f8ad95166eebc51f7577",
+      "wallMs": 24.662629000013112
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:recovery:pulse.search",
+      "status": 200,
+      "bytes": 13992,
+      "sha256": "efa3b517b4075b8eafd4dd0a3395aebea00bd49eec63910878b3637b5f549dff",
+      "wallMs": 12.51661900000181
+    },
+    {
+      "variant": "legacy-opt-in",
+      "label": "2025-06-18:recovery:pulse.start",
+      "status": 200,
+      "bytes": 16972,
+      "sha256": "9124953e4958fec59b3d24e86de4f79c4037a25f0a62ec91b4ebfc8216723a49",
+      "wallMs": 6.468515999993542
+    }
+  ],
+  "failures": [],
+  "tools": {
+    "fastlyCli": {
+      "binary": "/tmp/pulse-10a-tools/fastly",
+      "version": "16.1.0",
+      "output": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-10-21)\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 16.2.0\nRun `fastly update` to get the latest version.",
+      "args": [
+        "version"
+      ],
+      "termination": "clean-exit",
+      "source": "environment",
+      "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+    },
+    "viceroy": {
+      "binary": "/tmp/467-recovery-tools/viceroy",
+      "version": "0.21.1",
+      "output": "viceroy 0.21.1",
+      "args": [
+        "--version"
+      ],
+      "source": "environment",
+      "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+    }
+  },
+  "fixtureFiles": {
+    "context-fastly-local.cjs": "f8445a713bb5c773d8501d37481436d16622251ca0119d3b5ed637d4d7bb6c1d",
+    "context-installed-oracle.cjs": "b02a23f0fc77a0b16bea8eb2f707273298080657569c1d7e14694d73a669dd62",
+    "context-installed-read-guard.cjs": "a8e1cca6ced3d4473af14eb84b2224e23ae6e964e300aae8ef53a3163780f7aa",
+    "context-quality-harness.cjs": "012373e23fa3c98ede4d852d09fc678bad865e1de38e2cda339e163512e448d0",
+    "context-quality-cases.json": "b62bb7dd5f3cd77f5271aca0d9da9dd33b1b84c47abd6bb8c14aeceb625745ce",
+    "../runtime/binary-resource-closure-fixture.cjs": "aa64e5fb606a23dbd7ca2e6655a35030dc15721fabf4eba31078650f0a534f50"
+  },
+  "context": {
+    "manifestSha256": "68e804f55490e6dce2bfc390f437a11155db94d50564186bda6e7d16af24a747",
+    "corpusHash": "f980fddaf83cc990663aa746012390e55a2717795b54a62873dac2a81148b749",
+    "rows": 264
+  },
+  "memoryPolicy": {
+    "version": "pulse.native-read-loop-memory.v1",
+    "maxBytes": 67108864,
+    "maxValues": 1048576,
+    "valueBytes": 32,
+    "edgeBytes": 8,
+    "maximumMemoryPages": 4096,
+    "lifetime": "execution",
+    "reclamation": "retain-until-terminal"
+  },
+  "expected": {
+    "cases": 546,
+    "sha256": "c68c5c0cf90f9447b96f814983ea7fdd40c4d6654ff55c01a2e9905d662be4b2",
+    "oracle": "independent legacy handlers and lexical scan"
+  },
+  "installedUnchanged": true,
+  "coverageComplete": true
+}

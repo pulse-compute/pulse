@@ -1,0 +1,3252 @@
+{
+  "workflowRun": "https://github.com/pulse-compute/pulse/actions/runs/39164566431",
+  "artifactId": 12151931349,
+  "artifactSha256": "599945d3ba7bd26e346e7c5d15878625f9a8c9b079f8b43606b49681bd459866",
+  "artifactExpiresAt": "2026-11-01T21:41:51Z",
+  "measurement": {
+    "schemaVersion": "pulse.seal-measurement.v1",
+    "candidate": {
+      "sourceRevision": "095beb54f06201a5fac61ee441a66b7db79a6013",
+      "sourceTree": "21df6f07ed88e65ab3a92597da287fddaefccc73",
+      "workingTree": ""
+    },
+    "startedAt": "2026-10-18T20:43:35.458Z",
+    "completedAt": "2026-10-18T21:41:50.523Z",
+    "status": "passed",
+    "qualificationPassed": true,
+    "error": null,
+    "attemptDirectory": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-10-18T20-43-35-509Z-AYBLXF",
+    "commandOptions": [
+      "--require-fastly",
+      "--skip-install",
+      "--timeout-minutes",
+      "90",
+      "--workers",
+      "2",
+      "--memory-budget-mib",
+      "6144",
+      "--compiler-workers",
+      "2"
+    ],
+    "interruptionRequested": null,
+    "processObservationRequested": true,
+    "recoveryDemonstrated": false,
+    "environment": {
+      "node": "v24.18.0",
+      "platform": "linux",
+      "arch": "x64",
+      "osRelease": "6.17.0-1022-azure",
+      "dependencyProvenance": "Existing graph; provenance must be supplied by the operator",
+      "observerPreload": "/tmp/pulse-seal-observer-VOFsrd/observer.cjs"
+    },
+    "expectedCoverage": {
+      "releaseTasks": 190,
+      "installedGates": 11
+    },
+    "totalWallMs": 3495065,
+    "freshCompleteWallMs": 3495060,
+    "attempts": [
+      {
+        "phase": "fresh",
+        "interruptionSent": false,
+        "metrics": {
+          "wallMs": 3495060,
+          "controllerMs": 3494580,
+          "workerOccupancyMs": 6391278,
+          "workerTimeDefinition": "Serial executed task elapsed time, including waits and cleanup; not CPU time or bootstrap steps",
+          "tasks": {
+            "completed": 201,
+            "passed": 201,
+            "executed": 201,
+            "reused": 0
+          },
+          "avoidedTaskOccupancyMs": 0,
+          "candidatePackages": 20,
+          "observedLaunches": {
+            "asc": 1712,
+            "pack": 45,
+            "install": 27
+          },
+          "observationScope": "Node child_process launches under inherited preload; lower bounds. Shell launches, native custom-promisified calls and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.",
+          "workerCpuMs": null,
+          "peakProcessTreeRSSKiB": null,
+          "resourceLimit": "Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer",
+          "observedNodeCpuMs": 7575842.627,
+          "peakObservedNodeRSSKiB": 644976,
+          "processTree": {
+            "schemaVersion": "pulse.seal-process-observation.v1",
+            "status": "observed",
+            "error": null,
+            "rootProcess": "2745:19003",
+            "controllerNamespacePid": 2745,
+            "intervalMs": 200,
+            "samples": 17402,
+            "maxGapMs": 213,
+            "readErrors": 0,
+            "sampledCpuMs": 9074690,
+            "peakSimultaneousProcessRSSKiB": 2164768,
+            "peakProcessCount": 14,
+            "remainingObservedProcesses": [],
+            "elapsedMs": 3494998,
+            "scope": "Linux /proc snapshots of controller and observed descendants, including detached children and known surviving identities; sampler excluded",
+            "limits": "Sampled lower bounds: short-lived processes, exit CPU tails and unseen reparenting can be missed. RSS sums include shared pages in each process; not unique physical or cgroup memory. Idle/wait states are sampled report observations, not compiler CPU or precise admission events."
+          },
+          "observedCompilerElapsedMs": 5394577.826082993
+        },
+        "status": "passed",
+        "directory": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-10-18T20-43-35-509Z-AYBLXF"
+      }
+    ]
+  },
+  "stages": [
+    {
+      "id": "source-checks",
+      "status": "passed",
+      "durationMs": 13531
+    },
+    {
+      "id": "build",
+      "status": "passed",
+      "durationMs": 164
+    },
+    {
+      "id": "fastly-reality",
+      "status": "passed",
+      "durationMs": 11488
+    },
+    {
+      "id": "production-dependency-audit",
+      "status": "passed",
+      "durationMs": 295
+    },
+    {
+      "id": "workspace-unit",
+      "status": "passed",
+      "durationMs": 3942
+    },
+    {
+      "id": "workspaces",
+      "status": "passed",
+      "durationMs": 2757
+    },
+    {
+      "id": "shared-pack",
+      "status": "passed",
+      "durationMs": 3912
+    },
+    {
+      "id": "release",
+      "status": "passed",
+      "durationMs": 2995927
+    },
+    {
+      "id": "installed-features",
+      "status": "passed",
+      "durationMs": 451509
+    }
+  ],
+  "cleanup": {
+    "status": "passed",
+    "timedOut": false,
+    "retainedPath": null
+  },
+  "rawFileSha256": {
+    ".pulse-seal/attempts/2026-10-18T20-43-35-509Z-AYBLXF/report.json": "d6059689f5ab7dd3b6f6a30e7c9cbb35327649b2e085c94ad43134554096944b",
+    ".pulse-seal/measurements/hosted-two-compilers/measurement.json": "4846927973b8a014b51994fc44cc24b6c89414dd5b6f7ff5bfefb1ec0ee0be58",
+    ".pulse-seal/measurements/hosted-two-compilers/fresh-processes/observer-result.json": "77d11711cbd213f409966e9575d5694edc1a10cd69130aa6d9ceb5457c9383a9",
+    ".pulse-seal/prerequisites/environment.json": "1a6dcec5f502dead1fd29e4df4221ebdf0e8b45450e4e807d42bfe5c204605d9"
+  },
+  "sealedArtifacts": {
+    "taskReport": {
+      "kind": "file",
+      "sha256": "96697d94aec01811711582c210e3fa85b1265034e2f5f995cc7fe85841a40c63",
+      "mode": 420,
+      "bytes": 313195
+    },
+    "featureReport": {
+      "kind": "file",
+      "sha256": "634cda988f9e620d7010ec986fb0233dae17822fa126d78cce453f5b3dad282c",
+      "mode": 420,
+      "bytes": 41394
+    },
+    "featureTasks": {
+      "kind": "file",
+      "sha256": "e0671bc39e7345a66bbf9d12a0566776ee311242958693840aba950881bc4bb9",
+      "mode": 420,
+      "bytes": 25052
+    },
+    "installedReports": {
+      "kind": "directory",
+      "sha256": "16e6cc668cc7d922451da3d122e318c3636183fcab3ae91914094a737cd62503"
+    },
+    "fourMode": {
+      "kind": "file",
+      "sha256": "72cd98763dc6f9ffd0d3538cb3ea3cdb277111781005de15a640a7edf70eb051",
+      "mode": 420,
+      "bytes": 9498
+    },
+    "candidateReport": {
+      "kind": "file",
+      "sha256": "f4d9ce50788e4f17f335ecaa2925a43c3980efe0e091635e1ba86d1c44be34dc",
+      "mode": 420,
+      "bytes": 8405
+    },
+    "candidates": {
+      "kind": "directory",
+      "sha256": "b65bab02622a0f71539e6fea878d4a0ad5bcb86a6aee894b02b07a33f9397d9e"
+    },
+    "cleanMachineCorpora": {
+      "kind": "file",
+      "sha256": "035e4f13bcf99e93a446bd7616c20dbb881a615369c30b526866f5c64bd5de8c",
+      "mode": 420,
+      "bytes": 87368
+    },
+    "fastlyReality": {
+      "kind": "file",
+      "sha256": "00aecbeb40c96c209b1038e874792b8d3cc68b13221d757d33a120b1dca035e1",
+      "mode": 420,
+      "bytes": 13047
+    }
+  },
+  "review": {
+    "artifactIdentitiesVerified": 10,
+    "orderedCoverageVerified": true,
+    "allFresh": true,
+    "allTaskCleanupPassed": true
+  },
+  "taskReports": [
+    {
+      "report": "release-tasks.json",
+      "status": "passed",
+      "completed": 190,
+      "selectedTasks": [
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence",
+        "cli-report-size-evidence",
+        "cli-report-capture-proof",
+        "cli-report-entry-proof",
+        "cli-report-reference-provenance",
+        "cli-report-handler-topology",
+        "cli-report-handler-associations",
+        "cli-report-relationships",
+        "cli-report-imported-inputs",
+        "cli-report-resource-inventory",
+        "cli-report-graph-diagnostics",
+        "multifile-source-indexes",
+        "guest-json-roundtrip",
+        "pure-helper-contract",
+        "suite-shape",
+        "test-orchestration",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "hidden-contracts",
+        "release-feature-acceptance",
+        "release-runtime-policy",
+        "release-seal-lifecycle",
+        "release-checkpoints",
+        "release-recovery-runner",
+        "release-recovery",
+        "release-tag",
+        "api-surface",
+        "logging-contract",
+        "s3-design-contract",
+        "kv-design-contract",
+        "kv-conditional-runtime",
+        "kv-conditional-gates",
+        "s3-read-contract",
+        "s3-write-contract",
+        "crypto-config-planning",
+        "crypto-es256-signing",
+        "crypto-rs256",
+        "crypto-digest-text-contract",
+        "reachable-graph",
+        "project-modules",
+        "package-reachability",
+        "external-lowerers",
+        "package-runtime",
+        "provider-toolchain",
+        "schema-registry",
+        "continuation-registry",
+        "entities-contracts",
+        "entities-schema-bridge",
+        "entities-javascript-runtime",
+        "entities-json-rpc-corpus",
+        "mcp-http",
+        "pulse-context-corpus",
+        "pulse-context-application",
+        "pulse-context-host",
+        "mcp-compatibility",
+        "mcp-tools",
+        "mcp-authorization",
+        "entities-package-owned-lowering",
+        "entities-catalog",
+        "entities-inspection",
+        "entities-orchestration-demo",
+        "npm-source-imports",
+        "fastly-numeric-regions",
+        "fastly-numeric-budgets",
+        "fastly-handle-ownership",
+        "fastly-handle-frames",
+        "pure-helper-vocabulary",
+        "pure-string-index",
+        "pure-field-projection",
+        "pure-guarded-arguments",
+        "pure-source-helpers",
+        "pure-record-helpers",
+        "pure-argument-helpers",
+        "pure-loop-helpers",
+        "fastly-driver-behavior-o09",
+        "kv-native-abi-feasibility",
+        "s3-body-read",
+        "s3-node-transport",
+        "canonical-api-lowering",
+        "canonical-native-plan",
+        "shared-stage-o19",
+        "str02b-node-native",
+        "fastly-incoming-body-forwarding",
+        "str03a-generated-output",
+        "str03c-bounded-transforms",
+        "bounded-app-logic",
+        "bounded-read-loops",
+        "bounded-loop-helpers",
+        "logging-lowering",
+        "canonical-router-lowering",
+        "canonical-router-terminal-middleware",
+        "router-selected-groups",
+        "json-as-compatibility",
+        "entities-envelope-feasibility",
+        "entities-managed-handler",
+        "entities-managed-handler-effects",
+        "entities-native-runtime",
+        "entities-hardening",
+        "entities-node-native-workflow",
+        "fastly-entities-native-workflow",
+        "crypto-native-guest-source",
+        "guest-link-package",
+        "guest-link-materialization-stage",
+        "guest-link-audit-diagnostics",
+        "assets-lowering-plan",
+        "assets-package-owned-lowering",
+        "assets-native-embedded",
+        "grip-package-owned-lowering",
+        "jwt-package-owned-lowering",
+        "canonical-api-runtime",
+        "canonical-opaque-node-emission",
+        "grip-package-runtime",
+        "package-root-native",
+        "canonical-native-wasm",
+        "cli-javascript-target-compilation",
+        "target-support",
+        "jwt-javascript-admission",
+        "crypto-runtime-builtin",
+        "javascript-effect-adapter",
+        "logging-runtime",
+        "assets-javascript-runtime",
+        "jwt-signing",
+        "jwt-es256-signing",
+        "jwt-rs256",
+        "crypto-cross-target-conformance",
+        "crypto-digest-text-conformance",
+        "crypto-digest-storage-conformance",
+        "text-capacity-conformance",
+        "events-conformance",
+        "node-router-context-parity",
+        "catalog-router-parity",
+        "fetch-projections-request-bodies",
+        "config-secrets-kv-redaction",
+        "kv-conditional-conformance",
+        "fastly-conditional-kv",
+        "schema-codecs",
+        "schema-kv-parity",
+        "time-conformance",
+        "time-consumer",
+        "node-launcher",
+        "application-errors",
+        "application-error-boundaries",
+        "node-cross-target-conformance",
+        "grip-cross-target-conformance",
+        "four-mode-conformance",
+        "cli-command-spec",
+        "cli-init-workflow",
+        "cli-project-workflow",
+        "cli-expansion-doctor",
+        "cli-project-guards",
+        "cli-dev-workflow",
+        "cli-schema-json-workflow",
+        "events-cli-workflow",
+        "cli-diagnostics",
+        "docs-executable-contracts",
+        "docs-executable-init-dev",
+        "docs-migration-schema-lowering",
+        "docs-example-01-hello-json",
+        "docs-example-02-request-schema",
+        "docs-example-03-fetch-composition",
+        "docs-example-05-fastly-capabilities",
+        "docs-example-07-opaque-proxy",
+        "docs-example-09-router-lowering",
+        "docs-example-10-entities-tools",
+        "docs-example-11-events",
+        "docs-example-12-pulse-context-mcp",
+        "docs-example-13-jwt-es256",
+        "provider-packages",
+        "provider-fastly-package",
+        "provider-fastly-apps",
+        "canonical-grip-fastly",
+        "fastly-cli-gate-surface",
+        "fastly-javascript-packaging",
+        "fastly-javascript-runtime",
+        "fastly-javascript-tooling",
+        "fastly-native-http-shell",
+        "fastly-native-http-effects",
+        "fastly-native-platform-capabilities",
+        "fastly-request-headers",
+        "release-packages",
+        "release-artifact-determinism",
+        "clean-machine-acceptance",
+        "cli-entities-installed-workflow",
+        "npm-source-installed-workflow",
+        "release-evidence-authority",
+        "deployment-candidates"
+      ],
+      "results": [
+        {
+          "name": "report-capsule-contract",
+          "status": "passed",
+          "durationMs": 32861,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "durationMs": 9149,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-viewer",
+          "status": "passed",
+          "durationMs": 22864,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "durationMs": 55457,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-size-evidence",
+          "status": "passed",
+          "durationMs": 7737,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-capture-proof",
+          "status": "passed",
+          "durationMs": 18389,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-entry-proof",
+          "status": "passed",
+          "durationMs": 57622,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-reference-provenance",
+          "status": "passed",
+          "durationMs": 28581,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-handler-topology",
+          "status": "passed",
+          "durationMs": 84033,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-handler-associations",
+          "status": "passed",
+          "durationMs": 7303,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-relationships",
+          "status": "passed",
+          "durationMs": 14942,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-imported-inputs",
+          "status": "passed",
+          "durationMs": 28871,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-resource-inventory",
+          "status": "passed",
+          "durationMs": 17836,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-graph-diagnostics",
+          "status": "passed",
+          "durationMs": 11896,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "multifile-source-indexes",
+          "status": "passed",
+          "durationMs": 6237,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "guest-json-roundtrip",
+          "status": "passed",
+          "durationMs": 6050,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pure-helper-contract",
+          "status": "passed",
+          "durationMs": 7342,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "suite-shape",
+          "status": "passed",
+          "durationMs": 5826,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "test-orchestration",
+          "status": "passed",
+          "durationMs": 21343,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "package-exports",
+          "status": "passed",
+          "durationMs": 5922,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "boundaries",
+          "status": "passed",
+          "durationMs": 6197,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "workspace-hygiene",
+          "status": "passed",
+          "durationMs": 5959,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "hidden-contracts",
+          "status": "passed",
+          "durationMs": 5758,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-feature-acceptance",
+          "status": "passed",
+          "durationMs": 6510,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-runtime-policy",
+          "status": "passed",
+          "durationMs": 7764,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-seal-lifecycle",
+          "status": "passed",
+          "durationMs": 8899,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-checkpoints",
+          "status": "passed",
+          "durationMs": 6023,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-recovery-runner",
+          "status": "passed",
+          "durationMs": 64685,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-recovery",
+          "status": "passed",
+          "durationMs": 8718,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-tag",
+          "status": "passed",
+          "durationMs": 7209,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "api-surface",
+          "status": "passed",
+          "durationMs": 6792,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "logging-contract",
+          "status": "passed",
+          "durationMs": 5776,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "s3-design-contract",
+          "status": "passed",
+          "durationMs": 7835,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "kv-design-contract",
+          "status": "passed",
+          "durationMs": 7343,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "kv-conditional-runtime",
+          "status": "passed",
+          "durationMs": 7403,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "kv-conditional-gates",
+          "status": "passed",
+          "durationMs": 6501,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "s3-read-contract",
+          "status": "passed",
+          "durationMs": 8248,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "s3-write-contract",
+          "status": "passed",
+          "durationMs": 6148,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "crypto-config-planning",
+          "status": "passed",
+          "durationMs": 6527,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "crypto-es256-signing",
+          "status": "passed",
+          "durationMs": 5842,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "crypto-rs256",
+          "status": "passed",
+          "durationMs": 7436,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "crypto-digest-text-contract",
+          "status": "passed",
+          "durationMs": 6288,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "reachable-graph",
+          "status": "passed",
+          "durationMs": 5983,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "project-modules",
+          "status": "passed",
+          "durationMs": 7007,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "package-reachability",
+          "status": "passed",
+          "durationMs": 7449,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "external-lowerers",
+          "status": "passed",
+          "durationMs": 8055,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "package-runtime",
+          "status": "passed",
+          "durationMs": 5867,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "provider-toolchain",
+          "status": "passed",
+          "durationMs": 5908,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "schema-registry",
+          "status": "passed",
+          "durationMs": 6856,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "continuation-registry",
+          "status": "passed",
+          "durationMs": 5790,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-contracts",
+          "status": "passed",
+          "durationMs": 5896,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-schema-bridge",
+          "status": "passed",
+          "durationMs": 6190,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-javascript-runtime",
+          "status": "passed",
+          "durationMs": 6698,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-json-rpc-corpus",
+          "status": "passed",
+          "durationMs": 5775,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "mcp-http",
+          "status": "passed",
+          "durationMs": 6115,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pulse-context-corpus",
+          "status": "passed",
+          "durationMs": 7153,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pulse-context-application",
+          "status": "passed",
+          "durationMs": 13977,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pulse-context-host",
+          "status": "passed",
+          "durationMs": 10039,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "mcp-compatibility",
+          "status": "passed",
+          "durationMs": 6041,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "mcp-tools",
+          "status": "passed",
+          "durationMs": 6061,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "mcp-authorization",
+          "status": "passed",
+          "durationMs": 8964,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-package-owned-lowering",
+          "status": "passed",
+          "durationMs": 6034,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-catalog",
+          "status": "passed",
+          "durationMs": 6570,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-inspection",
+          "status": "passed",
+          "durationMs": 22865,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-orchestration-demo",
+          "status": "passed",
+          "durationMs": 15617,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "npm-source-imports",
+          "status": "passed",
+          "durationMs": 13351,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-numeric-regions",
+          "status": "passed",
+          "durationMs": 99087,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-numeric-budgets",
+          "status": "passed",
+          "durationMs": 71519,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-handle-ownership",
+          "status": "passed",
+          "durationMs": 65533,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-handle-frames",
+          "status": "passed",
+          "durationMs": 130312,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pure-helper-vocabulary",
+          "status": "passed",
+          "durationMs": 10606,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pure-string-index",
+          "status": "passed",
+          "durationMs": 13272,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pure-field-projection",
+          "status": "passed",
+          "durationMs": 25852,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pure-guarded-arguments",
+          "status": "passed",
+          "durationMs": 66409,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pure-source-helpers",
+          "status": "passed",
+          "durationMs": 20646,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pure-record-helpers",
+          "status": "passed",
+          "durationMs": 34522,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pure-argument-helpers",
+          "status": "passed",
+          "durationMs": 39039,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "pure-loop-helpers",
+          "status": "passed",
+          "durationMs": 15336,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-driver-behavior-o09",
+          "status": "passed",
+          "durationMs": 49316,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "kv-native-abi-feasibility",
+          "status": "passed",
+          "durationMs": 7972,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "s3-body-read",
+          "status": "passed",
+          "durationMs": 17252,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "s3-node-transport",
+          "status": "passed",
+          "durationMs": 6271,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "canonical-api-lowering",
+          "status": "passed",
+          "durationMs": 8278,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "canonical-native-plan",
+          "status": "passed",
+          "durationMs": 13832,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "shared-stage-o19",
+          "status": "passed",
+          "durationMs": 14425,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "str02b-node-native",
+          "status": "passed",
+          "durationMs": 15733,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-incoming-body-forwarding",
+          "status": "passed",
+          "durationMs": 19325,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "str03a-generated-output",
+          "status": "passed",
+          "durationMs": 30859,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "str03c-bounded-transforms",
+          "status": "passed",
+          "durationMs": 24873,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "bounded-app-logic",
+          "status": "passed",
+          "durationMs": 64130,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "bounded-read-loops",
+          "status": "passed",
+          "durationMs": 80004,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "bounded-loop-helpers",
+          "status": "passed",
+          "durationMs": 14877,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "logging-lowering",
+          "status": "passed",
+          "durationMs": 10431,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "canonical-router-lowering",
+          "status": "passed",
+          "durationMs": 18573,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "canonical-router-terminal-middleware",
+          "status": "passed",
+          "durationMs": 18607,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "router-selected-groups",
+          "status": "passed",
+          "durationMs": 13677,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "json-as-compatibility",
+          "status": "passed",
+          "durationMs": 10907,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-envelope-feasibility",
+          "status": "passed",
+          "durationMs": 8995,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-managed-handler",
+          "status": "passed",
+          "durationMs": 6334,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-managed-handler-effects",
+          "status": "passed",
+          "durationMs": 7585,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-native-runtime",
+          "status": "passed",
+          "durationMs": 15317,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-hardening",
+          "status": "passed",
+          "durationMs": 52508,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "entities-node-native-workflow",
+          "status": "passed",
+          "durationMs": 36709,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-entities-native-workflow",
+          "status": "passed",
+          "durationMs": 118968,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "crypto-native-guest-source",
+          "status": "passed",
+          "durationMs": 13098,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "guest-link-package",
+          "status": "passed",
+          "durationMs": 14740,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "guest-link-materialization-stage",
+          "status": "passed",
+          "durationMs": 40926,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "guest-link-audit-diagnostics",
+          "status": "passed",
+          "durationMs": 25734,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "assets-lowering-plan",
+          "status": "passed",
+          "durationMs": 6460,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "assets-package-owned-lowering",
+          "status": "passed",
+          "durationMs": 7264,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "assets-native-embedded",
+          "status": "passed",
+          "durationMs": 23067,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "grip-package-owned-lowering",
+          "status": "passed",
+          "durationMs": 7743,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "jwt-package-owned-lowering",
+          "status": "passed",
+          "durationMs": 6335,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "canonical-api-runtime",
+          "status": "passed",
+          "durationMs": 7366,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "canonical-opaque-node-emission",
+          "status": "passed",
+          "durationMs": 7641,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "grip-package-runtime",
+          "status": "passed",
+          "durationMs": 7084,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "package-root-native",
+          "status": "passed",
+          "durationMs": 8097,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "canonical-native-wasm",
+          "status": "passed",
+          "durationMs": 108306,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-javascript-target-compilation",
+          "status": "passed",
+          "durationMs": 26013,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "target-support",
+          "status": "passed",
+          "durationMs": 6483,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "jwt-javascript-admission",
+          "status": "passed",
+          "durationMs": 14202,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "crypto-runtime-builtin",
+          "status": "passed",
+          "durationMs": 6650,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "javascript-effect-adapter",
+          "status": "passed",
+          "durationMs": 6392,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "logging-runtime",
+          "status": "passed",
+          "durationMs": 6315,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "assets-javascript-runtime",
+          "status": "passed",
+          "durationMs": 7480,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "jwt-signing",
+          "status": "passed",
+          "durationMs": 28755,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "jwt-es256-signing",
+          "status": "passed",
+          "durationMs": 62516,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "jwt-rs256",
+          "status": "passed",
+          "durationMs": 536633,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "crypto-cross-target-conformance",
+          "status": "passed",
+          "durationMs": 16228,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "crypto-digest-text-conformance",
+          "status": "passed",
+          "durationMs": 21042,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "crypto-digest-storage-conformance",
+          "status": "passed",
+          "durationMs": 23171,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "text-capacity-conformance",
+          "status": "passed",
+          "durationMs": 26991,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "events-conformance",
+          "status": "passed",
+          "durationMs": 10143,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "node-router-context-parity",
+          "status": "passed",
+          "durationMs": 13208,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "catalog-router-parity",
+          "status": "passed",
+          "durationMs": 39891,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fetch-projections-request-bodies",
+          "status": "passed",
+          "durationMs": 8195,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "config-secrets-kv-redaction",
+          "status": "passed",
+          "durationMs": 8214,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "kv-conditional-conformance",
+          "status": "passed",
+          "durationMs": 11192,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-conditional-kv",
+          "status": "passed",
+          "durationMs": 46958,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "schema-codecs",
+          "status": "passed",
+          "durationMs": 185429,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "schema-kv-parity",
+          "status": "passed",
+          "durationMs": 26405,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "time-conformance",
+          "status": "passed",
+          "durationMs": 17757,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "time-consumer",
+          "status": "passed",
+          "durationMs": 34532,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "node-launcher",
+          "status": "passed",
+          "durationMs": 16188,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "application-errors",
+          "status": "passed",
+          "durationMs": 33703,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "application-error-boundaries",
+          "status": "passed",
+          "durationMs": 12866,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "node-cross-target-conformance",
+          "status": "passed",
+          "durationMs": 15722,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "grip-cross-target-conformance",
+          "status": "passed",
+          "durationMs": 16666,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "four-mode-conformance",
+          "status": "passed",
+          "durationMs": 60844,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-command-spec",
+          "status": "passed",
+          "durationMs": 6583,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-init-workflow",
+          "status": "passed",
+          "durationMs": 42694,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-project-workflow",
+          "status": "passed",
+          "durationMs": 118179,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-expansion-doctor",
+          "status": "passed",
+          "durationMs": 22107,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-project-guards",
+          "status": "passed",
+          "durationMs": 21186,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-dev-workflow",
+          "status": "passed",
+          "durationMs": 22615,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-schema-json-workflow",
+          "status": "passed",
+          "durationMs": 107305,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "events-cli-workflow",
+          "status": "passed",
+          "durationMs": 87939,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-diagnostics",
+          "status": "passed",
+          "durationMs": 13515,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-executable-contracts",
+          "status": "passed",
+          "durationMs": 49562,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-executable-init-dev",
+          "status": "passed",
+          "durationMs": 18588,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-migration-schema-lowering",
+          "status": "passed",
+          "durationMs": 6693,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-01-hello-json",
+          "status": "passed",
+          "durationMs": 20357,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-02-request-schema",
+          "status": "passed",
+          "durationMs": 27592,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-03-fetch-composition",
+          "status": "passed",
+          "durationMs": 21245,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-05-fastly-capabilities",
+          "status": "passed",
+          "durationMs": 39600,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-07-opaque-proxy",
+          "status": "passed",
+          "durationMs": 36281,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-09-router-lowering",
+          "status": "passed",
+          "durationMs": 23554,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-10-entities-tools",
+          "status": "passed",
+          "durationMs": 21672,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-11-events",
+          "status": "passed",
+          "durationMs": 30871,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-12-pulse-context-mcp",
+          "status": "passed",
+          "durationMs": 14856,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "docs-example-13-jwt-es256",
+          "status": "passed",
+          "durationMs": 50648,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "provider-packages",
+          "status": "passed",
+          "durationMs": 7433,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "provider-fastly-package",
+          "status": "passed",
+          "durationMs": 23299,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "provider-fastly-apps",
+          "status": "passed",
+          "durationMs": 7828,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "canonical-grip-fastly",
+          "status": "passed",
+          "durationMs": 22076,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-cli-gate-surface",
+          "status": "passed",
+          "durationMs": 7447,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-javascript-packaging",
+          "status": "passed",
+          "durationMs": 7196,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-javascript-runtime",
+          "status": "passed",
+          "durationMs": 6750,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-javascript-tooling",
+          "status": "passed",
+          "durationMs": 30783,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-native-http-shell",
+          "status": "passed",
+          "durationMs": 14692,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-native-http-effects",
+          "status": "passed",
+          "durationMs": 27793,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-native-platform-capabilities",
+          "status": "passed",
+          "durationMs": 193124,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-request-headers",
+          "status": "passed",
+          "durationMs": 27429,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-packages",
+          "status": "passed",
+          "durationMs": 6595,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-artifact-determinism",
+          "status": "passed",
+          "durationMs": 39398,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "clean-machine-acceptance",
+          "status": "passed",
+          "durationMs": 408990,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-entities-installed-workflow",
+          "status": "passed",
+          "durationMs": 140847,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "npm-source-installed-workflow",
+          "status": "passed",
+          "durationMs": 64463,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "release-evidence-authority",
+          "status": "passed",
+          "durationMs": 7867,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "deployment-candidates",
+          "status": "passed",
+          "durationMs": 42332,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        }
+      ]
+    },
+    {
+      "report": "feature-tasks.json",
+      "status": "passed",
+      "completed": 11,
+      "selectedTasks": [
+        "str02b-installed",
+        "node01-installed",
+        "arc01-installed",
+        "jwt-installed-workflow",
+        "str02-installed",
+        "str03b-installed",
+        "ast01-installed",
+        "ast02b-installed",
+        "ast02d-installed",
+        "mcp-installed",
+        "s3-body-installed"
+      ],
+      "results": [
+        {
+          "name": "str02b-installed",
+          "status": "passed",
+          "durationMs": 28710,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "node01-installed",
+          "status": "passed",
+          "durationMs": 20583,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "arc01-installed",
+          "status": "passed",
+          "durationMs": 69103,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "jwt-installed-workflow",
+          "status": "passed",
+          "durationMs": 416608,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "str02-installed",
+          "status": "passed",
+          "durationMs": 28265,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "str03b-installed",
+          "status": "passed",
+          "durationMs": 56775,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "ast01-installed",
+          "status": "passed",
+          "durationMs": 10285,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "ast02b-installed",
+          "status": "passed",
+          "durationMs": 10311,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "ast02d-installed",
+          "status": "passed",
+          "durationMs": 32101,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "mcp-installed",
+          "status": "passed",
+          "durationMs": 34893,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        },
+        {
+          "name": "s3-body-installed",
+          "status": "passed",
+          "durationMs": 24741,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed",
+            "worker": {
+              "status": "passed",
+              "removed": []
+            }
+          },
+          "remainingProcessTree": []
+        }
+      ]
+    }
+  ]
+}

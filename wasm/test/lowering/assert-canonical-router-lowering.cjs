@@ -140,7 +140,7 @@ async function main() {
     const planA = buildCanonicalNativePlan(copyA);
     const planB = buildCanonicalNativePlan(copyB);
     assert.equal(planA.entry.kind, 'router');
-    assert.equal(planA.version, 'pulse.canonical-native-plan.v9');
+    assert.equal(planA.version, 'pulse.canonical-native-plan.v11');
     assert.ok(planA.handlers.length > 0);
     assert.deepEqual(planA.handlers.map(handler => handler.id), planA.routing.entries
       .filter(entry => entry.nativeBody).map(entry => entry.stableId));
@@ -210,7 +210,7 @@ async function main() {
     assert.deepEqual(fastlyA.wasm, fastlyB.wasm, 'native Fastly routed Wasm must be deterministic');
     assert.equal(fastlyA.inspection.imports.some((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false);
     assert.deepEqual(fastlyA.inspection.imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
-      planA.effects.some(effect => effect.kind === 'fetch') ? ['wasi_snapshot_preview1:clock_time_get'] : [], 'only the fetch deadline clock is permitted');
+      planA.effects.some(effect => effect.kind === 'fetch') ? ['wasi_snapshot_preview1:clock_time_get', 'wasi_snapshot_preview1:fd_write'] : [], 'only the fetch deadline clock and transport diagnostic writer are permitted');
     result = fastlyMock.executeFastlyNativePlatformCapabilities(fastlyA, {
       request: { method: 'GET', path: '/api/users/42' },
       fixtures: { users: { '/users/42': { status: 200, json: { id: 42, name: 'Ada' } } } }

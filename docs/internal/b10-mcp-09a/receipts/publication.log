@@ -1,0 +1,6 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> publication:check
+> node scripts/validate-publication-workflows.cjs
+
+ok - 20 npm packages, 676 documentation sources, 14 documentation objects, 3 publication workflows, and 6 Fastly infrastructure files validated

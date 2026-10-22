@@ -3,6 +3,9 @@
 const path = require('node:path');
 
 const {
+  NATIVE_BOUNDED_SIZE_MODE,
+  NATIVE_SHRINK0_MODE,
+  selectNativeOptimizationMode,
   NATIVE_OPTIMIZATION_VERSION,
   EXPERIMENTAL_NATIVE_SIZE_MODE,
   EXPERIMENTAL_NATIVE_BOUNDED_SIZE_MODE
@@ -33,20 +36,26 @@ const EXPERIMENTAL_NATIVE_BOUNDED_SIZE_OPTIMIZATION = Object.freeze({
   })
 });
 
+const NATIVE_BOUNDED_SIZE_OPTIMIZATION = Object.freeze({
+  ...EXPERIMENTAL_NATIVE_BOUNDED_SIZE_OPTIMIZATION,
+  mode: NATIVE_BOUNDED_SIZE_MODE,
+  experimental: false
+});
+const NATIVE_SHRINK0_OPTIMIZATION = Object.freeze({
+  ...NATIVE_BOUNDED_SIZE_OPTIMIZATION,
+  mode: NATIVE_SHRINK0_MODE,
+  goal: 'speed',
+  assemblyScript: Object.freeze({ optimize: true, optimizeLevel: 3, shrinkLevel: 0, converge: false })
+});
+
 function resolveNativeOptimization(value) {
-  if (value === undefined || value === null || value === false) return undefined;
-  if (
-    value === true
-    || value === EXPERIMENTAL_NATIVE_SIZE_MODE
-    || (typeof value === 'object' && value.mode === EXPERIMENTAL_NATIVE_SIZE_MODE)
-  ) {
-    return EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION;
-  }
-  if (value === EXPERIMENTAL_NATIVE_BOUNDED_SIZE_MODE
-    || (typeof value === 'object' && value.mode === EXPERIMENTAL_NATIVE_BOUNDED_SIZE_MODE)) {
-    return EXPERIMENTAL_NATIVE_BOUNDED_SIZE_OPTIMIZATION;
-  }
-  throw new TypeError(`Unsupported Pulse Native optimization mode ${String(value && value.mode || value)}.`);
+  const mode = selectNativeOptimizationMode({ nativeOptimization: value });
+  return {
+    [NATIVE_BOUNDED_SIZE_MODE]: NATIVE_BOUNDED_SIZE_OPTIMIZATION,
+    [NATIVE_SHRINK0_MODE]: NATIVE_SHRINK0_OPTIMIZATION,
+    [EXPERIMENTAL_NATIVE_SIZE_MODE]: EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION,
+    [EXPERIMENTAL_NATIVE_BOUNDED_SIZE_MODE]: EXPERIMENTAL_NATIVE_BOUNDED_SIZE_OPTIMIZATION
+  }[mode];
 }
 
 function appendAssemblyScriptOptimizationArgs(args, value, options = {}) {
@@ -74,6 +83,9 @@ function appendJsonCacheArenaArgs(args, value, schemaCodecsActive) {
 
 module.exports = Object.freeze({
   appendJsonCacheArenaArgs,
+  NATIVE_BOUNDED_SIZE_MODE,
+  NATIVE_SHRINK0_MODE,
+  selectNativeOptimizationMode,
   NATIVE_OPTIMIZATION_VERSION,
   EXPERIMENTAL_NATIVE_SIZE_MODE,
   EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION,

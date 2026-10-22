@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-21T07-00-12-146Z--5",
+  "sourceRevision": "abb77482e004cd8e09e82064e76a22a55f0053f9",
+  "sourceIdentity": {
+    "sourceRevision": "abb77482e004cd8e09e82064e76a22a55f0053f9",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-21T07:00:12.151Z",
+  "updatedAt": "2026-10-21T07:02:21.952Z",
+  "finishedAt": "2026-10-21T07:02:21.952Z",
+  "durationMs": 129801,
+  "profiles": [],
+  "requestedTasks": [
+    "mcp-fastly-clients-installed"
+  ],
+  "selectedTasks": [
+    "mcp-fastly-clients-installed"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "mcp-fastly-clients-installed",
+      "evidence": "external",
+      "description": "10B exact installed Native Viceroy endpoint with pinned SDK both profiles, Claude 2026-07-28 and Codex 2025-06-18; individual terminal receipts",
+      "commandSignature": "4aaa3f682e1f1a4b35478184c8f9ee210b6ab41b34a8a5000393e9d0b2339d50",
+      "timeoutMs": 600000,
+      "durationMs": 129795,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-10-21T07-00-12-146Z--5/tasks/mcp-fastly-clients-installed.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-21T07-00-12-146Z--5"
+}

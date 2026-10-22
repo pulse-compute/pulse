@@ -1,0 +1,76 @@
+{
+  "version": "pulse.package-contract.v1",
+  "kind": "pulse.package-contract",
+  "contractId": "pulse.mcp",
+  "npmPackage": "@pulse-compute/mcp",
+  "description": "Static MCP protocol binding to local Entities operations.",
+  "authoring": {
+    "namespace": "mcp",
+    "import": "@pulse-compute/mcp/pulse",
+    "symbols": [
+      "EntityRouter",
+      "jsonRpc",
+      "mcp"
+    ]
+  },
+  "ownership": {
+    "profileFragment": "mcp",
+    "helperImports": [],
+    "reExportImports": []
+  },
+  "composition": {
+    "status": "reserved",
+    "helperSymbol": "mcp",
+    "profileToken": "opaque-direct-use",
+    "reasonCode": "PULSE_MCP_COMPOSITION_NOT_REALIZED"
+  },
+  "targets": {
+    "native": {
+      "status": "provider-dependent",
+      "realization": "canonical-package-lowering",
+      "lowerableSubpath": "@pulse-compute/mcp/pulse",
+      "providerRequirements": [
+        "effect-execution",
+        "logging",
+        "request",
+        "response-transport"
+      ],
+      "reasonCode": "PULSE_MCP_NATIVE_PROVIDER_INTEGRATION_REQUIRED"
+    },
+    "javascript": {
+      "status": "provider-dependent",
+      "realization": "javascript-package-runtime",
+      "entry": "./src/pulse.js",
+      "providerRequirements": [
+        "effect-execution",
+        "logging",
+        "request",
+        "response-transport",
+        "request.deadline"
+      ],
+      "reasonCode": "PULSE_MCP_REQUEST_DEADLINE_REQUIRED"
+    }
+  },
+  "lowering": {
+    "manifest": "./pulsewasm.manifest.cjs",
+    "trust": "first-party",
+    "canonicalOperationVersion": "pulse.canonical-package-operation.v1",
+    "bundleVersion": "pulse.package-lowering-bundle.v1",
+    "providerRequirementVersion": "pulse.provider-requirement-record.v1"
+  },
+  "conformance": {
+    "status": "target-overlap",
+    "fixtureRoots": [
+      "./conformance"
+    ],
+    "semanticCases": [
+      "server/discover",
+      "tools/list",
+      "tools/call"
+    ]
+  },
+  "docs": {
+    "readme": "./README.md",
+    "contract": "./pulse.package.json"
+  }
+}

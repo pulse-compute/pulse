@@ -360,6 +360,7 @@ function normalizeProject(raw, options = {}) {
       official: providerResolution.official
     }),
     providerConfig,
+    nativeOptimization: raw.nativeOptimization,
     reporting: reporting.name,
     reportingLevel: reporting.level,
     reportingPolicy: reporting,
@@ -456,6 +457,7 @@ function conventionalProjectProjection(plan, options = {}) {
   return {
     entry: plan.pulse.entry,
     provider,
+    nativeOptimization: fragments.nativeOptimization,
     outDir: typeof fragments.outDir === 'string' ? fragments.outDir : 'dist',
     reporting: plan.profile.reporting,
     schemas: plainObject(fragments.schemas) ? fragments.schemas : undefined,
@@ -591,6 +593,8 @@ function loadConventionalProject(workspace, options = {}) {
     bindings: plan.bindings,
     fragments: plan.fragments,
     crypto: plan.crypto,
+    ...(plan.pulse.binaryResources ? { binaryResources: require('@pulse-compute/wasm-contracts/resources/embedded').admitResourceCatalogue(
+      plan.pulse.binaryResources.manifest, Object.entries(plan.pulse.binaryResources.bindings).map(([id, path]) => ({ id, path })), plan.pulse.binaryResources.budgets) } : {}),
     schemaFile,
     testsFile,
     tests
@@ -656,6 +660,7 @@ function projectJson(project) {
     entryFile: project.entryFile,
     target: project.target || 'native',
     strict: project.strict !== false,
+    nativeOptimization: project.nativeOptimization,
     reporting: project.reporting,
     reportingLevel: project.reportingLevel,
     reportingPolicy: project.reportingPolicy,

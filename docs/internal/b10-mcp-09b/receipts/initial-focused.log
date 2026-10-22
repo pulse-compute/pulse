@@ -1,0 +1,42 @@
+
+[pulsewasm:unit] release-feature-acceptance
+[pulsewasm] installed feature gate coverage and exact candidate report rejection (timeout 30.00s)
+ok - release context freshness: exact package binding and 26 fail-closed cases
+ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity
+[pulsewasm] release-feature-acceptance: passed in 9.12s
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+[pulse:pack] Reused 1 verified packages from this seal
+ok - shared release packages are source-bound, hash-checked, private copies; tampering, dirty/stale source and overlapping paths fail closed
+[pulsewasm] Running release-runtime-policy (execution); elapsed 10.00s
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 3.74s
+
+[pulsewasm:unit] release-checkpoints
+[pulsewasm] Same-candidate receipt integrity, output retention and dependency invalidation (timeout 30.00s)
+release-checkpoints: 54 recovery/invalidation fixtures passed
+[pulsewasm] release-checkpoints: passed in 288ms
+
+[pulsewasm:unit] release-recovery
+[pulsewasm] Recovery input identity, checkout exclusion and retained-attempt expiry (timeout 30.00s)
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /another candidate/. Input:
+
+'Release source identity differs from the clean candidate HEAD'
+
+    at Object.verifyContextSealRecovery (/workspace/scratch/d3826bbd4bf5/pulse-09b/wasm/test/release/assert-context-seal-recovery.cjs:262:55)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async main (/workspace/scratch/d3826bbd4bf5/pulse-09b/wasm/test/release/assert-release-recovery.cjs:414:27)
+[pulsewasm] release-recovery: failed in 6.09s
+
+[pulsewasm] test summary
+  passed         288ms  release-checkpoints  (/tmp/runs/2026-10-21T05-42-53-934Z--6/tasks/release-checkpoints.log)
+  failed         6.09s  release-recovery  (/tmp/runs/2026-10-21T05-42-53-934Z--6/tasks/release-recovery.log)
+  passed         9.12s  release-feature-acceptance  (/tmp/runs/2026-10-21T05-42-53-934Z--6/tasks/release-feature-acceptance.log)
+  passed         3.74s  release-runtime-policy  (/tmp/runs/2026-10-21T05-42-53-934Z--6/tasks/release-runtime-policy.log)
+  report       /tmp/pulse-09b-focused.json
+  run logs     /tmp/runs/2026-10-21T05-42-53-934Z--6
+  total        19.25s

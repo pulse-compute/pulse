@@ -7,15 +7,15 @@
 > **Supported entry points:** `@pulse-compute/jwt`<br>
 > **Stability:** The package root supports provider-neutral verification and bounded HS256/ES256/RS256 signing; provider and compiler integration subpaths are not application APIs.<br>
 > **npm:** [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.9/packages/jwt/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.10/packages/jwt/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.9` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.10` package policy.
 <!-- pulse-package-status:end -->
 
 Bounded, provider-neutral JWT verification and HS256/ES256/RS256 signing for Pulse handlers.
 
 This package and `@pulse-compute/crypto` are members of the synchronized
-`1.0.0-beta.9` release catalog.
+`1.0.0-beta.10` release catalog.
 
 Verification is implemented for HS256 in all four sealed target cells. G3 also
 activates ES256 through the crypto-owned signature seam. H4 aligns Node and

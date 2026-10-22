@@ -3,6 +3,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { renderExampleTemplate } = require('../../scripts/documentation-examples.cjs');
 const { synchronizeReferenceDocs } = require('./sync-reference-docs.cjs');
 const { synchronizeContextCorpus } = require('../../scripts/pulse-context-corpus.cjs');
 const { synchronizeDocumentationMetadata, validateDocumentationMetadata } = require('../../scripts/documentation-ownership.cjs');
@@ -66,13 +67,19 @@ function synchronizeDocSnippets(options = {}) {
   const write = options.write === true;
   const mismatches = [];
   const references = [];
+  const layoutMismatches = [];
   let blockCount = 0;
   let changedFiles = 0;
 
   for (const markdownFile of markdownFiles()) {
     const original = fs.readFileSync(markdownFile, 'utf8');
     let markerCount = 0;
-    const updated = original.replace(BLOCK_PATTERN, (whole, rawReference, actualLanguage, actualBody) => {
+    const templated = renderExampleTemplate(original, () => {
+      if (!slash(path.relative(repoRoot, markdownFile)).startsWith('examples/')) throw new Error('Example template must belong to an example README');
+      return require('../packages/cli/src/project-config.js').resolveProject({ cwd: path.dirname(markdownFile) }).tests;
+    });
+    if (templated !== original) layoutMismatches.push(slash(path.relative(repoRoot, markdownFile)));
+    const updated = templated.replace(BLOCK_PATTERN, (whole, rawReference, actualLanguage, actualBody) => {
       markerCount += 1;
       blockCount += 1;
       const resolved = resolveSource(rawReference, markdownFile);
@@ -106,6 +113,8 @@ function synchronizeDocSnippets(options = {}) {
     }
   }
 
+  if (!write && layoutMismatches.length) throw new Error(`example layouts are stale: ${layoutMismatches.join(', ')}. Run npm run docs:sync`);
+
   if (!write && mismatches.length > 0) {
     const details = mismatches.map((entry) => `${entry.markdown} <- ${entry.source}`).join(', ');
     throw new Error(`documentation source snippets are stale: ${details}. Run node wasm/scripts/sync-doc-snippets.cjs --write`);
@@ -133,12 +142,19 @@ function main() {
     const maintenance = synchronizeMaintenancePolicy({ repoRoot, write });
     const snippets = synchronizeDocSnippets({ write });
     const contextCorpus = synchronizeContextCorpus({ repoRoot, write });
+    // The context-app harness reads the generated corpus identity. Refresh its
+    // table after corpus inputs, then reject cycles instead of emitting drift.
+    const derivedSnippets = write ? synchronizeDocSnippets({ write: true }) : { changedFiles: 0 };
+    if (write) {
+      synchronizeDocSnippets({ write: false });
+      synchronizeContextCorpus({ repoRoot, write: false });
+    }
     const references = synchronizeReferenceDocs({ write });
     const ownership = validateDocumentationMetadata({ repoRoot, today: '2026-07-16' });
     const result = Object.freeze({ status: 'ok', metadata, maintenance, snippets, contextCorpus, references, ownership });
     if (args.has('--json')) console.log(JSON.stringify(result, null, 2));
     else {
-      const changed = metadata.changedFiles + maintenance.changedFiles + snippets.changedFiles + contextCorpus.changedFiles + references.changedFiles;
+      const changed = metadata.changedFiles + maintenance.changedFiles + snippets.changedFiles + derivedSnippets.changedFiles + contextCorpus.changedFiles + references.changedFiles;
       console.log(`ok - ${references.expectedFiles} generated documentation/package file(s), ${maintenance.expectedFiles} maintenance-policy output(s), ${snippets.blockCount} source block(s), and ${metadata.files} owned page(s) are synchronized${changed ? `; updated ${changed} file(s)` : ''}`);
     }
   } catch (error) {

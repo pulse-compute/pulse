@@ -8,7 +8,7 @@ pulse-doc-meta:end -->
 # Release packages and clean-consumer acceptance
 
 The current Beta candidate contains twenty publishable packages
-synchronized at version `1.0.0-beta.9`. The product-facing packages are:
+synchronized at version `1.0.0-beta.10`. The product-facing packages are:
 
 ```text
 @pulse-compute/pulse
@@ -81,7 +81,7 @@ change requires another replay on the new candidate.
 | `str03b-installed` | Enabled experimental Node generated output, slow writers and disconnects; no support promotion |
 | `ast01-installed` | Assets signing facade and installed declarations |
 | `ast02b-installed`, `ast02d-installed` | Embedded binary Assets on JavaScript and Native, bounds, HTTP subsets and deterministic manifest identity |
-| `mcp-installed` | Exact CLI-shipped context app and public MCP package; production Node host, pinned official client/Codex onboarding and client-side starter CLI proof |
+| `mcp-installed` | Exact CLI-shipped context app and public MCP package; source-free Node Native five-tool replay, independent resource reconstruction and corrupt-closure rejection; generic multi-owner resource closure on installed Node Native/JavaScript after source removal; plus production Node host, pinned official client/Codex onboarding and client-side starter CLI proof |
 | `s3-body-installed` | S3 binary bodies, GET/HEAD, range/conditional outcomes, length failures, cancellation and cleanup on Node Native/JavaScript and Fastly Native ABI fixtures |
 
 These gates qualify their existing target cells. They do not expand production
@@ -271,6 +271,60 @@ node wasm/scripts/run-wasm-tests.cjs --task provider-fastly-compute-reality --no
 
 The task records the Fastly CLI version, invokes `fastly compute serve --file`, and lets the CLI own its local Compute engine. It then sends real HTTP requests through the generated native module. `PULSE_VICEROY_BIN` remains available only as an explicit lower-level reproduction override. The fixture covers schemas, configuration, secrets, KV persistence, named-backend fetch, opaque bytes, repeated headers, and GRIP hold/publish. It does not deploy or activate a Fastly service.
 
+The context application has a separate exact-installed local acceptance task:
+
+```bash
+PULSE_FASTLY_BIN=/path/to/fastly PULSE_VICEROY_BIN=/path/to/viceroy \
+  node wasm/scripts/run-wasm-tests.cjs --task mcp-fastly-local-installed
+```
+
+This task requires both tools and invokes the actual Fastly CLI with the selected
+Viceroy binary. It uses the standard package candidates, an unrelated installed
+consumer and its shipped `fastly-native` profile. Independent expectations cover
+all five tools, complete read/search pagination, citations, admission failures
+and repeated requests. Separately identified growth, deadline and generic resource
+fixtures exercise the admitted row ceiling, UTF-8/bounds behavior, deduplication,
+unused resource elimination, workspace lifetime and cumulative allocation failure.
+No configured backend or JavaScript fallback participates in these requests.
+
+Receipts retain package, source, configuration, context-manifest and module hashes,
+tool versions, HTTP outcomes, latency and the module's declared memory bounds.
+Host RSS is sampled only when observable; live guest allocation counts and peak
+heap remain unknown. Failed runs remain failed. This standalone development task
+does not extend the release selection or authorize deployment. Final release use
+requires a fresh run bound to the selected immutable candidate.
+
+The task requires generic workspace/resource bounds failures to produce HTTP 500,
+not an empty success response. The provider's terminal response preserves the
+original failure diagnostics while body, transport and deadline handlers retain
+their specific responses. Failed historical runs remain failed; allocation
+trapping and subsequent healthy requests are recorded separately. A new complete
+run is required after a provider repair before claiming local acceptance.
+
+Pinned client qualification of the installed Native endpoint is a separate task:
+
+```bash
+PULSE_FASTLY_BIN=/path/to/fastly PULSE_VICEROY_BIN=/path/to/viceroy \
+  node wasm/scripts/run-wasm-tests.cjs --task mcp-fastly-clients-installed
+```
+
+It reuses the exact-package installation and actual local host lifecycle above.
+The shipped application keeps its default `2026-07-28` profile. A separately
+hashed fixture enables `2025-06-18` explicitly through the existing binding
+option. The frozen official SDK 2.2.0 exercises both profiles, Claude Code 2.1.292
+exercises `2026-07-28`, and Codex 0.160.1 exercises `2025-06-18`. Host controls make
+explicit calls without model turns or operator accounts. A loopback recording
+relay forwards request/response bytes to Viceroy without MCP translation.
+
+Each client/profile has a terminal receipt binding its frozen lockfile, installed
+client files, application source/configuration, build receipts and Wasm identity.
+All five tools are compared with independent expectations. Separate wire checks
+cover IDs, notifications, protocol errors, disabled capabilities, admission and
+recovery. Malformed modern requests must fail even on the explicitly compatible
+variant. Dependency failures remain blockers, other row failures remain failures,
+and unexecuted rows cannot pass. Existing root/Node adapter qualification remains
+separate. This task adds no transport, deployment or release-selection authority.
+
 ## Aggregate seal and evidence
 
 [Testing Pulse](./testing.md#aggregate-release-seal) owns execution, deadlines,
@@ -278,6 +332,67 @@ shared packing, recovery and cleanup. The seal runs source checks before the
 TypeScript build, the complete release profile, mandatory installed features,
 and external Fastly proof when required. Workspace and installed checks cannot
 be pooled manually into a passing release claim.
+
+The v3 source-check receipt includes an independent, read-only reconstruction
+of the context corpus, vectors and generated application through the existing
+context builder. It binds the clean candidate tree, producer source/configuration,
+allowlist, lockfile, manifest, generated output hashes and complete release and
+installed-feature selections. Missing, stale, extra or corrupt context outputs
+fail before packaging; checks never regenerate candidate files.
+
+Packing compares every file in the CLI-shipped context application against this
+verified inventory, then records its freshness digest alongside the exact package
+closure. Standalone packing performs its own reconstruction, including with
+`--skip-build`. The controller requires the complete installed-feature runner,
+the `mcp-installed` receipt and matching tarball hashes before recording
+`pulse.release-context-qualification.v1`. Evidence aggregation rechecks retained
+receipt and tarball bytes and copies the source-check receipt, pack manifest and
+installed runner into the bundle. It does not refresh data after sealing. Fast PR
+checks remain development evidence; they do not replace installed qualification.
+
+Every resume runs fresh source checks before attempting checkpoint reuse. The
+controller validates that receipt against the current candidate immediately,
+rechecks its pinned bytes before package admission, and binds the stable context
+freshness digest as the shared-pack checkpoint prerequisite. Receipt duration and
+attempt-local metadata do not invalidate an identical proof; candidate, producer,
+configuration, lockfile, generated bytes and complete selections do. Missing,
+invalid or changed current receipts stop before reuse. Expired or damaged retained
+package proofs cause repacking and invalidate their dependent task proofs; missing
+installed receipts rerun their owning tasks. Only the explicitly selected prior
+attempt supplies checkpoints. Failed attempts are retained unchanged, and a resume
+must still finish both complete canonical selections.
+
+The `release-recovery` task includes a deterministic context-specific controller
+matrix with heavy product commands mocked. It covers receipt faults, source/input
+identity changes, expiry, changed package bytes, interrupted execution, complete
+resume and rejection of unselected historical passes. This proves recovery control
+flow and receipt admission, not installed product behavior or release qualification.
+
+Before freezing the integrated MCP/resource candidate, run `docs:sync`, then
+`context:build` with the pinned producer Node, then `docs:sync` and
+`context:check`. Commit all canonical and installed mirrors together. A source
+citation or workflow edit can change corpus, vector and Wasm identities even
+when the encoder is unchanged. Freeze only after regeneration; subsequent edits,
+including evidence commits, describe a new source revision and require a new
+candidate selection. Never copy old receipts into that selection as fresh passes.
+
+The integrated handoff must record the clean revision/tree, complete expansion
+of the `release` profile, all `REQUIRED_TASKS` from
+`scripts/release-feature-acceptance.cjs`, package manifest and tarball hashes,
+source-check/context inventory, lockfile and tool identities, terminal statuses,
+failed attempts and remaining external gates. Use the existing controller with
+`--require-fastly`; explicitly retain the separate
+`mcp-fastly-local-installed` and `mcp-fastly-clients-installed` receipts as well.
+Those two MCP gates are not silently included by the aggregate profile. Preserve
+the separate KV/deployed-provider dispositions and unresolved report-integrity
+observations. A passing local provider receipt is not deployed proof.
+
+[B10-09 / #382](https://github.com/pulse-compute/pulse/issues/382) owns the full
+integrated qualification. The documentation handoff does not run or approve that
+seal. Resource issues #412 and #381 require real-workload, generic-resource,
+installed, reporting and provider evidence reconciled to the selected candidate;
+implementation history alone does not close them. No release, merge or deployment
+is authorized by a completed documentation or development gate.
 
 Complete example workflows include default and experimental Native-size
 assertions. Run the size-only command for diagnosis, not as a replacement:
@@ -326,8 +441,10 @@ A human release authority must approve `npm-publish`. Codex may diagnose or prep
 ## Versioned documentation artifact
 
 The [documentation update loop](./documentation-system.md#update-loop) owns
-source and hosted-site checks. Qualification retains the validated versioned
-site alongside the exact package candidate. The
+source and hosted-site checks. New v2 package qualification retains source-only
+documentation evidence alongside the exact package candidate; it does not build
+or retain a website. Historical v1 qualification still requires its original
+validated site and rejects missing or changed bytes. The
 [deployment runbook](./documentation-deployment.md) owns immutable Object Storage
 uploads, registry gating, promotion and public URL verification. The
 [versioning procedure](./documentation-versioning.md) owns preserved history.

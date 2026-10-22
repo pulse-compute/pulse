@@ -1,8 +1,10 @@
 'use strict';
 
+const dynamicBackends = require('./native-dynamic-backends.js');
+
 const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
-const { nativeStdioSource } = require('./native-stdio.js');
+const { nativeLoggingSource } = require('./native-stdio.js');
 const applicationErrors = require('./native-application-errors.js');
 const effectInvocations = require('./effect-invocations.js');
 const packageApplication = require('./package-native-application.js');
@@ -10,7 +12,7 @@ const nativeValueBudget = require('./native-value-budget.js');
 const { schemaNeedsValueProjection } = require('@pulse-compute/wasm-contracts/schema-json/registry');
 
 const crypto = require('node:crypto');
-const { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
+const { nativeStringAssembly, nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
 const conditionalKv = require('./kv-native.js');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -125,7 +127,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   Object.freeze(['fastly_http_req', 'uri_set']),
   Object.freeze(['fastly_http_req', 'header_insert']),
   Object.freeze(['fastly_http_req', 'send_async']),
-  Object.freeze(['fastly_http_req', 'pending_req_wait']),
+  Object.freeze(['fastly_http_req', 'pending_req_wait_v2']),
   Object.freeze(['fastly_http_resp', 'new']),
   Object.freeze(['fastly_http_resp', 'header_append']),
   Object.freeze(['fastly_http_resp', 'header_value_get']),
@@ -146,6 +148,12 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   Object.freeze(['fastly_kv_store', 'lookup_wait_v2']),
   Object.freeze(['fastly_kv_store', 'insert']),
   Object.freeze(['fastly_kv_store', 'insert_wait']),
+  Object.freeze(['fastly_kv_store', 'list']),
+  Object.freeze(['fastly_kv_store', 'list_wait']),
+  Object.freeze(['fastly_kv_store', 'delete']),
+  Object.freeze(['fastly_kv_store', 'delete_wait']),
+  Object.freeze(['fastly_log', 'endpoint_get']),
+  Object.freeze(['fastly_log', 'write']),
   Object.freeze(['wasi_snapshot_preview1', 'fd_write']),
   Object.freeze(['wasi_snapshot_preview1', 'clock_time_get'])
 ].filter(([module, name], index, entries) => entries.findIndex((item) => item[0] === module && item[1] === name) === index));
@@ -175,6 +183,8 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   's3.getText': 13,
   's3.putText': 14,
   's3.getBody': 21,
+  'kv.delete': 22,
+  'kv.list': 23,
   'kv.getVersioned': 15,
   'kv.insertIfAbsent': 16,
   'kv.compareAndSwap': 17,
@@ -183,6 +193,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
 });
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
+  'fastly_http_req:register_dynamic_backend',
   ...FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS.map(([moduleName, name]) => `${moduleName}:${name}`)
 ]);
 
@@ -903,11 +914,11 @@ function resolveCapabilityBindings(plan, options = {}) {
       backend = byEffect[effect.id]
         || (origin && byOrigin[origin])
         || (effect.resource && effect.resource.value && byOrigin[effect.resource.value]);
-      if ((typeof backend !== 'string' || backend.trim() === '') && !origin) {
+      if ((typeof backend !== 'string' || backend.trim() === '') && !origin && source.dynamicBackends !== true) {
         const configured = [...new Set(Object.values(byOrigin).filter((value) => typeof value === 'string' && value.trim()).map((value) => value.trim()))];
         if (configured.length === 1) backend = configured[0];
       }
-      if (typeof backend !== 'string' || backend.trim() === '') {
+      if ((typeof backend !== 'string' || backend.trim() === '') && !(source.dynamicBackends === true && !(plan.capabilities || []).includes('request.body.forward'))) {
         fail(`Fastly native effect ${effect.id} has no static backend binding.`, 'PULSE_FASTLY_BACKEND_REQUIRED', {
           effectId: effect.id,
           effectIndex: index,
@@ -915,7 +926,7 @@ function resolveCapabilityBindings(plan, options = {}) {
           hint: `Provide bindings.backends[${JSON.stringify(origin || '<origin>')}] or an explicit effect backend.`
         });
       }
-      backend = backend.trim();
+      backend = typeof backend === 'string' ? backend.trim() : '';
     }
     const binding = Object.freeze({
       index,
@@ -924,6 +935,7 @@ function resolveCapabilityBindings(plan, options = {}) {
       origin,
       url,
       backend,
+      ...(!backend && effect.kind === 'fetch' ? { dynamic: true } : {}),
       ...(effect.kind === 'grip.broadcast' && gripSecretRef ? { authSecretRef: gripSecretRef } : {})
     });
     backends.push(binding);
@@ -934,6 +946,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   return Object.freeze({
     maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs),
     bodyForwarding: require('../toolchain/body-forwarding.js').normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs),
+    ...(source.logEndpoint === undefined ? {} : { logEndpoint: require('../toolchain/logging.js').normalizeFastlyLogEndpoint(source.logEndpoint) }),
     configStore,
     secretStore,
     s3: require('../toolchain/s3.js').resolveFastlyS3(effects.map((effect) => ({ ...effect, payload: Object.fromEntries(['contentType', 'method', 'range', 'ifNoneMatch'].map(name => [name, literalObjectField(inputExpression(effect, 'payload'), name) ?? undefined])) })), source.s3),
@@ -990,9 +1003,10 @@ function requiredImportsForPlan(plan, bindings) {
   if (kinds.has('fetch') || kinds.has('grip.publish') || kinds.has('grip.broadcast')) {
     for (const key of [
       'fastly_http_req:new', 'fastly_http_req:method_set', 'fastly_http_req:uri_set',
-      'fastly_http_req:header_insert', 'fastly_http_req:send_async', 'fastly_http_req:pending_req_wait'
+      'fastly_http_req:header_insert', 'fastly_http_req:send_async', 'fastly_http_req:pending_req_wait_v2'
     ]) keys.add(key);
   }
+  if (bindings && dynamicBackends.active(bindings)) keys.add('fastly_http_req:register_dynamic_backend');
   if (kinds.has('fetch')) for (const key of ['wasi_snapshot_preview1:clock_time_get', 'fastly_async_io:select', 'fastly_http_req:pending_req_poll_v2', 'fastly_http_resp:close', 'fastly_http_body:close']) keys.add(key);
   if (planRequiresFetchBodyRead(plan)) keys.add('fastly_http_body:read');
   if (kinds.has('config.get')) for (const key of ['fastly_config_store:open', 'fastly_config_store:get']) keys.add(key);
@@ -1012,12 +1026,13 @@ function requiredImportsForPlan(plan, bindings) {
   if (kinds.has('kv.get') || kinds.has('assets.lookup')) for (const key of ['fastly_kv_store:lookup', 'fastly_kv_store:lookup_wait_v2', 'fastly_http_body:read']) keys.add(key);
   if (kinds.has('kv.put')) for (const key of ['fastly_kv_store:insert', 'fastly_kv_store:insert_wait']) keys.add(key);
   if (kinds.has('grip.hold')) keys.add('fastly_http_resp:header_append');
-  if (plan.logging && plan.logging.enabledStatements > 0) {
-    keys.add('wasi_snapshot_preview1:fd_write');
+  if ((plan.logging && plan.logging.enabledStatements > 0) || ['fetch', 'grip.publish', 'grip.broadcast', 's3.head', 's3.getText', 's3.putText', 's3.getBody'].some(kind => kinds.has(kind))) {
+    if (bindings?.logEndpoint === undefined) keys.add('wasi_snapshot_preview1:fd_write');
+    else { keys.add('fastly_log:endpoint_get'); keys.add('fastly_log:write'); }
   }
   if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText') || kinds.has('s3.getBody')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
   if (require('./native-body-forwarding.js').enabled(plan)) {
-    keys.delete('fastly_http_req:send_async'); keys.delete('fastly_http_req:pending_req_wait');
+    keys.delete('fastly_http_req:send_async'); keys.delete('fastly_http_req:pending_req_wait_v2');
     for (const key of require('./native-body-forwarding.js').IMPORTS) keys.add(key);
     keys.add('fastly_http_body:read');
   }
@@ -1391,19 +1406,24 @@ function __pulse_fastly_jwt_attach_evidence(handle: i32): void {
   const value = __pulse_fastly_value(handle)
   if (value.kind == PULSE_VALUE_RESPONSE) __pulse_fastly_jwt_evidence_headers(value)
 }
-function __pulse_fastly_jwt_send_error(): void {
-  const output = new __PulseFastlyValue()
-  output.kind = PULSE_VALUE_RESPONSE
-  output.status = 400
-  output.text = ""
-  output.headers.push(new __PulseFastlyHeader("content-type", "text/plain; charset=utf-8"))
-  __pulse_fastly_jwt_evidence_headers(output)
-  __pulse_fastly_send_result(__pulse_fastly_put(output))
-}
 `
     : String.raw`
 function __pulse_fastly_jwt_attach_evidence(handle: i32): void { void handle }
-function __pulse_fastly_jwt_send_error(): void {}
+`;
+  // Keep the legacy hook name: body, fetch, header and deadline owners prepend
+  // their specific responses here. Every remaining fatal path needs a response,
+  // independently of whether JWT evidence was requested for this build.
+  const terminalErrorSource = `
+function __pulse_fastly_jwt_send_error(): void {
+  const output = new __PulseFastlyValue()
+  output.kind = PULSE_VALUE_RESPONSE
+  output.status = ${jwtReality ? '__pulse_fastly_jwt_error != 0 ? 400 : 500' : '500'}
+  output.text = output.status == 400 ? "" : "Internal Server Error"
+  output.headers.push(new __PulseFastlyHeader("content-type", "text/plain; charset=utf-8"))
+  ${jwtReality ? 'if (__pulse_fastly_jwt_error != 0) __pulse_fastly_jwt_evidence_headers(output)' : ''}
+  // Do not clear the original failure or expose its detail in the response.
+  __pulse_fastly_send_result(__pulse_fastly_put(output))
+}
 `;
   const gripAuthentication = bindings.grip && bindings.grip.authentication;
   const gripSecretSource = gripAuthentication
@@ -1423,7 +1443,7 @@ function __pulse_fastly_jwt_send_error(): void {}
 @external("fastly_http_req", "uri_set") declare function fastly_http_req_uri_set(handle: i32, uri: usize, uriLength: i32): i32
 @external("fastly_http_req", "header_insert") declare function fastly_http_req_header_insert(handle: i32, name: usize, nameLength: i32, value: usize, valueLength: i32): i32
 @external("fastly_http_req", "send_async") declare function fastly_http_req_send_async(handle: i32, body: i32, backend: usize, backendLength: i32, pendingOut: usize): i32
-@external("fastly_http_req", "pending_req_wait") declare function fastly_http_req_pending_req_wait(handle: i32, responseOut: usize, bodyOut: usize): i32
+@external("fastly_http_req", "pending_req_wait_v2") declare function fastly_http_req_pending_req_wait_v2(handle: i32, detail: usize, responseOut: usize, bodyOut: usize): i32
 @external("fastly_http_resp", "new") declare function fastly_http_resp_new(handleOut: usize): i32
 @external("fastly_http_resp", "header_append") declare function fastly_http_resp_header_append(handle: i32, name: usize, nameLength: i32, value: usize, valueLength: i32): i32
 @external("fastly_http_resp", "header_value_get") declare function fastly_http_resp_header_value_get(handle: i32, name: usize, nameLength: i32, value: usize, valueLength: i32, writtenOut: usize): i32
@@ -1443,7 +1463,11 @@ function __pulse_fastly_jwt_send_error(): void {}
 @external("fastly_kv_store", "lookup_wait_v2") declare function fastly_kv_store_lookup_wait_v2(handle: i32, bodyOut: usize, metadata: usize, metadataLength: i32, writtenOut: usize, generationOut: usize, kvErrorOut: usize): i32
 @external("fastly_kv_store", "insert") declare function fastly_kv_store_insert(store: i32, key: usize, keyLength: i32, body: i32, configMask: i32, config: usize, insertOut: usize): i32
 @external("fastly_kv_store", "insert_wait") declare function fastly_kv_store_insert_wait(handle: i32, kvErrorOut: usize): i32
-${nativeStdioSource}
+@external("fastly_kv_store", "delete") declare function fastly_kv_store_delete(store: i32, key: usize, keyLength: i32, configMask: i32, config: usize, pendingOut: usize): i32
+@external("fastly_kv_store", "delete_wait") declare function fastly_kv_store_delete_wait(handle: i32, kvErrorOut: usize): i32
+@external("fastly_kv_store", "list") declare function fastly_kv_store_list(store: i32, configMask: i32, config: usize, pendingOut: usize): i32
+@external("fastly_kv_store", "list_wait") declare function fastly_kv_store_list_wait(handle: i32, bodyOut: usize, kvErrorOut: usize): i32
+${nativeLoggingSource(bindings.logEndpoint)}
 @external("wasi_snapshot_preview1", "clock_time_get") declare function wasi_snapshot_preview1_clock_time_get(clockId: i32, precision: i64, timeOut: usize): i32
 
 const PULSE_FASTLY_EFFECTS_ABI_VERSION: i64 = ${FASTLY_NATIVE_PLATFORM_CAPABILITIES_ABI_VERSION}
@@ -1688,6 +1712,7 @@ function __pulse_fastly_out_i32(): StaticArray<i32> { return new StaticArray<i32
 function __pulse_fastly_out_value(out: StaticArray<i32>): i32 { return load<i32>(changetype<usize>(out)) }
 function __pulse_fastly_utf8(value: string): ArrayBuffer { return String.UTF8.encode(value, false) }
 function __pulse_fastly_decode(buffer: Uint8Array, length: i32): string { return String.UTF8.decodeUnsafe(buffer.dataStart, length, false) }
+${nativeStringAssembly}
 ${nativeStringConcat}
 ${nativeStringTrim}
 ${nativeStringIndex}
@@ -1774,7 +1799,7 @@ function __pulse_fastly_json(handle: i32, depth: i32): string {
   // Join once, avoiding a complete copy of a multi-MiB leaf at every ancestor
   // and at every following member in the response or effect result.
   const parts = new Array<string>(); __pulse_fastly_json_parts(handle, depth, parts);
-  return parts.join("")
+  return __pulse_fastly_join_strings(parts)
 }
 function __pulse_fastly_parse_json(text: string): i32 { const parser = new __PulseJsonParser(text); const value = parser.parse(); if (parser.failed || value <= 0) { __pulse_fastly_fail(PULSE_ERROR_JSON, 3, -1); return 0 } return value }
 function __pulse_fastly_path(uri: string): string { let start = 0; const scheme = uri.indexOf("://"); if (scheme >= 0) { const slash = uri.indexOf("/", scheme + 3); start = slash >= 0 ? slash : uri.length } let end = uri.length; const query = uri.indexOf("?", start); if (query >= 0 && query < end) end = query; const fragment = uri.indexOf("#", start); if (fragment >= 0 && fragment < end) end = fragment; return start >= end ? "/" : uri.substring(start, end) }
@@ -1810,6 +1835,7 @@ function __pulse_fastly_scalar(kind: i32, boolean: i32, slot: i32): i32 {
 function host_value_undefined(): i32 { return __pulse_fastly_scalar(PULSE_VALUE_UNDEFINED, 0, 0) }
 function host_value_null(): i32 { return __pulse_fastly_scalar(PULSE_VALUE_NULL, 0, 1) }
 function host_value_boolean(value: i32): i32 { return __pulse_fastly_scalar(PULSE_VALUE_BOOLEAN, value != 0 ? 1 : 0, value != 0 ? 3 : 2) }
+${plan.callables?.length || plan.binaryResources || plan.numericWorkspaces?.length ? require('./native-binary-resources.js').source() : ''}
 function host_value_number(value: f64): i32 {
   // Preserve negative zero, NaN, infinities and nonintegral values exactly.
   const cacheable = value >= 0 && value < 65536 && Math.floor(value) == value && (value != 0 || 1.0 / value > 0);
@@ -1824,6 +1850,13 @@ function host_value_string(pointer: i32, length: i32): i32 {
   const handle = __pulse_fastly_string_value(text);
   if (text.length > 1 && text.length <= 128 && __pulse_fastly_literal_handles.size < 1024) { __pulse_fastly_literal_handles.set(text, handle); ${options.handleTracing ? 'if (handle != 0) __pulse_handle_cache_roots.push(handle);' : ''} }
   return handle
+}
+function host_effect_collection_count(handle: i32, max: i32, stateIndex: i32): i32 {
+  const input = __pulse_fastly_value(handle)
+  if (__pulse_fastly_last_error != 0 || input.kind != PULSE_VALUE_ARRAY || max < 1 || max > 32) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 173, -1); return -1 }
+  if (input.values.length > max) { __pulse_fastly_fail(PULSE_ERROR_STATE, 172, -1); return -1 }
+  if (__pulse_invocation_count + input.values.length > PULSE_FASTLY_MAX_EFFECT_INVOCATIONS) { __pulse_fastly_fail(PULSE_ERROR_STATE, 170, -1); return -1 }
+  return input.values.length
 }
 function host_value_array(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_ARRAY; return __pulse_fastly_put(item) }
 function host_value_array_push(target: i32, value: i32): void { const item = __pulse_fastly_value(target); if (item.kind != PULSE_VALUE_ARRAY || item.immutable) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 30, -1); return } item.values.push(value) }
@@ -1910,7 +1943,7 @@ function __pulse_fastly_jwt_capture_clock(effectIndex: i32): f64 { __pulse_fastl
 function __pulse_fastly_jwt_validate_schema(effectIndex: i32, schemaId: string, claimsHandle: i32): i32 { __pulse_fastly_jwt_schema_calls += 1; __pulse_fastly_jwt_event_order += "H"; if (__pulse_fastly_jwt_case_id() == "claims-schema-failure-after-registered-claims") return 0; return __pulse_fastly_schema_apply(schemaId, claimsHandle, false) }
 function __pulse_fastly_jwt_sign_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const result = pulse_jwt_fastly_sign(effectIndex, unchecked(__pulse_fastly_payloads[effectIndex])); if (result > 0 && __pulse_fastly_last_error == 0) __pulse_fastly_ready_effect(effectIndex, result) }
 function __pulse_fastly_jwt_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const result = pulse_jwt_fastly_verify(effectIndex, unchecked(__pulse_fastly_payloads[effectIndex])); if (result > 0 && __pulse_fastly_last_error == 0) __pulse_fastly_ready_effect(effectIndex, result) }
-function __pulse_fastly_start_request(effectIndex: i32, url: string, method: string, headers: __PulseFastlyValue, body: string, backend: string): void { const requestOut = __pulse_fastly_out_i32(); let status = fastly_http_req_new(changetype<usize>(requestOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 70, effectIndex); return } const requestHandle = __pulse_fastly_out_value(requestOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 71, effectIndex); return } const bodyHandle = __pulse_fastly_out_value(bodyOut); const methodBytes = __pulse_fastly_utf8(method); status = fastly_http_req_method_set(requestHandle, changetype<usize>(methodBytes), methodBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 72, effectIndex); return } const urlBytes = __pulse_fastly_utf8(url); status = fastly_http_req_uri_set(requestHandle, changetype<usize>(urlBytes), urlBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 73, effectIndex); return } if (headers.kind == PULSE_VALUE_OBJECT) { for (let i = 0; i < headers.keys.length; i += 1) { const nameBytes = __pulse_fastly_utf8(unchecked(headers.keys[i])); const valueBytes = __pulse_fastly_utf8(__pulse_fastly_string(unchecked(headers.values[i]))); status = fastly_http_req_header_insert(requestHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 74, effectIndex); return } } } if (body.length > 0) { status = __pulse_fastly_write_body(bodyHandle, body); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 75, effectIndex); return } } if (backend.length == 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 76, effectIndex); return } const backendBytes = __pulse_fastly_utf8(backend); const pendingOut = __pulse_fastly_out_i32(); status = fastly_http_req_send_async(requestHandle, bodyHandle, changetype<usize>(backendBytes), backendBytes.byteLength, changetype<usize>(pendingOut)); if (status != FASTLY_STATUS_OK) { __pulse_fetch_close_request(requestHandle); __pulse_fetch_close_body(bodyHandle); __pulse_fetch_fail(status, 77, effectIndex); return } unchecked(__pulse_fastly_pending[effectIndex] = __pulse_fastly_out_value(pendingOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_ASYNC) }
+function __pulse_fastly_start_request(effectIndex: i32, url: string, method: string, headers: __PulseFastlyValue, body: string, backend: string): void { __pulse_transport_slots[effectIndex] = null; const requestOut = __pulse_fastly_out_i32(); let status = fastly_http_req_new(changetype<usize>(requestOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 70, effectIndex); return } const requestHandle = __pulse_fastly_out_value(requestOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 71, effectIndex); return } const bodyHandle = __pulse_fastly_out_value(bodyOut); const methodBytes = __pulse_fastly_utf8(method); status = fastly_http_req_method_set(requestHandle, changetype<usize>(methodBytes), methodBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 72, effectIndex); return } const urlBytes = __pulse_fastly_utf8(url); status = fastly_http_req_uri_set(requestHandle, changetype<usize>(urlBytes), urlBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 73, effectIndex); return } if (headers.kind == PULSE_VALUE_OBJECT) { for (let i = 0; i < headers.keys.length; i += 1) { const nameBytes = __pulse_fastly_utf8(unchecked(headers.keys[i])); const valueBytes = __pulse_fastly_utf8(__pulse_fastly_string(unchecked(headers.values[i]))); status = fastly_http_req_header_insert(requestHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 74, effectIndex); return } } } if (body.length > 0) { status = __pulse_fastly_write_body(bodyHandle, body); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 75, effectIndex); return } } if (backend.length == 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 76, effectIndex); return } const backendBytes = __pulse_fastly_utf8(backend); const pendingOut = __pulse_fastly_out_i32(); status = fastly_http_req_send_async(requestHandle, bodyHandle, changetype<usize>(backendBytes), backendBytes.byteLength, changetype<usize>(pendingOut)); if (status != FASTLY_STATUS_OK) { __pulse_fetch_close_request(requestHandle); __pulse_fetch_close_body(bodyHandle); __pulse_transport_capture(effectIndex, status, 'send'); __pulse_fetch_fail(status, 77, effectIndex); return } unchecked(__pulse_fastly_pending[effectIndex] = __pulse_fastly_out_value(pendingOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_ASYNC) }
 function __pulse_fastly_fetch_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const urlIndex = __pulse_fastly_find(payload, "url"); if (urlIndex < 0) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 48, effectIndex); return } const url = __pulse_fastly_string(unchecked(payload.values[urlIndex])); const initIndex = __pulse_fastly_find(payload, "init"); const init = initIndex >= 0 ? __pulse_fastly_value(unchecked(payload.values[initIndex])) : new __PulseFastlyValue(); let method = "GET"; let body = ""; let headers = new __PulseFastlyValue(); headers.kind = PULSE_VALUE_OBJECT; if (init.kind == PULSE_VALUE_OBJECT) { const methodIndex = __pulse_fastly_find(init, "method"); if (methodIndex >= 0) method = __pulse_fastly_string(unchecked(init.values[methodIndex])).toUpperCase(); const headersIndex = __pulse_fastly_find(init, "headers"); if (headersIndex >= 0) headers = __pulse_fastly_value(unchecked(init.values[headersIndex])); const bodyIndex = __pulse_fastly_find(init, "body"); const jsonIndex = __pulse_fastly_find(init, "json"); if (bodyIndex >= 0) { const bodyValue = unchecked(init.values[bodyIndex]); const bodyObject = __pulse_fastly_value(bodyValue); body = bodyObject.kind == PULSE_VALUE_STRING ? bodyObject.text : __pulse_fastly_json(bodyValue, 0) } else if (jsonIndex >= 0) { body = __pulse_fastly_fetch_json_body(init, unchecked(init.values[jsonIndex])); if (__pulse_fastly_last_error != 0) return; headers = __pulse_fastly_fetch_json_headers(headers) } } __pulse_fastly_start_request(effectIndex, url, method, headers, body, __pulse_fastly_backend(effectIndex)) }
 function __pulse_fastly_kv_get_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const store = __pulse_fastly_open_kv_store(effectIndex); if (__pulse_fastly_last_error != 0) return; const key = __pulse_fastly_string(__pulse_fastly_payload_field(payload, "key")); const keyBytes = __pulse_fastly_utf8(key); const lookupOut = __pulse_fastly_out_i32(); const config = new StaticArray<i32>(1); const status = fastly_kv_store_lookup(store, changetype<usize>(keyBytes), keyBytes.byteLength, 0, changetype<usize>(config), changetype<usize>(lookupOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 116, effectIndex); return } unchecked(__pulse_fastly_pending[effectIndex] = __pulse_fastly_out_value(lookupOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_ASYNC) }
 ${assetBeginSource}
@@ -1922,7 +1955,7 @@ function __pulse_fastly_grip_hold_begin(effectIndex: i32, payload: __PulseFastly
 ${gripSecretSource}
 function __pulse_fastly_grip_publish_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const valueHandle = __pulse_fastly_payload_field(payload, "payload"); const value = __pulse_fastly_value(valueHandle); if (value.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 122, effectIndex); return } const headers = new __PulseFastlyValue(); headers.kind = PULSE_VALUE_OBJECT; headers.keys.push("content-type"); headers.values.push(__pulse_fastly_string_value("application/json; charset=utf-8")); headers.keys.push("accept"); headers.values.push(__pulse_fastly_string_value("application/json")); ${gripAuthorizationSource} const body = __pulse_fastly_json(valueHandle, 0); if (String.UTF8.encode(body, false).byteLength > PULSE_FASTLY_BUFFER_BYTES) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 145, effectIndex); return } __pulse_fastly_start_request(effectIndex, __pulse_fastly_grip_publish_url(effectIndex), "POST", headers, body, __pulse_fastly_backend(effectIndex)) }
 ${effectDispatchSource(plan)}
-function __pulse_fastly_wait_fetch(effectIndex: i32): i32 { if (unchecked(__pulse_fastly_pending_mode[effectIndex]) != PULSE_FASTLY_PENDING_ASYNC) { __pulse_fastly_fail(PULSE_ERROR_STATE, 80, effectIndex); return 0 } const pending = unchecked(__pulse_fastly_pending[effectIndex]); const responseOut = __pulse_fastly_out_i32(); const bodyOut = __pulse_fastly_out_i32(); const status = fastly_http_req_pending_req_wait(pending, changetype<usize>(responseOut), changetype<usize>(bodyOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_NONE); unchecked(__pulse_fastly_pending[effectIndex] = 0); if (status != FASTLY_STATUS_OK) { __pulse_fetch_fail(status, 81, effectIndex); return 0 } const value = new __PulseFastlyValue(); value.kind = PULSE_VALUE_FETCH; value.responseHandle = __pulse_fastly_out_value(responseOut); value.bodyHandle = __pulse_fastly_out_value(bodyOut); return __pulse_fastly_put(value) }
+function __pulse_fastly_wait_fetch(effectIndex: i32): i32 { if (unchecked(__pulse_fastly_pending_mode[effectIndex]) != PULSE_FASTLY_PENDING_ASYNC) { __pulse_fastly_fail(PULSE_ERROR_STATE, 80, effectIndex); return 0 } const pending = unchecked(__pulse_fastly_pending[effectIndex]); const responseOut = __pulse_fastly_out_i32(); const bodyOut = __pulse_fastly_out_i32(); const detail = new StaticArray<i32>(__PULSE_SEND_ERROR_DETAIL_WORDS); __pulse_send_error_detail_reset(changetype<usize>(detail)); const status = fastly_http_req_pending_req_wait_v2(pending, changetype<usize>(detail), changetype<usize>(responseOut), changetype<usize>(bodyOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_NONE); unchecked(__pulse_fastly_pending[effectIndex] = 0); if (status != FASTLY_STATUS_OK) { __pulse_transport_capture(effectIndex, status, 'wait', changetype<usize>(detail)); __pulse_fetch_fail(status, 81, effectIndex); return 0 } const value = new __PulseFastlyValue(); value.kind = PULSE_VALUE_FETCH; value.responseHandle = __pulse_fastly_out_value(responseOut); value.bodyHandle = __pulse_fastly_out_value(bodyOut); return __pulse_fastly_put(value) }
 function __pulse_fastly_wait_grip_publish(effectIndex: i32): i32 { const responseHandle = __pulse_fastly_wait_fetch(effectIndex); if (responseHandle <= 0) return 0; const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 129, effectIndex); return 0 } const statusOut = __pulse_fastly_out_i32(); const statusCall = fastly_http_resp_status_get(response.responseHandle, changetype<usize>(statusOut)); if (statusCall != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 130, effectIndex); return 0 } const originStatus = __pulse_fastly_out_value(statusOut); if (originStatus < 200 || originStatus > 299) { __pulse_fastly_fail(PULSE_ERROR_TRANSPORT, 131, effectIndex); return 0 } const outer = __pulse_fastly_value(unchecked(__pulse_fastly_payloads[effectIndex])); const publicationHandle = __pulse_fastly_payload_field(outer, "payload"); const publication = __pulse_fastly_value(publicationHandle); if (publication.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 132, effectIndex); return 0 } const receipt = host_value_object(); host_value_object_set(receipt, __pulse_fastly_string_value("published"), host_value_boolean(1)); for (let i = 0; i < publication.keys.length; i += 1) host_value_object_set(receipt, __pulse_fastly_string_value(unchecked(publication.keys[i])), unchecked(publication.values[i])); const options = host_value_object(); host_value_object_set(options, __pulse_fastly_string_value("status"), host_value_number(202.0)); return host_response_json(receipt, options) }
 function __pulse_fastly_wait_grip_broadcast(effectIndex: i32): i32 { const responseHandle = __pulse_fastly_wait_fetch(effectIndex); if (responseHandle <= 0) return 0; const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 142, effectIndex); return 0 } const statusOut = __pulse_fastly_out_i32(); const statusCall = fastly_http_resp_status_get(response.responseHandle, changetype<usize>(statusOut)); if (statusCall != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 143, effectIndex); return 0 } const originStatus = __pulse_fastly_out_value(statusOut); if (originStatus < 200 || originStatus > 299) { __pulse_fastly_fail(PULSE_ERROR_TRANSPORT, 144, effectIndex); return 0 } const receipt = host_value_object(); host_value_object_set(receipt, __pulse_fastly_string_value("accepted"), host_value_boolean(1)); host_value_object_set(receipt, __pulse_fastly_string_value("status"), host_value_number(f64(originStatus))); return receipt }
 function __pulse_fastly_wait_ready(effectIndex: i32): i32 { if (unchecked(__pulse_fastly_pending_mode[effectIndex]) != PULSE_FASTLY_PENDING_READY) { __pulse_fastly_fail(PULSE_ERROR_STATE, 124, effectIndex); return 0 } const value = unchecked(__pulse_fastly_ready[effectIndex]); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_NONE); unchecked(__pulse_fastly_pending[effectIndex] = 0); unchecked(__pulse_fastly_ready[effectIndex] = 0); return value }
@@ -1933,6 +1966,7 @@ function __pulse_fastly_write_body(bodyHandle: i32, value: string): i32 { const 
 function __pulse_fastly_send_result(handle: i32): i32 { const value = __pulse_fastly_value(handle); ${bindings.s3.length ? 'if (value.s3Body) return __s3_send_body(value);' : ''} if (value.kind == PULSE_VALUE_FETCH) return fastly_http_resp_send_downstream(value.responseHandle, value.bodyHandle, 0); if (value.kind != PULSE_VALUE_RESPONSE) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 90, -1); return PULSE_ERROR_VALUE } const responseOut = __pulse_fastly_out_i32(); let status = fastly_http_resp_new(changetype<usize>(responseOut)); if (status != FASTLY_STATUS_OK) return status; const responseHandle = __pulse_fastly_out_value(responseOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) return status; const bodyHandle = __pulse_fastly_out_value(bodyOut); status = fastly_http_resp_status_set(responseHandle, value.status); if (status != FASTLY_STATUS_OK) return status; for (let i = 0; i < value.headers.length; i += 1) { const header = unchecked(value.headers[i]); const nameBytes = __pulse_fastly_utf8(header.name); const valueBytes = __pulse_fastly_utf8(header.value); status = fastly_http_resp_header_append(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) return status } status = __pulse_fastly_write_body(bodyHandle, value.text); if (status != FASTLY_STATUS_OK) return status; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0) }
 
 ${jwtEvidenceSource}
+${terminalErrorSource}
 ${es256KeyArtifactSource(es256KeyRecords)}
 ${jwtCryptoCompositionSource(jwtCrypto)}
 ${jwtSigningCryptoCompositionSource(jwtCrypto)}
@@ -2024,7 +2058,7 @@ function capabilityImports(effect) {
     return [
       'fastly_http_req.new',
       'fastly_http_req.send_async',
-      'fastly_http_req.pending_req_wait',
+      'fastly_http_req.pending_req_wait_v2',
       ...(effect.kind === 'grip.broadcast' ? ['fastly_secret_store.open', 'fastly_secret_store.get', 'fastly_secret_store.plaintext'] : [])
     ];
   }
@@ -2059,6 +2093,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       }
     );
   }
+  const packageDuration = plan.packages?.application?.requestLimits?.maxDurationMs;
+  if (packageDuration !== undefined) options = { ...options, maxDurationMs: Math.min(options.maxDurationMs ?? packageDuration, packageDuration) };
   const bindings = resolveCapabilityBindings(plan, options);
   // Keep final provider eligibility authoritative over the portable artifact
   // and caller options. Only the selected crypto guest uses the linked policy;
@@ -2085,6 +2121,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       es256KeyRecords
     }),
     jwtSource ? jwtSource.source : '',
+    ((plan.effects || []).some(effect => ['fetch', 'grip.publish', 'grip.broadcast'].includes(effect.kind)) || bindings.s3.length > 0)
+      ? fs.readFileSync(path.join(__dirname, 'native-send-error-detail.as.ts'), 'utf8') : '',
     require('./s3-native.js').s3NativeSource(plan, bindings),
     plan.effects.some(e => e.kind === 'assets.lookup') ? require('@pulse-compute/wasm-contracts/assets/contracts').embeddedNativeSource() + fs.readFileSync(path.join(__dirname, 'embedded-assets.as.ts'), 'utf8') : '',
     require('./time-native.js').timeNativeSource(plan),
@@ -2093,7 +2131,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./native-request-body.js').runtimeSource(),
     require('./native-request-headers.js').runtimeSource(),
     require('./native-header-lookup.js').runtimeSource(),
-    require('./native-fetch-errors.js').runtimeSource(),
+    fs.readFileSync(path.join(__dirname, 'native-transport-details.as.ts'), 'utf8'),
+    require('./native-fetch-errors.js').runtimeSource(dynamicBackends.active(bindings)),
     require('./native-fetch-deadlines.js').runtimeSource(plan),
     applicationErrors.settlementEnabled(plan) ? applicationErrors.runtimeSource(plan) : '',
     effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan) }),
@@ -2113,8 +2152,10 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   if (packageApplication.enabled(plan)) source = packageApplication.instrument(source);
   source = effectInvocations.instrument(source);
   source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
+  source = packageApplication.terminalFailure(source, plan);
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
+  source = dynamicBackends.instrument(source, bindings, true, (options.bindings || options).backends);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;
@@ -2126,7 +2167,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     capability: effect.capability,
     package: effect.package,
     contractId: effect.contractId,
-    imports: Object.freeze(capabilityImports(effect))
+    imports: Object.freeze([...capabilityImports(effect), ...(bindings.backends.some(b => b.index === index && b.dynamic) ? ['fastly_http_req.register_dynamic_backend'] : [])])
   })));
   const manifest = Object.freeze({
     version: FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
@@ -2180,7 +2221,10 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     bindings,
     backends: bindings.backends,
     capabilityDiagnostics,
-    allowedImports: FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS,
+    ...(dynamicBackends.active(bindings) ? { dynamicBackends: dynamicBackends.describe((options.bindings || options).backends) } : {}),
+    allowedImports: dynamicBackends.active(bindings)
+      ? Object.freeze([...FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS, Object.freeze(['fastly_http_req', 'register_dynamic_backend'])])
+      : FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS,
     requiredImports: requiredImportsForPlan(plan, bindings),
     requiredExports: Object.freeze([
       '_start',
@@ -2192,6 +2236,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       ...(bindings.maxDurationMs === undefined ? [] : ['pulse_fastly_request_expired'])
     ]),
     policy: Object.freeze({
+      ...(dynamicBackends.active(bindings) ? { dynamicBackends: dynamicBackends.describe((options.bindings || options).backends) } : {}),
       ...(nativeValueBudget.hasBoundedReadLoop(plan) ? { readLoopMemory: nativeValueBudget.policy } : {}),
       nativeFastly: true,
       provider: 'fastly',
@@ -2207,10 +2252,10 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       jwt: hasJwt || hasSign
         ? `package-owned compact-JWS, registered-claim, and bounded issuance semantics composed with ${jwtCrypto.realization}; provider-owned request, secret, clock, schema, and transport`
         : 'inactive',
-      kv: 'Fastly KV Store async lookup/insert; conditional operations preserve u64 generations, bounded readiness, strict Pulse envelopes and uncertain dispatch',
+      kv: 'Fastly KV Store async lookup/insert/delete and one bounded list page with opaque cursor; conditional operations preserve u64 generations, bounded readiness, strict Pulse envelopes and uncertain dispatch',
       assets: 'Fastly KV Store lookup with provider-owned content type, cache headers, and GET/HEAD body ownership',
       grip: 'canonical stateless framing plus bound, secret-referenced broadcast HTTP realization and stable acknowledgement',
-      logging: 'best-effort redacted WASI fd_write to stdout (descriptor 1), one attempt per statement',
+      logging: bindings.logEndpoint === undefined ? 'best-effort redacted WASI fd_write to stdout (descriptor 1), one attempt per statement' : 'best-effort named fastly_log endpoint; one lookup and at most one write per statement, 65536 UTF-8 byte maximum, no retries or stdout fallback; downstream delivery unverified',
       schemas: 'fetch JSON decode and structured response encode',
       opaqueResponse: 'origin fetch response/body handles and direct GRIP hold responses pass through without JavaScript runtime ownership',
       transportErrors: 'host status failures remain distinct from HTTP response status',
@@ -2338,7 +2383,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
     ];
     if (emitWat) args.push('--textFile', assemblyScriptWatFile);
     const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization, { guestLinked });
-    if (!guestLinked && (nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
+    if (!guestLinked && (plan.callables?.length || nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
       args.push('--maximumMemory', String(nativeValueBudget.policy.maximumMemoryPages));
     }
     if (generated.guestUnits.length > 0) {

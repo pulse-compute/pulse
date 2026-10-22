@@ -107,12 +107,17 @@ async function executeProbe(schemaCodecs, handler, options = {}) {
     assert.equal(Object.isFrozen(bridge), true);
     assert.deepEqual(
       Reflect.ownKeys(bridge),
-      ['decodeEmbeddedJson', 'encodeEmbeddedJson'],
+      ['describe', 'decodeEmbeddedJson', 'encodeEmbeddedJson'],
       'schema bridge capability surface must not expose registry, codec, request, or provider authority'
     );
     for (const forbidden of ['ids', 'registry', 'codec', 'schema', 'request', 'provider', 'schemaCodecs']) {
       assert.equal(forbidden in bridge, false, `schema bridge must not expose ${forbidden}`);
     }
+
+    const described = bridge.describe();
+    assert.deepEqual(described.map(schema => schema.id).sort(), ['app.createInput', 'app.user']);
+    described[0].root = null;
+    assert.notEqual(bridge.describe()[0].root, null);
 
     decoded = bridge.decodeEmbeddedJson('app.createInput', JSON.stringify({
       name: 'Ada',
@@ -267,6 +272,7 @@ async function executeProbe(schemaCodecs, handler, options = {}) {
         require: './pulsewasm.compiler.cjs',
         default: './pulsewasm.compiler.cjs'
       },
+      './internal/transport': { types: './dist/entity-router.d.ts', import: './dist/entity-router.js', default: './dist/entity-router.js' },
       './pulsewasm-native': {
         require: './pulsewasm.native.cjs',
         default: './pulsewasm.native.cjs'

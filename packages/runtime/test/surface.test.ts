@@ -6,7 +6,7 @@ const runtime = require('../src/index.js') as Record<string, unknown>
 
 describe('@pulse-compute/runtime public surface', () => {
   it('exports only the canonical runtime markers and Router value', () => {
-    expect(runtime.RUNTIME_API_VERSION).toBe('pulse.runtime-authoring.v4')
+    expect(runtime.RUNTIME_API_VERSION).toBe('pulse.runtime-authoring.v5')
     expect(runtime.ROUTER_API_VERSION).toBe('pulse.router-authoring.v2')
     expect(typeof runtime.Router).toBe('function')
     expect(runtime).not.toHaveProperty('defineHandler')

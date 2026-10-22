@@ -1,8 +1,24 @@
 # Explicit JSON schemas
 
-Schemas are static project declarations, not runtime reflection. The compiler does not execute the registry module. Pulse extracts the default export,
-compiles deterministic JavaScript and Native codecs, and binds literal schema
-IDs at every structured JSON boundary.
+Declare the JSON shapes your application accepts, register stable IDs, and use
+those IDs when reading or returning data. Pulse validates and projects values
+through the same declared contract on Native and JavaScript targets.
+
+Schemas are static project declarations, not runtime reflection.
+The compiler does not execute the registry module; it extracts the default
+export and builds deterministic codecs. TypeScript types alone do not validate incoming JSON.
+
+Start with this request-to-response path, then add optional or extensible fields
+only where your data needs them:
+
+1. [Declare the registry](#declare-the-registry).
+2. [Select it in project configuration](#point-project-configuration-at-the-registry).
+3. [Bind request and response boundaries](#bind-every-json-boundary).
+4. [Check strict mode](#understand-strict-mode) and [value semantics](#know-the-value-semantics).
+
+For richer shapes, use [optional fields](#optional-fields), [scalar records](#bounded-scalar-records),
+[typed open objects](#typed-open-objects), or [bounded nested JSON](#configurable-nested-json).
+[Application-owned text](#encode-application-owned-text) uses the same codecs without an HTTP boundary.
 
 ## Declare the registry
 
@@ -47,6 +63,128 @@ Explicit `undefined` types/unions, recursive or user-defined generic types, inte
 arbitrary unions, computed registry keys, runtime registry code, and public
 `json-as` decorators or imports are not supported. Relative type-only imports
 and re-exports can organize the type graph inside the project.
+
+## Point project configuration at the registry
+
+<!-- pulse-doc-source: examples/02-request-schema/.pulse/config.ts -->
+```ts
+import { defineConfig } from '@pulse-compute/pulse'
+
+export default defineConfig((_scope) => ({
+  pulse: {
+    entry: 'src/index.ts',
+    schema: 'src/schemas.ts',
+    tests: 'tests/pulse.harness.ts',
+    defaultProfile: 'local',
+    strict: true,
+  },
+  local: {
+    host: 'node',
+    target: 'native',
+    outDir: 'dist',
+    schemas: { contentTypePolicy: 'require-json', maxBytes: 1024 },
+  },
+}))
+```
+<!-- /pulse-doc-source -->
+
+`pulse.schema` owns the registry module. Do not also declare schema identity
+under a provider profile. Provider profiles own decode policy through
+`schemas.contentTypePolicy` and `schemas.maxBytes`:
+
+- `schemas.contentTypePolicy: 'accept-json-or-missing'` accepts JSON content
+  types and absent content types; it is the default;
+- `schemas.contentTypePolicy: 'require-json'` requires a JSON content type for
+  request and fetched-body schema decode;
+- `schemas.maxBytes` bounds structured schema decode and defaults to `65_536`
+  bytes;
+- `dev.maxBodyBytes` separately bounds incoming requests in the local
+  development server and also defaults to `65_536` bytes.
+
+Raise either byte limit deliberately. They are memory and request-amplification
+boundaries, not convenience settings.
+
+## Bind every JSON boundary
+
+<!-- pulse-doc-source: examples/02-request-schema/src/index.ts -->
+```ts
+import { Pulse } from '@pulse-compute/pulse'
+import type { CreateUserInput, CreateUserOutput } from './schemas.js'
+
+const app = new Pulse({ auto: true })
+
+app.post('/users', async (ctx) => {
+  const first = await ctx.req.json<CreateUserInput>('app.CreateUserInput')
+  const second = await ctx.req.json<CreateUserInput>('app.CreateUserInput')
+  const output: CreateUserOutput = {
+    id: 7,
+    name: first.name,
+    active: first.active,
+    sameReference: first === second,
+  }
+  return ctx.json(output, { status: 201, schema: 'app.CreateUserOutput' })
+})
+
+export default app
+```
+<!-- /pulse-doc-source -->
+
+The schema-boundary forms are:
+
+| Boundary | Authoring form | Operation |
+|---|---|---|
+| Incoming request | `await ctx.req.json<T>('app.Input')` | Decode |
+| Fetched response | `await ctx.fetch(url).json<T>('app.Output')` | Decode |
+| Outbound fetch body | `ctx.fetch(url, { json: value, schema: 'app.Input' })` | Encode |
+| Application response | `ctx.json(value, { schema: 'app.Output' })` | Encode |
+| Application-owned text | `ctx.encodeJson(value, 'app.Output')` | Encode |
+| Application-owned text | `ctx.decodeJson<T>(text, 'app.Input')` | Decode |
+
+A registered response case is shorthand for response status plus schema:
+
+```ts
+return ctx.json(user, 'user.created')
+```
+
+IDs must be string literals. An outbound `schema` property is valid only with
+the semantic `json` property; a raw string `body` and `json` are mutually
+exclusive.
+
+## Understand strict mode
+
+`pulse.strict` defaults to `true`. When the project declares schemas, strict
+mode requires a schema ID for request JSON, fetched-response JSON, outbound
+fetch JSON, and application JSON responses. A response may use either a literal
+`schema` descriptor or a registered response-case ID.
+
+Setting `pulse.strict: false` allows schema-less generic JSON at reachable
+request and fetch-response reads and at JSON encode boundaries. It does not
+make an unknown ID valid: supplying an ID always requests that exact compiled
+codec. Pulse does not try schemas in sequence, infer a codec from the value, or
+fall back to generic JSON when an ID is missing from the registry.
+
+Generic JSON remains bounded and appears as an explicit host-generic JSON
+capability in Native inspection. It is a deliberate compatibility choice, not
+automatic JavaScript fallback.
+
+## Know the value semantics
+
+Schema decoding and encoding are semantic boundaries, not thin calls to a
+provider JSON object:
+
+- input values are validated, normalized, deeply immutable, and owned by the
+  request after decode;
+- repeated request reads of the same schema reuse the request-local decoded
+  value;
+- unknown fields of closed declared objects are removed recursively; `OpenObject<T>`, `ScalarRecord`, `JsonObject` and `JsonValue` preserve their admitted dynamic keys;
+- declared fields are required unless marked optional with `?`;
+- response and fetch encoding projects declared object fields in declaration order, followed by admitted open-object extras;
+- numeric values must be finite JSON numbers;
+- JavaScript and Native use the same registry contract and semantic trace.
+
+The provider never exposes an SDK request or response object to the handler.
+Opaque bodies are not eligible for schema decode; see
+[Structured and opaque bodies](../concepts/bodies.md).
 
 ## Optional fields
 
@@ -302,92 +440,6 @@ export default defineSchemaRegistry({
 The response status and schema ID must be static literals. A response case
 cannot refer to an undeclared schema.
 
-## Point project configuration at the registry
-
-<!-- pulse-doc-source: examples/02-request-schema/.pulse/config.ts -->
-```ts
-import { defineConfig } from '@pulse-compute/pulse'
-
-export default defineConfig((_scope) => ({
-  pulse: {
-    entry: 'src/index.ts',
-    schema: 'src/schemas.ts',
-    tests: 'tests/pulse.harness.ts',
-    defaultProfile: 'local',
-    strict: true,
-  },
-  local: {
-    host: 'node',
-    target: 'native',
-    outDir: 'dist',
-    schemas: { contentTypePolicy: 'require-json', maxBytes: 1024 },
-  },
-}))
-```
-<!-- /pulse-doc-source -->
-
-`pulse.schema` owns the registry module. Do not also declare schema identity
-under a provider profile. Provider profiles own decode policy through
-`schemas.contentTypePolicy` and `schemas.maxBytes`:
-
-- `schemas.contentTypePolicy: 'accept-json-or-missing'` accepts JSON content
-  types and absent content types; it is the default;
-- `schemas.contentTypePolicy: 'require-json'` requires a JSON content type for
-  request and fetched-body schema decode;
-- `schemas.maxBytes` bounds structured schema decode and defaults to `65_536`
-  bytes;
-- `dev.maxBodyBytes` separately bounds incoming requests in the local
-  development server and also defaults to `65_536` bytes.
-
-Raise either byte limit deliberately. They are memory and request-amplification
-boundaries, not convenience settings.
-
-## Bind every JSON boundary
-
-<!-- pulse-doc-source: examples/02-request-schema/src/index.ts -->
-```ts
-import { Pulse } from '@pulse-compute/pulse'
-import type { CreateUserInput, CreateUserOutput } from './schemas.js'
-
-const app = new Pulse({ auto: true })
-
-app.post('/users', async (ctx) => {
-  const first = await ctx.req.json<CreateUserInput>('app.CreateUserInput')
-  const second = await ctx.req.json<CreateUserInput>('app.CreateUserInput')
-  const output: CreateUserOutput = {
-    id: 7,
-    name: first.name,
-    active: first.active,
-    sameReference: first === second,
-  }
-  return ctx.json(output, { status: 201, schema: 'app.CreateUserOutput' })
-})
-
-export default app
-```
-<!-- /pulse-doc-source -->
-
-The schema-boundary forms are:
-
-| Boundary | Authoring form | Operation |
-|---|---|---|
-| Incoming request | `await ctx.req.json<T>('app.Input')` | Decode |
-| Fetched response | `await ctx.fetch(url).json<T>('app.Output')` | Decode |
-| Outbound fetch body | `ctx.fetch(url, { json: value, schema: 'app.Input' })` | Encode |
-| Application response | `ctx.json(value, { schema: 'app.Output' })` | Encode |
-| Application-owned text | `ctx.encodeJson(value, 'app.Output')` | Encode |
-| Application-owned text | `ctx.decodeJson<T>(text, 'app.Input')` | Decode |
-
-A registered response case is shorthand for response status plus schema:
-
-```ts
-return ctx.json(user, 'user.created')
-```
-
-IDs must be string literals. An outbound `schema` property is valid only with
-the semantic `json` property; a raw string `body` and `json` are mutually
-exclusive.
-
 ## Encode application-owned text
 
 `ctx.encodeJson(value, 'app.Candidate')` synchronously validates and projects a
@@ -460,42 +512,6 @@ but encoding its returned value can change field order, whitespace, numeric
 spelling and unknown fields. A valid schema proves the decoded shape; it does
 not prove an object's authenticity, history linkage or acceptance by KV.
 
-## Understand strict mode
-
-`pulse.strict` defaults to `true`. When the project declares schemas, strict
-mode requires a schema ID for request JSON, fetched-response JSON, outbound
-fetch JSON, and application JSON responses. A response may use either a literal
-`schema` descriptor or a registered response-case ID.
-
-Setting `pulse.strict: false` allows schema-less generic JSON at reachable
-request and fetch-response reads and at JSON encode boundaries. It does not
-make an unknown ID valid: supplying an ID always requests that exact compiled
-codec. Pulse does not try schemas in sequence, infer a codec from the value, or
-fall back to generic JSON when an ID is missing from the registry.
-
-Generic JSON remains bounded and appears as an explicit host-generic JSON
-capability in Native inspection. It is a deliberate compatibility choice, not
-automatic JavaScript fallback.
-
-## Know the value semantics
-
-Schema decoding and encoding are semantic boundaries, not thin calls to a
-provider JSON object:
-
-- input values are validated, normalized, deeply immutable, and owned by the
-  request after decode;
-- repeated request reads of the same schema reuse the request-local decoded
-  value;
-- unknown fields of closed declared objects are removed recursively; `OpenObject<T>`, `ScalarRecord`, `JsonObject` and `JsonValue` preserve their admitted dynamic keys;
-- declared fields are required unless marked optional with `?`;
-- response and fetch encoding projects declared object fields in declaration order, followed by admitted open-object extras;
-- numeric values must be finite JSON numbers;
-- JavaScript and Native use the same registry contract and semantic trace.
-
-The provider never exposes an SDK request or response object to the handler.
-Opaque bodies are not eligible for schema decode; see
-[Structured and opaque bodies](../concepts/bodies.md).
-
 ## Inspect and diagnose the contract
 
 The CLI compiles the registry and direct codecs with the handler. `doctor`,
@@ -525,24 +541,9 @@ Common diagnostics include:
 
 ## Optional Native cache arena setting
 
-`pulse compile --elide-json-cache-arena` and
-`pulse build --elide-json-cache-arena` opt in to removing json-as's 1 MiB
-string-cache arena when that cache is disabled. The default keeps the existing
-allocation. Enabled string caches retain their original arena; schema-free
-artifacts are unchanged. JavaScript builds reject the flag.
-
-The setting reaches both portable and Fastly Native compilation. It is recorded
-as `elideJsonCacheArena` in the report recipe and as
-`jsonAs.elideDisabledCacheArena` in schema-active Native manifests. Build
-observations identify `schema-cache-arena-transform.cjs` when applied. Historical
-reports without the recipe field did not record this setting. The adapter is
-pinned to json-as 1.5.0 and fails if that dependency source changes.
-
-Removing the eager allocation reduces startup memory, but does not guarantee a
-lower peak. In the allocation-heavy escaped-string stress fixture, changing the
-allocator's growth trajectory raised linear-memory capacity from 110 MiB to
-148 MiB. Measure representative workloads before adopting the flag. This setting
-does not change garbage collection or fix retained scalar handles.
+See [Native build optimization](../reference/native-build-optimization.md#optional-json-as-cache-arena-setting)
+for the optional json-as cache arena setting, target support and peak-memory
+tradeoff.
 
 ## Related documentation
 

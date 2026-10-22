@@ -1,0 +1,325 @@
+{
+  "version": "pulse.b10-mcp-05f.checkpoint.v1",
+  "status": "passed",
+  "classification": "focused-development-not-release-seal",
+  "localBranch": "codex/b10-mcp-05f",
+  "remoteBranch": "codex/b10-call-proof-recovered",
+  "base": "8a51d705025c69ae306004215cb6cb48248d68e1",
+  "testedSource": {
+    "localCommit": "9bfd77fb6e97233c35af5f7ab56d8581d8808c6b",
+    "publishedCommit": "ea1a05720f874c1941187e6ced637ec3def756b6",
+    "tree": "18b6f9ab0d49a39259eeebbeebaed76aacdb79f6",
+    "initialWorkingTree": "clean"
+  },
+  "checks": {
+    "focused": {
+      "exitCode": 0,
+      "status": "passed",
+      "selectedTasks": [
+        "callable-lifetime",
+        "callable-authored-javascript",
+        "callable-authored-composition",
+        "callable-authored-native",
+        "native-context-primitives",
+        "binary-resource-execution",
+        "request-budget-transport",
+        "mcp-native-binding",
+        "mcp-http",
+        "suite-shape"
+      ],
+      "completedTasks": [
+        {
+          "name": "callable-lifetime",
+          "status": "passed"
+        },
+        {
+          "name": "callable-authored-javascript",
+          "status": "passed"
+        },
+        {
+          "name": "callable-authored-composition",
+          "status": "passed"
+        },
+        {
+          "name": "callable-authored-native",
+          "status": "passed"
+        },
+        {
+          "name": "native-context-primitives",
+          "status": "passed"
+        },
+        {
+          "name": "binary-resource-execution",
+          "status": "passed"
+        },
+        {
+          "name": "request-budget-transport",
+          "status": "passed"
+        },
+        {
+          "name": "mcp-native-binding",
+          "status": "passed"
+        },
+        {
+          "name": "mcp-http",
+          "status": "passed"
+        },
+        {
+          "name": "suite-shape",
+          "status": "passed"
+        }
+      ],
+      "completeTaskLogsRetained": true
+    },
+    "routedBaseline": {
+      "exitCode": 0,
+      "status": "passed",
+      "baseline": "8a51d705025c69ae306004215cb6cb48248d68e1"
+    },
+    "build": {
+      "exitCode": 0
+    },
+    "maintenance": {
+      "exitCode": 0
+    },
+    "documentationSync": {
+      "exitCode": 0
+    },
+    "documentationCheck": {
+      "exitCode": 0
+    },
+    "documentationReleaseInventory": {
+      "exitCode": 0,
+      "retained": false,
+      "scratchPath": ".pulse-development/05f/documentation-release-final.log",
+      "sha256": "947f1f65888024bc7bdfe939ee75433b47f8877a3dc8a2b2b2af822c438a1eb8"
+    },
+    "scope": {
+      "exitCode": 0,
+      "declaration": "docs/internal/b10-call-proof/PR.md",
+      "finalReport": "scope-final.log",
+      "logNormalization": "Trailing blank lines omitted; diagnostic text unchanged."
+    }
+  },
+  "followup": "Evidence, documentation catalog and generated reference copies only; no runtime/provider/compiler/test implementation changes. Delivery commit is recorded on PR #442 and issues #447/#436.",
+  "failedDevelopmentAttempts": [
+    {
+      "attempt": 1,
+      "reason": "Resource-free callable missing Fastly guard implementations; fixed shared guard selection."
+    },
+    {
+      "attempt": 2,
+      "reason": "Managed input adapter uses schema DECODE; corrected expectation."
+    },
+    {
+      "attempt": 3,
+      "reason": "Resource-free callable omitted Fastly shared deadline instrumentation; fixed owner selection."
+    },
+    {
+      "attempt": 4,
+      "reason": "Ordinary Fastly timeout is HTTP 504; corrected expectation."
+    },
+    {
+      "attempt": 5,
+      "status": "passed",
+      "qualification": "development iteration; final clean-source runner adds closed-controller/maximum-memory assertions."
+    },
+    {
+      "check": "initial documentation check/release inventory",
+      "reason": "Test-only receipt environment setting absent from documentation catalog; registered and regenerated; final checks pass."
+    }
+  ],
+  "cleanup": "Removed identified generated request-deadline fixture left by the completed regression test.",
+  "dependencies": "Restored identical-lockfile dependency graph; not fresh clean-install qualification.",
+  "artifacts": [
+    {
+      "path": "baseline-final.json",
+      "bytes": 42423,
+      "sha256": "adc6f25b48527775ec3aa0ca0038c6fb909075caca05be5b90a705b67d498e73"
+    },
+    {
+      "path": "baseline.log",
+      "bytes": 249,
+      "sha256": "f5253f79d3e999976bd5efa22d7761244ad39b642711580c7b7db7fe71aab917"
+    },
+    {
+      "path": "build-final.log",
+      "bytes": 986,
+      "sha256": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95"
+    },
+    {
+      "path": "build.log",
+      "bytes": 986,
+      "sha256": "badb5e29f71569e7a0840180baadf40cbd65218a154929e44d60fcdc18497b95"
+    },
+    {
+      "path": "development/initial-docs-check.log",
+      "bytes": 1295,
+      "sha256": "ea48d1e2e4ae330e017f3486c8aab991806a11063d1567c3f9808b6da92ca3dc"
+    },
+    {
+      "path": "development/initial-documentation-release.log",
+      "bytes": 935,
+      "sha256": "11bdf8901a02a3988ad915f8fd21c062fb53024ee4c2cee8a8430b9cf072608a"
+    },
+    {
+      "path": "development/javascript-development.log",
+      "bytes": 226,
+      "sha256": "010617c8eed7f76615252876ce4ba26dd1644fccc36292d9fb4bb8310527f147"
+    },
+    {
+      "path": "development/lifetime-attempt-1.json",
+      "bytes": 307,
+      "sha256": "6821fa49e2ff69166827a67e7d0e1046b3720f71d2fc173fd11eda323e9d908f"
+    },
+    {
+      "path": "development/lifetime-attempt-1.log",
+      "bytes": 16755,
+      "sha256": "6b58464bdbebc5b0030fc4e9705a12fb60eab73de3a4d568d29d00412ff5cc1c"
+    },
+    {
+      "path": "development/lifetime-attempt-2.json",
+      "bytes": 20663,
+      "sha256": "90fb8c2a3c544801fb2195c2cd61d1ac1a9170f5e1d72c1e879b42de469ccc8f"
+    },
+    {
+      "path": "development/lifetime-attempt-2.log",
+      "bytes": 160,
+      "sha256": "6c05b34ec222d2f3035fa414fa5ff8141c045a7ab9c8df1e1b8c685630f5592f"
+    },
+    {
+      "path": "development/lifetime-attempt-3.json",
+      "bytes": 14949,
+      "sha256": "8272f585ad123e07be0f75010ec8b566295d93eff660b3a917145daa66503b46"
+    },
+    {
+      "path": "development/lifetime-attempt-3.log",
+      "bytes": 72,
+      "sha256": "9c0928c3ae5a436a9178e9bf46ac3de1693e548553a8f7c176a23bb807a46ed0"
+    },
+    {
+      "path": "development/lifetime-attempt-4.json",
+      "bytes": 14937,
+      "sha256": "f1dd605f8d7531d47e5dd4c2678ddd002764af2dd257e3799ad3b8408b7cfddb"
+    },
+    {
+      "path": "development/lifetime-attempt-4.log",
+      "bytes": 64,
+      "sha256": "6c91b1f7328bfaf0093938e5c28411f2aad1fa7c7eb9d42b3cbe8f363eb3cefc"
+    },
+    {
+      "path": "development/lifetime-attempt-5.json",
+      "bytes": 33318,
+      "sha256": "039d4509e05e993556a1836189b06807011263101f93bccc5db6ee0f9d3e7a79"
+    },
+    {
+      "path": "development/lifetime-attempt-5.log",
+      "bytes": 61,
+      "sha256": "c8371fcb618f628d0a7e3f68efe7f13e4c06d7be855060a417c0c91ce43e5c1e"
+    },
+    {
+      "path": "docs-check-final.log",
+      "bytes": 234014,
+      "sha256": "8f0f4d34756aadcb23e70b1bbc22e57e0627cacab42a36ae37714ee233bdebd6"
+    },
+    {
+      "path": "docs-sync.log",
+      "bytes": 322,
+      "sha256": "8b2f975bf3f802af42c122fe05192e4b7249cc9c758e3e4bb6c7d734e05b28e4"
+    },
+    {
+      "path": "focused-report.json",
+      "bytes": 9789,
+      "sha256": "9c05072b02bd6ad0fe5bb16a1f42ef1e2186e4af16e24ea5a8350fe5287cc9f4"
+    },
+    {
+      "path": "focused.log",
+      "bytes": 12627,
+      "sha256": "46556875df4bc53d21a287378993ce68fe0865640e41191430dd8afe06b28dc9"
+    },
+    {
+      "path": "lifetime-final.json",
+      "bytes": 33470,
+      "sha256": "58899c50147d8eb81b851be1270fb3e494a79060037360b7cd7e2541eba078b0"
+    },
+    {
+      "path": "maintenance-final.log",
+      "bytes": 345,
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2"
+    },
+    {
+      "path": "maintenance-sync.log",
+      "bytes": 214,
+      "sha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+    },
+    {
+      "path": "maintenance.log",
+      "bytes": 345,
+      "sha256": "91b4e173036e1ce885808fda980cfc1b793406e44c97934acfb8adc388e154b2"
+    },
+    {
+      "path": "scope-final.log",
+      "bytes": 1106,
+      "sha256": "7f85bddef298d5062257c098e4228ca74de8c5d2811df53e6f5e91eef64581d1"
+    },
+    {
+      "path": "scope.log",
+      "bytes": 1106,
+      "sha256": "ebfcc42baaac4a13a388082ca00cfd0eb74aa8ba433175da55dfda472ee7d738"
+    },
+    {
+      "path": "tasks/binary-resource-execution.log",
+      "bytes": 765,
+      "sha256": "3a174670bb218343b84a6f20a0f13668b7ed762722eb156ebf6a1e8387007b7b"
+    },
+    {
+      "path": "tasks/callable-authored-composition.log",
+      "bytes": 3355,
+      "sha256": "0b31b43a8f16d4501fa42bbb4e0550caf38469dbd34d7a3a9fab413678838392"
+    },
+    {
+      "path": "tasks/callable-authored-javascript.log",
+      "bytes": 226,
+      "sha256": "010617c8eed7f76615252876ce4ba26dd1644fccc36292d9fb4bb8310527f147"
+    },
+    {
+      "path": "tasks/callable-authored-native.log",
+      "bytes": 335,
+      "sha256": "79ea41b152cdadceeefdd6e3af2ee4467e56df0ce90e81e8aed7fc5b9f934c20"
+    },
+    {
+      "path": "tasks/callable-lifetime.log",
+      "bytes": 61,
+      "sha256": "c8371fcb618f628d0a7e3f68efe7f13e4c06d7be855060a417c0c91ce43e5c1e"
+    },
+    {
+      "path": "tasks/mcp-http.log",
+      "bytes": 99,
+      "sha256": "e368ef604eb1c7fd3b3e83a405f738379c071c601c18da2c11a7f50dc59c8819"
+    },
+    {
+      "path": "tasks/mcp-native-binding.log",
+      "bytes": 2329,
+      "sha256": "f4d36d9eab32a00d381f94d2ad16d349bd92a5e65c057cc5144a4d9debe9b84e"
+    },
+    {
+      "path": "tasks/native-context-primitives.log",
+      "bytes": 142,
+      "sha256": "79a29c61e920d1e286d45a4cf56ea03882326a6dee17c81fa258205479784bb9"
+    },
+    {
+      "path": "tasks/request-budget-transport.log",
+      "bytes": 108,
+      "sha256": "2e61c66d8f8ff1732817d78a95964f4152868ca11a50d4b08c4cbb3ba6e171fc"
+    },
+    {
+      "path": "tasks/suite-shape.log",
+      "bytes": 41,
+      "sha256": "3d0731c5ff663a67d71552c34966f08617a38812745fc9eff3744358731f0d76"
+    }
+  ],
+  "runningChecks": [],
+  "blockers": [],
+  "remaining": "Full profiles, installed closure, Viceroy/deployed provider/client acceptance, real-corpus performance and release seal.",
+  "next": "05G / #448 public contract, types and diagnostics."
+}

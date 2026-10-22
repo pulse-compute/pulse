@@ -253,6 +253,18 @@ function resolveLocal(context, indexes, module, localName, diagnostics, stack = 
     exportName: requestedExportName || localExportNames(module, localName)[0] || null,
     declaration: index.handlers.get(localName)
   });
+  for (const statement of module.sourceFile.statements) {
+    if (!ts.isVariableStatement(statement) || !(statement.declarationList.flags & ts.NodeFlags.Const)) continue;
+    for (const declaration of statement.declarationList.declarations) {
+      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== localName) continue;
+      const value = declaration.initializer;
+      if (value && (ts.isStringLiteral(value) || ts.isNumericLiteral(value)
+        || [ts.SyntaxKind.TrueKeyword, ts.SyntaxKind.FalseKeyword].includes(value.kind)
+        || ts.isPrefixUnaryExpression(value) && [ts.SyntaxKind.PlusToken, ts.SyntaxKind.MinusToken].includes(value.operator) && ts.isNumericLiteral(value.operand))) {
+        return Object.freeze({ kind: 'scalar', module, localName, value });
+      }
+    }
+  }
   const imported = importResolutionForLocal(context, module, localName);
   if (!imported) return undefined;
   if (consumedImports) consumedImports.add(`${module.path}\u0000${localName}`);
@@ -561,10 +573,10 @@ function linkProjectRouterModules(graphBuild, options = {}) {
     }
   }
 
-  // Only HTTP handler loop calls enter JavaScript's bounded inspection. Never
-  // walk an ordinary dependency function into a new purity requirement.
+  // Only handler-owned calls enter Router helper inspection. Callable bodies
+  // own their helper graphs; JavaScript inspects only bounded-loop calls.
   const httpFunctions = new Set();
-  if (options.target === 'javascript') for (const ref of handlerReferences) {
+  for (const ref of handlerReferences) {
     if (!['route', 'middleware'].includes(ref.role)) continue;
     const module = context.projectModules.get(ref.module);
     if (!module) continue;
@@ -601,7 +613,7 @@ function linkProjectRouterModules(graphBuild, options = {}) {
             if (ts.isForStatement(owner)) inLoop = true;
           }
           const inspectPureLoopCall = inLoop && httpFunctions.has(owner) && fn && !fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword);
-          if (fn && (options.target !== 'javascript' || inspectPureLoopCall) && (awaited && fn.parameters.length > 1 || !awaited)) {
+          if (fn && (options.target !== 'javascript' && httpFunctions.has(owner) || inspectPureLoopCall) && (awaited && fn.parameters.length > 1 || !awaited)) {
             const identity = `${target.module.path}#${target.localName}`;
             let helper = byIdentity.get(identity);
             if (!helper) {
@@ -620,7 +632,7 @@ function linkProjectRouterModules(graphBuild, options = {}) {
   }
   const rootGlobalName = routerSymbols.get(`${root.module.path}:${root.localName}`);
   const ordered = orderLinkedRouters(routers, rootGlobalName);
-  if (options.target !== 'javascript') validateRuntimeProjectImports(context, consumedImports, diagnostics);
+  if (options.target !== 'javascript' && !options.deferRuntimeImportValidation) validateRuntimeProjectImports(context, consumedImports, diagnostics);
   const combinedIr = Object.freeze({
     source: entryModule.path,
     routerIR: Object.freeze(ordered.routers),
@@ -660,6 +672,12 @@ function linkProjectRouterModules(graphBuild, options = {}) {
   return Object.freeze({
     version: ROUTER_MODULE_LINKER_VERSION,
     kind: 'router',
+    validateRuntimeImports(extra = []) {
+      if (options.target === 'javascript') return;
+      const errors = [];
+      validateRuntimeProjectImports(context, new Set([...consumedImports, ...extra]), errors);
+      if (errors.length) throw new RouterModuleLinkError('Project module import validation failed.', errors, { entry: entryModule.path });
+    },
     graph: manifest,
     ir: combinedIr,
     entryModule,
@@ -764,11 +782,72 @@ function resolveProjectRoot(graphBuild) {
   return Object.freeze({ root, indexes: built.indexes });
 }
 
+// Private compiler seam: reuse the exact handler/export resolver for source
+// admission experiments without changing ordinary linking or import admission.
+function projectFunctionResolver(graphBuild) {
+  const context = projectGraphContext(graphBuild);
+  if (!context) throw new TypeError('projectFunctionResolver requires a reachable project graph build.');
+  const { root, indexes } = resolveProjectRoot(graphBuild);
+  const consumedImports = new Set();
+  function describe(target) {
+    if (!target || target.kind !== 'handler') return undefined;
+    const functionNode = functionForNamedHandler(target.module.sourceFile, target.localName);
+    if (!functionNode) return undefined;
+    return Object.freeze({ identity: `${target.module.path}#${target.localName}`,
+      modulePath: target.module.path, name: target.localName,
+      sourceFile: target.module.sourceFile, functionNode,
+      packageSource: Boolean(target.module.packageSource) });
+  }
+  function resolve(modulePath, localName) {
+    const module = context.projectModules.get(modulePath);
+    if (!module) return undefined;
+    const diagnostics = [], selectedImports = new Set();
+    const target = resolveLocal(context, indexes, module, localName, diagnostics, [], undefined, selectedImports);
+    if (diagnostics.length) throw new RouterModuleLinkError('Project function resolution failed.', diagnostics);
+    if (target?.module && !target.module.packageSource && ['handler', 'scalar'].includes(target.kind)) {
+      for (const key of selectedImports) consumedImports.add(key);
+    }
+    return target;
+  }
+  return Object.freeze({
+    entry: describe(root),
+    modules: Object.freeze([...context.projectModules.values()].filter(module => module.runtime && !module.packageSource)
+      .map(module => Object.freeze({ modulePath: module.path, sourceFile: module.sourceFile }))),
+    consumedRuntimeImports: () => Object.freeze([...consumedImports].sort()),
+    scalar(modulePath, localName) {
+      const target = resolve(modulePath, localName);
+      if (target?.kind !== 'scalar' || target.module.packageSource) return undefined;
+      let written = false;
+      const scan = node => {
+        const lhs = ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment
+          ? node.left : (ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(node.operator) ? node.operand : undefined;
+        const binding = item => { if (ts.isIdentifier(item) && item.text === target.localName) written = true; ts.forEachChild(item, binding); };
+        if (lhs) binding(lhs);
+        ts.forEachChild(node, scan);
+      };
+      scan(target.module.sourceFile);
+      if (written) throw new TypeError('Imported scalar binding must be unwritten.');
+      return target.value;
+    },
+    pureType(modulePath, node) {
+      return require('../spine/pure-helper-source').resolvePureType(context, context.projectModules.get(modulePath), node);
+    },
+    resolve(modulePath, localName) {
+      const module = context.projectModules.get(modulePath);
+      if (!module) return undefined;
+      const target = resolve(modulePath, localName);
+      const result = describe(target);
+      return result && Object.freeze({ ...result, imported: Boolean(importResolutionForLocal(context, module, localName)) });
+    }
+  });
+}
+
 module.exports = Object.freeze({
   ROUTER_MODULE_LINKER_VERSION,
   RouterModuleLinkError,
   linkProjectPlainHandler,
   linkProjectRouterModules,
   resolveProjectRoot,
+  projectFunctionResolver,
   wrappersForExpression
 });

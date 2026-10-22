@@ -1,0 +1,522 @@
+{
+  "version": "pulse.fastly-canonical-build.v6",
+  "status": "built",
+  "provider": "fastly",
+  "target": "fastly-compute-native",
+  "sourceHash": "77108139b770d957434a55dc736cf31a938b1dae685d4a6ec97820778fb43dfd",
+  "projectSourceHash": "0624caaba2228fc9b8eef6dffcab8be15c2ec6e0a5647f8d3c4cb73c40e3804d",
+  "handlerSourceHash": "77108139b770d957434a55dc736cf31a938b1dae685d4a6ec97820778fb43dfd",
+  "planVersion": "pulse.canonical-native-plan.v11",
+  "planHash": "7e3a20cb60ff67e298a45a6c698e0107c2df5ff5c20862cea9085fe720978db6",
+  "deployable": true,
+  "sourcePackage": true,
+  "sourceOnly": false,
+  "compiledWasmPresent": true,
+  "deploymentValidated": false,
+  "compileCommand": "pulse build",
+  "outputWasm": "bin/main.wasm",
+  "compiler": {
+    "package": "assemblyscript",
+    "version": "0.28.18",
+    "target": "pulse.fastly-native-platform-capabilities.v1",
+    "targetCompilerVersion": "pulse.fastly-native-platform-capabilities-compiler.v1",
+    "invoked": false
+  },
+  "wasm": {
+    "file": "bin/main.wasm",
+    "bytes": 1046695,
+    "sha256": "d8802e76e69539d62bc91f556a4495d73a2b9bcc71726c4134af4648701c0bf6",
+    "magic": "0061736d01000000"
+  },
+  "wat": {
+    "file": null,
+    "emitted": false,
+    "bytes": 0,
+    "sha256": null
+  },
+  "imports": [
+    {
+      "module": "fastly_http_resp",
+      "name": "send_downstream",
+      "kind": "function"
+    },
+    {
+      "module": "wasi_snapshot_preview1",
+      "name": "clock_time_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "status_set",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "status_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "new",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "header_append",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "uri_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "method_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "body_downstream_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_body",
+      "name": "write",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_body",
+      "name": "read",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_body",
+      "name": "new",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_abi",
+      "name": "init",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_async_io",
+      "name": "select",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "header_values_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "header_names_get",
+      "kind": "function"
+    }
+  ],
+  "importModules": [
+    "fastly_abi",
+    "fastly_async_io",
+    "fastly_http_body",
+    "fastly_http_req",
+    "fastly_http_resp",
+    "wasi_snapshot_preview1"
+  ],
+  "exports": [
+    {
+      "name": "pulse_entities_string_id",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_set_request",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_response_ptr",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_response_length",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_response_status",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_body_read_count",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_run_complete",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_run_suspended",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_run_failed",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_start",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_set_effect_result",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_resume",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_pending_count",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_selected_index",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_invocation_count",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_entities_effect_count",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_abi_version",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_plan_hash_ptr",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_plan_hash_length",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_start",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_resume",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_set_effect_result",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_package_set_effect_failure",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_result_handle",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_program_counter",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_continuation_state",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_last_error_code",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_pending_count",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_schema_string_id",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_schema_decode",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_schema_encode",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_package_http_failure",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_last_error",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_error_stage",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_error_effect",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_error",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_secret_calls",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_crypto_calls",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_clock_calls",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_jwt_schema_calls",
+      "kind": "function"
+    },
+    {
+      "name": "_start",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_request_expired",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_memory_bytes",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_memory_values",
+      "kind": "function"
+    },
+    {
+      "name": "__new",
+      "kind": "function"
+    },
+    {
+      "name": "__pin",
+      "kind": "function"
+    },
+    {
+      "name": "__unpin",
+      "kind": "function"
+    },
+    {
+      "name": "__collect",
+      "kind": "function"
+    },
+    {
+      "name": "__rtti_base",
+      "kind": "global"
+    },
+    {
+      "name": "memory",
+      "kind": "memory"
+    },
+    {
+      "name": "__setArgumentsLength",
+      "kind": "function"
+    },
+    {
+      "name": "__pulse_fastly_abort",
+      "kind": "function"
+    }
+  ],
+  "localConformanceRuntime": true,
+  "providerSpecificUserland": false,
+  "providerSdkUserland": false,
+  "javascriptRuntime": false,
+  "jsComputeRuntime": false,
+  "build": {
+    "name": "pulse-app",
+    "description": "Pulse application",
+    "authors": [],
+    "language": "other"
+  },
+  "files": {
+    "handler": "canonical-handler.cjs",
+    "program": "canonical-program.json",
+    "portableWasm": "canonical-native.wasm",
+    "portableManifest": "canonical-native-manifest.json",
+    "providerPlan": "fastly-provider.json",
+    "localEntry": "fastly-entry.cjs",
+    "sourceEntry": "src/main.as.ts",
+    "wasm": "bin/main.wasm",
+    "wat": null,
+    "nativePlan": "fastly-native-plan.json",
+    "nativeManifest": "fastly-native-manifest.json",
+    "fastlyToml": "fastly.toml",
+    "package": "package.json",
+    "schemaRegistry": "schema-json-registry.json",
+    "schemaCodecs": "schema-json-codecs.cjs"
+  },
+  "grip": {
+    "active": false,
+    "operations": []
+  },
+  "schemas": {
+    "active": true,
+    "ids": [
+      "context.StartInput",
+      "context.StartOutput",
+      "context.SearchInput",
+      "context.SearchOutput",
+      "context.ReadInput",
+      "context.ReadOutput",
+      "context.ExampleInput",
+      "context.ExampleOutput",
+      "context.DiagnosticInput",
+      "context.DiagnosticOutput"
+    ],
+    "references": [
+      {
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "id": "context.StartInput",
+        "position": {
+          "column": 23,
+          "line": 42,
+          "offset": 1649
+        },
+        "usage": "entity-input"
+      },
+      {
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "id": "context.StartOutput",
+        "position": {
+          "column": 23,
+          "line": 42,
+          "offset": 1649
+        },
+        "usage": "entity-output"
+      },
+      {
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "id": "context.SearchInput",
+        "position": {
+          "column": 24,
+          "line": 46,
+          "offset": 1978
+        },
+        "usage": "entity-input"
+      },
+      {
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "id": "context.SearchOutput",
+        "position": {
+          "column": 24,
+          "line": 46,
+          "offset": 1978
+        },
+        "usage": "entity-output"
+      },
+      {
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "id": "context.ReadInput",
+        "position": {
+          "column": 22,
+          "line": 50,
+          "offset": 2351
+        },
+        "usage": "entity-input"
+      },
+      {
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "id": "context.ReadOutput",
+        "position": {
+          "column": 22,
+          "line": 50,
+          "offset": 2351
+        },
+        "usage": "entity-output"
+      },
+      {
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "id": "context.ExampleInput",
+        "position": {
+          "column": 25,
+          "line": 54,
+          "offset": 2677
+        },
+        "usage": "entity-input"
+      },
+      {
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "id": "context.ExampleOutput",
+        "position": {
+          "column": 25,
+          "line": 54,
+          "offset": 2677
+        },
+        "usage": "entity-output"
+      },
+      {
+        "capability": "schema.decode",
+        "file": "src/index.ts",
+        "id": "context.DiagnosticInput",
+        "position": {
+          "column": 28,
+          "line": 58,
+          "offset": 3017
+        },
+        "usage": "entity-input"
+      },
+      {
+        "capability": "schema.encode",
+        "file": "src/index.ts",
+        "id": "context.DiagnosticOutput",
+        "position": {
+          "column": 28,
+          "line": 58,
+          "offset": 3017
+        },
+        "usage": "entity-output"
+      }
+    ],
+    "sourceHash": "5599781e198527e257c40c72cb65bc602ca500a25fc223a516b4f8a425bb9845"
+  },
+  "lowering": {
+    "bindings": {
+      "backends": {},
+      "configStore": "pulse_config",
+      "grip": {
+        "directHold": true
+      },
+      "kv": {},
+      "secretStore": "pulse_secrets"
+    },
+    "buildTarget": "fastly-compute",
+    "capabilityDiscoveryFromUserland": false,
+    "contractVersion": "pulse.canonical-provider-contract.v1",
+    "deployable": true,
+    "localExecution": true,
+    "operations": [],
+    "package": "@pulse-compute/provider-fastly",
+    "provider": "fastly",
+    "providerSdkUserland": false,
+    "providerSpecificUserland": false,
+    "providerVersion": "1.0.0-beta.9",
+    "requirements": [],
+    "runtime": "pulse.canonical-fastly-runtime.v2",
+    "version": "pulse.canonical-provider-plan.v1"
+  }
+}

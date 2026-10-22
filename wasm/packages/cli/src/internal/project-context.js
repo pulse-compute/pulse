@@ -16,7 +16,7 @@ function deepFreeze(value) {
 
 function commandRequiresProjectContext(value) {
   const request = normalizeCommandRequest(value);
-  if (request.kind !== 'command' || request.help || (request.command === 'init' || request.command === 'report')) return false;
+  if (request.kind !== 'command' || request.help || ['init', 'report', 'docs'].includes(request.command)) return false;
   if (request.command === 'inspect' && request.artifact) return false;
   return true;
 }

@@ -8,14 +8,14 @@ const { renderReport } = require('../../packages/cli/src/internal/report/viewer'
 const { serializeCapsule, parseCapsule } = require('../../packages/cli/src/internal/report/capsule');
 const { projectHandlerTopology } = require('../../packages/cli/src/internal/report/handler-topology');
 const { setup } = require('../support/report-analytics-fixture.cjs');
-function fixture(variant='http', optimization='default', edit, graph=false) {
+function fixture(variant='http', optimization='native-bounded-size', edit, graph=false) {
   const root=path.resolve(__dirname,'../../.test-results');fs.mkdirSync(root,{recursive:true});
   const directory=fs.mkdtempSync(path.join(root,'an9-05-viewer-'));
   try {
     setup(directory,variant);
     if(edit) { const source=path.join(directory,'src/index.ts');fs.writeFileSync(source,edit(fs.readFileSync(source,'utf8'))); }
     const project=require('../../packages/cli/src/project-config').resolveProject({cwd:directory,metadataOnly:true});
-    const prepared=require('../../packages/cli/src/project-execution').compileNativeProjectInMemory(project,{emitWat:false,nativeOptimization:optimization==='default'?undefined:optimization});
+    const prepared=require('../../packages/cli/src/project-execution').compileNativeProjectInMemory(project,{emitWat:false,nativeOptimization:optimization});
     const wasm=prepared.native.manifest.wasm;
     const artifact={id:'artifact:'+wasm.sha256,...wasm,stage:'final',target:'portable-native-wasm'};
     const value=require('../../packages/cli/src/internal/report/inventory').collectInventory(project,prepared,[artifact],artifact.id,optimization);

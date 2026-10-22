@@ -1,0 +1,1 @@
+{"status":"passed","cells":[{"optimization":"default","bindings":4,"references":7,"requests":10,"unchanged":true},{"optimization":"experimental-native-bounded-size","bindings":4,"references":7,"requests":10,"unchanged":true}],"retainedReplay":true,"foreignOffsetRejected":true,"packageBinding":true,"redacted":true}

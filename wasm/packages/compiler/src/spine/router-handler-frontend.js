@@ -173,6 +173,12 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
 
   const signature = validateFunctionSignature(sourceFile, functionNode, role, diagnostics) || {};
   const ctxName = signature.ctxName || 'ctx';
+  const callableSource = topology.options?.callableSource;
+  if (callableSource && signature.ctxName && ['route', 'middleware', 'error'].includes(role)) {
+    const module = callableSource.resolver.modules.find(module => module.sourceFile === sourceFile || module.modulePath === fileName);
+    if (module) callableSource.admit({ modulePath: module.modulePath, sourceFile, functionNode: authoredFunctionNode,
+      identity: `${module.modulePath}:${authoredFunctionNode.pos}` }, { rewrite: true, contextIndex: role === 'error' ? 1 : 0 });
+  }
   const nextName = signature.nextName;
   const errorName = signature.errorName;
   const packageEffectsByStart = new Map();
@@ -253,6 +259,9 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
 
   const rewriteTransformer = (context) => {
     const visit = (node) => {
+      const callable = ts.isCallExpression(node) && callableSource?.forCall(node);
+      if (callable) return ts.factory.updateCallExpression(node, ts.visitNode(node.expression, visit), undefined,
+        [ts.factory.createIdentifier(callable.marker), ...node.arguments.slice(1).map(arg => ts.visitNode(arg, visit))]);
       if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)
         && ts.isIdentifier(node.expression.expression) && node.expression.expression.text === ctxName
         && node.expression.name.text === 'kv' && node.typeArguments?.length === 1) {

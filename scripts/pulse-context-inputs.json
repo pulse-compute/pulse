@@ -409,7 +409,7 @@
           "id": "contract/report-comparison",
           "heading": "Report comparison contract",
           "targets": ["native"],
-          "tags": ["report", "compare", "identity", "coverage"]
+          "tags": ["report", "reports", "compare", "identity", "coverage"]
         },
         {
           "id": "contract/eligibility",
@@ -425,6 +425,33 @@
           "tags": [
             "packages",
             "authority"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/reference/native-build-optimization.md",
+      "category": "contract",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native"
+      ],
+      "sections": [
+        {
+          "id": "contract/native-build-optimization",
+          "heading": "Native build optimization",
+          "tags": [
+            "build",
+            "compile",
+            "optimization",
+            "shrink0",
+            "convergence",
+            "json-as",
+            "cache"
           ]
         }
       ]

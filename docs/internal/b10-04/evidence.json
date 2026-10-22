@@ -1,0 +1,413 @@
+{
+  "schema": "pulse.b10-04.decision-evidence.v1",
+  "planningBaseline": {
+    "revision": "b188b3c8aa161820f400647a37307b8e45f1cdc8",
+    "tree": "7b053a1a1fe8948b8f404724fd7877ba9744a2e0",
+    "workingTreeAtStart": "clean"
+  },
+  "sourceFiles": {
+    "docs/internal/b10-00/results.json": "8919f780db8ce0095ad6ca7ce45b9358df45530c48ef044927061df441f56b01",
+    "docs/internal/b10-01/results.json": "8972ee55d0fce56a978e4f049a9e9cb7657584dcac112512240a0ab9e1b2fb96",
+    "docs/internal/b10-02/results.json": "8cc8bcd02c8c506e8d35585e5eca354c9274c738d2ad3302944278debf55379f",
+    "docs/internal/b10-03/results.json": "b3dbb298df11af0b1d75ed40183a0a6b4aa0651a9a77a6520f8ad02a7a924ab6"
+  },
+  "implementationOwnerComparison": [
+    {
+      "candidate": "74bf891ffe54865cca4869bf7c45d86ff172f34f",
+      "selectedOwnerChanges": []
+    },
+    {
+      "candidate": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+      "selectedOwnerChanges": []
+    },
+    {
+      "candidate": "b5aa67295fca1af35361b4cdcee50562290e8ebf",
+      "selectedOwnerChanges": []
+    }
+  ],
+  "b10_00": {
+    "candidate": {
+      "sourceRevision": "74bf891ffe54865cca4869bf7c45d86ff172f34f",
+      "sourceTree": "c79155d6e115d58f13c362d4784a081248dd2df7",
+      "workingTree": ""
+    },
+    "trials": [
+      {
+        "status": "passed",
+        "coverage": {
+          "taskReport": {
+            "status": "passed",
+            "selected": 190,
+            "recorded": 190,
+            "orderedComplete": true,
+            "passed": 190,
+            "reused": 0,
+            "cleanupPassed": true
+          },
+          "featureTasks": {
+            "status": "passed",
+            "selected": 11,
+            "recorded": 11,
+            "orderedComplete": true,
+            "passed": 11,
+            "reused": 0,
+            "cleanupPassed": true
+          }
+        },
+        "releaseMs": 2972147,
+        "installedMs": 586423,
+        "fullSealMs": 3611842
+      },
+      {
+        "status": "failed",
+        "coverage": {
+          "taskReport": {
+            "status": "failed",
+            "selected": 190,
+            "recorded": 168,
+            "orderedComplete": false,
+            "passed": 167,
+            "reused": 0,
+            "cleanupPassed": false
+          }
+        },
+        "releaseMs": 1732085,
+        "installedMs": null,
+        "fullSealMs": 1793434
+      }
+    ],
+    "successfulSubsetSlowdown": 1.077968003313437,
+    "recommendation": "Retain 2 workers / 1 compiler; the failed two-slot attempt is not a speedup or complete qualification."
+  },
+  "b10_01": {
+    "provenance": {
+      "candidate": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+      "tree": "6fc0ccd355feddf06cda36e0e13baec201a9d8de",
+      "workingTree": "",
+      "node": "v24.18.0",
+      "npm": "11.15.0",
+      "pnpm": "12.4.2",
+      "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+      "commands": [
+        "node",
+        "wasm/scripts/run-wasm-tests.cjs",
+        "--task",
+        "jwt-rs256",
+        "--task",
+        "jwt-installed-workflow",
+        "--task",
+        "clean-machine-acceptance",
+        "--task",
+        "schema-codecs",
+        "--report",
+        "/tmp/pulse-b10-01-trials/.pulse-seal/b10-01/tasks.json"
+      ],
+      "tasks": [
+        "jwt-rs256",
+        "jwt-installed-workflow",
+        "clean-machine-acceptance",
+        "schema-codecs"
+      ],
+      "sharedPackReceiptSha256": "e0d139652a404ff89092edc82f5ada9df4362e11a00075ac06c3b1b45cdc453b",
+      "deadlineSeconds": 1800,
+      "status": "passed",
+      "coldWarm": "Warm pinned dependencies/build/tool caches; private consumer npm caches; no checkpoint reuse",
+      "exitCode": 0,
+      "elapsedMs": 929078,
+      "terminalWorkingTree": ""
+    },
+    "limitations": [
+      "Original checkout attempt failed cleanliness; preserved separately.",
+      "Five auxiliary fresh child traces lack terminal records.",
+      "Final analyzer and trace-cap fix postdate measured candidate; focused checks and unit suite cover final code.",
+      "Unit validation passed 65 tasks but left one S3 fixture directory; hashes retained and owned directory removed."
+    ],
+    "inputSourceChecks": [
+      {
+        "path": "wasm/test/support/phase-observer.cjs",
+        "recordedSha256": "cdd3a148553ed466ed368afad49eabe28c872d59bfca09231bf6cf3f8cc96b92",
+        "baselineSha256": "2c63f749e220839408f86fa96fb8cc3a06d13990a74ef06c5cc9c4818bc36548"
+      },
+      {
+        "path": "wasm/test/jwt/assert-jwt-rs256.cjs",
+        "recordedSha256": "11db2d9feae680be121740b37aefdc6de322d7b48dc59ddb06a3ed28707b569a",
+        "baselineSha256": "11db2d9feae680be121740b37aefdc6de322d7b48dc59ddb06a3ed28707b569a"
+      },
+      {
+        "path": "wasm/test/jwt/assert-jwt-installed-workflow.cjs",
+        "recordedSha256": "a3a0c9d6ff731447193dd8a63265648a873122fb688f7e9984d11ef2dbb563c4",
+        "baselineSha256": "a3a0c9d6ff731447193dd8a63265648a873122fb688f7e9984d11ef2dbb563c4"
+      },
+      {
+        "path": "wasm/test/release/assert-clean-machine-acceptance.cjs",
+        "recordedSha256": "8c7be5b8ea502155d95c2eb44fad187d3b383a759d3204871c42a088984f3d43",
+        "baselineSha256": "8c7be5b8ea502155d95c2eb44fad187d3b383a759d3204871c42a088984f3d43"
+      },
+      {
+        "path": "scripts/release-parallel.cjs",
+        "recordedSha256": "cb5b1f46fc8aa0ab45f71d3f48df05cc11cbf5da2c66a58a8459cdebab63274d",
+        "baselineSha256": "cb5b1f46fc8aa0ab45f71d3f48df05cc11cbf5da2c66a58a8459cdebab63274d"
+      },
+      {
+        "path": "scripts/release-checkpoints.cjs",
+        "recordedSha256": "f1ff6034b409b851fce63b0deebc9d8e42de83a56088e92ec19e004caecc48d4",
+        "baselineSha256": "f1ff6034b409b851fce63b0deebc9d8e42de83a56088e92ec19e004caecc48d4"
+      },
+      {
+        "path": "pnpm-lock.yaml",
+        "recordedSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+        "baselineSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3"
+      }
+    ],
+    "immutableInspection": {
+      "candidate": "804c69afe743a3f31d2033aa8cf1b121f2dafb21",
+      "tree": "6fc0ccd355feddf06cda36e0e13baec201a9d8de",
+      "input": {
+        "relative": "packages/crypto/guests/es256-rustcrypto/prebuilt/es256-verifier.wasm",
+        "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+        "bytes": 36378
+      },
+      "toolchain": {
+        "name": "binaryen",
+        "version": "129.0.0-nightly.20260428",
+        "tools": [
+          {
+            "name": "wasm-as",
+            "sha256": "de7e6f417519fdd1498903829741c64bf0ea5d59965a6b33249b1db2e34ffc47"
+          },
+          {
+            "name": "wasm-dis",
+            "sha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae"
+          },
+          {
+            "name": "wasm-merge",
+            "sha256": "2e917a96093675895515c8b5677a4f21200488a6dc5ce3590c4acd9cbf577ba2"
+          },
+          {
+            "name": "wasm-opt",
+            "sha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56"
+          }
+        ]
+      },
+      "samples": [
+        {
+          "elapsedMs": 574.640677,
+          "inspectionSha256": "d01cdb26f4b70c43ab85f7a73bf97a8503ca86909a9631223461e725ab989728",
+          "projectedSha256": "cf363decd014212d8c90beac9cab397c94163bfbe4e617445e99e45e821505de"
+        },
+        {
+          "elapsedMs": 547.9831909999998,
+          "inspectionSha256": "d01cdb26f4b70c43ab85f7a73bf97a8503ca86909a9631223461e725ab989728",
+          "projectedSha256": "cf363decd014212d8c90beac9cab397c94163bfbe4e617445e99e45e821505de"
+        },
+        {
+          "elapsedMs": 522.6343239999997,
+          "inspectionSha256": "d01cdb26f4b70c43ab85f7a73bf97a8503ca86909a9631223461e725ab989728",
+          "projectedSha256": "cf363decd014212d8c90beac9cab397c94163bfbe4e617445e99e45e821505de"
+        }
+      ],
+      "scope": "Three independent inspections of one exact immutable prebuilt input with identical options and pinned tools. Version calls are a startup proxy, not an additive removable-cost measurement. No inspection is skipped."
+    },
+    "workerControlRows": [
+      {
+        "name": "inputIdentity.first",
+        "elapsedMs": 793.466416
+      },
+      {
+        "name": "inputIdentity.repeat",
+        "elapsedMs": 716.6408019999999
+      },
+      {
+        "name": "inputIdentity.repeat",
+        "elapsedMs": 788.6832430000002
+      },
+      {
+        "name": "prepareWorkspaces",
+        "elapsedMs": 3173.1311090000004
+      },
+      {
+        "name": "worker.inputIdentity",
+        "elapsedMs": 820.9928989999999
+      },
+      {
+        "name": "preTask.verifyWorker",
+        "elapsedMs": 836.3036199999997
+      },
+      {
+        "name": "cleanup.first",
+        "elapsedMs": 1772.6157470000007
+      },
+      {
+        "name": "cleanup.reconcile",
+        "elapsedMs": 1708.4113579999994
+      },
+      {
+        "name": "preTask.verifyWorker",
+        "elapsedMs": 846.2505600000004
+      },
+      {
+        "name": "cleanup.first",
+        "elapsedMs": 1686.3811589999987
+      },
+      {
+        "name": "cleanup.reconcile",
+        "elapsedMs": 1734.085142
+      },
+      {
+        "name": "preTask.verifyWorker",
+        "elapsedMs": 892.509693
+      },
+      {
+        "name": "cleanup.first",
+        "elapsedMs": 1751.1478060000009
+      },
+      {
+        "name": "cleanup.reconcile",
+        "elapsedMs": 1710.6839809999983
+      },
+      {
+        "name": "cleanupWorkspaces",
+        "elapsedMs": 339.5965099999994
+      }
+    ]
+  },
+  "b10_02": {
+    "sourceCandidate": "b5aa67295fca1af35361b4cdcee50562290e8ebf",
+    "timingCandidate": "74bf891ffe54865cca4869bf7c45d86ff172f34f",
+    "coverage": {
+      "release": 190,
+      "installed": 11,
+      "distinct": 201,
+      "laneCounts": {
+        "shared": 70,
+        "mixed": 50,
+        "node": 64,
+        "fastly": 17
+      }
+    },
+    "scenarios": [
+      {
+        "name": "current-mixed-2w-1c",
+        "wallMs": 3432963,
+        "workers": 2,
+        "compilers": 1,
+        "durationFactor": 1,
+        "stageWallMs": [
+          2858463,
+          574500
+        ]
+      },
+      {
+        "name": "host-2w-1c",
+        "wallMs": 3450010,
+        "workers": 2,
+        "compilers": 1,
+        "durationFactor": 1,
+        "stageWallMs": [
+          2875510,
+          574500
+        ]
+      },
+      {
+        "name": "mixed-2w-2c",
+        "wallMs": 2004001,
+        "workers": 2,
+        "compilers": 2,
+        "durationFactor": 1,
+        "stageWallMs": [
+          1693235,
+          310766
+        ]
+      },
+      {
+        "name": "host-2w-2c",
+        "wallMs": 2636947,
+        "workers": 2,
+        "compilers": 2,
+        "durationFactor": 1,
+        "stageWallMs": [
+          2195174,
+          441773
+        ]
+      },
+      {
+        "name": "mixed-3w-2c",
+        "wallMs": 1750637,
+        "workers": 3,
+        "compilers": 2,
+        "durationFactor": 1,
+        "stageWallMs": [
+          1439871,
+          310766
+        ]
+      },
+      {
+        "name": "host-3w-2c",
+        "wallMs": 2094538,
+        "workers": 3,
+        "compilers": 2,
+        "durationFactor": 1,
+        "stageWallMs": [
+          1652765,
+          441773
+        ]
+      },
+      {
+        "name": "mixed-2w-1c-overlap-stages",
+        "wallMs": 3432963,
+        "workers": 2,
+        "compilers": 1,
+        "durationFactor": 1,
+        "stageWallMs": [
+          3432963
+        ]
+      },
+      {
+        "name": "mixed-2w-2c-overlap-stages",
+        "wallMs": 2000101,
+        "workers": 2,
+        "compilers": 2,
+        "durationFactor": 1,
+        "stageWallMs": [
+          2000101
+        ]
+      },
+      {
+        "name": "mixed-2w-2c-slowdown-1.078",
+        "wallMs": 2160313.0780000007,
+        "workers": 2,
+        "compilers": 2,
+        "durationFactor": 1.078,
+        "stageWallMs": [
+          1825307.3300000005,
+          335005.748
+        ]
+      },
+      {
+        "name": "mixed-2w-2c-slowdown-1.25",
+        "wallMs": 2505001.25,
+        "workers": 2,
+        "compilers": 2,
+        "durationFactor": 1.25,
+        "stageWallMs": [
+          2116543.75,
+          388457.5
+        ]
+      }
+    ],
+    "sourceChangesSinceMapping": []
+  },
+  "b10_03": {
+    "mergedAt": "b188b3c8aa161820f400647a37307b8e45f1cdc8",
+    "releaseStageSavingClaimMs": null,
+    "scope": "PR routing only; no paired hosted speedup claim"
+  },
+  "decision": {
+    "currentWorkers": 2,
+    "currentCompilerSlots": 1,
+    "hostLayout": "mixed",
+    "releaseInstalledBarrier": "retained",
+    "sub30Minutes": "exploratory, not established",
+    "newQualificationPerformed": false
+  }
+}

@@ -1,0 +1,27 @@
+# Pulse maintainer scope
+
+**Status:** Human decision required
+
+| Signal | Result |
+|---|---|
+| Declared class | `architecture` |
+| Declared scope | `architecture-change` |
+| Risk | `critical` |
+| Changed files | 247 |
+| Areas | `api`, `cli`, `compiler`, `documentation`, `lowering`, `provider`, `release`, `runtime`, `testing` |
+| Protected boundaries | `continuation-runtime`, `effect-capability-model`, `lowerer-trust`, `package-publication`, `provider-registry`, `public-authoring-api`, `release-authority`, `runtime-target-fluidity` |
+| Separate human decision | Required |
+| Current contract update | Required for the proposed boundary change |
+| Release authority | Required |
+| Required checks | `build`, `cli`, `conformance`, `documentation`, `javascript`, `maintenance-policy`, `native`, `providers`, `release`, `release-preflight`, `unit` |
+
+Human release authority must decide and approve this change before merge or publication.
+
+## Warnings
+
+- unclassified path(s) require human review: packages/entities/pulsewasm.native.cjs
+
+## Unclassified paths
+
+- `packages/entities/pulsewasm.native.cjs`
+

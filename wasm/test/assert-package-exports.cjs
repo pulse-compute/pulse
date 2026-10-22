@@ -61,7 +61,7 @@ for (const root of packageRoots) {
 
 const runtime = require(path.join(repoRoot, 'packages/runtime/src/index.js'));
 assert.equal(typeof runtime.Router, 'function');
-assert.equal(runtime.RUNTIME_API_VERSION, 'pulse.runtime-authoring.v4');
+assert.equal(runtime.RUNTIME_API_VERSION, 'pulse.runtime-authoring.v5');
 
 const contracts = require(path.join(repoRoot, 'wasm/packages/contracts/src/index.js'));
 for (const key of [

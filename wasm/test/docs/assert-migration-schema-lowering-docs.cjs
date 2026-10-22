@@ -146,4 +146,107 @@ assert.match(lowererTutorial, /reachable module graph selects participating pack
 assert.match(lowererTutorial, /not entry-source substring discovery/);
 assert.doesNotMatch(lowererTutorial, /selects those whose import subpath appears in the entry source/);
 
-console.log('ok - Express migration, schema boundaries, body ownership, and package-lowering owners match current repository contracts');
+async function assertExpressBehavior() {
+  const { Router } = require('../../../packages/runtime/src/index.js');
+  const { executeRouter } = require('../../../packages/runtime/src/host.js');
+  const { compileCanonicalRouterSource } = require('../../packages/compiler/src/canonical-router-compiler.js');
+  const { compileCanonicalSource } = require('../../packages/compiler/src/canonical-api-compiler.js');
+  const { buildCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan.js');
+  const snippet = /<!-- pulse-express-input-error:start -->\s*```ts\n([\s\S]*?)```/.exec(express)?.[1];
+  assert.ok(snippet, 'the documented input-error handler must remain executable');
+  const route = "app.post('/body', async (ctx) => { const text = await ctx.req.text(); return ctx.text(text); });";
+  // Compile the exact documented handler, rather than a separately maintained copy.
+  const router = compileCanonicalRouterSource(`import { Router } from '@pulse-compute/runtime';
+const app = new Router(); ${route} ${snippet} export default app;`, { fileName: 'express-input-error.ts', rootDir: repoRoot });
+  const compiled = compileCanonicalSource(router.sourceText, {
+    fileName: 'express-input-error.ts', rootDir: repoRoot, compilerPrelude: router.compilerPrelude,
+    compilerOwnedCalls: router.compilerOwnedCalls, internalGeneratedHandler: true,
+    metadataExtensions: { router: router.metadata }
+  });
+  assert.ok(buildCanonicalNativePlan(compiled).planHash, 'documented error handler must remain Native-eligible');
+  for (const [call, code] of [
+    ["app.get('/', async ctx => ctx.text('a'), async ctx => ctx.text('b'))", 'PULSEWASM_ARITY'],
+    ["app.get('/', [async ctx => ctx.text('a')])", 'PULSEWASM_UNSUPPORTED_HANDLER']
+  ]) {
+    assert.throws(() => compileCanonicalRouterSource(
+      `import { Router } from '@pulse-compute/runtime'; const app = new Router(); ${call}; export default app;`,
+      { fileName: 'express-handler-chain.ts', rootDir: repoRoot }
+    ), error => error.diagnostics?.some(item => item.code === code), 'Express handler chains are not admitted registrations');
+  }
+  const ts = require('typescript');
+  const virtualFile = path.join(__dirname, '__express_input_error_typecheck.ts');
+  const typeSource = `import { Router } from '../../../packages/runtime/src/index.js'; const app = new Router(); ${snippet}`;
+  const compilerOptions = { strict: true, noEmit: true, skipLibCheck: true, target: ts.ScriptTarget.ES2022,
+    module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext };
+  const host = ts.createCompilerHost(compilerOptions);
+  const getSourceFile = host.getSourceFile.bind(host);
+  host.getSourceFile = (file, languageVersion, ...rest) => file === virtualFile
+    ? ts.createSourceFile(file, typeSource, languageVersion, true)
+    : getSourceFile(file, languageVersion, ...rest);
+  const program = ts.createProgram([virtualFile], compilerOptions, host);
+  const diagnostics = ts.getPreEmitDiagnostics(program);
+  assert.deepEqual(diagnostics.map(item => ts.flattenDiagnosticMessageText(item.messageText, '\n')), [],
+    'the exact error example must typecheck against the public unknown error parameter');
+  const javascript = ts.transpileModule(snippet, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
+  const attach = new Function('app', javascript);
+  const app = new Router();
+  new Function('app', route)(app);
+  attach(app);
+  const invalid = await executeRouter(app, new Request('https://example.test/body', {
+    method: 'POST', body: new Uint8Array([0xc3, 0x28]), headers: { 'content-type': 'text/plain' }
+  }));
+  assert.equal(invalid.status, 400);
+  assert.equal(await invalid.text(), 'Invalid request body');
+  const valid = await executeRouter(app, new Request('https://example.test/body', { method: 'POST', body: 'valid' }));
+  assert.equal(valid.status, 200);
+  assert.equal(await valid.text(), 'valid');
+  for (const code of ['PULSE_SCHEMA_JSON_MALFORMED', 'PULSE_SCHEMA_DECODE', 'PULSE_JWT_MALFORMED']) {
+    const errors = new Router();
+    errors.use(async (_ctx, next) => next(Object.assign(new Error('data failure'), { code })));
+    attach(errors);
+    errors.error(async (error, ctx) => ctx.text(error.code, { status: 422 }));
+    const response = await executeRouter(errors, new Request('https://example.test/'));
+    assert.equal(response.status, code === 'PULSE_JWT_MALFORMED' ? 422 : 400);
+    assert.equal(await response.text(), code === 'PULSE_JWT_MALFORMED' ? code : 'Invalid request body');
+  }
+  // Express skip strings (and other defined arguments) are errors, not skips.
+  for (const value of ['route', 'router', null, false, 0]) {
+    const transfer = new Router();
+    const seen = [];
+    transfer.use(async (_ctx, next) => { seen.push('start'); return next(value); });
+    transfer.get('/', async ctx => { seen.push('skipped'); return ctx.text('wrong'); });
+    transfer.error(async (error, _ctx, next) => { assert.equal(error, value); seen.push('recover'); return next(); });
+    transfer.get('/', async ctx => { seen.push('tail'); return ctx.text('recovered'); });
+    const response = await executeRouter(transfer, new Request('https://example.test/'));
+    assert.equal(await response.text(), 'recovered');
+    assert.deepEqual(seen, ['start', 'recover', 'tail']);
+  }
+  const methods = new Router();
+  methods.get('/only-get', async ctx => ctx.text('get'));
+  for (const method of ['HEAD', 'OPTIONS', 'PUT', 'PATCH', 'DELETE']) {
+    assert.equal((await executeRouter(methods, new Request('https://example.test/only-get', { method }))).status, 404);
+  }
+  methods.head('/only-get', async ctx => ctx.text('', { status: 204 }));
+  assert.equal((await executeRouter(methods, new Request('https://example.test/only-get', { method: 'HEAD' }))).status, 204);
+  const mounted = new Router();
+  const child = new Router();
+  child.use(async (ctx, next) => { assert.equal(ctx.param, undefined); return next(); });
+  child.post('/users/:id', async ctx => {
+    const first = await ctx.req.json();
+    const second = await ctx.req.json();
+    assert.equal(first, second);
+    assert.ok(Object.isFrozen(first) && Object.isFrozen(first.nested));
+    return ctx.json({ url: ctx.req.url, path: ctx.req.path, id: ctx.param('id'), tenant: ctx.param('tenant'),
+      first: ctx.req.header('X-REPEAT'), pairs: ctx.req.headers });
+  });
+  mounted.mount('/api/:tenant', child);
+  const headers = [['x-repeat', 'first'], ['X-Repeat', 'second'], ['content-type', 'application/json']];
+  const url = 'https://example.test/api/acme/users/7?q=1';
+  const response = await executeRouter(mounted, new Request(url, { method: 'POST', body: '{"nested":{"value":1}}',
+    headers: { 'content-type': 'application/json' } }), { requestHeaders: headers });
+  assert.deepEqual(await response.json(), { url, path: '/api/acme/users/7', id: '7', tenant: 'acme', first: 'first', pairs: headers });
+}
+
+assertExpressBehavior().then(() => {
+  console.log('ok - Express migration example and routing/request traps execute; schema/body/lowering owners match current contracts');
+}).catch(error => { console.error(error); process.exitCode = 1; });

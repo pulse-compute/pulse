@@ -16,7 +16,7 @@ function derive(c) {
 }
 function rehash(c) {const {comparisonHash,...payload}=c;c.comparisonHash.value=sha256(canonicalJson(payload));return c;}
 module.exports=function semanticCases() {
-  const base=fixture(), bounded=fixture('http','experimental-native-bounded-size');
+  const base=fixture('http','native-shrink0'), bounded=fixture('http','native-bounded-size');
   const before=serializeComparison(compare(base,base)), same=compare(base,base);
   assert.equal(same.matchingVersion,'pulse.report-matching.v2');
   assert.deepEqual(same.sections,[]);
@@ -30,7 +30,7 @@ module.exports=function semanticCases() {
   assert.equal(recipe.compatibility.status,'different-build');
   for(const name of SEMANTIC_COLLECTIONS)assert.deepEqual(inventory(recipe,name),inventory(same,name),'recipe is independent of '+name);
   assert.ok(!recipe.sections.some(row=>SEMANTIC_COLLECTIONS.includes(row.collection)));
-  const edited=fixture('http','default',source=>source.replace("ctx.config.get('REGION')","ctx.config.get('SCOPED')"));
+  const edited=fixture('http','native-shrink0',source=>source.replace("ctx.config.get('REGION')","ctx.config.get('SCOPED')"));
   const changed=compare(base,edited);
   const legacySides=[base,edited].map(c=>{const copy=structuredClone(c);delete copy.analytics;return copy;});
   const legacyResult=compare(...legacySides);
