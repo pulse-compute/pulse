@@ -14,14 +14,12 @@ const wasmRoot = path.resolve(__dirname, '..', '..');
 const repoRoot = path.resolve(wasmRoot, '..');
 const pulseCli = path.join(wasmRoot, 'scripts', 'pulse.cjs');
 const BUILD_DIR = '.pulse-docs-build';
-const OPTIMIZED_BUILD_DIR = '.pulse-docs-build-size';
 
 const examples = Object.freeze([
   Object.freeze({
   "id": "03-fetch-composition/dynamic-probes",
   "provider": "node",
-  "guestWasmBytes": 86654,
-  "optimizedGuestWasmBytes": 71900,
+  "guestWasmBytes": 71947,
   "capabilities": [
     "fetch",
     "request.json",
@@ -40,33 +38,28 @@ const examples = Object.freeze([
   Object.freeze({
     id: '01-hello-json',
     provider: 'node',
-    guestWasmBytes: 2353,
-    optimizedGuestWasmBytes: 2270,
+    guestWasmBytes: 2273,
     capabilities: ['response.json', 'response.text']
   }),
   Object.freeze({
     id: '02-request-schema',
     provider: 'node',
-    guestWasmBytes: 41086,
-    optimizedGuestWasmBytes: 32708,
+    guestWasmBytes: 32707,
     capabilities: ['request.json', 'response.json'],
     schemas: ['app.CreateUserInput', 'app.CreateUserOutput']
   }),
   Object.freeze({
     id: '03-fetch-composition',
     provider: 'node',
-    guestWasmBytes: 5272,
-    optimizedGuestWasmBytes: 4570,
+    guestWasmBytes: 4572,
     capabilities: ['fetch', 'response.json'],
     grouped: true
   }),
   Object.freeze({
     id: '05-fastly-capabilities',
     provider: 'fastly',
-    guestWasmBytes: 5695,
-    optimizedGuestWasmBytes: 5181,
-    providerWasmBytes: 57484,
-    optimizedProviderWasmBytes: 46189,
+    guestWasmBytes: 5181,
+    providerWasmBytes: 46209,
     wasiImports: ['clock_time_get', 'fd_write'],
     capabilities: [
       'config.get',
@@ -81,10 +74,8 @@ const examples = Object.freeze([
   Object.freeze({
     id: '07-opaque-proxy',
     provider: 'fastly',
-    guestWasmBytes: 2304,
-    optimizedGuestWasmBytes: 2205,
-    providerWasmBytes: 43842,
-    optimizedProviderWasmBytes: 36610,
+    guestWasmBytes: 2205,
+    providerWasmBytes: 36637,
     wasiImports: ['clock_time_get', 'fd_write'],
     capabilities: ['fetch'],
     opaque: true
@@ -92,8 +83,7 @@ const examples = Object.freeze([
   Object.freeze({
     id: '09-router-lowering',
     provider: 'node',
-    guestWasmBytes: 8014,
-    optimizedGuestWasmBytes: 7407,
+    guestWasmBytes: 7407,
     capabilities: ['fetch', 'response.json', 'response.text'],
     routes: 7
   }),
@@ -110,8 +100,7 @@ const examples = Object.freeze([
   Object.freeze({
     id: '11-events',
     provider: 'node',
-    guestWasmBytes: 40667,
-    optimizedGuestWasmBytes: 32460,
+    guestWasmBytes: 32458,
     capabilities: ['event.emit', 'logging', 'response.text'],
     schemas: ['events.DeviceReading', 'events.DeviceReadingAccepted'],
     events: Object.freeze({
@@ -135,12 +124,9 @@ const examples = Object.freeze([
   Object.freeze({
     id: '13-jwt-es256',
     provider: 'node',
-    guestWasmBytes: 36100,
-    optimizedGuestWasmBytes: 35926,
-    applicationInputBytes: 3030,
-    optimizedApplicationInputBytes: 2848,
+    guestWasmBytes: 35926,
+    applicationInputBytes: 2848,
     linkedGuestInputBytes: 36378,
-    optimizedLinkedGuestInputBytes: 36378,
     capabilities: ['jwt.verify', 'response.text'],
     crypto: Object.freeze({
       algorithm: 'ES256',
@@ -517,22 +503,25 @@ function assertExampleReadme(example, project, syncResult) {
       ? 'pulse build && node host/prepare.cjs' : `pulse ${command}`, `${example.id} documented script must invoke the ordinary CLI`);
   }
   assert.match(text, /^## Wasm size$/m, `${example.id} README must document its Wasm size baseline`);
+  assert.ok(text.includes('docs/reference/native-build-optimization.md'),
+    `${example.id} README must link to the shared optimization reference`);
+  assert.ok(!text.includes('--experimental-native-'),
+    `${example.id} README must present the default build without experimental comparisons`);
+  const index = fs.readFileSync(path.join(repoRoot, 'docs/examples.md'), 'utf8');
+  const guestSize = example.noApplicationWasm ? 'No application Wasm' : documentedByteCount(example.guestWasmBytes);
+  const providerSize = example.providerWasmBytes ? documentedByteCount(example.providerWasmBytes) : '—';
+  assert.ok(index.includes(`| \`${example.id}\` | ${guestSize} | ${providerSize} |`),
+    `${example.id} example index must match the measured artifact sizes`);
   if (example.noApplicationWasm) {
     assert.ok(text.includes('**no application Wasm artifact**'), `${example.id} README must explicitly document that its default profile emits no application Wasm`);
-    assert.ok(text.includes('`--experimental-native-size`'), `${example.id} README must explain why experimental Native size is not applicable`);
   } else {
     assert.ok(text.includes(documentedByteCount(example.guestWasmBytes)), `${example.id} README application guest Wasm size is stale`);
-    assert.ok(text.includes(documentedByteCount(example.optimizedGuestWasmBytes)), `${example.id} README optimized application guest Wasm size is stale`);
-    assert.ok(text.includes('`--experimental-native-size`'), `${example.id} README must identify the experimental Native-size build`);
     if (example.providerWasmBytes) {
       assert.ok(text.includes(documentedByteCount(example.providerWasmBytes)), `${example.id} README provider Wasm size is stale`);
-      assert.ok(text.includes(documentedByteCount(example.optimizedProviderWasmBytes)), `${example.id} README optimized provider Wasm size is stale`);
     }
     if (example.linkedGuestInputBytes) {
       assert.ok(text.includes(documentedByteCount(example.applicationInputBytes)), `${example.id} README application input size is stale`);
-      assert.ok(text.includes(documentedByteCount(example.optimizedApplicationInputBytes)), `${example.id} README optimized application input size is stale`);
       assert.ok(text.includes(documentedByteCount(example.linkedGuestInputBytes)), `${example.id} README linked guest input size is stale`);
-      assert.ok(text.includes(documentedByteCount(example.optimizedLinkedGuestInputBytes)), `${example.id} README optimized linked guest input size is stale`);
     }
   }
   const relativeReadme = slash(path.relative(repoRoot, readme));
@@ -544,51 +533,16 @@ function assertExampleReadme(example, project, syncResult) {
   assert.ok(syncResult.references.some((entry) => entry.markdown === relativeReadme && entry.source === harness), `${example.id} README must derive its harness block from ${harness}`);
 }
 
-function verifyOptimizedNativeBuild(example, projectDir, outputs) {
-  if (example.noApplicationWasm) return Object.freeze({ guestWasmBytes: 0, providerWasmBytes: 0 });
-  const buildDir = path.join(projectDir, OPTIMIZED_BUILD_DIR);
-  fs.rmSync(buildDir, { recursive: true, force: true });
-  cleanupPaths.add(buildDir);
-  const build = runPulse(
-    'build',
-    projectDir,
-    ['--out', OPTIMIZED_BUILD_DIR, '--experimental-native-size'],
-    360000
-  );
-  outputs.push(build);
-  assert.equal(build.json.status, 'built', `${example.id} optimized pulse build failed`);
-  assert.equal(build.json.provider, example.provider, `${example.id} optimized build provider mismatch`);
-  assert.equal(path.resolve(build.json.outDir), buildDir, `${example.id} optimized build output mismatch`);
-
-  const manifest = JSON.parse(fs.readFileSync(path.join(buildDir, 'pulse-build.json'), 'utf8'));
-  assert.equal(manifest.portable.optimization.version, 'pulse.native-optimization.v1', `${example.id} optimized build policy version mismatch`);
-  assert.equal(manifest.portable.optimization.mode, 'experimental-native-size', `${example.id} optimized build mode mismatch`);
-  assert.equal(manifest.portable.optimization.experimental, true, `${example.id} optimized build must remain explicitly experimental`);
-  assert.deepEqual(manifest.portable.optimization.assemblyScript, {
+function assertDefaultOptimization(optimization, location) {
+  assert.equal(optimization.version, 'pulse.native-optimization.v1', location);
+  assert.equal(optimization.mode, 'native-bounded-size', location);
+  assert.equal(optimization.experimental, false, location);
+  assert.deepEqual(optimization.assemblyScript, {
     optimize: true,
     optimizeLevel: 3,
     shrinkLevel: 2,
-    converge: true
-  }, `${example.id} optimized AssemblyScript policy mismatch`);
-
-  const guestWasmBytes = inspectGuestWasm(path.join(buildDir, 'canonical-native.wasm'), example.id);
-  assert.equal(guestWasmBytes, example.optimizedGuestWasmBytes, `${example.id} documented optimized application guest Wasm size changed`);
-  if (example.linkedGuestInputBytes) {
-    const report = JSON.parse(fs.readFileSync(path.join(buildDir, 'guest-link-report.json'), 'utf8'));
-    assert.equal(report.inputs.primary.bytes, example.optimizedApplicationInputBytes, `${example.id} optimized primary guest-link input changed`);
-    assert.equal(report.inputs.guest.bytes, example.optimizedLinkedGuestInputBytes, `${example.id} optimized linked guest input changed`);
-    assert.equal(report.finalArtifact.bytes, example.optimizedGuestWasmBytes, `${example.id} optimized linked output size changed`);
-  }
-
-  let providerWasmBytes = 0;
-  if (example.provider === 'fastly') {
-    providerWasmBytes = inspectWasm(path.join(buildDir, 'bin', 'main.wasm'), example.id);
-    assert.equal(providerWasmBytes, example.optimizedProviderWasmBytes, `${example.id} documented optimized provider Wasm size changed`);
-    assert.equal(manifest.providerTarget.optimization.mode, 'experimental-native-size', `${example.id} provider output lost the optimized build policy`);
-  } else {
-    assert.equal(fs.existsSync(path.join(buildDir, 'bin', 'main.wasm')), false, `${example.id} optimized Node build must not claim a Fastly provider target`);
-  }
-  return Object.freeze({ guestWasmBytes, providerWasmBytes });
+    converge: false
+  }, `${location} AssemblyScript policy mismatch`);
 }
 
 function verifyDefaultNativeSizes(example, buildDir, build) {
@@ -598,6 +552,8 @@ function verifyDefaultNativeSizes(example, buildDir, build) {
     }
     return Object.freeze({ guestWasmBytes: 0, wasmBytes: 0 });
   }
+  const manifest = JSON.parse(fs.readFileSync(path.join(buildDir, 'pulse-build.json'), 'utf8'));
+  assertDefaultOptimization(manifest.portable.optimization, `${example.id} portable default`);
   const guestWasmBytes = inspectGuestWasm(path.join(buildDir, 'canonical-native.wasm'), example.id);
   assert.equal(guestWasmBytes, example.guestWasmBytes, `${example.id} documented application guest Wasm size changed`);
   if (example.linkedGuestInputBytes) {
@@ -608,6 +564,7 @@ function verifyDefaultNativeSizes(example, buildDir, build) {
   }
   let wasmBytes = 0;
   if (example.provider === 'fastly') {
+    assertDefaultOptimization(manifest.providerTarget.optimization, `${example.id} Fastly default`);
     wasmBytes = inspectWasm(path.join(buildDir, 'bin', 'main.wasm'), example.id);
     assert.equal(wasmBytes, example.providerWasmBytes, `${example.id} documented provider Wasm size changed`);
     assert.equal(build.json.manifest.providerTarget.compiledWasmPresent, true, `${example.id} did not report compiled Wasm`);
@@ -648,9 +605,7 @@ function verifyDocumentationSizes() {
     const build = runPulse('build', projectDir, ['--out', BUILD_DIR], 360000);
     assert.equal(build.json.status, 'built', `${example.id} size preflight build failed`);
     const defaults = verifyDefaultNativeSizes(example, buildDir, build);
-    console.log(`docs sizes - ${example.id}: optimized build`);
-    const optimized = verifyOptimizedNativeBuild(example, projectDir, []);
-    console.log(`ok - docs sizes ${example.id}: guest=${defaults.guestWasmBytes}/${optimized.guestWasmBytes} provider=${defaults.wasmBytes}/${optimized.providerWasmBytes}`);
+    console.log(`ok - docs sizes ${example.id}: guest=${defaults.guestWasmBytes} provider=${defaults.wasmBytes}`);
   }
   console.log(`ok - documentation size preflight checked ${examples.length} examples; full replay still required`);
 }
@@ -794,7 +749,6 @@ function verifyExampleWorkflow(example, syncResult) {
     assert.ok(fs.existsSync(path.join(buildDir, 'schema-json-registry.json')), `${example.id} schema build is missing the registry`);
     assert.ok(fs.existsSync(path.join(buildDir, 'schema-json-codecs.cjs')), `${example.id} schema build is missing generated codecs`);
   }
-  const optimized = verifyOptimizedNativeBuild(example, projectDir, outputs);
   assertSecretsRedacted(outputs, secretValues(project), example.id);
   const summary = Object.freeze({
     id: example.id,
@@ -803,13 +757,10 @@ function verifyExampleWorkflow(example, syncResult) {
     capabilities: inspect.json.compiler.capabilities.length,
     schemas: inspect.json.project.schemas.count,
     guestWasmBytes,
-    optimizedGuestWasmBytes: optimized.guestWasmBytes,
-    wasmBytes,
-    optimizedWasmBytes: optimized.providerWasmBytes
+    wasmBytes
   });
   for (const target of [
     buildDir,
-    path.join(projectDir, OPTIMIZED_BUILD_DIR),
     guestCacheDir
   ]) {
     fs.rmSync(target, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });

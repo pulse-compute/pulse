@@ -22,22 +22,24 @@ For build settings, see [Native build optimization](./reference/native-build-opt
 
 ## Wasm size at a glance
 
-The Native rows compare the ordinary build with
-`pulse build --experimental-native-size`. Values are uncompressed on-disk
-sizes; each example page includes exact byte counts.
+The Native rows show fresh default builds with Node 24.18.0 and lockfile-pinned
+AssemblyScript 0.28.18. Values are exact, uncompressed on-disk bytes. Portable
+guests and deployable provider modules are separate artifacts; the JWT guest is
+the final linked output.
 
-| Example | Default Native Wasm | Size-optimized Native Wasm | Reduction | Deployable Fastly module |
-|---|---:|---:|---:|---:|
-| `01-hello-json` | 2.1 KiB | 2.0 KiB | 3.8% | — |
-| `02-request-schema` | 40.0 KiB | 31.8 KiB | 20.4% | — |
-| `03-fetch-composition` | 4.9 KiB | 4.2 KiB | 13.7% | — |
-| `05-fastly-capabilities` | 5.3 KiB | 4.8 KiB | 9.4% | 45.8 → 38.0 KiB |
-| `07-opaque-proxy` | 2.1 KiB | 2.1 KiB | 4.5% | 33.9 → 29.2 KiB |
-| `09-router-lowering` | 9.0 KiB | 8.4 KiB | 6.6% | — |
-| `10-entities-tools` | — | — | Not applicable | JavaScript-first candidate |
-| `11-events` | 39.6 KiB | 31.6 KiB | 20.2% | — |
-| `12-pulse-context-mcp` | See its Report | — | Corpus-dependent | `fastly-native` profile |
-| `13-jwt-es256` | 38.4 KiB | 38.2 KiB | 0.5% | — |
+| Example | Default application guest | Default deployable Fastly module |
+|---|---:|---:|
+| `01-hello-json` | 2,273 bytes | — |
+| `02-request-schema` | 32,707 bytes | — |
+| `03-fetch-composition` | 4,572 bytes | — |
+| `03-fetch-composition/dynamic-probes` | 71,947 bytes | — |
+| `05-fastly-capabilities` | 5,181 bytes | 46,209 bytes |
+| `07-opaque-proxy` | 2,205 bytes | 36,637 bytes |
+| `09-router-lowering` | 7,407 bytes | — |
+| `10-entities-tools` | No application Wasm | — |
+| `11-events` | 32,458 bytes | — |
+| `12-pulse-context-mcp` | See its Report (corpus-dependent) | Explicit `fastly-native` profile |
+| `13-jwt-es256` | 35,926 bytes | — |
 
 Run the normal workflow from any example directory:
 
@@ -49,7 +51,7 @@ pulse build
 ```
 
 Use `pulse inspect` to examine the plan before building. Most examples record
-fixed default and optimized byte counts verified by the docs gate. Context MCP
+fixed default byte counts verified by the docs gate. Context MCP
 instead reports its completed build: bundled corpus changes affect its size.
 See [Project lifecycle](./guides/project-lifecycle.md).
 

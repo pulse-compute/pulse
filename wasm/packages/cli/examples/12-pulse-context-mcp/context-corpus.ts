@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "d843089a3b6d65231a9a4711029af1cff23bea8a2014efda1040d8e6676d878e",
+  "corpusHash": "03f848ac3eb4c744cc4a91e7d2b324e0fe7ba59abaa7b550d485c21acfd0df21",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -9059,9 +9059,9 @@ export const contextCorpus = freeze({
         "endLine": 150,
         "path": "examples/01-hello-json/README.md",
         "selection": "heading:Workflow",
-        "sha256": "a1d110211d9d4fc3bf9fa1a7f2590ea8b074b7f9281382b3f19c3659c51623c0",
+        "sha256": "b17e50060daf2667dfddd4f3c5939464aebbb2950adf8634d54a85958dd90e6d",
         "startLine": 134,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/95682987270baf4792ea5cceb4921be7d3444fa0"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/dd07456ac694297ed43eabf3dbcc78c84bbba5b1"
       },
       "status": "candidate",
       "tags": [
@@ -9237,9 +9237,9 @@ export const contextCorpus = freeze({
         "endLine": 161,
         "path": "examples/02-request-schema/README.md",
         "selection": "heading:Workflow",
-        "sha256": "8f8aab6bda4b5db7e46e4d81cace60a7a6f8f97364a774c41d70afa052b92f9b",
+        "sha256": "2afe8bb9183e208311ad8312dec45673b73efab203388400c62201d21a11d91a",
         "startLine": 150,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/13c117ac1e7ca10c3c67d43285cbf880e0c7ef7d"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b133b5dff794a94faa61edbaa5f2379c83d49860"
       },
       "status": "candidate",
       "tags": [
@@ -9390,9 +9390,9 @@ export const contextCorpus = freeze({
         "endLine": 216,
         "path": "examples/03-fetch-composition/README.md",
         "selection": "heading:Workflow",
-        "sha256": "3aae6ef6ea79f1d55c4242d85c04e75a8ca853b1525df1cd3f1767fcd8471e66",
+        "sha256": "6ea720ca0e36eda9345d03feabafdca2d621d028bd0e0be1e800ab0d3099053d",
         "startLine": 205,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/7878a656457d2cc5b771437cef167225629ffa98"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0a5eaeec9ab9461d189f9afee9e11a57119d753a"
       },
       "status": "candidate",
       "tags": [
@@ -9543,9 +9543,9 @@ export const contextCorpus = freeze({
         "endLine": 254,
         "path": "examples/09-router-lowering/README.md",
         "selection": "heading:Workflow",
-        "sha256": "28b0e4db3909231ee7f57f821d9b75240905234e6541ceb4296286a25469530d",
+        "sha256": "a1955ff2c69f79ad2685330981996df09efe9fb641ef491927f1b38885204f59",
         "startLine": 209,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8d7f6fad80d38d39d1d986fe61cc4f8a9d173ea0"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/edb59b1a48c9834717443fbfde679c1e9fdc264e"
       },
       "status": "candidate",
       "tags": [
@@ -10670,8 +10670,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/01-hello-json/README.md",
-      "sha256": "a1d110211d9d4fc3bf9fa1a7f2590ea8b074b7f9281382b3f19c3659c51623c0",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/95682987270baf4792ea5cceb4921be7d3444fa0"
+      "sha256": "b17e50060daf2667dfddd4f3c5939464aebbb2950adf8634d54a85958dd90e6d",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/dd07456ac694297ed43eabf3dbcc78c84bbba5b1"
     },
     {
       "path": "examples/01-hello-json/package.json",
@@ -10700,8 +10700,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/02-request-schema/README.md",
-      "sha256": "8f8aab6bda4b5db7e46e4d81cace60a7a6f8f97364a774c41d70afa052b92f9b",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/13c117ac1e7ca10c3c67d43285cbf880e0c7ef7d"
+      "sha256": "2afe8bb9183e208311ad8312dec45673b73efab203388400c62201d21a11d91a",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/b133b5dff794a94faa61edbaa5f2379c83d49860"
     },
     {
       "path": "examples/02-request-schema/package.json",
@@ -10735,8 +10735,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/03-fetch-composition/README.md",
-      "sha256": "3aae6ef6ea79f1d55c4242d85c04e75a8ca853b1525df1cd3f1767fcd8471e66",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/7878a656457d2cc5b771437cef167225629ffa98"
+      "sha256": "6ea720ca0e36eda9345d03feabafdca2d621d028bd0e0be1e800ab0d3099053d",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0a5eaeec9ab9461d189f9afee9e11a57119d753a"
     },
     {
       "path": "examples/03-fetch-composition/package.json",
@@ -10765,8 +10765,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/09-router-lowering/README.md",
-      "sha256": "28b0e4db3909231ee7f57f821d9b75240905234e6541ceb4296286a25469530d",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8d7f6fad80d38d39d1d986fe61cc4f8a9d173ea0"
+      "sha256": "a1955ff2c69f79ad2685330981996df09efe9fb641ef491927f1b38885204f59",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/edb59b1a48c9834717443fbfde679c1e9fdc264e"
     },
     {
       "path": "examples/09-router-lowering/package.json",

@@ -315,4 +315,7 @@ export default {
 
 For build settings, see [Native build optimization](../../../docs/reference/native-build-optimization.md).
 
-Measured application guest: **86,654 bytes** by default and **71,900 bytes** with `--experimental-native-size`, using the `node-native` profile and lockfile-pinned AssemblyScript 0.28.18. These are compiled artifact snapshots, not size budgets, transfer sizes or runtime memory estimates.
+Measured default application guest: **71,947 bytes**, using the
+`node-native` profile and lockfile-pinned AssemblyScript 0.28.18 on Node 24.18.0.
+The executable documentation gate checks this uncompressed on-disk size; it is
+not a size budget, transfer size or runtime memory estimate.

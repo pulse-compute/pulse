@@ -304,10 +304,10 @@ export default {
 
 For build settings, see [Native build optimization](../../docs/reference/native-build-optimization.md).
 
-| Artifact | Default build | `--experimental-native-size` | Reduction |
-|---|---:|---:|---:|
-| `canonical-native.wasm` | 5.1 KiB (5,272 bytes) | 4.5 KiB (4,570 bytes) | 13.3% |
+| Artifact | Default build |
+|---|---:|
+| Portable guest `canonical-native.wasm` | 4.5 KiB (4,572 bytes) |
 
-The executable documentation gate rebuilds and measures both variants on
-`1.0.0-beta.9`. These are uncompressed on-disk sizes, not transfer sizes or
+The executable documentation gate rebuilds and measures the default artifact.
+Measured with Node 24.18.0 and lockfile-pinned AssemblyScript 0.28.18. These are uncompressed on-disk sizes, not transfer sizes or
 platform limits.
