@@ -1,11 +1,9 @@
 # Canonical examples
 
-Every top-level example is a complete Pulse project with a handler, config,
-tests, TypeScript config, and package metadata. The executable documentation
-lane runs the documented `doctor`, `inspect`, `test`, and `build` workflows; it
-also starts the hello project with `dev`, sends a request, and verifies shutdown.
-The context MCP example additionally exercises its standalone host and client
-walkthroughs through the focused host test.
+Each example includes a handler, project config and package metadata. Follow its
+README for executable checks: most use a `pulse test` harness; context MCP runs
+live tool requests against its compiled `application/` project. The documentation
+lane verifies the shown CLI results and request evidence.
 
 | Example | Demonstrates |
 |---|---|
@@ -36,7 +34,7 @@ sizes; each example page includes exact byte counts.
 | `09-router-lowering` | 9.0 KiB | 8.4 KiB | 6.6% | — |
 | `10-entities-tools` | — | — | Not applicable | JavaScript-first candidate |
 | `11-events` | 39.6 KiB | 31.6 KiB | 20.2% | — |
-| `12-pulse-context-mcp` | — | — | Not applicable | Node JavaScript |
+| `12-pulse-context-mcp` | See its Report | — | Corpus-dependent | `fastly-native` profile |
 | `13-jwt-es256` | 38.4 KiB | 38.2 KiB | 0.5% | — |
 
 Run the normal workflow from any example directory:
@@ -48,14 +46,10 @@ pulse dev
 pulse build
 ```
 
-Use `pulse inspect` when you need to examine the plan; it is not required before
-`build`. Each example README contains exact source-bound handler/config blocks
-and executable evidence selected by the docs lane. Every page also records the
-default and experimental size-optimized Wasm outputs; Fastly pages separate the
-provider-neutral guest from the deployable module, and the JavaScript
-Entities and context MCP pages explicitly records that no comparable application Wasm is
-emitted. The same gate rebuilds and verifies every exact byte count. See
-[Project lifecycle](./guides/project-lifecycle.md).
+Use `pulse inspect` to examine the plan before building. Most examples record
+fixed default and optimized byte counts verified by the docs gate. Context MCP
+instead reports its completed build: bundled corpus changes affect its size.
+See [Project lifecycle](./guides/project-lifecycle.md).
 
 Examples 01, 02, 03, 05, 07, 11, and 13 use current package-root application
 surfaces. Example 09 retains the lower-level Router surface. Examples 10 and 12 use
@@ -65,11 +59,10 @@ the Node JavaScript/Native reference adapter. It does not claim a public
 listener, delivery, or Fastly/browser/ESP32 event support; see
 [Static events and outbound emission](./guides/events.md).
 
-Example 12 selects Node JavaScript explicitly. Its built-in context needs no
-upstream server. Use its `npm run build` and `npm start` scripts for the MCP
-listener; `pulse dev` serves only the app's JSON-RPC boundary. The README records
-candidate dependency availability and the installed release qualification still
-required before registry installation is supported.
+Example 12 serves five read-only MCP tools directly from `application/`, with
+Node Native, Node JavaScript and Fastly Native profiles. It uses a bundled corpus
+and requires no upstream server. Its README explains installation and shows the
+MCP endpoint and request helper.
 
 Example 13 pins the guest-linked ES256 realization for Native. Its harness
 executes valid, invalid-signature, and disallowed-algorithm cases against the

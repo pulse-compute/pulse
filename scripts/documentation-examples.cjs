@@ -41,7 +41,11 @@ function renderExampleTemplate(markdown, loadCases) {
     } else if (current) sections.set(current, sections.get(current) + line + '\n');
     else lead += line + '\n';
   }
-  sections.set('Request and response', requestTable(loadCases()));
+  // Protocol examples may document a concise live request instead of an HTTP
+  // harness table. Their executable documentation gate owns that evidence.
+  if (markdown.split('\n').includes('<!-- pulse-example-requests:authored -->')) {
+    if (!sections.get('Request and response')?.trim()) throw new Error('Authored example requires Request and response');
+  } else sections.set('Request and response', requestTable(loadCases()));
   const output = [lead.trimEnd()];
   const emit = (name, depth = 2) => {
     if (!sections.has(name)) return;
