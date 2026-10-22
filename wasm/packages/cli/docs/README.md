@@ -63,6 +63,7 @@ direction rather than release support.
 - [Canonical API](../API.md)
 - [Provider and target compatibility](./reference/compatibility-matrix.md)
 - [Managed handler TypeScript and JavaScript](./reference/handler-authoring.md)
+- [Native build optimization](./reference/native-build-optimization.md) — default recipe, fallback and optional build settings.
 - [CLI](./reference/cli.md)
 - [Project configuration](./reference/project-config.md)
 - [Diagnostics and remediation](./reference/diagnostics.md)

@@ -541,24 +541,9 @@ Common diagnostics include:
 
 ## Optional Native cache arena setting
 
-`pulse compile --elide-json-cache-arena` and
-`pulse build --elide-json-cache-arena` opt in to removing json-as's 1 MiB
-string-cache arena when that cache is disabled. The default keeps the existing
-allocation. Enabled string caches retain their original arena; schema-free
-artifacts are unchanged. JavaScript builds reject the flag.
-
-The setting reaches both portable and Fastly Native compilation. It is recorded
-as `elideJsonCacheArena` in the report recipe and as
-`jsonAs.elideDisabledCacheArena` in schema-active Native manifests. Build
-observations identify `schema-cache-arena-transform.cjs` when applied. Historical
-reports without the recipe field did not record this setting. The adapter is
-pinned to json-as 1.5.0 and fails if that dependency source changes.
-
-Removing the eager allocation reduces startup memory, but does not guarantee a
-lower peak. In the allocation-heavy escaped-string stress fixture, changing the
-allocator's growth trajectory raised linear-memory capacity from 110 MiB to
-148 MiB. Measure representative workloads before adopting the flag. This setting
-does not change garbage collection or fix retained scalar handles.
+See [Native build optimization](../reference/native-build-optimization.md#optional-json-as-cache-arena-setting)
+for the optional json-as cache arena setting, target support and peak-memory
+tradeoff.
 
 ## Related documentation
 

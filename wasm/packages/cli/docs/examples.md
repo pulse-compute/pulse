@@ -18,6 +18,8 @@ lane verifies the shown CLI results and request evidence.
 | [`12-pulse-context-mcp`](../examples/12-pulse-context-mcp/) | A read-only MCP server for project starters, cited contracts, examples and diagnostic help. |
 | [`13-jwt-es256`](../examples/13-jwt-es256/) | ES256 bearer verification with an explicit guest-linked Native realization. |
 
+For build settings, see [Native build optimization](./reference/native-build-optimization.md).
+
 ## Wasm size at a glance
 
 The Native rows compare the ordinary build with

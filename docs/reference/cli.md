@@ -4,6 +4,9 @@
 
 The `pulse` CLI in `@pulse-compute/cli@1.0.0-beta.9` is the supported project workflow. One command specification generates this page, installed help, and the shipped Bash, Zsh, and Fish completion scripts, so a public command or option cannot drift between those surfaces.
 
+For Native defaults, escape hatches and optional memory settings, see
+[Native build optimization](./native-build-optimization.md).
+
 ## Quick start
 
 Use `pulse` to create, check, run and build a project. The general shape is:

@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "536d1e963c0c165b03a4f508b848dfa78d4d000f2446ca0060ebcee0b0786efa",
+  "corpusHash": "d843089a3b6d65231a9a4711029af1cff23bea8a2014efda1040d8e6676d878e",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -677,6 +677,46 @@ export const contextCorpus = freeze({
         "await"
       ],
       "title": "Managed async, not arbitrary async"
+    },
+    {
+      "applicability": [
+        {
+          "provider": "fastly",
+          "target": "native"
+        },
+        {
+          "provider": "node",
+          "target": "native"
+        },
+        {
+          "provider": "none",
+          "target": "native"
+        }
+      ],
+      "category": "contract",
+      "content": "# Native build optimization\n\nOrdinary Native compilation uses **O3, shrink level 2, without convergence**.\nIts recorded recipe is `native-bounded-size`. No optimization flag is needed:\n\n```bash\npulse build\npulse compile\n```\n\n`pulse build` produces the selected provider's deployment output. `pulse compile`\nproduces provider-neutral Native Wasm. These settings apply to portable\ncompilation, Node Native and Fastly Native builds. They do not change source\neligibility, provider selection or the application's supported behavior.\n\n## Choose a recipe\n\n| Selection | Recorded recipe | AssemblyScript settings | When to use it |\n|---|---|---|---|\n| No override | `native-bounded-size` | O3 / shrink2 / no convergence | The ordinary default, unless the selected Native profile configures another recipe. |\n| `--native-shrink0` | `native-shrink0` | O3 / shrink0 / no convergence | Restore the previous recipe when investigating an optimization regression or comparing a workload. |\n| `--experimental-native-size` | `experimental-native-size` | O3 / shrink2 / convergence | Try additional optimizer convergence and measure the resulting artifact and compilation cost. |\n| `--experimental-native-bounded-size` | `experimental-native-bounded-size` | O3 / shrink2 / no convergence | Keep existing explicit selections and their historical identity; its settings match the ordinary default. |\n\nFor a one-command override:\n\n```bash\npulse build --native-shrink0\npulse compile --native-shrink0\npulse build --experimental-native-size\n```\n\nThe three recipe flags are **mutually exclusive**. An explicit flag overrides\n`nativeOptimization` in the selected profile. Without a flag, that profile's\nsetting wins; without either, Pulse uses `native-bounded-size`.\n\nTo keep a selection in `.pulse/config.ts`, set it on a Native profile:\n\n```ts\nimport { defineConfig } from '@pulse-compute/pulse'\n\nexport default defineConfig(() => ({\n  pulse: { entry: 'src/index.ts', defaultProfile: 'local' },\n  local: {\n    host: 'node',\n    target: 'native',\n    nativeOptimization: 'native-shrink0',\n  },\n}))\n```\n\nSet `nativeOptimization` to `native-bounded-size`, or remove it, to return that\nprofile to the ordinary default. The field accepts all four recipe identities\nin the table. See [project configuration](./project-config.md#nativeoptimization).\n\nJavaScript profiles reject `nativeOptimization`, and JavaScript `pulse build`\nrejects these flags. `pulse compile` always requests Native compilation, even\nwhen the selected profile otherwise targets JavaScript, and still requires\nNative-compatible source.\n\nConvergence asks the optimizer to continue seeking a stable result; it can add\ncompilation work without reducing the final artifact. Smaller Wasm does not by\nitself prove lower request latency or memory use. Compare completed builds and\nrepresentative workloads before adopting an override. Guest-linked builds also\nhave their own prebuilt inputs and final-link optimization; a primary compiler\nrecipe does not replace those steps.\n\n## Optional json-as cache arena setting\n\n`--elide-json-cache-arena` is an independent Native option. It omits json-as's\n1 MiB string-cache arena **only when string caching is disabled**. The default\nkeeps that allocation. Enabled caches retain their arena, and schema-free\nartifacts are unchanged. It can be combined with one recipe flag:\n\n```bash\npulse build --elide-json-cache-arena\npulse compile --native-shrink0 --elide-json-cache-arena\n```\n\nThe option reaches portable, Node Native and Fastly Native compilation.\nJavaScript builds reject it. This is a targeted json-as allocation setting,\nnot a general AssemblyScript optimizer or garbage-collection switch. It does\nnot change schema semantics or reclaim retained values.\n\n**Peak memory can increase for allocation-heavy workloads**, even though the\neager arena allocation is removed. A retained escaped-string stress observation\nincreased linear-memory capacity from 110 MiB to 148 MiB with this option;\nthat observation is not a prediction for another application. Measure startup\nand peak memory for the workload you intend to run. The adapter is pinned to\njson-as 1.5.0 and fails if the expected dependency source changes.\n\n## Inspect the result\n\nBuild manifests and retained reports record the selected recipe. Use a completed\nbuild's `pulse report` or `pulse report --html` to inspect the actual artifacts;\nkeep the source, target, toolchain and recipe identified when comparing results.\nHistorical absent recipe metadata and `default` report identities keep their\noriginal meaning; they are not reinterpreted as today's bounded default.\n\nThe arena selection is recorded as `elideJsonCacheArena` in the report recipe and\n`jsonAs.elideDisabledCacheArena` in schema-active Native manifests. Applied build\nobservations identify `schema-cache-arena-transform.cjs`. Historical reports\nwithout the field did not record the setting.\n\nSee the generated [CLI reference](./cli.md) for exact command syntax and the\n[JSON schema guide](../guides/json-schemas.md) for schema admission and limits.\n",
+      "contentSha256": "ae67d78fa1ccdbfed3c3133ab0db0a4fd44e6f4015461f0673320deb7c09523f",
+      "id": "contract/native-build-optimization",
+      "pulseVersion": "1.0.0-beta.9",
+      "source": {
+        "endLine": 107,
+        "path": "docs/reference/native-build-optimization.md",
+        "selection": "heading:Native build optimization",
+        "sha256": "ae67d78fa1ccdbfed3c3133ab0db0a4fd44e6f4015461f0673320deb7c09523f",
+        "startLine": 1,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/05210ddeb5298208039146dd0b856acdec6e8486"
+      },
+      "status": "candidate",
+      "tags": [
+        "build",
+        "cache",
+        "compile",
+        "convergence",
+        "json-as",
+        "optimization",
+        "shrink0"
+      ],
+      "title": "Native build optimization"
     },
     {
       "applicability": [
@@ -9019,9 +9059,9 @@ export const contextCorpus = freeze({
         "endLine": 150,
         "path": "examples/01-hello-json/README.md",
         "selection": "heading:Workflow",
-        "sha256": "a39336a65f9afb18bea54f7f2e53e940017117771a2c61cef1ae10f180a970d8",
+        "sha256": "a1d110211d9d4fc3bf9fa1a7f2590ea8b074b7f9281382b3f19c3659c51623c0",
         "startLine": 134,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ae7ded8b4fcb9b0147fcde04e16402d15ea1d8be"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/95682987270baf4792ea5cceb4921be7d3444fa0"
       },
       "status": "candidate",
       "tags": [
@@ -9197,9 +9237,9 @@ export const contextCorpus = freeze({
         "endLine": 161,
         "path": "examples/02-request-schema/README.md",
         "selection": "heading:Workflow",
-        "sha256": "423e861c3943025e44ca44b067122eb8b43d14183d5a3555b2c6ca2eeddb7133",
+        "sha256": "8f8aab6bda4b5db7e46e4d81cace60a7a6f8f97364a774c41d70afa052b92f9b",
         "startLine": 150,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ba46ada49807b050de29682a13a4bb7da7e648ac"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/13c117ac1e7ca10c3c67d43285cbf880e0c7ef7d"
       },
       "status": "candidate",
       "tags": [
@@ -9350,9 +9390,9 @@ export const contextCorpus = freeze({
         "endLine": 216,
         "path": "examples/03-fetch-composition/README.md",
         "selection": "heading:Workflow",
-        "sha256": "c16f9a8f150c0f46fbf9bc6167592bb1e8086312be64ffafede9b0219885423b",
+        "sha256": "3aae6ef6ea79f1d55c4242d85c04e75a8ca853b1525df1cd3f1767fcd8471e66",
         "startLine": 205,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3af2fa0056daffe136e14d4f3d5c8402ea7c7720"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/7878a656457d2cc5b771437cef167225629ffa98"
       },
       "status": "candidate",
       "tags": [
@@ -9503,9 +9543,9 @@ export const contextCorpus = freeze({
         "endLine": 254,
         "path": "examples/09-router-lowering/README.md",
         "selection": "heading:Workflow",
-        "sha256": "d1036524243026b2ace98f06a4e1369d500375a0310784f2c7a3c967b3f6ef5f",
+        "sha256": "28b0e4db3909231ee7f57f821d9b75240905234e6541ceb4296286a25469530d",
         "startLine": 209,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/7a6b0e91aa072bfc98a94bd918a6036915c9e8a9"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8d7f6fad80d38d39d1d986fe61cc4f8a9d173ea0"
       },
       "status": "candidate",
       "tags": [
@@ -10209,9 +10249,9 @@ export const contextCorpus = freeze({
         "endLine": 152,
         "path": "docs/guides/json-schemas.md",
         "selection": "heading:Bind every JSON boundary",
-        "sha256": "f47f6e76ddae327051a45e4d536f5b29855be7a2ea08403aae10f2c310b2b308",
+        "sha256": "147bb968ffd1d94490e904f8ef282b74cdcc68d1719d515bd10b1ab076605c68",
         "startLine": 107,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/cf1c861ad9b90f166ee23ca7523c8f6c93bae309"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e9824cf645800ba932dac33d7032c5734ef36e7"
       },
       "status": "candidate",
       "tags": [
@@ -10253,9 +10293,9 @@ export const contextCorpus = freeze({
         "endLine": 66,
         "path": "docs/guides/json-schemas.md",
         "selection": "heading:Declare the registry",
-        "sha256": "f47f6e76ddae327051a45e4d536f5b29855be7a2ea08403aae10f2c310b2b308",
+        "sha256": "147bb968ffd1d94490e904f8ef282b74cdcc68d1719d515bd10b1ab076605c68",
         "startLine": 23,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/cf1c861ad9b90f166ee23ca7523c8f6c93bae309"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e9824cf645800ba932dac33d7032c5734ef36e7"
       },
       "status": "candidate",
       "tags": [
@@ -10296,9 +10336,9 @@ export const contextCorpus = freeze({
         "endLine": 169,
         "path": "docs/guides/json-schemas.md",
         "selection": "heading:Understand strict mode",
-        "sha256": "f47f6e76ddae327051a45e4d536f5b29855be7a2ea08403aae10f2c310b2b308",
+        "sha256": "147bb968ffd1d94490e904f8ef282b74cdcc68d1719d515bd10b1ab076605c68",
         "startLine": 153,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/cf1c861ad9b90f166ee23ca7523c8f6c93bae309"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e9824cf645800ba932dac33d7032c5734ef36e7"
       },
       "status": "candidate",
       "tags": [
@@ -10339,9 +10379,9 @@ export const contextCorpus = freeze({
         "endLine": 52,
         "path": "docs/getting-started.md",
         "selection": "heading:Create a project",
-        "sha256": "a52a9412e7697d5fb35f53a4a509b2d0c608976b9a342489d3c5881abaca9027",
+        "sha256": "acdd0cbaef923f6446e5fbe7b06c49419d453e3471dded86501511286b0649a5",
         "startLine": 15,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e0323d3acf44796b8876b2e97c0c65748f099b8"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/00d41e8fd9152a1270761bdf6a6becabb69cbf86"
       },
       "status": "candidate",
       "tags": [
@@ -10382,9 +10422,9 @@ export const contextCorpus = freeze({
         "endLine": 14,
         "path": "docs/getting-started.md",
         "selection": "heading:Requirements",
-        "sha256": "a52a9412e7697d5fb35f53a4a509b2d0c608976b9a342489d3c5881abaca9027",
+        "sha256": "acdd0cbaef923f6446e5fbe7b06c49419d453e3471dded86501511286b0649a5",
         "startLine": 8,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e0323d3acf44796b8876b2e97c0c65748f099b8"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/00d41e8fd9152a1270761bdf6a6becabb69cbf86"
       },
       "status": "candidate",
       "tags": [
@@ -10425,9 +10465,9 @@ export const contextCorpus = freeze({
         "endLine": 66,
         "path": "docs/getting-started.md",
         "selection": "heading:Verify the project",
-        "sha256": "a52a9412e7697d5fb35f53a4a509b2d0c608976b9a342489d3c5881abaca9027",
+        "sha256": "acdd0cbaef923f6446e5fbe7b06c49419d453e3471dded86501511286b0649a5",
         "startLine": 53,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e0323d3acf44796b8876b2e97c0c65748f099b8"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/00d41e8fd9152a1270761bdf6a6becabb69cbf86"
       },
       "status": "candidate",
       "tags": [
@@ -10566,7 +10606,7 @@ export const contextCorpus = freeze({
     }
   ],
   "schemaVersion": "pulse.context-corpus.v1",
-  "selectionSha256": "de9c0d730c566453ed29a679fc5856880179b50e5f10809125711d3be929f917",
+  "selectionSha256": "d903a9b8e9d30fb9f22e40cc2518740b1651fb4501b39acbfc7ad71352e62ca7",
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",
@@ -10590,8 +10630,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/getting-started.md",
-      "sha256": "a52a9412e7697d5fb35f53a4a509b2d0c608976b9a342489d3c5881abaca9027",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e0323d3acf44796b8876b2e97c0c65748f099b8"
+      "sha256": "acdd0cbaef923f6446e5fbe7b06c49419d453e3471dded86501511286b0649a5",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/00d41e8fd9152a1270761bdf6a6becabb69cbf86"
     },
     {
       "path": "docs/guides/deploying-node.md",
@@ -10600,8 +10640,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/guides/json-schemas.md",
-      "sha256": "f47f6e76ddae327051a45e4d536f5b29855be7a2ea08403aae10f2c310b2b308",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/cf1c861ad9b90f166ee23ca7523c8f6c93bae309"
+      "sha256": "147bb968ffd1d94490e904f8ef282b74cdcc68d1719d515bd10b1ab076605c68",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3e9824cf645800ba932dac33d7032c5734ef36e7"
     },
     {
       "path": "docs/guides/project-lifecycle.md",
@@ -10619,14 +10659,19 @@ export const contextCorpus = freeze({
       "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/68de782b66cc65c7f2a8b10b41ce732519605554"
     },
     {
+      "path": "docs/reference/native-build-optimization.md",
+      "sha256": "ae67d78fa1ccdbfed3c3133ab0db0a4fd44e6f4015461f0673320deb7c09523f",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/05210ddeb5298208039146dd0b856acdec6e8486"
+    },
+    {
       "path": "examples/01-hello-json/.pulse/config.ts",
       "sha256": "9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61",
       "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3c81bdab5869b21461b3bb3164cf3da751b9f946"
     },
     {
       "path": "examples/01-hello-json/README.md",
-      "sha256": "a39336a65f9afb18bea54f7f2e53e940017117771a2c61cef1ae10f180a970d8",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ae7ded8b4fcb9b0147fcde04e16402d15ea1d8be"
+      "sha256": "a1d110211d9d4fc3bf9fa1a7f2590ea8b074b7f9281382b3f19c3659c51623c0",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/95682987270baf4792ea5cceb4921be7d3444fa0"
     },
     {
       "path": "examples/01-hello-json/package.json",
@@ -10655,8 +10700,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/02-request-schema/README.md",
-      "sha256": "423e861c3943025e44ca44b067122eb8b43d14183d5a3555b2c6ca2eeddb7133",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ba46ada49807b050de29682a13a4bb7da7e648ac"
+      "sha256": "8f8aab6bda4b5db7e46e4d81cace60a7a6f8f97364a774c41d70afa052b92f9b",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/13c117ac1e7ca10c3c67d43285cbf880e0c7ef7d"
     },
     {
       "path": "examples/02-request-schema/package.json",
@@ -10690,8 +10735,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/03-fetch-composition/README.md",
-      "sha256": "c16f9a8f150c0f46fbf9bc6167592bb1e8086312be64ffafede9b0219885423b",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/3af2fa0056daffe136e14d4f3d5c8402ea7c7720"
+      "sha256": "3aae6ef6ea79f1d55c4242d85c04e75a8ca853b1525df1cd3f1767fcd8471e66",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/7878a656457d2cc5b771437cef167225629ffa98"
     },
     {
       "path": "examples/03-fetch-composition/package.json",
@@ -10720,8 +10765,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/09-router-lowering/README.md",
-      "sha256": "d1036524243026b2ace98f06a4e1369d500375a0310784f2c7a3c967b3f6ef5f",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/7a6b0e91aa072bfc98a94bd918a6036915c9e8a9"
+      "sha256": "28b0e4db3909231ee7f57f821d9b75240905234e6541ceb4296286a25469530d",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8d7f6fad80d38d39d1d986fe61cc4f8a9d173ea0"
     },
     {
       "path": "examples/09-router-lowering/package.json",

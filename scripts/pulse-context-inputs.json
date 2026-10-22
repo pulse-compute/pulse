@@ -428,6 +428,33 @@
           ]
         }
       ]
+    },
+    {
+      "path": "docs/reference/native-build-optimization.md",
+      "category": "contract",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native"
+      ],
+      "sections": [
+        {
+          "id": "contract/native-build-optimization",
+          "heading": "Native build optimization",
+          "tags": [
+            "build",
+            "compile",
+            "optimization",
+            "shrink0",
+            "convergence",
+            "json-as",
+            "cache"
+          ]
+        }
+      ]
     }
   ],
   "examples": [

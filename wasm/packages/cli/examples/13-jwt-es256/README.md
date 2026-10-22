@@ -276,6 +276,8 @@ supported key sources.
 
 ## Wasm size
 
+For build settings, see [Native build optimization](../../docs/reference/native-build-optimization.md).
+
 | Artifact | Default build | `--experimental-native-size` | Reduction |
 |---|---:|---:|---:|
 | Application input | 3.0 KiB (3,030 bytes) | 2.8 KiB (2,848 bytes) | 6.0% |

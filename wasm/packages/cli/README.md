@@ -48,7 +48,8 @@ npm run build
 Use `npm run inspect` when you need the compiler/provider plan.
 `npm run compile` is the advanced provider-neutral Wasm workflow and requires
 Native-compatible source. Neither command is required before `npm run build`.
-See the [project lifecycle guide](./docs/guides/project-lifecycle.md).
+See the [project lifecycle guide](./docs/guides/project-lifecycle.md) and
+[Native build optimization](./docs/reference/native-build-optimization.md).
 
 ## Workflow boundaries
 
