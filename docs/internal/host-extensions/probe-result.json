@@ -1,0 +1,56 @@
+{
+  "kind": "HEX-00 historical boundary probes",
+  "revision": "e69e4b6f1381a05bf0ee0b9b4c6385d2acefb20c",
+  "workingTree": "?? docs/internal/host-extensions/",
+  "node": "v24.19.0",
+  "sourceSha256": {
+    "wasm/packages/contracts/src/provider/canonical-provider.js": "ebb1dfa7e42e35c50e0ef9baaec7cb42d1cc0d5ed92ec8edff83a46ae9b340b5",
+    "wasm/packages/contracts/src/provider/final-wasm-policy.js": "54c471162ff93f81f56819b2e69f2ff45f39a1f8308076c8eca6b91444818be4",
+    "wasm/packages/contracts/src/package/package-contract.js": "664a89fa8a96f79eb5c98cc02bcb897845455c4db4c8def1358594bae9495512",
+    "packages/provider-fastly/src/build/native-platform-capabilities.js": "5575ad3969967878ea960f4fb1914f3bf35b6dba085ec9504386bb7c970c01ee",
+    "packages/provider-fastly/src/toolchain/index.js": "0aad3209c8e99883fcf12e0738ae7344ae48bf14f08e1cf46591eb34b6f7378f",
+    "packages/grip/src/index.ts": "1e0b6cf69b620c2c43230be0801f65cd1fbc90a54b3ae646513fe8e77bbb0fa2",
+    "docs/internal/host-extensions/probe.cjs": "c12258a659234e55676869927c289325a9f16ae44fd5e41d39ea66ea60c2cc68"
+  },
+  "scope": "Current normalizers only; synthetic final import policy; no compiler/provider execution or size claim",
+  "passed": 9,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Existing GRIP capability is admitted",
+      "status": "pass"
+    },
+    {
+      "name": "Unknown operation capability is rejected",
+      "status": "pass"
+    },
+    {
+      "name": "Existing builder result is admitted",
+      "status": "pass"
+    },
+    {
+      "name": "Undeclared top-level hostImports is rejected",
+      "status": "pass"
+    },
+    {
+      "name": "Undeclared top-level hostExtensions is rejected",
+      "status": "pass"
+    },
+    {
+      "name": "Existing realizationArtifacts carrier preserves opaque data, without granting execution",
+      "status": "pass"
+    },
+    {
+      "name": "Builder owner mismatch is rejected",
+      "status": "pass"
+    },
+    {
+      "name": "Final policy admits declared imports",
+      "status": "pass"
+    },
+    {
+      "name": "Final policy rejects a new undeclared host import",
+      "status": "pass"
+    }
+  ]
+}
