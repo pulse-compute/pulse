@@ -1,0 +1,620 @@
+{
+  "status": "test isolation and diagnostics validated; intermittent freshness cause unresolved",
+  "qualification": false,
+  "base": "e30754019f03fa95a74ae72392382f44f2351927",
+  "testedHead": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
+  "productionChanges": false,
+  "node": "v24.19.0",
+  "testFile": "wasm/test/cli/assert-report-handler-topology.cjs",
+  "testStates": {
+    "unchanged": {
+      "sha256": "16d51f41942a4e470d8800ac32d926896f3dc7f2877123d2c8c587c645048a57",
+      "description": "committed fc43012 test"
+    },
+    "sourceGuard": {
+      "sha256": "c5b810c8ff26bafc6fa371be41a0d856a12bdcf9c8c927fa8a423937146398fe",
+      "description": "authored source/plan hash assertions"
+    },
+    "generation": {
+      "sha256": "23cb48fe325b651de6406ceabc69db0859ad6a12727ca1196fe3916d7072c8f8",
+      "description": "source assertions plus publication-withheld reason"
+    },
+    "isolated": {
+      "sha256": "a12801722a2d51ac97dd4116be3611e9723aec887eb262f0a13bf97cc983aad7",
+      "description": "source/output directory per variant and recipe, with diagnostic assertions"
+    }
+  },
+  "historicalEvidence": [
+    {
+      "file": "docs/internal/b10-mcp-06b/failed-2-cli-report-handler-topology.log",
+      "sha256": "b36e0f2eeb2aa10ead31625bcd35b75eaff982e4a7ea603d61ff4f9ffaf81f4f",
+      "presentAtBase": "6fa55c8af5fe5d9f89d9bc00a5670246a6214c3e"
+    },
+    {
+      "file": "docs/internal/b10-mcp-08/receipts/topology.log",
+      "sha256": "d61963a3bc12ce14f05b0a012c3db38e428222253592a74dae615fa2b7a20dd8",
+      "presentAtBase": "3d1b966b70586fc258f4de0586db5e5292c2b5e3"
+    }
+  ],
+  "originalMismatch": {
+    "controlVariant": "event",
+    "controlSourceSha256": "a1e45a6cb5c913888bf36aedc27711d3846249741a1e8916ee7c0197704542bc",
+    "observedVariant": "http",
+    "observedSourceSha256": "767fbc27effea8c7e215f74dd2646ec41d2cffe34b4206f00d8d424e77b70f3c",
+    "bytes": 1993,
+    "interpretation": "different source generations; mechanism unproven"
+  },
+  "freshnessProbe": {
+    "command": "node docs/internal/host-extensions/report-source-freshness.cjs",
+    "sourceSha256": "ff41f64cabc808b8429d6596acab0221f5196bc67ebaa48d2f2bf89cff4279ad",
+    "result": {
+      "status": "passed",
+      "cycles": 12,
+      "cases": 36,
+      "compilations": 72,
+      "sourceReads": 72,
+      "variants": {
+        "http": {
+          "sha256": "767fbc27effea8c7e215f74dd2646ec41d2cffe34b4206f00d8d424e77b70f3c",
+          "bytes": 1993
+        },
+        "event": {
+          "sha256": "a1e45a6cb5c913888bf36aedc27711d3846249741a1e8916ee7c0197704542bc",
+          "bytes": 1993
+        },
+        "full": {
+          "sha256": "03b16077afcea680dd9f4b182d1b0c242f0da1be9af3ee9cfb8535e5d143ff09",
+          "bytes": 1993
+        }
+      },
+      "scope": "same-path same-length fixture rewrites; compiler/plan only, no Wasm or retained publication"
+    }
+  },
+  "runs": [
+    {
+      "id": "hex-report-investigation",
+      "testState": "unchanged",
+      "instrumentation": null,
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --profile native --profile javascript --profile conformance --through cli-report-handler-topology --report /tmp/hex-report-investigation.json",
+      "sourceRevision": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
+      "status": "passed",
+      "selectedTasks": [
+        "binary-resource-admission",
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence",
+        "cli-report-size-evidence",
+        "cli-report-capture-proof",
+        "cli-report-entry-proof",
+        "cli-report-reference-provenance",
+        "cli-report-handler-topology"
+      ],
+      "completedTasks": 10,
+      "durationMs": 179138,
+      "logSha256": "7a69f407d4ca932b8943ce461913c08bcaf745bb9717fb5b64b812bdbd9977c2",
+      "results": [
+        {
+          "name": "binary-resource-admission",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 263
+        },
+        {
+          "name": "report-capsule-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 16470
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 3567
+        },
+        {
+          "name": "cli-report-viewer",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 10474
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 40576
+        },
+        {
+          "name": "cli-report-size-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 876
+        },
+        {
+          "name": "cli-report-capture-proof",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 7653
+        },
+        {
+          "name": "cli-report-entry-proof",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 33125
+        },
+        {
+          "name": "cli-report-reference-provenance",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 12488
+        },
+        {
+          "name": "cli-report-handler-topology",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 53627
+        }
+      ]
+    },
+    {
+      "id": "hex-report-exact-prefix",
+      "testState": "unchanged",
+      "instrumentation": null,
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task suite-shape --task package-exports --task boundaries --task workspace-hygiene --task release-feature-acceptance --task release-runtime-policy --task binary-resource-admission --task report-capsule-contract --task cli-report-workflow --task cli-report-viewer --task cli-report-retained-evidence --task cli-report-size-evidence --task cli-report-capture-proof --task cli-report-entry-proof --task cli-report-reference-provenance --task cli-report-handler-topology --report /tmp/hex-report-exact-prefix.json",
+      "sourceRevision": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
+      "status": "passed",
+      "selectedTasks": [
+        "suite-shape",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "release-feature-acceptance",
+        "release-runtime-policy",
+        "binary-resource-admission",
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence",
+        "cli-report-size-evidence",
+        "cli-report-capture-proof",
+        "cli-report-entry-proof",
+        "cli-report-reference-provenance",
+        "cli-report-handler-topology"
+      ],
+      "completedTasks": 16,
+      "durationMs": 198719,
+      "logSha256": "2841767926e079d5a1f6efb9b03fe7201ebf70ea360742eb663cd67a981385e5",
+      "results": [
+        {
+          "name": "suite-shape",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 149
+        },
+        {
+          "name": "package-exports",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 196
+        },
+        {
+          "name": "boundaries",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 391
+        },
+        {
+          "name": "workspace-hygiene",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 243
+        },
+        {
+          "name": "release-feature-acceptance",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 9141
+        },
+        {
+          "name": "release-runtime-policy",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 3767
+        },
+        {
+          "name": "binary-resource-admission",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 259
+        },
+        {
+          "name": "report-capsule-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 15780
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 3699
+        },
+        {
+          "name": "cli-report-viewer",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 10810
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 41691
+        },
+        {
+          "name": "cli-report-size-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 1012
+        },
+        {
+          "name": "cli-report-capture-proof",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 8162
+        },
+        {
+          "name": "cli-report-entry-proof",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 34803
+        },
+        {
+          "name": "cli-report-reference-provenance",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 12476
+        },
+        {
+          "name": "cli-report-handler-topology",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 56115
+        }
+      ]
+    },
+    {
+      "id": "hex-report-guarded",
+      "testState": "sourceGuard",
+      "instrumentation": null,
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task cli-report-handler-topology --report /tmp/hex-report-guarded.json",
+      "sourceRevision": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
+      "status": "failed",
+      "selectedTasks": [
+        "cli-report-handler-topology"
+      ],
+      "completedTasks": 1,
+      "durationMs": 9819,
+      "logSha256": "87c51bf1b92f2d875de7cb0f9de5836af7e721c1da9daac754173b53fd8d92d7",
+      "results": [
+        {
+          "name": "cli-report-handler-topology",
+          "status": "failed",
+          "exitCode": 1,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 9807
+        }
+      ],
+      "failedLog": "\n[pulsewasm:native] cli-report-handler-topology\n[pulsewasm] AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison (timeout 180.00s)\n[analytics parity] http/native-shrink0: control and observed compilation\nTypeError: Report input rejected (REPORT_MISSING_COMPLETION).\n    at fail (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/data.js:7:17)\n    at ensure (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:18:55)\n    at readCompleted (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:134:3)\n    at Object.collectArtifactReport (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:159:21)\n    at main (/workspace/scratch/253982db7f9e/pulse/wasm/test/cli/assert-report-handler-topology.cjs:337:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {\n  code: 'REPORT_MISSING_COMPLETION',\n  field: '$'\n}\n[pulsewasm] cli-report-handler-topology: failed in 9.81s\n\n[pulsewasm] test summary\n  failed         9.81s  cli-report-handler-topology  (/tmp/runs/2026-10-23T19-06-21-859Z--13/tasks/cli-report-handler-topology.log)\n  report       /tmp/hex-report-guarded.json\n  run logs     /tmp/runs/2026-10-23T19-06-21-859Z--13\n  total        9.82s\n"
+    },
+    {
+      "id": "hex-report-traced",
+      "testState": "generation",
+      "instrumentation": "hex-report-trace",
+      "command": "NODE_OPTIONS=--require=/tmp/hex-report-trace.cjs node wasm/scripts/run-wasm-tests.cjs --task cli-report-handler-topology --report /tmp/hex-report-traced.json",
+      "sourceRevision": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
+      "status": "passed",
+      "selectedTasks": [
+        "cli-report-handler-topology"
+      ],
+      "completedTasks": 1,
+      "durationMs": 54547,
+      "logSha256": "acc653b53648af85f316ca6d5eeeca1cf12abb6f6d4cd8f97d676105a68564f3",
+      "results": [
+        {
+          "name": "cli-report-handler-topology",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 54538
+        }
+      ]
+    },
+    {
+      "id": "hex-report-final",
+      "testState": "generation",
+      "instrumentation": null,
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task cli-report-handler-topology --report /tmp/hex-report-final.json",
+      "sourceRevision": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
+      "status": "failed",
+      "selectedTasks": [
+        "cli-report-handler-topology"
+      ],
+      "completedTasks": 1,
+      "durationMs": 34348,
+      "logSha256": "ad0009d6e3ed4776ff149ff1ef9ff3ab1b942acbca1f868de6d81a2ae7068b9f",
+      "results": [
+        {
+          "name": "cli-report-handler-topology",
+          "status": "failed",
+          "exitCode": 1,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 34339
+        }
+      ],
+      "failedLog": "\n[pulsewasm:native] cli-report-handler-topology\n[pulsewasm] AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison (timeout 180.00s)\n[analytics parity] http/native-shrink0: control and observed compilation\n[pulsewasm] Running cli-report-handler-topology (execution); elapsed 10.00s\n[analytics parity] http/experimental-native-bounded-size: control and observed compilation\n[pulsewasm] Running cli-report-handler-topology (execution); elapsed 20.01s\n[analytics parity] event/native-shrink0: control and observed compilation\n[analytics parity] event/experimental-native-bounded-size: control and observed compilation\n[pulsewasm] Running cli-report-handler-topology (execution); elapsed 30.01s\nAssertionError [ERR_ASSERTION]: event/experimental-native-bounded-size: retained report unavailable: {\"status\":\"unavailable\",\"reason\":\"REPORT_STALE_INPUTS\"}\n    at main (/workspace/scratch/253982db7f9e/pulse/wasm/test/cli/assert-report-handler-topology.cjs:337:16)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: undefined,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n[pulsewasm] cli-report-handler-topology: failed in 34.34s\n\n[pulsewasm] test summary\n  failed        34.34s  cli-report-handler-topology  (/tmp/runs/2026-10-23T19-08-53-610Z--5/tasks/cli-report-handler-topology.log)\n  report       /tmp/hex-report-final.json\n  run logs     /tmp/runs/2026-10-23T19-08-53-610Z--5\n  total        34.35s\n"
+    },
+    {
+      "id": "hex-report-snapshot-traced",
+      "testState": "generation",
+      "instrumentation": "hex-snapshot-trace",
+      "command": "NODE_OPTIONS=--require=/tmp/hex-snapshot-trace.cjs node wasm/scripts/run-wasm-tests.cjs --task cli-report-handler-topology --report /tmp/hex-report-snapshot-traced.json",
+      "sourceRevision": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
+      "status": "passed",
+      "selectedTasks": [
+        "cli-report-handler-topology"
+      ],
+      "completedTasks": 1,
+      "durationMs": 57874,
+      "logSha256": "30c017c3e62076b951e6926efda0c743f0d4baa17ff2c719b32aa9fbb7f982c4",
+      "results": [
+        {
+          "name": "cli-report-handler-topology",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 57866
+        }
+      ]
+    },
+    {
+      "id": "hex-report-failure-traced",
+      "testState": "generation",
+      "instrumentation": "hex-failure-trace",
+      "command": "NODE_OPTIONS=--require=/tmp/hex-failure-trace.cjs node wasm/scripts/run-wasm-tests.cjs --task cli-report-handler-topology --report /tmp/hex-report-failure-traced.json",
+      "sourceRevision": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
+      "status": "passed",
+      "selectedTasks": [
+        "cli-report-handler-topology"
+      ],
+      "completedTasks": 1,
+      "durationMs": 54738,
+      "logSha256": "2d1ba2ea2446d91a014f12603f5cfb061cad10f36fe1cfbe7ba59b991fa40af4",
+      "results": [
+        {
+          "name": "cli-report-handler-topology",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 54728
+        }
+      ]
+    },
+    {
+      "id": "hex-report-isolated-cells",
+      "testState": "isolated",
+      "instrumentation": null,
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task cli-report-retained-evidence --task cli-report-handler-topology --report /tmp/hex-report-isolated-cells.json",
+      "sourceRevision": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
+      "status": "passed",
+      "selectedTasks": [
+        "cli-report-retained-evidence",
+        "cli-report-handler-topology"
+      ],
+      "completedTasks": 2,
+      "durationMs": 99842,
+      "logSha256": "21223c4ebfc832be7194c70075010c9827ea9932e37a26c2ff9e1cdef75393e0",
+      "results": [
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 45714
+        },
+        {
+          "name": "cli-report-handler-topology",
+          "status": "passed",
+          "exitCode": 0,
+          "timedOut": false,
+          "cleanup": {
+            "status": "passed"
+          },
+          "durationMs": 54118
+        }
+      ]
+    }
+  ],
+  "instrumentation": [
+    {
+      "name": "hex-report-trace",
+      "sha256": "ff23173fd7b6c5a8278d63053cf6e86291edac3003bb16fddc00f43de99ce279",
+      "source": "'use strict';\nif (process.argv[1]?.endsWith('/assert-report-handler-topology.cjs')) {\n const fs=require('node:fs'),path=require('node:path'),{createHash}=require('node:crypto');\n const root='/workspace/scratch/253982db7f9e/pulse';\n const snapshot=require(path.join(root,'wasm/packages/cli/src/internal/report/snapshot'));\n const log=value=>fs.appendFileSync('/tmp/hex-report-trace.jsonl',JSON.stringify(value)+'\\n');\n const hash=value=>createHash('sha256').update(value).digest('hex');\n const diff=(a,b)=>{const aa=new Map(a.records.map(x=>[x.file,x])),bb=new Map(b.records.map(x=>[x.file,x]));return [...new Set([...aa.keys(),...bb.keys()])].filter(k=>JSON.stringify(aa.get(k))!==JSON.stringify(bb.get(k))||a.tokens.get(k)!==b.tokens.get(k)).map(k=>({file:k,before:aa.get(k),after:bb.get(k),tokenBefore:a.tokens.get(k),tokenAfter:b.tokens.get(k)}));};\n const begin=snapshot.beginSnapshot;\n snapshot.beginSnapshot=function(project,...args){try{return begin(project,...args);}catch(error){log({phase:'begin',error:error.code,root:project.root});throw error;}};\n const finish=snapshot.finishSnapshot;\n snapshot.finishSnapshot=function(project,attempt,compiled){try{return finish(project,attempt,compiled);}catch(error){\n  const details={phase:'finish',error:error.code,root:project.root};\n  try {details.project=diff(attempt.current,snapshot.scan(project.root,{excluded:attempt.excluded}));details.workspace=diff(attempt.workspace,snapshot.workspaceControls(project.root));details.dependencies=[];for(const [key,{root,snapshot:before}] of attempt.dependencies.snapshots){const changed=diff(before,snapshot.scan(root,{packageFiles:true}));if(changed.length)details.dependencies.push({key,changed});}}catch(e){details.scanError=e.code||e.message;}\n  log(details);throw error;\n }};\n const read=fs.readFileSync,write=fs.writeFileSync;\n const watched=file=>typeof file==='string'&&file.includes('/report-analytics-')&&(/\\/src\\/index.ts$/.test(file)||/\\.wasm$/.test(file));\n fs.writeFileSync=function(file,data,...args){const r=write.call(this,file,data,...args);if(watched(file))log({op:'write',file,sha256:hash(data),bytes:Buffer.byteLength(data)});return r;};\n fs.readFileSync=function(file,...args){const r=read.call(this,file,...args);if(watched(file))log({op:'read',file,sha256:hash(r),bytes:Buffer.byteLength(r)});return r;};\n process.on('exit',code=>log({phase:'exit',code}));\n}\n",
+      "qualification": false
+    },
+    {
+      "name": "hex-snapshot-trace",
+      "sha256": "9c9c7f9a1542f045073c642f6246dabc7cf4efdf49367a7b4abff4593935455d",
+      "source": "'use strict';\nif (process.argv[1]?.endsWith('/assert-report-handler-topology.cjs')) {\n const fs=require('node:fs'),path=require('node:path'),{createHash}=require('node:crypto');\n const root='/workspace/scratch/253982db7f9e/pulse';\n const snapshot=require(path.join(root,'wasm/packages/cli/src/internal/report/snapshot'));\n const log=value=>fs.appendFileSync('/tmp/hex-snapshot-trace.jsonl',JSON.stringify(value)+'\\n');\n const hash=value=>createHash('sha256').update(value).digest('hex');\n const diff=(a,b)=>{const aa=new Map(a.records.map(x=>[x.file,x])),bb=new Map(b.records.map(x=>[x.file,x]));return [...new Set([...aa.keys(),...bb.keys()])].filter(k=>JSON.stringify(aa.get(k))!==JSON.stringify(bb.get(k))||a.tokens.get(k)!==b.tokens.get(k)).map(k=>({file:k,before:aa.get(k),after:bb.get(k),tokenBefore:a.tokens.get(k),tokenAfter:b.tokens.get(k)}));};\n const receipts=new Map(),resolve=snapshot.resolutionStart;\n snapshot.resolutionStart=function(root,...args){const r=resolve(root,...args);receipts.set(root,r);return r;};\n const begin=snapshot.beginSnapshot;\n snapshot.beginSnapshot=function(project,...args){try{return begin(project,...args);}catch(error){const detail={phase:'begin',error:error.code,root:project.root};try{const receipt=receipts.get(project.root);detail.receiptError=receipt?.error;detail.project=diff(receipt.snapshot,snapshot.scan(project.root,{excluded:receipt.excluded}));detail.workspace=diff(receipt.workspace,snapshot.workspaceControls(project.root));}catch(e){detail.scanError=e.code||e.message;}log(detail);throw error;}};\n const finish=snapshot.finishSnapshot;\n snapshot.finishSnapshot=function(project,attempt,compiled){try{return finish(project,attempt,compiled);}catch(error){\n  const details={phase:'finish',error:error.code,root:project.root};\n  try {const current=snapshot.scan(project.root,{excluded:attempt.excluded});details.project=diff(attempt.current,current);details.workspace=diff(attempt.workspace,snapshot.workspaceControls(project.root));details.dependencies=[];for(const [key,{root,snapshot:before}] of attempt.dependencies.snapshots){const changed=diff(before,snapshot.scan(root,{packageFiles:true}));if(changed.length)details.dependencies.push({key,changed});}\n   details.projectModules=(compiled.reachableGraph?.modules||[]).filter(x=>x.kind==='project').map(x=>({path:x.path,compiled:x.contentHash,snapshot:current.records.find(r=>r.file===x.path)?.sha256,direct:x.packageName?null:hash(fs.readFileSync(path.join(project.root,x.path)))}));\n   details.imported=require(path.join(root,'wasm/packages/compiler/src/canonical-project-compiler')).sourceInputsForCompiled(compiled);\n  }catch(e){details.scanError=e.code||e.message;}\n  log(details);throw error;\n }};\n process.on('exit',code=>log({phase:'exit',code}));\n}\n",
+      "qualification": false
+    },
+    {
+      "name": "hex-failure-trace",
+      "sha256": "9e6073a46cab188e61023ac001e49cff9fd35b47d3b7f61b12245de045dbc0d4",
+      "source": "'use strict';\nif (process.argv[1]?.endsWith('/assert-report-handler-topology.cjs')) {\n const fs=require('node:fs'),Module=require('node:module');\n const original=Module._extensions['.js'];\n const changes=new Map([\n ['snapshot.js',[\n [\"if (canonicalJson(first.records) !== canonicalJson(second.records)) fail('REPORT_STALE_INPUTS');\", \"if (canonicalJson(first.records) !== canonicalJson(second.records)) { fs.appendFileSync('/tmp/hex-failure-trace.jsonl', JSON.stringify({kind:'snapshot',first:first.records,second:second.records})+'\\\\n'); fail('REPORT_STALE_INPUTS'); }\"],\n [\"if (!row || row.sha256 !== module.contentHash) fail('REPORT_STALE_INPUTS');\", \"if (!row || row.sha256 !== module.contentHash) { fs.appendFileSync('/tmp/hex-failure-trace.jsonl', JSON.stringify({kind:'module',row,module})+'\\\\n'); fail('REPORT_STALE_INPUTS'); }\"]]],\n ['source-inputs.js',[[\"ensure(read.size === row.bytes && read.sha256 === row.sha256, 'REPORT_STALE_INPUTS');\", \"if(read.size !== row.bytes || read.sha256 !== row.sha256) fs.appendFileSync('/tmp/hex-failure-trace.jsonl',JSON.stringify({kind:'import',row,actual:{size:read.size,sha256:read.sha256}})+'\\\\n'); ensure(read.size === row.bytes && read.sha256 === row.sha256, 'REPORT_STALE_INPUTS');\"]]],\n ['retained.js',[[\"ensure(read.size === reference.bytes && read.sha256 === reference.sha256 && WebAssembly.validate(read.bytes), 'REPORT_ARTIFACT_HASH');\", \"if(read.size !== reference.bytes || read.sha256 !== reference.sha256) fs.appendFileSync('/tmp/hex-failure-trace.jsonl',JSON.stringify({kind:'artifact',reference,actual:{size:read.size,sha256:read.sha256}})+'\\\\n'); ensure(read.size === reference.bytes && read.sha256 === reference.sha256 && WebAssembly.validate(read.bytes), 'REPORT_ARTIFACT_HASH');\"]]]\n ]);\n Module._extensions['.js']=function(module,file){const name=file.split('/').at(-1),edits=changes.get(name);if(!file.includes('/wasm/packages/cli/src/internal/report/')||!edits)return original(module,file);let source=fs.readFileSync(file,'utf8');for(const [from,to]of edits){if(!source.includes(from))throw Error('Trace point missing '+name);source=source.replace(from,to);}module._compile(source,file);};\n}\n",
+      "qualification": false
+    }
+  ],
+  "limitations": [
+    "Earlier failures remain retained in hex01-validation.json.",
+    "Historical matching signatures establish earlier occurrence, not common cause.",
+    "Instrumented reruns did not capture a failure and do not qualify uninstrumented behavior.",
+    "Final isolated-cell selection is development evidence, not a full aggregate or release seal.",
+    "No retries, disabled comparisons or weakened report freshness checks were added."
+  ],
+  "followupBase": {
+    "commit": "788b1fe0c24d3277b0d01bba674ad86952e2f7fc",
+    "tree": "ed1b7dcc8b6071c2d301a5028f3cdcae7f496af0",
+    "sameTreeAsTestedHead": true,
+    "branch": "hex/report-fixture-isolation",
+    "target": "hex-integration"
+  },
+  "repositoryChecks": [
+    {
+      "command": "npm run maintainer:sync; npm run docs:sync",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "f8b4a4cccefcecf8ac7cb177ce42941cdee61b4e9c351adf9dad35f41a565f42"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "c4ba4757de8427dc4e62528f6b6dd88a399ef2ed0f17aa7018b9765fcbc5e1d6"
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "47aa0d7fcc39d9fa1cbf6a25eec62ee05ebd79a2cab4d9cb47348eac79dd7a21"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "42f7245f3e4bea60ae96bdab29106afcfbd3c9fd1c1b2c26b2ab942968b97536"
+    }
+  ]
+}

@@ -226,6 +226,40 @@ source fingerprints, individual task outcomes and failed-attempt excerpts.
   isolated pass do not constitute a clean aggregate run or release seal.
 - Initial control-plane checks identified the missing release-shard mapping for
   the new regression task; the mapping was added and the checks passed on retry.
-- The PR remains draft for the report discrepancy and architecture review.
+- The report discrepancy and architecture review remain explicit review concerns.
   Engine/hosted handoff, cleanup and external packed acceptance remain later
   qualification work. No check is waived by this investigation.
+
+### Report-test investigation follow-up
+
+The [follow-up receipt](hex01-report-investigation.json) records the additional
+runs and their tested source states. The unchanged `fc43012` candidate passed
+the ten-task report prefix and the exact sixteen-task sequence that had stopped
+earlier. A separate [source-freshness probe](report-source-freshness.cjs) passed
+72 compilations across 36 same-path, same-length fixture rewrites. It checks
+source hashes, plan equality and earlier-plan immutability; it does not compile
+Wasm or qualify retained publication.
+
+The original plan mismatch identifies the event fixture in the control and the
+earlier HTTP fixture in the observed plan. Both files are 1,993 bytes, but their
+SHA-256 identities differ. Later diagnostic runs also reproduced missing
+completion, including an explicit `REPORT_STALE_INPUTS` reason. Three separately
+instrumented reruns passed without capturing the failing snapshot comparison.
+Passing retries do not identify the cause.
+
+Matching failure signatures predate HEX: the checked-in
+[MCP-06B log](../b10-mcp-06b/failed-2-cli-report-handler-topology.log) records
+`REPORT_ARTIFACT_HASH`, and the
+[MCP-08 log](../b10-mcp-08/receipts/topology.log) records
+`REPORT_MISSING_COMPLETION`. This establishes earlier occurrences, not a shared
+root cause or proof that every current failure is unrelated to HEX.
+
+The topology test now isolates each variant/recipe's source and retained output
+directory, checks both plans against the authored source hash, and exposes the
+publication-withheld reason before replay. The existing plan/source/Wasm,
+cross-recipe analytics, execution and source-free replay assertions remain.
+The final uninstrumented retained-evidence/topology selection passed both tasks
+and all six topology cells. Production code is unchanged by this follow-up.
+The isolation change is bounded test hardening; the underlying intermittent
+freshness failure remains unproven, and no complete aggregate/release claim is
+made from these development runs.

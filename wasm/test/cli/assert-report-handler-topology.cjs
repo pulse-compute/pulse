@@ -276,12 +276,25 @@ async function main() {
     for (const variant of ['http', 'event', 'full']) {
       let defaultReport;
       for (const optimization of ['native-shrink0', 'experimental-native-bounded-size']) {
-        setup(directory, variant);
-        project = resolveProject({ cwd: directory, metadataOnly: true });
+        // Keep source generations and retained outputs private to each cell.
+        // The controls within a cell still compile the exact same authored file.
+        const cellDirectory = path.join(directory, variant, optimization);
+        setup(cellDirectory, variant);
+        project = resolveProject({ cwd: cellDirectory, metadataOnly: true });
         const options = { emitWat: false, nativeOptimization: optimization };
+        const fixtureHash = sha256(fs.readFileSync(project.entryFile));
+        const assertFixtureGeneration = (prepared, phase) => {
+          const label = `${variant}/${optimization}/${phase}`;
+          assert.equal(sha256(fs.readFileSync(project.entryFile)), fixtureHash,
+            `${label}: authored fixture changed during compilation`);
+          assert.equal(prepared.plan.source.sourceHash, fixtureHash,
+            `${label}: plan does not identify the current authored fixture`);
+        };
         console.log(`[analytics parity] ${variant}/${optimization}: control and observed compilation`);
         const control = controlOwner.compileNativeProjectInMemory(project, options);
+        assertFixtureGeneration(control, 'control');
         const prepared = execution.compileNativeProjectInMemory(project, options);
+        assertFixtureGeneration(prepared, 'observed');
         assert.equal(control.reportReferences, undefined);
         assert.deepEqual(prepared.plan, control.plan);
         assert.equal(prepared.native.source, control.native.source);
@@ -324,18 +337,21 @@ async function main() {
         }
         const executions = await execute(prepared.native, variant) + await execute(control.native, variant);
         const built = execution.compileNativeProject(project, options);
+        assert.ok(built.manifest.reportCompletion,
+          `${variant}/${optimization}: retained report unavailable: ${JSON.stringify(built.manifest.reportEvidence)}`);
         const replay = retained.collectArtifactReport(built.files.manifest).capsule;
         assert.deepEqual(replay.analytics, value.analytics);
         assertIntegration(replay, value);
         const rendered = assertIntegration(replay);
         // Historical display/comparison must work after project/package removal.
-        for (const folder of ['src', 'node_modules', '.pulse']) fs.rmSync(path.join(directory, folder), { recursive: true, force: true });
+        for (const folder of ['src', 'node_modules', '.pulse']) fs.rmSync(path.join(cellDirectory, folder), { recursive: true, force: true });
         const script = `const M=require('node:module'),load=M._load;M._load=function(name,...args){if(/compiler|provider-|typescript|project-config|project-execution|child_process|^(node:)?(http|https|net|tls|dns|dgram)$/.test(name))throw Error('Unexpected work: '+name);return load.call(this,name,...args);};const fs=require('node:fs');for(const key of ['writeFileSync','appendFileSync','mkdirSync','renameSync','rmSync','unlinkSync'])fs[key]=()=>{throw Error('Unexpected write: '+key);};const value=require(${JSON.stringify(path.join(cli, 'internal/report/retained'))}).collectArtifactReport(process.argv[1]).capsule;process.stdout.write(JSON.stringify({analytics:value.analytics,rendered:require(${JSON.stringify(path.join(__dirname, 'report-analytics-integration.cjs'))})(value)}));`;
         const passive = JSON.parse(execFileSync(process.execPath, ['-e', script, built.files.manifest], { encoding: 'utf8' }));
         assert.deepEqual(passive.analytics, value.analytics);
         assert.deepEqual(passive.rendered, rendered, 'offline HTML/comparison is repeatable without source or toolchain execution');
         cells.push({ variant, optimization, executions, unchangedPlanSourceWasm: true, effectOrder: true,
           importedPassiveReplay: true, reportHtml: true, semanticComparison: true, sourcesRemoved: true });
+        fs.rmSync(cellDirectory, { recursive: true, force: true });
       }
     }
     // Nested mounts use ordered instance paths, not sorted sets of definitions.
