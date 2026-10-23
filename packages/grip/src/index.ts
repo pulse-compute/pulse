@@ -160,7 +160,13 @@ export function broadcast(
   });
 }
 
+/** @internal HEX-01 spike: Fastly Native only; not a supported public API. */
+function handoffFanout(_backend: string): never {
+  throw new Error('@pulse-compute/grip handoffFanout is not implemented for this host (requires Fastly Native).');
+}
+
 export const grip = Object.freeze({
+  handoffFanout,
   isWebSocket,
   subscribe,
   handoff,

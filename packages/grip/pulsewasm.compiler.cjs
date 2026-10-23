@@ -340,7 +340,7 @@ function resolveGripCall(ts, call, bindings) {
     const method = expression.name.text;
     const namespace = object && ts.isIdentifier(object) ? bindings.namespaceLocals.get(object.text) : undefined;
     const methods = namespace && namespace.canonicalRoot
-      ? ['broadcast', 'handoff', 'isWebSocket', 'subscribe']
+      ? ['broadcast', 'handoff', 'isWebSocket', 'subscribe', 'handoffFanout']
       : ['hold', 'channel', 'publish'];
     if (namespace && methods.includes(method)) {
       return { symbol: `grip.${method}`, method, local: object.text, canonicalRoot: namespace.canonicalRoot };
@@ -885,6 +885,32 @@ function broadcastEntry(ts, sourceFile, call, diagnostics) {
   });
 }
 
+// Private spike operation. The package owns ABI source; the provider owns dispatch
+// and all request/completion state. No provider-private identifier appears here.
+function fanoutProofArtifact() {
+  const source = '@external("fastly_http_req", "redirect_to_grip_proxy_v2") declare function __grip_fanout(request: i32, backend: usize, length: i32): i32\n';
+  return {
+    version: 'pulse.host-extension-proof.v0', id: '@pulse-compute/grip:fanout',
+    kind: 'host-extension-proof', mediaType: 'text/assemblyscript',
+    package: '@pulse-compute/grip', contractId: gripContracts.GRIP_CONTRACT_ID,
+    data: { target: 'fastly-compute-native', operation: 'handoffFanout', service: 'terminal-request-backend.v0',
+      source, sha256: require('node:crypto').createHash('sha256').update(source).digest('hex'), entry: '__grip_fanout',
+      imports: [{ module: 'fastly_http_req', name: 'redirect_to_grip_proxy_v2', parameters: ['i32', 'i32', 'i32'], results: ['i32'] }] }
+  };
+}
+function fanoutProofEntry(ts, sourceFile, call, diagnostics) {
+  const backend = literalText(ts, call.arguments[0]);
+  if (call.arguments.length !== 1 || !backend || placementForCall(ts, call) !== 'return') {
+    diagnostics.push(makeDiagnostic(sourceFile, call, 'PULSEWASM_GRIP_FANOUT_PROOF_SHAPE',
+      'HEX-01 handoffFanout requires a direct terminal return and one static backend binding key.',
+      'Use return grip.handoffFanout("fanout") in an ordinary HTTP handler.'));
+  }
+  const effect = canonicalEffect(ts, sourceFile, call, { operation: 'handoffFanout', result: 'host-terminal', resource: { kind: 'literal', value: backend || '' } });
+  return { symbol: 'grip.handoffFanout', kind: 'grip-fanout-proof', placement: effect.placement,
+    loc: effect.loc, range: effect.range,
+    canonicalEffect: { ...effect, kind: 'host.extension', providerKind: 'host-extension', capability: 'host.extension' } };
+}
+
 function sourceFileFromInputs(ts, inputs) {
   if (inputs.sourceFile) return inputs.sourceFile;
   const sourcePath = inputs.sourcePath || inputs.entry || inputs.appPath || inputs.file;
@@ -910,6 +936,7 @@ function buildGripLoweringPlan(inputs = {}) {
         if (resolved.method === 'isWebSocket') entries.push(isWebSocketEntry(ts, sourceFile, node, diagnostics));
         if (resolved.method === 'subscribe') entries.push(subscribeEntry(ts, sourceFile, node, diagnostics));
         if (resolved.method === 'handoff') entries.push(handoffEntry(ts, sourceFile, node, diagnostics));
+        if (resolved.method === 'handoffFanout') entries.push(fanoutProofEntry(ts, sourceFile, node, diagnostics));
         if (resolved.method === 'broadcast') entries.push(broadcastEntry(ts, sourceFile, node, diagnostics));
         if (resolved.method === 'hold') entries.push(holdEntry(ts, sourceFile, node, diagnostics));
         if (resolved.method === 'channel') entries.push(channelEntry(ts, sourceFile, node, diagnostics));
@@ -1040,6 +1067,7 @@ function buildGripLoweringPlan(inputs = {}) {
     diagnostics,
     manifest,
     packageCompilerBuilder,
+    ...(entries.some(entry => entry.kind === 'grip-fanout-proof') ? { realizationArtifacts: [fanoutProofArtifact()] } : {}),
     hasErrors: artifact.summary.errors > 0
   };
 }
