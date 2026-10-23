@@ -176,6 +176,14 @@ or effective permissions. **Expand workspace** gives the graph more room, with
 optional details and width controls; Escape exits the expanded view. These
 views use the same offline payload and leave full JSON exports unchanged.
 
+For the provisional host-extension integration, **Assets & sizes** also shows
+selected package contributions when that evidence was retained. The JSON
+`hostExtensions` records distinguish declared ABI signatures from signatures
+observed in the final Wasm, and retain package/operation ownership, generated-source
+and policy digests, and target/service requirements. Comparisons expose changes
+to those records. Historical absence is unknown. Import presence is build
+evidence; it does not prove execution or hosted acceptance.
+
 The report's **Build** summary retains elapsed time through inventory capture,
 AssemblyScript compilation time, target/profile, Pulse/compiler versions and
 effective optimization settings. Expand **Build details** for stage timings,

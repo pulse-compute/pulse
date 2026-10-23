@@ -1062,6 +1062,7 @@ function buildProjectWithReport(project, options, reportAttempt) {
   });
   const manifestFile = path.join(outDir, BUILD_MANIFEST);
   manifest = require('./internal/report/retained').publishBuild(project, { ...prepared, providerReportAttribution: providerBuildMetadata?.reportAttribution,
+    providerNativeManifest: providerFiles.providerNativeManifest,
     providerBuildObservation: providerBuildMetadata?.buildObservation, providerPortableReuse: providerBuildMetadata?.providerNeutralWasm === true }, manifest, manifestFile, outDir, reportAttempt);
   return Object.freeze({
     status: 'built',

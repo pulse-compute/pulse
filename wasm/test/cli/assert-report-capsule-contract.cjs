@@ -19,6 +19,7 @@ function mutate(fn) { const value = f.fixture(); fn(value); return () => capsule
 require('./report-normalization-cases.cjs')();
 require('./report-build-cases.cjs').contractCases();
 require('./report-comparison-cases.cjs')();
+require('./report-host-extension-cases.cjs')();
 require('./report-semantic-comparison-cases.cjs')();
 const minimal = capsule.createCapsule(f.fixture(false)), rich = capsule.createCapsule(f.fixture());
 const goldens = { 'minimal.json': capsule.serializeCapsule(minimal), 'shared-routes.json': capsule.serializeCapsule(rich) };
