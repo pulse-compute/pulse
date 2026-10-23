@@ -1,0 +1,994 @@
+{
+  "status": "focused-admission-proved; portable-regression-unresolved; draft integration candidate",
+  "implementation": {
+    "base": "788b1fe0c24d3277b0d01bba674ad86952e2f7fc",
+    "branch": "hex/02-operation-admission",
+    "integration": "hex-integration",
+    "commit": "00830927084b6dc1b5d61351c039402bbe0f19f8",
+    "tree": "ba64d5b82ba2542ea55ca19a7ceece9784b154f9",
+    "node": "24.19.0",
+    "contextProducerNode": "24.18.0",
+    "contextNodeArchiveSha256": "55aa7153f9d88f28d765fcdad5ae6945b5c0f98a36881703817e4c450fa76742",
+    "localPortableCommit": "e151d87ee882db61e1813c86ea66f91e5a174c77",
+    "localPortableCommitNote": "Clean local commit tested by the portable run. GitHub API created the published commit with different commit metadata; its complete Git tree was verified identical. The final focused run uses the published commit.",
+    "sources": [
+      {
+        "path": "docs/architecture/current-contracts.md",
+        "gitBlob": "c18db8742ad674073841abebff4dbd947ecfa426",
+        "sha256": "1631ab20d4e056cd9f48aaeaca2b1c1cef77c125e41a837607ce86ce10bb5359"
+      },
+      {
+        "path": "docs/contributing/package-lowerer-contract.md",
+        "gitBlob": "868b26bffd34fb16dbc51f1e61b097c66f1ae24f",
+        "sha256": "99fe6c4192ac4f25bb4f2634ae532c3077b7215f4ec9bada15e23240d56f28a4"
+      },
+      {
+        "path": "docs/internal/host-extensions/HEX-02.md",
+        "gitBlob": "b75ddc5f4b067042b6fb3dacc06098cc372c545c",
+        "sha256": "1769429fb26d666196be5cd536340d458ce02b9393bec29f6d4daebd732252dc"
+      },
+      {
+        "path": "docs/internal/host-extensions/assert-hex01.cjs",
+        "gitBlob": "76f73fc58527a8e3c5172f107ed39fac7919f36c",
+        "sha256": "5ffa47c44afe2e3ec98fc89e6344b32d45ef8394f7dd74bef3965aabd6a4686f"
+      },
+      {
+        "path": "docs/reference/diagnostics.md",
+        "gitBlob": "9f9c2ff4cb61b69389872cc1e775b91b2ace34ea",
+        "sha256": "2aa20623b4a6daada0d2c1fdfd910d8bf27adfe3d68fa4f62c984769f2dd3791"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/.pulse/config.ts",
+        "gitBlob": "5f465b1faab035908fef07544258710e10bec1a6",
+        "sha256": "a32e09982d043aa2ef2965df4e5a1e38e95d5b5f37778b4a4a7e486d3a3cb2d6"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/diagnostic.ts",
+        "gitBlob": "07af9af60a1ce99448761b0e679fd9bb4b903acc",
+        "sha256": "533faf8e9c0cd7983f7499d642dbe8ef9c993c88f23c28a3d80a4080cd63033b"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/example.ts",
+        "gitBlob": "3b1dd912200272176377f3d0b82cedde747852d4",
+        "sha256": "2b701ddf06407cead7d66103ccb9b9aefb8d835adc2762e30e212c134a842c60"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/read.ts",
+        "gitBlob": "1184709c6ccb514d3cdf0ceda0b80e82c8f8cd77",
+        "sha256": "ee7da89252519d45c610c62bd31cf0334bb0aaa3f967a71546a2b9c4a3280b3d"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/search.ts",
+        "gitBlob": "4b936502ee8e02894b5e169cc7f14df0cf6c31f5",
+        "sha256": "968a21af0caaf2c977dfee5ce3611d4b5f12ec633d5b6405d12000f2046c4253"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/application/src/start.ts",
+        "gitBlob": "5273291fd43654c1559f1ec157812899f077617b",
+        "sha256": "4fa2d3aaf24b22a64ae255aadd3243cf2f78b83b125b585962b05f65cc8325a9"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/context-corpus.ts",
+        "gitBlob": "810150647fb61edbea849ccb17d5257d04d7ef3a",
+        "sha256": "75c2a43d7ebcda2598839c5d46324e5ff5688f00c57a7a96487fd1b6445797dd"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/context-data/context-manifest.json",
+        "gitBlob": "9e7d91c28b895baa463823d83cabb090a47d6eb7",
+        "sha256": "8e0c9cfec4c5250c95cef3648da56993f660564fa277f04c19d8376f06c090d7"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+        "gitBlob": "865ec302b8b0d688b986638ce2597f65d61f91ae",
+        "sha256": "297b2f6254cd01944e3e548ebe768db6a38dc72df79276b26654ff7f65c371c8"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/context-data/metadata.bin",
+        "gitBlob": "008e1223063fab2b4d14e8e800082aad0fe6f630",
+        "sha256": "016d82c5a06fccf5243f98d4bbb0495256387e1de1c0a4bf0d20deb2de425297"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/context-data/resource-manifest.json",
+        "gitBlob": "30d50cdcadb3ed44497ee60b891eba84733fd28e",
+        "sha256": "60a5d2f8ec77e995bd6efcd2237378b8f9c3939013a6332f23610c4f44d6581c"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/context-data/text.bin",
+        "gitBlob": "a11b5fff3b4078219feacdbab7aa5a0ee1885227",
+        "sha256": "af91e7ef6ef98aefbc2e465ed441d75b1ef2fe7ac2db4e03f9785076af04400e"
+      },
+      {
+        "path": "examples/12-pulse-context-mcp/context-data/vector.bin",
+        "gitBlob": "b8ae47393771ed0d6c3f02fded2fddd5d31d267a",
+        "sha256": "aa49c333c7c12575fcef1782aa2818d3868673244090eb3e8345f11f90b4919f"
+      },
+      {
+        "path": "packages/grip/pulsewasm.compiler.cjs",
+        "gitBlob": "cb151327fe675fe694ac59b6a9a85cd7cd2e74c6",
+        "sha256": "cb21f97778a26cf1106efc858a7b1bebd5b83d3a60441f03ceef950a73b4f8ef"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/host-extension-proof.js",
+        "gitBlob": null,
+        "sha256": null
+      },
+      {
+        "path": "packages/provider-fastly/src/build/host-extensions.js",
+        "gitBlob": "4c7453078dad3954011c666b7cdad9789eb3953c",
+        "sha256": "ec66df7a2316fbc7acc2b324558979d305b0641ee7f4b5fea02e8c50ec8edc7b"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+        "gitBlob": "1dc99d17edfe25e7fbcf1528f9606e2e2e99bbd8",
+        "sha256": "132ea03b4db79ddb34af16f642d35a58d8818f61055622680fd9ca0985241c85"
+      },
+      {
+        "path": "packages/provider-fastly/src/provider-contract.js",
+        "gitBlob": "a1f76c277e814e8df2c9c2d65875069d1ee2ed0b",
+        "sha256": "81c592831adb5b365d18cd793c48d453e3bd5ec83c70d9e3503039d367e8fa73"
+      },
+      {
+        "path": "packages/provider-fastly/src/toolchain/index.js",
+        "gitBlob": "95319c5a57d54f7cd3514d3d26ed446823dad0f8",
+        "sha256": "c517ff2f0b86272fffa0e8c25c72da8dcdcd8c61e80eec967567c166168bd27d"
+      },
+      {
+        "path": "wasm/packages/cli/docs/architecture/current-contracts.md",
+        "gitBlob": "6ff596069f6715a175c1a260625a9b8cc997fc98",
+        "sha256": "46960be5ce7ca000e1c618ec2b6e0b16b569665a7591c3a428d0921f0a61ab8c"
+      },
+      {
+        "path": "wasm/packages/cli/docs/contributing/package-lowerer-contract.md",
+        "gitBlob": "868b26bffd34fb16dbc51f1e61b097c66f1ae24f",
+        "sha256": "99fe6c4192ac4f25bb4f2634ae532c3077b7215f4ec9bada15e23240d56f28a4"
+      },
+      {
+        "path": "wasm/packages/cli/docs/reference/diagnostics.md",
+        "gitBlob": "9f9c2ff4cb61b69389872cc1e775b91b2ace34ea",
+        "sha256": "2aa20623b4a6daada0d2c1fdfd910d8bf27adfe3d68fa4f62c984769f2dd3791"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/.pulse/config.ts",
+        "gitBlob": "5f465b1faab035908fef07544258710e10bec1a6",
+        "sha256": "a32e09982d043aa2ef2965df4e5a1e38e95d5b5f37778b4a4a7e486d3a3cb2d6"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/diagnostic.ts",
+        "gitBlob": "07af9af60a1ce99448761b0e679fd9bb4b903acc",
+        "sha256": "533faf8e9c0cd7983f7499d642dbe8ef9c993c88f23c28a3d80a4080cd63033b"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/example.ts",
+        "gitBlob": "3b1dd912200272176377f3d0b82cedde747852d4",
+        "sha256": "2b701ddf06407cead7d66103ccb9b9aefb8d835adc2762e30e212c134a842c60"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/read.ts",
+        "gitBlob": "1184709c6ccb514d3cdf0ceda0b80e82c8f8cd77",
+        "sha256": "ee7da89252519d45c610c62bd31cf0334bb0aaa3f967a71546a2b9c4a3280b3d"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/search.ts",
+        "gitBlob": "4b936502ee8e02894b5e169cc7f14df0cf6c31f5",
+        "sha256": "968a21af0caaf2c977dfee5ce3611d4b5f12ec633d5b6405d12000f2046c4253"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/start.ts",
+        "gitBlob": "5273291fd43654c1559f1ec157812899f077617b",
+        "sha256": "4fa2d3aaf24b22a64ae255aadd3243cf2f78b83b125b585962b05f65cc8325a9"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+        "gitBlob": "810150647fb61edbea849ccb17d5257d04d7ef3a",
+        "sha256": "75c2a43d7ebcda2598839c5d46324e5ff5688f00c57a7a96487fd1b6445797dd"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json",
+        "gitBlob": "9e7d91c28b895baa463823d83cabb090a47d6eb7",
+        "sha256": "8e0c9cfec4c5250c95cef3648da56993f660564fa277f04c19d8376f06c090d7"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+        "gitBlob": "865ec302b8b0d688b986638ce2597f65d61f91ae",
+        "sha256": "297b2f6254cd01944e3e548ebe768db6a38dc72df79276b26654ff7f65c371c8"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin",
+        "gitBlob": "008e1223063fab2b4d14e8e800082aad0fe6f630",
+        "sha256": "016d82c5a06fccf5243f98d4bbb0495256387e1de1c0a4bf0d20deb2de425297"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/resource-manifest.json",
+        "gitBlob": "30d50cdcadb3ed44497ee60b891eba84733fd28e",
+        "sha256": "60a5d2f8ec77e995bd6efcd2237378b8f9c3939013a6332f23610c4f44d6581c"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin",
+        "gitBlob": "a11b5fff3b4078219feacdbab7aa5a0ee1885227",
+        "sha256": "af91e7ef6ef98aefbc2e465ed441d75b1ef2fe7ac2db4e03f9785076af04400e"
+      },
+      {
+        "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin",
+        "gitBlob": "b8ae47393771ed0d6c3f02fded2fddd5d31d267a",
+        "sha256": "aa49c333c7c12575fcef1782aa2818d3868673244090eb3e8345f11f90b4919f"
+      },
+      {
+        "path": "wasm/packages/cli/src/diagnostics.js",
+        "gitBlob": "a1c77954d3891924dfec109cd8f5e61341a09b31",
+        "sha256": "3d2e9e01f8520040f38f3af3b49b53231ea716302521902b71bcba19a65d843e"
+      },
+      {
+        "path": "wasm/packages/compiler/src/canonical-project-compiler.js",
+        "gitBlob": "5814b532b5177f34bb84a663520331d364b54cdb",
+        "sha256": "73362cca28d5a046d15c40749200b53a63b02a5211aaa9df0135ae06a59c4d59"
+      },
+      {
+        "path": "wasm/packages/compiler/src/spine/package-operation-seam.js",
+        "gitBlob": "66deb094669e2bbcd7bfd5820109d5a8b041f654",
+        "sha256": "35e0780ea5877a3a11c78f10ff6195a20b5780694a6d933d37136417d05db042"
+      },
+      {
+        "path": "wasm/packages/contracts/src/package/package-contract.js",
+        "gitBlob": "5356be6a44173090c863c26b585806c1079dc085",
+        "sha256": "0a10bc34795d2802f6629373c5dae05831ef73119b9a040a99d1416e6d0f8257"
+      },
+      {
+        "path": "wasm/packages/contracts/src/provider/canonical-provider.js",
+        "gitBlob": "dbb54e079be0b27e266168442e109296402811a1",
+        "sha256": "755dd4802075e84f0ed4dc4dcc06d0f87bda957216113a91593a266076631f32"
+      },
+      {
+        "path": "wasm/packages/contracts/src/provider/host-extension.js",
+        "gitBlob": "19f1ba4ea4985a7a6f55e21a5c4976cbfbf7fc7f",
+        "sha256": "37f6fd15b12aa755487d5f420083f9114bbe77a90f0f7c21652474502c6d1360"
+      },
+      {
+        "path": "wasm/packages/contracts/src/provider/toolchain.js",
+        "gitBlob": "d6c6dfee6b083a86f0099d4a186e6c1763a2e3c5",
+        "sha256": "e8a3933f3a83590649954c68bccbd933b8c3eb3dd5a816ef09674853542d912c"
+      },
+      {
+        "path": "wasm/test/cli/assert-cli-diagnostics.cjs",
+        "gitBlob": "11198e8b9614ecbaa7cb85b9a3f797d64d55e139",
+        "sha256": "c022354e1e7193f8a16e4cd064a6fc88cfac2786b36d8c60ce2a3900b2f15b77"
+      },
+      {
+        "path": "wasm/test/contracts/assert-provider-toolchain-boundary.cjs",
+        "gitBlob": "c36405e9681b6a02c49341ccb42db44352758a6b",
+        "sha256": "1f67985c2eb585b72a77f7b095a17b060bd28df2652833db4ada398f44bfbbf0"
+      },
+      {
+        "path": "wasm/test/contracts/host-extension-contract-cases.cjs",
+        "gitBlob": "85cea79faad6d0f5051211022169288b85e413ec",
+        "sha256": "8df1f96c5c2364d142d6b2b73bdb523c776c04fa8e423dcc9fffe1d6c6c4515d"
+      },
+      {
+        "path": "wasm/test/provider/host-extension-admission-cases.cjs",
+        "gitBlob": "a8f3685d560887cc10b9dbb0b8077434e912ac99",
+        "sha256": "d72cb7aa894e7c53ac341fe9c792da8cf4d050b92fcdd17b3e5cbebf71c2215a"
+      },
+      {
+        "path": "wasm/test/provider/host-extension-external-cases.cjs",
+        "gitBlob": "4e8912fc26543c1944d1a2c061943051301d2813",
+        "sha256": "da387f1685f43b2a3779c21016619bb5373f55c5d5ad10b858c64175470e91a5"
+      }
+    ]
+  },
+  "direction": "Human \u201cOk proceed\u201d authorized HEX-02 after HEX-01 and parking the report investigation. Implementation and pass PR preparation only; human architecture review, merge and promotion remain required.",
+  "runs": [
+    {
+      "name": "proof",
+      "runId": "2026-10-23T20-14-07-310Z--5",
+      "sourceRevision": "788b1fe0c24d3277b0d01bba674ad86952e2f7fc",
+      "note": "Early development snapshot; private proof passed before admission case expansion.",
+      "status": "passed",
+      "startedAt": "2026-10-23T20:14:07.315Z",
+      "finishedAt": "2026-10-23T20:14:15.927Z",
+      "durationMs": 8612,
+      "profiles": [],
+      "selectedTasks": [
+        "fastly-host-extension-proof"
+      ],
+      "completedTasks": 1,
+      "passed": 1,
+      "failed": 0,
+      "notRun": 0,
+      "reportSha256": "ba7c532954238ed763e52c74eced1272719dcc4afa6f26ee4615f8498217b5e7",
+      "logSha256": "e7a746af8f1d6d07c3cd0b8c9c69bf697d6bdc73b17b59e1ab8b4726d0cd6d1e",
+      "tasks": [
+        {
+          "task": "fastly-host-extension-proof",
+          "status": "passed",
+          "durationMs": 8604,
+          "exitCode": 0,
+          "timedOut": false
+        }
+      ]
+    },
+    {
+      "name": "focused",
+      "runId": "2026-10-23T20-18-24-957Z--7",
+      "sourceRevision": "788b1fe0c24d3277b0d01bba674ad86952e2f7fc",
+      "note": "Development failure: new test changed plan.effects but left plan.packages.effects stale; corrected test fixture, no waiver.",
+      "status": "failed",
+      "startedAt": "2026-10-23T20:18:24.963Z",
+      "finishedAt": "2026-10-23T20:18:36.692Z",
+      "durationMs": 11729,
+      "profiles": [],
+      "selectedTasks": [
+        "provider-toolchain",
+        "package-reachability",
+        "external-lowerers",
+        "grip-package-owned-lowering",
+        "fastly-host-extension-proof",
+        "provider-fastly-package",
+        "fastly-native-platform-capabilities"
+      ],
+      "completedTasks": 5,
+      "passed": 4,
+      "failed": 1,
+      "notRun": 2,
+      "reportSha256": "828879db3df7af6b8afe80a32723e16300f7248d98a17af42df59dca6cdf03f9",
+      "logSha256": "bbe8ab3b72cac22d65c9a63f1e346e0b1337c23c8d7d1946ea4eedd5cbda82a6",
+      "tasks": [
+        {
+          "task": "provider-toolchain",
+          "status": "passed",
+          "durationMs": 182,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "package-reachability",
+          "status": "passed",
+          "durationMs": 1147,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "external-lowerers",
+          "status": "passed",
+          "durationMs": 1781,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "grip-package-owned-lowering",
+          "status": "passed",
+          "durationMs": 335,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "fastly-host-extension-proof",
+          "status": "failed",
+          "durationMs": 8273,
+          "exitCode": 1,
+          "timedOut": false
+        }
+      ],
+      "failureLogTail": "\n[pulsewasm:unit] provider-toolchain\n[pulsewasm] exact compiler-to-provider toolchain invocation and result boundary (timeout 30.00s)\nok - provider toolchains, target descriptors, invocations, requirements, results, and final-byte packaging are exact, versioned, and fail closed\nok - HEX-02 host contribution contract: 53 schema, owner, selection, service, policy and binary ABI cases\n[pulsewasm] provider-toolchain: passed in 182ms\n\n[pulsewasm:unit] package-reachability\n[pulsewasm] graph-selected package operations and native eligibility (timeout 240.00s)\nok - package reachability selects pulse.grip, owns 2 bindings, and rejects unsupported boundaries without fallback\n[pulsewasm] package-reachability: passed in 1.15s\n\n[pulsewasm:native] external-lowerers\n[pulsewasm] trusted external contracts, independent package versions, nested resolution and Native/JavaScript parity (timeout 180.00s)\nok - external trusted lowerer: independent version, Native/JavaScript parity, nested resolution, protocol/ownership/path/collision rejection\n[pulsewasm] external-lowerers: passed in 1.78s\n\n[pulsewasm:native] grip-package-owned-lowering\n[pulsewasm] GRIP package-owned lowerer (timeout 30.00s)\nok - package-owned GRIP lowering emits canonical channel, hold, and publish effects\n[pulsewasm] grip-package-owned-lowering: passed in 335ms\n\n[pulsewasm:providers] fastly-host-extension-proof\n[pulsewasm] HEX-01 private package-owned terminal handoff, target admission and import audit (timeout 120.00s)\n[pulsewasm] Running fastly-host-extension-proof (execution); elapsed 10.00s\n/workspace/scratch/253982db7f9e/pulse/packages/provider-fastly/src/build/native-platform-capabilities.js:292\n  throw new FastlyNativePlatformCapabilitiesError(message, code, detail);\n  ^\n\nFastlyNativePlatformCapabilitiesError: Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, and Crypto digest contracts.\n    at fail (/workspace/scratch/253982db7f9e/pulse/packages/provider-fastly/src/build/native-platform-capabilities.js:292:9)\n    at validatePlanBoundary (/workspace/scratch/253982db7f9e/pulse/packages/provider-fastly/src/build/native-platform-capabilities.js:745:5)\n    at Object.generateFastlyNativePlatformCapabilitiesAssemblyScript (/workspace/scratch/253982db7f9e/pulse/packages/provider-fastly/src/build/native-platform-capabilities.js:2076:3)\n    at module.exports (/workspace/scratch/253982db7f9e/pulse/wasm/test/provider/host-extension-admission-cases.cjs:40:28)\n    at Object.run (/workspace/scratch/253982db7f9e/pulse/docs/internal/host-extensions/assert-hex01.cjs:114:74)\n    at Object.<anonymous> (/workspace/scratch/253982db7f9e/pulse/wasm/test/provider/assert-fastly-host-extension-proof.cjs:2:68)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12) {\n  code: 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED',\n  detail: {\n    effects: [\n      {\n        contractId: 'pulse.grip',\n        package: '@pulse-compute/grip',\n        import: '@pulse-compute/grip',\n        kind: 'host.extension',\n        operation: 'handoffFanout',\n        capability: 'host.extension',\n        result: 'host-terminal',\n        placement: 'return',\n        range: { end: 157, start: 129 }\n      }\n    ]\n  }\n}\n\nNode.js v24.19.0\n[pulsewasm] fastly-host-extension-proof: failed in 8.27s\n\n[pulsewasm] test summary\n  passed         182ms  provider-toolchain  (/tmp/runs/2026-10-23T20-18-24-957Z--7/tasks/provider-toolchain.log)\n  passed         1.15s  package-reachability  (/tmp/runs/2026-10-23T20-18-24-957Z--7/tasks/package-reachability.log)\n  passed         1.78s  external-lowerers  (/tmp/runs/2026-10-23T20-18-24-957Z--7/tasks/external-lowerers.log)\n  passed         335ms  grip-package-owned-lowering  (/tmp/runs/2026-10-23T20-18-24-957Z--7/tasks/grip-package-owned-lowering.log)\n  failed         8.27s  fastly-host-extension-proof  (/tmp/runs/2026-10-23T20-18-24-957Z--7/tasks/fastly-host-extension-proof.log)\n  report       /tmp/hex02-focused.json\n  run logs     /tmp/runs/2026-10-23T20-18-24-957Z--7\n  total        11.73s\n"
+    },
+    {
+      "name": "focused-followup",
+      "runId": "2026-10-23T20-20-00-269Z--7",
+      "sourceRevision": "788b1fe0c24d3277b0d01bba674ad86952e2f7fc",
+      "note": "Development failure: independent fixture omitted its declared conformance directory; corrected fixture.",
+      "status": "failed",
+      "startedAt": "2026-10-23T20:20:00.273Z",
+      "finishedAt": "2026-10-23T20:20:08.906Z",
+      "durationMs": 8633,
+      "profiles": [],
+      "selectedTasks": [
+        "fastly-host-extension-proof",
+        "provider-fastly-package",
+        "fastly-native-platform-capabilities",
+        "cli-diagnostics"
+      ],
+      "completedTasks": 1,
+      "passed": 0,
+      "failed": 1,
+      "notRun": 3,
+      "reportSha256": "6dbdde020755d37e4554147c0dbd75569b42d911e99e6b70a02d10155a232fc3",
+      "logSha256": "50465819cb8b0bbd976bcdb5a42d24aa3de54f483f7457d21421741e1eaceef2",
+      "tasks": [
+        {
+          "task": "fastly-host-extension-proof",
+          "status": "failed",
+          "durationMs": 8623,
+          "exitCode": 1,
+          "timedOut": false
+        }
+      ],
+      "failureLogTail": "\n[pulsewasm:providers] fastly-host-extension-proof\n[pulsewasm] HEX-01 private package-owned terminal handoff, target admission and import audit (timeout 120.00s)\n/workspace/scratch/253982db7f9e/pulse/wasm/packages/compiler/src/canonical-project-compiler.js:1013\n    throw error;\n    ^\n\nTypeError: external-fixture.transport conformance.fixtureRoots does not exist: ./conformance.\n    at resolveInsidePackage (/workspace/scratch/253982db7f9e/pulse/wasm/packages/library-kit/src/compiler/package-contracts.js:103:40)\n    at validateOwnedPaths (/workspace/scratch/253982db7f9e/pulse/wasm/packages/library-kit/src/compiler/package-contracts.js:156:57)\n    at discoverPulsePackageContracts (/workspace/scratch/253982db7f9e/pulse/wasm/packages/library-kit/src/compiler/package-contracts.js:194:5)\n    at discoverPackageContractCatalog (/workspace/scratch/253982db7f9e/pulse/wasm/packages/compiler/src/spine/package-operation-seam.js:137:26)\n    at discoverResolvedPackageContract (/workspace/scratch/253982db7f9e/pulse/wasm/packages/compiler/src/project/reachable-graph-builder.js:452:19)\n    at packageModuleForSpecifier (/workspace/scratch/253982db7f9e/pulse/wasm/packages/compiler/src/project/reachable-graph-builder.js:474:3)\n    at resolveModuleEdges (/workspace/scratch/253982db7f9e/pulse/wasm/packages/compiler/src/project/reachable-graph-builder.js:732:27)\n    at loadProjectModule (/workspace/scratch/253982db7f9e/pulse/wasm/packages/compiler/src/project/reachable-graph-builder.js:787:3)\n    at buildReachableProjectGraph (/workspace/scratch/253982db7f9e/pulse/wasm/packages/compiler/src/project/reachable-graph-builder.js:954:17)\n    at Object.compileCanonicalProjectLegacy [as compileLegacy] (/workspace/scratch/253982db7f9e/pulse/wasm/packages/compiler/src/canonical-project-compiler.js:999:18)\n\nNode.js v24.19.0\n[pulsewasm] fastly-host-extension-proof: failed in 8.62s\n\n[pulsewasm] test summary\n  failed         8.62s  fastly-host-extension-proof  (/tmp/runs/2026-10-23T20-20-00-269Z--7/tasks/fastly-host-extension-proof.log)\n  report       /tmp/hex02-focused-followup.json\n  run logs     /tmp/runs/2026-10-23T20-20-00-269Z--7\n  total        8.63s\n"
+    },
+    {
+      "name": "focused-final",
+      "runId": "2026-10-23T20-20-50-538Z--6",
+      "sourceRevision": "788b1fe0c24d3277b0d01bba674ad86952e2f7fc",
+      "note": "Four development tasks passed, including broader Fastly realization. Later parser formatting, reserved-prefix validation and test additions are qualified by the final focused run. Not an immutable aggregate.",
+      "status": "passed",
+      "startedAt": "2026-10-23T20:20:50.550Z",
+      "finishedAt": "2026-10-23T20:24:14.344Z",
+      "durationMs": 203794,
+      "profiles": [],
+      "selectedTasks": [
+        "fastly-host-extension-proof",
+        "provider-fastly-package",
+        "fastly-native-platform-capabilities",
+        "cli-diagnostics"
+      ],
+      "completedTasks": 4,
+      "passed": 4,
+      "failed": 0,
+      "notRun": 0,
+      "reportSha256": "0b0440557a37f590168cdc857bb7aae6076faba923203744812530724641afb2",
+      "logSha256": "633e1c1adac0d10674f60c7429345c35c1abec15b6a0da1e2e73cbab40cc20f6",
+      "tasks": [
+        {
+          "task": "fastly-host-extension-proof",
+          "status": "passed",
+          "durationMs": 10592,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "provider-fastly-package",
+          "status": "passed",
+          "durationMs": 9970,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "fastly-native-platform-capabilities",
+          "status": "passed",
+          "durationMs": 178380,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-diagnostics",
+          "status": "passed",
+          "durationMs": 4839,
+          "exitCode": 0,
+          "timedOut": false
+        }
+      ]
+    },
+    {
+      "name": "contract-final",
+      "runId": "2026-10-23T20-25-12-946Z--6",
+      "sourceRevision": "788b1fe0c24d3277b0d01bba674ad86952e2f7fc",
+      "note": "Three final contract/proof/CLI development tasks passed before committing generated derivatives. Uncommitted tree; base commit alone does not identify these bytes.",
+      "status": "passed",
+      "startedAt": "2026-10-23T20:25:12.951Z",
+      "finishedAt": "2026-10-23T20:25:31.997Z",
+      "durationMs": 19047,
+      "profiles": [],
+      "selectedTasks": [
+        "provider-toolchain",
+        "fastly-host-extension-proof",
+        "cli-diagnostics"
+      ],
+      "completedTasks": 3,
+      "passed": 3,
+      "failed": 0,
+      "notRun": 0,
+      "reportSha256": "2f935244490c655bcc1f2768e2e14876c12fe99ceb479026a14d2eae689f1b1a",
+      "logSha256": "59ef42025b006fd1042b9d438726767896bdc65ab45ef9977c40dee1d74091ef",
+      "tasks": [
+        {
+          "task": "provider-toolchain",
+          "status": "passed",
+          "durationMs": 191,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "fastly-host-extension-proof",
+          "status": "passed",
+          "durationMs": 10596,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-diagnostics",
+          "status": "passed",
+          "durationMs": 8250,
+          "exitCode": 0,
+          "timedOut": false
+        }
+      ]
+    },
+    {
+      "name": "portable",
+      "runId": "2026-10-23T20-33-26-348Z--30",
+      "sourceRevision": "e151d87ee882db61e1813c86ea66f91e5a174c77",
+      "note": "Clean immutable local commit, same tree as published implementation. Stopped at cli-report-handler-topology / REPORT_ARTIFACT_HASH. Not a passing aggregate; do not combine focused runs to qualify the unrun selection.",
+      "status": "failed",
+      "startedAt": "2026-10-23T20:33:26.353Z",
+      "finishedAt": "2026-10-23T20:36:17.417Z",
+      "durationMs": 171064,
+      "profiles": [
+        "unit",
+        "native",
+        "javascript",
+        "conformance"
+      ],
+      "selectedTasks": [
+        "binary-resource-admission",
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence",
+        "cli-report-size-evidence",
+        "cli-report-capture-proof",
+        "cli-report-entry-proof",
+        "cli-report-reference-provenance",
+        "cli-report-handler-topology",
+        "cli-report-handler-associations",
+        "cli-report-relationships",
+        "cli-report-imported-inputs",
+        "cli-report-resource-inventory",
+        "cli-report-graph-diagnostics",
+        "multifile-source-indexes",
+        "guest-json-roundtrip",
+        "pure-helper-contract",
+        "callable-source-admission",
+        "suite-shape",
+        "test-orchestration",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "hidden-contracts",
+        "release-feature-acceptance",
+        "release-runtime-policy",
+        "release-seal-lifecycle",
+        "release-checkpoints",
+        "release-recovery-runner",
+        "release-recovery",
+        "release-tag",
+        "api-surface",
+        "logging-contract",
+        "s3-design-contract",
+        "kv-design-contract",
+        "kv-conditional-runtime",
+        "kv-conditional-gates",
+        "s3-read-contract",
+        "s3-write-contract",
+        "crypto-config-planning",
+        "crypto-es256-signing",
+        "crypto-rs256",
+        "crypto-digest-text-contract",
+        "reachable-graph",
+        "project-modules",
+        "package-reachability",
+        "external-lowerers",
+        "package-runtime",
+        "provider-toolchain",
+        "schema-registry",
+        "continuation-registry",
+        "entities-contracts",
+        "entities-schema-bridge",
+        "entities-javascript-runtime",
+        "entities-json-rpc-corpus",
+        "mcp-http",
+        "pulse-context-corpus",
+        "pulse-context-build",
+        "pulse-context-application",
+        "pulse-context-host",
+        "mcp-compatibility",
+        "mcp-tools",
+        "mcp-authorization",
+        "entities-package-owned-lowering",
+        "entities-catalog",
+        "entities-inspection",
+        "entities-orchestration-demo",
+        "context-native-proof",
+        "npm-source-imports",
+        "fastly-numeric-regions",
+        "fastly-numeric-budgets",
+        "fastly-handle-ownership",
+        "fastly-handle-frames",
+        "pure-helper-vocabulary",
+        "pure-string-index",
+        "pure-field-projection",
+        "pure-guarded-arguments",
+        "pure-source-helpers",
+        "pure-record-helpers",
+        "pure-argument-helpers",
+        "pure-loop-helpers",
+        "fastly-driver-behavior-o09",
+        "kv-native-abi-feasibility",
+        "s3-native-read",
+        "s3-body-read",
+        "s3-node-transport",
+        "canonical-api-lowering",
+        "canonical-native-plan",
+        "shared-stage-o19",
+        "str02b-node-native",
+        "fastly-incoming-body-forwarding",
+        "str03a-generated-output",
+        "str03c-bounded-transforms",
+        "bounded-app-logic",
+        "bounded-read-loops",
+        "bounded-loop-helpers",
+        "logging-lowering",
+        "canonical-router-lowering",
+        "canonical-router-terminal-middleware",
+        "router-selected-groups",
+        "json-as-compatibility",
+        "entities-envelope-feasibility",
+        "entities-managed-handler",
+        "entities-managed-handler-effects",
+        "entities-native-runtime",
+        "entities-hardening",
+        "entities-node-native-workflow",
+        "pulse-context-tools",
+        "pulse-context-quality-actual",
+        "pulse-context-quality-growth",
+        "pulse-context-quality-repeat",
+        "callable-public-contract",
+        "callable-composition-proof",
+        "callable-authored-native",
+        "callable-authored-composition",
+        "callable-authored-javascript",
+        "callable-authored-routed",
+        "callable-lifetime",
+        "mcp-native-binding",
+        "fastly-entities-native-workflow",
+        "crypto-native-guest-source",
+        "guest-link-package",
+        "guest-link-materialization-stage",
+        "guest-link-audit-diagnostics",
+        "assets-lowering-plan",
+        "assets-package-owned-lowering",
+        "assets-native-embedded",
+        "grip-package-owned-lowering",
+        "jwt-package-owned-lowering",
+        "canonical-api-runtime",
+        "canonical-opaque-node-emission",
+        "grip-package-runtime",
+        "package-root-native",
+        "canonical-native-wasm",
+        "cli-javascript-target-compilation",
+        "target-support",
+        "jwt-javascript-admission",
+        "crypto-runtime-builtin",
+        "javascript-effect-adapter",
+        "logging-runtime",
+        "assets-javascript-runtime",
+        "native-context-primitives",
+        "binary-resource-execution",
+        "effect-collections",
+        "effect-collection-providers",
+        "jwt-signing",
+        "jwt-es256-signing",
+        "jwt-rs256",
+        "s3-write-conformance",
+        "crypto-cross-target-conformance",
+        "crypto-digest-text-conformance",
+        "crypto-digest-storage-conformance",
+        "multifile-source-identity",
+        "text-capacity-conformance",
+        "events-conformance",
+        "node-router-context-parity",
+        "catalog-router-parity",
+        "fetch-projections-request-bodies",
+        "config-secrets-kv-redaction",
+        "kv-conditional-conformance",
+        "kv-conditional-adversarial",
+        "fastly-conditional-kv",
+        "schema-codecs",
+        "schema-kv-parity",
+        "time-conformance",
+        "time-consumer",
+        "request-budget-transport",
+        "node-launcher",
+        "http-input-outcomes",
+        "application-errors",
+        "application-error-boundaries",
+        "node-cross-target-conformance",
+        "grip-cross-target-conformance",
+        "four-mode-conformance"
+      ],
+      "completedTasks": 16,
+      "passed": 15,
+      "failed": 1,
+      "notRun": 159,
+      "reportSha256": "170dfd82f117b7a26f20a2860298d50e2d2bc5bcdb32c52df2bc1327a2d1ed77",
+      "logSha256": "9871eae63e399e06c42a14e0b6cab6b9aa7f523f1b6438ef704ca0c4d203e10a",
+      "tasks": [
+        {
+          "task": "binary-resource-admission",
+          "status": "passed",
+          "durationMs": 237,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "report-capsule-contract",
+          "status": "passed",
+          "durationMs": 17805,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-report-workflow",
+          "status": "passed",
+          "durationMs": 3937,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-report-viewer",
+          "status": "passed",
+          "durationMs": 11443,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-report-retained-evidence",
+          "status": "passed",
+          "durationMs": 43632,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-report-size-evidence",
+          "status": "passed",
+          "durationMs": 939,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-report-capture-proof",
+          "status": "passed",
+          "durationMs": 7880,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-report-entry-proof",
+          "status": "passed",
+          "durationMs": 33259,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-report-reference-provenance",
+          "status": "passed",
+          "durationMs": 12527,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-report-handler-topology",
+          "status": "failed",
+          "durationMs": 24795,
+          "exitCode": 1,
+          "timedOut": false
+        },
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "durationMs": 165,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "durationMs": 241,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "durationMs": 427,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "durationMs": 270,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "passed",
+          "durationMs": 9433,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "release-runtime-policy",
+          "status": "passed",
+          "durationMs": 4046,
+          "exitCode": 0,
+          "timedOut": false
+        }
+      ],
+      "failureLogTail": "B\":142904,\"capsuleBytes\":48762,\"sidecarBytes\":5552,\"mappedRoutes\":5,\"directUniqueBytes\":112,\"executions\":5},{\"target\":\"fastly\",\"optimization\":\"default\",\"bytes\":27735,\"sha256\":\"948b93e934ff142b0627504ecad8a56c43614d7b17399fbeabddd4bc12f5fcb8\",\"unchanged\":true,\"ascCalls\":2,\"generatorCalls\":2,\"controlMs\":1517,\"captureMs\":1637,\"collectionMs\":48,\"collectionRssDelta\":3145728,\"processMaxRssKiB\":150824,\"capsuleBytes\":113061,\"sidecarBytes\":17428,\"mappedRoutes\":5,\"directUniqueBytes\":117,\"executions\":5},{\"target\":\"portable\",\"optimization\":\"experimental-native-size\",\"bytes\":2464,\"sha256\":\"0a7f1918ac0ccc8ba74b6b61b84cf2ce5d46f4beb30b640379291f45ade9497c\",\"unchanged\":true,\"ascCalls\":2,\"generatorCalls\":2,\"controlMs\":929,\"captureMs\":959,\"collectionMs\":15,\"collectionRssDelta\":0,\"processMaxRssKiB\":152360,\"capsuleBytes\":48585,\"sidecarBytes\":5385,\"mappedRoutes\":5,\"directUniqueBytes\":112,\"executions\":5}],\"notes\":\"Paired builds are a test only. Report performs no compile or disassembly. RSS and timings are diagnostic, not a benchmark guarantee.\"}\n[pulsewasm] cli-report-capture-proof: passed in 7.88s\n\n[pulsewasm:native] cli-report-entry-proof\n[pulsewasm] RPT8-01 production entry/stage/helper attribution and byte-preserving capture (timeout 120.00s)\n[pulsewasm] Running cli-report-entry-proof (execution); elapsed 110.04s\n[pulsewasm] Running cli-report-entry-proof (execution); elapsed 120.05s\n[pulsewasm] Running cli-report-entry-proof (execution); elapsed 130.05s\n{\"status\":\"passed\",\"fixture\":\"transfer-router\",\"cells\":[{\"target\":\"portable\",\"optimization\":\"native-shrink0\",\"entries\":9,\"provenEntries\":6,\"productionMappedRoutes\":4,\"productionExpectedRoutes\":6,\"sharedRegistrations\":2,\"sharedPhysicalBodies\":1,\"sharedPhysicalBytes\":570,\"dispatcherCarrierEntries\":3,\"wholeExecutableUnchanged\":true,\"generatorCalls\":2,\"ascCalls\":2,\"requests\":14,\"graph\":\"available\",\"convergenceEmissions\":0},{\"target\":\"fastly\",\"optimization\":\"native-shrink0\",\"entries\":9,\"provenEntries\":6,\"productionMappedRoutes\":4,\"productionExpectedRoutes\":6,\"sharedRegistrations\":2,\"sharedPhysicalBodies\":1,\"sharedPhysicalBytes\":854,\"dispatcherCarrierEntries\":3,\"wholeExecutableUnchanged\":true,\"generatorCalls\":2,\"ascCalls\":2,\"requests\":14,\"graph\":\"available\",\"convergenceEmissions\":0},{\"target\":\"portable\",\"optimization\":\"experimental-native-size\",\"entries\":9,\"provenEntries\":6,\"productionMappedRoutes\":4,\"productionExpectedRoutes\":6,\"sharedRegistrations\":2,\"sharedPhysicalBodies\":1,\"sharedPhysicalBytes\":489,\"dispatcherCarrierEntries\":3,\"wholeExecutableUnchanged\":true,\"generatorCalls\":2,\"ascCalls\":2,\"requests\":14,\"graph\":\"available\",\"convergenceEmissions\":2},{\"target\":\"portable\",\"optimization\":\"experimental-native-bounded-size\",\"entries\":9,\"provenEntries\":6,\"productionMappedRoutes\":4,\"productionExpectedRoutes\":6,\"sharedRegistrations\":2,\"sharedPhysicalBodies\":1,\"sharedPhysicalBytes\":489,\"dispatcherCarrierEntries\":3,\"wholeExecutableUnchanged\":true,\"generatorCalls\":2,\"ascCalls\":2,\"requests\":14,\"graph\":\"available\",\"convergenceEmissions\":0},{\"target\":\"fastly\",\"optimization\":\"experimental-native-bounded-size\",\"entries\":9,\"provenEntries\":6,\"productionMappedRoutes\":4,\"productionExpectedRoutes\":6,\"sharedRegistrations\":2,\"sharedPhysicalBodies\":1,\"sharedPhysicalBytes\":438,\"dispatcherCarrierEntries\":3,\"wholeExecutableUnchanged\":true,\"generatorCalls\":2,\"ascCalls\":2,\"requests\":14,\"graph\":\"available\",\"convergenceEmissions\":0}],\"additional\":[{\"target\":\"portable\",\"optimization\":\"native-shrink0\",\"mappedRoutes\":7,\"exactRoutes\":5,\"sharedHelperConsumers\":2,\"helperBodies\":1,\"survivingHelperBodies\":0,\"requests\":10,\"wholeExecutableUnchanged\":true},{\"target\":\"portable\",\"optimization\":\"native-bounded-size\",\"mappedRoutes\":7,\"exactRoutes\":7,\"sharedHelperConsumers\":2,\"helperBodies\":1,\"survivingHelperBodies\":1,\"requests\":10,\"wholeExecutableUnchanged\":true},{\"target\":\"fastly\",\"optimization\":\"native-shrink0\",\"mappedRoutes\":7,\"exactRoutes\":5,\"sharedHelperConsumers\":2,\"helperBodies\":1,\"survivingHelperBodies\":0,\"requests\":10,\"wholeExecutableUnchanged\":true},{\"target\":\"fastly\",\"optimization\":\"native-bounded-size\",\"mappedRoutes\":7,\"exactRoutes\":7,\"sharedHelperConsumers\":2,\"helperBodies\":1,\"survivingHelperBodies\":1,\"requests\":10,\"wholeExecutableUnchanged\":true}],\"scope\":\"Production entry/stage capture; dispatcher carriers are explicit, not handler sizes. No exclusive ownership claim.\"}\n[pulsewasm] cli-report-entry-proof: passed in 33.26s\n\n[pulsewasm:native] cli-report-reference-provenance\n[pulsewasm] RPT8-02 resolved reference identities, shared consumers, unknowns, privacy and byte-preserving capture (timeout 120.00s)\n[pulsewasm] Running cli-report-reference-provenance (execution); elapsed 140.05s\n{\"status\":\"passed\",\"cells\":[{\"optimization\":\"native-shrink0\",\"bindings\":4,\"references\":7,\"requests\":10,\"unchanged\":true},{\"optimization\":\"experimental-native-bounded-size\",\"bindings\":4,\"references\":7,\"requests\":10,\"unchanged\":true}],\"retainedReplay\":true,\"foreignOffsetRejected\":true,\"packageBinding\":true,\"redacted\":true}\n[pulsewasm] cli-report-reference-provenance: passed in 12.53s\n\n[pulsewasm:native] cli-report-handler-topology\n[pulsewasm] AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison (timeout 180.00s)\n[analytics parity] http/native-shrink0: control and observed compilation\n[pulsewasm] Running cli-report-handler-topology (execution); elapsed 150.05s\n[analytics parity] http/experimental-native-bounded-size: control and observed compilation\n[pulsewasm] Running cli-report-handler-topology (execution); elapsed 160.05s\n[analytics parity] event/native-shrink0: control and observed compilation\n[pulsewasm] Running cli-report-handler-topology (execution); elapsed 170.06s\nTypeError: Report input rejected (REPORT_ARTIFACT_HASH).\n    at fail (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/data.js:7:17)\n    at ensure (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:18:55)\n    at /workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:63:5\n    at Array.map (<anonymous>)\n    at artifactRecords (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:60:21)\n    at Object.publishBuild (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:80:21)\n    at compileNativeProjectWithReport (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/project-execution.js:1242:52)\n    at /workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/project-execution.js:1117:66\n    at withReportBuild (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/project-execution.js:709:12)\n    at Object.compileNativeProject (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/project-execution.js:1117:10) {\n  code: 'REPORT_ARTIFACT_HASH',\n  field: '$'\n}\n[pulsewasm] cli-report-handler-topology: failed in 24.80s\n\n[pulsewasm] test summary\n  passed         237ms  binary-resource-admission  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/binary-resource-admission.log)\n  passed        17.80s  report-capsule-contract  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/report-capsule-contract.log)\n  passed         3.94s  cli-report-workflow  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/cli-report-workflow.log)\n  passed        11.44s  cli-report-viewer  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/cli-report-viewer.log)\n  passed        43.63s  cli-report-retained-evidence  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/cli-report-retained-evidence.log)\n  passed         939ms  cli-report-size-evidence  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/cli-report-size-evidence.log)\n  passed         7.88s  cli-report-capture-proof  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/cli-report-capture-proof.log)\n  passed        33.26s  cli-report-entry-proof  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/cli-report-entry-proof.log)\n  passed        12.53s  cli-report-reference-provenance  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/cli-report-reference-provenance.log)\n  failed        24.80s  cli-report-handler-topology  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/cli-report-handler-topology.log)\n  passed         165ms  suite-shape  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/suite-shape.log)\n  passed         241ms  package-exports  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/package-exports.log)\n  passed         427ms  boundaries  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/boundaries.log)\n  passed         270ms  workspace-hygiene  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/workspace-hygiene.log)\n  passed         9.43s  release-feature-acceptance  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/release-feature-acceptance.log)\n  passed         4.05s  release-runtime-policy  (/tmp/runs/2026-10-23T20-33-26-348Z--30/tasks/release-runtime-policy.log)\n  report       /tmp/hex02-portable.json\n  run logs     /tmp/runs/2026-10-23T20-33-26-348Z--30\n  total        171.06s\n"
+    },
+    {
+      "name": "immutable-focused",
+      "runId": "2026-10-23T20-37-00-788Z--7",
+      "sourceRevision": "00830927084b6dc1b5d61351c039402bbe0f19f8",
+      "note": "Clean published implementation commit. Six selected tasks passed; contract task contains 54 cases. Focused development evidence only.",
+      "status": "passed",
+      "startedAt": "2026-10-23T20:37:00.793Z",
+      "finishedAt": "2026-10-23T20:37:22.638Z",
+      "durationMs": 21845,
+      "profiles": [],
+      "selectedTasks": [
+        "provider-toolchain",
+        "package-reachability",
+        "external-lowerers",
+        "grip-package-owned-lowering",
+        "fastly-host-extension-proof",
+        "cli-diagnostics"
+      ],
+      "completedTasks": 6,
+      "passed": 6,
+      "failed": 0,
+      "notRun": 0,
+      "reportSha256": "30861378ef6e01dcd3d1cc533bf9a74275dcf164bf54b8c5dc6c3deab7e0ace2",
+      "logSha256": "3c34131127c88c11f494c2ef0cafbe18fdf8926b73fe9533539ca49337d2434e",
+      "tasks": [
+        {
+          "task": "provider-toolchain",
+          "status": "passed",
+          "durationMs": 189,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "package-reachability",
+          "status": "passed",
+          "durationMs": 1028,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "external-lowerers",
+          "status": "passed",
+          "durationMs": 1677,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "grip-package-owned-lowering",
+          "status": "passed",
+          "durationMs": 340,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "fastly-host-extension-proof",
+          "status": "passed",
+          "durationMs": 9904,
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "task": "cli-diagnostics",
+          "status": "passed",
+          "durationMs": 8692,
+          "exitCode": 0,
+          "timedOut": false
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "command": "npm run build",
+      "status": "failed-then-passed",
+      "failedLogSha256": "8da8ae81be9ea21b496b04ef4d82dd822f392f53c161b3bea0ee9d8943ca329d",
+      "failure": "Stale context-data/vector.bin after diagnostic catalog regeneration. Resolved by pinned Node 24.18.0 producer; no pin or check bypass.",
+      "finalLogSha256": "ff85b2886ed9f3bd035696c80a1246acdad951a18a8020685fca9048c2dcf6ec",
+      "finalExitCode": 0,
+      "source": "Final production and generated bytes before implementation commit; HEX-02 internal record/evidence added separately."
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "failed-then-passed",
+      "failedLogSha256": "099c584955d5abe935367a67fa22ee9ac91c7007ec2c8e154ed739f544f1ba0d",
+      "failure": "Stale context-data/vector.bin after diagnostic catalog regeneration. Resolved by pinned Node 24.18.0 producer; no pin or check bypass.",
+      "finalLogSha256": "c4ba4757de8427dc4e62528f6b6dd88a399ef2ed0f17aa7018b9765fcbc5e1d6",
+      "finalExitCode": 0,
+      "source": "Final production and generated bytes before implementation commit; HEX-02 internal record/evidence added separately."
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "failed-then-passed",
+      "failedLogSha256": "e0d6a3fd154371ca7cb9be7adcba61f258a11c302424d1b52be479f97e555089",
+      "failure": "Stale context-data/vector.bin after diagnostic catalog regeneration. Resolved by pinned Node 24.18.0 producer; no pin or check bypass.",
+      "finalLogSha256": "09895c60f3b6ebffdbe7ae24e996c77f58b019fb82d8d94405eeb7c18da4ac3c",
+      "finalExitCode": 0,
+      "source": "Final production and generated bytes before implementation commit; HEX-02 internal record/evidence added separately."
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "failed-then-passed",
+      "failedLogSha256": "17ee4b156f486ca574da86187fd4e006e8e5c34d10a26395c524f5ce8798babe",
+      "failure": "Stale context-data/vector.bin after diagnostic catalog regeneration. Resolved by pinned Node 24.18.0 producer; no pin or check bypass.",
+      "finalLogSha256": "9d1afdfd8a928c3e707b84e39b81ac97d01502d104b7c4c4628938c7a34b22c1",
+      "finalExitCode": 0,
+      "source": "Final production and generated bytes before implementation commit; HEX-02 internal record/evidence added separately."
+    },
+    {
+      "command": "npm run docs:sync",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "89fc04e779d85be6ce149612f05fbae43868d4d7a9ff1abe88a6e8866765f72f",
+      "detail": null
+    },
+    {
+      "command": "npm run maintainer:sync",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f",
+      "detail": null
+    },
+    {
+      "command": "Node 24.18.0 scripts/pulse-context-build.cjs --write",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "cc03a8e52f0cd1602e787b081b70afa3ba842cdf777a1b79567fe6b0eaec88a4",
+      "detail": "{\"schemaVersion\":\"pulse.context-build-receipt.v1\",\"status\":\"ok\",\"mode\":\"write\",\"executionNode\":\"24.18.0\",\"pinnedProducerNode\":\"24.18.0\",\"manifestSha256\":\"8e0c9cfec4c5250c95cef3648da56993f660564fa277f04c19d8376f06c090d7\",\"corpusHash\":\"e6ec7fe998cff0fb6a187fb509159039ac24135207cc61ce846aa64036982180\",\"dimensions\":{\"rows\":275,\"dimension\":2588,\"nonzeros\":16290,\"dictionarySha256\":\"d3cb282946b8b0a67a229c0460db217db6954a19ff7c908c26768bcd43f42d2a\",\"manifestId\":\"8201f09c56705117de3a9341da988a2ad72645a6e0a1570d724b7237a73a7c75\",\"catalogueIdentity\":\"dd0669231583cec007b5fdafed941ebc5ab56798927ef34b5f5c4d2758edd218\",\"rawBytes\":632608,\"serializedBytes\":844130,\"budgets\":{\"files\":3,\"fileBytes\":5242880,\"totalBytes\":8388608,\"serializedBytes\":16777216,\"bindings\":3}},\"changedFiles\":24,\"comparedFiles\":30}\n"
+    },
+    {
+      "command": "node docs/internal/host-extensions/assert-hex01.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "3c53cef477897c08b00279b694ed3e5eddf9c330f418f2549045863cb0426de4",
+      "detail": "ok - HEX-02 authored independently versioned external lowerer, injected host execution, conflict location and builder containment\nok - HEX-02 provider metadata, source diagnostics, selected-only emission, order independence and external owner admission\nok - HEX-01 authored proof, 3 exact baselines, 3 unsupported targets, 19 injected lifecycle cases, admission/import negatives\n"
+    }
+  ],
+  "scope": {
+    "status": "decision-required",
+    "changeClass": "architecture",
+    "scope": "architecture-change",
+    "inferredBoundaries": [
+      "lowerer-trust",
+      "provider-registry",
+      "runtime-target-fluidity"
+    ],
+    "additionalDeclaredBoundary": "effect-capability-model",
+    "directionSupplied": true,
+    "humanReviewOutstanding": true
+  },
+  "remaining": [
+    "Portable profiles stopped after 16 of 175 selected tasks: 15 passed, 1 failed, 159 not run. REPORT_ARTIFACT_HASH overlaps the report area tracked in #516; cause is not established.",
+    "Complete provider and CLI profiles have not been qualified on this candidate; focused checks do not replace them.",
+    "HEX-03 terminal cleanup, failure ownership and second-operation proof.",
+    "Viceroy/hosted acceptance, packed independent consumers and release seal are not claimed.",
+    "Human review and stability decision before merging or promoting to latest."
+  ],
+  "evidenceOnlyFollowup": "This receipt and the HEX-02 internal record are added after implementation validation. No executable source or generated product data changes in the evidence commit.",
+  "evidenceWorkingTreeChecks": [
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "c4ba4757de8427dc4e62528f6b6dd88a399ef2ed0f17aa7018b9765fcbc5e1d6"
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "4886fa5c2e80bb136eb3b1307d7d1688bd263131871db958647bf2ff31e70399"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "7657fb50588baf598bfb702858ac7d9f74db072c404da554920bcdc248c2f111"
+    }
+  ]
+}

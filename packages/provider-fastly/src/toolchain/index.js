@@ -168,6 +168,7 @@ function createDriver() {
         version: 'pulse.provider-target-descriptor.v1',
         target: 'native',
         targetId: 'fastly-compute-native',
+        hostExtensions: require('../build/host-extensions').ADMISSION,
         runtimeClass: 'native',
         status: 'supported',
         capabilities: Object.freeze([

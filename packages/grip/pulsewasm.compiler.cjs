@@ -890,10 +890,10 @@ function broadcastEntry(ts, sourceFile, call, diagnostics) {
 function fanoutProofArtifact() {
   const source = '@external("fastly_http_req", "redirect_to_grip_proxy_v2") declare function __grip_fanout(request: i32, backend: usize, length: i32): i32\n';
   return {
-    version: 'pulse.host-extension-proof.v0', id: '@pulse-compute/grip:fanout',
-    kind: 'host-extension-proof', mediaType: 'text/assemblyscript',
+    version: 'pulse.host-extension.v1', id: '@pulse-compute/grip:fanout',
+    kind: 'host-extension', mediaType: 'text/assemblyscript',
     package: '@pulse-compute/grip', contractId: gripContracts.GRIP_CONTRACT_ID,
-    data: { target: 'fastly-compute-native', operation: 'handoffFanout', service: 'terminal-request-backend.v0',
+    data: { target: { provider: 'fastly', target: 'native', targetId: 'fastly-compute-native' }, operation: 'handoffFanout', service: 'terminal-request-backend.v1',
       source, sha256: require('node:crypto').createHash('sha256').update(source).digest('hex'), entry: '__grip_fanout',
       imports: [{ module: 'fastly_http_req', name: 'redirect_to_grip_proxy_v2', parameters: ['i32', 'i32', 'i32'], results: ['i32'] }] }
   };

@@ -610,3 +610,82 @@ ownership. Its Native component builder contributes dispatch, codecs and managed
 continuations with package-owned transport hooks. MCP supplies its HTTP protocol
 at those hooks. The internal JavaScript transport export uses the same Entities
 operation pipeline; detached schema descriptions include declared IDs only.
+
+
+## Operation-level host contributions
+
+The HEX integration workstream defines `pulse.host-extension.v1` inside the
+existing `realizationArtifacts` array. The builder-result and artifact-set
+carrier versions do not change. Other artifact kinds and current lowerers keep
+their existing contracts. This protocol does not promote the provisional GRIP
+Fanout method to the released supported API; packed and actual-host
+qualification remain separate acceptance work.
+
+A lowerer contributes a plain immutable data record with these exact fields:
+
+| Field | Required value or meaning |
+| --- | --- |
+| `version` | `pulse.host-extension.v1` |
+| `kind`, `mediaType` | `host-extension`, `text/assemblyscript` |
+| `id` | Package-qualified ID beginning with `<package>:` |
+| `package`, `contractId` | Exact selected lowerer authority |
+| `data.target` | Exact `{ provider, target: "native", targetId }` |
+| `data.operation` | Operation name under that package and contract |
+| `data.service` | Required versioned provider service |
+| `data.source`, `data.sha256` | Self-contained generated source and its exact SHA-256 |
+| `data.entry` | Package-owned source symbol beginning with `__`; never `__pulse_` or `__Pulse` |
+| `data.imports` | Unique `{ module, name, parameters, results }` declarations |
+
+Source is at most 65,536 UTF-8 bytes. This representation carries generated
+source, not file paths or export resolvers. Module `import`/`export` keywords
+(including in comments) and `__pulse_`/`__Pulse` identifiers are excluded. The trusted
+builder and manifest still resolve through the existing package-contained,
+symlink-checked path contract. No new filesystem read authority is introduced
+by the artifact. These restrictions bind the declared source closure; they do
+not sandbox trusted build dependencies or generated native code.
+
+Import types are MVP `i32`, `i64`, `f32`, or `f64`, with at most 32 parameters
+and one result. At most 64 imports and 256 candidate contributions are admitted.
+The provider service can impose a narrower signature and placement.
+
+The optional target descriptor field `hostExtensions` advertises
+`{ version: "pulse.host-extension-admission.v1", protocols, services }`.
+Absence means no host-contribution admission. Selection matches package,
+contract, operation and all three target fields, then requires an advertised
+protocol and service. Npm release versions do not participate. Exactly one
+compatible contribution may realize each used operation. Duplicate IDs,
+overlapping compatible realizations, conflicting contract ownership of a
+package operation, and selected entry-symbol collisions fail. Disjoint targets
+can coexist; input graph or declaration order does not choose a winner.
+
+Only selected implementations enter provider source or its effective import
+ceiling. The ceiling is computed from provider baseline imports and validated
+selected declarations before inspecting emitted Wasm. Contributions may not
+redeclare baseline imports. Identical selected import declarations can share
+an import; conflicting signatures fail. `pulse.host-extension-import-policy.v1`
+binds baseline identity, selected package/contract/operation/target/service,
+source digests, entry symbols and declared signatures. The binary audit checks
+actual function types, missing selected imports, undeclared imports, conflicting
+observed signatures and policy-content identity. Observed imports never grant
+permission. Selected manifest attribution and actual binary audit observations
+remain distinct records.
+
+Fastly Native currently advertises only `terminal-request-backend.v1`. It
+accepts one directly returned terminal operation in an ordinary handler with a
+static logical backend key and one `(i32, i32, i32) -> i32` host import. The
+provider supplies request handle and UTF-8 backend pointer/length, owns dispatch
+and completion, and prevents response emission after dispatch. Helpers,
+Router/managed handlers, grouped or additional effects, request-body/state
+access, body forwarding, logging and guest-unit composition remain rejected.
+This version preserves the HEX-01 lifecycle, including unresolved actual-host
+cleanup and failure ownership; it adds no scheduler, new lifecycle form, retry
+or failure-driven implementation fallback.
+
+Generic methods and host-specific methods can coexist in a package. Unsupported
+reachable operations fail with a `PULSE_HOST_EXTENSION_*` diagnostic and authored
+location where an operation is available; dynamically invoked JavaScript calls
+retain their package guard. Generic GRIP methods keep their existing semantics.
+Stable public diagnostics cover target, protocol, binding, ownership, source,
+conflict, signature, import-policy and placement failures. No provider object,
+compiler service, mutable configuration or resolved secret is added to the
+lowerer invocation.

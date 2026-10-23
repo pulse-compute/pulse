@@ -424,7 +424,8 @@ function normalizePackageBuilderResult(input, authorityInput = {}) {
       resultAdapters: array('resultAdapters'),
       schemaReferences: array('schemaReferences'),
       cryptoRequirements: array('cryptoRequirements'),
-      realizationArtifacts: array('realizationArtifacts'),
+      realizationArtifacts: array('realizationArtifacts').map(artifact => artifact.kind === 'host-extension'
+        ? require('../provider/host-extension').normalizeContribution(artifact, authority) : artifact),
       inspectionArtifacts: array('inspectionArtifacts'),
       managedHandlers: array('managedHandlers'),
       guestUnits: Object.freeze(array('guestUnits').map(normalizeCanonicalGuestUnitContribution))

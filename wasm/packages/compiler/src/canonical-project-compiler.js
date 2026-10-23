@@ -1048,18 +1048,17 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
     workspaceRoot: options.workspaceRoot,
     schemaBundle: schema.bundle
   });
-  // Private HEX-01 target admission. Package operation identity stays outside
-  // compiler registries; the selected provider descriptor supplies target identity.
-  for (const operation of packageOperationRecognition.operations.filter(item => item.kind === 'host.extension')) {
-    const candidates = packageOperationRecognition.realizationArtifacts.filter(item =>
-      item.kind === 'host-extension-proof' && item.package === operation.package
-      && item.contractId === operation.contractId && item.data.operation === operation.operation);
-    const target = options.packageTargetDescriptor?.targetId || 'unspecified-native-host';
-    if (candidates.length !== 1 || options.target === 'javascript' || candidates[0].data.target !== target) {
-      const message = `${operation.package}.${operation.operation} is not implemented for this host (${target}); requires ${candidates.map(item => item.data.target).join(', ') || 'an owned host contribution'}.`;
-      throw new CanonicalProjectCompileError(message, [{ code: 'PULSEWASM_HOST_EXTENSION_PROOF_TARGET', severity: 'error', message, loc: operation.source }],
-        { operation: operation.operation, package: operation.package, target, loc: operation.source }, 'PULSEWASM_HOST_EXTENSION_PROOF_TARGET');
-    }
+  // Operation selection is generic and data-only. Only the selected provider
+  // advertises protocol/service admission; package names grant no capability.
+  try {
+    require('@pulse-compute/wasm-contracts/provider/toolchain').hostExtensions.select(
+      packageOperationRecognition.operations, packageOperationRecognition.realizationArtifacts,
+      { ...options.packageTargetDescriptor, target: options.target || 'native' });
+  } catch (error) {
+    if (!error.code?.startsWith('PULSE_HOST_EXTENSION_')) throw error;
+    throw new CanonicalProjectCompileError(error.message,
+      [{ code: error.code, severity: 'error', message: error.message, loc: error.detail?.loc }],
+      { ...error.detail, target: options.packageTargetDescriptor?.targetId || 'unspecified' }, error.code);
   }
   let managedHandlers = null;
   if (packageOperationRecognition.managedHandlers.length > 0) {

@@ -121,6 +121,25 @@ function main() {
     fs.rmSync(tmpRoot, { recursive: true, force: true });
   }
 
+  const extensionParent = path.join(repoRoot, 'wasm/.test-results');
+  fs.mkdirSync(extensionParent, { recursive: true });
+  const extensionRoot = fs.mkdtempSync(path.join(extensionParent, 'hex02-diagnostics-'));
+  try {
+    const source = "import { grip } from '@pulse-compute/grip';\nexport default async function handler(ctx) { return grip.handoffFanout('fanout'); }\n";
+    writeProject(extensionRoot, source, "{ host: 'node', target: 'native' }");
+    for (const command of ['inspect', 'compile']) {
+      const error = parseFailure(run([command, extensionRoot, '--json'], repoRoot), 3);
+      assertShape(error, 'PULSE_HOST_EXTENSION_TARGET', 'capability');
+      assert.equal(error.detail.loc.start.line, 2);
+    }
+    writeProject(extensionRoot, source, "{ host: 'node', target: 'javascript' }");
+    assertShape(parseFailure(run(['inspect', extensionRoot, '--json'], repoRoot), 3), 'PULSE_HOST_EXTENSION_TARGET', 'capability');
+    writeProject(extensionRoot, source, "{ host: 'fastly', target: 'native', fastly: { bindings: {} } }");
+    const binding = parseFailure(run(['inspect', extensionRoot, '--json'], repoRoot), 3);
+    assertShape(binding, 'PULSE_HOST_EXTENSION_BINDING', 'capability');
+    assert.equal(binding.detail.loc.line, 2);
+  } finally { fs.rmSync(extensionRoot, { recursive: true, force: true }); }
+
   let missingFastly;
   try { resolveFastlyCliBinary({ env: { PATH: '', PULSE_FASTLY_BIN: '' } }); }
   catch (error) { missingFastly = errorSummary(error); }

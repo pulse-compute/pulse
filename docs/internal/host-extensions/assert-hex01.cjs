@@ -69,7 +69,7 @@ for (const [provider,target] of [['node','native'],['node','javascript'],['fastl
   const descriptor=require(path.join(root, `packages/provider-${provider}/src/${provider === 'fastly' ? 'toolchain/index.js' : 'toolchain.js'}`)).createDriver().targets[target];
   const targetId=descriptor.targetId;
   assert.throws(()=>compileCanonicalProject(path.join(__dirname,'fixtures/fanout.ts'),{rootDir:root,target,packageTargetDescriptor:descriptor}),error=> {
-    assert.equal(error.code,'PULSEWASM_HOST_EXTENSION_PROOF_TARGET');
+    assert.equal(error.code,'PULSE_HOST_EXTENSION_TARGET');
     assert.match(error.message,/not implemented for this host/);
     assert.equal(error.detail.loc.start.line,3);
     receipt.targets.push({target,targetId,code:error.code,message:error.message,source:error.detail.loc}); return true;
@@ -77,9 +77,9 @@ for (const [provider,target] of [['node','native'],['node','javascript'],['fastl
   compileCanonicalProject(path.join(__dirname,'fixtures/generic.ts'),{rootDir:root,target,packageTargetDescriptor:descriptor});
 }
 assert.throws(()=>platform.inspectFastlyNativePlatformCapabilitiesWasm(native.wasm),/outside/,'unselected imports rejected');
-for (const change of [a=>{a.package='other';},a=>{a.data.sha256='0'.repeat(64);},a=>{a.data.imports[0].parameters=['i64'];}]) {
+for (const [code,change] of [['OWNER',a=>{a.package='other';}],['SOURCE',a=>{a.data.sha256='0'.repeat(64);} ],['SIGNATURE',a=>{a.data.imports[0].parameters=['i64'];}]]) {
   const artifacts=structuredClone(options.realizationArtifacts);change(artifacts[0]);
-  assert.throws(()=>platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(plan,{...options,realizationArtifacts:artifacts}),/HEX-01/);
+  assert.throws(()=>platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(plan,{...options,realizationArtifacts:artifacts}),{code:'PULSE_HOST_EXTENSION_'+code});
 }
 assert.throws(()=>platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(plan,{...options,bindings:{}}),/configured static backend/);
 // The package guard covers dynamic JavaScript calls that static recognition misses.
@@ -111,6 +111,7 @@ const wrongType=structuredClone(options.realizationArtifacts);
 wrongType[0].data.source=wrongType[0].data.source.replace('length: i32', 'length: i64');
 wrongType[0].data.sha256=require('node:crypto').createHash('sha256').update(wrongType[0].data.source).digest('hex');
 assert.throws(()=>platform.compileFastlyNativePlatformCapabilitiesPlan(plan,{...options,realizationArtifacts:wrongType}),/conflicting ABI signature/);
+require('../../../wasm/test/provider/host-extension-admission-cases.cjs')({ native, compiled, plan, options });
 if(record) fs.writeFileSync(path.join(__dirname,'hex01-result.json'),JSON.stringify(receipt,null,2)+'\n');
 console.log(`ok - HEX-01 authored proof, 3 ${compareBaseline ? 'exact baselines' : 'unused controls'}, 3 unsupported targets, ${receipt.executions.length} injected lifecycle cases, admission/import negatives`);
 }

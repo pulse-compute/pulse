@@ -15,6 +15,17 @@ function entry(category, options = {}) {
 }
 
 const DIAGNOSTIC_DEFINITIONS = Object.freeze({
+  PULSE_HOST_EXTENSION_INVALID: entry('compile', { exitCode: 3, remediation: ['Correct the package-owned contribution record; unknown fields and executable values are rejected.'] }),
+  PULSE_HOST_EXTENSION_PROTOCOL: entry('capability', { exitCode: 3, remediation: ['Select a provider advertising the exact contribution protocol and required service; npm versions need not match.'] }),
+  PULSE_HOST_EXTENSION_OWNER: entry('compile', { exitCode: 3, remediation: ['Keep the contribution, contract and operation under the authority selected by the reachable package graph.'] }),
+  PULSE_HOST_EXTENSION_TARGET: entry('capability', { exitCode: 3, remediation: ['Select a compatible explicit host/mode or use the package generic method; no fallback is automatic.'] }),
+  PULSE_HOST_EXTENSION_SOURCE: entry('compile', { exitCode: 3, remediation: ['Provide bounded self-contained generated AssemblyScript with a matching SHA-256 and package-owned entry symbol.'] }),
+  PULSE_HOST_EXTENSION_CONFLICT: entry('compile', { exitCode: 3, remediation: ['Keep exactly one compatible contribution per used operation and remove duplicate identities or baseline import redeclarations.'] }),
+  PULSE_HOST_EXTENSION_SIGNATURE: entry('compile', { exitCode: 3, remediation: ['Match the provider service signature and the actual Wasm function import types.'] }),
+  PULSE_HOST_EXTENSION_IMPORT: entry('compile', { exitCode: 3, remediation: ['Declare all additional imports before emission and preserve the validated contribution and policy identities.'] }),
+  PULSE_HOST_EXTENSION_BINDING: entry('capability', { exitCode: 3, remediation: ['Configure the operation logical backend key in the selected profile backends map.'] }),
+  PULSE_HOST_EXTENSION_PLACEMENT: entry('capability', { exitCode: 3, remediation: ['Use one directly returned terminal operation in an ordinary handler; composition and other effects require separate admission.'] }),
+
   PULSE_CALL_SOURCE_ENTRY: entry('compile', { exitCode: 3, remediation: ["Place the call in a named plain handler, a reachable Router handler, or a selected managed operation."] }),
   PULSE_CALL_SOURCE_CONTEXT: entry('compile', { exitCode: 3, remediation: ["Use a simple named context parameter at the selected caller position."] }),
   PULSE_CALL_SOURCE_FORM: entry('compile', { exitCode: 3, remediation: ["Use ctx.call(importedFunction, input, { inputSchema: 'app.Input', outputSchema: 'app.Output' }) without aliases, computed access, type arguments or spreads."] }),
@@ -208,6 +219,17 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
  });
 
 const DIAGNOSTIC_SUMMARIES = Object.freeze({
+  PULSE_HOST_EXTENSION_INVALID: 'Host contribution data does not match the bounded schema.',
+  PULSE_HOST_EXTENSION_PROTOCOL: 'The selected host contribution protocol or service is unsupported.',
+  PULSE_HOST_EXTENSION_OWNER: 'Host contribution ownership disagrees with its selected package operation.',
+  PULSE_HOST_EXTENSION_TARGET: 'A used package operation has no implementation for the selected host and mode.',
+  PULSE_HOST_EXTENSION_SOURCE: 'Generated host contribution source or its digest is invalid.',
+  PULSE_HOST_EXTENSION_CONFLICT: 'Selected host contribution identities, operations or import declarations conflict.',
+  PULSE_HOST_EXTENSION_SIGNATURE: 'The declared or emitted host ABI signature is incompatible.',
+  PULSE_HOST_EXTENSION_IMPORT: 'Emitted imports or import-policy identity exceed the admitted host contribution contract.',
+  PULSE_HOST_EXTENSION_BINDING: 'A host contribution requires a configured static backend binding.',
+  PULSE_HOST_EXTENSION_PLACEMENT: 'The host contribution appears outside the provider service supported placement.',
+
   PULSE_CALL_SOURCE_ENTRY: "Computation calls need a selected project HTTP caller.",
   PULSE_CALL_SOURCE_CONTEXT: "The computation caller context parameter is unsupported.",
   PULSE_CALL_SOURCE_FORM: "Computation call syntax is not a direct static call.",
