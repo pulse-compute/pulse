@@ -26,7 +26,7 @@ async function websocket(p) {
   return new Promise((resolve, reject) => {
     const socket = net.connect(p, '127.0.0.1'); let buffer = Buffer.alloc(0), upgraded = false;
     const timer = setTimeout(() => socket.destroy(Error('WebSocket frame timeout')), 5000);
-    socket.on('error', reject); socket.on('close', () => clearTimeout(timer));
+    socket.on('error', reject); socket.on('close', () => { clearTimeout(timer); reject(Error('WebSocket closed before the expected frame')); });
     socket.on('connect', () => socket.write('GET /fanout HTTP/1.1\r\nHost: localhost\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n\r\n'));
     socket.on('data', bytes => {
       buffer = Buffer.concat([buffer, bytes]);

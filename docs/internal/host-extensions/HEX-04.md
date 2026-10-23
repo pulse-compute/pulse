@@ -81,6 +81,76 @@ failure. The harness retains that failure and continues the independent Viceroy
 lane, leaving Fanout hold/publish acceptance **not run**. It never substitutes a
 mock proxy for Pushpin or treats an unavailable lane as passing.
 
-Final candidate identities, terminal regression receipts, exact measurements and
-the readiness decision belong in `hex04-validation.json` and the retained
-`hex04-evidence/` bundle. Their absence means qualification is still in progress.
+## Retained qualification
+
+The product candidate was built and tested at local commit
+`69e0d59771d8c8664524da5af1f72613e6e64048`, tree
+`34034e5d429d6795f29113c51a83b56ba99bada1`. The published implementation commit
+`10797ad76f5cfb74a0027eae27df54e7498e0783` has that exact tree; only Git commit
+metadata differs. The evidence includes the local commit object and the
+blob/tree equivalence receipt. The follow-up records evidence and makes the
+local WebSocket probe reject premature peer closure; that harness-only fix was
+checked with an early-close negative case and rerun against the same packed
+artifacts. No package payload was changed by the follow-up.
+
+| Installed Fastly Native fixture | Bytes | Delta from its pinned baseline | Delta from absent import |
+| --- | ---: | ---: | ---: |
+| Absent import | 23,444 | 0 | 0 |
+| Imported but unused | 23,444 | 0 | 0 |
+| Generic GRIP | 25,268 | 0 | +1,824 |
+| Fanout | 27,305 | 0 | +3,861 |
+| WebSocket | 27,310 | 0 | +3,866 |
+
+All five artifacts are byte-for-byte identical to their corresponding baseline,
+including imports. The three controls have ten imports and no selected extension;
+each used fixture has thirteen imports and one selected contribution. Raw Wasm,
+complete hashes, manifests/policies, installed-file inventories, command logs and
+reports are retained. The compatibility matrix includes both static target
+rejections on all three unsupported targets and the separate opaque Node JS
+facade guard.
+
+The regression selection contains 199 distinct tasks from unit, CLI, Native,
+JavaScript and conformance profiles plus the handoff proof. Every task has a
+passing result across the retained development runs. The first run completed
+30 passes and one `release-recovery` checkpoint-retention failure; that test
+passed an isolated unchanged-source retry. A subsequent run completed 49 tasks
+before the execution service disconnected and changed executor identity. Its
+original incomplete receipt is retained with an external-interruption record.
+The next run starts at the unfinished documentation task, completes another
+53 passes, then encounters a `pulse-context-tools` setup collision: leftover
+example dependency links from the interrupted execution were copied and then
+created again (`EEXIST`). Those task-owned links/outputs were preserved outside
+the checkout, without source edits. The final run starts at that failed task
+and completes all remaining 66 tasks. These manually combined results are not an uninterrupted
+release-controller run or a release seal. The initial retention failure's root
+cause remains unresolved.
+
+Local Viceroy passes four cases on the packed artifacts: each handoff's ordinary
+branch, WebSocket HTTP handoff, and upgrade with a bidirectional frame. The
+Pushpin worker could not start, so Fanout GRIP hold/publish is **not run**. Hosted
+entitlement, service identity and live behavior are also **not run**. Injected
+lifecycle assertions remain separately identified in the handoff-proof task log.
+
+The comparison examples show an extension addition, Fanout-to-WebSocket
+replacement (one removal and one addition, net zero), and historical missing
+attribution (unknown coverage, no invented addition). Source fingerprints remain
+null and build reports contain no fabricated test evidence.
+
+See [the validation ledger](./hex04-validation.json) and
+[archive index](./hex04-evidence-index.json). The
+[evidence archive](./hex04-evidence.tar.gz) preserves each indexed file's exact
+bytes, including failed attempts. Extract it outside the checkout:
+
+```sh
+mkdir -p /tmp/hex04-review
+tar -xzf docs/internal/host-extensions/hex04-evidence.tar.gz -C /tmp/hex04-review
+```
+
+Ledger paths beginning `hex04-evidence/` refer to that extracted root. Raw runner
+receipts retain their original absolute log paths; the same files are under the
+corresponding `regressions/<attempt>/` directory in the archive. Archive and file
+SHA-256 identities are checked in the ledger/index.
+
+HEX-04 is ready for review against `hex-integration`. This is not authorization
+to merge or promote `latest`, and it does not waive missing local/hosted acceptance
+or promote provisional methods to released support.
