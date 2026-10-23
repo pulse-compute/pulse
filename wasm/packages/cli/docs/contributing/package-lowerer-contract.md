@@ -618,7 +618,7 @@ The HEX integration workstream defines `pulse.host-extension.v1` inside the
 existing `realizationArtifacts` array. The builder-result and artifact-set
 carrier versions do not change. Other artifact kinds and current lowerers keep
 their existing contracts. This protocol does not promote the provisional GRIP
-Fanout method to the released supported API; packed and actual-host
+Fanout/WebSocket methods to the released supported API; packed and actual-host
 qualification remain separate acceptance work.
 
 A lowerer contributes a plain immutable data record with these exact fields:
@@ -677,9 +677,29 @@ provider supplies request handle and UTF-8 backend pointer/length, owns dispatch
 and completion, and prevents response emission after dispatch. Helpers,
 Router/managed handlers, grouped or additional effects, request-body/state
 access, body forwarding, logging and guest-unit composition remain rejected.
-This version preserves the HEX-01 lifecycle, including unresolved actual-host
-cleanup and failure ownership; it adds no scheduler, new lifecycle form, retry
-or failure-driven implementation fallback.
+The service borrows the request handle: status zero transfers downstream
+response authority but leaves local request/body handles owned by the provider.
+Contributions implementing this service must preserve that borrowing contract.
+The provider closes those handles once on success, including when completion
+later fails, and on undispatched invocation exit. Cleanup failures do not retry
+or restore response authority. After a nonzero status or trap, ownership remains
+uncertain; the provider performs no speculative close and leaves reclamation to
+host teardown. Hosted correspondence and failure-status ownership remain
+unqualified. There is no retry or failure-driven implementation fallback.
+
+Opaque completion is bound to the selected effect's invocation ticket and a
+private provider delivery path. Raw exported result setters cannot authenticate
+terminal results; stale, reused and forged completion is rejected. The shared
+request deadline is checked immediately before dispatch, and a closed invocation
+cannot start or settle the handoff. Normal, shared-error and timeout responders
+are fenced after dispatch, including an ambiguous outcome. The provider retires
+its token on completion or invocation close. This synchronous service adds no
+cancellation API or scheduler; a hostcall already executing cannot be interrupted.
+
+GRIP's provisional `handoffFanout` and `handoffWebSocket` use the same service and
+protocol, differing only in package-owned source/ABI identity. The latter binds
+`redirect_to_websocket_proxy_v2`; no session or frame engine is added. Neither
+method is promoted to the released supported facade by this integration pass.
 
 Generic methods and host-specific methods can coexist in a package. Unsupported
 reachable operations fail with a `PULSE_HOST_EXTENSION_*` diagnostic and authored

@@ -1,0 +1,234 @@
+{
+  "kind": "local core-Wasm ABI ownership and authored Pulse transport probes; not hosted acceptance",
+  "engine": {
+    "version": "viceroy 0.18.0",
+    "binarySha256": "e2173c8799f73850e657e3722ce5000d3338ccdf6246790688a6b8ae8e53b896"
+  },
+  "cases": [
+    {
+      "abi": "redirect_to_grip_proxy_v2",
+      "scenario": "valid request",
+      "sourceSha256": "dd7f4895b7f01e8023236b3e4f89221b9619930a50d52fe0155b8eecae2f1264",
+      "wasmSha256": "331649a780d1766a5d18b6fc35143a009401e88e8070b4fc539a86cd66e71bb0",
+      "trace": {
+        "acquired": 0,
+        "status": 0,
+        "requestStillReadable": 0,
+        "requestClose": 0,
+        "bodyClose": 0,
+        "requestCloseAgain": 3,
+        "bodyCloseAgain": 3
+      },
+      "response": {
+        "status": 500,
+        "body": "Pushpin handoff signaled, but Pushpin mode not enabled."
+      },
+      "logs": "2026-10-23T21:15:12.717542Z ERROR Pushpin handoff signaled, but Pushpin mode not enabled.\nstdout :: HEX03:{\"acquired\":0,\"status\":0,\"requestStillReadable\":0,\"requestClose\":0,\"bodyClose\":0,\"requestCloseAgain\":3,\"bodyCloseAgain\":3}\n"
+    },
+    {
+      "abi": "redirect_to_grip_proxy_v2",
+      "scenario": "invalid request",
+      "sourceSha256": "7b1f3d9660362f7c5ad02fde69a6a9bc398281fd7a4d67a68ce66f1ed8180416",
+      "wasmSha256": "5c9bd45c363789a8501c380b167f77725811c7cc23b12762797ef17f2f90e992",
+      "trace": {
+        "acquired": 0,
+        "status": 3,
+        "requestStillReadable": 0,
+        "requestClose": 0,
+        "bodyClose": 0,
+        "requestCloseAgain": 3,
+        "bodyCloseAgain": 3
+      },
+      "response": {
+        "status": 200,
+        "body": ""
+      },
+      "logs": "stdout :: HEX03:{\"acquired\":0,\"status\":3,\"requestStillReadable\":0,\"requestClose\":0,\"bodyClose\":0,\"requestCloseAgain\":3,\"bodyCloseAgain\":3}\n"
+    },
+    {
+      "abi": "redirect_to_grip_proxy_v2",
+      "scenario": "utf8",
+      "sourceSha256": "fb5a4a886aaa6af2e61e896a8fcbddb8509a3358fd0af9f6a023ac8780f828ac",
+      "wasmSha256": "bd13ae082eb256a47e541b2b63297d277c1cd35e3f2448fb85a9d4bb3f772d5d",
+      "trace": {
+        "acquired": 0,
+        "status": 2,
+        "requestStillReadable": 0,
+        "requestClose": 0,
+        "bodyClose": 0,
+        "requestCloseAgain": 3,
+        "bodyCloseAgain": 3
+      },
+      "response": {
+        "status": 200,
+        "body": ""
+      },
+      "logs": "stdout :: HEX03:{\"acquired\":0,\"status\":2,\"requestStillReadable\":0,\"requestClose\":0,\"bodyClose\":0,\"requestCloseAgain\":3,\"bodyCloseAgain\":3}\n"
+    },
+    {
+      "abi": "redirect_to_grip_proxy_v2",
+      "scenario": "repeat",
+      "sourceSha256": "197cbe28e4f167c36ad0a12aec4db76e1fe185de3eac14781af9955220553ffd",
+      "wasmSha256": "e074c54b45e9449308bce23992b2da75c8ad676dc8016bd521e3315d824d8416",
+      "trace": {
+        "acquired": 0,
+        "status": 1,
+        "requestStillReadable": 0,
+        "requestClose": 0,
+        "bodyClose": 0,
+        "requestCloseAgain": 3,
+        "bodyCloseAgain": 3
+      },
+      "response": {
+        "status": 500,
+        "body": "Pushpin handoff signaled, but Pushpin mode not enabled."
+      },
+      "logs": "stdout :: HEX03:{\"acquired\":0,\"status\":1,\"requestStillReadable\":0,\"requestClose\":0,\"bodyClose\":0,\"requestCloseAgain\":3,\"bodyCloseAgain\":3}\n2026-10-23T21:15:16.227312Z ERROR Pushpin handoff signaled, but Pushpin mode not enabled.\n"
+    },
+    {
+      "abi": "redirect_to_websocket_proxy_v2",
+      "scenario": "valid request",
+      "sourceSha256": "4c6dfffa2f9877bd2d0399b6d0ad0bb4cba8fb0927f52e63689adc46926d229d",
+      "wasmSha256": "fa57b057286320912090ccd86a3187edc8d6e43c86fd8d5bc0220e7ae778ad0a",
+      "trace": {
+        "acquired": 0,
+        "status": 0,
+        "requestStillReadable": 0,
+        "requestClose": 0,
+        "bodyClose": 0,
+        "requestCloseAgain": 3,
+        "bodyCloseAgain": 3
+      },
+      "response": {
+        "status": 200,
+        "body": "backend"
+      },
+      "logs": "stdout :: HEX03:{\"acquired\":0,\"status\":0,\"requestStillReadable\":0,\"requestClose\":0,\"bodyClose\":0,\"requestCloseAgain\":3,\"bodyCloseAgain\":3}\n"
+    },
+    {
+      "abi": "redirect_to_websocket_proxy_v2",
+      "scenario": "invalid request",
+      "sourceSha256": "3ea0bcc99abb90613498ef3c478e730180b912580811b442a9679c5199532273",
+      "wasmSha256": "87b167d32363b776ecd5bdd38e5f88b41207c6eb82d1c023e0e5f3ef1a99325d",
+      "trace": {
+        "acquired": 0,
+        "status": 3,
+        "requestStillReadable": 0,
+        "requestClose": 0,
+        "bodyClose": 0,
+        "requestCloseAgain": 3,
+        "bodyCloseAgain": 3
+      },
+      "response": {
+        "status": 200,
+        "body": ""
+      },
+      "logs": "stdout :: HEX03:{\"acquired\":0,\"status\":3,\"requestStillReadable\":0,\"requestClose\":0,\"bodyClose\":0,\"requestCloseAgain\":3,\"bodyCloseAgain\":3}\n"
+    },
+    {
+      "abi": "redirect_to_websocket_proxy_v2",
+      "scenario": "utf8",
+      "sourceSha256": "dc58b6889e9f7a340668676c307a56433854c63dbb3f8dfade686d8e4b49e7e4",
+      "wasmSha256": "6d6b2d9854014309897e9cded81c05adbacaa1204cb09d6217736257f3fa7add",
+      "trace": {
+        "acquired": 0,
+        "status": 2,
+        "requestStillReadable": 0,
+        "requestClose": 0,
+        "bodyClose": 0,
+        "requestCloseAgain": 3,
+        "bodyCloseAgain": 3
+      },
+      "response": {
+        "status": 200,
+        "body": ""
+      },
+      "logs": "stdout :: HEX03:{\"acquired\":0,\"status\":2,\"requestStillReadable\":0,\"requestClose\":0,\"bodyClose\":0,\"requestCloseAgain\":3,\"bodyCloseAgain\":3}\n"
+    },
+    {
+      "abi": "redirect_to_websocket_proxy_v2",
+      "scenario": "repeat",
+      "sourceSha256": "0b74f45f027eea08d7f4c076dc7682d7d44d470929d53bdb2058a184b83331fa",
+      "wasmSha256": "e004e2bb9cd036a75e7151a95c10a70fa5361fd35cc21442271cb5b05249e6b7",
+      "trace": {
+        "acquired": 0,
+        "status": 1,
+        "requestStillReadable": 0,
+        "requestClose": 0,
+        "bodyClose": 0,
+        "requestCloseAgain": 3,
+        "bodyCloseAgain": 3
+      },
+      "response": {
+        "status": 200,
+        "body": "backend"
+      },
+      "logs": "stdout :: HEX03:{\"acquired\":0,\"status\":1,\"requestStillReadable\":0,\"requestClose\":0,\"bodyClose\":0,\"requestCloseAgain\":3,\"bodyCloseAgain\":3}\n"
+    },
+    {
+      "scenario": "valid request",
+      "fixture": "fanout",
+      "ordinary": false,
+      "sourceSha256": "431ef8efbda0a0587c64800c4a7e0d871a9d8b2629a09eddcc8a29ea5c184781",
+      "wasmSha256": "353b107a95673170f6f8bdb5a42d39df2c5baf6e2df424b580a08d35df761504",
+      "trace": null,
+      "response": {
+        "status": 500,
+        "body": "Pushpin handoff signaled, but Pushpin mode not enabled."
+      },
+      "logs": "2026-10-23T21:15:23.052016Z ERROR Pushpin handoff signaled, but Pushpin mode not enabled.\n"
+    },
+    {
+      "scenario": "valid request",
+      "fixture": "fanout",
+      "ordinary": true,
+      "sourceSha256": "431ef8efbda0a0587c64800c4a7e0d871a9d8b2629a09eddcc8a29ea5c184781",
+      "wasmSha256": "353b107a95673170f6f8bdb5a42d39df2c5baf6e2df424b580a08d35df761504",
+      "trace": null,
+      "response": {
+        "status": 200,
+        "body": "ordinary response"
+      },
+      "logs": ""
+    },
+    {
+      "scenario": "valid request",
+      "fixture": "websocket",
+      "ordinary": false,
+      "sourceSha256": "e0f9fc6e87166958cbc8a4fc939d336b87d3da3ddebed2e2cdb0a9921340bce6",
+      "wasmSha256": "9dcd31171336c29f184baef097ba4b10923ca4632d197599fea1793ca4ff43bd",
+      "trace": null,
+      "response": {
+        "status": 200,
+        "body": "backend"
+      },
+      "logs": ""
+    },
+    {
+      "scenario": "valid request",
+      "fixture": "websocket",
+      "ordinary": true,
+      "sourceSha256": "e0f9fc6e87166958cbc8a4fc939d336b87d3da3ddebed2e2cdb0a9921340bce6",
+      "wasmSha256": "9dcd31171336c29f184baef097ba4b10923ca4632d197599fea1793ca4ff43bd",
+      "trace": null,
+      "response": {
+        "status": 200,
+        "body": "ordinary response"
+      },
+      "logs": ""
+    },
+    {
+      "scenario": "valid request",
+      "fixture": "websocket",
+      "upgrade": true,
+      "sourceSha256": "e0f9fc6e87166958cbc8a4fc939d336b87d3da3ddebed2e2cdb0a9921340bce6",
+      "wasmSha256": "9dcd31171336c29f184baef097ba4b10923ca4632d197599fea1793ca4ff43bd",
+      "trace": null,
+      "response": {
+        "status": 101,
+        "upgrade": "websocket"
+      },
+      "logs": ""
+    }
+  ]
+}

@@ -1134,7 +1134,7 @@ const tasks = Object.freeze({
   }),
   'fastly-host-extension-proof': nodeTask('test/provider/assert-fastly-host-extension-proof.cjs', {
     evidence: 'providers', timeoutMs: 120000, scheduling: { compiler: true },
-    description: 'HEX-01 private package-owned terminal handoff, target admission and import audit'
+    description: 'HEX integration: two package-owned terminal handoffs, authenticated lifecycle, admission and import audit'
   }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',

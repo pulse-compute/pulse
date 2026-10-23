@@ -1,0 +1,35 @@
+{
+  "status": "implementation complete; immutable regression validation pending",
+  "implementationBase": "d3eb6648e8084c0c4bba2285e715d00d372e1c87",
+  "branch": "hex/03-terminal-lifecycle",
+  "integration": "hex-integration",
+  "notes": [
+    "Focused lifecycle and local engine proofs completed; full final task coverage recorded in follow-up evidence.",
+    "Human instruction: Done, implement HEX-03."
+  ],
+  "developmentEvidence": {
+    "lifecycleCases": 62,
+    "exactBaselines": 3,
+    "engineCases": 13,
+    "focused": {
+      "passed": 5,
+      "failed": 1,
+      "notRun": 1,
+      "failure": "body-forwarding task captures git diff HEAD with default exec buffer; generated-data diff exceeded maxBuffer (ENOBUFS) before assertions. Retry on clean implementation commit."
+    },
+    "build": "passed",
+    "maintainer": "passed",
+    "docs": "passed",
+    "documentationRelease": "passed",
+    "failedFixtureAttempts": [
+      "Missing injected fastly_async_io module for budgeted artifact; fixture corrected.",
+      "Unreachable top-level function is outside canonical source grammar; unused-method control instead supplies the real unselected WebSocket contribution and compares emitted bytes.",
+      "Standalone AS probe used absolute module path with relative abort symbol; compiled from its temporary cwd instead."
+    ]
+  },
+  "remaining": [
+    "Hosted failure ownership and statuses 4\u201314/traps remain unresolved.",
+    "Fanout delivery requires Pushpin; ABI signal alone does not prove delivery.",
+    "No packed or release acceptance claim."
+  ]
+}

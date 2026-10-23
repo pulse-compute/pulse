@@ -1,0 +1,2264 @@
+{
+  "kind": "injected-host; not Fastly acceptance",
+  "cases": [
+    {
+      "name": "fanout success",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 3,
+      "status": 0,
+      "error": 0,
+      "stage": 0
+    },
+    {
+      "name": "fanout unknown ownership status 1",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 1
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 1,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 2",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 2
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 2,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 3",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 3
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 3,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 4",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 4
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 4,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 5",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 5
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 5,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 6",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 6
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 6,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 7",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 7
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 7,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 8",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 8
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 8,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 9",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 9
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 9,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 10",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 10
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 10,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 11",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 11
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 11,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 12",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 12
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 12,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 13",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 13
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 13,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout unknown ownership status 14",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 14
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 14,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "fanout trap then repeated entry",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": "trap"
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": "injected ambiguous outcome",
+      "state": 1,
+      "status": -1,
+      "error": 1007,
+      "stage": 171
+    },
+    {
+      "name": "fanout stale/reused completion and all late send paths",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 3,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout forged/premature raw setter 0",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout forged/premature raw setter -1",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout forged/premature raw setter 1",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout forged/premature raw setter 2147483647",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout forged/premature raw setter actual",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout closed invocation before dispatch",
+      "trace": [
+        {
+          "call": "status",
+          "status": 500
+        },
+        {
+          "call": "write",
+          "body": "Internal Server Error"
+        },
+        {
+          "call": "send",
+          "response": 101,
+          "body": 102
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 0,
+      "status": -1,
+      "error": 1007,
+      "stage": 171,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout closure during dispatch",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 102,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout deadline before dispatch",
+      "trace": [
+        {
+          "call": "status",
+          "status": 504
+        },
+        {
+          "call": "write",
+          "body": "Gateway Timeout"
+        },
+        {
+          "call": "send",
+          "response": 101,
+          "body": 102
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 0,
+      "status": -1,
+      "error": 0,
+      "stage": 260,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout deadline at final pre-ABI fence",
+      "trace": [
+        {
+          "call": "status",
+          "status": 504
+        },
+        {
+          "call": "write",
+          "body": "Gateway Timeout"
+        },
+        {
+          "call": "send",
+          "response": 101,
+          "body": 102
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 0,
+      "status": -1,
+      "error": 0,
+      "stage": 260,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout deadline after transfer",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1003,
+      "stage": 260,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout foreign invocation ticket",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout cleanup failure without retry or response",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 3
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 3
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1003,
+      "stage": 285,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout forged terminal result after settlement",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 283,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "fanout ordinary response",
+      "trace": [
+        {
+          "call": "status",
+          "status": 200
+        },
+        {
+          "call": "write",
+          "body": "ordinary response"
+        },
+        {
+          "call": "send",
+          "response": 101,
+          "body": 102
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 0,
+      "status": -1,
+      "error": 0,
+      "stage": 0,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket success",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 3,
+      "status": 0,
+      "error": 0,
+      "stage": 0
+    },
+    {
+      "name": "websocket unknown ownership status 1",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 1
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 1,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 2",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 2
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 2,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 3",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 3
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 3,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 4",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 4
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 4,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 5",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 5
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 5,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 6",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 6
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 6,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 7",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 7
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 7,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 8",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 8
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 8,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 9",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 9
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 9,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 10",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 10
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 10,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 11",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 11
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 11,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 12",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 12
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 12,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 13",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 13
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 13,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket unknown ownership status 14",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 14
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": null,
+      "state": 1,
+      "status": 14,
+      "error": 1003,
+      "stage": 281
+    },
+    {
+      "name": "websocket trap then repeated entry",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": "trap"
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": []
+      },
+      "thrown": "injected ambiguous outcome",
+      "state": 1,
+      "status": -1,
+      "error": 1007,
+      "stage": 171
+    },
+    {
+      "name": "websocket stale/reused completion and all late send paths",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 3,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket forged/premature raw setter 0",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket forged/premature raw setter -1",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket forged/premature raw setter 1",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket forged/premature raw setter 2147483647",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket forged/premature raw setter actual",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket closed invocation before dispatch",
+      "trace": [
+        {
+          "call": "status",
+          "status": 500
+        },
+        {
+          "call": "write",
+          "body": "Internal Server Error"
+        },
+        {
+          "call": "send",
+          "response": 101,
+          "body": 102
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 0,
+      "status": -1,
+      "error": 1007,
+      "stage": 171,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket closure during dispatch",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 102,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket deadline before dispatch",
+      "trace": [
+        {
+          "call": "status",
+          "status": 504
+        },
+        {
+          "call": "write",
+          "body": "Gateway Timeout"
+        },
+        {
+          "call": "send",
+          "response": 101,
+          "body": 102
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 0,
+      "status": -1,
+      "error": 0,
+      "stage": 260,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket deadline at final pre-ABI fence",
+      "trace": [
+        {
+          "call": "status",
+          "status": 504
+        },
+        {
+          "call": "write",
+          "body": "Gateway Timeout"
+        },
+        {
+          "call": "send",
+          "response": 101,
+          "body": 102
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 0,
+      "status": -1,
+      "error": 0,
+      "stage": 260,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket deadline after transfer",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1003,
+      "stage": 260,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket foreign invocation ticket",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 284,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket cleanup failure without retry or response",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 3
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 3
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1003,
+      "stage": 285,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket forged terminal result after settlement",
+      "trace": [
+        {
+          "call": "handoff",
+          "request": 41,
+          "backend": "fanout_backend",
+          "length": 14,
+          "status": 0
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 2,
+      "status": 0,
+      "error": 1007,
+      "stage": 283,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    },
+    {
+      "name": "websocket ordinary response",
+      "trace": [
+        {
+          "call": "status",
+          "status": 200
+        },
+        {
+          "call": "write",
+          "body": "ordinary response"
+        },
+        {
+          "call": "send",
+          "response": 101,
+          "body": 102
+        }
+      ],
+      "resources": {
+        "acquired": [
+          {
+            "request": 41,
+            "body": 42
+          }
+        ],
+        "closes": [
+          {
+            "kind": "request",
+            "handle": 41,
+            "status": 0
+          },
+          {
+            "kind": "body",
+            "handle": 42,
+            "status": 0
+          }
+        ]
+      },
+      "thrown": null,
+      "state": 0,
+      "status": -1,
+      "error": 0,
+      "stage": 0,
+      "token": 0,
+      "ticket": 0,
+      "closed": 1
+    }
+  ],
+  "artifacts": [
+    {
+      "fixture": "fanout",
+      "bytes": 27305,
+      "sha256": "353b107a95673170f6f8bdb5a42d39df2c5baf6e2df424b580a08d35df761504",
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "redirect_to_grip_proxy_v2",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "093b3d0c8976fad1289c8bc9c8bf80b159465ac641fb0af898e9081ecc5222da",
+      "observedBytes": 28369,
+      "observedSha256": "ad28edb57189326619e2f2aba9ad110a79e26a22af1a15a8fd98eca21653ef0a"
+    },
+    {
+      "fixture": "websocket",
+      "bytes": 27310,
+      "sha256": "9dcd31171336c29f184baef097ba4b10923ca4632d197599fea1793ca4ff43bd",
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "redirect_to_websocket_proxy_v2",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "f127fb386dcfee408cc18736ef25a986909e77d39b55a54409b206dfbf517a1e",
+      "observedBytes": 28374,
+      "observedSha256": "cf28547d61862e040d5c299d1361b18076dcec6746c9ce78ebd9d0a661167d36"
+    }
+  ],
+  "unusedSecondMethod": {
+    "sha256": "353b107a95673170f6f8bdb5a42d39df2c5baf6e2df424b580a08d35df761504",
+    "bytes": 27305,
+    "identical": true
+  }
+}
