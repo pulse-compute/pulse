@@ -260,7 +260,7 @@
       "state": 3,
       "status": 0,
       "error": 1007,
-      "stage": 0
+      "stage": 171
     },
     {
       "name": "ordinary-route",
@@ -522,8 +522,8 @@
       "thrown": "injected ambiguous outcome",
       "state": 1,
       "status": -1,
-      "error": 0,
-      "stage": 0
+      "error": 1007,
+      "stage": 171
     },
     {
       "name": "premature-settlement-injection",

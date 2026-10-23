@@ -1,0 +1,1454 @@
+{
+  "status": "private-spike-proved; aggregate-regression-unresolved; no release/hosted acceptance",
+  "implementation": {
+    "base": "e30754019f03fa95a74ae72392382f44f2351927",
+    "branch": "hex/01-fanout-proof",
+    "integration": "hex-integration",
+    "node": "v24.19.0",
+    "pnpm": "12.4.2",
+    "typescript": "5.9.3",
+    "assemblyscript": "0.28.18",
+    "sources": [
+      {
+        "path": "docs/internal/host-extensions/assert-hex01.cjs",
+        "sha256": "008326ad5a0637b5c19f92d4f5edc2ec6b6524349bfcfd042cbce60c71b6d906"
+      },
+      {
+        "path": "docs/internal/host-extensions/fixtures/absent.ts",
+        "sha256": "8e10e53081ae6251ad2a3317c9086ab9ac70def8fcf455eefa1cc2da2858c0f5"
+      },
+      {
+        "path": "docs/internal/host-extensions/fixtures/fanout.ts",
+        "sha256": "c0b764299110cf16359917cfa85e03622cdd0319351720b3af7beb19d0171470"
+      },
+      {
+        "path": "docs/internal/host-extensions/fixtures/generic.ts",
+        "sha256": "d00342a5e939b9e96c205a7d599462985c23f381c55aa0649e1ce04efeaae2e4"
+      },
+      {
+        "path": "docs/internal/host-extensions/fixtures/unused.ts",
+        "sha256": "7df1b8bf377f9fcef3232d80055e6c87049faefbbab14158a55ccaad78f14a5a"
+      },
+      {
+        "path": "docs/internal/host-extensions/injected-host.cjs",
+        "sha256": "cc8b5a0066e92caa69c77d42c7e71157937b8f21fd7d6b3628f6a169a9c3822d"
+      },
+      {
+        "path": "docs/internal/host-extensions/measure.cjs",
+        "sha256": "2255a7b953f65d6dc08b55d4e72249ea8d93351d6a8e8d4a11cfb14f1b413fc8"
+      },
+      {
+        "path": "packages/grip/pulsewasm.compiler.cjs",
+        "sha256": "778b69a96f76805be9b8b6b4cc05907afb1fbe80f00192ed09b31c121ce8e1ca"
+      },
+      {
+        "path": "packages/grip/src/index.ts",
+        "sha256": "3afbfb3346df2f428729d4998b744897e01049e9559f08a3a71f8a15c312a8d7"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/host-extension-proof.js",
+        "sha256": "321a7be1c2d9b30b72e5e79cd22cd666a34c9b8cf866e53e8345b12d7a1dbbec"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+        "sha256": "e62127f25740dae7a31256f39ade4f9eda4770d3200420994506df176f60057e"
+      },
+      {
+        "path": "packages/provider-fastly/src/provider-contract.js",
+        "sha256": "ba2dca170d66074a59d3ff1e2133c65a551191416dad6c5062dae93f628262d7"
+      },
+      {
+        "path": "scripts/release-evidence-bundle.cjs",
+        "sha256": "5b266e2d4e12c28df646604f771140a824ecb85fd2a3c09bf73c57c82914430b"
+      },
+      {
+        "path": "wasm/packages/compiler/src/canonical-project-compiler.js",
+        "sha256": "35c58be4b35c872fb0d87ad2fbd313147fa536a9f63a9745fd44b2c28debc005"
+      },
+      {
+        "path": "wasm/packages/contracts/src/provider/canonical-provider.js",
+        "sha256": "a6630945c1e26c76ac4a8966ddee12350541b411a4609cf62732b0aa5572722a"
+      },
+      {
+        "path": "wasm/test/provider/assert-fastly-host-extension-proof.cjs",
+        "sha256": "1c05eaac24230b4d36eed07468df68ee1c2500d20fed5d1af3077e0ee90cd1b3"
+      },
+      {
+        "path": "wasm/test/suite/registry.cjs",
+        "sha256": "f8e84cbb2aba94173abbe6e92f6f63627f1c14bd7421593f4f6ee672782ca2f2"
+      },
+      {
+        "path": "pnpm-lock.yaml",
+        "sha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0"
+      },
+      {
+        "path": "package.json",
+        "sha256": "c5630fccdd7233802f493997783e2af1a574241c3d7761d5048bbcd735c36e5d"
+      }
+    ]
+  },
+  "implementationCommit": "1853adbb4a32cc8cc06ed1d656afafe1a0f16612",
+  "implementationTree": "cc1a8a3f8e99f237e4ecd8fbd14d2932d65a4913",
+  "evidenceOnlyFollowup": "After the implementation commit, receipt snapshots were corrected to read post-scenario Wasm error/state exports and the dedicated proof was rerun. Production source is unchanged.",
+  "checks": [
+    {
+      "command": "npm run build",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "TypeScript source unchanged after this build",
+      "logSha256": "0e38dc9e7b5a027ef1d7fef30c8dfda5b8f2dca80b3405c4868351f43077691d",
+      "tasks": []
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task fastly-host-extension-proof --task grip-package-owned-lowering --task grip-package-runtime --task package-reachability --task provider-fastly-package --task provider-fastly-apps --task fastly-javascript-runtime --task fastly-native-http-shell --task fastly-native-http-effects --task fastly-native-platform-capabilities --no-report",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "development snapshot before final extension metadata/source-location attribution edits; final dedicated proof rerun separately",
+      "logSha256": "1909cb39575f0e6ce4c4f42b2059f8839e2c2ee36c4c26e332a00e3b0eac8605",
+      "tasks": [
+        {
+          "task": "fastly-host-extension-proof",
+          "status": "passed",
+          "duration": "9.01s"
+        },
+        {
+          "task": "grip-package-owned-lowering",
+          "status": "passed",
+          "duration": "442ms"
+        },
+        {
+          "task": "grip-package-runtime",
+          "status": "passed",
+          "duration": "700ms"
+        },
+        {
+          "task": "package-reachability",
+          "status": "passed",
+          "duration": "1.17s"
+        },
+        {
+          "task": "provider-fastly-package",
+          "status": "passed",
+          "duration": "10.61s"
+        },
+        {
+          "task": "provider-fastly-apps",
+          "status": "passed",
+          "duration": "994ms"
+        },
+        {
+          "task": "fastly-javascript-runtime",
+          "status": "passed",
+          "duration": "241ms"
+        },
+        {
+          "task": "fastly-native-http-shell",
+          "status": "passed",
+          "duration": "5.59s"
+        },
+        {
+          "task": "fastly-native-http-effects",
+          "status": "passed",
+          "duration": "37.17s"
+        },
+        {
+          "task": "fastly-native-platform-capabilities",
+          "status": "passed",
+          "duration": "184.12s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --profile native --profile javascript --profile conformance --no-report",
+      "status": "failed",
+      "exitCode": 1,
+      "source": "development snapshot before final metadata/source-location edits",
+      "logSha256": "ad5e34a24e4a52690092468f904144a3f3addbd5ba62b3831c441eeb6bbadd49",
+      "tasks": [
+        {
+          "task": "binary-resource-admission",
+          "status": "passed",
+          "duration": "255ms"
+        },
+        {
+          "task": "report-capsule-contract",
+          "status": "passed",
+          "duration": "18.00s"
+        },
+        {
+          "task": "cli-report-workflow",
+          "status": "passed",
+          "duration": "4.37s"
+        },
+        {
+          "task": "cli-report-viewer",
+          "status": "passed",
+          "duration": "11.38s"
+        },
+        {
+          "task": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "46.54s"
+        },
+        {
+          "task": "cli-report-size-evidence",
+          "status": "passed",
+          "duration": "1.09s"
+        },
+        {
+          "task": "cli-report-capture-proof",
+          "status": "passed",
+          "duration": "8.37s"
+        },
+        {
+          "task": "cli-report-entry-proof",
+          "status": "passed",
+          "duration": "33.54s"
+        },
+        {
+          "task": "cli-report-reference-provenance",
+          "status": "passed",
+          "duration": "12.56s"
+        },
+        {
+          "task": "cli-report-handler-topology",
+          "status": "failed",
+          "duration": "34.95s"
+        },
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "175ms"
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "duration": "231ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "411ms"
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "duration": "262ms"
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "passed",
+          "duration": "9.98s"
+        },
+        {
+          "task": "release-runtime-policy",
+          "status": "passed",
+          "duration": "4.08s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --profile native --profile javascript --profile conformance --no-report",
+      "status": "failed",
+      "exitCode": 1,
+      "source": "1853adbb4a32cc8cc06ed1d656afafe1a0f16612 (matching working-tree bytes)",
+      "logSha256": "57b9b82d7fe7bdfa3ad579db503175be7b6092bfaff8efee050a2df760806d25",
+      "tasks": [
+        {
+          "task": "binary-resource-admission",
+          "status": "passed",
+          "duration": "219ms"
+        },
+        {
+          "task": "report-capsule-contract",
+          "status": "passed",
+          "duration": "16.06s"
+        },
+        {
+          "task": "cli-report-workflow",
+          "status": "passed",
+          "duration": "3.51s"
+        },
+        {
+          "task": "cli-report-viewer",
+          "status": "passed",
+          "duration": "11.89s"
+        },
+        {
+          "task": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "43.88s"
+        },
+        {
+          "task": "cli-report-size-evidence",
+          "status": "passed",
+          "duration": "939ms"
+        },
+        {
+          "task": "cli-report-capture-proof",
+          "status": "passed",
+          "duration": "8.02s"
+        },
+        {
+          "task": "cli-report-entry-proof",
+          "status": "passed",
+          "duration": "34.73s"
+        },
+        {
+          "task": "cli-report-reference-provenance",
+          "status": "passed",
+          "duration": "12.39s"
+        },
+        {
+          "task": "cli-report-handler-topology",
+          "status": "failed",
+          "duration": "24.26s"
+        },
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "158ms"
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "duration": "215ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "405ms"
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "duration": "266ms"
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "passed",
+          "duration": "9.26s"
+        },
+        {
+          "task": "release-runtime-policy",
+          "status": "passed",
+          "duration": "3.99s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task cli-report-handler-topology --no-report",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "1853adbb4a32cc8cc06ed1d656afafe1a0f16612 (matching working-tree bytes)",
+      "logSha256": "f733c5f346774747701023b17bb8a6458f24cc29bdf73d0c64278c7bf91867ce",
+      "tasks": [
+        {
+          "task": "cli-report-handler-topology",
+          "status": "passed",
+          "duration": "51.07s"
+        }
+      ]
+    },
+    {
+      "command": "same four profiles --through cli-report-handler-topology --no-report",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "unchanged e30754019f03fa95a74ae72392382f44f2351927; shorter prefix selection",
+      "logSha256": "941c84a4479d6c1512cfd720722795731186a1e82a597190c30d22e83f68bcfe",
+      "tasks": [
+        {
+          "task": "binary-resource-admission",
+          "status": "passed",
+          "duration": "260ms"
+        },
+        {
+          "task": "report-capsule-contract",
+          "status": "passed",
+          "duration": "18.73s"
+        },
+        {
+          "task": "cli-report-workflow",
+          "status": "passed",
+          "duration": "4.03s"
+        },
+        {
+          "task": "cli-report-viewer",
+          "status": "passed",
+          "duration": "11.61s"
+        },
+        {
+          "task": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "43.16s"
+        },
+        {
+          "task": "cli-report-size-evidence",
+          "status": "passed",
+          "duration": "1.05s"
+        },
+        {
+          "task": "cli-report-capture-proof",
+          "status": "passed",
+          "duration": "8.34s"
+        },
+        {
+          "task": "cli-report-entry-proof",
+          "status": "passed",
+          "duration": "35.54s"
+        },
+        {
+          "task": "cli-report-reference-provenance",
+          "status": "passed",
+          "duration": "13.41s"
+        },
+        {
+          "task": "cli-report-handler-topology",
+          "status": "passed",
+          "duration": "56.27s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task <each task in selectedTasks> --no-report",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "unchanged e30754019f03fa95a74ae72392382f44f2351927",
+      "logSha256": "d570184b3e72fad23375279c254ff3c7725715ae76c7068d55a093594c5cd1f7",
+      "tasks": [
+        {
+          "task": "binary-resource-admission",
+          "status": "passed",
+          "duration": "251ms"
+        },
+        {
+          "task": "report-capsule-contract",
+          "status": "passed",
+          "duration": "17.96s"
+        },
+        {
+          "task": "cli-report-workflow",
+          "status": "passed",
+          "duration": "4.20s"
+        },
+        {
+          "task": "cli-report-viewer",
+          "status": "passed",
+          "duration": "12.53s"
+        },
+        {
+          "task": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "43.42s"
+        },
+        {
+          "task": "cli-report-size-evidence",
+          "status": "passed",
+          "duration": "967ms"
+        },
+        {
+          "task": "cli-report-capture-proof",
+          "status": "passed",
+          "duration": "8.27s"
+        },
+        {
+          "task": "cli-report-entry-proof",
+          "status": "passed",
+          "duration": "37.10s"
+        },
+        {
+          "task": "cli-report-reference-provenance",
+          "status": "passed",
+          "duration": "14.12s"
+        },
+        {
+          "task": "cli-report-handler-topology",
+          "status": "passed",
+          "duration": "56.36s"
+        },
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "154ms"
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "duration": "255ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "440ms"
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "duration": "253ms"
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "passed",
+          "duration": "10.67s"
+        },
+        {
+          "task": "release-runtime-policy",
+          "status": "passed",
+          "duration": "4.37s"
+        }
+      ],
+      "selectedTasks": [
+        "binary-resource-admission",
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence",
+        "cli-report-size-evidence",
+        "cli-report-capture-proof",
+        "cli-report-entry-proof",
+        "cli-report-reference-provenance",
+        "cli-report-handler-topology",
+        "suite-shape",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "release-feature-acceptance",
+        "release-runtime-policy"
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --profile native --profile javascript --profile conformance --from cli-report-handler-associations --no-report",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "1853adbb4a32cc8cc06ed1d656afafe1a0f16612 (matching working-tree bytes)",
+      "logSha256": "b2caf4330d21575130aa8dc108d16e0ecab10710615dc58c4fec8fdddfc34158",
+      "tasks": [
+        {
+          "task": "cli-report-handler-associations",
+          "status": "passed",
+          "duration": "1.06s"
+        },
+        {
+          "task": "cli-report-relationships",
+          "status": "passed",
+          "duration": "6.16s"
+        },
+        {
+          "task": "cli-report-imported-inputs",
+          "status": "passed",
+          "duration": "14.61s"
+        },
+        {
+          "task": "cli-report-resource-inventory",
+          "status": "passed",
+          "duration": "14.87s"
+        },
+        {
+          "task": "cli-report-graph-diagnostics",
+          "status": "passed",
+          "duration": "5.68s"
+        },
+        {
+          "task": "multifile-source-indexes",
+          "status": "passed",
+          "duration": "352ms"
+        },
+        {
+          "task": "guest-json-roundtrip",
+          "status": "passed",
+          "duration": "165ms"
+        },
+        {
+          "task": "pure-helper-contract",
+          "status": "passed",
+          "duration": "1.36s"
+        },
+        {
+          "task": "callable-source-admission",
+          "status": "passed",
+          "duration": "1.04s"
+        },
+        {
+          "task": "suite-shape",
+          "status": "passed",
+          "duration": "156ms"
+        },
+        {
+          "task": "test-orchestration",
+          "status": "passed",
+          "duration": "15.97s"
+        },
+        {
+          "task": "package-exports",
+          "status": "passed",
+          "duration": "199ms"
+        },
+        {
+          "task": "boundaries",
+          "status": "passed",
+          "duration": "389ms"
+        },
+        {
+          "task": "workspace-hygiene",
+          "status": "passed",
+          "duration": "246ms"
+        },
+        {
+          "task": "hidden-contracts",
+          "status": "passed",
+          "duration": "519ms"
+        },
+        {
+          "task": "release-feature-acceptance",
+          "status": "passed",
+          "duration": "10.45s"
+        },
+        {
+          "task": "release-runtime-policy",
+          "status": "passed",
+          "duration": "4.57s"
+        },
+        {
+          "task": "release-seal-lifecycle",
+          "status": "passed",
+          "duration": "5.20s"
+        },
+        {
+          "task": "release-checkpoints",
+          "status": "passed",
+          "duration": "361ms"
+        },
+        {
+          "task": "release-recovery-runner",
+          "status": "passed",
+          "duration": "74.34s"
+        },
+        {
+          "task": "release-recovery",
+          "status": "passed",
+          "duration": "9.78s"
+        },
+        {
+          "task": "release-tag",
+          "status": "passed",
+          "duration": "591ms"
+        },
+        {
+          "task": "api-surface",
+          "status": "passed",
+          "duration": "1.01s"
+        },
+        {
+          "task": "logging-contract",
+          "status": "passed",
+          "duration": "145ms"
+        },
+        {
+          "task": "s3-design-contract",
+          "status": "passed",
+          "duration": "1.37s"
+        },
+        {
+          "task": "kv-design-contract",
+          "status": "passed",
+          "duration": "1.35s"
+        },
+        {
+          "task": "kv-conditional-runtime",
+          "status": "passed",
+          "duration": "1.41s"
+        },
+        {
+          "task": "kv-conditional-gates",
+          "status": "passed",
+          "duration": "557ms"
+        },
+        {
+          "task": "s3-read-contract",
+          "status": "passed",
+          "duration": "1.99s"
+        },
+        {
+          "task": "s3-write-contract",
+          "status": "passed",
+          "duration": "418ms"
+        },
+        {
+          "task": "crypto-config-planning",
+          "status": "passed",
+          "duration": "734ms"
+        },
+        {
+          "task": "crypto-es256-signing",
+          "status": "passed",
+          "duration": "167ms"
+        },
+        {
+          "task": "crypto-rs256",
+          "status": "passed",
+          "duration": "2.40s"
+        },
+        {
+          "task": "crypto-digest-text-contract",
+          "status": "passed",
+          "duration": "692ms"
+        },
+        {
+          "task": "reachable-graph",
+          "status": "passed",
+          "duration": "212ms"
+        },
+        {
+          "task": "project-modules",
+          "status": "passed",
+          "duration": "1.12s"
+        },
+        {
+          "task": "package-reachability",
+          "status": "passed",
+          "duration": "1.27s"
+        },
+        {
+          "task": "external-lowerers",
+          "status": "passed",
+          "duration": "2.10s"
+        },
+        {
+          "task": "package-runtime",
+          "status": "passed",
+          "duration": "238ms"
+        },
+        {
+          "task": "provider-toolchain",
+          "status": "passed",
+          "duration": "187ms"
+        },
+        {
+          "task": "schema-registry",
+          "status": "passed",
+          "duration": "1.24s"
+        },
+        {
+          "task": "continuation-registry",
+          "status": "passed",
+          "duration": "185ms"
+        },
+        {
+          "task": "entities-contracts",
+          "status": "passed",
+          "duration": "212ms"
+        },
+        {
+          "task": "entities-schema-bridge",
+          "status": "passed",
+          "duration": "367ms"
+        },
+        {
+          "task": "entities-javascript-runtime",
+          "status": "passed",
+          "duration": "1.01s"
+        },
+        {
+          "task": "entities-json-rpc-corpus",
+          "status": "passed",
+          "duration": "157ms"
+        },
+        {
+          "task": "mcp-http",
+          "status": "passed",
+          "duration": "451ms"
+        },
+        {
+          "task": "pulse-context-corpus",
+          "status": "passed",
+          "duration": "1.13s"
+        },
+        {
+          "task": "pulse-context-build",
+          "status": "passed",
+          "duration": "75.65s"
+        },
+        {
+          "task": "pulse-context-application",
+          "status": "passed",
+          "duration": "6.46s"
+        },
+        {
+          "task": "pulse-context-host",
+          "status": "passed",
+          "duration": "3.61s"
+        },
+        {
+          "task": "mcp-compatibility",
+          "status": "passed",
+          "duration": "289ms"
+        },
+        {
+          "task": "mcp-tools",
+          "status": "passed",
+          "duration": "314ms"
+        },
+        {
+          "task": "mcp-authorization",
+          "status": "passed",
+          "duration": "3.07s"
+        },
+        {
+          "task": "entities-package-owned-lowering",
+          "status": "passed",
+          "duration": "364ms"
+        },
+        {
+          "task": "entities-catalog",
+          "status": "passed",
+          "duration": "322ms"
+        },
+        {
+          "task": "entities-inspection",
+          "status": "passed",
+          "duration": "10.88s"
+        },
+        {
+          "task": "entities-orchestration-demo",
+          "status": "passed",
+          "duration": "6.21s"
+        },
+        {
+          "task": "context-native-proof",
+          "status": "passed",
+          "duration": "24.06s"
+        },
+        {
+          "task": "npm-source-imports",
+          "status": "passed",
+          "duration": "4.19s"
+        },
+        {
+          "task": "fastly-numeric-regions",
+          "status": "passed",
+          "duration": "52.48s"
+        },
+        {
+          "task": "fastly-numeric-budgets",
+          "status": "passed",
+          "duration": "34.93s"
+        },
+        {
+          "task": "fastly-handle-ownership",
+          "status": "passed",
+          "duration": "34.95s"
+        },
+        {
+          "task": "fastly-handle-frames",
+          "status": "passed",
+          "duration": "77.78s"
+        },
+        {
+          "task": "pure-helper-vocabulary",
+          "status": "passed",
+          "duration": "3.54s"
+        },
+        {
+          "task": "pure-string-index",
+          "status": "passed",
+          "duration": "4.44s"
+        },
+        {
+          "task": "pure-field-projection",
+          "status": "passed",
+          "duration": "12.11s"
+        },
+        {
+          "task": "pure-guarded-arguments",
+          "status": "passed",
+          "duration": "38.83s"
+        },
+        {
+          "task": "pure-source-helpers",
+          "status": "passed",
+          "duration": "9.64s"
+        },
+        {
+          "task": "pure-record-helpers",
+          "status": "passed",
+          "duration": "18.37s"
+        },
+        {
+          "task": "pure-argument-helpers",
+          "status": "passed",
+          "duration": "20.18s"
+        },
+        {
+          "task": "pure-loop-helpers",
+          "status": "passed",
+          "duration": "6.60s"
+        },
+        {
+          "task": "fastly-driver-behavior-o09",
+          "status": "passed",
+          "duration": "29.95s"
+        },
+        {
+          "task": "kv-native-abi-feasibility",
+          "status": "passed",
+          "duration": "1.06s"
+        },
+        {
+          "task": "s3-native-read",
+          "status": "passed",
+          "duration": "17.14s"
+        },
+        {
+          "task": "s3-body-read",
+          "status": "passed",
+          "duration": "7.14s"
+        },
+        {
+          "task": "s3-node-transport",
+          "status": "passed",
+          "duration": "533ms"
+        },
+        {
+          "task": "canonical-api-lowering",
+          "status": "passed",
+          "duration": "1.26s"
+        },
+        {
+          "task": "canonical-native-plan",
+          "status": "passed",
+          "duration": "4.94s"
+        },
+        {
+          "task": "shared-stage-o19",
+          "status": "passed",
+          "duration": "5.24s"
+        },
+        {
+          "task": "str02b-node-native",
+          "status": "passed",
+          "duration": "6.35s"
+        },
+        {
+          "task": "fastly-incoming-body-forwarding",
+          "status": "passed",
+          "duration": "7.91s"
+        },
+        {
+          "task": "str03a-generated-output",
+          "status": "passed",
+          "duration": "15.24s"
+        },
+        {
+          "task": "str03c-bounded-transforms",
+          "status": "passed",
+          "duration": "12.33s"
+        },
+        {
+          "task": "bounded-app-logic",
+          "status": "passed",
+          "duration": "35.39s"
+        },
+        {
+          "task": "bounded-read-loops",
+          "status": "passed",
+          "duration": "36.07s"
+        },
+        {
+          "task": "bounded-loop-helpers",
+          "status": "passed",
+          "duration": "4.42s"
+        },
+        {
+          "task": "logging-lowering",
+          "status": "passed",
+          "duration": "2.08s"
+        },
+        {
+          "task": "canonical-router-lowering",
+          "status": "passed",
+          "duration": "7.08s"
+        },
+        {
+          "task": "canonical-router-terminal-middleware",
+          "status": "passed",
+          "duration": "7.41s"
+        },
+        {
+          "task": "router-selected-groups",
+          "status": "passed",
+          "duration": "4.40s"
+        },
+        {
+          "task": "json-as-compatibility",
+          "status": "passed",
+          "duration": "3.14s"
+        },
+        {
+          "task": "entities-envelope-feasibility",
+          "status": "passed",
+          "duration": "2.41s"
+        },
+        {
+          "task": "entities-managed-handler",
+          "status": "passed",
+          "duration": "464ms"
+        },
+        {
+          "task": "entities-managed-handler-effects",
+          "status": "passed",
+          "duration": "990ms"
+        },
+        {
+          "task": "entities-native-runtime",
+          "status": "passed",
+          "duration": "6.59s"
+        },
+        {
+          "task": "entities-hardening",
+          "status": "passed",
+          "duration": "29.75s"
+        },
+        {
+          "task": "entities-node-native-workflow",
+          "status": "passed",
+          "duration": "19.31s"
+        },
+        {
+          "task": "pulse-context-tools",
+          "status": "passed",
+          "duration": "176.63s"
+        },
+        {
+          "task": "pulse-context-quality-actual",
+          "status": "passed",
+          "duration": "68.60s"
+        },
+        {
+          "task": "pulse-context-quality-growth",
+          "status": "passed",
+          "duration": "73.91s"
+        },
+        {
+          "task": "pulse-context-quality-repeat",
+          "status": "passed",
+          "duration": "49.94s"
+        },
+        {
+          "task": "callable-public-contract",
+          "status": "passed",
+          "duration": "6.74s"
+        },
+        {
+          "task": "callable-composition-proof",
+          "status": "passed",
+          "duration": "56.77s"
+        },
+        {
+          "task": "callable-authored-native",
+          "status": "passed",
+          "duration": "18.87s"
+        },
+        {
+          "task": "callable-authored-composition",
+          "status": "passed",
+          "duration": "7.06s"
+        },
+        {
+          "task": "callable-authored-javascript",
+          "status": "passed",
+          "duration": "8.89s"
+        },
+        {
+          "task": "callable-authored-routed",
+          "status": "passed",
+          "duration": "40.41s"
+        },
+        {
+          "task": "callable-lifetime",
+          "status": "passed",
+          "duration": "46.61s"
+        },
+        {
+          "task": "mcp-native-binding",
+          "status": "passed",
+          "duration": "14.79s"
+        },
+        {
+          "task": "fastly-entities-native-workflow",
+          "status": "passed",
+          "duration": "65.55s"
+        },
+        {
+          "task": "crypto-native-guest-source",
+          "status": "passed",
+          "duration": "4.11s"
+        },
+        {
+          "task": "guest-link-package",
+          "status": "passed",
+          "duration": "6.31s"
+        },
+        {
+          "task": "guest-link-materialization-stage",
+          "status": "passed",
+          "duration": "38.19s"
+        },
+        {
+          "task": "guest-link-audit-diagnostics",
+          "status": "passed",
+          "duration": "13.67s"
+        },
+        {
+          "task": "assets-lowering-plan",
+          "status": "passed",
+          "duration": "500ms"
+        },
+        {
+          "task": "assets-package-owned-lowering",
+          "status": "passed",
+          "duration": "346ms"
+        },
+        {
+          "task": "assets-native-embedded",
+          "status": "passed",
+          "duration": "12.33s"
+        },
+        {
+          "task": "grip-package-owned-lowering",
+          "status": "passed",
+          "duration": "374ms"
+        },
+        {
+          "task": "jwt-package-owned-lowering",
+          "status": "passed",
+          "duration": "628ms"
+        },
+        {
+          "task": "canonical-api-runtime",
+          "status": "passed",
+          "duration": "1.26s"
+        },
+        {
+          "task": "canonical-opaque-node-emission",
+          "status": "passed",
+          "duration": "1.45s"
+        },
+        {
+          "task": "grip-package-runtime",
+          "status": "passed",
+          "duration": "677ms"
+        },
+        {
+          "task": "package-root-native",
+          "status": "passed",
+          "duration": "1.56s"
+        },
+        {
+          "task": "canonical-native-wasm",
+          "status": "passed",
+          "duration": "57.53s"
+        },
+        {
+          "task": "cli-javascript-target-compilation",
+          "status": "passed",
+          "duration": "16.41s"
+        },
+        {
+          "task": "target-support",
+          "status": "passed",
+          "duration": "451ms"
+        },
+        {
+          "task": "jwt-javascript-admission",
+          "status": "passed",
+          "duration": "6.39s"
+        },
+        {
+          "task": "crypto-runtime-builtin",
+          "status": "passed",
+          "duration": "698ms"
+        },
+        {
+          "task": "javascript-effect-adapter",
+          "status": "passed",
+          "duration": "532ms"
+        },
+        {
+          "task": "logging-runtime",
+          "status": "passed",
+          "duration": "163ms"
+        },
+        {
+          "task": "assets-javascript-runtime",
+          "status": "passed",
+          "duration": "936ms"
+        },
+        {
+          "task": "native-context-primitives",
+          "status": "passed",
+          "duration": "8.41s"
+        },
+        {
+          "task": "binary-resource-execution",
+          "status": "passed",
+          "duration": "50.55s"
+        },
+        {
+          "task": "effect-collections",
+          "status": "passed",
+          "duration": "2.59s"
+        },
+        {
+          "task": "effect-collection-providers",
+          "status": "passed",
+          "duration": "11.03s"
+        },
+        {
+          "task": "jwt-signing",
+          "status": "passed",
+          "duration": "11.38s"
+        },
+        {
+          "task": "jwt-es256-signing",
+          "status": "passed",
+          "duration": "33.55s"
+        },
+        {
+          "task": "jwt-rs256",
+          "status": "passed",
+          "duration": "293.42s"
+        },
+        {
+          "task": "s3-write-conformance",
+          "status": "passed",
+          "duration": "8.90s"
+        },
+        {
+          "task": "crypto-cross-target-conformance",
+          "status": "passed",
+          "duration": "4.70s"
+        },
+        {
+          "task": "crypto-digest-text-conformance",
+          "status": "passed",
+          "duration": "8.23s"
+        },
+        {
+          "task": "crypto-digest-storage-conformance",
+          "status": "passed",
+          "duration": "9.91s"
+        },
+        {
+          "task": "multifile-source-identity",
+          "status": "passed",
+          "duration": "14.31s"
+        },
+        {
+          "task": "text-capacity-conformance",
+          "status": "passed",
+          "duration": "13.95s"
+        },
+        {
+          "task": "events-conformance",
+          "status": "passed",
+          "duration": "2.79s"
+        },
+        {
+          "task": "node-router-context-parity",
+          "status": "passed",
+          "duration": "3.22s"
+        },
+        {
+          "task": "catalog-router-parity",
+          "status": "passed",
+          "duration": "20.17s"
+        },
+        {
+          "task": "fetch-projections-request-bodies",
+          "status": "passed",
+          "duration": "656ms"
+        },
+        {
+          "task": "config-secrets-kv-redaction",
+          "status": "passed",
+          "duration": "592ms"
+        },
+        {
+          "task": "kv-conditional-conformance",
+          "status": "passed",
+          "duration": "5.22s"
+        },
+        {
+          "task": "kv-conditional-adversarial",
+          "status": "passed",
+          "duration": "6.03s"
+        },
+        {
+          "task": "fastly-conditional-kv",
+          "status": "passed",
+          "duration": "32.84s"
+        },
+        {
+          "task": "schema-codecs",
+          "status": "passed",
+          "duration": "105.30s"
+        },
+        {
+          "task": "schema-kv-parity",
+          "status": "passed",
+          "duration": "10.84s"
+        },
+        {
+          "task": "time-conformance",
+          "status": "passed",
+          "duration": "6.49s"
+        },
+        {
+          "task": "time-consumer",
+          "status": "passed",
+          "duration": "18.23s"
+        },
+        {
+          "task": "request-budget-transport",
+          "status": "passed",
+          "duration": "6.67s"
+        },
+        {
+          "task": "node-launcher",
+          "status": "passed",
+          "duration": "6.45s"
+        },
+        {
+          "task": "http-input-outcomes",
+          "status": "passed",
+          "duration": "11.91s"
+        },
+        {
+          "task": "application-errors",
+          "status": "passed",
+          "duration": "16.38s"
+        },
+        {
+          "task": "application-error-boundaries",
+          "status": "passed",
+          "duration": "3.72s"
+        },
+        {
+          "task": "node-cross-target-conformance",
+          "status": "passed",
+          "duration": "4.90s"
+        },
+        {
+          "task": "grip-cross-target-conformance",
+          "status": "passed",
+          "duration": "6.22s"
+        },
+        {
+          "task": "four-mode-conformance",
+          "status": "passed",
+          "duration": "31.36s"
+        }
+      ]
+    },
+    {
+      "command": "node docs/internal/host-extensions/assert-hex01.cjs --record",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "final dedicated proof/evidence harness; source hashes retained below",
+      "logSha256": "17caddb38f2a9440465042d546e1ea28192ccc5ce0d33dbb188d9b65164999c7",
+      "tasks": []
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "1853adbb4a32cc8cc06ed1d656afafe1a0f16612 (matching working-tree bytes)",
+      "logSha256": "c4ba4757de8427dc4e62528f6b6dd88a399ef2ed0f17aa7018b9765fcbc5e1d6",
+      "tasks": []
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "1853adbb4a32cc8cc06ed1d656afafe1a0f16612 (matching working-tree bytes)",
+      "logSha256": "89457caaf8cddc70eadfe405fc84d6bec730d882e613cdb08b9041a9516f42dc",
+      "tasks": []
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "1853adbb4a32cc8cc06ed1d656afafe1a0f16612 (matching working-tree bytes)",
+      "logSha256": "37c069a6f318a83bbde67830e16101ba1cde566c2957134a97742cfe9776f22b",
+      "tasks": []
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --changed-files-file <changed paths> --declaration-file <PR body> --check --no-github",
+      "status": "passed",
+      "exitCode": 0,
+      "source": "1853adbb4a32cc8cc06ed1d656afafe1a0f16612 (matching working-tree bytes)",
+      "logSha256": "90ad86820cc4637f4d19fadcbe6d92c0b3d2150bc52eb23818cdca005f559923",
+      "tasks": []
+    }
+  ],
+  "failures": [
+    {
+      "attempt": "first aggregate",
+      "task": "cli-report-handler-topology",
+      "detail": "TypeError: Report input rejected (REPORT_ARTIFACT_HASH).\n    at fail (<repo>/wasm/packages/cli/src/internal/report/data.js:7:17)\n    at ensure (<repo>/wasm/packages/cli/src/internal/report/retained.js:18:55)\n    at <repo>/wasm/packages/cli/src/internal/report/retained.js:63:5\n    at Array.map (<anonymous>)\n    at artifactRecords (<repo>/wasm/packages/cli/src/internal/report/retained.js:60:21)\n    at Object.publishBuild (<repo>/wasm/packages/cli/src/internal/report/retained.js:80:21)\n    at compileNativeProjectWithReport (<repo>/wasm/packages/cli/src/project-execution.js:1242:52)\n    at <repo>/wasm/packages/cli/src/project-execution.js:1117:66\n    at withReportBuild (<repo>/wasm/packages/cli/src/project-execution.js:709:12)\n    at Object.compileNativeProject (<repo>/wasm/packages/cli/src/project-execution.js:1117:10) {\n  code: 'REPORT_ARTIFACT_HASH',\n  field: '$'\n}\n[pulsewasm] cli-report-handler-topology: failed in 34.95s"
+    },
+    {
+      "attempt": "second aggregate",
+      "task": "cli-report-handler-topology",
+      "detail": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    application: {\n      kind: 'pulse.application-ir',\n      project: {\n        configPlanHash: 'd000c71c90d3507f74faf26706b22201171a327af3d14300a54335465bf28a04',\n...\n        },\n+       entries: [\n-       applicationEntries: [\n          {\n            generatedBlockRange: {\n+             end: 769,\n+             start: 287\n-             end: 921,\n-             start: 439\n            },\n            generatedRange: {\n+             end: 713,\n+             start: 361\n-             end: 865,\n-             start: 513\n            },\n            handlerId: 'handler_d77d222a0e9e1425869955d8',\n            index: 0,\n            kind: 'use',\n            nextIndex: 1,\n            order: 0,\n-           plane: 'http',\n            router: 'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app',\n            routerPath: [\n              'module_project_dc21f81d1da688e8aca8fdf85a794714::router::app'\n            ],\n            scoped: false,\n...\n            generatedBlockRange: {\n+             end: 980,"
+    },
+    {
+      "attempt": "initial control-plane checks",
+      "detail": "The new fastly-host-extension-proof task was missing from the Fastly release shard. Added that mapping; maintainer/docs checks pass on rerun."
+    },
+    {
+      "attempt": "intermediate proof assertion",
+      "detail": "Source location assertion initially expected loc.line instead of loc.start.line. The final assertion verifies the actual source location and all three real target descriptors."
+    }
+  ],
+  "baseline": {
+    "commit": "e30754019f03fa95a74ae72392382f44f2351927",
+    "dependencyInstall": "pnpm 12.4.2 install --frozen-lockfile --ignore-scripts",
+    "command": "node <baseline>/docs/internal/host-extensions/measure.cjs <baseline>",
+    "sameFinalMeasurementScript": true,
+    "comparison": "byte-identical receipt"
+  },
+  "limits": [
+    "Partial development runs and isolated reruns are not a clean aggregate or release seal.",
+    "Unchanged-base checks passed; the report discrepancy on the spike is unresolved and is not declared a known baseline defect.",
+    "Viceroy/Pushpin and hosted handoff execution not run.",
+    "Packed external consumer and complete CLI/report qualification not claimed.",
+    "Actual request/body failure cleanup remains HEX-03 acceptance work."
+  ],
+  "artifacts": [
+    {
+      "path": "docs/internal/host-extensions/hex01-baseline.json",
+      "sha256": "d912175bdb4113513256a1f820b892ec8a34110355d74890ea361872d9810259"
+    },
+    {
+      "path": "docs/internal/host-extensions/hex01-result.json",
+      "sha256": "2a7efe666be01af5f8332843cdf351e2884e17c279d4ea1e882ee1cc87ecdf12"
+    },
+    {
+      "path": "docs/internal/host-extensions/hex01-source-evidence.json",
+      "sha256": "29fe698acbf9e361a238749d1e21c739e5359eb46023024e708b6d1902668077"
+    },
+    {
+      "path": "docs/internal/host-extensions/assert-hex01.cjs",
+      "sha256": "849130f3a32dd94265430a2ba6e324497079d9e886ede6cc091dbc8116e9c980"
+    },
+    {
+      "path": "docs/internal/host-extensions/measure.cjs",
+      "sha256": "2255a7b953f65d6dc08b55d4e72249ea8d93351d6a8e8d4a11cfb14f1b413fc8"
+    },
+    {
+      "path": "docs/internal/host-extensions/injected-host.cjs",
+      "sha256": "cc8b5a0066e92caa69c77d42c7e71157937b8f21fd7d6b3628f6a169a9c3822d"
+    }
+  ]
+}

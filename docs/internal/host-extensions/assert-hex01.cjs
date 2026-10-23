@@ -25,7 +25,11 @@ receipt.used = { bytes: native.inspection.bytes, sha256: native.inspection.sha25
   deltaFromOrdinaryBytes: native.inspection.bytes - receipt.controls.absent.bytes, contribution: native.manifest.hostExtensions };
 function retain(name, result) {
   const { instance, ...evidence } = result;
-  receipt.executions.push({ name, ...evidence });
+  receipt.executions.push({ name, ...evidence,
+    state: instance.exports.pulse_extension_state?.(),
+    status: instance.exports.pulse_extension_status?.(),
+    error: instance.exports.pulse_fastly_last_error(),
+    stage: instance.exports.pulse_fastly_error_stage() });
 }
 const success = execute(native);
 assert.equal(success.error, 0);

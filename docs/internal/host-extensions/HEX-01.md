@@ -207,4 +207,25 @@ compiler improvements to historical artifact hashes. The separate evidence
 command enforces the exact HEX-01 baseline comparison. All receipts are internal
 investigation artifacts, not release or hosted acceptance seals.
 
-Validation ledger is completed in the PR and the retained validation receipt.
+The retained [validation receipt](hex01-validation.json) contains commands,
+source fingerprints, individual task outcomes and failed-attempt excerpts.
+
+- Workspace TypeScript build, the dedicated authored proof, ten focused
+  package/provider tasks, maintainer checks, docs checks, documentation-release
+  and scope declaration passed. The dedicated proof was rerun after final
+  metadata/source-location edits and after correcting receipt snapshots to
+  capture the post-scenario error stage.
+- Two attempts at the combined unit/native/JavaScript/conformance profiles stopped
+  at `cli-report-handler-topology`: first a retained-artifact hash mismatch,
+  then a control/observed topology mismatch. The isolated task passed. Both a
+  shorter unchanged-base prefix and the exact 16-task failed-prefix selection
+  on unchanged base passed. The discrepancy on the spike is **unresolved**;
+  it is not declared a known baseline defect.
+- A separate development selection from `cli-report-handler-associations`
+  completed all 165 remaining tasks successfully. These partial runs and the
+  isolated pass do not constitute a clean aggregate run or release seal.
+- Initial control-plane checks identified the missing release-shard mapping for
+  the new regression task; the mapping was added and the checks passed on retry.
+- The PR remains draft for the report discrepancy and architecture review.
+  Engine/hosted handoff, cleanup and external packed acceptance remain later
+  qualification work. No check is waived by this investigation.
