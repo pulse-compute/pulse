@@ -1,0 +1,170 @@
+{
+  "absent": {
+    "bytes": 23444,
+    "sha256": "7848730bed1cc6ed85100914298664b34329793b0062ebc17e8ea0f16e32aa67",
+    "imports": [
+      {
+        "module": "fastly_http_resp",
+        "name": "send_downstream",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "status_set",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "header_append",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "uri_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "method_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "body_downstream_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "write",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_abi",
+        "name": "init",
+        "kind": "function"
+      }
+    ]
+  },
+  "unused": {
+    "bytes": 23444,
+    "sha256": "eb331d429b9de118e727214a757583ff0b24f21825401d5ed46767a1df87bc0a",
+    "imports": [
+      {
+        "module": "fastly_http_resp",
+        "name": "send_downstream",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "status_set",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "header_append",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "uri_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "method_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "body_downstream_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "write",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_abi",
+        "name": "init",
+        "kind": "function"
+      }
+    ]
+  },
+  "generic": {
+    "bytes": 25268,
+    "sha256": "a33f8e184b4d241858c8497004e99b404b2bad3c2a277c5263f5f790671dfa1f",
+    "imports": [
+      {
+        "module": "fastly_http_resp",
+        "name": "send_downstream",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "status_set",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "header_append",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "uri_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "method_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "body_downstream_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "write",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_abi",
+        "name": "init",
+        "kind": "function"
+      }
+    ]
+  }
+}

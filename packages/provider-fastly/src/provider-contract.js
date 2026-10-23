@@ -15,10 +15,11 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'request', 'request.body.forward', 'response.json', 'response.text', 'response.custom', 'fetch',
     'time.wall-clock', 'crypto.digestText', 'config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete', 'assets.lookup',
     'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify', 'jwt.sign',
-    'opaque.pass-through', 's3.head', 's3.getText', 's3.putText', 's3.getBody'
+    'host.extension', 'opaque.pass-through', 's3.head', 's3.getText', 's3.putText', 's3.getBody'
   ],
   lowering: {
     request: 'fastly.compute.request',
+    'host.extension': 'fastly.native.host-extension-proof',
     'request.body.forward': 'fastly.native.body-forwarding',
     'response.json': 'fastly.compute.response.json',
     'response.text': 'fastly.compute.response.text',

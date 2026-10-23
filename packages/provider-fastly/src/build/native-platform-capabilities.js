@@ -1,6 +1,7 @@
 'use strict';
 
 const dynamicBackends = require('./native-dynamic-backends.js');
+const hostExtensionProof = require('./host-extension-proof.js');
 
 const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
@@ -167,6 +168,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_REQUIRED_IMPORTS = Object.freeze([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
+  'host.extension': 100, // Generic dispatch slot; owned operation admission is separate.
   fetch: 1,
   'config.get': 2,
   'secret.get': 3,
@@ -685,14 +687,16 @@ function validatePlanBoundary(plan, options = {}) {
     fail('Fastly native platform capability realization requires a provider-neutral plan without JavaScript runtime ownership.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_PLAN_OWNERSHIP_INVALID', { ownership: plan.ownership });
   }
   const effects = plan.effects || [];
-  const unsupported = effects.filter((effect) => !FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.includes(effect.kind));
+  const extensions = hostExtensionProof.select(plan, options);
+  const extensionEffect = effect => extensions.some(item => hostExtensionProof.matches(effect, item.artifact));
+  const unsupported = effects.filter((effect) => !extensionEffect(effect) && !FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.includes(effect.kind));
   if (unsupported.length > 0) {
     fail('Fastly native realization supports fetch, config, secret, KV, Assets, JWT, and the first-party GRIP capability contract.', 'PULSE_FASTLY_NATIVE_PLATFORM_EFFECT_KIND_UNSUPPORTED', {
       effects: unsupported.map((entry) => ({ id: entry.id, kind: entry.kind, package: entry.package, contractId: entry.contractId }))
     });
   }
   const platformEffects = effects.filter((effect) => FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS.has(effect.kind));
-  if (platformEffects.length === 0 && options.requirePlatformCapability !== false) {
+  if (platformEffects.length === 0 && extensions.length === 0 && options.requirePlatformCapability !== false) {
     fail('Pass98 requires at least one Fastly platform capability effect.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITY_REQUIRED');
   }
   const packageEffects = effects.filter((effect) => effect.package || effect.contractId);
@@ -711,7 +715,7 @@ function validatePlanBoundary(plan, options = {}) {
       && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3 && !digest;
+    return !extensionEffect(effect) && !grip && !assets && !jwt && !s3 && !digest;
   });
   if (unsupportedPackages.length > 0) {
     fail('Fastly native realization only accepts the trusted first-party Assets, GRIP, JWT, S3, and Crypto digest package contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', {
@@ -734,7 +738,7 @@ function validatePlanBoundary(plan, options = {}) {
       && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3 && !digest;
+    return !extensionEffect(effect) && !grip && !assets && !jwt && !s3 && !digest;
   });
   if (unsupportedDeclarations.length > 0) {
     fail('Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, and Crypto digest contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
@@ -1315,7 +1319,8 @@ function effectDispatchSource(plan) {
     'grip.channel': '__pulse_fastly_grip_channel_begin',
     'grip.hold': '__pulse_fastly_grip_hold_begin',
     'grip.publish': '__pulse_fastly_grip_publish_begin',
-    'grip.broadcast': '__pulse_fastly_grip_publish_begin'
+    'grip.broadcast': '__pulse_fastly_grip_publish_begin',
+    'host.extension': '__pulse_extension_begin'
   });
   const kinds = [...new Set((plan.effects || []).map((effect) => effect.kind))];
   const lines = [
@@ -1331,7 +1336,7 @@ function effectDispatchSource(plan) {
     .map((kind) => Object.freeze({ kind, handler: handlerByKind[kind] }))
     .filter((entry) => entry.handler);
   handlers.forEach((entry, index) => {
-    lines.push(`  ${index === 0 ? 'if' : 'else if'} (kind == ${FASTLY_NATIVE_PLATFORM_EFFECT_KIND[entry.kind]}) ${entry.handler}(effectIndex, payloadValue)`);
+    lines.push(`  ${index === 0 ? 'if' : 'else if'} (kind == ${FASTLY_NATIVE_PLATFORM_EFFECT_KIND[entry.kind]}) ${entry.handler}(${entry.kind === 'host.extension' ? 'effectIndex' : 'effectIndex, payloadValue'})`);
   });
   lines.push(handlers.length === 0
     ? '  __pulse_fastly_fail(PULSE_ERROR_UNSUPPORTED, 123, effectIndex)'
@@ -2069,6 +2074,7 @@ function capabilityImports(effect) {
 function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = {}) {
   validatePlanBoundary(plan, options);
   const facts = packageFacts(plan, options);
+  const extensions = hostExtensionProof.select(plan, options);
   const jwtCrypto = selectedJwtCrypto(plan);
   const es256KeyRecords = jwtCrypto && ['ES256', 'RS256'].includes(jwtCrypto.algorithm)
     ? resolveEs256KeyArtifacts(plan, facts)
@@ -2120,6 +2126,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       jwtCrypto,
       es256KeyRecords
     }),
+    ...(extensions.length ? [hostExtensionProof.source(extensions)] : []),
     jwtSource ? jwtSource.source : '',
     ((plan.effects || []).some(effect => ['fetch', 'grip.publish', 'grip.broadcast'].includes(effect.kind)) || bindings.s3.length > 0)
       ? fs.readFileSync(path.join(__dirname, 'native-send-error-detail.as.ts'), 'utf8') : '',
@@ -2156,6 +2163,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
   source = dynamicBackends.instrument(source, bindings, true, (options.bindings || options).backends);
+  source = hostExtensionProof.instrument(source, extensions);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;
@@ -2167,7 +2175,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     capability: effect.capability,
     package: effect.package,
     contractId: effect.contractId,
-    imports: Object.freeze([...capabilityImports(effect), ...(bindings.backends.some(b => b.index === index && b.dynamic) ? ['fastly_http_req.register_dynamic_backend'] : [])])
+    imports: Object.freeze([...capabilityImports(effect), ...hostExtensionProof.imports(extensions.filter(item => item.effect.id === effect.id)).map(i => `${i.module}.${i.name}`), ...(bindings.backends.some(b => b.index === index && b.dynamic) ? ['fastly_http_req.register_dynamic_backend'] : [])])
   })));
   const manifest = Object.freeze({
     version: FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
@@ -2222,7 +2230,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     backends: bindings.backends,
     capabilityDiagnostics,
     ...(dynamicBackends.active(bindings) ? { dynamicBackends: dynamicBackends.describe((options.bindings || options).backends) } : {}),
-    allowedImports: dynamicBackends.active(bindings)
+    ...(extensions.length ? { hostExtensions: extensions.map(item => ({ id: item.artifact.id, package: item.artifact.package, operation: item.effect.operation, sha256: item.artifact.data.sha256, imports: item.artifact.data.imports })) } : {}),
+    allowedImports: extensions.length ? Object.freeze([...FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS, ...hostExtensionProof.imports(extensions).map(i => Object.freeze([i.module, i.name]))]) : dynamicBackends.active(bindings)
       ? Object.freeze([...FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS, Object.freeze(['fastly_http_req', 'register_dynamic_backend'])])
       : FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS,
     requiredImports: requiredImportsForPlan(plan, bindings),
@@ -2244,7 +2253,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       javascriptRuntime: false,
       jsComputeRuntime: false,
       wasi: requiredImportsForPlan(plan, bindings).filter(key => key.startsWith('wasi_snapshot_preview1:')).map(key => key.split(':')[1]).join(', ').replace(/(.+)/, '$1 only') || false,
-      effects: FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.join(', '),
+      effects: [...FASTLY_NATIVE_PLATFORM_EFFECT_KINDS, ...(extensions.length ? ['host.extension'] : [])].join(', '),
       continuations: true,
       groupedEffects: 'existing fetch start-before-wait ordering remains intact',
       config: 'Fastly Config Store open/get with undefined for missing values',
@@ -2259,7 +2268,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       schemas: 'fetch JSON decode and structured response encode',
       opaqueResponse: 'origin fetch response/body handles and direct GRIP hold responses pass through without JavaScript runtime ownership',
       transportErrors: 'host status failures remain distinct from HTTP response status',
-      platformCapabilities: (plan.effects || []).some((effect) => FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS.has(effect.kind)),
+      platformCapabilities: extensions.length > 0 || (plan.effects || []).some((effect) => FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS.has(effect.kind)),
       canonicalBuildLifecycle: options.canonicalBuild === true,
       realFastlyExecution: false
     }),
@@ -2293,7 +2302,10 @@ function inspectFastlyNativePlatformCapabilitiesWasm(input, options = {}) {
   const module = new WebAssembly.Module(bytes);
   const imports = WebAssembly.Module.imports(module).map((entry) => Object.freeze({ module: entry.module, name: entry.name, kind: entry.kind }));
   const exports = WebAssembly.Module.exports(module).map((entry) => Object.freeze({ name: entry.name, kind: entry.kind }));
-  const unexpected = imports.filter((entry) => !FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS.has(`${entry.module}:${entry.name}`));
+  const selected = options.extensionPlan ? hostExtensionProof.select(options.extensionPlan, options) : [];
+  const allowed = new Set([...FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS, ...hostExtensionProof.imports(selected).map(i => `${i.module}:${i.name}`)]);
+  const unexpected = imports.filter((entry) => !allowed.has(`${entry.module}:${entry.name}`) || entry.kind !== 'function');
+  hostExtensionProof.auditSignatures(bytes, selected);
   if (unexpected.length > 0) fail('Generated Fastly native platform capabilities module imports functions outside the Pass98 ABI.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORT_UNSUPPORTED', { unexpected, imports });
   const forbidden = imports.filter((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`));
   if (forbidden.length > 0) fail('Generated Fastly native platform capabilities module imports a forbidden runtime.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_RUNTIME_FORBIDDEN', { forbidden });
@@ -2549,7 +2561,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       fs.writeFileSync(wasmFile, wasm);
       if (emitWat) fs.writeFileSync(watFile, wat, 'utf8');
     }
-    const inspection = inspectFastlyNativePlatformCapabilitiesWasm(wasm, { maxWasmBytes });
+    const inspection = inspectFastlyNativePlatformCapabilitiesWasm(wasm, { ...options, extensionPlan: plan, maxWasmBytes });
     const imported = new Set(inspection.imports.map((entry) => `${entry.module}:${entry.name}`));
     const requiredImports = requiredImportsForPlan(plan, generated.bindings);
     const missingRequiredImports = requiredImports.filter((key) => !imported.has(key));

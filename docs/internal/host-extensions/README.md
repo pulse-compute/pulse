@@ -7,6 +7,9 @@ Date: 2026-10-23. Inspected base: `e69e4b6f1381a05bf0ee0b9b4c6385d2acefb20c`
 
 Tracker: [#508](https://github.com/pulse-compute/pulse/issues/508).
 
+Follow-up: [HEX-01 proof and decision record](HEX-01.md). The record below
+retains HEX-00 findings; the integration branch carries the private experiment.
+
 ## Direction and scope
 
 Human direction: investigate packages contributing ABI behavior to an explicitly
@@ -178,7 +181,7 @@ spike into a general plugin system.
 ## Work passes
 
 The following tickets implement the proposal in bounded checkpoints; they do not
-authorize one unbounded implementation run. Each targets `latest` and retains
+authorize one unbounded implementation run. Following the 2026-10-23 human direction, each targets `hex-integration` and retains
 human architecture review and merge authority. Model names are work
 recommendations, not GitHub assignees.
 

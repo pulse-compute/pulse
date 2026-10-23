@@ -1,0 +1,61 @@
+{
+  "sdk": {
+    "version": "fastly 0.13.0",
+    "url": "https://static.crates.io/crates/fastly/fastly-0.13.0.crate",
+    "archiveSha256": "62012ce6544fe774aa10ac4fb6b4715f8b0e3ffa5ff32c6a46b24cd625900493",
+    "sources": [
+      {
+        "file": "src/http/request.rs",
+        "sha256": "19bbdd5e7996878ffcf5c8eabaecb72d4b840acf1dd74905271974ded63c6f77"
+      },
+      {
+        "file": "src/http/request/handle.rs",
+        "sha256": "eccc93278cc98b1e5219a67de719730b002a932379d0d10433b4224b82999758"
+      },
+      {
+        "file": "src/http/body/handle.rs",
+        "sha256": "95b4162ce61ccfafa2d3223ed4629aa19fac742f04f5ae23cb6e6518aed12d59"
+      }
+    ]
+  },
+  "engine": {
+    "version": "Viceroy v0.18.0",
+    "commit": "6cc29ea3c4534518322df8cc19766519384de633",
+    "sources": [
+      {
+        "file": "src/wiggle_abi/req_impl.rs",
+        "sha256": "c3308632f87e6d9a4355f4ed990207d0333ac2277d1b8a650b4a7af0cc15d967"
+      },
+      {
+        "file": "src/component/http_req.rs",
+        "sha256": "ddf68b01d536fa8ba745c8d35262a3817201f4b25aa5901ea964a5d72f5cbeb3"
+      },
+      {
+        "file": "src/sandbox.rs",
+        "sha256": "ac71b72d37bf4c9a3a26d297956e0b304f5ac4390be9c9c3ea01a8d920da00f1"
+      },
+      {
+        "file": "src/sandbox/downstream.rs",
+        "sha256": "95c3b7498538fdf20485900ac77e18e21720023d216f5d308afeb3b8509817ee"
+      },
+      {
+        "file": "wasm_abi/compute-at-edge-abi/compute-at-edge.witx",
+        "sha256": "f2c063c8558235ddd11ed32100ee0c76bb8dae00a354ac7883530005698ee608"
+      }
+    ],
+    "execution": "not run; Viceroy/Fastly CLI/Pushpin are not installed"
+  },
+  "abi": {
+    "module": "fastly_http_req",
+    "name": "redirect_to_grip_proxy_v2",
+    "parameters": [
+      "i32",
+      "i32",
+      "i32"
+    ],
+    "results": [
+      "i32"
+    ]
+  },
+  "hostedExecution": "not run"
+}

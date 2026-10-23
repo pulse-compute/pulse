@@ -1132,6 +1132,10 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 300000, scheduling: { compiler: true },
     description: 'MEM9-09B helper/stage roots, effect transfer, Router recovery and pinned resource lifetime'
   }),
+  'fastly-host-extension-proof': nodeTask('test/provider/assert-fastly-host-extension-proof.cjs', {
+    evidence: 'providers', timeoutMs: 120000, scheduling: { compiler: true },
+    description: 'HEX-01 private package-owned terminal handoff, target admission and import audit'
+  }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',
     timeoutMs: 300000,
@@ -1657,6 +1661,7 @@ const profiles = Object.freeze({
     'fastly-native-http-shell',
     'fastly-native-http-effects',
     'fastly-native-platform-capabilities',
+    'fastly-host-extension-proof',
     'fastly-request-headers'
   ]),
   release: Object.freeze([
