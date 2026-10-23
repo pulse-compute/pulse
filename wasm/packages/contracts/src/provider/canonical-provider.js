@@ -6,7 +6,7 @@ const CANONICAL_PROVIDER_PLAN_VERSION = 'pulse.canonical-provider-plan.v1';
 const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'request',
   'package.invoke',
-  'host.extension', // Private HEX-01 admission seam; operation identity stays package-owned.
+  'host.extension', // Generic admission seam; operation identity stays package-owned.
   'request.body.forward',
   'response.json',
   'response.text',

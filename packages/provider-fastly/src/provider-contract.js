@@ -19,7 +19,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
   ],
   lowering: {
     request: 'fastly.compute.request',
-    'host.extension': 'fastly.native.host-extension-proof',
+    'host.extension': 'fastly.native.host-extension',
     'request.body.forward': 'fastly.native.body-forwarding',
     'response.json': 'fastly.compute.response.json',
     'response.text': 'fastly.compute.response.text',
@@ -71,6 +71,9 @@ function createFastlyLoweringPlan(metadata, bindings = {}, options = {}) {
   const descriptor = forwarding ? FASTLY_PROVIDER_DESCRIPTOR : {...FASTLY_PROVIDER_DESCRIPTOR, capabilities: FASTLY_PROVIDER_DESCRIPTOR.capabilities.filter(id => id !== 'request.body.forward')};
   require('./toolchain/s3.js').resolveFastlyS3(metadata.providerOperations || [], bindings.s3);
   validateStaticBackendBindings(metadata, bindings);
+  for (const operation of metadata.providerOperations || []) if (operation.capability === 'host.extension') {
+    require('./build/host-extensions').validateBinding({ ...operation, source: { file: metadata.file, ...operation.position } }, bindings);
+  }
   return canonical.createProviderLoweringPlan(metadata, descriptor, {
     ...bindings,
     grip: bindings.grip || 'fastly-fanout'

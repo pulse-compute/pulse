@@ -2318,6 +2318,33 @@ See [Package-owned lowering](../concepts/package-owned-lowering.md), the
 [package lowerer contract](../contributing/package-lowerer-contract.md), and
 [plugin readiness](../maintainers/plugin-readiness.md).
 
+### Operation-specific host contributions
+
+The HEX integration contract recognizes `pulse.host-extension.v1` artifacts in
+`realizationArtifacts`. `provider/host-extension.js` owns strict generated-source
+validation, operation/target selection, admitted import policy identity and
+binary signature auditing; the existing provider toolchain contract exposes it
+as `hostExtensions`. Only the explicitly selected provider advertises supported
+protocols/services. Package ownership comes from reachable trusted lowerer
+authority, without package-name registration or npm version equality. Generic
+and host-specific methods can coexist without a package-wide host restriction.
+
+Selection rejects ambiguous ownership/realizations and is independent of graph
+order. The effective import ceiling is baseline plus selected declarations,
+never discovered from emitted imports. Selected contribution metadata binds
+operation, target, service, source digest, authored location and policy identity;
+actual imports remain separate audit evidence. Unselected contribution source
+and imports do not enter the executable. The existing carrier version and
+lowerer invocation shape remain unchanged.
+
+Fastly Native admits only the proven `terminal-request-backend.v1` service and
+single direct terminal-return placement. The provider retains all request,
+binding, completion and error fences; no new resource or scheduling mechanism
+is introduced. Guest-unit/body-forwarding/helper/Router/grouped composition is
+still excluded. GRIP's provisional `handoffFanout` remains outside released
+support; actual host cleanup, second-operation proof and packed qualification
+remain later HEX passes. See the [host contribution contract](../contributing/package-lowerer-contract.md#operation-level-host-contributions).
+
 ## Trusted package runtime Wasm
 
 A reachable package may contribute a versioned private runtime Wasm artifact

@@ -82,6 +82,7 @@ const TARGET_FIELDS = Object.freeze([
   'crypto',
   'finalWasmPolicy',
   'reporting',
+  'hostExtensions',
   'commands'
 ]);
 const JAVASCRIPT_DRIVER_FIELDS = Object.freeze([
@@ -296,6 +297,7 @@ function normalizeProviderTargetDescriptor(input, expected = {}) {
     ...(input.jwt !== undefined ? { jwt: dataClone(input.jwt, 'target jwt') } : {}),
     ...(input.crypto !== undefined ? { crypto: dataClone(input.crypto, 'target crypto') } : {}),
     ...(finalWasmPolicy ? { finalWasmPolicy } : {}),
+    ...(input.hostExtensions !== undefined ? { hostExtensions: require('./host-extension').normalizeAdmission(input.hostExtensions) } : {}),
     ...(input.reporting !== undefined ? { reporting: dataClone(input.reporting, 'target reporting') } : {}),
     commands: normalizedCommands
   });
@@ -763,6 +765,7 @@ function normalizeProviderJavascriptPackageResult(input, expected = {}) {
 }
 
 module.exports = Object.freeze({
+  hostExtensions: require('./host-extension'),
   PROVIDER_TOOLCHAIN_VERSION,
   PROVIDER_DRIVER_VERSION,
   PROVIDER_TARGET_DESCRIPTOR_VERSION,
