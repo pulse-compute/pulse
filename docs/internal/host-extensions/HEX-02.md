@@ -62,7 +62,7 @@ covers an independent package, source-located CLI failures, missing backend
 bindings and unselected contributions. HEX-01's lifecycle injections and exact
 absent/unused/generic Wasm baselines remain executable controls.
 
-The validation receipt records completed task coverage, source identities,
+The [validation receipt](hex02-validation.json) records completed task coverage, source identities,
 failed development attempts and final checks. Focused tests are development
 evidence, not an aggregate release claim. Generated diagnostic references and
 the MCP context corpus/data are regenerated from their canonical owners; the
