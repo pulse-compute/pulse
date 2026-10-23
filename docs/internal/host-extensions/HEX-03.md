@@ -104,3 +104,23 @@ engine availability is never treated as an automatic pass.
 
 The [validation receipt](hex03-validation.json) records source identities, final
 checks, completed task coverage and failed development attempts.
+
+## Final regression validation
+
+The initial full portable selection passed 137 tasks, then failed Fastly
+JavaScript JWT packaging because the shared contribution validator imported
+`node:crypto`. The validator now uses the contracts package's existing portable
+SHA-256 helper. Both production handoff Wasm artifacts and policy hashes remain
+identical to the retained engine evidence. The failing JWT task, all 54
+contribution contract cases and the complete HEX lifecycle proof pass after
+the fix. The [original failure](hex03-portable-failure.log) is retained.
+
+The remaining 74-task diagnostic range passed on the corrected implementation.
+Recovery reused its running process for the last 14 documentation regressions;
+all 14 passed without restarting the earlier 60. Build, maintenance, documentation
+and the three exact HEX-01 baselines also pass after the portability fix.
+These results span two implementation commits and are not a single complete
+green release aggregate on the final source. The validation receipt retains
+each source identity, terminal status and task result. No test process remains
+pending from this pass. PR #518 remains ready for human review against
+`hex-integration`; hosted and packed qualification and promotion remain separate.
