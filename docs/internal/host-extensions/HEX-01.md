@@ -273,3 +273,29 @@ and atomic lock replacements using both ordinary and positional reads. This
 does not identify the report failure's cause. [PR #515](https://github.com/pulse-compute/pulse/pull/515)
 retains the test hardening in draft, and [issue #516](https://github.com/pulse-compute/pulse/issues/516)
 tracks the unresolved investigation. No freshness or lease guard is relaxed.
+
+A further bounded investigation adds [an opt-in identity trace](report-identity-trace.cjs)
+for the retained-evidence and topology tests. It records acquired/observed lease
+hashes, the first differing snapshot record or timestamp, imported-source and
+artifact mismatches, and the exact report module hashes loaded. The original
+comparison still determines rejection; a diagnostic second read cannot repair
+it. Tokens and authored contents are not retained. The trace changes module
+source only in the test process, fails if its anchors drift, caps its event
+buffer, and writes separate per-process JSON files on ordinary exit. A forced
+termination may leave no trace. It is investigation tooling, not a public CLI
+feature or a production fix.
+
+```sh
+NODE_OPTIONS="--require=$PWD/docs/internal/host-extensions/report-identity-trace.cjs" \
+HEX_REPORT_IDENTITY_TRACE=/tmp/hex-report-identity \
+node wasm/scripts/run-wasm-tests.cjs \
+  --task cli-report-retained-evidence --task cli-report-handler-topology \
+  --report /tmp/hex-report-identity-run.json
+```
+
+Output must be outside the checkout. Run ordering and the uninstrumented failed
+attempt remain relevant: instrumentation can affect reproduction. The bounded
+lease runs, trace checks and remaining limits are retained in
+[the identity investigation receipt](hex01-report-identity-investigation.json).
+These passing diagnostic runs do not supersede the failed required unit run or
+establish a fix for issue #516.
