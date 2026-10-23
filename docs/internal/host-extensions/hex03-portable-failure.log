@@ -1,0 +1,49 @@
+AssertionError [ERR_ASSERTION]: {
+  "status": "error",
+  "version": "1.0.0-beta.10",
+  "error": {
+    "name": "PulseFastlyJavascriptSourcePackageError",
+    "code": "PULSE_FASTLY_JAVASCRIPT_BUNDLE_FAILED",
+    "title": "Uncatalogued Pulse diagnostic",
+    "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",
+    "category": "provider",
+    "message": "Fastly JavaScript source packaging could not bundle the application closure.",
+    "remediation": [
+      "Run `pulse doctor --json` and inspect the configured provider realization."
+    ],
+    "stability": "internal-or-forward-compatible",
+    "scope": "fallback",
+    "docs": "https://pulsecompute.io/v1.0.0-beta.10/reference/diagnostics/",
+    "detail": {
+      "entry": "src/index.ts",
+      "errors": [
+        {
+          "text": "Could not resolve \"node:crypto\"",
+          "location": {
+            "column": 23,
+            "file": "../../../workspace/scratch/253982db7f9e/pulse/wasm/packages/contracts/src/provider/host-extension.js",
+            "length": 13,
+            "line": 4,
+            "lineText": "const crypto = require('node:crypto');",
+            "namespace": "",
+            "suggestion": ""
+          }
+        }
+      ],
+      "cause": "Build failed with 1 error:\n../../../workspace/scratch/253982db7f9e/pulse/wasm/packages/contracts/src/provider/host-extension.js:4:23: ERROR: Could not resolve \"node:crypto\""
+    }
+  }
+}
+
+
+5 !== 0
+
+    at run (/workspace/scratch/253982db7f9e/pulse/wasm/test/jwt/assert-jwt-javascript-admission.cjs:36:10)
+    at main (/workspace/scratch/253982db7f9e/pulse/wasm/test/jwt/assert-jwt-javascript-admission.cjs:168:18) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 5,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}

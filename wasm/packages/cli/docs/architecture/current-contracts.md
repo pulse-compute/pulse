@@ -2341,9 +2341,14 @@ Fastly Native admits only the proven `terminal-request-backend.v1` service and
 single direct terminal-return placement. The provider retains all request,
 binding, completion and error fences; no new resource or scheduling mechanism
 is introduced. Guest-unit/body-forwarding/helper/Router/grouped composition is
-still excluded. GRIP's provisional `handoffFanout` remains outside released
-support; actual host cleanup, second-operation proof and packed qualification
-remain later HEX passes. See the [host contribution contract](../contributing/package-lowerer-contract.md#operation-level-host-contributions).
+still excluded. Opaque terminal completion is authenticated against the provider's
+invocation ticket and private delivery path, with deadline/closure fences before
+dispatch. The service borrows local request/body handles; the provider closes
+them once after success or undispatched exit. Nonzero/trapped dispatch retains
+uncertain ownership and never triggers retry, speculative cleanup or response.
+GRIP's provisional `handoffFanout` and `handoffWebSocket` share this service and
+remain outside released support. Hosted failure ownership, Fanout/Pushpin
+delivery and packed qualification remain acceptance gates. See the [host contribution contract](../contributing/package-lowerer-contract.md#operation-level-host-contributions).
 
 ## Trusted package runtime Wasm
 

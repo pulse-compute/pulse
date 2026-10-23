@@ -1,13 +1,12 @@
 'use strict';
 
 // Data-only contract. Selected lowerers remain trusted build dependencies.
-const crypto = require('node:crypto');
+const { sha256Hex: hash } = require('../sha256');
 const VERSION = 'pulse.host-extension.v1';
 const ADMISSION_VERSION = 'pulse.host-extension-admission.v1';
 const POLICY_VERSION = 'pulse.host-extension-import-policy.v1';
 const TERMINAL_SERVICE = 'terminal-request-backend.v1';
 const KIND = 'host-extension';
-const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const stable = value => Array.isArray(value) ? value.map(stable) : value && typeof value === 'object'
   ? Object.fromEntries(Object.keys(value).sort().map(key => [key, stable(value[key])])) : value;
 const identity = value => JSON.stringify(stable(value));
