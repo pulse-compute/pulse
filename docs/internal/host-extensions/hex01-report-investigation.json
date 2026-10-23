@@ -1,5 +1,5 @@
 {
-  "status": "test isolation and diagnostics validated; intermittent freshness cause unresolved",
+  "status": "focused test hardening passed; required unit profile blocked by retained-report lease failure; root cause unresolved",
   "qualification": false,
   "base": "e30754019f03fa95a74ae72392382f44f2351927",
   "testedHead": "fc430129ca5c4d953d9ce0d60066bc6bc115e84f",
@@ -616,5 +616,164 @@
       "exitCode": 0,
       "logSha256": "42f7245f3e4bea60ae96bdab29106afcfbd3c9fd1c1b2c26b2ab942968b97536"
     }
-  ]
+  ],
+  "requiredUnitProfile": {
+    "command": "PATH=\"$PWD/.validation-tools/pnpm/bin:$PATH\" node wasm/scripts/run-wasm-tests.cjs --profile unit --report /tmp/hex-followup-unit.json",
+    "sourceRevision": "889b036f265d35b12f8ae7ab2ba9a1cd996cb4b8",
+    "workingTree": "clean published candidate",
+    "status": "failed",
+    "selectedTasks": [
+      "binary-resource-admission",
+      "report-capsule-contract",
+      "cli-report-workflow",
+      "cli-report-viewer",
+      "cli-report-retained-evidence",
+      "cli-report-size-evidence",
+      "cli-report-capture-proof",
+      "cli-report-entry-proof",
+      "cli-report-reference-provenance",
+      "cli-report-handler-topology",
+      "cli-report-handler-associations",
+      "cli-report-relationships",
+      "cli-report-imported-inputs",
+      "cli-report-resource-inventory",
+      "cli-report-graph-diagnostics",
+      "multifile-source-indexes",
+      "guest-json-roundtrip",
+      "pure-helper-contract",
+      "callable-source-admission",
+      "suite-shape",
+      "test-orchestration",
+      "package-exports",
+      "boundaries",
+      "workspace-hygiene",
+      "hidden-contracts",
+      "release-feature-acceptance",
+      "release-runtime-policy",
+      "release-seal-lifecycle",
+      "release-checkpoints",
+      "release-recovery-runner",
+      "release-recovery",
+      "release-tag",
+      "api-surface",
+      "logging-contract",
+      "s3-design-contract",
+      "kv-design-contract",
+      "kv-conditional-runtime",
+      "kv-conditional-gates",
+      "s3-read-contract",
+      "s3-write-contract",
+      "crypto-config-planning",
+      "crypto-es256-signing",
+      "crypto-rs256",
+      "crypto-digest-text-contract",
+      "reachable-graph",
+      "project-modules",
+      "package-reachability",
+      "external-lowerers",
+      "package-runtime",
+      "provider-toolchain",
+      "schema-registry",
+      "continuation-registry",
+      "entities-contracts",
+      "entities-schema-bridge",
+      "entities-javascript-runtime",
+      "entities-json-rpc-corpus",
+      "mcp-http",
+      "pulse-context-corpus",
+      "pulse-context-build",
+      "pulse-context-application",
+      "pulse-context-host",
+      "mcp-compatibility",
+      "mcp-tools",
+      "mcp-authorization",
+      "entities-package-owned-lowering",
+      "entities-catalog",
+      "entities-inspection",
+      "entities-orchestration-demo"
+    ],
+    "completedTasks": 11,
+    "notRun": 57,
+    "durationMs": 69813,
+    "results": [
+      {
+        "name": "binary-resource-admission",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 250
+      },
+      {
+        "name": "report-capsule-contract",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 18594
+      },
+      {
+        "name": "cli-report-workflow",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 4142
+      },
+      {
+        "name": "cli-report-viewer",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 10903
+      },
+      {
+        "name": "cli-report-retained-evidence",
+        "status": "failed",
+        "exitCode": 1,
+        "durationMs": 20331
+      },
+      {
+        "name": "suite-shape",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 165
+      },
+      {
+        "name": "package-exports",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 226
+      },
+      {
+        "name": "boundaries",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 419
+      },
+      {
+        "name": "workspace-hygiene",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 293
+      },
+      {
+        "name": "release-feature-acceptance",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 9893
+      },
+      {
+        "name": "release-runtime-policy",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 4571
+      }
+    ],
+    "failedTaskLog": "TypeError: Report input rejected (REPORT_CONCURRENT_BUILD).\n    at fail (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/data.js:7:17)\n    at ensure (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:18:55)\n    at release.verify [as assertLease] (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:41:26)\n    at Object.publishBuild (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:68:24)\n    at buildProjectWithReport (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/project-execution.js:1064:52)\n    at /workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/project-execution.js:720:71\n    at withReportBuild (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/project-execution.js:709:12)\n    at Object.buildProject (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/project-execution.js:720:10)\n    at main (/workspace/scratch/253982db7f9e/pulse/wasm/test/cli/assert-report-retained-evidence.cjs:215:15) {\n  code: 'REPORT_CONCURRENT_BUILD',\n  field: '$'\n}\n",
+    "logSha256": "66aa2ffb9b8e1337053485513d6d7c6d865aa311c9c36a3f90c13b00eb6a29cc"
+  },
+  "filesystemProbe": {
+    "source": "'use strict';\nconst fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');\nconst root=fs.mkdtempSync(path.join(process.cwd(),'wasm/.test-results/hex-file-io-'));\nlet step=0;\nfunction check(file,expected){const direct=fs.readFileSync(file);assert.deepEqual(direct,expected,'readFileSync after write/rename');const fd=fs.openSync(file,'r');try{const stat=fs.fstatSync(fd),bytes=Buffer.alloc(stat.size);let pos=0;while(pos<bytes.length){const n=fs.readSync(fd,bytes,pos,bytes.length-pos,pos);assert.ok(n>0);pos+=n;}assert.deepEqual(bytes,expected,'positional readSync after write/rename');}finally{fs.closeSync(fd);}}\ntry {for(step=0;step<1000;step++){const bytes=Buffer.alloc(1993,String(step%10));const source=path.join(root,'index.ts');fs.writeFileSync(source,bytes);check(source,bytes);const lock=Buffer.from(JSON.stringify({token:crypto.randomBytes(16).toString('hex')}));const tmp=path.join(root,'tmp'),target=path.join(root,'lock');const fd=fs.openSync(tmp,'wx');fs.writeFileSync(fd,lock);fs.fsyncSync(fd);fs.closeSync(fd);fs.renameSync(tmp,target);check(target,lock);fs.unlinkSync(source);}console.log(JSON.stringify({status:'passed',cycles:step,scope:'Node filesystem only: equal-length rewrite, readFileSync/readSync, atomic lock replacement'}));}catch(error){console.error({step,message:error.message});process.exitCode=1;}finally{fs.rmSync(root,{recursive:true,force:true});}\n",
+    "sourceSha256": "bd87a74a34b52a62b0cf3b7183fd25825224c16dfb029d691a627425d632566f",
+    "result": {
+      "status": "passed",
+      "cycles": 1000,
+      "scope": "Node filesystem only: equal-length rewrite, readFileSync/readSync, atomic lock replacement"
+    },
+    "limitation": "Passing serial file I/O does not identify the intermittent report cause."
+  }
 }

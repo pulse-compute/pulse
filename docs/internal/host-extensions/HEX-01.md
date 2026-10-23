@@ -263,3 +263,13 @@ and all six topology cells. Production code is unchanged by this follow-up.
 The isolation change is bounded test hardening; the underlying intermittent
 freshness failure remains unproven, and no complete aggregate/release claim is
 made from these development runs.
+
+The required 68-task unit profile on clean follow-up commit `889b036` stopped
+at the separate `cli-report-retained-evidence` task with
+`REPORT_CONCURRENT_BUILD`: ten tasks passed, one failed and 57 did not run.
+The changed topology task was not reached in that run; its focused pass remains
+separate. A compiler-free Node file-I/O probe passed 1,000 same-length rewrites
+and atomic lock replacements using both ordinary and positional reads. This
+does not identify the report failure's cause. [PR #515](https://github.com/pulse-compute/pulse/pull/515)
+retains the test hardening in draft, and [issue #516](https://github.com/pulse-compute/pulse/issues/516)
+tracks the unresolved investigation. No freshness or lease guard is relaxed.
