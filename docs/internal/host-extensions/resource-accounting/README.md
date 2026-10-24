@@ -10,7 +10,7 @@ optimizer is proposed. The owner approved RA-00 through RA-02; later units remai
 | --- | --- | --- | --- |
 | [RA-00](ra00/README.md) | Ownership inventory and evidence | GPT-6.1 Sol / High | Complete; evidence only |
 | [RA-01](ra01/README.md) | Shared ownership/disposition contract | Astra / High | Complete; internal candidate and checked lifecycle traces |
-| [RA-02](ra02/README.md) | Admission, reservation and refund policy | Astra / High | Complete; candidate policy and pressure evidence; review checkpoint |
+| [RA-02](ra02/README.md) | Admission, reservation and refund policy | Astra / High | Complete; candidate policy and [8/16/32 reservation sweep](ra02/sweep/README.md); review checkpoint |
 | RA-03 | Minimal shared accounting service prototype | GPT-6.1 Sol / High | Planned |
 | RA-04 | Exclusive lease and in-flight buffer pressure | Astra / High | Planned |
 | RA-05 | Core fetch integration | Astra / High | Planned |
