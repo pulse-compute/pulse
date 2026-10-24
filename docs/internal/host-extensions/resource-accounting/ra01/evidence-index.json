@@ -1,0 +1,45 @@
+{
+  "version": "hex.ra01-evidence.v0",
+  "base": "6b1caf2abbb022f8813eb2d4b961b530c27d91bf",
+  "archive": {
+    "file": "evidence.tar.gz",
+    "sha256": "ead4f44d4b154f211199c202757e39d65454d1cd8d0d841a3c62fa113ff613d6",
+    "members": [
+      {
+        "path": "README.md",
+        "bytes": 18174,
+        "sha256": "155292cdcef208debc0f3cde644c438f2c0a10535e2997d8791fc9da92906822"
+      },
+      {
+        "path": "check.cjs",
+        "bytes": 24716,
+        "sha256": "40e3aec2b112c3c5135ea4bcfe690d520b43bdaa33b88d5e2ffd377e14239f5b"
+      },
+      {
+        "path": "check.log",
+        "bytes": 91,
+        "sha256": "771622fc8bec87c1d4a9cbc9cf8abd984048303e9f0f723cd68c1909b4374b66"
+      },
+      {
+        "path": "contract.json",
+        "bytes": 3013,
+        "sha256": "2fed9d967ada50432e4aa973dddb66825da832d83c5ab239a3d0ae9f6d344cb2"
+      },
+      {
+        "path": "model.cjs",
+        "bytes": 10778,
+        "sha256": "87331594d1dde302c27d985422d093c2ab8bf6623e191d50f3406792105b9109"
+      },
+      {
+        "path": "receipt.full.json",
+        "bytes": 409493,
+        "sha256": "e600d92c5b53407348b25c9343294ef7bc36b7744164bf911764232cc1ed6fcc"
+      },
+      {
+        "path": "source-index.json",
+        "bytes": 1830,
+        "sha256": "5168e9c65711fa3b4b8ca6a9266b28f19b74300ab335a51e49bbfa1e2e7f03b3"
+      }
+    ]
+  }
+}
