@@ -1,0 +1,44 @@
+name: HEX-04 local transport
+
+on:
+  pull_request:
+    branches: [hex-integration]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/hex04-local.yml'
+      - 'docs/internal/host-extensions/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hex04-local-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  local-transport:
+    if: github.head_ref == 'hex/04-local-acceptance'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.18.0'
+      - name: Install OS libraries required by the pinned engines
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libdouble-conversion3 libpcre2-16-0 libproxy1v5 libzmq5 libicu74 libbrotli1 libdbus-1-3 libglib2.0-0t64 libgomp1 libgssapi-krb5-2 libssl3t64 libzstd1 zlib1g
+      - name: Run pinned engines against retained packed Wasm
+        run: python3 docs/internal/host-extensions/run-hex04-local-ci.py "$RUNNER_TEMP/hex04-local"
+      - name: Retain local transport receipt and logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: hex04-local-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hex04-local/results
+          if-no-files-found: error
+          retention-days: 30
