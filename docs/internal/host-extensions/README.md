@@ -252,3 +252,7 @@ hosted acceptance, full regression profile or release seal is claimed by 00.
   `node scripts/documentation-release.cjs`: all passed.
 - `git diff --check`: passed. Only this internal proposal, probe and receipt
   belong to the change; no production implementation or test gate is changed.
+
+[Resource ownership, investigation 2](ownership/README.md) retains a compiled
+cache-resource prototype, three-form execution and ownership failure evidence,
+and explicit disposal/reservation decisions. It changes no production contract.

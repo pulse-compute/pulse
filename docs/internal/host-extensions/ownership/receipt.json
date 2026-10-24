@@ -1,0 +1,7009 @@
+{
+  "version": "hex.resource-ownership.v0",
+  "status": "passed",
+  "revision": "b421aa58b7df07cc5bcb060248026c660eaf5ae3",
+  "workingTree": "?? docs/internal/host-extensions/ownership/",
+  "node": "v24.19.0",
+  "inputs": [
+    {
+      "file": "prototype.cjs",
+      "sha256": "730bb2810f2a4da4c52d3809688da2ae4e06da55337522348bb2805c621bbdbe"
+    },
+    {
+      "file": "service.as.ts",
+      "sha256": "9311101be0890535f6672ce988b98a97d30581057a0283ace0d847702e699725"
+    },
+    {
+      "file": "fixture.cjs",
+      "sha256": "c052d0be6acdc5c716d5566fa4dc68668875c47e5c3e4762f4e736d5fb64e119"
+    },
+    {
+      "file": "host.cjs",
+      "sha256": "7b4ddb06c2f1832334e8f86aad7f39db6ea9d15d5eb28f394badb7fcb0eef19a"
+    },
+    {
+      "file": "run.cjs",
+      "sha256": "3e0a7cb2f52bca794e2814b28c5cc101130e3fff99757e36190aba70cd08ca2a"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "baseline",
+      "bytes": 24457,
+      "sha256": "f2fe6f7c04b5e22527989f576e4f2bd2deffbeab840c733e4ca4fe2b289c13fc",
+      "generatedSha256": "b325d5039485b1cc2c1256bfba66424359e0b50f907646c943af17ec9c2c7495",
+      "sourceSha256": "9e7274fb7f4755dd511216eb7c0193ee485eb72f12456a4641bc42e4a5a5f874",
+      "effectSlots": 0,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": false,
+      "bindings": []
+    },
+    {
+      "name": "absent",
+      "bytes": 24457,
+      "sha256": "f2fe6f7c04b5e22527989f576e4f2bd2deffbeab840c733e4ca4fe2b289c13fc",
+      "generatedSha256": "b325d5039485b1cc2c1256bfba66424359e0b50f907646c943af17ec9c2c7495",
+      "sourceSha256": "9e7274fb7f4755dd511216eb7c0193ee485eb72f12456a4641bc42e4a5a5f874",
+      "effectSlots": 0,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": false,
+      "bindings": []
+    },
+    {
+      "name": "unused",
+      "bytes": 24457,
+      "sha256": "58f7b99aabe393fb2c8469a71e051be4ba1eb3fd7e89367ca4246ded5866ca5c",
+      "generatedSha256": "c28ba7df17a8e2d5e31bbd1120661425af14554109f74f1e1ee4881a9a0a7f82",
+      "sourceSha256": "5c455584131bd2e38e3249dea50561e17007f069d16cef37b2f36432306d4411",
+      "effectSlots": 0,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": false,
+      "bindings": []
+    },
+    {
+      "name": "read",
+      "bytes": 27654,
+      "sha256": "67a8d1771e5dd4d15a239d6756f134e18fbef7432d73e79b1334f0a2e5d96d03",
+      "generatedSha256": "e9d8db8bbd3fc8fb644dd6837a42752f2b499b68a0614fd0db205edc9c9fa43a",
+      "sourceSha256": "ff80e3afc97db4491d7a389e982f66215dd6cdc88c2dbfd9e68f268a98db9c32",
+      "effectSlots": 1,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 19,
+            "offset": 105
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": false,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "read-plain",
+      "bytes": 27444,
+      "sha256": "b8835151d57827baad9c470b0cf602fdfed1c7a9af75a0266911c3bfb63c0c6c",
+      "generatedSha256": "b0e133c8f5f7a46a75d5ada7f929e78f34256e23414828178f0ff23ae6fedb10",
+      "sourceSha256": "ff80e3afc97db4491d7a389e982f66215dd6cdc88c2dbfd9e68f268a98db9c32",
+      "effectSlots": 1,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": false,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 19,
+            "offset": 105
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": false,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "write",
+      "bytes": 27264,
+      "sha256": "3b0e28b4c9bd8bea88ff078da535a87ac79485f31fd4fee719323b905bfeeac2",
+      "generatedSha256": "51eb5d617a6f81373de1d4ad8a45f850b00510655fa1cfa78ca275ce96c41377",
+      "sourceSha256": "44c3f5120a3f913375df650fd222d9fbe96e68247b59ea4e6a2a98063be1cf14",
+      "effectSlots": 1,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 19,
+            "offset": 105
+          },
+          "contributionId": "@hex-spike/cache:putText",
+          "capability": "cache.write",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "write-body"
+          ],
+          "group": false,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "keyed-read",
+      "bytes": 28184,
+      "sha256": "795a76b279e776c95c16193d110d92d61942a8b5d03ca61941577652cca5bc55",
+      "generatedSha256": "303ba89539b414561641c3ad4f52cece79657a403e38b0fa24e2c8ee86ed1e71",
+      "sourceSha256": "aa4ef0c1fffad6520bdc9b4991f09c6f63121359050c3b3347314b56cea8bac0",
+      "effectSlots": 2,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 35,
+            "offset": 121
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-2",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 64,
+            "offset": 150
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "keyed-write",
+      "bytes": 27863,
+      "sha256": "98ea0b166222dbf46905c2eb8f84de23916cec85014f53c2f9cf1445a04b34d6",
+      "generatedSha256": "81fac2d41201d76b6c633315b1fe837485145c5828852b492acfa3dfbc07f0ad",
+      "sourceSha256": "76e2f6ba31a09a8d6a6cedc430894019f64131edf9920a86af5652d434bf99de",
+      "effectSlots": 2,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 35,
+            "offset": 121
+          },
+          "contributionId": "@hex-spike/cache:putText",
+          "capability": "cache.write",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "write-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-2",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 72,
+            "offset": 158
+          },
+          "contributionId": "@hex-spike/cache:putText",
+          "capability": "cache.write",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "write-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "collection-getText-2-4",
+      "bytes": 29038,
+      "sha256": "481a1481b5d2a08438c9b2b2d6c27b47c2321eb3e5b11e082df999585ac2782c",
+      "generatedSha256": "b2fdb1173216fc1d05760a03f47acc2a94108e2d855bf821bdc7d4a646094233",
+      "sourceSha256": "cf66c3de232e6a6f1ce3aa126b24e19bd62032421fa0b5469f629494d073c324",
+      "effectSlots": 4,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 95,
+            "offset": 181
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-2",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 95,
+            "offset": 181
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-3",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 95,
+            "offset": 181
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-4",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 95,
+            "offset": 181
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "collection-putText-2-4",
+      "bytes": 28650,
+      "sha256": "71a4498d28d2ed6cd737cbd8626dbb758dd05b15846ca081c4b36c4b53554afc",
+      "generatedSha256": "16a0c31f02f14df12431a90602a9f418dde688893df1bdd53166f65809acc935",
+      "sourceSha256": "88930a3cf35d42e957e2651264a97bd8516f2254a592bc704af495c893c48071",
+      "effectSlots": 4,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 95,
+            "offset": 181
+          },
+          "contributionId": "@hex-spike/cache:putText",
+          "capability": "cache.write",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "write-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-2",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 95,
+            "offset": 181
+          },
+          "contributionId": "@hex-spike/cache:putText",
+          "capability": "cache.write",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "write-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-3",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 95,
+            "offset": 181
+          },
+          "contributionId": "@hex-spike/cache:putText",
+          "capability": "cache.write",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "write-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-4",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 95,
+            "offset": 181
+          },
+          "contributionId": "@hex-spike/cache:putText",
+          "capability": "cache.write",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "write-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "collection-getText-0-4",
+      "bytes": 28877,
+      "sha256": "056038a10c417e8f3c17d897203227d55b950f4631cc2668c996a19597d61c0e",
+      "generatedSha256": "036a3b42f41483f6905bec3f95a10bb532b49d2d9244a000283e357245da2a8a",
+      "sourceSha256": "745a0d1d1da603ff9c134c9504ab5ce7947667283a519c4a271a9d1d30846422",
+      "effectSlots": 4,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 92,
+            "offset": 178
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-2",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 92,
+            "offset": 178
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-3",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 92,
+            "offset": 178
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-4",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 92,
+            "offset": 178
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "collection-getText-7-8",
+      "bytes": 30069,
+      "sha256": "3c7b9416081f828946a855019b15d50816ad27a2c36cbcdd243a3cebcc59b4ef",
+      "generatedSha256": "4247a800b5d0250a67c98c650d271cc92d0e051b39bc8a935fed4b1677269021",
+      "sourceSha256": "9a62fac5d248e53d60d5575aad9ae8f793904d2163f1fc8306afb92a851ab27d",
+      "effectSlots": 8,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 105,
+            "offset": 191
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-2",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 105,
+            "offset": 191
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-3",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 105,
+            "offset": 191
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-4",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 105,
+            "offset": 191
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-5",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 105,
+            "offset": 191
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-6",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 105,
+            "offset": 191
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-7",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 105,
+            "offset": 191
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-8",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 105,
+            "offset": 191
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "collection-getText-8-8",
+      "bytes": 30084,
+      "sha256": "a693c2d1cf8c357c4736919b31d932064335da128003833c1ff8837aaf307a9b",
+      "generatedSha256": "0334464c883a1c48bc888b12e474f42cb4b2e5412398e52175aad9735a990241",
+      "sourceSha256": "4cb2f103184b68589a7155eb3104e9a89ab1e3e41cfa1375a13738ec01bbfdce",
+      "effectSlots": 8,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 107,
+            "offset": 193
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-2",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 107,
+            "offset": 193
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-3",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 107,
+            "offset": 193
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-4",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 107,
+            "offset": 193
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-5",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 107,
+            "offset": 193
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-6",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 107,
+            "offset": 193
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-7",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 107,
+            "offset": 193
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-8",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 107,
+            "offset": 193
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "collection-getText-9-16",
+      "bytes": 31988,
+      "sha256": "6a70429fb84014f7a838eb42e839a735b7368f4f1d93cd1872aceecf46423ba7",
+      "generatedSha256": "379bfd25e9d3166b95a4c343ef0caab2dde88eee7f121b451fc46cae9b72a1d7",
+      "sourceSha256": "6b390ce421adbadbbc89c301cbb26659cb6c0cfc6a33974c6bf438c76813a535",
+      "effectSlots": 16,
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-2",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-3",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-4",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-5",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-6",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-7",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-8",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-9",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-10",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-11",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-12",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-13",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-14",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-15",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        },
+        {
+          "siteId": "host-extension-16",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 110,
+            "offset": 196
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    },
+    {
+      "name": "mixed-time",
+      "bytes": 29120,
+      "sha256": "e726538707cdebcf94503d0b450f5cb670569c8e96150b5bdb55b53f6d61d114",
+      "generatedSha256": "c63e2bca72643ac81bbd23b0abdb9f3e7c16520028449006651f5b0c1f0cb1b9",
+      "sourceSha256": "28c9c36849d8b2a7b9d52d8a57ea6cac47848cec940cba26ed89edb88ca945ad",
+      "effectSlots": 2,
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "instrumentation": true,
+      "bindings": [
+        {
+          "siteId": "host-extension-1",
+          "source": {
+            "file": "app.ts",
+            "line": 3,
+            "column": 59,
+            "offset": 145
+          },
+          "contributionId": "@hex-spike/cache:getText",
+          "capability": "cache.read",
+          "target": "fastly-compute-native",
+          "namedBinding": null,
+          "resources": [
+            "cache-entry",
+            "read-body"
+          ],
+          "group": true,
+          "continuation": "continuation-1",
+          "standardPulseReport": false
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "name": "Absent and imported-unused controls",
+      "status": "passed",
+      "detail": {
+        "bytes": 24457,
+        "unusedDelta": 0,
+        "unusedWholeIdentity": false
+      }
+    },
+    {
+      "name": "Direct read releases zero-valued cache handle and body before response",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"status\":\"hit\",\"value\":\"value:alpha\"}",
+        "json": {
+          "status": "hit",
+          "value": "value:alpha"
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Uninstrumented direct read size",
+      "status": "passed",
+      "detail": {
+        "bytes": 27444
+      }
+    },
+    {
+      "name": "Direct write handles partial progress and commits once",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 7
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 5
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 3
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 1
+          },
+          {
+            "call": "commit",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "commit"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"status\":\"stored\"}",
+        "json": {
+          "status": "stored"
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [
+          {
+            "key": "alpha",
+            "value": "payload"
+          }
+        ],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 1
+        }
+      }
+    },
+    {
+      "name": "Keyed reads start before waiting and preserve keys",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "beta"
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 2,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              2
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 2
+          },
+          {
+            "call": "select",
+            "hs": [
+              2
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 2
+          },
+          {
+            "call": "select",
+            "hs": [
+              2
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 2
+          },
+          {
+            "call": "reader.close",
+            "h": 2
+          },
+          {
+            "call": "release",
+            "h": 2,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 1
+          },
+          {
+            "call": "body",
+            "h": 1
+          },
+          {
+            "call": "acquire",
+            "h": 3,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              3
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 3
+          },
+          {
+            "call": "select",
+            "hs": [
+              3
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 3
+          },
+          {
+            "call": "select",
+            "hs": [
+              3
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 3
+          },
+          {
+            "call": "reader.close",
+            "h": 3
+          },
+          {
+            "call": "release",
+            "h": 3,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"a\":{\"status\":\"hit\",\"value\":\"value:alpha\"},\"b\":{\"status\":\"hit\",\"value\":\"value:beta\"}}",
+        "json": {
+          "a": {
+            "status": "hit",
+            "value": "value:alpha"
+          },
+          "b": {
+            "status": "hit",
+            "value": "value:beta"
+          }
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 3,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Keyed writes start before resolution",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "insert",
+            "key": "beta",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 5
+          },
+          {
+            "call": "commit",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "commit"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 1,
+            "n": 6
+          },
+          {
+            "call": "commit",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "writer",
+            "action": "commit"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"a\":{\"status\":\"stored\"},\"b\":{\"status\":\"stored\"}}",
+        "json": {
+          "a": {
+            "status": "stored"
+          },
+          "b": {
+            "status": "stored"
+          }
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [
+          {
+            "key": "alpha",
+            "value": "first"
+          },
+          {
+            "key": "beta",
+            "value": "second"
+          }
+        ],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 2
+        }
+      }
+    },
+    {
+      "name": "Collection getText count 2 capacity 4",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 2,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              2
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 2
+          },
+          {
+            "call": "select",
+            "hs": [
+              2
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 2
+          },
+          {
+            "call": "select",
+            "hs": [
+              2
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 2
+          },
+          {
+            "call": "reader.close",
+            "h": 2
+          },
+          {
+            "call": "release",
+            "h": 2,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 1
+          },
+          {
+            "call": "body",
+            "h": 1
+          },
+          {
+            "call": "acquire",
+            "h": 3,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              3
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 3
+          },
+          {
+            "call": "select",
+            "hs": [
+              3
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 3
+          },
+          {
+            "call": "select",
+            "hs": [
+              3
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 3
+          },
+          {
+            "call": "reader.close",
+            "h": 3
+          },
+          {
+            "call": "release",
+            "h": 3,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "[{\"status\":\"hit\",\"value\":\"value:alpha\"},{\"status\":\"hit\",\"value\":\"value:alpha\"}]",
+        "json": [
+          {
+            "status": "hit",
+            "value": "value:alpha"
+          },
+          {
+            "status": "hit",
+            "value": "value:alpha"
+          }
+        ],
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 3,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Collection putText count 2 capacity 4",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 7
+          },
+          {
+            "call": "commit",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "commit"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 1,
+            "n": 7
+          },
+          {
+            "call": "commit",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "writer",
+            "action": "commit"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "[{\"status\":\"stored\"},{\"status\":\"stored\"}]",
+        "json": [
+          {
+            "status": "stored"
+          },
+          {
+            "status": "stored"
+          }
+        ],
+        "status": 200,
+        "thrown": null,
+        "committed": [
+          {
+            "key": "alpha",
+            "value": "payload"
+          },
+          {
+            "key": "alpha",
+            "value": "payload"
+          }
+        ],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 2
+        }
+      }
+    },
+    {
+      "name": "Collection getText count 0 capacity 4",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "[]",
+        "json": [],
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 0,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Collection getText count 7 capacity 8",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 2,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 3,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 4,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 5,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 6,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 7,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              7
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 7
+          },
+          {
+            "call": "select",
+            "hs": [
+              7
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 7
+          },
+          {
+            "call": "select",
+            "hs": [
+              7
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 7
+          },
+          {
+            "call": "reader.close",
+            "h": 7
+          },
+          {
+            "call": "release",
+            "h": 7,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 1
+          },
+          {
+            "call": "body",
+            "h": 1
+          },
+          {
+            "call": "acquire",
+            "h": 8,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              8
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 8
+          },
+          {
+            "call": "select",
+            "hs": [
+              8
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 8
+          },
+          {
+            "call": "select",
+            "hs": [
+              8
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 8
+          },
+          {
+            "call": "reader.close",
+            "h": 8
+          },
+          {
+            "call": "release",
+            "h": 8,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "select",
+            "hs": [
+              2
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 2
+          },
+          {
+            "call": "body",
+            "h": 2
+          },
+          {
+            "call": "acquire",
+            "h": 9,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              9
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 9
+          },
+          {
+            "call": "select",
+            "hs": [
+              9
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 9
+          },
+          {
+            "call": "select",
+            "hs": [
+              9
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 9
+          },
+          {
+            "call": "reader.close",
+            "h": 9
+          },
+          {
+            "call": "release",
+            "h": 9,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 2
+          },
+          {
+            "call": "release",
+            "h": 2,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "select",
+            "hs": [
+              3
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 3
+          },
+          {
+            "call": "body",
+            "h": 3
+          },
+          {
+            "call": "acquire",
+            "h": 10,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              10
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 10
+          },
+          {
+            "call": "select",
+            "hs": [
+              10
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 10
+          },
+          {
+            "call": "select",
+            "hs": [
+              10
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 10
+          },
+          {
+            "call": "reader.close",
+            "h": 10
+          },
+          {
+            "call": "release",
+            "h": 10,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 3
+          },
+          {
+            "call": "release",
+            "h": 3,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "select",
+            "hs": [
+              4
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 4
+          },
+          {
+            "call": "body",
+            "h": 4
+          },
+          {
+            "call": "acquire",
+            "h": 11,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              11
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 11
+          },
+          {
+            "call": "select",
+            "hs": [
+              11
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 11
+          },
+          {
+            "call": "select",
+            "hs": [
+              11
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 11
+          },
+          {
+            "call": "reader.close",
+            "h": 11
+          },
+          {
+            "call": "release",
+            "h": 11,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 4
+          },
+          {
+            "call": "release",
+            "h": 4,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "select",
+            "hs": [
+              5
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 5
+          },
+          {
+            "call": "body",
+            "h": 5
+          },
+          {
+            "call": "acquire",
+            "h": 12,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              12
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 12
+          },
+          {
+            "call": "select",
+            "hs": [
+              12
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 12
+          },
+          {
+            "call": "select",
+            "hs": [
+              12
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 12
+          },
+          {
+            "call": "reader.close",
+            "h": 12
+          },
+          {
+            "call": "release",
+            "h": 12,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 5
+          },
+          {
+            "call": "release",
+            "h": 5,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "select",
+            "hs": [
+              6
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 6
+          },
+          {
+            "call": "body",
+            "h": 6
+          },
+          {
+            "call": "acquire",
+            "h": 13,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              13
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 13
+          },
+          {
+            "call": "select",
+            "hs": [
+              13
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 13
+          },
+          {
+            "call": "select",
+            "hs": [
+              13
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 13
+          },
+          {
+            "call": "reader.close",
+            "h": 13
+          },
+          {
+            "call": "release",
+            "h": 13,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 6
+          },
+          {
+            "call": "release",
+            "h": 6,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "[{\"status\":\"hit\",\"value\":\"value:alpha\"},{\"status\":\"hit\",\"value\":\"value:alpha\"},{\"status\":\"hit\",\"value\":\"value:alpha\"},{\"status\":\"hit\",\"value\":\"value:alpha\"},{\"status\":\"hit\",\"value\":\"value:alpha\"},{\"status\":\"hit\",\"value\":\"value:alpha\"},{\"status\":\"hit\",\"value\":\"value:alpha\"}]",
+        "json": [
+          {
+            "status": "hit",
+            "value": "value:alpha"
+          },
+          {
+            "status": "hit",
+            "value": "value:alpha"
+          },
+          {
+            "status": "hit",
+            "value": "value:alpha"
+          },
+          {
+            "status": "hit",
+            "value": "value:alpha"
+          },
+          {
+            "status": "hit",
+            "value": "value:alpha"
+          },
+          {
+            "status": "hit",
+            "value": "value:alpha"
+          },
+          {
+            "status": "hit",
+            "value": "value:alpha"
+          }
+        ],
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 8,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Collection getText count 8 capacity 8",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 2,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 3,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 4,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 5,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 6,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 7,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 1
+          },
+          {
+            "call": "cache.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 2
+          },
+          {
+            "call": "cache.close",
+            "h": 2
+          },
+          {
+            "call": "release",
+            "h": 2,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 3
+          },
+          {
+            "call": "cache.close",
+            "h": 3
+          },
+          {
+            "call": "release",
+            "h": 3,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 4
+          },
+          {
+            "call": "cache.close",
+            "h": 4
+          },
+          {
+            "call": "release",
+            "h": 4,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 5
+          },
+          {
+            "call": "cache.close",
+            "h": 5
+          },
+          {
+            "call": "release",
+            "h": 5,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 6
+          },
+          {
+            "call": "cache.close",
+            "h": 6
+          },
+          {
+            "call": "release",
+            "h": 6,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 7
+          },
+          {
+            "call": "cache.close",
+            "h": 7
+          },
+          {
+            "call": "release",
+            "h": 7,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 331,
+        "counters": {
+          "peak": 8,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Collection getText count 9 capacity 16",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 2,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 3,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 4,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 5,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 6,
+            "kind": "cache"
+          },
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 7,
+            "kind": "cache"
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "is_ready",
+            "h": 0
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 1
+          },
+          {
+            "call": "cache.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 2
+          },
+          {
+            "call": "cache.close",
+            "h": 2
+          },
+          {
+            "call": "release",
+            "h": 2,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 3
+          },
+          {
+            "call": "cache.close",
+            "h": 3
+          },
+          {
+            "call": "release",
+            "h": 3,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 4
+          },
+          {
+            "call": "cache.close",
+            "h": 4
+          },
+          {
+            "call": "release",
+            "h": 4,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 5
+          },
+          {
+            "call": "cache.close",
+            "h": 5
+          },
+          {
+            "call": "release",
+            "h": 5,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 6
+          },
+          {
+            "call": "cache.close",
+            "h": 6
+          },
+          {
+            "call": "release",
+            "h": 6,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "is_ready",
+            "h": 7
+          },
+          {
+            "call": "cache.close",
+            "h": 7
+          },
+          {
+            "call": "release",
+            "h": 7,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 331,
+        "counters": {
+          "peak": 8,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Mixed existing time effect and resource operation",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"time\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"cache\":{\"status\":\"hit\",\"value\":\"value:alpha\"}}",
+        "json": {
+          "time": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "cache": {
+            "status": "hit",
+            "value": "value:alpha"
+          }
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "miss is bounded policy miss with lookup disposal",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"status\":\"miss\"}",
+        "json": {
+          "status": "miss"
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "stale is bounded policy miss with lookup disposal",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"status\":\"miss\"}",
+        "json": {
+          "status": "miss"
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "lookup failure",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "send",
+            "status": 500
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 337,
+        "counters": {
+          "peak": 0,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "state failure",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 338,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "body acquisition failure",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 339,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "read failure",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 341,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "oversize value",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 342,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "malformed read length",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 342,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "bounded read steps",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 340,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "unsupported text encoding",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 343,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "insert failure",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "send",
+            "status": 500
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 345,
+        "counters": {
+          "peak": 0,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "partial write failure",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 7
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 5
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "abandon",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "abandon"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 347,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "zero progress write",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 7
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "abandon",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "abandon"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 348,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "bounded write steps",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 7
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 6
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 5
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 4
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "abandon",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "abandon"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 346,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Sibling write failure preserves earlier commit and abandons failing writer",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "insert",
+            "key": "beta",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 5
+          },
+          {
+            "call": "commit",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "commit"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 1,
+            "n": 6
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "abandon",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "writer",
+            "action": "abandon"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [
+          {
+            "key": "alpha",
+            "value": "first"
+          }
+        ],
+        "remaining": [],
+        "error": 1003,
+        "stage": 347,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 1
+        }
+      }
+    },
+    {
+      "name": "First write failure abandons already-admitted sibling",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "insert",
+            "key": "beta",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 5
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "abandon",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "abandon"
+          },
+          {
+            "call": "abandon",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "writer",
+            "action": "abandon"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1003,
+        "stage": 347,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Commit failure: host consumes false",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 7
+          },
+          {
+            "call": "commit",
+            "h": 0
+          },
+          {
+            "call": "send",
+            "status": 500
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [
+          {
+            "h": 0,
+            "kind": "writer"
+          }
+        ],
+        "error": 1003,
+        "stage": 333,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 1,
+          "cleanupErrors": 1,
+          "commitAttempts": 1
+        }
+      }
+    },
+    {
+      "name": "Commit failure: host consumes true",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 7
+          },
+          {
+            "call": "commit",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "commit"
+          },
+          {
+            "call": "send",
+            "status": 500
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [
+          {
+            "key": "alpha",
+            "value": "payload"
+          }
+        ],
+        "remaining": [],
+        "error": 1003,
+        "stage": 333,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 1,
+          "cleanupErrors": 1,
+          "commitAttempts": 1
+        }
+      }
+    },
+    {
+      "name": "Cache close failure remains unresolved without retry",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "send",
+            "status": 500
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [
+          {
+            "h": 0,
+            "kind": "cache"
+          }
+        ],
+        "error": 1003,
+        "stage": 334,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 1,
+          "cleanupErrors": 1,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Abandon failure preserves primary write failure and unresolved ownership",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 7
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "abandon",
+            "h": 0
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [
+          {
+            "h": 0,
+            "kind": "writer"
+          }
+        ],
+        "error": 1003,
+        "stage": 347,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 1,
+          "cleanupErrors": 1,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Failed reader disposal still attempts cache disposal",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [
+          {
+            "h": 1,
+            "kind": "reader"
+          }
+        ],
+        "error": 1003,
+        "stage": 341,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 1,
+          "cleanupErrors": 1,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Expiry with pending cache does not block on close",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "send",
+            "status": 504
+          },
+          {
+            "call": "is_ready",
+            "h": 0
+          }
+        ],
+        "body": "Gateway Timeout",
+        "status": 504,
+        "thrown": null,
+        "committed": [],
+        "remaining": [
+          {
+            "h": 0,
+            "kind": "cache"
+          }
+        ],
+        "error": 0,
+        "stage": 260,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 1,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Expiry with writable body abandons without commit",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "send",
+            "status": 504
+          },
+          {
+            "call": "abandon",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "abandon"
+          }
+        ],
+        "body": "Gateway Timeout",
+        "status": 504,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 260,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Expiry during read releases known-owned resources",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "send",
+            "status": 504
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Gateway Timeout",
+        "status": 504,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 260,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Expiry after commit cannot undo accepted write",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "insert",
+            "key": "alpha",
+            "ttlNs": "60000000000"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "writer"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "write",
+            "h": 0,
+            "n": 7
+          },
+          {
+            "call": "commit",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "writer",
+            "action": "commit"
+          },
+          {
+            "call": "send",
+            "status": 504
+          }
+        ],
+        "body": "Gateway Timeout",
+        "status": 504,
+        "thrown": null,
+        "committed": [
+          {
+            "key": "alpha",
+            "value": "payload"
+          }
+        ],
+        "remaining": [],
+        "error": 0,
+        "stage": 260,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 1
+        }
+      }
+    },
+    {
+      "name": "Closure and cumulative exhaustion prevent acquisition",
+      "status": "passed",
+      "detail": [
+        {
+          "trace": [
+            {
+              "call": "send",
+              "status": 500
+            }
+          ],
+          "body": "Internal Server Error",
+          "status": 500,
+          "thrown": null,
+          "committed": [],
+          "remaining": [],
+          "error": 1007,
+          "stage": 171,
+          "counters": {
+            "peak": 0,
+            "owned": 0,
+            "unresolved": 0,
+            "cleanupErrors": 0,
+            "commitAttempts": 0
+          }
+        },
+        {
+          "trace": [
+            {
+              "call": "send",
+              "status": 500
+            }
+          ],
+          "body": "Internal Server Error",
+          "status": 500,
+          "thrown": null,
+          "committed": [],
+          "remaining": [],
+          "error": 1007,
+          "stage": 170,
+          "counters": {
+            "peak": 0,
+            "owned": 0,
+            "unresolved": 0,
+            "cleanupErrors": 0,
+            "commitAttempts": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forged raw setter rejected while lookup is owned",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"status\":\"hit\",\"value\":\"value:alpha\"}",
+        "json": {
+          "status": "hit",
+          "value": "value:alpha"
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Wrong invocation ticket rejects completion",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "send",
+            "status": 500
+          },
+          {
+            "call": "is_ready",
+            "h": 0
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1007,
+        "stage": 171,
+        "counters": {
+          "peak": 1,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Duplicate completion after close is rejected without host work",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          },
+          {
+            "call": "reader.close",
+            "h": 1
+          },
+          {
+            "call": "release",
+            "h": 1,
+            "kind": "reader",
+            "action": "reader.close"
+          },
+          {
+            "call": "cache.close",
+            "h": 0
+          },
+          {
+            "call": "release",
+            "h": 0,
+            "kind": "cache",
+            "action": "cache.close"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"status\":\"hit\",\"value\":\"value:alpha\"}",
+        "json": {
+          "status": "hit",
+          "value": "value:alpha"
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 2,
+          "owned": 0,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Trap bypasses guest teardown; host reclamation remains required",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "lookup",
+            "key": "alpha"
+          },
+          {
+            "call": "acquire",
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "call": "select",
+            "hs": [
+              0
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "state",
+            "h": 0
+          },
+          {
+            "call": "body",
+            "h": 0
+          },
+          {
+            "call": "acquire",
+            "h": 1,
+            "kind": "reader"
+          },
+          {
+            "call": "select",
+            "hs": [
+              1
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 1
+          }
+        ],
+        "body": "",
+        "status": 200,
+        "thrown": "injected read trap",
+        "committed": [],
+        "remaining": [
+          {
+            "h": 0,
+            "kind": "cache"
+          },
+          {
+            "h": 1,
+            "kind": "reader"
+          }
+        ],
+        "error": 0,
+        "stage": 0,
+        "counters": {
+          "peak": 2,
+          "owned": 2,
+          "unresolved": 0,
+          "cleanupErrors": 0,
+          "commitAttempts": 0
+        }
+      }
+    },
+    {
+      "name": "Dynamic key is explicitly outside fixture admission",
+      "status": "passed",
+      "detail": "No capture/codec qualification"
+    }
+  ]
+}
