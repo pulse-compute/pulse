@@ -83,6 +83,28 @@ mock proxy for Pushpin or treats an unavailable lane as passing.
 
 ## Retained qualification
 
+### Focused local replay
+
+The follow-up `hex/04-local-acceptance` branch runs the same probe on an
+Ubuntu 24.04 GitHub Actions runner. Its read-only, credential-free workflow is
+limited to that branch's PR against `hex-integration`. It uses the retained Wasm
+rather than rebuilding packages or repeating the regression selection.
+
+`run-hex04-local-ci.py` verifies the evidence archive/index, extracted artifacts,
+engine archives/binaries and downloaded dependencies before execution. The
+runner requires all six local cases, including real Pushpin HTTP handoff and
+GRIP hold/publish; unavailable Pushpin makes the job fail. Each attempt uploads
+its source/artifact identities, engine pins, download log and probe receipt,
+including failures. This adds local engine evidence only, not hosted acceptance.
+No system service is installed or activated. To reproduce on Ubuntu 24.04 with
+Node 24.18.0, Python 3, curl and dpkg-deb, use a new output directory:
+
+```sh
+python3 docs/internal/host-extensions/run-hex04-local-ci.py /tmp/hex04-local-replay
+```
+
+### Original implementation evidence
+
 The product candidate was built and tested at local commit
 `69e0d59771d8c8664524da5af1f72613e6e64048`, tree
 `34034e5d429d6795f29113c51a83b56ba99bada1`. The published implementation commit
