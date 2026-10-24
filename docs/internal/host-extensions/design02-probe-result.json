@@ -1,0 +1,111 @@
+{
+  "version": "pulse.hex-design02-probe.v1",
+  "status": "passed",
+  "revision": "a068a02e3bf200699d6cd894b02d65526d108515",
+  "workingTree": "?? docs/internal/host-extensions/design02-probe-attempt1.json\n?? docs/internal/host-extensions/design02-probe.cjs",
+  "node": "v24.19.0",
+  "typescript": "5.9.3",
+  "scope": "Current source admission, Native plan construction and injected JavaScript adapter only",
+  "cases": [
+    {
+      "name": "Existing Native collection reserves declared capacity",
+      "status": "passed",
+      "detail": [
+        {
+          "max": 1,
+          "fetchSlots": 1,
+          "sourceSha256": "f9165ddd8a8f94f70150e5f1a1a972cbb271462c6e5d49d0e3193df8a039cf36"
+        },
+        {
+          "max": 4,
+          "fetchSlots": 4,
+          "sourceSha256": "f822d2737f18ac2bf3bd7a3e4838e6a5af3c6ee9ba6e72cb0ed0200819a91520"
+        },
+        {
+          "max": 32,
+          "fetchSlots": 32,
+          "sourceSha256": "7c2e27eb1b06b4e54fd24db75f79e093799facf1c9a7df79fbdb348c376502d1"
+        }
+      ]
+    },
+    {
+      "name": "Inline deferred loader rejected by collection source gate",
+      "status": "passed",
+      "detail": [
+        "Collection member arguments cannot await, mutate or call helpers."
+      ]
+    },
+    {
+      "name": "Named loader passes only collection structural gate",
+      "status": "passed",
+      "detail": "Structural acceptance only; no package recognition or named loader execution exists here."
+    },
+    {
+      "name": "Package payload cannot carry callback",
+      "status": "passed",
+      "detail": "Function payload rejected; a serializable child plan or other explicit contract would be needed."
+    },
+    {
+      "name": "JavaScript package bridge rejects undeclared observation operation",
+      "status": "passed",
+      "detail": "Native lowerer admission is not JavaScript operation admission."
+    },
+    {
+      "name": "Cache logical binding lacks current binding ownership mapping",
+      "status": "passed",
+      "detail": "KV control resolves; cache mapping is absent."
+    },
+    {
+      "name": "Existing effect roots work directly, keyed and held until collection flush",
+      "status": "passed",
+      "detail": {
+        "dispatchesBeforeFlush": 2,
+        "dispatchesAfterFlush": 4,
+        "ownedEffects": 4
+      }
+    },
+    {
+      "name": "An async wrapper loses parallel effect identity",
+      "status": "passed",
+      "detail": "Promise syntax does not preserve the execution-owned parallel root."
+    }
+  ],
+  "inputs": [
+    {
+      "file": "pnpm-lock.yaml",
+      "sha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0"
+    },
+    {
+      "file": "packages/runtime/src/internal/effect-adapter.js",
+      "sha256": "d9e9639cbeb7ba107d9f479f47cfd004391c5a5aa7d16d261dd055d453fb0c4e"
+    },
+    {
+      "file": "packages/runtime/src/internal/package-runtime.js",
+      "sha256": "c92855275f92879e60d4a1d3bc53b0399fc646e3f667a20e4825c8fd2411b0ee"
+    },
+    {
+      "file": "wasm/packages/compiler/src/spine/effect-collection-source.js",
+      "sha256": "90baf0d2ade1f299a44a15ccc657985e53de3c50b4bfed6bf250d6417e2d1dcc"
+    },
+    {
+      "file": "wasm/packages/compiler/src/spine/handler-ir.js",
+      "sha256": "d2203298280f45811f2a099188f6dcc34610296e7310234478cbcf6b01f47e52"
+    },
+    {
+      "file": "wasm/packages/compiler/src/spine/binding-ownership.js",
+      "sha256": "cc1fb7f1d150f8c4d3bd71ea52528cddfab8d14211da056b160b934559dcfd14"
+    },
+    {
+      "file": "wasm/packages/compiler/src/canonical-native-plan.js",
+      "sha256": "67bc12d63aa15ecc5061b8e87c538f99e581b6c991ebee42ba066ccc51f25839"
+    },
+    {
+      "file": "wasm/test/runtime/effect-collection-size.json",
+      "sha256": "4514d8311ed747a0e3263bb8f35814cd3d776e415c198d56fc056a9b87c5b16f"
+    },
+    {
+      "file": "docs/internal/host-extensions/design02-probe.cjs",
+      "sha256": "6e6c8afcc41cd0bc03cfc7afe1ea4496900dab8875ef7ba91636e1879043bc12"
+    }
+  ]
+}

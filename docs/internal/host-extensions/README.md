@@ -11,6 +11,10 @@ Design follow-up: [authoring shapes, pass 1](DESIGN-01-authoring-shapes.md)
 compares proposed observations and cache APIs across direct await, keyed parallel
 and bounded effect collections. It is design-only and does not widen HEX support.
 
+[Execution and evidence costs, pass 2](DESIGN-02-execution-costs.md) traces those
+shapes through existing owners, separates shared investment from per-capability
+work, and retains bounded structural probes. It adds no implemented capability.
+
 Follow-up: [HEX-01 proof and decision record](HEX-01.md). The record below
 retains HEX-00 findings; the integration branch carries the private experiment.
 
