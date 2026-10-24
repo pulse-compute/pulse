@@ -1,0 +1,1224 @@
+{
+  "version": "hex.ra03-measure.v1",
+  "status": "passed",
+  "sourceBase": "90845279acd261d8756e10423f06c6c2e0773291",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "widths": [
+    8,
+    16,
+    32
+  ],
+  "warmups": 60,
+  "samples": 7,
+  "repetitions": 120,
+  "rows": [
+    {
+      "width": 8,
+      "storage": {
+        "rootSlots": 16,
+        "claimsPerRoot": 6,
+        "childrenPerRoot": 3,
+        "emergencySlots": 2,
+        "rootBytes": 2432,
+        "claimBytes": 10976,
+        "childBytes": 768,
+        "scratchBytes": 56,
+        "backingBytes": 14232,
+        "tokenObjectsCreated": 0,
+        "snapshotObjectsCreated": 0,
+        "activeRecords": 0,
+        "peakRecords": 0
+      },
+      "cycles": [
+        {
+          "scenario": "hit",
+          "medianUs": 112.67511666666792,
+          "minUs": 82.36785833333329,
+          "maxUs": 203.10508333333246,
+          "samplesUs": [
+            203.10508333333246,
+            84.67341666666736,
+            82.36785833333329,
+            132.39196666666734,
+            144.07051666666652,
+            112.67511666666792,
+            104.86999999999966
+          ],
+          "processCpu": {
+            "medianUs": 224.26666666666668,
+            "minUs": 126.96666666666667,
+            "maxUs": 350.64166666666665,
+            "samplesUs": [
+              333.03333333333336,
+              139.75,
+              126.96666666666667,
+              284.15833333333336,
+              350.64166666666665,
+              173.31666666666666,
+              224.26666666666668
+            ]
+          },
+          "allocations": {
+            "rootSlots": 16,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 2432,
+            "claimBytes": 10976,
+            "childBytes": 768,
+            "scratchBytes": 56,
+            "backingBytes": 14232,
+            "tokenObjectsCreated": 24,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 8
+          }
+        },
+        {
+          "scenario": "miss",
+          "medianUs": 158.7522999999995,
+          "minUs": 135.24885000000117,
+          "maxUs": 183.0493999999987,
+          "samplesUs": [
+            175.59336666666732,
+            183.0493999999987,
+            158.7522999999995,
+            158.27548333333348,
+            135.24885000000117,
+            158.09905000000035,
+            173.05889166666663
+          ],
+          "processCpu": {
+            "medianUs": 310.85,
+            "minUs": 137.475,
+            "maxUs": 518.875,
+            "samplesUs": [
+              419.68333333333334,
+              310.85,
+              454.3666666666667,
+              289.31666666666666,
+              137.475,
+              267.93333333333334,
+              518.875
+            ]
+          },
+          "allocations": {
+            "rootSlots": 16,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 2432,
+            "claimBytes": 10976,
+            "childBytes": 768,
+            "scratchBytes": 56,
+            "backingBytes": 14232,
+            "tokenObjectsCreated": 56,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 24
+          }
+        },
+        {
+          "scenario": "cleanup",
+          "medianUs": 187.1563083333323,
+          "minUs": 158.4721999999999,
+          "maxUs": 317.4921500000001,
+          "samplesUs": [
+            187.73632499999925,
+            180.65804166666717,
+            158.4721999999999,
+            258.5046666666661,
+            317.4921500000001,
+            168.49724166666536,
+            187.1563083333323
+          ],
+          "processCpu": {
+            "medianUs": 265.2,
+            "minUs": 170.75833333333333,
+            "maxUs": 348.8833333333333,
+            "samplesUs": [
+              195.69166666666666,
+              261.90833333333336,
+              343.5083333333333,
+              348.8833333333333,
+              334.34166666666664,
+              170.75833333333333,
+              265.2
+            ]
+          },
+          "allocations": {
+            "rootSlots": 16,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 2432,
+            "claimBytes": 10976,
+            "childBytes": 768,
+            "scratchBytes": 56,
+            "backingBytes": 14232,
+            "tokenObjectsCreated": 64,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 32
+          }
+        },
+        {
+          "scenario": "unknown",
+          "medianUs": 195.19518333333204,
+          "minUs": 159.81486666666646,
+          "maxUs": 269.35480000000024,
+          "samplesUs": [
+            261.95772500000015,
+            192.3074083333328,
+            159.81486666666646,
+            187.81561666666752,
+            195.19518333333204,
+            269.35480000000024,
+            205.7624583333336
+          ],
+          "processCpu": {
+            "medianUs": 208.76666666666668,
+            "minUs": 171.6,
+            "maxUs": 265.96666666666664,
+            "samplesUs": [
+              265.96666666666664,
+              193.9,
+              229.1,
+              224.375,
+              204.33333333333334,
+              171.6,
+              208.76666666666668
+            ]
+          },
+          "allocations": {
+            "rootSlots": 16,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 2432,
+            "claimBytes": 10976,
+            "childBytes": 768,
+            "scratchBytes": 56,
+            "backingBytes": 14232,
+            "tokenObjectsCreated": 64,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 8,
+            "peakRecords": 32
+          }
+        },
+        {
+          "scenario": "retained",
+          "medianUs": 125.52585833333296,
+          "minUs": 100.3636583333332,
+          "maxUs": 133.07759166666528,
+          "samplesUs": [
+            133.07759166666528,
+            121.04020833333682,
+            126.72242500000266,
+            100.3636583333332,
+            126.72770833333213,
+            125.52585833333296,
+            103.17658333333004
+          ],
+          "processCpu": {
+            "medianUs": 175.64166666666668,
+            "minUs": 124.46666666666667,
+            "maxUs": 272.8666666666667,
+            "samplesUs": [
+              175.64166666666668,
+              124.46666666666667,
+              157.175,
+              190.81666666666666,
+              219.1,
+              272.8666666666667,
+              160.925
+            ]
+          },
+          "allocations": {
+            "rootSlots": 16,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 2432,
+            "claimBytes": 10976,
+            "childBytes": 768,
+            "scratchBytes": 56,
+            "backingBytes": 14232,
+            "tokenObjectsCreated": 32,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 16
+          }
+        },
+        {
+          "scenario": "mixed",
+          "medianUs": 182.0487749999984,
+          "minUs": 166.6845749999993,
+          "maxUs": 313.93206666667004,
+          "samplesUs": [
+            234.2092333333312,
+            177.37871666666555,
+            313.93206666667004,
+            166.6845749999993,
+            172.66685833333213,
+            200.10494166666604,
+            182.0487749999984
+          ],
+          "processCpu": {
+            "medianUs": 185.175,
+            "minUs": 169.48333333333332,
+            "maxUs": 239.1,
+            "samplesUs": [
+              239.1,
+              183.88333333333333,
+              200.99166666666667,
+              169.48333333333332,
+              174.96666666666667,
+              204.26666666666668,
+              185.175
+            ]
+          },
+          "allocations": {
+            "rootSlots": 16,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 2432,
+            "claimBytes": 10976,
+            "childBytes": 768,
+            "scratchBytes": 56,
+            "backingBytes": 14232,
+            "tokenObjectsCreated": 64,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 4,
+            "peakRecords": 32
+          }
+        }
+      ],
+      "memory": {
+        "samples": [
+          {
+            "width": 8,
+            "batch": 256,
+            "heapBytesPerLedger": 2537.53125,
+            "arrayBufferBytesPerLedger": 14176,
+            "exactBackingBytes": 14232,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 8,
+            "batch": 256,
+            "heapBytesPerLedger": 2505.75,
+            "arrayBufferBytesPerLedger": 14176,
+            "exactBackingBytes": 14232,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 8,
+            "batch": 256,
+            "heapBytesPerLedger": 2505.75,
+            "arrayBufferBytesPerLedger": 14176,
+            "exactBackingBytes": 14232,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 8,
+            "batch": 256,
+            "heapBytesPerLedger": 2683.125,
+            "arrayBufferBytesPerLedger": 14176,
+            "exactBackingBytes": 14232,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 8,
+            "batch": 256,
+            "heapBytesPerLedger": 2505.75,
+            "arrayBufferBytesPerLedger": 14176,
+            "exactBackingBytes": 14232,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          }
+        ],
+        "medianHeapBytesPerLedger": 2505.75,
+        "medianArrayBufferBytesPerLedger": 14176
+      },
+      "executor": {
+        "disabled": {
+          "medianUs": 713.2222166666678,
+          "minUs": 415.1036750000003,
+          "maxUs": 855.0899333333329,
+          "samplesUs": [
+            526.708933333335,
+            724.0649583333342,
+            855.0899333333329,
+            769.3139999999971,
+            713.2222166666678,
+            415.1036750000003,
+            562.1278333333332
+          ]
+        },
+        "enabled": {
+          "medianUs": 971.7707999999978,
+          "minUs": 644.9458666666676,
+          "maxUs": 1742.9749083333338,
+          "samplesUs": [
+            809.4556416666668,
+            1471.5979833333336,
+            1740.3151583333358,
+            971.7707999999978,
+            683.616058333333,
+            644.9458666666676,
+            1742.9749083333338
+          ]
+        },
+        "differenceOfMediansUs": 258.54858333333004,
+        "disabledProcessCpu": {
+          "medianUs": 800.4083333333333,
+          "minUs": 502.925,
+          "maxUs": 1132.7583333333334,
+          "samplesUs": [
+            1132.7583333333334,
+            787.4416666666667,
+            895.025,
+            861.725,
+            800.4083333333333,
+            502.925,
+            586.425
+          ]
+        },
+        "enabledProcessCpu": {
+          "medianUs": 1234.275,
+          "minUs": 938.2666666666667,
+          "maxUs": 1812.8166666666666,
+          "samplesUs": [
+            1234.275,
+            1606.2833333333333,
+            1811.95,
+            1172.15,
+            938.2666666666667,
+            978.0666666666667,
+            1812.8166666666666
+          ]
+        },
+        "differenceOfCpuMediansUs": 433.8666666666668,
+        "control": "Same real JS executor, keyed cohort, synthetic time result and host stub; ledger construction and private hooks included; bridge compilation excluded."
+      }
+    },
+    {
+      "width": 16,
+      "storage": {
+        "rootSlots": 32,
+        "claimsPerRoot": 6,
+        "childrenPerRoot": 3,
+        "emergencySlots": 2,
+        "rootBytes": 4864,
+        "claimBytes": 21728,
+        "childBytes": 1536,
+        "scratchBytes": 72,
+        "backingBytes": 28200,
+        "tokenObjectsCreated": 0,
+        "snapshotObjectsCreated": 0,
+        "activeRecords": 0,
+        "peakRecords": 0
+      },
+      "cycles": [
+        {
+          "scenario": "hit",
+          "medianUs": 159.40164166666668,
+          "minUs": 129.66292500000236,
+          "maxUs": 267.3560749999979,
+          "samplesUs": [
+            163.16660833333572,
+            179.66651666667227,
+            267.3560749999979,
+            158.57639166666408,
+            146.45779166666367,
+            129.66292500000236,
+            159.40164166666668
+          ],
+          "processCpu": {
+            "medianUs": 159.33333333333334,
+            "minUs": 136.44166666666666,
+            "maxUs": 305.68333333333334,
+            "samplesUs": [
+              258.7916666666667,
+              305.68333333333334,
+              268.575,
+              158.46666666666667,
+              153.13333333333333,
+              136.44166666666666,
+              159.33333333333334
+            ]
+          },
+          "allocations": {
+            "rootSlots": 32,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 4864,
+            "claimBytes": 21728,
+            "childBytes": 1536,
+            "scratchBytes": 72,
+            "backingBytes": 28200,
+            "tokenObjectsCreated": 48,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 16
+          }
+        },
+        {
+          "scenario": "miss",
+          "medianUs": 364.181350000005,
+          "minUs": 339.12286666666205,
+          "maxUs": 1470.926108333333,
+          "samplesUs": [
+            364.181350000005,
+            1470.926108333333,
+            339.12286666666205,
+            367.14557500000257,
+            388.32441666666756,
+            362.1481499999997,
+            349.6194583333363
+          ],
+          "processCpu": {
+            "medianUs": 389.9166666666667,
+            "minUs": 341.31666666666666,
+            "maxUs": 1456.4083333333333,
+            "samplesUs": [
+              415.9583333333333,
+              1456.4083333333333,
+              341.31666666666666,
+              370.2,
+              389.9166666666667,
+              432.075,
+              351.95
+            ]
+          },
+          "allocations": {
+            "rootSlots": 32,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 4864,
+            "claimBytes": 21728,
+            "childBytes": 1536,
+            "scratchBytes": 72,
+            "backingBytes": 28200,
+            "tokenObjectsCreated": 112,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 48
+          }
+        },
+        {
+          "scenario": "cleanup",
+          "medianUs": 441.95035833333804,
+          "minUs": 414.8226833333335,
+          "maxUs": 548.9208416666695,
+          "samplesUs": [
+            420.3031749999961,
+            523.8538916666736,
+            436.0411000000037,
+            414.8226833333335,
+            441.95035833333804,
+            548.9208416666695,
+            446.9467083333332
+          ],
+          "processCpu": {
+            "medianUs": 447.4166666666667,
+            "minUs": 415.925,
+            "maxUs": 614.8666666666667,
+            "samplesUs": [
+              415.925,
+              526.8,
+              439.9916666666667,
+              417.35,
+              614.8666666666667,
+              573.625,
+              447.4166666666667
+            ]
+          },
+          "allocations": {
+            "rootSlots": 32,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 4864,
+            "claimBytes": 21728,
+            "childBytes": 1536,
+            "scratchBytes": 72,
+            "backingBytes": 28200,
+            "tokenObjectsCreated": 128,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 64
+          }
+        },
+        {
+          "scenario": "unknown",
+          "medianUs": 498.9736500000011,
+          "minUs": 441.2846416666677,
+          "maxUs": 642.9839666666718,
+          "samplesUs": [
+            484.43141666666634,
+            441.2846416666677,
+            498.9736500000011,
+            485.7679166666685,
+            530.299066666665,
+            642.9839666666718,
+            523.2251499999999
+          ],
+          "processCpu": {
+            "medianUs": 500.25,
+            "minUs": 442.75,
+            "maxUs": 644.7583333333333,
+            "samplesUs": [
+              487.94166666666666,
+              442.75,
+              500.25,
+              488.15,
+              532.5583333333333,
+              644.7583333333333,
+              524.925
+            ]
+          },
+          "allocations": {
+            "rootSlots": 32,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 4864,
+            "claimBytes": 21728,
+            "childBytes": 1536,
+            "scratchBytes": 72,
+            "backingBytes": 28200,
+            "tokenObjectsCreated": 128,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 16,
+            "peakRecords": 64
+          }
+        },
+        {
+          "scenario": "retained",
+          "medianUs": 285.7008166666674,
+          "minUs": 227.17856666666498,
+          "maxUs": 314.47906666666466,
+          "samplesUs": [
+            282.6789749999989,
+            227.17856666666498,
+            288.419466666672,
+            311.6067416666662,
+            271.4925416666726,
+            314.47906666666466,
+            285.7008166666674
+          ],
+          "processCpu": {
+            "medianUs": 290.96666666666664,
+            "minUs": 233.66666666666666,
+            "maxUs": 423.925,
+            "samplesUs": [
+              284.21666666666664,
+              233.66666666666666,
+              285.775,
+              314.3,
+              290.96666666666664,
+              318.825,
+              423.925
+            ]
+          },
+          "allocations": {
+            "rootSlots": 32,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 4864,
+            "claimBytes": 21728,
+            "childBytes": 1536,
+            "scratchBytes": 72,
+            "backingBytes": 28200,
+            "tokenObjectsCreated": 64,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 32
+          }
+        },
+        {
+          "scenario": "mixed",
+          "medianUs": 449.4343333333366,
+          "minUs": 397.80649166666535,
+          "maxUs": 500.03751666666477,
+          "samplesUs": [
+            500.03751666666477,
+            416.2539916666674,
+            397.80649166666535,
+            467.67611666666653,
+            449.4343333333366,
+            433.1144500000012,
+            471.34800833333276
+          ],
+          "processCpu": {
+            "medianUs": 451.85833333333335,
+            "minUs": 399.775,
+            "maxUs": 508.55,
+            "samplesUs": [
+              508.55,
+              417.5833333333333,
+              399.775,
+              469.25,
+              451.85833333333335,
+              434.9166666666667,
+              461.425
+            ]
+          },
+          "allocations": {
+            "rootSlots": 32,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 4864,
+            "claimBytes": 21728,
+            "childBytes": 1536,
+            "scratchBytes": 72,
+            "backingBytes": 28200,
+            "tokenObjectsCreated": 128,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 8,
+            "peakRecords": 64
+          }
+        }
+      ],
+      "memory": {
+        "samples": [
+          {
+            "width": 16,
+            "batch": 256,
+            "heapBytesPerLedger": 2521.75,
+            "arrayBufferBytesPerLedger": 28128,
+            "exactBackingBytes": 28200,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 16,
+            "batch": 256,
+            "heapBytesPerLedger": 2521.75,
+            "arrayBufferBytesPerLedger": 28128,
+            "exactBackingBytes": 28200,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 16,
+            "batch": 256,
+            "heapBytesPerLedger": 2527.25,
+            "arrayBufferBytesPerLedger": 28128,
+            "exactBackingBytes": 28200,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 16,
+            "batch": 256,
+            "heapBytesPerLedger": 2521.75,
+            "arrayBufferBytesPerLedger": 28128,
+            "exactBackingBytes": 28200,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 16,
+            "batch": 256,
+            "heapBytesPerLedger": 2521.75,
+            "arrayBufferBytesPerLedger": 28128,
+            "exactBackingBytes": 28200,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          }
+        ],
+        "medianHeapBytesPerLedger": 2521.75,
+        "medianArrayBufferBytesPerLedger": 28128
+      },
+      "executor": {
+        "disabled": {
+          "medianUs": 708.8201833333338,
+          "minUs": 564.2667666666663,
+          "maxUs": 2147.036916666669,
+          "samplesUs": [
+            820.5000583333307,
+            790.8227583333428,
+            580.1353083333348,
+            2147.036916666669,
+            586.9012750000062,
+            564.2667666666663,
+            708.8201833333338
+          ]
+        },
+        "enabled": {
+          "medianUs": 925.1991916666611,
+          "minUs": 808.257783333344,
+          "maxUs": 2344.471458333343,
+          "samplesUs": [
+            952.3590666666678,
+            925.1991916666611,
+            886.265325000007,
+            2344.471458333343,
+            994.6096666666714,
+            862.8522499999993,
+            808.257783333344
+          ]
+        },
+        "differenceOfMediansUs": 216.3790083333273,
+        "disabledProcessCpu": {
+          "medianUs": 840.7166666666667,
+          "minUs": 635.35,
+          "maxUs": 2234.6666666666665,
+          "samplesUs": [
+            919.65,
+            943.8166666666667,
+            635.35,
+            2234.6666666666665,
+            675.9416666666667,
+            641.0916666666667,
+            840.7166666666667
+          ]
+        },
+        "enabledProcessCpu": {
+          "medianUs": 1124.4333333333334,
+          "minUs": 901.7083333333334,
+          "maxUs": 2500.7166666666667,
+          "samplesUs": [
+            1105.0583333333334,
+            1257.9833333333333,
+            1105.1083333333333,
+            2500.7166666666667,
+            1124.4333333333334,
+            1350.0833333333333,
+            901.7083333333334
+          ]
+        },
+        "differenceOfCpuMediansUs": 283.7166666666667,
+        "control": "Same real JS executor, keyed cohort, synthetic time result and host stub; ledger construction and private hooks included; bridge compilation excluded."
+      }
+    },
+    {
+      "width": 32,
+      "storage": {
+        "rootSlots": 64,
+        "claimsPerRoot": 6,
+        "childrenPerRoot": 3,
+        "emergencySlots": 2,
+        "rootBytes": 9728,
+        "claimBytes": 43232,
+        "childBytes": 3072,
+        "scratchBytes": 104,
+        "backingBytes": 56136,
+        "tokenObjectsCreated": 0,
+        "snapshotObjectsCreated": 0,
+        "activeRecords": 0,
+        "peakRecords": 0
+      },
+      "cycles": [
+        {
+          "scenario": "hit",
+          "medianUs": 329.8403166666655,
+          "minUs": 294.24167499999686,
+          "maxUs": 360.32513333332946,
+          "samplesUs": [
+            360.32513333332946,
+            337.5937166666669,
+            308.3792000000055,
+            294.24167499999686,
+            332.9020000000128,
+            329.8403166666655,
+            326.85789999998934
+          ],
+          "processCpu": {
+            "medianUs": 334.875,
+            "minUs": 322.525,
+            "maxUs": 389.43333333333334,
+            "samplesUs": [
+              389.43333333333334,
+              352.59166666666664,
+              322.525,
+              345.76666666666665,
+              334.875,
+              331.64166666666665,
+              329.3333333333333
+            ]
+          },
+          "allocations": {
+            "rootSlots": 64,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 9728,
+            "claimBytes": 43232,
+            "childBytes": 3072,
+            "scratchBytes": 104,
+            "backingBytes": 56136,
+            "tokenObjectsCreated": 96,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 32
+          }
+        },
+        {
+          "scenario": "miss",
+          "medianUs": 801.2402416666646,
+          "minUs": 783.0330583333458,
+          "maxUs": 999.8547833333305,
+          "samplesUs": [
+            834.9618416666696,
+            999.8547833333305,
+            838.327775000001,
+            801.2402416666646,
+            795.0200750000022,
+            783.0330583333458,
+            793.7705166666698
+          ],
+          "processCpu": {
+            "medianUs": 803.8666666666667,
+            "minUs": 785.4666666666667,
+            "maxUs": 1005.725,
+            "samplesUs": [
+              838.9,
+              1005.725,
+              842.375,
+              803.8666666666667,
+              797.6166666666667,
+              785.4666666666667,
+              795.425
+            ]
+          },
+          "allocations": {
+            "rootSlots": 64,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 9728,
+            "claimBytes": 43232,
+            "childBytes": 3072,
+            "scratchBytes": 104,
+            "backingBytes": 56136,
+            "tokenObjectsCreated": 224,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 96
+          }
+        },
+        {
+          "scenario": "cleanup",
+          "medianUs": 1083.3439166666722,
+          "minUs": 1009.7071416666646,
+          "maxUs": 1183.4612749999906,
+          "samplesUs": [
+            1034.2073249999885,
+            1183.4612749999906,
+            1155.9313750000001,
+            1094.1997249999986,
+            1083.3439166666722,
+            1060.1875500000006,
+            1009.7071416666646
+          ],
+          "processCpu": {
+            "medianUs": 1086.45,
+            "minUs": 1012.3833333333333,
+            "maxUs": 1191.6416666666667,
+            "samplesUs": [
+              1038.4083333333333,
+              1191.6416666666667,
+              1189.2416666666666,
+              1102.8833333333334,
+              1086.45,
+              1064.4833333333333,
+              1012.3833333333333
+            ]
+          },
+          "allocations": {
+            "rootSlots": 64,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 9728,
+            "claimBytes": 43232,
+            "childBytes": 3072,
+            "scratchBytes": 104,
+            "backingBytes": 56136,
+            "tokenObjectsCreated": 256,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 128
+          }
+        },
+        {
+          "scenario": "unknown",
+          "medianUs": 1106.1097583333321,
+          "minUs": 996.4537500000006,
+          "maxUs": 1227.312025000007,
+          "samplesUs": [
+            1106.1097583333321,
+            1227.312025000007,
+            1193.2442999999996,
+            1153.7449666666664,
+            1093.8337833333358,
+            1053.3000166666625,
+            996.4537500000006
+          ],
+          "processCpu": {
+            "medianUs": 1156.225,
+            "minUs": 1003.925,
+            "maxUs": 1412.625,
+            "samplesUs": [
+              1412.625,
+              1315.8083333333334,
+              1195.9916666666666,
+              1156.225,
+              1096.9916666666666,
+              1056.4,
+              1003.925
+            ]
+          },
+          "allocations": {
+            "rootSlots": 64,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 9728,
+            "claimBytes": 43232,
+            "childBytes": 3072,
+            "scratchBytes": 104,
+            "backingBytes": 56136,
+            "tokenObjectsCreated": 256,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 32,
+            "peakRecords": 128
+          }
+        },
+        {
+          "scenario": "retained",
+          "medianUs": 570.9828083333377,
+          "minUs": 528.2370833333365,
+          "maxUs": 671.778616666658,
+          "samplesUs": [
+            576.6708749999907,
+            558.7289083333266,
+            553.0212499999985,
+            671.778616666658,
+            570.9828083333377,
+            528.2370833333365,
+            613.1032250000013
+          ],
+          "processCpu": {
+            "medianUs": 578.6916666666667,
+            "minUs": 530.5083333333333,
+            "maxUs": 673.975,
+            "samplesUs": [
+              578.6916666666667,
+              560.1333333333333,
+              578.0083333333333,
+              673.975,
+              600.3666666666667,
+              530.5083333333333,
+              630.4666666666667
+            ]
+          },
+          "allocations": {
+            "rootSlots": 64,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 9728,
+            "claimBytes": 43232,
+            "childBytes": 3072,
+            "scratchBytes": 104,
+            "backingBytes": 56136,
+            "tokenObjectsCreated": 128,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 0,
+            "peakRecords": 64
+          }
+        },
+        {
+          "scenario": "mixed",
+          "medianUs": 1051.0979333333278,
+          "minUs": 971.0163083333404,
+          "maxUs": 1120.347091666675,
+          "samplesUs": [
+            1071.979650000003,
+            1120.347091666675,
+            971.0163083333404,
+            1045.6416416666646,
+            1015.4379666666651,
+            1062.2206083333215,
+            1051.0979333333278
+          ],
+          "processCpu": {
+            "medianUs": 1056.0416666666667,
+            "minUs": 974.8333333333334,
+            "maxUs": 1123.3666666666666,
+            "samplesUs": [
+              1074.475,
+              1123.3666666666666,
+              974.8333333333334,
+              1048.6,
+              1019.1666666666666,
+              1064,
+              1056.0416666666667
+            ]
+          },
+          "allocations": {
+            "rootSlots": 64,
+            "claimsPerRoot": 6,
+            "childrenPerRoot": 3,
+            "emergencySlots": 2,
+            "rootBytes": 9728,
+            "claimBytes": 43232,
+            "childBytes": 3072,
+            "scratchBytes": 104,
+            "backingBytes": 56136,
+            "tokenObjectsCreated": 256,
+            "snapshotObjectsCreated": 0,
+            "activeRecords": 16,
+            "peakRecords": 128
+          }
+        }
+      ],
+      "memory": {
+        "samples": [
+          {
+            "width": 32,
+            "batch": 256,
+            "heapBytesPerLedger": 2553.75,
+            "arrayBufferBytesPerLedger": 56032,
+            "exactBackingBytes": 56136,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 32,
+            "batch": 256,
+            "heapBytesPerLedger": 2559.25,
+            "arrayBufferBytesPerLedger": 56032,
+            "exactBackingBytes": 56136,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 32,
+            "batch": 256,
+            "heapBytesPerLedger": 2553.75,
+            "arrayBufferBytesPerLedger": 56032,
+            "exactBackingBytes": 56136,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 32,
+            "batch": 256,
+            "heapBytesPerLedger": 2559.25,
+            "arrayBufferBytesPerLedger": 56032,
+            "exactBackingBytes": 56136,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          },
+          {
+            "width": 32,
+            "batch": 256,
+            "heapBytesPerLedger": 2559.25,
+            "arrayBufferBytesPerLedger": 56032,
+            "exactBackingBytes": 56136,
+            "caveat": "Heap delta is a local GC estimate including first-use effects, not a layout guarantee; backing bytes are exact. Neither includes host resource backing storage."
+          }
+        ],
+        "medianHeapBytesPerLedger": 2559.25,
+        "medianArrayBufferBytesPerLedger": 56032
+      },
+      "executor": {
+        "disabled": {
+          "medianUs": 1207.21735833334,
+          "minUs": 922.7047666666749,
+          "maxUs": 2040.4546750000009,
+          "samplesUs": [
+            922.7047666666749,
+            1034.6588166666759,
+            1378.6532499999946,
+            1057.9870666666768,
+            2040.4546750000009,
+            1207.21735833334,
+            1219.5207083333419
+          ]
+        },
+        "enabled": {
+          "medianUs": 1715.203575000002,
+          "minUs": 1512.3716916666733,
+          "maxUs": 2213.3281833333363,
+          "samplesUs": [
+            1512.3716916666733,
+            1683.4769750000003,
+            1923.0074166666782,
+            1715.203575000002,
+            2213.3281833333363,
+            1857.5602916666564,
+            1538.0045916666556
+          ]
+        },
+        "differenceOfMediansUs": 507.98621666666213,
+        "disabledProcessCpu": {
+          "medianUs": 1319.2666666666667,
+          "minUs": 1046.7916666666667,
+          "maxUs": 2148.875,
+          "samplesUs": [
+            1046.7916666666667,
+            1265.225,
+            1992.7666666666667,
+            1170.3583333333333,
+            2148.875,
+            1460.7,
+            1319.2666666666667
+          ]
+        },
+        "enabledProcessCpu": {
+          "medianUs": 1958.5416666666667,
+          "minUs": 1702.4,
+          "maxUs": 2639.875,
+          "samplesUs": [
+            1702.4,
+            1913.3333333333333,
+            1958.5416666666667,
+            1939.0583333333334,
+            2639.875,
+            2461.625,
+            1959.35
+          ]
+        },
+        "differenceOfCpuMediansUs": 639.2750000000001,
+        "control": "Same real JS executor, keyed cohort, synthetic time result and host stub; ledger construction and private hooks included; bridge compilation excluded."
+      }
+    }
+  ],
+  "scope": "Local JavaScript internal prototype. Synthetic handles/host calls; no production Native size, memory, Fastly quota, workload latency or throughput qualification.",
+  "inputs": [
+    {
+      "file": "service.cjs",
+      "sha256": "38acecb33cfd99a9b91265d21582e37c6024440e6b31e71e2efaeaa731840763"
+    },
+    {
+      "file": "provider-hooks.cjs",
+      "sha256": "4f233aa01cac6c628e03d9e2fe285594b43f0382e3d9ecb93b542e6dc8d9dcb6"
+    },
+    {
+      "file": "javascript-bridge.cjs",
+      "sha256": "d3257663e380e8e1bfbdd33f2e8053ce0f5f66642b9ca54f52d3918ffeaa501b"
+    },
+    {
+      "file": "check.cjs",
+      "sha256": "9b95ba48f68746c301db33e7bcf6b5832c340f88161d4c280082a74bcbb8186c"
+    },
+    {
+      "file": "measure.cjs",
+      "sha256": "a7f615ddc17e5dd1326ef6890f0eba7f575f5a41960c2a6f9dcae3df0d4f9b74"
+    },
+    {
+      "file": "../ra02/policy.json",
+      "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f"
+    },
+    {
+      "file": "../../../../../packages/runtime/src/internal/effect-adapter.js",
+      "sha256": "d9e9639cbeb7ba107d9f479f47cfd004391c5a5aa7d16d261dd055d453fb0c4e"
+    }
+  ],
+  "workingTree": " M docs/internal/host-extensions/resource-accounting/README.md\n?? docs/internal/host-extensions/resource-accounting/ra03/\n"
+}
