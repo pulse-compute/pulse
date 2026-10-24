@@ -261,3 +261,8 @@ and explicit disposal/reservation decisions. It changes no production contract.
 cache/fetch/insert children under the existing driver, records the execution and
 resource-accounting costs, and pressures the proposed contract with an ESP32
 exclusive-resource scenario. It changes no production contract.
+
+[Shared resource accounting](resource-accounting/README.md) records the RA workstream.
+Its completed [RA-00 ownership inventory](resource-accounting/ra00/README.md) maps
+existing lifecycle owners and retains fresh failure/expiry evidence without
+changing production behavior.
