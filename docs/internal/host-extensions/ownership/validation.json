@@ -1,0 +1,71 @@
+{
+  "version": "hex.ownership-validation.v0",
+  "base": "b421aa58b7df07cc5bcb060248026c660eaf5ae3",
+  "scope": "Internal evidence only; production owners unchanged",
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run docs:sync",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "verify all archive members, input/artifact hashes and local documentation links",
+      "status": "passed",
+      "archiveMembers": 95
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --base b421aa58b7df07cc5bcb060248026c660eaf5ae3 --head HEAD --declaration-file /tmp/hex-ro-pr-body.md --check",
+      "status": "passed",
+      "exitCode": 0,
+      "classification": "evidence-only",
+      "protectedBoundaries": [],
+      "requiredChecks": [
+        "documentation",
+        "maintenance-policy"
+      ]
+    }
+  ],
+  "experiment": {
+    "receipt": "receipt.json",
+    "status": "passed",
+    "checks": 44,
+    "earlierSelection": {
+      "checks": 40,
+      "status": "passed"
+    }
+  },
+  "notRun": [
+    "full regression profiles",
+    "JavaScript parity",
+    "Viceroy",
+    "hosted Fastly",
+    "schema/capture/binding qualification",
+    "Router recovery",
+    "release qualification"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "version": "hex.ownership-upstream.v0",
+  "retrieved": "2026-10-24",
+  "claim": "Primary-source inspection; no engine acceptance",
+  "sources": [
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "wasm_abi/compute-at-edge-abi/cache.witx",
+      "blobSha": "aa11f9fd14dd184265cb298e4fc3028fed1c402c"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "wasm_abi/compute-at-edge-abi/compute-at-edge.witx",
+      "blobSha": "8c1f14c0528fa6184de838fe1129459556d59286"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "wasm_abi/adapter/src/fastly/cache.rs",
+      "blobSha": "08703928cd23fc99980b9ab12df2955efbff7e24"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "src/wiggle_abi/cache.rs",
+      "blobSha": "473a272b95b0d40fd8039ac7348d5435b88f9149"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "src/wiggle_abi/body_impl.rs",
+      "blobSha": "8042cccb6e14e955dc6341cee6d41997cfde60f7"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "wasm_abi/compute-at-edge-abi/typenames.witx",
+      "blobSha": "e9aa789bdd44f45cfa701970d4cc223df36f8216"
+    },
+    {
+      "repository": "fastly/compute-sdk-go",
+      "revision": "d6bf71b04516ed72d6018cab6fff701a865f86e5",
+      "path": "cache/core/core.go",
+      "blobSha": "3373ac9c332cb3ba01c3678e40c42a92a756743b"
+    }
+  ]
+}
