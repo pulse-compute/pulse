@@ -1,0 +1,81 @@
+{
+  "version": "hex.composition-validation.v0",
+  "base": "fccb92a437847e96c81b91be79ba07a1413c3f11",
+  "scope": "Internal evidence only; production owners unchanged",
+  "experiment": {
+    "status": "passed",
+    "checks": 47,
+    "receipt": "receipt.json",
+    "priorPassingSelection": 45
+  },
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run docs:sync",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run docs:check (sequential retry)",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "verify archive members, source and artifact identities, and local links",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --base fccb92a437847e96c81b91be79ba07a1413c3f11 --head HEAD --declaration-file /tmp/hex-bc-pr-body.md --check",
+      "status": "passed",
+      "exitCode": 0,
+      "classification": "evidence-only",
+      "risk": "low",
+      "protectedBoundaries": [],
+      "requiredChecks": [
+        "documentation",
+        "maintenance-policy"
+      ]
+    }
+  ],
+  "priorValidationFailure": {
+    "command": "npm run docs:check",
+    "status": "failed",
+    "exitCode": 1,
+    "message": "published context true/cleanup-failure probe failed",
+    "context": "Ran concurrently with two other validators and compilation. Same probe passed in the other validation commands. Sequential retry passed without source changes. Exact cause not established; no product defect inferred.",
+    "logs": [
+      "validation/docs-check.log",
+      "validation/docs-check-retry.log"
+    ]
+  },
+  "notRun": [
+    "full regression profiles",
+    "JavaScript parity",
+    "Viceroy/hosted Fastly",
+    "ESP32 hardware",
+    "Router recovery",
+    "capture/schema/nested-plan qualification",
+    "standard report integration",
+    "release qualification"
+  ]
+}

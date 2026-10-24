@@ -256,3 +256,8 @@ hosted acceptance, full regression profile or release seal is claimed by 00.
 [Resource ownership, investigation 2](ownership/README.md) retains a compiled
 cache-resource prototype, three-form execution and ownership failure evidence,
 and explicit disposal/reservation decisions. It changes no production contract.
+
+[Bounded composition, investigation 3](composition/README.md) tests conditional
+cache/fetch/insert children under the existing driver, records the execution and
+resource-accounting costs, and pressures the proposed contract with an ESP32
+exclusive-resource scenario. It changes no production contract.
