@@ -1,0 +1,28 @@
+# HEX-RA: shared resource ownership and accounting
+
+This workstream follows the [ownership](../ownership/README.md) and
+[bounded composition](../composition/README.md) investigations. Its first proposed
+milestone is cache, core fetch and their fixed composition under one accounting
+contract. No new scheduler, automatic retry, silent fallback or universal cost
+optimizer is proposed. The owner approved RA-00 only; later units remain planned.
+
+| Unit | Deliverable | Recommended model / reasoning effort | Status |
+| --- | --- | --- | --- |
+| [RA-00](ra00/README.md) | Ownership inventory and evidence | GPT-6.1 Sol / High | Complete; evidence only |
+| RA-01 | Shared ownership/disposition contract | Astra / High | Planned |
+| RA-02 | Admission, reservation and refund policy | Astra / High | Planned |
+| RA-03 | Minimal shared accounting service prototype | GPT-6.1 Sol / High | Planned |
+| RA-04 | Exclusive lease and in-flight buffer pressure | Astra / High | Planned |
+| RA-05 | Core fetch integration | Astra / High | Planned |
+| RA-06 | Cache integration | GPT-6.1 Sol / High | Planned |
+| RA-07 | Composed-operation integration | Astra / High | Planned |
+| RA-08 | Capability/resource evidence and diagnostics | GPT-6.1 Sol / High | Planned |
+| RA-09 | Matched cost and unused-path measurements | GPT-6.1 Sol / High | Planned |
+| RA-10 | Host lifecycle qualification | GPT-6.1 Sol / High | Planned |
+| RA-11 | Architecture and adoption review | Astra / High | Planned |
+
+Review the contract after RA-02, executable behavior after RA-07, and adoption
+after RA-11. RA-05/06 can separate once their shared service is stable. Each unit
+ends with its own reviewable result against `hex-integration`; this plan grants
+no merge/release authority. General callbacks, nested composition, migration of
+all ABIs, and ESP32 driver implementation remain outside the first milestone.

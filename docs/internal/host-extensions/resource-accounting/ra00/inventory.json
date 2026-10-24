@@ -1,0 +1,184 @@
+{
+  "version": "hex.ra00-inventory.v0",
+  "base": "3ac02b2df56f95b47b8a92b5c4633dbe0e1fde7d",
+  "scope": "Ordinary fetch, cache spike and lifecycle integration boundaries; not all ABI families",
+  "resources": [
+    {
+      "id": "ingress",
+      "domain": "borrowed host handles",
+      "ownerSymbol": "__pulse_fastly_run_invocation",
+      "acquisition": "Host invocation supplies request/body",
+      "disposition": "Ordinary path borrows; forwarding claims source",
+      "gap": "Teardown guarantee unqualified",
+      "handoff": "RA-05"
+    },
+    {
+      "id": "outbound-request",
+      "domain": "host request",
+      "ownerSymbol": "__pulse_fastly_start_request",
+      "acquisition": "http_req.new",
+      "disposition": "send_async transfer; send error attempts close",
+      "gap": "Setup exits can retain acquired handle; failed send may consume",
+      "handoff": "RA-05"
+    },
+    {
+      "id": "outbound-body",
+      "domain": "host body",
+      "ownerSymbol": "__pulse_fastly_start_request",
+      "acquisition": "http_body.new",
+      "disposition": "send_async transfer; send error attempts close",
+      "gap": "Setup exits can retain; failed send may consume",
+      "handoff": "RA-05"
+    },
+    {
+      "id": "pending-fetch",
+      "domain": "host pending",
+      "ownerSymbol": "__pulse_fastly_wait_fetch",
+      "acquisition": "send_async success",
+      "disposition": "wait/poll replaces with response and body",
+      "gap": "Generic deadline can bypass retirement; no cancel operation used",
+      "handoff": "RA-05"
+    },
+    {
+      "id": "fetch-response",
+      "domain": "host response",
+      "ownerSymbol": "__pulse_fastly_wait_fetch",
+      "acquisition": "wait/poll success",
+      "disposition": "Opaque downstream transfer or late-result close",
+      "gap": "Structured projection retains wrapper; close may fail",
+      "handoff": "RA-05"
+    },
+    {
+      "id": "fetch-body",
+      "domain": "host body",
+      "ownerSymbol": "__pulse_fastly_fetch_body",
+      "acquisition": "wait/poll success",
+      "disposition": "Opaque transfer; late-result close",
+      "gap": "Read/EOF does not close; wrapper aliases must survive",
+      "handoff": "RA-05"
+    },
+    {
+      "id": "output-response",
+      "domain": "host response",
+      "ownerSymbol": "__pulse_fastly_send_result",
+      "acquisition": "http_resp.new",
+      "disposition": "downstream send",
+      "gap": "Setup exits retain; failed transfer consumption unknown",
+      "handoff": "RA-05"
+    },
+    {
+      "id": "output-body",
+      "domain": "host body",
+      "ownerSymbol": "__pulse_fastly_send_result",
+      "acquisition": "http_body.new",
+      "disposition": "downstream send",
+      "gap": "Setup exits retain; failed transfer consumption unknown",
+      "handoff": "RA-05"
+    },
+    {
+      "id": "cache-lookup",
+      "domain": "prototype host cache handle",
+      "ownerSymbol": "ownership/service.as.ts",
+      "acquisition": "lookup",
+      "disposition": "Ready lookup close",
+      "gap": "Unready close can await; unresolved recorded without retry",
+      "handoff": "RA-06"
+    },
+    {
+      "id": "cache-reader",
+      "domain": "prototype host body",
+      "ownerSymbol": "ownership/service.as.ts",
+      "acquisition": "get_body",
+      "disposition": "body close then separate lookup cleanup",
+      "gap": "Disposal failure must not suppress other cleanup",
+      "handoff": "RA-06"
+    },
+    {
+      "id": "cache-writer",
+      "domain": "prototype host streaming body",
+      "ownerSymbol": "ownership/service.as.ts",
+      "acquisition": "insert",
+      "disposition": "close commits; abandon on failure",
+      "gap": "Failed consuming disposition may still consume/commit",
+      "handoff": "RA-06"
+    },
+    {
+      "id": "forwarding-writer",
+      "domain": "host streaming body",
+      "ownerSymbol": "__fwd_cleanup",
+      "acquisition": "streaming send retains writer",
+      "disposition": "EOF close; error abandon",
+      "gap": "Committed downstream cannot be replaced; statuses often ignored",
+      "handoff": "RA-05"
+    },
+    {
+      "id": "javascript-response",
+      "domain": "Web Response/body",
+      "ownerSymbol": "ownedResponses",
+      "acquisition": "effect dispatch return",
+      "disposition": "Final response transfer; best-effort body cancellation otherwise",
+      "gap": "Locked body skipped; body.cancel not awaited; adapter.dispose separately awaited",
+      "handoff": "RA-01"
+    },
+    {
+      "id": "invocation-ticket",
+      "domain": "control identity",
+      "ownerSymbol": "__pulse_invocation_begin",
+      "acquisition": "effect admission",
+      "disposition": "settle and invocation close",
+      "gap": "Cumulative 1024 admissions are not live resource capacity",
+      "handoff": "RA-02"
+    },
+    {
+      "id": "guest-value",
+      "domain": "guest allocation/reference",
+      "ownerSymbol": "__pulse_handle_checkpoint",
+      "acquisition": "value allocation",
+      "disposition": "value tracing/collection",
+      "gap": "Resource wrappers pinned; collector does not close host resources",
+      "handoff": "RA-01"
+    },
+    {
+      "id": "body-buffer",
+      "domain": "guest bytes/text",
+      "ownerSymbol": "__pulse_fastly_read_body",
+      "acquisition": "bounded read/materialization",
+      "disposition": "request-owned value lifecycle",
+      "gap": "Copies/bytes are distinct from host handle counts",
+      "handoff": "RA-04"
+    },
+    {
+      "id": "dynamic-backend",
+      "domain": "registration authority",
+      "ownerSymbol": "__pulse_dynamic_attempts",
+      "acquisition": "dynamic registration attempt",
+      "disposition": "Reuse origin/name; no generic disposal",
+      "gap": "32 attempt policy is not measured host capacity",
+      "handoff": "RA-02"
+    },
+    {
+      "id": "composition-parent-child",
+      "domain": "control state",
+      "ownerSymbol": "composition/service.as.ts",
+      "acquisition": "parent and three reserved child sites",
+      "disposition": "existing driver settlement",
+      "gap": "Static slots, actual admissions, host resources differ",
+      "handoff": "RA-07"
+    }
+  ],
+  "decisionsDeferred": [
+    "Scoped resource identity and lifetime",
+    "Consumed, retained and unknown disposition vocabulary",
+    "When unknown disposal refunds capacity",
+    "Progress reservations without another scheduler",
+    "Host teardown guarantees and failure consumption"
+  ],
+  "excluded": [
+    "Production implementation",
+    "Global scheduler",
+    "Automatic retry or fallback",
+    "Universal cost optimizer",
+    "All-ABI migration",
+    "ESP32 driver implementation"
+  ]
+}

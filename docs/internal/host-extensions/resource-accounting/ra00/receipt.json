@@ -1,0 +1,3724 @@
+{
+  "version": "hex.ra00-probe.v0",
+  "scope": "Ownership inventory; unmodified production compiler/provider; injected host assumptions only",
+  "revision": "3ac02b2df56f95b47b8a92b5c4633dbe0e1fde7d",
+  "workingTree": "?? docs/internal/host-extensions/resource-accounting/",
+  "inputs": [
+    {
+      "file": "host.cjs",
+      "sha256": "5ca59b7d7db9bfabfcb4ab61da5fceff46a4562d356ab8c3318477840bd0309a"
+    },
+    {
+      "file": "probe.cjs",
+      "sha256": "3fa1938ba47796fd9bf9a81a2e375f1e46e0ca018a97b0f57ed4340737999e7a"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "text",
+      "bytes": 34804,
+      "sha256": "6da245b009004fe7225ac34507bdab7f41cea67de60f86a37112e09dc83fbd24",
+      "sourceSha256": "2e01bef16e6b840d6a0498e7bd8a5c93575705f45f9c3cae813426d900e3e57e",
+      "generatedSha256": "74be11acf3654dc2cfd4e14eaa2d90c556c2154559ad8a2e36471760c35609ad"
+    },
+    {
+      "name": "post",
+      "bytes": 35003,
+      "sha256": "24d92fe82d1dd9097bb9abe0be48d04824e61cddea5d54c234e50cdf4541200c",
+      "sourceSha256": "dd67343d990c715aa6bc97e7442753bc9ec61e9ba96f4790518e9cac0289e7cc",
+      "generatedSha256": "a3565e3e4ffc86453deb1cc7a87289bdb8e0e463db46cfa1aae1c85952d31a3d"
+    },
+    {
+      "name": "opaque",
+      "bytes": 34211,
+      "sha256": "1b2cb823a3a7ecfbc68dce76d0cc54d3826e52ae00dad6749b898449590dc9c4",
+      "sourceSha256": "4cdf3eabe015dcde04ec10bd632cb5a0dc53349223192d373e8867e3a8468d37",
+      "generatedSha256": "e9628e53a4b34b94490223b21f9da7f33868b2aaaadb1dad90ba000f6e78e7e6"
+    },
+    {
+      "name": "deadline",
+      "bytes": 34970,
+      "sha256": "a1326e7636be586271f9f90534b6fb7035bc81e8df8f220861e0d90f629ca008",
+      "sourceSha256": "51d34bee16b2326c0c677e61dbc0525b5e5db1f53ede539809ab6a818c08930d",
+      "generatedSha256": "8fc7e43b93f7b8b3300214dfb4730fad83885d4ece19ffbf72ac7a84a1f894e3"
+    }
+  ],
+  "cases": [
+    {
+      "name": "Text projection retains fetch pair but transfers output pair",
+      "status": "passed",
+      "options": {},
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 106,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 106
+          },
+          {
+            "call": "send.downstream",
+            "r": 105,
+            "b": 106,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 106,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 200,
+            "body": "loaded"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 200,
+            "body": "loaded"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 0,
+        "stage": 0,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Preparation failure new.request",
+      "status": "passed",
+      "options": {
+        "fail": "new.request"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 101
+          },
+          {
+            "call": "send.downstream",
+            "r": 100,
+            "b": 101,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "remaining": [],
+        "peakOwned": 2,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 70,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Preparation failure new.request-body",
+      "status": "passed",
+      "options": {
+        "fail": "new.request-body"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 102
+          },
+          {
+            "call": "send.downstream",
+            "r": 101,
+            "b": 102,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 102,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 100,
+            "kind": "request"
+          }
+        ],
+        "peakOwned": 3,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 71,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Preparation failure method",
+      "status": "passed",
+      "options": {
+        "fail": "method"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 103
+          },
+          {
+            "call": "send.downstream",
+            "r": 102,
+            "b": 103,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "h": 101,
+            "kind": "request-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 72,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Preparation failure uri",
+      "status": "passed",
+      "options": {
+        "fail": "uri"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 103
+          },
+          {
+            "call": "send.downstream",
+            "r": 102,
+            "b": 103,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "h": 101,
+            "kind": "request-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 73,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Send failure consumption false",
+      "status": "passed",
+      "options": {
+        "fail": "send.async",
+        "consumeFailure": false
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "close.request",
+            "h": 100
+          },
+          {
+            "call": "release",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "close.body",
+            "h": 101
+          },
+          {
+            "call": "release",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 103
+          },
+          {
+            "call": "send.downstream",
+            "r": 102,
+            "b": 103,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 502,
+            "body": "Bad Gateway"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 502,
+            "body": "Bad Gateway"
+          }
+        ],
+        "remaining": [],
+        "peakOwned": 2,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1006,
+        "stage": 77,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Send failure consumption true",
+      "status": "passed",
+      "options": {
+        "fail": "send.async",
+        "consumeFailure": true
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "consume-on-failure",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "consume-on-failure",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "close.request",
+            "h": 100
+          },
+          {
+            "call": "close-invalid",
+            "h": 100
+          },
+          {
+            "call": "close.body",
+            "h": 101
+          },
+          {
+            "call": "close-invalid",
+            "h": 101
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 103
+          },
+          {
+            "call": "send.downstream",
+            "r": 102,
+            "b": 103,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 502,
+            "body": "Bad Gateway"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 502,
+            "body": "Bad Gateway"
+          }
+        ],
+        "remaining": [],
+        "peakOwned": 2,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1006,
+        "stage": 77,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Wait failure consumption false",
+      "status": "passed",
+      "options": {
+        "fail": "wait",
+        "consumeFailure": false
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 104
+          },
+          {
+            "call": "send.downstream",
+            "r": 103,
+            "b": 104,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 104,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 502,
+            "body": "Bad Gateway"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 502,
+            "body": "Bad Gateway"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 102,
+            "kind": "pending"
+          }
+        ],
+        "peakOwned": 3,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1006,
+        "stage": 81,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Wait failure consumption true",
+      "status": "passed",
+      "options": {
+        "fail": "wait",
+        "consumeFailure": true
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume-on-failure",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 104
+          },
+          {
+            "call": "send.downstream",
+            "r": 103,
+            "b": 104,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 104,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 502,
+            "body": "Bad Gateway"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 502,
+            "body": "Bad Gateway"
+          }
+        ],
+        "remaining": [],
+        "peakOwned": 2,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1006,
+        "stage": 81,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Read failure retains acquired response/body",
+      "status": "passed",
+      "options": {
+        "fail": "read"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 106,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 106
+          },
+          {
+            "call": "send.downstream",
+            "r": 105,
+            "b": 106,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 106,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 20,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Whole-request expiry before send retains preparation pair",
+      "status": "passed",
+      "options": {
+        "expireAfterPreparation": true
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 103
+          },
+          {
+            "call": "send.downstream",
+            "r": 102,
+            "b": 103,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "h": 101,
+            "kind": "request-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 0,
+        "stage": 260,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Whole-request expiry at generic wait does not retire pending slot",
+      "status": "passed",
+      "options": {
+        "timeout": true
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 104
+          },
+          {
+            "call": "send.downstream",
+            "r": 103,
+            "b": 104,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 104,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 102,
+            "kind": "pending"
+          }
+        ],
+        "peakOwned": 3,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 0,
+        "stage": 260,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Output preparation failure new.output",
+      "status": "passed",
+      "options": {
+        "fail": "new.output"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "new.output"
+          }
+        ],
+        "sent": [],
+        "attempts": [],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          }
+        ],
+        "peakOwned": 2,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 104,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Output preparation failure new.output-body",
+      "status": "passed",
+      "options": {
+        "fail": "new.output-body"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          }
+        ],
+        "sent": [],
+        "attempts": [],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "h": 105,
+            "kind": "output-response"
+          }
+        ],
+        "peakOwned": 3,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 104,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Output preparation failure status.output",
+      "status": "passed",
+      "options": {
+        "fail": "status.output"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 106,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          }
+        ],
+        "sent": [],
+        "attempts": [],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "h": 106,
+            "kind": "output-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 104,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Output preparation failure header.output",
+      "status": "passed",
+      "options": {
+        "fail": "header.output"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 106,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          }
+        ],
+        "sent": [],
+        "attempts": [],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "h": 106,
+            "kind": "output-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 104,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Output preparation failure write.output",
+      "status": "passed",
+      "options": {
+        "fail": "write.output"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 106,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 106
+          }
+        ],
+        "sent": [],
+        "attempts": [],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "h": 106,
+            "kind": "output-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 104,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Downstream send failure consumption false",
+      "status": "passed",
+      "options": {
+        "fail": "send.downstream",
+        "consumeFailure": false
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 106,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 106
+          },
+          {
+            "call": "send.downstream",
+            "r": 105,
+            "b": 106,
+            "streaming": 0
+          }
+        ],
+        "sent": [],
+        "attempts": [
+          {
+            "status": 200,
+            "body": "loaded"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "h": 106,
+            "kind": "output-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 104,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Downstream send failure consumption true",
+      "status": "passed",
+      "options": {
+        "fail": "send.downstream",
+        "consumeFailure": true
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 106,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 106
+          },
+          {
+            "call": "send.downstream",
+            "r": 105,
+            "b": 106,
+            "streaming": 0
+          },
+          {
+            "call": "consume-on-failure",
+            "h": 105,
+            "kind": "output-response"
+          },
+          {
+            "call": "consume-on-failure",
+            "h": 106,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [],
+        "attempts": [
+          {
+            "status": 200,
+            "body": "loaded"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 104,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Trap bypasses normal guest teardown",
+      "status": "passed",
+      "options": {
+        "trap": true
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "select",
+            "handles": [
+              104
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "read",
+            "h": 104
+          }
+        ],
+        "sent": [],
+        "attempts": [],
+        "remaining": [
+          {
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "h": 104,
+            "kind": "fetch-body"
+          }
+        ],
+        "peakOwned": 2,
+        "borrowedIngressCount": 2,
+        "thrown": "injected read trap",
+        "error": 0,
+        "stage": 0,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Outbound preparation failure header",
+      "status": "passed",
+      "options": {
+        "fail": "header"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "header"
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 103
+          },
+          {
+            "call": "send.downstream",
+            "r": 102,
+            "b": 103,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "h": 101,
+            "kind": "request-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 74,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Outbound preparation failure write.request",
+      "status": "passed",
+      "options": {
+        "fail": "write.request"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "header"
+          },
+          {
+            "call": "write.request",
+            "h": 101
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 103
+          },
+          {
+            "call": "send.downstream",
+            "r": 102,
+            "b": 103,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 102,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 500,
+            "body": "Internal Server Error"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "h": 101,
+            "kind": "request-body"
+          }
+        ],
+        "peakOwned": 4,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1003,
+        "stage": 75,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Opaque terminal response transfers original pair without reading",
+      "status": "passed",
+      "options": {},
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 1000
+          },
+          {
+            "call": "wait",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "send.downstream",
+            "r": 103,
+            "b": 104,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "transfer",
+            "h": 104,
+            "kind": "fetch-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 200,
+            "body": "loaded"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 200,
+            "body": "loaded"
+          }
+        ],
+        "remaining": [],
+        "peakOwned": 2,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 0,
+        "stage": 0,
+        "retired": 0,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Operation timeout retires and polls unready pending handle",
+      "status": "passed",
+      "options": {
+        "timeout": true
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "poll",
+            "h": 102
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 10
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 104
+          },
+          {
+            "call": "send.downstream",
+            "r": 103,
+            "b": 104,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 104,
+            "kind": "output-body"
+          },
+          {
+            "call": "poll",
+            "h": 102
+          }
+        ],
+        "sent": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 102,
+            "kind": "pending"
+          }
+        ],
+        "peakOwned": 3,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1006,
+        "stage": 271,
+        "retired": 1,
+        "unreaped": 1
+      }
+    },
+    {
+      "name": "Operation timeout reaper closes late response/body",
+      "status": "passed",
+      "options": {
+        "timeout": true,
+        "lateReady": true
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "poll",
+            "h": 102
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 10
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 104
+          },
+          {
+            "call": "send.downstream",
+            "r": 103,
+            "b": 104,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 104,
+            "kind": "output-body"
+          },
+          {
+            "call": "poll",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 106,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "close.response",
+            "h": 105
+          },
+          {
+            "call": "release",
+            "h": 105,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "close.body",
+            "h": 106
+          },
+          {
+            "call": "release",
+            "h": 106,
+            "kind": "fetch-body"
+          }
+        ],
+        "sent": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "remaining": [],
+        "peakOwned": 3,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1006,
+        "stage": 271,
+        "retired": 1,
+        "unreaped": 0
+      }
+    },
+    {
+      "name": "Reaper drops retirement record despite failed body close",
+      "status": "passed",
+      "options": {
+        "timeout": true,
+        "lateReady": true,
+        "fail": "close.body"
+      },
+      "result": {
+        "trace": [
+          {
+            "call": "borrow",
+            "handles": [
+              41,
+              42
+            ],
+            "kinds": [
+              "incoming-request",
+              "incoming-body"
+            ]
+          },
+          {
+            "call": "new.request"
+          },
+          {
+            "call": "acquire",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "new.request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "method"
+          },
+          {
+            "call": "uri"
+          },
+          {
+            "call": "send.async",
+            "r": 100,
+            "b": 101
+          },
+          {
+            "call": "transfer",
+            "h": 100,
+            "kind": "request"
+          },
+          {
+            "call": "transfer",
+            "h": 101,
+            "kind": "request-body"
+          },
+          {
+            "call": "acquire",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "poll",
+            "h": 102
+          },
+          {
+            "call": "select",
+            "handles": [
+              102
+            ],
+            "timeout": 10
+          },
+          {
+            "call": "new.output"
+          },
+          {
+            "call": "acquire",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "new.output-body"
+          },
+          {
+            "call": "acquire",
+            "h": 104,
+            "kind": "output-body"
+          },
+          {
+            "call": "status.output"
+          },
+          {
+            "call": "header.output"
+          },
+          {
+            "call": "write.output",
+            "h": 104
+          },
+          {
+            "call": "send.downstream",
+            "r": 103,
+            "b": 104,
+            "streaming": 0
+          },
+          {
+            "call": "transfer",
+            "h": 103,
+            "kind": "output-response"
+          },
+          {
+            "call": "transfer",
+            "h": 104,
+            "kind": "output-body"
+          },
+          {
+            "call": "poll",
+            "h": 102
+          },
+          {
+            "call": "consume",
+            "h": 102,
+            "kind": "pending"
+          },
+          {
+            "call": "acquire",
+            "h": 105,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "acquire",
+            "h": 106,
+            "kind": "fetch-body"
+          },
+          {
+            "call": "close.response",
+            "h": 105
+          },
+          {
+            "call": "release",
+            "h": 105,
+            "kind": "fetch-response"
+          },
+          {
+            "call": "close.body",
+            "h": 106
+          }
+        ],
+        "sent": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "attempts": [
+          {
+            "status": 504,
+            "body": "Gateway Timeout"
+          }
+        ],
+        "remaining": [
+          {
+            "h": 106,
+            "kind": "fetch-body"
+          }
+        ],
+        "peakOwned": 3,
+        "borrowedIngressCount": 2,
+        "thrown": null,
+        "error": 1006,
+        "stage": 271,
+        "retired": 1,
+        "unreaped": 0
+      }
+    }
+  ],
+  "status": "passed"
+}

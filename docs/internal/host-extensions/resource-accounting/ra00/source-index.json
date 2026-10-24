@@ -1,0 +1,413 @@
+{
+  "version": "hex.ra00-sources.v0",
+  "base": "3ac02b2df56f95b47b8a92b5c4633dbe0e1fde7d",
+  "local": [
+    {
+      "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "sha256": "132ea03b4db79ddb34af16f642d35a58d8818f61055622680fd9ca0985241c85",
+      "anchors": [
+        "__pulse_fastly_run_invocation",
+        "__pulse_fastly_start_request",
+        "__pulse_fastly_wait_fetch",
+        "__pulse_fastly_read_body",
+        "__pulse_fastly_send_result"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/effect-invocations.js",
+      "sha256": "3dca1866f1cb17f2e701a60406f2b360649c81b6e6fc7d3c078d1b7936f319fe",
+      "anchors": [
+        "__pulse_invocation_begin",
+        "__pulse_invocation_settle",
+        "__pulse_invocation_close"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/request-budget.js",
+      "sha256": "2d3a22f3e5ac2e8c36b7de2f915dae48ea1823291060ffe3c5bacb9b6d00a9b8",
+      "anchors": [
+        "instrumentRequestBudget"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/request-budget.as.ts",
+      "sha256": "6252b76ec39641b63fd90d3e2bd73a43515014eeca5e56199aacf9c946acac8e",
+      "anchors": [
+        "__request_check",
+        "__request_wait",
+        "__request_send_timeout"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-fetch-deadlines.js",
+      "sha256": "768bbc9f226f89192c0a0368f9127be9096f2f5e59dc5cd37fdef88d9f9e0852",
+      "anchors": [
+        "runtimeSource"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-fetch-deadlines.as.ts",
+      "sha256": "2ab007a5eadc1480bdf3f93bc73057024a4c492c9255ba977d404bb1119a0979",
+      "anchors": [
+        "__pulse_fetch_wait",
+        "__pulse_fetch_reap"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-fetch-errors.js",
+      "sha256": "26d53c9d0190600cfc2e2a0ca26ac98ca155b5dd78e063055658e81efda4dedb",
+      "anchors": [
+        "__pulse_fetch_close_request",
+        "__pulse_fetch_close_body"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-application-errors.js",
+      "sha256": "5cdbc2f0926c01b49d49b75a527dbd729a5a5aef1757695411a2483960615443",
+      "anchors": [
+        "__pulse_application_settle_effect"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-handle-ownership.js",
+      "sha256": "cea9ac2e50d24c8f3297c565ebad9bcff0dce8f3b34e82a0aaad4be18ecf56a6",
+      "anchors": [
+        "__pulse_handle_resource_roots",
+        "__pulse_handle_checkpoint"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-body-forwarding.js",
+      "sha256": "df9992bb53132d0b8145b223ab9ca95f18bdc9104ee1dbe12451e49005843c43",
+      "anchors": [
+        "instrument"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-body-forwarding.as.ts",
+      "sha256": "5fe9da004ad3f186e3ce01ad55fec9c5a72939f3627014fa07ea438cb2ce2a11",
+      "anchors": [
+        "__fwd_begin",
+        "__fwd_cleanup",
+        "__fwd_send"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-request-body.js",
+      "sha256": "20e28b9c16dccbbf6861e63f1681bc185f949eb698dc3c0eeb1ad60c31b6d2ce",
+      "anchors": [
+        "runtimeSource"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-dynamic-backends.js",
+      "sha256": "2e2613fee117173d973d39382a7167d768c863241872fc0fabf428ad4dc48337",
+      "anchors": [
+        "runtimeSource"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-dynamic-backends.as.ts",
+      "sha256": "a919c1778df7dba975a9f429178299b28da4c84de3cc3f865ac10ead21a4cf92",
+      "anchors": [
+        "__pulse_dynamic_attempts"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/runtime/src/internal/effect-adapter.js",
+      "sha256": "d9e9639cbeb7ba107d9f479f47cfd004391c5a5aa7d16d261dd055d453fb0c4e",
+      "anchors": [
+        "ownedResponses",
+        "transferredResponse"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/runtime/src/internal/response.js",
+      "sha256": "156919ca506c8440dd2ecd3ab6f198d0ec64698d981f6b39cb90789be47a871f",
+      "anchors": [
+        "retainFetchResponseForBudget",
+        "cancelResponseBody",
+        "fetchResponseToResponse"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/runtime/src/internal/body.js",
+      "sha256": "4d24dea172711c444d656b5d71c76a94558afd6865281a4d6dfaf998cb6b4f79",
+      "anchors": [
+        "cancel"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/runtime/src/internal/router.js",
+      "sha256": "9668c223b3ecd980ff30062cad36253f4048a0ffeff3257e854d3a7a07a85fad",
+      "anchors": [
+        "transferredResponse",
+        "effectExecution?.close"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/javascript/fetch-adapter.js",
+      "sha256": "548546a7911f20ec7cc930285377a13c00048bd5b7a2c7e3beb3dcbef0c6c3af",
+      "anchors": [
+        "signal"
+      ],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "packages/provider-fastly/src/javascript/lifecycle.js",
+      "sha256": "9738a9e61a7d6cc1afbe63de953bad5288281fc1c3ec5108f9fef5b48d67935d",
+      "anchors": [],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "docs/architecture/current-contracts.md",
+      "sha256": "e2b830be1bfc183498e713a32a411860a1b8653485a7709c9f02709fe59922c5",
+      "anchors": [],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "docs/concepts/bodies.md",
+      "sha256": "074751b810cad9abafd29ab42f5f25880c1a68ffc5acde2b688d777978109bd5",
+      "anchors": [],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "docs/internal/host-extensions/ownership/service.as.ts",
+      "sha256": "9311101be0890535f6672ce988b98a97d30581057a0283ace0d847702e699725",
+      "anchors": [],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "docs/internal/host-extensions/composition/service.as.ts",
+      "sha256": "7d4b97520789bf0767e11da2655c3507ad1da93924956e11e1016d3fe6bef9be",
+      "anchors": [],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js",
+      "sha256": "42fadc21b2ce99cd720f4cea4d464ed9b1d09320742adae38cd75377bf136045",
+      "anchors": [],
+      "coverage": "source audit; see README for bounded coverage"
+    },
+    {
+      "path": "wasm/packages/contracts/src/handler/canonical-runtime.js",
+      "sha256": "c0db896a0951bafe8bf5b60f33a6bbf26cd418e216a5b271c35f37abc3e58a0d",
+      "anchors": [],
+      "coverage": "source audit; see README for bounded coverage"
+    }
+  ],
+  "handoffOnly": [
+    {
+      "path": "packages/runtime/src/host.d.ts",
+      "sha256": "b760b42a723dfb5b5dbc621a2da7cf08355bdfcfbdc42aeaa0c6faec4430d690"
+    },
+    {
+      "path": "wasm/packages/contracts/src/provider/host-extension.js",
+      "sha256": "29fc0cebe68fd52bd371e3dd079f7507049842ffa5799858989a3c48ed920f5d"
+    },
+    {
+      "path": "wasm/packages/compiler/src/spine/binding-ownership.js",
+      "sha256": "cc1fb7f1d150f8c4d3bd71ea52528cddfab8d14211da056b160b934559dcfd14"
+    },
+    {
+      "path": "wasm/packages/compiler/src/report-reference-provenance.js",
+      "sha256": "1a6c15fc209afc995722b27a95bed5de401b240dc3c2f704517c779cd1fbb253"
+    },
+    {
+      "path": "wasm/packages/cli/src/internal/report/schema.js",
+      "sha256": "8fa793e8a6bab94324688dc1c2a54cc565382e053dbeee8a50f4b579495ee57e"
+    },
+    {
+      "path": "wasm/packages/cli/src/internal/report/semantic-comparison.js",
+      "sha256": "2a46637d9b76f55c1faf2f6120e4d568f767b5e6afcfcd53da8ddcbee3cdf3e2"
+    },
+    {
+      "path": "wasm/test/provider/assert-fastly-fetch-deadlines.cjs",
+      "sha256": "8b023dec5c5162aca3e4bca0ddf04ea65b73b701b2e067e8d7809a3d002d0380"
+    },
+    {
+      "path": "wasm/test/provider/assert-fastly-incoming-body-forwarding.cjs",
+      "sha256": "9f22214fafcfb57c9d250c3fd753bdfbd8378411043346c5150b09b04338e861"
+    }
+  ],
+  "inherited": [
+    {
+      "path": "docs/internal/host-extensions/ownership/receipt.json",
+      "sha256": "715a71e57e460df75b6c0f8241b234d587ddc4b6c73e7f3bbe0b16e4fbb934d1",
+      "revision": "b421aa58b7df07cc5bcb060248026c660eaf5ae3",
+      "caseCount": 44,
+      "cases": [
+        "Absent and imported-unused controls",
+        "Direct read releases zero-valued cache handle and body before response",
+        "Uninstrumented direct read size",
+        "Direct write handles partial progress and commits once",
+        "Keyed reads start before waiting and preserve keys",
+        "Keyed writes start before resolution",
+        "Collection getText count 2 capacity 4",
+        "Collection putText count 2 capacity 4",
+        "Collection getText count 0 capacity 4",
+        "Collection getText count 7 capacity 8",
+        "Collection getText count 8 capacity 8",
+        "Collection getText count 9 capacity 16",
+        "Mixed existing time effect and resource operation",
+        "miss is bounded policy miss with lookup disposal",
+        "stale is bounded policy miss with lookup disposal",
+        "lookup failure",
+        "state failure",
+        "body acquisition failure",
+        "read failure",
+        "oversize value",
+        "malformed read length",
+        "bounded read steps",
+        "unsupported text encoding",
+        "insert failure",
+        "partial write failure",
+        "zero progress write",
+        "bounded write steps",
+        "Sibling write failure preserves earlier commit and abandons failing writer",
+        "First write failure abandons already-admitted sibling",
+        "Commit failure: host consumes false",
+        "Commit failure: host consumes true",
+        "Cache close failure remains unresolved without retry",
+        "Abandon failure preserves primary write failure and unresolved ownership",
+        "Failed reader disposal still attempts cache disposal",
+        "Expiry with pending cache does not block on close",
+        "Expiry with writable body abandons without commit",
+        "Expiry during read releases known-owned resources",
+        "Expiry after commit cannot undo accepted write",
+        "Closure and cumulative exhaustion prevent acquisition",
+        "Forged raw setter rejected while lookup is owned",
+        "Wrong invocation ticket rejects completion",
+        "Duplicate completion after close is rejected without host work",
+        "Trap bypasses guest teardown; host reclamation remains required",
+        "Dynamic key is explicitly outside fixture admission"
+      ],
+      "execution": "inherited, not rerun by RA-00"
+    },
+    {
+      "path": "docs/internal/host-extensions/composition/receipt.json",
+      "sha256": "294857fe4bdec2a90c2b8f5f524607dffa0e37532242c704fa208d0c6d958468",
+      "revision": "fccb92a437847e96c81b91be79ba07a1413c3f11",
+      "caseCount": 47,
+      "cases": [
+        "Direct hit skips loader and insert",
+        "Direct miss runs fetch and insert",
+        "Reused fetch retains host resources outside cache ledger",
+        "Keyed misses dispatch both loaders before either waits",
+        "Mixed hit and miss preserve distinct parent outcomes",
+        "Collection 0/4 flush preserves parent count and bounded children",
+        "Collection 2/4 flush preserves parent count and bounded children",
+        "Collection 2/8 flush preserves parent count and bounded children",
+        "Collection 8/8 flush preserves parent count and bounded children",
+        "Eight hits still expose inherited handle admission limit",
+        "Ordinary core sibling settles once across child passes",
+        "Cache lookup failure never invokes loader",
+        "Cache state failure never invokes loader",
+        "Cache body failure never invokes loader",
+        "Cache read failure never invokes loader",
+        "Cache cache.close failure never invokes loader",
+        "Loader fetch.send failure never inserts",
+        "Loader fetch.wait failure never inserts",
+        "Loader fetch.read failure never inserts",
+        "Insert insert failure is explicit without retry",
+        "Insert write failure is explicit without retry",
+        "Insert commit failure is explicit without retry",
+        "Consumed failed commit remains committed and unresolved",
+        "Loader result exceeding fixture byte limit fails before insert",
+        "Failure in first loader drains admitted sibling but starts no inserts",
+        "Later lookup failure suppresses earlier admitted loader follow-on",
+        "Earlier commit survives later sibling write failure",
+        "Inherited deadline stops children at cache",
+        "Inherited deadline stops children at fetch-pending",
+        "Inherited deadline stops children at writer",
+        "Expiry after commit cannot claim rollback",
+        "Cumulative budget 1024 is shared by parent and children",
+        "Cumulative budget 1023 is shared by parent and children",
+        "Cumulative budget 1022 is shared by parent and children",
+        "Cumulative budget 1021 is shared by parent and children",
+        "Raw parent and child result forgery is fenced",
+        "Wrong child ticket rejects settlement",
+        "Closed parent cannot dispatch a deferred child",
+        "Repeated phase dispatch while live is rejected",
+        "Post-close child dispatch creates no host work",
+        "Trap still bypasses all guest cleanup",
+        "Callback and nested composition syntax remains rejected",
+        "Child backend authority is checked before execution",
+        "Absent and unused controls add no execution machinery",
+        "Uninstrumented compound artifact executes",
+        "Primitive-only control omits composition driver bridges",
+        "Core fetch control has the same retained response and body"
+      ],
+      "execution": "inherited, not rerun by RA-00"
+    }
+  ],
+  "upstream": [
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "wasm_abi/compute-at-edge-abi/compute-at-edge.witx",
+      "blob": "8c1f14c0528fa6184de838fe1129459556d59286",
+      "witness": "body close/abandon and request/response ABI",
+      "url": "https://github.com/fastly/Viceroy/blob/aabb3697e08c30339f93a9bb15bbb46a5028619f/wasm_abi/compute-at-edge-abi/compute-at-edge.witx"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "src/wiggle_abi/body_impl.rs",
+      "blob": "8042cccb6e14e955dc6341cee6d41997cfde60f7",
+      "witness": "close finalizes streaming body; abandon drops",
+      "url": "https://github.com/fastly/Viceroy/blob/aabb3697e08c30339f93a9bb15bbb46a5028619f/src/wiggle_abi/body_impl.rs"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "wasm_abi/compute-at-edge-abi/cache.witx",
+      "blob": "aa11f9fd14dd184265cb298e4fc3028fed1c402c",
+      "witness": "cache close and body acquisition ABI",
+      "url": "https://github.com/fastly/Viceroy/blob/aabb3697e08c30339f93a9bb15bbb46a5028619f/wasm_abi/compute-at-edge-abi/cache.witx"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "src/wiggle_abi/req_impl.rs",
+      "blob": "97f48885aa3649357cd0fb3e2087ab8559253bde",
+      "witness": "send_async takes parts/body before backend lookup; pending_req_wait takes pending",
+      "url": "https://github.com/fastly/Viceroy/blob/aabb3697e08c30339f93a9bb15bbb46a5028619f/src/wiggle_abi/req_impl.rs"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "src/wiggle_abi/resp_impl.rs",
+      "blob": "b4b7b8a4f2ff4ef37b2d504582fe840bf7d51f5c",
+      "witness": "send_downstream takes parts/body before delivery",
+      "url": "https://github.com/fastly/Viceroy/blob/aabb3697e08c30339f93a9bb15bbb46a5028619f/src/wiggle_abi/resp_impl.rs"
+    },
+    {
+      "repository": "fastly/Viceroy",
+      "revision": "aabb3697e08c30339f93a9bb15bbb46a5028619f",
+      "path": "src/wiggle_abi/cache.rs",
+      "blob": "473a272b95b0d40fd8039ac7348d5435b88f9149",
+      "witness": "close takes entry then awaits lookup task",
+      "url": "https://github.com/fastly/Viceroy/blob/aabb3697e08c30339f93a9bb15bbb46a5028619f/src/wiggle_abi/cache.rs"
+    }
+  ],
+  "qualification": "Pinned implementation witnesses do not establish universal hosted guarantees."
+}
