@@ -1,0 +1,5057 @@
+{
+  "version": "hex.ra02-sweep.v1",
+  "status": "passed",
+  "revision": "65da931d399e0dfac53ace9938edf3330e764b9c",
+  "workingTree": "?? docs/internal/host-extensions/resource-accounting/ra02/sweep/",
+  "node": "v24.19.0",
+  "inputs": [
+    {
+      "file": "check.cjs",
+      "sha256": "4d3284223251a5fa97f6f88b9e81237ef89b51b40f42d15b23383a635a439c06"
+    },
+    {
+      "file": "../model.cjs",
+      "sha256": "12fce123e91ca6e6f5d5f079b3d047ed8cef0a9d287cbf3591d1592dd3b55002"
+    },
+    {
+      "file": "../policy.json",
+      "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f"
+    }
+  ],
+  "scope": "Synthetic oracle traces, not runtime memory/CPU or host qualification",
+  "work": {
+    "handles": 3,
+    "bytes": 192,
+    "records": 4
+  },
+  "cleanup": {
+    "handles": 2,
+    "bytes": 64,
+    "records": 2
+  },
+  "exit": {
+    "handles": 2,
+    "bytes": 64,
+    "records": 2
+  },
+  "widths": [
+    8,
+    16,
+    32
+  ],
+  "cases": [
+    {
+      "width": 8,
+      "scenario": "hit",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCharged": {
+        "handles": 10,
+        "bytes": 576,
+        "records": 10
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 24
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 16
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 59,
+      "traceSha256": "af00459c1c4e2d386a7b488f33fe95914da18a81fa806245c31322a8e968f1cb"
+    },
+    {
+      "width": 8,
+      "scenario": "miss",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCharged": {
+        "handles": 26,
+        "bytes": 1600,
+        "records": 34
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 24
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 26,
+            "bytes": 1600,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 139,
+      "traceSha256": "e85e715b69aab5f72b680fda1dd63a705888aef234fd804523bde7ba4eef1cc2"
+    },
+    {
+      "width": 8,
+      "scenario": "cancellation",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCharged": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCleanupLane": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 24
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 26,
+            "bytes": 1600,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "cleanup-overlap",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "cleanupLane": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 165,
+      "traceSha256": "ed79ab001c713807ac83967825c5a8b1c660b9101a13575d7c14979709d9764e"
+    },
+    {
+      "width": 8,
+      "scenario": "failed-disposal",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCharged": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCleanupLane": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 24
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 26,
+            "bytes": 1600,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "cleanup-overlap",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "cleanupLane": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "next-cohort-rejected",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 173,
+      "traceSha256": "270fbf6636e4b7cdb78433de9169638f786022538f4ce714810e6bc07f3af9b4"
+    },
+    {
+      "width": 8,
+      "scenario": "retained-result",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCharged": {
+        "handles": 26,
+        "bytes": 1088,
+        "records": 26
+      },
+      "peakCleanupLane": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 24
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 16
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        },
+        {
+          "name": "next-cohort-rejected",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 24,
+          "promisedEffects": 0
+        },
+        {
+          "name": "late-cleanup",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "cleanupLane": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "carry": {
+            "handles": 24,
+            "bytes": 1024,
+            "records": 24
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 24,
+          "promisedEffects": 0
+        },
+        {
+          "name": "after-late-cleanup",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 24,
+          "promisedEffects": 0
+        },
+        {
+          "name": "fresh-cohort-finished",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 110,
+      "traceSha256": "3fb1489cb892c401d047484d3a0917d299fab1babae41f3b3b341d27fa439f11"
+    },
+    {
+      "width": 8,
+      "scenario": "mixed",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCharged": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCleanupLane": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 24
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 26,
+            "bytes": 1600,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "cleanup-overlap",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "cleanupLane": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 14,
+            "bytes": 576,
+            "records": 14
+          },
+          "charged": {
+            "handles": 6,
+            "bytes": 320,
+            "records": 6
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 4,
+            "bytes": 256,
+            "records": 4
+          },
+          "carryCleanupReserve": {
+            "handles": 8,
+            "bytes": 256,
+            "records": 8
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "next-cohort-rejected",
+          "committed": {
+            "handles": 14,
+            "bytes": 576,
+            "records": 14
+          },
+          "charged": {
+            "handles": 6,
+            "bytes": 320,
+            "records": 6
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 4,
+            "bytes": 256,
+            "records": 4
+          },
+          "carryCleanupReserve": {
+            "handles": 8,
+            "bytes": 256,
+            "records": 8
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 14,
+            "bytes": 576,
+            "records": 14
+          },
+          "charged": {
+            "handles": 6,
+            "bytes": 320,
+            "records": 6
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 4,
+            "bytes": 256,
+            "records": 4
+          },
+          "carryCleanupReserve": {
+            "handles": 8,
+            "bytes": 256,
+            "records": 8
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 14,
+            "bytes": 576,
+            "records": 14
+          },
+          "charged": {
+            "handles": 6,
+            "bytes": 320,
+            "records": 6
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 4,
+            "bytes": 256,
+            "records": 4
+          },
+          "carryCleanupReserve": {
+            "handles": 8,
+            "bytes": 256,
+            "records": 8
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 173,
+      "traceSha256": "3f52968a97aad6f307613ce538327d324831e9cb55c9c7edcb605cec08f70c36"
+    },
+    {
+      "width": 8,
+      "scenario": "exact-effects",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "checkpoints": [
+        {
+          "name": "exact-effects-admitted",
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 24
+        },
+        {
+          "name": "exact-effects-spent",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 65,
+      "traceSha256": "1e21990fcd989cd7bd1171ebf6e71fcb8b72ecf67217339bd55435a72108dea6"
+    },
+    {
+      "width": 8,
+      "scenario": "one-below-handles",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 10,
+      "traceSha256": "a884fca70cdd8636c7963c9bd50032a2d088df48e47f00fe6a4bc6400da07e1a"
+    },
+    {
+      "width": 8,
+      "scenario": "one-below-bytes",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 10,
+      "traceSha256": "a884fca70cdd8636c7963c9bd50032a2d088df48e47f00fe6a4bc6400da07e1a"
+    },
+    {
+      "width": 8,
+      "scenario": "one-below-records",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 10,
+      "traceSha256": "a884fca70cdd8636c7963c9bd50032a2d088df48e47f00fe6a4bc6400da07e1a"
+    },
+    {
+      "width": 8,
+      "scenario": "one-below-effects",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 16,
+        "bytes": 512,
+        "records": 16
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 10,
+      "traceSha256": "4fa8556c32601cef99dbe4c51dc577902918fb0249013df39838ccef0d58e649"
+    },
+    {
+      "width": 16,
+      "scenario": "hit",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCharged": {
+        "handles": 18,
+        "bytes": 1088,
+        "records": 18
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 48
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 32
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 115,
+      "traceSha256": "efc1f7c865898d007c6b3567b2180fe3265b09980273aba67249712337e71d86"
+    },
+    {
+      "width": 16,
+      "scenario": "miss",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCharged": {
+        "handles": 50,
+        "bytes": 3136,
+        "records": 66
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 48
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 50,
+            "bytes": 3136,
+            "records": 66
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 275,
+      "traceSha256": "c55ed754b7c335c27450fcd5b7f625388d7888505426d4cb9993fa5fa2b32168"
+    },
+    {
+      "width": 16,
+      "scenario": "cancellation",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCharged": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCleanupLane": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 48
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 50,
+            "bytes": 3136,
+            "records": 66
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "cleanup-overlap",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "cleanupLane": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 325,
+      "traceSha256": "196fff122685397f21d114569cef4124188d7073dcb82a502db0a4be5d3c1749"
+    },
+    {
+      "width": 16,
+      "scenario": "failed-disposal",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCharged": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCleanupLane": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 48
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 50,
+            "bytes": 3136,
+            "records": 66
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "cleanup-overlap",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "cleanupLane": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "next-cohort-rejected",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 341,
+      "traceSha256": "92827ce2495b5b839822e55046a5e814d418c9b2581ddb5e7824c92128c3375e"
+    },
+    {
+      "width": 16,
+      "scenario": "retained-result",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCharged": {
+        "handles": 50,
+        "bytes": 2112,
+        "records": 50
+      },
+      "peakCleanupLane": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 48
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 32
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        },
+        {
+          "name": "next-cohort-rejected",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 48,
+          "promisedEffects": 0
+        },
+        {
+          "name": "late-cleanup",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "cleanupLane": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "carry": {
+            "handles": 48,
+            "bytes": 2048,
+            "records": 48
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 48,
+          "promisedEffects": 0
+        },
+        {
+          "name": "after-late-cleanup",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 48,
+          "promisedEffects": 0
+        },
+        {
+          "name": "fresh-cohort-finished",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 214,
+      "traceSha256": "5d25b0fe23f2ca18a63f9bff424bf357aa47e6a2ae026b952b91fe03f807d3f5"
+    },
+    {
+      "width": 16,
+      "scenario": "mixed",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCharged": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCleanupLane": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 48
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 50,
+            "bytes": 3136,
+            "records": 66
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "cleanup-overlap",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "cleanupLane": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "next-cohort-rejected",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 341,
+      "traceSha256": "e98e4f21b1d31f8328e1f30b93456ef9b744997c4ceacb448c3592d3904d7eae"
+    },
+    {
+      "width": 16,
+      "scenario": "exact-effects",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 82,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "checkpoints": [
+        {
+          "name": "exact-effects-admitted",
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 48
+        },
+        {
+          "name": "exact-effects-spent",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 129,
+      "traceSha256": "87e845f5f96fbe0c5c144929475001394577126ce1c2b0371ac71eeee6e04640"
+    },
+    {
+      "width": 16,
+      "scenario": "one-below-handles",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 18,
+      "traceSha256": "9cc35b11a3fb3dd023b4aa724e2df7fe4d62e8774d289df10d4311dc0d652b1b"
+    },
+    {
+      "width": 16,
+      "scenario": "one-below-bytes",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 18,
+      "traceSha256": "9cc35b11a3fb3dd023b4aa724e2df7fe4d62e8774d289df10d4311dc0d652b1b"
+    },
+    {
+      "width": 16,
+      "scenario": "one-below-records",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 18,
+      "traceSha256": "9cc35b11a3fb3dd023b4aa724e2df7fe4d62e8774d289df10d4311dc0d652b1b"
+    },
+    {
+      "width": 16,
+      "scenario": "one-below-effects",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 32,
+        "bytes": 1024,
+        "records": 32
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 18,
+      "traceSha256": "c8582f378c733992e0bd04b0473050d260639ac17d58ab67e42c478fd8bdc7c9"
+    },
+    {
+      "width": 32,
+      "scenario": "hit",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCharged": {
+        "handles": 34,
+        "bytes": 2112,
+        "records": 34
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 96
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 64
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 227,
+      "traceSha256": "2dbc54af41cbdc8937001af72695f1780d3a6b419a3409eb8070d0d6b0d3afc5"
+    },
+    {
+      "width": 32,
+      "scenario": "miss",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCharged": {
+        "handles": 98,
+        "bytes": 6208,
+        "records": 130
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 96
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 98,
+            "bytes": 6208,
+            "records": 130
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 547,
+      "traceSha256": "a0a8e6f8dcdab5712fb91c5a486a22ee217e3cf4ea4ab53cf2caf833e8f47f1b"
+    },
+    {
+      "width": 32,
+      "scenario": "cancellation",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCharged": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCleanupLane": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 96
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 98,
+            "bytes": 6208,
+            "records": 130
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "cleanup-overlap",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "cleanupLane": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 645,
+      "traceSha256": "2db392c37d52ff9b26dcb5355fb7d2d101b120cedacd13380f125a0a6a2384cd"
+    },
+    {
+      "width": 32,
+      "scenario": "failed-disposal",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCharged": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCleanupLane": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 96
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 98,
+            "bytes": 6208,
+            "records": 130
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "cleanup-overlap",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "cleanupLane": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 32,
+            "bytes": 2048,
+            "records": 32
+          },
+          "carryCleanupReserve": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "next-cohort-rejected",
+          "committed": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 32,
+            "bytes": 2048,
+            "records": 32
+          },
+          "carryCleanupReserve": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 32,
+            "bytes": 2048,
+            "records": 32
+          },
+          "carryCleanupReserve": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 32,
+            "bytes": 2048,
+            "records": 32
+          },
+          "carryCleanupReserve": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 677,
+      "traceSha256": "7db4876ff8ca11019102c181697dd334844f67eb9c45ee99cb02a9bf4693acfb"
+    },
+    {
+      "width": 32,
+      "scenario": "retained-result",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCharged": {
+        "handles": 98,
+        "bytes": 4160,
+        "records": 98
+      },
+      "peakCleanupLane": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 96
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 64
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 32,
+            "bytes": 2048,
+            "records": 32
+          },
+          "carryCleanupReserve": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        },
+        {
+          "name": "next-cohort-rejected",
+          "committed": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 32,
+            "bytes": 2048,
+            "records": 32
+          },
+          "carryCleanupReserve": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "usedEffects": 96,
+          "promisedEffects": 0
+        },
+        {
+          "name": "late-cleanup",
+          "committed": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "cleanupLane": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "carry": {
+            "handles": 96,
+            "bytes": 4096,
+            "records": 96
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 96,
+          "promisedEffects": 0
+        },
+        {
+          "name": "after-late-cleanup",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 96,
+          "promisedEffects": 0
+        },
+        {
+          "name": "fresh-cohort-finished",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 422,
+      "traceSha256": "96e947dd2c88862185281785bd25c7d9987ba28180c329eb18856f52c326c893"
+    },
+    {
+      "width": 32,
+      "scenario": "mixed",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCharged": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCleanupLane": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "checkpoints": [
+        {
+          "name": "admitted",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 96
+        },
+        {
+          "name": "work-peak",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 98,
+            "bytes": 6208,
+            "records": 130
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "cleanup-overlap",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "cleanupLane": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "settled",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        },
+        {
+          "name": "next-cohort-rejected",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0
+        },
+        {
+          "name": "before-end",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0
+        },
+        {
+          "name": "ended",
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 677,
+      "traceSha256": "c7131ada317772ed4714258a3886c1b55a080a36e82c5c0e76825026bdb50724"
+    },
+    {
+      "width": 32,
+      "scenario": "exact-effects",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 162,
+        "bytes": 8256,
+        "records": 194
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "checkpoints": [
+        {
+          "name": "exact-effects-admitted",
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 96
+        },
+        {
+          "name": "exact-effects-spent",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 257,
+      "traceSha256": "69f5ce73c0f73dca78813d9af4f2c353fd31dbc9657d684f38250f825dd941d4"
+    },
+    {
+      "width": 32,
+      "scenario": "one-below-handles",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 34,
+      "traceSha256": "343c2c8a3fbe3adae9154705fc25798ec026bdd67f7fde9388954ff45700010f"
+    },
+    {
+      "width": 32,
+      "scenario": "one-below-bytes",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 34,
+      "traceSha256": "343c2c8a3fbe3adae9154705fc25798ec026bdd67f7fde9388954ff45700010f"
+    },
+    {
+      "width": 32,
+      "scenario": "one-below-records",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 34,
+      "traceSha256": "343c2c8a3fbe3adae9154705fc25798ec026bdd67f7fde9388954ff45700010f"
+    },
+    {
+      "width": 32,
+      "scenario": "one-below-effects",
+      "status": "passed",
+      "peakCommitted": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "peakCharged": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "peakCleanupLane": {
+        "handles": 0,
+        "bytes": 0,
+        "records": 0
+      },
+      "minimumUnusedCleanupAllowance": {
+        "handles": 64,
+        "bytes": 2048,
+        "records": 64
+      },
+      "checkpoints": [
+        {
+          "name": "denied",
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "cleanupLane": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      ],
+      "events": 34,
+      "traceSha256": "995cd4dbdb26cdf0a94aaae62727bb408d18e153e2bc8a6acb9f745a401ed400"
+    }
+  ],
+  "fullTrace": {
+    "file": "traces.json.gz",
+    "sha256": "4ad222365c0c75cde11edd3ca37a49bd037e6cff1fdc35dd7ef928f6987d91f2",
+    "uncompressedSha256": "b110c706ea64c4f78a5c14fe8b5d422262bfe1d6f3a3e8cd6deefffb75a85d7c"
+  },
+  "reportSourceSha256": "8194e8a73aac092212c82bd83ec926a4c6bb70b3c20f2f87b4a71ee3f86894c3"
+}
