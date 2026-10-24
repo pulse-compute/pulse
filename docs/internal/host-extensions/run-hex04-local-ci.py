@@ -96,6 +96,14 @@ def main():
         for binary in engines['pushpin']['binaries']:
             require(digest((pushpin / 'usr/bin' / binary['name']).read_bytes()) == binary['sha256'],
                     'Pushpin binary mismatch: ' + binary['name'])
+        (results / 'os-packages.txt').write_text(subprocess.check_output(
+            ['dpkg-query', '-W', '-f=${Package}\t${Version}\n'], text=True))
+        env = {**os.environ, 'LD_LIBRARY_PATH': str(pushpin / 'usr/lib/x86_64-linux-gnu')}
+        with (results / 'linked-libraries.txt').open('w') as log:
+            for binary in [viceroy] + [pushpin / 'usr/bin' / b['name'] for b in engines['pushpin']['binaries']]:
+                log.write(str(binary) + '\n')
+                log.flush()
+                subprocess.run(['ldd', str(binary)], env=env, stdout=log, stderr=log, check=True, timeout=10)
         (results / 'engines.json').write_text(json.dumps(engines, indent=2) + '\n')
         with (results / 'probe.log').open('w') as log:
             subprocess.run(['node', str(owner / 'probe-hex04-local.cjs'), str(proof_dir), str(viceroy),
