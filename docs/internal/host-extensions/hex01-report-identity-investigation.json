@@ -1,0 +1,883 @@
+{
+  "status": "bounded diagnostic runs passed; original intermittent failure not reproduced; no production fix established",
+  "qualification": false,
+  "head": "9b62b3811d9451b45e30a090c2f13d04f5b3215d",
+  "branch": "hex/report-fixture-isolation",
+  "base": "788b1fe0c24d3277b0d01bba674ad86952e2f7fc",
+  "node": "v24.19.0",
+  "sourceState": {
+    "productAndTestSources": "unchanged from head",
+    "firstTwoRuns": "clean checkout; scratch preloads transform retained.js only in the test process",
+    "finalRun": "new untracked diagnostic preload; HEX-01.md appended during the run; no product, compiler or test source changed",
+    "diagnostic": {
+      "file": "docs/internal/host-extensions/report-identity-trace.cjs",
+      "sha256": "529812554d8aa27ee047e7e834e94cfd1567129bedc72a9b122643ff37a182dc"
+    },
+    "tests": [
+      {
+        "file": "wasm/test/cli/assert-report-retained-evidence.cjs",
+        "sha256": "1bd0b01832d8b2d3d70ec331ad77a7c3b0b93a1689efd7a002bba0718a10b133"
+      },
+      {
+        "file": "wasm/test/cli/assert-report-handler-topology.cjs",
+        "sha256": "a12801722a2d51ac97dd4116be3611e9723aec887eb262f0a13bf97cc983aad7"
+      }
+    ]
+  },
+  "runs": [
+    {
+      "command": "NODE_OPTIONS='--require=/tmp/hex-lease-trace.cjs' node wasm/scripts/run-wasm-tests.cjs --task cli-report-retained-evidence --report /tmp/hex-lease-focused.json",
+      "instrumentation": "scratchLeaseTrace",
+      "reportSha256": "690573876cd921f3c5906184f31e8ebb6f4c20fdad338ba353c81f6fc8e1cc93",
+      "runId": "2026-10-23T19-43-22-785Z--6",
+      "sourceIdentity": {
+        "sourceRevision": "9b62b3811d9451b45e30a090c2f13d04f5b3215d",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "status": "passed",
+      "startedAt": "2026-10-23T19:43:22.790Z",
+      "finishedAt": "2026-10-23T19:44:02.060Z",
+      "durationMs": 39270,
+      "selectedTasks": [
+        "cli-report-retained-evidence"
+      ],
+      "completedTasks": 1,
+      "results": [
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 39261
+        }
+      ]
+    },
+    {
+      "command": "PATH=\"$PWD/.validation-tools/pnpm/bin:$PATH\" NODE_OPTIONS='--require=/tmp/hex-lease-failure-trace.cjs' HEX_LEASE_TRACE=/tmp/hex-lease-prefix-trace.json node wasm/scripts/run-wasm-tests.cjs --profile unit --through cli-report-retained-evidence --report /tmp/hex-lease-prefix.json",
+      "instrumentation": "scratchLeaseFailureTrace",
+      "reportSha256": "7220d488298e5b40b6c632a87ddf7cf9e6063cc8dead19622e5d52d0df86bc93",
+      "runId": "2026-10-23T19-44-20-219Z--6",
+      "sourceIdentity": {
+        "sourceRevision": "9b62b3811d9451b45e30a090c2f13d04f5b3215d",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "status": "passed",
+      "startedAt": "2026-10-23T19:44:20.224Z",
+      "finishedAt": "2026-10-23T19:45:31.377Z",
+      "durationMs": 71153,
+      "selectedTasks": [
+        "binary-resource-admission",
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence"
+      ],
+      "completedTasks": 5,
+      "results": [
+        {
+          "name": "binary-resource-admission",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 269
+        },
+        {
+          "name": "report-capsule-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 16284
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 3670
+        },
+        {
+          "name": "cli-report-viewer",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 10334
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 40583
+        }
+      ]
+    },
+    {
+      "command": "PATH=\"$PWD/.validation-tools/pnpm/bin:$PATH\" NODE_OPTIONS=\"--require=$PWD/docs/internal/host-extensions/report-identity-trace.cjs\" HEX_REPORT_IDENTITY_TRACE=/tmp/hex-identity-exact node wasm/scripts/run-wasm-tests.cjs --task suite-shape --task package-exports --task boundaries --task workspace-hygiene --task release-feature-acceptance --task release-runtime-policy --task binary-resource-admission --task report-capsule-contract --task cli-report-workflow --task cli-report-viewer --task cli-report-retained-evidence --task cli-report-handler-topology --report /tmp/hex-identity-exact.json",
+      "instrumentation": "checkedInIdentityTrace",
+      "reportSha256": "87d3aba7853dd72d19a4a8eeb751925f9f3ae0a3ef2160b62eb62b0bcf4c4016",
+      "runId": "2026-10-23T19-46-11-411Z--6",
+      "sourceIdentity": {
+        "sourceRevision": "9b62b3811d9451b45e30a090c2f13d04f5b3215d",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "status": "passed",
+      "startedAt": "2026-10-23T19:46:11.416Z",
+      "finishedAt": "2026-10-23T19:48:26.597Z",
+      "durationMs": 135181,
+      "selectedTasks": [
+        "suite-shape",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "release-feature-acceptance",
+        "release-runtime-policy",
+        "binary-resource-admission",
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence",
+        "cli-report-handler-topology"
+      ],
+      "completedTasks": 12,
+      "results": [
+        {
+          "name": "suite-shape",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 152
+        },
+        {
+          "name": "package-exports",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 207
+        },
+        {
+          "name": "boundaries",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 382
+        },
+        {
+          "name": "workspace-hygiene",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 256
+        },
+        {
+          "name": "release-feature-acceptance",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 8981
+        },
+        {
+          "name": "release-runtime-policy",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 3691
+        },
+        {
+          "name": "binary-resource-admission",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 291
+        },
+        {
+          "name": "report-capsule-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 15881
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 4262
+        },
+        {
+          "name": "cli-report-viewer",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 11159
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 39784
+        },
+        {
+          "name": "cli-report-handler-topology",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 50115
+        }
+      ]
+    }
+  ],
+  "selectionCaveat": "The --through run selected only five tasks. The final explicit twelve-task selection includes all eleven tasks completed in the failed unit run, in their execution order, plus topology. It is not the full unit profile.",
+  "scratchInstrumentation": {
+    "scratchLeaseTrace": {
+      "sha256": "97861c0a3297ca4d9c94c0d8292c70a85f91ec817646be200955171f93ee92fd",
+      "source": "'use strict';\n// Diagnostic preload: no changed acceptance conditions; no retries.\nif (process.argv[1]?.endsWith('/assert-report-retained-evidence.cjs')) {\n  const fs = require('node:fs'), path = require('node:path'), Module = require('node:module');\n  const crypto = require('node:crypto');\n  const events = [], original = Module._extensions['.js'];\n  const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');\n  const output = process.env.HEX_LEASE_TRACE || '/tmp/hex-lease-trace.json';\n  function note(kind, data) { events.push({ sequence: events.length, kind, ...data }); }\n  globalThis.__hexLeaseTrace = (kind, file, token, read) => {\n    const record = { file, expectedTokenHash: hash(token), stack: new Error().stack.split('\\n').slice(2, 7) };\n    if (read) Object.assign(record, { readHash: read.sha256, readStamp: read.token, actualTokenHash: hash(JSON.parse(read.bytes).token), matches: JSON.parse(read.bytes).token === token });\n    try {\n      const bytes = fs.readFileSync(file), stat = fs.statSync(file, { bigint: true });\n      record.directHash = hash(bytes); record.directTokenHash = hash(JSON.parse(bytes).token);\n      record.directStamp = [stat.dev, stat.ino, stat.size, stat.mtimeNs, stat.ctimeNs].map(String).join(':');\n    } catch (error) { record.directError = error.code; }\n    note(kind, record);\n  };\n  for (const name of ['renameSync', 'unlinkSync', 'rmSync']) {\n    const previous = fs[name];\n    fs[name] = function(...args) {\n      if (args.some(arg => typeof arg === 'string' && arg.includes('.pulse-report-locks'))) note(name, { paths: args.filter(arg => typeof arg === 'string'), stack: new Error().stack.split('\\n').slice(2, 6) });\n      return previous.apply(this, args);\n    };\n  }\n  Module._extensions['.js'] = function(module, file) {\n    if (!file.endsWith('/wasm/packages/cli/src/internal/report/retained.js')) return original(module, file);\n    let source = fs.readFileSync(file, 'utf8');\n    const edits = [\n      [\"atomicWrite(project.root, relative, Buffer.from(JSON.stringify({ token })));\", \"atomicWrite(project.root, relative, Buffer.from(JSON.stringify({ token }))); globalThis.__hexLeaseTrace('acquired', file, token);\"],\n      [\"try { if (parseJson(readFile(project.root, relative, 4096).bytes).token === token)\", \"try { const read = readFile(project.root, relative, 4096); globalThis.__hexLeaseTrace('release', file, token, read); if (parseJson(read.bytes).token === token)\"],\n      [\"release.verify = () => ensure(parseJson(readFile(project.root, relative, 4096).bytes).token === token, 'REPORT_CONCURRENT_BUILD');\", \"release.verify = () => { const read = readFile(project.root, relative, 4096); globalThis.__hexLeaseTrace('verify', file, token, read); ensure(parseJson(read.bytes).token === token, 'REPORT_CONCURRENT_BUILD'); };\"]\n    ];\n    for (const [from, to] of edits) { if (!source.includes(from)) throw Error('Missing trace point'); source = source.replace(from, to); }\n    module._compile(source, file);\n  };\n  process.on('exit', code => fs.writeFileSync(output, JSON.stringify({ code, pid: process.pid, events }, null, 2) + '\\n'));\n}\n"
+    },
+    "scratchLeaseFailureTrace": {
+      "sha256": "f80ebadd01104cb2bf4468ddfc7458b40d406fbd56f19b8a890387b56e864f3d",
+      "source": "'use strict';\n// Diagnostic preload: no changed acceptance conditions; no retries.\nif (process.argv[1]?.endsWith('/assert-report-retained-evidence.cjs')) {\n  const fs = require('node:fs'), path = require('node:path'), Module = require('node:module');\n  const crypto = require('node:crypto');\n  const events = [], original = Module._extensions['.js'];\n  const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');\n  const output = process.env.HEX_LEASE_TRACE || '/tmp/hex-lease-trace.json';\n  function note(kind, data) { events.push({ sequence: events.length, kind, ...data }); }\n  globalThis.__hexLeaseTrace = (kind, file, token, read) => {\n    const record = { file, expectedTokenHash: hash(token), stack: new Error().stack.split('\\n').slice(2, 7) };\n    if (read) Object.assign(record, { readHash: read.sha256, readStamp: read.token, actualTokenHash: hash(JSON.parse(read.bytes).token), matches: JSON.parse(read.bytes).token === token });\n    if (!read || record.matches) { note(kind, record); return; }\n    try {\n      const bytes = fs.readFileSync(file), stat = fs.statSync(file, { bigint: true });\n      record.directHash = hash(bytes); record.directTokenHash = hash(JSON.parse(bytes).token);\n      record.directStamp = [stat.dev, stat.ino, stat.size, stat.mtimeNs, stat.ctimeNs].map(String).join(':');\n    } catch (error) { record.directError = error.code; }\n    note(kind, record);\n  };\n  for (const name of ['renameSync', 'unlinkSync', 'rmSync']) {\n    const previous = fs[name];\n    fs[name] = function(...args) {\n      if (args.some(arg => typeof arg === 'string' && arg.includes('.pulse-report-locks'))) note(name, { paths: args.filter(arg => typeof arg === 'string'), stack: new Error().stack.split('\\n').slice(2, 6) });\n      return previous.apply(this, args);\n    };\n  }\n  Module._extensions['.js'] = function(module, file) {\n    if (!file.endsWith('/wasm/packages/cli/src/internal/report/retained.js')) return original(module, file);\n    let source = fs.readFileSync(file, 'utf8');\n    const edits = [\n      [\"atomicWrite(project.root, relative, Buffer.from(JSON.stringify({ token })));\", \"atomicWrite(project.root, relative, Buffer.from(JSON.stringify({ token }))); globalThis.__hexLeaseTrace('acquired', file, token);\"],\n      [\"try { if (parseJson(readFile(project.root, relative, 4096).bytes).token === token)\", \"try { const read = readFile(project.root, relative, 4096); globalThis.__hexLeaseTrace('release', file, token, read); if (parseJson(read.bytes).token === token)\"],\n      [\"release.verify = () => ensure(parseJson(readFile(project.root, relative, 4096).bytes).token === token, 'REPORT_CONCURRENT_BUILD');\", \"release.verify = () => { const read = readFile(project.root, relative, 4096); globalThis.__hexLeaseTrace('verify', file, token, read); ensure(parseJson(read.bytes).token === token, 'REPORT_CONCURRENT_BUILD'); };\"]\n    ];\n    for (const [from, to] of edits) { if (!source.includes(from)) throw Error('Missing trace point'); source = source.replace(from, to); }\n    module._compile(source, file);\n  };\n  process.on('exit', code => fs.writeFileSync(output, JSON.stringify({ code, pid: process.pid, events }, null, 2) + '\\n'));\n}\n"
+    }
+  },
+  "scratchTraceSummaries": [
+    {
+      "file": "/tmp/hex-lease-trace.json",
+      "sha256": "2afd9eb6edda27f03f9ef8cfd0428410dabaadda33d17917a59285386abb52f4",
+      "exitCode": 0,
+      "events": 45,
+      "acquisitions": 7,
+      "mismatches": [
+        {
+          "kind": "verify",
+          "stack": [
+            "    at release.verify (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:41:92)",
+            "    at /workspace/scratch/253982db7f9e/pulse/wasm/test/cli/assert-report-retained-evidence.cjs:199:27",
+            "    at getActual (node:assert:611:5)",
+            "    at strict.throws (node:assert:759:24)",
+            "    at rejects (/workspace/scratch/253982db7f9e/pulse/wasm/test/cli/assert-report-retained-evidence.cjs:30:49)"
+          ],
+          "expectedTokenHash": "526da2f88df2598bde2652c1675dbd75c808cda938fdd36e3ddfbaa63b5ef1f7",
+          "actualTokenHash": "8e6efd2163b60245d211808447ca612dd2129b78d4b400a8d8d83e12ae259dcf",
+          "directTokenHash": "8e6efd2163b60245d211808447ca612dd2129b78d4b400a8d8d83e12ae259dcf"
+        },
+        {
+          "kind": "release",
+          "stack": [
+            "    at release (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:37:75)",
+            "    at main (/workspace/scratch/253982db7f9e/pulse/wasm/test/cli/assert-report-retained-evidence.cjs:199:65)"
+          ],
+          "expectedTokenHash": "526da2f88df2598bde2652c1675dbd75c808cda938fdd36e3ddfbaa63b5ef1f7",
+          "actualTokenHash": "8e6efd2163b60245d211808447ca612dd2129b78d4b400a8d8d83e12ae259dcf",
+          "directTokenHash": "8e6efd2163b60245d211808447ca612dd2129b78d4b400a8d8d83e12ae259dcf"
+        }
+      ]
+    },
+    {
+      "file": "/tmp/hex-lease-prefix-trace.json",
+      "sha256": "3ba8b0f7a752424305ef83f7098250056f2161d48f60e0e110684bff9b0a1497",
+      "exitCode": 0,
+      "events": 45,
+      "acquisitions": 7,
+      "mismatches": [
+        {
+          "kind": "verify",
+          "stack": [
+            "    at release.verify (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:41:92)",
+            "    at /workspace/scratch/253982db7f9e/pulse/wasm/test/cli/assert-report-retained-evidence.cjs:199:27",
+            "    at getActual (node:assert:611:5)",
+            "    at strict.throws (node:assert:759:24)",
+            "    at rejects (/workspace/scratch/253982db7f9e/pulse/wasm/test/cli/assert-report-retained-evidence.cjs:30:49)"
+          ],
+          "expectedTokenHash": "8c049b966e3b402f8ff84413418ffab933bf0c08c39984064dcb020c75e03b49",
+          "actualTokenHash": "b49656ee3a1068e96841e24b5077c8a4f467900c57add358c2d26178912b8fb8",
+          "directTokenHash": "b49656ee3a1068e96841e24b5077c8a4f467900c57add358c2d26178912b8fb8"
+        },
+        {
+          "kind": "release",
+          "stack": [
+            "    at release (/workspace/scratch/253982db7f9e/pulse/wasm/packages/cli/src/internal/report/retained.js:37:75)",
+            "    at main (/workspace/scratch/253982db7f9e/pulse/wasm/test/cli/assert-report-retained-evidence.cjs:199:65)"
+          ],
+          "expectedTokenHash": "8c049b966e3b402f8ff84413418ffab933bf0c08c39984064dcb020c75e03b49",
+          "actualTokenHash": "b49656ee3a1068e96841e24b5077c8a4f467900c57add358c2d26178912b8fb8",
+          "directTokenHash": "b49656ee3a1068e96841e24b5077c8a4f467900c57add358c2d26178912b8fb8"
+        }
+      ]
+    }
+  ],
+  "traces": [
+    {
+      "file": "hex-identity-exact.assert-report-handler-topology.cjs.1286.json",
+      "sha256": "3979ee154a9e272842940d32af4d7210682736b86f27b04d503463804d4399d2",
+      "diagnosticVersion": 1,
+      "target": "assert-report-handler-topology.cjs",
+      "node": "v24.19.0",
+      "code": 0,
+      "loaded": [
+        {
+          "file": "wasm/packages/cli/src/internal/report/snapshot.js",
+          "sha256": "114e8e92ba075a88a0eafcadaa8aafcd73ecef6d924cc499ec0c383c8620cc64"
+        },
+        {
+          "file": "wasm/packages/cli/src/internal/report/retained.js",
+          "sha256": "f0728d3247d267c3e4f4731662d17b2608c3b5f1649ecc70444f8af8e552207d"
+        },
+        {
+          "file": "wasm/packages/cli/src/internal/report/source-inputs.js",
+          "sha256": "b629d87030c5f052ae6f7c9c6ab8d6da8843ebed4b11853733ef1c89ec544d73"
+        }
+      ],
+      "dropped": 0,
+      "events": [
+        {
+          "sequence": 0,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/http/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "4fa86928acfbc75f485e7ec041b3d61f49acc3134ad94d2e8740294d7b8d2c45"
+        },
+        {
+          "sequence": 1,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/http/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "4fa86928acfbc75f485e7ec041b3d61f49acc3134ad94d2e8740294d7b8d2c45",
+          "readHash": "dac857ebfda284a7be6932b34a9346b1aa4f85c3ff6d5f672d6fdcdc51147a3b",
+          "readStamp": "27:690383:44:1792784863695209707:1792784863698515115",
+          "actualTokenHash": "4fa86928acfbc75f485e7ec041b3d61f49acc3134ad94d2e8740294d7b8d2c45",
+          "matches": true
+        },
+        {
+          "sequence": 2,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/http/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "4fa86928acfbc75f485e7ec041b3d61f49acc3134ad94d2e8740294d7b8d2c45",
+          "readHash": "dac857ebfda284a7be6932b34a9346b1aa4f85c3ff6d5f672d6fdcdc51147a3b",
+          "readStamp": "27:690383:44:1792784863695209707:1792784863698515115",
+          "actualTokenHash": "4fa86928acfbc75f485e7ec041b3d61f49acc3134ad94d2e8740294d7b8d2c45",
+          "matches": true
+        },
+        {
+          "sequence": 3,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/http/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "4fa86928acfbc75f485e7ec041b3d61f49acc3134ad94d2e8740294d7b8d2c45",
+          "readHash": "dac857ebfda284a7be6932b34a9346b1aa4f85c3ff6d5f672d6fdcdc51147a3b",
+          "readStamp": "27:690383:44:1792784863695209707:1792784863698515115",
+          "actualTokenHash": "4fa86928acfbc75f485e7ec041b3d61f49acc3134ad94d2e8740294d7b8d2c45",
+          "matches": true
+        },
+        {
+          "sequence": 4,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/http/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "e6a61c2ac82be61d879500935f07746bff05332260d8c9c9e70331646b5f4aa4"
+        },
+        {
+          "sequence": 5,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/http/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "e6a61c2ac82be61d879500935f07746bff05332260d8c9c9e70331646b5f4aa4",
+          "readHash": "253bee58906f4c8c4126cbd7858501651ece81f42fbb288a9f54befb125c14e7",
+          "readStamp": "27:689353:44:1792784871138975620:1792784871139343532",
+          "actualTokenHash": "e6a61c2ac82be61d879500935f07746bff05332260d8c9c9e70331646b5f4aa4",
+          "matches": true
+        },
+        {
+          "sequence": 6,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/http/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "e6a61c2ac82be61d879500935f07746bff05332260d8c9c9e70331646b5f4aa4",
+          "readHash": "253bee58906f4c8c4126cbd7858501651ece81f42fbb288a9f54befb125c14e7",
+          "readStamp": "27:689353:44:1792784871138975620:1792784871139343532",
+          "actualTokenHash": "e6a61c2ac82be61d879500935f07746bff05332260d8c9c9e70331646b5f4aa4",
+          "matches": true
+        },
+        {
+          "sequence": 7,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/http/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "e6a61c2ac82be61d879500935f07746bff05332260d8c9c9e70331646b5f4aa4",
+          "readHash": "253bee58906f4c8c4126cbd7858501651ece81f42fbb288a9f54befb125c14e7",
+          "readStamp": "27:689353:44:1792784871138975620:1792784871139343532",
+          "actualTokenHash": "e6a61c2ac82be61d879500935f07746bff05332260d8c9c9e70331646b5f4aa4",
+          "matches": true
+        },
+        {
+          "sequence": 8,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/event/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "ab865ac0a5173b73524ff8d0069e8350e35e48ad374db275c93244a401602609"
+        },
+        {
+          "sequence": 9,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/event/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "ab865ac0a5173b73524ff8d0069e8350e35e48ad374db275c93244a401602609",
+          "readHash": "2e765c43b73a325bea5c1bd353d15e1bfa99f0fdb8a4650ee45779317ac0876a",
+          "readStamp": "27:689889:44:1792784878131400154:1792784878131466922",
+          "actualTokenHash": "ab865ac0a5173b73524ff8d0069e8350e35e48ad374db275c93244a401602609",
+          "matches": true
+        },
+        {
+          "sequence": 10,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/event/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "ab865ac0a5173b73524ff8d0069e8350e35e48ad374db275c93244a401602609",
+          "readHash": "2e765c43b73a325bea5c1bd353d15e1bfa99f0fdb8a4650ee45779317ac0876a",
+          "readStamp": "27:689889:44:1792784878131400154:1792784878131466922",
+          "actualTokenHash": "ab865ac0a5173b73524ff8d0069e8350e35e48ad374db275c93244a401602609",
+          "matches": true
+        },
+        {
+          "sequence": 11,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/event/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "ab865ac0a5173b73524ff8d0069e8350e35e48ad374db275c93244a401602609",
+          "readHash": "2e765c43b73a325bea5c1bd353d15e1bfa99f0fdb8a4650ee45779317ac0876a",
+          "readStamp": "27:689889:44:1792784878131400154:1792784878131466922",
+          "actualTokenHash": "ab865ac0a5173b73524ff8d0069e8350e35e48ad374db275c93244a401602609",
+          "matches": true
+        },
+        {
+          "sequence": 12,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/event/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "86eba56c3a5be0acf144cf3c26b6f1c8afbdc280460dcc169e5ce5f66938030a"
+        },
+        {
+          "sequence": 13,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/event/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "86eba56c3a5be0acf144cf3c26b6f1c8afbdc280460dcc169e5ce5f66938030a",
+          "readHash": "ccfc6f9240f70b2004b0bc5fe389ccee26a93c355725af6f707218e975b3bb3f",
+          "readStamp": "27:690418:44:1792784885263201070:1792784885263596234",
+          "actualTokenHash": "86eba56c3a5be0acf144cf3c26b6f1c8afbdc280460dcc169e5ce5f66938030a",
+          "matches": true
+        },
+        {
+          "sequence": 14,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/event/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "86eba56c3a5be0acf144cf3c26b6f1c8afbdc280460dcc169e5ce5f66938030a",
+          "readHash": "ccfc6f9240f70b2004b0bc5fe389ccee26a93c355725af6f707218e975b3bb3f",
+          "readStamp": "27:690418:44:1792784885263201070:1792784885263596234",
+          "actualTokenHash": "86eba56c3a5be0acf144cf3c26b6f1c8afbdc280460dcc169e5ce5f66938030a",
+          "matches": true
+        },
+        {
+          "sequence": 15,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/event/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "86eba56c3a5be0acf144cf3c26b6f1c8afbdc280460dcc169e5ce5f66938030a",
+          "readHash": "ccfc6f9240f70b2004b0bc5fe389ccee26a93c355725af6f707218e975b3bb3f",
+          "readStamp": "27:690418:44:1792784885263201070:1792784885263596234",
+          "actualTokenHash": "86eba56c3a5be0acf144cf3c26b6f1c8afbdc280460dcc169e5ce5f66938030a",
+          "matches": true
+        },
+        {
+          "sequence": 16,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/full/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "38e9b95e6aed80c33767df69ab4d855798d819df16fdf039b732d49f9563e67c"
+        },
+        {
+          "sequence": 17,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/full/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "38e9b95e6aed80c33767df69ab4d855798d819df16fdf039b732d49f9563e67c",
+          "readHash": "07f40fe81dbfd52e322032218ed93add04fcc8e5800d07629830330665f8c133",
+          "readStamp": "27:690450:44:1792784892415386288:1792784892415728439",
+          "actualTokenHash": "38e9b95e6aed80c33767df69ab4d855798d819df16fdf039b732d49f9563e67c",
+          "matches": true
+        },
+        {
+          "sequence": 18,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/full/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "38e9b95e6aed80c33767df69ab4d855798d819df16fdf039b732d49f9563e67c",
+          "readHash": "07f40fe81dbfd52e322032218ed93add04fcc8e5800d07629830330665f8c133",
+          "readStamp": "27:690450:44:1792784892415386288:1792784892415728439",
+          "actualTokenHash": "38e9b95e6aed80c33767df69ab4d855798d819df16fdf039b732d49f9563e67c",
+          "matches": true
+        },
+        {
+          "sequence": 19,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/full/native-shrink0/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "38e9b95e6aed80c33767df69ab4d855798d819df16fdf039b732d49f9563e67c",
+          "readHash": "07f40fe81dbfd52e322032218ed93add04fcc8e5800d07629830330665f8c133",
+          "readStamp": "27:690450:44:1792784892415386288:1792784892415728439",
+          "actualTokenHash": "38e9b95e6aed80c33767df69ab4d855798d819df16fdf039b732d49f9563e67c",
+          "matches": true
+        },
+        {
+          "sequence": 20,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/full/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "aa22930f431506e76b1079c83c9128e1f523249c0f2210e72fc01a0b05c0b31a"
+        },
+        {
+          "sequence": 21,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/full/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "aa22930f431506e76b1079c83c9128e1f523249c0f2210e72fc01a0b05c0b31a",
+          "readHash": "aa3f6ba32d8667d85f22189a28cf8ed11ae7b721dbf568defd341321dd307814",
+          "readStamp": "27:690481:44:1792784899863803212:1792784899863863736",
+          "actualTokenHash": "aa22930f431506e76b1079c83c9128e1f523249c0f2210e72fc01a0b05c0b31a",
+          "matches": true
+        },
+        {
+          "sequence": 22,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/full/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "aa22930f431506e76b1079c83c9128e1f523249c0f2210e72fc01a0b05c0b31a",
+          "readHash": "aa3f6ba32d8667d85f22189a28cf8ed11ae7b721dbf568defd341321dd307814",
+          "readStamp": "27:690481:44:1792784899863803212:1792784899863863736",
+          "actualTokenHash": "aa22930f431506e76b1079c83c9128e1f523249c0f2210e72fc01a0b05c0b31a",
+          "matches": true
+        },
+        {
+          "sequence": 23,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/report-analytics-h0E8aJ/full/experimental-native-bounded-size/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "aa22930f431506e76b1079c83c9128e1f523249c0f2210e72fc01a0b05c0b31a",
+          "readHash": "aa3f6ba32d8667d85f22189a28cf8ed11ae7b721dbf568defd341321dd307814",
+          "readStamp": "27:690481:44:1792784899863803212:1792784899863863736",
+          "actualTokenHash": "aa22930f431506e76b1079c83c9128e1f523249c0f2210e72fc01a0b05c0b31a",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "file": "hex-identity-exact.assert-report-retained-evidence.cjs.1030.json",
+      "sha256": "b947820bdcd01e44215628df18171d73a5cc8369926c8bc80a95777b4312b3ba",
+      "diagnosticVersion": 1,
+      "target": "assert-report-retained-evidence.cjs",
+      "node": "v24.19.0",
+      "code": 0,
+      "loaded": [
+        {
+          "file": "wasm/packages/cli/src/internal/report/retained.js",
+          "sha256": "f0728d3247d267c3e4f4731662d17b2608c3b5f1649ecc70444f8af8e552207d"
+        },
+        {
+          "file": "wasm/packages/cli/src/internal/report/snapshot.js",
+          "sha256": "114e8e92ba075a88a0eafcadaa8aafcd73ecef6d924cc499ec0c383c8620cc64"
+        },
+        {
+          "file": "wasm/packages/cli/src/internal/report/source-inputs.js",
+          "sha256": "b629d87030c5f052ae6f7c9c6ab8d6da8843ebed4b11853733ef1c89ec544d73"
+        }
+      ],
+      "dropped": 0,
+      "events": [
+        {
+          "sequence": 0,
+          "kind": "snapshot-content",
+          "root": null,
+          "file": "1/package.json",
+          "before": {
+            "file": "1/package.json",
+            "bytes": 29,
+            "sha256": "fb2503bec53b08008edec4b502d7dcf899cff32499b994716f8761f77f0b0861"
+          },
+          "after": {
+            "file": "1/package.json",
+            "bytes": 30,
+            "sha256": "481dde1bef7e7f8e4335ad36cea81539f161a5b90b130d7215858a010c823380"
+          },
+          "beforeStamp": "27:690268:29:1792784817114370339:1792784817114370339",
+          "afterStamp": "27:690268:30:1792784817117665737:1792784817117665737"
+        },
+        {
+          "sequence": 1,
+          "kind": "module",
+          "expected": {
+            "file": "src/index.ts",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          "actual": {
+            "file": "src/index.ts",
+            "bytes": 1046,
+            "sha256": "3ed026440627791ce71ccca70fd68fc7dcaa3bc1882bff8540a7e58e4edb6019"
+          }
+        },
+        {
+          "sequence": 2,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "75dfaf123cbe3d7a299b02de3e9d7b633355effbd0d67bf7854b8153031f2fc6"
+        },
+        {
+          "sequence": 3,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "75dfaf123cbe3d7a299b02de3e9d7b633355effbd0d67bf7854b8153031f2fc6",
+          "readHash": "e648cae0cc039181a2d594ab615427e2b600d35079cca8cd16a6c57e66c5c9a2",
+          "readStamp": "27:690271:44:1792784820242681870:1792784820243772770",
+          "actualTokenHash": "75dfaf123cbe3d7a299b02de3e9d7b633355effbd0d67bf7854b8153031f2fc6",
+          "matches": true
+        },
+        {
+          "sequence": 4,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "75dfaf123cbe3d7a299b02de3e9d7b633355effbd0d67bf7854b8153031f2fc6",
+          "readHash": "e648cae0cc039181a2d594ab615427e2b600d35079cca8cd16a6c57e66c5c9a2",
+          "readStamp": "27:690271:44:1792784820242681870:1792784820243772770",
+          "actualTokenHash": "75dfaf123cbe3d7a299b02de3e9d7b633355effbd0d67bf7854b8153031f2fc6",
+          "matches": true
+        },
+        {
+          "sequence": 5,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "75dfaf123cbe3d7a299b02de3e9d7b633355effbd0d67bf7854b8153031f2fc6",
+          "readHash": "e648cae0cc039181a2d594ab615427e2b600d35079cca8cd16a6c57e66c5c9a2",
+          "readStamp": "27:690271:44:1792784820242681870:1792784820243772770",
+          "actualTokenHash": "75dfaf123cbe3d7a299b02de3e9d7b633355effbd0d67bf7854b8153031f2fc6",
+          "matches": true
+        },
+        {
+          "sequence": 6,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "90fb0102bbd3d12ba11b81427380921ab134f98fd326caebb33367b5d3216776"
+        },
+        {
+          "sequence": 7,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "ae4e34e65a5ab3e33344db5444c75931882dbe05a4d3cdd70e023343aabad1e2"
+        },
+        {
+          "sequence": 8,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "90fb0102bbd3d12ba11b81427380921ab134f98fd326caebb33367b5d3216776",
+          "readHash": "214b4c7a6e05892c31e155d02dbcdb8e623ee70a5c4e78a74e9441b514e01f95",
+          "readStamp": "27:690286:44:1792784833094660881:1792784833097090396",
+          "actualTokenHash": "ae4e34e65a5ab3e33344db5444c75931882dbe05a4d3cdd70e023343aabad1e2",
+          "matches": false,
+          "directHash": "214b4c7a6e05892c31e155d02dbcdb8e623ee70a5c4e78a74e9441b514e01f95",
+          "directTokenHash": "ae4e34e65a5ab3e33344db5444c75931882dbe05a4d3cdd70e023343aabad1e2",
+          "directStamp": "27:690286:44:1792784833094660881:1792784833097090396",
+          "stack": [
+            "    at release.verify (wasm/packages/cli/src/internal/report/retained.js:41:155)",
+            "    at wasm/test/cli/assert-report-retained-evidence.cjs:199:27",
+            "    at getActual (node:assert:611:5)",
+            "    at strict.throws (node:assert:759:24)",
+            "    at rejects (wasm/test/cli/assert-report-retained-evidence.cjs:30:49)"
+          ]
+        },
+        {
+          "sequence": 9,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "90fb0102bbd3d12ba11b81427380921ab134f98fd326caebb33367b5d3216776",
+          "readHash": "214b4c7a6e05892c31e155d02dbcdb8e623ee70a5c4e78a74e9441b514e01f95",
+          "readStamp": "27:690286:44:1792784833094660881:1792784833097090396",
+          "actualTokenHash": "ae4e34e65a5ab3e33344db5444c75931882dbe05a4d3cdd70e023343aabad1e2",
+          "matches": false,
+          "directHash": "214b4c7a6e05892c31e155d02dbcdb8e623ee70a5c4e78a74e9441b514e01f95",
+          "directTokenHash": "ae4e34e65a5ab3e33344db5444c75931882dbe05a4d3cdd70e023343aabad1e2",
+          "directStamp": "27:690286:44:1792784833094660881:1792784833097090396",
+          "stack": [
+            "    at release (wasm/packages/cli/src/internal/report/retained.js:37:138)",
+            "    at main (wasm/test/cli/assert-report-retained-evidence.cjs:199:65)"
+          ]
+        },
+        {
+          "sequence": 10,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "ae4e34e65a5ab3e33344db5444c75931882dbe05a4d3cdd70e023343aabad1e2",
+          "readHash": "214b4c7a6e05892c31e155d02dbcdb8e623ee70a5c4e78a74e9441b514e01f95",
+          "readStamp": "27:690286:44:1792784833094660881:1792784833097090396",
+          "actualTokenHash": "ae4e34e65a5ab3e33344db5444c75931882dbe05a4d3cdd70e023343aabad1e2",
+          "matches": true
+        },
+        {
+          "sequence": 11,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "ae4e34e65a5ab3e33344db5444c75931882dbe05a4d3cdd70e023343aabad1e2",
+          "readHash": "214b4c7a6e05892c31e155d02dbcdb8e623ee70a5c4e78a74e9441b514e01f95",
+          "readStamp": "27:690286:44:1792784833094660881:1792784833097090396",
+          "actualTokenHash": "ae4e34e65a5ab3e33344db5444c75931882dbe05a4d3cdd70e023343aabad1e2",
+          "matches": true
+        },
+        {
+          "sequence": 12,
+          "kind": "snapshot-stamp",
+          "root": "wasm/.test-results/prpt02-Fx2JUS",
+          "file": "src/index.ts",
+          "before": {
+            "file": "src/index.ts",
+            "bytes": 1046,
+            "sha256": "3ed026440627791ce71ccca70fd68fc7dcaa3bc1882bff8540a7e58e4edb6019"
+          },
+          "after": {
+            "file": "src/index.ts",
+            "bytes": 1046,
+            "sha256": "3ed026440627791ce71ccca70fd68fc7dcaa3bc1882bff8540a7e58e4edb6019"
+          },
+          "beforeStamp": "27:690265:1046:1792784832734654261:1792784832734654261",
+          "afterStamp": "27:690265:1046:1792784833282664338:1792784833282664338"
+        },
+        {
+          "sequence": 13,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "4dce56fa5c8b2cf17bf18b670cfa075ca1331a9756e3e90dd78292298fd741dd"
+        },
+        {
+          "sequence": 14,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "4dce56fa5c8b2cf17bf18b670cfa075ca1331a9756e3e90dd78292298fd741dd",
+          "readHash": "d6e2b8107c7f14bbb0c6062bbc0a956b5cf35d27680d2dcde60341f71334b001",
+          "readStamp": "27:690286:44:1792784833286664412:1792784833291674413",
+          "actualTokenHash": "4dce56fa5c8b2cf17bf18b670cfa075ca1331a9756e3e90dd78292298fd741dd",
+          "matches": true
+        },
+        {
+          "sequence": 15,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "4dce56fa5c8b2cf17bf18b670cfa075ca1331a9756e3e90dd78292298fd741dd",
+          "readHash": "d6e2b8107c7f14bbb0c6062bbc0a956b5cf35d27680d2dcde60341f71334b001",
+          "readStamp": "27:690286:44:1792784833286664412:1792784833291674413",
+          "actualTokenHash": "4dce56fa5c8b2cf17bf18b670cfa075ca1331a9756e3e90dd78292298fd741dd",
+          "matches": true
+        },
+        {
+          "sequence": 16,
+          "kind": "snapshot-stamp",
+          "root": "wasm/.test-results/prpt02-Fx2JUS",
+          "file": "src/index.ts",
+          "before": {
+            "file": "src/index.ts",
+            "bytes": 1046,
+            "sha256": "3ed026440627791ce71ccca70fd68fc7dcaa3bc1882bff8540a7e58e4edb6019"
+          },
+          "after": {
+            "file": "src/index.ts",
+            "bytes": 1046,
+            "sha256": "3ed026440627791ce71ccca70fd68fc7dcaa3bc1882bff8540a7e58e4edb6019"
+          },
+          "beforeStamp": "27:690265:1046:1792784832734654261:1792784832734654261",
+          "afterStamp": "27:690265:1046:1792784833282664338:1792784833282664338"
+        },
+        {
+          "sequence": 17,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "6366a413efbc2b9f9862527d67b749951d4a2a7697c7705de5495075ab67bf31"
+        },
+        {
+          "sequence": 18,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "6366a413efbc2b9f9862527d67b749951d4a2a7697c7705de5495075ab67bf31",
+          "readHash": "944f2c4732deaaf55b10e3ec7eae94cafe4589109e22b09bc47380fa24a5abd2",
+          "readStamp": "27:690285:44:1792784833694671916:1792784833698445174",
+          "actualTokenHash": "6366a413efbc2b9f9862527d67b749951d4a2a7697c7705de5495075ab67bf31",
+          "matches": true
+        },
+        {
+          "sequence": 19,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "6366a413efbc2b9f9862527d67b749951d4a2a7697c7705de5495075ab67bf31",
+          "readHash": "944f2c4732deaaf55b10e3ec7eae94cafe4589109e22b09bc47380fa24a5abd2",
+          "readStamp": "27:690285:44:1792784833694671916:1792784833698445174",
+          "actualTokenHash": "6366a413efbc2b9f9862527d67b749951d4a2a7697c7705de5495075ab67bf31",
+          "matches": true
+        },
+        {
+          "sequence": 20,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "6366a413efbc2b9f9862527d67b749951d4a2a7697c7705de5495075ab67bf31",
+          "readHash": "944f2c4732deaaf55b10e3ec7eae94cafe4589109e22b09bc47380fa24a5abd2",
+          "readStamp": "27:690285:44:1792784833694671916:1792784833698445174",
+          "actualTokenHash": "6366a413efbc2b9f9862527d67b749951d4a2a7697c7705de5495075ab67bf31",
+          "matches": true
+        },
+        {
+          "sequence": 21,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "65feb3cbeb46c473db4fc1035190937c1ad2459b4b0385f21a883f22e93e33f1"
+        },
+        {
+          "sequence": 22,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "65feb3cbeb46c473db4fc1035190937c1ad2459b4b0385f21a883f22e93e33f1",
+          "readHash": "a915dc6a8bffba4150bb9b77e14b3eae0cbc02b54f3b042f2e9fa4f3971ce1d1",
+          "readStamp": "27:690284:44:1792784837594741325:1792784837599122119",
+          "actualTokenHash": "65feb3cbeb46c473db4fc1035190937c1ad2459b4b0385f21a883f22e93e33f1",
+          "matches": true
+        },
+        {
+          "sequence": 23,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "65feb3cbeb46c473db4fc1035190937c1ad2459b4b0385f21a883f22e93e33f1",
+          "readHash": "a915dc6a8bffba4150bb9b77e14b3eae0cbc02b54f3b042f2e9fa4f3971ce1d1",
+          "readStamp": "27:690284:44:1792784837594741325:1792784837599122119",
+          "actualTokenHash": "65feb3cbeb46c473db4fc1035190937c1ad2459b4b0385f21a883f22e93e33f1",
+          "matches": true
+        },
+        {
+          "sequence": 24,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "65feb3cbeb46c473db4fc1035190937c1ad2459b4b0385f21a883f22e93e33f1",
+          "readHash": "a915dc6a8bffba4150bb9b77e14b3eae0cbc02b54f3b042f2e9fa4f3971ce1d1",
+          "readStamp": "27:690284:44:1792784837594741325:1792784837599122119",
+          "actualTokenHash": "65feb3cbeb46c473db4fc1035190937c1ad2459b4b0385f21a883f22e93e33f1",
+          "matches": true
+        },
+        {
+          "sequence": 25,
+          "kind": "lease-acquired",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "3bbcfd1178217956e7704445b0c990b7b2b5d25055a1301e6e48a136239e10c7"
+        },
+        {
+          "sequence": 26,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "3bbcfd1178217956e7704445b0c990b7b2b5d25055a1301e6e48a136239e10c7",
+          "readHash": "7d138ff2902cb202af5b367234705e90e3fd2f1d8172d53776fde96d8fb6cd90",
+          "readStamp": "27:690323:44:1792784846330898685:1792784846334898758",
+          "actualTokenHash": "3bbcfd1178217956e7704445b0c990b7b2b5d25055a1301e6e48a136239e10c7",
+          "matches": true
+        },
+        {
+          "sequence": 27,
+          "kind": "lease-verify",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "3bbcfd1178217956e7704445b0c990b7b2b5d25055a1301e6e48a136239e10c7",
+          "readHash": "7d138ff2902cb202af5b367234705e90e3fd2f1d8172d53776fde96d8fb6cd90",
+          "readStamp": "27:690323:44:1792784846330898685:1792784846334898758",
+          "actualTokenHash": "3bbcfd1178217956e7704445b0c990b7b2b5d25055a1301e6e48a136239e10c7",
+          "matches": true
+        },
+        {
+          "sequence": 28,
+          "kind": "lease-release",
+          "file": "wasm/.test-results/prpt02-Fx2JUS/.pulse-report-locks/bcae0416621b3db43d8cba1e4454a792c7af9e4b7287e51056efc5a215d95839.lock",
+          "expectedTokenHash": "3bbcfd1178217956e7704445b0c990b7b2b5d25055a1301e6e48a136239e10c7",
+          "readHash": "7d138ff2902cb202af5b367234705e90e3fd2f1d8172d53776fde96d8fb6cd90",
+          "readStamp": "27:690323:44:1792784846330898685:1792784846334898758",
+          "actualTokenHash": "3bbcfd1178217956e7704445b0c990b7b2b5d25055a1301e6e48a136239e10c7",
+          "matches": true
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "No unexpected lease replacement was captured. Both mismatches in each retained-evidence trace are the intentional supersession test at line 199: verify rejects, then release preserves the replacement lease.",
+    "The final trace captures the existing negative workspace record change, stale module identity, and two timestamp changes. All 22 retained-evidence negative cases remain enforced. The six topology cells have no identity mismatch.",
+    "The recovery build that failed in the prior unit run passed in all three diagnostic runs. Instrumentation changes timing, so these are separate passing retries, not evidence that the original failure is repaired.",
+    "Normal lease acquisition/verification/release is recorded without an additional filesystem read. Only a token mismatch triggers a second diagnostic read; the original parsed token still decides rejection.",
+    "No compiler, provider, runtime, report acceptance condition, production lease implementation or normal test assertion is changed by this pass."
+  ],
+  "remaining": [
+    "Issue #516 still needs an unexpected first mismatch or a deterministic reproduction identifying its owner.",
+    "The required unit failure on 889b036 remains unresolved: 10 passed, 1 failed, 57 not run. PR #515 remains draft.",
+    "The trace does not observe other processes, every filesystem mutation, or abrupt termination; workspace-control records use ancestor-depth keys and may have a null scan root.",
+    "No complete aggregate, release, packed consumer, engine or hosted qualification is established."
+  ],
+  "nextAction": "Use the opt-in trace with the failing unit selection on the next reproduction. Preserve an unexpected mismatch before changing the demonstrated owner; do not add retries or waive freshness/lease comparisons."
+}

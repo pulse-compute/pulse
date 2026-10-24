@@ -226,6 +226,76 @@ source fingerprints, individual task outcomes and failed-attempt excerpts.
   isolated pass do not constitute a clean aggregate run or release seal.
 - Initial control-plane checks identified the missing release-shard mapping for
   the new regression task; the mapping was added and the checks passed on retry.
-- The PR remains draft for the report discrepancy and architecture review.
+- The report discrepancy and architecture review remain explicit review concerns.
   Engine/hosted handoff, cleanup and external packed acceptance remain later
   qualification work. No check is waived by this investigation.
+
+### Report-test investigation follow-up
+
+The [follow-up receipt](hex01-report-investigation.json) records the additional
+runs and their tested source states. The unchanged `fc43012` candidate passed
+the ten-task report prefix and the exact sixteen-task sequence that had stopped
+earlier. A separate [source-freshness probe](report-source-freshness.cjs) passed
+72 compilations across 36 same-path, same-length fixture rewrites. It checks
+source hashes, plan equality and earlier-plan immutability; it does not compile
+Wasm or qualify retained publication.
+
+The original plan mismatch identifies the event fixture in the control and the
+earlier HTTP fixture in the observed plan. Both files are 1,993 bytes, but their
+SHA-256 identities differ. Later diagnostic runs also reproduced missing
+completion, including an explicit `REPORT_STALE_INPUTS` reason. Three separately
+instrumented reruns passed without capturing the failing snapshot comparison.
+Passing retries do not identify the cause.
+
+Matching failure signatures predate HEX: the checked-in
+[MCP-06B log](../b10-mcp-06b/failed-2-cli-report-handler-topology.log) records
+`REPORT_ARTIFACT_HASH`, and the
+[MCP-08 log](../b10-mcp-08/receipts/topology.log) records
+`REPORT_MISSING_COMPLETION`. This establishes earlier occurrences, not a shared
+root cause or proof that every current failure is unrelated to HEX.
+
+The topology test now isolates each variant/recipe's source and retained output
+directory, checks both plans against the authored source hash, and exposes the
+publication-withheld reason before replay. The existing plan/source/Wasm,
+cross-recipe analytics, execution and source-free replay assertions remain.
+The final uninstrumented retained-evidence/topology selection passed both tasks
+and all six topology cells. Production code is unchanged by this follow-up.
+The isolation change is bounded test hardening; the underlying intermittent
+freshness failure remains unproven, and no complete aggregate/release claim is
+made from these development runs.
+
+The required 68-task unit profile on clean follow-up commit `889b036` stopped
+at the separate `cli-report-retained-evidence` task with
+`REPORT_CONCURRENT_BUILD`: ten tasks passed, one failed and 57 did not run.
+The changed topology task was not reached in that run; its focused pass remains
+separate. A compiler-free Node file-I/O probe passed 1,000 same-length rewrites
+and atomic lock replacements using both ordinary and positional reads. This
+does not identify the report failure's cause. [PR #515](https://github.com/pulse-compute/pulse/pull/515)
+retains the test hardening in draft, and [issue #516](https://github.com/pulse-compute/pulse/issues/516)
+tracks the unresolved investigation. No freshness or lease guard is relaxed.
+
+A further bounded investigation adds [an opt-in identity trace](report-identity-trace.cjs)
+for the retained-evidence and topology tests. It records acquired/observed lease
+hashes, the first differing snapshot record or timestamp, imported-source and
+artifact mismatches, and the exact report module hashes loaded. The original
+comparison still determines rejection; a diagnostic second read cannot repair
+it. Tokens and authored contents are not retained. The trace changes module
+source only in the test process, fails if its anchors drift, caps its event
+buffer, and writes separate per-process JSON files on ordinary exit. A forced
+termination may leave no trace. It is investigation tooling, not a public CLI
+feature or a production fix.
+
+```sh
+NODE_OPTIONS="--require=$PWD/docs/internal/host-extensions/report-identity-trace.cjs" \
+HEX_REPORT_IDENTITY_TRACE=/tmp/hex-report-identity \
+node wasm/scripts/run-wasm-tests.cjs \
+  --task cli-report-retained-evidence --task cli-report-handler-topology \
+  --report /tmp/hex-report-identity-run.json
+```
+
+Output must be outside the checkout. Run ordering and the uninstrumented failed
+attempt remain relevant: instrumentation can affect reproduction. The bounded
+lease runs, trace checks and remaining limits are retained in
+[the identity investigation receipt](hex01-report-identity-investigation.json).
+These passing diagnostic runs do not supersede the failed required unit run or
+establish a fix for issue #516.
