@@ -7,6 +7,10 @@ Date: 2026-10-23. Inspected base: `e69e4b6f1381a05bf0ee0b9b4c6385d2acefb20c`
 
 Tracker: [#508](https://github.com/pulse-compute/pulse/issues/508).
 
+Design follow-up: [authoring shapes, pass 1](DESIGN-01-authoring-shapes.md)
+compares proposed observations and cache APIs across direct await, keyed parallel
+and bounded effect collections. It is design-only and does not widen HEX support.
+
 Follow-up: [HEX-01 proof and decision record](HEX-01.md). The record below
 retains HEX-00 findings; the integration branch carries the private experiment.
 
