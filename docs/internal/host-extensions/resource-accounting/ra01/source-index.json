@@ -1,0 +1,47 @@
+{
+  "version": "hex.ra01-sources.v0",
+  "base": "6b1caf2abbb022f8813eb2d4b961b530c27d91bf",
+  "files": [
+    {
+      "path": "packages/runtime/src/host.d.ts",
+      "sha256": "b760b42a723dfb5b5dbc621a2da7cf08355bdfcfbdc42aeaa0c6faec4430d690"
+    },
+    {
+      "path": "wasm/packages/contracts/src/handler/canonical-runtime.js",
+      "sha256": "c0db896a0951bafe8bf5b60f33a6bbf26cd418e216a5b271c35f37abc3e58a0d"
+    },
+    {
+      "path": "wasm/packages/contracts/src/provider/host-extension.js",
+      "sha256": "29fc0cebe68fd52bd371e3dd079f7507049842ffa5799858989a3c48ed920f5d"
+    },
+    {
+      "path": "packages/runtime/src/internal/effect-adapter.js",
+      "sha256": "d9e9639cbeb7ba107d9f479f47cfd004391c5a5aa7d16d261dd055d453fb0c4e"
+    },
+    {
+      "path": "docs/architecture/current-contracts.md",
+      "sha256": "e2b830be1bfc183498e713a32a411860a1b8653485a7709c9f02709fe59922c5"
+    },
+    {
+      "path": "docs/concepts/bodies.md",
+      "sha256": "074751b810cad9abafd29ab42f5f25880c1a68ffc5acde2b688d777978109bd5"
+    },
+    {
+      "path": "docs/internal/host-extensions/resource-accounting/ra00/inventory.json",
+      "sha256": "d8bbeffb37aba5811d45e774701db306f8eb4e1ce251e52bdb5eef0e24ef531e"
+    },
+    {
+      "path": "docs/internal/host-extensions/resource-accounting/ra00/receipt.json",
+      "sha256": "fa81e48d21d8c757cabae36656b1b629cc7743a5a83ff81d1435fef0bdcab8cd"
+    },
+    {
+      "path": "docs/internal/host-extensions/ownership/README.md",
+      "sha256": "b1e540f1bc7a5567a4958fae0c1f1084785df91e883cb9e417a7aa13af885c54"
+    },
+    {
+      "path": "docs/internal/host-extensions/composition/README.md",
+      "sha256": "c0f176b096cb271674680c9502f25802c48dfab788bc6a977a42e84fa8e85f72"
+    }
+  ],
+  "authority": "Current sources and inherited evidence, not newly executed host qualification"
+}

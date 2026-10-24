@@ -4,12 +4,12 @@ This workstream follows the [ownership](../ownership/README.md) and
 [bounded composition](../composition/README.md) investigations. Its first proposed
 milestone is cache, core fetch and their fixed composition under one accounting
 contract. No new scheduler, automatic retry, silent fallback or universal cost
-optimizer is proposed. The owner approved RA-00 only; later units remain planned.
+optimizer is proposed. The owner approved RA-00 and RA-01; later units remain planned.
 
 | Unit | Deliverable | Recommended model / reasoning effort | Status |
 | --- | --- | --- | --- |
 | [RA-00](ra00/README.md) | Ownership inventory and evidence | GPT-6.1 Sol / High | Complete; evidence only |
-| RA-01 | Shared ownership/disposition contract | Astra / High | Planned |
+| [RA-01](ra01/README.md) | Shared ownership/disposition contract | Astra / High | Complete; internal candidate and checked lifecycle traces |
 | RA-02 | Admission, reservation and refund policy | Astra / High | Planned |
 | RA-03 | Minimal shared accounting service prototype | GPT-6.1 Sol / High | Planned |
 | RA-04 | Exclusive lease and in-flight buffer pressure | Astra / High | Planned |

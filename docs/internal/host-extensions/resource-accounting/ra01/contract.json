@@ -1,0 +1,32 @@
+{
+  "version": "hex.resource-ownership.candidate.v0",
+  "status": "internal candidate; not a supported provider protocol",
+  "states": ["owned", "busy", "released", "transferred", "consumed", "unresolved"],
+  "dispositions": ["retained", "released", "transferred", "consumed", "unknown"],
+  "access": ["quiescent", "active", "unknown"],
+  "acceptance": ["not-applicable", "accepted", "not-accepted", "unknown"],
+  "actions": {
+    "read": { "intent": "observe", "success": ["retained"], "error": ["retained", "unknown"], "kinds": ["reader", "web-response"], "repeatable": true },
+    "write": { "intent": "observe", "success": ["retained"], "error": ["retained", "unknown"], "kinds": ["writer"], "repeatable": true },
+    "poll-unready": { "intent": "observe", "success": ["retained"], "error": ["retained", "consumed", "unknown"], "kinds": ["pending"], "repeatable": true },
+    "resolve": { "intent": "consume", "success": ["consumed"], "error": ["retained", "consumed", "unknown"], "kinds": ["pending"], "repeatable": false },
+    "send": { "intent": "transfer", "success": ["transferred"], "error": ["retained", "consumed", "unknown"], "kinds": ["request", "response", "reader", "writer", "web-response", "buffer"], "repeatable": false },
+    "send-retain": { "intent": "use", "success": ["retained"], "error": ["retained", "consumed", "unknown"], "kinds": ["writer", "buffer"], "repeatable": false },
+    "close": { "intent": "dispose", "success": ["released"], "error": ["retained", "consumed", "unknown"], "kinds": ["request", "response", "reader", "cache", "buffer", "lease"], "repeatable": false },
+    "commit": { "intent": "commit", "success": ["consumed"], "error": ["retained", "consumed", "unknown"], "kinds": ["writer"], "repeatable": false },
+    "abandon": { "intent": "dispose", "success": ["released"], "error": ["retained", "consumed", "unknown"], "kinds": ["writer"], "repeatable": false },
+    "cancel": { "intent": "cancel", "success": ["consumed", "unknown"], "error": ["retained", "consumed", "unknown"], "kinds": ["web-response"], "repeatable": false }
+  },
+  "rules": {
+    "identity": "execution + slot + generation, issued by provider; payload and namespace stay private",
+    "attribution": "immutable root attribution across child/result ownership handoff",
+    "authority": "completion tickets, resource authority and cleanup authority are distinct",
+    "calls": "validate and fence all input claims before dispatch; record all outcomes and observed outputs before resuming",
+    "failure": "status does not infer consumption, quiescence, acceptance or refund",
+    "unknown": "quarantine; no reuse, retry, optimistic release or automatic fallback",
+    "cleanup": "bounded provider-declared actions; never substitute commit for abandon",
+    "settlement": "effect settlement does not dispose resources",
+    "refund": "RA-02 decision; no capacity algorithm in this contract",
+    "evidence": "binding identity and scoped opaque record identity; no raw handles or payloads"
+  }
+}
