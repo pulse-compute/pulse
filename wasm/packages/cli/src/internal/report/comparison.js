@@ -95,6 +95,7 @@ function grouped(rows, identity) {
 }
 function identity(c, collection, row, maps, index) {
   if (collection === 'routes') return ['route', row.method, row.path];
+  if (collection === 'hostExtensions') return [row.package, row.contractId, row.operation, row.target];
   if (collection === 'schemas') return ['schema', row.schemaId];
   if (collection === 'bindings') return ['binding', row.kind, row.name];
   if (collection === 'declarations') return ['declaration', row.kind, row.name];
@@ -170,7 +171,7 @@ function matching(a, b, collection, maps, indexes) {
   return { pairs, pending };
 }
 function rowLabel(collection, row) {
-  return collection === 'routes' ? row.method + ' ' + row.path : row.schemaId || row.name || row.canonicalId || row.origin || row.code || row.kind;
+  return collection === 'routes' ? row.method + ' ' + row.path : row.operation || row.schemaId || row.name || row.canonicalId || row.origin || row.code || row.kind;
 }
 function scopedComplete(c, collection, row) {
   if (complete(coverage(c, collection))) return true;
@@ -206,6 +207,7 @@ function projector(c, maps, rank) {
     if (collection === 'schemas') return { ...common, schemaId: row.schemaId, registryVersion: row.registryVersion, structure: row.structure,
       consumers: { routes: refs(row.routeIds), entries: refs(row.entryIds) } };
     if (collection === 'bindings') return { ...common, ...pick(row, ['declared', 'referenced', 'resolution']), consumers: { routes: refs(row.routeIds), entries: refs(row.entryIds) } };
+    if (collection === 'hostExtensions') return pick(row, ['contributionId', 'package', 'contractId', 'operation', 'protocol', 'service', 'target', 'source', 'sourceSha256', 'policySha256', 'declaredImports', 'observedImports']);
     if (collection === 'declarations') return common;
     if (collection === 'references') return { ...pick(row, ['kind', 'bindingKind', 'canonicalId', 'state', 'reason', 'entryCoverage', 'externalPackages']),
       target: refs(row.targetId ? [row.targetId] : []), consumers: refs(row.entryIds) };
@@ -231,18 +233,19 @@ function buildProjection(c) {
 }
 function compareCapsules(beforeInput, afterInput) {
   const before = validateCapsule(beforeInput), after = validateCapsule(afterInput);
-  const collections = before.analytics || after.analytics ? [...COLLECTIONS, ...SEMANTIC_COLLECTIONS] : COLLECTIONS;
+  const coreCollections = before.hostExtensions || after.hostExtensions ? [...COLLECTIONS, 'hostExtensions'] : COLLECTIONS;
+  const collections = before.analytics || after.analytics ? [...coreCollections, ...SEMANTIC_COLLECTIONS] : coreCollections;
   const compatible = compatibility(before, after), comparable = compatible.status !== 'incompatible';
   const maps = [new Map(), new Map()], matches = new Map(), inventories = [], sections = [];
   const indexes = [before, after].map(c => ({ routes: new Map(c.routes.map(row => [row.entryId, row])), entries: new Map(c.entries.map(row => [row.canonicalId, row])), artifacts: new Map(c.artifacts.map(row => [row.id, row])) }));
   // Route keys precede entry keys; all matches exist before projecting links.
-  for (const collection of COLLECTIONS) matches.set(collection, matching(before, after, collection, maps, indexes));
+  for (const collection of coreCollections) matches.set(collection, matching(before, after, collection, maps, indexes));
   const ranks = [new Map(), new Map()];
   for (const collection of ['routes', 'entries']) for (const [index, side] of [[0, 'before'], [1, 'after']]) {
     [...matches.get(collection).pairs].sort((a, b) => a[side].order - b[side].order).forEach((pair, rank) => ranks[index].set(pair[side].id, rank));
   }
   const project = [projector(before, maps[0], ranks[0]), projector(after, maps[1], ranks[1])];
-  const authored = collections.length > COLLECTIONS.length ? semantic.prepareSemanticComparison(before, after, maps) : null;
+  const authored = before.analytics || after.analytics ? semantic.prepareSemanticComparison(before, after, maps) : null;
   for (const collection of collections) {
     const isSemantic = SEMANTIC_COLLECTIONS.includes(collection);
     const projections = isSemantic ? authored.project : project;
@@ -297,7 +300,8 @@ function validateComparison(input) {
   validate(result, comparisonSchema);
   const { comparisonHash, ...payload } = result;
   ensure(comparisonHash.value === sha256(json(payload)), 'REPORT_COMPARISON_HASH');
-  const expectedCollections = result.matchingVersion === 'pulse.report-matching.v2' ? [...COLLECTIONS, ...SEMANTIC_COLLECTIONS] : COLLECTIONS;
+  const coreCollections = result.summary.inventories.some(row => row.collection === 'hostExtensions') ? [...COLLECTIONS, 'hostExtensions'] : COLLECTIONS;
+  const expectedCollections = result.matchingVersion === 'pulse.report-matching.v2' ? [...coreCollections, ...SEMANTIC_COLLECTIONS] : coreCollections;
   ensure(same(result.summary.inventories.map(row => row.collection), expectedCollections));
   const capsules = ['before', 'after'].map(side => {
     const row = result.sources[side];

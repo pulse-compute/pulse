@@ -4,14 +4,14 @@ const { copyData, canonicalJson, parseJson, sha256, fail, relativePath, freeze }
 const { capsuleSchema, RESOURCE_SCOPES } = require('./schema');
 const { validate, project } = require('./validate');
 const { structureFromDescriptor, REGISTRY_VERSION } = require('./schema-projection');
-const collections = ['routes', 'entries', 'declarations', 'schemas', 'bindings', 'resources', 'references', 'implementations', 'artifacts', 'bodies', 'rootSets', 'measurements', 'observations', 'evidence'];
+const collections = ['routes', 'entries', 'declarations', 'schemas', 'bindings', 'resources', 'references', 'implementations', 'hostExtensions', 'artifacts', 'bodies', 'rootSets', 'measurements', 'observations', 'evidence'];
 const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 const same = (a, b) => canonicalJson(a) === canonicalJson(b);
 const ensure = (condition, code = 'REPORT_INVARIANT') => { if (!condition) fail(code); };
 function artifactId(hash) { ensure(/^[a-f0-9]{64}$/.test(hash)); return `artifact:${hash}`; }
 function bodyId(hash, index) { ensure(Number.isSafeInteger(index) && index >= 0); return `body:${artifactId(hash).slice(9)}:${index}`; }
 function stableReportId(kind, canonicalId) {
-  ensure(['route', 'entry', 'schema', 'binding', 'resource', 'reference', 'implementation', 'measurement', 'evidence', 'declaration', 'root-set', 'handler', 'root'].includes(kind));
+  ensure(['route', 'entry', 'schema', 'binding', 'resource', 'reference', 'implementation', 'host-extension', 'measurement', 'evidence', 'declaration', 'root-set', 'handler', 'root'].includes(kind));
   ensure(typeof canonicalId === 'string' && canonicalId.length > 0);
   return `${kind}:${sha256(canonicalJson({ kind, canonicalId }))}`;
 }
@@ -73,6 +73,8 @@ function check(capsule) {
   }
   ensure(Object.hasOwn(capsule, 'references') === Object.hasOwn(capsule.coverage, 'references'), 'REPORT_COVERAGE');
   ensure(Object.hasOwn(capsule, 'implementations') === Object.hasOwn(capsule.coverage, 'implementations'), 'REPORT_COVERAGE');
+  ensure(Object.hasOwn(capsule, 'hostExtensions') === Object.hasOwn(capsule.coverage, 'hostExtensions'), 'REPORT_COVERAGE');
+  require('./host-extensions').checkHostExtensions(capsule, maps, ensure);
   for (const name of Object.keys(capsule.coverage)) coverage(capsule.coverage[name], capsule[name].length);
   for (const [name, rows] of Object.entries(maps)) for (const row of rows.values()) {
     source(row);

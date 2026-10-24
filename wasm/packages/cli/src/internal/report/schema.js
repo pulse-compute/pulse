@@ -44,6 +44,11 @@ const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-g
 const analyticsFact = value => object({ state: en('available', 'unavailable', 'not-applicable'),
   value: nullable(value), reason: nullable(en('not-recorded', 'not-applicable')) });
 const defs = {
+  HostImport: object({ module: text, name: text, parameters: array(en('i32', 'i64', 'f32', 'f64')), results: array(en('i32', 'i64', 'f32', 'f64')) }),
+  HostExtension: object({ id, contributionId: text, package: text, contractId: text, operation: text,
+    protocol: text, service: text, target: object({ provider: text, target: text, targetId: text }),
+    source: nullable(ref('Source')), sourceSha256: hash, policySha256: hash,
+    artifactId: id, declaredImports: array(ref('HostImport')), observedImports: array(ref('HostImport')), evidenceIds: ids }),
   Computation: object({ version: fixed('pulse.report-computation.v1'),
     callees: array(object({ id, name: text, source: analyticsFact(ref('AnalyticsSpan')),
       helpers: array(object({ name: text, source: analyticsFact(ref('AnalyticsSpan')) })),
@@ -185,15 +190,15 @@ const capsule = object({ kind: fixed('pulse.application-report'), reportVersion:
   producer: object({ pulseVersion: text, reporterVersion: text }), context: ref('Context'), build: ref('Build'),
   provenance: object({ revision: nullable({ type: 'string', pattern: '^[a-f0-9]{40,64}$' }), dirty: nullable(bool),
     sourceFingerprint: nullable(hash), buildEvidenceId: id, toolchain: array(ref('Producer')), recipe: ref('Recipe') }),
-  coverage: object(Object.fromEntries(['routes', 'entries', 'schemas', 'bindings', 'resources', 'references', 'implementations'].map(key => [key, ref('Coverage')])), ['references', 'implementations']),
+  coverage: object(Object.fromEntries(['routes', 'entries', 'schemas', 'bindings', 'resources', 'references', 'implementations', 'hostExtensions'].map(key => [key, ref('Coverage')])), ['references', 'implementations', 'hostExtensions']),
   application: object({ name: text }), routes: array(ref('Route')), entries: array(ref('Entry')),
   declarations: array(ref('Declaration')), schemas: array(ref('Schema')), bindings: array(ref('Binding')),
   resources: array(ref('Resource')), artifacts: array(ref('Artifact')), bodies: array(ref('Body')),
   references: array(ref('Reference')),
   resourceProducers: array(ref('ResourceProducer')), computation: ref('Computation'), binaryResources: ref('BinaryResources'),
-  implementations: array(ref('Implementation')),
+  implementations: array(ref('Implementation')), hostExtensions: array(ref('HostExtension')),
   rootSets: array(ref('RootSet')), measurements: array(ref('Measurement')), observations: array(ref('Observation')),
-  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }), analytics: ref('Analytics') }, ['references', 'resourceProducers', 'implementations', 'build', 'analytics', 'computation', 'binaryResources']);
+  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }), analytics: ref('Analytics') }, ['references', 'resourceProducers', 'implementations', 'build', 'analytics', 'computation', 'binaryResources', 'hostExtensions']);
 const completion = object({ kind: fixed('pulse.report-completion'), completionVersion: fixed(1), status: fixed('complete'),
   operation: en('compile', 'native-build'), manifestVersion: fixed('pulse.project-execution.v10'), context: ref('Context'),
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),

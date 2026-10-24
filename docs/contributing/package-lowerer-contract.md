@@ -709,3 +709,51 @@ Stable public diagnostics cover target, protocol, binding, ownership, source,
 conflict, signature, import-policy and placement failures. No provider object,
 compiler service, mutable configuration or resolved secret is added to the
 lowerer invocation.
+
+
+### Authoring a generic package with host upgrades
+
+Keep the portable contract explicit. A package can expose its existing generic
+methods alongside separately named host-specific methods. Co-locate the facade,
+trusted builder and generated contribution when that helps maintenance and code
+reuse; splitting them into another package is optional. A separate package does
+not receive additional compiler authority.
+
+GRIP illustrates the distinction: `grip.handoff(...)` continues to construct the
+generic GRIP response, while the provisional `grip.handoffFanout('fanout')` and
+`grip.handoffWebSocket('fanout')` request the terminal Fastly Native service.
+They are different operations, not a transparent optimization of the generic
+method. Changing to Node Native, Node JavaScript or Fastly JavaScript rejects a
+recognized reachable host-specific operation with `PULSE_HOST_EXTENSION_TARGET`.
+An opaque JavaScript lookup that reaches the facade throws “not implemented for
+this host.” Do not catch either failure and silently retry a different operation:
+a handoff may already have transferred response authority.
+
+Choose contribution IDs under the owning package, keep generated source and its
+UTF-8 SHA-256 together, and declare the exact target, service and function
+signatures. The provider matches protocol versions rather than npm versions.
+Installing a package is not selection: only reachable operations select an
+implementation. Neither an unused import nor generic-only use grants additional
+ABI imports. Test those controls from an installed tarball consumer as well as
+testing a used operation. Use only declared exports in the consumer; private
+checkout paths cannot demonstrate package usability.
+
+Retained Native reports can record `hostExtensions`: contribution identity,
+package/contract/operation owner, authored call location, generated-source digest,
+required target/service/protocol, import-policy digest, final artifact identity,
+and separate declared and observed import signatures. Collection re-audits the
+exact final Wasm against the provider's policy. Observed signatures cover that
+contribution's imports; the policy still checks the entire import ceiling.
+Comparison joins the logical package/contract/operation/target and exposes
+source, policy and import changes. An absent collection in a historical or
+portable-only report is unknown, not an empty selection. These records neither
+invent a whole-application source fingerprint nor prove that a hostcall ran.
+
+Qualify the separate layers honestly: injected lifecycle tests, exact installed
+consumer builds, local Viceroy/Pushpin transport, and separately authorized hosted
+acceptance. Pin engine and artifact identities and retain failed or unavailable
+lanes. A local WebSocket exchange does not qualify hosted failure-status ownership,
+and a successful build does not qualify a GRIP hold/publish exchange. The bounded
+terminal placement and lifecycle restrictions above apply to every contribution
+using this service. This integration protocol remains provisional; qualification
+does not by itself promote a package symbol or a target support tier.

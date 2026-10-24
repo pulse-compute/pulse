@@ -118,6 +118,9 @@
         },
         "implementations": {
           "$ref": "#/$defs/Coverage"
+        },
+        "hostExtensions": {
+          "$ref": "#/$defs/Coverage"
         }
       },
       "required": [
@@ -223,6 +226,13 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/Implementation"
+      },
+      "maxItems": 100000
+    },
+    "hostExtensions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/HostExtension"
       },
       "maxItems": 100000
     },
@@ -2946,6 +2956,179 @@
         "evidenceIds",
         "chunks",
         "bodyCoverage"
+      ],
+      "additionalProperties": false
+    },
+    "HostExtension": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "contributionId": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "package": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "contractId": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "operation": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "protocol": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "service": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            "target": {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            "targetId": {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            }
+          },
+          "required": [
+            "provider",
+            "target",
+            "targetId"
+          ],
+          "additionalProperties": false
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Source"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "policySha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "declaredImports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HostImport"
+          },
+          "maxItems": 100000
+        },
+        "observedImports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HostImport"
+          },
+          "maxItems": 100000
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "id",
+        "contributionId",
+        "package",
+        "contractId",
+        "operation",
+        "protocol",
+        "service",
+        "target",
+        "source",
+        "sourceSha256",
+        "policySha256",
+        "artifactId",
+        "declaredImports",
+        "observedImports",
+        "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "HostImport": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "i32",
+              "i64",
+              "f32",
+              "f64"
+            ]
+          },
+          "maxItems": 100000
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "i32",
+              "i64",
+              "f32",
+              "f64"
+            ]
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "module",
+        "name",
+        "parameters",
+        "results"
       ],
       "additionalProperties": false
     },

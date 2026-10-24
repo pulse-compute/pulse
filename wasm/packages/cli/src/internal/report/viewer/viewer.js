@@ -448,6 +448,9 @@
       state.resourceAdvanced?el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'All resource evidence'},resourceTable(sortedResources().filter(r=>model.technicalResources.includes(r)),true)):null);
     replace($('#view-resources'),
       sectionHeading('Assets & sizes','Embedded assets and associated response payloads, grouped by type.',model.assetResources.length),
+      P.hostExtensions?el('section',{class:'surface panel-pad'},el('h3',{},'Selected host extensions'),
+        note('Package source declarations and final Wasm import audits. These records do not prove execution or hosted acceptance.'),
+        P.hostExtensions.length?P.hostExtensions.map(row=>el('details',{class:'details-block'},el('summary',{},row.package+' · '+row.operation),el('pre',{class:'record-text'},JSON.stringify(row,null,2)))):el('p',{},'No host extensions selected.')):null,
       P.binaryResources?el('div',{class:'surface panel-pad'},el('h3',{},'Binary resource closure'),
         kv([['Logical bindings',P.binaryResources.selectedBindingCount+' selected / '+P.binaryResources.bindingCount+' admitted'],
           ['Unique backings',P.binaryResources.selectedUniqueBackingCount+' selected / '+P.binaryResources.uniqueBackingCount+' admitted'],

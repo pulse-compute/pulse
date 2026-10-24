@@ -164,6 +164,7 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization,
     row.entryIds = capsule.entries.filter(entry => entry[key].includes(row.id)).map(entry => entry.id);
     row.routeIds = capsule.routes.filter(route => route[key].includes(row.id)).map(route => route.id);
   }
+  require('./host-extensions').addHostExtensions(capsule, prepared.reportHostExtensions, source, project.root, evidenceIds);
   require('./resource-inventory').addResourceInventory(capsule, prepared, evidenceIds);
   require('./computation').addComputation(capsule, references?.computation, project.root, evidenceIds);
   require('./resource-bytes').observeResourceBytes(capsule, prepared);

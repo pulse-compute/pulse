@@ -14,7 +14,7 @@ const array = items => ({ type: 'array', items, maxItems: LIMITS.records });
 const object = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
 const COLLECTIONS = ['routes', 'entries', 'schemas', 'bindings', 'resources', 'implementations', 'declarations', 'references', 'evidence', 'observations'];
 const SEMANTIC_COLLECTIONS = ['handlers', 'registrations', 'useSites', 'helperCalls', 'associations'];
-const ALL_COLLECTIONS = [...COLLECTIONS, ...SEMANTIC_COLLECTIONS];
+const ALL_COLLECTIONS = [...COLLECTIONS, 'hostExtensions', ...SEMANTIC_COLLECTIONS];
 const states = ['added', 'removed', 'modified', 'coverage-changed', 'unresolved'];
 const defs = {
   ...capsuleSchema.$defs,
