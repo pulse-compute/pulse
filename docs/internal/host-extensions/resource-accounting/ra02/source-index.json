@@ -1,0 +1,47 @@
+{
+  "version": "hex.ra02-sources.v0",
+  "base": "7ab4741ea9c519bc01488d169441889288303b5c",
+  "files": [
+    {
+      "path": "docs/internal/host-extensions/resource-accounting/ra01/README.md",
+      "sha256": "155292cdcef208debc0f3cde644c438f2c0a10535e2997d8791fc9da92906822"
+    },
+    {
+      "path": "docs/internal/host-extensions/resource-accounting/ra01/model.cjs",
+      "sha256": "87331594d1dde302c27d985422d093c2ab8bf6623e191d50f3406792105b9109"
+    },
+    {
+      "path": "docs/internal/host-extensions/resource-accounting/ra01/contract.json",
+      "sha256": "2fed9d967ada50432e4aa973dddb66825da832d83c5ab239a3d0ae9f6d344cb2"
+    },
+    {
+      "path": "docs/internal/host-extensions/resource-accounting/ra00/inventory.json",
+      "sha256": "d8bbeffb37aba5811d45e774701db306f8eb4e1ce251e52bdb5eef0e24ef531e"
+    },
+    {
+      "path": "docs/internal/host-extensions/composition/README.md",
+      "sha256": "c0f176b096cb271674680c9502f25802c48dfab788bc6a977a42e84fa8e85f72"
+    },
+    {
+      "path": "packages/runtime/src/internal/effect-adapter.js",
+      "sha256": "d9e9639cbeb7ba107d9f479f47cfd004391c5a5aa7d16d261dd055d453fb0c4e"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/effect-invocations.js",
+      "sha256": "3dca1866f1cb17f2e701a60406f2b360649c81b6e6fc7d3c078d1b7936f319fe"
+    },
+    {
+      "path": "wasm/packages/contracts/src/handler/canonical-runtime.js",
+      "sha256": "c0db896a0951bafe8bf5b60f33a6bbf26cd418e216a5b271c35f37abc3e58a0d"
+    },
+    {
+      "path": "docs/concepts/effects-and-continuations.md",
+      "sha256": "88bd04442d76fe067ee45843823e210ba6d5ff1ab42699ffbbd5dadfba06c2bb"
+    },
+    {
+      "path": "docs/architecture/current-contracts.md",
+      "sha256": "e2b830be1bfc183498e713a32a411860a1b8653485a7709c9f02709fe59922c5"
+    }
+  ],
+  "authority": "Current source inspection and inherited investigation; no newly executed production Wasm or host qualification"
+}

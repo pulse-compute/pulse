@@ -1,0 +1,572 @@
+{
+  "version": "hex.ra02-checks.v0",
+  "status": "passed",
+  "revision": "7ab4741ea9c519bc01488d169441889288303b5c",
+  "workingTree": "M docs/internal/host-extensions/resource-accounting/README.md\n?? docs/internal/host-extensions/resource-accounting/ra02/",
+  "node": "v24.19.0",
+  "inputs": [
+    {
+      "file": "policy.json",
+      "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f"
+    },
+    {
+      "file": "model.cjs",
+      "sha256": "12fce123e91ca6e6f5d5f079b3d047ed8cef0a9d287cbf3591d1592dd3b55002"
+    },
+    {
+      "file": "check.cjs",
+      "sha256": "090cc5ee7d7a5080175e79db33045b658014704902b391db6379c2dc18aa2cb8"
+    },
+    {
+      "file": "README.md",
+      "sha256": "6061061648009a1c15f11dbf34468cf42dcbb7a83972e7b387e6bcc3345c16a9"
+    },
+    {
+      "file": "../ra01/model.cjs",
+      "sha256": "87331594d1dde302c27d985422d093c2ab8bf6623e191d50f3406792105b9109"
+    },
+    {
+      "file": "../ra01/contract.json",
+      "sha256": "2fed9d967ada50432e4aa973dddb66825da832d83c5ab239a3d0ae9f6d344cb2"
+    }
+  ],
+  "cases": [
+    {
+      "name": "Direct root reserves work and cleanup without double counting charges",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "9034601de005df114b58c0d3f1672c23edbad0d0cedecd4f5369f4d91be7c491"
+    },
+    {
+      "name": "Failed cohort reserves no resources; existing root admissions remain spent",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "6a0c253a66f2b0754fc71881c4a9f459e168670d2b66db2c547dff31e508caae"
+    },
+    {
+      "name": "Independent exhaustion: handles",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "b11644bae9f308a5c2b3d87c03ceee285eb6088bd9fec16726390845ff68565f"
+    },
+    {
+      "name": "Independent exhaustion: bytes",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "f2eb9013e280f31f98c1665454a8fdb763c8b2676c94ffa030c0958d0531d8e5"
+    },
+    {
+      "name": "Independent exhaustion: records",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "776a3459967943415eab14b058118ce4d8b7d6b7218521cff5691d038f92dddc"
+    },
+    {
+      "name": "Unstarted keyed cohort and builder membership use the same reservation",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "ae936535712c868915a264a9ae55b6bab19ec1516b14fb1701e6ba8cac9b385e"
+    },
+    {
+      "name": "Already-started effects cannot acquire retroactive atomic cohort semantics",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "c2c12c0aa3a2210bdbc2fbf548f1815392fda5a300294abd44a0a34f22a7d4dd"
+    },
+    {
+      "name": "Empty collection acquires no root resources or tickets",
+      "status": "passed",
+      "traceEvents": 1,
+      "traceSha256": "611aae924f0372301b6371b03f5577c6f9df65ae654cbc03adc8df84129e51ed"
+    },
+    {
+      "name": "Duplicate group member is rejected without partial reservation",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "1f75d92bdb71a7354c8f3d8bd52672f96975248148972a82da0df4053293c42a"
+    },
+    {
+      "name": "A root cannot reserve its envelope twice",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "fd7c7c3f1048746b9a6dfe09dfe26695ca439aae87b5a3cec3b1d38649e5f412"
+    },
+    {
+      "name": "Missing provider profile and impossible execution exit reserve reject",
+      "status": "passed",
+      "traceEvents": 0,
+      "traceSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "name": "Invalid finite bound rejects: -1",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "86da60d8a9f92af9536741cb21fa72384990fc3b7b85bf42b291d4c859b97d73"
+    },
+    {
+      "name": "Invalid finite bound rejects: 0.5",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "21548ec090dc4f0ff4ad78f05494fa65869383be8df6eb03a5ff3b4eeb0985c8"
+    },
+    {
+      "name": "Invalid finite bound rejects: 9007199254740992",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "c00b9581cd4ed1924a102655aa188b6f8fa73c422806ea623327bf33b5f204df"
+    },
+    {
+      "name": "Invalid finite bound rejects: null",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "fc9125d4900823f5d6a314a99e9f7604ee26e7864068e1667f03f8ccb789fdbe"
+    },
+    {
+      "name": "Missing dimensions and unknown protocol do not get permissive defaults",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "d1832c856f3f63545160100cd9f699394ff50615c4214b22e2e68bf1f304ce9a"
+    },
+    {
+      "name": "Unsafe integer sum rejects before overcommitting",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "5c4258542f00a29ed31802522fb8468d9378dd77e9629d530832cead90b49f12"
+    },
+    {
+      "name": "Normal work cannot spend protected cleanup credit",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "162f7f2ad3fde69e5d015e2b6316ef1cf3876cdaab227f135773270a234aa3f7"
+    },
+    {
+      "name": "Cleanup lane requires private provider authority",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "2cf20391a1fe05701c111f47ce7a3b63be3520bbb37257a29bb7d43400029e6f"
+    },
+    {
+      "name": "Cleanup may use unused work headroom but cannot exceed the root envelope",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "beecdcce1376b8ca6355b1cf81d024445a2bbe30a5fc5f7e937c31f069b9941a"
+    },
+    {
+      "name": "A root cannot steal unused reservation from its sibling",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "133fe33f3781c440bbe2403fe07a11806027c7a84826a927106c4e4c1b587351"
+    },
+    {
+      "name": "Whole execution stop prevents captures and business acquisitions, permits cleanup",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "03ffaa440ea647a8c587a9c038ef316a61b1d8b27f76d12389f2039fb7ca6698"
+    },
+    {
+      "name": "Child admissions spend existing promised effects rather than a new budget",
+      "status": "passed",
+      "traceEvents": 10,
+      "traceSha256": "985f13948d29db73eb7878cc9c513c77200c10524d8ae5014ebe8a5dc2528dd4"
+    },
+    {
+      "name": "Skipped children release promises, not already-spent effects",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "96768832c343b08e14990451306e911fbe50542b371142818b1ff3ce585cdccf"
+    },
+    {
+      "name": "Other captures cannot steal effect capacity promised to children",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "3c440a47b1f29435fe61535b7fc7c9236d6cb9f7f27707e9e058e34781dfdff1"
+    },
+    {
+      "name": "Insufficient future-effect capacity rejects before root resource acquisition",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "9fd18f236ac90146f9b6b4c14b5b945c7677b957ccac69ec8486c8611f4cdfd2"
+    },
+    {
+      "name": "Parent completion cannot release reservations while a child is live",
+      "status": "passed",
+      "traceEvents": 8,
+      "traceSha256": "b7afa07af91186c32fb4ec13fa88e19f096a489e0ff0bcd6a2c962ca6db2c9f8"
+    },
+    {
+      "name": "Consumed admission is not refunded when host work never starts",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "8effe63f96dd57f55f432d25edbcd964fe044e88f4fdb546fc31ec15b53eab14"
+    },
+    {
+      "name": "Two members requiring one exclusive binding fail as a cohort",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "6b6d1d571d66f7a186a3d5457a61e90296a6fa6fb65768d1bb0bcbbb4206dc87"
+    },
+    {
+      "name": "Distinct exclusive bindings can admit concurrently",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "4d816d92e6799e666691cfbd99d7eda92dc83ba3ccece122052d028db07fc8e3"
+    },
+    {
+      "name": "Unacquired exclusive promise releases when operation finishes",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "b340387813150b95bde40609669fd12db3481f6363b5094da4106b5ee17374ce"
+    },
+    {
+      "name": "Unresolved exclusive lease survives effect completion and blocks next operation",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "b9757d31ec6da435aa678048b79a3add8d6edc93e6e38a129549f0e61db3fe20"
+    },
+    {
+      "name": "Exclusive release requires both qualified disposition and quiescence",
+      "status": "passed",
+      "traceEvents": 8,
+      "traceSha256": "02224228f2dc16952e4fc134cd5e7890adf9390e50b6d7d40196bb491fa28bd7"
+    },
+    {
+      "name": "Undeclared and duplicate exclusive acquisition fail",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "efa59ba412ae896bdd0caa0345b2ecbb30784a6a7cb82f3f87c86a9293a2b1e8"
+    },
+    {
+      "name": "No refund from owned ownership",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "b192bf2722e40a3d9d75254886ffca0bc0f90db8aa5ad4593c89861f2e5b3bac"
+    },
+    {
+      "name": "No refund from busy ownership",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "40343a16a464bea62f56c1d2da2219a22b4cf0edc9905bd2a4d2889bfe62321f"
+    },
+    {
+      "name": "No refund from unresolved ownership",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "e682739afc96624ca318c248e8364a86ec3eabb1ac6ac60a2fc2907c00082658"
+    },
+    {
+      "name": "Released capacity still requires a qualified dimension proof",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "c97544aa3fa4a95d630dd9389b50ab971ed38ba4a4fa79e1e59325c77220b1e4"
+    },
+    {
+      "name": "Consumption can return logical handle capacity without freeing bytes or records",
+      "status": "passed",
+      "traceEvents": 8,
+      "traceSha256": "32d1a10cec036b567c447caf0d5f9bc5160aa3a1f65fc55a8555e9465263fef6"
+    },
+    {
+      "name": "Transfer outside the handle accounting domain does not refund guest bytes",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "d05b1dedff5a2d9490a0cb390a9c0bdec14311b77abf4d2d08d86b4a418da045"
+    },
+    {
+      "name": "Failed commit acceptance does not change refund rules",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "2e4dd0e04ff1c1afd432ecbed15b277907af8f5b753f5cd4c54e12c611b4fbe9"
+    },
+    {
+      "name": "Unknown disposition cannot be rewritten into a refund in v0",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "c5a2ca7bd0090999ee1ac0b709777995e14792424b6b8018793360764f7b8ede"
+    },
+    {
+      "name": "Resource handoff preserves capacity and original operation attribution",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "a3153213ee2e415356128577c1fe2be74cee5a62018d7144238f56b7f1c3a6a4"
+    },
+    {
+      "name": "Binding identity cannot change to conceal a resource charge",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "9b736a20c7b07de56591187383fd20e6a9dd6c8a1df8dcfda23c8f091ea93f00"
+    },
+    {
+      "name": "Released credit is reusable inside root but not lent to new siblings",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "515b341237ce256104a2048dff9ae4851b236ce04925ff55acfbb8746a72343b"
+    },
+    {
+      "name": "Surviving result charges and cleanup headroom outlive effect settlement",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "17e9fc42dae55de91e7e09f3397587b04d2727efec7b9acb87d48f7b5e5fafbb"
+    },
+    {
+      "name": "Final cleanup releases remaining charge and its now-unused tail reserve",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "6292cac5dd3d18e177d53af3ef15ec712292ddeb4660b2478d138ef33b032ab1"
+    },
+    {
+      "name": "Late cleanup can reuse proven released headroom within its original bound",
+      "status": "passed",
+      "traceEvents": 8,
+      "traceSha256": "e24e78559d8d6bcd15a9243289bbbbdc7785e7c077d006f83f4d13bed53e528f"
+    },
+    {
+      "name": "Root finish cannot increase global reservation after cleanup uses work slack",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "f34b9222b39d7e7aba68723e5fde87a28eec9270cd7ab2e668015c3e05542c9e"
+    },
+    {
+      "name": "Retained resources from earlier operations reduce next admission capacity",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "3e1c37b8ec9ce4b2d6976bf6a36493b23e688e833652e4574d680c6650020160"
+    },
+    {
+      "name": "Known release allows a later independent operation to admit",
+      "status": "passed",
+      "traceEvents": 8,
+      "traceSha256": "da55aa7cfb1230b3e254bb3128a2e7f4e04f1dd852d976129a034d7027d7e146"
+    },
+    {
+      "name": "Execution exit reserve remains available under full work pressure",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "618cb6f8ed57a13424a127d557deafb57924401ee095b72cbb8ff4d5b98fe24d"
+    },
+    {
+      "name": "Package work cannot impersonate execution exit ownership",
+      "status": "passed",
+      "traceEvents": 1,
+      "traceSha256": "fa0d2043c4baa582fb2a52902adbea27de48138261cfb2fc877e9d09eb00a735"
+    },
+    {
+      "name": "Baseline resources reduce capacity without being adopted by a package",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "6462d015336e8d31ddc54e6d0512dd81ff7c4fdc780ca2819045a6d46df738a0"
+    },
+    {
+      "name": "Trap/end does not refund charges or permit another action",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "614fee73e4e7419c30bc3f13353cb07968198f73c66fb43fd88b22f3e24834a6"
+    },
+    {
+      "name": "RA-01 failed-close trace feeds RA-02 without an optimistic refund",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "9e8ad840be2cd6168fb73911349c4128e59472b6ac08aff2832df761d9e3a1f2"
+    },
+    {
+      "name": "RA-01 successful-close trace supports a qualified RA-02 refund",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "df2fe373bf347f244cd444e0e13930a9714a5ccf99636bdf76fd00a6a2728b6a"
+    },
+    {
+      "name": "Exact derived cohort boundary for 0 members",
+      "status": "passed",
+      "traceEvents": 1,
+      "traceSha256": "611aae924f0372301b6371b03f5577c6f9df65ae654cbc03adc8df84129e51ed"
+    },
+    {
+      "name": "Exact derived cohort boundary for 1 members",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "37d5864b5e208bc53f9bcfa92dff3e7f43b313dab65b8d7b83c1336bfa3aa52b"
+    },
+    {
+      "name": "One handle below derived cohort boundary rejects 1 members",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "316f8a43bc6fb1e5bdbe7891de2f29164d002678f463792792221c2e0b110a8f"
+    },
+    {
+      "name": "Exact derived cohort boundary for 2 members",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "b932bdd31174a5dd8e32483093a89a65149865618e810024ebd3b8f84d93e2ff"
+    },
+    {
+      "name": "One handle below derived cohort boundary rejects 2 members",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "5042e909376f259d0718bf041748d89746bc6b723443177e15148a581207369e"
+    },
+    {
+      "name": "Exact derived cohort boundary for 8 members",
+      "status": "passed",
+      "traceEvents": 9,
+      "traceSha256": "cddc5fdf3afcf56802ef7a79652371f24525aeba37828ffef119b7b658d7d54f"
+    },
+    {
+      "name": "One handle below derived cohort boundary rejects 8 members",
+      "status": "passed",
+      "traceEvents": 9,
+      "traceSha256": "efb229e03f9fd1a8ca0dddff85d6d125e7d2ccab0f3008a1f72db6acad6147e5"
+    },
+    {
+      "name": "First-fit admission order is explicit; no hidden fairness or rescheduling",
+      "status": "passed",
+      "traceEvents": 9,
+      "traceSha256": "03aee1a4113a9a33bb2af3e7a72c69dc130a89389885c03d2181baf427d4bebf"
+    },
+    {
+      "name": "Every acquisition needs bounded bookkeeping before host entry",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "4b064d8f37a979f18519f399228049926e9188a070673bc23db7bc9b8d4dae7e"
+    },
+    {
+      "name": "Unknown mixed-operation demand cannot claim complete accounting",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "526101418e7f42a4c6ed617d9b4f20cbf8c8d0b143961606a5b1b4d15e13cbda"
+    },
+    {
+      "name": "Qualified refund dimension matrix: released-quiescent",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "a13c0d8ff69e564c3146f0a4fa180b43fdc4594b0cbbdc80943fe264c7ff6542"
+    },
+    {
+      "name": "Qualified refund dimension matrix: consumed-handle",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "0c1ac922157eef1dbc11e3355d1dbca79a1266618aebd3df53452ed265e5b45c"
+    },
+    {
+      "name": "Qualified refund dimension matrix: consumed-record",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "e6729a672f63776e0952fb1ef148a00752f4d9f0a44df9082daa8906f1e02abf"
+    },
+    {
+      "name": "Qualified refund dimension matrix: transferred-handle",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "2c6c0263c3d88362bc049ea4ab2fd193f196e1c1c2243a5bb2c87ea690fb4323"
+    },
+    {
+      "name": "Qualified refund dimension matrix: transferred-record",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "c39aef8e30868302fd0319213712e2219edda377f8c445d8b5b31ce3389cfe99"
+    }
+  ],
+  "comparisons": [
+    {
+      "members": 0,
+      "work": {
+        "handles": 3,
+        "bytes": 192,
+        "records": 4
+      },
+      "cleanup": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "exit": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "totalReservation": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "reservedEffects": 0
+    },
+    {
+      "members": 1,
+      "work": {
+        "handles": 3,
+        "bytes": 192,
+        "records": 4
+      },
+      "cleanup": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "exit": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "totalReservation": {
+        "handles": 7,
+        "bytes": 320,
+        "records": 8
+      },
+      "reservedEffects": 4
+    },
+    {
+      "members": 2,
+      "work": {
+        "handles": 3,
+        "bytes": 192,
+        "records": 4
+      },
+      "cleanup": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "exit": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "totalReservation": {
+        "handles": 12,
+        "bytes": 576,
+        "records": 14
+      },
+      "reservedEffects": 8
+    },
+    {
+      "members": 8,
+      "work": {
+        "handles": 3,
+        "bytes": 192,
+        "records": 4
+      },
+      "cleanup": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "exit": {
+        "handles": 2,
+        "bytes": 64,
+        "records": 2
+      },
+      "totalReservation": {
+        "handles": 42,
+        "bytes": 2112,
+        "records": 50
+      },
+      "reservedEffects": 32
+    }
+  ],
+  "refundDimensionChecks": 15,
+  "fullReceipt": {
+    "archive": "evidence.tar.gz",
+    "member": "receipt.full.json",
+    "sha256": "c24a7c1ddf11e216211c1c1d7002fdfce276d1360fd4435c980a1266289fdd4f"
+  },
+  "scope": "Offline policy arithmetic; RA-01 trace integration; no host-capacity measurement"
+}
