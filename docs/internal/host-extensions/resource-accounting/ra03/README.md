@@ -1,6 +1,9 @@
 # RA-03 — bounded accounting service prototype
 
 Status: **internal executable prototype; no production integration**.
+Native follow-up: [compiled fixed-profile ledger and generated-driver evidence](native/README.md).
+This page records the original JavaScript unit; Native results are separate.
+
 Base: `9084527` (`hex-integration`, merged RA-02 sweep #529).
 Human direction: proceed with RA-03, including bounded storage, admission before
 host dispatch, unexpected-output containment, finite cleanup and implementation

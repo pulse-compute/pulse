@@ -1,0 +1,1158 @@
+{
+  "version": "hex.ra03-native-ledger.v1",
+  "status": "passed",
+  "sourceBase": "1349e1615e379ba582d2276d4f29e9fc334c8d7b",
+  "node": "v24.19.0",
+  "asc": "0.28.18",
+  "inputs": [
+    {
+      "file": "service.as.ts",
+      "sha256": "8e7da28b6d524691f6787fded634a3f684986ed8748b39fda2f43e4710d8fc43"
+    },
+    {
+      "file": "build.cjs",
+      "sha256": "824a9f6a5e481f5920233349d0396e9ccd12b6d868d69f7ecc570492985bafd3"
+    },
+    {
+      "file": "check.cjs",
+      "sha256": "1eb72bebdfc96397f786d1d088db1a8a481845680a09a63b150c1048498a134a"
+    },
+    {
+      "file": "../../ra02/policy.json",
+      "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f"
+    },
+    {
+      "file": "../../ra02/sweep/traces.json.gz",
+      "sha256": "4ad222365c0c75cde11edd3ca37a49bd037e6cff1fdc35dd7ef928f6987d91f2"
+    }
+  ],
+  "cases": [
+    {
+      "name": "Wasm oracle parity 8/hit",
+      "status": "passed",
+      "detail": {
+        "events": 59,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/miss",
+      "status": "passed",
+      "detail": {
+        "events": 139,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/cancellation",
+      "status": "passed",
+      "detail": {
+        "events": 165,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/failed-disposal",
+      "status": "passed",
+      "detail": {
+        "events": 173,
+        "summary": {
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/retained-result",
+      "status": "passed",
+      "detail": {
+        "events": 110,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/mixed",
+      "status": "passed",
+      "detail": {
+        "events": 173,
+        "summary": {
+          "committed": {
+            "handles": 14,
+            "bytes": 576,
+            "records": 14
+          },
+          "charged": {
+            "handles": 6,
+            "bytes": 320,
+            "records": 6
+          },
+          "carry": {
+            "handles": 4,
+            "bytes": 256,
+            "records": 4
+          },
+          "carryCleanupReserve": {
+            "handles": 8,
+            "bytes": 256,
+            "records": 8
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/exact-effects",
+      "status": "passed",
+      "detail": {
+        "events": 65,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/one-below-handles",
+      "status": "passed",
+      "detail": {
+        "events": 10,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/one-below-bytes",
+      "status": "passed",
+      "detail": {
+        "events": 10,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/one-below-records",
+      "status": "passed",
+      "detail": {
+        "events": 10,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 8/one-below-effects",
+      "status": "passed",
+      "detail": {
+        "events": 10,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm stale handles, ownership and pre-host records 8",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm deadline and late output 8",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm finite work steps preserve cleanup allowance 8",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm bounded emergency 8",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm 5000 cycles without allocation/growth 8",
+      "status": "passed",
+      "detail": {
+        "cycles": 5000,
+        "bankBytes": 4608,
+        "memoryBytes": 65536
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/hit",
+      "status": "passed",
+      "detail": {
+        "events": 115,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/miss",
+      "status": "passed",
+      "detail": {
+        "events": 275,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/cancellation",
+      "status": "passed",
+      "detail": {
+        "events": 325,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/failed-disposal",
+      "status": "passed",
+      "detail": {
+        "events": 341,
+        "summary": {
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/retained-result",
+      "status": "passed",
+      "detail": {
+        "events": 214,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/mixed",
+      "status": "passed",
+      "detail": {
+        "events": 341,
+        "summary": {
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/exact-effects",
+      "status": "passed",
+      "detail": {
+        "events": 129,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/one-below-handles",
+      "status": "passed",
+      "detail": {
+        "events": 18,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/one-below-bytes",
+      "status": "passed",
+      "detail": {
+        "events": 18,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/one-below-records",
+      "status": "passed",
+      "detail": {
+        "events": 18,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 16/one-below-effects",
+      "status": "passed",
+      "detail": {
+        "events": 18,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm stale handles, ownership and pre-host records 16",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm deadline and late output 16",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm finite work steps preserve cleanup allowance 16",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm bounded emergency 16",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm 5000 cycles without allocation/growth 16",
+      "status": "passed",
+      "detail": {
+        "cycles": 5000,
+        "bankBytes": 9024,
+        "memoryBytes": 65536
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/hit",
+      "status": "passed",
+      "detail": {
+        "events": 227,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/miss",
+      "status": "passed",
+      "detail": {
+        "events": 547,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/cancellation",
+      "status": "passed",
+      "detail": {
+        "events": 645,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/failed-disposal",
+      "status": "passed",
+      "detail": {
+        "events": 677,
+        "summary": {
+          "committed": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "carry": {
+            "handles": 32,
+            "bytes": 2048,
+            "records": 32
+          },
+          "carryCleanupReserve": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/retained-result",
+      "status": "passed",
+      "detail": {
+        "events": 422,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/mixed",
+      "status": "passed",
+      "detail": {
+        "events": 677,
+        "summary": {
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/exact-effects",
+      "status": "passed",
+      "detail": {
+        "events": 257,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/one-below-handles",
+      "status": "passed",
+      "detail": {
+        "events": 34,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/one-below-bytes",
+      "status": "passed",
+      "detail": {
+        "events": 34,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/one-below-records",
+      "status": "passed",
+      "detail": {
+        "events": 34,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm oracle parity 32/one-below-effects",
+      "status": "passed",
+      "detail": {
+        "events": 34,
+        "summary": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0
+        }
+      }
+    },
+    {
+      "name": "Wasm stale handles, ownership and pre-host records 32",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm deadline and late output 32",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm finite work steps preserve cleanup allowance 32",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm bounded emergency 32",
+      "status": "passed"
+    },
+    {
+      "name": "Wasm 5000 cycles without allocation/growth 32",
+      "status": "passed",
+      "detail": {
+        "cycles": 5000,
+        "bankBytes": 17856,
+        "memoryBytes": 65536
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "width": 8,
+      "file": "ledger-8.wasm",
+      "bytes": 5490,
+      "sha256": "c21d5cd9bd3049b11ae10a180565ef8ca0f9c44ec260e612e2c97d3ddb52139f",
+      "bankBytes": 4608,
+      "memoryBytes": 65536,
+      "imports": []
+    },
+    {
+      "width": 16,
+      "file": "ledger-16.wasm",
+      "bytes": 5512,
+      "sha256": "cc39a75d5b2aab17d150d2d5a8e661e55a952342cc39505d52a4452b74c07f94",
+      "bankBytes": 9024,
+      "memoryBytes": 65536,
+      "imports": []
+    },
+    {
+      "width": 32,
+      "file": "ledger-32.wasm",
+      "bytes": 5522,
+      "sha256": "74eb79cb64864384119723f6f284f2d7023c672a5568609efe0c1bef78b8eac6",
+      "bankBytes": 17856,
+      "memoryBytes": 65536,
+      "imports": []
+    }
+  ]
+}
