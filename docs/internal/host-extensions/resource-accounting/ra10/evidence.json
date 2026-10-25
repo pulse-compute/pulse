@@ -1,0 +1,1102 @@
+{
+  "version": "hex.ra10.evidence.v1",
+  "status": "passed",
+  "sourceBase": "b04440397aecd01be2e93167aabd49f9249835ba",
+  "scope": {
+    "localViceroy": true,
+    "hostedFastly": false,
+    "esp32": false,
+    "physicalReclamation": false
+  },
+  "engine": {
+    "version": "viceroy 0.21.1",
+    "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+  },
+  "upstream": {
+    "repository": "fastly/Viceroy",
+    "revision": "ba6fb78c02b2f40b70f8c65ab86fa86c66f0641f",
+    "files": [
+      {
+        "file": "src/wiggle_abi/body_impl.rs",
+        "sha256": "39cc4232d2311523bd8861fe70786762375030eca648e1d21b73ac29a4334183"
+      },
+      {
+        "file": "src/wiggle_abi/req_impl.rs",
+        "sha256": "27b394f539db3f6df6ab02bc08fb1d5977d7f7f9de713c5eee5dc2df89818cb8"
+      },
+      {
+        "file": "src/wiggle_abi/resp_impl.rs",
+        "sha256": "92b1a3ec044e3787dd066169b6e78c53b947fc697af9c9176857b1e02a1538fb"
+      },
+      {
+        "file": "src/wiggle_abi/cache.rs",
+        "sha256": "865a7c065c8b1f541f9372cb3ea425c46655476ac588284ffcaac40be0e94e15"
+      },
+      {
+        "file": "src/async_io.rs",
+        "sha256": "49a73f24b6c495e5240768b4e3af47af21252ae6e4c891df80c635395e3025c3"
+      },
+      {
+        "file": "src/sandbox.rs",
+        "sha256": "e78e94daa329ce51a2cf43b9f67eef6454cc83a32f8e1267297c3a0482c4821f"
+      },
+      {
+        "file": "src/sandbox/async_item.rs",
+        "sha256": "5ea625789320ecf07988c5fff9db860f7c0b11a69f22779d7cf3b76b64b1f757"
+      },
+      {
+        "file": "src/streaming_body.rs",
+        "sha256": "20f3fea1e6414a4501ef047b1bfdab7d7df45bffd77cfef07f9675ceaf62088f"
+      },
+      {
+        "file": "src/body.rs",
+        "sha256": "df2134af7ebf5d404b1ad41fcc744737325c7d0d929908f8d8742f50a93f4ee5"
+      },
+      {
+        "file": "src/cache.rs",
+        "sha256": "d15b4df1647e1cf0eeae1916f961e0a5f90235186c3f0c453df99391291a6ca2"
+      },
+      {
+        "file": "src/cache/store.rs",
+        "sha256": "4aa5add929b6021f332d21839faed46a328aaeb9032048cb718f62fa86a6c3a8"
+      },
+      {
+        "file": "src/body_tee.rs",
+        "sha256": "53e2db0739bc595b909e897b3918710dfe8f44a0997a58e648596d4876c99e67"
+      },
+      {
+        "file": "src/execute.rs",
+        "sha256": "56df4bb0fc028c08c8a3d0698640ec53d500357720c54bdc394cdd80786eff14"
+      },
+      {
+        "file": "wasm_abi/compute-at-edge-abi/compute-at-edge.witx",
+        "sha256": "ffaae0a9e1f7392a0d2498b9e46c0b034d3d400030d72ef9308e850616166631"
+      },
+      {
+        "file": "wasm_abi/compute-at-edge-abi/cache.witx",
+        "sha256": "e4ec663410f873159e46831d647e69a48ee73fe79fa6430c99a8c3b89c0c0828"
+      },
+      {
+        "file": "wasm_abi/compute-at-edge-abi/typenames.witx",
+        "sha256": "1506336bf0e0d28a113a177b1450d08663e64a718b670099bd729bd2affd154a"
+      },
+      {
+        "file": "LICENSE",
+        "sha256": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5"
+      }
+    ]
+  },
+  "qualification": {
+    "receipt": "qualification/receipt.json",
+    "sha256": "2b4517ac83f6d7c6993f2dab88010b8d9236eb438d492ddadd95cffbc2697729",
+    "hostReceipt": "qualification/host/receipt.json",
+    "hostSha256": "2c97c9f4e952250687403789e87e4523d899b6bf0ee580282a350c4642645aca",
+    "realHostCases": 33,
+    "injectedBridgeControls": 6,
+    "cleanup": true
+  },
+  "cases": [
+    {
+      "name": "body",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "body",
+          "observations": {
+            "new": 0,
+            "close": 0,
+            "close.stale": 3,
+            "new.second": 0,
+            "same.request.reuse": 0,
+            "abandon": 0,
+            "abandon.stale": 3
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "namespace",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "namespace",
+          "observations": {
+            "response.zero.valid": 1,
+            "response.zero.close": 0,
+            "request.response.overlap": 1,
+            "request.close": 0,
+            "response.close": 0,
+            "body.close": 0,
+            "body.acquired": 256,
+            "body.closed": 256
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "downstream-twice",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "downstream-twice",
+          "observations": {
+            "second.send": 1,
+            "response.after.send": 3,
+            "body.after.send": 3
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "send-unknown",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "send-unknown",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 2,
+            "pending.output.changed": 0,
+            "request.after.send": 3,
+            "body.after.send": 3
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "send-badbody",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "send-badbody",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 3,
+            "pending.output.changed": 0,
+            "request.after.send": 3,
+            "body.after.send": 0
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "wait-ok",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "wait-ok",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 0,
+            "pending.output.changed": 1,
+            "request.after.send": 3,
+            "body.after.send": 3,
+            "wait": 0,
+            "pending.after.completion": 3,
+            "response.close": 0,
+            "response.stale": 3,
+            "body.close": 0,
+            "body.stale": 3
+          }
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "wait-error",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "wait-error",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 0,
+            "pending.output.changed": 1,
+            "request.after.send": 3,
+            "body.after.send": 3,
+            "wait": 9,
+            "pending.after.completion": 3
+          }
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "poll-delay",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "poll-delay",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 0,
+            "pending.output.changed": 1,
+            "request.after.send": 3,
+            "body.after.send": 3,
+            "poll": 0,
+            "done": 0,
+            "poll.response.changed": 1,
+            "poll.body.changed": 1,
+            "pending.retained": 0,
+            "wait": 0,
+            "pending.after.completion": 3,
+            "response.close": 0,
+            "response.stale": 3,
+            "body.close": 0,
+            "body.stale": 3
+          }
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "poll-error",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "poll-error",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 0,
+            "pending.output.changed": 1,
+            "request.after.send": 3,
+            "body.after.send": 3,
+            "select": 0,
+            "poll": 9,
+            "done": -777,
+            "poll.response.changed": 0,
+            "poll.body.changed": 0,
+            "pending.after.completion": 3
+          }
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "cache-miss",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "cache-miss",
+          "observations": {
+            "lookup": 0,
+            "cache.ready": 0,
+            "cache.ready.value": 0,
+            "cache.state": 0,
+            "cache.state.value": 0,
+            "cache.body": 10,
+            "cache.body.output.changed": 0,
+            "cache.close": 0,
+            "cache.stale": 3
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "cache-commit",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "cache-commit",
+          "observations": {
+            "insert": 0,
+            "write": 0,
+            "write.bytes": 7,
+            "writer.dispose": 0,
+            "writer.stale": 3,
+            "lookup": 0,
+            "cache.ready": 0,
+            "cache.ready.value": 0,
+            "cache.state": 0,
+            "cache.state.value": 3,
+            "cache.body": 0,
+            "cache.body.output.changed": 1,
+            "cache.read": 0,
+            "cache.read.bytes": 7,
+            "cache.read.eof": 1,
+            "reader.close": 0,
+            "reader.stale": 3,
+            "cache.close": 0,
+            "cache.stale": 3
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "cache-abandon",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "cache-abandon",
+          "observations": {
+            "insert": 0,
+            "write": 0,
+            "write.bytes": 7,
+            "writer.dispose": 0,
+            "writer.stale": 3,
+            "lookup": 0,
+            "cache.ready": 0,
+            "cache.ready.value": 0,
+            "cache.state": 0,
+            "cache.state.value": 3,
+            "cache.body": 0,
+            "cache.body.output.changed": 1,
+            "cache.read": 1,
+            "cache.read.bytes": 0,
+            "cache.read.eof": 0,
+            "reader.close": 0,
+            "reader.stale": 3,
+            "cache.close": 0,
+            "cache.stale": 3
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "cache-invalid",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "cache-invalid",
+          "observations": {
+            "insert.invalid": 2,
+            "insert.output.changed": 0
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "cache-return",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "cache-return",
+          "observations": {
+            "insert": 0,
+            "write": 0,
+            "write.bytes": 7
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "cache-check-return",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "cache-check-return",
+          "observations": {
+            "lookup": 0,
+            "cache.ready": 0,
+            "cache.ready.value": 0,
+            "cache.state": 0,
+            "cache.state.value": 3,
+            "cache.body": 0,
+            "cache.body.output.changed": 1,
+            "cache.read": 1,
+            "cache.read.bytes": 0,
+            "cache.read.eof": 0,
+            "reader.close": 0,
+            "reader.stale": 3,
+            "cache.close": 0,
+            "cache.stale": 3
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "cache-trap",
+      "status": "passed",
+      "responseStatus": 500,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "cache-trap",
+          "observations": {
+            "insert": 0,
+            "write": 0,
+            "write.bytes": 7
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "cache-check-trap",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "cache-check-trap",
+          "observations": {
+            "lookup": 0,
+            "cache.ready": 0,
+            "cache.ready.value": 0,
+            "cache.state": 0,
+            "cache.state.value": 3,
+            "cache.body": 0,
+            "cache.body.output.changed": 1,
+            "cache.read": 1,
+            "cache.read.bytes": 0,
+            "cache.read.eof": 0,
+            "reader.close": 0,
+            "reader.stale": 3,
+            "cache.close": 0,
+            "cache.stale": 3
+          }
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "return-pending",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "return-pending",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 0,
+            "pending.output.changed": 1,
+            "request.after.send": 3,
+            "body.after.send": 3,
+            "select": 0,
+            "select.index": -1
+          }
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "trap-pending",
+      "status": "passed",
+      "responseStatus": 500,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "trap-pending",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 0,
+            "pending.output.changed": 1,
+            "request.after.send": 3,
+            "body.after.send": 3,
+            "select": 0,
+            "select.index": -1
+          }
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "exit-pending",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "exit-pending",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 0,
+            "pending.output.changed": 1,
+            "request.after.send": 3,
+            "body.after.send": 3,
+            "select": 0,
+            "select.index": -1
+          }
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "kill-pending",
+      "status": "passed",
+      "responseStatus": null,
+      "guest": [
+        {
+          "kind": "abi",
+          "case": "kill-pending",
+          "observations": {
+            "req.new": 0,
+            "body.new": 0,
+            "uri.set": 0,
+            "send": 0,
+            "pending.output.changed": 1,
+            "request.after.send": 3,
+            "body.after.send": 3,
+            "select": 0,
+            "select.index": -1
+          }
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "composed-1-miss",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 262785,
+          "records": 3,
+          "invocations": 4,
+          "ledgerError": 0,
+          "fetchCloses": 2,
+          "cacheDisposals": 2,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "composed-1-hit",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 257,
+          "records": 1,
+          "invocations": 2,
+          "ledgerError": 0,
+          "fetchCloses": 0,
+          "cacheDisposals": 2,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "composed-8-miss",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 2102280,
+          "records": 24,
+          "invocations": 32,
+          "ledgerError": 0,
+          "fetchCloses": 16,
+          "cacheDisposals": 16,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 8
+    },
+    {
+      "name": "composed-8-hit",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 2056,
+          "records": 8,
+          "invocations": 16,
+          "ledgerError": 0,
+          "fetchCloses": 0,
+          "cacheDisposals": 16,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "composed-32-miss",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 8409120,
+          "records": 96,
+          "invocations": 128,
+          "ledgerError": 0,
+          "fetchCloses": 64,
+          "cacheDisposals": 64,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 32
+    },
+    {
+      "name": "composed-32-hit",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 8224,
+          "records": 32,
+          "invocations": 64,
+          "ledgerError": 0,
+          "fetchCloses": 0,
+          "cacheDisposals": 64,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 0
+    },
+    {
+      "name": "composed-reset",
+      "status": "passed",
+      "responseStatus": 502,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 1,
+          "bytes": 257,
+          "records": 2,
+          "invocations": 3,
+          "ledgerError": 0,
+          "fetchCloses": 0,
+          "cacheDisposals": 1,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "recovery-reset",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 262785,
+          "records": 3,
+          "invocations": 4,
+          "ledgerError": 0,
+          "fetchCloses": 2,
+          "cacheDisposals": 2,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "composed-large",
+      "status": "passed",
+      "responseStatus": 500,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 262593,
+          "records": 2,
+          "invocations": 3,
+          "ledgerError": 0,
+          "fetchCloses": 2,
+          "cacheDisposals": 1,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "recovery-large",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 262785,
+          "records": 3,
+          "invocations": 4,
+          "ledgerError": 0,
+          "fetchCloses": 2,
+          "cacheDisposals": 2,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "composed-timeout",
+      "status": "passed",
+      "responseStatus": 504,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 1,
+          "bytes": 257,
+          "records": 2,
+          "invocations": 3,
+          "ledgerError": 0,
+          "fetchCloses": 0,
+          "cacheDisposals": 1,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 1
+    },
+    {
+      "name": "recovery-timeout",
+      "status": "passed",
+      "responseStatus": 200,
+      "guest": [
+        {
+          "kind": "composed",
+          "closed": 1,
+          "handles": 0,
+          "bytes": 262785,
+          "records": 3,
+          "invocations": 4,
+          "ledgerError": 0,
+          "fetchCloses": 2,
+          "cacheDisposals": 2,
+          "cleanupErrors": 0
+        }
+      ],
+      "originRequests": 1
+    }
+  ],
+  "inputs": [
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra10/build.cjs",
+      "sha256": "6843ec74526ce61724866e8f4daaaef46ca7c437cf6208f2ea4dfa2091b900c7"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra10/check.cjs",
+      "sha256": "310c72001d431c2513413fe5c161e412ca76c3ea0c73cab93937583fb8926e91"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra10/run.cjs",
+      "sha256": "c817e99472b1ae3c862811c9e91763ce779c3cb6ebe9451db4bbdeed781a0bf2"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra10/probe.as.ts",
+      "sha256": "d73fc334990189cab72ce53e0d3f8627ce18efca40c5c57d43a63a9f9380f7d6"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra10/profile.json",
+      "sha256": "d949a184b129d9e0cbe6905c1ede6b29136b0c508e57630d8e5ef4bfd7e9bcdb"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra03/native/build.cjs",
+      "sha256": "824a9f6a5e481f5920233349d0396e9ccd12b6d868d69f7ecc570492985bafd3"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra03/native/service.as.ts",
+      "sha256": "8e7da28b6d524691f6787fded634a3f684986ed8748b39fda2f43e4710d8fc43"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra05/adapter.as.ts",
+      "sha256": "46b8966307a69210a2702e0fc57ac21d346b0fd548a2d26ba8b029ae40b0d62c"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra06/service.as.ts",
+      "sha256": "d7ae814e248b833060bc0660819fca04d28ee7a15307aff03d5af7c6372d605a"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra07/build.cjs",
+      "sha256": "e0925ddc3a6243cc342d89e9b99889db2a3dd0526c6ff1e2d2d0836e1c2a9e8a"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra07/service.as.ts",
+      "sha256": "4a6eb2ba10da7985783351b1370b83b19c25b247ef02db472846bc6d55c3c70e"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra07/host.cjs",
+      "sha256": "419f158e2c5ce927223b93767100f6526cb4296111cb13759128fd59c2e6708b"
+    },
+    {
+      "file": "docs/internal/host-extensions/composition/prototype.cjs",
+      "sha256": "98cdde8f9d73f476c681a4461eba59d6e94433e5f1a60a0edc5cf984da84358a"
+    },
+    {
+      "file": "docs/internal/host-extensions/composition/fixture.cjs",
+      "sha256": "598c124920d47db3d3c4730a784b579ad5ae5442f34accc579a940c6b701b91a"
+    },
+    {
+      "file": "docs/internal/host-extensions/composition/service.as.ts",
+      "sha256": "7d4b97520789bf0767e11da2655c3507ad1da93924956e11e1016d3fe6bef9be"
+    },
+    {
+      "file": "docs/internal/host-extensions/ownership/prototype.cjs",
+      "sha256": "730bb2810f2a4da4c52d3809688da2ae4e06da55337522348bb2805c621bbdbe"
+    },
+    {
+      "file": "docs/internal/host-extensions/ownership/fixture.cjs",
+      "sha256": "c052d0be6acdc5c716d5566fa4dc68668875c47e5c3e4762f4e736d5fb64e119"
+    },
+    {
+      "file": "docs/internal/host-extensions/ownership/service.as.ts",
+      "sha256": "9311101be0890535f6672ce988b98a97d30581057a0283ace0d847702e699725"
+    },
+    {
+      "file": "pnpm-lock.yaml",
+      "sha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0"
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "build/abi/module.as.ts",
+      "bytes": 8503,
+      "sha256": "d73fc334990189cab72ce53e0d3f8627ce18efca40c5c57d43a63a9f9380f7d6"
+    },
+    {
+      "file": "build/abi/module.wasm",
+      "bytes": 9540,
+      "sha256": "cba29ad4b78afa168d36bcb79550f80e11b925a0a878793786a43cb39689d21c"
+    },
+    {
+      "file": "build/width-1/generated/fixture.as.ts",
+      "bytes": 185538,
+      "sha256": "5c576ced87e3fdbd35f82ba3b460726cfecc9249a2047c7f41730f80926b07c4"
+    },
+    {
+      "file": "build/width-1/generated/fixture.canonical-plan.json",
+      "bytes": 8509,
+      "sha256": "06a3bfb10a800be0eeebcb736a208cc091986c38537b066c8369408270df2b92"
+    },
+    {
+      "file": "build/width-1/generated/fixture.contributions.json",
+      "bytes": 4692,
+      "sha256": "1a57fd39970d62975e1f933e4eb97ddb426a413625ccd4efc5c052f908eeae45"
+    },
+    {
+      "file": "build/width-1/generated/fixture.plan.json",
+      "bytes": 14352,
+      "sha256": "34734e70fbb8759571704a6000e22fca8ae4ff759966f403a37fefc7c9cc19d7"
+    },
+    {
+      "file": "build/width-1/generated/fixture.policy.json",
+      "bytes": 8612,
+      "sha256": "7f702cdeeb7d8c163da60c861317f6acd748bbac4056ca173a6b5c9157bb0cdf"
+    },
+    {
+      "file": "build/width-1/generated/fixture.ts",
+      "bytes": 188,
+      "sha256": "6246e8000576e5232cb241e4cdaa4acebb1c9dcc5073e8b2b437c66c1932c7d0"
+    },
+    {
+      "file": "build/width-1/generated/fixture.wasm",
+      "bytes": 47834,
+      "sha256": "9fa5631b3d568615967c073236de59abb5709f863c18ac5a9d34c1b9cf903fc0"
+    },
+    {
+      "file": "build/width-1/module.as.ts",
+      "bytes": 186315,
+      "sha256": "48257fb0b70dd4d186cacb389f9bfa8cdda8921dd2c1be37eea914a7b9cbabe4"
+    },
+    {
+      "file": "build/width-1/module.wasm",
+      "bytes": 48579,
+      "sha256": "bd27a2260709893bc13981facb4edc75c42a8601519429b59a38753d34bd0cc2"
+    },
+    {
+      "file": "build/width-32/generated/fixture.as.ts",
+      "bytes": 343688,
+      "sha256": "d39c822790294f3620582dadd0ddeb7f5b1327c80d8fa34d677d8cda70fb126c"
+    },
+    {
+      "file": "build/width-32/generated/fixture.canonical-plan.json",
+      "bytes": 113317,
+      "sha256": "051ec8b1f8cd1eccf23862e287344d416a11be4a5981f3401f47f86f5c8824c5"
+    },
+    {
+      "file": "build/width-32/generated/fixture.contributions.json",
+      "bytes": 4692,
+      "sha256": "1a57fd39970d62975e1f933e4eb97ddb426a413625ccd4efc5c052f908eeae45"
+    },
+    {
+      "file": "build/width-32/generated/fixture.plan.json",
+      "bytes": 314324,
+      "sha256": "0259466786ae4453153de7ab27020e5d7185c4f82a1ca59c88cb37fa9494979a"
+    },
+    {
+      "file": "build/width-32/generated/fixture.policy.json",
+      "bytes": 8612,
+      "sha256": "7f702cdeeb7d8c163da60c861317f6acd748bbac4056ca173a6b5c9157bb0cdf"
+    },
+    {
+      "file": "build/width-32/generated/fixture.ts",
+      "bytes": 2204,
+      "sha256": "0d41f491b05023986ee29928e17f5f128193eed295041552459f187f3f3de129"
+    },
+    {
+      "file": "build/width-32/generated/fixture.wasm",
+      "bytes": 74426,
+      "sha256": "9d2ca2a1440907490307ddde1e30c0326734bbe3624ac3f5c3dc7ce953efbf7f"
+    },
+    {
+      "file": "build/width-32/module.as.ts",
+      "bytes": 344465,
+      "sha256": "06be8e65ec430cba794259466bf0be69e5f2958ee8704ca35bec1d5001327047"
+    },
+    {
+      "file": "build/width-32/module.wasm",
+      "bytes": 75173,
+      "sha256": "8e77b659ca7b566fdcd57cd9ff0fc3e8e2f550d9809b41ea1eeed43b3d582479"
+    },
+    {
+      "file": "build/width-8/generated/fixture.as.ts",
+      "bytes": 221244,
+      "sha256": "653a626655ec25b74c31313f012a354f95e5150a4c8a082adedec37d8b69238e"
+    },
+    {
+      "file": "build/width-8/generated/fixture.canonical-plan.json",
+      "bytes": 33030,
+      "sha256": "813cda902bff115c91aed7770f284652238d77c2268a66b971490a0575294e84"
+    },
+    {
+      "file": "build/width-8/generated/fixture.contributions.json",
+      "bytes": 4692,
+      "sha256": "1a57fd39970d62975e1f933e4eb97ddb426a413625ccd4efc5c052f908eeae45"
+    },
+    {
+      "file": "build/width-8/generated/fixture.plan.json",
+      "bytes": 83166,
+      "sha256": "234a7174ebb6a67bd375531105777dac9c6491d97b46653ee5a6dac64bbd69f3"
+    },
+    {
+      "file": "build/width-8/generated/fixture.policy.json",
+      "bytes": 8612,
+      "sha256": "7f702cdeeb7d8c163da60c861317f6acd748bbac4056ca173a6b5c9157bb0cdf"
+    },
+    {
+      "file": "build/width-8/generated/fixture.ts",
+      "bytes": 648,
+      "sha256": "09e43b52e9da864ac43287118aebe9eb8b70f403968f9bc7bb92082eb4b52c11"
+    },
+    {
+      "file": "build/width-8/generated/fixture.wasm",
+      "bytes": 53944,
+      "sha256": "af3deafbbe16525b0c8fbb39ad571aeff317320e5a05352b412be72777991c51"
+    },
+    {
+      "file": "build/width-8/module.as.ts",
+      "bytes": 222021,
+      "sha256": "44187356bd370ebb513eee20d7c64e3d4483cba0451d6251dcc8b1e21f6a03d0"
+    },
+    {
+      "file": "build/width-8/module.wasm",
+      "bytes": 54691,
+      "sha256": "e3df8c75021919b0a24d0ed4b7fb1d668da9e95591fc137e7e62656f9de30f35"
+    }
+  ],
+  "archive": {
+    "file": "evidence.tar.gz",
+    "bytes": 686865,
+    "sha256": "165f55122fb2aa2294a7227edc9f0751c7c1d72b417da5d8cc03093fdc04dd59",
+    "membersVerified": 143,
+    "manifest": "ra10-evidence/SHA256SUMS"
+  },
+  "validation": [
+    {
+      "command": "npm run maintainer:sync",
+      "log": "validation/maintainer-sync.log",
+      "status": "passed"
+    },
+    {
+      "command": "npm run docs:sync",
+      "log": "validation/docs-sync.log",
+      "status": "passed"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "log": "validation/maintainer-check.log",
+      "status": "passed"
+    },
+    {
+      "command": "npm run docs:check",
+      "log": "validation/docs-check.log",
+      "status": "passed"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "log": "validation/documentation-release.log",
+      "status": "passed"
+    }
+  ],
+  "limitations": [
+    "Local pinned Viceroy only; no hosted Fastly or ESP32 qualification",
+    "Exact sources and generated artifacts retained for formal attempt; exploratory logs retained but not all earlier generated bytes",
+    "No physical-memory reclamation, platform capacity maximum, universal error mapping or cache rollback claim"
+  ]
+}

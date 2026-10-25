@@ -4,7 +4,7 @@ This workstream follows the [ownership](../ownership/README.md) and
 [bounded composition](../composition/README.md) investigations. Its first proposed
 milestone is cache, core fetch and their fixed composition under one accounting
 contract. No new scheduler, automatic retry, silent fallback or universal cost
-optimizer is proposed. The owner approved RA-00 through RA-09; later units remain planned.
+optimizer is proposed. The owner approved RA-00 through RA-10; RA-11 remains planned.
 
 | Unit | Deliverable | Recommended model / reasoning effort | Status |
 | --- | --- | --- | --- |
@@ -18,7 +18,7 @@ optimizer is proposed. The owner approved RA-00 through RA-09; later units remai
 | [RA-07](ra07/README.md) | Composed-operation integration | Astra / High | Complete bounded checkpoint; joint Native cache/fetch accounting, fixed child lifecycle and whole-cohort admission; review before diagnostics/adoption |
 | [RA-08](ra08/README.md) | Capability/resource evidence and diagnostics | GPT-6.1 Sol / High | Complete bounded checkpoint; Native observation, redacted capability/resource sidecar, coverage-aware schema and comparison; public report adoption remains separate |
 | [RA-09](ra09/README.md) | Matched cost and unused-path measurements | GPT-6.1 Sol / High | Complete bounded checkpoint; matched Native execution/observer, ledger, report and unused-path measurements; full accounting overhead and real-host latency remain unqualified |
-| RA-10 | Host lifecycle qualification | GPT-6.1 Sol / High | Planned |
+| [RA-10](ra10/README.md) | Host lifecycle qualification | GPT-6.1 Sol / High | Complete bounded checkpoint; pinned Viceroy consumption/disposal/teardown and composed 1/8/32 execution; incomplete cache entries remain visible after abandon; hosted Fastly/adoption remain unqualified |
 | RA-11 | Architecture and adoption review | Astra / High | Planned |
 
 Before RA-06, the [nonterminal lifecycle proof](../nonterminal-lifecycle/README.md)
