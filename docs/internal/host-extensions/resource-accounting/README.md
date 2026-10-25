@@ -21,6 +21,12 @@ optimizer is proposed. The owner approved RA-00 through RA-05; later units remai
 | RA-10 | Host lifecycle qualification | GPT-6.1 Sol / High | Planned |
 | RA-11 | Architecture and adoption review | Astra / High | Planned |
 
+Before RA-06, the [nonterminal lifecycle proof](../nonterminal-lifecycle/README.md)
+qualifies a fixed private service followed by ordinary core fetch against the
+shared lifecycle points. Its 38 compiled-Native cases and five mutation oracles
+support the bounded cache mapping next; cache admission and real-host disposition
+remain unqualified.
+
 Review the contract after RA-02, executable behavior after RA-07, and adoption
 after RA-11. RA-05/06 can separate once their shared service is stable. Each unit
 ends with its own reviewable result against `hex-integration`; this plan grants
