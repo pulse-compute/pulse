@@ -1,0 +1,297 @@
+{
+  "version": "hex.ra05-js.v1",
+  "status": "passed",
+  "cases": [
+    {
+      "name": "Cancellation resolve is not a release receipt",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 5,
+          "bytes": 192,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 2,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 1,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 1,
+        "emergency": 0,
+        "stopped": true,
+        "ended": true,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Cancellation reject is not a release receipt",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 5,
+          "bytes": 192,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 2,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 1,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 1,
+        "emergency": 0,
+        "stopped": true,
+        "ended": true,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Cancellation never is not a release receipt",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 5,
+          "bytes": 192,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 2,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 1,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 1,
+        "emergency": 0,
+        "stopped": true,
+        "ended": true,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Locked response is skipped and remains charged",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 5,
+          "bytes": 192,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 2,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 1,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 1,
+        "emergency": 0,
+        "stopped": true,
+        "ended": true,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Explicit final response transfer preserves continued-access charge",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 4,
+          "bytes": 192,
+          "records": 5
+        },
+        "charged": {
+          "handles": 0,
+          "bytes": 64,
+          "records": 1
+        },
+        "carry": {
+          "handles": 0,
+          "bytes": 64,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 2,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 1,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 0,
+        "emergency": 0,
+        "stopped": true,
+        "ended": true,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Late arrival after cancellation remains represented",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 5,
+          "bytes": 192,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 2,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 1,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 1,
+        "emergency": 0,
+        "stopped": true,
+        "ended": true,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Fetch cohort shortage 8 dispatches zero",
+      "status": "passed",
+      "detail": {
+        "width": 8,
+        "dispatches": 0
+      }
+    },
+    {
+      "name": "Fetch cohort shortage 16 dispatches zero",
+      "status": "passed",
+      "detail": {
+        "width": 16,
+        "dispatches": 0
+      }
+    },
+    {
+      "name": "Fetch cohort shortage 32 dispatches zero",
+      "status": "passed",
+      "detail": {
+        "width": 32,
+        "dispatches": 0
+      }
+    }
+  ],
+  "node": "v24.19.0",
+  "inputs": [
+    {
+      "file": "check-js.cjs",
+      "sha256": "b5447bdc52a7e00adfdb14d1df0df9f2dd85fcf58b522dd7983f6750583e13a0"
+    },
+    {
+      "file": "../ra03/service.cjs",
+      "sha256": "38acecb33cfd99a9b91265d21582e37c6024440e6b31e71e2efaeaa731840763"
+    },
+    {
+      "file": "../ra03/check.cjs",
+      "sha256": "9b95ba48f68746c301db33e7bcf6b5832c340f88161d4c280082a74bcbb8186c"
+    },
+    {
+      "file": "../ra03/provider-hooks.cjs",
+      "sha256": "4f233aa01cac6c628e03d9e2fe285594b43f0382e3d9ecb93b542e6dc8d9dcb6"
+    },
+    {
+      "file": "../ra03/javascript-bridge.cjs",
+      "sha256": "d3257663e380e8e1bfbdd33f2e8053ce0f5f66642b9ca54f52d3918ffeaa501b"
+    },
+    {
+      "file": "../ra02/policy.json",
+      "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f"
+    },
+    {
+      "file": "../../../../../packages/runtime/src/internal/response.js",
+      "sha256": "156919ca506c8440dd2ecd3ab6f198d0ec64698d981f6b39cb90789be47a871f"
+    },
+    {
+      "file": "../../../../../packages/runtime/src/internal/body.js",
+      "sha256": "4d24dea172711c444d656b5d71c76a94558afd6865281a4d6dfaf998cb6b4f79"
+    }
+  ],
+  "executor": {
+    "file": "/workspace/scratch/253982db7f9e/pulse/packages/runtime/src/internal/effect-adapter.js",
+    "sha256": "d9e9639cbeb7ba107d9f479f47cfd004391c5a5aa7d16d261dd055d453fb0c4e"
+  }
+}

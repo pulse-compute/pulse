@@ -1,0 +1,124 @@
+{
+  "version": "hex.ra05-validation.v1",
+  "status": "passed",
+  "base": "1310222cb1d9184a98a480ef8e211ddfa2c3ce07",
+  "inputs": [
+    {
+      "file": "README.md",
+      "sha256": "09d36882efaa38766d300aad430e93689756e0c8499ab13080a72a79092cfeb9"
+    },
+    {
+      "file": "adapter.as.ts",
+      "sha256": "46b8966307a69210a2702e0fc57ac21d346b0fd548a2d26ba8b029ae40b0d62c"
+    },
+    {
+      "file": "build.cjs",
+      "sha256": "7516cabf743978160824d8e5d00f7efebbc66923df8c89c6afcc0c5605126545"
+    },
+    {
+      "file": "check-js.cjs",
+      "sha256": "b5447bdc52a7e00adfdb14d1df0df9f2dd85fcf58b522dd7983f6750583e13a0"
+    },
+    {
+      "file": "check.cjs",
+      "sha256": "2affeb115dfbc8fd97cd15f2721e672d74aaa632974a6fde4acbc7787668a6e3"
+    },
+    {
+      "file": "checks.json",
+      "sha256": "42f52463c43837257acd2bc9449adc4d75ae06be9b79ab87da2c8e51ce7dacd0"
+    },
+    {
+      "file": "evidence-index.json",
+      "sha256": "1798ed28d567ed801ffa33770faaca8c4940fd414c21361f64ab0d807d7aad18"
+    },
+    {
+      "file": "evidence.tar.gz",
+      "sha256": "eb0f52ca1e09182a0245999c6253d1088870eb670562e1a8ed89cc628dc5a05a"
+    },
+    {
+      "file": "host.cjs",
+      "sha256": "1ee57a8cb48a2a2467d2e236ebd907ab64172867e5916a23a20321097664df7e"
+    },
+    {
+      "file": "javascript.json",
+      "sha256": "196555ad51b158c85947741ea5c93d18f4bfa93e26c85e0607476319eeb7e9af"
+    },
+    {
+      "file": "validation-logs.tar.gz",
+      "sha256": "2de184ec492f56befa44078b1c57d038e2d4eb801186802abb25bbc0548abb66"
+    }
+  ],
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:53:02.999387+00:00",
+      "log": {
+        "path": "0.log",
+        "sha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+      }
+    },
+    {
+      "command": "npm run docs:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:53:03.760797+00:00",
+      "log": {
+        "path": "1.log",
+        "sha256": "c31091ee16b5ebc5712f89de52b83240030aee11850daa4a77a0fdb5dabeb471"
+      }
+    },
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:53:06.494855+00:00",
+      "log": {
+        "path": "2.log",
+        "sha256": "1f428a3a3fa5888988ff157b267e88a858d71da4779791ae3dfbb4f707b1c382"
+      }
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:53:28.842954+00:00",
+      "log": {
+        "path": "3.log",
+        "sha256": "62e230090b87cefe5be13acebbe67e557e7b06536cb5125f855b598156d2d2ad"
+      }
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:53:51.841330+00:00",
+      "log": {
+        "path": "4.log",
+        "sha256": "29fe04d6c493584fcf5defa4441fa7801563cbb2a1195fa47d6fe4964917256a"
+      }
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:54:17.161394+00:00",
+      "log": {
+        "path": "5.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "logArchive": {
+    "path": "validation-logs.tar.gz",
+    "sha256": "2de184ec492f56befa44078b1c57d038e2d4eb801186802abb25bbc0548abb66"
+  },
+  "scope": "Internal integration evidence; no full runtime regression or hosted qualification.",
+  "scopeCheck": {
+    "exitCode": 0,
+    "testedHead": "b5dfb471468a4061a0b08c5d359a68dad895ab24",
+    "output": "# Pulse maintainer scope\n\n**Status:** Pass\n\n| Signal | Result |\n|---|---|\n| Declared class | `evidence` |\n| Declared scope | `evidence-only` |\n| Risk | `low` |\n| Changed files | 13 |\n| Areas | `documentation` |\n| Protected boundaries | None |\n| Separate human decision | Not required |\n| Current contract update | Not inferred |\n| Release authority | Not inferred |\n| Required checks | `documentation`, `maintenance-policy` |\n\nThe resident maintainer may analyze, review, and prepare a minimal patch; human review and merge remain required.\n\n",
+    "note": "Repeated after adding this receipt to the amended commit."
+  }
+}
