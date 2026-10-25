@@ -1,0 +1,23 @@
+{
+  "version": "hex.ra08.resource-compare.v1",
+  "static": {
+    "samePlan": true,
+    "sameExecution": true,
+    "sameProfile": true,
+    "sameBindings": true,
+    "bindingsBefore": 4,
+    "bindingsAfter": 4,
+    "identityCoverage": "exact"
+  },
+  "runtime": {
+    "status": "available",
+    "reason": null,
+    "chargedDelta": {
+      "handles": 0,
+      "backingBytes": 262528,
+      "records": 2
+    },
+    "claimIdentity": "execution-scoped-not-compared",
+    "hostReclamation": "not-established"
+  }
+}

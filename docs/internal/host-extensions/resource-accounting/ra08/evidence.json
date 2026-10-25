@@ -1,0 +1,701 @@
+{
+  "status": "passed",
+  "base": "5b99be05fae56405d2c9dc9c3610e99149f53247",
+  "node": "v24.22.1",
+  "compiler": {
+    "version": "0.28.18",
+    "sha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44"
+  },
+  "inputs": [
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra08/build.cjs",
+      "sha256": "e7ab41aadbcf18426856c1fac3a8cf74f4a510592fdfd9641975fd82312306bf"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra08/host.cjs",
+      "sha256": "abf0c5b2cc3e16e9858f114c22f96cbef02f7fa6d8da53fefb80888485569280"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra08/observer.as.ts",
+      "sha256": "a631e0ea65bc241f2a289562f0bca8db907e986f7025e762a07a17e4a5172b9c"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra08/report.cjs",
+      "sha256": "9f66bfb69e7af3b3107ee672ea04d17108d66d9d2c16627ac4f0cfad7424e4ad"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra08/schema.cjs",
+      "sha256": "fba2f1f6bc896924d411334e075c6325259a1a0ba62742215f824ce9366f182e"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra08/cli.cjs",
+      "sha256": "72fdf8a1808ec806e5c768c4ea6e5ef90a97213de6d39f1d67bac27ffd90fb36"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra08/check.cjs",
+      "sha256": "7c6fb53cdddd4f3603fcdc938ca27d20c67525d8be7f6a2a34dfbb96099b05e6"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra07/build.cjs",
+      "sha256": "e0925ddc3a6243cc342d89e9b99889db2a3dd0526c6ff1e2d2d0836e1c2a9e8a"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra07/host.cjs",
+      "sha256": "419f158e2c5ce927223b93767100f6526cb4296111cb13759128fd59c2e6708b"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra07/service.as.ts",
+      "sha256": "4a6eb2ba10da7985783351b1370b83b19c25b247ef02db472846bc6d55c3c70e"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra07/check.cjs",
+      "sha256": "873e61b15c6d0e385764a4e8c3a55da5f1dea3f31b4db4b93fe8bb8bccbe0f21"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra03/native/build.cjs",
+      "sha256": "824a9f6a5e481f5920233349d0396e9ccd12b6d868d69f7ecc570492985bafd3"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra03/native/service.as.ts",
+      "sha256": "8e7da28b6d524691f6787fded634a3f684986ed8748b39fda2f43e4710d8fc43"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra05/adapter.as.ts",
+      "sha256": "46b8966307a69210a2702e0fc57ac21d346b0fd548a2d26ba8b029ae40b0d62c"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra06/service.as.ts",
+      "sha256": "d7ae814e248b833060bc0660819fca04d28ee7a15307aff03d5af7c6372d605a"
+    },
+    {
+      "file": "docs/internal/host-extensions/composition/prototype.cjs",
+      "sha256": "98cdde8f9d73f476c681a4461eba59d6e94433e5f1a60a0edc5cf984da84358a"
+    },
+    {
+      "file": "docs/internal/host-extensions/composition/service.as.ts",
+      "sha256": "7d4b97520789bf0767e11da2655c3507ad1da93924956e11e1016d3fe6bef9be"
+    },
+    {
+      "file": "docs/internal/host-extensions/composition/fixture.cjs",
+      "sha256": "598c124920d47db3d3c4730a784b579ad5ae5442f34accc579a940c6b701b91a"
+    },
+    {
+      "file": "docs/internal/host-extensions/ownership/prototype.cjs",
+      "sha256": "730bb2810f2a4da4c52d3809688da2ae4e06da55337522348bb2805c621bbdbe"
+    },
+    {
+      "file": "docs/internal/host-extensions/ownership/fixture.cjs",
+      "sha256": "c052d0be6acdc5c716d5566fa4dc68668875c47e5c3e4762f4e736d5fb64e119"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "direct",
+      "width": 1,
+      "options": {},
+      "bytes": 49544,
+      "sha256": "d0b743530c95f544afb4d69aa120af353168d4aac3c7d3c9658329640d08668f",
+      "sourceSha256": "83fc05bfcd1cdc93fa402f73df582751ca5c79de9f3fdabe24486b0e3d8da056",
+      "controlBytes": 47834,
+      "controlSha256": "836db5463ee52e9b66f80cb3056611300b1712d3e47ac9d23b215037543c9030",
+      "importsUnchanged": true
+    },
+    {
+      "name": "disabled",
+      "width": 1,
+      "options": {
+        "enabled": false
+      },
+      "bytes": 47834,
+      "sha256": "836db5463ee52e9b66f80cb3056611300b1712d3e47ac9d23b215037543c9030",
+      "sourceSha256": "5c576ced87e3fdbd35f82ba3b460726cfecc9249a2047c7f41730f80926b07c4",
+      "controlBytes": 47834,
+      "controlSha256": "836db5463ee52e9b66f80cb3056611300b1712d3e47ac9d23b215037543c9030",
+      "importsUnchanged": true
+    },
+    {
+      "name": "unused",
+      "width": 1,
+      "options": {
+        "unused": true
+      },
+      "bytes": 24457,
+      "sha256": "a57135ec47e88d4460c5a7ffb38454f99b1b0d8d151e552f254f172304c042a1",
+      "sourceSha256": "2da1876872b7c871e7f037573c769f22d672f8070d7aba60128127700c34d9a1",
+      "controlBytes": 24457,
+      "controlSha256": "a57135ec47e88d4460c5a7ffb38454f99b1b0d8d151e552f254f172304c042a1",
+      "importsUnchanged": true
+    },
+    {
+      "name": "absent",
+      "width": 1,
+      "options": {
+        "unused": true,
+        "absent": true
+      },
+      "bytes": 24457,
+      "sha256": "e55e5161e09612bb673fb2d2f691334eb0141ce9539be51fc2955b014eb2a9ea",
+      "sourceSha256": "f1b77f12e105977fc83cebc47411089c46a429779eb0753e1fb11442e7796df3",
+      "controlBytes": 24457,
+      "controlSha256": "e55e5161e09612bb673fb2d2f691334eb0141ce9539be51fc2955b014eb2a9ea",
+      "importsUnchanged": true
+    },
+    {
+      "name": "sampled",
+      "width": 1,
+      "options": {
+        "sampleEvery": 4
+      },
+      "bytes": 49568,
+      "sha256": "277477570eef10c97007c9d26dc0175c220950de5d5de190c0368a839ff52ca6",
+      "sourceSha256": "8e33290fd7aa178a08f8e70897f9f0a1a9134cd11f0fd2840a002f763963a606",
+      "controlBytes": 47834,
+      "controlSha256": "836db5463ee52e9b66f80cb3056611300b1712d3e47ac9d23b215037543c9030",
+      "importsUnchanged": true
+    },
+    {
+      "name": "truncated",
+      "width": 1,
+      "options": {
+        "capacity": 8
+      },
+      "bytes": 49379,
+      "sha256": "ce248fae4c3ce564490df4e4db1643c7f178f9b996547aae4998c4452ad63df4",
+      "sourceSha256": "366c6a5927acdc6af34b219fa1aac9a2ebfab282977000a8ffc55a075f6ff2d8",
+      "controlBytes": 47834,
+      "controlSha256": "836db5463ee52e9b66f80cb3056611300b1712d3e47ac9d23b215037543c9030",
+      "importsUnchanged": true
+    },
+    {
+      "name": "count-only",
+      "width": 1,
+      "options": {
+        "capacity": 0
+      },
+      "bytes": 49379,
+      "sha256": "8da967e3ef764016ed08bec4adeb5e9b13fa1c7ed56498baaef936f148bfd6c9",
+      "sourceSha256": "7314d180de429662906b343c91eee63a52664305eac7ed3675d8901ac73344e4",
+      "controlBytes": 47834,
+      "controlSha256": "836db5463ee52e9b66f80cb3056611300b1712d3e47ac9d23b215037543c9030",
+      "importsUnchanged": true
+    },
+    {
+      "name": "saturated",
+      "width": 1,
+      "options": {
+        "counterLimit": 8
+      },
+      "bytes": 49542,
+      "sha256": "f3509c0a85f61306b993236f75ae12b096306319f19d086a19a8b5b5f78a5618",
+      "sourceSha256": "5f15cd4d2e23005b31ec2c34db625a6eac6b49da9da33c93216cfd3afdcd5673",
+      "controlBytes": 47834,
+      "controlSha256": "836db5463ee52e9b66f80cb3056611300b1712d3e47ac9d23b215037543c9030",
+      "importsUnchanged": true
+    },
+    {
+      "name": "width-2",
+      "width": 2,
+      "options": {},
+      "bytes": 50545,
+      "sha256": "299f50aa45bb9644f4ea5c44023db4d49a083eb5466930bb7bc082b5fa8b6f74",
+      "sourceSha256": "fd5dd1f26a13d1757cf5f3e74822098bbe332ed50cb165763b3a9e3d7af2b16b",
+      "controlBytes": 48832,
+      "controlSha256": "7fd02d06bfea6ab666cdac95f87aed55203cd8e4a4fc08903ea3ed2e4ee7fffd",
+      "importsUnchanged": true
+    },
+    {
+      "name": "width-8",
+      "width": 8,
+      "options": {},
+      "bytes": 55523,
+      "sha256": "1794dc4259e496c57596a85b809c933f7306260bb11fc8d6c9c9eea9fdf77f96",
+      "sourceSha256": "1520d0bc4fe84cd678bb170e82467aadc49c442d85f506f2df63b7fe66a2c8f2",
+      "controlBytes": 53944,
+      "controlSha256": "edb4c41d6aef9b25240afe64b8e485a95fc4f622a43edd1f4650869d51af5158",
+      "importsUnchanged": true
+    },
+    {
+      "name": "width-16",
+      "width": 16,
+      "options": {},
+      "bytes": 62213,
+      "sha256": "8f9ba6852ecfb5048ffee6e51608037cdb81dd62102e85bd08bbfe4349d9ca33",
+      "sourceSha256": "10dbb8702f03f49c2f7308858246f11244de766ebad25a2411dbbb439bf8c4f0",
+      "controlBytes": 60625,
+      "controlSha256": "ae954973ce9324eae046bb706c90e9e4ff527fcf33cd73de982afd1af63a93df",
+      "importsUnchanged": true
+    },
+    {
+      "name": "width-32",
+      "width": 32,
+      "options": {},
+      "bytes": 76014,
+      "sha256": "88d2d883bad5a6e5220f066eb098f857111cac0013ab9985daec6352c55b9601",
+      "sourceSha256": "6baa95239c444529877fe88799ca5068c021b8218d084e851221f6d79a5b43d9",
+      "controlBytes": 74426,
+      "controlSha256": "e91415426fe2c2a99290cd7bab195ce727ac99d0094625fc2f3e7fa340d6f76a",
+      "importsUnchanged": true
+    },
+    {
+      "name": "full-events",
+      "width": 32,
+      "options": {
+        "capacity": 4096
+      },
+      "bytes": 76014,
+      "sha256": "ac3ff7ea5b2905aff51e1d661ced35d42a1a4259a5d3ac53c25ddcdc7d506511",
+      "sourceSha256": "609d18c4c719a4cd39d9295176c10b5e4e660a68e6e5bbc82cffd23eba2e7454",
+      "controlBytes": 74426,
+      "controlSha256": "9d2ca2a1440907490307ddde1e30c0326734bbe3624ac3f5c3dc7ce953efbf7f",
+      "importsUnchanged": true
+    },
+    {
+      "name": "mixed",
+      "width": 2,
+      "options": {
+        "core": true
+      },
+      "bytes": 51028,
+      "sha256": "6d5c08216f9bd8240f66e570bc7cb3e329fce70d70b36a725632e952f39a8712",
+      "sourceSha256": "60b76894b63d677499f3f6d5827adbda0614e7342aba48163ef9a05707ec62b1",
+      "controlBytes": 49311,
+      "controlSha256": "378d0681fbe4f18ade04c68126105739733700c8d59da64b2897a30e1827b30e",
+      "importsUnchanged": true
+    },
+    {
+      "name": "mutation-no-events",
+      "width": 1,
+      "options": {
+        "diagnosticMutation": "no-events"
+      },
+      "bytes": 48988,
+      "sha256": "7c7dd6d003203548a02842ef3d049429c0378a4b865aaa3636c33e58287b5bd9",
+      "sourceSha256": "5530d072f756d4d512cefe4846a81a3e944fe657d43708b577bee695b186b621",
+      "controlBytes": 47834,
+      "controlSha256": "0c957ecdf96359c31eaec0649666e7693509fb428fefebcf24e92af0640bd2bb",
+      "importsUnchanged": true
+    },
+    {
+      "name": "mutation-wrong-site",
+      "width": 1,
+      "options": {
+        "diagnosticMutation": "wrong-site"
+      },
+      "bytes": 49544,
+      "sha256": "1bdfcbdcf113f7a3069adbe2adfc1d7570b838501a5ca92dd71e419f17f4e5cb",
+      "sourceSha256": "f2763045a0cf2d5ab984248277afef7ec2a57f8c2208b54423abd66b7573c81e",
+      "controlBytes": 47834,
+      "controlSha256": "0c957ecdf96359c31eaec0649666e7693509fb428fefebcf24e92af0640bd2bb",
+      "importsUnchanged": true
+    },
+    {
+      "name": "mutation-hide-overflow",
+      "width": 1,
+      "options": {
+        "diagnosticMutation": "hide-overflow",
+        "capacity": 8
+      },
+      "bytes": 49367,
+      "sha256": "cb387b60d78ce1cf28738ce158103e5bbdad3ff0e199a3af4d7713991bd376ef",
+      "sourceSha256": "83e9fbecff1b1bd0d75cb2f49e565a6e5fe6870e1b07d40989e38d644a5a8863",
+      "controlBytes": 47834,
+      "controlSha256": "0c957ecdf96359c31eaec0649666e7693509fb428fefebcf24e92af0640bd2bb",
+      "importsUnchanged": true
+    },
+    {
+      "name": "mutation-hide-backing",
+      "width": 1,
+      "options": {
+        "diagnosticMutation": "hide-backing"
+      },
+      "bytes": 49555,
+      "sha256": "d8ff232309bc2065eb31b0474f3befb50bff1b3d5881e8749b062884c9fb6217",
+      "sourceSha256": "f9f8e9d0aef06dca625b945ed108889dd5ece5fbf300686272d7adfe6465912c",
+      "controlBytes": 47834,
+      "controlSha256": "0c957ecdf96359c31eaec0649666e7693509fb428fefebcf24e92af0640bd2bb",
+      "importsUnchanged": true
+    },
+    {
+      "name": "mutation-hide-saturation",
+      "width": 1,
+      "options": {
+        "diagnosticMutation": "hide-saturation",
+        "counterLimit": 8
+      },
+      "bytes": 49531,
+      "sha256": "b8e3162daed7a0020e98d8b9209f9194c6a424e29f598cf5b7ea0dbc5db8ac97",
+      "sourceSha256": "f993ef5d31f3da70d2977b6eb3230a3a50194310cb657f85d5df37624745b3f6",
+      "controlBytes": 47834,
+      "controlSha256": "0c957ecdf96359c31eaec0649666e7693509fb428fefebcf24e92af0640bd2bb",
+      "importsUnchanged": true
+    }
+  ],
+  "cases": [
+    {
+      "name": "hit",
+      "status": "passed"
+    },
+    {
+      "name": "miss",
+      "status": "passed"
+    },
+    {
+      "name": "hit and miss retain identical static capability demand",
+      "status": "passed"
+    },
+    {
+      "name": "matched comparison reports backing delta without reclamation claim",
+      "status": "passed"
+    },
+    {
+      "name": "repeat-close",
+      "status": "passed"
+    },
+    {
+      "name": "short-handles",
+      "status": "passed"
+    },
+    {
+      "name": "short-backingBytes",
+      "status": "passed"
+    },
+    {
+      "name": "short-effects",
+      "status": "passed"
+    },
+    {
+      "name": "unknown-wait-false-false",
+      "status": "passed"
+    },
+    {
+      "name": "unknown-wait-false-true",
+      "status": "passed"
+    },
+    {
+      "name": "unknown-wait-true-false",
+      "status": "passed"
+    },
+    {
+      "name": "unknown-wait-true-true",
+      "status": "passed"
+    },
+    {
+      "name": "failure-12",
+      "status": "passed"
+    },
+    {
+      "name": "failure-13",
+      "status": "passed"
+    },
+    {
+      "name": "failure-14",
+      "status": "passed"
+    },
+    {
+      "name": "failure-15",
+      "status": "passed"
+    },
+    {
+      "name": "failure-16",
+      "status": "passed"
+    },
+    {
+      "name": "failure-17",
+      "status": "passed"
+    },
+    {
+      "name": "failure-18",
+      "status": "passed"
+    },
+    {
+      "name": "trap-lookup",
+      "status": "passed"
+    },
+    {
+      "name": "trap-fetch.send",
+      "status": "passed"
+    },
+    {
+      "name": "trap-fetch.wait",
+      "status": "passed"
+    },
+    {
+      "name": "trap-write",
+      "status": "passed"
+    },
+    {
+      "name": "trap-commit",
+      "status": "passed"
+    },
+    {
+      "name": "containment",
+      "status": "passed"
+    },
+    {
+      "name": "redacted-values",
+      "status": "passed"
+    },
+    {
+      "name": "execution identifiers are fresh even for identical outcomes",
+      "status": "passed"
+    },
+    {
+      "name": "disabled observer is byte-identical to RA-07",
+      "status": "passed"
+    },
+    {
+      "name": "not-observed",
+      "status": "passed"
+    },
+    {
+      "name": "missing observations never compare as zero",
+      "status": "passed"
+    },
+    {
+      "name": "unused",
+      "status": "passed"
+    },
+    {
+      "name": "absent observation is byte-identical",
+      "status": "passed"
+    },
+    {
+      "name": "sampled",
+      "status": "passed"
+    },
+    {
+      "name": "truncated",
+      "status": "passed"
+    },
+    {
+      "name": "count-only",
+      "status": "passed"
+    },
+    {
+      "name": "saturated",
+      "status": "passed"
+    },
+    {
+      "name": "width-2-hit",
+      "status": "passed"
+    },
+    {
+      "name": "width-2-miss",
+      "status": "passed"
+    },
+    {
+      "name": "width-2-short",
+      "status": "passed"
+    },
+    {
+      "name": "width-8-hit",
+      "status": "passed"
+    },
+    {
+      "name": "width-8-miss",
+      "status": "passed"
+    },
+    {
+      "name": "width-8-short",
+      "status": "passed"
+    },
+    {
+      "name": "width-16-hit",
+      "status": "passed"
+    },
+    {
+      "name": "width-16-miss",
+      "status": "passed"
+    },
+    {
+      "name": "width-16-short",
+      "status": "passed"
+    },
+    {
+      "name": "width-32-hit",
+      "status": "passed"
+    },
+    {
+      "name": "width-32-miss",
+      "status": "passed"
+    },
+    {
+      "name": "width-32-short",
+      "status": "passed"
+    },
+    {
+      "name": "full-events",
+      "status": "passed"
+    },
+    {
+      "name": "core-sibling",
+      "status": "passed"
+    },
+    {
+      "name": "different child graphs are not silently aligned",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects unknown-schema",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects extra-sensitive-field",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects wrong-binding",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects raw-use-site",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects duplicate-record",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects hidden-backing",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects bad-conservation",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects false-static-demand",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects wrong-profile-hash",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects conditional-erasure",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects forged-shortfall",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects duplicate-transition",
+      "status": "passed"
+    },
+    {
+      "name": "schema rejects wrong-record-state",
+      "status": "passed"
+    },
+    {
+      "name": "trap cannot claim complete coverage",
+      "status": "passed"
+    },
+    {
+      "name": "different execution artifact cannot be compared as matched",
+      "status": "passed"
+    },
+    {
+      "name": "report profiles are independent mutable values",
+      "status": "passed"
+    },
+    {
+      "name": "a retired ordinal cannot start another resource lifetime",
+      "status": "passed"
+    },
+    {
+      "name": "schema is canonical-order independent",
+      "status": "passed"
+    },
+    {
+      "name": "CLI validates and compares sidecars",
+      "status": "passed"
+    }
+  ],
+  "mutations": [
+    {
+      "name": "no-events",
+      "detected": true,
+      "assertion": "REPORT_DUPLICATE\n\n1 !== 3\n"
+    },
+    {
+      "name": "wrong-site",
+      "detected": true,
+      "assertion": "child attribution\n+ actual - expected\n\n  [\n+   'cache.compose',\n+   'cache.compose',\n+   'cache.compose'\n-   'cache.read',\n-   'cache.write',\n-   'fetch.text'\n  ]\n"
+    },
+    {
+      "name": "hide-overflow",
+      "detected": true,
+      "assertion": "REPORT_COLLECTION\n\n43 !== 8\n"
+    },
+    {
+      "name": "hide-backing",
+      "detected": true,
+      "assertion": "REPORT_CONSERVATION\n\n0 !== 262785\n"
+    },
+    {
+      "name": "hide-saturation",
+      "detected": true,
+      "assertion": "REPORT_FINAL_STATE"
+    }
+  ],
+  "version": "hex.ra08.evidence.v1",
+  "scope": {
+    "productionChanges": false,
+    "publicReportIntegration": false,
+    "realHost": false,
+    "observer": "bounded Native fixed-profile claim-state observation",
+    "report": "hex.ra08.resource-evidence.v1",
+    "compare": "hex.ra08.resource-compare.v1"
+  },
+  "attempts": [
+    {
+      "directory": "attempt-1",
+      "status": "failed",
+      "note": "Count-only mode attempted a zero-byte static allocation; compiler rejected it."
+    },
+    {
+      "directory": "attempt-2",
+      "status": "failed",
+      "note": "Exact executable comparison correctly rejected separately compiled controls with differing optimized layout. Matched variants now share one control artifact."
+    },
+    {
+      "directory": "attempt-3",
+      "status": "failed",
+      "note": "Core sibling decoding during continuation resumption exposed stale driver-slot attribution. Attribution now occurs at adapter allocation sites."
+    },
+    {
+      "directory": "attempt-4",
+      "status": "passed",
+      "note": "Passed 68 cases and 5 mutations; final review then tightened profile isolation and record lifetime validation."
+    },
+    {
+      "directory": "attempt-5",
+      "status": "passed",
+      "note": "Final: passed 70 cases and 5 mutations."
+    }
+  ],
+  "control": {
+    "name": "RA-07",
+    "status": "passed",
+    "cases": 81,
+    "mutations": 7,
+    "receiptSha256": "f387b9e5a3c20f1d5b0499b99187c6ce6ea0971c169fc5666effb0ae40add3fb"
+  },
+  "validation": {
+    "maintainerSync": "passed",
+    "docsSync": "passed",
+    "maintainerCheck": "passed",
+    "docsCheck": "passed",
+    "documentationRelease": "passed",
+    "scope": "passed; evidence-only; documentation and maintenance-policy checks"
+  },
+  "archive": {
+    "file": "evidence.tar.gz",
+    "bytes": 3873976,
+    "sha256": "1bce26ec7f1a84a90b1f8d7969e73c247f102a754c64e80bf5f9ad87821d8674",
+    "membersVerified": 1162,
+    "manifest": "SHA256SUMS.json",
+    "receipt": "attempt-5/receipt.json"
+  }
+}
