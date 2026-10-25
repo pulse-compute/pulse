@@ -11,6 +11,10 @@ change). It incorporates the supplied terminal-hook candidate, then pressure-tes
 shared response authority, forwarding and accounting closure. The supplied
 candidate's measurements are not substituted for this spike's evidence.
 
+Follow-up: [shared lifecycle contract extraction](shared-lifecycle/README.md) moves
+execution and HTTP semantics into shared contracts while retaining this spike’s
+Fastly implementation and historical evidence.
+
 ## Problem and boundary
 
 Several provider services rewrite the same generated driver functions. Correctness

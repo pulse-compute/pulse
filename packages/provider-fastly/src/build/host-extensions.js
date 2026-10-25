@@ -3,6 +3,7 @@
 // The provider owns the terminal service. Package selection and ABI admission
 // use the shared contribution contract; trusted source is not sandboxed.
 const contract = require('@pulse-compute/wasm-contracts/provider/toolchain').hostExtensions;
+const { STATES } = require('./response-authority.js');
 const ADMISSION = contract.normalizeAdmission({ version: contract.ADMISSION_VERSION,
   protocols: [contract.VERSION], services: [contract.TERMINAL_SERVICE] });
 const TARGET = Object.freeze({ provider: 'fastly', target: 'native', targetId: 'fastly-compute-native', hostExtensions: ADMISSION });
@@ -82,7 +83,7 @@ function __pulse_extension_cleanup(): void {
   // This service borrows the request handle. Status zero transfers downstream
   // response authority, not ownership of these local request/body handles.
   // Nonzero/trapped dispatch remains uncertain and is left to host teardown.
-  if (!__pulse_extension_handles_owned || (__pulse_extension_slot >= 0 && __pulse_response_authority == 1)) return
+  if (!__pulse_extension_handles_owned || (__pulse_extension_slot >= 0 && __pulse_response_authority == ${STATES['outcome-unknown']})) return
   __pulse_extension_handles_owned = false
   const request = __pulse_fastly_request_handle, body = __pulse_fastly_request_body_handle
   __pulse_fastly_request_handle = -1
@@ -95,7 +96,7 @@ export function pulse_extension_state(): i32 { return __pulse_response_authority
 export function pulse_extension_status(): i32 { return __pulse_extension_status }
 function __pulse_extension_begin(effectIndex: i32): void {
   const slot = __pulse_extension_slot_of(effectIndex)
-  if (slot < 0 || __pulse_response_authority != 0 || !__pulse_invocation_started || __pulse_invocation_closed || __pulse_fastly_last_error != 0 || unchecked(__pulse_invocation_tickets[effectIndex]) <= 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 280, effectIndex); return }
+  if (slot < 0 || __pulse_response_authority != ${STATES['owned']} || !__pulse_invocation_started || __pulse_invocation_closed || __pulse_fastly_last_error != 0 || unchecked(__pulse_invocation_tickets[effectIndex]) <= 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 280, effectIndex); return }
   const backend = __pulse_extension_backend(slot)
   // Allocate before dispatch, while we still own downstream response authority.
   const value = new __PulseFastlyValue()
@@ -129,7 +130,7 @@ function hooks(selected) {
     // Authenticate the terminal value before the ordinary invocation consumes its
     // ticket. A raw exported setter is not authority to complete this operation.
     { point: 'effect.settle', owner: OWNER, order: 0, body: `  if (!(${mine('index')})) return true
-  if (!(${dispatched('index')}) || __pulse_response_authority != 2 || __pulse_extension_settled || ticket != __pulse_extension_invocation || result != __pulse_extension_token || result <= 0) {
+  if (!(${dispatched('index')}) || __pulse_response_authority != ${STATES['transferred']} || __pulse_extension_settled || ticket != __pulse_extension_invocation || result != __pulse_extension_token || result <= 0) {
     __pulse_fastly_fail(PULSE_ERROR_STATE, 284, index); return false
   }
   return true` },
@@ -138,7 +139,7 @@ function hooks(selected) {
       after: `  __pulse_extension_delivering = false
   if (${mine('index')} && accepted == 1) __pulse_extension_settled = true` },
     { point: 'effect.result', owner: OWNER, order: 0, body: `  if (!(${mine('effectIndex')})) return true
-  if (!(${dispatched('effectIndex')}) || !__pulse_extension_delivering || __pulse_response_authority != 2 || __pulse_extension_settled || handle != __pulse_extension_token || __pulse_invocation_closed) {
+  if (!(${dispatched('effectIndex')}) || !__pulse_extension_delivering || __pulse_response_authority != ${STATES['transferred']} || __pulse_extension_settled || handle != __pulse_extension_token || __pulse_invocation_closed) {
     __pulse_fastly_fail(PULSE_ERROR_STATE, 284, effectIndex); return false
   }
   return true` },
@@ -146,8 +147,8 @@ function hooks(selected) {
   __pulse_extension_token = 0
   __pulse_extension_invocation = 0
   __pulse_extension_delivering = false` },
-    { point: 'result.claim', owner: OWNER, order: 0, body: `  if (__pulse_response_authority == 0) return false
-  if (__pulse_response_authority != 2 || !__pulse_extension_settled || result != __pulse_extension_token || __pulse_extension_token <= 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 283, -1); return true }
+    { point: 'result.claim', owner: OWNER, order: 0, body: `  if (__pulse_response_authority == ${STATES['owned']}) return false
+  if (__pulse_response_authority != ${STATES['transferred']} || !__pulse_extension_settled || result != __pulse_extension_token || __pulse_extension_token <= 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 283, -1); return true }
   __pulse_response_complete()
   __pulse_extension_token = 0
   return true` }

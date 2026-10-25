@@ -53,6 +53,28 @@ function run() {
   assert.equal(hooks.compose(timed, authority, { requestBudget: true }).record[0].sites.length, 3); checks++;
   throws(() => hooks.compose(driver, [{ point: 'constructor', owner: 'a', order: 0, body: '' }]), 'inherited names are not points');
   throws(() => hooks.compose(driver, [guard('a', Number.MAX_SAFE_INTEGER + 1)]), 'unsafe integer order');
+  const bound = () => structuredClone(hooks.BINDINGS);
+  let invalid = bound(); delete invalid['effect.settle'].params.ticket;
+  throws(() => hooks.bindPoints(invalid), 'missing semantic role');
+  invalid = bound(); invalid['effect.result'].params.pointer = ['address', 'usize'];
+  throws(() => hooks.bindPoints(invalid), 'extra provider role');
+  invalid = bound(); invalid['effect.deliver'].afterParams = {};
+  throws(() => hooks.bindPoints(invalid), 'missing acceptance role');
+  invalid = bound(); invalid['effect.settle'].kind = 'observe';
+  throws(() => hooks.bindPoints(invalid), 'provider cannot redefine composition');
+  invalid = bound(); invalid['response.authority'].doc = 'a different semantic';
+  throws(() => hooks.bindPoints(invalid), 'provider cannot redefine semantics');
+  throws(() => hooks.bindPoints(Object.fromEntries(Object.entries(bound()).reverse())), 'authority must remain outside error claims');
+  for (const [file, contract] of [['lifecycle-hooks', 'executionLifecycle'], ['lifecycle-hooks', 'httpLifecycle'], ['response-authority', 'httpLifecycle']]) {
+    require('node:child_process').execFileSync(process.execPath, ['-e', `
+      const assert=require('node:assert/strict'),Module=require('node:module');
+      const contracts=Module.createRequire(process.argv[1])('@pulse-compute/wasm-contracts/provider/toolchain'),load=Module._load;
+      Module._load=function(id,...rest){return id==='@pulse-compute/wasm-contracts/provider/toolchain'
+        ? {...contracts,[process.argv[2]]:{...contracts[process.argv[2]],VERSION:'unreviewed.v2'}} : load.call(this,id,...rest)};
+      assert.throws(()=>require(process.argv[1]),{code:'PULSE_FASTLY_LIFECYCLE_HOOK_INVALID'});
+    `, require.resolve('../../../packages/provider-fastly/src/build/' + file), contract], { cwd: require('node:path').resolve(__dirname, '../../..'), stdio: 'pipe' });
+    checks++;
+  }
 
   // Composition is deterministic: contribution order never changes the output,
   // guards run in declared order and short-circuit, around() unwinds in reverse.

@@ -1,12 +1,12 @@
 'use strict';
 
-// Driver-owned lifecycle hook points for the Fastly Native request driver.
+// Fastly Native bindings and emission for the shared execution/HTTP lifecycle contracts.
 //
 // The driver (this table) is the only owner of the generated text that marks a
 // lifecycle position. Provider services contribute typed function bodies to a
 // named point; they never match or rewrite driver text themselves. Each point
-// declares its parameters, its composition rule and what every call site does
-// when a guard rejects. With no contributions the driver source is returned
+// binds shared parameter roles and composition rules to concrete sites and
+// rejection actions. With no contributions the driver source is returned
 // unchanged, so builds that use no hooks are byte-identical by construction.
 //
 // Hooks are a provider-internal surface. Packages still contribute only ABI
@@ -18,55 +18,50 @@
 // That keeps the current "extension fences dominate" ordering. Migrating the
 // legacy instrumenters onto these points removes the need for that rule.
 
-const KINDS = Object.freeze(['observe', 'guard', 'predicate', 'claim', 'around']);
+const { executionLifecycle, httpLifecycle } = require('@pulse-compute/wasm-contracts/provider/toolchain');
+if (executionLifecycle.VERSION !== 'pulse.execution-lifecycle.v1' || httpLifecycle.VERSION !== 'pulse.http-lifecycle.v1')
+  throw hookError('Fastly lifecycle bindings require the reviewed execution and HTTP contract versions.');
+const { KINDS, COMPOSITION } = executionLifecycle;
+const semantics = Object.freeze({ ...executionLifecycle.POINTS, ...httpLifecycle.POINTS });
 
 // sites[].at: 'enter' inserts the call immediately after the anchor text (the
 // anchor is a function signature or a statement); 'before' inserts it on the
 // line above the anchor; 'wrap' replaces the anchor with a composed form.
-const POINTS = Object.freeze({
+const BINDINGS = Object.freeze({
   'request.acquired': Object.freeze({
-    kind: 'observe', params: [],
-    doc: 'Downstream request and body handles are loaded and owned by the driver.',
+    params: {},
     sites: [{ anchor: '  __pulse_fastly_request_body_handle = load<i32>(changetype<usize>(handles) + 4)\n', at: 'enter-line' }]
   }),
   'effect.settle': Object.freeze({
-    kind: 'guard', params: [['index', 'i32'], ['ticket', 'i32'], ['result', 'i32']],
-    doc: 'A resolved effect result is about to consume its invocation ticket.',
+    params: { effect: ['index', 'i32'], ticket: ['ticket', 'i32'], result: ['result', 'i32'] },
     sites: [{ anchor: 'function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {', at: 'enter', reject: 'return 0' }]
   }),
   'effect.deliver': Object.freeze({
-    kind: 'around', params: [['index', 'i32'], ['result', 'i32']], afterParams: [['accepted', 'i32']],
-    doc: 'Continuation hand-off; after() runs only on normal return, including rejection, never on trap.',
+    params: { effect: ['index', 'i32'], result: ['result', 'i32'] }, afterParams: { accepted: ['accepted', 'i32'] },
     sites: [{ anchor: 'return pulse_set_effect_result(index, result)', at: 'wrap' }]
   }),
   'effect.result': Object.freeze({
-    kind: 'guard', params: [['effectIndex', 'i32'], ['handle', 'i32']],
-    doc: 'The exported continuation setter is entered (also reachable directly by the host).',
+    params: { effect: ['effectIndex', 'i32'], result: ['handle', 'i32'] },
     sites: [{ anchor: 'export function pulse_set_effect_result(effectIndex: i32, handle: i32): i32 {', at: 'enter', reject: 'return 0' }]
   }),
   'invocation.close': Object.freeze({
-    kind: 'observe', params: [],
-    doc: 'The invocation closes; outstanding tickets are about to be cleared.',
+    params: {},
     sites: [{ anchor: 'function __pulse_invocation_close(): void {', at: 'enter' }]
   }),
   'invocation.end': Object.freeze({
-    kind: 'observe', params: [],
-    doc: 'Driver run returned normally (including handled failure); not a trap finalizer.',
+    params: {},
     sites: [{ anchor: '  __pulse_fastly_run_invocation()\n', at: 'enter-line' }]
   }),
   'invocation.closed': Object.freeze({
-    kind: 'observe', params: [],
-    doc: 'Driver closure and pending reaping returned normally; not a trap finalizer.',
+    params: {},
     sites: [{ anchor: '  __pulse_invocation_close()\n', at: 'enter-line' }]
   }),
   'response.error': Object.freeze({
-    kind: 'claim', params: [],
-    doc: 'Service-specific error responder, behind the shared authority fence.',
+    params: {},
     sites: [{ anchor: 'function __pulse_fastly_jwt_send_error(): void {', at: 'enter', onClaim: 'return;' }]
   }),
   'response.authority': Object.freeze({
-    kind: 'predicate', params: [],
-    doc: 'Whether the guest still holds downstream response authority. Every responder checks it first.',
+    params: {},
     sites: [
       { anchor: 'function __request_send_timeout(): void {', at: 'enter', reject: 'return;', feature: 'requestBudget' },
       { anchor: 'function __pulse_fastly_jwt_send_error(): void {', at: 'enter', reject: 'return;' },
@@ -75,11 +70,12 @@ const POINTS = Object.freeze({
     ]
   }),
   'result.claim': Object.freeze({
-    kind: 'claim', params: [['result', 'i32']],
-    doc: 'The final result is about to be sent downstream; a claimant completes it instead.',
+    params: { result: ['result', 'i32'] },
     sites: [{ anchor: '  __pulse_fastly_jwt_attach_evidence(result)', at: 'before', onClaim: 'return' }]
   })
 });
+
+const POINTS = bindPoints(BINDINGS);
 
 function hookError(message, detail) {
   const error = new Error(message);
@@ -92,29 +88,55 @@ const symbol = point => '__pulse_hook_' + point.replace(/\./g, '_');
 const paramList = params => params.map(([name, type]) => `${name}: ${type}`).join(', ');
 const argList = params => params.map(([name]) => name).join(', ');
 
+// Map semantic roles to concrete local names/types. Shared contracts never need
+// to know AssemblyScript, driver signatures, anchor order or diagnostic stages.
+function bindPoints(bindings) {
+  const bound = {};
+  function parameters(roles, values = {}, point) {
+    if (Object.keys(values).length !== roles.length || roles.some(role => !Object.hasOwn(values, role)))
+      throw hookError('Lifecycle binding must realize every semantic parameter role exactly once.', { point });
+    return Object.freeze(roles.map(role => {
+      const value = values[role];
+      if (!Array.isArray(value) || value.length !== 2 || value.some(v => typeof v !== 'string' || !v.length))
+        throw hookError('Lifecycle parameter binding requires a local name and type.', { point, role });
+      return Object.freeze([...value]);
+    }));
+  }
+  for (const [name, binding] of Object.entries(bindings)) {
+    if (!Object.hasOwn(semantics, name)) throw hookError('Unknown lifecycle binding point.', { point: name });
+    const semantic = semantics[name];
+    if (Object.hasOwn(binding, 'kind') || Object.hasOwn(binding, 'doc'))
+      throw hookError('Lifecycle bindings cannot override shared semantics.', { point: name });
+    bound[name] = Object.freeze({ ...semantic,
+      params: parameters(semantic.parameters, binding.params, name),
+      afterParams: parameters(semantic.afterParameters || [], binding.afterParams, name),
+      sites: Object.freeze(binding.sites.map(site => Object.freeze({ ...site })))
+    });
+  }
+  // Entry insertion reverses table order at a shared anchor. Realize the HTTP
+  // contract's outer fence explicitly, instead of silently depending on order.
+  const names = Object.keys(bound);
+  for (const [name, point] of Object.entries(bound)) for (const inner of point.dominates || []) {
+    if (bound[inner] && point.sites.some(site => bound[inner].sites.some(other => site.anchor === other.anchor))
+      && names.indexOf(name) <= names.indexOf(inner))
+      throw hookError('Lifecycle binding order violates the shared authority fence.', { point: name, inner });
+  }
+  return Object.freeze(bound);
+}
+
 function validate(contributions) {
-  if (!Array.isArray(contributions)) throw hookError('Lifecycle hook contributions must be a list.');
-  const seen = new Set(), orders = new Map();
-  for (const item of contributions) {
-    if (!item || typeof item !== 'object') throw hookError('Lifecycle hook contribution must be a record.');
-    const point = Object.hasOwn(POINTS, item.point) ? POINTS[item.point] : undefined;
-    if (!point) throw hookError(`Unknown lifecycle hook point ${item.point}.`, { point: item.point, owner: item.owner });
-    if (typeof item.owner !== 'string' || !/^[a-z0-9][a-z0-9.:-]{0,95}$/.test(item.owner)) throw hookError('Lifecycle hook owner must be a bounded identifier.', { point: item.point });
-    if (!Number.isSafeInteger(item.order)) throw hookError('Lifecycle hook contribution requires a safe integer order.', { point: item.point, owner: item.owner });
-    const key = item.point + '\0' + item.owner;
-    if (seen.has(key)) throw hookError('An owner may contribute to a lifecycle hook point once.', { point: item.point, owner: item.owner });
-    seen.add(key);
-    const orderKey = item.point + '\0' + item.order;
-    if (orders.has(orderKey)) throw hookError('Lifecycle hook contributions on one point need distinct orders.', { point: item.point, owners: [orders.get(orderKey), item.owner] });
-    orders.set(orderKey, item.owner);
-    const bodies = point.kind === 'around' ? ['before', 'after'] : ['body'];
+  const ordered = executionLifecycle.orderedContributions(contributions, POINTS, hookError);
+  for (const item of ordered) {
+    const point = POINTS[item.point];
+    const bodies = COMPOSITION[point.kind].dispatch === 'around' ? ['before', 'after'] : ['body'];
     for (const field of bodies) {
       if (typeof item[field] !== 'string') throw hookError(`Lifecycle hook ${point.kind} contribution requires ${field}.`, { point: item.point, owner: item.owner });
-      // Contributions are trusted provider source; this only keeps the module
-      // shape intact and stops a contribution from widening the export surface.
+      // Trusted provider source, not a source sandbox. Module-shape checks and
+      // emission remain here; shared metadata does not require source bodies.
       if (/\b(?:import|export)\b/.test(item[field])) throw hookError('Lifecycle hook bodies cannot import or export.', { point: item.point, owner: item.owner });
     }
   }
+  return ordered;
 }
 
 // Emit one function per contribution (parameters and module globals, not caller locals)
@@ -122,27 +144,29 @@ function validate(contributions) {
 function functions(name, point, items) {
   const lines = [];
   const p = point.params;
+  const rule = COMPOSITION[point.kind];
   items.forEach((item, n) => {
     const fn = `${symbol(name)}_${n}`;
-    if (point.kind === 'around') {
+    if (rule.dispatch === 'around') {
       lines.push(`function ${fn}_before(${paramList(p)}): void {\n${item.before}\n}`);
       lines.push(`function ${fn}_after(${paramList([...p, ...point.afterParams])}): void {\n${item.after}\n}`);
     } else {
-      const result = point.kind === 'observe' ? 'void' : 'bool';
+      const result = rule.result === 'void' ? 'void' : 'bool';
       lines.push(`function ${fn}(${paramList(p)}): ${result} {\n${item.body}\n}`);
     }
   });
   const call = (n, suffix = '', params = p) => `${symbol(name)}_${n}${suffix}(${argList(params)})`;
   const all = items.map((_, n) => n);
   const d = symbol(name);
-  if (point.kind === 'observe') lines.push(`function ${d}(${paramList(p)}): void { ${all.map(n => call(n) + ';').join(' ')} }`);
-  if (point.kind === 'guard' || point.kind === 'predicate') lines.push(`function ${d}(${paramList(p)}): bool { ${all.map(n => `if (!${call(n)}) return false;`).join(' ')} return true }`);
-  if (point.kind === 'claim') lines.push(`function ${d}(${paramList(p)}): bool { ${all.map(n => `if (${call(n)}) return true;`).join(' ')} return false }`);
-  if (point.kind === 'around') {
+  if (rule.dispatch === 'all') lines.push(`function ${d}(${paramList(p)}): void { ${all.map(n => call(n) + ';').join(' ')} }`);
+  if (rule.dispatch === 'all-true') lines.push(`function ${d}(${paramList(p)}): bool { ${all.map(n => `if (!${call(n)}) return false;`).join(' ')} return true }`);
+  if (rule.dispatch === 'first-true') lines.push(`function ${d}(${paramList(p)}): bool { ${all.map(n => `if (${call(n)}) return true;`).join(' ')} return false }`);
+  if (rule.dispatch === 'around') {
     const after = [...p, ...point.afterParams];
     lines.push(`function ${d}_before(${paramList(p)}): void { ${all.map(n => call(n, '_before') + ';').join(' ')} }`);
     // Reverse normal-return notifications. A trap skips these; this is not finally.
-    lines.push(`function ${d}_after(${paramList(after)}): void { ${[...all].reverse().map(n => call(n, '_after', after) + ';').join(' ')} }`);
+    const afterOrder = rule.afterOrder === 'descending' ? [...all].reverse() : all;
+    lines.push(`function ${d}_after(${paramList(after)}): void { ${afterOrder.map(n => call(n, '_after', after) + ';').join(' ')} }`);
   }
   return lines.join('\n');
 }
@@ -150,9 +174,9 @@ function functions(name, point, items) {
 function siteCall(name, point, site) {
   const d = symbol(name);
   const args = argList(point.params);
-  if (point.kind === 'observe') return `${d}(${args})`;
-  if (point.kind === 'guard' || point.kind === 'predicate') return `if (!${d}(${args})) ${site.reject}`;
-  if (point.kind === 'claim') return `if (${d}(${args})) ${site.onClaim}`;
+  if (COMPOSITION[point.kind].dispatch === 'all') return `${d}(${args})`;
+  if (COMPOSITION[point.kind].dispatch === 'all-true') return `if (!${d}(${args})) ${site.reject}`;
+  if (COMPOSITION[point.kind].dispatch === 'first-true') return `if (${d}(${args})) ${site.onClaim}`;
   throw hookError(`No call form for ${point.kind} at ${name}.`);
 }
 
@@ -163,11 +187,11 @@ function occurrences(source, anchor) {
 }
 
 function compose(source, contributions = [], features = {}) {
-  validate(contributions);
+  const ordered = validate(contributions);
   const record = [];
   if (!contributions.length) return { source, record };
   const byPoint = new Map();
-  for (const item of [...contributions].sort((a, b) => a.order - b.order || a.owner.localeCompare(b.owner))) {
+  for (const item of ordered) {
     if (!byPoint.has(item.point)) byPoint.set(item.point, []);
     byPoint.get(item.point).push(item);
   }
@@ -214,4 +238,4 @@ function describe() {
   })));
 }
 
-module.exports = Object.freeze({ KINDS, POINTS, compose, describe, validate });
+module.exports = Object.freeze({ KINDS, POINTS, BINDINGS, bindPoints, compose, describe, validate });

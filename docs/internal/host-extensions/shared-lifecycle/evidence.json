@@ -1,0 +1,1395 @@
+{
+  "version": "hex.shared-lifecycle.v1",
+  "status": "passed",
+  "base": "4a06175b4850786f19b3e6a234b85a447eed1b42",
+  "node": "v24.22.1",
+  "contextProducerNode": "v24.18.0",
+  "sourceIdentity": [
+    {
+      "path": "docs/architecture/current-contracts.md",
+      "sha256": "2fe4f20af63f5ae17356038e16fbdcd91067071a4a9a60b8a0aff1eefd73eb94"
+    },
+    {
+      "path": "docs/internal/host-extensions/DESIGN-03-lifecycle-hooks.md",
+      "sha256": "c29d791d4badaf29555a1aee3db49df03853c2c33c3ac7c70fd0b502d364cc7c"
+    },
+    {
+      "path": "docs/internal/host-extensions/shared-lifecycle/README.md",
+      "sha256": "dc5263c2b0b4b575fb346bc6890f41d2741b13dcf33eccbf7787bbdb9c037b41"
+    },
+    {
+      "path": "docs/internal/host-extensions/shared-lifecycle/identity.cjs",
+      "sha256": "2fc12c2171fb62aa5082c7d7a8f67870e3eb1ec275e9c1fc6002c437bce6fab7"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/application/.pulse/config.ts",
+      "sha256": "eeac05f8b7c00a65dd657ad5091c81c54175f906dcec65ff0d3d865b52c66624"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/application/src/diagnostic.ts",
+      "sha256": "dc39161fcdcfc792ebbc4b86fdc7f96404d69a855258e17a4ef2b73db9624cfa"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/application/src/example.ts",
+      "sha256": "bf23c14baed14eeccd18208868d682bbe5adc4c3f84806c9ca248de9cad59887"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/application/src/read.ts",
+      "sha256": "4c152bca7acea13cf096264fdc24c40c1a37b0a2592f18fa77f1f4e259d02adf"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/application/src/search.ts",
+      "sha256": "6ffec35d6b74530c34ccd420a746a9bd01b86f5ca8468106031165336f9b6a1b"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/application/src/start.ts",
+      "sha256": "002e8b79146c3e1fc3ae048c87ed730752920502b114052edf966dc5f645d384"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "b0b6074e616d6b00834ca7c21a201d4f2b41df7c25127b7c6885dc6fc53c5589"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/context-manifest.json",
+      "sha256": "bcc3aa2d0b413358afc2a522814e5deccfbf03c8e324097e0543085d9ce586b3"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+      "sha256": "56b241ec5bd84a20826d0bbeee8b0233570b036455f9758586d3adea5e1f4c85"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/metadata.bin",
+      "sha256": "f9a32659816b39c44a0c51ef37303b2c3587b50de7fcc3c97f9f16f662b84685"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/resource-manifest.json",
+      "sha256": "5d3a16972d2f16199015bf7e8eae9ab23db05c667b82f59b643185ce881a83af"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/text.bin",
+      "sha256": "d77ea8fc7625a1c8cd3151f881172774afbad8b0c4e6ce2556e55b7904b3f782"
+    },
+    {
+      "path": "examples/12-pulse-context-mcp/context-data/vector.bin",
+      "sha256": "4e8a5cbc25cac7501ce12dcdde1d883c07473640b42ff17b8e0c5657e25716aa"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/host-extensions.js",
+      "sha256": "8042b0afe989cd6417aa1153894595bc26175af003bc46b4c2359cee45cdbf82"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/lifecycle-hooks.js",
+      "sha256": "c1ef4f5d3ec239d287579e27e08e45d994aba1e2f981b63533046f4497d0f958"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/response-authority.js",
+      "sha256": "07e0ab35863ff5c240123ed7d8c397c168268e8b5d0e82e29982737baa70173e"
+    },
+    {
+      "path": "wasm/packages/cli/docs/architecture/current-contracts.md",
+      "sha256": "57004091e7f5cabd1f718d4bcdb625ca5cde28bf076fc3b5b0ca59b7712e6752"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/.pulse/config.ts",
+      "sha256": "eeac05f8b7c00a65dd657ad5091c81c54175f906dcec65ff0d3d865b52c66624"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/diagnostic.ts",
+      "sha256": "dc39161fcdcfc792ebbc4b86fdc7f96404d69a855258e17a4ef2b73db9624cfa"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/example.ts",
+      "sha256": "bf23c14baed14eeccd18208868d682bbe5adc4c3f84806c9ca248de9cad59887"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/read.ts",
+      "sha256": "4c152bca7acea13cf096264fdc24c40c1a37b0a2592f18fa77f1f4e259d02adf"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/search.ts",
+      "sha256": "6ffec35d6b74530c34ccd420a746a9bd01b86f5ca8468106031165336f9b6a1b"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/application/src/start.ts",
+      "sha256": "002e8b79146c3e1fc3ae048c87ed730752920502b114052edf966dc5f645d384"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "b0b6074e616d6b00834ca7c21a201d4f2b41df7c25127b7c6885dc6fc53c5589"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-manifest.json",
+      "sha256": "bcc3aa2d0b413358afc2a522814e5deccfbf03c8e324097e0543085d9ce586b3"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+      "sha256": "56b241ec5bd84a20826d0bbeee8b0233570b036455f9758586d3adea5e1f4c85"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/metadata.bin",
+      "sha256": "f9a32659816b39c44a0c51ef37303b2c3587b50de7fcc3c97f9f16f662b84685"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/resource-manifest.json",
+      "sha256": "5d3a16972d2f16199015bf7e8eae9ab23db05c667b82f59b643185ce881a83af"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/text.bin",
+      "sha256": "d77ea8fc7625a1c8cd3151f881172774afbad8b0c4e6ce2556e55b7904b3f782"
+    },
+    {
+      "path": "wasm/packages/cli/examples/12-pulse-context-mcp/context-data/vector.bin",
+      "sha256": "4e8a5cbc25cac7501ce12dcdde1d883c07473640b42ff17b8e0c5657e25716aa"
+    },
+    {
+      "path": "wasm/packages/contracts/src/handler/execution-lifecycle.js",
+      "sha256": "f158fe9a609d012a708e75496f42f55b47ac009678661c52a78e7c8088719222"
+    },
+    {
+      "path": "wasm/packages/contracts/src/host/http-lifecycle.js",
+      "sha256": "c08b753dca6ade8e2e0722ec9f92573886ef5935fa2d35b4fef851d5452f3cc2"
+    },
+    {
+      "path": "wasm/packages/contracts/src/provider/toolchain.js",
+      "sha256": "455a4593488f9c4664391ee0b06fb5e5d8471cd487cb09b709e85cac5e81501c"
+    },
+    {
+      "path": "wasm/test/contracts/assert-provider-toolchain-boundary.cjs",
+      "sha256": "184501313c708eecfc77d5c26195a8c409aa79d6f6acc92778dfc0fd28c9966c"
+    },
+    {
+      "path": "wasm/test/contracts/lifecycle-contract-cases.cjs",
+      "sha256": "2592884fd1e1675530ef710be1f1c43608fffdf34a2700f3aef0ad8dff3b63f7"
+    },
+    {
+      "path": "wasm/test/provider/lifecycle-hook-cases.cjs",
+      "sha256": "d7ed740987b7b0898deb600a85e101c4a25a40542e7140798e22115e167b0b01"
+    }
+  ],
+  "identity": [
+    {
+      "fixture": "absent",
+      "wasmBytes": 23444,
+      "wasmSha256": "7848730bed1cc6ed85100914298664b34329793b0062ebc17e8ea0f16e32aa67",
+      "sourceSha256": "20cd7bcb14521773350298b69392e902c061a88108156c9886cc4bc1c710f68f",
+      "wasmDeltaBytes": 0,
+      "sourceIdentical": true,
+      "orderedImportsAndPolicyIdentical": true
+    },
+    {
+      "fixture": "unused",
+      "wasmBytes": 23444,
+      "wasmSha256": "eb331d429b9de118e727214a757583ff0b24f21825401d5ed46767a1df87bc0a",
+      "sourceSha256": "c07234378d9bd362dbba364c957ade802e401ca8f90750fc9c87462804252efe",
+      "wasmDeltaBytes": 0,
+      "sourceIdentical": true,
+      "orderedImportsAndPolicyIdentical": true
+    },
+    {
+      "fixture": "generic",
+      "wasmBytes": 25268,
+      "wasmSha256": "a33f8e184b4d241858c8497004e99b404b2bad3c2a277c5263f5f790671dfa1f",
+      "sourceSha256": "6bc8cdfe9135c56b91e3d6cb8931009af486c4c0593945f4b896efd4631c41fe",
+      "wasmDeltaBytes": 0,
+      "sourceIdentical": true,
+      "orderedImportsAndPolicyIdentical": true
+    },
+    {
+      "fixture": "fanout",
+      "wasmBytes": 27551,
+      "wasmSha256": "8992b9cbfb2882cdc28b7e34580b18417b47ae2fa2debb8919bd4437082ec37f",
+      "sourceSha256": "44a9dde73963abe9bdf0717f05c5abd613a67143b6c379dc3558515d1e6f2a15",
+      "wasmDeltaBytes": 0,
+      "sourceIdentical": true,
+      "orderedImportsAndPolicyIdentical": true
+    },
+    {
+      "fixture": "websocket",
+      "wasmBytes": 27556,
+      "wasmSha256": "35c2bcfcf574a6a5f3b5b242c8d27592de8da378ffa4bb8658ea51236ef30b6c",
+      "sourceSha256": "349c54217ed27de04f7f2e93a2dfb9aae341dc84e1317b7b022f8a087d54070b",
+      "wasmDeltaBytes": 0,
+      "sourceIdentical": true,
+      "orderedImportsAndPolicyIdentical": true
+    },
+    {
+      "fixture": "forwarding",
+      "wasmBytes": 35296,
+      "wasmSha256": "2eca73a9faeeb22c23ad3996338743a32f676d0a7fb0155abdfa1bdac6fb5906",
+      "sourceSha256": "943eeaeccfce7dd0d8c62c473a593c8b736a1c99cdb7650574a25b3554ffb0e6",
+      "wasmDeltaBytes": 0,
+      "sourceIdentical": true,
+      "orderedImportsAndPolicyIdentical": true
+    },
+    {
+      "fixture": "fanout-budget",
+      "wasmBytes": 28362,
+      "wasmSha256": "c5db9d61a14254d7709469058c1d22a319b59dbf4c8098c8bb591807cbd5c18f",
+      "sourceSha256": "0541cd7c3e2e939329f105cb2673fc82c0db46c46edc57eded34b5922a2c7196",
+      "wasmDeltaBytes": 0,
+      "sourceIdentical": true,
+      "orderedImportsAndPolicyIdentical": true
+    }
+  ],
+  "sharedContracts": {
+    "cases": [
+      "execution capability does not imply HTTP",
+      "HTTP points require explicit capability selection",
+      "parameters carry roles without an ABI representation",
+      "contracts are recursively immutable",
+      "composition kinds define result and short-circuit semantics",
+      "after and exit notifications do not promise trap cleanup",
+      "rejection postconditions precede ticket consumption and delivery",
+      "metadata validation does not require executable source",
+      "ordering is deterministic and does not mutate registration input",
+      "owners and orders are scoped per point",
+      "reject non-list",
+      "reject null record",
+      "reject array record",
+      "reject unknown point",
+      "reject inherited point",
+      "reject invalid owner",
+      "reject unbounded owner",
+      "reject fractional order",
+      "reject unsafe order",
+      "reject duplicate owner",
+      "reject duplicate order",
+      "provider may preserve its own diagnostic namespace",
+      "authority has no automatic path back to owned",
+      "completion does not prove delivery, quiescence or resource disposal",
+      "execution contract loads without HTTP or a provider",
+      "packed contracts load outside checkout without Fastly"
+    ],
+    "packed": {
+      "execution": "pulse.execution-lifecycle.v1",
+      "http": "pulse.http-lifecycle.v1",
+      "fastlyLoaded": false,
+      "packageSha256": "f05e778e31910e878ed29ec3f5e2fd75d8c3025e6fc13c398b85dfddf8ded540",
+      "packageBytes": 173935
+    }
+  },
+  "compiledComposition": {
+    "cases": 9,
+    "bytes": 1415,
+    "sha256": "42db6f2de8aed3f0d1b3af7502136575efcb04e724abd1e7c033ac69972f7f49",
+    "registrationOrderIdentical": true
+  },
+  "composerCases": 37,
+  "terminalTraces": 66,
+  "ra05Cases": 44,
+  "runnerChecks": [
+    {
+      "selection": "unit",
+      "status": "passed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "binary-resource-admission"
+        },
+        {
+          "status": "passed",
+          "task": "report-capsule-contract"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-viewer"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-retained-evidence"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-size-evidence"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-capture-proof"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-entry-proof"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-reference-provenance"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-handler-topology"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-handler-associations"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-relationships"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-imported-inputs"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-resource-inventory"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-graph-diagnostics"
+        },
+        {
+          "status": "passed",
+          "task": "multifile-source-indexes"
+        },
+        {
+          "status": "passed",
+          "task": "guest-json-roundtrip"
+        },
+        {
+          "status": "passed",
+          "task": "pure-helper-contract"
+        },
+        {
+          "status": "passed",
+          "task": "callable-source-admission"
+        },
+        {
+          "status": "passed",
+          "task": "suite-shape"
+        },
+        {
+          "status": "passed",
+          "task": "test-orchestration"
+        },
+        {
+          "status": "passed",
+          "task": "package-exports"
+        },
+        {
+          "status": "passed",
+          "task": "boundaries"
+        },
+        {
+          "status": "passed",
+          "task": "workspace-hygiene"
+        },
+        {
+          "status": "passed",
+          "task": "hidden-contracts"
+        },
+        {
+          "status": "passed",
+          "task": "release-feature-acceptance"
+        },
+        {
+          "status": "passed",
+          "task": "release-runtime-policy"
+        },
+        {
+          "status": "passed",
+          "task": "release-seal-lifecycle"
+        },
+        {
+          "status": "passed",
+          "task": "release-checkpoints"
+        },
+        {
+          "status": "passed",
+          "task": "release-recovery-runner"
+        },
+        {
+          "status": "passed",
+          "task": "release-recovery"
+        },
+        {
+          "status": "passed",
+          "task": "release-tag"
+        },
+        {
+          "status": "passed",
+          "task": "api-surface"
+        },
+        {
+          "status": "passed",
+          "task": "logging-contract"
+        },
+        {
+          "status": "passed",
+          "task": "s3-design-contract"
+        },
+        {
+          "status": "passed",
+          "task": "kv-design-contract"
+        },
+        {
+          "status": "passed",
+          "task": "kv-conditional-runtime"
+        },
+        {
+          "status": "passed",
+          "task": "kv-conditional-gates"
+        },
+        {
+          "status": "passed",
+          "task": "s3-read-contract"
+        },
+        {
+          "status": "passed",
+          "task": "s3-write-contract"
+        },
+        {
+          "status": "passed",
+          "task": "crypto-config-planning"
+        },
+        {
+          "status": "passed",
+          "task": "crypto-es256-signing"
+        },
+        {
+          "status": "passed",
+          "task": "crypto-rs256"
+        },
+        {
+          "status": "passed",
+          "task": "crypto-digest-text-contract"
+        },
+        {
+          "status": "passed",
+          "task": "reachable-graph"
+        },
+        {
+          "status": "passed",
+          "task": "project-modules"
+        },
+        {
+          "status": "passed",
+          "task": "package-reachability"
+        },
+        {
+          "status": "passed",
+          "task": "external-lowerers"
+        },
+        {
+          "status": "passed",
+          "task": "package-runtime"
+        },
+        {
+          "status": "passed",
+          "task": "provider-toolchain"
+        },
+        {
+          "status": "passed",
+          "task": "schema-registry"
+        },
+        {
+          "status": "passed",
+          "task": "continuation-registry"
+        },
+        {
+          "status": "passed",
+          "task": "entities-contracts"
+        },
+        {
+          "status": "passed",
+          "task": "entities-schema-bridge"
+        },
+        {
+          "status": "passed",
+          "task": "entities-javascript-runtime"
+        },
+        {
+          "status": "passed",
+          "task": "entities-json-rpc-corpus"
+        },
+        {
+          "status": "passed",
+          "task": "mcp-http"
+        },
+        {
+          "status": "passed",
+          "task": "pulse-context-corpus"
+        },
+        {
+          "status": "passed",
+          "task": "pulse-context-build"
+        },
+        {
+          "status": "passed",
+          "task": "pulse-context-application"
+        },
+        {
+          "status": "passed",
+          "task": "pulse-context-host"
+        },
+        {
+          "status": "passed",
+          "task": "mcp-compatibility"
+        },
+        {
+          "status": "passed",
+          "task": "mcp-tools"
+        },
+        {
+          "status": "passed",
+          "task": "mcp-authorization"
+        },
+        {
+          "status": "passed",
+          "task": "entities-package-owned-lowering"
+        },
+        {
+          "status": "passed",
+          "task": "entities-catalog"
+        },
+        {
+          "status": "passed",
+          "task": "entities-inspection"
+        },
+        {
+          "status": "passed",
+          "task": "entities-orchestration-demo"
+        }
+      ]
+    },
+    {
+      "selection": "cli",
+      "status": "failed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "report-capsule-contract"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-viewer"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-retained-evidence"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-size-evidence"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-capture-proof"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-entry-proof"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-reference-provenance"
+        },
+        {
+          "status": "failed",
+          "task": "cli-report-handler-topology"
+        }
+      ]
+    },
+    {
+      "selection": "topology-retry",
+      "status": "passed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "cli-report-handler-topology"
+        }
+      ]
+    },
+    {
+      "selection": "cli-remainder",
+      "status": "passed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "cli-report-handler-associations"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-relationships"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-imported-inputs"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-resource-inventory"
+        },
+        {
+          "status": "passed",
+          "task": "cli-report-graph-diagnostics"
+        },
+        {
+          "status": "passed",
+          "task": "cli-command-spec"
+        },
+        {
+          "status": "passed",
+          "task": "cli-init-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "cli-project-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "cli-expansion-doctor"
+        },
+        {
+          "status": "passed",
+          "task": "cli-project-guards"
+        },
+        {
+          "status": "passed",
+          "task": "cli-dev-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "cli-schema-json-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "entities-node-native-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "mcp-native-binding"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-entities-native-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "events-cli-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "cli-diagnostics"
+        },
+        {
+          "status": "passed",
+          "task": "docs-executable-contracts"
+        },
+        {
+          "status": "passed",
+          "task": "docs-executable-init-dev"
+        },
+        {
+          "status": "passed",
+          "task": "docs-migration-schema-lowering"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-01-hello-json"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-03-fetch-composition-dynamic-probes"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-02-request-schema"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-03-fetch-composition"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-05-fastly-capabilities"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-07-opaque-proxy"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-09-router-lowering"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-10-entities-tools"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-11-events"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-12-pulse-context-mcp"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-13-jwt-es256"
+        }
+      ]
+    },
+    {
+      "selection": "portable",
+      "status": "failed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "context-native-proof"
+        },
+        {
+          "status": "passed",
+          "task": "npm-source-imports"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-numeric-regions"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-numeric-budgets"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-handle-ownership"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-handle-frames"
+        },
+        {
+          "status": "passed",
+          "task": "pure-helper-vocabulary"
+        },
+        {
+          "status": "passed",
+          "task": "pure-string-index"
+        },
+        {
+          "status": "passed",
+          "task": "pure-field-projection"
+        },
+        {
+          "status": "passed",
+          "task": "pure-guarded-arguments"
+        },
+        {
+          "status": "passed",
+          "task": "pure-source-helpers"
+        },
+        {
+          "status": "passed",
+          "task": "pure-record-helpers"
+        },
+        {
+          "status": "passed",
+          "task": "pure-argument-helpers"
+        },
+        {
+          "status": "passed",
+          "task": "pure-loop-helpers"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-driver-behavior-o09"
+        },
+        {
+          "status": "passed",
+          "task": "kv-native-abi-feasibility"
+        },
+        {
+          "status": "passed",
+          "task": "s3-native-read"
+        },
+        {
+          "status": "passed",
+          "task": "s3-body-read"
+        },
+        {
+          "status": "passed",
+          "task": "s3-node-transport"
+        },
+        {
+          "status": "passed",
+          "task": "canonical-api-lowering"
+        },
+        {
+          "status": "passed",
+          "task": "canonical-native-plan"
+        },
+        {
+          "status": "passed",
+          "task": "shared-stage-o19"
+        },
+        {
+          "status": "passed",
+          "task": "str02b-node-native"
+        },
+        {
+          "status": "failed",
+          "task": "fastly-incoming-body-forwarding"
+        }
+      ]
+    },
+    {
+      "selection": "portable-remainder",
+      "status": "failed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "fastly-incoming-body-forwarding"
+        },
+        {
+          "status": "passed",
+          "task": "str03a-generated-output"
+        },
+        {
+          "status": "passed",
+          "task": "str03c-bounded-transforms"
+        },
+        {
+          "status": "passed",
+          "task": "bounded-app-logic"
+        },
+        {
+          "status": "passed",
+          "task": "bounded-read-loops"
+        },
+        {
+          "status": "passed",
+          "task": "bounded-loop-helpers"
+        },
+        {
+          "status": "passed",
+          "task": "logging-lowering"
+        },
+        {
+          "status": "passed",
+          "task": "canonical-router-lowering"
+        },
+        {
+          "status": "passed",
+          "task": "canonical-router-terminal-middleware"
+        },
+        {
+          "status": "passed",
+          "task": "router-selected-groups"
+        },
+        {
+          "status": "passed",
+          "task": "json-as-compatibility"
+        },
+        {
+          "status": "passed",
+          "task": "entities-envelope-feasibility"
+        },
+        {
+          "status": "passed",
+          "task": "entities-managed-handler"
+        },
+        {
+          "status": "passed",
+          "task": "entities-managed-handler-effects"
+        },
+        {
+          "status": "passed",
+          "task": "entities-native-runtime"
+        },
+        {
+          "status": "passed",
+          "task": "entities-hardening"
+        },
+        {
+          "status": "passed",
+          "task": "entities-node-native-workflow"
+        },
+        {
+          "status": "failed",
+          "task": "pulse-context-tools"
+        }
+      ]
+    },
+    {
+      "selection": "portable-final",
+      "status": "passed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "callable-public-contract"
+        },
+        {
+          "status": "passed",
+          "task": "callable-composition-proof"
+        },
+        {
+          "status": "passed",
+          "task": "callable-authored-native"
+        },
+        {
+          "status": "passed",
+          "task": "callable-authored-composition"
+        },
+        {
+          "status": "passed",
+          "task": "callable-authored-javascript"
+        },
+        {
+          "status": "passed",
+          "task": "callable-authored-routed"
+        },
+        {
+          "status": "passed",
+          "task": "callable-lifetime"
+        },
+        {
+          "status": "passed",
+          "task": "mcp-native-binding"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-entities-native-workflow"
+        },
+        {
+          "status": "passed",
+          "task": "crypto-native-guest-source"
+        },
+        {
+          "status": "passed",
+          "task": "guest-link-package"
+        },
+        {
+          "status": "passed",
+          "task": "guest-link-materialization-stage"
+        },
+        {
+          "status": "passed",
+          "task": "guest-link-audit-diagnostics"
+        },
+        {
+          "status": "passed",
+          "task": "assets-lowering-plan"
+        },
+        {
+          "status": "passed",
+          "task": "assets-package-owned-lowering"
+        },
+        {
+          "status": "passed",
+          "task": "assets-native-embedded"
+        },
+        {
+          "status": "passed",
+          "task": "grip-package-owned-lowering"
+        },
+        {
+          "status": "passed",
+          "task": "jwt-package-owned-lowering"
+        },
+        {
+          "status": "passed",
+          "task": "canonical-api-runtime"
+        },
+        {
+          "status": "passed",
+          "task": "canonical-opaque-node-emission"
+        },
+        {
+          "status": "passed",
+          "task": "grip-package-runtime"
+        },
+        {
+          "status": "passed",
+          "task": "package-root-native"
+        },
+        {
+          "status": "passed",
+          "task": "canonical-native-wasm"
+        },
+        {
+          "status": "passed",
+          "task": "cli-javascript-target-compilation"
+        },
+        {
+          "status": "passed",
+          "task": "target-support"
+        },
+        {
+          "status": "passed",
+          "task": "jwt-javascript-admission"
+        },
+        {
+          "status": "passed",
+          "task": "crypto-runtime-builtin"
+        },
+        {
+          "status": "passed",
+          "task": "javascript-effect-adapter"
+        },
+        {
+          "status": "passed",
+          "task": "logging-runtime"
+        },
+        {
+          "status": "passed",
+          "task": "assets-javascript-runtime"
+        },
+        {
+          "status": "passed",
+          "task": "native-context-primitives"
+        },
+        {
+          "status": "passed",
+          "task": "binary-resource-execution"
+        },
+        {
+          "status": "passed",
+          "task": "effect-collections"
+        },
+        {
+          "status": "passed",
+          "task": "effect-collection-providers"
+        },
+        {
+          "status": "passed",
+          "task": "jwt-signing"
+        },
+        {
+          "status": "passed",
+          "task": "jwt-es256-signing"
+        },
+        {
+          "status": "passed",
+          "task": "jwt-rs256"
+        },
+        {
+          "status": "passed",
+          "task": "s3-write-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "crypto-cross-target-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "crypto-digest-text-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "crypto-digest-storage-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "multifile-source-identity"
+        },
+        {
+          "status": "passed",
+          "task": "text-capacity-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "events-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "node-router-context-parity"
+        },
+        {
+          "status": "passed",
+          "task": "catalog-router-parity"
+        },
+        {
+          "status": "passed",
+          "task": "fetch-projections-request-bodies"
+        },
+        {
+          "status": "passed",
+          "task": "config-secrets-kv-redaction"
+        },
+        {
+          "status": "passed",
+          "task": "kv-conditional-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "kv-conditional-adversarial"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-conditional-kv"
+        },
+        {
+          "status": "passed",
+          "task": "schema-codecs"
+        },
+        {
+          "status": "passed",
+          "task": "schema-kv-parity"
+        },
+        {
+          "status": "passed",
+          "task": "time-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "time-consumer"
+        },
+        {
+          "status": "passed",
+          "task": "request-budget-transport"
+        },
+        {
+          "status": "passed",
+          "task": "node-launcher"
+        },
+        {
+          "status": "passed",
+          "task": "http-input-outcomes"
+        },
+        {
+          "status": "passed",
+          "task": "application-errors"
+        },
+        {
+          "status": "passed",
+          "task": "application-error-boundaries"
+        },
+        {
+          "status": "passed",
+          "task": "node-cross-target-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "grip-cross-target-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "four-mode-conformance"
+        },
+        {
+          "status": "passed",
+          "task": "provider-packages"
+        },
+        {
+          "status": "passed",
+          "task": "provider-fastly-package"
+        },
+        {
+          "status": "passed",
+          "task": "provider-fastly-apps"
+        },
+        {
+          "status": "passed",
+          "task": "canonical-grip-fastly"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-cli-gate-surface"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-javascript-packaging"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-javascript-runtime"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-javascript-tooling"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-native-http-shell"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-native-http-effects"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-native-platform-capabilities"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-host-extension-proof"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-request-headers"
+        }
+      ]
+    },
+    {
+      "selection": "context-retry",
+      "status": "passed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "pulse-context-tools"
+        },
+        {
+          "status": "passed",
+          "task": "pulse-context-quality-actual"
+        },
+        {
+          "status": "passed",
+          "task": "pulse-context-quality-growth"
+        },
+        {
+          "status": "passed",
+          "task": "pulse-context-quality-repeat"
+        }
+      ]
+    },
+    {
+      "selection": "functional",
+      "status": "passed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "provider-toolchain"
+        },
+        {
+          "status": "passed",
+          "task": "package-exports"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-host-extension-proof"
+        },
+        {
+          "status": "passed",
+          "task": "fastly-incoming-body-forwarding"
+        }
+      ]
+    },
+    {
+      "selection": "final-functional",
+      "status": "passed",
+      "tasks": [
+        {
+          "status": "passed",
+          "task": "fastly-host-extension-proof"
+        },
+        {
+          "status": "passed",
+          "task": "pulse-context-build"
+        },
+        {
+          "status": "passed",
+          "task": "pulse-context-corpus"
+        },
+        {
+          "status": "passed",
+          "task": "docs-example-12-pulse-context-mcp"
+        }
+      ]
+    }
+  ],
+  "coverage": {
+    "unit": {
+      "expected": 68,
+      "passed": 68,
+      "selections": [
+        "unit"
+      ],
+      "complete": true,
+      "releaseAcceptance": false
+    },
+    "cli": {
+      "expected": 40,
+      "passed": 40,
+      "selections": [
+        "cli",
+        "topology-retry",
+        "cli-remainder"
+      ],
+      "complete": true,
+      "releaseAcceptance": false
+    },
+    "portable": {
+      "expected": 120,
+      "passed": 120,
+      "selections": [
+        "portable",
+        "portable-remainder",
+        "portable-final",
+        "context-retry"
+      ],
+      "complete": true,
+      "releaseAcceptance": false
+    }
+  },
+  "remoteImplementation": {
+    "implementationCommit": "21141e63b3b4737cb1b144e2e0a28966c4a1b65a",
+    "implementationTree": "e87810942e0365c92d40cdc4f9b5f0cb1594a344",
+    "baseTree": "f6a1c5b65e430f157d174520694ce6636d9d4a80"
+  },
+  "localImplementationCommit": "8dd8d6e18b81ab43b5972271d8ab98c79bea301f",
+  "otherPassed": [
+    "workspace build",
+    "maintainer:check",
+    "docs:check",
+    "documentation-release",
+    "git diff --check"
+  ],
+  "earlierAttempts": [
+    {
+      "logs": [
+        "shared-lifecycle-portable-remainder.log",
+        "shared-lifecycle-context-retry.log"
+      ],
+      "result": "Context fixture setup copied pre-existing application/node_modules and then collided creating its own symlinks (EEXIST). The CLI documentation workflow was still using that fixture. After it completed, its dependency cleanup had removed the source node_modules; retried the context selection sequentially with that clean fixture. A planned preservation move was unnecessary and made no filesystem change. No implementation or test source changes."
+    },
+    {
+      "logs": [
+        "shared-lifecycle-portable.log",
+        "shared-lifecycle-portable-remainder.log"
+      ],
+      "result": "Forwarding proof capture of uncommitted git diff exceeded default child-process buffer after context regeneration (ENOBUFS). Implementation committed locally; same bytes rerun from forwarding task. No test or implementation changes for retry."
+    },
+    {
+      "logs": [
+        "shared-lifecycle-cli.log",
+        "shared-lifecycle-topology-retry.log",
+        "shared-lifecycle-cli-remainder.log"
+      ],
+      "result": "CLI profile stopped at REPORT_ARTIFACT_HASH in report topology; isolated retry passed without source changes; remaining CLI selection run separately; original failed attempt retained; cause not established"
+    },
+    {
+      "logs": [
+        "shared-lifecycle-build.log",
+        "shared-lifecycle-maintainer.log",
+        "shared-lifecycle-docs.log",
+        "shared-lifecycle-doc-release.log"
+      ],
+      "result": "stale generated context dataset; regenerated with pinned producer; final retries passed"
+    },
+    {
+      "logs": [
+        "shared-lifecycle-composer.log"
+      ],
+      "result": "version-rejection child resolved contracts from repository root; corrected to resolve relative to provider module; final 37 cases passed"
+    }
+  ],
+  "limits": [
+    "development evidence, not release acceptance",
+    "no second-host or actual Fastly qualification",
+    "no execution-cost claim; matched code and Wasm identity only",
+    "no merge or release action"
+  ],
+  "archive": {
+    "file": "evidence.tar.gz",
+    "bytes": 1467963,
+    "sha256": "eeb0f3ea9f0e7ea835bbee4a02a6fe085801947da5ccf90e23cd1ad08e4b9b1e"
+  }
+}
