@@ -4,7 +4,7 @@ This workstream follows the [ownership](../ownership/README.md) and
 [bounded composition](../composition/README.md) investigations. Its first proposed
 milestone is cache, core fetch and their fixed composition under one accounting
 contract. No new scheduler, automatic retry, silent fallback or universal cost
-optimizer is proposed. The owner approved RA-00 through RA-08; later units remain planned.
+optimizer is proposed. The owner approved RA-00 through RA-09; later units remain planned.
 
 | Unit | Deliverable | Recommended model / reasoning effort | Status |
 | --- | --- | --- | --- |
@@ -17,7 +17,7 @@ optimizer is proposed. The owner approved RA-00 through RA-08; later units remai
 | [RA-06](ra06/README.md) | Cache integration | GPT-6.1 Sol / High | Complete bounded checkpoint; Native cache ownership, whole-cohort reservation and shared lifecycle hooks; production adoption/host qualification remain separate |
 | [RA-07](ra07/README.md) | Composed-operation integration | Astra / High | Complete bounded checkpoint; joint Native cache/fetch accounting, fixed child lifecycle and whole-cohort admission; review before diagnostics/adoption |
 | [RA-08](ra08/README.md) | Capability/resource evidence and diagnostics | GPT-6.1 Sol / High | Complete bounded checkpoint; Native observation, redacted capability/resource sidecar, coverage-aware schema and comparison; public report adoption remains separate |
-| RA-09 | Matched cost and unused-path measurements | GPT-6.1 Sol / High | Planned |
+| [RA-09](ra09/README.md) | Matched cost and unused-path measurements | GPT-6.1 Sol / High | Complete bounded checkpoint; matched Native execution/observer, ledger, report and unused-path measurements; full accounting overhead and real-host latency remain unqualified |
 | RA-10 | Host lifecycle qualification | GPT-6.1 Sol / High | Planned |
 | RA-11 | Architecture and adoption review | Astra / High | Planned |
 
