@@ -1,0 +1,621 @@
+{
+  "version": "hex.ra04.v1",
+  "status": "passed",
+  "base": "e13139ad45f808e9f46e56e0944d63a87aeb31c5",
+  "node": "v24.19.0",
+  "inputs": [
+    {
+      "file": "guard.as.ts",
+      "sha256": "ff3d8703d7375569c5ce4ad9a27665ad49493c7774390cbc360efc7c6884b6bd"
+    },
+    {
+      "file": "check.cjs",
+      "sha256": "a5a239ff0f23b879c202237c1d1122da22e30d3f05aeaf09b75b8d073a70772d"
+    },
+    {
+      "file": "../ra03/service.cjs",
+      "sha256": "38acecb33cfd99a9b91265d21582e37c6024440e6b31e71e2efaeaa731840763"
+    },
+    {
+      "file": "../ra03/check.cjs",
+      "sha256": "9b95ba48f68746c301db33e7bcf6b5832c340f88161d4c280082a74bcbb8186c"
+    },
+    {
+      "file": "../ra03/native/build.cjs",
+      "sha256": "824a9f6a5e481f5920233349d0396e9ccd12b6d868d69f7ecc570492985bafd3"
+    },
+    {
+      "file": "../ra03/native/service.as.ts",
+      "sha256": "8e7da28b6d524691f6787fded634a3f684986ed8748b39fda2f43e4710d8fc43"
+    },
+    {
+      "file": "../ra02/policy.json",
+      "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f"
+    },
+    {
+      "file": "../../../../../packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "sha256": "132ea03b4db79ddb34af16f642d35a58d8818f61055622680fd9ca0985241c85"
+    },
+    {
+      "file": "../../../../../packages/runtime/src/internal/body.js",
+      "sha256": "4d24dea172711c444d656b5d71c76a94558afd6865281a4d6dfaf998cb6b4f79"
+    }
+  ],
+  "cases": [
+    {
+      "name": "Combined Native guard and ledger retain all in-flight charges 8",
+      "status": "passed",
+      "detail": {
+        "carryBytes": 1536,
+        "cleanupReserveBytes": 512,
+        "bankBytes": 5024
+      }
+    },
+    {
+      "name": "Combined Native cleanup capacity remains available at deadline boundary 8",
+      "status": "passed",
+      "detail": {
+        "chargedBytes": 256,
+        "deadlineReject": -2
+      }
+    },
+    {
+      "name": "Native shared pins fence actions and handoff 8",
+      "status": "passed"
+    },
+    {
+      "name": "Native four-pin bound and foreign tokens 8",
+      "status": "passed"
+    },
+    {
+      "name": "Native cancellation cannot release in-flight storage 8",
+      "status": "passed"
+    },
+    {
+      "name": "Native uncertainty prevents reuse and disposal retry 8",
+      "status": "passed"
+    },
+    {
+      "name": "Native closure accepts late facts without new actions 8",
+      "status": "passed"
+    },
+    {
+      "name": "Native read cannot claim disposal 8",
+      "status": "passed"
+    },
+    {
+      "name": "Native 5000 reuse cycles fence old resource pin and action tokens 8",
+      "status": "passed",
+      "detail": {
+        "cycles": 5000,
+        "bankBytes": 416,
+        "memoryBytes": 65536
+      }
+    },
+    {
+      "name": "Atomic exclusive alias conflict before dispatch 8",
+      "status": "passed",
+      "detail": {
+        "dispatches": 0,
+        "captures": 2
+      }
+    },
+    {
+      "name": "Whole-root reservation survives early resource release 8",
+      "status": "passed"
+    },
+    {
+      "name": "Consumed handle leaves active bytes and exclusive lease 8",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 2,
+          "bytes": 320,
+          "records": 5
+        },
+        "charged": {
+          "handles": 0,
+          "bytes": 192,
+          "records": 1
+        },
+        "carry": {
+          "handles": 0,
+          "bytes": 192,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 0,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 2,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 0,
+        "emergency": 0,
+        "stopped": false,
+        "ended": false,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Aliases retain full backing; copy needs overlap reserve 8",
+      "status": "passed",
+      "detail": {
+        "viewBytes": 64,
+        "backingBytes": 192,
+        "simultaneousCopyBytes": 384
+      }
+    },
+    {
+      "name": "Full-width native in-flight guards retain ledger charges through cancellation 8",
+      "status": "passed",
+      "detail": {
+        "carry": {
+          "handles": 0,
+          "bytes": 1536,
+          "records": 8
+        },
+        "cleanupReserve": {
+          "handles": 0,
+          "bytes": 512,
+          "records": 16
+        },
+        "nativeBankBytes": 416
+      }
+    },
+    {
+      "name": "Unknown sibling does not prevent independent safe cleanup 8",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 3,
+          "bytes": 320,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 192,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 192,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 0,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 9,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 1,
+        "emergency": 0,
+        "stopped": false,
+        "ended": false,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Zero numeric charge alone cannot retire exclusivity 8",
+      "status": "passed"
+    },
+    {
+      "name": "Cleanup allocation survives full work occupancy 8",
+      "status": "passed",
+      "detail": {
+        "peakChargedBytes": 3584,
+        "committedBytes": 3648
+      }
+    },
+    {
+      "name": "Combined Native guard and ledger retain all in-flight charges 16",
+      "status": "passed",
+      "detail": {
+        "carryBytes": 3072,
+        "cleanupReserveBytes": 1024,
+        "bankBytes": 9856
+      }
+    },
+    {
+      "name": "Combined Native cleanup capacity remains available at deadline boundary 16",
+      "status": "passed",
+      "detail": {
+        "chargedBytes": 256,
+        "deadlineReject": -2
+      }
+    },
+    {
+      "name": "Native shared pins fence actions and handoff 16",
+      "status": "passed"
+    },
+    {
+      "name": "Native four-pin bound and foreign tokens 16",
+      "status": "passed"
+    },
+    {
+      "name": "Native cancellation cannot release in-flight storage 16",
+      "status": "passed"
+    },
+    {
+      "name": "Native uncertainty prevents reuse and disposal retry 16",
+      "status": "passed"
+    },
+    {
+      "name": "Native closure accepts late facts without new actions 16",
+      "status": "passed"
+    },
+    {
+      "name": "Native read cannot claim disposal 16",
+      "status": "passed"
+    },
+    {
+      "name": "Native 5000 reuse cycles fence old resource pin and action tokens 16",
+      "status": "passed",
+      "detail": {
+        "cycles": 5000,
+        "bankBytes": 832,
+        "memoryBytes": 65536
+      }
+    },
+    {
+      "name": "Atomic exclusive alias conflict before dispatch 16",
+      "status": "passed",
+      "detail": {
+        "dispatches": 0,
+        "captures": 2
+      }
+    },
+    {
+      "name": "Whole-root reservation survives early resource release 16",
+      "status": "passed"
+    },
+    {
+      "name": "Consumed handle leaves active bytes and exclusive lease 16",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 2,
+          "bytes": 320,
+          "records": 5
+        },
+        "charged": {
+          "handles": 0,
+          "bytes": 192,
+          "records": 1
+        },
+        "carry": {
+          "handles": 0,
+          "bytes": 192,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 0,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 2,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 0,
+        "emergency": 0,
+        "stopped": false,
+        "ended": false,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Aliases retain full backing; copy needs overlap reserve 16",
+      "status": "passed",
+      "detail": {
+        "viewBytes": 64,
+        "backingBytes": 192,
+        "simultaneousCopyBytes": 384
+      }
+    },
+    {
+      "name": "Full-width native in-flight guards retain ledger charges through cancellation 16",
+      "status": "passed",
+      "detail": {
+        "carry": {
+          "handles": 0,
+          "bytes": 3072,
+          "records": 16
+        },
+        "cleanupReserve": {
+          "handles": 0,
+          "bytes": 1024,
+          "records": 32
+        },
+        "nativeBankBytes": 832
+      }
+    },
+    {
+      "name": "Unknown sibling does not prevent independent safe cleanup 16",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 3,
+          "bytes": 320,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 192,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 192,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 0,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 17,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 1,
+        "emergency": 0,
+        "stopped": false,
+        "ended": false,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Zero numeric charge alone cannot retire exclusivity 16",
+      "status": "passed"
+    },
+    {
+      "name": "Cleanup allocation survives full work occupancy 16",
+      "status": "passed",
+      "detail": {
+        "peakChargedBytes": 7168,
+        "committedBytes": 7232
+      }
+    },
+    {
+      "name": "Combined Native guard and ledger retain all in-flight charges 32",
+      "status": "passed",
+      "detail": {
+        "carryBytes": 6144,
+        "cleanupReserveBytes": 2048,
+        "bankBytes": 19520
+      }
+    },
+    {
+      "name": "Combined Native cleanup capacity remains available at deadline boundary 32",
+      "status": "passed",
+      "detail": {
+        "chargedBytes": 256,
+        "deadlineReject": -2
+      }
+    },
+    {
+      "name": "Native shared pins fence actions and handoff 32",
+      "status": "passed"
+    },
+    {
+      "name": "Native four-pin bound and foreign tokens 32",
+      "status": "passed"
+    },
+    {
+      "name": "Native cancellation cannot release in-flight storage 32",
+      "status": "passed"
+    },
+    {
+      "name": "Native uncertainty prevents reuse and disposal retry 32",
+      "status": "passed"
+    },
+    {
+      "name": "Native closure accepts late facts without new actions 32",
+      "status": "passed"
+    },
+    {
+      "name": "Native read cannot claim disposal 32",
+      "status": "passed"
+    },
+    {
+      "name": "Native 5000 reuse cycles fence old resource pin and action tokens 32",
+      "status": "passed",
+      "detail": {
+        "cycles": 5000,
+        "bankBytes": 1664,
+        "memoryBytes": 65536
+      }
+    },
+    {
+      "name": "Atomic exclusive alias conflict before dispatch 32",
+      "status": "passed",
+      "detail": {
+        "dispatches": 0,
+        "captures": 2
+      }
+    },
+    {
+      "name": "Whole-root reservation survives early resource release 32",
+      "status": "passed"
+    },
+    {
+      "name": "Consumed handle leaves active bytes and exclusive lease 32",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 2,
+          "bytes": 320,
+          "records": 5
+        },
+        "charged": {
+          "handles": 0,
+          "bytes": 192,
+          "records": 1
+        },
+        "carry": {
+          "handles": 0,
+          "bytes": 192,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 0,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 2,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 0,
+        "emergency": 0,
+        "stopped": false,
+        "ended": false,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Aliases retain full backing; copy needs overlap reserve 32",
+      "status": "passed",
+      "detail": {
+        "viewBytes": 64,
+        "backingBytes": 192,
+        "simultaneousCopyBytes": 384
+      }
+    },
+    {
+      "name": "Full-width native in-flight guards retain ledger charges through cancellation 32",
+      "status": "passed",
+      "detail": {
+        "carry": {
+          "handles": 0,
+          "bytes": 6144,
+          "records": 32
+        },
+        "cleanupReserve": {
+          "handles": 0,
+          "bytes": 2048,
+          "records": 64
+        },
+        "nativeBankBytes": 1664
+      }
+    },
+    {
+      "name": "Unknown sibling does not prevent independent safe cleanup 32",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 3,
+          "bytes": 320,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 192,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 192,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 0,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 33,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 1,
+        "emergency": 0,
+        "stopped": false,
+        "ended": false,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Zero numeric charge alone cannot retire exclusivity 32",
+      "status": "passed"
+    },
+    {
+      "name": "Cleanup allocation survives full work occupancy 32",
+      "status": "passed",
+      "detail": {
+        "peakChargedBytes": 14336,
+        "committedBytes": 14400
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "width": 8,
+      "file": "guard-8.wasm",
+      "bytes": 1305,
+      "sha256": "b1956613962b1cdff1250383fad50322987b861c0e21b0c668e6fff678eeb19c",
+      "bankBytes": 416,
+      "linearMemoryBytes": 65536
+    },
+    {
+      "width": 8,
+      "file": "combined-8.wasm",
+      "bytes": 6732,
+      "sha256": "7bb2c2ef6d56671807529e6f13d43a9a42831b3934af92d119438ebb99862f49",
+      "scope": "Guard and RA03 ledger in one module; test harness coordinates trusted calls."
+    },
+    {
+      "width": 16,
+      "file": "guard-16.wasm",
+      "bytes": 1307,
+      "sha256": "ad15fad93a36b31e5793dca40adda4b087ce0bc9a8962daf75e83ffd0130dc67",
+      "bankBytes": 832,
+      "linearMemoryBytes": 65536
+    },
+    {
+      "width": 16,
+      "file": "combined-16.wasm",
+      "bytes": 6756,
+      "sha256": "761aa1989cd5404c3e169dd5746d1b8e3ad35d4425748ca56295f5b8251092ed",
+      "scope": "Guard and RA03 ledger in one module; test harness coordinates trusted calls."
+    },
+    {
+      "width": 32,
+      "file": "guard-32.wasm",
+      "bytes": 1307,
+      "sha256": "d4506fc05b7e160ced0df9e007dfae5f36ba0d5841a00189ce4b61aee57c2e87",
+      "bankBytes": 1664,
+      "linearMemoryBytes": 65536
+    },
+    {
+      "width": 32,
+      "file": "combined-32.wasm",
+      "bytes": 6766,
+      "sha256": "4b20f962fd3cafe9f41afe5c44d60e807dc2c2674842beb208772620c2ef54e9",
+      "scope": "Guard and RA03 ledger in one module; test harness coordinates trusted calls."
+    }
+  ]
+}

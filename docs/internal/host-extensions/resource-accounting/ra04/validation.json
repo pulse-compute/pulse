@@ -1,0 +1,108 @@
+{
+  "version": "hex.ra04-validation.v1",
+  "status": "passed",
+  "base": "e13139ad45f808e9f46e56e0944d63a87aeb31c5",
+  "inputs": [
+    {
+      "file": "README.md",
+      "sha256": "ac0f1f7b95a0e22a3f6ddc78a0c6d1446e1592c912c71d1820cb39b29976b8b6"
+    },
+    {
+      "file": "check.cjs",
+      "sha256": "a5a239ff0f23b879c202237c1d1122da22e30d3f05aeaf09b75b8d073a70772d"
+    },
+    {
+      "file": "checks.json",
+      "sha256": "585da97061a9fb46cb70c4d6dfff52e140d3e82b22cd5a3bdedfbafa2a15ba28"
+    },
+    {
+      "file": "evidence-index.json",
+      "sha256": "5afacc7e051c71011a03603c34be61a2b565a70ef1629140f812d8ebf2e8bd67"
+    },
+    {
+      "file": "evidence.tar.gz",
+      "sha256": "feffad1bcf088d1e18b5d32467bfba79c1b6f354bf6150d3f7faedc81e12c0fd"
+    },
+    {
+      "file": "guard.as.ts",
+      "sha256": "ff3d8703d7375569c5ce4ad9a27665ad49493c7774390cbc360efc7c6884b6bd"
+    },
+    {
+      "file": "validation-logs.tar.gz",
+      "sha256": "dc5c4b2bc86cb158eaa749fb0e8e478e07551812fbad9ca43446e89a416604bb"
+    }
+  ],
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:32:58.091579+00:00",
+      "log": {
+        "path": "0.log",
+        "sha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+      }
+    },
+    {
+      "command": "npm run docs:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:32:58.553127+00:00",
+      "log": {
+        "path": "1.log",
+        "sha256": "c31091ee16b5ebc5712f89de52b83240030aee11850daa4a77a0fdb5dabeb471"
+      }
+    },
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:33:01.710008+00:00",
+      "log": {
+        "path": "2.log",
+        "sha256": "1f428a3a3fa5888988ff157b267e88a858d71da4779791ae3dfbb4f707b1c382"
+      }
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:33:23.277779+00:00",
+      "log": {
+        "path": "3.log",
+        "sha256": "c458f1079bab8d4e73de55fc6c9d349b95cc4bf0b1889cfa8821defb039362c1"
+      }
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:33:53.388234+00:00",
+      "log": {
+        "path": "4.log",
+        "sha256": "e599930c23f251ccad614daec17b7ad5187fc5e53dcc6246830dd8f7b7ab7c52"
+      }
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:34:44.282497+00:00",
+      "log": {
+        "path": "5.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "logArchive": {
+    "path": "validation-logs.tar.gz",
+    "sha256": "dc5c4b2bc86cb158eaa749fb0e8e478e07551812fbad9ca43446e89a416604bb"
+  },
+  "scope": "Internal evidence; no full runtime regression or deployment qualification.",
+  "scopeCheck": {
+    "exitCode": 0,
+    "testedHead": "b9c75b368494a2ae148a7a5b7ce205b0082901d3",
+    "output": "# Pulse maintainer scope\n\n**Status:** Pass\n\n| Signal | Result |\n|---|---|\n| Declared class | `evidence` |\n| Declared scope | `evidence-only` |\n| Risk | `low` |\n| Changed files | 9 |\n| Areas | `documentation` |\n| Protected boundaries | None |\n| Separate human decision | Not required |\n| Current contract update | Not inferred |\n| Release authority | Not inferred |\n| Required checks | `documentation`, `maintenance-policy` |\n\nThe resident maintainer may analyze, review, and prepare a minimal patch; human review and merge remain required.\n\n",
+    "note": "Repeated on amended commit after adding this receipt."
+  }
+}

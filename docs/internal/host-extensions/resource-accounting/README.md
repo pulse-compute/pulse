@@ -4,7 +4,7 @@ This workstream follows the [ownership](../ownership/README.md) and
 [bounded composition](../composition/README.md) investigations. Its first proposed
 milestone is cache, core fetch and their fixed composition under one accounting
 contract. No new scheduler, automatic retry, silent fallback or universal cost
-optimizer is proposed. The owner approved RA-00 through RA-03; later units remain planned.
+optimizer is proposed. The owner approved RA-00 through RA-04; later units remain planned.
 
 | Unit | Deliverable | Recommended model / reasoning effort | Status |
 | --- | --- | --- | --- |
@@ -12,7 +12,7 @@ optimizer is proposed. The owner approved RA-00 through RA-03; later units remai
 | [RA-01](ra01/README.md) | Shared ownership/disposition contract | Astra / High | Complete; internal candidate and checked lifecycle traces |
 | [RA-02](ra02/README.md) | Admission, reservation and refund policy | Astra / High | Complete; candidate policy and [8/16/32 reservation sweep](ra02/sweep/README.md); review checkpoint |
 | [RA-03](ra03/README.md) | Minimal shared accounting service prototype | GPT-6.1 Sol / High | Complete; bounded JS prototype plus [Native fixed-profile proof](ra03/native/README.md), executor hooks and measured costs; production integration remains separate |
-| RA-04 | Exclusive lease and in-flight buffer pressure | Astra / High | Planned |
+| [RA-04](ra04/README.md) | Exclusive lease and in-flight buffer pressure | Astra / High | Complete; compiled Native pin guard, ledger pressure and copy-overlap evidence; provider integration remains separate |
 | RA-05 | Core fetch integration | Astra / High | Planned |
 | RA-06 | Cache integration | GPT-6.1 Sol / High | Planned |
 | RA-07 | Composed-operation integration | Astra / High | Planned |
