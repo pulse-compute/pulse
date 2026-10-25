@@ -766,6 +766,8 @@ function normalizeProviderJavascriptPackageResult(input, expected = {}) {
 
 module.exports = Object.freeze({
   hostExtensions: require('./host-extension'),
+  executionLifecycle: require('../handler/execution-lifecycle'),
+  httpLifecycle: require('../host/http-lifecycle'),
   PROVIDER_TOOLCHAIN_VERSION,
   PROVIDER_DRIVER_VERSION,
   PROVIDER_TARGET_DESCRIPTOR_VERSION,

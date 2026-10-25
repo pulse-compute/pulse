@@ -245,3 +245,4 @@ assert.doesNotMatch(executionSource, /driver\.inspectRealization\(\s*\{/);
 console.log('ok - provider toolchains, target descriptors, invocations, requirements, results, and final-byte packaging are exact, versioned, and fail closed');
 
 require('./host-extension-contract-cases.cjs');
+require('./lifecycle-contract-cases.cjs').run();
