@@ -1,0 +1,2355 @@
+{
+  "version": "hex.ra06.evidence.v1",
+  "status": "passed",
+  "base": "48cd28d333ff7e4289236a9a8f662310bc56014d",
+  "node": "v24.22.1",
+  "compiler": {
+    "version": "0.28.18",
+    "sha256": "db224cf7a4a9f16a0b7a3540753eabd413ee4db69f75dd565f309aaa057f4e44"
+  },
+  "scope": {
+    "productionAdmission": false,
+    "realHost": false,
+    "javascriptParity": false,
+    "jointFetchAccounting": false,
+    "owner": "@hex-spike/cache / investigation-owned-resource.v0",
+    "membership": "one direct or fixed homogeneous keyed cohort per fresh instance",
+    "profile": {
+      "work": [
+        3,
+        320,
+        4
+      ],
+      "cleanup": [
+        2,
+        64,
+        2
+      ],
+      "exit": [
+        2,
+        64,
+        2
+      ],
+      "readBackingBytes": 257,
+      "writeBackingBytes": 192
+    },
+    "diagnosticImport": "ra06_proof.event is an explicit private baseline addition, not package authority"
+  },
+  "inputs": [
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra06/build.cjs",
+      "sha256": "c8a45274ebc9d326029f66d03835dfde69e3f182ae51d00861d7fb98b87cf731"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra06/service.as.ts",
+      "sha256": "d7ae814e248b833060bc0660819fca04d28ee7a15307aff03d5af7c6372d605a"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra06/host.cjs",
+      "sha256": "fa0290c9353498cf354f53e65ad28015941e28e97a315ed63e638a8e490e79cd"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra06/check.cjs",
+      "sha256": "7449c0b1479b0520e007b78b5af5ab96c02f0730568108b625d042e1d3400bc2"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra03/native/build.cjs",
+      "sha256": "824a9f6a5e481f5920233349d0396e9ccd12b6d868d69f7ecc570492985bafd3"
+    },
+    {
+      "file": "docs/internal/host-extensions/resource-accounting/ra03/native/service.as.ts",
+      "sha256": "8e7da28b6d524691f6787fded634a3f684986ed8748b39fda2f43e4710d8fc43"
+    },
+    {
+      "file": "docs/internal/host-extensions/ownership/prototype.cjs",
+      "sha256": "730bb2810f2a4da4c52d3809688da2ae4e06da55337522348bb2805c621bbdbe"
+    },
+    {
+      "file": "docs/internal/host-extensions/ownership/fixture.cjs",
+      "sha256": "c052d0be6acdc5c716d5566fa4dc68668875c47e5c3e4762f4e736d5fb64e119"
+    },
+    {
+      "file": "packages/provider-fastly/src/build/lifecycle-hooks.js",
+      "sha256": "c1ef4f5d3ec239d287579e27e08e45d994aba1e2f981b63533046f4497d0f958"
+    },
+    {
+      "file": "packages/provider-fastly/src/build/response-authority.js",
+      "sha256": "07e0ab35863ff5c240123ed7d8c397c168268e8b5d0e82e29982737baa70173e"
+    },
+    {
+      "file": "packages/provider-fastly/src/build/host-extensions.js",
+      "sha256": "8042b0afe989cd6417aa1153894595bc26175af003bc46b4c2359cee45cdbf82"
+    },
+    {
+      "file": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "sha256": "6ffa6fef7aa09ca5628ae1027eafb05b8ec13fb243cfd2932f41b499f556616d"
+    },
+    {
+      "file": "packages/provider-fastly/src/build/effect-invocations.js",
+      "sha256": "3dca1866f1cb17f2e701a60406f2b360649c81b6e6fc7d3c078d1b7936f319fe"
+    },
+    {
+      "file": "packages/provider-fastly/src/build/request-budget.js",
+      "sha256": "2d3a22f3e5ac2e8c36b7de2f915dae48ea1823291060ffe3c5bacb9b6d00a9b8"
+    },
+    {
+      "file": "packages/provider-fastly/src/build/request-budget.as.ts",
+      "sha256": "6252b76ec39641b63fd90d3e2bd73a43515014eeca5e56199aacf9c946acac8e"
+    },
+    {
+      "file": "wasm/packages/contracts/src/handler/execution-lifecycle.js",
+      "sha256": "f158fe9a609d012a708e75496f42f55b47ac009678661c52a78e7c8088719222"
+    },
+    {
+      "file": "wasm/packages/contracts/src/host/http-lifecycle.js",
+      "sha256": "c08b753dca6ade8e2e0722ec9f92573886ef5935fa2d35b4fef851d5452f3cc2"
+    },
+    {
+      "file": "wasm/packages/contracts/src/provider/host-extension.js",
+      "sha256": "29fc0cebe68fd52bd371e3dd079f7507049842ffa5799858989a3c48ed920f5d"
+    },
+    {
+      "file": "pnpm-lock.yaml",
+      "sha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0"
+    }
+  ],
+  "identity": {
+    "absentSourceIdentical": true,
+    "absentWasmIdentical": true,
+    "unusedDeltaBytes": 0,
+    "unusedWholeWasmIdentical": false,
+    "isolatedRuntimeCostClaim": false
+  },
+  "productionAdmissionRejected": true,
+  "artifacts": [
+    {
+      "name": "baseline",
+      "op": "none",
+      "width": 1,
+      "options": {
+        "adapter": false,
+        "imported": false
+      },
+      "bytes": 24457,
+      "sha256": "f2fe6f7c04b5e22527989f576e4f2bd2deffbeab840c733e4ca4fe2b289c13fc",
+      "sourceSha256": "b325d5039485b1cc2c1256bfba66424359e0b50f907646c943af17ec9c2c7495",
+      "authoredSha256": "9e7274fb7f4755dd511216eb7c0193ee485eb72f12456a4641bc42e4a5a5f874",
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "registrationOrderIdentical": false
+    },
+    {
+      "name": "absent",
+      "op": "none",
+      "width": 1,
+      "options": {
+        "imported": false
+      },
+      "bytes": 24457,
+      "sha256": "f2fe6f7c04b5e22527989f576e4f2bd2deffbeab840c733e4ca4fe2b289c13fc",
+      "sourceSha256": "b325d5039485b1cc2c1256bfba66424359e0b50f907646c943af17ec9c2c7495",
+      "authoredSha256": "9e7274fb7f4755dd511216eb7c0193ee485eb72f12456a4641bc42e4a5a5f874",
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "registrationOrderIdentical": false
+    },
+    {
+      "name": "unused",
+      "op": "none",
+      "width": 1,
+      "options": {},
+      "bytes": 24457,
+      "sha256": "7e8e7fde61eb2d640e33befee18d550dc0b2b90039851b1876f210ec5fd97b44",
+      "sourceSha256": "1c854d1639cf783ec780d2273b7ebdc698f5848a86fc3aa9fc99e16d9f730dd7",
+      "authoredSha256": "fa0b8b6d782e57bc27971ae1f927ed7b03e7b33f3b032cfe116cc411bf842584",
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ],
+      "registrationOrderIdentical": false
+    },
+    {
+      "name": "read-1",
+      "op": "getText",
+      "width": 1,
+      "options": {},
+      "bytes": 32474,
+      "sha256": "be8cc115998546a4ef899add82dd488adeb7897d8c71114bb62e1c1997c47627",
+      "sourceSha256": "9ca054a46dc10f5800766623bb4e3546be874e7d7d3918f012f8a4d54a7b34ea",
+      "authoredSha256": "4a140f2f5055fee88fc260c2c31d8cc88597582064c9fcc74d253c0b2f46b667",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "9946a69231bf51f02b909359a055d61d35678cd927e6716c472825f1af003383",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "write-1",
+      "op": "putText",
+      "width": 1,
+      "options": {},
+      "bytes": 31955,
+      "sha256": "b12f222571dfc7d11adf909aa8b684833c73ad4396b5bf74eb355a0ad8fa02f3",
+      "sourceSha256": "b58bd006615e5eaf762532afe1f4bb37b8e42dd4f8ac8fcc5d9851b3fe882639",
+      "authoredSha256": "1adef06aed5faa1bf3bc99eb9024fed5a5b50f228680f3ca0629c8e41907fcfe",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "be72641c149dc49d186fa8b4db42258144422ee91f6fdce55b2f414805011970",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "read-2",
+      "op": "getText",
+      "width": 2,
+      "options": {},
+      "bytes": 32868,
+      "sha256": "01a5f1252933abec58b479e02b05abb1856ad1b49215c852aef6e3cd202f60d2",
+      "sourceSha256": "b111f3a09dea2dead26990d50e64bc01b4630de7dde9df9b98727233c49dc5cf",
+      "authoredSha256": "c906dd67e0db713da951d4687cf8bec7739f78b77649b5abc876d5c05a5fa242",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "9946a69231bf51f02b909359a055d61d35678cd927e6716c472825f1af003383",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "read-8",
+      "op": "getText",
+      "width": 8,
+      "options": {},
+      "bytes": 34315,
+      "sha256": "804298ead4f5d823e873115ff142625a2b5eaa32ceef8a447dd8a5e4fd2a1b8b",
+      "sourceSha256": "f6d712e0c7798da12c956ae54812a7ea2295d3f3423893e0c5b641d16de03d55",
+      "authoredSha256": "3f0d980443a235c7a9ce645a19aea033b9a5c55d80e3c4218b50afa8b1941aae",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "9946a69231bf51f02b909359a055d61d35678cd927e6716c472825f1af003383",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "read-16",
+      "op": "getText",
+      "width": 16,
+      "options": {},
+      "bytes": 36253,
+      "sha256": "5ffa99277ebb1c2707acc205ea62217b39471395c9ffc7ec0a94029e6d2fb1e1",
+      "sourceSha256": "0bec9f6652cc4a9a3de6f51268802ece70cef6ca7b753017ca51cbab9a1d4f79",
+      "authoredSha256": "fcbb3a4dd262cb51a2bf0234da4b5f436d710ba248f2f9aa4cbd7aa34fe44884",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "9946a69231bf51f02b909359a055d61d35678cd927e6716c472825f1af003383",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "read-32",
+      "op": "getText",
+      "width": 32,
+      "options": {},
+      "bytes": 40041,
+      "sha256": "bd2c2fddb0364b21dbff47f732676d3ef5e22de8468afd751412cafe73e94e52",
+      "sourceSha256": "b88175bd452f2d1b3aa705750663e07b1f752d59a4e61b5191333bc9cc514f2a",
+      "authoredSha256": "ff574a0a16187c5e815bc746996c01f6eeb06feb2321cf5ed7bd523f99e976d6",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "9946a69231bf51f02b909359a055d61d35678cd927e6716c472825f1af003383",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "write-2",
+      "op": "putText",
+      "width": 2,
+      "options": {},
+      "bytes": 32350,
+      "sha256": "4bfdd2e3b8c4f5a2ce74a8d0906672b5c8c5b40bbc21d61286ec3e6d62ca5b5f",
+      "sourceSha256": "f6d7793cfb1ce2e2966a62b162beffa6b0793dd1de6d71ab0456a1a21fa5a6b8",
+      "authoredSha256": "3a083413725e1324ff792c50ba221c5e5741f8f1583bc295fe329f3c3d461019",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "be72641c149dc49d186fa8b4db42258144422ee91f6fdce55b2f414805011970",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "write-8",
+      "op": "putText",
+      "width": 8,
+      "options": {},
+      "bytes": 33802,
+      "sha256": "49efa81f8e3e7598ff45cee084f4ab1ed529b0c0080397e60b9b68132681b369",
+      "sourceSha256": "088baed4ee797d264f290d1f78db97ef822e7c1585313be77c47da58d2c2bbea",
+      "authoredSha256": "29d232bdbcbefc7cac793b0638ad1112875c8bb34042d7dfcdd5e17a76276245",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "be72641c149dc49d186fa8b4db42258144422ee91f6fdce55b2f414805011970",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "write-16",
+      "op": "putText",
+      "width": 16,
+      "options": {},
+      "bytes": 35746,
+      "sha256": "1d76b707bd6115a4fa031bdcced9cb2be67f75cae5427d35f8c59eabb4f9fee0",
+      "sourceSha256": "9bdc6ced7bd6912fcc35e916a466617b2536138631c7ec23188f823f7f7f8a91",
+      "authoredSha256": "019d06119b75f9fe9b1a31b3886d3cd6aa5256ad2be9ef660a37909132f4f937",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "be72641c149dc49d186fa8b4db42258144422ee91f6fdce55b2f414805011970",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "write-32",
+      "op": "putText",
+      "width": 32,
+      "options": {},
+      "bytes": 39549,
+      "sha256": "c01c5e58f303459468e41bbcc620383ddd9d6af24e35ff06436e97ccfed35bcc",
+      "sourceSha256": "cfde9602ff6005526de7317a925d92821d8ed878bdb685f01e2580edf7a7e102",
+      "authoredSha256": "4e59ca53de6dc17c214d8e2bc5b63865debefb45ad4eeac4766cb213fbd52037",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "be72641c149dc49d186fa8b4db42258144422ee91f6fdce55b2f414805011970",
+      "registrationOrderIdentical": true
+    },
+    {
+      "name": "mutation-no-settle-guard",
+      "op": "getText",
+      "width": 1,
+      "options": {
+        "mutation": "no-settle-guard"
+      },
+      "bytes": 32318,
+      "sha256": "6cfa78f2fb4b9e825553e8ee1f0d714bb3e7c4a9fb3f5d155d6601b600cb6fa1",
+      "sourceSha256": "89d11934dc9ca8ae428d572feb6ca8bbb7ccc1515fe4c4c49f06b3f30857b9e4",
+      "authoredSha256": "4a140f2f5055fee88fc260c2c31d8cc88597582064c9fcc74d253c0b2f46b667",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "9946a69231bf51f02b909359a055d61d35678cd927e6716c472825f1af003383",
+      "registrationOrderIdentical": false
+    },
+    {
+      "name": "mutation-no-result-guard",
+      "op": "getText",
+      "width": 1,
+      "options": {
+        "mutation": "no-result-guard"
+      },
+      "bytes": 32386,
+      "sha256": "7b429fc0be45caf2470ed22784cf06e28080fc7529a7a22d7325cbd89159c69e",
+      "sourceSha256": "748d4494cb398130dbf65cf9d617f7729c334642e005234a9756fa63830f6633",
+      "authoredSha256": "4a140f2f5055fee88fc260c2c31d8cc88597582064c9fcc74d253c0b2f46b667",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "9946a69231bf51f02b909359a055d61d35678cd927e6716c472825f1af003383",
+      "registrationOrderIdentical": false
+    },
+    {
+      "name": "mutation-no-cleanup",
+      "op": "putText",
+      "width": 1,
+      "options": {
+        "mutation": "no-cleanup"
+      },
+      "bytes": 31407,
+      "sha256": "925aa3e5987364a6a754e80bf740bf4433172cb7e07dcf8af28f45c72a3eaf4e",
+      "sourceSha256": "ff65efa32ee119a9bbd89e0430f6e9ad1613b07fcd7ede0569a17fadcc5bab2e",
+      "authoredSha256": "1adef06aed5faa1bf3bc99eb9024fed5a5b50f228680f3ca0629c8e41907fcfe",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "be72641c149dc49d186fa8b4db42258144422ee91f6fdce55b2f414805011970",
+      "registrationOrderIdentical": false
+    },
+    {
+      "name": "mutation-commit-on-cleanup",
+      "op": "putText",
+      "width": 1,
+      "options": {
+        "mutation": "commit-on-cleanup"
+      },
+      "bytes": 31927,
+      "sha256": "c4f5fd88d969253a1f0533053819387b9407da91f2f631976d112aa61d0ef639",
+      "sourceSha256": "6a0a1d21bc5a7996868e5079fc4465a522261fc6464950db94ce32175624a893",
+      "authoredSha256": "1adef06aed5faa1bf3bc99eb9024fed5a5b50f228680f3ca0629c8e41907fcfe",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "be72641c149dc49d186fa8b4db42258144422ee91f6fdce55b2f414805011970",
+      "registrationOrderIdentical": false
+    },
+    {
+      "name": "mutation-refund-unknown",
+      "op": "putText",
+      "width": 1,
+      "options": {
+        "mutation": "refund-unknown"
+      },
+      "bytes": 31968,
+      "sha256": "5f83839ecde4e4964caa8b9314834ad93b1b476a99aba2d43fdfffe519bb569c",
+      "sourceSha256": "ea4f101b7fa18b39a2a255e8f13002559b9dfd4af17611b66719b2cd10b1913e",
+      "authoredSha256": "1adef06aed5faa1bf3bc99eb9024fed5a5b50f228680f3ca0629c8e41907fcfe",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "abandon",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "insert",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "be72641c149dc49d186fa8b4db42258144422ee91f6fdce55b2f414805011970",
+      "registrationOrderIdentical": false
+    },
+    {
+      "name": "mutation-close-unready",
+      "op": "getText",
+      "width": 1,
+      "options": {
+        "mutation": "close-unready"
+      },
+      "bytes": 32459,
+      "sha256": "c27fca1592f362d1a11d861cc2339ac906607fe7b9175dfa3ab9873183411fcd",
+      "sourceSha256": "b72c90fb197db4dbfbcb46d099c4682a2143d3fb56d20dddd72777004e4b7d04",
+      "authoredSha256": "4a140f2f5055fee88fc260c2c31d8cc88597582064c9fcc74d253c0b2f46b667",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "9946a69231bf51f02b909359a055d61d35678cd927e6716c472825f1af003383",
+      "registrationOrderIdentical": false
+    },
+    {
+      "name": "mutation-dispatch-after-failure",
+      "op": "getText",
+      "width": 2,
+      "options": {
+        "mutation": "dispatch-after-failure"
+      },
+      "bytes": 32860,
+      "sha256": "9f2ef25ccfbb1ecf62594ae871cd258f89c84dbd25186ad9051a70c148288ead",
+      "sourceSha256": "715b3eccc3b475483394f6cf10b2f45a14bc1b51bb98409c528acb230b326c16",
+      "authoredSha256": "c906dd67e0db713da951d4687cf8bec7739f78b77649b5abc876d5c05a5fa242",
+      "imports": [
+        {
+          "module": "ra06_proof",
+          "name": "event",
+          "kind": "function"
+        },
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "is_ready",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_body",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "get_state",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "close",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_cache",
+          "name": "lookup",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        }
+      ],
+      "policySha256": "9946a69231bf51f02b909359a055d61d35678cd927e6716c472825f1af003383",
+      "registrationOrderIdentical": false
+    }
+  ],
+  "final": {
+    "receipt": "ra06/final/receipt.json",
+    "sha256": "66dba2debaefe56dbf39ca3910ca4667c0731c92d85f454604952c5b01f3b02b",
+    "cases": 94,
+    "mutations": 7,
+    "caseNames": [
+      "unused package has no runtime cache authority",
+      "read hit resumes compiled handler and disposes zero-valued cache handle",
+      "write commits zero-valued writer once after bounded partial progress",
+      "maximum read payload fits the declared backing allowance",
+      "whole-cohort shortage before any getText acquisition",
+      "repeat closure and responders do not repeat getText work",
+      "shared deadline consumption for getText",
+      "getText rejects wrong-ticket",
+      "getText rejects wrong-result",
+      "getText rejects direct-result",
+      "getText rejects undefined-success",
+      "whole-cohort shortage before any putText acquisition",
+      "repeat closure and responders do not repeat putText work",
+      "shared deadline consumption for putText",
+      "putText rejects wrong-ticket",
+      "putText rejects wrong-result",
+      "putText rejects direct-result",
+      "putText rejects undefined-success",
+      "miss is a policy miss without body acquisition",
+      "stale is a policy miss without body acquisition",
+      "lookup uncertain acquisition/false",
+      "lookup uncertain acquisition/true",
+      "body uncertain acquisition/false",
+      "body uncertain acquisition/true",
+      "insert uncertain acquisition/false",
+      "insert uncertain acquisition/true",
+      "cache state failure",
+      "read failure",
+      "read byte bound",
+      "malformed read count",
+      "read step bound",
+      "ASCII profile bound",
+      "write failure",
+      "partial write failure",
+      "zero write progress",
+      "malformed write count",
+      "write step bound",
+      "incomplete writer cleanup abandons after ticket invalidation",
+      "ambiguous commit is not retried or abandoned/false",
+      "cleanup failure retains claim and primary error/reader.close/false",
+      "cleanup failure retains claim and primary error/cache.close/false",
+      "cleanup failure retains claim and primary error/abandon/false",
+      "ambiguous commit is not retried or abandoned/true",
+      "cleanup failure retains claim and primary error/reader.close/true",
+      "cleanup failure retains claim and primary error/cache.close/true",
+      "cleanup failure retains claim and primary error/abandon/true",
+      "success-path disposal failure is not a hit/reader.close",
+      "success-path disposal failure is not a hit/cache.close",
+      "unready lookup is retained without a blocking close",
+      "ready failed lookup can close within remaining budget",
+      "readiness failure leaves lookup charged",
+      "readiness observation cannot renew cleanup time",
+      "expiry grants no cleanup allowance/{\"timeoutSelect\":true}/read",
+      "expiry grants no cleanup allowance/{\"expireAt\":\"read\"}/read",
+      "expiry grants no cleanup allowance/{\"timeoutSelect\":true}/write",
+      "expiry grants no cleanup allowance/{\"expireAt\":\"write\"}/write",
+      "timeout after commit cannot undo the accepted write",
+      "cancellation/lookup",
+      "cancellation/body",
+      "cancellation/insert",
+      "cancellation/write",
+      "late readiness cannot reopen a closed invocation",
+      "known failure rejects forged success before ticket consumption",
+      "diagnostic failure-placeholder delivery is not business success",
+      "trap has no implied finalizer/lookup",
+      "trap has no implied finalizer/body",
+      "trap has no implied finalizer/read",
+      "trap has no implied finalizer/reader.close",
+      "trap has no implied finalizer/cache.close",
+      "trap has no implied finalizer/hook.5",
+      "trap has no implied finalizer/write",
+      "trap has no implied finalizer/commit",
+      "trap has no implied finalizer/abandon",
+      "out-of-profile handle records containment without complete-accounting claim",
+      "getText width 2 makes progress under whole-cohort reservation",
+      "getText width 2 shortage rejects before dispatch",
+      "getText acquisition failure suppresses undispatched siblings",
+      "getText width 8 makes progress under whole-cohort reservation",
+      "getText width 8 shortage rejects before dispatch",
+      "getText width 16 makes progress under whole-cohort reservation",
+      "getText width 16 shortage rejects before dispatch",
+      "getText width 32 makes progress under whole-cohort reservation",
+      "getText width 32 shortage rejects before dispatch",
+      "putText width 2 makes progress under whole-cohort reservation",
+      "putText width 2 shortage rejects before dispatch",
+      "putText acquisition failure suppresses undispatched siblings",
+      "first failing writer abandons both admitted siblings",
+      "later failure preserves earlier commit without atomicity claim",
+      "putText width 8 makes progress under whole-cohort reservation",
+      "putText width 8 shortage rejects before dispatch",
+      "putText width 16 makes progress under whole-cohort reservation",
+      "putText width 16 shortage rejects before dispatch",
+      "putText width 32 makes progress under whole-cohort reservation",
+      "putText width 32 shortage rejects before dispatch"
+    ],
+    "mutationAssertions": [
+      {
+        "mutation": "no-settle-guard",
+        "detected": true,
+        "assertion": "Expected values to be strictly equal:\n\n1007 !== 0\n"
+      },
+      {
+        "mutation": "no-result-guard",
+        "detected": true,
+        "assertion": "Expected values to be strictly equal:\n\n1007 !== 0\n"
+      },
+      {
+        "mutation": "no-cleanup",
+        "detected": true,
+        "assertion": "Expected values to be strictly equal:\n\n0 !== 1\n"
+      },
+      {
+        "mutation": "commit-on-cleanup",
+        "detected": true,
+        "assertion": "Expected values to be strictly equal:\n\n1 !== 0\n"
+      },
+      {
+        "mutation": "refund-unknown",
+        "detected": true,
+        "assertion": "Expected values to be strictly equal:\n\n0 !== 1\n"
+      },
+      {
+        "mutation": "close-unready",
+        "detected": true,
+        "assertion": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'never close an unready lookup'\n- null\n"
+      },
+      {
+        "mutation": "dispatch-after-failure",
+        "detected": true,
+        "assertion": "Expected values to be strictly equal:\n\n2 !== 1\n"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "directory": "earlier-91",
+      "status": "passed",
+      "exitCode": 0,
+      "cases": 91,
+      "mutations": 6,
+      "note": "Before acquisition-failure suppression and its new oracle; exact inputs retained."
+    },
+    {
+      "directory": "failed-diagnostic-assertion",
+      "status": "failed",
+      "exitCode": 1,
+      "cases": 1,
+      "note": "Production admission correctly rejected; assertion matched wording instead of exact diagnostic code. Corrected to PULSE_HOST_EXTENSION_PLACEMENT."
+    },
+    {
+      "directory": "failed-workspace-isolation",
+      "status": "failed",
+      "exitCode": 1,
+      "cases": 74,
+      "note": "Shared fixture path contained an app.ts remnant before the cohort build. Isolated active/error fixture paths while retaining one matched control path; no runtime failure in the completed cases."
+    },
+    {
+      "directory": "final",
+      "status": "passed",
+      "exitCode": 0,
+      "cases": 94,
+      "mutations": 7
+    },
+    {
+      "directory": "nonterminal-control",
+      "status": "passed",
+      "exitCode": 0,
+      "cases": 38,
+      "mutations": 5
+    }
+  ],
+  "validation": [
+    {
+      "command": "npm run maintainer:sync",
+      "exitCode": 0,
+      "log": "maintainer-sync.log",
+      "sha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+    },
+    {
+      "command": "npm run docs:sync",
+      "exitCode": 0,
+      "log": "docs-sync.log",
+      "sha256": "c31091ee16b5ebc5712f89de52b83240030aee11850daa4a77a0fdb5dabeb471"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "log": "maintainer-check.log",
+      "sha256": "1f428a3a3fa5888988ff157b267e88a858d71da4779791ae3dfbb4f707b1c382"
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "log": "docs-check.log",
+      "sha256": "51645741419909ced43ebe08642dc00d8f207e429879f3c56adf7a7a6febff55"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "log": "docs-release.log",
+      "sha256": "ebc80d8a1de2fcbe8efa1ff65e6993b00ebc50bfa3e3d520dd98570df4571825"
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --changed-files-file /tmp/ra06-changed-files.txt --pr-body-file /tmp/ra06-pr.md --check --no-github --json-out /tmp/ra06-scope.json",
+      "exitCode": 0,
+      "report": "scope.json",
+      "status": "pass",
+      "classification": "evidence-only; documentation; no protected boundary"
+    }
+  ],
+  "bundle": {
+    "file": "evidence.tar.gz",
+    "bytes": 2326863,
+    "sha256": "33be304f8ab4943f7511e11c940f41bcf12635847f6930f7305132a039a15519",
+    "manifest": "ra06/manifest.json",
+    "deduplication": "identical files use internal tar hardlinks; all member hashes verified"
+  }
+}
