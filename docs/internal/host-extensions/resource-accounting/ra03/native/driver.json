@@ -1,0 +1,4040 @@
+{
+  "version": "hex.ra03-native-driver.v1",
+  "status": "passed",
+  "node": "v24.19.0",
+  "revision": "1349e1615e379ba582d2276d4f29e9fc334c8d7b",
+  "inputs": [
+    {
+      "file": "service.as.ts",
+      "sha256": "8e7da28b6d524691f6787fded634a3f684986ed8748b39fda2f43e4710d8fc43"
+    },
+    {
+      "file": "build.cjs",
+      "sha256": "824a9f6a5e481f5920233349d0396e9ccd12b6d868d69f7ecc570492985bafd3"
+    },
+    {
+      "file": "driver.cjs",
+      "sha256": "497604d859783bab9e20db843b3fee12e13c0787ca2a9ab0f3f42313ae35f69b"
+    },
+    {
+      "file": "../../../ownership/host.cjs",
+      "sha256": "7b4ddb06c2f1832334e8f86aad7f39db6ea9d15d5eb28f394badb7fcb0eef19a"
+    },
+    {
+      "file": "../../../../../../packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "sha256": "132ea03b4db79ddb34af16f642d35a58d8818f61055622680fd9ca0985241c85"
+    },
+    {
+      "file": "../../../../../../packages/provider-fastly/src/build/effect-invocations.js",
+      "sha256": "3dca1866f1cb17f2e701a60406f2b360649c81b6e6fc7d3c078d1b7936f319fe"
+    }
+  ],
+  "cases": [
+    {
+      "name": "Native disabled and unreachable controls 8",
+      "status": "passed",
+      "detail": {
+        "baseBytes": 27721,
+        "disabledDelta": 0,
+        "unusedLinkedDelta": 119,
+        "accountingDelta": 3592,
+        "testExportDelta": 418
+      }
+    },
+    {
+      "name": "Native full-group gate and qualified release 8",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"k0\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k1\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k2\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k3\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k4\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k5\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k6\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k7\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"}}",
+        "json": {
+          "k0": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k1": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k2": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k3": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k4": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k5": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k6": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k7": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          }
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": null,
+        "summary": {
+          "committed": [
+            2,
+            64,
+            2
+          ],
+          "carry": [
+            0,
+            0,
+            0
+          ],
+          "used": 8,
+          "tickets": 8
+        }
+      }
+    },
+    {
+      "name": "Native shortage dispatches zero members 8",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 500
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1007,
+        "stage": 370,
+        "counters": null,
+        "summary": {
+          "committed": [
+            2,
+            64,
+            2
+          ],
+          "carry": [
+            0,
+            0,
+            0
+          ],
+          "used": 8,
+          "tickets": 8
+        }
+      }
+    },
+    {
+      "name": "Native unknown disposal stays charged after return 8",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"k0\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k1\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k2\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k3\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k4\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k5\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k6\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k7\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"}}",
+        "json": {
+          "k0": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k1": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k2": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k3": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k4": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k5": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k6": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k7": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          }
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": null,
+        "summary": {
+          "committed": [
+            26,
+            1088,
+            26
+          ],
+          "carry": [
+            8,
+            512,
+            8
+          ],
+          "used": 8,
+          "tickets": 8
+        }
+      }
+    },
+    {
+      "name": "Native deadline keeps first claim and suppresses siblings 8",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 504
+          }
+        ],
+        "body": "Gateway Timeout",
+        "status": 504,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 260,
+        "counters": null,
+        "summary": {
+          "committed": [
+            5,
+            192,
+            5
+          ],
+          "carry": [
+            1,
+            64,
+            1
+          ],
+          "used": 8,
+          "tickets": 8
+        }
+      }
+    },
+    {
+      "name": "Native disabled and unreachable controls 16",
+      "status": "passed",
+      "detail": {
+        "baseBytes": 29043,
+        "disabledDelta": 0,
+        "unusedLinkedDelta": 195,
+        "accountingDelta": 3685,
+        "testExportDelta": 418
+      }
+    },
+    {
+      "name": "Native full-group gate and qualified release 16",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"k0\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k1\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k2\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k3\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k4\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k5\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k6\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k7\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k8\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k9\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k10\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k11\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k12\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k13\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k14\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k15\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"}}",
+        "json": {
+          "k0": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k1": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k2": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k3": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k4": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k5": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k6": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k7": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k8": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k9": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k10": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k11": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k12": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k13": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k14": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k15": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          }
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": null,
+        "summary": {
+          "committed": [
+            2,
+            64,
+            2
+          ],
+          "carry": [
+            0,
+            0,
+            0
+          ],
+          "used": 16,
+          "tickets": 16
+        }
+      }
+    },
+    {
+      "name": "Native shortage dispatches zero members 16",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 500
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1007,
+        "stage": 370,
+        "counters": null,
+        "summary": {
+          "committed": [
+            2,
+            64,
+            2
+          ],
+          "carry": [
+            0,
+            0,
+            0
+          ],
+          "used": 16,
+          "tickets": 16
+        }
+      }
+    },
+    {
+      "name": "Native unknown disposal stays charged after return 16",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"k0\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k1\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k2\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k3\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k4\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k5\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k6\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k7\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k8\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k9\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k10\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k11\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k12\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k13\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k14\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k15\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"}}",
+        "json": {
+          "k0": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k1": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k2": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k3": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k4": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k5": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k6": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k7": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k8": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k9": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k10": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k11": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k12": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k13": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k14": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k15": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          }
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": null,
+        "summary": {
+          "committed": [
+            50,
+            2112,
+            50
+          ],
+          "carry": [
+            16,
+            1024,
+            16
+          ],
+          "used": 16,
+          "tickets": 16
+        }
+      }
+    },
+    {
+      "name": "Native deadline keeps first claim and suppresses siblings 16",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 504
+          }
+        ],
+        "body": "Gateway Timeout",
+        "status": 504,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 260,
+        "counters": null,
+        "summary": {
+          "committed": [
+            5,
+            192,
+            5
+          ],
+          "carry": [
+            1,
+            64,
+            1
+          ],
+          "used": 16,
+          "tickets": 16
+        }
+      }
+    },
+    {
+      "name": "Native disabled and unreachable controls 32",
+      "status": "passed",
+      "detail": {
+        "baseBytes": 31765,
+        "disabledDelta": 0,
+        "unusedLinkedDelta": 195,
+        "accountingDelta": 3729,
+        "testExportDelta": 424
+      }
+    },
+    {
+      "name": "Native full-group gate and qualified release 32",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"k0\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k1\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k2\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k3\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k4\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k5\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k6\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k7\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k8\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k9\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k10\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k11\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k12\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k13\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k14\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k15\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k16\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k17\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k18\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k19\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k20\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k21\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k22\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k23\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k24\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k25\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k26\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k27\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k28\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k29\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k30\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k31\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"}}",
+        "json": {
+          "k0": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k1": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k2": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k3": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k4": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k5": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k6": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k7": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k8": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k9": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k10": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k11": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k12": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k13": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k14": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k15": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k16": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k17": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k18": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k19": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k20": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k21": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k22": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k23": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k24": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k25": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k26": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k27": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k28": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k29": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k30": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k31": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          }
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": null,
+        "summary": {
+          "committed": [
+            2,
+            64,
+            2
+          ],
+          "carry": [
+            0,
+            0,
+            0
+          ],
+          "used": 32,
+          "tickets": 32
+        }
+      }
+    },
+    {
+      "name": "Native shortage dispatches zero members 32",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 500
+          }
+        ],
+        "body": "Internal Server Error",
+        "status": 500,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 1007,
+        "stage": 370,
+        "counters": null,
+        "summary": {
+          "committed": [
+            2,
+            64,
+            2
+          ],
+          "carry": [
+            0,
+            0,
+            0
+          ],
+          "used": 32,
+          "tickets": 32
+        }
+      }
+    },
+    {
+      "name": "Native unknown disposal stays charged after return 32",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 200
+          }
+        ],
+        "body": "{\"k0\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k1\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k2\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k3\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k4\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k5\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k6\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k7\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k8\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k9\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k10\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k11\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k12\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k13\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k14\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k15\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k16\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k17\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k18\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k19\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k20\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k21\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k22\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k23\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k24\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k25\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k26\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k27\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k28\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k29\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k30\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"},\"k31\":{\"status\":\"ok\",\"unixEpochMs\":0,\"iso8601\":\"1970-01-01T00:00:00.000Z\"}}",
+        "json": {
+          "k0": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k1": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k2": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k3": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k4": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k5": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k6": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k7": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k8": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k9": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k10": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k11": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k12": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k13": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k14": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k15": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k16": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k17": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k18": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k19": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k20": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k21": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k22": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k23": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k24": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k25": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k26": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k27": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k28": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k29": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k30": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          },
+          "k31": {
+            "status": "ok",
+            "unixEpochMs": 0,
+            "iso8601": "1970-01-01T00:00:00.000Z"
+          }
+        },
+        "status": 200,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 0,
+        "counters": null,
+        "summary": {
+          "committed": [
+            98,
+            4160,
+            98
+          ],
+          "carry": [
+            32,
+            2048,
+            32
+          ],
+          "used": 32,
+          "tickets": 32
+        }
+      }
+    },
+    {
+      "name": "Native deadline keeps first claim and suppresses siblings 32",
+      "status": "passed",
+      "detail": {
+        "trace": [
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "wall-clock"
+          },
+          {
+            "call": "monotonic-clock"
+          },
+          {
+            "call": "send",
+            "status": 504
+          }
+        ],
+        "body": "Gateway Timeout",
+        "status": 504,
+        "thrown": null,
+        "committed": [],
+        "remaining": [],
+        "error": 0,
+        "stage": 260,
+        "counters": null,
+        "summary": {
+          "committed": [
+            5,
+            192,
+            5
+          ],
+          "carry": [
+            1,
+            64,
+            1
+          ],
+          "used": 32,
+          "tickets": 32
+        }
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "width": 8,
+      "kind": "base",
+      "file": "base-8.wasm",
+      "bytes": 27721,
+      "sha256": "68a2e636a9f6d501be1b6e5de69a621ee2bc34a6fda22929f632a22dd44a7b6f",
+      "sourceSha256": "cce0cbb03cf4132df55dd6f75dede8334fff7136da4e3c94a54ece0a5abe2145",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 8,
+      "kind": "disabled",
+      "file": "disabled-8.wasm",
+      "bytes": 27721,
+      "sha256": "68a2e636a9f6d501be1b6e5de69a621ee2bc34a6fda22929f632a22dd44a7b6f",
+      "sourceSha256": "cce0cbb03cf4132df55dd6f75dede8334fff7136da4e3c94a54ece0a5abe2145",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 8,
+      "kind": "unused-linked",
+      "file": "unused-linked-8.wasm",
+      "bytes": 27840,
+      "sha256": "82e0f5dabfaf36c2c9fb8745841a14c71ab874127d6a5e97f5ca187501ad942e",
+      "sourceSha256": "c60d31ec2e2608617ebc334d0dffac1727373851a0c98d1a393fadd659e48bea",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 8,
+      "kind": "plain",
+      "file": "plain-8.wasm",
+      "bytes": 31313,
+      "sha256": "6d4927f19a4a45bcfa258f5c7e90165f879d5976f3305b25b0be7fa16ea48965",
+      "sourceSha256": "83f495ab6b2ef5086b9bbf443017a2b5b0bcc570d3c162ab4980a9fc9a356101",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 8,
+      "kind": "test",
+      "file": "test-8.wasm",
+      "bytes": 31731,
+      "sha256": "373735b12fe21767f96b95e8b67238449ee395e6d3c13ad34b3e59f36cad02c0",
+      "sourceSha256": "45f6670fcb68352b6224e43eaf80ff2152f758c4b5c26a39ec59b03f772c6147",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 16,
+      "kind": "base",
+      "file": "base-16.wasm",
+      "bytes": 29043,
+      "sha256": "327aaa7f16d4006f7c294f6e6de9d74e53382aa41a3718d78dbd2204485b6a59",
+      "sourceSha256": "65af6f9f701f64def9c52363f98c99ef306aa8dc38441548ce2be166a2b3e483",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 16,
+      "kind": "disabled",
+      "file": "disabled-16.wasm",
+      "bytes": 29043,
+      "sha256": "327aaa7f16d4006f7c294f6e6de9d74e53382aa41a3718d78dbd2204485b6a59",
+      "sourceSha256": "65af6f9f701f64def9c52363f98c99ef306aa8dc38441548ce2be166a2b3e483",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 16,
+      "kind": "unused-linked",
+      "file": "unused-linked-16.wasm",
+      "bytes": 29238,
+      "sha256": "5ab305eead41fae4099e2abd1c92b81ccb80e5c1f7628bb52bce1d62eccc4b27",
+      "sourceSha256": "c1cac217449aa16f54ff586c2d5931cfcfed51fa463e3296b526692d8e69477a",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 16,
+      "kind": "plain",
+      "file": "plain-16.wasm",
+      "bytes": 32728,
+      "sha256": "d710201e19b3e194c732dd00b480debeee886ace5fdc65b77ed9e3e1a41a91b6",
+      "sourceSha256": "f7c383b6781d2461d63a67593fec0d0ccefb43d182a25a2a552c9f2feeb74259",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 16,
+      "kind": "test",
+      "file": "test-16.wasm",
+      "bytes": 33146,
+      "sha256": "bb25f41636d3e2b00bd8b912653ab8ce1c981248ee5fb6b3629d6d8e049617bb",
+      "sourceSha256": "0450852ac7496d2fd125a523faf2640b1b872e9cd59928795c2819bb5eddfb4b",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 32,
+      "kind": "base",
+      "file": "base-32.wasm",
+      "bytes": 31765,
+      "sha256": "ba619790dcf675d5f9cf06e8cd5474f6961c3e0619260320f4df64473d0db51f",
+      "sourceSha256": "cd3326e7fd1cb1e9b12f868408da3919557a00154da70a9a7c476e502df3aff8",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 32,
+      "kind": "disabled",
+      "file": "disabled-32.wasm",
+      "bytes": 31765,
+      "sha256": "ba619790dcf675d5f9cf06e8cd5474f6961c3e0619260320f4df64473d0db51f",
+      "sourceSha256": "cd3326e7fd1cb1e9b12f868408da3919557a00154da70a9a7c476e502df3aff8",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 32,
+      "kind": "unused-linked",
+      "file": "unused-linked-32.wasm",
+      "bytes": 31960,
+      "sha256": "c26e288528553c97fe7ae8ad201d218def763bb39852222319f55082a74f3783",
+      "sourceSha256": "c1e7bd4d92176167810464a8b04e0913fcd9b32379ee9541364124636bd771a9",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 32,
+      "kind": "plain",
+      "file": "plain-32.wasm",
+      "bytes": 35494,
+      "sha256": "dd069f6dc04868b814b081e8c424482e96c564409d4aba8e7495369acaf480b3",
+      "sourceSha256": "f1e61898b74a9630e9e7129640a1e3dec8adbfa844b2d982391a4274b1d07762",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    },
+    {
+      "width": 32,
+      "kind": "test",
+      "file": "test-32.wasm",
+      "bytes": 35918,
+      "sha256": "a21c7552f246544ecd178da45a6e6be59fc324d9c8f2283ba3cf7a44210576c2",
+      "sourceSha256": "4e9993a646dc940235841050f64becb60dcb002ede78e1521c7e14f3d0063b1b",
+      "imports": [
+        {
+          "module": "wasi_snapshot_preview1",
+          "name": "clock_time_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_async_io",
+          "name": "select",
+          "kind": "function"
+        }
+      ]
+    }
+  ]
+}
