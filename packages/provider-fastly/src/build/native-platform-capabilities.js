@@ -2165,7 +2165,14 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
   source = dynamicBackends.instrument(source, bindings, true, (options.bindings || options).backends);
-  source = hostExtensions.instrument(source, extensions);
+  const forwarding = require('./native-body-forwarding.js');
+  const authority = require('./response-authority.js');
+  const lifecycle = [...hostExtensions.hooks(extensions), ...forwarding.hooks(plan)];
+  if (extensions.length || forwarding.enabled(plan)) {
+    source = authority.instrument(source);
+    lifecycle.push(...authority.hooks());
+  }
+  source = require('./lifecycle-hooks.js').compose(source, lifecycle, { requestBudget: bindings.maxDurationMs !== undefined }).source;
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;

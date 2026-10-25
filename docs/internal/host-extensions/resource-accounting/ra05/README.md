@@ -150,3 +150,18 @@ remaining profile/qualification obligations. RA-06 can now map cache-specific
 acquisition, readiness, commit and abandon into the same ownership policy; RA-07
 must qualify the combined demand and preserved driver behavior. No merge, release,
 real-host acceptance or full runtime regression is claimed here.
+
+## Lifecycle checkpoint replay
+
+The [driver-owned lifecycle spike](../../DESIGN-03-lifecycle-hooks.md) adds an
+opt-in replay without replacing this checkpoint's archived evidence:
+
+```sh
+node docs/internal/host-extensions/resource-accounting/ra05/check.cjs /tmp/hex-lifecycle-ra05 --lifecycle
+```
+
+It uses shared downstream response authority and registers final cleanup at
+`invocation.closed`, after the driver's existing pending reaping and ticket
+invalidation. The 44 Native assertions are unchanged. Capability-specific host-call
+and allocation instrumentation remains fixture-owned source injection. This is a
+closure/composition proof, not production adoption of the accounting adapter.

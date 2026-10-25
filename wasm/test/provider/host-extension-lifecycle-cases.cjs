@@ -61,6 +61,14 @@ export function hex03_send(token:i32): i32 { return __pulse_fastly_send_result(t
     const forgedFinal=execute(observed,{clock:instance=>{const e=instance.exports;if(!escaped && e.hex03_settled() && e.pulse_pending_count()===0){escaped=true;e.hex03_replace_result();}return 0n;}});
     assert(escaped);assert.equal(forgedFinal.stage,283);assert.equal(forgedFinal.trace.length,1);retain(fixture+' forged terminal result after settlement',forgedFinal);
     const ordinary=execute(observed,{path:'/ordinary'});assert.equal(ordinary.error,0);assert.equal(ordinary.trace.filter(x=>x.call==='send').length,1);retain(fixture+' ordinary response',ordinary);
+    const ordinaryFailed=execute(observed,{path:'/ordinary',sendStatus:3});
+    assert.equal(ordinaryFailed.state,1);assert.equal(ordinaryFailed.trace.filter(x=>x.call==='send').length,1);
+    assert.equal(ordinaryFailed.resources.closes.length,2,'an uncertain ordinary output does not make borrowed ingress uncertain');
+    ordinaryFailed.instance.exports.hex03_error();ordinaryFailed.instance.exports.hex03_timeout();
+    assert.equal(ordinaryFailed.trace.filter(x=>x.call==='send').length,1);retain(fixture+' ordinary send failure retains output fence but closes ingress',ordinaryFailed);
+    const ordinaryReentrant=execute(observed,{path:'/ordinary',onSend:instance=>{instance.exports.hex03_error();instance.exports.hex03_timeout();instance.exports.hex03_send(1);}});
+    assert.equal(ordinaryReentrant.state,3);assert.equal(ordinaryReentrant.trace.filter(x=>x.call==='send').length,1);
+    assert.equal(ordinaryReentrant.resources.closes.length,2);retain(fixture+' reentrant ordinary responders share the pre-ABI fence',ordinaryReentrant);
     receipt.artifacts.push({fixture,bytes:native.wasm.length,sha256:native.inspection.sha256,imports:native.inspection.imports,policySha256:native.manifest.hostExtensionPolicy.sha256,observedBytes:observed.wasm.length,observedSha256:observed.inspection.sha256});
     for(const [provider,target] of [['node','native'],['node','javascript'],['fastly','javascript']]) {
       const descriptor=require(path.join(root,`packages/provider-${provider}/src/${provider==='fastly'?'toolchain/index.js':'toolchain.js'}`)).createDriver().targets[target];
