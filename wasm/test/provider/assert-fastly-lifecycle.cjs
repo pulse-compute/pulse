@@ -68,6 +68,17 @@ export function getCleanups(): i32 { return cleanups }
 `);
   lifecycle.assertSites();
   const fresh = () => new WebAssembly.Instance(module, {}).exports;
+  require('../support/execution-lifecycle-conformance.cjs').runDeliveryConformance(() => {
+    const x = fresh(), ticket = x.open();
+    return {
+      mode: x.setMode, settle: () => x.settle(ticket), close: x.close, cleanupCount: x.getCleanups,
+      trace: () => x.getTrace() === 0 ? '' : String(x.getTrace()), accepted: x.getAccepted,
+      rejectInvalid() { for (const invalid of [0, -1, ticket + 1]) assert.equal(x.settle(invalid), 0); assert.equal(x.settleOther(ticket), 0); },
+      assertPending() { assert.equal(x.getTicket(), ticket); },
+      assertConsumed() { assert.equal(x.getTicket(), 0); assert.equal(x.settle(ticket), 0); }
+    };
+  }, check);
+
   check('authenticates before service guards and ticket consumption', () => {
     const x = fresh(), ticket = x.open();
     for (const value of [0, -1, ticket + 1]) assert.equal(x.settle(value), 0);
