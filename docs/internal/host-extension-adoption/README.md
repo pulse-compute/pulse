@@ -13,6 +13,9 @@ qualification gates. It does not mark the later implementation units complete.
 metadata implementation. [P03](P03-fastly-lifecycle.md) and
 [P09A](P09A-node-lifecycle.md) record the guest and host driver integrations;
 foundation qualification and promotion gates remain open.
+[P05](P05-resource-profiles.md) supplies resource profile/admission calculations
+and the allocation/budget inventory; runtime accounting is not installed. P11A
+and foundation qualification still precede P04.
 
 ## Direction and stopping point
 
@@ -104,7 +107,7 @@ do not substitute for a complete required candidate selection.
 | [P02 — Lifecycle contract and planner](P02-lifecycle-contract.md) | P01; foundation | Adapt the six execution and optional HTTP semantics into the shared owner; define one invocation contract and ordered dispatch data with binding validation. Keep emitted source and host-specific rejection actions outside the semantic planner. | Astra / High |
 | [P03 — Structural Fastly integration](P03-fastly-lifecycle.md) | P02; foundation | Emit lifecycle calls at explicit driver sites, preserving settlement authentication, rejected delivery, normal-return closure and response-authority precedence. Remove migrated anchor/pass-order dependence. Migrate forwarding as needed and reject unsupported combinations. Preserve unused paths. | Sol 6.1 / High |
 | P04 — Production accounting core | P05 and P11A, foundation complete; RA | Implement bounded ledger storage under the appropriate runtime owners, generations, overflow/exhaustion handling, retained claims and protected cleanup. Select by reachability. Do not copy fixture banks or introduce a second scheduler. | Astra / High |
-| P05 — Profiles and admission | P01, P02; RA design can begin early | Derive heterogeneous envelopes from selected operations, payload bounds and actual allocation strategy. Reserve overlapping lifetimes and cleanup before dispatch. Reconcile existing value/handle/effect budgets while preserving distinct dimensions. State excluded memory explicitly. | Astra / High |
+| [P05 — Profiles and admission](P05-resource-profiles.md) | P01, P02; RA design can begin early | Derive heterogeneous envelopes from selected operations, payload bounds and actual allocation strategy. Reserve overlapping lifetimes and cleanup before dispatch. Reconcile existing value/handle/effect budgets while preserving distinct dimensions. State excluded memory explicitly. | Astra / High |
 | P06 — Compiler-owned composition | P04, P07, P08; RA | Validate fixed child graphs, parent ownership, conditional work, effect counts, result authentication and deadline continuity in the canonical plan. Remove post-compiler graph expansion and experimental export replacement. Reject unsupported nesting/callbacks. | Astra / High; split implementation and qualification |
 | P07 — Core fetch accounting | P04, P05; RA | Structurally integrate acquisition, send/wait/poll, body allocation, alias retention, opaque transfer and cleanup. Reconcile existing enforcement; preserve primary failures and uncertainty. No new cancellation guarantee. | Astra / High |
 | P08 — Cache contract and adapter | P05 for contract, P04 for implementation; RA | Decide incomplete-entry, read-failure, commit and abandon semantics before exposing a production package. Implement qualified read/write disposal and readiness rules. Never infer rollback or treat body-read error as a cache miss without a separate reviewed policy. | Astra / High |

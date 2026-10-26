@@ -860,6 +860,27 @@ handoff, accounting or support-tier change is exposed. The semantic owners are
 [`http-lifecycle.js`](../../wasm/packages/contracts/src/host/http-lifecycle.js) and
 [`lifecycle-planner.js`](../../wasm/packages/contracts/src/handler/lifecycle-planner.js).
 
+### Internal resource profile planning (P05)
+
+The contracts package exposes `resourceAdmission` through the existing internal
+`provider/toolchain` subpath. `pulse.resource-profile.v1` describes a selected
+operation's realization, work and protected cleanup requirements. The immutable
+`pulse.resource-admission.v1` plan sums heterogeneous selected instances, execution
+exit and already-occupied capacity across distinct handles, cumulative payload
+backing, record slots, cleanup steps and effects. All dimensions must fit; no
+partial admission, phase discount, implicit refund or unchecked arithmetic is
+allowed. Namespaces remain distinct. Fixed-copy and bounded chunked-text models
+make allocation assumptions explicit, including intermediate backing retained
+for the invocation. Excluded memory is reported rather than treated as zero.
+
+This is a data calculation, not a reservation token or installed accounting
+service. Compiler/profile producers must prove selection/bounds, and the runtime
+must reserve atomically before acquisition under its original deadline. Existing
+value, effect, body, page and time budgets remain authoritative. There are no
+production RA defaults, cache profiles, new application/configuration surfaces
+or target support claims. The semantic owner is
+[`resource-admission.js`](../../wasm/packages/contracts/src/handler/resource-admission.js).
+
 ### Read-loop invocation lifecycle (PS2)
 
 `pulse.effect-invocation.v1` distinguishes reusable static effect/continuation

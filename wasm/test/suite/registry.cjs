@@ -386,9 +386,12 @@ const tasks = Object.freeze({
   'lifecycle-contract': nodeTask('test/contracts/assert-lifecycle-contract.cjs', {
     description: 'shared execution/HTTP semantics, strict symbolic bindings and deterministic dispatch plans'
   }),
+  'resource-admission': nodeTask('test/contracts/assert-resource-admission.cjs', {
+    description: 'heterogeneous resource profiles, cumulative allocation envelopes and whole-selection admission'
+  }),
   'lifecycle-contract-installed': nodeTask('test/contracts/assert-lifecycle-contract-installed.cjs', {
     evidence: 'external', timeoutMs: 180000,
-    description: 'packed contracts lifecycle planner replay from an offline installed consumer outside the checkout'
+    description: 'packed lifecycle/resource planner replay from an offline installed consumer outside the checkout'
   }),
   'provider-toolchain': nodeTask('test/contracts/assert-provider-toolchain-boundary.cjs', {
     evidence: 'unit',
@@ -1487,6 +1490,7 @@ const profiles = Object.freeze({
     'package-runtime',
     'provider-toolchain',
     'lifecycle-contract',
+    'resource-admission',
     'schema-registry',
     'continuation-registry',
     'entities-contracts',
