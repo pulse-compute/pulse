@@ -812,7 +812,7 @@ Production qualification remains open. Applications must handle a continuing
 chain at the cap as incomplete rather than conclude that the searched value is
 absent.
 
-### Shared lifecycle planning (P02)
+### Shared lifecycle planning and Fastly sites (P02/P03)
 
 The contracts package owns internal `executionLifecycle`, optional `httpLifecycle`
 and `lifecyclePlanner` objects through its existing `provider/toolchain` subpath.
@@ -834,10 +834,18 @@ explicit contract version, not a provider/device name; uncertain host outcomes
 never reopen authority or imply disposal, delivery or quiescence.
 
 These are internal adoption contracts, not application hooks, package registration
-or a new support tier. This increment does not wire existing drivers to the
-planner or expose host handoffs/accounting. Actual site placement, action behavior,
-unused artifact identity and cross-driver conformance require the subsequent
-Fastly and Node integrations. The semantic owners are
+or a new support tier. The shared AssemblyScript emitter in `runtime-core-as`
+realizes the plan at explicit Fastly driver and canonical setter sites. Ticket
+authentication precedes service guards and consumption; normal-return closure
+notifications distinguish pre-invalidation from closed state. Forwarding uses
+structural acquired/result/error/end points. Selected HTTP authority fences
+ordinary, error and timeout responders outside legacy handlers and fences raw
+send before the host call; nonzero or trapped outcomes never reopen authority.
+Empty selection emits no lifecycle machinery. Provider-internal service bodies
+are trusted generator inputs, not application or package hooks. Package-owned
+driver emitters with selected services reject until explicitly bound. Node
+integration and cross-driver conformance remain subsequent work; no host handoff,
+accounting or support-tier change is exposed. The semantic owners are
 [`execution-lifecycle.js`](../../wasm/packages/contracts/src/handler/execution-lifecycle.js),
 [`http-lifecycle.js`](../../wasm/packages/contracts/src/host/http-lifecycle.js) and
 [`lifecycle-planner.js`](../../wasm/packages/contracts/src/handler/lifecycle-planner.js).

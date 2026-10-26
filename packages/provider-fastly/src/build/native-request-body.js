@@ -31,12 +31,12 @@ function __pulse_request_send_body_error(): bool {
 `;
 }
 
-function instrument(source, applicationErrors) {
+function instrument(source, applicationErrors, lifecycle) {
   if (!applicationErrors) source = source.replace(/function (host_\w+)\(([^)]*)\): (i32|void) \{/g,
     (declaration, _name, _args, result) => `${declaration} if (__pulse_fastly_last_error == PULSE_ERROR_REQUEST_BODY) return${result === 'void' ? '' : ' 0'};`);
   // The existing terminal failure path also covers applications without an
   // error handler. Request-budget instrumentation subsequently takes priority.
-  const marker = 'function __pulse_fastly_jwt_send_error(): void {';
+  const marker = `function ${lifecycle?.legacyName('__pulse_fastly_jwt_send_error') || '__pulse_fastly_jwt_send_error'}(): void {`;
   if (!source.includes(marker)) throw new Error('Fastly request-body error boundary drift.');
   return source.replace(marker, marker + ' if (__pulse_request_send_body_error()) return;');
 }

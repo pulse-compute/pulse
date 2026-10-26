@@ -7,6 +7,7 @@ const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonPro
 const { nativeLoggingSource } = require('./native-stdio.js');
 const applicationErrors = require('./native-application-errors.js');
 const effectInvocations = require('./effect-invocations.js');
+const lifecycleBindings = require('./lifecycle.js');
 const packageApplication = require('./package-native-application.js');
 const nativeValueBudget = require('./native-value-budget.js');
 const { schemaNeedsValueProjection } = require('@pulse-compute/wasm-contracts/schema-json/registry');
@@ -1341,6 +1342,7 @@ function effectDispatchSource(plan) {
 }
 
 function fastlyRuntimeSource(plan, bindings, options = {}) {
+  const lifecycle = options.lifecycle;
   const textEncodeIds = schemaTextEncodeIds(plan);
   const effectCount = (plan.effects || []).length;
   const hasAssets = (plan.effects || []).some(effect => effect.kind === 'assets.lookup');
@@ -1414,7 +1416,7 @@ function __pulse_fastly_jwt_attach_evidence(handle: i32): void { void handle }
   // their specific responses here. Every remaining fatal path needs a response,
   // independently of whether JWT evidence was requested for this build.
   const terminalErrorSource = `
-function __pulse_fastly_jwt_send_error(): void {
+${lifecycle?.active ? `function __pulse_fastly_jwt_send_error(): void {\n${lifecycle.site('response-error')}\n  __pulse_fastly_jwt_send_error_impl()\n}\n` : ''}function ${lifecycle?.legacyName('__pulse_fastly_jwt_send_error') || '__pulse_fastly_jwt_send_error'}(): void {
   const output = new __PulseFastlyValue()
   output.kind = PULSE_VALUE_RESPONSE
   output.status = ${jwtReality ? '__pulse_fastly_jwt_error != 0 ? 400 : 500' : '500'}
@@ -1449,7 +1451,7 @@ function __pulse_fastly_jwt_send_error(): void {
 @external("fastly_http_resp", "header_value_get") declare function fastly_http_resp_header_value_get(handle: i32, name: usize, nameLength: i32, value: usize, valueLength: i32, writtenOut: usize): i32
 @external("fastly_http_resp", "status_get") declare function fastly_http_resp_status_get(handle: i32, statusOut: usize): i32
 @external("fastly_http_resp", "status_set") declare function fastly_http_resp_status_set(handle: i32, status: i32): i32
-@external("fastly_http_resp", "send_downstream") declare function fastly_http_resp_send_downstream(handle: i32, body: i32, streaming: i32): i32
+@external("fastly_http_resp", "send_downstream") declare function ${lifecycle?.authority ? '__pulse_response_send_raw' : 'fastly_http_resp_send_downstream'}(handle: i32, body: i32, streaming: i32): i32
 @external("fastly_http_body", "new") declare function fastly_http_body_new(handleOut: usize): i32
 @external("fastly_http_body", "read") declare function fastly_http_body_read(handle: i32, buffer: usize, bufferLength: i32, readOut: usize): i32
 @external("fastly_http_body", "write") declare function fastly_http_body_write(handle: i32, buffer: usize, bufferLength: i32, end: i32, writtenOut: usize): i32
@@ -1963,7 +1965,7 @@ function __pulse_fastly_wait_kv_get(effectIndex: i32): i32 { if (unchecked(__pul
 ${assetResultSource}
 function __pulse_fastly_wait_kv_put(effectIndex: i32): i32 { if (unchecked(__pulse_fastly_pending_mode[effectIndex]) != PULSE_FASTLY_PENDING_ASYNC) { __pulse_fastly_fail(PULSE_ERROR_STATE, 126, effectIndex); return 0 } const pending = unchecked(__pulse_fastly_pending[effectIndex]); const kvError = __pulse_fastly_out_i32(); const status = fastly_kv_store_insert_wait(pending, changetype<usize>(kvError)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_NONE); unchecked(__pulse_fastly_pending[effectIndex] = 0); if (status != FASTLY_STATUS_OK || __pulse_fastly_out_value(kvError) != 1) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 127, effectIndex); return 0 } return host_value_boolean(1) }
 function __pulse_fastly_write_body(bodyHandle: i32, value: string): i32 { const bytes = __pulse_fastly_utf8(value); let offset = 0; while (offset < bytes.byteLength) { const written = __pulse_fastly_out_i32(); const status = fastly_http_body_write(bodyHandle, changetype<usize>(bytes) + offset, bytes.byteLength - offset, 0, changetype<usize>(written)); if (status != FASTLY_STATUS_OK) return status; const count = __pulse_fastly_out_value(written); if (count <= 0) return 1; offset += count } return FASTLY_STATUS_OK }
-function __pulse_fastly_send_result(handle: i32): i32 { const value = __pulse_fastly_value(handle); ${bindings.s3.length ? 'if (value.s3Body) return __s3_send_body(value);' : ''} if (value.kind == PULSE_VALUE_FETCH) return fastly_http_resp_send_downstream(value.responseHandle, value.bodyHandle, 0); if (value.kind != PULSE_VALUE_RESPONSE) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 90, -1); return PULSE_ERROR_VALUE } const responseOut = __pulse_fastly_out_i32(); let status = fastly_http_resp_new(changetype<usize>(responseOut)); if (status != FASTLY_STATUS_OK) return status; const responseHandle = __pulse_fastly_out_value(responseOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) return status; const bodyHandle = __pulse_fastly_out_value(bodyOut); status = fastly_http_resp_status_set(responseHandle, value.status); if (status != FASTLY_STATUS_OK) return status; for (let i = 0; i < value.headers.length; i += 1) { const header = unchecked(value.headers[i]); const nameBytes = __pulse_fastly_utf8(header.name); const valueBytes = __pulse_fastly_utf8(header.value); status = fastly_http_resp_header_append(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) return status } status = __pulse_fastly_write_body(bodyHandle, value.text); if (status != FASTLY_STATUS_OK) return status; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0) }
+${lifecycle?.active ? `function __pulse_fastly_send_result(handle: i32): i32 {\n${lifecycle.site('response-send')}\n  return __pulse_fastly_send_result_impl(handle)\n}\n` : ''}function ${lifecycle?.legacyName('__pulse_fastly_send_result') || '__pulse_fastly_send_result'}(handle: i32): i32 { const value = __pulse_fastly_value(handle); ${bindings.s3.length ? 'if (value.s3Body) return __s3_send_body(value);' : ''} if (value.kind == PULSE_VALUE_FETCH) return fastly_http_resp_send_downstream(value.responseHandle, value.bodyHandle, 0); if (value.kind != PULSE_VALUE_RESPONSE) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 90, -1); return PULSE_ERROR_VALUE } const responseOut = __pulse_fastly_out_i32(); let status = fastly_http_resp_new(changetype<usize>(responseOut)); if (status != FASTLY_STATUS_OK) return status; const responseHandle = __pulse_fastly_out_value(responseOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) return status; const bodyHandle = __pulse_fastly_out_value(bodyOut); status = fastly_http_resp_status_set(responseHandle, value.status); if (status != FASTLY_STATUS_OK) return status; for (let i = 0; i < value.headers.length; i += 1) { const header = unchecked(value.headers[i]); const nameBytes = __pulse_fastly_utf8(header.name); const valueBytes = __pulse_fastly_utf8(header.value); status = fastly_http_resp_header_append(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) return status } status = __pulse_fastly_write_body(bodyHandle, value.text); if (status != FASTLY_STATUS_OK) return status; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0) }
 
 ${jwtEvidenceSource}
 ${terminalErrorSource}
@@ -1980,6 +1982,7 @@ ${effectResultSource(plan, bindings)}
 }
 
 function driverSource(plan, options = {}) {
+  const lifecycle = options.lifecycle;
   const entryName = options.guestLinked === true
     ? 'pulse_fastly_handle'
     : '_start';
@@ -1996,7 +1999,7 @@ export function ${entryName}(): void {
   if (__pulse_invocation_started) { __pulse_fastly_fail(PULSE_ERROR_STATE, 171, -1); return }
   __pulse_invocation_started = true
   __pulse_fastly_run_invocation()
-  ${plan.effects.some(e => e.kind === 's3.getBody') ? '__s3_close_bodies()' : ''}
+${lifecycle?.site('invocation-end') ? lifecycle.site('invocation-end') + '\n' : ''}  ${plan.effects.some(e => e.kind === 's3.getBody') ? '__s3_close_bodies()' : ''}
   __pulse_invocation_close()
 }
 function __pulse_fastly_run_invocation(): void {
@@ -2007,7 +2010,7 @@ function __pulse_fastly_run_invocation(): void {
   if (downstreamStatus != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 100, -1); __pulse_fastly_jwt_send_error(); return }
   __pulse_fastly_request_handle = load<i32>(changetype<usize>(handles))
   __pulse_fastly_request_body_handle = load<i32>(changetype<usize>(handles) + 4)
-  __pulse_fastly_request_method = __pulse_fastly_read_req_string(0)
+${lifecycle?.site('request-acquired') ? lifecycle.site('request-acquired') + '\n' : ''}  __pulse_fastly_request_method = __pulse_fastly_read_req_string(0)
   if (__pulse_fastly_last_error != 0) { __pulse_fastly_jwt_send_error(); return }
   __pulse_fastly_request_url = __pulse_fastly_read_req_string(1)
   if (__pulse_fastly_last_error != 0) { __pulse_fastly_jwt_send_error(); return }
@@ -2027,7 +2030,7 @@ ${packageApplication.enabled(plan) ? packageApplication.driverLoop() : applicati
   if (runStatus != 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 102, -1); __pulse_fastly_jwt_send_error(); return }
   const result = pulse_result_handle()
   if (result <= 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 103, -1); __pulse_fastly_jwt_send_error(); return }
-  __pulse_fastly_jwt_attach_evidence(result)
+${lifecycle?.site('result-claim') ? lifecycle.site('result-claim') + '\n' : ''}  __pulse_fastly_jwt_attach_evidence(result)
   const sendStatus = __pulse_fastly_send_result(result)
   if (sendStatus != FASTLY_STATUS_OK) __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 104, -1)
 }
@@ -2096,13 +2099,15 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   const packageDuration = plan.packages?.application?.requestLimits?.maxDurationMs;
   if (packageDuration !== undefined) options = { ...options, maxDurationMs: Math.min(options.maxDurationMs ?? packageDuration, packageDuration) };
   const bindings = resolveCapabilityBindings(plan, options);
+  // Trusted provider-internal services, never a project/package hook API.
+  const lifecycle = lifecycleBindings.create(plan, bindings, options.lifecycleServices);
   // Keep final provider eligibility authoritative over the portable artifact
   // and caller options. Only the selected crypto guest uses the linked policy;
   // that policy excludes active codecs regardless of JSON arena configuration.
   const numericRegions = facts.guestUnits.length === 0 ? 'fastly-numeric-regions-v2'
     : jwtCrypto && jwtCrypto.guestUnitRequired ? 'fastly-linked-numeric-regions-v1' : undefined;
   const portable = packageApplication.enabled(plan) ? packageApplication.portable(plan) : generateCanonicalNativeAssemblyScript(plan, {
-    ...options, numericRegions,
+    ...options, numericRegions, lifecycle,
     handleOwnership: facts.guestUnits.length === 0 ? 'fastly-handle-tracing-v1' : undefined
   });
   nativeHandleOwnership.validateRoots(plan, portable.manifest);
@@ -2115,7 +2120,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     'export function __pulse_fastly_abort(message: string | null, fileName: string | null = null, line: u32 = 0, column: u32 = 0): void { unreachable() }',
     '',
     fastlyRuntimeSource(plan, bindings, {
-      ...options,
+      ...options, lifecycle,
       handleTracing: portable.manifest.handleOwnership?.enabled === true,
       jwtCrypto,
       es256KeyRecords
@@ -2135,27 +2140,29 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./native-fetch-errors.js').runtimeSource(dynamicBackends.active(bindings)),
     require('./native-fetch-deadlines.js').runtimeSource(plan),
     applicationErrors.settlementEnabled(plan) ? applicationErrors.runtimeSource(plan) : '',
-    effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan) }),
+    effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan), lifecycle }),
     ...(portable.manifest.numericRegions?.accounting === 'fastly-read-loop-v1' && portable.manifest.numericRegions.regions.length > 0
       ? [nativeValueBudget.numericRegionSource()] : []),
     portableSource,
     nativeHandleOwnership.providerSource(plan, portable.manifest.handleOwnership?.enabled === true),
-    driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
+    driverSource(plan, { guestLinked: facts.guestUnits.length > 0, lifecycle }),
     ''
   ].join('\n');
   if (applicationErrors.settlementEnabled(plan)) source = applicationErrors.instrument(source);
   source = require('./native-request-headers.js').instrument(source, applicationErrors.enabled(plan), /\bhost_request_headers\(/.test(portableSource));
-  source = require('./native-header-lookup.js').instrument(source);
-  source = require('./native-fetch-errors.js').instrument(source);
+  source = require('./native-header-lookup.js').instrument(source, lifecycle);
+  source = require('./native-fetch-errors.js').instrument(source, lifecycle);
   source = require('./native-fetch-deadlines.js').instrument(source, plan);
-  source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan));
+  source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan), lifecycle);
   if (packageApplication.enabled(plan)) source = packageApplication.instrument(source);
   source = effectInvocations.instrument(source);
-  source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
+  source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan, lifecycle);
   source = packageApplication.terminalFailure(source, plan);
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
   source = dynamicBackends.instrument(source, bindings, true, (options.bindings || options).backends);
+  lifecycle.assertSites();
+  if (lifecycle.supportSource) source += '\n' + lifecycle.supportSource;
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;
@@ -2215,6 +2222,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       : Object.freeze({ status: 'inactive' }),
     effectCount: (plan.effects || []).length,
     effectInvocations: effectInvocations.policy,
+    ...(lifecycle.active ? { lifecycle: lifecycle.plan } : {}),
     effectKinds,
     continuationCount: (plan.continuations || []).length,
     groupedContinuationCount: (plan.continuations || []).filter((entry) => (entry.effectIds || []).length > 1).length,

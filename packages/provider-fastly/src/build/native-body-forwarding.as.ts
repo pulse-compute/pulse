@@ -29,7 +29,6 @@ let __fwd_index: i32 = -1
 let __fwd_result: i32 = 0
 let __fwd_marker: i32 = 0
 let __fwd_failure: i32 = 0
-let __fwd_committed: bool = false
 let __fwd_reserved: bool = false
 let __fwd_header_count: i32 = 0
 let __fwd_request_length: i32 = -1
@@ -77,14 +76,13 @@ function __fwd_cleanup(): void {
   }
 }
 function __fwd_error_response(): bool {
-  if (__fwd_committed) { __fwd_cleanup(); return true; }
+  if (!__pulse_response_owned()) { __fwd_cleanup(); return true; }
   if (__fwd_failure == 0) return false;
   const status = __fwd_failure;
   __fwd_cleanup(); __request_error_response = true;
   __pulse_fastly_last_error = 0;
   const value = new __PulseFastlyValue(); value.kind = PULSE_VALUE_RESPONSE; value.status = status;
   value.text = status == 413 ? 'Payload Too Large' : status == 504 ? 'Gateway Timeout' : status == 400 ? 'Bad Request' : 'Bad Gateway';
-  __fwd_committed = true;
   __pulse_fastly_send_result(__pulse_fastly_put(value)); return true;
 }
 function __fwd_lower(byte: u8): u8 { return byte >= 65 && byte <= 90 ? byte + 32 : byte; }
@@ -325,7 +323,6 @@ function __fwd_send(): i32 {
   if (!__fwd_remaining()) { __fwd_error_response(); return 0; }
   // Treat even an ambiguous send failure as committed: never emit a second
   // response. The writable body remains ours until explicit EOF or abandon.
-  __fwd_committed = true;
   const output = __fwd_output; __fwd_output = -1;
   if (fastly_http_resp_send_downstream(output, __fwd_downstream, 1) != 0) { __pulse_fetch_close_response(output); __fwd_fail(502); __fwd_cleanup(); return 0; }
   const bodyless = __fwd_status == 204 || __fwd_status == 205 || __fwd_status == 304;
@@ -334,6 +331,7 @@ function __fwd_send(): i32 {
   if (eof && __fwd_remaining()) {
     const downstream = __fwd_downstream; __fwd_downstream = -1;
     if (__pulse_fetch_close_body(downstream) != 0) __fwd_fail(502);
+    else __pulse_response_complete();
     // Success is the host-handoff boundary. The handle is gone; there is no
     // final-writer wait, delivery receipt, or post-handoff timeout guarantee.
   }

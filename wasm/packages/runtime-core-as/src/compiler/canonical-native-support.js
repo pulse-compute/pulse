@@ -134,7 +134,7 @@ function renderNativeResumeSupport({ readyCases, clearCases }) {
   ];
 }
 
-function renderNativeExports({ eventReachable, stateEnabled, eventExports, setterCases }) {
+function renderNativeExports({ eventReachable, stateEnabled, eventExports, setterCases, lifecycle }) {
   return [
     'export function pulse_abi_version(): i32 { return PULSE_ABI_VERSION }',
     'export function pulse_plan_hash_ptr(): i32 { return changetype<i32>(PULSE_PLAN_HASH) }',
@@ -159,6 +159,7 @@ function renderNativeExports({ eventReachable, stateEnabled, eventExports, sette
     '  return __pulse_run()',
     '}',
     'export function pulse_set_effect_result(effectIndex: i32, handle: i32): i32 {',
+    ...(lifecycle?.site('effect-result') ? [lifecycle.site('effect-result')] : []),
     '  switch (effectIndex) {',
     ...(setterCases ? [setterCases] : []),
     `    default: __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_EFFECT_RESULT}; return ${runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.REJECTED}`,

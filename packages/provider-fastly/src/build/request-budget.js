@@ -1,9 +1,7 @@
 'use strict';
-const fs = require('node:fs');
-const path = require('node:path');
 const {normalizeRequestDuration} = require('@pulse-compute/runtime/host');
 
-function instrumentRequestBudget(input, duration, plan) {
+function instrumentRequestBudget(input, duration, plan, lifecycle) {
   const ms = normalizeRequestDuration(duration);
   if (ms === undefined) return input;
   let source = input;
@@ -28,12 +26,12 @@ function instrumentRequestBudget(input, duration, plan) {
   }`);
   replace('    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();', '    if (!__request_wait(handle, effectIndex)) return "";\n    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();');
   replace('while (offset < bytes.byteLength) { const written', 'while (offset < bytes.byteLength) { if (!__request_check()) return 1; const written');
-  replace('function __pulse_fastly_send_result(handle: i32): i32 {', 'function __pulse_fastly_send_result(handle: i32): i32 { if (!__request_check()) return 1;');
+  replace(`function ${lifecycle?.legacyName('__pulse_fastly_send_result') || '__pulse_fastly_send_result'}(handle: i32): i32 {`, `function ${lifecycle?.legacyName('__pulse_fastly_send_result') || '__pulse_fastly_send_result'}(handle: i32): i32 { if (!__request_check()) return 1;`);
   replace('return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0)', 'if (!__request_check()) return 1; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0)');
   replace('if (sendStatus != FASTLY_STATUS_OK) __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 104, -1)', 'if (sendStatus != FASTLY_STATUS_OK) { if (__request_expired) { __request_send_timeout(); return; } __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 104, -1); }');
   replace('status = fastly_http_req_send_async(requestHandle', 'if (!__request_check(effectIndex)) return; status = fastly_http_req_send_async(requestHandle');
   replace('function __pulse_fastly_ready_effect(effectIndex: i32, handle: i32): void {', 'function __pulse_fastly_ready_effect(effectIndex: i32, handle: i32): void { if (!__request_check(effectIndex)) return;');
-  replace('function __pulse_fastly_jwt_send_error(): void {', 'function __pulse_fastly_jwt_send_error(): void { if (__request_expired || !__request_check()) { __request_send_timeout(); return; }');
+  replace(`function ${lifecycle?.legacyName('__pulse_fastly_jwt_send_error') || '__pulse_fastly_jwt_send_error'}(): void {`, `function ${lifecycle?.legacyName('__pulse_fastly_jwt_send_error') || '__pulse_fastly_jwt_send_error'}(): void { if (__request_expired || !__request_check()) { __request_send_timeout(); return; }`);
   source = source.replaceAll('runStatus = pulse_resume()', 'if (!__request_check()) { __request_send_timeout(); return; }\n    runStatus = pulse_resume()');
   replace('  const result = pulse_result_handle()', '  if (!__request_check()) { __request_send_timeout(); return; }\n  const result = pulse_result_handle()');
   if (source.includes('__kv_deadline[index] = start +')) replace('__kv_deadline[index] = start + i64(__KV_timeoutMs) * 1000000;', '__kv_deadline[index] = min<i64>(__request_deadline, start + i64(__KV_timeoutMs) * 1000000);');
@@ -42,6 +40,6 @@ function instrumentRequestBudget(input, duration, plan) {
   replace('function __pulse_fetch_request_check(index: i32): bool { return true }', 'function __pulse_fetch_request_check(index: i32): bool { return __request_check(index) }');
   replace('function __pulse_fetch_request_remaining(): i32 { return 2147483647 }', 'function __pulse_fetch_request_remaining(): i32 { return __request_remaining() }');
   if (plan.callables?.length || plan.binaryResources || plan.numericWorkspaces?.length) replace('function __pulse_resource_request_check(): bool { return true }', 'function __pulse_resource_request_check(): bool { return __request_check() }');
-  return source + '\n' + fs.readFileSync(path.join(__dirname,'request-budget.as.ts'),'utf8');
+  return source + '\n' + require('./request-budget-source.js').runtimeSource(lifecycle);
 }
 module.exports = {instrumentRequestBudget};
