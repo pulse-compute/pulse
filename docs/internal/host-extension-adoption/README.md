@@ -6,6 +6,10 @@ Date: 2026-10-25. Development base: `latest` at
 `hex-integration` at `ecc36468b5900a0de57a415379b85d12c5026f3f`.
 This repository-only plan is not public or installed documentation.
 
+Follow-up: [P01 adoption decision](P01-adoption-decision.md) records the milestone
+scope, ownership, target/placement matrix, remaining detailed decisions and
+qualification gates. It does not mark the later implementation units complete.
+
 ## Direction and stopping point
 
 Human direction: “So we should probably work in an new branch targeting latest.
@@ -92,7 +96,7 @@ do not substitute for a complete required candidate selection.
 
 | Unit | Dependency / milestone | Deliverable and stopping condition | Recommended model / effort |
 | --- | --- | --- | --- |
-| P01 — Adoption decision | P00; all milestones | Record the scoped RA-11 adoption decision, ownership, support/placement matrix, open compatibility decisions and qualification requirements. Distinguish accepted direction from unresolved detailed contracts; no runtime changes. | Astra / High |
+| [P01 — Adoption decision](P01-adoption-decision.md) | P00; all milestones | Record the scoped RA-11 adoption decision, ownership, support/placement matrix, open compatibility decisions and qualification requirements. Distinguish accepted direction from unresolved detailed contracts; no runtime changes. | Astra / High |
 | P02 — Lifecycle contract and planner | P01; foundation | Adapt the six execution and optional HTTP semantics into the shared owner; define one invocation contract and ordered dispatch data with binding validation. Keep emitted source and host-specific rejection actions outside the semantic planner. | Astra / High |
 | P03 — Structural Fastly integration | P02; foundation | Emit lifecycle calls at explicit driver sites, preserving settlement authentication, rejected delivery, normal-return closure and response-authority precedence. Remove migrated anchor/pass-order dependence. Migrate forwarding as needed and reject unsupported combinations. Preserve unused paths. | Sol 6.1 / High |
 | P04 — Production accounting core | P05 and P11A, foundation complete; RA | Implement bounded ledger storage under the appropriate runtime owners, generations, overflow/exhaustion handling, retained claims and protected cleanup. Select by reachability. Do not copy fixture banks or introduce a second scheduler. | Astra / High |
