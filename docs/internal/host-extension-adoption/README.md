@@ -16,6 +16,8 @@ foundation qualification and promotion gates remain open.
 [P05](P05-resource-profiles.md) supplies resource profile/admission calculations
 and the allocation/budget inventory; runtime accounting is not installed. P11A
 and foundation qualification still precede P04.
+[P11A](P11A-cost-baseline.md) establishes the compiled ownership-only control,
+measurement recipe and proposed cost budgets; numeric thresholds are not enforced.
 
 ## Direction and stopping point
 
@@ -114,7 +116,7 @@ do not substitute for a complete required candidate selection.
 | [P09A — Second-driver lifecycle](P09A-node-lifecycle.md) | P02; foundation, integrate with P03 | Bind the shared lifecycle to Node Native host JavaScript. Both driver styles pass common settlement, stale-result, rejected-delivery, closure and trap traces; apply HTTP authority cases only where that capability is selected. No claim of Node support for Fastly handoffs. | Astra / High |
 | P09B — JavaScript RA parity | P04–P08; RA | Replace experimental executor injection with maintained integration. Prove whole-cohort pre-dispatch admission and semantic ownership/deadline parity for admitted operations; do not equate synthetic JS charges with physical stream memory. | Sol 6.1 / High |
 | P10 — Application qualification | Matrix defined in P01; execute per milestone | Qualify admitted mixed effects, repeated sites, sequential groups, ctx.call, Router recovery, forwarding and partial-progress failure. Implement or explicitly reject each relevant placement. Foundation/HEX cases precede the RA matrix; no blanket syntax widening. | Sol 6.1 / High |
-| P11A — Equivalent cost baseline | P05; before finalizing P04 | Establish an ownership-preserving accounting-free control, measurement boundaries and proposed cost budgets. Isolate accounting from observer/report overhead. Review thresholds before enforcing them; no unexplained width-8 cap. | Sol 6.1 / High |
+| [P11A — Equivalent cost baseline](P11A-cost-baseline.md) | P05; before finalizing P04 | Establish an ownership-preserving accounting-free control, measurement boundaries and proposed cost budgets. Isolate accounting from observer/report overhead. Review thresholds before enforcing them; no unexplained width-8 cap. | Sol 6.1 / High |
 | P11B — Production cost qualification | P04–P10 as applicable; RA | Measure actual adopted artifacts at widths 1/8/16/32 and representative payloads. Report execution, allocation, banks, observer, reporting and unused-path results separately. Optimize scans if accepted budgets require it; do not infer hosted latency from local kernel timing. | Sol 6.1 / High |
 | P12A — HEX report attribution | P15 implementation; HEX | Carry selected operation/owner/contribution/import provenance into production report/compare, including retained and packed consumers. Historical missing attribution stays unknown. | Sol 6.1 / High |
 | P12B — Resource report adoption | P05–P09B and production identities; RA | Integrate static envelopes plus optional bounded observations. Preserve redaction and separate final-record, aggregate and sampled-event coverage. Missing or incomplete evidence is not zero; no physical-reclamation claim. | Sol 6.1 / High |

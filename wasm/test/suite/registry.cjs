@@ -265,6 +265,10 @@ const tasks = Object.freeze({
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'P09A host lifecycle bindings and shared Fastly/Node execution traces'
   }),
+  'resource-ownership-cost': nodeTask('test/performance/assert-resource-ownership-cost.cjs', {
+    timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P11A compiled ownership-only control, observer parity and mutation detection; no timing gate'
+  }),
   'fastly-lifecycle': nodeTask('test/provider/assert-fastly-lifecycle.cjs', {
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'P03 structural Fastly lifecycle, compiled settlement and response authority'
@@ -1536,6 +1540,7 @@ const profiles = Object.freeze({
     'str02b-node-native',
     'native-lifecycle',
     'fastly-lifecycle',
+    'resource-ownership-cost',
     'fastly-incoming-body-forwarding',
     'str03a-generated-output',
     'str03c-bounded-transforms',
