@@ -59,6 +59,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'workspace-hygiene',
       'target-support',
       'provider-toolchain',
+      'lifecycle-contract',
+      'lifecycle-contract-installed',
       'provider-packages',
       'provider-fastly-package',
       'fastly-javascript-packaging'
