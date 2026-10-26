@@ -10,7 +10,9 @@ Follow-up: [P01 adoption decision](P01-adoption-decision.md) records the milesto
 scope, ownership, target/placement matrix, remaining detailed decisions and
 qualification gates. It does not mark the later implementation units complete.
 [P02 lifecycle contract and planner](P02-lifecycle-contract.md) records the shared
-metadata implementation; concrete driver integration remains P03/P09A.
+metadata implementation. [P03](P03-fastly-lifecycle.md) and
+[P09A](P09A-node-lifecycle.md) record the guest and host driver integrations;
+foundation qualification and promotion gates remain open.
 
 ## Direction and stopping point
 
@@ -106,7 +108,7 @@ do not substitute for a complete required candidate selection.
 | P06 — Compiler-owned composition | P04, P07, P08; RA | Validate fixed child graphs, parent ownership, conditional work, effect counts, result authentication and deadline continuity in the canonical plan. Remove post-compiler graph expansion and experimental export replacement. Reject unsupported nesting/callbacks. | Astra / High; split implementation and qualification |
 | P07 — Core fetch accounting | P04, P05; RA | Structurally integrate acquisition, send/wait/poll, body allocation, alias retention, opaque transfer and cleanup. Reconcile existing enforcement; preserve primary failures and uncertainty. No new cancellation guarantee. | Astra / High |
 | P08 — Cache contract and adapter | P05 for contract, P04 for implementation; RA | Decide incomplete-entry, read-failure, commit and abandon semantics before exposing a production package. Implement qualified read/write disposal and readiness rules. Never infer rollback or treat body-read error as a cache miss without a separate reviewed policy. | Astra / High |
-| P09A — Second-driver lifecycle | P02; foundation, integrate with P03 | Bind the shared lifecycle to Node Native host JavaScript. Both driver styles pass common settlement, stale-result, rejected-delivery, closure and trap traces; apply HTTP authority cases only where that capability is selected. No claim of Node support for Fastly handoffs. | Astra / High |
+| [P09A — Second-driver lifecycle](P09A-node-lifecycle.md) | P02; foundation, integrate with P03 | Bind the shared lifecycle to Node Native host JavaScript. Both driver styles pass common settlement, stale-result, rejected-delivery, closure and trap traces; apply HTTP authority cases only where that capability is selected. No claim of Node support for Fastly handoffs. | Astra / High |
 | P09B — JavaScript RA parity | P04–P08; RA | Replace experimental executor injection with maintained integration. Prove whole-cohort pre-dispatch admission and semantic ownership/deadline parity for admitted operations; do not equate synthetic JS charges with physical stream memory. | Sol 6.1 / High |
 | P10 — Application qualification | Matrix defined in P01; execute per milestone | Qualify admitted mixed effects, repeated sites, sequential groups, ctx.call, Router recovery, forwarding and partial-progress failure. Implement or explicitly reject each relevant placement. Foundation/HEX cases precede the RA matrix; no blanket syntax widening. | Sol 6.1 / High |
 | P11A — Equivalent cost baseline | P05; before finalizing P04 | Establish an ownership-preserving accounting-free control, measurement boundaries and proposed cost budgets. Isolate accounting from observer/report overhead. Review thresholds before enforcing them; no unexplained width-8 cap. | Sol 6.1 / High |

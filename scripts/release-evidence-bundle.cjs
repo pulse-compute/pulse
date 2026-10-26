@@ -144,6 +144,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'guest-link-audit-diagnostics',
       'jwt-package-owned-lowering',
       'jwt-javascript-admission',
+      'native-lifecycle',
       'canonical-native-wasm'
     ])
   }),

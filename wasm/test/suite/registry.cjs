@@ -261,6 +261,10 @@ const tasks = Object.freeze({
     args:['--native'], timeoutMs:300000, evidence:'external',
     description:'STR-02B exact installed Node Native forwarding, emitted Wasm identity and real incremental HTTP'
   }),
+  'native-lifecycle': nodeTask('test/runtime/assert-native-lifecycle.cjs', {
+    timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P09A host lifecycle bindings and shared Fastly/Node execution traces'
+  }),
   'fastly-lifecycle': nodeTask('test/provider/assert-fastly-lifecycle.cjs', {
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'P03 structural Fastly lifecycle, compiled settlement and response authority'
@@ -1526,6 +1530,7 @@ const profiles = Object.freeze({
     'canonical-native-plan',
     'shared-stage-o19',
     'str02b-node-native',
+    'native-lifecycle',
     'fastly-lifecycle',
     'fastly-incoming-body-forwarding',
     'str03a-generated-output',
