@@ -763,6 +763,10 @@ function normalizeProviderJavascriptPackageResult(input, expected = {}) {
 }
 
 module.exports = Object.freeze({
+  // Internal adoption contracts; loading these does not advertise driver support.
+  executionLifecycle: require('../handler/execution-lifecycle.js'),
+  httpLifecycle: require('../host/http-lifecycle.js'),
+  lifecyclePlanner: require('../handler/lifecycle-planner.js'),
   PROVIDER_TOOLCHAIN_VERSION,
   PROVIDER_DRIVER_VERSION,
   PROVIDER_TARGET_DESCRIPTOR_VERSION,

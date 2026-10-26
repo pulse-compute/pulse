@@ -812,6 +812,36 @@ Production qualification remains open. Applications must handle a continuing
 chain at the cap as incomplete rather than conclude that the searched value is
 absent.
 
+### Shared lifecycle planning (P02)
+
+The contracts package owns internal `executionLifecycle`, optional `httpLifecycle`
+and `lifecyclePlanner` objects through its existing `provider/toolchain` subpath.
+The six execution points extend the existing `pulse.effect-invocation.v1` policy:
+authenticate before consuming a ticket, consume before delivery, and never reopen
+a ticket after rejected or trapped delivery. Closure invalidates outstanding
+delivery authority before cleanup requiring closed invocation state. Driver
+storage and ABI representations remain provider/runtime-owned.
+
+`pulse.lifecycle-bindings.v1` declares symbolic sites, exact semantic parameter
+roles and provider-owned rejection/claim action IDs. The planner rejects malformed
+versions, missing roles/sites, duplicate owner/order pairs and error-claim sites
+without a preceding active response-authority fence. Its immutable
+`pulse.lifecycle-plan.v1` output contains ordered dispatch data, never source,
+ABI types, callbacks or a scheduler. Around after-notifications reverse order on
+normal return, including rejected delivery; traps do not promise finalization.
+Unselected contributions produce no dispatch sites. HTTP selection requires its
+explicit contract version, not a provider/device name; uncertain host outcomes
+never reopen authority or imply disposal, delivery or quiescence.
+
+These are internal adoption contracts, not application hooks, package registration
+or a new support tier. This increment does not wire existing drivers to the
+planner or expose host handoffs/accounting. Actual site placement, action behavior,
+unused artifact identity and cross-driver conformance require the subsequent
+Fastly and Node integrations. The semantic owners are
+[`execution-lifecycle.js`](../../wasm/packages/contracts/src/handler/execution-lifecycle.js),
+[`http-lifecycle.js`](../../wasm/packages/contracts/src/host/http-lifecycle.js) and
+[`lifecycle-planner.js`](../../wasm/packages/contracts/src/handler/lifecycle-planner.js).
+
 ### Read-loop invocation lifecycle (PS2)
 
 `pulse.effect-invocation.v1` distinguishes reusable static effect/continuation

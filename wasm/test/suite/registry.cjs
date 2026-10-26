@@ -375,6 +375,13 @@ const tasks = Object.freeze({
     timeoutMs: 360000, evidence: 'external',
     description: 'ARC-01 exact compiler-only, Node-only, Fastly-only and bundled CLI package isolation'
   }),
+  'lifecycle-contract': nodeTask('test/contracts/assert-lifecycle-contract.cjs', {
+    description: 'shared execution/HTTP semantics, strict symbolic bindings and deterministic dispatch plans'
+  }),
+  'lifecycle-contract-installed': nodeTask('test/contracts/assert-lifecycle-contract-installed.cjs', {
+    evidence: 'external', timeoutMs: 180000,
+    description: 'packed contracts lifecycle planner replay from an offline installed consumer outside the checkout'
+  }),
   'provider-toolchain': nodeTask('test/contracts/assert-provider-toolchain-boundary.cjs', {
     evidence: 'unit',
     description: 'exact compiler-to-provider toolchain invocation and result boundary'
@@ -1471,6 +1478,7 @@ const profiles = Object.freeze({
     'external-lowerers',
     'package-runtime',
     'provider-toolchain',
+    'lifecycle-contract',
     'schema-registry',
     'continuation-registry',
     'entities-contracts',
@@ -1666,6 +1674,7 @@ const profiles = Object.freeze({
     '@conformance',
     '@cli',
     '@providers',
+    'lifecycle-contract-installed',
     'release-packages',
     'release-artifact-determinism',
     'clean-machine-acceptance',
