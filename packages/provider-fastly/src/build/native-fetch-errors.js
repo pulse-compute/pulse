@@ -30,8 +30,8 @@ function __pulse_fetch_send_error(): bool {
 }
 `;
 }
-function instrument(source) {
-  const marker = 'function __pulse_fastly_jwt_send_error(): void {';
+function instrument(source, lifecycle) {
+  const marker = `function ${lifecycle?.legacyName('__pulse_fastly_jwt_send_error') || '__pulse_fastly_jwt_send_error'}(): void {`;
   if (!source.includes(marker)) throw new Error('Fastly fetch error boundary drift.');
   return source.replace(marker, marker + ' if (__pulse_fetch_send_error()) return;');
 }

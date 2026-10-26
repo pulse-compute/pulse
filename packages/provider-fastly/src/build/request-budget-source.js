@@ -1,4 +1,8 @@
-// Provider-owned request lifecycle. No wall time or caller header grants time.
+'use strict';
+
+function runtimeSource(lifecycle) {
+  const name = lifecycle?.legacyName('__request_send_timeout') || '__request_send_timeout';
+  return `// Provider-owned request lifecycle. No wall time or caller header grants time.
 @external('fastly_async_io', 'select') declare function __request_select(handles: usize, count: i32, timeout: i32, done: usize): i32
 let __request_deadline: i64 = -1;
 let __request_last_clock: i64 = -1;
@@ -37,7 +41,7 @@ function __request_wait(handle: i32, index: i32): bool {
   if (ready[0] == -1) __request_expired = true;
   return __request_check(index);
 }
-function __request_send_timeout(): void {
+${lifecycle?.active ? `function __request_send_timeout(): void {\n${lifecycle.site('response-timeout')}\n  ${name}()\n}\n` : ''}function ${name}(): void {
   // A timeout says nothing about remote acceptance of dispatched writes.
   __request_error_response = true;
   __pulse_fastly_last_error = 0;
@@ -48,3 +52,6 @@ function __request_send_timeout(): void {
   const status = __pulse_fastly_send_result(response);
   if (status != 0) __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 262, -1);
 }
+`;
+}
+module.exports = { runtimeSource };
