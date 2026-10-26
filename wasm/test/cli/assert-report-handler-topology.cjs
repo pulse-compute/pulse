@@ -235,7 +235,9 @@ async function execute(native, variant) {
 }
 async function main() {
   fs.mkdirSync(path.join(root, 'wasm/.test-results'), { recursive: true });
-  const directory = fs.mkdtempSync(path.join(root, 'wasm/.test-results/report-analytics-'));
+  const fixtureRoot = fs.mkdtempSync(path.join(root, 'wasm/.test-results/report-analytics-'));
+  const directory = path.join(fixtureRoot, 'planning');
+  fs.mkdirSync(directory);
   const cells = [];
   try {
     require('./report-handler-name-cases.cjs')(directory);
@@ -276,6 +278,8 @@ async function main() {
     for (const variant of ['http', 'event', 'full']) {
       let defaultReport;
       for (const optimization of ['native-shrink0', 'experimental-native-bounded-size']) {
+        // Each recipe owns its source/output paths; prior cells are never rewritten.
+        const directory = path.join(fixtureRoot, variant, optimization);
         setup(directory, variant);
         project = resolveProject({ cwd: directory, metadataOnly: true });
         const options = { emitWat: false, nativeOptimization: optimization };
@@ -324,6 +328,7 @@ async function main() {
         }
         const executions = await execute(prepared.native, variant) + await execute(control.native, variant);
         const built = execution.compileNativeProject(project, options);
+        assert.ok(built.manifest.reportCompletion, JSON.stringify(built.manifest.reportEvidence));
         const replay = retained.collectArtifactReport(built.files.manifest).capsule;
         assert.deepEqual(replay.analytics, value.analytics);
         assertIntegration(replay, value);
@@ -397,6 +402,6 @@ export default app;
     assert.equal(standalone.analytics.coverage.handlers.status, 'unavailable', 'no router producer is not a known-empty handler universe');
     console.log(JSON.stringify({ status: 'passed', cells, negativeCases: negative, importedSpans: true,
       nestedMounts: true, oldCapsulesUnchanged: true, authoredUseSites: true, validatedHelperCalls: true, contextualAssociations: true, importedSourceReplay: true, handlerNames: true }));
-  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+  } finally { fs.rmSync(fixtureRoot, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

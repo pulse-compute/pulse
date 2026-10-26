@@ -60,7 +60,15 @@ function artifactRecords(outDir, manifest) {
   return candidates.map(reference => {
     validate({ file: reference.file, bytes: reference.bytes, sha256: reference.sha256 }, fileSchema);
     const read = readFile(outDir, reference.file);
-    ensure(read.size === reference.bytes && read.sha256 === reference.sha256 && WebAssembly.validate(read.bytes), 'REPORT_ARTIFACT_HASH');
+    const validWasm = WebAssembly.validate(read.bytes);
+    if (read.size !== reference.bytes || read.sha256 !== reference.sha256 || !validWasm) {
+      // Capture this verified read, not a second read after the failure. No
+      // payload, absolute path or source content belongs in the diagnostic.
+      fail('REPORT_ARTIFACT_HASH', '$.artifacts', {
+        expected: { bytes: reference.bytes, sha256: reference.sha256 },
+        actual: { bytes: read.size, sha256: read.sha256, validWasm }
+      });
+    }
     return { id: artifactId(read.sha256), file: reference.file, bytes: read.size, sha256: read.sha256, stage: reference.stage, target: reference.target };
   });
 }

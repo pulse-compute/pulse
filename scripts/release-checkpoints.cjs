@@ -118,6 +118,21 @@ function inspectCheckpointMetadata({ directory, id, context, now = Date.now() })
   }
 }
 
+// Diagnose the exact receipt and clock sample that rejected admission. Keep
+// the existing strict lifetime policy; a clock regression is not a grace period.
+function assertRetention(receipt) {
+  const now = Date.now(), created = Date.parse(receipt.createdAt), expires = Date.parse(receipt.expiresAt);
+  const reason = !Number.isFinite(created) || !Number.isFinite(expires) ? 'invalid-timestamp'
+    : created > now ? 'created-in-future'
+    : expires <= now ? 'expired'
+    : expires > created + RETENTION_MS ? 'retention-exceeded' : null;
+  if (reason) {
+    const retention = { reason, now, created: Number.isFinite(created) ? created : null,
+      expires: Number.isFinite(expires) ? expires : null, maximumMs: RETENTION_MS };
+    throw Object.assign(new Error(`Checkpoint expired or has invalid retention: ${JSON.stringify(retention)}`), { retention });
+  }
+}
+
 function readCheckpointReceipt({ receiptPath, context, definition, dependencies, requirePassed = true }) {
   object(context, 'Expected checkpoint context');
   if (typeof receiptPath !== 'string' || !path.isAbsolute(receiptPath)) throw new Error('Checkpoint receipt path must be absolute');
@@ -137,9 +152,7 @@ function readCheckpointReceipt({ receiptPath, context, definition, dependencies,
   if (receipt.disposition === 'executed' && receipt.originDirectory !== path.dirname(receiptPath)) throw new Error('Executed checkpoint moved outside its original attempt');
   if (receipt.disposition === 'reused' && (!path.isAbsolute(receipt.reusedFrom.directory) || receipt.reusedFrom.directory === path.dirname(receiptPath))) throw new Error('Reused checkpoint predecessor is invalid');
   if (requirePassed && !reusableResult(receipt.result)) throw new Error('Checkpoint did not pass with successful cleanup');
-  const created = Date.parse(receipt.createdAt);
-  const expires = Date.parse(receipt.expiresAt);
-  if (!Number.isFinite(created) || !Number.isFinite(expires) || created > Date.now() || expires <= Date.now() || expires > created + RETENTION_MS) throw new Error('Checkpoint expired or has invalid retention');
+  assertRetention(receipt);
   if (!Array.isArray(receipt.artifacts)) throw new Error('Checkpoint artifact set missing');
   const keys = new Set();
   for (const artifact of receipt.artifacts) {
@@ -254,9 +267,7 @@ function createCheckpointStore({ directory, previousDirectory = null, context, e
       if (prior.definitionHash !== input.definitionHash) throw new Error('Checkpoint task definition changed');
       if (canonical(prior.dependencies) !== canonical(input.dependencies)) throw new Error('Checkpoint dependency proof changed');
       if (!reusableResult(prior.result)) throw new Error('Checkpoint did not pass with successful cleanup');
-      const created = Date.parse(prior.createdAt);
-      const expires = Date.parse(prior.expiresAt);
-      if (!Number.isFinite(created) || !Number.isFinite(expires) || created > Date.now() || expires <= Date.now() || expires > created + RETENTION_MS) throw new Error('Checkpoint expired or has invalid retention');
+      assertRetention(prior);
       if (!Array.isArray(prior.artifacts) || canonical(prior.artifacts.map((artifact) => artifact.key).sort()) !== canonical(Object.keys(input.artifacts).sort())) throw new Error('Checkpoint artifact set changed');
       const validatedSources = new Map();
       for (const artifact of prior.artifacts) {
