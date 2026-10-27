@@ -15,11 +15,13 @@ const __pulse_fetch_retired = new Array<i32>()
 let __pulse_fetch_last_clock: i64 = -1
 let __pulse_fetch_retired_total: i32 = 0
 export function pulse_fastly_fetch_retired(): i32 { return __pulse_fetch_retired_total }
-export function pulse_fastly_fetch_unreaped(): i32 { return __pulse_fetch_retired.length }
+export function pulse_fastly_fetch_unreaped(): i32 { return /*ACCOUNTING_UNREAPED*/ }
+/*ACCOUNTING_CLOCK_STORAGE*/
 function __pulse_fetch_clock(index: i32): i64 {
-  const out = new StaticArray<i64>(1)
+  const out = /*ACCOUNTING_CLOCK_OUT*/
   if (wasi_snapshot_preview1_clock_time_get(1, 1, changetype<usize>(out)) != 0
     || out[0] < 0 || out[0] < __pulse_fetch_last_clock) {
+    /*ACCOUNTING_CLOCK_FAILURE*/
     __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 272, index); return -1
   }
   __pulse_fetch_last_clock = out[0]; return out[0]
@@ -66,21 +68,22 @@ function __pulse_fetch_complete(index: i32, outcome: i32, result: i32 = 0): void
 function __pulse_fetch_retire(index: i32, outcome: i32): void {
   // The Fastly ABI has no pending-request cancellation hostcall. Retain explicit
   // ownership until invocation cleanup; never wait, retry, or claim rollback.
-  __pulse_fetch_retired.push(__pulse_fastly_pending[index]); __pulse_fetch_retired_total++
+  /*ACCOUNTING_RETIRED*/ __pulse_fetch_retired_total++
   __pulse_fetch_complete(index, outcome)
 }
 function __pulse_fetch_retire_all(): void {
   for (let i = 0; i < PULSE_FASTLY_EFFECT_COUNT; i++) if (__pulse_fetch_active(i)) __pulse_fetch_retire(i, -2)
 }
 function __pulse_fetch_reap(): void {
+  /*ACCOUNTING_REAP*/
   const detail = new StaticArray<i32>(__PULSE_SEND_ERROR_DETAIL_WORDS), done = new StaticArray<i32>(1)
   const response = new StaticArray<i32>(1), body = new StaticArray<i32>(1)
   for (let i = __pulse_fetch_retired.length - 1; i >= 0; i--) {
     done[0] = 0
     __pulse_send_error_detail_reset(changetype<usize>(detail))
-    const status = __pulse_fetch_poll(__pulse_fetch_retired[i], changetype<usize>(detail), changetype<usize>(done), changetype<usize>(response), changetype<usize>(body))
+    const status = /*ACCOUNTING_POLL*/(__pulse_fetch_retired[i], changetype<usize>(detail), changetype<usize>(done), changetype<usize>(response), changetype<usize>(body))
     if (status == 0 && done[0] == 0) continue
-    if (status == 0 && done[0] == 1) { __pulse_fetch_close_response(response[0]); __pulse_fetch_close_body(body[0]) }
+    if (status == 0 && done[0] == 1) { /*ACCOUNTING_LATE_CLOSE*/ }
     __pulse_fetch_retired[i] = __pulse_fetch_retired[__pulse_fetch_retired.length - 1]; __pulse_fetch_retired.pop()
   }
   // Unready handles remain platform-owned until host teardown. No guest task
@@ -114,7 +117,7 @@ function __pulse_fetch_wait(index: i32): i32 {
       if (__pulse_fetch_remaining(i, now) <= 0) { __pulse_fetch_retire(i, -1); continue }
       done[0] = 0
       __pulse_send_error_detail_reset(changetype<usize>(detail))
-      const status = __pulse_fetch_poll(__pulse_fastly_pending[i], changetype<usize>(detail), changetype<usize>(done), changetype<usize>(response), changetype<usize>(body))
+      const status = /*ACCOUNTING_POLL*/(__pulse_fastly_pending[i], changetype<usize>(detail), changetype<usize>(done), changetype<usize>(response), changetype<usize>(body))
       now = __pulse_fetch_clock(i)
       if (status != 0) {
         __pulse_transport_capture(i, status, 'poll', changetype<usize>(detail))
@@ -127,7 +130,7 @@ function __pulse_fetch_wait(index: i32): i32 {
       }
       if (now < 0 || __pulse_fetch_remaining(i, now) <= 0) {
         if (done[0] == 1) {
-          __pulse_fetch_close_response(response[0]); __pulse_fetch_close_body(body[0]); __pulse_fetch_complete(i, now < 0 ? -2 : -1)
+          /*ACCOUNTING_LATE_CLOSE*/; __pulse_fetch_complete(i, now < 0 ? -2 : -1)
         } else __pulse_fetch_retire(i, now < 0 ? -2 : -1)
         if (now < 0) { __pulse_fetch_retire_all(); return 0 }
         continue
