@@ -256,8 +256,10 @@ async function verifyContextSealRecovery({ out } = {}) {
     const retainedResume = hash(fs.readFileSync(path.join(resumed.runDirectory, 'report.json')));
     const packReceipt = resumed.recovery.sharedPack.receiptPath;
     const savedPackReceipt = fs.readFileSync(packReceipt);
+    const savedPackDigest = hash(savedPackReceipt);
     const retainedTarball = path.join(path.dirname(packReceipt), path.basename(packReceipt, '.json'), 'pack', '0.tgz');
     const savedTarball = fs.readFileSync(retainedTarball);
+    const savedTarballDigest = hash(savedTarball);
     for (const fault of ['changed-retained-package', 'expired-retained-package']) {
       if (fault === 'changed-retained-package') fs.appendFileSync(retainedTarball, 'corrupt');
       else {
@@ -277,6 +279,8 @@ async function verifyContextSealRecovery({ out } = {}) {
       assert.equal(hash(fs.readFileSync(path.join(resumed.runDirectory, 'report.json'))), retainedResume);
       record(fault, { packageExecution: 'executed', dependentTasksReexecuted: true });
       fs.writeFileSync(packReceipt, savedPackReceipt); fs.writeFileSync(retainedTarball, savedTarball);
+      assert.equal(hash(fs.readFileSync(packReceipt)), savedPackDigest, `${fault}: receipt restoration differs`);
+      assert.equal(hash(fs.readFileSync(retainedTarball)), savedTarballDigest, `${fault}: package restoration differs`);
     }
     const mcpReceipt = features.results.find(r => r.name === 'mcp-installed').checkpoint.receiptPath;
     const installedReceipt = path.join(path.dirname(mcpReceipt), path.basename(mcpReceipt, '.json'), 'installedReport');

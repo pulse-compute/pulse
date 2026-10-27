@@ -855,10 +855,9 @@ changing guest bytes/imports; absent services retain the native export view.
 The controller does not own socket sends and rejects HTTP lifecycle contributions.
 Both driver styles run maintained common settlement/closure/trap cases; broader
 application, host and packed-consumer promotion gates remain open. No host
-handoff, accounting or support-tier change is exposed. The semantic owners are
-[`execution-lifecycle.js`](../../wasm/packages/contracts/src/handler/execution-lifecycle.js),
-[`http-lifecycle.js`](../../wasm/packages/contracts/src/host/http-lifecycle.js) and
-[`lifecycle-planner.js`](../../wasm/packages/contracts/src/handler/lifecycle-planner.js).
+handoff, accounting or support-tier change is exposed. The semantic owners live
+in the contracts package at `src/handler/execution-lifecycle.js`,
+`src/host/http-lifecycle.js` and `src/handler/lifecycle-planner.js`.
 
 ### Internal resource profile planning (P05)
 
@@ -878,8 +877,8 @@ service. Compiler/profile producers must prove selection/bounds, and the runtime
 must reserve atomically before acquisition under its original deadline. Existing
 value, effect, body, page and time budgets remain authoritative. There are no
 production RA defaults, cache profiles, new application/configuration surfaces
-or target support claims. The semantic owner is
-[`resource-admission.js`](../../wasm/packages/contracts/src/handler/resource-admission.js).
+or target support claims. The semantic owner is the contracts package's
+`src/handler/resource-admission.js`.
 
 ### Read-loop invocation lifecycle (PS2)
 
@@ -1205,11 +1204,18 @@ through response pumping and the final pre-close check. Successful streaming
 close relinquishes the writable handle and hands queued completion to Fastly;
 **it is not a drain receipt, client delivery guarantee, or retained cancellation
 authority**. This explicitly accepts the FWD9-01 host-handoff alternative.
-No pending-request cancellation ABI exists: cleanup polls once, discards late
-handles and leaves unresolved host work to invocation teardown, without retries
-or rollback claims. Before downstream commitment, upload overflow attempts 413,
-deadline expiry 504, and origin/protocol/response-limit failure 502. After
-commitment, failure abandons the stream and never sends a second response.
+The selected forwarding service reserves a fixed resource ledger before incoming
+acquisition, including overlapping send/poll outputs and protected cleanup/exit
+capacity. Uncertain acquisition, consumption or disposal remains charged; there
+is no speculative close or retry. General fetch does not inherit this profile.
+No pending-request cancellation ABI exists: cleanup may poll once under the
+original request deadline, discard known late handles and leave unresolved host
+work to invocation teardown. Before downstream commitment, upload overflow attempts
+413, an earlier fetch timeout 504, and origin/protocol/response-limit failure 502.
+After commitment, failure attempts to abandon the stream and never sends a second
+response. Original request expiry or an untrustworthy clock denies all further
+cleanup/error-response host calls; host teardown retains responsibility, and no
+new error response or guest disposal is guaranteed.
 FWD9-03 qualifies normal builds and exact installed candidate packages with an
 adversarial injected-ABI matrix and pinned Viceroy 0.21.1 HTTP replay. The
 `fwd9-03-installed` task checks doctor/inspect/test/build/report, artifact identity,

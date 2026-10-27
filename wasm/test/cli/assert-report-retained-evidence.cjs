@@ -75,6 +75,41 @@ export default app;`;
     const buildMs = Date.now() - started;
     assert.equal(built.native.wasm.sha256, control.native.manifest.wasm.sha256, 'passive evidence preserves exact guest bytes');
     assert.ok(built.manifest.reportCompletion, JSON.stringify(built.manifest.reportEvidence));
+    // Publication diagnoses its exact read and still withholds completion for
+    // independently wrong size/hash and hash-matching invalid Wasm.
+    const artifact = built.manifest.native.wasm;
+    const artifactFile = path.join(built.outDir, artifact.file);
+    const completionFile = path.join(built.outDir, report.COMPLETION_FILE);
+    const artifactBytes = fs.readFileSync(artifactFile), completionBytes = fs.readFileSync(completionFile);
+    const invalidBytes = Buffer.from('invalid Wasm');
+    try {
+      for (const [label, bytes, reference] of [
+        ['size', artifactBytes, { ...artifact, bytes: artifact.bytes + 1 }],
+        ['hash', artifactBytes, { ...artifact, sha256: '0'.repeat(64) }],
+        ['format', invalidBytes, { ...artifact, bytes: invalidBytes.length, sha256: sha256(invalidBytes) }]
+      ]) {
+        report.invalidate(built.outDir);
+        fs.writeFileSync(artifactFile, bytes);
+        const currentProject = resolve(), attempt = report.beginBuild(currentProject, {}, built.outDir);
+        assert.ok(attempt.snapshot, JSON.stringify(attempt));
+        const manifest = { ...built.manifest, native: { ...built.manifest.native, wasm: reference } };
+        assert.throws(() => report.publishBuild(currentProject, control, manifest, built.files.manifest, built.outDir, attempt), error => {
+          assert.equal(error.code, 'REPORT_ARTIFACT_HASH', label);
+          assert.equal(error.field, '$.artifacts');
+          assert.deepEqual(error.detail, {
+            expected: { bytes: reference.bytes, sha256: reference.sha256 },
+            actual: { bytes: bytes.length, sha256: sha256(bytes), validWasm: label !== 'format' }
+          });
+          assert.ok(!JSON.stringify(error.detail).includes(directory));
+          return true;
+        });
+        assert.ok(!fs.existsSync(completionFile), `${label}: rejected artifact cannot publish completion`);
+        negative++;
+      }
+    } finally {
+      fs.writeFileSync(artifactFile, artifactBytes);
+      fs.writeFileSync(completionFile, completionBytes);
+    }
     const reportStarted = Date.now(), collected = report.collectProjectReport({ cwd: directory });
     const reportMs = Date.now() - reportStarted;
     const saved = capsule.serializeCapsule(collected.capsule), c = collected.capsule;

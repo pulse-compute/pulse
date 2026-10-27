@@ -233,6 +233,7 @@ function assembleNativeResult({
 }
 
 module.exports = Object.freeze({
+  resourceLedgerSource: require('./resource-ledger.js').resourceLedgerSource,
   createLifecycleEmitter: require('./lifecycle-emitter.js').createLifecycleEmitter,
   CANONICAL_NATIVE_AS_GENERATOR_VERSION,
   CanonicalNativeAssemblyScriptError,

@@ -62,6 +62,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'lifecycle-contract',
       'resource-admission',
       'lifecycle-contract-installed',
+      'lifecycle-foundation-installed',
       'provider-packages',
       'provider-fastly-package',
       'fastly-javascript-packaging'
@@ -146,6 +147,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'jwt-package-owned-lowering',
       'jwt-javascript-admission',
       'native-lifecycle',
+      'lifecycle-foundation',
       'canonical-native-wasm'
     ])
   }),
@@ -177,6 +179,9 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-request-headers',
       'fastly-native-platform-capabilities',
       'fastly-lifecycle',
+      'resource-ownership-cost',
+      'resource-ledger',
+      'fastly-forwarding-accounting',
       'fastly-incoming-body-forwarding',
       'fastly-conditional-kv',
       'clean-machine-acceptance' // installed conditional-KV adversarial corpus

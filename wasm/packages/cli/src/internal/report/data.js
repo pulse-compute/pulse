@@ -3,9 +3,11 @@
 const crypto = require('node:crypto');
 const { LIMITS } = require('./encoding');
 const forbidden = new Set(['__proto__', 'prototype', 'constructor']);
-function fail(code, field = '$') {
+function fail(code, field = '$', detail) {
   const error = new TypeError(`Report input rejected (${code}).`);
-  error.code = code; error.field = field; throw error;
+  error.code = code; error.field = field;
+  if (detail !== undefined) error.detail = detail;
+  throw error;
 }
 function copyData(input) {
   const active = new Set(); let nodes = 0, bytes = 0;

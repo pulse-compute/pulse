@@ -41,13 +41,14 @@ function host_request_body(): i32 {
 }
 function __fwd_fail(status: i32): void {
   if (__fwd_failure == 0) __fwd_failure = status;
+  if (__fwd_ra !== null) __fwd_ra!.fail(1,u32(status));
   __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 280, __fwd_index);
 }
 function __fwd_remaining(): i32 {
   if (__fwd_failure != 0) return 0;
-  if (wasi_snapshot_preview1_clock_time_get(1, 1, __fwd_io) != 0) { __fwd_fail(504); return 0; }
+  if (wasi_snapshot_preview1_clock_time_get(1, 1, __fwd_io) != 0) { __fra_clock_failed = true; __fwd_fail(504); return 0; }
   const now = load<i64>(__fwd_io);
-  if (now < 0 || now < __request_last_clock || now < __pulse_fetch_last_clock) { __fwd_fail(504); return 0; }
+  if (now < 0 || now < __request_last_clock || now < __pulse_fetch_last_clock) { __fra_clock_failed = true; __fwd_fail(504); return 0; }
   __request_last_clock = now; __pulse_fetch_last_clock = now;
   let remaining = f64(__request_deadline - now) / 1000000.0;
   if (__request_expired || remaining <= 0) { __request_expired = true; __fwd_fail(504); return 0; }
@@ -56,34 +57,20 @@ function __fwd_remaining(): i32 {
   return i32(Math.ceil(remaining)); // 1..30000; zero never reaches async.select
 }
 function __fwd_cleanup(): void {
-  if (__fwd_source >= 0) { __pulse_fetch_close_body(__fwd_source); __fwd_source = -1; }
-  if (__fwd_upload >= 0) { __fwd_abandon(__fwd_upload); __fwd_upload = -1; }
-  if (__fwd_request >= 0) { __pulse_fetch_close_request(__fwd_request); __fwd_request = -1; }
-  if (__fwd_body >= 0) { __pulse_fetch_close_body(__fwd_body); __fwd_body = -1; }
-  if (__fwd_response >= 0) { __pulse_fetch_close_response(__fwd_response); __fwd_response = -1; }
-  if (__fwd_output >= 0) { __pulse_fetch_close_response(__fwd_output); __fwd_output = -1; }
-  if (__fwd_downstream >= 0) { __fwd_abandon(__fwd_downstream); __fwd_downstream = -1; }
-  if (__fwd_pending >= 0) {
-    // No pending-request cancel ABI. Poll once without waiting and discard any
-    // late handles; an unresolved host operation ends at invocation teardown.
-    __pulse_send_error_detail_reset(__fwd_detail);
-    store<i32>(__fwd_done, 0);
-    const status = __pulse_fetch_poll(__fwd_pending, __fwd_detail, __fwd_done, __fwd_response_out, __fwd_body_out);
-    if (status == 0 && load<i32>(__fwd_done) == 1) {
-      __pulse_fetch_close_response(load<i32>(__fwd_response_out)); __pulse_fetch_close_body(load<i32>(__fwd_body_out));
-    }
-    __fwd_pending = -1;
-  }
+  __fra_cleanup();
+  __fwd_source = -1; __fwd_upload = -1; __fwd_request = -1;
+  __fwd_body = -1; __fwd_response = -1; __fwd_output = -1;
+  __fwd_downstream = -1; __fwd_pending = -1;
 }
 function __fwd_error_response(): bool {
+  if (__fwd_ra === null) return false;
+  if (__fwd_failure == 0 && __pulse_fastly_last_error != 0) __fwd_fail(502);
   if (!__pulse_response_owned()) { __fwd_cleanup(); return true; }
   if (__fwd_failure == 0) return false;
   const status = __fwd_failure;
-  __fwd_cleanup(); __request_error_response = true;
-  __pulse_fastly_last_error = 0;
-  const value = new __PulseFastlyValue(); value.kind = PULSE_VALUE_RESPONSE; value.status = status;
-  value.text = status == 413 ? 'Payload Too Large' : status == 504 ? 'Gateway Timeout' : status == 400 ? 'Bad Request' : 'Bad Gateway';
-  __pulse_fastly_send_result(__pulse_fastly_put(value)); return true;
+  __fwd_cleanup();
+  __fra_error(status);
+  return true;
 }
 function __fwd_lower(byte: u8): u8 { return byte >= 65 && byte <= 90 ? byte + 32 : byte; }
 function __fwd_equal(ptr: usize, size: i32, text: string): bool {
@@ -134,9 +121,9 @@ function __fwd_begin(index: i32, payload: __PulseFastlyValue): void {
   if (__pulse_fastly_last_error != 0 || !__fwd_remaining() || !__fwd_declared_request()) return;
   const url = __pulse_fastly_utf8(__pulse_fastly_string(__pulse_fastly_payload_field(payload, 'url')));
   const backend = __pulse_fastly_utf8(__pulse_fastly_backend(index));
-  if (fastly_http_req_new(__fwd_io + 52) != 0) { __fwd_fail(502); return; }
+  if (__fra_new(2,__fwd_io + 52) != 0) { __fwd_fail(502); return; }
   __fwd_request = load<i32>(__fwd_io + 52);
-  if (fastly_http_body_new(__fwd_io + 52) != 0) { __fwd_fail(502); return; }
+  if (__fra_new(3,__fwd_io + 52) != 0) { __fwd_fail(502); return; }
   __fwd_upload = load<i32>(__fwd_io + 52);
   const method = memory.data<u8>([80,79,83,84]);
   if (fastly_http_req_method_set(__fwd_request, method, 4) != 0 || fastly_http_req_uri_set(__fwd_request, changetype<usize>(url), url.byteLength) != 0) { __fwd_fail(502); return; }
@@ -150,9 +137,8 @@ function __fwd_begin(index: i32, payload: __PulseFastlyValue): void {
   }
   if (!__fwd_remaining()) return;
   __pulse_transport_slots[index] = null;
-  const status = __fwd_dispatch(__fwd_request, __fwd_upload, changetype<usize>(backend), backend.byteLength, __fwd_io + 52);
-  // send may consume the request even on failure. Cleanup makes only a best-effort
-  // close on that error path before any handle allocation/reuse can occur.
+  const status = __fra_dispatch(__fwd_request, __fwd_upload, changetype<usize>(backend), backend.byteLength, __fwd_io + 52);
+  // An ambiguous send retains its fenced request claim; cleanup never retries it.
   if (status != 0) { __pulse_transport_capture(__fwd_index, status, 'send'); __fwd_fail(502); return; }
   __fwd_request = -1; __fwd_pending = load<i32>(__fwd_io + 52);
   __pulse_fastly_pending[index] = __fwd_pending; __pulse_fastly_pending_mode[index] = PULSE_FASTLY_PENDING_ASYNC;
@@ -163,7 +149,7 @@ function __fwd_poll(): bool {
   if (__fwd_pending < 0 || !__fwd_remaining()) return __fwd_response >= 0;
   __pulse_send_error_detail_reset(__fwd_detail);
   store<i32>(__fwd_done, 0);
-  const status = __pulse_fetch_poll(__fwd_pending, __fwd_detail, __fwd_done, __fwd_response_out, __fwd_body_out);
+  const status = __fra_poll();
   const done = load<i32>(__fwd_done);
   if (status != 0) { __pulse_transport_capture(__fwd_index, status, 'poll', __fwd_detail); __fwd_pending = -1; __fwd_fail(502); return false; }
   if (done != 0 && done != 1) { __fwd_fail(502); return false; }
@@ -227,11 +213,11 @@ function __fwd_copy(source: i32, sink: i32, cap: i32, declared: i32, upload: boo
 function __fwd_wait(): i32 {
   if (__fwd_failure != 0 || __fwd_pending < 0) return 0;
   const eof = __fwd_copy(__fwd_source, __fwd_upload, __FWD_REQUEST_MAX, __fwd_request_length, true);
-  __pulse_fetch_close_body(__fwd_source); __fwd_source = -1;
+  __fra_dispose(1); __fwd_source = -1;
   if (eof && __fwd_remaining()) {
     const upload = __fwd_upload; __fwd_upload = -1;
-    if (__pulse_fetch_close_body(upload) != 0) __fwd_fail(502);
-  } else if (__fwd_upload >= 0) { __fwd_abandon(__fwd_upload); __fwd_upload = -1; }
+    if (__fra_dispose(3) != 0) __fwd_fail(502);
+  } else if (__fwd_upload >= 0) { __fra_dispose(3,true); __fwd_upload = -1; }
   while (__fwd_failure == 0 && __fwd_response < 0) {
     if (__fwd_poll()) break;
     if (__fwd_failure != 0 || !__fwd_wait_io(__fwd_pending, false)) break;
@@ -308,9 +294,9 @@ function __fwd_nominated(name: usize, length: i32): bool {
 }
 function __fwd_send(): i32 {
   if (!__fwd_response_headers()) { __fwd_error_response(); return 0; }
-  if (fastly_http_resp_new(__fwd_io + 52) != 0) { __fwd_fail(502); __fwd_error_response(); return 0; }
+  if (__fra_new(7,__fwd_io + 52) != 0) { __fwd_fail(502); __fwd_error_response(); return 0; }
   __fwd_output = load<i32>(__fwd_io + 52);
-  if (fastly_http_resp_status_set(__fwd_output, __fwd_status) != 0 || fastly_http_body_new(__fwd_io + 52) != 0) { __fwd_fail(502); __fwd_error_response(); return 0; }
+  if (fastly_http_resp_status_set(__fwd_output, __fwd_status) != 0 || __fra_new(8,__fwd_io + 52) != 0) { __fwd_fail(502); __fwd_error_response(); return 0; }
   __fwd_downstream = load<i32>(__fwd_io + 52);
   for (let i = 0; i < __fwd_header_count; i++) {
     const pair = __fwd_pairs + i * 16, name = load<usize>(pair), length = load<i32>(pair + 4);
@@ -319,18 +305,18 @@ function __fwd_send(): i32 {
     if (__fwd_hop(name, length) || nominated) continue;
     if (fastly_http_resp_header_append(__fwd_output, name, length, load<usize>(pair + 8), load<i32>(pair + 12)) != 0) { __fwd_fail(502); break; }
   }
-  __pulse_fetch_close_response(__fwd_response); __fwd_response = -1;
+  __fra_dispose(5); __fwd_response = -1;
   if (!__fwd_remaining()) { __fwd_error_response(); return 0; }
   // Treat even an ambiguous send failure as committed: never emit a second
   // response. The writable body remains ours until explicit EOF or abandon.
   const output = __fwd_output; __fwd_output = -1;
-  if (fastly_http_resp_send_downstream(output, __fwd_downstream, 1) != 0) { __pulse_fetch_close_response(output); __fwd_fail(502); __fwd_cleanup(); return 0; }
+  if (__fra_send(output, __fwd_downstream, 1) != 0) { __fwd_fail(502); __fwd_cleanup(); return 0; }
   const bodyless = __fwd_status == 204 || __fwd_status == 205 || __fwd_status == 304;
   const eof = __fwd_copy(__fwd_body, __fwd_downstream, bodyless ? 0 : __FWD_RESPONSE_MAX, bodyless ? 0 : __fwd_response_length, false);
-  __pulse_fetch_close_body(__fwd_body); __fwd_body = -1;
+  __fra_dispose(6); __fwd_body = -1;
   if (eof && __fwd_remaining()) {
     const downstream = __fwd_downstream; __fwd_downstream = -1;
-    if (__pulse_fetch_close_body(downstream) != 0) __fwd_fail(502);
+    if (__fra_dispose(8) != 0) __fwd_fail(502);
     else __pulse_response_complete();
     // Success is the host-handoff boundary. The handle is gone; there is no
     // final-writer wait, delivery receipt, or post-handoff timeout guarantee.
