@@ -1807,24 +1807,27 @@ function __pulse_fastly_parse_json(text: string): i32 { const parser = new __Pul
 function __pulse_fastly_path(uri: string): string { let start = 0; const scheme = uri.indexOf("://"); if (scheme >= 0) { const slash = uri.indexOf("/", scheme + 3); start = slash >= 0 ? slash : uri.length } let end = uri.length; const query = uri.indexOf("?", start); if (query >= 0 && query < end) end = query; const fragment = uri.indexOf("#", start); if (fragment >= 0 && fragment < end) end = fragment; return start >= end ? "/" : uri.substring(start, end) }
 function __pulse_fastly_read_req_string(kind: i32): string { const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = kind == 0 ? fastly_http_req_method_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)) : fastly_http_req_uri_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 10 + kind, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
 function __pulse_fastly_read_body(handle: i32, effectIndex: i32, requestText: bool = false): string {
-  const chunks = new Array<Uint8Array>(); let total = 0;
+  // One retained input allocation, including a byte to distinguish exact-limit
+  // EOF from overflow. Short reads never allocate another chunk or prefix.
+  if (__PULSE_SCHEMA_MAX_BYTES <= 0 || __PULSE_SCHEMA_MAX_BYTES > 1073741823) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 21, effectIndex); return "" }
+  const bytes = new Uint8Array(__PULSE_SCHEMA_MAX_BYTES + 1), read = __pulse_fastly_out_i32();
+  let total = 0;
   while (true) {
-    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();
-    const status = fastly_http_body_read(handle, buffer.dataStart, buffer.length, changetype<usize>(read));
+    if (!__pulse_fastly_body_read_ready(handle, effectIndex)) return "";
+    const capacity = min<i32>(PULSE_FASTLY_BUFFER_BYTES, bytes.length - total);
+    const status = fastly_http_body_read(handle, bytes.dataStart + total, capacity, changetype<usize>(read));
     if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" }
     const count = __pulse_fastly_out_value(read);
-    if (count < 0 || count > buffer.length) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" }
+    if (count < 0 || count > capacity) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" }
     if (!count) break;
     total += count;
-    if (total > __PULSE_SCHEMA_MAX_BYTES && __PULSE_SCHEMA_MAX_BYTES > 0) { __pulse_fastly_fail(requestText ? PULSE_ERROR_REQUEST_BODY : PULSE_ERROR_SCHEMA, 21, effectIndex); return "" }
-    chunks.push(buffer.subarray(0, count));
+    if (total > __PULSE_SCHEMA_MAX_BYTES) { __pulse_fastly_fail(requestText ? PULSE_ERROR_REQUEST_BODY : PULSE_ERROR_SCHEMA, 21, effectIndex); return "" }
   }
   // UTF-8 scalars may straddle host read chunks. Decode the bounded body once.
-  const bytes = new Uint8Array(total); let offset = 0;
-  for (let i = 0; i < chunks.length; i++) { bytes.set(chunks[i], offset); offset += chunks[i].length; }
-  if (requestText && !__pulse_request_utf8_valid(bytes)) { __pulse_fastly_fail(PULSE_ERROR_REQUEST_BODY, 24, effectIndex); return "" }
+  if (requestText && !__pulse_request_utf8_valid(bytes, total)) { __pulse_fastly_fail(PULSE_ERROR_REQUEST_BODY, 24, effectIndex); return "" }
   return __pulse_fastly_decode(bytes, total);
 }
+function __pulse_fastly_body_read_ready(handle: i32, effectIndex: i32): bool { return true }
 function __pulse_fastly_request_header_text(name: string): string { const value = __pulse_header_lookup(__pulse_fastly_request_handle, name, false); return value === null ? "" : value }
 function __pulse_fastly_fetch_header_text(responseHandle: i32, name: string): string { const value = __pulse_header_lookup(responseHandle, name, true); return value === null ? "" : value }
 function __pulse_fastly_fetch_body(value: __PulseFastlyValue): string { if (value.bodyLoaded == 0) { value.text = __pulse_fastly_read_body(value.bodyHandle, -1); value.bodyLoaded = 1 } return value.text }

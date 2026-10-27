@@ -24,7 +24,7 @@ function instrumentRequestBudget(input, duration, plan, lifecycle) {
   if (unchecked(__pulse_fastly_pending_mode[effectIndex]) == PULSE_FASTLY_PENDING_ASYNC && !(kind == 1 && __pulse_fetch_has_deadlines()) && kind != 12 && kind != 13 && kind != 14 && kind != 21 && ${plan.effects.filter(e=>e.kind.startsWith('kv.')&&['kv.getVersioned','kv.insertIfAbsent','kv.compareAndSwap','kv.list','kv.delete'].includes(e.kind)).map(e=>'effectIndex != '+plan.effects.indexOf(e)).join(' && ')||'true'}) {
     if (!__request_wait(unchecked(__pulse_fastly_pending[effectIndex]), effectIndex)) return 0;
   }`);
-  replace('    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();', '    if (!__request_wait(handle, effectIndex)) return "";\n    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();');
+  replace('function __pulse_fastly_body_read_ready(handle: i32, effectIndex: i32): bool { return true }', 'function __pulse_fastly_body_read_ready(handle: i32, effectIndex: i32): bool { return __request_wait(handle, effectIndex) }');
   replace('while (offset < bytes.byteLength) { const written', 'while (offset < bytes.byteLength) { if (!__request_check()) return 1; const written');
   replace(`function ${lifecycle?.legacyName('__pulse_fastly_send_result') || '__pulse_fastly_send_result'}(handle: i32): i32 {`, `function ${lifecycle?.legacyName('__pulse_fastly_send_result') || '__pulse_fastly_send_result'}(handle: i32): i32 { if (!__request_check()) return 1;`);
   replace('return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0)', 'if (!__request_check()) return 1; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0)');

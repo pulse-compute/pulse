@@ -132,7 +132,7 @@ resources remain charged; there is no cancellation, rollback or refund guarantee
 
 ## Allocation inventory and first derivation
 
-The current Fastly core reader in
+The legacy Fastly HTTP-effects reader in
 [`native-http-effects.js`](../../../packages/provider-fastly/src/build/native-http-effects.js)
 allocates a fresh 65,536-byte buffer and four-byte result slot per read, decodes
 each successful chunk and concatenates the accumulated UTF-16 string. One-byte
@@ -160,6 +160,12 @@ fixed allocations; it remains a proposal until implemented and qualified. P11A
 must use the **same reader and ownership behavior** in accounting-on/off controls,
 so reader savings are not misreported as accounting cost. No width-8 cap or new
 memory default is chosen to conceal the existing strategy's cost.
+
+The maintained platform driver's later
+[P07 decoded-body reader](P07-decoded-body-backing.md) uses one bounded input and
+one final decode, with a `3B + 5` payload-backing envelope per body. That new
+realization does not change this historical legacy-reader formula or complete
+the full fetch profile.
 
 Additional inputs cannot be inferred from a body bound:
 
