@@ -855,10 +855,9 @@ changing guest bytes/imports; absent services retain the native export view.
 The controller does not own socket sends and rejects HTTP lifecycle contributions.
 Both driver styles run maintained common settlement/closure/trap cases; broader
 application, host and packed-consumer promotion gates remain open. No host
-handoff, accounting or support-tier change is exposed. The semantic owners are
-[`execution-lifecycle.js`](../../wasm/packages/contracts/src/handler/execution-lifecycle.js),
-[`http-lifecycle.js`](../../wasm/packages/contracts/src/host/http-lifecycle.js) and
-[`lifecycle-planner.js`](../../wasm/packages/contracts/src/handler/lifecycle-planner.js).
+handoff, accounting or support-tier change is exposed. The semantic owners live
+in the contracts package at `src/handler/execution-lifecycle.js`,
+`src/host/http-lifecycle.js` and `src/handler/lifecycle-planner.js`.
 
 ### Internal resource profile planning (P05)
 
@@ -878,8 +877,8 @@ service. Compiler/profile producers must prove selection/bounds, and the runtime
 must reserve atomically before acquisition under its original deadline. Existing
 value, effect, body, page and time budgets remain authoritative. There are no
 production RA defaults, cache profiles, new application/configuration surfaces
-or target support claims. The semantic owner is
-[`resource-admission.js`](../../wasm/packages/contracts/src/handler/resource-admission.js).
+or target support claims. The semantic owner is the contracts package's
+`src/handler/resource-admission.js`.
 
 ### Read-loop invocation lifecycle (PS2)
 

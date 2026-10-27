@@ -124,6 +124,7 @@ async function main() {
       const plain = fastly.compileFastlyNativePlatformCapabilitiesPlan(plan, options);
       const observed = fastly.compileFastlyNativePlatformCapabilitiesPlan(plan, { ...options, lifecycleServices: fastlyServices });
       assert.deepEqual(observed.inspection.imports, plain.inspection.imports, 'selected observers add no host imports');
+      let controlHostTrace;
       for (const selected of [false, true]) {
         const trace = [];
         const node = await host.executeCanonicalNativeModule(native, {
@@ -144,6 +145,8 @@ async function main() {
           conditionalKv: { authority }, fixtures: { [url]: { status: 200, body: 'origin' } } });
         assert.deepEqual(response(actual.response), expected, entry.name + '/fastly');
         assert.equal(actual.trace.filter(row => row.name === 'send_downstream').length, 1);
+        if (!selected) controlHostTrace = actual.trace;
+        else assert.deepEqual(actual.trace, controlHostTrace, entry.name + '/host-call noninterference');
         if (selected) {
           const ex = actual.instance.exports;
           assert.equal(ex.pulse_fastly_jwt_secret_calls(), entry.effects, entry.name + '/settle');
@@ -153,6 +156,7 @@ async function main() {
         }
       }
       const cell = { name: entry.name, status: 'passed', effects: entry.effects,
+        nodeVersion: process.version, assemblyScript: native.manifest.assemblyScript.version,
         nodeSha256: hash(native.wasm), fastlyControlSha256: hash(plain.wasm), fastlySelectedSha256: hash(observed.wasm) };
       report.cells.push(cell); console.log('ok - foundation ' + entry.name);
       if (launcher) {
