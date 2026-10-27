@@ -15,7 +15,13 @@ remain applicable. The new `canonical-fetch-cohorts` profile follows the existin
 single-operation selectors and covers proved pure-fetch handlers and Router
 routes, including ordinary results, retained response/text/JSON aliases,
 sequential operations, repeated imported helpers, parallel groups, uploads and opaque response transfer.
-No accounting flag or new authoring syntax is introduced.
+No accounting flag or new authoring syntax is introduced. Newly selected fetch
+programs now follow P04's original-time exit rule: expiry prevents cleanup and
+error-delivery host calls as well as dispatch. A 504 can be delivered for an
+operation timeout while original invocation time remains; a response after the
+original deadline is not guaranteed or financed by a fresh cleanup budget. The
+reader/preparation regressions explicitly verify this stronger selected-path
+fence; unselected incoming-body behavior is retained.
 
 ## Acceptance mapping
 

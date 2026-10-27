@@ -68,7 +68,10 @@ async function main(options={}) {
           fixtures:{[origin+(kind==='s3'?'/bucket/object':'/object')]:{status:200,body:'ok',headers:{'content-length':'2'},sendErrorDetail:wire,
             ...(outcome==='failure'?{transportStatus:1}:outcome==='send'?{sendStatus:1}:outcome==='timeout'?{pollNotReadyMs:1100}:{})},
             [origin+'/second']:{status:200,body:'sibling',transportStatus:1,sendErrorDetail:{tag:23,mask:8,tlsAlert:99},delayMs:10}},
-          sendErrorDetailLayout:kind==='forward'?'scratch':'managed',allowHandledTransportError:true,allowHandledFetchDeadlineError:true});
+          // Forwarding and selected unhandled fetch cleanup use reserved static scratch.
+          // Keep the independent 20-byte alignment/reset/overlap/canary oracle;
+          // a managed-object header is not part of that host ABI.
+          sendErrorDetailLayout:['forward','unhandled'].includes(kind)?'scratch':'managed',allowHandledTransportError:true,allowHandledFetchDeadlineError:true});
         const records=diagnostic(result);
         if(outcome==='failure'||outcome==='send') {
           const detail=expected(outcome==='send'?null:wire,outcome==='send'?'unavailable':label,outcome==='send'?{}:optional,outcome==='send'?'send':kind==='wait'?'wait':'poll');
