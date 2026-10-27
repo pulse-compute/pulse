@@ -48,6 +48,7 @@ function assertNativePlatformModule(name, compiled, expectedModules, forbiddenMo
 
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-fastly-platform-capabilities-'));
 try {
+  require('./assert-fastly-decoded-body-backing.cjs').main();
   require('./assert-fastly-terminal-errors.cjs').main();
   require('./assert-fastly-native-config-effect-sharing.cjs').main();
   require('./assert-fastly-request-budget.cjs');
