@@ -182,6 +182,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'resource-ownership-cost',
       'resource-ledger',
       'fastly-forwarding-accounting',
+      'fastly-fetch-cohorts',
       'fastly-incoming-body-forwarding',
       'fastly-conditional-kv',
       'clean-machine-acceptance' // installed conditional-KV adversarial corpus

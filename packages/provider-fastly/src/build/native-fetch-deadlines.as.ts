@@ -56,8 +56,10 @@ function __pulse_fetch_active(index: i32): bool {
   return __pulse_fastly_effect_kind(index) == 1 && __pulse_fastly_pending_mode[index] == PULSE_FASTLY_PENDING_ASYNC
 }
 function __pulse_fetch_has_deadlines(): bool {
-  for (let i = 0; i < PULSE_FASTLY_EFFECT_COUNT; i++)
+  for (let i = 0; i < PULSE_FASTLY_EFFECT_COUNT; i++) {
+    /*ACCOUNTING_FORCE_POLL*/
     if (__pulse_fetch_active(i) && __pulse_fetch_timeout[i] > 0) return true
+  }
   return false
 }
 function __pulse_fetch_complete(index: i32, outcome: i32, result: i32 = 0): void {

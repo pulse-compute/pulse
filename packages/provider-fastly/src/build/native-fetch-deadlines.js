@@ -12,7 +12,8 @@ function __pulse_fetch_request_remaining(): i32 { return 2147483647 }`;
     .replace('/*ACCOUNTING_CLOCK_FAILURE*/', accounting ? '__fca_clock_failed = true;' : '')
     .replace('/*ACCOUNTING_REAP*/', accounting ? '__fca_cleanup(); return;' : '')
     .replace('/*ACCOUNTING_RETIRED*/', accounting ? '' : '__pulse_fetch_retired.push(__pulse_fastly_pending[index]);')
-    .replace('/*ACCOUNTING_UNREAPED*/', accounting ? '__fetch_ra !== null && __fetch_ra!.bank[2*8+5] != PRL_FREE && __fetch_ra!.bank[2*8+5] != PRL_RESERVED ? 1 : 0' : '__pulse_fetch_retired.length')
+    .replace('/*ACCOUNTING_UNREAPED*/', accounting?.selection === 'canonical-fetch-cohorts' ? '__fca_unreaped()' : accounting ? '__fetch_ra !== null && __fetch_ra!.bank[2*8+5] != PRL_FREE && __fetch_ra!.bank[2*8+5] != PRL_RESERVED ? 1 : 0' : '__pulse_fetch_retired.length')
+    .replace('/*ACCOUNTING_FORCE_POLL*/', accounting?.selection === 'canonical-fetch-cohorts' ? 'if (__pulse_fetch_active(i)) return true;' : '')
     .replaceAll('/*ACCOUNTING_POLL*/', accounting ? '__fca_poll' : '__pulse_fetch_poll')
     .replaceAll('/*ACCOUNTING_LATE_CLOSE*/', accounting ? '__fca_dispose(3); __fca_dispose(4)' : '__pulse_fetch_close_response(response[0]); __pulse_fetch_close_body(body[0])');
 }
