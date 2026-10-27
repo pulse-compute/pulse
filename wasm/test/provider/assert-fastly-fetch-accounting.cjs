@@ -156,7 +156,7 @@ function main(){
       source.replace("headers:{'x-proof':'é'}", "headers:{'x-proof':ctx.req.method}"),
       source.replace('return ctx.text(body)', 'return ctx.text(body+body)'),
       source.replace('return ctx.text(body)', `const again=await ctx.fetch('${url}',{timeoutMs:500}).text();return ctx.text(again)`)];
-    for(const text of unselected){const a=generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(planFor(text),options);assert.equal(a.manifest.resourceAccounting,undefined);assert(!a.source.includes('class PulseResourceLedger'));}
+    for(const [i,text] of unselected.entries()){const a=generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(planFor(text),options);assert.equal(a.manifest.resourceAccounting?.selection,[1,2,3].includes(i)?undefined:'canonical-fetch-cohorts');if([1,2,3].includes(i))assert(!a.source.includes('class PulseResourceLedger'));}
     for(const maxDurationMs of [undefined]){const a=generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(plan,{...options,maxDurationMs});assert.equal(a.manifest.resourceAccounting,undefined);}
   });
   const report={status:'passed',mode:installed?'installed':'workspace',cases,selection:p.selection,required:p.required,

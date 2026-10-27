@@ -122,11 +122,19 @@ function main() {
     }
   });
   check('original-request-deadline-remains-between-reads', () => {
-    let calls = 0;
-    const result = run(fetch, 'bounded', 1, {afterHostcall(c) {
+    let calls = 0, expired = false; const after = [];
+    assert.equal(fetch.manifest.resourceAccounting.selection, 'canonical-fetch-cohorts');
+    failure(() => run(fetch, 'bounded', 1, {afterHostcall(c) {
+      if (expired) after.push(c.name);
+      if (c.module === 'fastly_http_body' && c.name === 'read') {calls++; c.advance(1001); expired = true;}
+    }}), 260);
+    assert.equal(calls, 1);
+    assert(after.every(name => name === 'clock_time_get'), 'selected fetch cannot spend fresh time on cleanup or error delivery');
+    calls = 0;
+    const incoming = run(request, 'bounded', 1, {afterHostcall(c) {
       if (c.module === 'fastly_http_body' && c.name === 'read') {calls++; c.advance(1001);}
     }});
-    assert.equal(result.response.status, 504); assert.equal(calls, 1);
+    assert.equal(incoming.response.status, 504); assert.equal(calls, 1);
   });
   check('unused-reader-emits-no-body-read-import', () => {
     const unused = compile(sources.unused);

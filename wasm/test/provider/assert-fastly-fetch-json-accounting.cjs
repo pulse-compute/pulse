@@ -137,8 +137,8 @@ function main(){
     assert(fault);assert(after.every(x=>x==='clock_time_get'));
   });
   check('selection-still-proves-literals-and-complete-control-tree',()=>{
-    for(const text of [source.replace('timeoutMs:500,',''),source.replace('timeoutMs:500,','timeoutMs:500,timeoutMs:0,'),source.replace('ctx.json(body)','ctx.json({body})'),source.replace("'x-proof':'é'","'x-proof':ctx.req.method")]){
-      assert.equal(generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(planFor(text,'require-json'),options).manifest.resourceAccounting,undefined);
+    for(const [i,text] of [source.replace('timeoutMs:500,',''),source.replace('timeoutMs:500,','timeoutMs:500,timeoutMs:0,'),source.replace('ctx.json(body)','ctx.json({body})'),source.replace("'x-proof':'é'","'x-proof':ctx.req.method")].entries()){
+      assert.equal(generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(planFor(text,'require-json'),options).manifest.resourceAccounting?.selection,i===1?undefined:'canonical-fetch-cohorts');
     }
   });
   const artifacts=Object.fromEntries(Object.entries({permissive,plain,observed,typed}).map(([name,c])=>[name,{bytes:c.wasm.length,sha256:createHash('sha256').update(c.wasm).digest('hex')}]));

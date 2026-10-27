@@ -2,7 +2,9 @@
 
 This production-selected slice extends #552's [single text-fetch ledger](P07-fetch-text-accounting.md)
 to one compiler-proven GET/JSON operation, directly on `latest`
-`ff8cd9f525040c3150a4fb95eaa7c8570c4587f5`. It does not complete P07.
+`ff8cd9f525040c3150a4fb95eaa7c8570c4587f5`. This historical slice did not complete P07; the subsequent
+[core-fetch completion](P07-core-fetch-completion.md) records the expanded service
+integration and its precise remaining boundaries.
 Human direction: “Proceed” after the next bounded integration step. Entry point:
 `provider-fastly`; additional owners are maintained provider tests and this internal
 record. Classification: architecture. Resource ownership, effect/lifecycle and
