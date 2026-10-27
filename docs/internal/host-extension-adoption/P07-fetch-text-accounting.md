@@ -18,7 +18,7 @@ The trusted provider producer selects an ordinary handler whose complete entry
 body is one fetch effect binding followed by `ctx.text` of that same local. It
 requires a literal URL, static backend, literal optional headers, positive literal
 `timeoutMs`, text decoder, and original request duration of 1–30,000 ms. The init
-admits only timeout and headers, so the method is GET and upload is empty. The
+admits only timeout and headers, with unique init and header keys, so the method is GET and upload is empty. The
 canonical control tree proves one visit and one decode; counting static effect
 sites alone would not establish that. Routers, JSON, response options, dynamic
 inputs, repeated effects, groups, application packages and other shapes remain

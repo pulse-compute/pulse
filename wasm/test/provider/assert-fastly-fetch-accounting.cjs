@@ -149,7 +149,10 @@ function main(){
   });
   check('zero-handles-in-each-namespace',()=>{for(const kind of ['request','body','response','pending']){const r=run(observed,{}, {handleStarts:{[kind]:0}});assert.equal(r.response.body,'hello');assert.deepEqual(metrics(r),[0,5,0,0]);}});
   check('selection-proves-control-and-literals',()=>{
-    const unselected=[source.replace('timeoutMs:500,',''),source.replace('.text()', '.json()').replace('ctx.text(body)','ctx.json(body)'),
+    const unselected=[source.replace('timeoutMs:500,',''),
+      source.replace('timeoutMs:500,','timeoutMs:500,timeoutMs:0,'),
+      source.replace("headers:{'x-proof':'é'}", "headers:{x:'a'},headers:{'very-long-key':'long value'}"),
+      source.replace("headers:{'x-proof':'é'}", "headers:{x:'a',x:'long value'}"),source.replace('.text()', '.json()').replace('ctx.text(body)','ctx.json(body)'),
       source.replace("headers:{'x-proof':'é'}", "headers:{'x-proof':ctx.req.method}"),
       source.replace('return ctx.text(body)', 'return ctx.text(body+body)'),
       source.replace('return ctx.text(body)', `const again=await ctx.fetch('${url}',{timeoutMs:500}).text();return ctx.text(again)`)];

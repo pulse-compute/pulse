@@ -17,14 +17,17 @@ function profile(plan, bindings) {
     || body[1].value.arguments[0].id !== effect.result?.localId) return null;
   const init = effect.inputs.find(x => x.name === 'init')?.value;
   const url = effect.inputs.find(x => x.name === 'url')?.value;
+  const uniqueKeys = object => object?.kind === 'object'
+    && object.entries.every(x => x.kind === 'property' && x.key?.kind === 'literal' && typeof x.key.value === 'string')
+    && new Set(object.entries.map(x => x.key.value)).size === object.entries.length;
   const field = name => init?.entries?.find(x => x.key?.value === name)?.value;
   const timeout = field('timeoutMs'), headers = field('headers');
   const backend = bindings.backends.find(x => x.index === 0)?.backend;
   const bound = plan.schemas?.registry?.maxBytes;
-  if (url?.kind !== 'literal' || typeof url.value !== 'string' || init?.kind !== 'object'
+  if (url?.kind !== 'literal' || typeof url.value !== 'string' || !uniqueKeys(init)
     || init.entries.some(x => !['timeoutMs','headers'].includes(x.key?.value))
     || timeout?.kind !== 'literal' || !Number.isSafeInteger(timeout.value) || timeout.value <= 0
-    || (headers && (headers.kind !== 'object' || headers.entries.some(x => x.key?.kind !== 'literal'
+    || (headers && (!uniqueKeys(headers) || headers.entries.some(x => x.key?.kind !== 'literal'
       || typeof x.key.value !== 'string' || x.value?.kind !== 'literal' || typeof x.value.value !== 'string')))
     || typeof backend !== 'string' || !backend || bindings.dynamicBackends
     || !Number.isInteger(bindings.maxDurationMs) || bindings.maxDurationMs < 1 || bindings.maxDurationMs > 30000
