@@ -277,6 +277,10 @@ const tasks = Object.freeze({
     timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
     description: 'P11A compiled ownership-only control, observer parity and mutation detection; no timing gate'
   }),
+  'resource-ledger': nodeTask('test/runtime/assert-resource-ledger.cjs', {
+    timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P04 compiled bounded reservation, generation exhaustion, retained claims and protected cleanup kernel'
+  }),
   'fastly-lifecycle': nodeTask('test/provider/assert-fastly-lifecycle.cjs', {
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'P03 structural Fastly lifecycle, compiled settlement and response authority'
@@ -1550,6 +1554,7 @@ const profiles = Object.freeze({
     'lifecycle-foundation',
     'fastly-lifecycle',
     'resource-ownership-cost',
+    'resource-ledger',
     'fastly-incoming-body-forwarding',
     'str03a-generated-output',
     'str03c-bounded-transforms',

@@ -180,6 +180,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-native-platform-capabilities',
       'fastly-lifecycle',
       'resource-ownership-cost',
+      'resource-ledger',
       'fastly-incoming-body-forwarding',
       'fastly-conditional-kv',
       'clean-machine-acceptance' // installed conditional-KV adversarial corpus
