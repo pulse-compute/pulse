@@ -23,17 +23,19 @@ function __fca_start():bool {
   if (__fetch_ra !== null || __request_deadline < 0 || __request_last_clock < 0
     || __pulse_invocation_count != 1 || __pulse_invocation_tickets[0] != 1) return __fca_ok(false);
   __fca_origin = __request_deadline - i64(__FCA_DURATION);
-  const l = new PulseResourceLedger(1,12,7,__FCA_BACKING,7,1,__FCA_DURATION,2560);
+  const l = new PulseResourceLedger(1,__FCA_RECORDS,7,__FCA_BACKING,7,1,__FCA_DURATION,__FCA_STORAGE);
   __fetch_ra = l;
   if (!l.begin(1,__fca_now(),5,2,1,true)) return __fca_ok(false);
   for (let i=0;i<7;i++) if (!l.stageRecord(1,1,__fca_ns(i),1,i>=5?3:1,0)) return __fca_ok(false);
   if (!l.stageRecord(1,2,0,1,1,100) || !l.stageRecord(1,2,0,1,1,__FCA_ENCODING)
     || !l.stageRecord(1,2,0,1,1,__FCA_READER) || !l.stageRecord(1,2,0,1,3,64)
-    || !l.stageRecord(1,3,0,1,1,0) || !l.commit(1,__fca_now())) return __fca_ok(false);
-  for (let i=0;i<12;i++) if (l.reservedSlot(i)!=i || l.reservedGeneration(i)!=1) return __fca_ok(false);
+    || !l.stageRecord(1,3,0,1,1,0)
+    /*FCA_HEADER_STAGE*/ || !l.commit(1,__fca_now())) return __fca_ok(false);
+  for (let i=0;i<__FCA_RECORDS;i++) if (l.reservedSlot(i)!=i || l.reservedGeneration(i)!=1) return __fca_ok(false);
   return __fca_ok(l.consume(1,7,1,1,100,false,__fca_now())
     && l.consume(1,8,1,1,__FCA_ENCODING,false,__fca_now())
-    && l.consume(1,9,1,1,__FCA_READER,false,__fca_now()));
+    && l.consume(1,9,1,1,__FCA_READER,false,__fca_now())
+    /*FCA_HEADER_CONSUME*/);
 }
 function __fca_acquire(slot:i32):bool {
   return __fetch_ra !== null && __fca_ok(__fetch_ra!.beginAcquire(1,slot,1,__fca_ns(slot),1,slot>=5,__fca_now()));
