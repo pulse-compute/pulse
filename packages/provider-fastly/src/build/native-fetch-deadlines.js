@@ -2,13 +2,21 @@
 const fs = require('node:fs');
 const path = require('node:path');
 function enabled(plan) { return (plan.effects || []).some(effect => effect.kind === 'fetch'); }
-function runtimeSource(plan) {
+function runtimeSource(plan, accounting) {
   if (!enabled(plan)) return `function __pulse_fetch_has_deadlines(): bool { return false }
 function __pulse_fetch_request_check(index: i32): bool { return true }
 function __pulse_fetch_request_remaining(): i32 { return 2147483647 }`;
-  return fs.readFileSync(path.join(__dirname,'native-fetch-deadlines.as.ts'),'utf8');
+  return fs.readFileSync(path.join(__dirname,'native-fetch-deadlines.as.ts'),'utf8')
+    .replace('/*ACCOUNTING_CLOCK_STORAGE*/', accounting ? 'const __pulse_fetch_clock_out = new StaticArray<i64>(1)' : '')
+    .replace('/*ACCOUNTING_CLOCK_OUT*/', accounting ? '__pulse_fetch_clock_out' : 'new StaticArray<i64>(1)')
+    .replace('/*ACCOUNTING_CLOCK_FAILURE*/', accounting ? '__fca_clock_failed = true;' : '')
+    .replace('/*ACCOUNTING_REAP*/', accounting ? '__fca_cleanup(); return;' : '')
+    .replace('/*ACCOUNTING_RETIRED*/', accounting ? '' : '__pulse_fetch_retired.push(__pulse_fastly_pending[index]);')
+    .replace('/*ACCOUNTING_UNREAPED*/', accounting ? '__fetch_ra !== null && __fetch_ra!.bank[2*8+5] != PRL_FREE && __fetch_ra!.bank[2*8+5] != PRL_RESERVED ? 1 : 0' : '__pulse_fetch_retired.length')
+    .replaceAll('/*ACCOUNTING_POLL*/', accounting ? '__fca_poll' : '__pulse_fetch_poll')
+    .replaceAll('/*ACCOUNTING_LATE_CLOSE*/', accounting ? '__fca_dispose(3); __fca_dispose(4)' : '__pulse_fetch_close_response(response[0]); __pulse_fetch_close_body(body[0])');
 }
-function instrument(input, plan) {
+function instrument(input, plan, accounting) {
   if (!enabled(plan)) return input;
   let source = input;
   const replace = (before,after) => {
@@ -18,7 +26,7 @@ function instrument(input, plan) {
   replace('const init = initIndex >= 0 ? __pulse_fastly_value(unchecked(payload.values[initIndex])) : new __PulseFastlyValue(); let method',
     'const init = initIndex >= 0 ? __pulse_fastly_value(unchecked(payload.values[initIndex])) : new __PulseFastlyValue(); __pulse_fetch_begin_deadline(effectIndex, init); if (__pulse_fastly_last_error != 0) return; let method');
   replace('const backendBytes = __pulse_fastly_utf8(backend); const pendingOut',
-    'if (!__pulse_fetch_before_send(effectIndex)) { __pulse_fetch_close_request(requestHandle); __pulse_fetch_close_body(bodyHandle); return; } const backendBytes = __pulse_fastly_utf8(backend); const pendingOut');
+    `if (!__pulse_fetch_before_send(effectIndex)) { ${accounting ? '__fca_cleanup();' : '__pulse_fetch_close_request(requestHandle); __pulse_fetch_close_body(bodyHandle);'} return; } const backendBytes = __pulse_fastly_utf8(backend); const pendingOut`);
   replace('function __pulse_fastly_wait_fetch(effectIndex: i32): i32 {',
     'function __pulse_fastly_wait_fetch(effectIndex: i32): i32 { if (__pulse_fastly_effect_kind(effectIndex) == 1 && (__pulse_fetch_completed[effectIndex] || __pulse_fetch_has_deadlines())) return __pulse_fetch_wait(effectIndex);');
   replace('function __pulse_invocation_close(): void {', 'function __pulse_invocation_close(): void { __pulse_fetch_reap();');
