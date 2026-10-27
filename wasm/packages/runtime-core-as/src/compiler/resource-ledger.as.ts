@@ -212,6 +212,14 @@ class PulseResourceLedger {
     if (exit) this.exitRemaining--; else this.cleanupRemaining--;
     unchecked(this.bank[at + 5] = PRL_DISPOSING); return true;
   }
+  // Protected non-disposal attempt (for example one nonblocking cleanup poll).
+  // This grants no resource/output authority; those claims must already exist.
+  cleanupStep(execution: u64, exit: bool, now: u64): bool {
+    if (!this.auth(execution) || !this.clock(now)) return false;
+    if (exit ? this.exitRemaining == 0 : this.cleanupRemaining == 0) return this.reject(7);
+    if (exit) this.exitRemaining--; else this.cleanupRemaining--;
+    return true;
+  }
   disposed(execution: u64, slot: i32, generation: u64, namespace: u32, owner: u32, knownConsumed: bool): bool {
     if (!this.match(execution, slot, generation, namespace, owner)) return false;
     const at = slot * 8;
@@ -222,6 +230,14 @@ class PulseResourceLedger {
   transferred(execution: u64, slot: i32, generation: u64, namespace: u32, owner: u32): bool {
     if (!this.match(execution, slot, generation, namespace, owner) || unchecked(this.bank[slot * 8 + 5]) != PRL_LIVE) return false;
     this.release(slot); return true;
+  }
+  // A qualified host operation may leave an existing input's consumption
+  // unknown. Keep its claim and forbid subsequent business acquisition/retry.
+  uncertain(execution: u64, slot: i32, generation: u64, namespace: u32, owner: u32): bool {
+    if (!this.match(execution, slot, generation, namespace, owner)) return false;
+    const at = slot * 8;
+    if (unchecked(this.bank[at]) != PRL_HANDLE || unchecked(this.bank[at + 5]) != PRL_LIVE) return false;
+    unchecked(this.bank[at + 5] = PRL_UNKNOWN); this.reject(10); return true;
   }
   unused(execution: u64, slot: i32, generation: u64, namespace: u32, owner: u32): bool {
     if (!this.match(execution, slot, generation, namespace, owner)) return false;

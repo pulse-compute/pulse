@@ -22,8 +22,9 @@ measurement recipe and proposed cost budgets; numeric thresholds are not enforce
 application cases, explicit local-engine replay and a source-free packed consumer.
 Exact candidate results and remaining promotion decisions belong in the PR.
 [P04 accounting kernel](P04-accounting-kernel.md) records the approved bank and
-exhaustion policy and the private Native kernel slice. No driver selects it yet;
-foundation promotion and P07 operation integration remain separate gates.
+exhaustion policy and the shared Native kernel. Foundation promotion remains a separate gate. [P07 forwarding](P07-forwarding-accounting.md)
+selects the kernel for the existing bounded Fastly Native operation; general fetch
+integration and full RA qualification remain open.
 
 ## Direction and stopping point
 

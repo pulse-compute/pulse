@@ -281,6 +281,10 @@ const tasks = Object.freeze({
     timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
     description: 'P04 compiled bounded reservation, generation exhaustion, retained claims and protected cleanup kernel'
   }),
+  'fastly-forwarding-accounting': nodeTask('test/provider/assert-fastly-forwarding-accounting.cjs', {
+    timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P07 bounded forwarding profile, production ledger ownership and original-deadline qualification'
+  }),
   'fastly-lifecycle': nodeTask('test/provider/assert-fastly-lifecycle.cjs', {
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'P03 structural Fastly lifecycle, compiled settlement and response authority'
@@ -1555,6 +1559,7 @@ const profiles = Object.freeze({
     'fastly-lifecycle',
     'resource-ownership-cost',
     'resource-ledger',
+    'fastly-forwarding-accounting',
     'fastly-incoming-body-forwarding',
     'str03a-generated-output',
     'str03c-bounded-transforms',

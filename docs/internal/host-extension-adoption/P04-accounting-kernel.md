@@ -1,8 +1,9 @@
 # P04 — Bounded Native accounting kernel
 
-Status: private kernel implemented and under qualification; no driver selects it.
-Foundation promotion, P07 operation integration and P11B cost qualification remain
-separate. This is the first P04 implementation slice, not completed production RA.
+Status: shared kernel integrated into the existing bounded Fastly Native
+forwarding realization; see [P07](P07-forwarding-accounting.md) for its exact scope.
+Foundation promotion, general fetch integration and P11B cost qualification remain
+separate. This does not complete production RA.
 
 ## Human decision and scope
 
@@ -24,7 +25,7 @@ source, application API, export map, effect scheduler or default budget changes.
 The canonical Native implementation is
 `wasm/packages/runtime-core-as/src/compiler/resource-ledger.as.ts`. Its adjacent
 JavaScript loader returns the source only for explicit selection. Merely loading
-the package installs nothing. There are no host imports or provider calls.
+the package installs nothing. The kernel has no host imports or provider calls; the selected provider adapter owns those transitions.
 
 One invocation owns a fixed-capacity active bank and equally bounded staging bank.
 Each bank has eight unsigned 64-bit words per record. Together they use **128 × N
@@ -67,7 +68,8 @@ The managed driver supplies and authenticates a unique, nonzero execution identi
 and binds it to this ledger instance. A display name or reusable static site is
 not that identity. Equality checks inside this trusted kernel do not make scalar
 values unforgeable. Raw Wasm memory/ABI access remains trusted. Cross-instance and
-host-boundary identity qualification belongs to the eventual driver integration.
+host-boundary identity qualification belongs to each driver integration. P07
+binds the first one-shot forwarding instance without exporting scalar identities.
 
 ## Reservation and lifetime rules
 
@@ -169,7 +171,8 @@ bank scanning per commit, observer/report costs and driver-owned ticket storage 
 be measured separately. No timing threshold enters correctness CI. P11B must use
 the same reader, ownership and compiler recipe on/off.
 
-This slice does not complete foundation promotion, P07 profiles/dispatch integration,
+The first selected forwarding integration is documented in P07. It does not
+complete foundation promotion, general P07 profiles/dispatch integration,
 Node-host/JavaScript RA realization, P06 child graphs, P08 cache policy, P11B costs,
 or RA application/local/hosted qualification. Historical report/retention causes
 remain unresolved. Exact source/tree, failed development attempts and terminal

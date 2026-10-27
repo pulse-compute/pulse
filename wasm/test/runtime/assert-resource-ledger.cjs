@@ -28,6 +28,8 @@ export function acquired(e:u64,s:i32,g:u64,n:u32,o:u32,h:u32):bool{return l().ac
 export function noAcquisition(e:u64,s:i32,g:u64,n:u32,o:u32,k:bool):bool{return l().noAcquisition(e,s,g,n,o,k);}
 export function dispose(e:u64,s:i32,g:u64,n:u32,o:u32,t:u64):bool{return l().beginDispose(e,s,g,n,o,t);}
 export function disposed(e:u64,s:i32,g:u64,n:u32,o:u32,k:bool):bool{return l().disposed(e,s,g,n,o,k);}
+export function uncertain(e:u64,s:i32,g:u64,n:u32,o:u32):bool{return l().uncertain(e,s,g,n,o);}
+export function cleanupStep(e:u64,x:bool,t:u64):bool{return l().cleanupStep(e,x,t);}
 export function transfer(e:u64,s:i32,g:u64,n:u32,o:u32):bool{return l().transferred(e,s,g,n,o);}
 export function unused(e:u64,s:i32,g:u64,n:u32,o:u32):bool{return l().unused(e,s,g,n,o);}
 export function consume(e:u64,s:i32,g:u64,o:u32,b:u64,c:bool,t:u64):bool{return l().consume(e,s,g,o,b,c,t);}
@@ -135,6 +137,17 @@ function correctness(module) {
       assert.equal(x.acquired(...t,3),0);assert.equal(x.dispose(...t,0n),0);
       assert.equal(x.total(7),known?0n:10n);
     }
+  });
+  check('uncertain live input and bounded cleanup observation',()=>{
+    const x=instance(module),[t]=reserve(x,[row()],{cleanup:2n});acquire(x,t);
+    assert.equal(x.uncertain(2n,...t.slice(1)),0);assert.equal(x.uncertain(...t),1);
+    assert.equal(x.uncertain(...t),0);assert.equal(x.read(t[1],5),5n);
+    assert.equal(x.dispose(...t,0n),0);assert.equal(x.transfer(...t),0);assert.equal(x.total(0),1n);
+    assert.equal(x.cleanupStep(2n,0,0n),0);assert.equal(x.cleanupStep(1n,0,0n),1);
+    x.close(1n);assert.equal(x.cleanupStep(1n,0,1n),1);assert.equal(x.cleanupStep(1n,0,1n),0);
+    assert.equal(x.total(7),10n);assert.equal(x.total(6),0n);
+    const y=instance(module);reserve(y,[row()],{cleanup:1n});assert.equal(y.cleanupStep(1n,0,100n),0);
+    assert.equal(y.total(5),1n);
   });
   check('late acquisition result retained after close; original deadline',()=>{
     const x=instance(module),[t]=reserve(x,[row()]);assert.equal(x.acquire(...t,0,99n),1);

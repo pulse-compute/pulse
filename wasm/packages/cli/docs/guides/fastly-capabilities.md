@@ -335,7 +335,11 @@ explicit and fit 64 pairs/16 KiB; incoming credentials are not copied implicitly
 Pulse pumps opaque bytes, watches for early origin responses and enforces the
 request deadline plus any earlier fetch `timeoutMs` through response pumping.
 Successful final close hands queued delivery to Fastly; it provides no client
-receipt or post-handoff cancellation. Fastly JavaScript remains ineligible.
+receipt or post-handoff cancellation. The selected operation reserves fixed
+resource claims and protected cleanup before acquisition. Unknown host outcomes
+remain charged and are not retried. Cleanup and an error response require time
+under the original request deadline; after that deadline or a clock failure,
+unresolved resources remain for host teardown. Fastly JavaScript remains ineligible.
 See [body transport limits](../concepts/bodies.md#current-transport-limits)
 for the initial shape restrictions and qualification boundary.
 
