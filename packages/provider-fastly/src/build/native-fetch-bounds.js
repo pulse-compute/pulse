@@ -5,7 +5,7 @@
 function create(plan,C,B){
   const locals=new Map(),effects=new Map();let mutable=false;
   const walk=(v,fn)=>{if(!v||typeof v!=='object')return;if(Array.isArray(v)){v.forEach(x=>walk(x,fn));return;}fn(v);Object.values(v).forEach(x=>walk(x,fn));};
-  walk(plan.entry,scan);walk(plan.handlers,scan);
+  walk(plan.entry,scan);walk(plan.handlers,scan);walk(plan.helpers,scan);walk(plan.stages,scan);
   function scan(v){if(v.kind==='local'&&v.declaration==='const'&&v.value)locals.set(v.localId,v.value);if(/assign|update/.test(v.kind||'')||v.kind==='method-call'&&['push','pop','shift','unshift','splice'].includes(v.method))mutable=true;}
   for(const e of plan.effects)if(e.kind==='fetch'&&e.result?.localId&&e.result.valueKind!=='fetch-response'&&e.decoder==='text')effects.set(e.result.localId,{chars:B,bytes:3*B});
   function string(v,seen=new Set()){

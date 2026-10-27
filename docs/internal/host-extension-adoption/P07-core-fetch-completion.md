@@ -14,7 +14,7 @@ The earlier forwarding, decoded-body, single text and single JSON implementation
 remain applicable. The new `canonical-fetch-cohorts` profile follows the existing
 single-operation selectors and covers proved pure-fetch handlers and Router
 routes, including ordinary results, retained response/text/JSON aliases,
-sequential operations, parallel groups, uploads and opaque response transfer.
+sequential operations, repeated imported helpers, parallel groups, uploads and opaque response transfer.
 No accounting flag or new authoring syntax is introduced.
 
 ## Acceptance mapping
@@ -69,7 +69,8 @@ physical-reclamation or cancellation guarantee.
 
 Let S be the static fetch-site count and N the maximum admissions implied by the
 canonical control tree, capped by the existing cumulative effect limit. Ordinary
-acyclic handlers reserve S; a repeated control form conservatively reserves the
+acyclic handlers reserve S; repeated controls or source helper/stage calls
+conservatively reserve the
 existing cumulative limit. This is a compiler inventory, not a runtime counter.
 Five slots per existing ticket own request, upload body, pending request,
 response and response body. Two additional slots protect error delivery.
@@ -104,7 +105,7 @@ the production project compiler and provider generator. Trusted lifecycle
 observers inspect closure and retained claims without replacing generated source
 or introducing a production test switch. Plain/observed artifacts check response,
 host trace and outbound-request parity. The task includes width-32 groups,
-sequential aliases, Router siblings, bounded dynamic inputs, JSON/text upload,
+sequential aliases, repeated helper sites with distinct tickets, Router siblings, bounded dynamic inputs, JSON/text upload,
 partial writes, malformed ABI results, zero namespace handles, unknown send/poll/
 close/transfer, deadline/clock failures, overflow and trap behavior.
 

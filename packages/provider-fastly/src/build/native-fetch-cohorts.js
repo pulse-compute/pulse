@@ -37,13 +37,13 @@ function profile(plan,bindings,C){
   const headerNames=new Set(plan.schemas.registry.contentTypePolicy==='require-json'?['content-type']:[]);
   let repeated=false,unsupported=false;
   function visit(v){if(!v||typeof v!=='object')return;if(Array.isArray(v)){v.forEach(visit);return;}
-    if(/loop|while|for|map/.test(v.kind||''))repeated=true;
+    if(/loop|while|for|map/.test(v.kind||'')||['helper-call','stage-call'].includes(v.kind))repeated=true;
     if(v.kind==='method-call'&&v.receiver?.valueKind==='fetch-response'&&v.method==='header'){
       const name=v.arguments?.[0];if(name?.kind!=='literal'||typeof name.value!=='string')unsupported=true;else headerNames.add(name.value);
     }
     Object.values(v).forEach(visit);
   }
-  visit(plan.entry);visit(plan.handlers);if(unsupported)return null;
+  visit(plan.entry);visit(plan.handlers);visit(plan.helpers);visit(plan.stages);if(unsupported)return null;
   const count=Math.min(policy.defaultMaxEffects,repeated?policy.defaultMaxEffects:plan.effects.length),header=[...headerNames].sort();
   // Each response owns one cached decode per admitted name. Lowercase admission
   // is also cached; repeated aliases never allocate another fetch-service copy.
