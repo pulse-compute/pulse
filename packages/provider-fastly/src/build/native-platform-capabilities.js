@@ -2006,7 +2006,7 @@ function __pulse_fastly_run_invocation(): void {
   __pulse_fastly_last_error = fastly_abi_init(PULSE_FASTLY_EFFECTS_ABI_VERSION)
   if (__pulse_fastly_last_error != FASTLY_STATUS_OK) { __pulse_fastly_jwt_send_error(); return }
   const handles = new StaticArray<i32>(2)
-  const downstreamStatus = fastly_http_req_body_downstream_get(changetype<usize>(handles), changetype<usize>(handles) + 4)
+  const downstreamStatus = ${options.resourceAccounting ? '__fra_incoming' : 'fastly_http_req_body_downstream_get'}(changetype<usize>(handles), changetype<usize>(handles) + 4)
   if (downstreamStatus != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 100, -1); __pulse_fastly_jwt_send_error(); return }
   __pulse_fastly_request_handle = load<i32>(changetype<usize>(handles))
   __pulse_fastly_request_body_handle = load<i32>(changetype<usize>(handles) + 4)
@@ -2099,6 +2099,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   const packageDuration = plan.packages?.application?.requestLimits?.maxDurationMs;
   if (packageDuration !== undefined) options = { ...options, maxDurationMs: Math.min(options.maxDurationMs ?? packageDuration, packageDuration) };
   const bindings = resolveCapabilityBindings(plan, options);
+  const resourceAccounting = require('./native-forwarding-accounting.js').profile(plan, bindings);
   // Trusted provider-internal services, never a project/package hook API.
   const lifecycle = lifecycleBindings.create(plan, bindings, options.lifecycleServices);
   // Keep final provider eligibility authoritative over the portable artifact
@@ -2145,7 +2146,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       ? [nativeValueBudget.numericRegionSource()] : []),
     portableSource,
     nativeHandleOwnership.providerSource(plan, portable.manifest.handleOwnership?.enabled === true),
-    driverSource(plan, { guestLinked: facts.guestUnits.length > 0, lifecycle }),
+    driverSource(plan, { guestLinked: facts.guestUnits.length > 0, lifecycle, resourceAccounting }),
+    ...(resourceAccounting ? [require('./native-forwarding-accounting.js').source(resourceAccounting)] : []),
     ''
   ].join('\n');
   if (applicationErrors.settlementEnabled(plan)) source = applicationErrors.instrument(source);
@@ -2177,6 +2179,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     imports: Object.freeze([...capabilityImports(effect), ...(bindings.backends.some(b => b.index === index && b.dynamic) ? ['fastly_http_req.register_dynamic_backend'] : [])])
   })));
   const manifest = Object.freeze({
+    ...(resourceAccounting ? { resourceAccounting } : {}),
     version: FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
     generatorVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_GENERATOR_VERSION,
     abiVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_ABI_VERSION,

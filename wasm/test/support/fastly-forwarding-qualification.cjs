@@ -7,7 +7,7 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const binary = size => Buffer.from(Array.from({ length: size }, (_, i) => i % 256));
 const config = { maxDurationMs: 2000, bodyForwarding: { requestMaxBytes: 1048576, responseMaxBytes: 1048576 }, bindings: { backends: { 'https://origin.example': 'origin' } } };
 const source = `import {Pulse} from '@pulse-compute/pulse';const app=new Pulse({auto:true});app.post('/',async ctx=>{return ctx.fetch('${url}',{method:'POST',body:ctx.req.body(),timeoutMs:1500,headers:{'content-type':'application/octet-stream'}})});export default app;`;
-function qualifyAbi(wasm, { requestCap = 1048576, responseCap = 1048576, deadline = 1500 } = {}) {
+function qualifyAbi(wasm, { requestCap = 1048576, responseCap = 1048576, deadline = 1500, requestDeadline = 2000 } = {}) {
     const cases = [];
     const run = (request = {}, fixture = {}, options = {}) => execute({ wasm }, { request: { method: 'POST', path: '/', ...request }, fixtures: { [url]: { echoBody: true, ...fixture } }, allowAbortedResponse: true, traceBodyIo: true, ...options });
     const check = (name, fn) => { try {
@@ -34,6 +34,16 @@ function qualifyAbi(wasm, { requestCap = 1048576, responseCap = 1048576, deadlin
                 assert.equal(r.trace.slice(r.trace.indexOf(entry) + 1).filter(x => (x.name === 'close' || x.name === 'abandon') && x.module === 'fastly_http_body' && x.handle === entry.handle).length, 1, `body ${entry.handle} terminal owner`);
         }
         assert.ok(r.trace.filter(x => x.name === 'select').every(x => x.timeout > 0 && x.timeout <= deadline));
+    };
+    const originalExpired = (invoke, committed = false) => {
+        if (committed) {
+            const r = invoke();
+            assert.equal(r.response.aborted,true); assert.equal(sends(r).length,1);
+            assert(r.forwardingResources.bodies > 0, 'expired disposal retains physical claims until teardown');
+            return;
+        }
+        assert.throws(invoke,error => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED'
+            && !error.detail.trace.some(x=>x.name==='send_downstream'));
     };
     let guestMemoryBytes;
     for (const size of [...new Set([0, 1, 1024, 65536, 1048576, Math.min(requestCap, responseCap) - 1, Math.min(requestCap, responseCap)].filter(n => n <= Math.min(requestCap, responseCap)))])
@@ -87,7 +97,7 @@ function qualifyAbi(wasm, { requestCap = 1048576, responseCap = 1048576, deadlin
         ['response-source', {}, { echoBody: false, body: binary(1), bodyDelayMs: 4000 }, {}, true],
         ['response-writer', { body: binary(2) }, {}, { bodyWriteChunkBytes: 1, downstreamWriteDelayMs: 4000 }, true]
     ])
-        check(`deadline-${name}`, () => { const r = run(req, fixture, opts); if (committed)
+        check(`deadline-${name}`, () => { if(deadline===requestDeadline){originalExpired(()=>run(req,fixture,opts),committed);return;} const r = run(req, fixture, opts); if (committed)
             aborted(r);
         else
             failed(r, 504); assert.equal(r.monotonicMs, deadline); clean(r); if (name === 'upload-writer')
@@ -98,12 +108,14 @@ function qualifyAbi(wasm, { requestCap = 1048576, responseCap = 1048576, deadlin
     for (const phase of ['upload', 'response'])
         check(`deadline-at-${phase}-eof`, () => {
             let upload;
-            const r = run({ body: binary(1) }, {}, { afterHostcall: c => {
+            const invoke = () => run({ body: binary(1) }, {}, { afterHostcall: c => {
                     if (c.name === 'send_async_streaming')
                         upload = c.args[1];
                     if (c.name === 'read' && c.readU32(c.args[3]) === 0 && ((phase === 'upload') === (c.args[0] === 2)))
                         c.advance(deadline);
                 } });
+            if(deadline===requestDeadline){originalExpired(invoke,phase==='response');return;}
+            const r=invoke();
             if (phase === 'upload') {
                 failed(r, 504);
                 assert.ok(r.trace.some(x => x.name === 'abandon' && x.handle === upload));
@@ -114,19 +126,21 @@ function qualifyAbi(wasm, { requestCap = 1048576, responseCap = 1048576, deadlin
         });
     check('late-headers-discarded-on-timeout', () => {
         let delayed = false;
-        const r = run({}, { body: 'late', echoBody: false }, { afterHostcall: c => {
+        const invoke = () => run({}, { body: 'late', echoBody: false }, { afterHostcall: c => {
                 if (c.name === 'pending_req_poll_v2' && c.readU32(c.args[2]) === 1 && !delayed) {
                     delayed = true;
                     c.advance(deadline);
                 }
             } });
+        if(deadline===requestDeadline){originalExpired(invoke);return;}
+        const r=invoke();
         failed(r, 504);
         assert.equal(r.transportResources.pendingRequests, 0);
         assert.equal(reads(r).filter(x => x.handle !== 2).length, 0);
         assert.ok(r.trace.some(x => x.module === 'fastly_http_resp' && x.name === 'close'));
         clean(r);
     });
-    check('late-result-in-cleanup-discarded', () => { const r = run({}, { body: 'late', echoBody: false, delayMs: deadline - 1 }, { hostcallDelayMs: { 'fastly_http_body.close': 1 } }); failed(r, 504); assert.equal(r.transportResources.pendingRequests, 0); assert.equal(reads(r).filter(x => x.handle !== 2).length, 0); clean(r); });
+    check('late-result-in-cleanup-discarded', () => { const invoke = () => run({}, { body: 'late', echoBody: false, delayMs: deadline - 1 }, { hostcallDelayMs: { 'fastly_http_body.close': 1 } }); if(deadline===requestDeadline){originalExpired(invoke);return;} const r=invoke(); failed(r, 504); assert.equal(r.transportResources.pendingRequests, 0); assert.equal(reads(r).filter(x => x.handle !== 2).length, 0); clean(r); });
     check('successful-close-is-the-handoff-boundary', () => {
         let sink;
         const r = run({ body: binary(7) }, {}, { afterHostcall: c => {
@@ -140,13 +154,24 @@ function qualifyAbi(wasm, { requestCap = 1048576, responseCap = 1048576, deadlin
         assert.equal(sends(r).length, 1);
         clean(r);
     });
-    for (const fault of ['status', 'negative', 'regression'])
-        check(`clock-${fault}-during-pump`, () => {
-            let armed = false, tick = 0;
-            const r = run({ body: binary(1) }, {}, { afterHostcall: c => { if (c.name === 'read')
-                    armed = true; }, monotonicClock: () => armed ? (fault === 'status' ? { status: 1 } : { nanoseconds: fault === 'negative' ? BigInt.asUintN(64, -1n) : 0n }) : { nanoseconds: BigInt(++tick) * 1000000n } });
-            failed(r, 504);
-            clean(r);
+    // Accounting's approved original-clock rule denies even protected host
+    // work after the clock becomes untrustworthy. Claims remain for teardown;
+    // a synthetic 504 must not be created with replenished/unknown time.
+    for (const fault of ['status', 'negative', 'regression']) for (const transient of [false,true])
+        check(`clock-${fault}-${transient ? 'transient' : 'persistent'}-during-pump`, () => {
+            let armed = false, tick = 0, faultObserved = false;
+            const afterFault = [];
+            assert.throws(() => run({ body: binary(1) }, {}, {
+                afterHostcall: c => { if (faultObserved) afterFault.push(c.module + ':' + c.name); if (c.name === 'read') armed = true; },
+                monotonicClock: () => {
+                    if (!armed || (faultObserved && transient)) return { nanoseconds: BigInt(++tick) * 1000000n };
+                    faultObserved = true;
+                    return fault === 'status' ? { status: 1 } : { nanoseconds: fault === 'negative' ? BigInt.asUintN(64, -1n) : 0n };
+                }
+            }), error => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED'
+                && !error.detail.trace.some(x => x.name === 'send_downstream'));
+            assert(faultObserved);
+            assert(afterFault.every(x => x === 'wasi_snapshot_preview1:clock_time_get'), 'no acquisition, disposal or delivery after clock failure');
         });
     for (const phase of ['request', 'response-names', 'response-values'])
         for (const fault of ['count', 'cursor'])
@@ -211,7 +236,7 @@ function qualifyAbi(wasm, { requestCap = 1048576, responseCap = 1048576, deadlin
         else
             aborted(r); clean(r); });
     check('partial-one-byte-writes', () => { const r = run({ body: binary(31) }, {}, { bodyWriteChunkBytes: 1 }); assert.deepEqual(r.response.bodyBytes, binary(31)); clean(r); });
-    check('writer-fails-including-error-response', () => { assert.throws(() => run({ body: binary(1) }, {}, { bodyWriteChunkBytes: 0 }), error => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_RESPONSE_NOT_SENT' && !error.detail.trace.some(x => x.name === 'send_downstream')); });
+    check('writer-fails-including-error-response', () => { assert.throws(() => run({ body: binary(1) }, {}, { bodyWriteChunkBytes: 0 }), error => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED' && !error.detail.trace.some(x => x.name === 'send_downstream')); });
     for (const kind of ['request', 'body', 'response', 'pending'])
         check(`zero-${kind}-handle`, () => { const r = run({ body: binary(1) }, {}, { handleStarts: { [kind]: 0 } }); assert.deepEqual(r.response.bodyBytes, binary(1)); clean(r); });
     for (const headers of [{ 'content-length': String(responseCap + 1) }, { 'content-length': '-1' }, [['content-length', '0'], ['content-length', '0']], { 'x-large': 'x'.repeat(16384) }, Object.fromEntries(Array.from({ length: 65 }, (_, i) => ['x-' + i, 'a'])), { 'connection': 'x-private,', 'x-private': 'hidden' }, { 'x-bad': 'a\rb' }])

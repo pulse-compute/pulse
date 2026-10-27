@@ -1204,11 +1204,18 @@ through response pumping and the final pre-close check. Successful streaming
 close relinquishes the writable handle and hands queued completion to Fastly;
 **it is not a drain receipt, client delivery guarantee, or retained cancellation
 authority**. This explicitly accepts the FWD9-01 host-handoff alternative.
-No pending-request cancellation ABI exists: cleanup polls once, discards late
-handles and leaves unresolved host work to invocation teardown, without retries
-or rollback claims. Before downstream commitment, upload overflow attempts 413,
-deadline expiry 504, and origin/protocol/response-limit failure 502. After
-commitment, failure abandons the stream and never sends a second response.
+The selected forwarding service reserves a fixed resource ledger before incoming
+acquisition, including overlapping send/poll outputs and protected cleanup/exit
+capacity. Uncertain acquisition, consumption or disposal remains charged; there
+is no speculative close or retry. General fetch does not inherit this profile.
+No pending-request cancellation ABI exists: cleanup may poll once under the
+original request deadline, discard known late handles and leave unresolved host
+work to invocation teardown. Before downstream commitment, upload overflow attempts
+413, an earlier fetch timeout 504, and origin/protocol/response-limit failure 502.
+After commitment, failure attempts to abandon the stream and never sends a second
+response. Original request expiry or an untrustworthy clock denies all further
+cleanup/error-response host calls; host teardown retains responsibility, and no
+new error response or guest disposal is guaranteed.
 FWD9-03 qualifies normal builds and exact installed candidate packages with an
 adversarial injected-ABI matrix and pinned Viceroy 0.21.1 HTTP replay. The
 `fwd9-03-installed` task checks doctor/inspect/test/build/report, artifact identity,

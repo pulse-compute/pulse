@@ -138,14 +138,16 @@ P05 static plan construction is also excluded and must be measured separately
 when a real compiler/runtime producer uses it. There is no total-memory or host
 resource limit claim.
 
-## Proposed acceptance budgets for review
+## Engineering acceptance targets approved for P04
 
-These are engineering targets for P04/P11B, not measured conclusions or accepted
-SLOs. They separate fixed invocation overhead from per-root cost, and allow a
-small absolute floor so sub-microsecond controls do not create misleading ratios.
-Review them before adding enforcement; this PR does not approve its own targets.
+The owner approved these engineering targets for implementation and qualification
+with “I'm with 2.” after review of the P04 policy and cost proposal. They are not
+measured conclusions, accepted SLOs or timing-sensitive CI gates. They separate
+fixed invocation overhead from per-root cost and allow a small absolute floor so
+sub-microsecond controls do not create misleading ratios. P11B must qualify the
+actual candidate; foundation promotion and merge/release remain separate decisions.
 
-| Area | Proposed acceptance rule | Basis / remaining decision |
+| Area | Approved review target | Basis / remaining qualification |
 | --- | --- | --- |
 | Ownership semantics | Same host work, payload allocation, result checks and failure/cleanup outcomes on/off; candidate additionally passes admission-pressure tests. | Mandatory correctness, not a performance tradeoff. |
 | Unused feature | Zero added guest code/imports/banks on matched absent/imported-unused/generic-only controls; distinguish embedded identity bytes. | Existing adoption requirement; verify on production candidate, not this selected fixture. |
@@ -155,7 +157,7 @@ Review them before adding enforcement; this PR does not approve its own targets.
 | Growth | Explain every width-dependent scan; aim for ≤2.5× incremental work from 16→32 once the delta is distinguishable from noise. | A superlinear scan needs redesign or explicit reviewed justification, not a width-8 cutoff. |
 | Observation/reporting | Separate modes and budgets; never include observer cost in the accounting delta or claim it is zero from a noisy negative sample. | Numeric budgets remain with P12/P11B after the actual reporting implementation exists. |
 
-The fixture baseline does not enforce these targets. Time thresholds are not
+The fixture baseline does not enforce these approved review targets. Time thresholds are not
 part of correctness CI. Before P04 is finalized, resolve the bank layout and
 baseline/candidate equivalence; before promotion, P11B measures real compiled
 artifacts and P13 qualifies relevant hosts. Foundation P10/P13/P14 remains a

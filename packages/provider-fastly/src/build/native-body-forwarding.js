@@ -66,7 +66,7 @@ function hooks(plan) {
     { point: 'result.claim', owner, order, body: `  if (result != __fwd_result || result == 0) return false
   if (__pulse_response_owned()) __fwd_send()
   return true` },
-    { point: 'invocation.end', owner, order, body: '  __fwd_cleanup()' }
+    { point: 'invocation.end', owner, order, body: '  __fwd_cleanup(); __fra_cleanup(true)'  }
   ];
 }
 module.exports = {IMPORTS, enabled, validate, instrument, hooks};
