@@ -791,6 +791,8 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     }
   };
 
+  const cacheEvidence = options.cache ? require('./native-cache-host.js').attachCacheHost(imports, {view, writeU32, readBytes, readUtf8, alloc, bodies, bodyBytes, trace, now:()=>monotonicMs, advance:ms=>{monotonicMs+=ms;}}, options.cache) : undefined;
+
   const kvEvidence = options.conditionalKv ? require('./conditional-kv-host.js').attachConditionalKvHost(imports, {
     view, writeU32, writeU64, readBytes, readUtf8, alloc, bodies, bodyBytes, trace,
     now: () => monotonicMs, advance: ms => { monotonicMs += ms; }
@@ -867,7 +869,8 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     && ((lastError === 1001 && errorStage === 273 && downstream?.status === 400)
       || (lastError === 1001 && errorStage === 276 && downstream?.status === 500)
       || (lastError === 1003 && (errorStage === 274 || errorStage === 275) && downstream?.status === 500));
-  if (lastError !== FASTLY_STATUS_OK && !handledDynamicBackendError && !handledDeadlineError && !handledTransportError && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
+  const handledCacheError = options.allowHandledCacheError === true && lastError === 1003 && errorStage >= 300 && errorStage <= 309 && downstream?.status === 500;
+  if (lastError !== FASTLY_STATUS_OK && !handledCacheError && !handledDynamicBackendError && !handledDeadlineError && !handledTransportError && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
     throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module reported an execution error.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED', { ...callableEvidence(), lastError, errorStage, errorEffect, pulseLastError, trace });
   }
   if (!downstream) {
@@ -876,6 +879,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
 
   return Object.freeze({
     ...callableEvidence(),
+    cacheEvidence,
     version: 'pulse.fastly-native-platform-capabilities-mock.v1',
     request: Object.freeze({ method, url, path: pathValue, headers: Object.freeze(requestHeaders.map((entry) => Object.freeze(entry))) }),
     response: Object.freeze({

@@ -1,0 +1,61 @@
+{
+  "version": "pulse.package-contract.v1",
+  "kind": "pulse.package-contract",
+  "contractId": "pulse.cache",
+  "npmPackage": "@pulse-compute/cache",
+  "description": "Private bounded cache adoption candidate.",
+  "authoring": {
+    "namespace": "cache",
+    "import": "@pulse-compute/cache",
+    "symbols": [
+      "getText",
+      "putText"
+    ]
+  },
+  "ownership": {
+    "profileFragment": "cache",
+    "helperImports": [],
+    "reExportImports": []
+  },
+  "composition": {
+    "status": "reserved",
+    "helperSymbol": "cache",
+    "profileToken": "opaque-direct-use",
+    "reasonCode": "PULSE_PACKAGE_COMPOSITION_HELPER_NOT_REALIZED"
+  },
+  "targets": {
+    "native": {
+      "status": "provider-dependent",
+      "realization": "canonical-package-lowering",
+      "lowerableSubpath": "@pulse-compute/cache",
+      "providerRequirements": [
+        "cache.getText",
+        "cache.putText"
+      ],
+      "reasonCode": "PULSE_PACKAGE_PROVIDER_CAPABILITY_REQUIRED"
+    },
+    "javascript": {
+      "status": "unsupported",
+      "reasonCode": "PULSE_CACHE_TARGET_UNSUPPORTED"
+    }
+  },
+  "lowering": {
+    "manifest": "./pulsewasm.manifest.cjs",
+    "trust": "first-party",
+    "canonicalOperationVersion": "pulse.canonical-package-operation.v1",
+    "bundleVersion": "pulse.package-lowering-bundle.v1",
+    "providerRequirementVersion": "pulse.provider-requirement-record.v1"
+  },
+  "conformance": {
+    "status": "native-contract-only",
+    "fixtureRoots": ["./conformance"],
+    "semanticCases": [
+      "cache.getText",
+      "cache.putText"
+    ]
+  },
+  "docs": {
+    "readme": "./README.md",
+    "contract": "./pulse.package.json"
+  }
+}

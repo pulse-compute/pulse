@@ -12,7 +12,7 @@ const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'response.custom',
   'response.output',
   'request.body.transform',
-  'fetch',
+  'fetch', 'cache.getText', 'cache.putText',
   'time.wall-clock',
   'crypto.digestText',
   'config.get',

@@ -40,6 +40,15 @@ importers:
         specifier: workspace:*
         version: link:../pulse
 
+  packages/cache:
+    dependencies:
+      '@pulse-compute/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      '@pulse-compute/wasm-contracts':
+        specifier: workspace:*
+        version: link:../../wasm/packages/contracts
+
   packages/crypto:
     dependencies:
       '@pulse-compute/runtime':

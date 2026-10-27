@@ -281,6 +281,10 @@ const tasks = Object.freeze({
     timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
     description: 'P04 compiled bounded reservation, generation exhaustion, retained claims and protected cleanup kernel'
   }),
+  'fastly-cache': nodeTask('test/provider/assert-fastly-cache.cjs', {
+    timeoutMs: 240000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P08 bounded cache admission, incomplete reads, commit/abandon and original-deadline cleanup'
+  }),
   'fastly-fetch-cohorts': nodeTask('test/provider/assert-fastly-fetch-cohorts.cjs', {
     timeoutMs: 240000, evidence: 'native', scheduling: { compiler: true },
     description: 'P07 complete bounded fetch lifecycle: cohorts, aliases, uploads, transfer and uncertainty'
@@ -1565,6 +1569,7 @@ const profiles = Object.freeze({
     'resource-ledger',
     'fastly-forwarding-accounting',
     'fastly-fetch-cohorts',
+    'fastly-cache',
     'fastly-incoming-body-forwarding',
     'str03a-generated-output',
     'str03c-bounded-transforms',

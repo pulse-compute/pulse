@@ -1,0 +1,38 @@
+{
+  "name": "@pulse-compute/cache",
+  "version": "0.0.0-private",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./pulsewasm/manifest": "./pulsewasm.manifest.cjs",
+    "./pulsewasm/compiler": "./pulsewasm.compiler.cjs"
+  },
+  "files": [
+    "conformance",
+    "src",
+    "as",
+    "pulse.package.json",
+    "pulsewasm.manifest.cjs",
+    "pulsewasm.compiler.cjs",
+    "README.md"
+  ],
+  "pulse": {
+    "contract": "./pulse.package.json"
+  },
+  "pulsewasm": {
+    "manifest": "./pulsewasm.manifest.cjs"
+  },
+  "dependencies": {
+    "@pulse-compute/wasm-contracts": "workspace:*"
+  },
+  "peerDependencies": {
+    "@pulse-compute/runtime": "workspace:*"
+  }
+}

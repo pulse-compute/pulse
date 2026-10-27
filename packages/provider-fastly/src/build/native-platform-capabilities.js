@@ -15,6 +15,7 @@ const { schemaNeedsValueProjection } = require('@pulse-compute/wasm-contracts/sc
 const crypto = require('node:crypto');
 const { nativeStringAssembly, nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
 const conditionalKv = require('./kv-native.js');
+const nativeCache = require('./native-cache.js');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -114,6 +115,7 @@ const FASTLY_NATIVE_SIZE_OPTIMIZATION = EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION;
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   ...require('./native-body-forwarding.js').IMPORTS.map(key => Object.freeze(key.split(':'))),
+  ...nativeCache.IMPORTS.map(key => Object.freeze(key.split(':'))),
   ...conditionalKv.KV_IMPORTS.map((key) => Object.freeze(key.split(':'))),
   ...require('./s3-native.js').S3_IMPORTS.map((key) => Object.freeze(key.split(':'))),
   Object.freeze(['fastly_abi', 'init']),
@@ -168,6 +170,8 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_REQUIRED_IMPORTS = Object.freeze([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
+  'cache.getText': 24,
+  'cache.putText': 25,
   fetch: 1,
   'config.get': 2,
   'secret.get': 3,
@@ -199,6 +203,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
+  ...nativeCache.KINDS,
   'time.now',
   'crypto.digestText',
   'fetch',
@@ -221,6 +226,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
+  ...nativeCache.KINDS,
   'time.now',
   'crypto.digestText',
   'config.get',
@@ -712,10 +718,11 @@ function validatePlanBoundary(plan, options = {}) {
       && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3 && !digest;
+    const cache = effect.package === '@pulse-compute/cache' && effect.contractId === 'pulse.cache' && nativeCache.KINDS.includes(effect.kind) && effect.kind === `cache.${effect.operation}` && effect.capability === effect.kind;
+    return !grip && !assets && !jwt && !s3 && !digest && !cache;
   });
   if (unsupportedPackages.length > 0) {
-    fail('Fastly native realization only accepts the trusted first-party Assets, GRIP, JWT, S3, and Crypto digest package contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', {
+    fail('Fastly native realization only accepts the trusted first-party Assets, GRIP, JWT, S3, Crypto digest, and private Cache package contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', {
       effects: unsupportedPackages.map((entry) => ({ id: entry.id, kind: entry.kind, package: entry.package, contractId: entry.contractId }))
     });
   }
@@ -735,10 +742,11 @@ function validatePlanBoundary(plan, options = {}) {
       && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3 && !digest;
+    const cache = effect.package === '@pulse-compute/cache' && effect.contractId === 'pulse.cache' && nativeCache.KINDS.includes(effect.kind) && effect.kind === `cache.${effect.operation}` && effect.capability === effect.kind;
+    return !grip && !assets && !jwt && !s3 && !digest && !cache;
   });
   if (unsupportedDeclarations.length > 0) {
-    fail('Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, and Crypto digest contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
+    fail('Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, Crypto digest, and private Cache contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
   }
   for (const effect of effects.filter((entry) => ['jwt.verify', 'jwt.sign'].includes(entry.kind))) {
     const resource = effect.resource;
@@ -1037,6 +1045,7 @@ function requiredImportsForPlan(plan, bindings) {
     for (const key of require('./native-body-forwarding.js').IMPORTS) keys.add(key);
     keys.add('fastly_http_body:read');
   }
+  for (const key of nativeCache.imports(plan)) keys.add(key);
   return Object.freeze([...keys].sort());
 }
 
@@ -1262,7 +1271,7 @@ function effectResultSource(plan, bindings) {
     }
     const result = effect.result || {};
     const decoder = result.decoder;
-    const waiter = conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) ? '__pulse_fastly_kv_conditional_wait' : ['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
+    const waiter = nativeCache.KINDS.includes(effect.kind) ? '__cache_wait' : conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) ? '__pulse_fastly_kv_conditional_wait' : ['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
       ? '__pulse_fastly_wait_fetch'
       : effect.kind === 'grip.publish'
         ? '__pulse_fastly_wait_grip_publish'
@@ -1298,6 +1307,8 @@ function effectResultSource(plan, bindings) {
 
 function effectDispatchSource(plan) {
   const handlerByKind = Object.freeze({
+    'cache.getText': '__cache_begin',
+    'cache.putText': '__cache_begin',
     'time.now': '__pulse_fastly_time_begin',
     'crypto.digestText': '__pulse_fastly_digest_begin',
     fetch: '__pulse_fastly_fetch_begin',
@@ -2106,9 +2117,10 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   const forwardingAccounting = require('./native-forwarding-accounting.js').profile(plan, bindings);
   const fetchAccounting = require('./native-fetch-accounting.js').profile(plan, bindings, FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES)
     || require('./native-fetch-cohorts.js').profile(plan, bindings, FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES);
-  const resourceAccounting = forwardingAccounting || fetchAccounting;
+  const cacheAccounting = nativeCache.profile(plan, bindings);
+  const resourceAccounting = forwardingAccounting || fetchAccounting || nativeCache.report(cacheAccounting);
   // Trusted provider-internal services, never a project/package hook API.
-  const lifecycle = lifecycleBindings.create(plan, bindings, [...require('./native-fetch-accounting.js').hooks(fetchAccounting), ...(options.lifecycleServices || [])]);
+  const lifecycle = lifecycleBindings.create(plan, bindings, [...require('./native-fetch-accounting.js').hooks(fetchAccounting), ...nativeCache.hooks(cacheAccounting), ...(options.lifecycleServices || [])]);
   // Keep final provider eligibility authoritative over the portable artifact
   // and caller options. Only the selected crypto guest uses the linked policy;
   // that policy excludes active codecs regardless of JSON arena configuration.
@@ -2137,6 +2149,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     ((plan.effects || []).some(effect => ['fetch', 'grip.publish', 'grip.broadcast'].includes(effect.kind)) || bindings.s3.length > 0)
       ? fs.readFileSync(path.join(__dirname, 'native-send-error-detail.as.ts'), 'utf8') : '',
     require('./s3-native.js').s3NativeSource(plan, bindings),
+    nativeCache.source(cacheAccounting),
     plan.effects.some(e => e.kind === 'assets.lookup') ? require('@pulse-compute/wasm-contracts/assets/contracts').embeddedNativeSource() + fs.readFileSync(path.join(__dirname, 'embedded-assets.as.ts'), 'utf8') : '',
     require('./time-native.js').timeNativeSource(plan),
     require('./digest-native.js').digestNativeSource(plan),
@@ -2166,7 +2179,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan), lifecycle);
   if (packageApplication.enabled(plan)) source = packageApplication.instrument(source);
   source = effectInvocations.instrument(source);
-  source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan, lifecycle, fetchAccounting);
+  source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan, lifecycle, fetchAccounting, cacheAccounting);
   source = packageApplication.terminalFailure(source, plan);
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);

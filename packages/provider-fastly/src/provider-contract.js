@@ -12,7 +12,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
   deployable: true,
   localExecution: true,
   capabilities: [
-    'request', 'request.body.forward', 'response.json', 'response.text', 'response.custom', 'fetch',
+    'request', 'request.body.forward', 'response.json', 'response.text', 'response.custom', 'fetch', 'cache.getText', 'cache.putText',
     'time.wall-clock', 'crypto.digestText', 'config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete', 'assets.lookup',
     'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify', 'jwt.sign',
     'opaque.pass-through', 's3.head', 's3.getText', 's3.putText', 's3.getBody'
@@ -24,6 +24,8 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'response.text': 'fastly.compute.response.text',
     'response.custom': 'fastly.compute.response.custom',
     fetch: 'fastly.backend.fetch',
+    'cache.getText': 'fastly.native.cache.getText',
+    'cache.putText': 'fastly.native.cache.putText',
     'time.wall-clock': 'wasi.clock_time_get.realtime',
     'crypto.digestText': 'pulse.crypto.guest-source.sha256',
     'config.get': 'fastly.config-store.get',

@@ -100,9 +100,10 @@ assert.equal(projectionContract.policies.automaticTargetFallback, false);
 
 const catalog = discoverPackageContractCatalog({ cwd: fixtureRoot, workspaceRoot: repoRoot });
 assert.equal(catalog.version, PACKAGE_CONTRACT_CATALOG_VERSION);
-assert.deepEqual(catalog.contracts.map((entry) => entry.contractId), ['pulse.assets', 'pulse.crypto', 'pulse.entities', 'pulse.grip', 'pulse.jwt', 'pulse.mcp', 'pulse.s3']);
+assert.deepEqual(catalog.contracts.map((entry) => entry.contractId), ['pulse.assets', 'pulse.cache', 'pulse.crypto', 'pulse.entities', 'pulse.grip', 'pulse.jwt', 'pulse.mcp', 'pulse.s3']);
 assert.deepEqual(catalog.contracts.map((entry) => entry.lowerableSubpath), [
   '@pulse-compute/assets',
+  '@pulse-compute/cache',
   '@pulse-compute/crypto',
   '@pulse-compute/entities',
   '@pulse-compute/grip',
@@ -114,6 +115,7 @@ assert.deepEqual(catalog.contracts.map((entry) => entry.compatibilitySubpaths), 
   ['@pulse-compute/assets/pulsewasm'],
   [],
   [],
+  [],
   ['@pulse-compute/grip/pulsewasm'],
   [],
   [],
@@ -121,8 +123,9 @@ assert.deepEqual(catalog.contracts.map((entry) => entry.compatibilitySubpaths), 
 ]);
 assert.ok(catalog.contracts.every((entry) => entry.compilerTrust === 'first-party'));
 assert.ok(catalog.contracts.every((entry) => entry.targetSupport.native === true));
-assert.ok(catalog.contracts.filter((entry) => entry.contractId !== 'pulse.s3').every((entry) => entry.targetSupport.javascript === 'declared'));
+assert.ok(catalog.contracts.filter((entry) => !['pulse.s3','pulse.cache'].includes(entry.contractId)).every((entry) => entry.targetSupport.javascript === 'declared'));
 assert.equal(catalog.contracts.find((entry) => entry.contractId === 'pulse.s3').targetSupport.javascript, 'declared');
+assert.equal(catalog.contracts.find((entry) => entry.contractId === 'pulse.cache').productContract.targets.javascript.status, 'unsupported');
 const entitiesCatalogContract = catalog.contracts.find((entry) => entry.contractId === 'pulse.entities');
 assert.equal(entitiesCatalogContract.targetSupport.native, true);
 assert.equal(entitiesCatalogContract.targetSupport.javascript, 'declared');
