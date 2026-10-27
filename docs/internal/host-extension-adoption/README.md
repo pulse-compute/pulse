@@ -18,6 +18,9 @@ and the allocation/budget inventory; runtime accounting is not installed. P11A
 and foundation qualification still precede P04.
 [P11A](P11A-cost-baseline.md) establishes the compiled ownership-only control,
 measurement recipe and proposed cost budgets; numeric thresholds are not enforced.
+[P10 foundation qualification](P10-foundation-qualification.md) adds selected-service
+application cases, explicit local-engine replay and a source-free packed consumer.
+Exact candidate results and remaining promotion decisions belong in the PR.
 
 ## Direction and stopping point
 

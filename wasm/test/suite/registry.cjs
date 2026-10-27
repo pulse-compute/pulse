@@ -265,6 +265,14 @@ const tasks = Object.freeze({
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'P09A host lifecycle bindings and shared Fastly/Node execution traces'
   }),
+  'lifecycle-foundation': nodeTask('test/runtime/assert-lifecycle-foundation.cjs', {
+    timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P10 mixed effects, sequential cohorts, repeated sites, ctx.call and Router recovery with selected lifecycle services'
+  }),
+  'lifecycle-foundation-installed': nodeTask('test/runtime/assert-lifecycle-foundation-installed.cjs', {
+    timeoutMs: 360000, evidence: 'external', scheduling: { compiler: true },
+    description: 'P14 source-free packed foundation compiler and driver replay outside the checkout'
+  }),
   'resource-ownership-cost': nodeTask('test/performance/assert-resource-ownership-cost.cjs', {
     timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
     description: 'P11A compiled ownership-only control, observer parity and mutation detection; no timing gate'
@@ -1539,6 +1547,7 @@ const profiles = Object.freeze({
     'shared-stage-o19',
     'str02b-node-native',
     'native-lifecycle',
+    'lifecycle-foundation',
     'fastly-lifecycle',
     'resource-ownership-cost',
     'fastly-incoming-body-forwarding',
@@ -1694,6 +1703,7 @@ const profiles = Object.freeze({
     '@cli',
     '@providers',
     'lifecycle-contract-installed',
+    'lifecycle-foundation-installed',
     'release-packages',
     'release-artifact-determinism',
     'clean-machine-acceptance',

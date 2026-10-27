@@ -62,6 +62,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'lifecycle-contract',
       'resource-admission',
       'lifecycle-contract-installed',
+      'lifecycle-foundation-installed',
       'provider-packages',
       'provider-fastly-package',
       'fastly-javascript-packaging'
@@ -146,6 +147,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'jwt-package-owned-lowering',
       'jwt-javascript-admission',
       'native-lifecycle',
+      'lifecycle-foundation',
       'canonical-native-wasm'
     ])
   }),
