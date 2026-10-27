@@ -152,7 +152,7 @@ function main(){
     const unselected=[source.replace('timeoutMs:500,',''),
       source.replace('timeoutMs:500,','timeoutMs:500,timeoutMs:0,'),
       source.replace("headers:{'x-proof':'é'}", "headers:{x:'a'},headers:{'very-long-key':'long value'}"),
-      source.replace("headers:{'x-proof':'é'}", "headers:{x:'a',x:'long value'}"),source.replace('.text()', '.json()').replace('ctx.text(body)','ctx.json(body)'),
+      source.replace("headers:{'x-proof':'é'}", "headers:{x:'a',x:'long value'}"),source.replace('.text()', '.json()').replace('ctx.text(body)','ctx.json({body})'),
       source.replace("headers:{'x-proof':'é'}", "headers:{'x-proof':ctx.req.method}"),
       source.replace('return ctx.text(body)', 'return ctx.text(body+body)'),
       source.replace('return ctx.text(body)', `const again=await ctx.fetch('${url}',{timeoutMs:500}).text();return ctx.text(again)`)];

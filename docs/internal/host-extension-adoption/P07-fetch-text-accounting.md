@@ -12,6 +12,9 @@ ownership, effect/lifecycle and provider/target boundaries require human review.
 No merge, release, deployment, public configuration or new authoring support is
 included.
 
+The subsequent [JSON slice](P07-fetch-json-accounting.md) extends this selection
+to direct JSON results; the exclusions below describe this text-only step.
+
 ## Selection and scope
 
 The trusted provider producer selects an ordinary handler whose complete entry

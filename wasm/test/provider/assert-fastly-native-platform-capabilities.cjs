@@ -50,6 +50,7 @@ const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-fastly-platform-ca
 try {
   require('./assert-fastly-decoded-body-backing.cjs').main();
   require('./assert-fastly-fetch-accounting.cjs').main();
+  require('./assert-fastly-fetch-json-accounting.cjs').main();
   require('./assert-fastly-terminal-errors.cjs').main();
   require('./assert-fastly-native-config-effect-sharing.cjs').main();
   require('./assert-fastly-request-budget.cjs');
