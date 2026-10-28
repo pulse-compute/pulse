@@ -2389,6 +2389,32 @@ create a host capability or expand the separate prebuilt-guest contract.
 A general compiler-plugin hook API remains deferred; the scoped external
 lowerer contract is available independently of that readiness gate.
 
+### Package-owned host-extension admission
+
+The existing package artifact carrier reserves `host-extension` for the exact
+`pulse.host-extension.v1` Native contribution protocol. Shared contracts own its
+strict data schema, source identity, selected-manifest ownership, exact-target
+selection, and `pulse.host-extension-import-policy.v1` import audit. The existing
+provider toolchain subpath exposes this owner as `hostExtensions`; a target may
+advertise `pulse.host-extension-admission.v1` with exact protocols and services.
+The generic `host.extension` provider requirement is transport vocabulary, not
+permission to invoke arbitrary host imports. No production provider advertises
+the initial `terminal-request-backend.v1` service at this stage.
+
+Admission uses reachable trusted package discovery without package-name tables,
+registration, or npm-version equality. Each used owned operation selects exactly
+one compatible contribution; ambiguous matches, source entry collisions, ownership
+mismatches, and undeclared services fail. Source and policy hashes are deterministic
+content identities. The full provider baseline and selected function declarations
+form a precomputed import ceiling; the audit checks all emitted import kinds and
+exact contributed function signatures. Existing final-Wasm memory, export,
+feature, and start checks remain independently required. Service execution,
+terminal placement, response authority, and runtime lifecycle attachment require
+the subsequent provider adapter; this contract introduces no executable handoff
+surface. The exact schema and limits are in the
+[package lowerer contract](../contributing/package-lowerer-contract.md#host-extension-contribution-v1).
+
+
 See [Package-owned lowering](../concepts/package-owned-lowering.md), the
 [package lowerer contract](../contributing/package-lowerer-contract.md), and
 [plugin readiness](../maintainers/plugin-readiness.md).

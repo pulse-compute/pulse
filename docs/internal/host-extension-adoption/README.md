@@ -19,6 +19,11 @@ attachment and contribution/import evidence; implementation and architecture
 approval remain separate. The priority audit and P01 direction annotation are
 carried from PR #555 as documentation only, without its cache implementation.
 
+[P15 contract/admission](P15-contract-admission.md) implements RC workstream item 1
+under the subsequent “Implement 1” direction. It adds the strict contribution
+carrier and shared admission/import contract; terminal service execution and
+provider advertisement remain the next unit.
+
 ## Historical kickoff and milestone plan
 
 Status: **planning baseline; no production adoption implemented**.
