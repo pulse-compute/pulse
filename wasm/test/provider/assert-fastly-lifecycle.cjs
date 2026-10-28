@@ -206,3 +206,6 @@ export function transfer(): void { __pulse_response_transferred() }
   });
   console.log(`ok - ${count} compiled Fastly lifecycle cases; injected-host and emitted-template evidence, not hosted acceptance`);
 } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
+
+// The terminal service binds to the same structural lifecycle and authority.
+require('./assert-fastly-host-extensions.cjs');

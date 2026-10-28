@@ -8,6 +8,7 @@ const { nativeLoggingSource } = require('./native-stdio.js');
 const applicationErrors = require('./native-application-errors.js');
 const effectInvocations = require('./effect-invocations.js');
 const lifecycleBindings = require('./lifecycle.js');
+const hostExtensions = require('./host-extensions.js');
 const packageApplication = require('./package-native-application.js');
 const nativeValueBudget = require('./native-value-budget.js');
 const { schemaNeedsValueProjection } = require('@pulse-compute/wasm-contracts/schema-json/registry');
@@ -190,7 +191,8 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   'kv.insertIfAbsent': 16,
   'kv.compareAndSwap': 17,
   'time.now': 18,
-  'crypto.digestText': 19
+  'crypto.digestText': 19,
+  'host.extension': 24
 });
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
@@ -199,6 +201,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
+  'host.extension',
   'time.now',
   'crypto.digestText',
   'fetch',
@@ -221,6 +224,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
+  'host.extension',
   'time.now',
   'crypto.digestText',
   'config.get',
@@ -685,6 +689,7 @@ function validatePlanBoundary(plan, options = {}) {
   if (!plan.ownership || plan.ownership.providerNeutral !== true || plan.ownership.javascriptRuntime !== false) {
     fail('Fastly native platform capability realization requires a provider-neutral plan without JavaScript runtime ownership.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_PLAN_OWNERSHIP_INVALID', { ownership: plan.ownership });
   }
+  const selectedExtensions = hostExtensions.select(plan, options);
   const effects = plan.effects || [];
   const unsupported = effects.filter((effect) => !FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.includes(effect.kind));
   if (unsupported.length > 0) {
@@ -712,7 +717,8 @@ function validatePlanBoundary(plan, options = {}) {
       && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3 && !digest;
+    const extension = effect.kind === 'host.extension' && selectedExtensions.some(item => hostExtensions.matches(effect, item.artifact));
+    return !grip && !assets && !jwt && !s3 && !digest && !extension;
   });
   if (unsupportedPackages.length > 0) {
     fail('Fastly native realization only accepts the trusted first-party Assets, GRIP, JWT, S3, and Crypto digest package contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', {
@@ -735,7 +741,8 @@ function validatePlanBoundary(plan, options = {}) {
       && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3 && !digest;
+    const extension = effect.kind === 'host.extension' && selectedExtensions.some(item => hostExtensions.matches(effect, item.artifact));
+    return !grip && !assets && !jwt && !s3 && !digest && !extension;
   });
   if (unsupportedDeclarations.length > 0) {
     fail('Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, and Crypto digest contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
@@ -1316,7 +1323,8 @@ function effectDispatchSource(plan) {
     'grip.channel': '__pulse_fastly_grip_channel_begin',
     'grip.hold': '__pulse_fastly_grip_hold_begin',
     'grip.publish': '__pulse_fastly_grip_publish_begin',
-    'grip.broadcast': '__pulse_fastly_grip_publish_begin'
+    'grip.broadcast': '__pulse_fastly_grip_publish_begin',
+    'host.extension': '__pulse_extension_begin'
   });
   const kinds = [...new Set((plan.effects || []).map((effect) => effect.kind))];
   const lines = [
@@ -2103,12 +2111,15 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   const packageDuration = plan.packages?.application?.requestLimits?.maxDurationMs;
   if (packageDuration !== undefined) options = { ...options, maxDurationMs: Math.min(options.maxDurationMs ?? packageDuration, packageDuration) };
   const bindings = resolveCapabilityBindings(plan, options);
+  const selectedExtensions = hostExtensions.select(plan, options);
+  const extensionPolicy = selectedExtensions.length ? hostExtensions.policy(selectedExtensions,
+    (options.targetDescriptor?.finalWasmPolicy?.permittedImports || FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS.map(([module, name]) => ({ module, name, kind: 'function' })))) : undefined;
   const forwardingAccounting = require('./native-forwarding-accounting.js').profile(plan, bindings);
   const fetchAccounting = require('./native-fetch-accounting.js').profile(plan, bindings, FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES)
     || require('./native-fetch-cohorts.js').profile(plan, bindings, FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES);
   const resourceAccounting = forwardingAccounting || fetchAccounting;
   // Trusted provider-internal services, never a project/package hook API.
-  const lifecycle = lifecycleBindings.create(plan, bindings, [...require('./native-fetch-accounting.js').hooks(fetchAccounting), ...(options.lifecycleServices || [])]);
+  const lifecycle = lifecycleBindings.create(plan, bindings, [...require('./native-fetch-accounting.js').hooks(fetchAccounting), ...hostExtensions.hooks(selectedExtensions), ...(options.lifecycleServices || [])]);
   // Keep final provider eligibility authoritative over the portable artifact
   // and caller options. Only the selected crypto guest uses the linked policy;
   // that policy excludes active codecs regardless of JSON arena configuration.
@@ -2134,6 +2145,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       es256KeyRecords
     }),
     jwtSource ? jwtSource.source : '',
+    ...(selectedExtensions.length ? [hostExtensions.source(selectedExtensions)] : []),
     ((plan.effects || []).some(effect => ['fetch', 'grip.publish', 'grip.broadcast'].includes(effect.kind)) || bindings.s3.length > 0)
       ? fs.readFileSync(path.join(__dirname, 'native-send-error-detail.as.ts'), 'utf8') : '',
     require('./s3-native.js').s3NativeSource(plan, bindings),
@@ -2234,6 +2246,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     effectCount: (plan.effects || []).length,
     effectInvocations: effectInvocations.policy,
     ...(lifecycle.active ? { lifecycle: lifecycle.plan } : {}),
+    ...(selectedExtensions.length ? { hostExtensions: hostExtensions.evidence(selectedExtensions, lifecycle, extensionPolicy) } : {}),
     effectKinds,
     continuationCount: (plan.continuations || []).length,
     groupedContinuationCount: (plan.continuations || []).filter((entry) => (entry.effectIds || []).length > 1).length,
@@ -2312,7 +2325,9 @@ function inspectFastlyNativePlatformCapabilitiesWasm(input, options = {}) {
   const module = new WebAssembly.Module(bytes);
   const imports = WebAssembly.Module.imports(module).map((entry) => Object.freeze({ module: entry.module, name: entry.name, kind: entry.kind }));
   const exports = WebAssembly.Module.exports(module).map((entry) => Object.freeze({ name: entry.name, kind: entry.kind }));
-  const unexpected = imports.filter((entry) => !FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS.has(`${entry.module}:${entry.name}`));
+  const permitted = options.extensionPolicy ? new Set(options.extensionPolicy.permittedImports.map(entry => `${entry.module}:${entry.name}:${entry.kind}`)) : null;
+  if (options.extensionPolicy) require('@pulse-compute/wasm-contracts/provider/toolchain').hostExtensions.auditWasm(bytes, options.extensionPolicy);
+  const unexpected = imports.filter((entry) => permitted ? !permitted.has(`${entry.module}:${entry.name}:${entry.kind}`) : entry.kind !== 'function' || !FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS.has(`${entry.module}:${entry.name}`));
   if (unexpected.length > 0) fail('Generated Fastly native platform capabilities module imports functions outside the Pass98 ABI.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORT_UNSUPPORTED', { unexpected, imports });
   const forbidden = imports.filter((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`));
   if (forbidden.length > 0) fail('Generated Fastly native platform capabilities module imports a forbidden runtime.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_RUNTIME_FORBIDDEN', { forbidden });
@@ -2568,13 +2583,16 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       fs.writeFileSync(wasmFile, wasm);
       if (emitWat) fs.writeFileSync(watFile, wat, 'utf8');
     }
-    const inspection = inspectFastlyNativePlatformCapabilitiesWasm(wasm, { maxWasmBytes });
+    const inspection = inspectFastlyNativePlatformCapabilitiesWasm(wasm, { maxWasmBytes, extensionPolicy: generated.manifest.hostExtensions?.importPolicy });
     const imported = new Set(inspection.imports.map((entry) => `${entry.module}:${entry.name}`));
     const requiredImports = requiredImportsForPlan(plan, generated.bindings);
     const missingRequiredImports = requiredImports.filter((key) => !imported.has(key));
     if (missingRequiredImports.length > 0) fail('Generated Fastly native platform capabilities module is missing plan-required host imports.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORT_MISSING', { missingRequiredImports, imports: inspection.imports, requiredImports });
     const manifest = Object.freeze({
       ...generated.manifest,
+      ...(generated.manifest.hostExtensions ? { hostExtensions: Object.freeze({ ...generated.manifest.hostExtensions,
+        finalWasmSha256: inspection.sha256,
+        observedImports: require('@pulse-compute/wasm-contracts/provider/toolchain').hostExtensions.auditWasm(wasm, generated.manifest.hostExtensions.importPolicy).observedImports }) } : {}),
       compilerVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION,
       assemblyScript: Object.freeze({ package: 'assemblyscript', version: require(path.join(asc.packageRoot, 'package.json')).version }),
       jsonAs: jsonAs

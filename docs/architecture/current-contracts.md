@@ -2426,8 +2426,8 @@ selection, and `pulse.host-extension-import-policy.v1` import audit. The existin
 provider toolchain subpath exposes this owner as `hostExtensions`; a target may
 advertise `pulse.host-extension-admission.v1` with exact protocols and services.
 The generic `host.extension` provider requirement is transport vocabulary, not
-permission to invoke arbitrary host imports. No production provider advertises
-the initial `terminal-request-backend.v1` service at this stage.
+permission to invoke arbitrary host imports. Fastly Native advertises the initial
+`terminal-request-backend.v1` service; Node and JavaScript targets do not.
 
 Admission uses reachable trusted package discovery without package-name tables,
 registration, or npm-version equality. Each used owned operation selects exactly
@@ -2436,10 +2436,7 @@ mismatches, and undeclared services fail. Source and policy hashes are determini
 content identities. The full provider baseline and selected function declarations
 form a precomputed import ceiling; the audit checks all emitted import kinds and
 exact contributed function signatures. Existing final-Wasm memory, export,
-feature, and start checks remain independently required. Service execution,
-terminal placement, response authority, and runtime lifecycle attachment require
-the subsequent provider adapter; this contract introduces no executable handoff
-surface. The exact schema and limits are in the
+feature, and start checks remain independently required. The exact schema and limits are in the
 [package lowerer contract](../contributing/package-lowerer-contract.md#host-extension-contribution-v1).
 
 
@@ -2943,3 +2940,46 @@ resolves them through the current build default or invents compiler measurements
 Guest linking retains its independent final optimizer, retention and merging
 posture; bounded and shrink0 primary compilation both use `native-default`
 link posture. This does not change the guest prebuilt recipe.
+
+### Fastly Native terminal service
+
+The provider implements one direct terminal package effect in a plain HTTP
+handler: `kind: host.extension`, declared result `host-terminal`, empty payload,
+and a literal configured backend key. Bounded pure method/path/URL conditions
+and ordinary text-response branches are allowed. Router, helpers, middleware,
+parallel or multiple handoffs, other surrounding effects, body forwarding,
+dynamic backends, guest-unit composition, and package-owned application emitters
+are rejected. No new GRIP authoring method is introduced by this adapter.
+
+Each selected contribution declares exactly one `(i32, i32, i32) -> i32`
+function. The service passes the borrowed ingress request handle and a bounded
+UTF-8 backend encoding. Backend bytes are limited to 1,024 (also capped by the
+canonical value-transfer limit); one private completion value is allocated
+before dispatch. These are logical allocation bounds, not total-memory or
+resource-accounting coverage. Package source is trusted executable build input.
+
+The existing driver owns tickets, readiness, deadlines and closure. The adapter
+binds the existing execution/HTTP lifecycle points structurally. It authenticates
+the exact live slot, ticket and completion before consuming or delivering a
+result. Raw setters, forged/stale tokens, duplicate settlement and closed
+invocations cannot complete a handoff. Optional provider-internal observers use
+the same ordered bindings for independently named packages; packages cannot
+supply hook bodies or acquire authority through an observer.
+
+The shared response fence enters outcome-unknown before the hostcall. The
+terminal service's zero-status convention transfers response authority; nonzero
+status or a trap leaves it unknown. Neither permits a replacement response or
+retry. Successful dispatch retains local request/body handles for one close
+attempt, separate from response authority. Known handles are retired before
+close calls; uncertain disposition is left to host teardown. Cleanup preserves
+an existing primary failure. Final completion requires the authenticated result.
+Ordinary, error and timeout responses use the same fence and original deadline.
+The Fastly request instance remains single-use; no trap-finalization or remote
+delivery guarantee is inferred.
+
+The provider manifest retains contribution identities, separate use sites,
+service/lifecycle versions, selected point coverage, limits, precomputed import
+policy, observed signatures and final Wasm identity. Packaging rechecks this
+identity and import policy. Unselected contributions emit no terminal service
+or observer machinery. This is build evidence; report/compare projection and
+hosted WebSocket/fan-out qualification remain separate work.

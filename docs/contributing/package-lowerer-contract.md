@@ -615,8 +615,10 @@ operation pipeline; detached schema descriptions include declared IDs only.
 
 The `hostExtensions` contract on `@pulse-compute/wasm-contracts/provider/toolchain`
 normalizes a reserved `realizationArtifacts` kind. This is a Native build-time
-contribution and admission contract. No production provider currently advertises
-its service, and this contract alone does not make a terminal operation executable.
+contribution and admission contract. Fastly Native implements its bounded
+`terminal-request-backend.v1` service through the existing driver lifecycle.
+Node and JavaScript targets do not advertise it; the wire contract alone grants
+no execution authority. See the [terminal service contract](../architecture/current-contracts.md#fastly-native-terminal-service).
 The existing trusted manifest, reachable graph selection, and package builder
 remain its only discovery path. Package names and npm versions are independent
 of Pulse releases; exact protocol versions determine compatibility.
