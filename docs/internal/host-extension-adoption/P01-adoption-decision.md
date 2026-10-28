@@ -1,5 +1,14 @@
 # P01 — Scoped lifecycle, HEX and RA adoption decision
 
+Current direction, 2026-10-28: the
+[host-extension priority audit](host-extension-priority-audit.md) supersedes the
+priority and cache prerequisites of this historical decision. The immediate
+objective is generic package contribution with shared lifecycle, management and
+instrumentation. Cache ABI quirks and stronger cache guarantees belong to a
+future concrete package/adapter; P08 does not gate P15 or unrelated extensions.
+The original milestones and evidence below remain historical planning context.
+Executable contracts and support claims require their own implementation/review.
+
 Status: **adoption direction recorded for review; production gates remain open**.
 Date: 2026-10-25. Base: `latest` at
 `5b087bff3e99be0eb88105a5d63dd8ae75ae5f98`, after merged [P00 #543](https://github.com/pulse-compute/pulse/pull/543).
