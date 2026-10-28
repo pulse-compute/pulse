@@ -1,0 +1,73 @@
+{
+  "version": "hex.nonterminal-validation.v0",
+  "base": "b421aa58b7df07cc5bcb060248026c660eaf5ae3",
+  "scope": "Only internal evidence; production source unchanged",
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run docs:sync",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "verify retained archive, artifact/input hashes and local Markdown links",
+      "status": "passed",
+      "archiveMembers": 89
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --base b421aa58b7df07cc5bcb060248026c660eaf5ae3 --head HEAD --declaration-file /tmp/hex-nonterminal-pr-body.md --check",
+      "status": "passed",
+      "exitCode": 0,
+      "classification": "evidence-only",
+      "protectedBoundaries": [],
+      "requiredChecks": [
+        "documentation",
+        "maintenance-policy"
+      ]
+    }
+  ],
+  "experimentalChecks": {
+    "main": {
+      "passed": 25,
+      "failed": 0,
+      "receipt": "receipt.json"
+    },
+    "consumption": {
+      "passed": 2,
+      "failed": 0,
+      "receipt": "consume-receipt.json"
+    }
+  },
+  "notRun": [
+    "full regression profiles",
+    "JavaScript parity",
+    "pending resource/cache execution",
+    "Viceroy",
+    "hosted Fastly",
+    "release qualification"
+  ]
+}

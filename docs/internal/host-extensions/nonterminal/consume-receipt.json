@@ -1,0 +1,46 @@
+{
+  "version": "hex.nonterminal-consume.v0",
+  "status": "passed",
+  "revision": "b421aa58b7df07cc5bcb060248026c660eaf5ae3",
+  "workingTree": "?? docs/internal/host-extensions/nonterminal/",
+  "node": "v24.19.0",
+  "inputs": [
+    {
+      "file": "prototype.cjs",
+      "sha256": "c53e5669d7566027653e81f130f08bf763670ea5f1be71b539c317b8ff119dbc"
+    },
+    {
+      "file": "fixture.cjs",
+      "sha256": "050aebd50f3a303a796d7403c76bff00de7257c9286a85b96485bfe27fa898fc"
+    },
+    {
+      "file": "host.cjs",
+      "sha256": "e24ee85f365116ed4e369409e394ebbda4b3cf0dd84c0d0c89797aa1001650b8"
+    },
+    {
+      "file": "consume.cjs",
+      "sha256": "ed6cb865792eaeb44a4a82eb3e9abe173375ae1baf8816d7191f15416cd409dc"
+    }
+  ],
+  "cases": [
+    {
+      "name": "available",
+      "status": "passed",
+      "body": "TLSv1.3"
+    },
+    {
+      "name": "unavailable",
+      "status": "passed",
+      "body": "not-present"
+    }
+  ],
+  "artifact": {
+    "bytes": 27424,
+    "sha256": "593fdcaa880592e4e3d68dc4c2491a39ea345c30edfcb23c039ecab61e05838c",
+    "sourceSha256": "3f3684a922a40bcdc059de0921cfe7d2c63ea7e21549e6a274119e80d73710a6",
+    "generatedSourceSha256": "65474b09cd9b33cb0e31cf9ae06968d7974c1a7b651d844fbd96d006e239cbed",
+    "valueKinds": [
+      "unknown"
+    ]
+  }
+}

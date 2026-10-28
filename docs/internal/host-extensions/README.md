@@ -15,6 +15,10 @@ and bounded effect collections. It is design-only and does not widen HEX support
 shapes through existing owners, separates shared investment from per-capability
 work, and retains bounded structural probes. It adds no implemented capability.
 
+[Nonterminal execution, investigation 1](nonterminal/README.md) retains a compiled
+observation prototype, composition/failure evidence, measured artifact costs and
+the result/authority/reporting gaps. It changes no production contract.
+
 [Driver-owned lifecycle hooks, pass 3](DESIGN-03-lifecycle-hooks.md) replaces the
 terminal service's text patches with typed contributions to named driver points.
 
