@@ -25,6 +25,7 @@ function prepareNativeRuntimeSupport({
     valueRoots.push('__pulse_helper_result');
   }
   if (eventReachable) {
+    globals.push('let __pulse_event_finished: bool = false');
     globals.push('let __pulse_event_runtime_id: i32 = -1');
     globals.push('let __pulse_event_payload_handle: i32 = 0');
     valueRoots.push('__pulse_event_payload_handle');
@@ -68,9 +69,14 @@ function prepareNativeRuntimeSupport({
     return `    case ${event.runtimeId}: validPayload = ${condition}; break`;
   }).join('\n');
   const eventExports = eventReachable ? [
+    'function __pulse_event_run(): i32 {',
+    '  const status = __pulse_run()',
+    `  __pulse_event_finished = status == ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE} && __pulse_pending == 0`,
+    '  return status',
+    '}',
     `export function pulse_event_abi_version(): i32 { return ${eventContract.EVENT_NATIVE_ABI_EXTENSION.abiVersion} }`,
     'export function pulse_event_start(runtimeId: i32, payloadHandle: i32): i32 {',
-    `  if (__pulse_started != 0 || runtimeId < 0 || payloadHandle < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_START}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED} }`,
+    `  if ((__pulse_started != 0 && !__pulse_event_finished) || __pulse_pending != 0 || runtimeId < 0 || payloadHandle < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_START}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED} }`,
     '  let validPayload = false',
     '  switch (runtimeId) {',
     eventPayloadCases,
@@ -78,6 +84,15 @@ function prepareNativeRuntimeSupport({
     '  }',
     `  if (!validPayload) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_START}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED} }`,
     '  __pulse_started = 1',
+    '  __pulse_event_finished = false',
+    ...valueRoots.map(name => `  ${name} = 0`),
+    ...(helpers.size ? ['  __pulse_helper_return = 0', '  __pulse_helper_error_next = 0', '  __pulse_helper_error_return = 0'] : []),
+    ...(stages.size ? [
+      '  __pulse_stage_next = 0', '  __pulse_stage_return = 0',
+      ...Array.from({ length: maxStageSites }, (_, site) => `  __pulse_stage_effect_${site} = -1; __pulse_stage_continuation_${site} = 0`)
+    ] : []),
+    ...(plan.effects || []).map((_, index) => `  __pulse_effect_ready_${index} = 0; __pulse_effect_pending_${index} = 0`),
+    '  __pulse_event_reset_storage()',
     '  __pulse_event_runtime_id = runtimeId',
     '  __pulse_event_payload_handle = payloadHandle',
     '  __pulse_pc = PULSE_ENTRY_PC',
@@ -85,8 +100,11 @@ function prepareNativeRuntimeSupport({
     '  __pulse_result = 0',
     '  __pulse_error = 0',
     '  __pulse_pending = 0',
-    ...(stateEnabled ? ['  __pulse_state_keys = new Array<i32>()', '  __pulse_state_values = new Array<i32>()'] : []),
-    '  return __pulse_run()',
+    ...(stateEnabled ? ['  __pulse_state_keys.length = 0', '  __pulse_state_values.length = 0'] : []),
+    // Event artifacts use the reclaiming runtime, including schema-free plans.
+    // Collection runs only between invocations, never over a live continuation.
+    '  __collect()',
+    '  return __pulse_event_run()',
     '}'
   ] : [];
 
@@ -156,7 +174,7 @@ function renderNativeExports({ eventReachable, stateEnabled, eventExports, sette
     `  if (__pulse_started == 0 || __pulse_pending == 0 || !__pulse_ready_for_resume()) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INCOMPLETE_RESUME}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.INVALID_RESUME} }`,
     `  __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.NONE}`,
     '  __pulse_clear_resume_flags()',
-    '  return __pulse_run()',
+    eventReachable ? '  return __pulse_event_runtime_id >= 0 ? __pulse_event_run() : __pulse_run()' : '  return __pulse_run()',
     '}',
     'export function pulse_set_effect_result(effectIndex: i32, handle: i32): i32 {',
     ...(lifecycle?.site('effect-result') ? [lifecycle.site('effect-result')] : []),

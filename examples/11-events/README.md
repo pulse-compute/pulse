@@ -285,7 +285,7 @@ For build settings, see [Native build optimization](../../docs/reference/native-
 
 | Artifact | Default build |
 |---|---:|
-| Portable guest `canonical-native.wasm` | 31.7 KiB (32,458 bytes) |
+| Portable guest `canonical-native.wasm` | 31.8 KiB (32,545 bytes) |
 
 The executable documentation gate rebuilds and measures the default artifact.
 Measured with Node 24.18.0 and lockfile-pinned AssemblyScript 0.28.18. These are uncompressed on-disk sizes, not transfer sizes or
