@@ -81,6 +81,7 @@ const TARGET_FIELDS = Object.freeze([
   'jwt',
   'crypto',
   'finalWasmPolicy',
+  'hostExtensions',
   'reporting',
   'commands'
 ]);
@@ -271,6 +272,9 @@ function normalizeProviderTargetDescriptor(input, expected = {}) {
     throw new TypeError(`Pulse provider target ${provider}/${target} version must be ${expectedVersion}.`);
   }
   if (input.automaticFallback !== false) throw new TypeError(`Pulse provider target ${provider}/${target} must disable automatic fallback.`);
+  if (input.hostExtensions !== undefined && target !== 'native') {
+    require('./host-extension').fail('TARGET', 'Host contribution v1 admission requires a Native target.');
+  }
   const normalizedCommands = commands(input.commands, `Pulse provider target ${provider}/${target}`);
   const finalWasmPolicy = target === 'native' && input.status === 'supported'
     ? defineFinalWasmPolicy(input.finalWasmPolicy)
@@ -295,6 +299,7 @@ function normalizeProviderTargetDescriptor(input, expected = {}) {
     ...(input.realizations !== undefined ? { realizations: dataClone(input.realizations, 'target realizations') } : {}),
     ...(input.jwt !== undefined ? { jwt: dataClone(input.jwt, 'target jwt') } : {}),
     ...(input.crypto !== undefined ? { crypto: dataClone(input.crypto, 'target crypto') } : {}),
+    ...(input.hostExtensions !== undefined ? { hostExtensions: require('./host-extension').normalizeAdmission(input.hostExtensions) } : {}),
     ...(finalWasmPolicy ? { finalWasmPolicy } : {}),
     ...(input.reporting !== undefined ? { reporting: dataClone(input.reporting, 'target reporting') } : {}),
     commands: normalizedCommands
@@ -766,6 +771,7 @@ module.exports = Object.freeze({
   // Internal adoption contracts; loading these does not advertise driver support.
   executionLifecycle: require('../handler/execution-lifecycle.js'),
   httpLifecycle: require('../host/http-lifecycle.js'),
+  hostExtensions: require('./host-extension'),
   lifecyclePlanner: require('../handler/lifecycle-planner.js'),
   resourceAdmission: require('../handler/resource-admission.js'),
   PROVIDER_TOOLCHAIN_VERSION,

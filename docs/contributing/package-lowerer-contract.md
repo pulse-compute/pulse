@@ -610,3 +610,66 @@ ownership. Its Native component builder contributes dispatch, codecs and managed
 continuations with package-owned transport hooks. MCP supplies its HTTP protocol
 at those hooks. The internal JavaScript transport export uses the same Entities
 operation pipeline; detached schema descriptions include declared IDs only.
+
+## Host-extension contribution v1
+
+The `hostExtensions` contract on `@pulse-compute/wasm-contracts/provider/toolchain`
+normalizes a reserved `realizationArtifacts` kind. This is a Native build-time
+contribution and admission contract. No production provider currently advertises
+its service, and this contract alone does not make a terminal operation executable.
+The existing trusted manifest, reachable graph selection, and package builder
+remain its only discovery path. Package names and npm versions are independent
+of Pulse releases; exact protocol versions determine compatibility.
+
+| Record | Exact fields |
+| --- | --- |
+| Envelope | `version: pulse.host-extension.v1`, package-prefixed unique `id`, `kind: host-extension`, `mediaType: text/assemblyscript`, `package`, `contractId`, `data` |
+| Data | `target`, owned `operation`, `service: terminal-request-backend.v1`, inline `source`, lowercase SHA-256 `sha256`, package-owned `entry`, `imports` |
+| Target | Exact `provider`, `target: native`, `targetId` |
+| Function import | `module`, `name`, ordered `parameters`, ordered `results` |
+| Optional provider target `hostExtensions` | `version: pulse.host-extension-admission.v1`, `protocols`, `services` |
+
+Records are plain data with no unknown, hidden, symbol, or accessor fields.
+Arrays are dense data arrays. Static identifiers use ASCII letters, digits,
+`_`, `@`, `.`, `/`, `:`, and `-`, begin with a letter, digit, `_`, or `@`, and
+contain at most 256 characters. The artifact ID starts with its exact npm package
+name and `:` followed by a nonempty suffix. Its package and contract must match
+the selected manifest, and the lowering bundle must retain that selected owner.
+Validation happens before generic carrier cloning can erase invalid properties.
+
+Source is nonempty and at most 65,536 UTF-8 bytes. Its exact bytes determine its
+SHA-256. Module `import`/`export` tokens and `__pulse_`/`__Pulse` private identifiers
+are excluded, including in comments. An entry starts with `__`, then an ASCII
+letter, followed by at most 127 letters, digits, or underscores, and cannot use
+those reserved prefixes. This is validation of a trusted contribution, not a
+source sandbox. The service implementation must separately validate its calling
+convention, placement, and authority semantics before generating executable code.
+
+There are 1–64 unique module/name import declarations per contribution, each
+with at most 32 parameters and one result from `i32`, `i64`, `f32`, `f64`.
+Selection accepts at most 256 host contributions. For every used canonical
+`host.extension` effect, it requires exactly one matching package, contract,
+operation, and target triple, plus the exact advertised protocol and service.
+Missing advertisement denies admission. Unknown versions and services are rejected.
+Repeated use sites select one contribution; duplicate IDs, ambiguous matches,
+conflicting owners, and selected entry-symbol collisions fail. Selection and
+policy identities use deterministic code-point ordering. Generic operations and
+unused contributions grant no imports.
+
+`composeImportPolicy(providerBaseline, selected)` computes the ceiling before
+examining emitted Wasm. The explicit provider baseline retains every declared
+MVP import kind (`function`, `table`, `memory`, `global`), with up to 4,096 baseline
+entries. Contributions add only function imports, cannot redeclare any baseline
+module/name, and may share an import only with the same scalar signature.
+`pulse.host-extension-import-policy.v1` records the complete ceiling, baseline
+hash, contribution identities/source hashes, declared signatures, and policy hash.
+These hashes identify content; they do not establish publisher trust.
+
+`auditWasm(bytes, policy)` validates policy identity and the actual Wasm binary,
+checks every observed import against the precomputed module/name/kind ceiling,
+and requires every contributed function import with its exact declared signature.
+The provider's existing final-Wasm audit remains mandatory for exports, memory,
+features, and start policy. This import audit neither reconstructs permission
+from observed imports nor replaces that final audit. Stable failures use
+`PULSE_HOST_EXTENSION_` with `INVALID`, `PROTOCOL`, `OWNER`, `TARGET`, `SOURCE`,
+`CONFLICT`, `SIGNATURE`, or `IMPORT` suffixes.

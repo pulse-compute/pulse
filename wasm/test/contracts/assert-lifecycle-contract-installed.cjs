@@ -25,14 +25,14 @@ try {
   assert.equal(tarballs.length, 1);
   fs.writeFileSync(path.join(temporary, 'package.json'), JSON.stringify({ name: 'lifecycle-consumer', private: true }));
   run(['--ignore-workspace', 'add', '--offline', '--ignore-scripts', path.join(temporary, tarballs[0])]);
-  for (const script of ['assert-lifecycle-contract.cjs', 'assert-resource-admission.cjs']) {
+  for (const script of ['assert-lifecycle-contract.cjs', 'assert-resource-admission.cjs', 'assert-host-extension-contract.cjs']) {
     fs.copyFileSync(path.join(__dirname, script), path.join(temporary, 'check.cjs'));
     const output = execFileSync(process.execPath, [path.join(temporary, 'check.cjs'), '--installed'], {
       cwd: temporary, encoding: 'utf8', timeout: 30000, env: { ...process.env, NODE_PATH: '' }
     });
     process.stdout.write(output);
   }
-  console.log('ok - actual pnpm pack, offline install and lifecycle/resource replay outside checkout');
+  console.log('ok - actual pnpm pack, offline install and lifecycle/resource/host-extension contract replay outside checkout');
 } finally {
   fs.rmSync(temporary, { recursive: true, force: true });
 }
