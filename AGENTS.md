@@ -369,14 +369,15 @@ npm run publication:check
 
 These checks validate repository contracts and local simulations. They do not publish packages, write Object Storage, or activate Fastly configuration.
 
-For compiler/runtime work, use the selected portable profiles from the scope report after installing the lockfile-pinned workspace dependencies with lifecycle scripts disabled in a clean checkout, commonly:
+Select bounded tasks justified by the change, Entry Point and scope
+report. Required broad profiles remain checkpoints; focused evidence cannot
+replace them, CI, acceptance or release qualification.
 
-```bash
-node wasm/scripts/run-wasm-tests.cjs --profile unit --no-report
-node wasm/scripts/run-wasm-tests.cjs --profile native --no-report
-node wasm/scripts/run-wasm-tests.cjs --profile javascript --no-report
-node wasm/scripts/run-wasm-tests.cjs --profile conformance --no-report
-```
+Install lockfile-pinned dependencies with lifecycle scripts disabled. For clean
+commits, default to `node scripts/development-recovery.cjs` with explicit selections. See [recovery handoff](docs/maintainers/testing.md#recoverable-development-runs)
+for attempt/source/selection/receipt paths and process-liveness checks. Ordinary
+`--no-report` runs cannot resume. Preserve split evidence; do not restart campaigns
+to consolidate reports.
 
 The full TypeScript build, real pnpm release pack, package acceptance, clean-machine acceptance, and external Fastly reality lanes require the restored lockfile-pinned dependency bundle.
 
