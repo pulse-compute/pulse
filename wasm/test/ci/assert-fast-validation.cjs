@@ -145,4 +145,47 @@ withTrustedPolicy(base, (trusted, match) => {
     'An additional trusted-base owner cannot be bypassed by the exact-path exception');
 });
 
+// Shared matching excludes only the declared generated-doc subtree from CLI
+// ownership, never an additional trusted owner or mixed executable changes.
+const generatedDocs = 'wasm/packages/cli/docs/maintainers/testing.md';
+const docsOnly = select(policy, [generatedDocs]);
+assert.deepEqual(docsOnly.decisions[0].rules, ['documentation']);
+for (const id of ['cli-command-spec', 'cli-project-guards', 'schema-codecs']) {
+  assert(!docsOnly.selectedTasks.includes(id), `generated docs unexpectedly select ${id}`);
+}
+for (const neighbor of ['wasm/packages/cli/src/project-execution.js',
+  'wasm/packages/cli/examples/12-pulse-context-mcp/src/handlers.ts',
+  'wasm/packages/cli/docs-extra/runtime.js']) {
+  const mixed = select(policy, [generatedDocs, neighbor]);
+  assert(mixed.selectedTasks.includes('cli-command-spec'));
+  assert(mixed.selectedTasks.includes('schema-codecs'));
+}
+const extraOwner = { ...policy, pathRules: [...policy.pathRules, {
+  id: 'compiler-default', patterns: [generatedDocs], boundaries: []
+}] };
+assert.equal(select(extraOwner, [generatedDocs]).schemaCoverage.task, 'schema-codecs');
+const { classifyFiles, validateMaintenancePolicy } = require('../../../scripts/maintenance-policy.cjs');
+const malformed = structuredClone(policy);
+malformed.pathRules.find(rule => rule.id === 'cli-and-diagnostics').excludePatterns = ['../escape'];
+assert.throws(() => validateMaintenancePolicy(malformed), /invalid repository-relative/);
+assert.deepEqual(classifyFiles([generatedDocs]).checks, ['documentation', 'maintenance-policy']);
+for (const id of ['unit', 'native', 'javascript', 'conformance', 'cli', 'providers', 'build', 'release']) {
+  assert.equal(policy.checks[id].execution, 'ci', `${id} must not become a broad local loop`);
+}
+for (const id of ['maintenance-policy', 'documentation', 'publication-control-plane', 'release-preflight']) {
+  assert.equal(policy.checks[id].execution, 'local', `${id} must retain local contract checks`);
+}
+assert(classifyFiles([]).ciChecks.includes('cli'), 'empty changes must remain conservative');
+assert(classifyFiles(['unrecognized.js']).ciChecks.includes('conformance'));
+const unknownPackage = classifyFiles(['packages/new-unowned/src/index.ts']);
+assert.deepEqual(unknownPackage.unmatchedFiles, ['packages/new-unowned/src/index.ts']);
+assert(unknownPackage.ciChecks.includes('conformance'));
+const { expandProfile } = require('../suite/registry.cjs');
+const releaseTasks = new Set(expandProfile('release'));
+for (const profile of ['cli', 'providers']) {
+  assert.equal(policy.checks[profile].checkpoint, 'pre-main-qualification');
+  assert(expandProfile(profile).every(id => releaseTasks.has(id)), `${profile} coverage must exist at its CI checkpoint`);
+}
+const schema = classifyFiles([generatedDocs, 'packages/pulse/src/schema.ts']);
+assert(schema.checks.includes('native') && schema.boundaries.includes('public-authoring-api'));
 console.log('Fast validation selection contract passed');

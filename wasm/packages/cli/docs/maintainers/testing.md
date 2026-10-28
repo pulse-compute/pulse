@@ -73,20 +73,51 @@ node wasm/scripts/run-wasm-tests.cjs --profile cli --through docs-example-03-fet
 
 ## Selecting development checks
 
-Start with the changed behavior and the active Entry Point's evidence. Record a
-bounded selection of exact task IDs, its coverage rationale and any remaining
-obligations from the scope report or target instructions. Prefer focused checks
-for iteration; do not launch all portable profiles as the default agent loop.
-Required assertions, coverage obligations and acceptance checks still apply.
-If instructions require broad profiles, schedule them as a separate checkpoint
-on stabilized source and report them as pending until completed. Selective
-checks do not satisfy that broader obligation or qualify a release.
+Start with the changed behavior and the active Entry Point's evidence. The scope
+report separates `validation.local` from `validation.ci`; its status is a plan,
+not a pass. Run local policy checks and behavior-specific regressions before
+handoff. For example, crypto implementation changes require crypto tests, plus
+lowering/parity regressions if that behavior changes, not every portable profile.
+Registry `testFiles` and direct task ownership provide discovered tasks in the
+scope report. This is not a complete dependency graph: retain all Entry Point
+obligations, inspect shared consumers and add the regression for the actual fix.
+Unknown, mixed or cross-cutting changes keep conservative CI coverage and require
+an explicit local regression rationale; an empty discovery list is not a waiver.
 
-Use [recoverable development runs](#recoverable-development-runs) by default for
-clean committed checkpoints, especially when a campaign may outlast a session.
-Short ordinary runs remain appropriate while editing a dirty tree; preserve
-their output and tested diff, since they do not create resumable attempts.
-Required hosted CI and full pre-main/release qualification remain separate gates.
+The existing fast selector can produce a source-bound smoke plan locally:
+
+```bash
+node scripts/maintainer-fast-validation.cjs --branch --base BASE_SHA --head HEAD_SHA --tested HEAD_SHA --report wasm/.test-results/local-selection.json
+```
+
+Replace the SHA placeholders with full commit IDs; `--tested` must equal the
+checkout's HEAD. Add `--run` to execute that smoke. Its bounded task set does not
+replace the subsystem's tests. Dirty-tree checks also need the tested diff or
+tree digest; commit identity alone is insufficient. The selector uses trusted
+base policy and preserves the exact changed range and tested source.
+
+Broad profiles and workspace builds selected by policy are CI-owned checkpoints,
+not a requirement to keep an implementation agent running. Existing non-main CI
+runs fast portable, Node-floor, maintenance and documentation checks. Main full
+portable and eligible pre-main qualification retain complete coverage; the latter
+also owns CLI/provider/release qualification. A non-main fast pass is not a pass
+for those later checkpoints. Generated CLI docs are documentation inputs; mixed
+runtime/configuration/provider changes still union their own obligations.
+
+Before exiting, hand off the PR, base/head/tested revision and working-tree state,
+local commands/results/artifacts, required CI checks and workflow/run links, and
+remaining coverage with explicit passed/failed/pending/not-triggered states.
+Pushing a branch does not prove a later checkpoint is queued. If a required broad
+workflow has not triggered, name its existing trigger and retain it as an
+blocker for that checkpoint. The agent may finish the implementation session
+while CI runs or awaits that trigger; do not claim the corresponding integration
+or release checkpoint complete until its required exact-source evidence exists. Candidate qualification and release
+acceptance requirements are unchanged.
+
+Use [recoverable development runs](#recoverable-development-runs) when a local
+regression selection may outlast a session. Required local assertions cannot be
+replaced by a smoke pass or silently deferred. Preserve split evidence for dirty
+trees and ordinary runs, and existing receipts for eligible recovery.
 
 ## Compiler analytics qualification
 

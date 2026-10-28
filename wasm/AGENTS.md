@@ -9,4 +9,4 @@ The canonical workspace owns compilation, explicit effects, continuations, provi
 - Keep artifacts deterministic and regenerate them through the owning task rather than manual edits.
 - Treat changes under handler effects, continuation runtime, package lowering, and provider descriptors as protected boundaries.
 - A new effect, capability, provider, syntax form, or lowerer discovery path is scope/architecture work, not an incidental defect fix.
-- Run the smallest relevant functional profiles plus `unit`; use `release` only when the full dependency environment is available.
+- Run local scope checks and behavior-specific Entry Point regressions. Broad profiles belong to CI checkpoints; hand off pending exact-source evidence under the root validation rules.

@@ -8,7 +8,7 @@ The CLI is a public contract. Its declarative command specification, project-con
 - Preserve one-object JSON output for completed commands and newline-delimited event output for `pulse dev --json`.
 - Keep provider loading behind the approved exact `./toolchain` package resolver. Do not add CLI host branches, dependency scanning, self-registration, or fallback discovery.
 - Carry the selected target into compiler, package and provider planning. JavaScript execution uses the original source graph; Native eligibility is advisory for that selected target, while `pulse compile` requires a real Native compilation. Keep these results distinct in doctor/inspect output.
-- Run docs synchronization, `unit`, and the CLI profile; run provider/build/release evidence when affected.
+- Run docs synchronization and changed CLI behavior regressions. Generated docs alone use documentation checks; mixed runtime changes retain their tests. CI owns broad profile/build checkpoints under the root validation rules.
 
 ## Pulse entry points
 

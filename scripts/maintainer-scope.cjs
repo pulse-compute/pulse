@@ -227,6 +227,32 @@ function maxRisk(left, right) {
   return RISK_ORDER[Math.max(RISK_ORDER.indexOf(left), RISK_ORDER.indexOf(right))];
 }
 
+// Registry metadata is a discovery aid, not a dependency graph or a substitute
+// for the active Entry Point's behavior-specific regression obligations.
+function localRegressions(files, registry = require('../wasm/test/suite/registry.cjs').tasks) {
+  const root = path.resolve(__dirname, '..');
+  const relative = (file) => slash(path.relative(root, file));
+  const selected = new Set();
+  const decisions = [];
+  for (const file of files) {
+    const packageRoot = file.match(/^(packages\/[^/]+)\/(?:src|test)\//)?.[1];
+    const owned = Object.entries(registry).filter(([, task]) => {
+      // Never invoke dependency-bound args getters during classification.
+      const args = Object.getOwnPropertyDescriptor(task, 'args')?.value;
+      return (args?.[0] && relative(args[0]) === file) ||
+        (task.testFiles || []).some((test) => relative(test) === file ||
+          (packageRoot && relative(test).startsWith(`${packageRoot}/test/`)));
+    }).map(([id]) => id).sort();
+    for (const id of owned) selected.add(id);
+    decisions.push({ file, tasks: owned });
+  }
+  return {
+    tasks: [...selected].sort(), decisions,
+    coverage: 'discovery-only',
+    requirement: 'Run change-specific Entry Point regressions and add a regression for changed behavior. Registry ownership and fast smoke alone do not prove coverage.'
+  };
+}
+
 function reportForInputs(inputs, options = {}, policy = MAINTENANCE_POLICY) {
   const classification = classifyFiles(inputs.files, policy);
   const declaration = parseDeclaration(inputs.body, policy);
@@ -316,6 +342,20 @@ function reportForInputs(inputs, options = {}, policy = MAINTENANCE_POLICY) {
       releaseAuthorityRequired,
       suggestedChangeClasses: suggestedClasses
     },
+    validation: {
+      status: 'not-run',
+      local: { checks: classification.localChecks, regressions: localRegressions(classification.files) },
+      ci: {
+        checks: classification.ciChecks.map((id) => ({ id, checkpoint: policy.checks[id].checkpoint, status: 'pending' })),
+        checkpoints: {
+          'main-full-portable': { workflow: '.github/workflows/validate.yml', trigger: 'main PR or push', evidence: 'terminal exact-source portable shard reports and aggregate' },
+          'pre-main-qualification': { workflow: '.github/workflows/release-qualify.yml', trigger: 'eligible ready PR into main', evidence: 'complete immutable candidate qualification' }
+        },
+        handoff: 'Record PR/head/tested source, required check and workflow links, artifacts and passed/failed/pending/not-triggered status. Do not claim untriggered CI is queued. Agent may exit after local evidence and this handoff; integration and release remain gated.'
+      },
+      conservative: classification.unmatchedFiles.length > 0 || classification.files.length === 0 || classification.boundaries.length > 0,
+      fastSmokeIsSubsystemCoverage: false
+    },
     consistency: { errors, warnings },
     files: classification.fileDetails,
     recommendation
@@ -349,7 +389,17 @@ function renderMarkdown(report) {
     `| Release authority | ${report.inferred.releaseAuthorityRequired ? 'Required' : 'Not inferred'} |`,
     `| Required checks | ${checkText} |`,
     '',
-    report.recommendation
+    report.recommendation,
+    '',
+    '## Validation ownership (not execution evidence)',
+    '',
+    `Local checks: ${report.validation.local.checks.join(', ') || 'none'}.`,
+    `Discovered registry regressions: ${report.validation.local.regressions.tasks.join(', ') || 'select from the active Entry Point and changed behavior'}.`,
+    report.validation.local.regressions.requirement,
+    '',
+    `CI checkpoints: ${report.validation.ci.checks.map((check) => `${check.id} -> ${check.checkpoint} (pending)`).join(', ') || 'no additional path-specific broad checks'}.`,
+    report.validation.ci.handoff,
+    'Fast smoke is not subsystem regression coverage. No local or CI pass is inferred by this report.'
   ];
   if (report.consistency.errors.length) {
     lines.push('', '## Errors', '');
