@@ -33,7 +33,7 @@ the final linked output.
 | `02-request-schema` | 32,707 bytes | — |
 | `03-fetch-composition` | 4,572 bytes | — |
 | `03-fetch-composition/dynamic-probes` | 71,947 bytes | — |
-| `05-fastly-capabilities` | 5,181 bytes | 46,209 bytes |
+| `05-fastly-capabilities` | 5,181 bytes | 45,928 bytes |
 | `07-opaque-proxy` | 2,205 bytes | 36,637 bytes |
 | `09-router-lowering` | 7,407 bytes | — |
 | `10-entities-tools` | No application Wasm | — |
