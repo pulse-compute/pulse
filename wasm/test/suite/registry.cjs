@@ -851,6 +851,10 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'repository-only event normalization and conditional Native entry evidence'
   }),
+  'events-results': nodeTask('test/events/assert-events-results.cjs', {
+    evidence: 'conformance', timeoutMs: 240000, isolatedArtifacts: true,
+    description: 'shared route/event schemas, typed return parity, suspension, result bounds and detached instance reuse'
+  }),
   'events-static-topology': nodeTask('test/events/assert-events-static-topology.cjs', {
     evidence: 'external',
     timeoutMs: 180000,
@@ -1634,6 +1638,7 @@ const profiles = Object.freeze({
     'multifile-source-identity',
     'text-capacity-conformance',
     'events-conformance',
+    'events-results',
     'node-router-context-parity',
     'catalog-router-parity',
     'fetch-projections-request-bodies',

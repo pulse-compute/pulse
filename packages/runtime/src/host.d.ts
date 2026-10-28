@@ -277,7 +277,7 @@ export interface PulseRuntimeExecutionOptions {
   readonly requestHeaders?: readonly (readonly [string, string])[];
   readonly signal?: AbortSignal;
   readonly maxEffects?: number;
-  /** Optional stricter limits for direct event ingress normalization. */
+  /** Optional stricter limits for direct event ingress and returned data. */
   readonly eventLimits?: PulseEventLimits;
   /** Maximum bytes materialized by ctx.req.text()/json(). */
   readonly maxRequestBodyBytes?: number;
@@ -424,11 +424,12 @@ export type PulseEventFrame<Payload = unknown> =
     }>;
 export type PulseEventExecutionResult =
   | Readonly<{
-      version: 'pulse.event-execution-result.v1';
+      version: 'pulse.event-execution-result.v2';
       status: 'completed';
+      readonly result?: unknown;
     }>
   | Readonly<{
-      version: 'pulse.event-execution-result.v1';
+      version: 'pulse.event-execution-result.v2';
       status: 'failed';
       error: unknown;
     }>;

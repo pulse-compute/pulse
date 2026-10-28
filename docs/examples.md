@@ -37,7 +37,7 @@ the final linked output.
 | `07-opaque-proxy` | 2,205 bytes | 36,637 bytes |
 | `09-router-lowering` | 7,407 bytes | — |
 | `10-entities-tools` | No application Wasm | — |
-| `11-events` | 32,545 bytes | — |
+| `11-events` | 32,563 bytes | — |
 | `12-pulse-context-mcp` | See its Report (corpus-dependent) | Explicit `fastly-native` profile |
 | `13-jwt-es256` | 35,926 bytes | — |
 

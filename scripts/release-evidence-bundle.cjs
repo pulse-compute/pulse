@@ -86,6 +86,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'application-error-boundaries',
       'entities-javascript-runtime',
       'events-conformance',
+      'events-results',
       'canonical-api-runtime',
       'logging-runtime',
       'fastly-javascript-runtime'

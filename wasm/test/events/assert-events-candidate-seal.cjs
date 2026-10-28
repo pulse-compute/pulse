@@ -250,7 +250,7 @@ async function main() {
     type: 'system.tick',
     schemaId: null,
   }, { effectAdapter: adapter })
-  assert.deepEqual(result, { version: 'pulse.event-execution-result.v1', status: 'completed' })
+  assert.deepEqual(result, { version: 'pulse.event-execution-result.v2', status: 'completed' })
   assert.deepEqual(adapter.acceptedFrames(), [{
     version: 'pulse.event-frame.v1',
     type: 'system.heartbeat',

@@ -28,13 +28,17 @@ const app = new Pulse({ auto: true })
 
 app.get('/health', async (ctx) => ctx.text('ok'))
 
-app.on<DeviceReading>('device.reading', { schema: 'events.DeviceReading' }, async (ctx) => {
+app.on<DeviceReading>('device.reading', {
+  schema: 'events.DeviceReading',
+  resultSchema: 'events.DeviceReadingAccepted',
+}, async (ctx) => {
   const reading = ctx.event.payload
   ctx.log.info('device reading accepted')
   await ctx.emit('device.reading.accepted', {
     schema: 'events.DeviceReadingAccepted',
     payload: { deviceId: reading.deviceId, accepted: true },
   })
+  return { deviceId: reading.deviceId, accepted: true }
 })
 
 app.on('system.tick', { schema: null }, async (ctx) => {
@@ -53,8 +57,9 @@ a `Router`, or created dynamically.
 
 ## Event context
 
-An event handler receives `PulseEventContext<Payload>` and completes with
-`Promise<void>`:
+An event handler receives `PulseEventContext<Payload>`. Without `resultSchema`,
+it completes with `Promise<void>`. Declaring `resultSchema` requires a returned
+value matching that registered schema:
 
 | Available | Deliberately absent |
 |---|---|
@@ -67,6 +72,33 @@ Schema selection and payload validation complete before handler entry. The
 payload is detached from host input and immutable. State, effects,
 continuations, cancellation, logging, redaction, completion, and disposal are
 owned by one invocation and do not leak into another event or HTTP request.
+
+## Returned application data
+
+`resultSchema` references the same project registry used by HTTP `ctx.json(value,
+{ schema })`. Return the application value directly; no response builder is needed.
+The invoking host receives completion metadata and the value separately:
+
+```json
+{
+  "version": "pulse.event-execution-result.v2",
+  "status": "completed",
+  "result": { "deviceId": "sensor-7", "accepted": true }
+}
+```
+
+A declared result is required on every successful return path. Missing, invalid,
+non-JSON or oversized results fail the invocation with no successful `result`.
+Result validation uses the shared schema codecs and the event payload byte,
+depth and entry limits. The returned value is detached and immutable. Success
+is exposed only after owned effects and required cleanup complete, including
+returns after an await. JavaScript and Native use the same schema semantics.
+Void handlers retain their behavior and omit `result` from the v2 envelope;
+failed completions carry `error` and omit `result`.
+
+The declaration and catalog carry optional `resultSchemaId` metadata internally.
+It participates in a result-bearing event's stable identity. Ingress frames and
+outbound `ctx.emit` remain unchanged; emission acceptance is still one-way.
 
 ## Native instance reuse
 
@@ -85,7 +117,8 @@ entry, implicit event queue, or multiple-live-continuation support.
 Each accepted invocation receives fresh guest state, host handles, effect-ticket
 identity, context and trace. Late or duplicate tickets from an earlier invocation
 cannot settle a later invocation's effect. Read results and copy any trace you
-need before starting again. Guest allocation is reclaimed between invocations;
+need before starting again. A retrieved result remains valid after subsequent
+invocations; a suspended or failed invocation exposes no successful result. Guest allocation is reclaimed between invocations;
 linear memory retains its high-water capacity rather than shrinking.
 
 Selected host lifecycle services observe `invocation.end`, `invocation.close`,
@@ -163,7 +196,7 @@ export default { cases: [
     expect: { status: 200, text: 'ok' },
   },
   {
-    name: 'schema event emits an accepted frame',
+    name: 'schema event returns data and emits an accepted frame',
     kind: 'event',
     event: {
       type: 'device.reading',
@@ -172,6 +205,7 @@ export default { cases: [
     },
     expect: {
       status: 'completed',
+      result: { deviceId: 'sensor-7', accepted: true },
       emitted: [{
         type: 'device.reading.accepted',
         schema: 'events.DeviceReadingAccepted',
@@ -192,7 +226,7 @@ export default { cases: [
 ```
 <!-- /pulse-doc-source -->
 
-`expect.emitted` is ordered and exact. It verifies host acceptance, not
+`expect.result` compares returned application data exactly. `expect.emitted` is ordered and exact. It verifies host acceptance, not
 transport delivery. `pulse dev` continues to serve the HTTP plane only; there
 is no public event injection command.
 

@@ -97,7 +97,9 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization,
     const entry = raw.length ? owners.length === 1 && entries.get(owners[0].stableId) : capsule.entries[0];
     linkSchema(reference.id, entry);
   }
-  if (!references) for (const [stableId, event] of events) if (event.schemaId) linkSchema(event.schemaId, entries.get(stableId));
+  if (!references) for (const [stableId, event] of events) {
+    for (const schemaId of new Set([event.schemaId, event.resultSchemaId].filter(Boolean))) linkSchema(schemaId, entries.get(stableId));
+  }
   const bindings = new Map();
   function binding(kind, name, declared, entry) {
     const key = kind + ':' + name;

@@ -52,7 +52,8 @@ function assertEventProjection(events, provider, target, status) {
   assert.deepEqual(events.schemas, {
     registrations: ['events.Input'],
     emissions: ['events.Output'],
-    all: ['events.Input', 'events.Output']
+    results: ['events.Result'],
+    all: ['events.Input', 'events.Output', 'events.Result']
   });
   assert.deepEqual(events.capabilities, ['event.emit']);
   assert.deepEqual(events.hostRequirements, ['event.emit', 'event.ingress']);
@@ -77,8 +78,9 @@ function assertNodeTest(result, target) {
   assert.equal(eventCase.kind, 'event');
   assert.deepEqual(eventCase.event, { type: 'input.received', schemaId: 'events.Input' });
   assert.deepEqual(eventCase.result, {
-    version: 'pulse.event-execution-result.v1',
-    status: 'completed'
+    version: 'pulse.event-execution-result.v2',
+    status: 'completed',
+    result: { accepted: true, sequence: 7 }
   });
   assert.deepEqual(eventCase.emittedFrames, [expectedFrame]);
   assert.equal(eventCase.emittedFrameCount, 1);
@@ -162,6 +164,7 @@ function assertFastlyEmitOnlyBlocked(projectRoot, profile, target) {
   assert.deepEqual(inspect.events.schemas, {
     registrations: [],
     emissions: ['events.Output'],
+    results: [],
     all: ['events.Output']
   });
   assert.deepEqual(inspect.events.hostRequirements, ['event.emit']);
@@ -266,7 +269,7 @@ async function main() {
       assert.equal(eventCheck.status, 'passed');
       const schemaCheck = doctor.checks.find((entry) => entry.id === 'schemas');
       assert.equal(schemaCheck.status, 'passed');
-      assert.deepEqual(schemaCheck.detail.eventReferences, ['events.Input', 'events.Output']);
+      assert.deepEqual(schemaCheck.detail.eventReferences, ['events.Input', 'events.Output', 'events.Result']);
       assertEventProjection(doctor.events, 'node', target, 'eligible');
       const build = parseJson(command(projectRoot, 'build', profile));
       assertBuild(projectRoot, build, 'node', target);

@@ -410,7 +410,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
       const returnsVoid = !returned
         || (ts.isIdentifier(returned) && returned.text === 'undefined')
         || ts.isVoidExpression(returned);
-      if (role === 'event' && !returnsVoid) {
+      if (role === 'event' && entry.eventResultSchemaId === undefined && !returnsVoid) {
         diagnostics.push(diagnostic(
           sourceFile,
           statement,
@@ -418,6 +418,9 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
           'Event handlers complete with void and cannot return a result value.',
           { role }
         ));
+      } else if (role === 'event' && entry.eventResultSchemaId !== undefined && returnsVoid) {
+        diagnostics.push(diagnostic(sourceFile, statement, 'PULSE_EVENT_HANDLER_RESULT_REQUIRED',
+          'An event with resultSchema must return a value on every path.', { role }));
       } else if (role !== 'event' && !statement.expression) {
         diagnostics.push(createHandlerDiagnostic({ frontend: 'canonical-router', issue: 'handler.return-value.required', sourceFile, node: statement }));
       }
@@ -456,7 +459,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
     ? functionNode.body
     : ts.factory.createBlock([ts.factory.createReturnStatement(functionNode.body)], true);
   const transformed = transformList(originalBody.statements);
-  if (role !== 'event' && !transformed.mustTerminate) diagnostics.push(createHandlerDiagnostic({
+  if ((role !== 'event' || entry.eventResultSchemaId !== undefined) && !transformed.mustTerminate) diagnostics.push(createHandlerDiagnostic({
     frontend: 'canonical-router',
     issue: 'handler.fallthrough',
     sourceFile,

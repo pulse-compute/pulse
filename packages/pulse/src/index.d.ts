@@ -160,8 +160,8 @@ export interface PulseProfileToken {
 }
 
 export type PulseEventDeclaration =
-  | Readonly<{ schema: string }>
-  | Readonly<{ schema: null }>;
+  | Readonly<{ schema: string; resultSchema?: string }>
+  | Readonly<{ schema: null; resultSchema?: string }>;
 
 /**
  * Project-aware application root. Pulse shares Router registration and execution
@@ -170,6 +170,16 @@ export type PulseEventDeclaration =
 export declare class Pulse extends Router {
   constructor(options: PulseAutoOptions);
   constructor(config: PulseConfigFactory);
+  on<Payload = unknown, Result extends {} | null = {} | null>(
+    type: string,
+    declaration: Readonly<{ schema: string; resultSchema: string }>,
+    handler: import('@pulse-compute/runtime').PulseEventHandler<Payload, Result>
+  ): this;
+  on<Result extends {} | null = {} | null>(
+    type: string,
+    declaration: Readonly<{ schema: null; resultSchema: string }>,
+    handler: import('@pulse-compute/runtime').PulseEventHandler<null, Result>
+  ): this;
   on<Payload = unknown>(
     type: string,
     declaration: Readonly<{ schema: string }>,

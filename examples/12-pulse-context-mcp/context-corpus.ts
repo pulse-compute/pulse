@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "3952ec142a8a46a2c1b4882df099d0ca834e6946884877fc94cf88d0a0f4a1ed",
+  "corpusHash": "c9566c99ea6c035ebd288862cee8814e8168ec60da6938081d9361610b1f1506",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -405,17 +405,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "contract",
-      "content": "## One application contract and one compiler spine\n\n`@pulse-compute/runtime` owns the low-level portable handler, context, effect,\nbody, and static `Router` contract. `@pulse-compute/pulse` owns the conventional\n`Pulse` application root, project configuration helpers, schema declarations,\nand runtime type re-exports. Applications import normal package roots and do not\nselect providers through application-package export conditions.\n\nPlain handlers, the `Pulse` application root, and static Router authoring are\nfrontends to one deterministic whole-project compiler:\n\n```text\nroot extraction\n→ reachable-module graph\n→ authoring and Router topology normalization\n→ semantic classification and contract validation\n→ canonical Handler IR\n→ effects, continuations, schemas, and package operations\n→ provider-neutral Native plan\n→ selected provider realization\n```\n\nThe compiler has one internal, fixed phase order. It does not expose a mutable\nvisitor framework or accept runtime rule registration. Frontends may retain\ntheir own topology while normalizing handler bodies into the same canonical IR.\nProvider realization begins only after the complete reachable program and its\ncapability requirements are known.\n\nExplicit JavaScript Entities operations retain their original static source\ngraph, including ordinary helpers and callbacks. Declared-handler inspection\nrecords recognized Pulse effects; it does not prove ordinary helper or dependency\ninternals. Schema admission, Pulse effect-await rules and static dispatch remain\nin force. Native handler restrictions are separate eligibility blockers during\nJavaScript inspection and remain errors when Native is selected. A JavaScript\ninspection body is never substituted for a Native generator.\n\nHTTP Router authoring supports static `get`, `head`, `post`, `put`, `patch`,\nand `delete` registrations, inherited by `Pulse`. The owned Router API registry\ndefines compiler admission; topology and lifecycle method catalogs derive from\nthat registry. Each verb uses the existing route entry, exact-method dispatch,\nterminal transfer and 404/500 exhaustion contracts. This expands ingress\nregistration without changing outgoing fetch methods or the effect/continuation\nABI.\n\nAn ordered mount can carry the static string descriptor\n`mount(path, child, { state: 'key', equals: 'family' })`. The owned Router API\nregistry and extractor admit only that inline, literal form. Runtime dispatch\nand canonical lowering read request state once at the matching mount entry;\nfalse takes `parentContinueIndex`, true takes `childStartIndex`. The descriptor\nparticipates in the mount's stable identity and retained topology. No child body\nis duplicated, no callback is evaluated, and no new effect or continuation ABI\nis introduced. Resumption stays inside the admitted child even if it changes\nthat state. Selection conveys no authorization. Historical table/harness\nemission rejects this form because its compatibility scanner has no eligibility\ncontract. See [Selected groups](../guides/routing.md#selected-groups).\n\nThe compiler also recognizes root-only `Pulse.on(type, { schema }, handler)`\ndeclarations as a separate static event topology. Event types and schema IDs\nmust be literal, schema IDs must resolve through the project registry, each\ntype has one owner, and event handlers receive the same checkout-independent\ncanonical handler identity used by HTTP handlers. The resulting event catalog\nis inspectable and enters a plane-neutral application-entry table without\nbecoming a Router route. Event handlers use exact event selection,\nschema-validated `ctx.event.payload`, shared non-HTTP context operations, void\ncompletion, and execution-owned failure.\n\nThe transport-free JavaScript runtime host can directly execute one canonical\nevent frame against a live Pulse application. Provider-neutral Native plans can\nlower the same eligible event handlers through the conditional\n`pulse.native-event-abi.v1` extension. Event-only artifacts expose the event\nentry; mixed artifacts retain the separate HTTP and event entries; HTTP-only\nartifacts add no event imports, exports, code, catalog data, or byte changes.\nThe Native host validates and detaches the frame and schema payload before\nentering the module, passes an artifact-local event runtime ID plus a host-owned\npayload handle, and drives the existing effect/continuation state machine to\nvoid completion or bounded failure. Event input never masquerades as an HTTP\nrequest, no Promise or Asyncify runtime is linked, and no target probing or\nfallback occurs. Node now supplies a bounded invocation-scoped reference\nadapter around this entry for direct JavaScript/Native parity. It is not a\npublic listener, process-global bus, or production transport; Fastly, browser,\nand ESP32 event realizations remain unclaimed.\n\nMixed Native applications may combine HTTP application-error handlers with\nevent entries. Compiler-owned HTTP cursor boundaries protect the HTTP error\nlane; event records in the shared routing inventory are not HTTP cursor entries.\nAn event effect failure remains an event execution failure and cannot enter\nHTTP middleware or application-error handlers.\n\nEach JavaScript or Native event invocation owns its state, effects,\ncancellation, redaction, logging, completion, and disposal. HTTP and event\nhandlers may await the shared one-way `ctx.emit(type, { schema, payload? })`\neffect in JavaScript and Native runtimes. Compilation requires literal event and\nschema identities, validates schemas against the project registry, records\ndeterministic callsite/capability requirements, and accepts emission inside an\nawaited `ctx.parallel` group. Runtime dispatch validates and detaches the frame\nbefore a trusted adapter sees it; public observations redact the payload. The\nbounded Node reference adapter owns a FIFO ingress queue and an independent\nexact-frame outbound acceptance ledger. It serializes instance entry,\npropagates cancellation/failure categories, and never invokes a matching local\nhandler. Native `event.emit` lowers through the canonical effect and\ncontinuation protocol with zero JavaScript/Asyncify imports. None of this\nimplies delivery, a receipt, persistence, retry, a public provider listener, or\nautomatic target fallback. Router lifecycle `on`, channel, and\nconnect/disconnect semantics remain retired.\n\nThe event contract reserves no `call` surface: event contexts have no `ctx.call`,\napplication call method, generic call effect, adapter operation, compiler\nopcode, or runtime capability. `ctx.emit` is strictly one-way and cannot enter\nlocal dispatch. Any request/reply or reflexive routing mechanism must arrive as\na separately reviewed host, lifecycle, recursion, and failure contract rather\nthan an interpretation of the current event plane. See [Static events and\noutbound emission](../guides/events.md).\n\nProject discovery is graph-based rather than substring-based. Module identity is\npath-independent and deterministic, resolver inputs are fixed, and only\nreachable project modules and package roots participate in compilation,\neligibility, and packaging. Static ESM links supported project modules; Pulse\ndoes not become a general TypeScript bundler or execute arbitrary application\nJavaScript during Native compilation.\n\nSee [Compilation and lowering](../concepts/compilation-and-lowering.md) and the\n[architecture overview](./overview.md).\n",
-      "contentSha256": "512499f9abc99407296104129fe9b7dee25c1003eced54456b45af5cc72b04f8",
+      "content": "## One application contract and one compiler spine\n\n`@pulse-compute/runtime` owns the low-level portable handler, context, effect,\nbody, and static `Router` contract. `@pulse-compute/pulse` owns the conventional\n`Pulse` application root, project configuration helpers, schema declarations,\nand runtime type re-exports. Applications import normal package roots and do not\nselect providers through application-package export conditions.\n\nPlain handlers, the `Pulse` application root, and static Router authoring are\nfrontends to one deterministic whole-project compiler:\n\n```text\nroot extraction\n→ reachable-module graph\n→ authoring and Router topology normalization\n→ semantic classification and contract validation\n→ canonical Handler IR\n→ effects, continuations, schemas, and package operations\n→ provider-neutral Native plan\n→ selected provider realization\n```\n\nThe compiler has one internal, fixed phase order. It does not expose a mutable\nvisitor framework or accept runtime rule registration. Frontends may retain\ntheir own topology while normalizing handler bodies into the same canonical IR.\nProvider realization begins only after the complete reachable program and its\ncapability requirements are known.\n\nExplicit JavaScript Entities operations retain their original static source\ngraph, including ordinary helpers and callbacks. Declared-handler inspection\nrecords recognized Pulse effects; it does not prove ordinary helper or dependency\ninternals. Schema admission, Pulse effect-await rules and static dispatch remain\nin force. Native handler restrictions are separate eligibility blockers during\nJavaScript inspection and remain errors when Native is selected. A JavaScript\ninspection body is never substituted for a Native generator.\n\nHTTP Router authoring supports static `get`, `head`, `post`, `put`, `patch`,\nand `delete` registrations, inherited by `Pulse`. The owned Router API registry\ndefines compiler admission; topology and lifecycle method catalogs derive from\nthat registry. Each verb uses the existing route entry, exact-method dispatch,\nterminal transfer and 404/500 exhaustion contracts. This expands ingress\nregistration without changing outgoing fetch methods or the effect/continuation\nABI.\n\nAn ordered mount can carry the static string descriptor\n`mount(path, child, { state: 'key', equals: 'family' })`. The owned Router API\nregistry and extractor admit only that inline, literal form. Runtime dispatch\nand canonical lowering read request state once at the matching mount entry;\nfalse takes `parentContinueIndex`, true takes `childStartIndex`. The descriptor\nparticipates in the mount's stable identity and retained topology. No child body\nis duplicated, no callback is evaluated, and no new effect or continuation ABI\nis introduced. Resumption stays inside the admitted child even if it changes\nthat state. Selection conveys no authorization. Historical table/harness\nemission rejects this form because its compatibility scanner has no eligibility\ncontract. See [Selected groups](../guides/routing.md#selected-groups).\n\nThe compiler also recognizes root-only `Pulse.on(type, { schema, resultSchema? }, handler)`\ndeclarations as a separate static event topology. Event types and schema IDs\nmust be literal, schema IDs must resolve through the project registry, each\ntype has one owner, and event handlers receive the same checkout-independent\ncanonical handler identity used by HTTP handlers. The resulting event catalog\nis inspectable and enters a plane-neutral application-entry table without\nbecoming a Router route. Event handlers use exact event selection,\nschema-validated `ctx.event.payload`, shared non-HTTP context operations,\noptional schema-bound result completion, and execution-owned failure.\n\nThe transport-free JavaScript runtime host can directly execute one canonical\nevent frame against a live Pulse application. Provider-neutral Native plans can\nlower the same eligible event handlers through the conditional\n`pulse.native-event-abi.v1` extension. Event-only artifacts expose the event\nentry; mixed artifacts retain the separate HTTP and event entries; HTTP-only\nartifacts add no event imports, exports, code, catalog data, or byte changes.\nThe Native host validates and detaches the frame and schema payload before\nentering the module, passes an artifact-local event runtime ID plus a host-owned\npayload handle, and drives the existing effect/continuation state machine to\nvoid or schema-bound result completion, or bounded failure. Event input never masquerades as an HTTP\nrequest, no Promise or Asyncify runtime is linked, and no target probing or\nfallback occurs. Node now supplies a bounded invocation-scoped reference\nadapter around this entry for direct JavaScript/Native parity. It is not a\npublic listener, process-global bus, or production transport; Fastly, browser,\nand ESP32 event realizations remain unclaimed.\n\nMixed Native applications may combine HTTP application-error handlers with\nevent entries. Compiler-owned HTTP cursor boundaries protect the HTTP error\nlane; event records in the shared routing inventory are not HTTP cursor entries.\nAn event effect failure remains an event execution failure and cannot enter\nHTTP middleware or application-error handlers.\n\nEach JavaScript or Native event invocation owns its state, effects,\ncancellation, redaction, logging, completion, and disposal. HTTP and event\nhandlers may await the shared one-way `ctx.emit(type, { schema, payload? })`\neffect in JavaScript and Native runtimes. Compilation requires literal event and\nschema identities, validates schemas against the project registry, records\ndeterministic callsite/capability requirements, and accepts emission inside an\nawaited `ctx.parallel` group. Runtime dispatch validates and detaches the frame\nbefore a trusted adapter sees it; public observations redact the payload. The\nbounded Node reference adapter owns a FIFO ingress queue and an independent\nexact-frame outbound acceptance ledger. It serializes instance entry,\npropagates cancellation/failure categories, and never invokes a matching local\nhandler. Native `event.emit` lowers through the canonical effect and\ncontinuation protocol with zero JavaScript/Asyncify imports. None of this\nimplies delivery, a receipt, persistence, retry, a public provider listener, or\nautomatic target fallback. Router lifecycle `on`, channel, and\nconnect/disconnect semantics remain retired.\n\nThe event contract reserves no `call` surface: event contexts have no `ctx.call`,\napplication call method, generic call effect, adapter operation, compiler\nopcode, or runtime capability. `ctx.emit` is strictly one-way and cannot enter\nlocal dispatch. Any request/reply or reflexive routing mechanism must arrive as\na separately reviewed host, lifecycle, recursion, and failure contract rather\nthan an interpretation of the current event plane. See [Static events and\noutbound emission](../guides/events.md).\n\nProject discovery is graph-based rather than substring-based. Module identity is\npath-independent and deterministic, resolver inputs are fixed, and only\nreachable project modules and package roots participate in compilation,\neligibility, and packaging. Static ESM links supported project modules; Pulse\ndoes not become a general TypeScript bundler or execute arbitrary application\nJavaScript during Native compilation.\n\nSee [Compilation and lowering](../concepts/compilation-and-lowering.md) and the\n[architecture overview](./overview.md).\n",
+      "contentSha256": "9c20f4c185e2ab77cf6b5e7d30f6f4530428aad5f436c21c9ec4fede09e423a3",
       "id": "contract/application",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
         "endLine": 233,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:One application contract and one compiler spine",
-        "sha256": "b320243769edafa66dab2d76cbed1c8260aceb3dc60c45424207619a4841a43d",
+        "sha256": "0e0423b2697a6d0e6ca876362d3cbef7fa220cad9b0c091ae4923a4f293cf533",
         "startLine": 111,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/032bef7b7fc8b50acb15cd0a0f90be3e35c7fe50"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ebfe12e6faa3fef9a3b3508ebd203474adfa0472"
       },
       "status": "candidate",
       "tags": [
@@ -489,12 +489,12 @@ export const contextCorpus = freeze({
       "id": "contract/build-metadata",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 1607,
+        "endLine": 1616,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Retained build metadata",
-        "sha256": "b320243769edafa66dab2d76cbed1c8260aceb3dc60c45424207619a4841a43d",
-        "startLine": 1589,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/032bef7b7fc8b50acb15cd0a0f90be3e35c7fe50"
+        "sha256": "0e0423b2697a6d0e6ca876362d3cbef7fa220cad9b0c091ae4923a4f293cf533",
+        "startLine": 1598,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ebfe12e6faa3fef9a3b3508ebd203474adfa0472"
       },
       "status": "candidate",
       "tags": [
@@ -576,12 +576,12 @@ export const contextCorpus = freeze({
       "id": "contract/eligibility",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 2348,
+        "endLine": 2357,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Providers, targets, and eligibility",
-        "sha256": "b320243769edafa66dab2d76cbed1c8260aceb3dc60c45424207619a4841a43d",
-        "startLine": 1987,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/032bef7b7fc8b50acb15cd0a0f90be3e35c7fe50"
+        "sha256": "0e0423b2697a6d0e6ca876362d3cbef7fa220cad9b0c091ae4923a4f293cf533",
+        "startLine": 1996,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ebfe12e6faa3fef9a3b3508ebd203474adfa0472"
       },
       "status": "candidate",
       "tags": [
@@ -790,12 +790,12 @@ export const contextCorpus = freeze({
       "id": "contract/package-authority",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 2440,
+        "endLine": 2449,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Package-owned capabilities",
-        "sha256": "b320243769edafa66dab2d76cbed1c8260aceb3dc60c45424207619a4841a43d",
-        "startLine": 2349,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/032bef7b7fc8b50acb15cd0a0f90be3e35c7fe50"
+        "sha256": "0e0423b2697a6d0e6ca876362d3cbef7fa220cad9b0c091ae4923a4f293cf533",
+        "startLine": 2358,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ebfe12e6faa3fef9a3b3508ebd203474adfa0472"
       },
       "status": "candidate",
       "tags": [
@@ -955,12 +955,12 @@ export const contextCorpus = freeze({
       "id": "contract/report-comparison",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 1752,
+        "endLine": 1761,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Report comparison contract",
-        "sha256": "b320243769edafa66dab2d76cbed1c8260aceb3dc60c45424207619a4841a43d",
-        "startLine": 1608,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/032bef7b7fc8b50acb15cd0a0f90be3e35c7fe50"
+        "sha256": "0e0423b2697a6d0e6ca876362d3cbef7fa220cad9b0c091ae4923a4f293cf533",
+        "startLine": 1617,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ebfe12e6faa3fef9a3b3508ebd203474adfa0472"
       },
       "status": "candidate",
       "tags": [
@@ -10610,8 +10610,8 @@ export const contextCorpus = freeze({
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",
-      "sha256": "b320243769edafa66dab2d76cbed1c8260aceb3dc60c45424207619a4841a43d",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/032bef7b7fc8b50acb15cd0a0f90be3e35c7fe50"
+      "sha256": "0e0423b2697a6d0e6ca876362d3cbef7fa220cad9b0c091ae4923a4f293cf533",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ebfe12e6faa3fef9a3b3508ebd203474adfa0472"
     },
     {
       "path": "docs/concepts/bodies.md",

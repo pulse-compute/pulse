@@ -439,6 +439,12 @@ function prepareCanonicalRouterTopology(sourceText, options = {}) {
       phase: 'event-topology'
     }));
     else eventTypes.set(event.type, event.order);
+    const resultSchemaId = event.declaration && event.declaration.resultSchemaId;
+    if (resultSchemaId !== undefined && !declaredSchemaIds.has(resultSchemaId)) diagnostics.push(extractorDiagnostic(sourceFile, {
+      code: 'PULSEWASM_EVENTS_SCHEMA_UNRESOLVED',
+      message: `Pulse event result schema ${JSON.stringify(resultSchemaId)} is not present in the compiled project schema registry.`,
+      loc: event.loc, phase: 'event-topology'
+    }));
     const schemaId = event.declaration && event.declaration.schemaId;
     if (schemaId !== null && !declaredSchemaIds.has(schemaId)) diagnostics.push(extractorDiagnostic(sourceFile, {
       code: 'PULSEWASM_EVENTS_SCHEMA_UNRESOLVED',
@@ -566,6 +572,7 @@ function prepareCanonicalRouterTopology(sourceText, options = {}) {
       eventStableId: event.stableId,
       eventRuntimeId: event.runtimeId,
       eventType: event.type,
+      eventResultSchemaId: event.resultSchemaId,
       eventSchemaId: event.schemaId
     });
     return Object.freeze({

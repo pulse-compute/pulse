@@ -432,6 +432,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     } finally { closing = false; }
   }
   function close() {
+    eventResult = undefined;
     invocationState = 'closed';
     options.signal?.removeEventListener('abort', onAbort);
     retire();
@@ -448,6 +449,8 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const status = operation();
       invocations.assertOpen(); // Cancellation during a host callback is terminal.
       if (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE || status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED) {
+        const completedResult = status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE && executionPlane === 'event'
+          ? validateEventResult() : undefined;
         lifecycle?.observe('invocation.end');
         invocations.assertOpen();
         if (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE && executionPlane === 'event') {
@@ -455,7 +458,10 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
             throw new CanonicalNativeHostError('Native completion has outstanding effects.', 'PULSE_CANONICAL_NATIVE_PENDING_MISMATCH');
           }
           retire();
-          if (invocationState !== 'closed') invocationState = 'completed';
+          if (invocationState !== 'closed') {
+            eventResult = completedResult;
+            invocationState = 'completed';
+          }
         } else {
           close();
         }
@@ -1098,7 +1104,30 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     });
   }
 
+  let eventResult;
   function resultValue() {
+    if (executionPlane === 'event') return invocationState === 'completed' ? eventResult : undefined;
+    return rawResultValue();
+  }
+  function validateEventResult() {
+    try {
+      const output = rawResultValue();
+      if (activeEvent.resultSchemaId === undefined) {
+        if (output !== undefined) throw new TypeError('Event without resultSchema must complete with void.');
+        return undefined;
+      }
+      const snapshot = eventContract.normalizeEventExecutionResult({
+        version: eventContract.EVENT_EXECUTION_RESULT_VERSION, status: 'completed', result: output
+      }, options.eventLimits).result;
+      const validated = schemaCodecs.decode(activeEvent.resultSchemaId, snapshot, 'event-result');
+      return eventContract.normalizeEventExecutionResult({
+        version: eventContract.EVENT_EXECUTION_RESULT_VERSION, status: 'completed', result: validated
+      }, options.eventLimits).result;
+    } catch (_) {
+      throw new CanonicalNativeHostError('Event result does not match its declaration.', 'PULSE_CANONICAL_NATIVE_EVENT_RESULT_INVALID');
+    }
+  }
+  function rawResultValue() {
     const handle = instance.exports.pulse_result_handle();
     return handle === 0 ? undefined : value(handle);
   }
@@ -1150,6 +1179,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       collectionAdmission = undefined;
       applicationError = 0;
       activeEvent = undefined;
+      eventResult = undefined;
       context = createContext();
     }
     const payloadHandle = frame.schemaId === null ? 0 : put(validated.payload);
@@ -1158,6 +1188,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       stableId: selected.stableId,
       type: selected.type,
       schemaId: selected.schemaId,
+      ...(selected.resultSchemaId === undefined ? {} : { resultSchemaId: selected.resultSchemaId }),
       payloadHandle
     });
     return run(() => instance.exports.pulse_event_start(selected.runtimeId, payloadHandle));
@@ -1422,15 +1453,11 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       if (options.signal && options.signal.aborted) {
         throw nativeEventCancelled('Native event execution was cancelled before completion.');
       }
-      if (controller.resultValue() !== undefined) {
-        throw new CanonicalNativeHostError('Native event handlers must complete with void.', 'PULSE_CANONICAL_NATIVE_EVENT_RESULT_INVALID', {
-          resultType: typeof controller.resultValue()
-        });
-      }
       const selection = controller.eventSelection();
       controller.trace.push(Object.freeze(redactValue({ type: 'native-event-execution-completed', executionId, eventStableId: selection.stableId, eventType: selection.type }, controller.sensitiveValues)));
       return Object.freeze({
         kind: 'event',
+        ...(controller.resultValue() === undefined ? {} : { result: controller.resultValue() }),
         executionId,
         planHash: controller.plan.planHash,
         wasmSha256: controller.wasmSha256,
@@ -1516,8 +1543,14 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
     try { controller.close(); }
     catch (error) { if (!executionFailure) throw error; }
     finally {
-      try { adapter.disposeExecution(Object.freeze({ executionId, metadata: controller.plan.canonical, plan: controller.plan, status: executionFailure ? 'failed' : 'completed', error: executionFailure })); }
-      catch (_) { /* provider cleanup must not mask execution */ }
+      try {
+        const disposal = adapter.disposeExecution(Object.freeze({ executionId, metadata: controller.plan.canonical, plan: controller.plan, status: executionFailure ? 'failed' : 'completed', error: executionFailure }));
+        if (eventMode) await disposal;
+      } catch (_) {
+        if (eventMode && !executionFailure) throw new CanonicalNativeHostError('Native event provider disposal failed.', 'PULSE_CANONICAL_NATIVE_EVENT_DISPOSAL_FAILED');
+        // Preserve a primary execution failure.
+      }
+      if (eventMode && !executionFailure && options.signal?.aborted) throw nativeEventCancelled('Native event execution was cancelled during disposal.');
     }
   }
 }
@@ -1538,6 +1571,8 @@ function nativeEventFailure(error) {
     ? 'handler-not-found'
     : code === 'PULSE_CANONICAL_NATIVE_EVENT_CANCELLED'
       ? 'cancelled'
+    : code === 'PULSE_CANONICAL_NATIVE_EVENT_DISPOSAL_FAILED'
+      ? 'disposal-failed'
     : code === 'PULSE_CANONICAL_NATIVE_EVENT_SCHEMA_MISMATCH'
       ? 'schema-mismatch'
       : code.startsWith('PULSE_SCHEMA_')
@@ -1561,7 +1596,8 @@ async function executeCanonicalNativeEvent(compiled, frame, options = {}) {
     if (typeof options.onEventExecutionEvidence === 'function') options.onEventExecutionEvidence(evidence);
     return eventContract.normalizeEventExecutionResult({
       version: eventContract.EVENT_EXECUTION_RESULT_VERSION,
-      status: eventContract.EVENT_EXECUTION_STATUS.COMPLETED
+      status: eventContract.EVENT_EXECUTION_STATUS.COMPLETED,
+      ...(Object.prototype.hasOwnProperty.call(evidence, 'result') ? { result: evidence.result } : {})
     }, options.eventLimits);
   } catch (error) {
     const evidence = error && error.execution;

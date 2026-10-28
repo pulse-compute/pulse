@@ -104,7 +104,7 @@ async function main() {
     schemaCodecs,
     effectAdapter: eventAdapter
   });
-  assert.deepEqual(eventResult, { version: 'pulse.event-execution-result.v1', status: 'completed' });
+  assert.deepEqual(eventResult, { version: 'pulse.event-execution-result.v2', status: 'completed' });
   assert.deepEqual(eventAdapter.acceptedFrames(), [
     { version: FRAME_VERSION, type: 'event.outbound', schemaId: null }
   ]);

@@ -164,15 +164,15 @@ that state. Selection conveys no authorization. Historical table/harness
 emission rejects this form because its compatibility scanner has no eligibility
 contract. See [Selected groups](../guides/routing.md#selected-groups).
 
-The compiler also recognizes root-only `Pulse.on(type, { schema }, handler)`
+The compiler also recognizes root-only `Pulse.on(type, { schema, resultSchema? }, handler)`
 declarations as a separate static event topology. Event types and schema IDs
 must be literal, schema IDs must resolve through the project registry, each
 type has one owner, and event handlers receive the same checkout-independent
 canonical handler identity used by HTTP handlers. The resulting event catalog
 is inspectable and enters a plane-neutral application-entry table without
 becoming a Router route. Event handlers use exact event selection,
-schema-validated `ctx.event.payload`, shared non-HTTP context operations, void
-completion, and execution-owned failure.
+schema-validated `ctx.event.payload`, shared non-HTTP context operations,
+optional schema-bound result completion, and execution-owned failure.
 
 The transport-free JavaScript runtime host can directly execute one canonical
 event frame against a live Pulse application. Provider-neutral Native plans can
@@ -183,7 +183,7 @@ artifacts add no event imports, exports, code, catalog data, or byte changes.
 The Native host validates and detaches the frame and schema payload before
 entering the module, passes an artifact-local event runtime ID plus a host-owned
 payload handle, and drives the existing effect/continuation state machine to
-void completion or bounded failure. Event input never masquerades as an HTTP
+void or schema-bound result completion, or bounded failure. Event input never masquerades as an HTTP
 request, no Promise or Asyncify runtime is linked, and no target probing or
 fallback occurs. Node now supplies a bounded invocation-scoped reference
 adapter around this entry for direct JavaScript/Native parity. It is not a
@@ -1001,6 +1001,15 @@ shared state, logging, fetch, parallel, config, secret, KV, and outbound event
 authority but do
 not expose a Request, Response, route parameters, Router transfer, middleware,
 or response builders.
+
+Event declarations may name `resultSchema` from the same registry used for HTTP
+JSON bodies. Declared results are required, schema-validated, bounded by event
+payload limits and detached from invocation storage. JavaScript and Native expose
+`pulse.event-execution-result.v2` with separate completion status and optional
+application `result`. Undeclared results remain void; failures include no result.
+Completion is published after owned effects and required cleanup. A retained
+result remains valid across subsequent Native invocations. No new transport,
+HTTP context authority, or reflexive event routing is introduced.
 
 Native event controllers permit sequential `startEvent(frame)` calls on the
 same Wasm instance after successful completion with no pending effects. A new

@@ -104,8 +104,10 @@ function collectCanonicalReportReferences(compiled, plan) {
     add('schema', name, null, consumers, 'schema:' + index, { unresolved: !schemas.has(name),
       externalPackages: [...(packageSources.get(referenceKey(reference)) || [])] });
   }
-  for (const event of compiled.eventCatalog?.events || []) if (event.schemaId) {
-    add('schema', event.schemaId, null, [event.stableId], event.stableId, { unresolved: !schemas.has(event.schemaId) });
+  for (const event of compiled.eventCatalog?.events || []) {
+    for (const schemaId of new Set([event.schemaId, event.resultSchemaId].filter(Boolean))) {
+      add('schema', schemaId, null, [event.stableId], event.stableId, { unresolved: !schemas.has(schemaId) });
+    }
   }
   // Only compact allowlisted data crosses into Report. No provider metadata,
   // effect payloads, binding values, resource bodies or expression text survives.

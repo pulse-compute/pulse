@@ -7,7 +7,7 @@ const EVENT_DECLARATION_VERSION = 'pulse.event-declaration.v1';
 const EVENT_FRAME_VERSION = 'pulse.event-frame.v1';
 const EVENT_CATALOG_VERSION = 'pulse.event-catalog.v1';
 const EVENT_ADAPTER_VERSION = 'pulse.event-adapter.v1';
-const EVENT_EXECUTION_RESULT_VERSION = 'pulse.event-execution-result.v1';
+const EVENT_EXECUTION_RESULT_VERSION = 'pulse.event-execution-result.v2';
 const EVENT_DIAGNOSTIC_VERSION = 'pulse.events-diagnostics.v1';
 const EVENT_NATIVE_ABI_EXTENSION_VERSION = 'pulse.native-event-abi.v1';
 const EVENT_CONTRACT_ID = 'pulse.events';
@@ -55,10 +55,10 @@ const EVENT_ADAPTER_SEMANTICS = Object.freeze({
 });
 
 const EVENT_COMPLETION_SEMANTICS = Object.freeze({
-  handlerResult: 'void',
+  handlerResult: 'void-or-declared-schema',
   completed: 'handler-and-owned-effects-completed',
   failed: 'selection-validation-handler-or-owned-effect-failed',
-  responseValue: false,
+  responseValue: true,
   providerMetadata: false
 });
 
@@ -244,13 +244,18 @@ function cloneBoundedJson(input, options) {
 function normalizeEventDeclaration(input, limitsInput) {
   const limits = resolvedLimits(limitsInput);
   assertDataObject(input, 'declaration', EVENT_DIAGNOSTIC_CODES.DECLARATION_INVALID);
-  assertKnownKeys(input, ['schema'], 'declaration', EVENT_DIAGNOSTIC_CODES.DECLARATION_INVALID);
+  assertKnownKeys(input, ['schema', 'resultSchema'], 'declaration', EVENT_DIAGNOSTIC_CODES.DECLARATION_INVALID);
   if (!Object.prototype.hasOwnProperty.call(input, 'schema')) {
     throw eventContractError(EVENT_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Event declaration requires an explicit schema field.');
   }
+  const hasResult = Object.prototype.hasOwnProperty.call(input, 'resultSchema');
+  if (hasResult && typeof input.resultSchema !== 'string') {
+    throw eventContractError(EVENT_DIAGNOSTIC_CODES.SCHEMA_ID_INVALID, 'resultSchema must be a dotted schema ID.');
+  }
   return Object.freeze({
     version: EVENT_DECLARATION_VERSION,
-    schemaId: normalizeEventSchemaId(input.schema, limits)
+    schemaId: normalizeEventSchemaId(input.schema, limits),
+    ...(hasResult ? { resultSchemaId: normalizeEventSchemaId(input.resultSchema, limits) } : {})
   });
 }
 
@@ -288,7 +293,7 @@ function normalizeEventFrame(input, limitsInput) {
 
 function createEventStableId(input, limitsInput) {
   assertDataObject(input, 'eventIdentity', EVENT_DIAGNOSTIC_CODES.CATALOG_INVALID);
-  assertKnownKeys(input, ['type', 'schemaId', 'handlerStableId'], 'eventIdentity', EVENT_DIAGNOSTIC_CODES.CATALOG_INVALID);
+  assertKnownKeys(input, ['type', 'schemaId', 'resultSchemaId', 'handlerStableId'], 'eventIdentity', EVENT_DIAGNOSTIC_CODES.CATALOG_INVALID);
   const type = normalizeEventType(input.type, limitsInput);
   const schemaId = normalizeEventSchemaId(input.schemaId, limitsInput);
   const handlerStableId = String(input.handlerStableId || '');
@@ -299,6 +304,7 @@ function createEventStableId(input, limitsInput) {
     artifact: EVENT_CATALOG_VERSION,
     type,
     schemaId,
+    ...(input.resultSchemaId === undefined ? {} : { resultSchemaId: normalizeEventSchemaId(input.resultSchemaId, limitsInput) }),
     handlerStableId
   });
 }
@@ -350,14 +356,17 @@ function normalizeEventCatalog(input, limitsInput) {
   const runtimeIds = new Set();
   const events = input.events.map((event, index) => {
     assertDataObject(event, `catalog.events[${index}]`, EVENT_DIAGNOSTIC_CODES.CATALOG_INVALID);
-    assertKnownKeys(event, ['type', 'schemaId', 'stableId', 'runtimeId', 'handlerStableId', 'source', 'capabilities', 'packageOperations', 'eligibility', 'hostRequirements'], `catalog.events[${index}]`, EVENT_DIAGNOSTIC_CODES.CATALOG_INVALID);
+    assertKnownKeys(event, ['type', 'schemaId', 'resultSchemaId', 'stableId', 'runtimeId', 'handlerStableId', 'source', 'capabilities', 'packageOperations', 'eligibility', 'hostRequirements'], `catalog.events[${index}]`, EVENT_DIAGNOSTIC_CODES.CATALOG_INVALID);
     const type = normalizeEventType(event.type, limits);
     if (types.has(type)) throw eventContractError(EVENT_DIAGNOSTIC_CODES.TYPE_DUPLICATE, `Event catalog repeats type ${JSON.stringify(type)}.`, { type });
     types.add(type);
     const schemaId = normalizeEventSchemaId(event.schemaId, limits);
     const handlerStableId = String(event.handlerStableId || '');
     if (!HANDLER_STABLE_ID_PATTERN.test(handlerStableId)) throw eventContractError(EVENT_DIAGNOSTIC_CODES.CATALOG_INVALID, 'Catalog event requires a canonical handler stable ID.', { handlerStableId });
-    const stableId = createEventStableId({ type, schemaId, handlerStableId }, limits);
+    const hasResult = Object.prototype.hasOwnProperty.call(event, 'resultSchemaId');
+    if (hasResult && typeof event.resultSchemaId !== 'string') throw eventContractError(EVENT_DIAGNOSTIC_CODES.CATALOG_INVALID, 'Event resultSchemaId must be a dotted schema ID.');
+    const resultDeclaration = hasResult ? { resultSchemaId: normalizeEventSchemaId(event.resultSchemaId, limits) } : {};
+    const stableId = createEventStableId({ type, schemaId, ...resultDeclaration, handlerStableId }, limits);
     if (event.stableId !== stableId || stableIds.has(stableId)) throw eventContractError(EVENT_DIAGNOSTIC_CODES.CATALOG_INVALID, 'Catalog event stable ID does not match its canonical registration identity.', { expected: stableId, actual: event.stableId });
     stableIds.add(stableId);
     const runtimeId = Number(event.runtimeId);
@@ -368,6 +377,7 @@ function normalizeEventCatalog(input, limitsInput) {
     return Object.freeze({
       type,
       schemaId,
+      ...resultDeclaration,
       stableId,
       runtimeId,
       handlerStableId,
@@ -405,16 +415,22 @@ function normalizeEventAdapter(input, limitsInput) {
 function normalizeEventExecutionResult(input, limitsInput) {
   const limits = resolvedLimits(limitsInput);
   assertDataObject(input, 'executionResult', EVENT_DIAGNOSTIC_CODES.EXECUTION_RESULT_INVALID);
-  assertKnownKeys(input, ['version', 'status', 'error'], 'executionResult', EVENT_DIAGNOSTIC_CODES.EXECUTION_RESULT_INVALID);
+  assertKnownKeys(input, ['version', 'status', 'error', 'result'], 'executionResult', EVENT_DIAGNOSTIC_CODES.EXECUTION_RESULT_INVALID);
   if (input.version !== EVENT_EXECUTION_RESULT_VERSION || !Object.values(EVENT_EXECUTION_STATUS).includes(input.status)) {
     throw eventContractError(EVENT_DIAGNOSTIC_CODES.EXECUTION_RESULT_INVALID, `Event execution result requires ${EVENT_EXECUTION_RESULT_VERSION} and a supported status.`);
   }
+  const hasResult = Object.prototype.hasOwnProperty.call(input, 'result');
+  if (input.status === EVENT_EXECUTION_STATUS.FAILED && hasResult) throw eventContractError(EVENT_DIAGNOSTIC_CODES.EXECUTION_RESULT_INVALID, 'Failed event execution must not include a result.');
   const hasError = Object.prototype.hasOwnProperty.call(input, 'error');
   if (input.status === EVENT_EXECUTION_STATUS.COMPLETED && hasError) throw eventContractError(EVENT_DIAGNOSTIC_CODES.EXECUTION_RESULT_INVALID, 'Completed event execution must not include an error.');
   if (input.status === EVENT_EXECUTION_STATUS.FAILED && !hasError) throw eventContractError(EVENT_DIAGNOSTIC_CODES.EXECUTION_RESULT_INVALID, 'Failed event execution requires an error.');
   return deepFreeze({
     version: EVENT_EXECUTION_RESULT_VERSION,
     status: input.status,
+    ...(hasResult ? { result: cloneBoundedJson(input.result, {
+      field: 'executionResult.result', code: EVENT_DIAGNOSTIC_CODES.EXECUTION_RESULT_INVALID,
+      maxDepth: limits.maxPayloadDepth, maxEntries: limits.maxPayloadEntries, maxBytes: limits.maxPayloadBytes
+    }) } : {}),
     ...(hasError ? {
       error: cloneBoundedJson(input.error, {
         field: 'executionResult.error',
