@@ -47,6 +47,14 @@ async function main() {
     const result = await run(process.execPath, ['check.cjs', '--installed']);
     const report = JSON.parse(result.stdout.trim().split('\n').at(-1));
     assert.equal(report.status, 'passed'); assert.equal(report.mode, 'installed'); assert.equal(report.cells.length, 5);
+    for (const file of ['host-extension-fixture.cjs', 'terminal-host.cjs'])
+      fs.copyFileSync(path.join(root, 'wasm/test/support', file), path.join(consumer, file));
+    fs.copyFileSync(path.join(root, 'packages/grip/pulse.package.json'), path.join(consumer, 'fixture-product.json'));
+    fs.copyFileSync(path.join(root, 'wasm/test/provider/assert-fastly-host-extensions-installed.cjs'), path.join(consumer, 'terminal.cjs'));
+    const terminal = await run(process.execPath, ['terminal.cjs', '--installed']);
+    const terminalReport = JSON.parse(terminal.stdout.trim().split('\n').at(-1));
+    assert.equal(terminalReport.status, 'passed'); assert.equal(terminalReport.cells.length, 2);
+    process.stdout.write(terminal.stdout);
     console.log(JSON.stringify({ status: 'passed', mode: 'source-free-installed', packages: identities, qualification: report }));
   } finally {
     if (registry) await new Promise(resolve => registry.server.close(resolve));

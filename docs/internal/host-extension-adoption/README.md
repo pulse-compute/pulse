@@ -21,8 +21,12 @@ carried from PR #555 as documentation only, without its cache implementation.
 
 [P15 contract/admission](P15-contract-admission.md) implements RC workstream item 1
 under the subsequent “Implement 1” direction. It adds the strict contribution
-carrier and shared admission/import contract; terminal service execution and
-provider advertisement remain the next unit.
+carrier and shared admission/import contract.
+[P15 terminal adapter](P15-terminal-adapter.md) implements RC item 2 under
+“Implement 2”: Fastly Native service execution, exact advertisement, structural
+lifecycle/response authority, and independent-package injected ABI evidence.
+GRIP authoring, Router placement, report projection and hosted qualification remain
+subsequent units.
 
 ## Historical kickoff and milestone plan
 
