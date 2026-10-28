@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { pathToFileURL } = require('node:url');
 
 const events = require('../../packages/contracts/src/events/contracts.js');
 const { extractSchemaRegistry } = require('../../packages/schema-json/src/compiler/schema-registry.js');
@@ -56,12 +57,14 @@ export default defineSchemaRegistry({
   const extracted = extractSchemaRegistry(schemaFile, { projectRoot: root });
   write(root, 'src/handlers.ts', `
 export async function onButton(ctx) {
+  ctx.log.info(ctx.state.get('mode') ?? 'fresh')
   const mode = await ctx.config.get(ctx.event.payload.key)
   ctx.state.set('mode', mode ?? 'missing')
   ctx.log.info(ctx.event.type + ':' + ctx.event.payload.enabled)
 }
 
 export async function onTick(ctx) {
+  ctx.log.info(ctx.state.get('mode') ?? 'fresh')
   ctx.state.set('tick', ctx.event.payload === null ? 'yes' : 'no')
 }
 
@@ -153,6 +156,163 @@ function adapter(record) {
   };
 }
 
+function assertSequentialReuse(compiled) {
+  const tick = { version: events.EVENT_FRAME_VERSION, type: 'system.tick', schemaId: null };
+  const button = key => ({ version: events.EVENT_FRAME_VERSION, type: 'device.button',
+    schemaId: 'events.DeviceButton', payload: { key, enabled: true } });
+  const logs = [];
+  const lifecycleTrace = [];
+  let reentrantChecks = 0;
+  const controller = nativeHost.instantiateCanonicalNativeModule(compiled, {
+    executionPlane: 'event', secrets: { seed: 'initial-secret' },
+    lifecycleServices: ['invocation.end', 'invocation.close', 'invocation.closed'].map(point => ({
+      point, owner: 'event-reuse-test', order: 0,
+      run() {
+        lifecycleTrace.push(point);
+        assert.throws(() => controller.startEvent(tick), { code: 'PULSE_CANONICAL_NATIVE_INVOCATION_ACTIVE' });
+        if (point === 'invocation.closed') assert.deepEqual(controller.pendingEffects(), []);
+      }
+    })),
+    log(_level, message) {
+      logs.push(message);
+      assert.throws(() => controller.startEvent(tick), { code: 'PULSE_CANONICAL_NATIVE_INVOCATION_ACTIVE' });
+      reentrantChecks++;
+    }
+  });
+  const instance = controller.instance;
+  let previousTicket;
+  const handles = new Map();
+  let warmedMemory;
+  for (let iteration = 0; iteration < 1200; iteration++) {
+    logs.length = 0;
+    lifecycleTrace.length = 0;
+    const immediate = iteration % 2 === 0;
+    const status = controller.startEvent(immediate ? tick : button(`key-${iteration}`));
+    assert.equal(controller.instance, instance, 'reuse must not instantiate another Wasm module');
+    assert.equal(status, immediate ? 0 : 1);
+    assert.equal(controller.context.ctx.state.get('host-only'), undefined);
+    assert.equal(controller.sensitiveValues.has('previous-secret'), false);
+    assert.equal(controller.sensitiveValues.has('initial-secret'), true);
+    assert.equal(logs[0], 'fresh', 'guest state must not survive the previous event');
+    if (!immediate) {
+      const [pending] = controller.pendingEffects();
+      assert.equal(pending.payload.name, `key-${iteration}`, 'payload/local handles belong to this event');
+      const before = { size: controller.heap.size(), pc: controller.programCounter(),
+        selection: controller.eventSelection(), trace: controller.trace.length };
+      assert.throws(() => controller.startEvent(tick), { code: 'PULSE_CANONICAL_NATIVE_INVOCATION_ACTIVE' });
+      assert.equal(controller.exports.pulse_event_start(1, 0), -1, 'raw entry must also refuse a live continuation');
+      assert.equal(controller.resume(), -2, 'incomplete resume must remain resumable');
+      if (previousTicket) {
+        assert.throws(() => controller.setEffectResult(previousTicket, 'late'), { code: 'PULSE_EFFECT_INVOCATION_INVALID' });
+        assert.throws(() => controller.assertPendingEffect(previousTicket), { code: 'PULSE_EFFECT_INVOCATION_INVALID' });
+      }
+      assert.deepEqual({ size: controller.heap.size(), pc: controller.programCounter(),
+        selection: controller.eventSelection(), trace: controller.trace.length }, before);
+      controller.assertPendingEffect(pending.ticket);
+      controller.setEffectResult(pending.ticket, `result-${iteration}`);
+      assert.throws(() => controller.startEvent(tick), { code: 'PULSE_CANONICAL_NATIVE_INVOCATION_ACTIVE' }, 'settled effects still require guest resume');
+      assert.equal(controller.resume(), 0);
+      previousTicket = pending.ticket;
+    }
+    assert.equal(controller.resultValue(), undefined);
+    assert.deepEqual(lifecycleTrace, ['invocation.end', 'invocation.close', 'invocation.closed'], 'each reused event must retain the complete lifecycle-service cleanup sequence');
+    const handleCount = controller.heap.size();
+    if (!handles.has(immediate)) handles.set(immediate, handleCount);
+    assert.equal(handleCount, handles.get(immediate), 'host handles must not grow across invocations');
+    assert.ok(controller.trace.length <= 4, 'trace must be invocation-local');
+    controller.context.ctx.state.set('host-only', 'old');
+    controller.sensitiveValues.add('previous-secret');
+    if (iteration === 100) warmedMemory = instance.exports.memory.buffer.byteLength;
+    if (iteration > 100) assert.ok(instance.exports.memory.buffer.byteLength <= warmedMemory + 65536, 'guest memory must plateau after warmup');
+  }
+  assert.ok(reentrantChecks > 1200);
+  const retained = { heap: controller.heap, trace: [...controller.trace], selection: controller.eventSelection() };
+  assert.throws(() => controller.startEvent({ ...tick, type: 'missing' }), { code: 'PULSE_CANONICAL_NATIVE_EVENT_HANDLER_NOT_FOUND' });
+  assert.throws(() => controller.startEvent({ ...button('bad'), payload: { key: 'bad', enabled: 'wrong' } }));
+  assert.equal(controller.heap, retained.heap, 'rejected ingress must preserve the previous result');
+  assert.deepEqual(controller.trace, retained.trace);
+  assert.equal(controller.eventSelection(), retained.selection);
+  assert.equal(controller.startEvent(tick), 0, 'ingress rejection does not poison an idle instance');
+  controller.close();
+  assert.throws(() => controller.startEvent(tick), { code: 'PULSE_EFFECT_INVOCATION_INVALID' });
+
+  const signal = new AbortController();
+  const cancelled = nativeHost.instantiateCanonicalNativeModule(compiled, { executionPlane: 'event', signal: signal.signal });
+  assert.equal(cancelled.startEvent(button('cancel')), 1);
+  const [abandoned] = cancelled.pendingEffects();
+  signal.abort();
+  const count = cancelled.heap.size();
+  assert.throws(() => cancelled.setEffectResult(abandoned.ticket, 'late'), { code: 'PULSE_EFFECT_INVOCATION_INVALID' });
+  assert.throws(() => cancelled.startEvent(tick), { code: 'PULSE_EFFECT_INVOCATION_INVALID' });
+  assert.equal(cancelled.heap.size(), count, 'cancelled instances never reset into a new invocation');
+
+  for (const point of ['invocation.end', 'invocation.close', 'invocation.closed']) {
+    const failure = new Error(`failed ${point}`);
+    const failed = nativeHost.instantiateCanonicalNativeModule(compiled, {
+      executionPlane: 'event', lifecycleServices: [{ point, owner: 'event-reuse-test', order: 0, run() { throw failure; } }]
+    });
+    assert.throws(() => failed.startEvent(tick), error => error === failure);
+    assert.throws(() => failed.startEvent(tick), { code: 'PULSE_EFFECT_INVOCATION_INVALID' }, 'failed lifecycle cleanup must prevent reuse');
+  }
+  const duringEnd = new AbortController();
+  const abortedAtEnd = nativeHost.instantiateCanonicalNativeModule(compiled, {
+    executionPlane: 'event', signal: duringEnd.signal,
+    lifecycleServices: [{ point: 'invocation.end', owner: 'event-reuse-test', order: 0, run() { duringEnd.abort(); } }]
+  });
+  assert.throws(() => abortedAtEnd.startEvent(tick), { code: 'PULSE_EFFECT_INVOCATION_INVALID' });
+  assert.throws(() => abortedAtEnd.startEvent(tick), { code: 'PULSE_EFFECT_INVOCATION_INVALID' }, 'cancellation in an end hook must remain terminal');
+
+  const raw = nativeHost.instantiateCanonicalNativeModule(compiled, { executionPlane: 'event' });
+  assert.equal(raw.exports.pulse_event_start(1, 0), 0);
+  assert.equal(raw.exports.pulse_event_start(-1, 0), -1);
+  assert.equal(raw.exports.pulse_event_start(1, 0), 0, 'the guest ABI itself permits successful sequential entry');
+  raw.close();
+}
+
+function compileSchemaFreeEvents(root) {
+  write(root, 'tsconfig.json', '{"compilerOptions":{"baseUrl":"."}}\n');
+  const entry = write(root, 'src/index.ts', `
+import { Pulse } from '@pulse-compute/pulse'
+const app = new Pulse({ auto: true })
+app.on('tick', { schema: null }, async (ctx) => {
+  ctx.log.info(ctx.state.get('previous') ?? 'fresh')
+  ctx.state.set('previous', 'dirty')
+})
+app.on('wait', { schema: null }, async (ctx) => {
+  const value = await ctx.config.get('counter')
+  ctx.state.set('previous', value ?? 'missing')
+})
+export default app
+`);
+  const project = compileCanonicalProject(entry, { rootDir: root, workspaceRoot: repoRoot,
+    tsconfigFile: path.join(root, 'tsconfig.json'), applicationProjectMetadata: projectMetadata(),
+    strict: true, requireAsync: true, requireEffectAwait: true });
+  return compileCanonicalNativePlan(buildCanonicalNativePlan(project), { cwd: repoRoot, timeoutMs: 180000 });
+}
+
+async function assertTerminalDisposal(compiled) {
+  // Replace only the event entry body to exercise actual Wasm failure/trap
+  // outcomes. Keep the real module's imports, memory and authenticated plan hash.
+  const ascRoot = path.dirname(require.resolve('assemblyscript/package.json', { paths: [path.resolve(__dirname, '../..')] }));
+  const binaryen = (await import(pathToFileURL(require.resolve('binaryen', { paths: [ascRoot] })))).default;
+  const frame = { version: events.EVENT_FRAME_VERSION, type: 'tick', schemaId: null };
+  for (const trap of [false, true]) {
+    const module = binaryen.readBinary(compiled.wasm);
+    try {
+      module.setFeatures(binaryen.Features.All);
+      const name = binaryen.getExportInfo(module.getExport('pulse_event_start')).value;
+      const info = binaryen.getFunctionInfo(module.getFunction(name));
+      module.removeFunction(name);
+      module.addFunction(name, info.params, info.results, [], trap ? module.unreachable() : module.i32.const(-1));
+      assert.ok(module.validate());
+      const controller = nativeHost.instantiateCanonicalNativeModule({ ...compiled, wasm: Buffer.from(module.emitBinary()) }, { executionPlane: 'event' });
+      if (trap) assert.throws(() => controller.startEvent(frame), WebAssembly.RuntimeError);
+      else assert.equal(controller.startEvent(frame), -1);
+      assert.throws(() => controller.startEvent(frame), { code: 'PULSE_EFFECT_INVOCATION_INVALID' }, 'terminal failure/trap requires disposal');
+    } finally { module.dispose(); }
+  }
+}
+
 async function main() {
   const tempRoot = fs.mkdtempSync(path.join(process.env.PULSEWASM_TEST_TMP_ROOT || os.tmpdir(), 'pulse-events-native-runtime-'));
   try {
@@ -161,8 +321,8 @@ async function main() {
     assert.deepEqual(eventA.eventCatalog, eventB.eventCatalog, 'event catalog must be checkout-independent');
     assert.ok(eventA.eventCatalog.events.every((entry) => entry.eligibility.native === true));
     assert.deepEqual(eventA.eventCatalog.events.map((entry) => entry.capabilities), [
-      ['config.get', 'logging', 'state.set'],
-      ['state.set']
+      ['config.get', 'logging', 'state.get', 'state.set'],
+      ['logging', 'state.get', 'state.set']
     ]);
     assert.match(eventA.router.sourceText, /__pulse_event_runtime_id\(\) === 0/);
     assert.match(eventA.router.sourceText, /ctx\.event\.payload\.key/);
@@ -193,10 +353,33 @@ async function main() {
     assert.deepEqual(nativeA.inspection.imports.filter((entry) => entry.name.startsWith('pulse_event_')), []);
     assert.equal(nativeA.manifest.events.abiVersion, 1);
     assert.equal(nativeA.manifest.events.count, 2);
+    assertSequentialReuse(nativeA);
+    const schemaFree = compileSchemaFreeEvents(path.join(tempRoot, 'schema-free'));
+    assert.equal(schemaFree.manifest.schemaCodecs.active, false);
+    const fresh = [];
+    const reused = nativeHost.instantiateCanonicalNativeModule(schemaFree, { executionPlane: 'event', log(_level, message) { fresh.push(message); } });
+    let warmedMemory;
+    for (let i = 0; i < 2000; i++) {
+      assert.equal(reused.startEvent({ version: events.EVENT_FRAME_VERSION, type: i % 2 ? 'wait' : 'tick', schemaId: null }), i % 2 ? 1 : 0);
+      if (i % 2) {
+        const [pending] = reused.pendingEffects();
+        reused.setEffectResult(pending.ticket, 'settled');
+        assert.equal(reused.resume(), 0);
+      }
+      if (i === 100) warmedMemory = reused.exports.memory.buffer.byteLength;
+      if (i > 100) assert.ok(reused.exports.memory.buffer.byteLength <= warmedMemory + 65536, 'schema-free event memory must also plateau');
+    }
+    assert.equal(fresh.length, 1000);
+    assert.ok(fresh.every(message => message === 'fresh'));
+    reused.close();
+    await assertTerminalDisposal(schemaFree);
 
     const direct = nativeHost.instantiateCanonicalNativeModule(nativeA, { executionPlane: 'event' });
     assert.equal(direct.exports.pulse_event_abi_version(), 1);
     assert.equal(direct.exports.pulse_event_start(-1, 0), -1);
+    const tick = { version: events.EVENT_FRAME_VERSION, type: 'system.tick', schemaId: null };
+    assert.equal(direct.startEvent(tick), 0);
+    assert.equal(direct.startEvent(tick), 0, 'a completed event must permit sequential reuse of the same instance');
     assert.throws(
       () => direct.start(),
       (error) => error && error.code === 'PULSE_CANONICAL_NATIVE_EXECUTION_PLANE_MISMATCH'

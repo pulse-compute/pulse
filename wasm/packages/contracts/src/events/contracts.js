@@ -86,7 +86,10 @@ const EVENT_NATIVE_ABI_EXTENSION = Object.freeze({
     eventImportsAdded: false,
     mixedArtifactsKeepHttpEntry: true,
     hostValidatesFrameAndSchemaBeforeEntry: true,
-    singleActiveInvocationPerInstance: true
+    singleActiveInvocationPerInstance: true,
+    sequentialReuse: 'successful completion with no pending effects; reset on next accepted entry',
+    failedOrCancelledInstance: 'dispose; no continuation reset or recovery',
+    rawResults: 'trusted-host handles; managed hosts authenticate execution-owned tickets'
   })
 });
 

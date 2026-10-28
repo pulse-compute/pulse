@@ -97,6 +97,12 @@ function assembleNativeSource({
     ...support.globals,
     ...numeric.globals,
     ...resources.source,
+    ...(eventReachable ? [
+      'function __pulse_event_reset_storage(): void {',
+      ...numeric.clear().map(line => `  ${line}`),
+      ...resources.workspaces.clear().map(line => `  ${line}`),
+      '}'
+    ] : []),
     ...(plan.callable ? [
       'function __pulse_callable_close(): void {',
       ...support.valueRoots.map(name => `  ${name} = 0`),

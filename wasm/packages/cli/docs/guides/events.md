@@ -68,6 +68,35 @@ payload is detached from host input and immutable. State, effects,
 continuations, cancellation, logging, redaction, completion, and disposal are
 owned by one invocation and do not leak into another event or HTTP request.
 
+## Native instance reuse
+
+The low-level managed Native controller can call `startEvent(frame)` repeatedly
+on the same Wasm instance. A call must finish successfully, including all owned
+effects and the final resume, before the next call begins. There is no concurrent
+entry, implicit event queue, or multiple-live-continuation support.
+
+| Previous state | Next event entry |
+| --- | --- |
+| Successful completion, no pending effects | Allowed; reset invocation-local state on accepted entry. |
+| Executing, suspended, or results settled but not resumed | Refused; preserve the active invocation. |
+| Invalid frame, schema, or event selection before entry | Correct the input and retry; no handler ran. |
+| Controlled execution failure, explicit close, cancellation, or trap | Dispose the controller and Wasm instance. |
+
+Each accepted invocation receives fresh guest state, host handles, effect-ticket
+identity, context and trace. Late or duplicate tickets from an earlier invocation
+cannot settle a later invocation's effect. Read results and copy any trace you
+need before starting again. Guest allocation is reclaimed between invocations;
+linear memory retains its high-water capacity rather than shrinking.
+
+Selected host lifecycle services observe `invocation.end`, `invocation.close`,
+and `invocation.closed` for each successful event. A service failure or
+cancellation during cleanup makes the controller disposable.
+
+This is a low-level host lifecycle contract. Raw ABI setters remain trusted-host
+operations, and direct hosts own provider dispatch and cleanup. The high-level
+event execution helpers still create and dispose an instance per invocation;
+this change does not introduce provider pooling or retry failed events.
+
 ## Canonical frame and schema rules
 
 Ingress and outbound acceptance use `pulse.event-frame.v1` internally:
