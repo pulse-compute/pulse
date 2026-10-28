@@ -1,5 +1,26 @@
 # P00 — Lifecycle, HEX and resource-accounting adoption kickoff
 
+## Current priority — host extension through packages
+
+Human direction, 2026-10-28: make package-driven host extension the primary
+acceptance criterion, reusing Pulse lifecycle, management and instrumentation.
+The [current-state and work-unit audit](host-extension-priority-audit.md)
+supersedes the execution priority and cache prerequisites in the historical plan
+below. P15 policy and bounded production contribution adoption are next, followed
+by applicable P12A/P16 and P10/P13/P14 qualification. P08 cache product semantics,
+P06 composed caching and broader RA parity/cost/reporting are separate follow-ups.
+No established live cache-host defect blocks the generic extension milestone.
+The audit records the current implementation gaps and disposition of every unit;
+it does not mark the extension mechanism complete or waive existing failed tests.
+
+P15 policy is now prepared as a [reviewable proposal](P15-host-extension-policy.md)
+against merged P07. It specifies the first service, package exposure, lifecycle
+attachment and contribution/import evidence; implementation and architecture
+approval remain separate. The priority audit and P01 direction annotation are
+carried from PR #555 as documentation only, without its cache implementation.
+
+## Historical kickoff and milestone plan
+
 Status: **planning baseline; no production adoption implemented**.
 Date: 2026-10-25. Development base: `latest` at
 `e30754019f03fa95a74ae72392382f44f2351927`. Research reference:
