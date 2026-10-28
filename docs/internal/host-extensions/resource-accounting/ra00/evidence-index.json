@@ -1,0 +1,133 @@
+{
+  "version": "hex.ra00-evidence.v0",
+  "base": "3ac02b2df56f95b47b8a92b5c4633dbe0e1fde7d",
+  "archive": {
+    "file": "artifacts.tar.gz",
+    "sha256": "5fa2c2b891a3cc90d14e5ebe44de7cc8c662879dcfc53d7435b071a6e4f7179c",
+    "bytes": 199885,
+    "members": [
+      {
+        "path": "deadline.as.ts",
+        "sha256": "8fc7e43b93f7b8b3300214dfb4730fad83885d4ece19ffbf72ac7a84a1f894e3",
+        "bytes": 141857
+      },
+      {
+        "path": "deadline.manifest.json",
+        "sha256": "5d35abd0d3480c024d78d1396a544f7f0a088a80fc5fbe52e47dc01b13a212a4",
+        "bytes": 15015
+      },
+      {
+        "path": "deadline.plan.json",
+        "sha256": "b77fb01ee626df139d99d6ab1874a30d527de9897d98d3189ed629d296e29387",
+        "bytes": 8216
+      },
+      {
+        "path": "deadline.ts",
+        "sha256": "51d34bee16b2326c0c677e61dbc0525b5e5db1f53ede539809ab6a818c08930d",
+        "bytes": 142
+      },
+      {
+        "path": "deadline.wasm",
+        "sha256": "a1326e7636be586271f9f90534b6fb7035bc81e8df8f220861e0d90f629ca008",
+        "bytes": 34970
+      },
+      {
+        "path": "host.cjs",
+        "sha256": "5ca59b7d7db9bfabfcb4ab61da5fceff46a4562d356ab8c3318477840bd0309a",
+        "bytes": 5802
+      },
+      {
+        "path": "opaque.as.ts",
+        "sha256": "e9628e53a4b34b94490223b21f9da7f33868b2aaaadb1dad90ba000f6e78e7e6",
+        "bytes": 141299
+      },
+      {
+        "path": "opaque.manifest.json",
+        "sha256": "151fded02775f29c97dac66f02ac6b7e0cef91ea175d98d22139c951645bf207",
+        "bytes": 14890
+      },
+      {
+        "path": "opaque.plan.json",
+        "sha256": "3b2ea3c8d4952a48402b46978c5aed201dc741546e7ddb493fedb8bfe9af8c86",
+        "bytes": 6972
+      },
+      {
+        "path": "opaque.ts",
+        "sha256": "4cdf3eabe015dcde04ec10bd632cb5a0dc53349223192d373e8867e3a8468d37",
+        "bytes": 100
+      },
+      {
+        "path": "opaque.wasm",
+        "sha256": "1b2cb823a3a7ecfbc68dce76d0cc54d3826e52ae00dad6749b898449590dc9c4",
+        "bytes": 34211
+      },
+      {
+        "path": "post.as.ts",
+        "sha256": "a3565e3e4ffc86453deb1cc7a87289bdb8e0e463db46cfa1aae1c85952d31a3d",
+        "bytes": 142492
+      },
+      {
+        "path": "post.manifest.json",
+        "sha256": "a7a55202a516e4f2dcd4e5e258f1121f1976b4f1d17efda23fb764590431e18e",
+        "bytes": 15015
+      },
+      {
+        "path": "post.plan.json",
+        "sha256": "13f38da3f26b0f300b8ebc81c1c72afd558fb66f280b222cecbb4c851cc78951",
+        "bytes": 9335
+      },
+      {
+        "path": "post.ts",
+        "sha256": "dd67343d990c715aa6bc97e7442753bc9ec61e9ba96f4790518e9cac0289e7cc",
+        "bytes": 183
+      },
+      {
+        "path": "post.wasm",
+        "sha256": "24d92fe82d1dd9097bb9abe0be48d04824e61cddea5d54c234e50cdf4541200c",
+        "bytes": 35003
+      },
+      {
+        "path": "probe.cjs",
+        "sha256": "3fa1938ba47796fd9bf9a81a2e375f1e46e0ca018a97b0f57ed4340737999e7a",
+        "bytes": 7560
+      },
+      {
+        "path": "receipt.json",
+        "sha256": "fa81e48d21d8c757cabae36656b1b629cc7743a5a83ff81d1435fef0bdcab8cd",
+        "bytes": 79116
+      },
+      {
+        "path": "text.as.ts",
+        "sha256": "74be11acf3654dc2cfd4e14eaa2d90c556c2154559ad8a2e36471760c35609ad",
+        "bytes": 141633
+      },
+      {
+        "path": "text.manifest.json",
+        "sha256": "ee7764d5d55c3d951159ca3a5219b56ce7ce849bc1c28609c16e8eb56b44ebd0",
+        "bytes": 15015
+      },
+      {
+        "path": "text.plan.json",
+        "sha256": "7367f6759c4ccabd4482e5de85437c32993b38764ebb53522ac1bca4db3645d3",
+        "bytes": 7841
+      },
+      {
+        "path": "text.ts",
+        "sha256": "2e01bef16e6b840d6a0498e7bd8a5c93575705f45f9c3cae813426d900e3e57e",
+        "bytes": 127
+      },
+      {
+        "path": "text.wasm",
+        "sha256": "6da245b009004fe7225ac34507bdab7f41cea67de60f86a37112e09dc83fbd24",
+        "bytes": 34804
+      }
+    ]
+  },
+  "receipt": {
+    "file": "receipt.json",
+    "sha256": "fa81e48d21d8c757cabae36656b1b629cc7743a5a83ff81d1435fef0bdcab8cd"
+  },
+  "freshChecks": 26,
+  "inheritedChecks": 91,
+  "scope": "Injected host; unmodified production compiler/provider; no real-host qualification"
+}

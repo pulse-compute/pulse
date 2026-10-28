@@ -1,0 +1,1999 @@
+{
+  "version": "hex.ra03-check.v1",
+  "status": "passed",
+  "cases": [
+    {
+      "name": "RA-02 differential 8/hit",
+      "status": "passed",
+      "detail": {
+        "events": 59,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 24,
+          "snapshotObjectsCreated": 59,
+          "activeRecords": 0,
+          "peakRecords": 8
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/miss",
+      "status": "passed",
+      "detail": {
+        "events": 139,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 56,
+          "snapshotObjectsCreated": 139,
+          "activeRecords": 0,
+          "peakRecords": 24
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/cancellation",
+      "status": "passed",
+      "detail": {
+        "events": 165,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 64,
+          "snapshotObjectsCreated": 165,
+          "activeRecords": 0,
+          "peakRecords": 32
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/failed-disposal",
+      "status": "passed",
+      "detail": {
+        "events": 173,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 72,
+          "snapshotObjectsCreated": 173,
+          "activeRecords": 8,
+          "peakRecords": 32
+        },
+        "final": {
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 8,
+          "prepared": 0,
+          "unresolved": 8,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/retained-result",
+      "status": "passed",
+      "detail": {
+        "events": 110,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 48,
+          "snapshotObjectsCreated": 110,
+          "activeRecords": 0,
+          "peakRecords": 16
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/mixed",
+      "status": "passed",
+      "detail": {
+        "events": 173,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 72,
+          "snapshotObjectsCreated": 173,
+          "activeRecords": 4,
+          "peakRecords": 32
+        },
+        "final": {
+          "committed": {
+            "handles": 14,
+            "bytes": 576,
+            "records": 14
+          },
+          "charged": {
+            "handles": 6,
+            "bytes": 320,
+            "records": 6
+          },
+          "carry": {
+            "handles": 4,
+            "bytes": 256,
+            "records": 4
+          },
+          "carryCleanupReserve": {
+            "handles": 8,
+            "bytes": 256,
+            "records": 8
+          },
+          "usedEffects": 40,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 4,
+          "prepared": 0,
+          "unresolved": 4,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/exact-effects",
+      "status": "passed",
+      "detail": {
+        "events": 65,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 32,
+          "snapshotObjectsCreated": 65,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/one-below-handles",
+      "status": "passed",
+      "detail": {
+        "events": 10,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 8,
+          "snapshotObjectsCreated": 10,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/one-below-bytes",
+      "status": "passed",
+      "detail": {
+        "events": 10,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 8,
+          "snapshotObjectsCreated": 10,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/one-below-records",
+      "status": "passed",
+      "detail": {
+        "events": 10,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 8,
+          "snapshotObjectsCreated": 10,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 8/one-below-effects",
+      "status": "passed",
+      "detail": {
+        "events": 10,
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 8,
+          "snapshotObjectsCreated": 10,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 8,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/hit",
+      "status": "passed",
+      "detail": {
+        "events": 115,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 48,
+          "snapshotObjectsCreated": 115,
+          "activeRecords": 0,
+          "peakRecords": 16
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/miss",
+      "status": "passed",
+      "detail": {
+        "events": 275,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 112,
+          "snapshotObjectsCreated": 275,
+          "activeRecords": 0,
+          "peakRecords": 48
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/cancellation",
+      "status": "passed",
+      "detail": {
+        "events": 325,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 128,
+          "snapshotObjectsCreated": 325,
+          "activeRecords": 0,
+          "peakRecords": 64
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/failed-disposal",
+      "status": "passed",
+      "detail": {
+        "events": 341,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 144,
+          "snapshotObjectsCreated": 341,
+          "activeRecords": 16,
+          "peakRecords": 64
+        },
+        "final": {
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 16,
+          "prepared": 0,
+          "unresolved": 16,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/retained-result",
+      "status": "passed",
+      "detail": {
+        "events": 214,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 96,
+          "snapshotObjectsCreated": 214,
+          "activeRecords": 0,
+          "peakRecords": 32
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/mixed",
+      "status": "passed",
+      "detail": {
+        "events": 341,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 144,
+          "snapshotObjectsCreated": 341,
+          "activeRecords": 8,
+          "peakRecords": 64
+        },
+        "final": {
+          "committed": {
+            "handles": 26,
+            "bytes": 1088,
+            "records": 26
+          },
+          "charged": {
+            "handles": 10,
+            "bytes": 576,
+            "records": 10
+          },
+          "carry": {
+            "handles": 8,
+            "bytes": 512,
+            "records": 8
+          },
+          "carryCleanupReserve": {
+            "handles": 16,
+            "bytes": 512,
+            "records": 16
+          },
+          "usedEffects": 80,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 8,
+          "prepared": 0,
+          "unresolved": 8,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/exact-effects",
+      "status": "passed",
+      "detail": {
+        "events": 129,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 64,
+          "snapshotObjectsCreated": 129,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/one-below-handles",
+      "status": "passed",
+      "detail": {
+        "events": 18,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 16,
+          "snapshotObjectsCreated": 18,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/one-below-bytes",
+      "status": "passed",
+      "detail": {
+        "events": 18,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 16,
+          "snapshotObjectsCreated": 18,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/one-below-records",
+      "status": "passed",
+      "detail": {
+        "events": 18,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 16,
+          "snapshotObjectsCreated": 18,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 16/one-below-effects",
+      "status": "passed",
+      "detail": {
+        "events": 18,
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 16,
+          "snapshotObjectsCreated": 18,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 16,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/hit",
+      "status": "passed",
+      "detail": {
+        "events": 227,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 96,
+          "snapshotObjectsCreated": 227,
+          "activeRecords": 0,
+          "peakRecords": 32
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 64,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/miss",
+      "status": "passed",
+      "detail": {
+        "events": 547,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 224,
+          "snapshotObjectsCreated": 547,
+          "activeRecords": 0,
+          "peakRecords": 96
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/cancellation",
+      "status": "passed",
+      "detail": {
+        "events": 645,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 256,
+          "snapshotObjectsCreated": 645,
+          "activeRecords": 0,
+          "peakRecords": 128
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/failed-disposal",
+      "status": "passed",
+      "detail": {
+        "events": 677,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 288,
+          "snapshotObjectsCreated": 677,
+          "activeRecords": 32,
+          "peakRecords": 128
+        },
+        "final": {
+          "committed": {
+            "handles": 98,
+            "bytes": 4160,
+            "records": 98
+          },
+          "charged": {
+            "handles": 34,
+            "bytes": 2112,
+            "records": 34
+          },
+          "carry": {
+            "handles": 32,
+            "bytes": 2048,
+            "records": 32
+          },
+          "carryCleanupReserve": {
+            "handles": 64,
+            "bytes": 2048,
+            "records": 64
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 32,
+          "prepared": 0,
+          "unresolved": 32,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/retained-result",
+      "status": "passed",
+      "detail": {
+        "events": 422,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 192,
+          "snapshotObjectsCreated": 422,
+          "activeRecords": 0,
+          "peakRecords": 64
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/mixed",
+      "status": "passed",
+      "detail": {
+        "events": 677,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 288,
+          "snapshotObjectsCreated": 677,
+          "activeRecords": 16,
+          "peakRecords": 128
+        },
+        "final": {
+          "committed": {
+            "handles": 50,
+            "bytes": 2112,
+            "records": 50
+          },
+          "charged": {
+            "handles": 18,
+            "bytes": 1088,
+            "records": 18
+          },
+          "carry": {
+            "handles": 16,
+            "bytes": 1024,
+            "records": 16
+          },
+          "carryCleanupReserve": {
+            "handles": 32,
+            "bytes": 1024,
+            "records": 32
+          },
+          "usedEffects": 160,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 16,
+          "prepared": 0,
+          "unresolved": 16,
+          "emergency": 0,
+          "stopped": true,
+          "ended": true,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/exact-effects",
+      "status": "passed",
+      "detail": {
+        "events": 257,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 128,
+          "snapshotObjectsCreated": 257,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 128,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/one-below-handles",
+      "status": "passed",
+      "detail": {
+        "events": 34,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 32,
+          "snapshotObjectsCreated": 34,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/one-below-bytes",
+      "status": "passed",
+      "detail": {
+        "events": 34,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 32,
+          "snapshotObjectsCreated": 34,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/one-below-records",
+      "status": "passed",
+      "detail": {
+        "events": 34,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 32,
+          "snapshotObjectsCreated": 34,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "RA-02 differential 32/one-below-effects",
+      "status": "passed",
+      "detail": {
+        "events": 34,
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 32,
+          "snapshotObjectsCreated": 34,
+          "activeRecords": 0,
+          "peakRecords": 0
+        },
+        "final": {
+          "committed": {
+            "handles": 2,
+            "bytes": 64,
+            "records": 2
+          },
+          "charged": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carry": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "carryCleanupReserve": {
+            "handles": 0,
+            "bytes": 0,
+            "records": 0
+          },
+          "usedEffects": 32,
+          "promisedEffects": 0,
+          "activeRoots": 0,
+          "retainedRoots": 0,
+          "prepared": 0,
+          "unresolved": 0,
+          "emergency": 0,
+          "stopped": false,
+          "ended": false,
+          "fault": null,
+          "coverageLost": false,
+          "accountingComplete": true
+        }
+      }
+    },
+    {
+      "name": "Malformed finite profiles reject before allocation/dispatch",
+      "status": "passed"
+    },
+    {
+      "name": "Atomic cohort rejection and spent captures",
+      "status": "passed"
+    },
+    {
+      "name": "Atomic output reservation before host entry",
+      "status": "passed"
+    },
+    {
+      "name": "Root/resource generations reject stale, cross-execution and duplicate receipts",
+      "status": "passed"
+    },
+    {
+      "name": "Ownership handoff keeps charge/root and fences stale actor",
+      "status": "passed"
+    },
+    {
+      "name": "Action tickets fence duplicates, in-flight handoff and repeated disposal",
+      "status": "passed"
+    },
+    {
+      "name": "Failed retained read cannot retry, but independent cleanup remains possible",
+      "status": "passed"
+    },
+    {
+      "name": "Known consumed quiescent host handle can be reused without erasing backing charges",
+      "status": "passed"
+    },
+    {
+      "name": "Transfer refunds only qualified dimensions",
+      "status": "passed"
+    },
+    {
+      "name": "Child tickets remain cumulative and stale completion rejects after reuse",
+      "status": "passed"
+    },
+    {
+      "name": "Repeated acquisition reuses backing storage without retained history",
+      "status": "passed",
+      "detail": {
+        "rootSlots": 2,
+        "claimsPerRoot": 6,
+        "childrenPerRoot": 3,
+        "emergencySlots": 2,
+        "rootBytes": 304,
+        "claimBytes": 1568,
+        "childBytes": 96,
+        "scratchBytes": 42,
+        "backingBytes": 2010,
+        "tokenObjectsCreated": 5001,
+        "snapshotObjectsCreated": 0,
+        "activeRecords": 0,
+        "peakRecords": 1
+      }
+    },
+    {
+      "name": "Finite step bound preserves cleanup lane",
+      "status": "passed"
+    },
+    {
+      "name": "Deadline blocks work and cleanup, late output stays charged",
+      "status": "passed"
+    },
+    {
+      "name": "Output after end recorded as unresolved; no synthetic refund",
+      "status": "passed"
+    },
+    {
+      "name": "Exclusive promises conflict; acquired uncertainty survives settlement",
+      "status": "passed"
+    },
+    {
+      "name": "Emergency quarantine is bounded and overflow explicitly loses coverage",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 7,
+          "bytes": 320,
+          "records": 8
+        },
+        "charged": {
+          "handles": 0,
+          "bytes": 0,
+          "records": 0
+        },
+        "carry": {
+          "handles": 0,
+          "bytes": 0,
+          "records": 0
+        },
+        "carryCleanupReserve": {
+          "handles": 0,
+          "bytes": 0,
+          "records": 0
+        },
+        "usedEffects": 1,
+        "promisedEffects": 3,
+        "activeRoots": 1,
+        "retainedRoots": 0,
+        "prepared": 0,
+        "unresolved": 2,
+        "emergency": 2,
+        "stopped": true,
+        "ended": false,
+        "fault": "PROVIDER_CONTRACT",
+        "coverageLost": true,
+        "accountingComplete": false
+      }
+    },
+    {
+      "name": "Unadmitted root cannot acquire a stop/cleanup reservation",
+      "status": "passed"
+    },
+    {
+      "name": "Partial logical refunds cannot spend physical cleanup slots on work",
+      "status": "passed"
+    },
+    {
+      "name": "Physical record exhaustion cannot start a host call",
+      "status": "passed"
+    }
+  ],
+  "sourceBase": "90845279acd261d8756e10423f06c6c2e0773291",
+  "node": "v24.19.0",
+  "inputs": [
+    {
+      "file": "service.cjs",
+      "sha256": "38acecb33cfd99a9b91265d21582e37c6024440e6b31e71e2efaeaa731840763"
+    },
+    {
+      "file": "check.cjs",
+      "sha256": "9b95ba48f68746c301db33e7bcf6b5832c340f88161d4c280082a74bcbb8186c"
+    },
+    {
+      "file": "../ra02/policy.json",
+      "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f"
+    },
+    {
+      "file": "../ra02/sweep/traces.json.gz",
+      "sha256": "4ad222365c0c75cde11edd3ca37a49bd037e6cff1fdc35dd7ef928f6987d91f2"
+    }
+  ]
+}

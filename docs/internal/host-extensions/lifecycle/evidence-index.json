@@ -1,0 +1,216 @@
+{
+  "status": "bounded-spike-complete; human review pending",
+  "base": "41d9f6b5d577e444c5135fdb098da120596f76fd",
+  "localExperimentParent": "25b3f9628183fa4ddfdc479673d0014e684b09f4",
+  "baseTreesIdentical": true,
+  "node": "v24.22.1",
+  "evidence": {
+    "file": "evidence.tar.gz",
+    "bytes": 889787,
+    "sha256": "794f99f658701c24fe8c4a1e8acc5001f72bddeb0ef2d1edf5c2d75b1fd902f5",
+    "manifestEntries": 91
+  },
+  "checks": {
+    "composer": 28,
+    "compiledComposition": 9,
+    "hex01Lifecycle": 19,
+    "hex03Lifecycle": 66,
+    "forwarding": "passed; injected ABI only",
+    "ra05Native": 44,
+    "providerTasks": {
+      "status": "passed",
+      "tasks": [
+        "provider-fastly-package",
+        "provider-fastly-apps",
+        "fastly-javascript-runtime",
+        "fastly-native-http-shell",
+        "fastly-native-http-effects",
+        "fastly-native-platform-capabilities"
+      ]
+    },
+    "build": "passed",
+    "maintainer": "passed",
+    "docs": "passed on retry after test-only CLI flag replaces undocumented environment switch",
+    "documentationRelease": "passed on same retry",
+    "unitAggregate": {
+      "passed": 30,
+      "failed": 1,
+      "task": "release-recovery",
+      "failure": "expected sharedPack reused, got executed",
+      "isolatedRetry": "passed, task unchanged"
+    },
+    "scope": "declaration valid; architecture/human review required"
+  },
+  "measurements": {
+    "kind": "matched local binary-size evidence; not runtime cost or Fastly acceptance",
+    "base": "41d9f6b5d577e444c5135fdb098da120596f76fd",
+    "node": "v24.22.1",
+    "rows": [
+      {
+        "name": "absent",
+        "baseBytes": 23444,
+        "bytes": 23444,
+        "delta": 0,
+        "baseSha256": "7848730bed1cc6ed85100914298664b34329793b0062ebc17e8ea0f16e32aa67",
+        "sha256": "7848730bed1cc6ed85100914298664b34329793b0062ebc17e8ea0f16e32aa67",
+        "sourceIdentical": true,
+        "wasmIdentical": true,
+        "importsIdentical": true,
+        "policyIdentical": true,
+        "importSetIdentical": true
+      },
+      {
+        "name": "unused",
+        "baseBytes": 23444,
+        "bytes": 23444,
+        "delta": 0,
+        "baseSha256": "eb331d429b9de118e727214a757583ff0b24f21825401d5ed46767a1df87bc0a",
+        "sha256": "eb331d429b9de118e727214a757583ff0b24f21825401d5ed46767a1df87bc0a",
+        "sourceIdentical": true,
+        "wasmIdentical": true,
+        "importsIdentical": true,
+        "policyIdentical": true,
+        "importSetIdentical": true
+      },
+      {
+        "name": "generic",
+        "baseBytes": 25268,
+        "bytes": 25268,
+        "delta": 0,
+        "baseSha256": "a33f8e184b4d241858c8497004e99b404b2bad3c2a277c5263f5f790671dfa1f",
+        "sha256": "a33f8e184b4d241858c8497004e99b404b2bad3c2a277c5263f5f790671dfa1f",
+        "sourceIdentical": true,
+        "wasmIdentical": true,
+        "importsIdentical": true,
+        "policyIdentical": true,
+        "importSetIdentical": true
+      },
+      {
+        "name": "fanout",
+        "baseBytes": 27305,
+        "bytes": 27551,
+        "delta": 246,
+        "baseSha256": "353b107a95673170f6f8bdb5a42d39df2c5baf6e2df424b580a08d35df761504",
+        "sha256": "8992b9cbfb2882cdc28b7e34580b18417b47ae2fa2debb8919bd4437082ec37f",
+        "sourceIdentical": false,
+        "wasmIdentical": false,
+        "importsIdentical": false,
+        "policyIdentical": true,
+        "importSetIdentical": true
+      },
+      {
+        "name": "websocket",
+        "baseBytes": 27310,
+        "bytes": 27556,
+        "delta": 246,
+        "baseSha256": "9dcd31171336c29f184baef097ba4b10923ca4632d197599fea1793ca4ff43bd",
+        "sha256": "35c2bcfcf574a6a5f3b5b242c8d27592de8da378ffa4bb8658ea51236ef30b6c",
+        "sourceIdentical": false,
+        "wasmIdentical": false,
+        "importsIdentical": false,
+        "policyIdentical": true,
+        "importSetIdentical": true
+      },
+      {
+        "name": "forwarding",
+        "baseBytes": 35147,
+        "bytes": 35296,
+        "delta": 149,
+        "baseSha256": "ee0f0971dee0ebf3f3719c12ba1af3dc4361b605c696231a91169bc9962060d4",
+        "sha256": "2eca73a9faeeb22c23ad3996338743a32f676d0a7fb0155abdfa1bdac6fb5906",
+        "sourceIdentical": false,
+        "wasmIdentical": false,
+        "importsIdentical": false,
+        "policyIdentical": true,
+        "importSetIdentical": true
+      }
+    ]
+  },
+  "notRun": [
+    "full native/javascript/conformance profiles",
+    "packed consumer qualification",
+    "Viceroy",
+    "hosted Fastly",
+    "release seal"
+  ],
+  "limits": [
+    "forced mixed-service harness uses explicit I/O stubs; placement admission unchanged",
+    "RA05 capability wrappers still source-injected; only closure and response-authority seam migrated",
+    "binary-size measurement, not execution cost",
+    "after/end/closed hooks are not trap finalizers"
+  ],
+  "sourceInputs": [
+    {
+      "path": "docs/internal/host-extensions/DESIGN-03-lifecycle-hooks.md",
+      "sha256": "ada3c6852a59e562b3ff5aa8c18154068067c01b7d4330891bf24cd78ae696f6"
+    },
+    {
+      "path": "docs/internal/host-extensions/README.md",
+      "sha256": "4906fa9f9fdaa3f5b3e3e4aab65ffe82757d0337ffcf7d5b8ce5df6210338919"
+    },
+    {
+      "path": "docs/internal/host-extensions/assert-hex01.cjs",
+      "sha256": "16e38c8d56ad62a279c9847d10e1c4f07cf465e85897c00cd9a9854c62ba4f17"
+    },
+    {
+      "path": "docs/internal/host-extensions/injected-host.cjs",
+      "sha256": "45a02f60235ce94856208aef17cc89e2ae92f519ec048b0276de8aa0ec10af53"
+    },
+    {
+      "path": "docs/internal/host-extensions/lifecycle/measure.cjs",
+      "sha256": "7a763d78819ce0a122aae0b26bddfea95a7c90511857543f694c033f3d3c6403"
+    },
+    {
+      "path": "docs/internal/host-extensions/resource-accounting/ra05/README.md",
+      "sha256": "c62ef1fd5903755774464f86c92302d588dbbdb6158a2c854ff99b604debc9c6"
+    },
+    {
+      "path": "docs/internal/host-extensions/resource-accounting/ra05/build.cjs",
+      "sha256": "8a350111edf983ed30c10de6bdd887a2a6b929e81af544a124026966a7052d70"
+    },
+    {
+      "path": "docs/internal/host-extensions/resource-accounting/ra05/check.cjs",
+      "sha256": "aebf9d7716c555f00f4710b1cd9ef767f31f3405933c2e6f62bedc0c89518804"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/host-extensions.js",
+      "sha256": "04e92507da6266f7c296ea78234ee3ad4d9721c568c971c837d7502fec0e5d3d"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/lifecycle-hooks.js",
+      "sha256": "5a82df835d8ebd0f8db241dbeb7640b09230dbd82f12f5943574d45b307f3865"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-body-forwarding.as.ts",
+      "sha256": "7a7eadd07d9aea9745b00ff5b8f895b2f4387f4b04c640c9ce38b3b31687e703"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-body-forwarding.js",
+      "sha256": "bca530e684aa8564be21c33d3dfea32dbfea931be8607221cfa2ccc42d036ece"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "sha256": "6ffa6fef7aa09ca5628ae1027eafb05b8ec13fb243cfd2932f41b499f556616d"
+    },
+    {
+      "path": "packages/provider-fastly/src/build/response-authority.js",
+      "sha256": "c344c5d5d7a611100449f4388b30a19a4476d8f722c8217765e071352d666dc4"
+    },
+    {
+      "path": "wasm/test/provider/assert-fastly-host-extension-proof.cjs",
+      "sha256": "7585254364a43f9c2b7cb2ecfadb2a6dc39382e5d4e0663518404614ea53ffa3"
+    },
+    {
+      "path": "wasm/test/provider/host-extension-lifecycle-cases.cjs",
+      "sha256": "8548860343bd013863429da1e8438527e6e34d225240c5ed8ccb464f2f9c80ab"
+    },
+    {
+      "path": "wasm/test/provider/lifecycle-hook-cases.cjs",
+      "sha256": "b92483107dbad1ada81b47be02b3208370525710d8db604e633d33ad1706858c"
+    },
+    {
+      "path": "wasm/test/provider/lifecycle-native-cases.cjs",
+      "sha256": "89ef5daf745acea8c3286f95fc00a6a779e7fe15b52f62245052f22ba2060092"
+    }
+  ]
+}

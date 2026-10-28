@@ -1,0 +1,122 @@
+{
+  "version": "hex.ra02-validation.v0",
+  "status": "passed",
+  "sourceBase": "7ab4741ea9c519bc01488d169441889288303b5c",
+  "scope": "Internal candidate policy and offline accounting oracle; production behavior unchanged",
+  "policyChecks": {
+    "command": "node docs/internal/host-extensions/resource-accounting/ra02/check.cjs /tmp/hex-ra02-final.json",
+    "status": "passed",
+    "scenarios": 72,
+    "refundDimensionCombinations": 15,
+    "ra01IntegratedTraces": 2,
+    "sourceIdentity": "receipt.json inputs; archive contains exact input snapshots and full receipt"
+  },
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T22:05:46.604042+00:00",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> maintainer:sync\n> node scripts/maintenance-policy.cjs --write\n\nok - 5 maintenance-policy output(s) synchronized\n",
+      "fullLog": "0.log"
+    },
+    {
+      "command": "npm run docs:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T22:05:47.153975+00:00",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> docs:sync\n> node wasm/scripts/sync-doc-snippets.cjs --write\n\nok - 268 generated documentation/package file(s), 5 maintenance-policy output(s), 62 source block(s), and 19 owned page(s) are synchronized\n",
+      "fullLog": "1.log"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T22:05:50.332479+00:00",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> maintainer:check\n> node scripts/validate-maintainer-control-plane.cjs\n\nok - 7 change classes, 11 protected boundaries, 9 AGENTS files, 44 documented test commands, 10 workflows, 14 documentation deployment objects, and 17 scope cases validated\n",
+      "fullLog": "2.log"
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T22:06:11.678992+00:00",
+      "outputTail": "portTiers\": 3\n    },\n    \"releaseManifest\": {\n      \"schemaVersion\": \"pulse.release-catalog.v1\",\n      \"releaseVersion\": \"1.0.0-beta.10\",\n      \"versions\": 9,\n      \"runtimeTargets\": 3,\n      \"packages\": 20\n    },\n    \"links\": {\n      \"checked\": 1539,\n      \"hosted\": 43\n    },\n    \"diagnostics\": 194,\n    \"cli\": {\n      \"commands\": 9,\n      \"publicOptions\": 22,\n      \"maintainerOptions\": 0,\n      \"completionShells\": 3,\n      \"metaInvocations\": 3\n    },\n    \"config\": {\n      \"fields\": 37,\n      \"runtimeRules\": 14,\n      \"fastlyFields\": 27,\n      \"schemaVersion\": \"pulse.project-config-schema.v1\"\n    },\n    \"environment\": {\n      \"catalog\": 31,\n      \"discovered\": 31\n    },\n    \"pluginReadiness\": {\n      \"publicPluginApi\": false,\n      \"decision\": \"deferred\",\n      \"requirements\": 6,\n      \"satisfied\": 0,\n      \"providers\": 3\n    },\n    \"metadata\": {\n      \"status\": \"ok\",\n      \"files\": 19,\n      \"owners\": 3,\n      \"checkedOn\": \"2026-10-24\"\n    },\n    \"layers\": {\n      \"productDocuments\": 28,\n      \"architectureDocuments\": 8,\n      \"siteDocuments\": 1,\n      \"routingDocuments\": 1,\n      \"middlewareDocuments\": 1,\n      \"governanceDocuments\": 7,\n      \"deliveryDocuments\": 4,\n      \"changelogDocuments\": 1,\n      \"maintenanceSources\": 31,\n      \"deliverySources\": 15,\n      \"machineArtifacts\": 6,\n      \"publicFixtures\": 1,\n      \"sourceBindings\": 5,\n      \"executableBindings\": 2\n    },\n    \"sourceContract\": {\n      \"status\": \"ok\",\n      \"pages\": 84,\n      \"routeAliases\": 2\n    }\n  }\n}\n",
+      "fullLog": "3.log"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T22:06:40.963617+00:00",
+      "outputTail": "   \"pages\": 3\n      },\n      \"elapsedMs\": 14113\n    },\n    \"elapsedMs\": 33811\n  },\n  \"packagePolicy\": {\n    \"packages\": 20,\n    \"supportTiers\": 3\n  },\n  \"releaseManifest\": {\n    \"schemaVersion\": \"pulse.release-catalog.v1\",\n    \"releaseVersion\": \"1.0.0-beta.10\",\n    \"versions\": 9,\n    \"runtimeTargets\": 3,\n    \"packages\": 20\n  },\n  \"links\": {\n    \"checked\": 1539,\n    \"hosted\": 43\n  },\n  \"diagnostics\": 194,\n  \"cli\": {\n    \"commands\": 9,\n    \"publicOptions\": 22,\n    \"maintainerOptions\": 0,\n    \"completionShells\": 3,\n    \"metaInvocations\": 3\n  },\n  \"config\": {\n    \"fields\": 37,\n    \"runtimeRules\": 14,\n    \"fastlyFields\": 27,\n    \"schemaVersion\": \"pulse.project-config-schema.v1\"\n  },\n  \"environment\": {\n    \"catalog\": 31,\n    \"discovered\": 31\n  },\n  \"pluginReadiness\": {\n    \"publicPluginApi\": false,\n    \"decision\": \"deferred\",\n    \"requirements\": 6,\n    \"satisfied\": 0,\n    \"providers\": 3\n  },\n  \"metadata\": {\n    \"status\": \"ok\",\n    \"files\": 19,\n    \"owners\": 3,\n    \"checkedOn\": \"2026-10-24\"\n  },\n  \"layers\": {\n    \"productDocuments\": 28,\n    \"architectureDocuments\": 8,\n    \"siteDocuments\": 1,\n    \"routingDocuments\": 1,\n    \"middlewareDocuments\": 1,\n    \"governanceDocuments\": 7,\n    \"deliveryDocuments\": 4,\n    \"changelogDocuments\": 1,\n    \"maintenanceSources\": 31,\n    \"deliverySources\": 15,\n    \"machineArtifacts\": 6,\n    \"publicFixtures\": 1,\n    \"sourceBindings\": 5,\n    \"executableBindings\": 2\n  },\n  \"sourceContract\": {\n    \"status\": \"ok\",\n    \"pages\": 84,\n    \"routeAliases\": 2\n  }\n}\n",
+      "fullLog": "4.log"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T22:07:18.090716+00:00",
+      "outputTail": "",
+      "fullLog": "5.log"
+    }
+  ],
+  "logArchive": {
+    "file": "validation-logs.tar.gz",
+    "sha256": "344d386e8a4f29ab3cd045212f21c17732e78fa199a139ecd2951a49e8901bcb",
+    "members": [
+      {
+        "file": "0.log",
+        "bytes": 214,
+        "sha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+      },
+      {
+        "file": "1.log",
+        "bytes": 303,
+        "sha256": "c31091ee16b5ebc5712f89de52b83240030aee11850daa4a77a0fdb5dabeb471"
+      },
+      {
+        "file": "2.log",
+        "bytes": 346,
+        "sha256": "1f428a3a3fa5888988ff157b267e88a858d71da4779791ae3dfbb4f707b1c382"
+      },
+      {
+        "file": "3.log",
+        "bytes": 340636,
+        "sha256": "cd69bb9c2018bf045f2b5ca00e94e0e1072bee47a15945ee720ede1fae1a67b6"
+      },
+      {
+        "file": "4.log",
+        "bytes": 326845,
+        "sha256": "01045d733d40831b6014c4c9a05400c6e63811e5579e8938991a7350cf15e01b"
+      },
+      {
+        "file": "5.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "notes": [
+    "The first 66-scenario selection passed; final coverage expanded to 72 scenarios and passed. No failed policy-check attempt occurred.",
+    "Repository checks ran sequentially after final scenario/input packaging. No generated or production source files changed.",
+    "Two scenarios execute the RA-01 oracle as a dependency. The full RA-01 suite and prior Wasm/cache/composition evidence were not rerun.",
+    "No full regression, compiled-Wasm, JavaScript host parity, Viceroy/hosted or hardware qualification, performance measurement, or standard report integration is claimed."
+  ],
+  "integrity": {
+    "status": "passed",
+    "checks": [
+      "Pinned source hashes",
+      "Archive and all member hashes",
+      "Archived RA-01/02 inputs match final worktree",
+      "Final receipt input hashes and terminal 72-scenario coverage",
+      "Validation log hashes",
+      "Relative README links"
+    ]
+  },
+  "scopeCheck": {
+    "command": "node scripts/maintainer-scope.cjs --base 7ab4741ea9c519bc01488d169441889288303b5c --head HEAD --declaration-file /tmp/ra02-pr-body.md --check",
+    "status": "passed",
+    "output": "# Pulse maintainer scope\n\n**Status:** Pass\n\n| Signal | Result |\n|---|---|\n| Declared class | `evidence` |\n| Declared scope | `evidence-only` |\n| Risk | `low` |\n| Changed files | 11 |\n| Areas | `documentation` |\n| Protected boundaries | None |\n| Separate human decision | Not required |\n| Current contract update | Not inferred |\n| Release authority | Not inferred |\n| Required checks | `documentation`, `maintenance-policy` |\n\nThe resident maintainer may analyze, review, and prepare a minimal patch; human review and merge remain required.\n\n"
+  }
+}

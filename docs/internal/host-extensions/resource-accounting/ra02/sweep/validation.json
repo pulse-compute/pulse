@@ -1,0 +1,128 @@
+{
+  "version": "hex.ra02-sweep-validation.v1",
+  "status": "passed",
+  "sourceBase": "65da931d399e0dfac53ace9938edf3330e764b9c",
+  "scope": "Evidence-only; synthetic oracle counters, no production behavior changes",
+  "sweep": {
+    "status": "passed",
+    "cases": 33,
+    "widths": [
+      8,
+      16,
+      32
+    ],
+    "recovery": "All case results and full traces match the prior final receipt exactly; plot bytes also match.",
+    "inputs": "receipt.json and evidence-index.json pin executed input bytes"
+  },
+  "baseline": {
+    "status": "passed",
+    "cases": 72,
+    "executed": "Prior session; unchanged RA-02 oracle; full receipt preserved in recovery-evidence.tar.gz"
+  },
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T22:47:48.524109+00:00",
+      "fullLog": "0.log",
+      "sha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> maintainer:sync\n> node scripts/maintenance-policy.cjs --write\n\nok - 5 maintenance-policy output(s) synchronized\n"
+    },
+    {
+      "command": "npm run docs:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T22:47:49.253614+00:00",
+      "fullLog": "1.log",
+      "sha256": "c31091ee16b5ebc5712f89de52b83240030aee11850daa4a77a0fdb5dabeb471",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> docs:sync\n> node wasm/scripts/sync-doc-snippets.cjs --write\n\nok - 268 generated documentation/package file(s), 5 maintenance-policy output(s), 62 source block(s), and 19 owned page(s) are synchronized\n"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T22:47:52.774031+00:00",
+      "fullLog": "2.log",
+      "sha256": "1f428a3a3fa5888988ff157b267e88a858d71da4779791ae3dfbb4f707b1c382",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> maintainer:check\n> node scripts/validate-maintainer-control-plane.cjs\n\nok - 7 change classes, 11 protected boundaries, 9 AGENTS files, 44 documented test commands, 10 workflows, 14 documentation deployment objects, and 17 scope cases validated\n"
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 1,
+      "status": "failed",
+      "started": "2026-10-24T22:48:22.265089+00:00",
+      "fullLog": "3.log",
+      "sha256": "668f2d22a06c4e86bccafa59cb6e2d9e62004e49843e14756cc587587dd95a65",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> docs:check\n> node scripts/documentation-check.cjs\n\nok - 268 generated documentation/package file(s), 5 maintenance-policy output(s), 62 source block(s), and 19 owned page(s) are synchronized\nError: published context true/missing-report probe failed\n    at fail (/workspace/scratch/253982db7f9e/pulse/scripts/validate-publication-workflows.cjs:42:17)\n    at validatePublishedContextSmoke (/workspace/scratch/253982db7f9e/pulse/scripts/validate-publication-workflows.cjs:366:77)\n    at validateWorkflows (/workspace/scratch/253982db7f9e/pulse/scripts/validate-publication-workflows.cjs:405:3)\n    at validatePublicationControlPlane (/workspace/scratch/253982db7f9e/pulse/scripts/validate-publication-workflows.cjs:937:16)\n    at validateMaintainerControlPlane (/workspace/scratch/253982db7f9e/pulse/scripts/validate-maintainer-control-plane.cjs:696:18)\n    at validateDocumentationSource (/workspace/scratch/253982db7f9e/pulse/scripts/documentation-release.cjs:1045:23)\n    at Object.validatePackageDocumentation (/workspace/scratch/253982db7f9e/pulse/scripts/documentation-release.cjs:1062:10)\n    at checkDocumentation (/workspace/scratch/253982db7f9e/pulse/scripts/documentation-check.cjs:12:64)\n    at Object.<anonymous> (/workspace/scratch/253982db7f9e/pulse/scripts/documentation-check.cjs:31:36)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 1,
+      "status": "failed",
+      "recovery": true,
+      "fullLog": "4.log",
+      "sha256": "c6645cd0b1af07b31172d06aa0c6a02e85cd73b602746aff7bde6594a98fad0e",
+      "outputTail": "Error: published context false/ready probe failed\n    at fail (/workspace/scratch/253982db7f9e/pulse/scripts/validate-publication-workflows.cjs:42:17)\n    at validatePublishedContextSmoke (/workspace/scratch/253982db7f9e/pulse/scripts/validate-publication-workflows.cjs:366:77)\n    at validateWorkflows (/workspace/scratch/253982db7f9e/pulse/scripts/validate-publication-workflows.cjs:405:3)\n    at validatePublicationControlPlane (/workspace/scratch/253982db7f9e/pulse/scripts/validate-publication-workflows.cjs:937:16)\n    at validateMaintainerControlPlane (/workspace/scratch/253982db7f9e/pulse/scripts/validate-maintainer-control-plane.cjs:696:18)\n    at validateDocumentationSource (/workspace/scratch/253982db7f9e/pulse/scripts/documentation-release.cjs:1045:23)\n    at main (/workspace/scratch/253982db7f9e/pulse/scripts/documentation-release.cjs:1183:20)\n    at Object.<anonymous> (/workspace/scratch/253982db7f9e/pulse/scripts/documentation-release.cjs:1220:30)\n    at Module._compile (node:internal/modules/cjs/loader:1872:14)\n    at Object..js (node:internal/modules/cjs/loader:2003:10)\n"
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "status": "passed",
+      "recovery": true,
+      "fullLog": "5.log",
+      "sha256": "7b09248b6feb25cf1a26f66fc166481e9b407c97ffc7be03f8678faf47298bb0",
+      "outputTail": "igV4\",\n          \"automaticActivation\": false\n        },\n        \"packageScripts\": {\n          \"scripts\": 5\n        },\n        \"documentation\": {\n          \"pages\": 3\n        },\n        \"elapsedMs\": 9265\n      },\n      \"elapsedMs\": 21704\n    },\n    \"packagePolicy\": {\n      \"packages\": 20,\n      \"supportTiers\": 3\n    },\n    \"releaseManifest\": {\n      \"schemaVersion\": \"pulse.release-catalog.v1\",\n      \"releaseVersion\": \"1.0.0-beta.10\",\n      \"versions\": 9,\n      \"runtimeTargets\": 3,\n      \"packages\": 20\n    },\n    \"links\": {\n      \"checked\": 1539,\n      \"hosted\": 43\n    },\n    \"diagnostics\": 194,\n    \"cli\": {\n      \"commands\": 9,\n      \"publicOptions\": 22,\n      \"maintainerOptions\": 0,\n      \"completionShells\": 3,\n      \"metaInvocations\": 3\n    },\n    \"config\": {\n      \"fields\": 37,\n      \"runtimeRules\": 14,\n      \"fastlyFields\": 27,\n      \"schemaVersion\": \"pulse.project-config-schema.v1\"\n    },\n    \"environment\": {\n      \"catalog\": 31,\n      \"discovered\": 31\n    },\n    \"pluginReadiness\": {\n      \"publicPluginApi\": false,\n      \"decision\": \"deferred\",\n      \"requirements\": 6,\n      \"satisfied\": 0,\n      \"providers\": 3\n    },\n    \"metadata\": {\n      \"status\": \"ok\",\n      \"files\": 19,\n      \"owners\": 3,\n      \"checkedOn\": \"2026-10-24\"\n    },\n    \"layers\": {\n      \"productDocuments\": 28,\n      \"architectureDocuments\": 8,\n      \"siteDocuments\": 1,\n      \"routingDocuments\": 1,\n      \"middlewareDocuments\": 1,\n      \"governanceDocuments\": 7,\n      \"deliveryDocuments\": 4,\n      \"changelogDocuments\": 1,\n      \"maintenanceSources\": 31,\n      \"deliverySources\": 15,\n      \"machineArtifacts\": 6,\n      \"publicFixtures\": 1,\n      \"sourceBindings\": 5,\n      \"executableBindings\": 2\n    },\n    \"sourceContract\": {\n      \"status\": \"ok\",\n      \"pages\": 84,\n      \"routeAliases\": 2\n    }\n  }\n}\n"
+    },
+    {
+      "command": "node --require /tmp/ra02-sweep-probe-diagnostic.cjs scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "status": "passed",
+      "recovery": true,
+      "fullLog": "6.log",
+      "sha256": "9e5407309144337b367e65d52d7077378b86324299c479ddf87fa7a78d399002",
+      "outputTail": "ses\": 7\n      },\n      \"fastlyVcl\": {\n        \"files\": 6,\n        \"methods\": [\n          \"GET\",\n          \"HEAD\"\n        ],\n        \"privateOriginSigning\": \"AWS SigV4\",\n        \"automaticActivation\": false\n      },\n      \"packageScripts\": {\n        \"scripts\": 5\n      },\n      \"documentation\": {\n        \"pages\": 3\n      },\n      \"elapsedMs\": 9630\n    },\n    \"elapsedMs\": 19717\n  },\n  \"packagePolicy\": {\n    \"packages\": 20,\n    \"supportTiers\": 3\n  },\n  \"releaseManifest\": {\n    \"schemaVersion\": \"pulse.release-catalog.v1\",\n    \"releaseVersion\": \"1.0.0-beta.10\",\n    \"versions\": 9,\n    \"runtimeTargets\": 3,\n    \"packages\": 20\n  },\n  \"links\": {\n    \"checked\": 1539,\n    \"hosted\": 43\n  },\n  \"diagnostics\": 194,\n  \"cli\": {\n    \"commands\": 9,\n    \"publicOptions\": 22,\n    \"maintainerOptions\": 0,\n    \"completionShells\": 3,\n    \"metaInvocations\": 3\n  },\n  \"config\": {\n    \"fields\": 37,\n    \"runtimeRules\": 14,\n    \"fastlyFields\": 27,\n    \"schemaVersion\": \"pulse.project-config-schema.v1\"\n  },\n  \"environment\": {\n    \"catalog\": 31,\n    \"discovered\": 31\n  },\n  \"pluginReadiness\": {\n    \"publicPluginApi\": false,\n    \"decision\": \"deferred\",\n    \"requirements\": 6,\n    \"satisfied\": 0,\n    \"providers\": 3\n  },\n  \"metadata\": {\n    \"status\": \"ok\",\n    \"files\": 19,\n    \"owners\": 3,\n    \"checkedOn\": \"2026-10-24\"\n  },\n  \"layers\": {\n    \"productDocuments\": 28,\n    \"architectureDocuments\": 8,\n    \"siteDocuments\": 1,\n    \"routingDocuments\": 1,\n    \"middlewareDocuments\": 1,\n    \"governanceDocuments\": 7,\n    \"deliveryDocuments\": 4,\n    \"changelogDocuments\": 1,\n    \"maintenanceSources\": 31,\n    \"deliverySources\": 15,\n    \"machineArtifacts\": 6,\n    \"publicFixtures\": 1,\n    \"sourceBindings\": 5,\n    \"executableBindings\": 2\n  },\n  \"sourceContract\": {\n    \"status\": \"ok\",\n    \"pages\": 84,\n    \"routeAliases\": 2\n  }\n}\n"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "status": "passed",
+      "fullLog": "7.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputTail": ""
+    },
+    {
+      "command": "Observe publication probe subprocess results without changing arguments or outcomes",
+      "exitCode": 0,
+      "status": "passed",
+      "fullLog": "8.log",
+      "sha256": "6a198926bf00fe9daa1c023cfaf601f3def13502a6e3d932847a0a7ccd74e2e2",
+      "outputTail": "e:assert:152\\n  throw new AssertionError(obj);\\n  ^\\n\\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n+ actual - expected\\n\\n+ '0.0.0'\\n- '9.8.7-beta.smoke'\\n\\n    at [stdin]:6:8\\n    at runScriptInThisContext (node:internal/vm:219:10)\\n    at node:internal/process/execution:451:12\\n    at [stdin]-wrapper:6:24\\n    at runScriptInContext (node:internal/process/execution:449:60)\\n    at evalFunction (node:internal/process/execution:283:30)\\n    at evalTypeScript (node:internal/process/execution:295:3)\\n    at node:internal/main/eval_stdin:51:5\\n    at Socket.<anonymous> (node:internal/process/execution:205:5)\\n    at Socket.emit (node:events:521:24) {\\n  generatedMessage: true,\\n  code: 'ERR_ASSERTION',\\n  actual: '0.0.0',\\n  expected: '9.8.7-beta.smoke',\\n  operator: 'strictEqual',\\n  diff: 'simple'\\n}\\n\\nNode.js v24.19.0\\n\"}\n{\"scenario\":\"cleanup-failure\",\"runSmoke\":\"true\",\"elapsedMs\":824,\"timeout\":10000,\"status\":1,\"signal\":null,\"stderr\":\"node:assert:152\\n  throw new AssertionError(obj);\\n  ^\\n\\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n\\n'failed' !== 'passed'\\n\\n    at [stdin]:7:8\\n    at runScriptInThisContext (node:internal/vm:219:10)\\n    at node:internal/process/execution:451:12\\n    at [stdin]-wrapper:6:24\\n    at runScriptInContext (node:internal/process/execution:449:60)\\n    at evalFunction (node:internal/process/execution:283:30)\\n    at evalTypeScript (node:internal/process/execution:295:3)\\n    at node:internal/main/eval_stdin:51:5\\n    at Socket.<anonymous> (node:internal/process/execution:205:5)\\n    at Socket.emit (node:events:521:24) {\\n  generatedMessage: true,\\n  code: 'ERR_ASSERTION',\\n  actual: 'failed',\\n  expected: 'passed',\\n  operator: 'strictEqual',\\n  diff: 'simple'\\n}\\n\\nNode.js v24.19.0\\n\"}\n"
+    }
+  ],
+  "logArchive": {
+    "file": "validation-logs.tar.gz",
+    "sha256": "c8d8d3ac30791710c80cedf2fbf702da9327364b6f9beb2172d46165ee02996b"
+  },
+  "integrity": {
+    "status": "passed",
+    "checks": [
+      "Oracle and harness input hashes",
+      "Compressed and uncompressed trace digests",
+      "Per-case trace digests and event counts",
+      "Reproduction of all 33 cases and plot",
+      "Oracle and policy unchanged from base",
+      "Plot visually inspected"
+    ]
+  },
+  "notes": [
+    "Initial 30-case selection passed; expanded final 33-case selection passed and reproduced on recovery.",
+    "The prior docs:check failed at published context true/missing-report probe. An unchanged retry passed; cause is unconfirmed. Both attempts are preserved. The release simulation also failed at false/ready and was retried with a logging-only spawnSync observer; no timeout or execution argument changed.",
+    "No runtime memory, CPU, latency, Wasm size, real host limit or throughput measurement; no RA-03 implementation."
+  ],
+  "scopeCheck": {
+    "status": "passed",
+    "command": "node scripts/maintainer-scope.cjs --base 65da931d399e0dfac53ace9938edf3330e764b9c --head HEAD --declaration-file /tmp/ra02-sweep-pr-body.md --check",
+    "output": "# Pulse maintainer scope\n\n**Status:** Pass\n\n| Signal | Result |\n|---|---|\n| Declared class | `evidence` |\n| Declared scope | `evidence-only` |\n| Risk | `low` |\n| Changed files | 11 |\n| Areas | `documentation` |\n| Protected boundaries | None |\n| Separate human decision | Not required |\n| Current contract update | Not inferred |\n| Release authority | Not inferred |\n| Required checks | `documentation`, `maintenance-policy` |\n\nThe resident maintainer may analyze, review, and prepare a minimal patch; human review and merge remain required.\n\n"
+  }
+}

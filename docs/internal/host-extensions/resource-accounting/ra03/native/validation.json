@@ -1,0 +1,126 @@
+{
+  "schema": "hex.ra03-native-validation.v1",
+  "status": "passed",
+  "sourceBase": "1349e1615e379ba582d2276d4f29e9fc334c8d7b",
+  "sourceState": "Internal native files and two workstream README links uncommitted over base; production unchanged. Exact native inputs hashed below.",
+  "inputs": [
+    {
+      "file": "README.md",
+      "sha256": "65bbf4e5d186ee9475eab158771b6f69080f7858585de4ccda15d2a8512b874c"
+    },
+    {
+      "file": "build.cjs",
+      "sha256": "824a9f6a5e481f5920233349d0396e9ccd12b6d868d69f7ecc570492985bafd3"
+    },
+    {
+      "file": "check.cjs",
+      "sha256": "1eb72bebdfc96397f786d1d088db1a8a481845680a09a63b150c1048498a134a"
+    },
+    {
+      "file": "checks.json",
+      "sha256": "65b0598da2929dbf5a8105fa867bddf98563f211998cf98b18ea69588fadc408"
+    },
+    {
+      "file": "driver.cjs",
+      "sha256": "497604d859783bab9e20db843b3fee12e13c0787ca2a9ab0f3f42313ae35f69b"
+    },
+    {
+      "file": "driver.json",
+      "sha256": "2fa011f8db0fe3a993cb4f91b3459dfd95d2e5b36b7617f1382ef2889f72bbe7"
+    },
+    {
+      "file": "evidence-index.json",
+      "sha256": "70d4c82d232308cb5fe791920f47ab38f745ececda285851f766d0d6ca5cb1fa"
+    },
+    {
+      "file": "evidence.tar.gz",
+      "sha256": "cb6121b4c029ce92f166501bc20e53eb66a287682013e9cc78b402348809bd13"
+    },
+    {
+      "file": "measure.cjs",
+      "sha256": "e63413b051251cc75faf5bd6991e563359d7a58f75292d6db0dd718607c3310a"
+    },
+    {
+      "file": "measurements.json",
+      "sha256": "bece3b0a8f85e399541d5aacb278e622fb152514da788df00e2bcebb629490be"
+    },
+    {
+      "file": "service.as.ts",
+      "sha256": "8e7da28b6d524691f6787fded634a3f684986ed8748b39fda2f43e4710d8fc43"
+    }
+  ],
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:16:09.185480+00:00",
+      "log": {
+        "path": "0.log",
+        "sha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+      }
+    },
+    {
+      "command": "npm run docs:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:16:09.858265+00:00",
+      "log": {
+        "path": "1.log",
+        "sha256": "c31091ee16b5ebc5712f89de52b83240030aee11850daa4a77a0fdb5dabeb471"
+      }
+    },
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:16:13.256920+00:00",
+      "log": {
+        "path": "2.log",
+        "sha256": "1f428a3a3fa5888988ff157b267e88a858d71da4779791ae3dfbb4f707b1c382"
+      }
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:16:35.467577+00:00",
+      "log": {
+        "path": "3.log",
+        "sha256": "a0418e0760f273d32c8c52cccf50d3e8c74019698daac5ec0b7673a430f1dee4"
+      }
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:17:15.428500+00:00",
+      "log": {
+        "path": "4.log",
+        "sha256": "0de7d72952164cdd286431292c10eb99fc64f88a94431904f340cf09b02503c2"
+      }
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-25T00:17:48.348562+00:00",
+      "log": {
+        "path": "5.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "scope": "Local evidence and repository maintenance/documentation checks; no full regression, target deployment or release qualification.",
+  "scopeCheck": {
+    "command": "node scripts/maintainer-scope.cjs --base origin/hex-integration --head HEAD --declaration-file /tmp/ra03-native-pr.md --check",
+    "exitCode": 0,
+    "testedHead": "52062ee75c1467461e214d2afeb91351ccefaa1f",
+    "output": "# Pulse maintainer scope\n\n**Status:** Pass\n\n| Signal | Result |\n|---|---|\n| Declared class | `evidence` |\n| Declared scope | `evidence-only` |\n| Risk | `low` |\n| Changed files | 14 |\n| Areas | `documentation` |\n| Protected boundaries | None |\n| Separate human decision | Not required |\n| Current contract update | Not inferred |\n| Release authority | Not inferred |\n| Required checks | `documentation`, `maintenance-policy` |\n\nThe resident maintainer may analyze, review, and prepare a minimal patch; human review and merge remain required.\n\n",
+    "note": "Run on initial evidence commit; final amendment adds this receipt only. Repeated on amended head before publication."
+  },
+  "logArchive": {
+    "path": "validation-logs.tar.gz",
+    "sha256": "b67b1b4abb44d8d90a61905d5c7130ed672ea6a3666b7458c8dbce4770d388b5"
+  }
+}

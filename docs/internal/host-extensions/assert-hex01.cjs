@@ -42,7 +42,7 @@ assert.notEqual(success.instance.exports.pulse_fastly_last_error(),0);
 retain('duplicate-start', { ...success, error: success.instance.exports.pulse_fastly_last_error() });
 const ordinary = execute(native,{path:'/ordinary'});
 assert.equal(ordinary.error,0);
-assert.equal(ordinary.state,0);
+assert.equal(ordinary.state,3); // Shared driver authority also tracks ordinary sends.
 assert.equal(ordinary.trace.filter(e=>e.call==='send').length,1);
 assert.equal(ordinary.trace.some(e=>e.body==='ordinary response'),true);
 retain('ordinary-route',ordinary);

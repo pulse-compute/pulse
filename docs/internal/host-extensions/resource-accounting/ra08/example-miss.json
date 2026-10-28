@@ -1,0 +1,714 @@
+{
+  "version": "hex.ra08.resource-evidence.v1",
+  "target": "fastly-native-injected-host",
+  "artifact": {
+    "sha256": "d0b743530c95f544afb4d69aa120af353168d4aac3c7d3c9658329640d08668f",
+    "execution": "836db5463ee52e9b66f80cb3056611300b1712d3e47ac9d23b215037543c9030",
+    "canonicalPlan": "9ca24c949ecc181a030a7e9ba69c1b410251ec2182a57604d6ee864de724d2b0",
+    "expandedPlan": "53ff8ec97a6c7c5958caa8fe9b1edbb30d222b03ee61f9e78dd044dceb226650",
+    "profile": "b7b3ed1da617b16996fce699c71ae0f479992dabec634b0efd0449b9d930653b"
+  },
+  "static": {
+    "bindings": [
+      {
+        "id": "binding-31fc3c7e52837b25",
+        "useSite": "31fc3c7e52837b25a73ecd008af557fa3ebd506735f029074f01e0b3e1438aec",
+        "capability": "cache.compose",
+        "service": "investigation-bounded-composition.v0",
+        "implementation": "4a6eb2ba10da7985783351b1370b83b19c25b247ef02db472846bc6d55c3c70e",
+        "root": "binding-31fc3c7e52837b25",
+        "parent": null,
+        "phase": "parent",
+        "resources": [],
+        "actions": [
+          "compose"
+        ],
+        "conditional": false,
+        "accounting": "root-envelope",
+        "demand": {
+          "handles": 3,
+          "backingBytes": 262785,
+          "records": 6
+        }
+      },
+      {
+        "id": "binding-cb86706b417c2aa5",
+        "useSite": "cb86706b417c2aa560d7efa3732c1c4cfcadd16bb9a5cf8106cdf2aa93aafaa7",
+        "capability": "cache.read",
+        "service": "investigation-bounded-composition.v0",
+        "implementation": "d7ae814e248b833060bc0660819fca04d28ee7a15307aff03d5af7c6372d605a",
+        "root": "binding-31fc3c7e52837b25",
+        "parent": "binding-31fc3c7e52837b25",
+        "phase": "lookup",
+        "resources": [
+          "cache-entry",
+          "body-reader",
+          "backing"
+        ],
+        "actions": [
+          "lookup",
+          "read",
+          "close"
+        ],
+        "conditional": false,
+        "accounting": "included-in-root",
+        "demand": {
+          "handles": 2,
+          "backingBytes": 257,
+          "records": 3
+        }
+      },
+      {
+        "id": "binding-d9dc34b271a5b0af",
+        "useSite": "d9dc34b271a5b0af8b2c7f6b093f823d241384033596dc33fc50d7ba7ba2d37c",
+        "capability": "fetch.text",
+        "service": "core.fetch",
+        "implementation": "46b8966307a69210a2702e0fc57ac21d346b0fd548a2d26ba8b029ae40b0d62c",
+        "root": "binding-31fc3c7e52837b25",
+        "parent": "binding-31fc3c7e52837b25",
+        "phase": "loader",
+        "resources": [
+          "request",
+          "request-body",
+          "pending-fetch",
+          "response",
+          "response-body",
+          "backing"
+        ],
+        "actions": [
+          "allocate",
+          "transfer",
+          "consume",
+          "read",
+          "close"
+        ],
+        "conditional": true,
+        "accounting": "included-in-root",
+        "demand": {
+          "handles": 3,
+          "backingBytes": 262336,
+          "records": 4
+        }
+      },
+      {
+        "id": "binding-7ee1e96f782589f6",
+        "useSite": "7ee1e96f782589f6e95f1e9032fe2ea1aa0716c707b8ccf4b9faa2f05825de98",
+        "capability": "cache.write",
+        "service": "investigation-bounded-composition.v0",
+        "implementation": "d7ae814e248b833060bc0660819fca04d28ee7a15307aff03d5af7c6372d605a",
+        "root": "binding-31fc3c7e52837b25",
+        "parent": "binding-31fc3c7e52837b25",
+        "phase": "insert",
+        "resources": [
+          "body-writer",
+          "backing"
+        ],
+        "actions": [
+          "insert",
+          "write",
+          "commit",
+          "abandon"
+        ],
+        "conditional": true,
+        "accounting": "included-in-root",
+        "demand": {
+          "handles": 1,
+          "backingBytes": 192,
+          "records": 2
+        }
+      }
+    ],
+    "rootIds": [
+      "binding-31fc3c7e52837b25"
+    ],
+    "profile": {
+      "work": {
+        "handles": 3,
+        "backingBytes": 262785,
+        "records": 6
+      },
+      "cleanup": {
+        "handles": 2,
+        "backingBytes": 64,
+        "records": 2
+      },
+      "exit": {
+        "handles": 2,
+        "backingBytes": 64,
+        "records": 2
+      },
+      "effectsPerRoot": 4
+    },
+    "graph": "experimental-expanded",
+    "canonicalChildGraph": false
+  },
+  "runtime": {
+    "scope": "dc4e26182c9914d9b1c4ecda0f0feb62",
+    "termination": "closed",
+    "coverage": {
+      "aggregates": "complete",
+      "records": "complete",
+      "samples": "complete",
+      "saturated": false,
+      "containment": false,
+      "lost": false
+    },
+    "collection": {
+      "total": 43,
+      "kept": 43,
+      "sampledOut": 0,
+      "dropped": 0,
+      "capacity": 256,
+      "sampleEvery": 1,
+      "storageBytes": 7552
+    },
+    "admission": {
+      "status": "admitted",
+      "bindings": [
+        "binding-31fc3c7e52837b25"
+      ],
+      "dimensions": [
+        {
+          "name": "handles",
+          "requested": 7,
+          "limit": 7,
+          "shortfall": 0
+        },
+        {
+          "name": "backingBytes",
+          "requested": 262913,
+          "limit": 262913,
+          "shortfall": 0
+        },
+        {
+          "name": "records",
+          "requested": 10,
+          "limit": 10,
+          "shortfall": 0
+        },
+        {
+          "name": "effects",
+          "requested": 4,
+          "limit": 1024,
+          "shortfall": 0
+        }
+      ]
+    },
+    "totals": {
+      "charged": {
+        "handles": 0,
+        "backingBytes": 262785,
+        "records": 3
+      },
+      "committed": {
+        "handles": 4,
+        "backingBytes": 262913,
+        "records": 7
+      },
+      "retainedBackingBytes": 262785,
+      "uncertainHostClaims": 0,
+      "retired": {
+        "released": 4,
+        "consumed": 1,
+        "transferred": 2
+      }
+    },
+    "roots": [
+      {
+        "binding": "binding-31fc3c7e52837b25",
+        "logicalState": "logically-finished",
+        "charge": {
+          "handles": 0,
+          "backingBytes": 262785,
+          "records": 3
+        },
+        "promisedChildren": 0,
+        "pendingChildren": 0
+      }
+    ],
+    "records": [
+      {
+        "id": 1,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-cb86706b417c2aa5",
+        "state": "uncertain-or-fenced",
+        "kind": "backing",
+        "charge": {
+          "handles": 0,
+          "backingBytes": 257,
+          "records": 1
+        }
+      },
+      {
+        "id": 8,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "state": "owned",
+        "kind": "backing",
+        "charge": {
+          "handles": 0,
+          "backingBytes": 262336,
+          "records": 1
+        }
+      },
+      {
+        "id": 9,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-7ee1e96f782589f6",
+        "state": "uncertain-or-fenced",
+        "kind": "backing",
+        "charge": {
+          "handles": 0,
+          "backingBytes": 192,
+          "records": 1
+        }
+      }
+    ],
+    "transitions": [
+      {
+        "from": "free",
+        "to": "prepared",
+        "count": 10
+      },
+      {
+        "from": "prepared",
+        "to": "owned",
+        "count": 10
+      },
+      {
+        "from": "owned",
+        "to": "uncertain-or-fenced",
+        "count": 4
+      },
+      {
+        "from": "owned",
+        "to": "in-flight",
+        "count": 5
+      },
+      {
+        "from": "released",
+        "to": "free",
+        "count": 4
+      },
+      {
+        "from": "uncertain-or-fenced",
+        "to": "released",
+        "count": 2
+      },
+      {
+        "from": "consumed",
+        "to": "free",
+        "count": 1
+      },
+      {
+        "from": "transferred",
+        "to": "free",
+        "count": 2
+      },
+      {
+        "from": "in-flight",
+        "to": "released",
+        "count": 2
+      },
+      {
+        "from": "in-flight",
+        "to": "consumed",
+        "count": 1
+      },
+      {
+        "from": "in-flight",
+        "to": "transferred",
+        "count": 2
+      }
+    ],
+    "samples": [
+      {
+        "sequence": 1,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-cb86706b417c2aa5",
+        "record": 1,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 2,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-cb86706b417c2aa5",
+        "record": 1,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 3,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-cb86706b417c2aa5",
+        "record": 2,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 4,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-cb86706b417c2aa5",
+        "record": 2,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 5,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-cb86706b417c2aa5",
+        "record": 2,
+        "from": "owned",
+        "to": "in-flight",
+        "afterClosure": false
+      },
+      {
+        "sequence": 6,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-cb86706b417c2aa5",
+        "record": 2,
+        "from": "in-flight",
+        "to": "released",
+        "afterClosure": false
+      },
+      {
+        "sequence": 7,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-cb86706b417c2aa5",
+        "record": 2,
+        "from": "released",
+        "to": "free",
+        "afterClosure": false
+      },
+      {
+        "sequence": 8,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 3,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 9,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 3,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 10,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 4,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 11,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 4,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 12,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 5,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 13,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 3,
+        "from": "owned",
+        "to": "in-flight",
+        "afterClosure": false
+      },
+      {
+        "sequence": 14,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 4,
+        "from": "owned",
+        "to": "in-flight",
+        "afterClosure": false
+      },
+      {
+        "sequence": 15,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 3,
+        "from": "in-flight",
+        "to": "transferred",
+        "afterClosure": false
+      },
+      {
+        "sequence": 16,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 3,
+        "from": "transferred",
+        "to": "free",
+        "afterClosure": false
+      },
+      {
+        "sequence": 17,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 4,
+        "from": "in-flight",
+        "to": "transferred",
+        "afterClosure": false
+      },
+      {
+        "sequence": 18,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 4,
+        "from": "transferred",
+        "to": "free",
+        "afterClosure": false
+      },
+      {
+        "sequence": 19,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 5,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 20,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 6,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 21,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 7,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 22,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 5,
+        "from": "owned",
+        "to": "in-flight",
+        "afterClosure": false
+      },
+      {
+        "sequence": 23,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 5,
+        "from": "in-flight",
+        "to": "consumed",
+        "afterClosure": false
+      },
+      {
+        "sequence": 24,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 5,
+        "from": "consumed",
+        "to": "free",
+        "afterClosure": false
+      },
+      {
+        "sequence": 25,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 6,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 26,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 7,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 27,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 8,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 28,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 8,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 29,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-7ee1e96f782589f6",
+        "record": 9,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 30,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-7ee1e96f782589f6",
+        "record": 9,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 31,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-7ee1e96f782589f6",
+        "record": 10,
+        "from": "free",
+        "to": "prepared",
+        "afterClosure": false
+      },
+      {
+        "sequence": 32,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-7ee1e96f782589f6",
+        "record": 10,
+        "from": "prepared",
+        "to": "owned",
+        "afterClosure": false
+      },
+      {
+        "sequence": 33,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-7ee1e96f782589f6",
+        "record": 10,
+        "from": "owned",
+        "to": "in-flight",
+        "afterClosure": false
+      },
+      {
+        "sequence": 34,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-7ee1e96f782589f6",
+        "record": 10,
+        "from": "in-flight",
+        "to": "released",
+        "afterClosure": false
+      },
+      {
+        "sequence": 35,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-7ee1e96f782589f6",
+        "record": 10,
+        "from": "released",
+        "to": "free",
+        "afterClosure": false
+      },
+      {
+        "sequence": 36,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-cb86706b417c2aa5",
+        "record": 1,
+        "from": "owned",
+        "to": "uncertain-or-fenced",
+        "afterClosure": true
+      },
+      {
+        "sequence": 37,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-7ee1e96f782589f6",
+        "record": 9,
+        "from": "owned",
+        "to": "uncertain-or-fenced",
+        "afterClosure": true
+      },
+      {
+        "sequence": 38,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 6,
+        "from": "owned",
+        "to": "uncertain-or-fenced",
+        "afterClosure": true
+      },
+      {
+        "sequence": 39,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 6,
+        "from": "uncertain-or-fenced",
+        "to": "released",
+        "afterClosure": true
+      },
+      {
+        "sequence": 40,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 6,
+        "from": "released",
+        "to": "free",
+        "afterClosure": true
+      },
+      {
+        "sequence": 41,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 7,
+        "from": "owned",
+        "to": "uncertain-or-fenced",
+        "afterClosure": true
+      },
+      {
+        "sequence": 42,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 7,
+        "from": "uncertain-or-fenced",
+        "to": "released",
+        "afterClosure": true
+      },
+      {
+        "sequence": 43,
+        "root": "binding-31fc3c7e52837b25",
+        "binding": "binding-d9dc34b271a5b0af",
+        "record": 7,
+        "from": "released",
+        "to": "free",
+        "afterClosure": true
+      }
+    ]
+  }
+}

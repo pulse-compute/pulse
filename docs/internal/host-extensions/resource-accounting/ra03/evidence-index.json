@@ -1,0 +1,141 @@
+{
+  "version": "hex.ra03-evidence.v1",
+  "sourceBase": "90845279acd261d8756e10423f06c6c2e0773291",
+  "archive": {
+    "file": "evidence.tar.gz",
+    "sha256": "ff3f5d444c1b5ed1d00331128d9c5c52ce843347a406d733d209a80e6986e119",
+    "members": [
+      {
+        "file": "attempts/hex-ra03-attempt1.json",
+        "bytes": 50272,
+        "sha256": "2d497891c874afd69fc20c8739b79066b4bf431cc176855a52fd2e8c3e154477"
+      },
+      {
+        "file": "attempts/hex-ra03-attempt2.json",
+        "bytes": 50272,
+        "sha256": "fba3ddf85807a4b82a5e8b84126611a4dc2a87e379623f6c13a3e729b87aa9d4"
+      },
+      {
+        "file": "attempts/hex-ra03-attempt3.json",
+        "bytes": 50272,
+        "sha256": "8770ecf597ac5acfdcaa7510294af82e7e2c046828aea7f9ecf22d40f84ac1a6"
+      },
+      {
+        "file": "attempts/hex-ra03-attempt4.json",
+        "bytes": 50508,
+        "sha256": "212798fcf7ec7214393ff08bcffec570761a81c84a2bc72829d6a23f61661f60"
+      },
+      {
+        "file": "attempts/hex-ra03-attempt5.json",
+        "bytes": 50508,
+        "sha256": "c03deb493d28307922183aa4f1415fb47888abc0fde9e264b9959097ed870169"
+      },
+      {
+        "file": "attempts/hex-ra03-hooks-attempt1.json",
+        "bytes": 1467,
+        "sha256": "3fc91156b25f7f9f14dd9fa7e010f833d313613ef1d8d7971b3b2171e5706dad"
+      },
+      {
+        "file": "attempts/hex-ra03-hooks-attempt2.json",
+        "bytes": 9223,
+        "sha256": "83f7393ac38641ed5d0ece0022b14f9345add4bbf1c2cb05cbb9dec9f3e0bb73"
+      },
+      {
+        "file": "attempts/hex-ra03-hooks-attempt3.json",
+        "bytes": 9223,
+        "sha256": "6548998003cd21bc08b51e3cf59546b2996191a103e331d83c346f132dabbbc7"
+      },
+      {
+        "file": "attempts/hex-ra03-hooks-attempt4.json",
+        "bytes": 9459,
+        "sha256": "8c1a26d50cf531337a01016e954b929cd210a0264ea4f090d411ed3c05c56bda"
+      },
+      {
+        "file": "attempts/hex-ra03-measure-attempt1.json",
+        "bytes": 25053,
+        "sha256": "fe4733a9b56b3f4856d8c434a86816d4da99dba04f4a652afffac2e442a1d5c8"
+      },
+      {
+        "file": "attempts/hex-ra03-measure-attempt2.json",
+        "bytes": 25067,
+        "sha256": "e5e70f447437cf256fc4f363f1c5c2849a8bb374c5026166b0dcf05489c7aa3e"
+      },
+      {
+        "file": "attempts/hex-ra03-measure-attempt3.json",
+        "bytes": 38138,
+        "sha256": "be9733c81ca00d3cdee8bf06c2b490033b3b697fbb2a2647db858861fb13e88b"
+      },
+      {
+        "file": "final/check-hooks.cjs",
+        "bytes": 9209,
+        "sha256": "2443fcbd2435fdd27af6a7f935efd9af1d6bee452a0783129ce1a22fe9e85246"
+      },
+      {
+        "file": "final/check.cjs",
+        "bytes": 12492,
+        "sha256": "9b95ba48f68746c301db33e7bcf6b5832c340f88161d4c280082a74bcbb8186c"
+      },
+      {
+        "file": "final/checks.json",
+        "bytes": 50777,
+        "sha256": "aaf9b7cb5918873d61b29256db91528246431ec86cad75a4f38331e99a9e3dae"
+      },
+      {
+        "file": "final/hooks.json",
+        "bytes": 9459,
+        "sha256": "fc453d083a094faf129191481df807057c19b53177cfcdb0ac36fba14c0885bf"
+      },
+      {
+        "file": "final/javascript-bridge.cjs",
+        "bytes": 4017,
+        "sha256": "d3257663e380e8e1bfbdd33f2e8053ce0f5f66642b9ca54f52d3918ffeaa501b"
+      },
+      {
+        "file": "final/measure.cjs",
+        "bytes": 7709,
+        "sha256": "a7f615ddc17e5dd1326ef6890f0eba7f575f5a41960c2a6f9dcae3df0d4f9b74"
+      },
+      {
+        "file": "final/measurements.json",
+        "bytes": 38322,
+        "sha256": "ef317a23d3012f66ad2265cb24548d74e812a2662ad2a2c2efd143f5b2e9ff84"
+      },
+      {
+        "file": "final/provider-hooks.cjs",
+        "bytes": 2435,
+        "sha256": "4f233aa01cac6c628e03d9e2fe285594b43f0382e3d9ecb93b542e6dc8d9dcb6"
+      },
+      {
+        "file": "final/service.cjs",
+        "bytes": 25474,
+        "sha256": "38acecb33cfd99a9b91265d21582e37c6024440e6b31e71e2efaeaa731840763"
+      },
+      {
+        "file": "production/effect-adapter.js",
+        "bytes": 41174,
+        "sha256": "d9e9639cbeb7ba107d9f479f47cfd004391c5a5aa7d16d261dd055d453fb0c4e"
+      },
+      {
+        "file": "prototype/effect-adapter.js",
+        "bytes": 42606,
+        "sha256": "97fb678c117488eb7f4cce34777323b0dc34902d0a50fb69e39a84411e4c0b13"
+      },
+      {
+        "file": "ra02/model.cjs",
+        "bytes": 11104,
+        "sha256": "12fce123e91ca6e6f5d5f079b3d047ed8cef0a9d287cbf3591d1592dd3b55002"
+      },
+      {
+        "file": "ra02/policy.json",
+        "bytes": 1843,
+        "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f"
+      },
+      {
+        "file": "ra02/sweep/traces.json.gz",
+        "bytes": 140145,
+        "sha256": "4ad222365c0c75cde11edd3ca37a49bd037e6cff1fdc35dd7ef928f6987d91f2"
+      }
+    ]
+  },
+  "attemptLimits": "Earlier receipts retain outcomes and declared hashes; pre-final edited harness revisions were not separately snapshotted. Only final inputs are reproduced by this archive. Superseded measurements are not final evidence."
+}

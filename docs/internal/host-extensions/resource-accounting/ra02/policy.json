@@ -1,0 +1,20 @@
+{
+  "version": "hex.resource-admission.candidate.v0",
+  "status": "internal candidate; not a runtime service or host capacity guarantee",
+  "admission": "atomic resource reservation for the sealed fresh cohort before any member host dispatch",
+  "reservation": "per-root bounded work envelope plus protected cleanup headroom; shared execution exit reserve",
+  "dimensions": ["handles", "bytes", "records"],
+  "exclusive": "reserve exact provider-resolved binding identities; conflicts reject, never queue or serialize",
+  "effects": "existing cumulative admissions remain spent; reserve future child admissions without counting them as executed",
+  "refund": "per dimension, only against qualified capacity evidence; never infer from effect settlement or a zero counter",
+  "unknown": "retain charged capacity and exclusivity until execution teardown; no in-execution reconciliation in v0",
+  "finish": "release unused work/future-effect promises; surviving result/unresolved charges and required cleanup headroom remain execution-owned carry",
+  "limits": "provider profile supplies explicit supported ceilings and provenance; missing or unbounded demand rejects",
+  "fixtureProofs": {
+    "released-quiescent": { "dispositions": ["released"], "quiescent": true, "dimensions": ["handles", "bytes", "records"], "exclusive": true },
+    "consumed-handle": { "dispositions": ["consumed"], "quiescent": false, "dimensions": ["handles"], "exclusive": false },
+    "consumed-record": { "dispositions": ["consumed"], "quiescent": true, "dimensions": ["records"], "exclusive": false },
+    "transferred-handle": { "dispositions": ["transferred"], "quiescent": false, "dimensions": ["handles"], "exclusive": false },
+    "transferred-record": { "dispositions": ["transferred"], "quiescent": true, "dimensions": ["records"], "exclusive": false }
+  }
+}

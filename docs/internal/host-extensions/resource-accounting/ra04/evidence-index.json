@@ -1,0 +1,257 @@
+{
+  "version": "hex.ra04-evidence.v1",
+  "base": "e13139ad45f808e9f46e56e0944d63a87aeb31c5",
+  "sourceState": "Internal RA04 experiment uncommitted over base; production unchanged. Exact executable sources are archived and hashed.",
+  "archive": {
+    "file": "evidence.tar.gz",
+    "bytes": 94904,
+    "sha256": "feffad1bcf088d1e18b5d32467bfba79c1b6f354bf6150d3f7faedc81e12c0fd"
+  },
+  "files": [
+    {
+      "path": "attempt1/guard-8.as.ts",
+      "bytes": 2643,
+      "sha256": "6ab4af4f0da1d2deee9539a66e87b0bb31444141f8567e55db6a6bd31d16e1c9"
+    },
+    {
+      "path": "attempt1/guard-8.wasm",
+      "bytes": 1305,
+      "sha256": "b1956613962b1cdff1250383fad50322987b861c0e21b0c668e6fff678eeb19c"
+    },
+    {
+      "path": "attempt1/receipt.json",
+      "bytes": 3760,
+      "sha256": "298e1504dc5cb25de8d9d172d0258fb2f052e2209ae97e408745ec908e381d9f"
+    },
+    {
+      "path": "complete/combined-16.as.ts",
+      "bytes": 12524,
+      "sha256": "b1516ac449786d1a50fdb696c4671a2b58078f77c8b0c5624647d7eea2dbe60a"
+    },
+    {
+      "path": "complete/combined-16.wasm",
+      "bytes": 6756,
+      "sha256": "761aa1989cd5404c3e169dd5746d1b8e3ad35d4425748ca56295f5b8251092ed"
+    },
+    {
+      "path": "complete/combined-32.as.ts",
+      "bytes": 12527,
+      "sha256": "da2b51ab2eeda1da7483284eb6d7bd82b851740fe60d8390b8a0efceef83e339"
+    },
+    {
+      "path": "complete/combined-32.wasm",
+      "bytes": 6766,
+      "sha256": "4b20f962fd3cafe9f41afe5c44d60e807dc2c2674842beb208772620c2ef54e9"
+    },
+    {
+      "path": "complete/combined-8.as.ts",
+      "bytes": 12522,
+      "sha256": "0a060607750e689a204bc4976035db2513229749b28be5dc4a90be737d506e59"
+    },
+    {
+      "path": "complete/combined-8.wasm",
+      "bytes": 6732,
+      "sha256": "7bb2c2ef6d56671807529e6f13d43a9a42831b3934af92d119438ebb99862f49"
+    },
+    {
+      "path": "complete/guard-16.as.ts",
+      "bytes": 2709,
+      "sha256": "7e478abdc7b3a02d55fcab38cf431e891c46b573e631ea43a26ba0889f084c24"
+    },
+    {
+      "path": "complete/guard-16.wasm",
+      "bytes": 1307,
+      "sha256": "ad15fad93a36b31e5793dca40adda4b087ce0bc9a8962daf75e83ffd0130dc67"
+    },
+    {
+      "path": "complete/guard-32.as.ts",
+      "bytes": 2710,
+      "sha256": "b6a5be603673eeeab5f9d3541f26c39252c440a650abda846e96c2a9738c677c"
+    },
+    {
+      "path": "complete/guard-32.wasm",
+      "bytes": 1307,
+      "sha256": "d4506fc05b7e160ced0df9e007dfae5f36ba0d5841a00189ce4b61aee57c2e87"
+    },
+    {
+      "path": "complete/guard-8.as.ts",
+      "bytes": 2708,
+      "sha256": "9dfa1323477190223cdcdc12c320351d896033fa16f19d4ac15060b3f736aec6"
+    },
+    {
+      "path": "complete/guard-8.wasm",
+      "bytes": 1305,
+      "sha256": "b1956613962b1cdff1250383fad50322987b861c0e21b0c668e6fff678eeb19c"
+    },
+    {
+      "path": "complete/receipt.json",
+      "bytes": 15722,
+      "sha256": "c5a36a6351323d72d9d163bf506e0cfa3dbca789fd97eaf87c5e4a188afff533"
+    },
+    {
+      "path": "final/guard-16.as.ts",
+      "bytes": 2644,
+      "sha256": "d42c6be386e6a3bb240965583f59d2274a5d912041149b3669d46f63a31263c5"
+    },
+    {
+      "path": "final/guard-16.wasm",
+      "bytes": 1307,
+      "sha256": "ad15fad93a36b31e5793dca40adda4b087ce0bc9a8962daf75e83ffd0130dc67"
+    },
+    {
+      "path": "final/guard-32.as.ts",
+      "bytes": 2645,
+      "sha256": "e662af923b7489eff5f837e3ba81c71dedcc6740421b5c664aaa2b7f5dd73841"
+    },
+    {
+      "path": "final/guard-32.wasm",
+      "bytes": 1307,
+      "sha256": "d4506fc05b7e160ced0df9e007dfae5f36ba0d5841a00189ce4b61aee57c2e87"
+    },
+    {
+      "path": "final/guard-8.as.ts",
+      "bytes": 2643,
+      "sha256": "6ab4af4f0da1d2deee9539a66e87b0bb31444141f8567e55db6a6bd31d16e1c9"
+    },
+    {
+      "path": "final/guard-8.wasm",
+      "bytes": 1305,
+      "sha256": "b1956613962b1cdff1250383fad50322987b861c0e21b0c668e6fff678eeb19c"
+    },
+    {
+      "path": "final/receipt.json",
+      "bytes": 13572,
+      "sha256": "942cd4c1c317f1005deafed567d4fa243e1458d45651b808047082a4e40e8929"
+    },
+    {
+      "path": "native-final/combined-8.as.ts",
+      "bytes": 12457,
+      "sha256": "81de477cb5a2b5b65d900559f6bbdbaca2b8dcca8f0808bc93d4cd1f19ffd1ad"
+    },
+    {
+      "path": "native-final/guard-8.as.ts",
+      "bytes": 2643,
+      "sha256": "6ab4af4f0da1d2deee9539a66e87b0bb31444141f8567e55db6a6bd31d16e1c9"
+    },
+    {
+      "path": "native-final/guard-8.wasm",
+      "bytes": 1305,
+      "sha256": "b1956613962b1cdff1250383fad50322987b861c0e21b0c668e6fff678eeb19c"
+    },
+    {
+      "path": "native-final/receipt.json",
+      "bytes": 3508,
+      "sha256": "185e215998045aea42732574526a08149a458f8ee0c11a7296ce12669feb1170"
+    },
+    {
+      "path": "sources/docs/internal/host-extensions/resource-accounting/ra02/policy.json",
+      "bytes": 1843,
+      "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f"
+    },
+    {
+      "path": "sources/docs/internal/host-extensions/resource-accounting/ra03/check.cjs",
+      "bytes": 12492,
+      "sha256": "9b95ba48f68746c301db33e7bcf6b5832c340f88161d4c280082a74bcbb8186c"
+    },
+    {
+      "path": "sources/docs/internal/host-extensions/resource-accounting/ra03/native/build.cjs",
+      "bytes": 4056,
+      "sha256": "824a9f6a5e481f5920233349d0396e9ccd12b6d868d69f7ecc570492985bafd3"
+    },
+    {
+      "path": "sources/docs/internal/host-extensions/resource-accounting/ra03/native/service.as.ts",
+      "bytes": 9874,
+      "sha256": "8e7da28b6d524691f6787fded634a3f684986ed8748b39fda2f43e4710d8fc43"
+    },
+    {
+      "path": "sources/docs/internal/host-extensions/resource-accounting/ra03/service.cjs",
+      "bytes": 25474,
+      "sha256": "38acecb33cfd99a9b91265d21582e37c6024440e6b31e71e2efaeaa731840763"
+    },
+    {
+      "path": "sources/docs/internal/host-extensions/resource-accounting/ra04/check.cjs",
+      "bytes": 10339,
+      "sha256": "a5a239ff0f23b879c202237c1d1122da22e30d3f05aeaf09b75b8d073a70772d"
+    },
+    {
+      "path": "sources/docs/internal/host-extensions/resource-accounting/ra04/guard.as.ts",
+      "bytes": 2732,
+      "sha256": "ff3d8703d7375569c5ce4ad9a27665ad49493c7774390cbc360efc7c6884b6bd"
+    },
+    {
+      "path": "sources/packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "bytes": 202811,
+      "sha256": "132ea03b4db79ddb34af16f642d35a58d8818f61055622680fd9ca0985241c85"
+    },
+    {
+      "path": "sources/packages/runtime/src/internal/body.js",
+      "bytes": 8630,
+      "sha256": "4d24dea172711c444d656b5d71c76a94558afd6865281a4d6dfaf998cb6b4f79"
+    },
+    {
+      "path": "verified/combined-16.as.ts",
+      "bytes": 12524,
+      "sha256": "b1516ac449786d1a50fdb696c4671a2b58078f77c8b0c5624647d7eea2dbe60a"
+    },
+    {
+      "path": "verified/combined-16.wasm",
+      "bytes": 6756,
+      "sha256": "761aa1989cd5404c3e169dd5746d1b8e3ad35d4425748ca56295f5b8251092ed"
+    },
+    {
+      "path": "verified/combined-32.as.ts",
+      "bytes": 12527,
+      "sha256": "da2b51ab2eeda1da7483284eb6d7bd82b851740fe60d8390b8a0efceef83e339"
+    },
+    {
+      "path": "verified/combined-32.wasm",
+      "bytes": 6766,
+      "sha256": "4b20f962fd3cafe9f41afe5c44d60e807dc2c2674842beb208772620c2ef54e9"
+    },
+    {
+      "path": "verified/combined-8.as.ts",
+      "bytes": 12522,
+      "sha256": "0a060607750e689a204bc4976035db2513229749b28be5dc4a90be737d506e59"
+    },
+    {
+      "path": "verified/combined-8.wasm",
+      "bytes": 6732,
+      "sha256": "7bb2c2ef6d56671807529e6f13d43a9a42831b3934af92d119438ebb99862f49"
+    },
+    {
+      "path": "verified/guard-16.as.ts",
+      "bytes": 2709,
+      "sha256": "7e478abdc7b3a02d55fcab38cf431e891c46b573e631ea43a26ba0889f084c24"
+    },
+    {
+      "path": "verified/guard-16.wasm",
+      "bytes": 1307,
+      "sha256": "ad15fad93a36b31e5793dca40adda4b087ce0bc9a8962daf75e83ffd0130dc67"
+    },
+    {
+      "path": "verified/guard-32.as.ts",
+      "bytes": 2710,
+      "sha256": "b6a5be603673eeeab5f9d3541f26c39252c440a650abda846e96c2a9738c677c"
+    },
+    {
+      "path": "verified/guard-32.wasm",
+      "bytes": 1307,
+      "sha256": "d4506fc05b7e160ced0df9e007dfae5f36ba0d5841a00189ce4b61aee57c2e87"
+    },
+    {
+      "path": "verified/guard-8.as.ts",
+      "bytes": 2708,
+      "sha256": "9dfa1323477190223cdcdc12c320351d896033fa16f19d4ac15060b3f736aec6"
+    },
+    {
+      "path": "verified/guard-8.wasm",
+      "bytes": 1305,
+      "sha256": "b1956613962b1cdff1250383fad50322987b861c0e21b0c668e6fff678eeb19c"
+    },
+    {
+      "path": "verified/receipt.json",
+      "bytes": 15900,
+      "sha256": "585da97061a9fb46cb70c4d6dfff52e140d3e82b22cd5a3bdedfbafa2a15ba28"
+    }
+  ]
+}

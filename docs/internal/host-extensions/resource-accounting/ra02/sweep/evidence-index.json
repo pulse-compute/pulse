@@ -1,0 +1,45 @@
+{
+  "version": "hex.ra02-sweep-recovery.v1",
+  "sourceBase": "65da931d399e0dfac53ace9938edf3330e764b9c",
+  "archive": {
+    "file": "recovery-evidence.tar.gz",
+    "sha256": "4871418b9abaf60840e104cc1c618e45dacfc9f72737cbfa58ec59492e4a6d25",
+    "members": [
+      {
+        "file": "hex-ra02-regression.json",
+        "sha256": "4b6619bc18d66e822aade7527dd707c32b1ce48e78a3fd46f67a79dd3ae93ee3",
+        "bytes": 281745
+      },
+      {
+        "file": "hex-ra02-sweep-attempt1.json",
+        "sha256": "314ed604627505873d61bec0121346f0b3a17ffb2c8a2380879bb8a945628d31",
+        "bytes": 7423941
+      },
+      {
+        "file": "hex-ra02-sweep-recovered.json",
+        "sha256": "f9edc95a4465d289b457a73c02ca045824b66197c569bf4690babb346639f33e",
+        "bytes": 7868762
+      },
+      {
+        "file": "inputs/check.cjs",
+        "sha256": "4d3284223251a5fa97f6f88b9e81237ef89b51b40f42d15b23383a635a439c06",
+        "bytes": 11173
+      },
+      {
+        "file": "inputs/model.cjs",
+        "sha256": "12fce123e91ca6e6f5d5f079b3d047ed8cef0a9d287cbf3591d1592dd3b55002",
+        "bytes": 11104
+      },
+      {
+        "file": "inputs/policy.json",
+        "sha256": "ef80715ffa43805dbd1c02a17e8aec6d6dbfa8fd4ce802422a8d808ee91fa13f",
+        "bytes": 1843
+      },
+      {
+        "file": "inputs/report.cjs",
+        "sha256": "8194e8a73aac092212c82bd83ec926a4c6bb70b3c20f2f87b4a71ee3f86894c3",
+        "bytes": 4103
+      }
+    ]
+  }
+}

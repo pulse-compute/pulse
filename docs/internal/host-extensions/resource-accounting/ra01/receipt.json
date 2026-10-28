@@ -1,0 +1,531 @@
+{
+  "version": "hex.ra01-checks.v0",
+  "status": "passed",
+  "revision": "6b1caf2abbb022f8813eb2d4b961b530c27d91bf",
+  "workingTree": "M docs/internal/host-extensions/resource-accounting/README.md\n?? docs/internal/host-extensions/resource-accounting/ra01/",
+  "node": "v24.19.0",
+  "inputs": [
+    {
+      "file": "contract.json",
+      "sha256": "2fed9d967ada50432e4aa973dddb66825da832d83c5ab239a3d0ae9f6d344cb2"
+    },
+    {
+      "file": "model.cjs",
+      "sha256": "87331594d1dde302c27d985422d093c2ab8bf6623e191d50f3406792105b9109"
+    },
+    {
+      "file": "check.cjs",
+      "sha256": "40e3aec2b112c3c5135ea4bcfe690d520b43bdaa33b88d5e2ffd377e14239f5b"
+    },
+    {
+      "file": "README.md",
+      "sha256": "155292cdcef208debc0f3cde644c438f2c0a10535e2997d8791fc9da92906822"
+    }
+  ],
+  "inherited": {
+    "file": "../ra00/receipt.json",
+    "sha256": "fa81e48d21d8c757cabae36656b1b629cc7743a5a83ff81d1435fef0bdcab8cd",
+    "execution": "not rerun"
+  },
+  "cases": [
+    {
+      "name": "Zero payload is valid; distinct ABI namespaces may reuse integers",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "a0adda9bf43f2471adca4b2e17f9b2a1d88f6164e073b24bf050eeaaa0b18f37"
+    },
+    {
+      "name": "Semantic kinds do not split one ABI handle namespace",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "9bf0dee40a6b153c55211029ed6103cdf3b6343d81aa21ee4582f7c3c515587a"
+    },
+    {
+      "name": "Identity fences execution and generation, not static call site",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "5535210bc431653ad4c75cece99f90999c3daea6f757dc706bc06a7676e17d4e"
+    },
+    {
+      "name": "Released slot and numeric handle may be reused with a new generation",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "f0cec48dacfea45397606f24a17889aaf975595a7bf66e34e4ffe578a18dcfb3"
+    },
+    {
+      "name": "Foreign owner cannot consume a resource",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "3c750db636e8e7815ea9df120e9f2b40dd47ca001087c854869fa22653e96244"
+    },
+    {
+      "name": "Pins prevent cleanup until explicitly released, even after stop",
+      "status": "passed",
+      "traceEvents": 9,
+      "traceSha256": "6857660c4b2507dcb4557b795d8a0d4896dfa9791a4b10f30ec147f832b36baf"
+    },
+    {
+      "name": "Borrow does not grant owner authority or cross-root access",
+      "status": "passed",
+      "traceEvents": 8,
+      "traceSha256": "df70f5f7618962f2b009b8dea23c90bb52f33efd84ab1b3c0d644a2d0989c8bb"
+    },
+    {
+      "name": "Child handoff preserves root attribution and invalidates prior owner",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "f0f404465fc54f284df5eeb651504746cedf9c265be3028e209a2fcff1d4865a"
+    },
+    {
+      "name": "Handoff cannot launder attribution into another parallel root",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "540a852c9e66025e733dce039c94fa21684307cf4bb8a6e592a5b253702e6fa1"
+    },
+    {
+      "name": "Execution result ownership survives effect settlement",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "0f3519d988d3b823565b39b0ee7dc2eb6a14917611d14c37427e62a41e0bb08c"
+    },
+    {
+      "name": "Settling an effect does not dispose retained fetch resources",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "168a531c7eebd0421c20eeacbf6ccba56b17c43e12bf80a3f064b44126595eb1"
+    },
+    {
+      "name": "Opaque result can transfer after producing effect settles",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "fd8dce4820b6f507f2d7d963ded47f65b58c268ef1548af99130d53d9e6788ca"
+    },
+    {
+      "name": "Execution cancellation also fences a result whose effect already settled",
+      "status": "passed",
+      "traceEvents": 9,
+      "traceSha256": "2295fb218c6b7e1e3b9bdbd8226aeef2512a1bd5687577c79b1b89c9e4c066e2"
+    },
+    {
+      "name": "No implicit retry after known-retained send failure; safe close remains possible",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "a9b822d784b17468684ae8938ac24ee796dbb0398ecb0bd6f4fa222b48ae137d"
+    },
+    {
+      "name": "Failed disposal preserves retained without speculative retry",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "bc9c39a70c44183460498877d8e3d39ae7d46f2e3e4ad0d929ef2058259abd8f"
+    },
+    {
+      "name": "Failed disposal preserves consumed without speculative retry",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "b10c601c0aac6b3778fefdb73fcc03af00fd650438dcdc3dc6f70ccce71a7fbf"
+    },
+    {
+      "name": "Failed disposal preserves unknown without speculative retry",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "35fd0112593861a22766873e76392fd113e1ca7d2f5f5c733dd79d459a657bc2"
+    },
+    {
+      "name": "Known failed-call consumption requires provider evidence",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "8c63baa0546f5415d658ca24dae4854101ab19fd4300edbee7531f81aed315f5"
+    },
+    {
+      "name": "Success status does not permit an invented disposition",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "e670cf5a4561ac0a7378e444cc74ae52134746daae9ca90fa884afc4ce368cb8"
+    },
+    {
+      "name": "Unknown failed-send ownership blocks handle and slot reuse",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "2fefe268056acfd653e168da1b0ea4426c22869bc34c429d7f05fb5cc9bad194"
+    },
+    {
+      "name": "Partial preparation leaves acquired resources visible for cleanup",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "791b33b9c30b32208d78e72f2445aa73ae86f770483c035a3a68822965743c0c"
+    },
+    {
+      "name": "Multi-input send is fenced before host entry and requires every outcome",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "f0ad59bb45c9ac9bf676983a426be3c23012d8481d5f2a6a153b844e789f394d"
+    },
+    {
+      "name": "Mixed per-input failure dispositions are retained independently",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "37a275fbc5a9423e60d5f011bda0403ffce354b2cf34cef10bbe6059aa3f841e"
+    },
+    {
+      "name": "Streaming send transfers request but retains the active writer",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "3b495269dc0190ff352138c07c085da32631e33163065dcc7741fd7397ff510a"
+    },
+    {
+      "name": "Failed input validation fences the whole call atomically",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "3b684b035d76ae49fb01f84a2e859d6234939a8b8741b011459f8bddf3c2b851"
+    },
+    {
+      "name": "No duplicate completion, concurrent action or forged completion owner",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "22f13101648fda8354f6895462ba7ce553e8a99dd79ddfd13ed548b60f461a3d"
+    },
+    {
+      "name": "Pending replacement adopts response and body before resumption",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "9e589484542f0804536aedbda3f95c33344bb9d95f14915a78131a5b7836eb70"
+    },
+    {
+      "name": "Error may return an observed output; it remains owned",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "c73d6c88ad0ac5f996ac49f232843260fc5a945d61647fcbf756e7f2a77023ea"
+    },
+    {
+      "name": "Undeclared acquired output is a contract violation, not an invisible resource",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "74120da0b5ca2e11b811842dfcacb813073e2ae81def51d1ba15d034646fec6e"
+    },
+    {
+      "name": "Late completion after stop only adopts cleanup-owned outputs",
+      "status": "passed",
+      "traceEvents": 8,
+      "traceSha256": "4fbe874e906f58f5042beccc27fde11228a1b1165f89d62a047af2888d3873de"
+    },
+    {
+      "name": "Stopping a root prevents new children and acquisitions",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "ae5dc5c8fb97319d683fefc9e9c6bd18436cd12ebdefeedb00e910d1415b348d"
+    },
+    {
+      "name": "Parent settlement waits for admitted child settlement",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "288962df6850c69ae0cf30902eed53c81ec93320e9c802fc02710d306bb7a2cd"
+    },
+    {
+      "name": "An in-flight call cannot be silently settled or finalized",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "0312cd38f0bd07fc99c8f8ef3292062b9fe51358472ae3942bd21fb7b3664d35"
+    },
+    {
+      "name": "Cache pending cleanup cannot introduce a blocking close",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "65fe161ebe4a593c5046d28dfdd559b2c8922a96df1ce1bbc1f28bc449952080"
+    },
+    {
+      "name": "Pending cleanup resolves only after nonblocking readiness evidence",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "75f3883ca18beed0827f8cedd7f56c9a45b217c4502dc1eddcb4169304272005"
+    },
+    {
+      "name": "Writer cleanup abandons and cannot commit or substitute generic close",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "971fbc9d9b9c4a4565909591e433f0348da97093b9ee18420a88cb5cc4938853"
+    },
+    {
+      "name": "Commit failure consumption stays separate from acceptance accepted",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "115271f8b3b7464680762c4b2355be7a8bc9b4194c01cb86746c16b5a4d91b6c"
+    },
+    {
+      "name": "Commit failure consumption stays separate from acceptance not-accepted",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "8c63b0d460c5755d61f9cad17734a5068923e336de46ad7327201209f11a7eb9"
+    },
+    {
+      "name": "Commit failure consumption stays separate from acceptance unknown",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "87a5ab6ed8fcab747c32411736cf919df6f7348d42bd301c4468cab513e8aea3"
+    },
+    {
+      "name": "Successful commit needs acceptance but does not establish delivery or release",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "925f63ad1beecec8d4adaf8a34f460fd656c1bdbd6857a75ebca36375bf9b17f"
+    },
+    {
+      "name": "Failed retained commit does not trigger abandon or commit retry",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "4816fced120bfdd1a9b03b4714f2a578dc0c33fed4d58775a745ca73d9c34001"
+    },
+    {
+      "name": "Cancellation cannot free a buffer with active external access",
+      "status": "passed",
+      "traceEvents": 8,
+      "traceSha256": "e6081a49056634494d2ab625c1ed0c00f291094435df30420e920004375ef9e6"
+    },
+    {
+      "name": "Cancellation cannot free a buffer with unknown external access",
+      "status": "passed",
+      "traceEvents": 8,
+      "traceSha256": "ad274b3666ea1aa3e8eb2a81ee3fee6bacd8677c5716414059dfb49526919767"
+    },
+    {
+      "name": "Active buffer transfer requires a receiver that owns continued access",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "72eee3ddd45a69ea47fbb99016db43eb96a1c6ba8e53be4887501c30411c5ae1"
+    },
+    {
+      "name": "Qualified disposal may itself establish quiescence; failure cannot assume it",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "c029cc13171b614d5c9f3c0cbcff13f6da86ae4c539ddb60fb31723807558e16"
+    },
+    {
+      "name": "Qualified disposal completion establishes release only with quiescence evidence",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "8262e5990a22064bc0cd1cdbb390ae10a5b05d72e560caf51f07678945e5926e"
+    },
+    {
+      "name": "Consumed input with unknown external access remains unavailable for reuse",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "dc2891164fe0f556975709f22c8490e067e3b043ae23ba96f4e086dafed1c3c5"
+    },
+    {
+      "name": "Result cannot invent quiescence after externally active work",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "57d6d317fe10e543bc6aa805bcbd5960780d32a45a65f3a31da889366dbb90cf"
+    },
+    {
+      "name": "External access and pins prevent internal ownership handoff",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "8bdbbc100e770c782229f618e41e1b36afb71cbaa99e88d8a2ea8513d5ce2c3f"
+    },
+    {
+      "name": "Lease is distinct from byte storage and must close explicitly",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "25a4ce80768f8b40d79f14bdf443bac96b3d1d5109ddbea91af43282ea47b213"
+    },
+    {
+      "name": "Best-effort Web cancellation cannot be reported as confirmed release",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "271e4e96b1e13fd2a09c9c1ec9b216496dd89d6ec85094b5d3a2171c8a3c7ae9"
+    },
+    {
+      "name": "Requesting cancellation is allowed while access remains active",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "0afac802ae2935801c33329aa9b86ad42b09e387eabe87399a913217901bf387"
+    },
+    {
+      "name": "Read and EOF leave host ownership intact",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "1166e926fbff6bbb535a4c424dae504a02a4bbaada1cb14ee19fcb3aae3f7f0c"
+    },
+    {
+      "name": "Repeated successful reads do not authorize retry after a read error",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "7791222fbd4467fb2a1b97ea75b6a68e1630ef29e5a7e3203571747cd52e23c9"
+    },
+    {
+      "name": "Result ownership cannot manufacture a new operation child",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "b20434914f3f5a3dafe56e05f17a2d556ade2c0d21e9b9c9a343edc08dfbc1be"
+    },
+    {
+      "name": "Binding identity remains linked through child ownership handoff",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "8420ebba3e9dd20618286bd20d8b42ed5355222526d0d4ed3212d146be941e73"
+    },
+    {
+      "name": "Acquisition without a static capability binding is rejected",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "f0ceb5ad71900055fed41475d4285fd72d5f7db284c565debdcf8d5f11c2ce00"
+    },
+    {
+      "name": "Failure cleanup can continue for independent resources",
+      "status": "passed",
+      "traceEvents": 7,
+      "traceSha256": "a5598690a0d6842d1f02f5701bca4e5061604b75794af3bb22e8f40e014a4700"
+    },
+    {
+      "name": "Whole-request timeout pending resource remains visible without a retirement list",
+      "status": "passed",
+      "traceEvents": 4,
+      "traceSha256": "dae95bff40cd9e14b6e8402922101bd59477e339105309273a0443a2c5d9e3b1"
+    },
+    {
+      "name": "Trap records uncertain in-flight consumption; no guest cleanup follows",
+      "status": "passed",
+      "traceEvents": 6,
+      "traceSha256": "c8ea5bb2515262042a875d8def96764c2b9fb3eed90ba66013e28d6e87b895ae"
+    },
+    {
+      "name": "Return does not manufacture teardown release or drop unresolved records",
+      "status": "passed",
+      "traceEvents": 3,
+      "traceSha256": "41e0d6baf21df76808fd39819cbf3b38ea025b75eaacd24b0b19eb09ee2e1d5b"
+    },
+    {
+      "name": "Resource evidence omits raw payloads, namespaces and capacities",
+      "status": "passed",
+      "traceEvents": 2,
+      "traceSha256": "52dcd40ea0d9c7f71b468adaf8da930c7e87ab303e5dfc775c36c753f0b7abf8"
+    },
+    {
+      "name": "Disposition matrix: read / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "6cf763d429ca0f84b88c78a4122ba32ffd9824d6c0b9b2ed2aedb273ed53a42d"
+    },
+    {
+      "name": "Disposition matrix: read / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "7984770bc8c950e48fc90598d624ba39aede916d6d2b3825fc8de4b06019135a"
+    },
+    {
+      "name": "Disposition matrix: write / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "712947bed1ab13e1f3fcb81136a5f67612cfecc4c06d170fc2000f887f3472d7"
+    },
+    {
+      "name": "Disposition matrix: write / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "0a25a507dd119247f3c450849db943c47a097c1ac21e9e13c8aaa56be31313f1"
+    },
+    {
+      "name": "Disposition matrix: poll-unready / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "b6c9b41a0f4a4a14e79fbef85b1e587799694e07344172c5de7dea939443c280"
+    },
+    {
+      "name": "Disposition matrix: poll-unready / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "f7afb4fde0ae309e6874d2f9864762cf4093e96dfbe59187449b5e4910674cb9"
+    },
+    {
+      "name": "Disposition matrix: resolve / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "b7f85ba35f08549ab722a2b6ec5c072cdf9b4c770eef120fad7afb19ec0be088"
+    },
+    {
+      "name": "Disposition matrix: resolve / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "ab61b709d1612caf3ea94e9af55c00c0b424d4739ecaea38bf57cb184791a4dc"
+    },
+    {
+      "name": "Disposition matrix: send / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "1e094ad3b908607f2ee6420508e1582e92f3e2b581d004968a4d6fa3e13378b1"
+    },
+    {
+      "name": "Disposition matrix: send / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "b55e8f87276a40f03fef9dff9c775b95a28a99d78136ff3b01679a01981cbc36"
+    },
+    {
+      "name": "Disposition matrix: send-retain / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "331430f66a2eacbaf9b4b5c0f0294cfc000c30de116d4be26f5ec3e5dd515312"
+    },
+    {
+      "name": "Disposition matrix: send-retain / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "0ceffc9b61440d7a79b333fa62d514b3e20db6cc22ceba9dc44cde3c845c6139"
+    },
+    {
+      "name": "Disposition matrix: close / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "8863b6cd77313a11cc5d5673140431d80b90ae11fc0b2355ff126d60747e03fa"
+    },
+    {
+      "name": "Disposition matrix: close / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "69f823c93021d21434068c936cf9e8513db37120f9f7f273c003572e840a5926"
+    },
+    {
+      "name": "Disposition matrix: commit / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "fd6348e5b27c9e70b295787c83545bb8c3264bcc0f3c78e5c17059bf3a7ab240"
+    },
+    {
+      "name": "Disposition matrix: commit / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "6bad1fbd59736824c78833382ccdb0b2653e68782bc5a3ba6b877be3647aa105"
+    },
+    {
+      "name": "Disposition matrix: abandon / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "37728764dfca8cd9e859fefadad6a2a4ba5790679bded17bdd962540773a56d9"
+    },
+    {
+      "name": "Disposition matrix: abandon / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "92195c3961b48bdfbc5a5391727b714e72aae73373dced646094fd246fcad3ab"
+    },
+    {
+      "name": "Disposition matrix: cancel / ok",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "f3ec63f7dafb358d2c9642b3cfb038b9e5baf0bef4bb63fddbff63d4f4ab46ef"
+    },
+    {
+      "name": "Disposition matrix: cancel / error",
+      "status": "passed",
+      "traceEvents": 5,
+      "traceSha256": "4fa12349b7cb077714d8ae241be0f245b72080c8c2194a3539111989d45e5cae"
+    }
+  ],
+  "matrixTransitions": 100,
+  "fullReceipt": {
+    "archive": "evidence.tar.gz",
+    "member": "receipt.full.json",
+    "sha256": "e600d92c5b53407348b25c9343294ef7bc36b7744164bf911764232cc1ed6fcc"
+  },
+  "scope": "Offline candidate contract traces, not production runtime or host qualification"
+}

@@ -2350,6 +2350,30 @@ GRIP's provisional `handoffFanout` and `handoffWebSocket` share this service and
 remain outside released support. Hosted failure ownership, Fanout/Pushpin
 delivery and packed qualification remain acceptance gates. See the [host contribution contract](../contributing/package-lowerer-contract.md#operation-level-host-contributions).
 
+### Shared execution and HTTP lifecycle semantics
+
+The HEX integration's internal lifecycle contract separates execution from the
+optional HTTP-serving capability. `handler/execution-lifecycle.js` owns settlement,
+closure, contribution ordering, rejection postconditions and normal-return-only
+after/exit semantics. `host/http-lifecycle.js` owns request acquisition, response
+claims and symbolic response authority. The existing contracts toolchain module
+exposes these as `executionLifecycle` and `httpLifecycle`; it adds no package
+entry point, author hook API, provider registration or runtime scheduler.
+
+HTTP authority moves from owned to outcome unknown before host dispatch. Only
+provider-qualified observations permit transfer and local completion. Unknown
+outcomes and traps never reopen authority. Completion is not client delivery,
+host quiescence or proof of handle disposal. These are capability semantics,
+independent of whether the HTTP server runs on Fastly, another host or a device.
+Non-HTTP execution does not select HTTP points.
+
+Providers bind semantic parameter roles to concrete names/types, reject unsupported
+contract versions and own host-call interpretation, emission and call-site rejection
+actions within the shared postconditions. Fastly retains its AssemblyScript,
+numeric authority encoding, checked driver anchors and selected-service admission.
+The extraction does not qualify another host or widen terminal placement. Explicit
+template call sites and a minimal nonterminal proof remain subsequent work.
+
 ## Trusted package runtime Wasm
 
 A reachable package may contribute a versioned private runtime Wasm artifact

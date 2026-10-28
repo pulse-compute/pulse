@@ -1,6 +1,6 @@
 'use strict';
 // Deliberately small injected fixture: no Viceroy, Pushpin or network behavior.
-function execute(native, { path = '/fanout', status = 0, trap = false, afterHandoff, beforeStart, onUri, clock, closeStatus = 0 } = {}) {
+function execute(native, { path = '/fanout', status = 0, trap = false, afterHandoff, beforeStart, onUri, clock, closeStatus = 0, sendStatus = 0, onSend } = {}) {
   let instance, next = 100;
   const trace = [];
   const resources = { acquired: [], closes: [] };
@@ -28,7 +28,7 @@ function execute(native, { path = '/fanout', status = 0, trap = false, afterHand
       new: p => { write(p,++next); return 0; },
       status_set: (handle,status) => { trace.push({call:'status',status}); return 0; },
       header_append: () => 0,
-      send_downstream: (response,body) => { trace.push({call:'send',response,body}); return 0; }
+      send_downstream: (response,body) => { trace.push({call:'send',response,body}); onSend?.(instance); return sendStatus; }
     },
     fastly_http_body: {
       close: handle => { resources.closes.push({kind:'body',handle,status:closeStatus}); return closeStatus; },

@@ -19,6 +19,9 @@ work, and retains bounded structural probes. It adds no implemented capability.
 observation prototype, composition/failure evidence, measured artifact costs and
 the result/authority/reporting gaps. It changes no production contract.
 
+[Driver-owned lifecycle hooks, pass 3](DESIGN-03-lifecycle-hooks.md) replaces the
+terminal service's text patches with typed contributions to named driver points.
+
 Follow-up: [HEX-01 proof and decision record](HEX-01.md). The record below
 retains HEX-00 findings; the integration branch carries the private experiment.
 
@@ -256,3 +259,17 @@ hosted acceptance, full regression profile or release seal is claimed by 00.
   `node scripts/documentation-release.cjs`: all passed.
 - `git diff --check`: passed. Only this internal proposal, probe and receipt
   belong to the change; no production implementation or test gate is changed.
+
+[Resource ownership, investigation 2](ownership/README.md) retains a compiled
+cache-resource prototype, three-form execution and ownership failure evidence,
+and explicit disposal/reservation decisions. It changes no production contract.
+
+[Bounded composition, investigation 3](composition/README.md) tests conditional
+cache/fetch/insert children under the existing driver, records the execution and
+resource-accounting costs, and pressures the proposed contract with an ESP32
+exclusive-resource scenario. It changes no production contract.
+
+[Shared resource accounting](resource-accounting/README.md) records the RA workstream.
+Its completed [RA-00 ownership inventory](resource-accounting/ra00/README.md) maps
+existing lifecycle owners and retains fresh failure/expiry evidence without
+changing production behavior.

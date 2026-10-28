@@ -1,0 +1,373 @@
+{
+  "version": "hex.ra03-hooks.v1",
+  "status": "passed",
+  "cases": [
+    {
+      "name": "keyed width 8 reserves entire cohort before dispatch",
+      "status": "passed",
+      "detail": {
+        "dispatches": 8,
+        "admission": {
+          "width": 8,
+          "dispatches": 0,
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          }
+        },
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 24,
+          "snapshotObjectsCreated": 10,
+          "activeRecords": 0,
+          "peakRecords": 8
+        }
+      }
+    },
+    {
+      "name": "keyed width 8 shortage fences every member",
+      "status": "passed",
+      "detail": {
+        "dispatches": 0
+      }
+    },
+    {
+      "name": "collection width 8 reserves entire cohort before dispatch",
+      "status": "passed",
+      "detail": {
+        "dispatches": 8,
+        "admission": {
+          "width": 8,
+          "dispatches": 0,
+          "committed": {
+            "handles": 42,
+            "bytes": 2112,
+            "records": 50
+          }
+        },
+        "storage": {
+          "rootSlots": 16,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 2432,
+          "claimBytes": 10976,
+          "childBytes": 768,
+          "scratchBytes": 56,
+          "backingBytes": 14232,
+          "tokenObjectsCreated": 24,
+          "snapshotObjectsCreated": 10,
+          "activeRecords": 0,
+          "peakRecords": 8
+        }
+      }
+    },
+    {
+      "name": "collection width 8 shortage fences every member",
+      "status": "passed",
+      "detail": {
+        "dispatches": 0
+      }
+    },
+    {
+      "name": "keyed width 16 reserves entire cohort before dispatch",
+      "status": "passed",
+      "detail": {
+        "dispatches": 16,
+        "admission": {
+          "width": 16,
+          "dispatches": 0,
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          }
+        },
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 48,
+          "snapshotObjectsCreated": 18,
+          "activeRecords": 0,
+          "peakRecords": 16
+        }
+      }
+    },
+    {
+      "name": "keyed width 16 shortage fences every member",
+      "status": "passed",
+      "detail": {
+        "dispatches": 0
+      }
+    },
+    {
+      "name": "collection width 16 reserves entire cohort before dispatch",
+      "status": "passed",
+      "detail": {
+        "dispatches": 16,
+        "admission": {
+          "width": 16,
+          "dispatches": 0,
+          "committed": {
+            "handles": 82,
+            "bytes": 4160,
+            "records": 98
+          }
+        },
+        "storage": {
+          "rootSlots": 32,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 4864,
+          "claimBytes": 21728,
+          "childBytes": 1536,
+          "scratchBytes": 72,
+          "backingBytes": 28200,
+          "tokenObjectsCreated": 48,
+          "snapshotObjectsCreated": 18,
+          "activeRecords": 0,
+          "peakRecords": 16
+        }
+      }
+    },
+    {
+      "name": "collection width 16 shortage fences every member",
+      "status": "passed",
+      "detail": {
+        "dispatches": 0
+      }
+    },
+    {
+      "name": "keyed width 32 reserves entire cohort before dispatch",
+      "status": "passed",
+      "detail": {
+        "dispatches": 32,
+        "admission": {
+          "width": 32,
+          "dispatches": 0,
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          }
+        },
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 96,
+          "snapshotObjectsCreated": 34,
+          "activeRecords": 0,
+          "peakRecords": 32
+        }
+      }
+    },
+    {
+      "name": "keyed width 32 shortage fences every member",
+      "status": "passed",
+      "detail": {
+        "dispatches": 0
+      }
+    },
+    {
+      "name": "collection width 32 reserves entire cohort before dispatch",
+      "status": "passed",
+      "detail": {
+        "dispatches": 32,
+        "admission": {
+          "width": 32,
+          "dispatches": 0,
+          "committed": {
+            "handles": 162,
+            "bytes": 8256,
+            "records": 194
+          }
+        },
+        "storage": {
+          "rootSlots": 64,
+          "claimsPerRoot": 6,
+          "childrenPerRoot": 3,
+          "emergencySlots": 2,
+          "rootBytes": 9728,
+          "claimBytes": 43232,
+          "childBytes": 3072,
+          "scratchBytes": 104,
+          "backingBytes": 56136,
+          "tokenObjectsCreated": 96,
+          "snapshotObjectsCreated": 34,
+          "activeRecords": 0,
+          "peakRecords": 32
+        }
+      }
+    },
+    {
+      "name": "collection width 32 shortage fences every member",
+      "status": "passed",
+      "detail": {
+        "dispatches": 0
+      }
+    },
+    {
+      "name": "Direct effect uses same pre-dispatch hook",
+      "status": "passed"
+    },
+    {
+      "name": "Already-started keyed member rejects; no retroactive admission claim",
+      "status": "passed"
+    },
+    {
+      "name": "Unknown descriptor rejects before any host dispatch",
+      "status": "passed"
+    },
+    {
+      "name": "Host throw retains prepared claims as unknown, without retry",
+      "status": "passed"
+    },
+    {
+      "name": "Unexpected returned output quarantines and invokes containment once",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 5,
+          "bytes": 192,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 2,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 1,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 2,
+        "emergency": 2,
+        "stopped": true,
+        "ended": false,
+        "fault": "PROVIDER_CONTRACT",
+        "coverageLost": true,
+        "accountingComplete": false
+      }
+    },
+    {
+      "name": "Known missing output requires explicit provider proof",
+      "status": "passed"
+    },
+    {
+      "name": "Cancellation preserves pending registration and late output",
+      "status": "passed",
+      "detail": {
+        "committed": {
+          "handles": 5,
+          "bytes": 192,
+          "records": 5
+        },
+        "charged": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carry": {
+          "handles": 1,
+          "bytes": 64,
+          "records": 1
+        },
+        "carryCleanupReserve": {
+          "handles": 2,
+          "bytes": 64,
+          "records": 2
+        },
+        "usedEffects": 1,
+        "promisedEffects": 0,
+        "activeRoots": 0,
+        "retainedRoots": 1,
+        "prepared": 0,
+        "unresolved": 1,
+        "emergency": 0,
+        "stopped": true,
+        "ended": true,
+        "fault": null,
+        "coverageLost": false,
+        "accountingComplete": true
+      }
+    },
+    {
+      "name": "Expired inherited deadline stops entry",
+      "status": "passed"
+    },
+    {
+      "name": "Existing local and provider admissions share the cumulative count",
+      "status": "passed"
+    },
+    {
+      "name": "Future child promises block local producer before it starts",
+      "status": "passed"
+    },
+    {
+      "name": "Disabled hook is exact production source and behavior",
+      "status": "passed",
+      "detail": {
+        "sourceIdentical": true,
+        "ledgerConstructed": false
+      }
+    }
+  ],
+  "node": "v24.19.0",
+  "inputs": [
+    {
+      "file": "service.cjs",
+      "sha256": "38acecb33cfd99a9b91265d21582e37c6024440e6b31e71e2efaeaa731840763"
+    },
+    {
+      "file": "provider-hooks.cjs",
+      "sha256": "4f233aa01cac6c628e03d9e2fe285594b43f0382e3d9ecb93b542e6dc8d9dcb6"
+    },
+    {
+      "file": "javascript-bridge.cjs",
+      "sha256": "d3257663e380e8e1bfbdd33f2e8053ce0f5f66642b9ca54f52d3918ffeaa501b"
+    },
+    {
+      "file": "check-hooks.cjs",
+      "sha256": "2443fcbd2435fdd27af6a7f935efd9af1d6bee452a0783129ce1a22fe9e85246"
+    }
+  ],
+  "productionSource": {
+    "file": "/workspace/scratch/253982db7f9e/pulse/packages/runtime/src/internal/effect-adapter.js",
+    "sha256": "d9e9639cbeb7ba107d9f479f47cfd004391c5a5aa7d16d261dd055d453fb0c4e"
+  }
+}

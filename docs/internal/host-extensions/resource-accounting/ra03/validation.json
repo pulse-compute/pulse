@@ -1,0 +1,102 @@
+{
+  "version": "hex.ra03-validation.v1",
+  "status": "passed",
+  "sourceBase": "90845279acd261d8756e10423f06c6c2e0773291",
+  "scope": "Internal bounded JavaScript accounting prototype and investigation-only hooks; production sources unchanged",
+  "ledgerChecks": {
+    "status": "passed",
+    "cases": 52,
+    "receipt": "checks.json",
+    "oracleReplayCases": 33
+  },
+  "executorChecks": {
+    "status": "passed",
+    "cases": 23,
+    "receipt": "hooks.json"
+  },
+  "measurements": {
+    "status": "passed",
+    "receipt": "measurements.json",
+    "sourceInputsVerifiedAtStartAndEnd": true
+  },
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T23:40:34.914288+00:00",
+      "fullLog": "0.log",
+      "sha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> maintainer:sync\n> node scripts/maintenance-policy.cjs --write\n\nok - 5 maintenance-policy output(s) synchronized\n"
+    },
+    {
+      "command": "npm run docs:sync",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T23:40:35.442029+00:00",
+      "fullLog": "1.log",
+      "sha256": "c31091ee16b5ebc5712f89de52b83240030aee11850daa4a77a0fdb5dabeb471",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> docs:sync\n> node wasm/scripts/sync-doc-snippets.cjs --write\n\nok - 268 generated documentation/package file(s), 5 maintenance-policy output(s), 62 source block(s), and 19 owned page(s) are synchronized\n"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T23:40:39.531216+00:00",
+      "fullLog": "2.log",
+      "sha256": "1f428a3a3fa5888988ff157b267e88a858d71da4779791ae3dfbb4f707b1c382",
+      "outputTail": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n\n> maintainer:check\n> node scripts/validate-maintainer-control-plane.cjs\n\nok - 7 change classes, 11 protected boundaries, 9 AGENTS files, 44 documented test commands, 10 workflows, 14 documentation deployment objects, and 17 scope cases validated\n"
+    },
+    {
+      "command": "npm run docs:check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T23:41:06.820569+00:00",
+      "fullLog": "3.log",
+      "sha256": "7297029ceeda21dd3c7593502bdfab6099d9614abe4c46617eddddcdb022430b",
+      "outputTail": "gV4\",\n          \"automaticActivation\": false\n        },\n        \"packageScripts\": {\n          \"scripts\": 5\n        },\n        \"documentation\": {\n          \"pages\": 3\n        },\n        \"elapsedMs\": 12728\n      },\n      \"elapsedMs\": 23054\n    },\n    \"packagePolicy\": {\n      \"packages\": 20,\n      \"supportTiers\": 3\n    },\n    \"releaseManifest\": {\n      \"schemaVersion\": \"pulse.release-catalog.v1\",\n      \"releaseVersion\": \"1.0.0-beta.10\",\n      \"versions\": 9,\n      \"runtimeTargets\": 3,\n      \"packages\": 20\n    },\n    \"links\": {\n      \"checked\": 1539,\n      \"hosted\": 43\n    },\n    \"diagnostics\": 194,\n    \"cli\": {\n      \"commands\": 9,\n      \"publicOptions\": 22,\n      \"maintainerOptions\": 0,\n      \"completionShells\": 3,\n      \"metaInvocations\": 3\n    },\n    \"config\": {\n      \"fields\": 37,\n      \"runtimeRules\": 14,\n      \"fastlyFields\": 27,\n      \"schemaVersion\": \"pulse.project-config-schema.v1\"\n    },\n    \"environment\": {\n      \"catalog\": 31,\n      \"discovered\": 31\n    },\n    \"pluginReadiness\": {\n      \"publicPluginApi\": false,\n      \"decision\": \"deferred\",\n      \"requirements\": 6,\n      \"satisfied\": 0,\n      \"providers\": 3\n    },\n    \"metadata\": {\n      \"status\": \"ok\",\n      \"files\": 19,\n      \"owners\": 3,\n      \"checkedOn\": \"2026-10-24\"\n    },\n    \"layers\": {\n      \"productDocuments\": 28,\n      \"architectureDocuments\": 8,\n      \"siteDocuments\": 1,\n      \"routingDocuments\": 1,\n      \"middlewareDocuments\": 1,\n      \"governanceDocuments\": 7,\n      \"deliveryDocuments\": 4,\n      \"changelogDocuments\": 1,\n      \"maintenanceSources\": 31,\n      \"deliverySources\": 15,\n      \"machineArtifacts\": 6,\n      \"publicFixtures\": 1,\n      \"sourceBindings\": 5,\n      \"executableBindings\": 2\n    },\n    \"sourceContract\": {\n      \"status\": \"ok\",\n      \"pages\": 84,\n      \"routeAliases\": 2\n    }\n  }\n}\n"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T23:41:38.515389+00:00",
+      "fullLog": "4.log",
+      "sha256": "8a02613b69d112fd511d0687d0af660d124a6163389768252517aef2c56dc779",
+      "outputTail": "ses\": 7\n      },\n      \"fastlyVcl\": {\n        \"files\": 6,\n        \"methods\": [\n          \"GET\",\n          \"HEAD\"\n        ],\n        \"privateOriginSigning\": \"AWS SigV4\",\n        \"automaticActivation\": false\n      },\n      \"packageScripts\": {\n        \"scripts\": 5\n      },\n      \"documentation\": {\n        \"pages\": 3\n      },\n      \"elapsedMs\": 9521\n    },\n    \"elapsedMs\": 18073\n  },\n  \"packagePolicy\": {\n    \"packages\": 20,\n    \"supportTiers\": 3\n  },\n  \"releaseManifest\": {\n    \"schemaVersion\": \"pulse.release-catalog.v1\",\n    \"releaseVersion\": \"1.0.0-beta.10\",\n    \"versions\": 9,\n    \"runtimeTargets\": 3,\n    \"packages\": 20\n  },\n  \"links\": {\n    \"checked\": 1539,\n    \"hosted\": 43\n  },\n  \"diagnostics\": 194,\n  \"cli\": {\n    \"commands\": 9,\n    \"publicOptions\": 22,\n    \"maintainerOptions\": 0,\n    \"completionShells\": 3,\n    \"metaInvocations\": 3\n  },\n  \"config\": {\n    \"fields\": 37,\n    \"runtimeRules\": 14,\n    \"fastlyFields\": 27,\n    \"schemaVersion\": \"pulse.project-config-schema.v1\"\n  },\n  \"environment\": {\n    \"catalog\": 31,\n    \"discovered\": 31\n  },\n  \"pluginReadiness\": {\n    \"publicPluginApi\": false,\n    \"decision\": \"deferred\",\n    \"requirements\": 6,\n    \"satisfied\": 0,\n    \"providers\": 3\n  },\n  \"metadata\": {\n    \"status\": \"ok\",\n    \"files\": 19,\n    \"owners\": 3,\n    \"checkedOn\": \"2026-10-24\"\n  },\n  \"layers\": {\n    \"productDocuments\": 28,\n    \"architectureDocuments\": 8,\n    \"siteDocuments\": 1,\n    \"routingDocuments\": 1,\n    \"middlewareDocuments\": 1,\n    \"governanceDocuments\": 7,\n    \"deliveryDocuments\": 4,\n    \"changelogDocuments\": 1,\n    \"maintenanceSources\": 31,\n    \"deliverySources\": 15,\n    \"machineArtifacts\": 6,\n    \"publicFixtures\": 1,\n    \"sourceBindings\": 5,\n    \"executableBindings\": 2\n  },\n  \"sourceContract\": {\n    \"status\": \"ok\",\n    \"pages\": 84,\n    \"routeAliases\": 2\n  }\n}\n"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "status": "passed",
+      "started": "2026-10-24T23:41:58.864188+00:00",
+      "fullLog": "5.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputTail": ""
+    }
+  ],
+  "logArchive": {
+    "file": "validation-logs.tar.gz",
+    "sha256": "1d2cd1c96e210e601a1bc74a9a1b7332a3d0521a3bfc1ac9704b56a10f04e963"
+  },
+  "integrity": {
+    "status": "passed",
+    "checks": [
+      "Final receipt input hashes match current worktree",
+      "Evidence archive and every member digest/size",
+      "Exact original and bridged executor sources retained",
+      "Relative README links",
+      "Scope limited to internal docs/evidence"
+    ]
+  },
+  "notes": [
+    "Initial hook attempt failed because the harness used adapter instead of effectAdapter; corrected fixture and final 23-case run passed.",
+    "Initial memory measurements reused GC batches in one process; final samples use separate processes. Superseded measurement receipts are retained but not final evidence.",
+    "All six repository checks passed on their first RA-03 attempt.",
+    "No full regression, production/Native accounting implementation, actual fetch/cache integration, real-host/hardware qualification or release claim."
+  ],
+  "scopeCheck": {
+    "status": "passed",
+    "output": "# Pulse maintainer scope\n\n**Status:** Pass\n\n| Signal | Result |\n|---|---|\n| Declared class | `evidence` |\n| Declared scope | `evidence-only` |\n| Risk | `low` |\n| Changed files | 15 |\n| Areas | `documentation` |\n| Protected boundaries | None |\n| Separate human decision | Not required |\n| Current contract update | Not inferred |\n| Release authority | Not inferred |\n| Required checks | `documentation`, `maintenance-policy` |\n\nThe resident maintainer may analyze, review, and prepare a minimal patch; human review and merge remain required.\n\n"
+  }
+}

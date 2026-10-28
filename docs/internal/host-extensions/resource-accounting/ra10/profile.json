@@ -1,0 +1,48 @@
+{
+  "version": "hex.ra10.local-host-profile.v1",
+  "status": "bounded-qualification-only",
+  "productionAdmission": false,
+  "engine": {
+    "name": "Viceroy",
+    "version": "0.21.1",
+    "platform": "linux-amd64",
+    "sourceRevision": "ba6fb78c02b2f40b70f8c65ab86fa86c66f0641f",
+    "archiveUrl": "https://github.com/fastly/Viceroy/releases/download/v0.21.1/viceroy_v0.21.1_linux-amd64.tar.gz",
+    "archiveSha256": "54a5b46ab05ce1492f4df136728b2eb81b350cb42da5d9f2eec66558ddc1e233",
+    "binarySha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+  },
+  "mappings": [
+    {"case":"body","operation":"body.close / body.abandon","outcome":"success","input":"released guest handle; physical reclamation unmeasured","retry":false},
+    {"case":"send-unknown","operation":"request.send_async","outcome":"unknown backend, status 2","inputs":{"request":"consumed","body":"consumed"},"pendingOutput":"unchanged sentinel","retry":false},
+    {"case":"send-badbody","operation":"request.send_async","outcome":"invalid supplied body, status 3","inputs":{"request":"consumed","unpassed valid body":"retained"},"pendingOutput":"unchanged sentinel","retry":false},
+    {"case":"downstream-twice","operation":"response.send_downstream","outcome":"second send rejected","inputs":{"response":"consumed","body":"consumed"},"acceptance":"first response delivered; second not accepted","retry":false},
+    {"case":"wait-ok","operation":"pending_req_wait_v2","outcome":"success","input":"consumed","outputs":["response","body"],"retry":false},
+    {"case":"wait-error","operation":"pending_req_wait_v2","outcome":"origin resets connection","input":"consumed","retry":false},
+    {"case":"poll-delay","operation":"pending_req_poll_v2","outcome":"success, done=0","input":"retained","outputs":"ABI invalid-handle sentinels; no acquired response/body","retry":"only ordinary driver readiness, not business retry"},
+    {"case":"poll-error","operation":"pending_req_poll_v2","outcome":"ready request fails after origin reset","input":"consumed","retry":false},
+    {"case":"cache-miss","operation":"cache.get_body","outcome":"missing entry, status 10","input":"retained cache lookup; subsequent close succeeds","output":"unchanged sentinel","retry":false},
+    {"case":"cache-invalid","operation":"cache.insert","outcome":"4097-byte key rejected","output":"unchanged sentinel","retry":false},
+    {"case":"cache-commit","operation":"writer.close","outcome":"success","input":"released guest writer","acceptance":"subsequent lookup reads complete payload and EOF; not global durability","retry":false},
+    {"case":"cache-abandon","operation":"writer.abandon","outcome":"success","input":"released guest writer","acceptance":"entry still found/usable but body read fails; no rollback or cache miss claim","retry":false},
+    {"case":"cache-check-return","operation":"guest return with unclosed writer","outcome":"next request sees found/usable entry with failing body","input":"guest ownership ended; no guest cleanup receipt","retry":false},
+    {"case":"cache-check-trap","operation":"guest trap with unclosed writer","outcome":"next request sees found/usable entry with failing body","input":"guest ownership ended; no guest cleanup receipt","retry":false},
+    {"case":"namespace","operation":"handle identity / bounded acquisition","outcome":"zero response valid; request/response integer overlap; 256 bodies acquired and closed","limitClaim":false,"namespace":"request and response separate; body, pending and cache share upstream async table"}
+  ],
+  "conservativeDefaults": {
+    "otherFailedAcquisition": "unknown; do not infer no outputs from this finite sample",
+    "otherFailedConsumption": "unknown; fence, quarantine, no retry or refund",
+    "failedCloseOrAbandon": "unknown; no retry or capacity refund",
+    "unreadyCacheClose": "do not dispatch; source awaits lookup and no maximum wait is qualified",
+    "deadline": "stop admission; retained pending charge; origin may continue",
+    "returnTrapTermination": "no synthetic release receipt; origin side effects can continue",
+    "handleReuse": "no reuse observed within probe; preserve execution, namespace and generation identity"
+  },
+  "open": [
+    "Hosted Fastly deployment/version lifecycle, including platform termination and hard limits",
+    "Natural acquiring/consuming/closing failures not induced by these cases, including allocation exhaustion and failed writer finish",
+    "Long-running unready cache lookup and bounded disposal latency after cancellation",
+    "Physical host memory reclamation, origin cancellation, global cache propagation and durability",
+    "Production namespace/profile admission and structural integration; raw integer observations do not replace generation guards",
+    "ESP32 DMA/quiescence and JavaScript composition parity"
+  ]
+}
