@@ -400,19 +400,24 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   const adapter = normalizeProviderAdapter(options.providerAdapter || options.provider);
   const executionPlane = options.executionPlane === 'event' ? 'event' : 'http';
   const lifecycle = createNativeExecutionLifecycle(options.lifecycleServices);
-  const memoryBudget = (plan.callables?.length || runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
+  const createMemoryBudget = () => (plan.callables?.length || runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
     ? new NativeValueBudget(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, closeAfterFailure) : undefined;
-  const heap = new ValueHeap(memoryBudget);
+  let memoryBudget = createMemoryBudget();
+  let heap = new ValueHeap(memoryBudget);
   const pending = [];
   // Retain the admitted arguments until settlement, including for hosts that
   // take pending tickets and prepare their results manually.
   const kvAdmissions = new Map();
-  const invocations = createEffectInvocations(() => {
+  const createInvocations = () => createEffectInvocations(() => {
     options.requestBudget?.check();
     if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
   });
+  let invocations = createInvocations();
+  let invocationState = 'ready';
+  let running = false;
+  let entering = false;
   let closing = false;
-  function close() {
+  function retire() {
     if (closing || invocations.closed) return;
     closing = true;
     try {
@@ -422,24 +427,42 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
         invocations.close();
         pending.length = 0;
         kvAdmissions.clear();
-        options.signal?.removeEventListener('abort', onAbort);
       }
       lifecycle?.observe('invocation.closed');
     } finally { closing = false; }
   }
+  function close() {
+    invocationState = 'closed';
+    options.signal?.removeEventListener('abort', onAbort);
+    retire();
+  }
   function closeAfterFailure() { try { close(); } catch (_) { /* Preserve the primary execution failure. */ } }
   function onAbort() { closeAfterFailure(); }
   function run(operation) {
+    if (running) throw new CanonicalNativeHostError('Native invocation is already executing.', 'PULSE_CANONICAL_NATIVE_INVOCATION_ACTIVE');
     try {
       if (closing) throw new CanonicalNativeHostError('Native invocation is closing.', 'PULSE_EFFECT_INVOCATION_INVALID');
       invocations.assertOpen();
+      running = true;
+      invocationState = 'active';
       const status = operation();
+      invocations.assertOpen(); // Cancellation during a host callback is terminal.
       if (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE || status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED) {
         lifecycle?.observe('invocation.end');
-        close();
+        invocations.assertOpen();
+        if (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE && executionPlane === 'event') {
+          if (invocations.pendingCount || pending.length || instance.exports.pulse_pending_count()) {
+            throw new CanonicalNativeHostError('Native completion has outstanding effects.', 'PULSE_CANONICAL_NATIVE_PENDING_MISMATCH');
+          }
+          retire();
+          if (invocationState !== 'closed') invocationState = 'completed';
+        } else {
+          close();
+        }
       }
       return status;
     } catch (error) { closeAfterFailure(); throw error; }
+    finally { running = false; }
   }
   const trace = [];
   if (memoryBudget) Object.defineProperty(trace, 'push', { value(...entries) {
@@ -452,6 +475,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   for (const value of Array.isArray(options.redactionValues) ? options.redactionValues : []) {
     if (typeof value === 'string' && value.length > 0) sensitiveValues.add(value);
   }
+  const initialSensitiveValues = [...sensitiveValues];
   let instance;
   const preflightSchemaCodecs = options.schemaCodecs || createSchemaCodecs(plan.schemas && plan.schemas.registry);
   const schemaIndexes = new Map((preflightSchemaCodecs.ids || []).map((id, index) => [String(id), index]));
@@ -545,7 +569,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   });
   const plannedMaxBodyBytes = Number(plan.json && plan.json.limits && plan.json.limits.maxBytes || plan.schemas && plan.schemas.registry && plan.schemas.registry.maxBytes || 65536);
   const strict = options.strict === undefined ? plan.json && plan.json.strict === true : options.strict === true;
-  const context = canonicalRuntime.createCanonicalContext({
+  const createContext = () => canonicalRuntime.createCanonicalContext({
     ...options,
     strict,
     maxBodyBytes: options.maxBodyBytes === undefined ? plannedMaxBodyBytes : options.maxBodyBytes,
@@ -560,6 +584,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       return canonicalRuntime.redactRuntimeValue(message, sensitiveValues);
     }
   }, traceSink);
+  let context = createContext();
   function value(handle) { return heap.get(handle); }
   function put(input) { return heap.put(input); }
   function requireHttpSurface(surface) {
@@ -1044,30 +1069,32 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   function setEffectResult(ticket, result) {
     if (lifecycle) guardSettlement(ticket, result);
     return invocations.settle(ticket, () => {
-      const handle = put(result);
-      const accepted = lifecycle
-        ? lifecycle.around('effect.deliver', [ticket.slot, result], () => instance.exports.pulse_set_effect_result(ticket.slot, handle))
-        : instance.exports.pulse_set_effect_result(ticket.slot, handle);
-      if (accepted !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
-        closeAfterFailure();
-        throw new CanonicalNativeHostError('Native module rejected an invocation result.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: ticket.slot, errorCode: instance.exports.pulse_last_error_code() });
-      }
-      kvAdmissions.delete(ticket.slot);
-      return handle;
+      try {
+        const handle = put(result);
+        const accepted = lifecycle
+          ? lifecycle.around('effect.deliver', [ticket.slot, result], () => instance.exports.pulse_set_effect_result(ticket.slot, handle))
+          : instance.exports.pulse_set_effect_result(ticket.slot, handle);
+        if (accepted !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
+          throw new CanonicalNativeHostError('Native module rejected an invocation result.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: ticket.slot, errorCode: instance.exports.pulse_last_error_code() });
+        }
+        kvAdmissions.delete(ticket.slot);
+        return handle;
+      } catch (error) { closeAfterFailure(); throw error; }
     });
   }
 
   function setEffectFailure(ticket) {
     if (lifecycle) guardSettlement(ticket, undefined);
     return invocations.settle(ticket, () => {
-      const accepted = lifecycle
-        ? lifecycle.around('effect.deliver', [ticket.slot, undefined], () => instance.exports.pulse_package_set_effect_failure(ticket.slot))
-        : instance.exports.pulse_package_set_effect_failure(ticket.slot);
-      if (accepted !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
-        closeAfterFailure();
-        throw new CanonicalNativeHostError('Native package rejected an invocation failure.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID');
-      }
-      kvAdmissions.delete(ticket.slot);
+      try {
+        const accepted = lifecycle
+          ? lifecycle.around('effect.deliver', [ticket.slot, undefined], () => instance.exports.pulse_package_set_effect_failure(ticket.slot))
+          : instance.exports.pulse_package_set_effect_failure(ticket.slot);
+        if (accepted !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
+          throw new CanonicalNativeHostError('Native package rejected an invocation failure.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID');
+        }
+        kvAdmissions.delete(ticket.slot);
+      } catch (error) { closeAfterFailure(); throw error; }
     });
   }
 
@@ -1079,6 +1106,15 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   let activeEvent;
   function startEvent(inputFrame) {
     requireExecutionPlane('event');
+    if (invocationState === 'closed') invocations.assertOpen();
+    if (closing || running || entering || invocationState === 'active' || instance.exports.pulse_pending_count() > 0) {
+      throw new CanonicalNativeHostError('Native invocation is already active.', 'PULSE_CANONICAL_NATIVE_INVOCATION_ACTIVE');
+    }
+    entering = true;
+    try { return enterEvent(inputFrame); }
+    finally { entering = false; }
+  }
+  function enterEvent(inputFrame) {
     if (!eventReachable) {
       throw new CanonicalNativeHostError('Native plan does not contain an event entry.', 'PULSE_CANONICAL_NATIVE_EVENT_UNREACHABLE');
     }
@@ -1100,6 +1136,22 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
           ...frame,
           payload: schemaCodecs.decode(frame.schemaId, frame.payload, 'event-ingress')
         }, options.eventLimits);
+    // Validate ingress before retiring the previous invocation's observable
+    // result. Only successful completion permits reuse; close/failure is final.
+    options.requestBudget?.check();
+    if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
+    if (invocationState === 'completed') {
+      memoryBudget = createMemoryBudget();
+      heap = new ValueHeap(memoryBudget);
+      invocations = createInvocations();
+      trace.length = 0;
+      sensitiveValues.clear();
+      for (const value of initialSensitiveValues) sensitiveValues.add(value);
+      collectionAdmission = undefined;
+      applicationError = 0;
+      activeEvent = undefined;
+      context = createContext();
+    }
     const payloadHandle = frame.schemaId === null ? 0 : put(validated.payload);
     activeEvent = Object.freeze({
       runtimeId: selected.runtimeId,
@@ -1119,9 +1171,9 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     module,
     instance,
     exports: instance.exports,
-    heap,
+    get heap() { return heap; },
     adapter,
-    context,
+    get context() { return context; },
     schemaCodecs,
     trace,
     traceSink,
@@ -1135,7 +1187,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     eventSelection() { return activeEvent; },
     resume() { return run(() => instance.exports.pulse_resume()); },
     close,
-    assertPendingEffect: invocations.assertPending,
+    assertPendingEffect(ticket) { return invocations.assertPending(ticket); },
     pendingEffects: takePending,
     prepareEffectResult,
     captureApplicationError,

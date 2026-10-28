@@ -151,6 +151,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
     numericRegions: guestUnits.length === 0 ? 'host-numeric-regions-v1' : undefined
   });
   const schemaCodecsActive = generated.manifest.schemaCodecs && generated.manifest.schemaCodecs.active === true;
+  const eventReachable = Boolean(plan.events?.catalog?.events.length);
   let jsonAs;
   if (schemaCodecsActive) {
     let transform;
@@ -194,7 +195,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       asc.script,
       path.basename(sourceFile),
       '--outFile', wasmFile,
-      '--runtime', schemaCodecsActive ? 'incremental' : 'stub',
+      '--runtime', schemaCodecsActive || eventReachable ? 'incremental' : 'stub',
       '--noAssert',
       '--optimize'
     ];

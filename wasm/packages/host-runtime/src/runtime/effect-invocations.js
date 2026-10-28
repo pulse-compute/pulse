@@ -45,6 +45,7 @@ function createEffectInvocations(check = () => {}) {
       return consume();
     },
     close() { closed = true; active.clear(); },
+    get pendingCount() { return active.size; },
     get closed() { return closed; }
   });
 }

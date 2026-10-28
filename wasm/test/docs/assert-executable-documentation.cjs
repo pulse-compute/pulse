@@ -100,7 +100,7 @@ const examples = Object.freeze([
   Object.freeze({
     id: '11-events',
     provider: 'node',
-    guestWasmBytes: 32458,
+    guestWasmBytes: 32545,
     capabilities: ['event.emit', 'logging', 'response.text'],
     schemas: ['events.DeviceReading', 'events.DeviceReadingAccepted'],
     events: Object.freeze({

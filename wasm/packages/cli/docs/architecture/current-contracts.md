@@ -889,7 +889,7 @@ executions with the same caller-supplied execution label. Node Native effect and
 continuation traces include invocation IDs while retaining static site IDs.
 Original-source JavaScript continues to use its per-call effect identities.
 
-The managed Native controller (`pulse.canonical-native-host.v6`) accepts a pending effect's opaque ticket in
+The managed Native controller (`pulse.canonical-native-host.v7`) accepts a pending effect's opaque ticket in
 `setEffectResult(ticket, result)`. Object identity authenticates the ticket;
 copied fields, foreign executions, old loop visits and duplicate settlement fail
 with `PULSE_EFFECT_INVOCATION_INVALID` before allocating a result handle or
@@ -1001,6 +1001,25 @@ shared state, logging, fetch, parallel, config, secret, KV, and outbound event
 authority but do
 not expose a Request, Response, route parameters, Router transfer, middleware,
 or response builders.
+
+Native event controllers permit sequential `startEvent(frame)` calls on the
+same Wasm instance after successful completion with no pending effects. A new
+accepted entry clears guest locals, state, result/readiness slots, numeric
+storage and continuation bookkeeping, and creates fresh host value handles,
+effect tickets, context, trace, redactions and memory accounting. Reclamation
+never runs across an active invocation. Event-reachable portable artifacts use
+the incremental AssemblyScript runtime even without schemas; HTTP-only
+artifacts retain their existing allocator selection and single-use entry.
+
+Entry is refused while executing, suspended, or awaiting guest resume after
+effect settlement. Refusal does not consume the active invocation. Invalid
+ingress leaves the previous completed result intact. Controlled execution
+failure, explicit close, cancellation and traps require disposal; this contract
+does not recover failed continuations. Tickets from a prior invocation remain
+invalid after reuse, even at the same static effect slot. Raw ABI handles and
+setters remain trusted-host operations. Direct hosts own provider-work cleanup;
+the high-level execution helpers still instantiate and dispose per invocation.
+See [Native instance reuse](../guides/events.md#native-instance-reuse).
 
 Conditional KV is owned by the portable runtime authoring/host contract.
 `kv.getVersioned`, `kv.insertIfAbsent`, and `kv.compareAndSwap` lower through the
