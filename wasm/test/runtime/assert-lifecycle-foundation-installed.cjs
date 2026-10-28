@@ -23,7 +23,7 @@ async function main() {
     const version = packed.manifest.releaseVersion;
     fs.mkdirSync(consumer);
     fs.writeFileSync(path.join(consumer, 'package.json'), JSON.stringify({ name: 'foundation-consumer', private: true,
-      dependencies: Object.fromEntries(['pulse', 'cli', 'provider-node', 'provider-fastly'].map(name => ['@pulse-compute/' + name, version])) }));
+      dependencies: Object.fromEntries(['pulse', 'cli', 'provider-node', 'provider-fastly', 'grip'].map(name => ['@pulse-compute/' + name, version])) }));
     registry = createReadOnlyRegistry(catalogFromTarballs(packed.manifest.packages.map(row => path.join(pack, row.tarball))));
     await new Promise(resolve => registry.server.listen(0, '127.0.0.1', resolve));
     fs.writeFileSync(path.join(consumer, '.npmrc'), `registry=https://registry.npmjs.org/\n@pulse-compute:registry=http://127.0.0.1:${registry.server.address().port}/\nreplace-registry-host=never\n`);
@@ -47,7 +47,7 @@ async function main() {
     const result = await run(process.execPath, ['check.cjs', '--installed']);
     const report = JSON.parse(result.stdout.trim().split('\n').at(-1));
     assert.equal(report.status, 'passed'); assert.equal(report.mode, 'installed'); assert.equal(report.cells.length, 5);
-    for (const file of ['host-extension-fixture.cjs', 'terminal-host.cjs'])
+    for (const file of ['host-extension-fixture.cjs', 'terminal-host.cjs', 'terminal-observer.cjs', 'terminal-cli.cjs'])
       fs.copyFileSync(path.join(root, 'wasm/test/support', file), path.join(consumer, file));
     fs.copyFileSync(path.join(root, 'packages/grip/pulse.package.json'), path.join(consumer, 'fixture-product.json'));
     fs.copyFileSync(path.join(root, 'wasm/test/provider/assert-fastly-host-extensions-installed.cjs'), path.join(consumer, 'terminal.cjs'));
@@ -55,6 +55,11 @@ async function main() {
     const terminalReport = JSON.parse(terminal.stdout.trim().split('\n').at(-1));
     assert.equal(terminalReport.status, 'passed'); assert.equal(terminalReport.cells.length, 2);
     process.stdout.write(terminal.stdout);
+    fs.copyFileSync(path.join(root, 'wasm/test/package/assert-grip-terminal.cjs'), path.join(consumer, 'grip-terminal.cjs'));
+    const grip = await run(process.execPath, ['grip-terminal.cjs', '--installed']);
+    const gripReport = JSON.parse(grip.stdout.trim().split('\n').at(-1));
+    assert.equal(gripReport.status, 'passed'); assert.equal(gripReport.cells.length, 2);
+    process.stdout.write(grip.stdout);
     console.log(JSON.stringify({ status: 'passed', mode: 'source-free-installed', packages: identities, qualification: report }));
   } finally {
     if (registry) await new Promise(resolve => registry.server.close(resolve));

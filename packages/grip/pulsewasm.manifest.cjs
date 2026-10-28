@@ -14,7 +14,7 @@ const pulseWasmManifest = Object.freeze({
   publicApi: Object.freeze({
     package: '@pulse-compute/grip',
     symbols: Object.freeze(['broadcast', 'grip', 'handoff', 'isWebSocket', 'subscribe']),
-    compatibilitySubpaths: Object.freeze(['@pulse-compute/grip/pulsewasm']),
+    compatibilitySubpaths: Object.freeze(['@pulse-compute/grip/pulsewasm', '@pulse-compute/grip/experimental']),
     loweringIntentionallyNarrow: true
   }),
   description: 'Package-owned Native lowering manifest for bounded stateless GRIP framing and request-bound broadcast.',

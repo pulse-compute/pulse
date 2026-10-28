@@ -82,3 +82,42 @@ new applications and is not evidence that Pulse owns WebSocket lifecycle. See
 - [Contracts and providers](../concepts/contracts-and-providers.md)
 - [Package-owned lowering](../concepts/package-owned-lowering.md)
 - [Diagnostics](../reference/diagnostics.md)
+
+## Experimental Fastly Native terminal handoff
+
+Candidate builds expose named `handoffFanout(ctx, backend)` and
+`handoffWebSocket(ctx, backend)` functions from
+`@pulse-compute/grip/experimental`. This subpath is provisional and outside the
+release manifest's supported entry points; it is not added to the root `grip`
+object. The existing pure `grip.handoff` framing method is unchanged.
+
+```ts
+import type { Handler } from '@pulse-compute/runtime'
+import { handoffWebSocket } from '@pulse-compute/grip/experimental'
+
+const handler: Handler = async (ctx) => {
+  if (ctx.req.path === '/health') return ctx.text('ok')
+  return handoffWebSocket(ctx, 'edge')
+}
+export default handler
+```
+
+Use one direct terminal return in a plain Fastly Native handler, with its current
+context and a literal configured backend key (`fastly.bindings.backends.edge`
+in this example). Fan-out selects `fastly_http_req.redirect_to_grip_proxy_v2`;
+WebSocket passthrough selects `fastly_http_req.redirect_to_websocket_proxy_v2`.
+Both use the generic `terminal-request-backend.v1` service and existing lifecycle,
+deadline and response authority. They return no application value: the TypeScript
+return type is `never`, compatible with a terminal handler branch, not a fabricated
+`Response` or a constructible completion token. Native compilation enforces
+placement independently of TypeScript; a cast cannot admit unsupported usage.
+
+Router placement, helpers, parallel/multiple handoffs, other surrounding effects,
+body forwarding and dynamic backend expressions remain unsupported. Node Native
+and JavaScript targets do not advertise this service. Direct JavaScript calls
+throw `PULSE_HOST_EXTENSION_TARGET`; there is no runtime fallback.
+
+Current evidence covers injected ABI execution and packed consumers. It does not
+qualify Viceroy, hosted Fastly, remote delivery or the lifetime of the handed-off
+connection. See the [terminal service contract](../architecture/current-contracts.md#fastly-native-terminal-service)
+for unknown outcomes and cleanup rules.

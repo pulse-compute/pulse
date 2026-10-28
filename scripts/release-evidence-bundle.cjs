@@ -223,6 +223,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'assets-native-embedded',
       'grip-package-owned-lowering',
       'grip-package-runtime',
+      'grip-terminal',
       'package-root-native',
       'assets-javascript-runtime',
       'entities-catalog',

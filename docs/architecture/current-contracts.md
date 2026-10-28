@@ -2949,7 +2949,13 @@ and a literal configured backend key. Bounded pure method/path/URL conditions
 and ordinary text-response branches are allowed. Router, helpers, middleware,
 parallel or multiple handoffs, other surrounding effects, body forwarding,
 dynamic backends, guest-unit composition, and package-owned application emitters
-are rejected. No new GRIP authoring method is introduced by this adapter.
+are rejected. The provisional `@pulse-compute/grip/experimental` named exports
+`handoffFanout(ctx, backend)` and `handoffWebSocket(ctx, backend)` select this
+service through package-owned contributions. They are absent from the package
+root and its `grip` object. Their `never` return type admits a terminal handler
+branch without inventing a Response or constructible completion token; Native
+placement is proved independently. JavaScript calls throw
+`PULSE_HOST_EXTENSION_TARGET`. See the [GRIP package guide](../packages/grip.md#experimental-fastly-native-terminal-handoff).
 
 Each selected contribution declares exactly one `(i32, i32, i32) -> i32`
 function. The service passes the borrowed ingress request handle and a bounded
