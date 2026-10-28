@@ -79,7 +79,7 @@ describe('@pulse-compute/runtime host bridge', () => {
       type: 'system.tick',
       schemaId: null,
     })
-    expect(result).toEqual({ version: 'pulse.event-execution-result.v1', status: 'completed' })
+    expect(result).toEqual({ version: 'pulse.event-execution-result.v2', status: 'completed' })
     expect(observed).toEqual({ type: 'system.tick', payload: null, request: false, response: false })
   })
 

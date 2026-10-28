@@ -11,7 +11,7 @@ const runtimeEvents = require(path.join(repoRoot, 'packages/runtime/src/internal
 const eventContracts = require(path.join(repoRoot, 'wasm/packages/contracts/src/events/contracts.js'));
 
 const FRAME_VERSION = 'pulse.event-frame.v1';
-const RESULT_VERSION = 'pulse.event-execution-result.v1';
+const RESULT_VERSION = 'pulse.event-execution-result.v2';
 
 function schemaFailure(message, detail) {
   const error = new runtimeHost.PulseRuntimeContractError('PULSE_SCHEMA_DECODE', message);
@@ -83,7 +83,7 @@ async function main() {
   app.on('device.button', { schema: 'events.DeviceButton' }, async (ctx) => {
     eventCalls += 1;
     assert.equal(Object.isFrozen(ctx), true);
-    assert.deepEqual(Object.keys(ctx), ['state', 'log', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit', 'event']);
+    assert.deepEqual(Object.keys(ctx), ['encodeJson', 'decodeJson', 'state', 'workspace', 'resources', 'log', 'fetch', 'time', 'effects', 'parallel', 'config', 'secret', 'kv', 'emit', 'event']);
     for (const httpField of ['req', 'param', 'json', 'text', 'response', 'next']) {
       assert.equal(Object.prototype.hasOwnProperty.call(ctx, httpField), false, `event context must not expose ${httpField}`);
     }

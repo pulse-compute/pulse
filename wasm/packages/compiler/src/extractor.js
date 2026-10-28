@@ -508,37 +508,31 @@ function parseEventTypeLiteral(sourceFile, node, diagnostics) {
 
 function parseEventDeclarationLiteral(sourceFile, node, diagnostics) {
   const expression = unwrapExpression(node);
-  let schema;
-  let valid = true;
-  if (!ts.isObjectLiteralExpression(expression) || expression.properties.length !== 1) {
-    valid = false;
-  } else {
-    const property = expression.properties[0];
-    const staticName = property && ts.isPropertyAssignment(property)
-      && (ts.isIdentifier(property.name) || isStringLiteralLike(property.name))
-      ? property.name.text
-      : undefined;
-    if (staticName !== 'schema') valid = false;
-    else {
-      const value = unwrapExpression(property.initializer);
-      if (value.kind === ts.SyntaxKind.NullKeyword) schema = null;
-      else if (isStringLiteralLike(value)) schema = literalText(value);
-      else valid = false;
-    }
+  const declaration = {};
+  let valid = ts.isObjectLiteralExpression(expression);
+  if (valid) for (const property of expression.properties) {
+    const name = ts.isPropertyAssignment(property)
+      && (ts.isIdentifier(property.name) || isStringLiteralLike(property.name)) ? property.name.text : undefined;
+    if (!['schema', 'resultSchema'].includes(name) || Object.prototype.hasOwnProperty.call(declaration, name)) { valid = false; break; }
+    const value = unwrapExpression(property.initializer);
+    if (name === 'schema' && value.kind === ts.SyntaxKind.NullKeyword) declaration[name] = null;
+    else if (isStringLiteralLike(value)) declaration[name] = literalText(value);
+    else { valid = false; break; }
   }
+  valid = valid && Object.prototype.hasOwnProperty.call(declaration, 'schema');
   if (!valid) {
     diagnostics.push(diagnostic(
       sourceFile,
       node,
       EVENTS.EVENT_DIAGNOSTIC_CODES.DECLARATION_INVALID,
-      'Pulse.on declarations must be direct object literals containing exactly one literal schema field.',
+      'Pulse.on declarations must be direct object literals containing a literal schema and optional literal resultSchema.',
       'Use { schema: "events.Payload" } or { schema: null } without spreads, computed keys, or aliases.',
       { phase: 'extract' }
     ));
     return { version: EVENTS.EVENT_DECLARATION_VERSION, schemaId: undefined, unsupported: true };
   }
   try {
-    return EVENTS.normalizeEventDeclaration({ schema });
+    return EVENTS.normalizeEventDeclaration(declaration);
   } catch (error) {
     diagnostics.push(diagnostic(
       sourceFile,
@@ -548,7 +542,7 @@ function parseEventDeclarationLiteral(sourceFile, node, diagnostics) {
       'Use a bounded dotted schema ID or explicit null.',
       { phase: 'extract' }
     ));
-    return { version: EVENTS.EVENT_DECLARATION_VERSION, schemaId: schema, unsupported: true };
+    return { version: EVENTS.EVENT_DECLARATION_VERSION, schemaId: declaration.schema, unsupported: true };
   }
 }
 

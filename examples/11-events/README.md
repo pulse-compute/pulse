@@ -3,8 +3,9 @@
 <!-- pulse-example-template:v1 -->
 
 This mixed Node project keeps HTTP and event entries in separate planes. Two
-schema-bound `Pulse.on` registrations accept canonical event frames and use the
-one-way `ctx.emit` effect. The harness proves exact outbound acceptance; it
+`Pulse.on` registrations accept schema-bound or no-payload event frames and use the
+one-way `ctx.emit` effect. The reading handler also returns a schema-validated
+application result. The harness proves returned data and exact outbound acceptance; it
 does not claim delivery or invoke a matching local handler.
 
 ## Request and response
@@ -14,7 +15,7 @@ Generated from the executable test harness below; these are tested requests or e
 | Request | Expected response |
 |---|---|
 | http health remains separate<br><code>GET /health</code> | <code>{"status":200,"text":"ok"}</code> |
-| schema event emits an accepted frame<br>Event: <code>{"version":"pulse.event-frame.v1","type":"device.reading","schemaId":"events.DeviceReading","payload":{"deviceId":"sensor-7","temperatureC":21}}</code> | <code>{"status":"completed","emitted":[{"version":"pulse.event-frame.v1","type":"device.reading.accepted","schemaId":"events.DeviceReadingAccepted","payload":{"accepted":true,"deviceId":"sensor-7"}}]}</code> |
+| schema event returns data and emits an accepted frame<br>Event: <code>{"version":"pulse.event-frame.v1","type":"device.reading","schemaId":"events.DeviceReading","payload":{"deviceId":"sensor-7","temperatureC":21}}</code> | <code>{"status":"completed","result":{"accepted":true,"deviceId":"sensor-7"},"emitted":[{"version":"pulse.event-frame.v1","type":"device.reading.accepted","schemaId":"events.DeviceReadingAccepted","payload":{"accepted":true,"deviceId":"sensor-7"}}]}</code> |
 | no-payload event emits a no-payload frame<br>Event: <code>{"version":"pulse.event-frame.v1","type":"system.tick","schemaId":null}</code> | <code>{"status":"completed","emitted":[{"version":"pulse.event-frame.v1","type":"system.heartbeat","schemaId":null}]}</code> |
 
 <!-- pulse-example-view:code -->
@@ -35,13 +36,17 @@ const app = new Pulse({ auto: true })
 
 app.get('/health', async (ctx) => ctx.text('ok'))
 
-app.on<DeviceReading>('device.reading', { schema: 'events.DeviceReading' }, async (ctx) => {
+app.on<DeviceReading>('device.reading', {
+  schema: 'events.DeviceReading',
+  resultSchema: 'events.DeviceReadingAccepted',
+}, async (ctx) => {
   const reading = ctx.event.payload
   ctx.log.info('device reading accepted')
   await ctx.emit('device.reading.accepted', {
     schema: 'events.DeviceReadingAccepted',
     payload: { deviceId: reading.deviceId, accepted: true },
   })
+  return { deviceId: reading.deviceId, accepted: true }
 })
 
 app.on('system.tick', { schema: null }, async (ctx) => {
@@ -227,7 +232,7 @@ pulse test --json
       }
     },
     {
-      "name": "schema event emits an accepted frame",
+      "name": "schema event returns data and emits an accepted frame",
       "status": "passed",
       "kind": "event",
       "emittedFrameCount": 1
@@ -247,7 +252,7 @@ export default { cases: [
     expect: { status: 200, text: 'ok' },
   },
   {
-    name: 'schema event emits an accepted frame',
+    name: 'schema event returns data and emits an accepted frame',
     kind: 'event',
     event: {
       type: 'device.reading',
@@ -256,6 +261,7 @@ export default { cases: [
     },
     expect: {
       status: 'completed',
+      result: { deviceId: 'sensor-7', accepted: true },
       emitted: [{
         type: 'device.reading.accepted',
         schema: 'events.DeviceReadingAccepted',
@@ -285,7 +291,7 @@ For build settings, see [Native build optimization](../../docs/reference/native-
 
 | Artifact | Default build |
 |---|---:|
-| Portable guest `canonical-native.wasm` | 31.8 KiB (32,545 bytes) |
+| Portable guest `canonical-native.wasm` | 31.8 KiB (32,563 bytes) |
 
 The executable documentation gate rebuilds and measures the default artifact.
 Measured with Node 24.18.0 and lockfile-pinned AssemblyScript 0.28.18. These are uncompressed on-disk sizes, not transfer sizes or

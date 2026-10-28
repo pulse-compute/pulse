@@ -14,6 +14,7 @@ export default [
     },
     expect: {
       status: 'completed',
+      result: { accepted: true, sequence: 7 },
       emitted: [
         {
           type: 'output.accepted',

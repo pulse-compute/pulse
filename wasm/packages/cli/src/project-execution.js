@@ -181,9 +181,11 @@ function eventInspectionProjection(project, compiled, support = selectedEventTar
     callsites: Object.freeze(callsites),
     schemas: Object.freeze({
       registrations: sortedUnique(registrations.map((event) => event.schemaId)),
+      results: sortedUnique(registrations.map((event) => event.resultSchemaId)),
       emissions: sortedUnique(callsites.map((callsite) => callsite.schemaId)),
       all: sortedUnique([
         ...registrations.map((event) => event.schemaId),
+        ...registrations.map((event) => event.resultSchemaId),
         ...callsites.map((callsite) => callsite.schemaId)
       ])
     }),
@@ -1378,6 +1380,10 @@ function assertEventExpectation(testCase, execution) {
   const expected = testCase.expect;
   const result = eventContracts.normalizeEventExecutionResult(execution.result);
   assert.equal(result.status, expected.status, `${testCase.name}: unexpected event execution status`);
+  if (Object.prototype.hasOwnProperty.call(expected, 'result')) {
+    assert.ok(Object.prototype.hasOwnProperty.call(result, 'result'), `${testCase.name}: missing event result`);
+    assert.deepEqual(result.result, expected.result, `${testCase.name}: unexpected event result`);
+  }
   if (expected.error) {
     assert.ok(result.error, `${testCase.name}: expected an event execution error`);
     if (expected.error.name !== undefined) assert.equal(result.error.name, expected.error.name, `${testCase.name}: unexpected event error name`);
@@ -1414,7 +1420,7 @@ function eventTestCaseResult(testCase, execution, result, started) {
     status: 'passed',
     durationMs: Number(process.hrtime.bigint() - started) / 1e6,
     event: Object.freeze({ type: testCase.event.type, schemaId: testCase.event.schemaId }),
-    result,
+    result: Object.freeze(redactValue(result, secretTokens(testCase.secrets))),
     emittedFrames: Object.freeze(redactValue(execution.emittedFrames, secretTokens(testCase.secrets))),
     emittedFrameCount: execution.emittedFrames.length,
     effects: effectCount,

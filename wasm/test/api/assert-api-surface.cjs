@@ -70,7 +70,7 @@ assert.match(declarations, /export interface PulseEvent<Payload = unknown>/);
 assert.match(declarations, /export interface PulseEventContext<Payload = unknown> extends PulseExecutionContext/);
 assert.match(declarations, /export type PulseEmitEvent<Payload = unknown>/);
 assert.match(declarations, /emit<Payload = unknown>\(/);
-assert.match(declarations, /export type PulseEventHandler<Payload = unknown> = \(ctx: PulseEventContext<Payload>\) => Promise<void>/);
+assert.match(declarations, /export type PulseEventHandler<Payload = unknown, Result = void> = \(ctx: PulseEventContext<Payload>\) => Promise<Result>/);
 assert.match(declarations, /error\(message: string\): void/);
 assert.match(declarations, /warn\(message: string\): void/);
 assert.match(declarations, /info\(message: string\): void/);

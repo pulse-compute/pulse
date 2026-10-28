@@ -280,7 +280,7 @@ export interface PulseEventContext<Payload = unknown> extends PulseExecutionCont
   readonly event: PulseEvent<Payload>;
 }
 
-export type PulseEventHandler<Payload = unknown> = (ctx: PulseEventContext<Payload>) => Promise<void>;
+export type PulseEventHandler<Payload = unknown, Result = void> = (ctx: PulseEventContext<Payload>) => Promise<Result>;
 
 export type HandlerResult = PulseResult | PulseFetchResponse;
 export type Handler = (ctx: PulseContext) => Promise<HandlerResult>;

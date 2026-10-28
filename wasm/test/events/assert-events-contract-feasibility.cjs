@@ -35,7 +35,7 @@ function contractProof() {
   assert.equal(events.EVENT_FRAME_VERSION, 'pulse.event-frame.v1');
   assert.equal(events.EVENT_CATALOG_VERSION, 'pulse.event-catalog.v1');
   assert.equal(events.EVENT_ADAPTER_VERSION, 'pulse.event-adapter.v1');
-  assert.equal(events.EVENT_EXECUTION_RESULT_VERSION, 'pulse.event-execution-result.v1');
+  assert.equal(events.EVENT_EXECUTION_RESULT_VERSION, 'pulse.event-execution-result.v2');
   assert.equal(events.EVENT_DIAGNOSTIC_VERSION, 'pulse.events-diagnostics.v1');
   assert.deepEqual(events.EVENT_DEFAULT_LIMITS, {
     maxTypeBytes: 128,

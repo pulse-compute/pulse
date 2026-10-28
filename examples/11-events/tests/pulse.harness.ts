@@ -5,7 +5,7 @@ export default { cases: [
     expect: { status: 200, text: 'ok' },
   },
   {
-    name: 'schema event emits an accepted frame',
+    name: 'schema event returns data and emits an accepted frame',
     kind: 'event',
     event: {
       type: 'device.reading',
@@ -14,6 +14,7 @@ export default { cases: [
     },
     expect: {
       status: 'completed',
+      result: { deviceId: 'sensor-7', accepted: true },
       emitted: [{
         type: 'device.reading.accepted',
         schema: 'events.DeviceReadingAccepted',

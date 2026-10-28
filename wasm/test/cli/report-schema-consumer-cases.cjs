@@ -4,6 +4,13 @@ const { collectCanonicalReportReferences: collect } = require('../../packages/co
 const { attachPackageOperationRecognition, PACKAGE_OPERATION_RECOGNITION_VERSION } = require('../../packages/compiler/src/spine/package-operation-seam');
 
 module.exports = function schemaConsumerCases() {
+  const eventResult = collect({ metadata: {schemaReferences: []},
+    schema: { registry: { schemas: [{ id: 'events.Result' }] } },
+    eventCatalog: {events: [{stableId: 'event-result', schemaId: null, resultSchemaId: 'events.Result'}]}
+  }, {entry: {body: []}, routing: {entries: [{stableId: 'event-result', kind: 'event'}]}}).references;
+  assert.equal(eventResult.length, 1);
+  assert.equal(eventResult[0].canonicalId, 'events.Result');
+  assert.deepEqual(eventResult[0].entryIds, ['event-result']);
   const reference = { id: 'app.Item', usage: 'text-decode', capability: 'schema.decode', position: { offset: 5 } };
   const compiled = { metadata: { file: 'generated.ts', schemaReferences: [reference] }, schema: { registry: { schemas: [{ id: 'app.Item' }] } } };
   const call = callerEntryId => ({ kind: 'helper-call', helperId: 'helper', callerEntryId });
