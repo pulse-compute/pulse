@@ -349,7 +349,7 @@ function reportForInputs(inputs, options = {}, policy = MAINTENANCE_POLICY) {
         checks: classification.ciChecks.map((id) => ({ id, checkpoint: policy.checks[id].checkpoint, status: 'pending' })),
         checkpoints: {
           'main-full-portable': { workflow: '.github/workflows/validate.yml', trigger: 'main PR or push', evidence: 'terminal exact-source portable shard reports and aggregate' },
-          'pre-main-qualification': { workflow: '.github/workflows/release-qualify.yml', trigger: 'eligible ready PR into main', evidence: 'complete immutable candidate qualification' }
+          'pre-main-qualification': { workflow: '.github/workflows/release-qualify.yml', trigger: 'ready main PR with a prepared release or Release qualification: required; synchronize/reopen after adding the request', evidence: 'complete immutable candidate qualification; skipped seal steps or job success alone never satisfy coverage', missingProducer: 'pending; qualification identify fails closed for mandatory scope checks without a seal request' }
         },
         handoff: 'Record PR/head/tested source, required check and workflow links, artifacts and passed/failed/pending/not-triggered status. Do not claim untriggered CI is queued. Agent may exit after local evidence and this handoff; integration and release remain gated.'
       },

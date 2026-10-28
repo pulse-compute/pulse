@@ -100,7 +100,13 @@ Broad profiles and workspace builds selected by policy are CI-owned checkpoints,
 not a requirement to keep an implementation agent running. Existing non-main CI
 runs fast portable, Node-floor, maintenance and documentation checks. Main full
 portable and eligible pre-main qualification retain complete coverage; the latter
-also owns CLI/provider/release qualification. A non-main fast pass is not a pass
+also owns CLI/provider/release qualification. That producer is conditional: a
+prepared release or `Release qualification: required` in the ready main PR body
+enables the seal. If trusted-base scope requires this coverage without either,
+qualification identification fails with the obligations pending. Add the request
+and synchronize or reopen the PR to trigger existing CI. This guard does not
+automatically schedule a seal; skipped steps or job success alone are not evidence.
+A non-main fast pass is not a pass
 for those later checkpoints. Generated CLI docs are documentation inputs; mixed
 runtime/configuration/provider changes still union their own obligations.
 

@@ -67,18 +67,30 @@ function identify({ root, event, env = process.env }) {
   // File content participates in byte digests; only Git metadata may be trimmed.
   const read = (ref, file) => execFileSync('git', ['show', `${ref}:${file}`],
     { cwd: root, encoding: 'utf8', timeout: 10000, maxBuffer: 16 * 1024 * 1024 });
+  const changedFiles = execFileSync('git', ['diff', '--no-renames', '--name-only', '-z', base, candidate.sourceRevision], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
   const preparation = checkReleasePr({
     baseManifest: JSON.parse(read(base, 'release/pulse-release-manifest.json')),
     headManifest: JSON.parse(read(candidate.sourceRevision, 'release/pulse-release-manifest.json')),
-    changedFiles: execFileSync('git', ['diff', '--name-only', '-z', base, candidate.sourceRevision], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean),
+    changedFiles,
     readHistoricalSource: tag => require('./release-pr-check.cjs').historicalSource(root, tag),
     readHead: file => read(candidate.sourceRevision, file)
   });
   const qualificationRequested = requestsQualification(pr.body);
+  // The producer is conditional: a green job that skipped its seal is not
+  // evidence for mandatory path coverage. Read base policy so a candidate
+  // cannot remove its own obligations. Do not auto-start a broad campaign.
+  const policy = JSON.parse(read(base, 'release/maintenance-policy.json'));
+  const scopeChecks = require('./maintenance-policy.cjs').classifyFiles(changedFiles, policy).checks;
+  const pendingChecks = scopeChecks.filter(id => ['cli', 'providers', 'release'].includes(id) ||
+    policy.checks[id]?.checkpoint === 'pre-main-qualification');
+  assert(preparation.preparedRelease || qualificationRequested || pendingChecks.length === 0,
+    `Pending scope qualification: ${pendingChecks.join(', ')}. The conditional seal would be skipped. Add Release qualification: required and synchronize or reopen this ready main PR; skipped steps or a successful job are not coverage.`);
+
   return { schemaVersion: SCHEMA, repository, workflow: WORKFLOW,
     runId: positive(env.GITHUB_RUN_ID, 'run ID'), attempt: positive(env.GITHUB_RUN_ATTEMPT, 'attempt'),
     pullRequest: number, base, head, sourceRef, candidate, preparation,
     releaseTag: `v${preparation.version}`, qualificationRequested,
+    scopeQualification: { policyRevision: base, checks: pendingChecks, status: pendingChecks.length ? 'pending' : 'not-required' },
     required: preparation.preparedRelease || qualificationRequested };
 }
 
