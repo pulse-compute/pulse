@@ -1,9 +1,16 @@
 # P08 — Bounded cache contract and Fastly Native adapter
 
-Status: **draft implementation; blocked on incomplete-body host qualification**.
-P08 is not complete or approved for production. The independent injected-host
-suite passes, but pinned Viceroy can turn an abandoned entry into a successful
-empty hit. The reproducible blocker below must be resolved before promotion.
+Status: **private cache experiment; deferred from the host-extension milestone**.
+Current direction, 2026-10-28: the
+[host-extension priority audit](host-extension-priority-audit.md) makes generic
+package contribution and shared lifecycle/management/instrumentation the primary
+acceptance criteria. P08 is not a production cache admission and does not block
+P15. Its provider still contains cache-specific admission and dispatch branches;
+the package facade/lowerer alone does not prove generic host extension.
+The original cache-specific assertions and local results below are retained as
+historical experiment evidence. They are not requirements on the generic seam.
+Host/package quirks and stronger integrity/completion guarantees are separate
+follow-ups. No live-host defect blocking the extension mechanism was established.
 Base: merged P07 #554, `534acd58fb8afaeb7cb33cf4cb03866698668816` on `latest`.
 Human direction: “Implement P08.” Entry point: `provider-fastly`. Additional
 owners are the private cache package and lowerer, canonical provider capability
@@ -105,7 +112,7 @@ This is not total invocation memory or a platform capacity guarantee.
 
 ## Qualification and stopping point
 
-### Blocking local-engine observation
+### Historical cache-package local-engine observation
 
 Viceroy 0.21.1 (binary SHA-256
 `881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9`,
@@ -124,18 +131,30 @@ Cache length is not a completion proof: an unfinished writer may supply an
 expected length. Neither is an acceptable workaround. The historical direct
 read probe did not cover this intervening readiness call.
 
-Reproduce without modifying the reader or changing the failing expectation:
+Reproduce the original experiment and its original expectations:
 
 ```bash
 node wasm/test/provider/assert-fastly-cache.cjs --artifacts-dir /tmp/pulse-cache-artifacts
 node wasm/test/provider/assert-fastly-cache-wire.cjs --artifacts-dir /tmp/pulse-cache-artifacts --viceroy /path/to/viceroy
 ```
 
-The second command records all outcomes and exits nonzero on a contract
-violation. A passing mock run or ordinary wire roundtrip cannot clear this
-blocker. Resolution requires a host that preserves read errors through
-readiness, exact-artifact replay of abandon and trap cases, and human review.
-Production behavior has not been inferred from the Viceroy defect.
+The second command records all outcomes and exits nonzero when its original
+cache expectations fail. Those failures are retained; they do not block package
+extension adoption. The Viceroy readiness error-preservation issue remains
+host/emulator evidence. Later live diagnostics observed successful reads of nine
+written bytes followed by EOF after abandonment, including a producer that
+supplied expected length ten. That producer length was not read back from host
+metadata. The matched v4 local diagnostic also returned the nine bytes; it must
+not be conflated with the earlier empty-hit artifact above. Diagnostic variants
+are not byte-identical to the unobserved production reader artifact.
+
+Official SDK documentation says incomplete writers' concurrent readers *may*
+encounter errors; unconditional HTTP 500 after abandon was an overstrong probe
+oracle. No native read error was observed in those live cases, so propagation of
+a live read error was not qualified. No proprietary live-host defect follows.
+An error actually reported by the host must still propagate; this audit neither
+changes that rule nor silently turns failed captures into passes. Additional
+cache completion/integrity policy belongs to future package work.
 
 `fastly-cache` is the maintained Native task. It compiles authored package calls
 through the production compiler and executes the emitted Wasm with an independent
