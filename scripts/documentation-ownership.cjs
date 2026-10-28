@@ -60,7 +60,7 @@ function filesUnder(root, predicate = () => true, out = []) {
 
 function policyFor(relativeFile) {
   const file = slash(relativeFile);
-  const reviewed = file === 'docs/maintainers/testing.md'
+  const reviewed = ['docs/maintainers/testing.md', 'docs/maintainers/scope-policy.md'].includes(file)
     ? { lastReviewed: '2026-10-28', reviewBy: '2027-04-28' }
     : ['docs/maintainers/documentation-system.md', 'docs/maintainers/public-site.md',
     'docs/maintainers/documentation-deployment.md', 'docs/maintainers/documentation-versioning.md',

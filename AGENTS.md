@@ -306,7 +306,7 @@ The path classifier is conservative. A protected-path match means “name and re
 2. Identify the canonical source of truth; do not patch generated copies.
 3. Make the smallest coherent change that preserves current scope.
 4. Add or update the nearest contract test, fixture, diagnostic, and documentation when behavior changes.
-5. Run the portable checks selected by the maintenance policy.
+5. Run local checks and change-specific regressions; hand off CI checkpoints.
 6. State dependency-bound checks that remain for the release owner; never report them as passing when dependencies are absent.
 7. Summarize changed boundaries, evidence, and residual uncertainty.
 
@@ -369,15 +369,13 @@ npm run publication:check
 
 These checks validate repository contracts and local simulations. They do not publish packages, write Object Storage, or activate Fastly configuration.
 
-Select bounded tasks justified by the change, Entry Point and scope
-report. Required broad profiles remain checkpoints; focused evidence cannot
-replace them, CI, acceptance or release qualification.
-
-Install lockfile-pinned dependencies with lifecycle scripts disabled. For clean
-commits, default to `node scripts/development-recovery.cjs` with explicit selections. See [recovery handoff](docs/maintainers/testing.md#recoverable-development-runs)
-for attempt/source/selection/receipt paths and process-liveness checks. Ordinary
-`--no-report` runs cannot resume. Preserve split evidence; do not restart campaigns
-to consolidate reports.
+Run the scope report's local checks and change-specific Entry Point regressions.
+Fast selection is smoke, not subsystem coverage. CI owns broad profiles/builds;
+record exact-source evidence or pending/untriggered workflow links in the PR.
+An agent may exit after this handoff; integration and release gates still apply.
+Use [testing and recovery](docs/maintainers/testing.md#selecting-development-checks)
+for selection, durable attempts and interruption handoffs. Never restart a
+campaign merely to consolidate reports.
 
 The full TypeScript build, real pnpm release pack, package acceptance, clean-machine acceptance, and external Fastly reality lanes require the restored lockfile-pinned dependency bundle.
 

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
-  "policyVersion": 13,
+  "policyVersion": 14,
   "releaseVersion": "1.0.0-beta.10",
-  "reviewedAt": "2026-10-09",
+  "reviewedAt": "2026-10-28",
   "maintainerModel": {
     "residentMaintainer": "Codex",
     "architectureAuthority": "human",
@@ -180,62 +180,82 @@
     "maintenance-policy": {
       "label": "Maintainer control plane",
       "command": "node scripts/validate-maintainer-control-plane.cjs",
-      "portable": true
+      "portable": true,
+      "execution": "local"
     },
     "publication-control-plane": {
       "label": "Publication and documentation deployment control plane",
       "command": "node scripts/validate-publication-workflows.cjs",
-      "portable": true
+      "portable": true,
+      "execution": "local"
     },
     "release-preflight": {
       "label": "Release preflight and documentation inventory",
       "command": "node scripts/release-preflight.cjs --check",
-      "portable": true
+      "portable": true,
+      "execution": "local"
     },
     "documentation": {
       "label": "Documentation synchronization and site",
       "command": "npm run docs:check",
-      "portable": true
+      "portable": true,
+      "execution": "local"
     },
     "unit": {
       "label": "Unit and repository contract evidence",
       "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --no-report",
-      "portable": true
+      "portable": true,
+      "execution": "ci",
+      "checkpoint": "main-full-portable"
     },
     "native": {
       "label": "Native compilation and runtime evidence",
       "command": "node wasm/scripts/run-wasm-tests.cjs --profile native --no-report",
-      "portable": true
+      "portable": true,
+      "execution": "ci",
+      "checkpoint": "main-full-portable"
     },
     "javascript": {
       "label": "JavaScript target evidence",
       "command": "node wasm/scripts/run-wasm-tests.cjs --profile javascript --no-report",
-      "portable": true
+      "portable": true,
+      "execution": "ci",
+      "checkpoint": "main-full-portable"
     },
     "conformance": {
       "label": "Cross-target conformance evidence",
       "command": "node wasm/scripts/run-wasm-tests.cjs --profile conformance --no-report",
-      "portable": true
+      "portable": true,
+      "execution": "ci",
+      "checkpoint": "main-full-portable"
     },
     "cli": {
       "label": "CLI truth profile",
       "command": "node wasm/scripts/run-wasm-tests.cjs --profile cli --no-report",
-      "portable": true
+      "portable": true,
+      "execution": "ci",
+      "checkpoint": "pre-main-qualification"
     },
     "providers": {
       "label": "Provider realization evidence",
       "command": "node wasm/scripts/run-wasm-tests.cjs --profile providers --no-report",
-      "portable": false
+      "portable": false,
+      "execution": "ci",
+      "checkpoint": "pre-main-qualification"
     },
     "build": {
       "label": "Workspace TypeScript build",
       "command": "pnpm build",
-      "portable": false
+      "portable": false,
+      "execution": "ci",
+      "checkpoint": "main-full-portable"
     },
     "release": {
       "label": "Aggregate release seal",
       "command": "npm run release:seal",
-      "portable": false
+      "portable": false,
+      "execution": "ci",
+      "checkpoint": "pre-main-qualification"
     }
   },
   "protectedBoundaries": [
@@ -526,7 +546,10 @@
         "cli",
         "build"
       ],
-      "risk": "medium"
+      "risk": "medium",
+      "excludePatterns": [
+        "wasm/packages/cli/docs/**"
+      ]
     },
     {
       "id": "release-system",
@@ -639,7 +662,8 @@
         "packages/*/README.md",
         "wasm/packages/*/README.md",
         "wasm/MAPPING.md",
-        "scripts/environment-reference.cjs"
+        "scripts/environment-reference.cjs",
+        "wasm/packages/cli/docs/**"
       ],
       "areas": [
         "documentation"
@@ -689,6 +713,33 @@
         "build"
       ],
       "risk": "high"
+    },
+    {
+      "id": "package-implementation",
+      "patterns": [
+        "packages/grip/src/**",
+        "packages/grip/test/**",
+        "packages/assets/src/**",
+        "packages/assets/test/**",
+        "packages/crypto/src/**",
+        "packages/crypto/test/**",
+        "packages/jwt/src/**",
+        "packages/jwt/test/**",
+        "packages/entities/src/**",
+        "packages/entities/test/**",
+        "packages/mcp/src/**",
+        "packages/s3/src/**"
+      ],
+      "areas": [
+        "packages"
+      ],
+      "boundaries": [],
+      "checks": [
+        "unit",
+        "javascript",
+        "build"
+      ],
+      "risk": "medium"
     }
   ],
   "pullRequestDeclaration": {

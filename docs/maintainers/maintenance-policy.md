@@ -5,9 +5,9 @@
 Pulse uses a machine-readable maintenance policy so repository automation and Codex receive the same scope boundaries. The policy is advisory about product direction and mandatory about process: Codex may analyze, review, and prepare bounded patches, while a human retains architecture, merge, repository-setting, and release authority.
 
 - **Policy schema:** `pulse.maintenance-policy.v2`
-- **Policy version:** `13`
+- **Policy version:** `14`
 - **Release:** `1.0.0-beta.10`
-- **Reviewed:** `2026-10-09`
+- **Reviewed:** `2026-10-28`
 - **Resident maintainer:** Codex
 - **Merge authority:** human-only
 - **Release authority:** human-only
@@ -58,20 +58,28 @@ Path classification is intentionally conservative. Touching a protected path doe
 
 ## Validation catalog
 
-| Check ID | Availability | Command |
-|---|---|---|
-| `maintenance-policy` | Portable | `node scripts/validate-maintainer-control-plane.cjs` |
-| `publication-control-plane` | Portable | `node scripts/validate-publication-workflows.cjs` |
-| `release-preflight` | Portable | `node scripts/release-preflight.cjs --check` |
-| `documentation` | Portable | `npm run docs:check` |
-| `unit` | Portable | `node wasm/scripts/run-wasm-tests.cjs --profile unit --no-report` |
-| `native` | Portable | `node wasm/scripts/run-wasm-tests.cjs --profile native --no-report` |
-| `javascript` | Portable | `node wasm/scripts/run-wasm-tests.cjs --profile javascript --no-report` |
-| `conformance` | Portable | `node wasm/scripts/run-wasm-tests.cjs --profile conformance --no-report` |
-| `cli` | Portable | `node wasm/scripts/run-wasm-tests.cjs --profile cli --no-report` |
-| `providers` | Dependency-bound | `node wasm/scripts/run-wasm-tests.cjs --profile providers --no-report` |
-| `build` | Dependency-bound | `pnpm build` |
-| `release` | Dependency-bound | `npm run release:seal` |
+| Check ID | Availability | Execution owner | Command |
+|---|---|---|---|
+| `maintenance-policy` | Portable | Local | `node scripts/validate-maintainer-control-plane.cjs` |
+| `publication-control-plane` | Portable | Local | `node scripts/validate-publication-workflows.cjs` |
+| `release-preflight` | Portable | Local | `node scripts/release-preflight.cjs --check` |
+| `documentation` | Portable | Local | `npm run docs:check` |
+| `unit` | Portable | CI: main-full-portable | `node wasm/scripts/run-wasm-tests.cjs --profile unit --no-report` |
+| `native` | Portable | CI: main-full-portable | `node wasm/scripts/run-wasm-tests.cjs --profile native --no-report` |
+| `javascript` | Portable | CI: main-full-portable | `node wasm/scripts/run-wasm-tests.cjs --profile javascript --no-report` |
+| `conformance` | Portable | CI: main-full-portable | `node wasm/scripts/run-wasm-tests.cjs --profile conformance --no-report` |
+| `cli` | Portable | CI: pre-main-qualification | `node wasm/scripts/run-wasm-tests.cjs --profile cli --no-report` |
+| `providers` | Dependency-bound | CI: pre-main-qualification | `node wasm/scripts/run-wasm-tests.cjs --profile providers --no-report` |
+| `build` | Dependency-bound | CI: main-full-portable | `pnpm build` |
+| `release` | Dependency-bound | CI: pre-main-qualification | `npm run release:seal` |
+
+Execution ownership is explicit in the JSON catalog: local checks accompany required
+change-specific Entry Point regressions; broad profiles and workspace builds are
+CI checkpoints. The scope report lists both without claiming either has passed.
+The fast selector is smoke evidence, never sufficient subsystem regression coverage.
+Main full-portable and pre-main qualification retain their complete selections.
+Agents may hand off a PR with pending CI links and exact source identity; pending
+or untriggered coverage blocks its integration/release checkpoint, not agent exit.
 
 Portable checks use the normal lockfile-pinned workspace installation and do not require the release-only dependency bundle or external provider credentials. Dependency-bound checks remain required before publication when their affected paths are touched.
 
