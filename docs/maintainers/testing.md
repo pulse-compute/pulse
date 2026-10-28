@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-10-09
-review-by: 2027-04-09
+last-reviewed: 2026-10-28
+review-by: 2027-04-28
 pulse-doc-meta:end -->
 
 # Testing Pulse
@@ -30,7 +30,7 @@ These commands cover the TypeScript workspace and package-level unit tests.
 | `cli` | commands, diagnostics, clean projects, live development, and executable documentation examples |
 | `release` | functional coverage with shared corpora owned by installed acceptance, package construction, deterministic artifacts, evidence authority, and offline deployment candidates |
 
-Run one profile or task:
+Inspect the registry and select a task or profile explicitly:
 
 ```bash
 node wasm/scripts/run-wasm-tests.cjs --profile unit
@@ -70,6 +70,23 @@ node wasm/scripts/run-wasm-tests.cjs --profile cli --through docs-example-03-fet
 ```
 
 `--from` and `--through` aid investigation. A release claim requires the complete release profile.
+
+## Selecting development checks
+
+Start with the changed behavior and the active Entry Point's evidence. Record a
+bounded selection of exact task IDs, its coverage rationale and any remaining
+obligations from the scope report or target instructions. Prefer focused checks
+for iteration; do not launch all portable profiles as the default agent loop.
+Required assertions, coverage obligations and acceptance checks still apply.
+If instructions require broad profiles, schedule them as a separate checkpoint
+on stabilized source and report them as pending until completed. Selective
+checks do not satisfy that broader obligation or qualify a release.
+
+Use [recoverable development runs](#recoverable-development-runs) by default for
+clean committed checkpoints, especially when a campaign may outlast a session.
+Short ordinary runs remain appropriate while editing a dirty tree; preserve
+their output and tested diff, since they do not create resumable attempts.
+Required hosted CI and full pre-main/release qualification remain separate gates.
 
 ## Compiler analytics qualification
 
@@ -535,15 +552,19 @@ proofs in authoritative evidence.
 
 ### Recoverable development runs
 
-CI9-02 adds an opt-in, checkout-local diagnostic command:
+Use the existing CI9-02 checkout-local controller for durable development
+checkpoints. Choose the smallest justified selection; this schema example is
+not a universal validation set:
 
 ```bash
-node scripts/development-recovery.cjs --profile unit --profile native
+node scripts/development-recovery.cjs --task schema-registry --task schema-codecs
 node scripts/development-recovery.cjs --resume /absolute/path/to/checkout/.pulse-development/attempts/ATTEMPT
 ```
 
 Commit the tested source and install/build dependencies before starting. A fresh
-run requires explicit `--profile` and/or `--task` selections. Resume accepts only
+run requires explicit `--profile` and/or `--task` selections. Repeated flags are
+supported; use a whole profile only when its coverage is justified or required.
+Save the printed attempt directory as soon as it appears. Resume accepts only
 the printed attempt directory; it preserves that selection and creates a new
 attempt. It never edits the earlier manifest, report, receipts or logs, even if
 the old progress report is missing or truncated. Each report records executed
@@ -581,9 +602,47 @@ run cannot replace fresh performance measurements, hosted CI or a release seal.
 The `release-recovery-runner` unit task includes the development recovery probes,
 including 149 completed passes followed by one-task recovery.
 
-On an interruption or handoff, record the branch, base/head, uncommitted work,
-report/artifact paths, completed and running checks, blockers and the next action.
-A task handoff must distinguish implemented, validated, pushed and merged work.
+### Interruption handoff
+
+Before pausing, retain a compact evidence ledger outside the tested source tree:
+
+- Branch, base/head, exact commit and tree, checkout path, working-tree state and
+  tested diff/tree digest for any ordinary dirty-tree runs.
+- Exact launch command, requested profiles/tasks and expanded `selectedTasks`
+  from `manifest.json`; the selection belongs to the whole attempt.
+- Absolute attempt directory, `manifest.json`, `report.json`, `checkpoints/`
+  receipt paths (including each result's `checkpoint.receiptPath` where present), and
+  `run/tasks/` logs. Preserve predecessor attempts referenced by reused receipts.
+- Controller PID and child PID/process group from `.pulse-seal/active.json`,
+  report `activeChildPid`, completed/failed/running tasks, process exit if known,
+  blockers and the next command. Distinguish implemented, validated and pushed
+  work from human-owned merge status.
+
+A report still marked `running` is a progress snapshot, not proof that a process
+is alive or that its task passed. Inspect the controller and child process group
+on the recorded host/process namespace (for example, `ps` with PID, PPID, PGID
+and command columns on POSIX), then compare the report and logs. If still alive,
+continue observing the existing run; do not launch overlapping work. If liveness
+cannot be verified, retain the lock and investigate. Never delete a lock merely
+because its report is stale. The controller verifies stale takeover itself.
+
+Once the prior processes have ended, resume the eligible attempt using its exact
+printed directory and unchanged checkout, commit/tree, dependencies, tools,
+environment and selection. Do not pass new task/profile flags with `--resume`.
+The controller verifies receipts even when the old report is missing or
+truncated, creates a new attempt and reruns ineligible tasks. Retain both attempt
+paths and verify terminal status, coverage, task outcomes and process exit.
+
+Ordinary runner attempts, including `--no-report` runs, have no development
+recovery manifest/receipts and cannot be converted into a resumable attempt.
+Preserve available terminal task results, logs, aggregate summaries, failures
+and exact source identities as separate development evidence. Identify missing,
+failed or uncertain coverage and run a justified bounded follow-up; if no
+trustworthy completion evidence exists, treat that task as unresolved. Start a
+fresh recovery attempt for a new clean selection or changed inputs. Do not rerun
+an entire campaign solely to consolidate its reports, fabricate receipts or
+combine different source trees into a passing claim. A separately required full
+checkpoint must still complete under its own evidence rules.
 
 ## Provider evidence boundaries
 
