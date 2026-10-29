@@ -1379,6 +1379,53 @@ See [Effects and continuations](../concepts/effects-and-continuations.md),
 [routing](../guides/routing.md), and
 [structured and opaque bodies](../concepts/bodies.md).
 
+## Selected fetch outcome and transport timing boundaries
+
+Issue #565 selects the following boundary clarification on 29 October 2026 for
+the outcome/timing work in #563 and #564. **`errors: 'collect'`, `timing: true`
+and `elapsedMs` remain proposed API, not implemented features.** The bounded
+spike in PR #576 establishes viability, not feature qualification.
+
+Elapsed time measures transport only. Start at provider dispatch initiation,
+not effect construction or group collection. End at status/header availability
+for an opaque response, or at final payload-byte acquisition for an explicitly
+body-consuming operation. Exclude text decoding, JSON parsing, schema validation,
+application transforms, sibling waiting and caller-continuation delay. Record
+the endpoint before those operations; do not infer it from final result wrapping.
+If body acquisition itself is deferred until group rejoin, that delay must not
+be mislabeled as transport time: the implementation must observe per-member
+acquisition completion independently. Timing must never force an opaque body
+read or buffering. The two endpoints describe different transport boundaries,
+so an opaque response's elapsed value is not a full-body latency measurement.
+
+Outcome settlement and the timing endpoint are distinct. A selected JSON result
+still requires parsing/validation before it can be fulfilled, even though its
+transport clock has already stopped. A transform failure does not become a
+transport failure merely because timing was selected. Monotonic samples,
+valid zero, explicit unavailable/null cases and supported-target diagnostics
+belong to #564 implementation and qualification.
+
+Timing does not alter `timeoutMs`. Preserve the
+[existing target-specific lifetimes](../concepts/effects-and-continuations.md#existing-fetch-timeout-boundaries),
+including Node Native structured acquisition and opt-in forwarding exceptions.
+The deadline clock can include preparation even though the transport measurement
+starts at dispatch. No group clock resets, second scheduler, group-only policy,
+or new group defaults are introduced.
+
+With collection selected, operational member timeouts may become rejected
+outcomes; HTTP statuses remain data. Enclosing cancellation/deadline expiry and
+runtime integrity faults remain fatal, including when expiry coincides with a
+member timeout. Preserve cancellation fences, response/body ownership, late
+result disposal and no implicit retries. Existing noncollecting behavior stays
+unchanged. Mixed policies, bounded error classification and final outcome
+settlement are implementation acceptance work in #563.
+
+New typed connect, first-byte and between-byte provider controls are deferred.
+Their capability mapping, precedence, backend registration identity/reuse and
+real-provider phase evidence are a separate workstream, not a prerequisite for
+the selected outcome/timing feature. No phase attribution is inferred from a
+generic host timeout.
+
 ## Selected bounded HTTP deadline contract
 
 P-01 selects the following implementation contract on 15 September 2026.
