@@ -50,13 +50,15 @@ Broadcast configuration is provider-owned. It requires an explicit publish/contr
 Candidate builds provide `handoffFanout(ctx, backend)` and
 `handoffWebSocket(ctx, backend)` as named exports from
 `@pulse-compute/grip/experimental`. Use one direct terminal return from a plain
-Fastly Native handler, with the current context and a literal configured backend
-key. These methods use the shared terminal service; the root `grip` object and
+Fastly Native handler or one selected Router route, with the current context and
+a literal configured backend key. Ordinary text-response sibling routes retain
+their response authority and unmatched requests return 404. These methods use the shared terminal service; the root `grip` object and
 its existing pure `handoff` method are unchanged.
 
 This provisional subpath is outside the supported entry-point list. Its `never`
 return type represents terminal transfer, with no application completion value.
 Native compilation enforces the bounded placement separately. JavaScript calls
-throw `PULSE_HOST_EXTENSION_TARGET`; Node Native, Router placement, helpers,
-parallel handoffs and surrounding effects are not admitted. Injected ABI and
+throw `PULSE_HOST_EXTENSION_TARGET`; Node Native, helpers, middleware/error
+composition, parallel or multiple handoffs, escaped tokens and other effects
+(including sibling routes) are not admitted. Injected ABI and
 packed-consumer evidence does not claim hosted or local-engine qualification.
