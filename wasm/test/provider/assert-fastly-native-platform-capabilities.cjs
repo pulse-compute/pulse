@@ -63,6 +63,7 @@ try {
   require('./assert-fastly-schema-encode-text.cjs').main();
   require('./assert-fastly-json-parser.cjs').main();
   require('./assert-fastly-native-value-parity.cjs').main('platform');
+  require('./assert-fastly-fetch-headers.cjs').main('platform');
   const zeroEffectPlan = planForExample('hello');
   assert.equal(zeroEffectPlan.effects.length, 0, 'hello plan must exercise the zero-effect provider path');
   const zeroEffectCompiled = platform.compileFastlyNativePlatformCapabilitiesPlan(zeroEffectPlan, { cwd: repoRoot, bindings: {}, requirePlatformCapability: false, canonicalBuild: true });
@@ -225,7 +226,7 @@ try {
   assert.ok(result.trace.some((entry) => entry.module === 'fastly_config_store' && entry.name === 'get' && entry.key === 'API_BASE'));
   assert.ok(result.trace.some((entry) => entry.module === 'fastly_secret_store' && entry.name === 'plaintext' && entry.value === '[REDACTED]'));
   assert.equal(JSON.stringify(result.trace).includes(secretValue), false, 'secret plaintext must never appear in native proof traces');
-  const authorization = result.trace.find((entry) => entry.module === 'fastly_http_req' && entry.name === 'header_insert' && entry.header[0] === 'authorization');
+  const authorization = result.trace.find((entry) => entry.module === 'fastly_http_req' && entry.name === 'header_append' && entry.header[0] === 'authorization');
   assert.deepEqual(authorization.header, ['authorization', '[REDACTED]'], 'sensitive outbound headers must be trace-redacted');
 
   const experimentalResult = mock.executeFastlyNativePlatformCapabilities(configExperimentalFirst, {
