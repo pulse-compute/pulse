@@ -87,7 +87,7 @@ function buildExperimental({ ts, sourceFile, unwrapExpression, placementForCall,
           && ts.isReturnStatement(parent) && !node.questionDotToken && !node.expression.questionDotToken;
         if (!valid) diagnostics.push(makeDiagnostic(sourceFile, node, 'PULSE_HOST_EXTENSION_PLACEMENT',
           `${SUBPATH}.${operation} requires a direct terminal return with the current handler context and a literal backend key.`,
-          `Use return ${operation}(${contextName}, 'backend'); in a plain Fastly Native handler.`));
+          `Use return ${operation}(${contextName}, 'backend'); in a plain Fastly Native handler or selected Router route.`));
         else entries.push({
           kind: 'grip-terminal', symbol: operation, placement, loc: locFor(sourceFile, node), range: rangeFor(sourceFile, node),
           canonicalEffect: {

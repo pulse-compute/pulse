@@ -180,6 +180,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-request-headers',
       'fastly-native-platform-capabilities',
       'fastly-lifecycle',
+      'fastly-router-terminal',
       'resource-ownership-cost',
       'resource-ledger',
       'fastly-forwarding-accounting',

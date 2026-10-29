@@ -2944,10 +2944,15 @@ link posture. This does not change the guest prebuilt recipe.
 ### Fastly Native terminal service
 
 The provider implements one direct terminal package effect in a plain HTTP
-handler: `kind: host.extension`, declared result `host-terminal`, empty payload,
+handler or one selected Router route: `kind: host.extension`, declared result `host-terminal`, empty payload,
 and a literal configured backend key. Bounded pure method/path/URL conditions
-and ordinary text-response branches are allowed. Router, helpers, middleware,
-parallel or multiple handoffs, other surrounding effects, body forwarding,
+and ordinary text-response branches are allowed. A Router uses the existing
+canonical dispatcher and private terminal-route bodies; ordinary text-response
+sibling routes and the normal 404 exhaustion remain available. The one handoff
+must belong to its selected route and return directly, without resuming sibling
+routes. Router text responses may use a literal HTTP status option. Helpers,
+middleware/error-handler composition, parallel or multiple handoffs, other
+surrounding effects (including sibling-route effects), body forwarding,
 dynamic backends, guest-unit composition, and package-owned application emitters
 are rejected. The provisional `@pulse-compute/grip/experimental` named exports
 `handoffFanout(ctx, backend)` and `handoffWebSocket(ctx, backend)` select this

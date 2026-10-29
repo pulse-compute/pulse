@@ -23,29 +23,81 @@ function select(plan, options = {}) {
   const used = effects.filter(effect => effect.kind === 'host.extension');
   if (!used.length) return [];
   const reject = message => fail(message, used[0]);
-  // A single ordinary direct-return site bounds the proof. No scheduler/composition claim.
+  // Reuse the canonical Router dispatcher and private terminal-route bodies.
+  // Admission bounds authored behavior; no new scheduler or package special case.
+  const routed = plan.entry?.kind === 'router';
   if (used.length !== 1 || effects.length !== 1 || used[0].grouped || used[0].result?.mode !== 'return'
     || used[0].declaredResult !== 'host-terminal'
-    || !used[0].statementPath?.startsWith('entry.body') || (plan.helpers || []).length || (plan.callables || []).length
-    || options.bodyForwarding || options.bindings?.dynamicBackends || options.guestUnits?.length || plan.handlers?.length || plan.routing?.entries?.length || plan.packages?.application || plan.logging?.enabledStatements) reject('only one ordinary direct terminal effect is admitted.');
-  function expression(value) {
+    || (plan.helpers || []).length || (plan.callables || []).length || (plan.stages || []).length
+    || options.bodyForwarding || options.bindings?.dynamicBackends || options.guestUnits?.length
+    || plan.packages?.application || plan.logging?.enabledStatements)
+    reject('only one direct terminal effect without surrounding effects or composition is admitted.');
+  const handlers = new Map((plan.handlers || []).map(handler => [handler.id, handler]));
+  const entries = plan.routing?.entries || [];
+  if (routed) {
+    if (!entries.length || entries.length !== handlers.size
+      || entries.some(entry => entry.kind !== 'route' || entry.nativeBody?.family !== 'terminal-route'
+        || !handlers.has(entry.stableId))
+      || used[0].routerEntryKind !== 'route' || !handlers.has(used[0].routerEntryStableId)
+      || !used[0].statementPath?.startsWith(`handlers.${used[0].routerEntryStableId}.body[`))
+      reject('terminal Router placement requires private route bodies without middleware or error composition.');
+  } else if (plan.entry?.kind !== 'handler' || handlers.size || entries.length
+    || !used[0].statementPath?.startsWith('entry.body[')) {
+    reject('terminal placement requires a plain HTTP handler or one selected Router route.');
+  }
+  const dispatcherLocals = new Set((plan.locals || []).filter(local => local.scopeId === 'entry').map(local => local.id));
+  function expression(value, dispatcher = false) {
     if (!value || typeof value !== 'object') return;
+    if (dispatcher && value.kind === 'local' && dispatcherLocals.has(value.id)) return;
+    if (dispatcher && value.kind === 'undefined') return;
+    if (dispatcher && value.kind === 'assignment' && value.operator === '='
+      && value.target?.kind === 'local' && dispatcherLocals.has(value.target.id)) {
+      expression(value.value, true); return;
+    }
+    // Router exhaustion emits a literal status option; authored text siblings
+    // may use that same bounded response shape, without evaluating callbacks.
+    if (routed && value.kind === 'object' && value.entries?.every(entry => entry.kind === 'property'
+      && entry.key?.kind === 'literal' && entry.key.value === 'status' && entry.value?.kind === 'literal'
+      && Number.isInteger(entry.value.value) && entry.value.value >= 100 && entry.value.value <= 599)) return;
     if (!['literal', 'context-read', 'binary', 'intrinsic'].includes(value.kind)) reject('unsupported expression in the terminal proof.');
     if (value.kind === 'context-read' && !['req.path', 'req.method', 'req.url'].includes(value.path.join('.'))) reject('request mutation/body/state is outside this proof.');
-    if (value.kind === 'intrinsic' && value.name !== 'response.text') reject('only a plain text response control is admitted beside the handoff.');
-    for (const child of [value.left, value.right, ...(value.arguments || [])]) if (child) expression(child);
+    if (value.kind === 'intrinsic' && value.name !== 'response.text' && !(dispatcher && value.name === 'router.match'))
+      reject('only a plain text response control is admitted beside the handoff.');
+    for (const child of [value.left, value.right, ...(value.arguments || [])]) if (child) expression(child, dispatcher);
   }
-  function statements(body) {
-    for (const statement of body) {
-      if (statement.kind === 'if') { expression(statement.test); statements(statement.then); statements(statement.else); }
+  let occurrences = 0;
+  const calls = new Map();
+  function statements(body, owner) {
+    const dispatcher = routed && owner === 'entry';
+    for (const [index, statement] of body.entries()) {
+      if (statement.kind === 'if') { expression(statement.test, dispatcher); statements(statement.then, owner); statements(statement.else, owner); }
       else if (statement.kind === 'return') {
         if (statement.value?.kind !== 'intrinsic' || statement.value.name !== 'response.text') reject('Ordinary terminal branches must return a text response.');
-        expression(statement.value);
-      }
-      else if (statement.kind !== 'effect') reject('only pure route conditions, terminal return and a text response control are admitted.');
+        expression(statement.value, dispatcher);
+      } else if (statement.kind === 'effect') {
+        if (dispatcher || statement.effectId !== used[0].id || statement.result?.mode !== 'return'
+          || (routed && owner !== used[0].routerEntryStableId)) reject('handoff must return directly from its selected route.');
+        occurrences++;
+      } else if (dispatcher && statement.kind === 'handler-call' && handlers.has(statement.handlerId)) {
+        calls.set(statement.handlerId, (calls.get(statement.handlerId) || 0) + 1);
+      } else if (dispatcher && statement.kind === 'local' && dispatcherLocals.has(statement.localId)) {
+        expression(statement.value, true);
+      } else if (dispatcher && statement.kind === 'expression') {
+        expression(statement.expression, true);
+      } else if (routed && !dispatcher && index === 0 && statement.kind === 'local'
+        && statement.name === `__pulse_router_transferred_${entries.find(entry => entry.stableId === owner)?.index}`
+        && handlers.get(owner)?.localIds.includes(statement.localId)
+        && statement.value?.kind === 'literal' && statement.value.value === false) {
+        // The canonical route body's private transfer flag, not an authored token.
+      } else reject('only bounded route dispatch, pure conditions, direct handoff and text responses are admitted.');
     }
   }
-  statements(plan.entry.body);
+  statements(plan.entry.body, 'entry');
+  for (const handler of handlers.values()) {
+    if (calls.get(handler.id) !== 1) reject('each terminal route requires exactly one dispatcher call.');
+    statements(handler.body, handler.id);
+  }
+  if (occurrences !== 1) reject('exactly one terminal handoff site is required.');
   const effect = used[0];
   const inputs = effect.inputs || [];
   if (inputs.length !== 2 || inputs[0].name !== 'resource' || inputs[1].name !== 'payload'
