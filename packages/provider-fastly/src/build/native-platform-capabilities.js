@@ -2189,6 +2189,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
   source = dynamicBackends.instrument(source, bindings, true, (options.bindings || options).backends);
+  source = require('./native-fetch-outcomes.js').instrument(source, plan);
   lifecycle.assertSites();
   if (lifecycle.supportSource) source += '\n' + lifecycle.supportSource;
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {

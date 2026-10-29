@@ -50,6 +50,10 @@ function fetchEffectExpression(factory, sourceFile, site, chain) {
       literalProperty(factory, 'column', factory.createNumericLiteral(pos.column))
     ], false))
   );
+  if (site.fetchErrors === 'collect') {
+    properties.push(literalProperty(factory, 'fetchErrors', stringLiteral(factory, 'collect')));
+    properties.push(literalProperty(factory, 'projectionArgs', factory.createArrayLiteralExpression([...chain.decoderArgs])));
+  }
   return factory.createObjectLiteralExpression(properties, false);
 }
 
@@ -164,8 +168,8 @@ function parallelMemberEffectExpression(factory, sourceFile, site, member, rewri
   throw new TypeError(`Unsupported ctx.parallel member kind: ${member.kind}`);
 }
 
-function parallelMemberResultExpression(factory, temporary, member) {
-  if (member.kind === 'fetch') return decodedExpression(factory, temporary, member.chain.decoder, member.chain.decoderArgs);
+function parallelMemberResultExpression(factory, temporary, member, site) {
+  if (member.kind === 'fetch' && site?.fetchErrors !== 'collect') return decodedExpression(factory, temporary, member.chain.decoder, member.chain.decoderArgs);
   return temporary;
 }
 
@@ -174,7 +178,7 @@ function bindingKey(node) {
   return undefined;
 }
 
-function parallelResultStatements(factory, candidate, temporaryNames) {
+function parallelResultStatements(factory, candidate, temporaryNames, sites) {
   const binding = candidate.declaration.name;
   if (ts.isObjectBindingPattern(binding)) {
     const memberIndexes = new Map(candidate.members.map((member, index) => [member.key, index]));
@@ -184,7 +188,7 @@ function parallelResultStatements(factory, candidate, temporaryNames) {
       if (index === undefined || !ts.isIdentifier(element.name) || element.dotDotDotToken || element.initializer) {
         throw new TypeError('Unsupported ctx.parallel result binding reached canonical emission.');
       }
-      const initializer = parallelMemberResultExpression(factory, temporaryNames[index], candidate.members[index]);
+      const initializer = parallelMemberResultExpression(factory, temporaryNames[index], candidate.members[index], sites[index]);
       return factory.createVariableStatement(candidate.statement.modifiers, factory.createVariableDeclarationList([
         factory.createVariableDeclaration(element.name, undefined, undefined, initializer)
       ], declarationFlags(candidate.statement)));
@@ -193,7 +197,7 @@ function parallelResultStatements(factory, candidate, temporaryNames) {
   const resultObject = factory.createObjectLiteralExpression(candidate.members.map((member, index) =>
     factory.createPropertyAssignment(
       factory.createStringLiteral(member.key),
-      parallelMemberResultExpression(factory, temporaryNames[index], member)
+      parallelMemberResultExpression(factory, temporaryNames[index], member, sites[index])
     )), true);
   const declaration = factory.updateVariableDeclaration(
     candidate.declaration,
@@ -301,7 +305,7 @@ function emitCanonicalHandlerGenerator(ir) {
         const { candidate, site, continuation } = entry;
         const marker = fetchEffectExpression(factory, sourceFile, site, candidate.chain);
         const yieldExpression = factory.createYieldExpression(undefined, callPulse(factory, 'effect', [marker, stringLiteral(factory, continuation.id)]));
-        const initializer = decodedExpression(factory, factory.createParenthesizedExpression(yieldExpression), candidate.chain.decoder, candidate.chain.decoderArgs);
+        const initializer = decodedExpression(factory, factory.createParenthesizedExpression(yieldExpression), site.fetchErrors === 'collect' ? undefined : candidate.chain.decoder, candidate.chain.decoderArgs);
         const declaration = factory.updateVariableDeclaration(candidate.declaration, candidate.declaration.name, undefined, candidate.declaration.type, initializer);
         return factory.updateVariableStatement(candidate.statement, candidate.statement.modifiers, factory.updateVariableDeclarationList(candidate.statement.declarationList, [declaration]));
       }
@@ -315,7 +319,7 @@ function emitCanonicalHandlerGenerator(ir) {
           factory.createVariableDeclaration(binding, undefined, undefined, groupYield)
         ], ts.NodeFlags.Const));
         const declarations = candidates.map((candidate, index) => {
-          const initializer = decodedExpression(factory, tempNames[index], candidate.chain.decoder, candidate.chain.decoderArgs);
+          const initializer = decodedExpression(factory, tempNames[index], sites[index].fetchErrors === 'collect' ? undefined : candidate.chain.decoder, candidate.chain.decoderArgs);
           return factory.createVariableStatement(candidate.statement.modifiers, factory.createVariableDeclarationList([
             factory.createVariableDeclaration(candidate.declaration.name, undefined, candidate.declaration.type, initializer)
           ], declarationFlags(candidate.statement)));
@@ -326,7 +330,7 @@ function emitCanonicalHandlerGenerator(ir) {
         const { candidate, sites, continuation } = entry;
         const factories = sites.map((site, index) => factory.createArrowFunction(undefined, undefined, [], undefined,
           factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), parallelMemberEffectExpression(factory, sourceFile, site, candidate.members[index], rewritePackageIntrinsics)));
-        const decoders = candidate.members.map(member => factory.createArrayLiteralExpression(member.kind === 'fetch' && member.chain.decoder
+        const decoders = candidate.members.map((member, index) => factory.createArrayLiteralExpression(sites[index].fetchErrors !== 'collect' && member.kind === 'fetch' && member.chain.decoder
           ? [factory.createStringLiteral(member.chain.decoder), ...member.chain.decoderArgs] : []));
         const yielded = factory.createYieldExpression(undefined, callPulse(factory, 'collection', [
           factory.createArrayLiteralExpression(factories), stringLiteral(factory, continuation.id), candidate.input,
@@ -348,7 +352,7 @@ function emitCanonicalHandlerGenerator(ir) {
         const groupDeclaration = factory.createVariableStatement(undefined, factory.createVariableDeclarationList([
           factory.createVariableDeclaration(binding, undefined, undefined, groupYield)
         ], ts.NodeFlags.Const));
-        return [groupDeclaration, ...parallelResultStatements(factory, candidate, temporaryNames)];
+        return [groupDeclaration, ...parallelResultStatements(factory, candidate, temporaryNames, sites)];
       }
       case 'provider-variable': {
         const { candidate, site, continuation } = entry;

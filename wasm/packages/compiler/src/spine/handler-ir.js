@@ -334,12 +334,28 @@ function buildPlainHandlerIr(frontend, options = {}) {
   }
 
   function nextFetchEffectSite(chain, grouped, groupKey) {
+    let fetchErrors;
+    // Shape selectors belong to the individual operation and must be literal.
+    // Dynamic values are never used to change Native result shape at runtime.
+    if (chain.init && ts.isObjectLiteralExpression(chain.init)) {
+      for (const property of chain.init.properties) {
+        const name = property.name && (ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)) ? property.name.text : undefined;
+        if (options.target !== 'javascript' && property.name && ts.isComputedPropertyName(property.name) && ts.isStringLiteral(property.name.expression) && property.name.expression.text === 'errors') {
+          diagnostics.push(diagnostic(sourceFile, property, 'PULSE_FETCH_ERRORS_LITERAL_REQUIRED', "Native fetch errors requires an inline named literal property."));
+        }
+        if (name !== 'errors') continue;
+        if (!ts.isPropertyAssignment(property) || !ts.isStringLiteral(property.initializer) || property.initializer.text !== 'collect') {
+          if (options.target !== 'javascript') diagnostics.push(diagnostic(sourceFile, property, 'PULSE_FETCH_ERRORS_LITERAL_REQUIRED', "Native fetch errors must be the literal 'collect' or omitted."));
+        } else fetchErrors = 'collect';
+      }
+    }
     const site = Object.freeze({
       id: nextEffectId('fetch'),
       kind: 'fetch',
       providerKind: 'fetch',
       operation: 'dispatch',
       decoder: chain.decoder || null,
+      ...(fetchErrors ? { fetchErrors } : {}),
       grouped: Boolean(grouped),
       ...(groupKey === undefined ? {} : { groupKey }),
       capability: 'fetch',

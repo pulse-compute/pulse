@@ -1,4 +1,5 @@
 import type {
+  PulseFetchOutcome,
   Handler,
   PulseTimeResult,
   PulseEffect,
@@ -9,6 +10,12 @@ import type {
   PulseParallelResult,
   Router
 } from './index';
+
+/** Host settlement helpers. rejected rethrows failures outside the fetch transport taxonomy. */
+export const fetchOutcomes: {
+  fulfilled<T>(value: T): PulseFetchOutcome<T>;
+  rejected(error: unknown): PulseFetchOutcome<never>;
+};
 
 /** Provider-owned execution metadata supplied to every JavaScript effect. */
 export interface PulseJavascriptEffectHostExecution {
@@ -194,7 +201,8 @@ export interface PulseJavascriptEffectExecution {
   project<T, U>(
     effect: PulseParallelEffect<T>,
     projection: string,
-    projector: (value: T) => U | PromiseLike<U>
+    projector: (value: T) => U | PromiseLike<U>,
+    rejector?: (error: unknown) => U | PromiseLike<U>
   ): PulseParallelEffect<U>;
   effects<T = unknown>(options: { readonly max: number }): PulseEffects<T>;
   parallel<T>(effects: PulseEffects<T>): PulseEffect<readonly T[]>;

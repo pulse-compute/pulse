@@ -129,27 +129,33 @@ function createFetchOperation(effectExecution, fetchEffect, fetchRequest, option
     requestMethod: fetchRequest.init.method,
     effectId
   });
-  const operation = effectExecution.project(
+  const response = effectExecution.project(
     fetchEffect,
     'response',
     (value) => normalizeFetchResponse(value, projectionOptions)
   );
+  const outcome = require('./fetch-outcome.js');
+  const collect = fetchRequest.init.errors === 'collect';
+  const wrap = effect => collect
+    ? effectExecution.project(effect, 'fetch.outcome', outcome.fulfilled, outcome.rejected)
+    : effect;
+  const operation = wrap(response);
   Object.defineProperties(operation, {
     text: {
       enumerable: false,
-      value: () => effectExecution.project(
-        operation,
+      value: () => wrap(effectExecution.project(
+        response,
         'text',
         (response) => projectFetchResponse(response, 'text', undefined, projectionOptions)
-      )
+      ))
     },
     json: {
       enumerable: false,
-      value: (schemaId) => effectExecution.project(
-        operation,
+      value: (schemaId) => wrap(effectExecution.project(
+        response,
         'json',
         (response) => projectFetchResponse(response, 'json', schemaId, projectionOptions)
-      )
+      ))
     }
   });
   return operation;

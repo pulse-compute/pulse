@@ -129,6 +129,9 @@ function validatePlanBoundary(plan) {
   if (packageEffects.length > 0) {
     fail('Pass97 does not realize package-owned Fastly effects; config, secret, KV, and GRIP are introduced in Pass98.', 'PULSE_FASTLY_NATIVE_HTTP_PLATFORM_EFFECTS_DEFERRED', { effects: packageEffects.map((entry) => entry.id) });
   }
+  if (plan.effects?.some(effect => effect.fetchErrors)) {
+    fail('Collected fetch outcomes require the canonical platform realization.', 'PULSE_FASTLY_NATIVE_HTTP_EFFECT_KIND_UNSUPPORTED');
+  }
   const unsupported = (plan.effects || []).filter((effect) => effect.kind !== 'fetch');
   if (unsupported.length > 0) {
     fail('Pass97 realizes only outbound HTTP fetch effects.', 'PULSE_FASTLY_NATIVE_HTTP_EFFECT_KIND_UNSUPPORTED', { effects: unsupported.map((entry) => ({ id: entry.id, kind: entry.kind })) });

@@ -83,6 +83,7 @@ async function executeApplication(application, request, options = {}) {
 }
 
 module.exports = Object.freeze({
+  fetchOutcomes: require('./internal/fetch-outcome.js'),
   bindCallableApplication: require('./internal/callable.js').bindCallableApplication,
   createBinaryResourceStore: require('./internal/resources.js').createBinaryResourceStore,
   bindBinaryResources: require('./internal/resources.js').bindBinaryResources,

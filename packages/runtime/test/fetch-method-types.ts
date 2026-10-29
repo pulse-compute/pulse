@@ -35,3 +35,34 @@ ctx.fetch(url, { method: 'PUT', body: new Uint8Array([1]) })
 ctx.fetch(url, { method: 'PATCH', timeoutMs: '1000' })
 // @ts-expect-error header values remain strings
 ctx.fetch(url, { method: 'PUT', headers: { 'x-value': 1 } })
+
+// Collected outcomes preserve the selected payload and discriminate failures.
+import type { PulseFetchOutcome, PulseOpaqueResponse, PulseFetchInit } from '@pulse-compute/runtime'
+const collected: Promise<PulseFetchOutcome<string>> = ctx.fetch(url, { errors: 'collect' }).text()
+const collectedJson: Promise<PulseFetchOutcome<{ enabled: boolean }>> = ctx.fetch(url, { errors: 'collect' }).json<{ enabled: boolean }>('example.ItemUpdate')
+const rawCollected: Promise<PulseFetchOutcome<PulseOpaqueResponse>> = ctx.fetch(url, { errors: 'collect' })
+declare const maybeCollect: PulseFetchInit
+const conditional: Promise<PulseOpaqueResponse | PulseFetchOutcome<PulseOpaqueResponse>> = ctx.fetch(url, maybeCollect)
+async function outcomes() {
+  const result = await ctx.fetch(url, { errors: 'collect' }).text()
+  if (result.status === 'fulfilled') {
+    const value: string = result.value
+    void value
+    // @ts-expect-error fulfilled outcomes have no error
+    result.error
+  } else {
+    const code: 'PULSE_FETCH_NETWORK' | 'PULSE_FETCH_TIMEOUT' = result.error.code
+    void code
+    // @ts-expect-error failed outcomes have no payload
+    result.value
+  }
+  const group = await ctx.parallel({ plain: ctx.fetch(url).text(), collected: ctx.fetch(url, { errors: 'collect' }).text() })
+  const plain: string = group.plain
+  const wrapped: PulseFetchOutcome<string> = group.collected
+  void [plain, wrapped]
+}
+// @ts-expect-error unsupported policy is rejected
+ctx.fetch(url, { errors: 'ignore' })
+// @ts-expect-error selected text is wrapped
+const unwrapped: Promise<string> = ctx.fetch(url, { errors: 'collect' }).text()
+void [collected, collectedJson, rawCollected, conditional, outcomes, unwrapped]

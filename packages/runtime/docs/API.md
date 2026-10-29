@@ -253,6 +253,7 @@ interface PulseFetchInitBase {
   readonly method?: 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH'
   readonly headers?: Readonly<Record<string, string>> | readonly [string, string][]
   readonly timeoutMs?: number
+  readonly errors?: 'collect'
 }
 
 type PulseFetchInit = PulseFetchInitBase & (
@@ -261,7 +262,9 @@ type PulseFetchInit = PulseFetchInitBase & (
   | { readonly body?: never; readonly json: unknown; readonly schema?: string }
 )
 
-ctx.fetch(url: string, init?: PulseFetchInit): PulseFetchOperation
+ctx.fetch(url: string, init: PulseFetchInit & { errors: 'collect' }): PulseFetchOperation<true>
+ctx.fetch(url: string, init?: PulseFetchInit & { errors?: undefined }): PulseFetchOperation
+ctx.fetch(url: string, init: PulseFetchInit): PulseFetchOperation<boolean>
 ```
 
 Outbound methods are `GET`, `HEAD`, `POST`, `PUT`, and `PATCH`. `GET` and
@@ -274,7 +277,8 @@ request body; it is invalid without `json`. `PulseIncomingBody` is the opaque
 request-forwarding handle under the explicit Node opt-in, not an arbitrary
 stream or buffer. See [incoming forwarding](https://pulsecompute.io/v1.0.0-beta.10/concepts/bodies/#incoming-forwarding-on-node).
 
-HTTP status is response data. Network and timeout failures are runtime failures.
+HTTP status is response data. Network and timeout failures are runtime failures
+unless that operation selects `errors: 'collect'`.
 The [Router recovery contract](./guides/routing.md#next-is-a-terminal-transfer)
 owns which failures enter application error handling; the
 [deadline contract](https://pulsecompute.io/v1.0.0-beta.10/concepts/effects-and-continuations/#timeouts-have-two-scopes)
@@ -287,6 +291,43 @@ return ctx.json({ found: true, user })
 
 Consecutive independent fetches may lower into a deterministic effect group. Results are presented in declaration order, not host completion order.
 
+
+### Collected fetch outcomes
+
+Select `errors: 'collect'` on an individual fetch to turn transport failures and
+member timeouts into bounded data. This works under direct await,
+`ctx.parallel({ ... })`, and the existing bounded effect collection syntax.
+Text/JSON projections produce an outcome around the selected payload:
+
+```ts
+const { primary, secondary } = await ctx.parallel({
+  primary: ctx.fetch(primaryUrl, { errors: 'collect', timeoutMs: 1000 }).text(),
+  secondary: ctx.fetch(secondaryUrl, { errors: 'collect' }).text(),
+})
+return ctx.json({ primary, secondary })
+```
+
+```ts
+type PulseFetchOutcome<T> =
+  | { readonly status: 'fulfilled'; readonly value: T }
+  | { readonly status: 'rejected'; readonly error: {
+      readonly code: 'PULSE_FETCH_NETWORK' | 'PULSE_FETCH_TIMEOUT'
+    } }
+```
+
+Without a projection, `value` remains the opaque response. After narrowing on
+`status`, return `result.value` to forward it; the envelope does not acquire,
+decode or serialize its body. HTTP error statuses still produce fulfilled
+outcomes. Error objects contain no provider message, URL, credentials or cause.
+Malformed JSON, schema failures, size bounds, invalid options, enclosing
+cancellation/deadline expiry and runtime integrity failures remain failures.
+A failing ordinary member still fails a mixed group. No retries or group policy
+changes are introduced. Omission preserves existing shapes and failure behavior.
+
+For Native, use an inline named literal `errors: 'collect'`; dynamic selectors,
+computed names and selectors hidden in aliases/spreads are rejected. Existing
+projection/schema and collection admission rules still apply. Timing metadata
+remains separate work; this option does not change `timeoutMs` lifetimes.
 
 ## `ctx.resources`
 

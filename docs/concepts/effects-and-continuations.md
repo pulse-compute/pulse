@@ -370,12 +370,11 @@ managed boundaries; this is not hard CPU preemption. Fastly JavaScript rejects
 the total `maxDurationMs` configuration rather than claiming support it lacks.
 
 Without collected outcomes, a failed group delivers no partial result. The
-selected future `errors: 'collect'` contract makes an operational member timeout
+per-fetch `errors: 'collect'` option makes an operational member timeout
 a rejected member while retaining successful siblings. Enclosing cancellation,
 request expiry and runtime integrity faults remain execution failures. HTTP
-error statuses remain response data. These outcome options are not implemented
-by this deadline clarification; their selected contract is
-[recorded separately](../architecture/current-contracts.md#selected-fetch-outcome-and-transport-timing-boundaries).
+error statuses remain response data. The outcome and future timing boundaries
+are [recorded separately](../architecture/current-contracts.md#selected-fetch-outcome-and-transport-timing-boundaries).
 
 ### Fastly Native observation and cleanup
 

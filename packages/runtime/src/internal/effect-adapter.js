@@ -744,7 +744,7 @@ function createJavascriptEffectExecution(options = {}) {
       return effect;
     },
 
-    project(parent, projection, projector) {
+    project(parent, projection, projector, rejector) {
       assertOpen();
       const parentData = dataForEffect(parent);
       if (!parentData || parentData.execution !== execution) {
@@ -755,7 +755,13 @@ function createJavascriptEffectExecution(options = {}) {
             : 'Pulse effect projections require a request-owned Pulse effect.'
         );
       }
-      const projected = raceWithSignal(parent.then(value => { options.requestBudget?.check(); return projector(value); }).then(value => { options.requestBudget?.check(); return value; }), lifecycleController.signal).catch((error) => {
+      const selected = parent.then(value => { options.requestBudget?.check(); return projector(value); });
+      const settled = typeof rejector === 'function' ? selected.catch(error => {
+        options.requestBudget?.check();
+        if (lifecycleController.signal.aborted) throw abortedEffectError(lifecycleController.signal.reason);
+        return rejector(error);
+      }) : selected;
+      const projected = raceWithSignal(settled.then(value => { options.requestBudget?.check(); return value; }), lifecycleController.signal).catch((error) => {
         throw redaction.redactError(error);
       });
       const effectData = {
