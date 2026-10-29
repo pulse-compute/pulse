@@ -270,6 +270,13 @@ const tasks = Object.freeze({
     timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
     description: 'P10 mixed effects, sequential cohorts, repeated sites, ctx.call and Router recovery with selected lifecycle services'
   }),
+  'terminal-installed': nodeTask('test/qualification/terminal/installed.cjs', {
+    timeoutMs: 600000, evidence: 'external', scheduling: { compiler: true },
+    description: 'P10/P13 exact-tarball terminal consumers, controls and separately retained injected failures'
+  }),
+  'terminal-qualification-contract': nodeTask('test/qualification/terminal/assert-bundle.cjs', {
+    description: 'P10/P13 evidence binding rejects changed artifacts and incomplete transport receipts'
+  }),
   'lifecycle-foundation-installed': nodeTask('test/runtime/assert-lifecycle-foundation-installed.cjs', {
     timeoutMs: 360000, evidence: 'external', scheduling: { compiler: true },
     description: 'P14 source-free packed foundation compiler and driver replay outside the checkout'
@@ -1576,6 +1583,7 @@ const profiles = Object.freeze({
     'lifecycle-foundation',
     'fastly-lifecycle',
     'fastly-router-terminal',
+    'terminal-qualification-contract',
     'resource-ownership-cost',
     'resource-ledger',
     'fastly-forwarding-accounting',

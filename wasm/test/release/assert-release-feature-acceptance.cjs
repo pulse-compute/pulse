@@ -36,7 +36,7 @@ const reports = Object.fromEntries(REQUIRED_TASKS.map(task => [task, {
   workingDiffSha256: crypto.createHash('sha256').update('').digest('hex'), acceptanceScriptSha256: 'c'.repeat(64),
   packages: [{ name: '@pulse-compute/pulse', version: RELEASE_VERSION, sha256: 'd'.repeat(64) }]
 }]));
-assert.equal(validateAcceptance(runner, reports, identity).gates.length, 11);
+assert.equal(validateAcceptance(runner, reports, identity).gates.length, 12);
 const summary = validateAcceptance(runner, reports, identity);
 assert.equal(validateSummary(summary, identity.sourceRevision), summary);
 assert.throws(() => validateSummary(undefined, identity.sourceRevision), /Missing installed feature acceptance/);
@@ -164,7 +164,7 @@ async function verifySealOrchestration() {
     process.stdout.write = originalWrite;
     delete require.cache[sealModule];
   }
-  console.log('ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity');
+  console.log('ok - twelve separate installed gates, cross-lane coverage and fail-closed candidate/report identity');
 
 }
 verifySealOrchestration().catch(error => { console.error(error); process.exitCode = 1; });
