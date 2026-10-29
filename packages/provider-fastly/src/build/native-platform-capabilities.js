@@ -1043,6 +1043,7 @@ function requiredImportsForPlan(plan, bindings) {
   }
   if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText') || kinds.has('s3.getBody')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
   if (require('./native-body-forwarding.js').enabled(plan)) {
+    keys.delete('fastly_http_req:header_append'); keys.add('fastly_http_req:header_insert');
     keys.delete('fastly_http_req:send_async'); keys.delete('fastly_http_req:pending_req_wait_v2');
     for (const key of require('./native-body-forwarding.js').IMPORTS) keys.add(key);
     keys.add('fastly_http_body:read');
