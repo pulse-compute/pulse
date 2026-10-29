@@ -211,6 +211,8 @@ function readerForFetchData(data, options = {}) {
     maxBytes: options.maxBodyBytes === undefined ? data.maxBodyBytes : options.maxBodyBytes,
     forceStructured: true,
     signal: options.signal || data.signal,
+    onTransportEnd: options.onTransportEnd,
+    onTransportFailure: options.onTransportFailure,
     onReadSettled: () => {
       if (data.response.bodyUsed && !data.response.body?.locked) releaseFetchResponseCancellation(data.response);
     }

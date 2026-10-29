@@ -1384,9 +1384,11 @@ See [Effects and continuations](../concepts/effects-and-continuations.md),
 Issue #565 selects the following boundary clarification on 29 October 2026 for
 the outcome/timing work in #563 and #564. Per-fetch `errors: 'collect'` is
 implemented for direct await, keyed groups and bounded collections on the
-JavaScript and Native targets. **`timing: true` and `elapsedMs` remain proposed
-API.** The bounded spike in PR #576 established viability; transport-only timing
-still requires #564 implementation and qualification.
+JavaScript and Native targets. `timing: true` adds a transport-only `elapsedMs`
+field, with or without collection. Timing alone wraps successful payloads and
+preserves ordinary failure behavior. Omitted/false timing retains untimed shapes.
+The bounded spike in PR #576 established viability; production instrumentation
+uses provider observations and the existing Fastly poll/select loop.
 
 Elapsed time measures transport only. Start at provider dispatch initiation,
 not effect construction or group collection. End at status/header availability
@@ -1403,9 +1405,14 @@ so an opaque response's elapsed value is not a full-body latency measurement.
 Outcome settlement and the timing endpoint are distinct. A selected JSON result
 still requires parsing/validation before it can be fulfilled, even though its
 transport clock has already stopped. A transform failure does not become a
-transport failure merely because timing was selected. Monotonic samples,
-valid zero, explicit unavailable/null cases and supported-target diagnostics
-belong to #564 implementation and qualification.
+transport failure merely because timing was selected. Final nonempty-read
+samples exclude subsequent EOF/trailer delay; empty bodies use EOF. JS/Node use
+`performance.now()` and Fastly Native uses monotonic WASI nanoseconds. Durations
+are fractional milliseconds with no added rounding, from zero through
+`Number.MAX_SAFE_INTEGER`. Invalid/unavailable optional samples produce null;
+unsupported providers fail explicitly. Scheduler/deadline clock faults remain
+fatal. No wall-clock fallback is allowed. See the [timing API](../../API.md#transport-timing)
+for optional storage and the incoming-forwarding exclusion.
 
 Timing does not alter `timeoutMs`. Preserve the
 [existing target-specific lifetimes](../concepts/effects-and-continuations.md#existing-fetch-timeout-boundaries),

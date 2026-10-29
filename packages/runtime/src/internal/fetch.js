@@ -5,7 +5,7 @@ const { encodeSchemaValue, requireExplicitSchemaId } = require('./schema.js');
 const { isIncomingBody } = require('./incoming-body.js');
 
 const SUPPORTED_FETCH_METHODS = Object.freeze(new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH']));
-const SUPPORTED_FETCH_INIT_FIELDS = Object.freeze(new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs', 'errors']));
+const SUPPORTED_FETCH_INIT_FIELDS = Object.freeze(new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs', 'errors', 'timing']));
 
 function fetchContractError(code, message, detail, cause) {
   return new PulseRuntimeContractError(code, message, {
@@ -112,6 +112,7 @@ function normalizeFetchInit(input, options = {}) {
     throw fetchContractError('PULSE_FETCH_INIT_INVALID', 'Pulse fetch init must be an ordinary object.');
   }
   const value = input || {};
+  if (value.timing !== undefined && typeof value.timing !== 'boolean') throw fetchContractError('PULSE_FETCH_TIMING_INVALID', 'Fetch timing must be a boolean.');
   if (value.errors !== undefined && value.errors !== 'collect') {
     throw fetchContractError('PULSE_FETCH_ERRORS_INVALID', "Pulse fetch errors must be the literal 'collect' or omitted.");
   }
@@ -177,6 +178,8 @@ function normalizeFetchInit(input, options = {}) {
     bodyMode = 'json';
   }
 
+  if (bodyMode === 'incoming-request-v1' && value.timing === true) throw fetchContractError('PULSE_FETCH_TIMING_UNSUPPORTED', 'Transport timing is not available for incoming-body forwarding.');
+
   if ((method === 'GET' || method === 'HEAD') && bodyMode !== 'none') {
     throw fetchContractError(
       'PULSE_FETCH_BODY_METHOD_UNSUPPORTED',
@@ -192,6 +195,7 @@ function normalizeFetchInit(input, options = {}) {
     bodyMode,
     ...(hasSchema ? { schema: schemaId } : {}),
     ...(value.errors === 'collect' ? { errors: 'collect' } : {}),
+    ...(value.timing === true ? { timing: true } : {}),
     timeoutMs: normalizeTimeout(value.timeoutMs)
   });
 }

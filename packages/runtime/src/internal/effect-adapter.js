@@ -576,7 +576,7 @@ function createJavascriptEffectExecution(options = {}) {
 
   const execution = {
     checkOpen() { assertOpen(); options.signal?.throwIfAborted(); },
-    dispatch(input, projector) {
+    dispatch(input, projector, fetchTiming) {
       assertOpen();
       requireObject('effect descriptor', input);
       if (totalEffects + localEffects >= maxEffects) {
@@ -621,7 +621,7 @@ function createJavascriptEffectExecution(options = {}) {
         root.started = true;
         observe({ type: 'effect-dispatched', effect: publicDescriptor });
         const operationSignal = createEffectSignal(lifecycleController.signal, descriptor);
-        const operationExecution = Object.freeze({ ...externalExecution, signal: operationSignal.signal });
+        const operationExecution = Object.freeze({ ...externalExecution, signal: operationSignal.signal, ...(fetchTiming ? { fetchTiming } : {}) });
         try {
           const pending = (() => {
             options.requestBudget?.check();
@@ -650,7 +650,7 @@ function createJavascriptEffectExecution(options = {}) {
           const normalized = normalizeEffectResult(descriptor, value, limits);
           if (descriptor.kind === 'secret.get' && typeof normalized === 'string') redaction.add(normalized);
           return normalized;
-        } finally { operationSignal.dispose(); }
+        } catch (error) { fetchTiming?.fail(); throw error; } finally { operationSignal.dispose(); }
       }), lifecycleController.signal).catch(error => { throw redaction.redactError(error); });
       const projected = (typeof projector === 'function' ? raw.then(value => { options.requestBudget?.check(); return projector(value); }).then(value => { options.requestBudget?.check(); return value; }) : raw).catch((error) => {
         throw redaction.redactError(error);

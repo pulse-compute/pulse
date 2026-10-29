@@ -1018,6 +1018,7 @@ function requiredImportsForPlan(plan, bindings) {
     ]) keys.add(key);
   }
   if (bindings && dynamicBackends.active(bindings)) keys.add('fastly_http_req:register_dynamic_backend');
+  if (plan.effects.some(effect=>effect.fetchTiming)) keys.add('fastly_async_io:is_ready');
   if (kinds.has('fetch')) for (const key of ['wasi_snapshot_preview1:clock_time_get', 'fastly_async_io:select', 'fastly_http_req:pending_req_poll_v2', 'fastly_http_resp:close', 'fastly_http_body:close']) keys.add(key);
   if (planRequiresFetchBodyRead(plan)) keys.add('fastly_http_body:read');
   if (kinds.has('config.get')) for (const key of ['fastly_config_store:open', 'fastly_config_store:get']) keys.add(key);
@@ -2190,6 +2191,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
   source = dynamicBackends.instrument(source, bindings, true, (options.bindings || options).backends);
   source = require('./native-fetch-outcomes.js').instrument(source, plan);
+  source = require('./native-fetch-timing.js').instrument(source, plan);
   lifecycle.assertSites();
   if (lifecycle.supportSource) source += '\n' + lifecycle.supportSource;
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {

@@ -19,6 +19,7 @@ export const fetchOutcomes: {
 
 /** Provider-owned execution metadata supplied to every JavaScript effect. */
 export interface PulseJavascriptEffectHostExecution {
+  readonly fetchTiming?: PulseFetchTiming;
   readonly kind: 'request' | 'event';
   readonly request?: Request;
   readonly event?: PulseEventFrame;
@@ -235,6 +236,7 @@ export declare function createRequestBudget(options?: {
   maxDurationMs?: number;
   requestBudget?: PulseRequestBudget;
   requestClock?: PulseKvClock;
+  fetchClock?: { now(): number };
   signal?: AbortSignal;
   requestSignal?: AbortSignal;
 }): PulseRequestBudget;
@@ -243,7 +245,7 @@ export interface PulseGeneratedOutputExecution {
   readonly started: boolean;
   readonly finished: boolean;
   assertEffect(): void;
-  dispatch(effect: Readonly<Record<string, unknown>>): Promise<unknown>;
+  dispatch(effect: Readonly<Record<string, unknown>>, projector?: (value: unknown) => unknown, fetchTiming?: PulseFetchTiming): Promise<unknown>;
   bindInput(input: PulseIncomingBodyOwnership | undefined): void;
   close(factory?: (options: import('./index').PulseResponseOptions) => unknown): any;
   validateResult(result: unknown): void;
@@ -270,6 +272,7 @@ export interface PulseRuntimeExecutionOptions {
   readonly requestBudget?: PulseRequestBudget;
   /** Monotonic host clock/scheduler, never application wall time. */
   readonly requestClock?: PulseKvClock;
+  readonly fetchClock?: { now(): number };
   /** Host-only monotonic clock/scheduler injection for deterministic lifecycle evidence. */
   readonly kvClock?: PulseKvClock;
   /** Host monotonic deadline; conditional KV uses the earlier of this and 10 seconds. */
@@ -517,3 +520,13 @@ export declare function createIncomingBodyOwnership(transport: {
   cancel(reason?: unknown): unknown;
 }): PulseIncomingBodyOwnership;
 export declare function forwardIncomingBody(marker: unknown, url: string, init: unknown, execution: PulseJavascriptEffectHostExecution): Promise<Response>;
+
+/** Private provider observations; no wall-clock fallback. */
+export interface PulseFetchTiming {
+  begin(): void;
+  headers(): void;
+  body(complete?: boolean): void;
+  fail(): void;
+  elapsed(projection?: string, rejected?: boolean): number | null;
+}
+export declare function createFetchTiming(clock?: { now(): number }): PulseFetchTiming;

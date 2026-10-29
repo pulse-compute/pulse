@@ -334,7 +334,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
   }
 
   function nextFetchEffectSite(chain, grouped, groupKey) {
-    let fetchErrors;
+    let fetchErrors, fetchTiming;
     // Shape selectors belong to the individual operation and must be literal.
     // Dynamic values are never used to change Native result shape at runtime.
     if (chain.init && ts.isObjectLiteralExpression(chain.init)) {
@@ -342,6 +342,11 @@ function buildPlainHandlerIr(frontend, options = {}) {
         const name = property.name && (ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)) ? property.name.text : undefined;
         if (options.target !== 'javascript' && property.name && ts.isComputedPropertyName(property.name) && ts.isStringLiteral(property.name.expression) && property.name.expression.text === 'errors') {
           diagnostics.push(diagnostic(sourceFile, property, 'PULSE_FETCH_ERRORS_LITERAL_REQUIRED', "Native fetch errors requires an inline named literal property."));
+        }
+        if (name === 'timing') {
+          if (!ts.isPropertyAssignment(property) || ![ts.SyntaxKind.TrueKeyword, ts.SyntaxKind.FalseKeyword].includes(property.initializer.kind)) {
+            if (options.target !== 'javascript') diagnostics.push(diagnostic(sourceFile, property, 'PULSE_FETCH_TIMING_LITERAL_REQUIRED', 'Native fetch timing must be literal true/false or omitted.'));
+          } else if (property.initializer.kind === ts.SyntaxKind.TrueKeyword) fetchTiming = true;
         }
         if (name !== 'errors') continue;
         if (!ts.isPropertyAssignment(property) || !ts.isStringLiteral(property.initializer) || property.initializer.text !== 'collect') {
@@ -356,6 +361,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
       operation: 'dispatch',
       decoder: chain.decoder || null,
       ...(fetchErrors ? { fetchErrors } : {}),
+      ...(fetchTiming ? { fetchTiming: true } : {}),
       grouped: Boolean(grouped),
       ...(groupKey === undefined ? {} : { groupKey }),
       capability: 'fetch',

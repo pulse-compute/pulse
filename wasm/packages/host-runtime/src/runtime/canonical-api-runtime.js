@@ -754,7 +754,8 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
     throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_INIT_INVALID', 'Canonical fetch init must be an object.');
   }
   const value = init || {};
-  const supportedFields = new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs', 'errors']);
+  const supportedFields = new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs', 'errors', 'timing']);
+  if (value.timing !== undefined && typeof value.timing !== 'boolean') throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_TIMING_INVALID', 'Fetch timing must be a boolean.');
   if (value.errors !== undefined && value.errors !== 'collect') throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_ERRORS_INVALID', "Fetch errors must be 'collect' or omitted.");
   for (const field of Object.keys(value)) {
     if (!supportedFields.has(field)) {
@@ -849,6 +850,7 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
       { method, bodyMode }
     );
   }
+  if (bodyMode === 'incoming-request-v1' && value.timing === true) throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_TIMING_UNSUPPORTED', 'Transport timing is not available for incoming-body forwarding.');
   let timeoutMs;
   if (value.timeoutMs !== undefined) {
     timeoutMs = Number(value.timeoutMs);
@@ -863,6 +865,7 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
     bodyMode,
     ...(hasSchema ? { schema: schemaId } : {}),
     ...(value.errors === 'collect' ? { errors: 'collect' } : {}),
+    ...(value.timing === true ? { timing: true } : {}),
     timeoutMs
   });
 }
@@ -921,6 +924,7 @@ function normalizeFetchEffect(effect, schemaCodecs, options = {}) {
   const init = normalizedInit(effect.init, schemaCodecs, {
     ...options, effectId: String(effect.id), groupId: effect.groupKey === undefined ? null : String(effect.groupKey)
   });
+  if ((init.timing === true) !== (effect.fetchTiming === true)) throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_FETCH_TIMING_LITERAL_REQUIRED', 'Timing requires a literal selector.');
   if ((init.errors === 'collect') !== (effect.fetchErrors === 'collect')) {
     throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_FETCH_ERRORS_LITERAL_REQUIRED', 'Collected fetch requires an inline literal errors selector.');
   }
@@ -931,7 +935,9 @@ function normalizeFetchEffect(effect, schemaCodecs, options = {}) {
     init,
     responseMode,
     projection,
-    ...(effect.fetchErrors === 'collect' ? { fetchErrors: 'collect', projectionArgs: effect.projectionArgs || [] } : {}),
+    ...(effect.fetchErrors === 'collect' ? { fetchErrors: 'collect' } : {}),
+    ...(effect.fetchTiming ? { fetchTiming: true } : {}),
+    ...((effect.fetchErrors === 'collect' || effect.fetchTiming) ? { projectionArgs: effect.projectionArgs || [] } : {}),
     ...(effect.groupKey === undefined ? {} : { groupKey: String(effect.groupKey) }),
     source: effect.source
   });
@@ -1438,12 +1444,13 @@ function createCanonicalHostRuntime(options = {}) {
       executionOptions.requestBudget.check();
       const ticket = invocations.open(effect.id, effect.id);
       const normalized = normalizeProviderEffect(effect, schemaCodecs, runtimeOptions);
+      const fetchTiming = normalized.fetchTiming ? portableKv.createFetchTiming(options.fetchClock) : undefined;
       const conditional = portableKv.isConditionalKv(normalized.kind);
       if (conditional) portableKv.registerKvRedactions(normalized, (value) => sensitiveValues.add(value));
       recordTrace({ ...effectTraceStart(adapter.id, executionId, normalized, sensitiveValues), invocationId: ticket.invocationId });
       dispatchedEffects += 1;
       try {
-        const effectExecution = { ...options, ...executionOptions, metadata, executionId, invocationId: ticket.invocationId, trace: traceSink, registerRedactionValue: (value) => sensitiveValues.add(value), onKvObservation: recordTrace };
+        const effectExecution = { ...options, ...executionOptions, fetchTiming, metadata, executionId, invocationId: ticket.invocationId, trace: traceSink, registerRedactionValue: (value) => sensitiveValues.add(value), onKvObservation: recordTrace };
         let snapshot = conditional
           ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)), effectExecution, runtimeOptions)
           : await executionOptions.requestBudget.race(adapter.dispatchEffect(normalized, effectExecution));
@@ -1495,9 +1502,9 @@ function createCanonicalHostRuntime(options = {}) {
               groupId: normalized.groupKey
             })
           : snapshot;
-        if (normalized.kind === 'fetch' && normalized.init.errors === 'collect') {
+        if (normalized.kind === 'fetch' && (normalized.init.errors === 'collect' || fetchTiming)) {
           if (normalized.projection !== 'response') value = value[normalized.projection](...normalized.projectionArgs);
-          value = portableKv.fetchOutcomes.fulfilled(value);
+          value = Object.freeze({ ...portableKv.fetchOutcomes.fulfilled(value), ...(fetchTiming ? { elapsedMs: fetchTiming.elapsed(normalized.projection) } : {}) });
         }
         resolutionOrder.push(effect.id);
         recordTrace({ ...effectTraceResolved(adapter.id, executionId, normalized, value), invocationId: ticket.invocationId });
@@ -1509,7 +1516,8 @@ function createCanonicalHostRuntime(options = {}) {
         }
         recordTrace(Object.freeze({ type: 'effect-failed', provider: adapter.id, executionId, effectId: effect.id, kind: normalized.kind, error: error.name || 'Error', code: error.code }));
         if (normalized.kind === 'fetch' && normalized.fetchErrors === 'collect' && normalized.init.errors === 'collect') {
-          const result = portableKv.fetchOutcomes.rejected(error);
+          fetchTiming?.fail();
+          const result = Object.freeze({ ...portableKv.fetchOutcomes.rejected(error), ...(fetchTiming ? { elapsedMs: fetchTiming.elapsed(normalized.projection, true) } : {}) });
           resolutionOrder.push(effect.id);
           return invocations.settle(ticket, () => result);
         }

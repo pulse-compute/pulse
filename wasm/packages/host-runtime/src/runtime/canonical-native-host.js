@@ -269,7 +269,7 @@ function nativeEffect(planEffect, payload) {
   if (planEffect.kind === 'time.now') return { ...base, providerKind: 'time', operation: 'now', capability: 'time.wall-clock' };
   if (planEffect.kind === 'fetch') {
     const response = nativeFetchResponseContract(planEffect, payload);
-    return { ...base, url: payload.url, init: payload.init, ...response, fetchErrors: planEffect.fetchErrors };
+    return { ...base, url: payload.url, init: payload.init, ...response, fetchErrors: planEffect.fetchErrors, fetchTiming: planEffect.fetchTiming };
   }
   if (planEffect.kind === 'config.get' || planEffect.kind === 'secret.get') return { ...base, name: payload.name };
   if (planEffect.kind === 'kv.get' || planEffect.kind === 'kv.put') return { ...base, store: kvStoreName(payload.store), key: payload.key, value: planEffect.kind === 'kv.put' ? payload.value : undefined };
@@ -1368,7 +1368,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         });
         controller.assertPendingEffect(entry.ticket);
         controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-start', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, payload: privateEffect ? '<redacted>' : entry.payload }, controller.sensitiveValues)));
+        const fetchTiming = entry.effect.fetchTiming ? portableKv.createFetchTiming(options.fetchClock) : undefined;
         const effectExecution = {
+          fetchTiming,
           ...options,
           executionId,
           invocationId: entry.ticket.invocationId,
@@ -1399,7 +1401,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           // redactions using these execution limits. Reuse only that internal
           // result; raw controller callers still use prepareEffectResult.
           let result = conditional ? rawResult : controller.prepareEffectResult(entry.index, rawResult);
-          if (entry.effect.fetchErrors === 'collect') result = portableKv.fetchOutcomes.fulfilled(result);
+          if (entry.effect.fetchErrors === 'collect' || fetchTiming) result = Object.freeze({ ...portableKv.fetchOutcomes.fulfilled(result), ...(fetchTiming ? { elapsedMs: fetchTiming.elapsed(normalized.projection) } : {}) });
           controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
           resolutionOrder.push(entry.effect.id);
           return { entry, result };
@@ -1407,7 +1409,8 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           options.requestBudget?.check();
           if (options.signal?.aborted) throw eventMode ? nativeEventCancelled('Native event execution was cancelled during fetch settlement.') : nativeRequestCancelled(options.signal);
           if (entry.effect.fetchErrors !== 'collect') throw error;
-          const result = portableKv.fetchOutcomes.rejected(error);
+          fetchTiming?.fail();
+          const result = Object.freeze({ ...portableKv.fetchOutcomes.rejected(error), ...(fetchTiming ? { elapsedMs: fetchTiming.elapsed(normalized.projection, true) } : {}) });
           resolutionOrder.push(entry.effect.id);
           return { entry, result };
         }

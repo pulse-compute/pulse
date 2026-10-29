@@ -47,6 +47,7 @@ export interface PulseFetchInitBase {
   readonly timeoutMs?: number;
   /** Collect transport failures and member timeouts; execution failures remain fatal. */
   readonly errors?: 'collect';
+  readonly timing?: boolean;
 }
 
 export type PulseFetchInit = PulseFetchInitBase & (
@@ -89,10 +90,13 @@ export interface PulseFetchError {
 export type PulseFetchOutcome<T> =
   | { readonly status: 'fulfilled'; readonly value: T }
   | { readonly status: 'rejected'; readonly error: PulseFetchError };
-export type PulseFetchValue<T, Collect extends boolean> = Collect extends true ? PulseFetchOutcome<T> : T;
-export interface PulseFetchOperation<Collect extends boolean = false> extends PulseParallelEffect<PulseFetchValue<PulseOpaqueResponse, Collect>> {
-  text(): PulseParallelEffect<PulseFetchValue<string, Collect>>;
-  json<T = unknown>(schemaId?: string): PulseParallelEffect<PulseFetchValue<T, Collect>>;
+export type PulseTimedFetchOutcome<T> = PulseFetchOutcome<T> & { readonly elapsedMs: number | null };
+export type PulseFetchValue<T, Collect extends boolean, Timed extends boolean = false> = Timed extends true
+  ? (Collect extends true ? PulseFetchOutcome<T> : { readonly status: 'fulfilled'; readonly value: T }) & { readonly elapsedMs: number | null }
+  : Collect extends true ? PulseFetchOutcome<T> : T;
+export interface PulseFetchOperation<Collect extends boolean = false, Timed extends boolean = false> extends PulseParallelEffect<PulseFetchValue<PulseOpaqueResponse, Collect, Timed>> {
+  text(): PulseParallelEffect<PulseFetchValue<string, Collect, Timed>>;
+  json<T = unknown>(schemaId?: string): PulseParallelEffect<PulseFetchValue<T, Collect, Timed>>;
 }
 
 export interface PulseResult {
@@ -232,9 +236,11 @@ export interface PulseExecutionContext {
   readonly time: { now(): PulseParallelEffect<PulseTimeResult> };
   readonly state: PulseState;
   readonly log: PulseLogger;
-  fetch(url: string, init: PulseFetchInit & { readonly errors: 'collect' }): PulseFetchOperation<true>;
-  fetch(url: string, init?: PulseFetchInit & { readonly errors?: undefined }): PulseFetchOperation;
-  fetch(url: string, init: PulseFetchInit): PulseFetchOperation<boolean>;
+  fetch(url: string, init: PulseFetchInit & { readonly errors: 'collect'; readonly timing: true }): PulseFetchOperation<true, true>;
+  fetch(url: string, init: PulseFetchInit & { readonly errors?: undefined; readonly timing: true }): PulseFetchOperation<false, true>;
+  fetch(url: string, init: PulseFetchInit & { readonly errors: 'collect'; readonly timing?: false }): PulseFetchOperation<true>;
+  fetch(url: string, init?: PulseFetchInit & { readonly errors?: undefined; readonly timing?: false }): PulseFetchOperation;
+  fetch(url: string, init: PulseFetchInit): PulseFetchOperation<boolean, boolean>;
   /** Portable capacity is a literal integer from 1 to 32. */
   effects<T = unknown>(options: { readonly max: number }): PulseEffects<T>;
   parallel<T>(effects: PulseEffects<T>): PulseEffect<readonly T[]>;

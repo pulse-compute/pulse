@@ -186,7 +186,7 @@ function intrinsicForContextCall(parts) {
 }
 
 function resultKindForEffect(site, decoder, continuation, resultMode) {
-  if (site.fetchErrors === 'collect') return 'fetch-outcome-' + (site.decoder || 'response');
+  if (site.fetchErrors === 'collect' || site.fetchTiming) return 'fetch-outcome-' + (site.decoder || 'response');
   if (decoder && decoder.kind === 'json') return 'json';
   if (decoder && decoder.kind === 'text') return 'string';
   if (resultMode === 'return' && continuation && continuation.kind === 'opaque-fetch-return') return 'opaque-response';
@@ -761,7 +761,7 @@ class NativePlanBuilder {
     const effectId = literalString(fields.get('id'));
     const kind = literalString(fields.get('kind'));
     const site = effectId ? this.effectSites.get(effectId) : undefined;
-    if (site?.fetchErrors === 'collect') {
+    if (site?.fetchErrors === 'collect' || site?.fetchTiming) {
       const args = fields.get('projectionArgs');
       result = Object.freeze({ ...result, decoder: site.decoder ? this.decoderPlan({ kind: site.decoder,
         arguments: args && ts.isArrayLiteralExpression(args) ? [...args.elements] : [] }, scope) : undefined });
@@ -798,6 +798,7 @@ class NativePlanBuilder {
       declaredResult: site && site.result ? String(site.result) : undefined,
       decoder: site && site.decoder ? String(site.decoder) : null,
       ...(site?.fetchErrors === 'collect' ? { fetchErrors: 'collect' } : {}),
+      ...(site?.fetchTiming ? { fetchTiming: true } : {}),
       ...(site?.borrowedValue && result?.mode === 'bind' ? { borrowedValue: cloneJson(site.borrowedValue) } : {}),
       continuationId,
       statementPath,
@@ -1991,15 +1992,15 @@ function assertCanonicalNativePlan(plan) {
     initVisitor.expression = () => {};
     walkStatements(plan.entry?.body, initVisitor);
     for (const body of [...(plan.handlers || []), ...(plan.helpers || []), ...(plan.stages || [])]) walkStatements(body.body, initVisitor);
-    function hiddenErrors(value, seen = new Set()) {
+    function hiddenErrors(value, seen = new Set(), name = 'errors') {
       if (!value) return false;
       if (value.kind === 'local') {
         if (seen.has(value.id)) return false;
-        return hiddenErrors(initLocals.get(value.id), new Set([...seen, value.id]));
+        return hiddenErrors(initLocals.get(value.id), new Set([...seen, value.id]), name);
       }
       return value.kind === 'object' && value.entries.some(entry => entry.kind === 'spread'
-        ? hiddenErrors(entry.value, seen)
-        : (entry.key?.kind === 'literal' ? entry.key.value : entry.key?.value?.value) === 'errors');
+        ? hiddenErrors(entry.value, seen, name)
+        : (entry.key?.kind === 'literal' ? entry.key.value : entry.key?.value?.value) === name && !(name === 'timing' && entry.value?.kind === 'literal' && entry.value.value === false));
     }
     const localIds = new Set();
     for (const local of locals) {
@@ -2033,7 +2034,15 @@ function assertCanonicalNativePlan(plan) {
             || errors[0].value?.kind !== 'literal' || errors[0].value.value !== 'collect'
             || effect.result?.valueKind !== 'fetch-outcome-' + (effect.decoder || 'response'))
           || !selected && (selector || hiddenErrors(init))) fail('fetch outcome selector must match literal admission and result shape', { effectId: effect.id });
-        if (selected && (effect.result?.decoder?.kind || null) !== (effect.decoder || null)) fail('fetch outcome projection differs from settlement', { effectId: effect.id });
+        const timed = effect.fetchTiming === true;
+        const timingSelector = effect.inputs?.find(input => input.name === 'fetchTiming')?.value;
+        const timing = init?.entries?.filter(entry => entry.key?.value === 'timing') || [];
+        if (effect.fetchTiming !== undefined && !timed || timed && (timingSelector?.kind !== 'literal' || timingSelector.value !== true
+          || timing.length !== 1 || timing[0].value?.kind !== 'literal' || timing[0].value.value !== true
+          || init.entries.some(entry => entry.kind !== 'property' || entry.key?.kind !== 'literal')
+          || effect.result?.valueKind !== 'fetch-outcome-' + (effect.decoder || 'response'))
+          || !timed && (timingSelector || hiddenErrors(init, new Set(), 'timing'))) fail('fetch timing selector must match literal admission and result shape', { effectId: effect.id });
+        if ((selected || timed) && (effect.result?.decoder?.kind || null) !== (effect.decoder || null)) fail('fetch outcome projection differs from settlement', { effectId: effect.id });
       }
     }
 
