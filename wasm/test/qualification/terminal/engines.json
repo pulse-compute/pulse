@@ -1,0 +1,53 @@
+{
+  "viceroy": {
+    "version": "0.18.0",
+    "binarySha256": "e2173c8799f73850e657e3722ce5000d3338ccdf6246790688a6b8ae8e53b896",
+    "archiveSha256": "090c978dd160335e8ac6c7d5b4d0ce7c7b7bf9b6d072617fa2301266515182ab",
+    "sourceCommit": "6cc29ea3c4534518322df8cc19766519384de633",
+    "archive": "https://github.com/fastly/Viceroy/releases/download/v0.18.0/viceroy_v0.18.0_linux-amd64.tar.gz"
+  },
+  "pushpin": {
+    "version": "1.42.0",
+    "archive": "https://packages.pushpin.org/deb/pool/pushpin_1.42.0-1~noble1_amd64.deb",
+    "archiveSha256": "d2e0b133f6e26b10e31ce7e31aae5ed9d1edf3c9757710ab886fda077931b0ef",
+    "binaries": [
+      {
+        "name": "pushpin",
+        "sha256": "eec3637be3432c80137fdba9154be274feaf6ee60c730d6d379a67ef65c754f5"
+      },
+      {
+        "name": "pushpin-connmgr",
+        "sha256": "3473238e502f8b2b61d0bf82a63747688ea2e830d76fb2baffc5cae21ee7643b"
+      },
+      {
+        "name": "pushpin-proxy",
+        "sha256": "06fa85a3dbc64011d250ecad1a69010c9a34952ea497d688b1f9a3ec1764fac9"
+      },
+      {
+        "name": "pushpin-handler",
+        "sha256": "b5f76c0f7adc9dbd1d29eab1df22eeffeaa71e4786652370c52d9306c4992197"
+      }
+    ],
+    "dependencies": [
+      {
+        "file": "libb2-1_0.98.1-1.1build1_amd64.deb",
+        "sha256": "c23173e035b257118540266098bd4f1928c67d918ad981b1e13e6e0d9847d69c"
+      },
+      {
+        "file": "libqt6core6t64_6.4.2+dfsg-21.1build5_amd64.deb",
+        "sha256": "1f6e26589271c1d7aa549cb86d0156ff589b764d37edf356712fecebfe5f30f8"
+      },
+      {
+        "file": "libqt6dbus6t64_6.4.2+dfsg-21.1build5_amd64.deb",
+        "sha256": "20891a752f6569b8b0772b0c81b7251eb3394fdef57bf52870f4825cb0e9c0de"
+      },
+      {
+        "file": "libqt6network6t64_6.4.2+dfsg-21.1build5_amd64.deb",
+        "sha256": "743f289d5f7b1a4cafa021de62bcd705122bad06ba5d3a2c971fd7d34b87752f"
+      }
+    ],
+    "dependencySource": "https://snapshot.ubuntu.com/ubuntu/20260828T000000Z",
+    "systemServiceActivated": false
+  },
+  "version": "pulse.terminal-engine-pins.v1"
+}
