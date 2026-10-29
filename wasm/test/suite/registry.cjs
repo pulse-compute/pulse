@@ -289,6 +289,10 @@ const tasks = Object.freeze({
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'P07 bounded forwarding profile, production ledger ownership and original-deadline qualification'
   }),
+  'fastly-router-terminal': nodeTask('test/provider/assert-fastly-router-terminal.cjs', {
+    timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P16 bounded Router terminal handoff, sibling routes, rejection and lifecycle authority'
+  }),
   'fastly-lifecycle': nodeTask('test/provider/assert-fastly-lifecycle.cjs', {
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'P03 structural Fastly lifecycle, compiled settlement and response authority'
@@ -1569,6 +1573,7 @@ const profiles = Object.freeze({
     'native-lifecycle',
     'lifecycle-foundation',
     'fastly-lifecycle',
+    'fastly-router-terminal',
     'resource-ownership-cost',
     'resource-ledger',
     'fastly-forwarding-accounting',

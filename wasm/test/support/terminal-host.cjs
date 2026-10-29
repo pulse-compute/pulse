@@ -11,7 +11,7 @@ module.exports = function execute(wasm, options = {}) {
     fastly_abi:{init:()=>0},
     wasi_snapshot_preview1:{clock_time_get:(_id,_precision,out)=>{clock++;memory().writeBigInt64LE(BigInt(options.clock?.(clock) ?? 0)*1000000n,out);return 0;},fd_write:()=>0},
     fastly_http_req:{body_downstream_get:(r,b)=>{write(r,1);write(b,2);return 0;},
-      method_get:(_h,p,n,out)=>read('GET',p,n,out),uri_get:(_h,p,n,out)=>read('https://test.invalid'+(options.path||'/transfer'),p,n,out),
+      method_get:(_h,p,n,out)=>read(options.method||'GET',p,n,out),uri_get:(_h,p,n,out)=>read('https://test.invalid'+(options.path||'/transfer'),p,n,out),
       close:()=>options.closeStatus||0},
     fastly_http_body:{close:()=>options.closeStatus||0,new:out=>{const h=next++;bodies.set(h,'');write(out,h);return 0;},
       write:(h,p,n,_end,out)=>{bodies.set(h,(bodies.get(h)||'')+text(p,n));write(out,n);return 0;}},

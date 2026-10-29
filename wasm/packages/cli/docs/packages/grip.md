@@ -102,7 +102,8 @@ const handler: Handler = async (ctx) => {
 export default handler
 ```
 
-Use one direct terminal return in a plain Fastly Native handler, with its current
+Use one direct terminal return in a plain Fastly Native handler or one Router
+route, with its current
 context and a literal configured backend key (`fastly.bindings.backends.edge`
 in this example). Fan-out selects `fastly_http_req.redirect_to_grip_proxy_v2`;
 WebSocket passthrough selects `fastly_http_req.redirect_to_websocket_proxy_v2`.
@@ -112,7 +113,27 @@ return type is `never`, compatible with a terminal handler branch, not a fabrica
 `Response` or a constructible completion token. Native compilation enforces
 placement independently of TypeScript; a cast cannot admit unsupported usage.
 
-Router placement, helpers, parallel/multiple handoffs, other surrounding effects,
+A bounded Router may select that one handoff alongside ordinary text-response
+routes:
+
+```ts
+import { Router } from '@pulse-compute/runtime'
+import { handoffWebSocket } from '@pulse-compute/grip/experimental'
+
+const app = new Router()
+app.get('/health', async ctx => ctx.text('ok'))
+app.get('/socket', async ctx => {
+  return handoffWebSocket(ctx, 'edge')
+})
+export default app
+```
+
+The existing Router matcher selects the route; a successful handoff does not
+resume another route or send a replacement response. Unmatched requests retain
+the normal 404 response and all branches retain the original request deadline.
+Pure method/path/URL conditions and text responses (with a literal status option)
+are admitted. Helpers, middleware/error-handler composition, parallel/multiple
+handoffs, escaped completion values, other effects anywhere in that Router,
 body forwarding and dynamic backend expressions remain unsupported. Node Native
 and JavaScript targets do not advertise this service. Direct JavaScript calls
 throw `PULSE_HOST_EXTENSION_TARGET`; there is no runtime fallback.

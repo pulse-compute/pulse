@@ -26,8 +26,11 @@ carrier and shared admission/import contract.
 “Implement 2”: Fastly Native service execution, exact advertisement, structural
 lifecycle/response authority, and independent-package injected ABI evidence.
 [P15 GRIP facade](P15-grip-facade.md) implements RC item 3: the experimental
-explicit-context methods and packed package proof. Router placement, report
-projection and hosted qualification remain subsequent units.
+explicit-context methods and packed package proof.
+[P16 bounded Router placement](P16-router-terminal.md) implements RC item 4:
+one selected terminal route alongside ordinary text-response routes, using the
+existing dispatcher and lifecycle. Report projection and hosted qualification
+remain subsequent units.
 
 ## Historical kickoff and milestone plan
 
