@@ -129,10 +129,38 @@ result. See the [interpretation contract](../guides/troubleshooting.md#agent-evi
 
 `report` reviews retained evidence from a successful Native build: a compact overview by default, or one complete capsule with `--json`. `--artifact` replays a supported manifest or historical capsule without loading project code. `--html` writes a self-contained offline viewer with expandable schemas and full JSON export. It never opens a browser. `--out file.html` selects a contained destination; generated-output receipts beside the file preserve repeatable project matching. Reports contain build-review metadata; review before sharing.
 
+Host extension evidence records package name and snapshotted npm version
+(unknown if multiple installed versions make the snapshot ambiguous),
+operation, owning contract, contribution protocol/ID and source digest, service,
+provider implementation, exact target and import-policy digest. Unique
+`hostContributions` and authored `hostUseSites` are separate inventories. Router
+sites link to their selected authored entry; a handler span is labelled as such
+rather than presented as an exact operation span.
+
+`hostAudits` binds the primary final Wasm to the complete permitted import
+ceiling and baseline digest. Declared contribution signatures remain separate
+from observed final-module imports, including ordinary provider imports. Capture
+re-audits the exact bytes; saved reports validate the retained identities and
+links without loading package or provider code. Lifecycle attachment points and
+normal-return/trap limitations are recorded. Runtime observation coverage is
+**unknown**, not a passing host or transport qualification. Current builds with
+no selected handoff record complete empty inventories; historical reports that
+lack this inventory remain unknown. Comparison preserves these distinctions and
+shows identity, policy, signature and coverage changes.
+
+An independently installed lowerer belongs in the application's ordinary
+`dependencies` or `devDependencies`. Report snapshots bind those explicitly
+declared inputs alongside toolchain packages, without granting discovery or
+admission authority. Undeclared or unbound build inputs can leave report evidence
+unavailable. Host diagnostic output retains bounded public identities and a
+contained authored location, omitting generated source, backend values and
+arbitrary exception detail.
+
 Retained inventory and HTML data use lossless normalized storage when smaller.
 Reports retain all identities, evidence and coverage. CLI `--json` and viewer
-downloads still emit canonical Report v1 JSON, compatible with older readers
-within their size limits;
+downloads still emit canonical Report v1 JSON. Readers predating an optional
+inventory may reject that inventory; current readers retain historical capsules
+and preserve missing coverage as unknown;
 new readers also accept normalized inventory files with `--artifact`. Older
 readers reject normalized storage. Both stored and expanded data allow up to
 64 MiB, with a two-million-value work budget. Comparison HTML keeps one data payload; its full

@@ -25,27 +25,30 @@ function redactValue(value, tokens, seen = new WeakSet()) {
   return out;
 }
 
-function errorSummary(error, secrets) {
+function errorSummary(error, secrets, root) {
+  const host = require('./host-diagnostic');
+  const hostFailure = host.isHost(error) || error?.diagnostics?.some(host.isHost);
   const tokens = secretTokens(secrets);
   const code = error && error.code ? String(error.code) : undefined;
   const descriptor = describeDiagnostic(code);
   const diagnostics = error && Array.isArray(error.diagnostics)
-    ? Object.freeze(redactValue(error.diagnostics, tokens).map((entry) => decorateDiagnostic(entry)))
+    ? Object.freeze(redactValue(error.diagnostics.map(entry => hostFailure ? host.project(entry, describeDiagnostic(entry.code), root) : entry), tokens)
+      .map((entry) => decorateDiagnostic(entry, root)))
     : undefined;
   return Object.freeze({
-    name: error && error.name ? String(error.name) : 'Error',
+    name: hostFailure ? 'Error' : error && error.name ? String(error.name) : 'Error',
     code,
     title: descriptor.title,
     summary: descriptor.summary,
     category: descriptor.category,
-    message: redactString(error && error.message ? error.message : String(error), tokens),
+    message: redactString(hostFailure ? descriptor.summary : error && error.message ? error.message : String(error), tokens),
     remediation: descriptor.remediation,
     stability: descriptor.stability,
     scope: descriptor.scope,
     docs: descriptor.docs,
-    detail: error && error.detail ? Object.freeze(redactValue(error.detail, tokens)) : undefined,
+    detail: hostFailure ? Object.freeze(redactValue(host.project(error, descriptor, root).detail, tokens)) : error && error.detail ? Object.freeze(redactValue(error.detail, tokens)) : undefined,
     diagnostics,
-    execution: error && error.execution ? Object.freeze(redactValue({
+    execution: !hostFailure && error && error.execution ? Object.freeze(redactValue({
       executionId: error.execution.executionId,
       resolutionOrder: error.execution.resolutionOrder,
       continuations: error.execution.continuations

@@ -86,8 +86,10 @@ function publishBuild(project, prepared, manifest, manifestFile, outDir, attempt
     return publishBuild(project, prepared, manifest, manifestFile, outDir, { ...attempt, error: error.code });
   }
   const artifacts = artifactRecords(outDir, manifest);
+  if (prepared.providerHostExtensions) prepared = { ...prepared, hostEvidence: require('./host-evidence').capture(
+    prepared.providerHostExtensions, prepared.native.realizationArtifacts, artifacts[0], readFile(outDir, artifacts[0].file).bytes) };
   const build = attempt.timing?.finish(prepared, artifacts, manifest.status === 'compiled' ? 'compile' : 'native-build');
-  const capsule = collectInventory(project, prepared, artifacts, artifacts[0].id, attempt.snapshot.optimization, build);
+  const capsule = collectInventory(project, { ...prepared, reportPackageVersions: attempt.snapshot.dependencies.groups.map(({name, version}) => ({name, version})) }, artifacts, artifacts[0].id, attempt.snapshot.optimization, build);
   const inventory = Buffer.from(serializeStoredCapsule(capsule)), inputs = Buffer.from(canonicalJson(retained.inputs) + '\n');
   const completion = { kind: 'pulse.report-completion', completionVersion: 1, status: 'complete',
     operation: manifest.status === 'compiled' ? 'compile' : 'native-build', manifestVersion: manifest.version,

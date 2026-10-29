@@ -19,6 +19,21 @@ function validateBinding(effect, bindings = {}) {
   return backend;
 }
 function select(plan, options = {}) {
+  try { return selectPlan(plan, options); }
+  catch (error) {
+    if (error.code?.startsWith('PULSE_HOST_EXTENSION_') && plan.entry?.kind === 'router') {
+      const used = (plan.effects || []).filter(effect => effect.kind === 'host.extension');
+      const effect = used.find(effect => effect.package === error.detail?.package && effect.operation === error.detail?.operation) || used[0];
+      const entry = plan.routing?.entries?.find(entry => entry.stableId === effect?.routerEntryStableId);
+      const source = entry?.nativeBody?.source || plan.handlers?.find(handler => handler.id === effect?.routerEntryStableId)?.source || null;
+      // Lowered Router positions address generated dispatch text. Public errors
+      // must identify the authored handler and state the coarser source basis.
+      error.detail = Object.freeze({ ...error.detail, loc: source, sourceBasis: source ? 'authored-entry' : 'not-recorded' });
+    }
+    throw error;
+  }
+}
+function selectPlan(plan, options = {}) {
   const effects = plan.effects || [];
   const used = effects.filter(effect => effect.kind === 'host.extension');
   if (!used.length) return [];
@@ -226,6 +241,7 @@ function policy(selected, baseline) {
 function evidence(selected, lifecycle, importPolicy) {
   if (!selected.length) return undefined;
   return Object.freeze({ version: 'pulse.fastly-terminal-service.v1', service: contract.TERMINAL_SERVICE,
+    implementation: require('../provider-contract.js').FASTLY_PROVIDER_DESCRIPTOR.lowering['host.extension'],
     contributions: importPolicy.contributions,
     useSites: selected.map(({artifact,effect,index}) => ({ contributionId: artifact.id, effectId: effect.id, index,
       source: effect.source || null })),

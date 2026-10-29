@@ -88,7 +88,7 @@ function terminalOverview(collected) {
       `    observed raw data: ${c.binaryResources.observedBackingBytes.value ?? 'unknown'} bytes | instance/process memory: unknown; aliases are nonadditive`] : []),
     `  primary Wasm: ${artifact.bytes} bytes (${artifact.stage}); ${c.artifacts.length} artifact(s) | build: ${c.build ? `${c.build.totalDurationMs} ms to capture; asc ${c.build.compilationDurationMs === null ? 'not recorded' : c.build.compilationDurationMs + ' ms'}` : 'not recorded'} | optimization: ${terminalText(c.provenance.recipe.optimization)}`,
     `  handler mapping: ${available}/${mappings.length} available (${exact} exact); ${c.routes.filter(row => view.handlerAttribution(row).code === 'mixed-dispatcher').length} mixed dispatcher ownership; nonadditive`,
-    `  observations: ${c.observations.length} | inventory coverage gaps: ${gaps} | missing optional sidecars: ${collected.missingOptionalSidecars.length}`,
+    `  observations: ${c.observations.length} | host contributions: ${c.hostContributions ? count('hostContributions') + ' unique / ' + count('hostUseSites') + ' use sites' : 'unknown (not recorded)'} | runtime observations: unknown | inventory coverage gaps: ${gaps} | missing optional sidecars: ${collected.missingOptionalSidecars.length}`,
     '  Build-review artifact; review contents before sharing publicly.'
   ].join('\n') + '\n';
 }
