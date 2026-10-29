@@ -140,7 +140,7 @@ request, route, response, middleware, or Router-transfer surface and complete
 with `void` unless `resultSchema` declares a returned application value. Result
 schemas use the same project registry as HTTP JSON responses. The host receives
 a bounded, validated `result` separately from completion metadata; see the
-[events guide](docs/guides/events.md#returned-application-data).
+[events guide](./docs/guides/events.md#returned-application-data).
 
 Eligible handlers lower into plane-neutral application entries and execute
 through the conditional provider-neutral `pulse.native-event-abi.v1`

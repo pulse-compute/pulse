@@ -1044,6 +1044,10 @@ const tasks = Object.freeze({
     evidence: 'native',
     description: 'opaque body ownership and repeated Node headers'
   }),
+  'grip-terminal': nodeTask('test/package/assert-grip-terminal.cjs', {
+    evidence: 'native', timeoutMs: 180000, scheduling: { compiler: true },
+    description: 'Experimental GRIP terminal facade, shared service, omission and type boundaries'
+  }),
   'grip-package-runtime': nodeTask('test/package/assert-grip-package-runtime.cjs', {
     evidence: 'native',
     timeoutMs: 240000,
@@ -1611,6 +1615,7 @@ const profiles = Object.freeze({
     'canonical-api-runtime',
     'canonical-opaque-node-emission',
     'grip-package-runtime',
+    'grip-terminal',
     'package-root-native',
     'canonical-native-wasm'
   ]),

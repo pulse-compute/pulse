@@ -25,8 +25,9 @@ carrier and shared admission/import contract.
 [P15 terminal adapter](P15-terminal-adapter.md) implements RC item 2 under
 “Implement 2”: Fastly Native service execution, exact advertisement, structural
 lifecycle/response authority, and independent-package injected ABI evidence.
-GRIP authoring, Router placement, report projection and hosted qualification remain
-subsequent units.
+[P15 GRIP facade](P15-grip-facade.md) implements RC item 3: the experimental
+explicit-context methods and packed package proof. Router placement, report
+projection and hosted qualification remain subsequent units.
 
 ## Historical kickoff and milestone plan
 

@@ -114,7 +114,7 @@ assert.deepEqual(catalog.contracts.map((entry) => entry.compatibilitySubpaths), 
   ['@pulse-compute/assets/pulsewasm'],
   [],
   [],
-  ['@pulse-compute/grip/pulsewasm'],
+  ['@pulse-compute/grip/experimental', '@pulse-compute/grip/pulsewasm'],
   [],
   [],
   []

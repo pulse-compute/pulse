@@ -44,3 +44,19 @@ guidance is published at
 <https://pulsecompute.io/v1.0.0-beta.10/guides/compatibility-imports/>.
 
 Broadcast configuration is provider-owned. It requires an explicit publish/control endpoint and may name a bearer-token secret reference; it never discovers an ambient endpoint or credential. Public gateway URLs and ingress routes are separate concerns. This bounded realization is included in both generally available JavaScript targets.
+
+## Experimental terminal handoff
+
+Candidate builds provide `handoffFanout(ctx, backend)` and
+`handoffWebSocket(ctx, backend)` as named exports from
+`@pulse-compute/grip/experimental`. Use one direct terminal return from a plain
+Fastly Native handler, with the current context and a literal configured backend
+key. These methods use the shared terminal service; the root `grip` object and
+its existing pure `handoff` method are unchanged.
+
+This provisional subpath is outside the supported entry-point list. Its `never`
+return type represents terminal transfer, with no application completion value.
+Native compilation enforces the bounded placement separately. JavaScript calls
+throw `PULSE_HOST_EXTENSION_TARGET`; Node Native, Router placement, helpers,
+parallel handoffs and surrounding effects are not admitted. Injected ABI and
+packed-consumer evidence does not claim hosted or local-engine qualification.

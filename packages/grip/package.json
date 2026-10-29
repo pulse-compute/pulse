@@ -24,6 +24,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./experimental": {
+      "types": "./dist/experimental.d.ts",
+      "import": "./dist/experimental.js",
+      "default": "./dist/experimental.js"
     }
   },
   "scripts": {
@@ -39,7 +44,8 @@
     "pulsewasm.manifest.cjs",
     "pulsewasm.compiler.cjs",
     "as",
-    "conformance"
+    "conformance",
+    "experimental.compiler.cjs"
   ],
   "pulsewasm": {
     "manifest": "./pulsewasm.manifest.cjs"
