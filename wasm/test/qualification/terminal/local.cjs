@@ -16,6 +16,19 @@ async function ready(p, child, logs) {
   }
   throw Error('Local engine startup timeout: ' + logs());
 }
+async function transportReady(address) {
+  // Listening sockets precede ZeroMQ subscription readiness. Probe only the
+  // fixture proxy here; candidate Wasm requests are never retried.
+  for(let attempt=1;attempt<=20;attempt++){
+    try {
+      const response=await fetch(`http://127.0.0.1:${address}/ready`,{headers:{connection:'close'},signal:AbortSignal.timeout(1000)});
+      if(response.status===200 && await response.text()==='terminal-origin')return {status:'passed',attempts:attempt};
+      await response.body?.cancel();
+    } catch {}
+    await delay(100);
+  }
+  throw Error('Pushpin transport readiness failed');
+}
 async function stop(child) {
   if (!child || !child.pid || (child.exitCode !== null || child.signalCode !== null)) return;
   const closed = new Promise(resolve => child.once('close', resolve));
@@ -42,7 +55,7 @@ async function run(proofDir, viceroy, pushpinRoot, output) {
   const pushpin = path.join(pushpinRoot, 'usr/bin/pushpin');
   const bundle=load(proofDir);
   assertHarness(bundle,['local.cjs','bundle.cjs','origin.cjs','engines.json']);
-  const proof = {version:'pulse.terminal-transport.v1',lane:'local',status:'running',bundleSha256:bundle.sha256,engines:[],cases:[],logs:{}};
+  const proof = {version:'pulse.terminal-transport.v1',lane:'local',status:'running',bundleSha256:bundle.sha256,engines:[],startup:[],cases:[],logs:{}};
   const save = () => fs.writeFileSync(output, JSON.stringify(proof, null, 2) + '\n');
   let originCount = 0, held = false, proxy, engine;
   const sockets = new Set();
@@ -74,6 +87,7 @@ async function run(proofDir, viceroy, pushpinRoot, output) {
     fs.writeFileSync(path.join(cell, 'routes'), `*,id=terminal_origin 127.0.0.1:${originPort}\n`);
     proxy = start(pushpin, ['--config', conf, '--port', '127.0.0.1:' + proxyPort, '--merge-output'], fixture+'-pushpin', env);
     await ready(proxyPort,proxy,()=>proof.logs[fixture+'-pushpin']);await ready(publishPort,proxy,()=>proof.logs[fixture+'-pushpin']);
+    proof.startup.push({id:fixture,...await transportReady(proxyPort)});
     const toml = path.join(cell, 'fastly.toml'); fs.writeFileSync(toml, `[local_server.backends.terminal_origin]\nurl = "http://127.0.0.1:${originPort}"\n`);
       const wasm = path.join(proofDir, fixture + '.wasm'), artifactSha256 = hash(fs.readFileSync(wasm)), address = await port();
       assert.equal(artifactSha256, bundle.data.artifacts.find(a=>a.id===fixture).sha256);
