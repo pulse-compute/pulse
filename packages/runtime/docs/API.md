@@ -250,7 +250,7 @@ durable storage and does not cross an invocation boundary.
 
 ```ts
 interface PulseFetchInitBase {
-  readonly method?: 'GET' | 'HEAD' | 'POST'
+  readonly method?: 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH'
   readonly headers?: Readonly<Record<string, string>> | readonly [string, string][]
   readonly timeoutMs?: number
 }
@@ -263,6 +263,11 @@ type PulseFetchInit = PulseFetchInitBase & (
 
 ctx.fetch(url: string, init?: PulseFetchInit): PulseFetchOperation
 ```
+
+Outbound methods are `GET`, `HEAD`, `POST`, `PUT`, and `PATCH`. `GET` and
+`HEAD` cannot carry a body. `POST`, `PUT`, and `PATCH` accept text or JSON
+bodies; Native JSON requires a registered schema. Incoming opaque-body
+forwarding retains its separately admitted `POST`-only shape.
 
 Choose text/opaque `body` or `json`, never both. `schema` describes a JSON
 request body; it is invalid without `json`. `PulseIncomingBody` is the opaque

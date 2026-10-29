@@ -42,7 +42,7 @@ export interface PulseRequest {
 }
 
 export interface PulseFetchInitBase {
-  readonly method?: 'GET' | 'HEAD' | 'POST';
+  readonly method?: 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH';
   readonly headers?: Readonly<Record<string, string>> | readonly HeaderPair[];
   readonly timeoutMs?: number;
 }

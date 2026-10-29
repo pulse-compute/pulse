@@ -154,6 +154,7 @@ const vnextFiles = [
   path.join(runtimeRoot, 'test', 'vnext-types-negative.ts'),
   path.join(runtimeRoot, 'test', 'canon-types.ts'),
   path.join(runtimeRoot, 'test', 'canon-types-negative.ts'),
+  path.join(runtimeRoot, 'test', 'fetch-method-types.ts'),
   path.join(runtimeRoot, 'test', 'host-types.ts'),
   path.join(pulseRoot, 'test', 'vnext-types.ts'),
   path.join(pulseRoot, 'test', 'vnext-types-negative.ts'),
@@ -185,4 +186,5 @@ assert.deepEqual(
   'runtime and Pulse async-shaped positive and negative TypeScript contract fixtures must type-check'
 );
 
+require('./fetch-method-types.cjs')(repoRoot);
 console.log('ok - runtime owns one async provider-neutral type algebra and Pulse re-exports it without a second Router value');
