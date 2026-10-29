@@ -43,7 +43,6 @@ async function run(proofDir, viceroy, pushpinRoot, output) {
   const bundle=load(proofDir);
   assertHarness(bundle,['local.cjs','bundle.cjs','origin.cjs','engines.json']);
   const proof = {version:'pulse.terminal-transport.v1',lane:'local',status:'running',bundleSha256:bundle.sha256,engines:[],cases:[],logs:{}};
-  const channel='pulse-terminal-'+crypto.randomBytes(12).toString('hex');
   const save = () => fs.writeFileSync(output, JSON.stringify(proof, null, 2) + '\n');
   let originCount = 0, held = false, proxy, engine;
   const sockets = new Set();
@@ -61,18 +60,21 @@ async function run(proofDir, viceroy, pushpinRoot, output) {
     proof.engines.push({ version, sha256: hash(fs.readFileSync(binary)) });
   }
     await new Promise(resolve => origin.listen(0, '127.0.0.1', resolve));
-    const originPort = origin.address().port, proxyPort = await port(), publishPort = await port();
-    fs.mkdirSync(path.join(tmp, 'run')); fs.mkdirSync(path.join(tmp, 'logs'));
+    const originPort=origin.address().port;
+    for (const fixture of terminalCases) {
+    const cell=path.join(tmp,fixture);fs.mkdirSync(cell);
+    const channel='pulse-terminal-'+crypto.randomBytes(12).toString('hex'),publishedBody='published-'+crypto.randomBytes(12).toString('hex');
+    const proxyPort=await port(),publishPort=await port();
+    fs.mkdirSync(path.join(cell, 'run')); fs.mkdirSync(path.join(cell, 'logs'));
     let config = fs.readFileSync(path.join(pushpinRoot, 'usr/share/pushpin/pushpin.conf'), 'utf8')
       .replace('include={libdir}/internal.conf', 'include=' + path.join(pushpinRoot, 'usr/lib/pushpin/internal.conf'))
-      .replace('rundir=/var/run/pushpin', 'rundir=' + path.join(tmp, 'run')).replace('logdir=/var/log/pushpin', 'logdir=' + path.join(tmp, 'logs'))
+      .replace('rundir=/var/run/pushpin', 'rundir=' + path.join(cell, 'run')).replace('logdir=/var/log/pushpin', 'logdir=' + path.join(cell, 'logs'))
       .replace('accept_pushpin_route=false', 'accept_pushpin_route=true').replace('push_in_http_port=5561', 'push_in_http_port=' + publishPort);
-    const conf = path.join(tmp, 'pushpin.conf'); fs.writeFileSync(conf, config);
-    fs.writeFileSync(path.join(tmp, 'routes'), `*,id=terminal_origin 127.0.0.1:${originPort}\n`);
-    proxy = start(pushpin, ['--config', conf, '--port', '127.0.0.1:' + proxyPort, '--merge-output'], 'pushpin', env);
-    await ready(proxyPort,proxy,()=>proof.logs.pushpin);await ready(publishPort,proxy,()=>proof.logs.pushpin);
-    const toml = path.join(tmp, 'fastly.toml'); fs.writeFileSync(toml, `[local_server.backends.terminal_origin]\nurl = "http://127.0.0.1:${originPort}"\n`);
-    for (const fixture of terminalCases) {
+    const conf = path.join(cell, 'pushpin.conf'); fs.writeFileSync(conf, config);
+    fs.writeFileSync(path.join(cell, 'routes'), `*,id=terminal_origin 127.0.0.1:${originPort}\n`);
+    proxy = start(pushpin, ['--config', conf, '--port', '127.0.0.1:' + proxyPort, '--merge-output'], fixture+'-pushpin', env);
+    await ready(proxyPort,proxy,()=>proof.logs[fixture+'-pushpin']);await ready(publishPort,proxy,()=>proof.logs[fixture+'-pushpin']);
+    const toml = path.join(cell, 'fastly.toml'); fs.writeFileSync(toml, `[local_server.backends.terminal_origin]\nurl = "http://127.0.0.1:${originPort}"\n`);
       const wasm = path.join(proofDir, fixture + '.wasm'), artifactSha256 = hash(fs.readFileSync(wasm)), address = await port();
       assert.equal(artifactSha256, bundle.data.artifacts.find(a=>a.id===fixture).sha256);
       engine = start(viceroy, [wasm, '--addr', '127.0.0.1:' + address, '-C', toml, '--local-pushpin-proxy-port', String(proxyPort)], fixture);
@@ -88,11 +90,11 @@ async function run(proofDir, viceroy, pushpinRoot, output) {
         for (let n = 0; n < 100 && !held; n++) await delay(20); assert(held);
         await delay(250); assert.equal(finished, false, 'Pushpin must hold the response');
         const published = await fetch(`http://127.0.0.1:${publishPort}/publish`, { method: 'POST', headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ items: [{ channel, formats: { 'http-response': { body: 'terminal-published' } } }] }), signal: AbortSignal.timeout(3000) });
-        assert.equal(published.status, 200); const response = await pending; assert.deepEqual(response, { status: 200, body: 'terminal-published' });
+          body: JSON.stringify({ items: [{ channel, formats: { 'http-response': { body: publishedBody } } }] }), signal: AbortSignal.timeout(3000) });
+        assert.equal(published.status, 200); const response = await pending; assert.deepEqual(response, { status: 200, body: publishedBody });
         proof.cases.push({ id:fixture,status:'passed',scenario:'hold-publish', artifactSha256, response });
       } else { const response = await websocket(address); assert.deepEqual(response, {status:101,frames:2}); proof.cases.push({ id:fixture,status:'passed',scenario:'bidirectional-websocket', artifactSha256, response }); }
-      await stop(engine); engine = null; save();
+      await stop(engine); engine = null; await stop(proxy);proxy=null;save();
     }
     assert.equal(load(proofDir).sha256,bundle.sha256);
     proof.status='passed';
