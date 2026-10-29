@@ -766,11 +766,11 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
     }
   }
   const method = String(value.method || 'GET').toUpperCase();
-  if (!['GET', 'HEAD', 'POST'].includes(method)) {
+  if (!['GET', 'HEAD', 'POST', 'PUT', 'PATCH'].includes(method)) {
     throw new CanonicalRuntimeError(
       'FetchRequestError',
       'PULSE_FETCH_METHOD_UNSUPPORTED',
-      `Canonical fetch method ${method} is outside the portable GET, HEAD, and POST contract.`,
+      `Canonical fetch method ${method} is outside the portable GET, HEAD, POST, PUT, and PATCH contract.`,
       { method }
     );
   }

@@ -48,8 +48,8 @@ router.put('/items', (routeCtx) => routeCtx.text('sync'))
 router.patch(async (routeCtx: PulseContext) => routeCtx.text('missing path'))
 // @ts-expect-error DELETE requires a callable route handler
 router.delete('/items', 'invalid')
-// @ts-expect-error ingress PUT does not widen outgoing fetch methods
-ctx.fetch('https://origin.test/items', { method: 'PUT' })
+// @ts-expect-error DELETE is outside the supported outgoing fetch methods
+ctx.fetch('https://origin.test/items', { method: 'DELETE' })
 // @ts-expect-error lifecycle methods are provider-owned
 router.bind()
 // @ts-expect-error lifecycle methods are provider-owned
