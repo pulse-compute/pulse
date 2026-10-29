@@ -59,7 +59,7 @@ async function runPulseWorkflowCli(argv, io = {}) {
     });
     return reporter.reportExecution(request, plan, execution);
   } catch (error) {
-    const summary = summarizeExecutionError(error);
+    const summary = summarizeExecutionError(error, undefined, cwd);
     const status = exitCodeForDiagnostic(summary.code, error instanceof PulseProjectError ? 2 : 1);
     reporter.reportDiagnostic(summary, { request, argv, exitCode: status });
     return {

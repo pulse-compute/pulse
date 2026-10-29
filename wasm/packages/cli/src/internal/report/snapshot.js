@@ -119,6 +119,14 @@ function dependencyRoots(projectRoot, host) {
     roots.set(key, { ...pkg, name, from: from === projectRoot ? 'project' : 'toolchain' });
     for (const dependency of Object.keys(pkg.manifest.dependencies || {}).sort()) add(dependency, pkg.root);
   }
+  // Bind explicitly declared application build inputs through the same snapshot
+  // mechanism as toolchain dependencies. This reads package data only: it never
+  // searches node_modules for providers, loads lowerers, or grants admission.
+  const applicationManifest = path.join(projectRoot, 'package.json');
+  if (fs.existsSync(applicationManifest)) {
+    const application = JSON.parse(readFile(projectRoot, 'package.json').bytes);
+    for (const name of [...new Set([...Object.keys(application.dependencies || {}), ...Object.keys(application.devDependencies || {})])].sort()) add(name, projectRoot);
+  }
   for (const pkg of release.packages) add(pkg.name, projectRoot);
   add('@pulse-compute/cli', cliRoot);
   // Exact configured provider resolution only; no provider discovery or loading.

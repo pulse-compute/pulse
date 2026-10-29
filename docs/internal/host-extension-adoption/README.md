@@ -29,8 +29,11 @@ lifecycle/response authority, and independent-package injected ABI evidence.
 explicit-context methods and packed package proof.
 [P16 bounded Router placement](P16-router-terminal.md) implements RC item 4:
 one selected terminal route alongside ordinary text-response routes, using the
-existing dispatcher and lifecycle. Report projection and hosted qualification
-remain subsequent units.
+existing dispatcher and lifecycle.
+[P12A attribution and diagnostics](P12A-attribution-diagnostics.md) implements RC
+item 5: unique contributions, authored use sites, exact import audits, historical
+comparison and private-data-free public diagnostics. Installed transport
+qualification, independent review and sealing remain items 6–8.
 
 ## Historical kickoff and milestone plan
 

@@ -14,7 +14,8 @@ const array = items => ({ type: 'array', items, maxItems: LIMITS.records });
 const object = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
 const COLLECTIONS = ['routes', 'entries', 'schemas', 'bindings', 'resources', 'implementations', 'declarations', 'references', 'evidence', 'observations'];
 const SEMANTIC_COLLECTIONS = ['handlers', 'registrations', 'useSites', 'helperCalls', 'associations'];
-const ALL_COLLECTIONS = [...COLLECTIONS, ...SEMANTIC_COLLECTIONS];
+const HOST_COLLECTIONS = ['hostContributions', 'hostUseSites', 'hostAudits'];
+const ALL_COLLECTIONS = [...COLLECTIONS, ...HOST_COLLECTIONS, ...SEMANTIC_COLLECTIONS];
 const states = ['added', 'removed', 'modified', 'coverage-changed', 'unresolved'];
 const defs = {
   ...capsuleSchema.$defs,
@@ -57,6 +58,6 @@ function visit(node) {
   Object.values(node).forEach(visit);
 }
 visit(shape);
-module.exports = { SEMANTIC_COLLECTIONS: Object.freeze(SEMANTIC_COLLECTIONS), COLLECTIONS: Object.freeze(COLLECTIONS), comparisonSchema: freeze({
+module.exports = { HOST_COLLECTIONS: Object.freeze(HOST_COLLECTIONS), SEMANTIC_COLLECTIONS: Object.freeze(SEMANTIC_COLLECTIONS), COLLECTIONS: Object.freeze(COLLECTIONS), comparisonSchema: freeze({
   $schema: 'https://json-schema.org/draft/2020-12/schema', $id: 'urn:pulse:report:comparison:v1', ...shape, $defs: used
 }) };

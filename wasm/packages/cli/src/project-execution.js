@@ -1063,7 +1063,7 @@ function buildProjectWithReport(project, options, reportAttempt) {
     ...(eventInspection ? { events: eventManifestProjection(eventInspection) } : {})
   });
   const manifestFile = path.join(outDir, BUILD_MANIFEST);
-  manifest = require('./internal/report/retained').publishBuild(project, { ...prepared, providerReportAttribution: providerBuildMetadata?.reportAttribution,
+  manifest = require('./internal/report/retained').publishBuild(project, { ...prepared, providerReportAttribution: providerBuildMetadata?.reportAttribution, providerHostExtensions: providerBuildMetadata?.hostExtensions,
     providerBuildObservation: providerBuildMetadata?.buildObservation, providerPortableReuse: providerBuildMetadata?.providerNeutralWasm === true }, manifest, manifestFile, outDir, reportAttempt);
   return Object.freeze({
     status: 'built',
@@ -1953,6 +1953,11 @@ function doctorProject(project, options = {}) {
   function check(id, status, message, detail = {}, explicitCode) {
     const code = explicitCode || detail.code;
     const descriptor = code ? describeDiagnostic(code) : undefined;
+    const hostDiagnostic = require('./internal/host-diagnostic');
+    if (hostDiagnostic.isHost({code}) || detail.diagnostics?.some(hostDiagnostic.isHost)) {
+      const safe = errorSummary({code, message, detail: detail.detail, diagnostics: detail.diagnostics}, undefined, project.root);
+      message = safe.message; detail = { detail: safe.detail, diagnostics: safe.diagnostics };
+    }
     checks.push(Object.freeze({
       id,
       status,

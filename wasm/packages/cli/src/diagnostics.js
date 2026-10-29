@@ -15,6 +15,17 @@ function entry(category, options = {}) {
 }
 
 const DIAGNOSTIC_DEFINITIONS = Object.freeze({
+  PULSE_HOST_EXTENSION_INVALID: entry('compile', { exitCode: 3, remediation: ['Provide the frozen v1 plain-data contribution envelope from the selected package lowerer.'] }),
+  PULSE_HOST_EXTENSION_PROTOCOL: entry('compile', { exitCode: 3, remediation: ['Use pulse.host-extension.v1 and the admitted terminal-request-backend.v1 service.'] }),
+  PULSE_HOST_EXTENSION_OWNER: entry('compile', { exitCode: 3, remediation: ['Keep the package, contract and contribution namespace aligned with the discovered package owner.'] }),
+  PULSE_HOST_EXTENSION_CONFLICT: entry('compile', { exitCode: 3, remediation: ['Supply exactly one matching contribution for each selected operation and target.'] }),
+  PULSE_HOST_EXTENSION_TARGET: entry('compile', { exitCode: 3, remediation: ['Select the admitted Fastly Native target; automatic fallback is not available.'] }),
+  PULSE_HOST_EXTENSION_SOURCE: entry('compile', { exitCode: 3, remediation: ['Regenerate bounded self-contained package source, its digest and its package-owned entry symbol.'] }),
+  PULSE_HOST_EXTENSION_SIGNATURE: entry('compile', { exitCode: 3, remediation: ['Align the declared MVP scalar signature with the exact final Wasm import.'] }),
+  PULSE_HOST_EXTENSION_IMPORT: entry('compile', { exitCode: 3, remediation: ['Rebuild with the selected contribution and complete provider baseline; do not alter the policy or artifact.'] }),
+  PULSE_HOST_EXTENSION_PLACEMENT: entry('compile', { exitCode: 3, remediation: ['Return one direct handoff from a plain handler or selected Router route. Remove surrounding effects, middleware composition, parallel handoffs, escaped tokens and unsupported helpers.'] }),
+  PULSE_HOST_EXTENSION_BINDING: entry('compile', { exitCode: 3, remediation: ['Configure the literal backend key for the selected profile and target; do not pass dynamic backend values.'] }),
+
   PULSE_CALL_SOURCE_ENTRY: entry('compile', { exitCode: 3, remediation: ["Place the call in a named plain handler, a reachable Router handler, or a selected managed operation."] }),
   PULSE_CALL_SOURCE_CONTEXT: entry('compile', { exitCode: 3, remediation: ["Use a simple named context parameter at the selected caller position."] }),
   PULSE_CALL_SOURCE_FORM: entry('compile', { exitCode: 3, remediation: ["Use ctx.call(importedFunction, input, { inputSchema: 'app.Input', outputSchema: 'app.Output' }) without aliases, computed access, type arguments or spreads."] }),
@@ -208,6 +219,17 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
  });
 
 const DIAGNOSTIC_SUMMARIES = Object.freeze({
+  PULSE_HOST_EXTENSION_INVALID: 'The host contribution envelope is malformed.',
+  PULSE_HOST_EXTENSION_PROTOCOL: 'The host contribution protocol or service is unsupported.',
+  PULSE_HOST_EXTENSION_OWNER: 'The host contribution does not belong to its selected package contract.',
+  PULSE_HOST_EXTENSION_CONFLICT: 'Host contribution selection is ambiguous or duplicated.',
+  PULSE_HOST_EXTENSION_TARGET: 'The selected target does not admit this host contribution.',
+  PULSE_HOST_EXTENSION_SOURCE: 'Host contribution source identity or entry is invalid.',
+  PULSE_HOST_EXTENSION_SIGNATURE: 'A host import has an invalid or mismatched ABI signature.',
+  PULSE_HOST_EXTENSION_IMPORT: 'The final Wasm import audit does not match the admitted policy.',
+  PULSE_HOST_EXTENSION_PLACEMENT: 'The authored terminal handoff is outside its admitted placement.',
+  PULSE_HOST_EXTENSION_BINDING: 'The authored terminal handoff has no valid static backend binding.',
+
   PULSE_CALL_SOURCE_ENTRY: "Computation calls need a selected project HTTP caller.",
   PULSE_CALL_SOURCE_CONTEXT: "The computation caller context parameter is unsupported.",
   PULSE_CALL_SOURCE_FORM: "Computation call syntax is not a direct static call.",
@@ -455,9 +477,10 @@ function describeDiagnostic(code) {
   });
 }
 
-function decorateDiagnostic(value) {
+function decorateDiagnostic(value, root) {
   if (!value || typeof value !== 'object') return value;
   const descriptor = describeDiagnostic(value.code);
+  if (require('./internal/host-diagnostic').isHost(value)) value = require('./internal/host-diagnostic').project(value, descriptor, root);
   return Object.freeze({
     ...value,
     title: value.title || descriptor.title,

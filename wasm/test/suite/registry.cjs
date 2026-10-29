@@ -37,6 +37,7 @@ const tasks = Object.freeze({
   'binary-resource-admission': nodeTask('test/contracts/assert-binary-resource-admission.cjs', {
     description: 'B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy'
   }),
+  'cli-report-host-extensions': nodeTask('test/cli/assert-report-host-extensions.cjs', { evidence: 'native', scheduling: { compiler: true }, timeoutMs: 180000, description: 'P12A host contribution/use-site attribution, exact import audit, historical comparison and private diagnostics' }),
   'cli-report-viewer': nodeTask('test/cli/assert-report-viewer.cjs', { description: 'PRPT-05 offline encoding, view projections and generated-output receipts' }),
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-graph-diagnostics': nodeTask('test/cli/assert-report-graph-diagnostics.cjs', {
@@ -1480,6 +1481,7 @@ const profiles = Object.freeze({
     'cli-report-workflow',
     'cli-report-viewer',
     'cli-report-retained-evidence',
+    'cli-report-host-extensions',
     'cli-report-size-evidence',
     'cli-report-capture-proof',
     'cli-report-entry-proof',
@@ -1674,6 +1676,7 @@ const profiles = Object.freeze({
     'cli-report-workflow',
     'cli-report-viewer',
     'cli-report-retained-evidence',
+    'cli-report-host-extensions',
     'cli-report-size-evidence',
     'cli-report-capture-proof',
     'cli-report-entry-proof',
