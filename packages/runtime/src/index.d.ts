@@ -45,6 +45,8 @@ export interface PulseFetchInitBase {
   readonly method?: 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH';
   readonly headers?: Readonly<Record<string, string>> | readonly HeaderPair[];
   readonly timeoutMs?: number;
+  /** Collect transport failures and member timeouts; execution failures remain fatal. */
+  readonly errors?: 'collect';
 }
 
 export type PulseFetchInit = PulseFetchInitBase & (
@@ -81,9 +83,16 @@ export interface PulseOpaqueResponse {
 
 export type PulseFetchResponse = PulseStructuredResponse | PulseOpaqueResponse;
 
-export interface PulseFetchOperation extends PulseParallelEffect<PulseOpaqueResponse> {
-  text(): PulseParallelEffect<string>;
-  json<T = unknown>(schemaId?: string): PulseParallelEffect<T>;
+export interface PulseFetchError {
+  readonly code: 'PULSE_FETCH_NETWORK' | 'PULSE_FETCH_TIMEOUT';
+}
+export type PulseFetchOutcome<T> =
+  | { readonly status: 'fulfilled'; readonly value: T }
+  | { readonly status: 'rejected'; readonly error: PulseFetchError };
+export type PulseFetchValue<T, Collect extends boolean> = Collect extends true ? PulseFetchOutcome<T> : T;
+export interface PulseFetchOperation<Collect extends boolean = false> extends PulseParallelEffect<PulseFetchValue<PulseOpaqueResponse, Collect>> {
+  text(): PulseParallelEffect<PulseFetchValue<string, Collect>>;
+  json<T = unknown>(schemaId?: string): PulseParallelEffect<PulseFetchValue<T, Collect>>;
 }
 
 export interface PulseResult {
@@ -223,7 +232,9 @@ export interface PulseExecutionContext {
   readonly time: { now(): PulseParallelEffect<PulseTimeResult> };
   readonly state: PulseState;
   readonly log: PulseLogger;
-  fetch(url: string, init?: PulseFetchInit): PulseFetchOperation;
+  fetch(url: string, init: PulseFetchInit & { readonly errors: 'collect' }): PulseFetchOperation<true>;
+  fetch(url: string, init?: PulseFetchInit & { readonly errors?: undefined }): PulseFetchOperation;
+  fetch(url: string, init: PulseFetchInit): PulseFetchOperation<boolean>;
   /** Portable capacity is a literal integer from 1 to 32. */
   effects<T = unknown>(options: { readonly max: number }): PulseEffects<T>;
   parallel<T>(effects: PulseEffects<T>): PulseEffect<readonly T[]>;

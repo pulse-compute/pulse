@@ -5,7 +5,7 @@ const { encodeSchemaValue, requireExplicitSchemaId } = require('./schema.js');
 const { isIncomingBody } = require('./incoming-body.js');
 
 const SUPPORTED_FETCH_METHODS = Object.freeze(new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH']));
-const SUPPORTED_FETCH_INIT_FIELDS = Object.freeze(new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs']));
+const SUPPORTED_FETCH_INIT_FIELDS = Object.freeze(new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs', 'errors']));
 
 function fetchContractError(code, message, detail, cause) {
   return new PulseRuntimeContractError(code, message, {
@@ -112,6 +112,9 @@ function normalizeFetchInit(input, options = {}) {
     throw fetchContractError('PULSE_FETCH_INIT_INVALID', 'Pulse fetch init must be an ordinary object.');
   }
   const value = input || {};
+  if (value.errors !== undefined && value.errors !== 'collect') {
+    throw fetchContractError('PULSE_FETCH_ERRORS_INVALID', "Pulse fetch errors must be the literal 'collect' or omitted.");
+  }
   for (const field of Object.keys(value)) {
     if (!SUPPORTED_FETCH_INIT_FIELDS.has(field)) {
       throw fetchContractError(
@@ -188,6 +191,7 @@ function normalizeFetchInit(input, options = {}) {
     body,
     bodyMode,
     ...(hasSchema ? { schema: schemaId } : {}),
+    ...(value.errors === 'collect' ? { errors: 'collect' } : {}),
     timeoutMs: normalizeTimeout(value.timeoutMs)
   });
 }

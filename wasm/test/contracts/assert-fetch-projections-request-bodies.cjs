@@ -9,6 +9,7 @@ const {
 
 (async () => {
   await require('../support/fetch-methods.cjs')();
+  await require('../runtime/assert-fetch-outcomes.cjs')();
   const proof = await buildFetchBodyProof();
   assert.equal(proof.version, FETCH_BODY_PROOF_VERSION);
   assert.deepEqual(proof.report.summary, { total: 12, passed: 12, failed: 0 });

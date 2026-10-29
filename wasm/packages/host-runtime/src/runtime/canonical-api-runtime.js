@@ -754,7 +754,8 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
     throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_INIT_INVALID', 'Canonical fetch init must be an object.');
   }
   const value = init || {};
-  const supportedFields = new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs']);
+  const supportedFields = new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs', 'errors']);
+  if (value.errors !== undefined && value.errors !== 'collect') throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_ERRORS_INVALID', "Fetch errors must be 'collect' or omitted.");
   for (const field of Object.keys(value)) {
     if (!supportedFields.has(field)) {
       throw new CanonicalRuntimeError(
@@ -861,6 +862,7 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
     body,
     bodyMode,
     ...(hasSchema ? { schema: schemaId } : {}),
+    ...(value.errors === 'collect' ? { errors: 'collect' } : {}),
     timeoutMs
   });
 }
@@ -916,17 +918,20 @@ function normalizeFetchEffect(effect, schemaCodecs, options = {}) {
       { effectId: String(effect.id), responseMode, projection }
     );
   }
+  const init = normalizedInit(effect.init, schemaCodecs, {
+    ...options, effectId: String(effect.id), groupId: effect.groupKey === undefined ? null : String(effect.groupKey)
+  });
+  if ((init.errors === 'collect') !== (effect.fetchErrors === 'collect')) {
+    throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_FETCH_ERRORS_LITERAL_REQUIRED', 'Collected fetch requires an inline literal errors selector.');
+  }
   return Object.freeze({
     id: String(effect.id),
     kind: 'fetch',
     parts: urlParts(effect.url),
-    init: normalizedInit(effect.init, schemaCodecs, {
-      ...options,
-      effectId: String(effect.id),
-      groupId: effect.groupKey === undefined ? null : String(effect.groupKey)
-    }),
+    init,
     responseMode,
     projection,
+    ...(effect.fetchErrors === 'collect' ? { fetchErrors: 'collect', projectionArgs: effect.projectionArgs || [] } : {}),
     ...(effect.groupKey === undefined ? {} : { groupKey: String(effect.groupKey) }),
     source: effect.source
   });
@@ -1473,7 +1478,7 @@ function createCanonicalHostRuntime(options = {}) {
             { receivedType: Array.isArray(snapshot) ? 'array' : snapshot === null ? 'null' : typeof snapshot }
           );
         }
-        const value = normalized.kind === 'fetch' || normalized.result === 'opaque-response'
+        let value = normalized.kind === 'fetch' || normalized.result === 'opaque-response'
           ? normalizeFetchResponse(snapshot, effect.id, adapter.id, schemaCodecs, {
               maxBytes: executionOptions.maxFetchBodyBytes
                 || executionOptions.maxStructuredBodyBytes
@@ -1490,6 +1495,10 @@ function createCanonicalHostRuntime(options = {}) {
               groupId: normalized.groupKey
             })
           : snapshot;
+        if (normalized.kind === 'fetch' && normalized.init.errors === 'collect') {
+          if (normalized.projection !== 'response') value = value[normalized.projection](...normalized.projectionArgs);
+          value = portableKv.fetchOutcomes.fulfilled(value);
+        }
         resolutionOrder.push(effect.id);
         recordTrace({ ...effectTraceResolved(adapter.id, executionId, normalized, value), invocationId: ticket.invocationId });
         return invocations.settle(ticket, () => value);
@@ -1499,6 +1508,11 @@ function createCanonicalHostRuntime(options = {}) {
           if (typeof failure?.code === 'string' && failure.code.startsWith('PULSE_REQUEST_')) error = failure;
         }
         recordTrace(Object.freeze({ type: 'effect-failed', provider: adapter.id, executionId, effectId: effect.id, kind: normalized.kind, error: error.name || 'Error', code: error.code }));
+        if (normalized.kind === 'fetch' && normalized.fetchErrors === 'collect' && normalized.init.errors === 'collect') {
+          const result = portableKv.fetchOutcomes.rejected(error);
+          resolutionOrder.push(effect.id);
+          return invocations.settle(ticket, () => result);
+        }
         throw redactRuntimeError(error, sensitiveValues);
       }
     }

@@ -269,7 +269,7 @@ function nativeEffect(planEffect, payload) {
   if (planEffect.kind === 'time.now') return { ...base, providerKind: 'time', operation: 'now', capability: 'time.wall-clock' };
   if (planEffect.kind === 'fetch') {
     const response = nativeFetchResponseContract(planEffect, payload);
-    return { ...base, url: payload.url, init: payload.init, ...response };
+    return { ...base, url: payload.url, init: payload.init, ...response, fetchErrors: planEffect.fetchErrors };
   }
   if (planEffect.kind === 'config.get' || planEffect.kind === 'secret.get') return { ...base, name: payload.name };
   if (planEffect.kind === 'kv.get' || planEffect.kind === 'kv.put') return { ...base, store: kvStoreName(payload.store), key: payload.key, value: planEffect.kind === 'kv.put' ? payload.value : undefined };
@@ -1386,21 +1386,31 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           }
         };
         options.outputExecution?.assertEffect();
-        const rawResult = normalized.kind.startsWith('output.')
-          ? await (options.outputExecution ? options.outputExecution.dispatch(normalized) : Promise.reject(new portableKv.PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires Node HTTP execution.')))
-          : conditional
-          ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)),
-              { ...effectExecution, onKvObservation: (event) => controller.trace.push(event) }, options)
-          : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), options.signal, eventMode);
-        options.requestBudget?.check();
-        controller.assertPendingEffect(entry.ticket);
-        // executeConditionalKv already validates, detaches, freezes and registers
-        // redactions using these execution limits. Reuse only that internal
-        // result; raw controller callers still use prepareEffectResult.
-        const result = conditional ? rawResult : controller.prepareEffectResult(entry.index, rawResult);
-        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
-        resolutionOrder.push(entry.effect.id);
-        return { entry, result };
+        try {
+          const rawResult = normalized.kind.startsWith('output.')
+            ? await (options.outputExecution ? options.outputExecution.dispatch(normalized) : Promise.reject(new portableKv.PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires Node HTTP execution.')))
+            : conditional
+            ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)),
+                { ...effectExecution, onKvObservation: (event) => controller.trace.push(event) }, options)
+            : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), options.signal, eventMode);
+          options.requestBudget?.check();
+          controller.assertPendingEffect(entry.ticket);
+          // executeConditionalKv already validates, detaches, freezes and registers
+          // redactions using these execution limits. Reuse only that internal
+          // result; raw controller callers still use prepareEffectResult.
+          let result = conditional ? rawResult : controller.prepareEffectResult(entry.index, rawResult);
+          if (entry.effect.fetchErrors === 'collect') result = portableKv.fetchOutcomes.fulfilled(result);
+          controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
+          resolutionOrder.push(entry.effect.id);
+          return { entry, result };
+        } catch (error) {
+          options.requestBudget?.check();
+          if (options.signal?.aborted) throw eventMode ? nativeEventCancelled('Native event execution was cancelled during fetch settlement.') : nativeRequestCancelled(options.signal);
+          if (entry.effect.fetchErrors !== 'collect') throw error;
+          const result = portableKv.fetchOutcomes.rejected(error);
+          resolutionOrder.push(entry.effect.id);
+          return { entry, result };
+        }
       })), options.signal, eventMode);
 
       if (eventMode && options.signal && options.signal.aborted) {

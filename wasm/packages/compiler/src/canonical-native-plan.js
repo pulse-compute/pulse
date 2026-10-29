@@ -186,6 +186,7 @@ function intrinsicForContextCall(parts) {
 }
 
 function resultKindForEffect(site, decoder, continuation, resultMode) {
+  if (site.fetchErrors === 'collect') return 'fetch-outcome-' + (site.decoder || 'response');
   if (decoder && decoder.kind === 'json') return 'json';
   if (decoder && decoder.kind === 'text') return 'string';
   if (resultMode === 'return' && continuation && continuation.kind === 'opaque-fetch-return') return 'opaque-response';
@@ -523,6 +524,11 @@ class NativePlanBuilder {
       }
       const object = this.expression(current.expression, scope);
       let valueKind = 'unknown';
+      if (object.valueKind.startsWith('fetch-outcome-')) {
+        if (current.name.text === 'status') valueKind = 'string';
+        else if (current.name.text === 'error') valueKind = 'object';
+        else if (current.name.text === 'value') valueKind = object.valueKind === 'fetch-outcome-response' ? 'fetch-response' : object.valueKind === 'fetch-outcome-text' ? 'string' : 'json';
+      }
       if (object.valueKind === 'fetch-response') {
         if (current.name.text === 'status') valueKind = 'number';
         else if (current.name.text === 'ok') valueKind = 'boolean';
@@ -755,6 +761,11 @@ class NativePlanBuilder {
     const effectId = literalString(fields.get('id'));
     const kind = literalString(fields.get('kind'));
     const site = effectId ? this.effectSites.get(effectId) : undefined;
+    if (site?.fetchErrors === 'collect') {
+      const args = fields.get('projectionArgs');
+      result = Object.freeze({ ...result, decoder: site.decoder ? this.decoderPlan({ kind: site.decoder,
+        arguments: args && ts.isArrayLiteralExpression(args) ? [...args.elements] : [] }, scope) : undefined });
+    }
     const continuation = this.continuationSites.get(continuationId);
     if (!effectId || !kind || !site) {
       this.fail(marker, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EFFECT_INVALID, 'Generated effect marker must identify a known canonical effect site.', { effectId, kind, continuationId });
@@ -786,6 +797,7 @@ class NativePlanBuilder {
       contractId: site && site.contractId ? String(site.contractId) : undefined,
       declaredResult: site && site.result ? String(site.result) : undefined,
       decoder: site && site.decoder ? String(site.decoder) : null,
+      ...(site?.fetchErrors === 'collect' ? { fetchErrors: 'collect' } : {}),
       ...(site?.borrowedValue && result?.mode === 'bind' ? { borrowedValue: cloneJson(site.borrowedValue) } : {}),
       continuationId,
       statementPath,
@@ -971,7 +983,7 @@ class NativePlanBuilder {
         const resultType = pureValues.effectType(effect, this.pureTypes.schemas);
         if (resultType) this.pureTypes.set(local.id, resultType);
         scope.set(local.name, resultFacts.bind(local, effect));
-        out.push(Object.freeze({ kind: 'effect', effectId: effect.id, continuationId, result, statementPath: itemPath }));
+        out.push(Object.freeze({ kind: 'effect', effectId: effect.id, continuationId, result: effect.result, statementPath: itemPath }));
         continue;
       }
 
@@ -1970,6 +1982,25 @@ function assertCanonicalNativePlan(plan) {
     const locals = Array.isArray(plan.locals) ? plan.locals : [];
     const effects = Array.isArray(plan.effects) ? plan.effects : [];
     const continuations = Array.isArray(plan.continuations) ? plan.continuations : [];
+    // Resolve only const initializer structure, never runtime values. A selector
+    // hidden in an alias/spread cannot silently bypass literal shape admission.
+    const initLocals = new Map();
+    const initVisitor = statement => {
+      if (statement.kind === 'local' && statement.declaration === 'const') initLocals.set(statement.localId, statement.value);
+    };
+    initVisitor.expression = () => {};
+    walkStatements(plan.entry?.body, initVisitor);
+    for (const body of [...(plan.handlers || []), ...(plan.helpers || []), ...(plan.stages || [])]) walkStatements(body.body, initVisitor);
+    function hiddenErrors(value, seen = new Set()) {
+      if (!value) return false;
+      if (value.kind === 'local') {
+        if (seen.has(value.id)) return false;
+        return hiddenErrors(initLocals.get(value.id), new Set([...seen, value.id]));
+      }
+      return value.kind === 'object' && value.entries.some(entry => entry.kind === 'spread'
+        ? hiddenErrors(entry.value, seen)
+        : (entry.key?.kind === 'literal' ? entry.key.value : entry.key?.value?.value) === 'errors');
+    }
     const localIds = new Set();
     for (const local of locals) {
       if (!local || typeof local !== 'object' || localIds.has(local.id)) fail('local IDs must be unique', { localId: local && local.id });
@@ -1991,6 +2022,19 @@ function assertCanonicalNativePlan(plan) {
         validateExpression(input && input.value, fail, localIds, { effectId: effect && effect.id, input: input && input.name });
       }
       if (effect) validateResult(effect.result, fail, localIds, { effectId: effect.id });
+      if (effect?.kind === 'fetch') {
+        const selector = effect.inputs?.find(input => input.name === 'fetchErrors')?.value;
+        const init = effect.inputs?.find(input => input.name === 'init')?.value;
+        const errors = init?.entries?.filter(entry => entry.key?.value === 'errors') || [];
+        const selected = effect.fetchErrors === 'collect';
+        if (effect.fetchErrors !== undefined && !selected || selected &&
+          (selector?.kind !== 'literal' || selector.value !== 'collect' || errors.length !== 1
+            || init.entries.some(entry => entry.kind !== 'property' || entry.key?.kind !== 'literal')
+            || errors[0].value?.kind !== 'literal' || errors[0].value.value !== 'collect'
+            || effect.result?.valueKind !== 'fetch-outcome-' + (effect.decoder || 'response'))
+          || !selected && (selector || hiddenErrors(init))) fail('fetch outcome selector must match literal admission and result shape', { effectId: effect.id });
+        if (selected && (effect.result?.decoder?.kind || null) !== (effect.decoder || null)) fail('fetch outcome projection differs from settlement', { effectId: effect.id });
+      }
     }
 
     const continuationIds = new Set();

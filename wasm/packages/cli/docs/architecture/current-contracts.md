@@ -1382,9 +1382,11 @@ See [Effects and continuations](../concepts/effects-and-continuations.md),
 ## Selected fetch outcome and transport timing boundaries
 
 Issue #565 selects the following boundary clarification on 29 October 2026 for
-the outcome/timing work in #563 and #564. **`errors: 'collect'`, `timing: true`
-and `elapsedMs` remain proposed API, not implemented features.** The bounded
-spike in PR #576 establishes viability, not feature qualification.
+the outcome/timing work in #563 and #564. Per-fetch `errors: 'collect'` is
+implemented for direct await, keyed groups and bounded collections on the
+JavaScript and Native targets. **`timing: true` and `elapsedMs` remain proposed
+API.** The bounded spike in PR #576 established viability; transport-only timing
+still requires #564 implementation and qualification.
 
 Elapsed time measures transport only. Start at provider dispatch initiation,
 not effect construction or group collection. End at status/header availability
@@ -1417,8 +1419,18 @@ outcomes; HTTP statuses remain data. Enclosing cancellation/deadline expiry and
 runtime integrity faults remain fatal, including when expiry coincides with a
 member timeout. Preserve cancellation fences, response/body ownership, late
 result disposal and no implicit retries. Existing noncollecting behavior stays
-unchanged. Mixed policies, bounded error classification and final outcome
-settlement are implementation acceptance work in #563.
+unchanged. Collection returns `PulseFetchOutcome<T>`: fulfilled with `value: T`,
+or rejected with only `error.code` (`PULSE_FETCH_NETWORK` or
+`PULSE_FETCH_TIMEOUT`). Provider messages, URLs and causes are not copied.
+Body acquisition transport failures are collectible; malformed JSON, schema
+failures, size bounds and invalid init remain failures. A noncollecting failed
+member keeps the existing group failure behavior. Projections settle before
+envelope construction; opaque values retain their original body ownership.
+Native requires an inline named `errors: 'collect'` literal, validated against
+its planned result shape; hidden selectors cannot change that shape at dispatch.
+The existing Fastly resource-accounting profiles do not certify collected
+outcome allocations. They remain unselected for this new init/result shape;
+the ordinary request deadline and bounded body reader still apply.
 
 New typed connect, first-byte and between-byte provider controls are deferred.
 Their capability mapping, precedence, backend registration identity/reuse and
