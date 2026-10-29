@@ -2,6 +2,8 @@
 
 function instrument(input, plan) {
   const selected = plan.effects.flatMap((effect, index) => effect.kind === 'fetch' && effect.fetchErrors === 'collect' ? [index] : []);
+  const wrapped = plan.effects.flatMap((effect,index)=>effect.kind==='fetch' && (effect.fetchErrors==='collect'||effect.fetchTiming) ? [index] : []);
+  const hasTiming = plan.effects.some(effect=>effect.fetchTiming);
   let source = input;
   const replace = (before, after) => {
     if (source.split(before).length !== 2) throw Error('Fetch outcome boundary drift: ' + before);
@@ -19,7 +21,7 @@ function instrument(input, plan) {
       __pulse_fastly_fail(PULSE_ERROR_VALUE, 48, effectIndex); return;
     }
   `);
-  if (!selected.length) return source;
+  if (!wrapped.length) return source;
   replace('function __pulse_fastly_fetch_begin(effectIndex: i32, payload: __PulseFastlyValue): void {',
     'function __pulse_fetch_begin_uncollected(effectIndex: i32, payload: __PulseFastlyValue): void {');
   replace('function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {',
@@ -32,8 +34,9 @@ function instrument(input, plan) {
 // Per-site storage is reset on every admission; it never outlives invocation ownership.
 const __pulse_fetch_collected_failure = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)
 let __pulse_fetch_projecting: i32 = -1
-function __pulse_fetch_collects(index: i32): bool { return ${selected.map(i => `index == ${i}`).join(' || ')} }
-function __pulse_fetch_envelope(value: i32, timeout: bool = false, rejected: bool = false): i32 {
+function __pulse_fetch_collects(index: i32): bool { return ${selected.map(i => `index == ${i}`).join(' || ') || 'false'} }
+function __pulse_fetch_wraps(index: i32): bool { return ${wrapped.map(i => `index == ${i}`).join(' || ')} }
+function __pulse_fetch_envelope(index: i32, value: i32, timeout: bool = false, rejected: bool = false): i32 {
   const result = host_value_object()
   host_value_object_set(result, __pulse_fastly_string_value('status'), __pulse_fastly_string_value(rejected ? 'rejected' : 'fulfilled'))
   if (rejected) {
@@ -41,6 +44,7 @@ function __pulse_fetch_envelope(value: i32, timeout: bool = false, rejected: boo
     host_value_object_set(error, __pulse_fastly_string_value('code'), __pulse_fastly_string_value(timeout ? 'PULSE_FETCH_TIMEOUT' : 'PULSE_FETCH_NETWORK'))
     host_value_object_set(result, __pulse_fastly_string_value('error'), error)
   } else host_value_object_set(result, __pulse_fastly_string_value('value'), value)
+  ${hasTiming ? "if (__pulse_timing_selected(index)) host_value_object_set(result, __pulse_fastly_string_value('elapsedMs'), __pulse_timing_elapsed(index))" : ''}
   return result
 }
 function __pulse_fetch_collect_failure(index: i32): i32 {
@@ -49,7 +53,7 @@ function __pulse_fetch_collect_failure(index: i32): i32 {
   if (__pulse_fastly_last_error != PULSE_ERROR_TRANSPORT || __pulse_fastly_error_effect != index
     || (stage != 77 && stage != 81 && stage != 271 && stage != 20)) return 0
   __pulse_fastly_last_error = 0; __pulse_fastly_error_stage = 0; __pulse_fastly_error_effect = -1
-  return __pulse_fetch_envelope(0, stage == 271, true)
+  return __pulse_fetch_envelope(index, 0, stage == 271, true)
 }
 function __pulse_fastly_fetch_begin(effectIndex: i32, payload: __PulseFastlyValue): void {
   __pulse_fetch_collected_failure[effectIndex] = 0
@@ -69,13 +73,13 @@ function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {
     __pulse_fastly_ready[effectIndex] = 0
     return saved
   }
-  if (__pulse_fetch_collects(effectIndex)) __pulse_fetch_projecting = effectIndex
+  if (__pulse_fetch_wraps(effectIndex)) __pulse_fetch_projecting = effectIndex
   const value = __pulse_fetch_resolve_uncollected(effectIndex)
   __pulse_fetch_projecting = -1
-  if (!__pulse_fetch_collects(effectIndex)) return value
+  if (!__pulse_fetch_wraps(effectIndex)) return value
   if (!__pulse_fetch_request_check(effectIndex)) return 0
   if (__pulse_fastly_last_error != 0) return __pulse_fetch_collect_failure(effectIndex)
-  return value > 0 ? __pulse_fetch_envelope(value) : 0
+  return value > 0 ? __pulse_fetch_envelope(effectIndex, value) : 0
 }
 `;
   return source;

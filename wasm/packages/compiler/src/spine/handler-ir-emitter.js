@@ -50,8 +50,9 @@ function fetchEffectExpression(factory, sourceFile, site, chain) {
       literalProperty(factory, 'column', factory.createNumericLiteral(pos.column))
     ], false))
   );
-  if (site.fetchErrors === 'collect') {
-    properties.push(literalProperty(factory, 'fetchErrors', stringLiteral(factory, 'collect')));
+  if (site.fetchErrors === 'collect' || site.fetchTiming) {
+    if (site.fetchErrors === 'collect') properties.push(literalProperty(factory, 'fetchErrors', stringLiteral(factory, 'collect')));
+    if (site.fetchTiming) properties.push(literalProperty(factory, 'fetchTiming', factory.createTrue()));
     properties.push(literalProperty(factory, 'projectionArgs', factory.createArrayLiteralExpression([...chain.decoderArgs])));
   }
   return factory.createObjectLiteralExpression(properties, false);
@@ -169,7 +170,7 @@ function parallelMemberEffectExpression(factory, sourceFile, site, member, rewri
 }
 
 function parallelMemberResultExpression(factory, temporary, member, site) {
-  if (member.kind === 'fetch' && site?.fetchErrors !== 'collect') return decodedExpression(factory, temporary, member.chain.decoder, member.chain.decoderArgs);
+  if (member.kind === 'fetch' && site?.fetchErrors !== 'collect' && !site?.fetchTiming) return decodedExpression(factory, temporary, member.chain.decoder, member.chain.decoderArgs);
   return temporary;
 }
 
@@ -305,7 +306,7 @@ function emitCanonicalHandlerGenerator(ir) {
         const { candidate, site, continuation } = entry;
         const marker = fetchEffectExpression(factory, sourceFile, site, candidate.chain);
         const yieldExpression = factory.createYieldExpression(undefined, callPulse(factory, 'effect', [marker, stringLiteral(factory, continuation.id)]));
-        const initializer = decodedExpression(factory, factory.createParenthesizedExpression(yieldExpression), site.fetchErrors === 'collect' ? undefined : candidate.chain.decoder, candidate.chain.decoderArgs);
+        const initializer = decodedExpression(factory, factory.createParenthesizedExpression(yieldExpression), (site.fetchErrors === 'collect' || site.fetchTiming) ? undefined : candidate.chain.decoder, candidate.chain.decoderArgs);
         const declaration = factory.updateVariableDeclaration(candidate.declaration, candidate.declaration.name, undefined, candidate.declaration.type, initializer);
         return factory.updateVariableStatement(candidate.statement, candidate.statement.modifiers, factory.updateVariableDeclarationList(candidate.statement.declarationList, [declaration]));
       }
@@ -319,7 +320,7 @@ function emitCanonicalHandlerGenerator(ir) {
           factory.createVariableDeclaration(binding, undefined, undefined, groupYield)
         ], ts.NodeFlags.Const));
         const declarations = candidates.map((candidate, index) => {
-          const initializer = decodedExpression(factory, tempNames[index], sites[index].fetchErrors === 'collect' ? undefined : candidate.chain.decoder, candidate.chain.decoderArgs);
+          const initializer = decodedExpression(factory, tempNames[index], (sites[index].fetchErrors === 'collect' || sites[index].fetchTiming) ? undefined : candidate.chain.decoder, candidate.chain.decoderArgs);
           return factory.createVariableStatement(candidate.statement.modifiers, factory.createVariableDeclarationList([
             factory.createVariableDeclaration(candidate.declaration.name, undefined, candidate.declaration.type, initializer)
           ], declarationFlags(candidate.statement)));
@@ -330,7 +331,7 @@ function emitCanonicalHandlerGenerator(ir) {
         const { candidate, sites, continuation } = entry;
         const factories = sites.map((site, index) => factory.createArrowFunction(undefined, undefined, [], undefined,
           factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), parallelMemberEffectExpression(factory, sourceFile, site, candidate.members[index], rewritePackageIntrinsics)));
-        const decoders = candidate.members.map((member, index) => factory.createArrayLiteralExpression(sites[index].fetchErrors !== 'collect' && member.kind === 'fetch' && member.chain.decoder
+        const decoders = candidate.members.map((member, index) => factory.createArrayLiteralExpression(sites[index].fetchErrors !== 'collect' && !sites[index].fetchTiming && member.kind === 'fetch' && member.chain.decoder
           ? [factory.createStringLiteral(member.chain.decoder), ...member.chain.decoderArgs] : []));
         const yielded = factory.createYieldExpression(undefined, callPulse(factory, 'collection', [
           factory.createArrayLiteralExpression(factories), stringLiteral(factory, continuation.id), candidate.input,

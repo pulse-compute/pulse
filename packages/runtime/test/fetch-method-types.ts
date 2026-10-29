@@ -66,3 +66,13 @@ ctx.fetch(url, { errors: 'ignore' })
 // @ts-expect-error selected text is wrapped
 const unwrapped: Promise<string> = ctx.fetch(url, { errors: 'collect' }).text()
 void [collected, collectedJson, rawCollected, conditional, outcomes, unwrapped]
+
+import type { PulseTimedFetchOutcome } from '@pulse-compute/runtime'
+const timed: Promise<{ readonly status: 'fulfilled'; readonly value: string; readonly elapsedMs: number | null }> = ctx.fetch(url, { timing: true }).text()
+const timedCollected: Promise<PulseTimedFetchOutcome<string>> = ctx.fetch(url, { timing: true, errors: 'collect' }).text()
+const untimed: Promise<string> = ctx.fetch(url, { timing: false }).text()
+// @ts-expect-error timing is boolean
+ctx.fetch(url, { timing: 'true' })
+// @ts-expect-error timing alone still wraps success
+const timedPlain: Promise<string> = ctx.fetch(url, { timing: true }).text()
+void [timed, timedCollected, untimed, timedPlain]

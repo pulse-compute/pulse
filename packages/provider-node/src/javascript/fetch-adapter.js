@@ -25,6 +25,7 @@ function createNodeJavascriptFetchCapability(options = {}) {
       if (init.body && typeof init.body === 'object') {
         return await runtimeHost.forwardIncomingBody(init.body, String(url), init, execution);
       }
+      execution.fetchTiming?.begin();
       const response = await implementation(String(url), {
         method: init.method,
         headers: init.headers,
@@ -32,6 +33,7 @@ function createNodeJavascriptFetchCapability(options = {}) {
         signal: execution.signal,
         redirect: 'follow'
       });
+      execution.fetchTiming?.headers();
       if (execution.signal?.aborted) {
         if (response instanceof Response && response.body) void response.body.cancel(execution.signal.reason).catch(() => {});
         throw execution.signal.reason;
@@ -45,6 +47,7 @@ function createNodeJavascriptFetchCapability(options = {}) {
       }
       return response;
     } catch (error) {
+      execution.fetchTiming?.fail();
       if (error instanceof runtimeHost.PulseRuntimeContractError) throw error;
       if (execution.signal && execution.signal.aborted) {
         const reason = execution.signal.reason;

@@ -373,7 +373,7 @@ Without collected outcomes, a failed group delivers no partial result. The
 per-fetch `errors: 'collect'` option makes an operational member timeout
 a rejected member while retaining successful siblings. Enclosing cancellation,
 request expiry and runtime integrity faults remain execution failures. HTTP
-error statuses remain response data. The outcome and future timing boundaries
+error statuses remain response data. The outcome and transport timing boundaries
 are [recorded separately](../architecture/current-contracts.md#selected-fetch-outcome-and-transport-timing-boundaries).
 
 ### Fastly Native observation and cleanup

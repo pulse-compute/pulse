@@ -17,6 +17,7 @@ export type {
   PulseFetchOperation,
   PulseFetchError,
   PulseFetchOutcome,
+  PulseTimedFetchOutcome,
   PulseFetchValue,
   PulseResult,
   PulseResponseOptions,
