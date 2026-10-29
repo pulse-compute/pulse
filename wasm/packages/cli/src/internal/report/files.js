@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { fail, relativePath, sha256 } = require('./data');
+const identity = require('./identity-diagnostic');
 const MAX_FILE_BYTES = 64 * 1024 * 1024;
 function stamp(stat) { return [stat.dev, stat.ino, stat.size, stat.mtimeNs, stat.ctimeNs].map(String).join(':'); }
 const pathStamp = stat => stat.isDirectory() ? [stat.dev, stat.ino, stat.mode].map(String).join(':') : stamp(stat);
@@ -26,10 +27,16 @@ function checkedPath(root, relative) {
   }
   return { file, chain };
 }
-function verifyChain(chain) {
-  for (const row of chain) {
-    let stat; try { stat = fs.lstatSync(row.file, { bigint: true }); } catch { fail('REPORT_CONCURRENT_CHANGE'); }
-    if (stat.isSymbolicLink() || pathStamp(stat) !== row.token) fail('REPORT_CONCURRENT_CHANGE');
+function changed(stage, relative, before, after, component) {
+  identity.reject('REPORT_CONCURRENT_CHANGE', stage,
+    { identitySha256: sha256(relative), stampSha256: sha256(before), ...(component === undefined ? {} : { component }) },
+    { stampSha256: after === null ? null : sha256(after) });
+}
+function verifyChain(chain, relative) {
+  for (const [index, row] of chain.entries()) {
+    let stat; try { stat = fs.lstatSync(row.file, { bigint: true }); }
+    catch { changed('path-missing', relative, row.token, null, index); }
+    if (stat.isSymbolicLink() || pathStamp(stat) !== row.token) changed('path-stamp', relative, row.token, pathStamp(stat), index);
   }
 }
 function readFile(root, relative, maximum = MAX_FILE_BYTES) {
@@ -40,16 +47,18 @@ function readFile(root, relative, maximum = MAX_FILE_BYTES) {
     const before = fs.fstatSync(fd, { bigint: true });
     if (!before.isFile()) fail('REPORT_PATH');
     if (before.size > BigInt(maximum)) fail('REPORT_LIMIT');
-    if (stamp(before) !== chain.at(-1).token) fail('REPORT_CONCURRENT_CHANGE');
+    if (stamp(before) !== chain.at(-1).token) changed('read-open', relative, chain.at(-1).token, stamp(before));
     const bytes = Buffer.alloc(Number(before.size));
     let offset = 0;
     while (offset < bytes.length) {
       const count = fs.readSync(fd, bytes, offset, bytes.length - offset, offset);
-      if (!count) fail('REPORT_CONCURRENT_CHANGE');
+      if (!count) identity.reject('REPORT_CONCURRENT_CHANGE', 'read-short',
+        { identitySha256: sha256(relative), bytes: bytes.length }, { bytes: offset });
       offset += count;
     }
-    if (stamp(fs.fstatSync(fd, { bigint: true })) !== stamp(before)) fail('REPORT_CONCURRENT_CHANGE');
-    verifyChain(chain);
+    const after = fs.fstatSync(fd, { bigint: true });
+    if (stamp(after) !== stamp(before)) changed('read-finish', relative, stamp(before), stamp(after));
+    verifyChain(chain, relative);
     return { bytes, file: relative, size: bytes.length, sha256: sha256(bytes), token: stamp(before) };
   } finally { if (fd !== undefined) fs.closeSync(fd); }
 }
@@ -68,7 +77,7 @@ function atomicWrite(root, relative, bytes) {
     fd = fs.openSync(temporary, 'wx', 0o600);
     fs.writeFileSync(fd, bytes); fs.fsyncSync(fd); fs.closeSync(fd); fd = undefined;
     if (parent !== '.') checkedPath(root, parent);
-    verifyChain(rootChain);
+    verifyChain(rootChain, relative);
     fs.renameSync(temporary, target);
     syncDirectory(path.dirname(target));
   } finally {

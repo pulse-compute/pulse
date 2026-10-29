@@ -5,6 +5,7 @@ const path = require('node:path');
 const { createRequire } = require('node:module');
 const { canonicalJson, sha256, fail, relativePath } = require('./data');
 const { readFile, contained } = require('./files');
+const identity = require('./identity-diagnostic');
 const RESOLUTIONS = new WeakMap();
 const MAX_FILES = 20000, MAX_BYTES = 256 * 1024 * 1024;
 const slash = file => file.split(path.sep).join('/');
@@ -36,9 +37,19 @@ function scan(root, { excluded = [], packageFiles = false } = {}) {
   visit(root);
   return { records, tokens };
 }
-function sameSnapshot(first, second) {
-  if (canonicalJson(first.records) !== canonicalJson(second.records)) fail('REPORT_STALE_INPUTS');
-  for (const [file, token] of first.tokens) if (second.tokens.get(file) !== token) fail('REPORT_CONCURRENT_CHANGE');
+function sameSnapshot(first, second, scope = 'snapshot') {
+  if (canonicalJson(first.records) !== canonicalJson(second.records)) {
+    const index = Array.from({ length: Math.max(first.records.length, second.records.length) })
+      .findIndex((_, i) => canonicalJson(first.records[i] || null) !== canonicalJson(second.records[i] || null));
+    const before = first.records[index], after = second.records[index];
+    identity.reject('REPORT_STALE_INPUTS', scope + '-content',
+      identity.record(before?.file, before), identity.record(after?.file, after));
+  }
+  for (const [file, token] of first.tokens) if (second.tokens.get(file) !== token) {
+    identity.reject('REPORT_CONCURRENT_CHANGE', scope + '-stamp',
+      { identitySha256: sha256(file), stampSha256: sha256(token) },
+      { identitySha256: sha256(file), stampSha256: second.tokens.has(file) ? sha256(second.tokens.get(file)) : null });
+  }
 }
 function workspaceControls(root) {
   const records = [], tokens = new Map(); let directory = path.resolve(root);
@@ -69,7 +80,7 @@ function resolutionStart(root, configFile, outDir) {
     const config = snapshot.records.find(row => path.resolve(root, row.file) === configFile);
     if (!config) fail('REPORT_INPUT_UNBOUND');
     return { root, excluded, snapshot, workspace: workspaceControls(root) };
-  } catch (error) { return { error: error.code || 'REPORT_INPUT_UNBOUND' }; }
+  } catch (error) { return { error: error.code || 'REPORT_INPUT_UNBOUND', ...identity.retainedDetail(error) }; }
 }
 function retainResolution(project, receipt) { RESOLUTIONS.set(project, receipt); return project; }
 function packageRoot(name, from) {
@@ -161,23 +172,23 @@ function profileDigest(plan) {
 }
 function beginSnapshot(project, options, outDir) {
   const receipt = RESOLUTIONS.get(project);
-  if (!receipt || receipt.error || options.compiled || !project.profilePlan) fail(receipt?.error || 'REPORT_INPUT_UNBOUND');
+  if (!receipt || receipt.error || options.compiled || !project.profilePlan) fail(receipt?.error || 'REPORT_INPUT_UNBOUND', '$', receipt?.detail);
   const excluded = [...new Set([...receipt.excluded, outDir].map(file => path.resolve(project.root, file)))];
   // Resolution and build must describe the same output exclusion.
   if (!receipt.excluded.some(file => path.resolve(project.root, file) === outDir)) fail('REPORT_INPUT_UNBOUND');
-  const current = scan(project.root, { excluded }); sameSnapshot(receipt.snapshot, current);
-  const workspace = workspaceControls(project.root); sameSnapshot(receipt.workspace, workspace);
+  const current = scan(project.root, { excluded }); sameSnapshot(receipt.snapshot, current, 'project');
+  const workspace = workspaceControls(project.root); sameSnapshot(receipt.workspace, workspace, 'workspace');
   const dependencies = toolchainSnapshot(project.root, project.providerSelector || project.provider);
   return { receipt, current, workspace, dependencies, excluded, elideJsonCacheArena: options.elideJsonCacheArena === true, optimization: (options.operation === 'native-build' && project.target === 'javascript') ? 'default'
       : require('../native-optimization').selectedNativeOptimization(options, project),
     profileSha256: profileDigest(project.profilePlan) };
 }
 function finishSnapshot(project, attempt, compiled) {
-  const current = scan(project.root, { excluded: attempt.excluded }); sameSnapshot(attempt.current, current);
-  sameSnapshot(attempt.workspace, workspaceControls(project.root));
+  const current = scan(project.root, { excluded: attempt.excluded }); sameSnapshot(attempt.current, current, 'project');
+  sameSnapshot(attempt.workspace, workspaceControls(project.root), 'workspace');
   const files = new Map(current.records.map(row => [path.resolve(project.root, row.file), row]));
   for (const { root, snapshot } of attempt.dependencies.snapshots.values()) {
-    const after = scan(root, { packageFiles: true }); sameSnapshot(snapshot, after);
+    const after = scan(root, { packageFiles: true }); sameSnapshot(snapshot, after, 'dependency');
     for (const row of after.records) files.set(path.join(root, row.file), row);
   }
   const { sourceInputsForCompiled } = require('@pulse-compute/wasm-compiler/canonical-project-compiler');
@@ -188,7 +199,8 @@ function finishSnapshot(project, attempt, compiled) {
   for (const module of compiled.reachableGraph?.modules || []) if (module.kind === 'project') {
     const row = module.packageName ? sourceRecords.get(module.path)
       : files.get(path.resolve(project.root, module.path));
-    if (!row || row.sha256 !== module.contentHash) fail('REPORT_STALE_INPUTS');
+    if (!row || row.sha256 !== module.contentHash) identity.reject('REPORT_STALE_INPUTS', 'compiler-source',
+      { identitySha256: sha256(module.path), sha256: module.contentHash }, identity.record(module.path, row));
   }
   const inputs = { kind: 'pulse.report-inputs', inputVersion: 1, excluded: attempt.excluded.map(file => {
     const relative = slash(path.relative(project.root, path.resolve(project.root, file))); relativePath(relative); return relative;

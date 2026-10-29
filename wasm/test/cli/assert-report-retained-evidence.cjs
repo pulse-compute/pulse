@@ -16,6 +16,7 @@ const qualificationOutput = outputArg ? path.resolve(outputArg) : null;
 assert(!qualificationOutput || installed, 'Retained qualification output requires an installed consumer');
 assert(!qualificationOutput || (qualificationOutput !== installed && !qualificationOutput.startsWith(installed + path.sep)), 'Evidence belongs outside project inputs');
 const cli = installed ? path.join(installed, 'node_modules/@pulse-compute/cli/src') : path.join(root, 'wasm/packages/cli/src');
+const failureEvidence = require('../support/report-identity-failure.cjs')(__filename, cli);
 if (installed) for (const name of ['cli', 'pulse', 'assets', 'provider-node', 'provider-fastly']) {
   const packageRoot = fs.realpathSync(path.join(installed, 'node_modules/@pulse-compute', name));
   assert(packageRoot.startsWith(installed + path.sep), 'Installed qualification cannot use workspace package links');
@@ -27,9 +28,10 @@ const { resolveProject } = require(path.join(cli, 'project-config'));
 const execution = require(path.join(cli, 'project-execution'));
 const { sha256, canonicalJson } = require(path.join(cli, 'internal/report/data'));
 let negative = 0;
-function rejects(fn, code) { negative++; assert.throws(fn, error => { if (code && error.code !== code) console.error(error.stack); return !code || error.code === code; }); }
+function rejects(fn, code, stage) { negative++; assert.throws(fn, error => { if (code && error.code !== code) console.error(error.stack); if (stage) assert.equal(error.detail?.stage, stage); return !code || error.code === code; }); }
 function write(file, text) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, text); }
 async function main() {
+  if (!installed) require('./report-identity-cases.cjs')();
   const results = path.join(root, 'wasm/.test-results');
   if (!installed) fs.mkdirSync(results, { recursive: true });
   // The installed CLI and its application must share the exact workspace
@@ -69,7 +71,8 @@ export default app;`;
     rejects(() => snapshots.sameSnapshot(workspaceBefore, snapshots.workspaceControls(path.join(workspaceFixture, 'child'))), 'REPORT_STALE_INPUTS');
     const freshAttempt = snapshots.beginSnapshot(resolve(), {}, path.join(directory, 'dist'));
     const forged = { watchFiles: [], reachableGraph: { modules: [{ kind: 'project', path: 'src/index.ts', contentHash: '0'.repeat(64) }] } };
-    rejects(() => snapshots.finishSnapshot(resolve(), freshAttempt, forged), 'REPORT_STALE_INPUTS');
+    rejects(() => snapshots.finishSnapshot(resolve(), freshAttempt, forged), 'REPORT_STALE_INPUTS', 'compiler-source');
+    failureEvidence.phase('portable-publication');
     const control = execution.compileNativeProjectInMemory(project);
     const started = Date.now(), built = execution.compileNativeProject(project);
     const buildMs = Date.now() - started;
@@ -244,14 +247,17 @@ export default app;`;
     assert.equal(capsule.serializeCapsule(report.collectArtifactReport(savedFile).capsule), saved);
     const unavailable = report.beginBuild(raceProject, {}, built.outDir);
     assert.equal(unavailable.error, 'REPORT_CONCURRENT_CHANGE', 'stale resolution disables evidence without changing ordinary build admission');
+    assert.equal(unavailable.detail.stage, 'project-stamp', 'unavailable evidence retains the originating mismatch');
     assert.equal(fs.existsSync(path.join(built.outDir, report.COMPLETION_FILE)), false);
     // The provider-final path is separately verified and never borrows the
     // portable hash. This build also proves recovery after the failed attempt.
+    failureEvidence.phase('recovery-publication');
     execution.buildProject(resolve());
     const nodeBuild = report.collectProjectReport({ cwd: directory }).capsule.build;
     assert.equal(nodeBuild.providerArtifactReuse, 'reused');
     assert.equal(nodeBuild.compilers.length, 1, 'Node packaging does not double-count portable compilation');
     assert.equal(nodeBuild.compilationDurationMs, nodeBuild.compilers[0].durationMs);
+    failureEvidence.phase('provider-publication');
     execution.buildProject(resolve({ profile: 'fastly' }), { nativeShrink0: true });
     const shrink0Report = report.collectProjectReport({ cwd: directory, profile: 'fastly', optimization: 'native-shrink0' }).capsule;
     assert.equal(shrink0Report.provenance.recipe.optimization, 'native-shrink0');
@@ -309,4 +315,4 @@ export default app;`;
     else fs.rmSync(directory, { recursive: true, force: true });
   }
 }
-main().catch(error => { console.error(error); process.exitCode = 1; });
+main().catch(error => { console.error(error); failureEvidence(error); process.exitCode = 1; });

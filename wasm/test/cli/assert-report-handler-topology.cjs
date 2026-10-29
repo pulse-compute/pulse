@@ -7,6 +7,7 @@ const Module = require('node:module');
 const { execFileSync } = require('node:child_process');
 const root = path.resolve(__dirname, '../../..');
 const cli = path.join(root, 'wasm/packages/cli/src');
+const failureEvidence = require('../support/report-identity-failure.cjs')(__filename, cli);
 const compiler = path.join(root, 'wasm/packages/compiler/src');
 const execution = require(path.join(cli, 'project-execution'));
 const { resolveProject } = require(path.join(cli, 'project-config'));
@@ -278,6 +279,7 @@ async function main() {
     for (const variant of ['http', 'event', 'full']) {
       let defaultReport;
       for (const optimization of ['native-shrink0', 'experimental-native-bounded-size']) {
+        failureEvidence.phase(`${variant}/${optimization}/parity`);
         // Each recipe owns its source/output paths; prior cells are never rewritten.
         const directory = path.join(fixtureRoot, variant, optimization);
         setup(directory, variant);
@@ -327,6 +329,7 @@ async function main() {
           assert.equal(capsule.serializeCapsule(capsule.parseCapsule(saved)), saved, 'AN9-01 unavailable tables remain valid');
         }
         const executions = await execute(prepared.native, variant) + await execute(control.native, variant);
+        failureEvidence.phase(`${variant}/${optimization}/publication`);
         const built = execution.compileNativeProject(project, options);
         assert.ok(built.manifest.reportCompletion, JSON.stringify(built.manifest.reportEvidence));
         const replay = retained.collectArtifactReport(built.files.manifest).capsule;
@@ -343,6 +346,7 @@ async function main() {
           importedPassiveReplay: true, reportHtml: true, semanticComparison: true, sourcesRemoved: true });
       }
     }
+    failureEvidence.phase('nested-topology');
     // Nested mounts use ordered instance paths, not sorted sets of definitions.
     setup(directory, 'http', true);
     const source = path.join(directory, 'src/index.ts');
@@ -404,4 +408,4 @@ export default app;
       nestedMounts: true, oldCapsulesUnchanged: true, authoredUseSites: true, validatedHelperCalls: true, contextualAssociations: true, importedSourceReplay: true, handlerNames: true }));
   } finally { fs.rmSync(fixtureRoot, { recursive: true, force: true }); }
 }
-main().catch(error => { console.error(error); process.exitCode = 1; });
+main().catch(error => { console.error(error); failureEvidence(error); process.exitCode = 1; });

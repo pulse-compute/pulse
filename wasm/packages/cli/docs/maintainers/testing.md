@@ -127,6 +127,22 @@ trees and ordinary runs, and existing receipts for eligible recovery.
 
 ## Compiler analytics qualification
 
+For intermittent report identity failures (#516), preserve the original failed
+attempt and inspect its first rejected comparison. Read/snapshot/import/lease
+errors carry bounded identity metadata; unavailable report evidence preserves
+owner-produced detail. Identities, stamps and lease tokens are hashed, with no
+source payload or absolute path. The retained-evidence and topology tasks emit
+one entry record and at most one terminal failure record with task phase, Node
+version and hashes of the test, runner, registry and report owners captured at
+task entry. The reported revision
+alone does not certify a clean tree. Runner timeout/process diagnostics remain
+the authority when a task cannot emit its terminal record.
+
+Use the focused retained-evidence/topology tasks to verify a new signal. Expand
+only for a specific ordering hypothesis; absent a demonstrated mismatch, park
+the investigation for the next signal. Passing reruns do not repair or erase a
+failed attempt, and older failures need not share a cause across runner changes.
+
 Run the focused AN9 boundary selection on one immutable candidate:
 
 ```bash
