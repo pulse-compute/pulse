@@ -152,8 +152,10 @@ settles before continuation and delivers no partial result array. The example's
 `app.error` handler handles admitted failures; it is not a catch-all for terminal
 faults. See [Router recovery](./routing.md#next-is-a-terminal-transfer).
 
-A per-fetch `timeoutMs` starts when the effect is dispatched, including at a
-collection flush. The request's `maxDurationMs` also covers collection construction
+A per-fetch `timeoutMs` starts at provider admission/dispatch, including at a
+collection flush. Its end boundary depends on the existing transport path:
+ordinary Fastly Native and JavaScript fetches stop at headers; Node Native live
+structured fetches also include body acquisition. The request's `maxDurationMs` also covers collection construction
 and remains terminal. Cancellation does not promise remote wire cancellation,
 retry or rollback of completed effects. Read the [deadline and ownership rules](../concepts/effects-and-continuations.md#timeouts-have-two-scopes)
 for provider-specific behavior.

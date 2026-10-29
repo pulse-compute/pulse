@@ -323,10 +323,61 @@ monotonic clock used for deadlines and can move backward. See the
 
 ## Timeouts have two scopes
 
-A fetch can have an operation timeout through `PulseFetchInit.timeoutMs`. The request runtime also owns a continuation lifetime configured by the execution environment or test case. These are different controls:
+A fetch can have an operation timeout through `PulseFetchInit.timeoutMs`.
+The enclosing execution can have a total `maxDurationMs` budget. These controls
+have separate lifetimes: a member timeout fails that operation; request expiry
+revokes execution authority, including later managed body reads and continuations.
+The separate test/host `continuationTtlMs` bounds suspension freshness; it does
+not replace either transport timeout or total execution budget.
 
-- the operation timeout bounds one host operation;
-- the continuation TTL bounds how long compiled execution may remain suspended before resumption is rejected.
+### Existing fetch timeout boundaries
+
+`timeoutMs` is an optional positive integer number of milliseconds. Omission
+adds no Pulse member timeout; provider/backend limits and an enclosing request
+budget still apply. Zero, negatives, fractions and unsafe numeric integers are
+invalid. Timeout support does not promise millisecond scheduling accuracy or
+preemption of synchronous work.
+
+| Execution path | Timer starts | Timer ends |
+| --- | --- | --- |
+| Node/Fastly JavaScript, ordinary fetch | Effect dispatch, before the provider adapter runs | Provider response/status/headers settle; before `.text()` or `.json()` consumes the body |
+| Fastly Native, ordinary fetch | Fetch admission, including outbound request preparation | Response headers are observed before expiry |
+| Node Native, live opaque fetch | Provider transport dispatch | Response headers are available; the stream remains opaque |
+| Node Native, live structured fetch | Provider transport dispatch | Bounded body acquisition and provider text decoding finish |
+
+Node Native's existing structured transport consumes the body before returning
+its snapshot. Its member timer therefore includes that acquisition; it is not
+the same header-only lifetime as Fastly Native or JavaScript. Guest JSON parsing
+and application transforms happen later. This distinction is preserved, not
+silently changed by adding metadata. Opt-in incoming-body forwarding has its
+own longer completion-aware deadline on Node and Fastly Native; see
+[body transport contracts](./bodies.md#incoming-forwarding-on-node).
+
+An effect descriptor or collection member does not start a transport timer by
+being constructed. A collection starts its members at flush; outbound provider
+preparation may consume their timeout. The request budget also covers time spent
+constructing the collection. Group join never resets a member timer or extends
+the enclosing budget. A later invocation of a reusable effect site gets a new
+member timer but inherits the same enclosing request deadline.
+
+### Precedence and failure ownership
+
+An earlier applicable deadline wins. If the enclosing deadline is also expired
+when a member result or failure is delivered, enclosing expiry is terminal and
+takes precedence over member recovery. No successful late result, application
+error handler or group join can restore execution authority. Checks occur at
+managed boundaries; this is not hard CPU preemption. Fastly JavaScript rejects
+the total `maxDurationMs` configuration rather than claiming support it lacks.
+
+Without collected outcomes, a failed group delivers no partial result. The
+selected future `errors: 'collect'` contract makes an operational member timeout
+a rejected member while retaining successful siblings. Enclosing cancellation,
+request expiry and runtime integrity faults remain execution failures. HTTP
+error statuses remain response data. These outcome options are not implemented
+by this deadline clarification; their selected contract is
+[recorded separately](../architecture/current-contracts.md#selected-fetch-outcome-and-transport-timing-boundaries).
+
+### Fastly Native observation and cleanup
 
 On Fastly Native, `timeoutMs` must be a positive numeric safe integer. Omission
 leaves the per-fetch deadline disabled; it does not disable a configured
@@ -336,7 +387,7 @@ expires at `elapsed >= timeoutMs`. It bounds arrival of response headers.
 Once headers arrive, status/header inspection does not wait for the body;
 explicit body reads remain separate work under the whole-request budget.
 
-A fetch deadline enters `app.error` as `PULSE_FETCH_TIMEOUT`; without an error
+A Fastly Native fetch deadline enters `app.error` as `PULSE_FETCH_TIMEOUT`; without an error
 handler it returns `504 Gateway Timeout`. The earlier whole-request deadline
 remains terminal and takes priority over application recovery. Parallel fetches
 keep independent admission times and header outcomes. Recovery waits for the
