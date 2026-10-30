@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "264f82e7771088ba0cc3120358721f2bce87a404465f6e35677c48bb37301845",
+  "corpusHash": "23b1d1fc770eb0137e816f6f884f0cc185acd956478cf6d0ec9c21883822382a",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -10874,17 +10874,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "guide",
-      "content": "## Create a project\n\nThe command and documented result below are executed by the documentation test lane.\n\n<!-- pulse-doc-run {\"temp\":true,\"args\":[\"init\",\"hello-pulse\",\"--json\"],\"display\":\"pnpm pulse -- init ./hello-pulse --json\"} -->\n```bash\npnpm pulse -- init ./hello-pulse --json\n```\n```json\n{\n  \"status\": \"initialized\",\n  \"files\": [\n    \".gitignore\",\n    \".pulse/.gitignore\",\n    \".pulse/config.ts\",\n    \"README.md\",\n    \"package.json\",\n    \"src/index.ts\",\n    \"tests/pulse.harness.ts\",\n    \"tsconfig.json\"\n  ]\n}\n```\n\nThen enter the project and install the exact dependencies written by `pulse init`:\n\n```bash\ncd ./hello-pulse\nnpm install\n```\n\n`pulse init` never runs a package manager or performs hidden network work.\n\nThe generated project uses the conventional `.pulse/config.ts` workspace,\nan async `Pulse` application root from `@pulse-compute/pulse`, and a dedicated\n`tests/pulse.harness.ts` case module. The `.pulse/.gitignore` keeps generated\nworkspace artifacts out of version control while retaining the project config.\n",
-      "contentSha256": "98f87aaa4267c01621217d4dcd6cc36224c7b86d15eb7f7a2f50cc3b8f9f4345",
+      "content": "## Create a project\n\nUse the published CLI without a global install. The documentation test lane\nexecutes the same `init` operation and verifies the documented result.\n\n<!-- pulse-doc-run {\"temp\":true,\"args\":[\"init\",\"hello-pulse\",\"--json\"],\"display\":\"npm exec --package=@pulse-compute/cli@1.0.0-beta.10 -- pulse init ./hello-pulse --json\"} -->\n```bash\nnpm exec --package=@pulse-compute/cli@1.0.0-beta.10 -- pulse init ./hello-pulse --json\n```\n```json\n{\n  \"status\": \"initialized\",\n  \"files\": [\n    \".gitignore\",\n    \".pulse/.gitignore\",\n    \".pulse/config.ts\",\n    \"README.md\",\n    \"package.json\",\n    \"src/index.ts\",\n    \"tests/pulse.harness.ts\",\n    \"tsconfig.json\"\n  ]\n}\n```\n\nFor a checkout with restored dependencies, `pnpm pulse -- init ./hello-pulse --json`\nexecutes the repository CLI instead.\n\nThen enter the project and install the exact dependencies written by `pulse init`:\n\n```bash\ncd ./hello-pulse\nnpm install\n```\n\n`pulse init` never runs a package manager or performs hidden network work.\n\nThe generated project uses the conventional `.pulse/config.ts` workspace,\nan async `Pulse` application root from `@pulse-compute/pulse`, and a dedicated\n`tests/pulse.harness.ts` case module. The `.pulse/.gitignore` keeps generated\nworkspace artifacts out of version control while retaining the project config.\n",
+      "contentSha256": "8169fadd51662972744c7a0d5543b3201dc086da5407517832ff666feabe19a9",
       "id": "start/create",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 52,
+        "endLine": 57,
         "path": "docs/getting-started.md",
         "selection": "heading:Create a project",
-        "sha256": "acdd0cbaef923f6446e5fbe7b06c49419d453e3471dded86501511286b0649a5",
-        "startLine": 15,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/00d41e8fd9152a1270761bdf6a6becabb69cbf86"
+        "sha256": "45453d9d73d27c0db4fc450323954519796dbf2cf5f0602ce250db8fd4b307ae",
+        "startLine": 16,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/39684582a9fab63f7d73cdd6b5b26367c344f64f"
       },
       "status": "candidate",
       "tags": [
@@ -10917,17 +10917,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "guide",
-      "content": "## Requirements\n\n- Node.js `22.14.0` or newer on the 22.x line, or Node.js 24.x (`^22.14.0 || ^24.0.0`).\n- npm 10 or another npm-compatible package manager.\n- A repository checkout with its lockfile-pinned dependencies restored, using `pnpm pulse -- <command>`, or the synchronized public package set produced by release acceptance.\n- A Fastly local execution engine only when running the external Fastly Compute reality workflow. Native compilation and configured-provider builds do not require one. The gate accepts the Fastly CLI through `PATH`/`PULSE_FASTLY_BIN` or direct Viceroy through `PULSE_VICEROY_BIN`.\n",
-      "contentSha256": "243c42ab80794eec4d8e6a758dd62ece76331aec5ca70baa7eebc4fd4c07f41d",
+      "content": "## Requirements\n\n- Node.js `22.14.0` or newer on the 22.x line, or Node.js 24.x (`^22.14.0 || ^24.0.0`).\n- npm 10 or another npm-compatible package manager.\n- Access to the exact synchronized published package versions below, or a repository checkout with its lockfile-pinned dependencies restored.\n- A Fastly local execution engine only when running the external Fastly Compute reality workflow. Native compilation and configured-provider builds do not require one. The gate accepts the Fastly CLI through `PATH`/`PULSE_FASTLY_BIN` or direct Viceroy through `PULSE_VICEROY_BIN`.\n",
+      "contentSha256": "a01f96bde9322c7d5798b5c1f82e3377dcc49a5e744bc43a5a6a4d8ad59d0a70",
       "id": "start/requirements",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 14,
+        "endLine": 15,
         "path": "docs/getting-started.md",
         "selection": "heading:Requirements",
-        "sha256": "acdd0cbaef923f6446e5fbe7b06c49419d453e3471dded86501511286b0649a5",
-        "startLine": 8,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/00d41e8fd9152a1270761bdf6a6becabb69cbf86"
+        "sha256": "45453d9d73d27c0db4fc450323954519796dbf2cf5f0602ce250db8fd4b307ae",
+        "startLine": 9,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/39684582a9fab63f7d73cdd6b5b26367c344f64f"
       },
       "status": "candidate",
       "tags": [
@@ -10965,12 +10965,12 @@ export const contextCorpus = freeze({
       "id": "start/verify",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 66,
+        "endLine": 71,
         "path": "docs/getting-started.md",
         "selection": "heading:Verify the project",
-        "sha256": "acdd0cbaef923f6446e5fbe7b06c49419d453e3471dded86501511286b0649a5",
-        "startLine": 53,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/00d41e8fd9152a1270761bdf6a6becabb69cbf86"
+        "sha256": "45453d9d73d27c0db4fc450323954519796dbf2cf5f0602ce250db8fd4b307ae",
+        "startLine": 58,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/39684582a9fab63f7d73cdd6b5b26367c344f64f"
       },
       "status": "candidate",
       "tags": [
@@ -11008,12 +11008,12 @@ export const contextCorpus = freeze({
       "id": "workflow/build",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 126,
+        "endLine": 172,
         "path": "docs/guides/project-lifecycle.md",
         "selection": "heading:5. Build the selected target",
-        "sha256": "44311fac04f96256c5105d17894765fdbe0afb454d6cfb8a5f84b87254733675",
-        "startLine": 102,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1627ae0cce2eb9e828de72896f979113eac2c2fb"
+        "sha256": "48ad39a5879436d9c6945a1d5dc63cb5e1fe5570e46dfa11de423ca326133380",
+        "startLine": 148,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98f5674cbc8022ade4d2dd4e88d139f33bfb3cba"
       },
       "status": "candidate",
       "tags": [
@@ -11051,12 +11051,12 @@ export const contextCorpus = freeze({
       "id": "workflow/init",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 30,
+        "endLine": 76,
         "path": "docs/guides/project-lifecycle.md",
         "selection": "heading:1. Initialize",
-        "sha256": "44311fac04f96256c5105d17894765fdbe0afb454d6cfb8a5f84b87254733675",
-        "startLine": 18,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1627ae0cce2eb9e828de72896f979113eac2c2fb"
+        "sha256": "48ad39a5879436d9c6945a1d5dc63cb5e1fe5570e46dfa11de423ca326133380",
+        "startLine": 64,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98f5674cbc8022ade4d2dd4e88d139f33bfb3cba"
       },
       "status": "candidate",
       "tags": [
@@ -11094,12 +11094,12 @@ export const contextCorpus = freeze({
       "id": "workflow/inspect",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 138,
+        "endLine": 184,
         "path": "docs/guides/project-lifecycle.md",
         "selection": "heading:Inspect when you need the plan",
-        "sha256": "44311fac04f96256c5105d17894765fdbe0afb454d6cfb8a5f84b87254733675",
-        "startLine": 127,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1627ae0cce2eb9e828de72896f979113eac2c2fb"
+        "sha256": "48ad39a5879436d9c6945a1d5dc63cb5e1fe5570e46dfa11de423ca326133380",
+        "startLine": 173,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98f5674cbc8022ade4d2dd4e88d139f33bfb3cba"
       },
       "status": "candidate",
       "tags": [
@@ -11133,8 +11133,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/getting-started.md",
-      "sha256": "acdd0cbaef923f6446e5fbe7b06c49419d453e3471dded86501511286b0649a5",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/00d41e8fd9152a1270761bdf6a6becabb69cbf86"
+      "sha256": "45453d9d73d27c0db4fc450323954519796dbf2cf5f0602ce250db8fd4b307ae",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/39684582a9fab63f7d73cdd6b5b26367c344f64f"
     },
     {
       "path": "docs/guides/deploying-node.md",
@@ -11148,8 +11148,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/guides/project-lifecycle.md",
-      "sha256": "44311fac04f96256c5105d17894765fdbe0afb454d6cfb8a5f84b87254733675",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1627ae0cce2eb9e828de72896f979113eac2c2fb"
+      "sha256": "48ad39a5879436d9c6945a1d5dc63cb5e1fe5570e46dfa11de423ca326133380",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/98f5674cbc8022ade4d2dd4e88d139f33bfb3cba"
     },
     {
       "path": "docs/packages/pulse.md",

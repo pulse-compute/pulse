@@ -24,6 +24,10 @@ npm test
 `npm install` installs the dependencies, including the project's local CLI;
 no global install is needed.
 
+For agent-assisted work, use the compact
+[cold-start checklist](./docs/guides/project-lifecycle.md#cold-start-checklist)
+to pin the goal, target, version and verification boundary.
+
 Start the local server:
 
 ```bash
