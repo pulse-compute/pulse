@@ -37,6 +37,7 @@ function finishCommandRequest(request) {
   if (request.evidenceStatus && request.html) {
     throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', '--evidence-status emits JSON and cannot be combined with --html.');
   }
+  if (request.command === 'compare') require('./report/compare-command.js').validateCompareRequest(request);
   if (request.command === 'report') require('./report/command.js').validateReportRequest(request);
   if (request.command === 'compile' || request.command === 'build') require('./native-optimization').selectedNativeOptimization(request);
   if (request.elideJsonCacheArena !== undefined && typeof request.elideJsonCacheArena !== 'boolean') throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'elideJsonCacheArena must be a boolean.');
@@ -109,6 +110,10 @@ function parseCommandRequest(argv) {
     }
 
     if (!token.startsWith('-')) {
+      if (command === 'compare') {
+        const positional = COMMAND_SPECS.compare.positionals.find(entry => request[entry.key] === undefined);
+        if (positional) { request[positional.key] = token; continue; }
+      }
       if (command === 'init' && !request.target) {
         request.target = token;
         continue;

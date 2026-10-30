@@ -39,6 +39,7 @@ const tasks = Object.freeze({
   }),
   'cli-report-host-extensions': nodeTask('test/cli/assert-report-host-extensions.cjs', { evidence: 'native', scheduling: { compiler: true }, timeoutMs: 180000, description: 'P12A host contribution/use-site attribution, exact import audit, historical comparison and private diagnostics' }),
   'cli-report-viewer': nodeTask('test/cli/assert-report-viewer.cjs', { description: 'PRPT-05 offline encoding, view projections and generated-output receipts' }),
+  'cli-compare-workflow': nodeTask('test/cli/assert-cli-compare-workflow.cjs', { description: 'Installed public comparison adapter, passive capsule replay and safe offline output' }),
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-graph-diagnostics': nodeTask('test/cli/assert-report-graph-diagnostics.cjs', {
     description: 'RPT8-03 bounded graph diagnostics, exhaustive direct-call joins, privacy and passive replay', timeoutMs: 60000
@@ -1479,6 +1480,7 @@ const profiles = Object.freeze({
     'binary-resource-admission',
     'report-capsule-contract',
     'cli-report-workflow',
+    'cli-compare-workflow',
     'cli-report-viewer',
     'cli-report-retained-evidence',
     'cli-report-host-extensions',
@@ -1674,6 +1676,7 @@ const profiles = Object.freeze({
   cli: Object.freeze([
     'report-capsule-contract',
     'cli-report-workflow',
+    'cli-compare-workflow',
     'cli-report-viewer',
     'cli-report-retained-evidence',
     'cli-report-host-extensions',

@@ -1685,8 +1685,9 @@ this optional block remain unchanged and display **Not recorded**.
 CMP8-01 owns the internal, pure `pulse.report-comparison` v1 result and
 `pulse.report-matching.v1` identity policy. The CLI, HTML and MCP adapters must
 consume that shared result rather than implement their own matching or arithmetic.
-CMP8-02 adds the offline HTML presentation. Command/MCP adapters remain separate
-integration work. No new public CLI option or package export is introduced here.
+CMP8-02 adds the offline HTML presentation. The public `pulse compare` command
+exposes this shared result and renderer for external consumers using saved Report
+capsules. MCP integration and a JavaScript package export remain separate work.
 
 `compareCapsules(before, after)` admits two validated Report v1 capsules and
 returns immutable evidence without IO, project loading, compilation or execution.
@@ -1793,7 +1794,7 @@ namespaces so one cannot overwrite the other.
 The offline comparison HTML adds authored inventory summaries, identity coverage,
 matching bases and semantic changed fields. Existing search, local links, native
 disclosures and complete JSON export include the new sections. It remains passive
-and self-contained; command/MCP integration and graph visualization are separate.
+and self-contained; MCP integration and graph visualization remain separate.
 
 The canonical schema and generated TypeScript declaration share the report fixture
 writer. The report-capsule-contract task includes comparison regressions for

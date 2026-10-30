@@ -1368,7 +1368,7 @@ A provider attempted to resume the same continuation more than once.
 | Code | Meaning | CLI exit |
 |---|---|---|
 | [`PULSE_REPORT_INPUT_INVALID`](#pulse-report-input-invalid) | Report evidence is malformed, unsafe, or fails integrity validation. | `3` |
-| [`PULSE_REPORT_EVIDENCE_MISSING`](#pulse-report-evidence-missing) | A matching completed Wasm build and its required retained evidence are missing. | `3` |
+| [`PULSE_REPORT_EVIDENCE_MISSING`](#pulse-report-evidence-missing) | Required retained report evidence or a saved input capsule is missing. | `3` |
 | [`PULSE_REPORT_STALE`](#pulse-report-stale) | Retained Report evidence does not match the selected inputs or changed during collection. | `3` |
 | [`PULSE_REPORT_INCOMPATIBLE`](#pulse-report-incompatible) | The Report input version or output representation is unsupported. | `3` |
 | [`PULSE_REPORT_OUTPUT_UNSAFE`](#pulse-report-output-unsafe) | The HTML output path is not a contained regular .html file. | `2` |
@@ -1393,7 +1393,7 @@ Report evidence is malformed, unsafe, or fails integrity validation.
 <a id="pulse-report-evidence-missing"></a>
 ### `PULSE_REPORT_EVIDENCE_MISSING` — Report Evidence Missing
 
-A matching completed Wasm build and its required retained evidence are missing.
+Required retained report evidence or a saved input capsule is missing.
 
 - **Category:** `report`
 - **CLI exit class:** `3`
@@ -1403,7 +1403,7 @@ A matching completed Wasm build and its required retained evidence are missing.
 
 **Remediation**
 
-1. Run pulse compile or pulse build with the selected Native profile, then retry report; report never builds automatically.
+1. For compare, provide two existing saved Report capsules. For report, run pulse compile or pulse build with the selected Native profile; neither command builds automatically.
 
 <a id="pulse-report-stale"></a>
 ### `PULSE_REPORT_STALE` — Report Stale
@@ -1448,7 +1448,7 @@ The HTML output path is not a contained regular .html file.
 
 **Remediation**
 
-1. Choose a .html file within the selected project root or artifact JSON parent, without symbolic links or parent traversal.
+1. Choose a .html file within the selected report root, or the current directory for compare, without symbolic links or parent traversal.
 
 <a id="pulse-report-output-failed"></a>
 ### `PULSE_REPORT_OUTPUT_FAILED` — Report Output Failed

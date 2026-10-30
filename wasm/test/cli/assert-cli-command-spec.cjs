@@ -82,7 +82,7 @@ const reference = fs.readFileSync(referencePath, 'utf8');
 const publicOptions = OPTION_SPECS.filter((option) => option.visibility === 'public');
 
 assert.deepEqual(workflow.COMMANDS, COMMANDS, 'workflow command surface must use the canonical command specification');
-assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report', 'docs']);
+assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report', 'compare', 'docs']);
 assert.equal(publicOptions.length, 22, 'the CLI must expose exactly 22 documented option contracts');
 assert.equal(OPTION_SPECS.every((option) => option.visibility === 'public'), true, 'the product parser must not retain repository-only controls');
 
@@ -157,7 +157,7 @@ for (const command of PUBLIC_COMMAND_ORDER) {
       const forms = value ? [[flag.name, value.source], [`${flag.name}=${value.source}`]] : [[flag.name]];
       for (const form of forms) {
         // --out on report is intentionally valid only together with --html.
-        const argv = [command, ...form, ...(command === 'report' && option.id === 'out' ? ['--html'] : [])];
+        const argv = [command, ...(command === 'compare' ? ['before.json', 'after.json'] : []), ...form, ...(['report', 'compare'].includes(command) && option.id === 'out' ? ['--html'] : [])];
         if (!allowed) {
           assert.throws(() => parseCommandRequest(argv), error => error.code === 'PULSE_ARGUMENT_UNEXPECTED',
             `${command} must reject ${flag.name}`);

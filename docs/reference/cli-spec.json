@@ -831,6 +831,74 @@
       "exit": "0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence or an output write failure."
     },
     {
+      "name": "compare",
+      "summary": "Compare two saved Report capsules without loading a project or rebuilding.",
+      "usage": [
+        "pulse compare <before.json> <after.json> [--json | --html] [--out <file.html>]"
+      ],
+      "positionals": [
+        {
+          "name": "before.json",
+          "key": "before",
+          "description": "Saved baseline Report capsule, resolved from the current directory."
+        },
+        {
+          "name": "after.json",
+          "key": "after",
+          "description": "Saved candidate Report capsule, resolved from the current directory."
+        }
+      ],
+      "options": [
+        {
+          "id": "html",
+          "key": "html",
+          "flags": [
+            {
+              "name": "--html"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Write a self-contained offline HTML report; mutually exclusive with --json."
+        },
+        {
+          "id": "out",
+          "key": "outDir",
+          "flags": [
+            {
+              "name": "--out"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<file.html>",
+          "description": "HTML destination under the current directory; requires --html. Defaults to .pulse/reports/pulse-comparison.html."
+        }
+      ],
+      "examples": [
+        "pulse compare before.json after.json --json",
+        "pulse compare before.json after.json --html --out review/compare.html"
+      ],
+      "diagnostics": [
+        "PULSE_REPORT_INPUT_INVALID",
+        "PULSE_REPORT_EVIDENCE_MISSING",
+        "PULSE_REPORT_STALE",
+        "PULSE_REPORT_INCOMPATIBLE",
+        "PULSE_REPORT_OUTPUT_UNSAFE",
+        "PULSE_REPORT_OUTPUT_FAILED"
+      ],
+      "outputs": [
+        "Default output and --json emit one canonical pulse.report-comparison v1 JSON object.",
+        "--html writes a self-contained offline comparison and prints its path. Both formats consume the same validated comparison.",
+        "Missing measurements remain unknown; incompatible artifact contexts retain compatibility reasons and unavailable deltas. Input provenance is historical, not proof of current source or common lineage."
+      ],
+      "sideEffects": [
+        "Reads only the two bounded saved Report capsules; no project discovery, compilation, execution, project dependency loading or network access.",
+        "Inputs may be outside the current directory. Build manifests and bare Wasm are not accepted; export capsules with pulse report --json first.",
+        "--out requires --html; HTML stays within the current directory, without parent traversal or symbolic links, and cannot overwrite either input.",
+        "HTML uses the existing atomic writer and generated-output receipt. --plan and --dry-run do not read inputs or write output."
+      ],
+      "exit": "0 for a valid comparison, including differences, missing optional evidence or incompatible artifact contexts; 2 for invalid arguments or unsafe output; 3 for missing, invalid or unsupported capsules, changed inputs during reading, or an output write failure."
+    },
+    {
       "name": "docs",
       "summary": "Locate the offline documentation shipped with the executing CLI package.",
       "usage": [
