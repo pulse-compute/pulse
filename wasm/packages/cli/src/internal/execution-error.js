@@ -26,6 +26,14 @@ function redactValue(value, tokens, seen = new WeakSet()) {
 }
 
 function errorSummary(error, secrets, root) {
+  const assertion = require('./harness-assertion').summary(error, secretTokens(secrets), redactString);
+  if (assertion) {
+    const descriptor = describeDiagnostic('PULSE_TEST_ASSERTION');
+    return Object.freeze({ name: 'AssertionError', code: descriptor.code, title: descriptor.title,
+      summary: descriptor.summary, category: descriptor.category, message: 'Harness expectation did not match the observed result.',
+      remediation: descriptor.remediation, stability: descriptor.stability, scope: descriptor.scope,
+      docs: descriptor.docs, detail: Object.freeze(assertion) });
+  }
   const host = require('./host-diagnostic');
   const hostFailure = host.isHost(error) || error?.diagnostics?.some(host.isHost);
   const tokens = secretTokens(secrets);

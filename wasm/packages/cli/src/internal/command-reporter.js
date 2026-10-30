@@ -43,7 +43,17 @@ function writeHumanResult(stream, command, result) {
     return;
   }
   if (command === 'test') {
-    for (const entry of result.cases || []) stream.write(`${entry.status === 'passed' ? 'ok' : 'not ok'} - ${entry.name}\n`);
+    const safe = require('./report/command').terminalText;
+    for (const entry of result.cases || []) {
+      stream.write(`${entry.status === 'passed' ? 'ok' : 'not ok'} - ${safe(entry.name, 256)}\n`);
+      if (entry.error?.code === 'PULSE_TEST_ASSERTION') {
+        const d = entry.error.detail;
+        stream.write(`  ${entry.error.code}: ${d.expectation} (${d.operator})\n`);
+        stream.write(`  expected: ${JSON.stringify(d.expected)}\n  actual: ${JSON.stringify(d.actual)}\n`);
+        if (d.request) stream.write(`  request: ${JSON.stringify(d.request)}\n`);
+        stream.write(`  docs: ${entry.error.docs}\n`);
+      }
+    }
     stream.write(`${result.summary.passed}/${result.summary.total} Pulse project tests passed\n`);
     return;
   }
