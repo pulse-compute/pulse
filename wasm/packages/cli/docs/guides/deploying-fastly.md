@@ -166,6 +166,38 @@ The Sprint 7 final candidate must pass its mandatory external reality gate in
 the later packed/provider-reality checkpoint. Checkpoint 5 documents the
 boundary; it does not mark that external gate complete.
 
+## Stateful validation
+
+Pulse's exact Fastly Native fixture executor resets KV from supplied fixtures
+for each invocation. Conditional KV selects this path in `pulse test`/`pulse dev`.
+See [fixture state lifetime](./project-lifecycle.md#fastly-native-fixture-kv-lifetime).
+Use the existing Fastly CLI/Viceroy workflow above with the built candidate and
+explicit local KV bindings when testing persistence across requests. Compilation
+alone does not require these external tools.
+
+1. Select a dedicated test namespace and key, and record candidate Wasm digest,
+   selected bindings and exact engine versions. Seed a distinguishable initial
+   value (for example `seed-A`). Keep credentials and private values out of reports.
+2. Send a write request with a new value `write-B`. In a separate read request,
+   require that exact value. A write/read within a single request proves less.
+3. Read its generation, then submit two CAS requests using that same generation
+   with distinct proposed values `winner-C` and `winner-D`. Require exactly one
+   `stored` and one `conflict`, and a later read matching the successful proposal.
+   Use a barrier before dispatch if testing overlap; identical proposed values
+   cannot reveal a lost update. Also require stale-generation and missing-key
+   CAS to conflict without changing or creating state.
+4. Record each raw result and cleanup the dedicated test state. Treat timeouts,
+   unknown outcomes, duplicate winners and unexpected persistence as nonpassing
+   evidence to investigate; keep assertions intact.
+
+Viceroy results establish local engine behavior only. Known Viceroy conditional
+KV discrepancies have their own recorded release dispositions; a local run or
+an accepted discrepancy does not establish deployed Pulse CAS semantics. Repeat
+required schedules against an authorized deployed candidate and resource binding,
+including relevant placement/concurrency coverage, for deployed-service evidence.
+See the [conditional KV contract](../concepts/effects-and-continuations.md#conditional-kv)
+for result semantics. This recipe neither deploys nor activates a service.
+
 ## Remote deployment and activation
 
 `pulse build` never runs `fastly compute deploy`. After candidate review, a

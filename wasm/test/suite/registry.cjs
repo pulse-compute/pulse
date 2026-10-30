@@ -1085,6 +1085,7 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'output containment, redaction, and provider truth guards'
   }),
+  'cli-fixture-state-workflow': nodeTask('test/cli/assert-cli-fixture-state-workflow.cjs', { evidence: 'cli', timeoutMs: 120000, description: 'Fastly exact Native fixture state lifetime and startup/reload evidence' }),
   'cli-dev-workflow': nodeTask('test/cli/assert-cli-dev-workflow.cjs', {
     evidence: 'cli',
     timeoutMs: 60000,
@@ -1698,6 +1699,7 @@ const profiles = Object.freeze({
     'cli-expansion-doctor',
     'cli-project-guards',
     'cli-dev-workflow',
+    'cli-fixture-state-workflow',
     'cli-schema-json-workflow',
     'entities-node-native-workflow',
     'mcp-native-binding',

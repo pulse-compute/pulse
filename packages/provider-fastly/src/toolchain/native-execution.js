@@ -28,9 +28,11 @@ function prepareFastlyNativeExecution(invocation) {
     target: 'fastly-compute-native',
     wasmSha256: native.manifest.wasm.sha256,
     providerRealityValidated: false,
-    effectObservations: 'unavailable'
+    effectObservations: 'unavailable',
+    kvFixture: Object.freeze({ lifetime: 'invocation', initialization: 'supplied-fixtures', crossRequestPersistence: false }),
+    notice: 'KV fixture state is seeded from supplied fixtures for each invocation; writes do not persist across requests. Use the Fastly CLI/Viceroy workflow for local provider persistence and contention checks; deployed-service acceptance is separate.'
   });
-  return (options = {}) => {
+  const execute = (options = {}) => {
     if (options.liveFetch === true) throw new TypeError('Fastly Native fixture execution cannot perform live fetches.');
     const kvStores = {};
     for (const [logical, physical] of Object.entries(bindings.kv || {})) {
@@ -73,6 +75,9 @@ function prepareFastlyNativeExecution(invocation) {
       evidence
     });
   };
+  // Public observation already returned with execution results, available before
+  // the first request without running a probe or acquiring additional authority.
+  return Object.freeze(Object.assign(execute, { evidence }));
 }
 
 module.exports = { prepareFastlyNativeExecution };

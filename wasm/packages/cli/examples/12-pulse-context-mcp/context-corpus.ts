@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "8cfe54460c55d3363bfce7534f51c8f9905d62927e7bf88f49e11a3bcd6b7ee6",
+  "corpusHash": "264f82e7771088ba0cc3120358721f2bce87a404465f6e35677c48bb37301845",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -11008,12 +11008,12 @@ export const contextCorpus = freeze({
       "id": "workflow/build",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 102,
+        "endLine": 126,
         "path": "docs/guides/project-lifecycle.md",
         "selection": "heading:5. Build the selected target",
-        "sha256": "3f4a9130af28262e2eba3ec701f3330fbe6fe8b2218debba7c5b3c6b18a9a3ad",
-        "startLine": 78,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/2f587fcb590c2f5bb10c44657fdb857685141f4d"
+        "sha256": "44311fac04f96256c5105d17894765fdbe0afb454d6cfb8a5f84b87254733675",
+        "startLine": 102,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1627ae0cce2eb9e828de72896f979113eac2c2fb"
       },
       "status": "candidate",
       "tags": [
@@ -11054,9 +11054,9 @@ export const contextCorpus = freeze({
         "endLine": 30,
         "path": "docs/guides/project-lifecycle.md",
         "selection": "heading:1. Initialize",
-        "sha256": "3f4a9130af28262e2eba3ec701f3330fbe6fe8b2218debba7c5b3c6b18a9a3ad",
+        "sha256": "44311fac04f96256c5105d17894765fdbe0afb454d6cfb8a5f84b87254733675",
         "startLine": 18,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/2f587fcb590c2f5bb10c44657fdb857685141f4d"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1627ae0cce2eb9e828de72896f979113eac2c2fb"
       },
       "status": "candidate",
       "tags": [
@@ -11094,12 +11094,12 @@ export const contextCorpus = freeze({
       "id": "workflow/inspect",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 114,
+        "endLine": 138,
         "path": "docs/guides/project-lifecycle.md",
         "selection": "heading:Inspect when you need the plan",
-        "sha256": "3f4a9130af28262e2eba3ec701f3330fbe6fe8b2218debba7c5b3c6b18a9a3ad",
-        "startLine": 103,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/2f587fcb590c2f5bb10c44657fdb857685141f4d"
+        "sha256": "44311fac04f96256c5105d17894765fdbe0afb454d6cfb8a5f84b87254733675",
+        "startLine": 127,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1627ae0cce2eb9e828de72896f979113eac2c2fb"
       },
       "status": "candidate",
       "tags": [
@@ -11148,8 +11148,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/guides/project-lifecycle.md",
-      "sha256": "3f4a9130af28262e2eba3ec701f3330fbe6fe8b2218debba7c5b3c6b18a9a3ad",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/2f587fcb590c2f5bb10c44657fdb857685141f4d"
+      "sha256": "44311fac04f96256c5105d17894765fdbe0afb454d6cfb8a5f84b87254733675",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1627ae0cce2eb9e828de72896f979113eac2c2fb"
     },
     {
       "path": "docs/packages/pulse.md",

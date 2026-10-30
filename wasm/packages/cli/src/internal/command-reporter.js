@@ -110,8 +110,15 @@ function createCommandReporter(options = {}) {
     const request = normalizeCommandRequest(requestValue);
     if (request.kind !== 'command') return;
     if (request.json) stdout.write(`${JSON.stringify(event)}\n`);
-    else if (event.event === 'ready') stdout.write(`pulse dev: ${event.url}\n`);
-    else if (event.event === 'reloaded') stdout.write(`reloaded ${event.entry}\n`);
+    else if (event.event === 'ready' || event.event === 'reloaded') {
+      stdout.write(event.event === 'ready' ? `pulse dev: ${event.url}\n` : `reloaded ${event.entry}\n`);
+      const evidence = event.executionEvidence;
+      if (evidence?.notice) {
+        const safe = require('./report/command').terminalText;
+        stdout.write(`  execution: ${safe(evidence.kind, 128)}; provider reality validated: ${evidence.providerRealityValidated === true}\n`);
+        stdout.write(`  ${safe(evidence.notice, 1024)}\n`);
+      }
+    }
     else if (event.event === 'compile-error') stderr.write(`compile error: ${event.error.message}\n`);
     else if (event.event === 'request-error') stderr.write(`request error: ${event.error.message}\n`);
   }
