@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "92cb124c5dcd4f38a5f1bf95b0e6cc87a6d33907a5bf4269c061fd8d9f654408",
+  "corpusHash": "bbe25c135d8a029b6642ff322c7ded9e08461241280aba99978f6563177b64c5",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -51,8 +51,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.build",
-        "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
       },
       "status": "candidate",
       "tags": [
@@ -60,6 +60,47 @@ export const contextCorpus = freeze({
         "cli"
       ],
       "title": "pulse build"
+    },
+    {
+      "applicability": [
+        {
+          "provider": "fastly",
+          "target": "javascript"
+        },
+        {
+          "provider": "fastly",
+          "target": "native"
+        },
+        {
+          "provider": "node",
+          "target": "javascript"
+        },
+        {
+          "provider": "node",
+          "target": "native"
+        },
+        {
+          "provider": "none",
+          "target": "native"
+        }
+      ],
+      "category": "command",
+      "content": "{\n  \"diagnostics\": [\n    \"PULSE_REPORT_INPUT_INVALID\",\n    \"PULSE_REPORT_EVIDENCE_MISSING\",\n    \"PULSE_REPORT_STALE\",\n    \"PULSE_REPORT_INCOMPATIBLE\",\n    \"PULSE_REPORT_OUTPUT_UNSAFE\",\n    \"PULSE_REPORT_OUTPUT_FAILED\"\n  ],\n  \"examples\": [\n    \"pulse compare before.json after.json --json\",\n    \"pulse compare before.json after.json --html --out review/compare.html\"\n  ],\n  \"exit\": \"0 for a valid comparison, including differences, missing optional evidence or incompatible artifact contexts; 2 for invalid arguments or unsafe output; 3 for missing, invalid or unsupported capsules, changed inputs during reading, or an output write failure.\",\n  \"globalOptions\": [\n    {\n      \"description\": \"Print public CLI help and exit.\",\n      \"flags\": [\n        {\n          \"name\": \"--help\"\n        },\n        {\n          \"name\": \"-h\"\n        }\n      ],\n      \"id\": \"help\",\n      \"key\": \"help\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Emit machine-readable JSON. pulse dev emits one JSON event per line.\",\n      \"flags\": [\n        {\n          \"name\": \"--json\"\n        }\n      ],\n      \"id\": \"json\",\n      \"key\": \"json\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"Resolve and report the command plan without executing it.\",\n      \"flags\": [\n        {\n          \"name\": \"--dry-run\"\n        },\n        {\n          \"name\": \"--plan\"\n        }\n      ],\n      \"id\": \"dry-run\",\n      \"key\": \"dryRun\",\n      \"kind\": \"boolean\"\n    }\n  ],\n  \"name\": \"compare\",\n  \"options\": [\n    {\n      \"description\": \"Write a self-contained offline HTML report; mutually exclusive with --json.\",\n      \"flags\": [\n        {\n          \"name\": \"--html\"\n        }\n      ],\n      \"id\": \"html\",\n      \"key\": \"html\",\n      \"kind\": \"boolean\"\n    },\n    {\n      \"description\": \"HTML destination under the current directory; requires --html. Defaults to .pulse/reports/pulse-comparison.html.\",\n      \"flags\": [\n        {\n          \"name\": \"--out\"\n        }\n      ],\n      \"id\": \"out\",\n      \"key\": \"outDir\",\n      \"kind\": \"value\",\n      \"valueName\": \"<file.html>\"\n    }\n  ],\n  \"outputs\": [\n    \"Default output and --json emit one canonical pulse.report-comparison v1 JSON object.\",\n    \"--html writes a self-contained offline comparison and prints its path. Both formats consume the same validated comparison.\",\n    \"Missing measurements remain unknown; incompatible artifact contexts retain compatibility reasons and unavailable deltas. Input provenance is historical, not proof of current source or common lineage.\"\n  ],\n  \"positionals\": [\n    {\n      \"description\": \"Saved baseline Report capsule, resolved from the current directory.\",\n      \"key\": \"before\",\n      \"name\": \"before.json\"\n    },\n    {\n      \"description\": \"Saved candidate Report capsule, resolved from the current directory.\",\n      \"key\": \"after\",\n      \"name\": \"after.json\"\n    }\n  ],\n  \"sideEffects\": [\n    \"Reads only the two bounded saved Report capsules; no project discovery, compilation, execution, project dependency loading or network access.\",\n    \"Inputs may be outside the current directory. Build manifests and bare Wasm are not accepted; export capsules with pulse report --json first.\",\n    \"--out requires --html; HTML stays within the current directory, without parent traversal or symbolic links, and cannot overwrite either input.\",\n    \"HTML uses the existing atomic writer and generated-output receipt. --plan and --dry-run do not read inputs or write output.\"\n  ],\n  \"summary\": \"Compare two saved Report capsules without loading a project or rebuilding.\",\n  \"usage\": [\n    \"pulse compare <before.json> <after.json> [--json | --html] [--out <file.html>]\"\n  ]\n}",
+      "contentSha256": "69fa4dc8d09a67cd2818f12343fa23937c9b46fd385d6e91861ba0a834241e15",
+      "id": "command/compare",
+      "pulseVersion": "1.0.0-beta.10",
+      "source": {
+        "path": "wasm/packages/cli/src/command-spec.js",
+        "selection": "COMMAND_SPECS.compare",
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
+      },
+      "status": "candidate",
+      "tags": [
+        "cli",
+        "compare"
+      ],
+      "title": "pulse compare"
     },
     {
       "applicability": [
@@ -84,8 +125,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.compile",
-        "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
       },
       "status": "candidate",
       "tags": [
@@ -125,8 +166,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.dev",
-        "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
       },
       "status": "candidate",
       "tags": [
@@ -166,8 +207,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.docs",
-        "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
       },
       "status": "candidate",
       "tags": [
@@ -207,8 +248,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.doctor",
-        "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
       },
       "status": "candidate",
       "tags": [
@@ -248,8 +289,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.init",
-        "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
       },
       "status": "candidate",
       "tags": [
@@ -289,8 +330,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.inspect",
-        "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
       },
       "status": "candidate",
       "tags": [
@@ -330,8 +371,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.report",
-        "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
       },
       "status": "candidate",
       "tags": [
@@ -371,8 +412,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/command-spec.js",
         "selection": "COMMAND_SPECS.test",
-        "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+        "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
       },
       "status": "candidate",
       "tags": [
@@ -413,9 +454,9 @@ export const contextCorpus = freeze({
         "endLine": 233,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:One application contract and one compiler spine",
-        "sha256": "13613084b9b3b0b224e8cadd8e7c367ee2045c3821eb4cae08015256874cf80c",
+        "sha256": "c005332266ab3cf75eb990702a45c329f59e2b0d920f03b9e04636fcf79d8c3a",
         "startLine": 111,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4b86f0fdb8b130a4d31e7615489d25882177a546"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a73da1e03c572b1897b7d59c317c2375a02dfd76"
       },
       "status": "candidate",
       "tags": [
@@ -492,9 +533,9 @@ export const contextCorpus = freeze({
         "endLine": 1682,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Retained build metadata",
-        "sha256": "13613084b9b3b0b224e8cadd8e7c367ee2045c3821eb4cae08015256874cf80c",
+        "sha256": "c005332266ab3cf75eb990702a45c329f59e2b0d920f03b9e04636fcf79d8c3a",
         "startLine": 1664,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4b86f0fdb8b130a4d31e7615489d25882177a546"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a73da1e03c572b1897b7d59c317c2375a02dfd76"
       },
       "status": "candidate",
       "tags": [
@@ -576,12 +617,12 @@ export const contextCorpus = freeze({
       "id": "contract/eligibility",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 2423,
+        "endLine": 2424,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Providers, targets, and eligibility",
-        "sha256": "13613084b9b3b0b224e8cadd8e7c367ee2045c3821eb4cae08015256874cf80c",
-        "startLine": 2062,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4b86f0fdb8b130a4d31e7615489d25882177a546"
+        "sha256": "c005332266ab3cf75eb990702a45c329f59e2b0d920f03b9e04636fcf79d8c3a",
+        "startLine": 2063,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a73da1e03c572b1897b7d59c317c2375a02dfd76"
       },
       "status": "candidate",
       "tags": [
@@ -790,12 +831,12 @@ export const contextCorpus = freeze({
       "id": "contract/package-authority",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 2512,
+        "endLine": 2513,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Package-owned capabilities",
-        "sha256": "13613084b9b3b0b224e8cadd8e7c367ee2045c3821eb4cae08015256874cf80c",
-        "startLine": 2424,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4b86f0fdb8b130a4d31e7615489d25882177a546"
+        "sha256": "c005332266ab3cf75eb990702a45c329f59e2b0d920f03b9e04636fcf79d8c3a",
+        "startLine": 2425,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a73da1e03c572b1897b7d59c317c2375a02dfd76"
       },
       "status": "candidate",
       "tags": [
@@ -950,17 +991,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "contract",
-      "content": "## Report comparison contract\n\nCMP8-01 owns the internal, pure `pulse.report-comparison` v1 result and\n`pulse.report-matching.v1` identity policy. The CLI, HTML and MCP adapters must\nconsume that shared result rather than implement their own matching or arithmetic.\nCMP8-02 adds the offline HTML presentation. Command/MCP adapters remain separate\nintegration work. No new public CLI option or package export is introduced here.\n\n`compareCapsules(before, after)` admits two validated Report v1 capsules and\nreturns immutable evidence without IO, project loading, compilation or execution.\n`parseComparison`, `validateComparison` and `serializeComparison` own bounded\nwire admission, canonical JSON and the comparison hash. Both input capsule\nhashes, project names, selected contexts, primary artifacts, producer versions,\nprovenance and recorded build metadata remain available in `sources`. These are\nhistorical claims from the input capsules, not proof of current project freshness,\ncommon repository lineage, signatures, or original artifact-byte verification.\nMatching project names alone do not establish that two builds belong together.\n\nThe summary always preserves primary artifact bytes and all inventory counts,\nincluding zero-net route/schema changes with separate added and removed counts.\nDetails contain only changed fields and added, removed, modified, coverage-changed\nor unresolved records; unchanged records and empty sections are omitted. Build\ntiming and provenance changes remain separate metadata changes. Sparse records\nretain full before/after capsule-local IDs for lookup in the original capsules.\n\n| Inventory | Matching policy |\n| --- | --- |\n| Routes | Unique exact method/path slot. Duplicate slots require a unique exact canonical ID; otherwise retain ambiguity. No matching by row ordinal, shortened ID or handler display name. |\n| Entries | Route entries follow the route match. Other entries use a unique recorded kind/name/source-file/router-scope/method/path key. Source line movement changes provenance without deleting the logical record. |\n| Schemas | Unique declared schema ID. |\n| Bindings and declarations | Unique kind/name pair. |\n| Resources | Unique kind/generator-scope/producer-name/resource-name key. Numbered response-payload labels are excluded as unstable identities. |\n| Implementations | Named compiler identity within artifact stage/host/target; dedicated bodies follow matched entries. Dispatcher chunk/function indices never establish cross-artifact identity. |\n| References | Recorded kind/binding-kind/canonical reference identity; unresolved references without a canonical identity remain unmatched. |\n| Evidence | Kind, producer name, method and exact corpus/cases/target scope. Result and producer-version changes are visible. |\n| Observations | Code, producer name and resolved comparison subject keys; unresolved subjects cannot establish identity. |\n\nA unique exact canonical ID may disambiguate a duplicated logical key, but never\nsupplies a fuzzy rename or source-code equivalence claim. For records without a\nlogical key, exact record IDs can join only inside the same primary artifact.\nAmbiguous or unavailable identities remain explicit unresolved groups containing\nevery record ID. Relative ordering compares matched route/entry records, so\ninserting a new registration does not manufacture modifications to all later\nordinals. Recorded composition, flow, consumers and declarations use the matched\nkeys, not artifact-bound IDs. Handler IDs, physical function indices, evidence\nhash churn and timestamps on unrelated evidence do not imply code changes.\nComparison describes retained facts; equal reported size or behavior labels\ncannot prove unchanged handler implementation.\n\nA missing row is an addition/removal only when the opposite inventory is complete.\nFor generated resources, the exact producer scope may establish completeness even\nwhen aggregate resource coverage is partial. Missing optional telemetry, ambiguous\nidentity, or partial inventories produce unresolved evidence, never a zero or a\nproven deletion. Coverage state is retained even when no detail row changes.\n\nCompatibility checks distinguish **compatible**, **different-build**,\n**incompatible**, and **unknown**. Host, target, representation and artifact-stage\nmismatches block size deltas. Profile, Pulse/reporter/toolchain versions, recipe\nand effective compiler-setting changes qualify the result as different-build;\nphysical byte differences remain arithmetic, not attributed savings. Missing\nsettings or unsupported defaults stay unknown. Changed checks and unknown checks\nremain individually visible even when another check determines the overall state.\n\nPer-subject byte deltas require available exact evidence with matching basis,\nmethod and stage, plus compatible artifact domains. Missing/conflicting measures,\nbounds, incomplete ownership or incompatible artifacts retain both observations\nand a null delta with its reason. Prelink-only evidence is never promoted to a\nprimary final measurement. Whole containing-body measurements remain non-additive;\nthe comparison does not sum route/helper deltas into an artifact total or infer\nperformance regressions from one build duration.\n\nAN9-06 extends comparison to retained authored analytics. When either input has\nan analytics block, `pulse.report-matching.v2` adds handlers, registrations, use\nsites, helper calls and associations to the summary and changed sections. Each\nsemantic inventory has separate before/after `identityCoverage`: resolved\ncomparison keys out of observed records. This does not certify a complete source\ninventory or prove unchanged implementation. Missing analytics keeps unavailable\ncoverage and cannot establish additions/removals. Comparing two legacy capsules\nstill emits the original matching-v1 result; existing v1 comparison bytes remain\nreadable and hash-preserving. V2 results require a reader that supports this policy.\n\n| Authored inventory | Comparison policy after exact retained-ID matching |\n| --- | --- |\n| Definitions | Unique kind plus authored file and exact UTF-16 start/end offset slot. Names and similar bodies never establish a match. |\n| Registrations | Authored source slot, kind, router path, resolved definition and ordered enclosing mount instances. Parent mounts match before children. |\n| Use sites | Resolved definition owner and authored source slot; repeated operations stay distinct. Capability, operation and binding are compared values, not identity guesses. |\n| Helper calls | Resolved caller/callee definitions and authored call slot; consumer registrations use resolved keys. |\n| Associations | Resolved consumer, use site and ordered typed explanation hops. Lane, conditionality and coverage remain compared facts. |\n\n`retained-identity`, `authored-source-slot` and `semantic-links` matching bases are\nexplicit in changed records. Source-slot matching is an exact location comparison,\nnot a claim that the same code survives an edit. Original source ranges/hashes and\npackage provenance remain visible as values. Ambiguous locations and missing\nprerequisite identities remain unresolved. Bilateral unmatched source records\nare conservatively unresolved, including moves/renames that cannot be connected;\nthey are not guessed deletion/addition pairs. One-sided records require complete\nopposite inventory coverage before claiming an addition/removal. Association path\nchanges require resolved reference keys. Unavailable dependencies retain explicit\npartial link coverage rather than acquiring identity from artifact bytes.\n\nThese semantic projections contain no byte measurements, execution counts or\ninferred grants. Default/bounded-size recipe changes can affect the physical\nartifact and build compatibility without changing authored capability/binding\ninventories. A source hash change is provenance, not by itself a capability change.\nDynamic/unknown binding state, unavailable source/capability and lost control or\nassociation coverage remain qualified evidence changes. Ordered mount and helper\npaths, normal/error/event lanes and direct-versus-conditional ownership survive\ncomparison. Legacy physical entry and authored registration keys live in separate\nnamespaces so one cannot overwrite the other.\n\nThe offline comparison HTML adds authored inventory summaries, identity coverage,\nmatching bases and semantic changed fields. Existing search, local links, native\ndisclosures and complete JSON export include the new sections. It remains passive\nand self-contained; command/MCP integration and graph visualization are separate.\n\nThe canonical schema and generated TypeScript declaration share the report fixture\nwriter. The report-capsule-contract task includes comparison regressions for\nidentity churn, ambiguity, coverage loss/gain, settings/provenance, exact and\nunavailable deltas, sparse ordering, deterministic bytes and compiler-free replay.\n\nThe internal `renderComparison(result)` renderer consumes this validated result;\nit does not perform matching, recalculate deltas, compile or load projects. The\nself-contained HTML keeps project names, before/after artifact bytes, route and\nschema counts, zero-net additions/removals and artifact provenance visible.\nBoth full capsule hashes, artifact identities, recorded recipes, compiler flags,\ntoolchains and build metadata remain available in native disclosures. Compatibility\nis qualified next to the summaries, including unknown historical build settings.\n\nOnly changed inventories and fields appear in detail, with text and `+`/`−`\nmarkers alongside color. Unresolved identities and coverage changes retain their\nreasons; partial counts are labeled observed and missing measurements never read\nas zero or measured savings. Whole-body measurements remain non-additive.\nChanged settings and provenance appear separately from application records.\nUnchanged details and empty inventory sections are omitted, while all inventory\ncoverage stays inspectable even in a no-change comparison.\n\nThe summary, provenance and native disclosure controls remain readable without\nJavaScript. Optional search/status filters, local anchors and theme changes are\npresentation state only; export retains the exact canonical comparison JSON,\nincluding hidden and filtered evidence. This is a comparison export, not either\noriginal capsule. Rendering escapes all retained text, admits a bounded validated\ncomparison, uses hash-bound inline assets and makes no network requests. Mobile\nbefore/after fields stack in the same explicit order as the desktop columns.\nThe `cli-report-viewer` task covers this renderer alongside the single-capsule view.\n",
-      "contentSha256": "9e5ffc53f170c86abc9f0aaf1b398732f104eb2313335f41a9044f979bde57c0",
+      "content": "## Report comparison contract\n\nCMP8-01 owns the internal, pure `pulse.report-comparison` v1 result and\n`pulse.report-matching.v1` identity policy. The CLI, HTML and MCP adapters must\nconsume that shared result rather than implement their own matching or arithmetic.\nCMP8-02 adds the offline HTML presentation. The public `pulse compare` command\nexposes this shared result and renderer for external consumers using saved Report\ncapsules. MCP integration and a JavaScript package export remain separate work.\n\n`compareCapsules(before, after)` admits two validated Report v1 capsules and\nreturns immutable evidence without IO, project loading, compilation or execution.\n`parseComparison`, `validateComparison` and `serializeComparison` own bounded\nwire admission, canonical JSON and the comparison hash. Both input capsule\nhashes, project names, selected contexts, primary artifacts, producer versions,\nprovenance and recorded build metadata remain available in `sources`. These are\nhistorical claims from the input capsules, not proof of current project freshness,\ncommon repository lineage, signatures, or original artifact-byte verification.\nMatching project names alone do not establish that two builds belong together.\n\nThe summary always preserves primary artifact bytes and all inventory counts,\nincluding zero-net route/schema changes with separate added and removed counts.\nDetails contain only changed fields and added, removed, modified, coverage-changed\nor unresolved records; unchanged records and empty sections are omitted. Build\ntiming and provenance changes remain separate metadata changes. Sparse records\nretain full before/after capsule-local IDs for lookup in the original capsules.\n\n| Inventory | Matching policy |\n| --- | --- |\n| Routes | Unique exact method/path slot. Duplicate slots require a unique exact canonical ID; otherwise retain ambiguity. No matching by row ordinal, shortened ID or handler display name. |\n| Entries | Route entries follow the route match. Other entries use a unique recorded kind/name/source-file/router-scope/method/path key. Source line movement changes provenance without deleting the logical record. |\n| Schemas | Unique declared schema ID. |\n| Bindings and declarations | Unique kind/name pair. |\n| Resources | Unique kind/generator-scope/producer-name/resource-name key. Numbered response-payload labels are excluded as unstable identities. |\n| Implementations | Named compiler identity within artifact stage/host/target; dedicated bodies follow matched entries. Dispatcher chunk/function indices never establish cross-artifact identity. |\n| References | Recorded kind/binding-kind/canonical reference identity; unresolved references without a canonical identity remain unmatched. |\n| Evidence | Kind, producer name, method and exact corpus/cases/target scope. Result and producer-version changes are visible. |\n| Observations | Code, producer name and resolved comparison subject keys; unresolved subjects cannot establish identity. |\n\nA unique exact canonical ID may disambiguate a duplicated logical key, but never\nsupplies a fuzzy rename or source-code equivalence claim. For records without a\nlogical key, exact record IDs can join only inside the same primary artifact.\nAmbiguous or unavailable identities remain explicit unresolved groups containing\nevery record ID. Relative ordering compares matched route/entry records, so\ninserting a new registration does not manufacture modifications to all later\nordinals. Recorded composition, flow, consumers and declarations use the matched\nkeys, not artifact-bound IDs. Handler IDs, physical function indices, evidence\nhash churn and timestamps on unrelated evidence do not imply code changes.\nComparison describes retained facts; equal reported size or behavior labels\ncannot prove unchanged handler implementation.\n\nA missing row is an addition/removal only when the opposite inventory is complete.\nFor generated resources, the exact producer scope may establish completeness even\nwhen aggregate resource coverage is partial. Missing optional telemetry, ambiguous\nidentity, or partial inventories produce unresolved evidence, never a zero or a\nproven deletion. Coverage state is retained even when no detail row changes.\n\nCompatibility checks distinguish **compatible**, **different-build**,\n**incompatible**, and **unknown**. Host, target, representation and artifact-stage\nmismatches block size deltas. Profile, Pulse/reporter/toolchain versions, recipe\nand effective compiler-setting changes qualify the result as different-build;\nphysical byte differences remain arithmetic, not attributed savings. Missing\nsettings or unsupported defaults stay unknown. Changed checks and unknown checks\nremain individually visible even when another check determines the overall state.\n\nPer-subject byte deltas require available exact evidence with matching basis,\nmethod and stage, plus compatible artifact domains. Missing/conflicting measures,\nbounds, incomplete ownership or incompatible artifacts retain both observations\nand a null delta with its reason. Prelink-only evidence is never promoted to a\nprimary final measurement. Whole containing-body measurements remain non-additive;\nthe comparison does not sum route/helper deltas into an artifact total or infer\nperformance regressions from one build duration.\n\nAN9-06 extends comparison to retained authored analytics. When either input has\nan analytics block, `pulse.report-matching.v2` adds handlers, registrations, use\nsites, helper calls and associations to the summary and changed sections. Each\nsemantic inventory has separate before/after `identityCoverage`: resolved\ncomparison keys out of observed records. This does not certify a complete source\ninventory or prove unchanged implementation. Missing analytics keeps unavailable\ncoverage and cannot establish additions/removals. Comparing two legacy capsules\nstill emits the original matching-v1 result; existing v1 comparison bytes remain\nreadable and hash-preserving. V2 results require a reader that supports this policy.\n\n| Authored inventory | Comparison policy after exact retained-ID matching |\n| --- | --- |\n| Definitions | Unique kind plus authored file and exact UTF-16 start/end offset slot. Names and similar bodies never establish a match. |\n| Registrations | Authored source slot, kind, router path, resolved definition and ordered enclosing mount instances. Parent mounts match before children. |\n| Use sites | Resolved definition owner and authored source slot; repeated operations stay distinct. Capability, operation and binding are compared values, not identity guesses. |\n| Helper calls | Resolved caller/callee definitions and authored call slot; consumer registrations use resolved keys. |\n| Associations | Resolved consumer, use site and ordered typed explanation hops. Lane, conditionality and coverage remain compared facts. |\n\n`retained-identity`, `authored-source-slot` and `semantic-links` matching bases are\nexplicit in changed records. Source-slot matching is an exact location comparison,\nnot a claim that the same code survives an edit. Original source ranges/hashes and\npackage provenance remain visible as values. Ambiguous locations and missing\nprerequisite identities remain unresolved. Bilateral unmatched source records\nare conservatively unresolved, including moves/renames that cannot be connected;\nthey are not guessed deletion/addition pairs. One-sided records require complete\nopposite inventory coverage before claiming an addition/removal. Association path\nchanges require resolved reference keys. Unavailable dependencies retain explicit\npartial link coverage rather than acquiring identity from artifact bytes.\n\nThese semantic projections contain no byte measurements, execution counts or\ninferred grants. Default/bounded-size recipe changes can affect the physical\nartifact and build compatibility without changing authored capability/binding\ninventories. A source hash change is provenance, not by itself a capability change.\nDynamic/unknown binding state, unavailable source/capability and lost control or\nassociation coverage remain qualified evidence changes. Ordered mount and helper\npaths, normal/error/event lanes and direct-versus-conditional ownership survive\ncomparison. Legacy physical entry and authored registration keys live in separate\nnamespaces so one cannot overwrite the other.\n\nThe offline comparison HTML adds authored inventory summaries, identity coverage,\nmatching bases and semantic changed fields. Existing search, local links, native\ndisclosures and complete JSON export include the new sections. It remains passive\nand self-contained; MCP integration and graph visualization remain separate.\n\nThe canonical schema and generated TypeScript declaration share the report fixture\nwriter. The report-capsule-contract task includes comparison regressions for\nidentity churn, ambiguity, coverage loss/gain, settings/provenance, exact and\nunavailable deltas, sparse ordering, deterministic bytes and compiler-free replay.\n\nThe internal `renderComparison(result)` renderer consumes this validated result;\nit does not perform matching, recalculate deltas, compile or load projects. The\nself-contained HTML keeps project names, before/after artifact bytes, route and\nschema counts, zero-net additions/removals and artifact provenance visible.\nBoth full capsule hashes, artifact identities, recorded recipes, compiler flags,\ntoolchains and build metadata remain available in native disclosures. Compatibility\nis qualified next to the summaries, including unknown historical build settings.\n\nOnly changed inventories and fields appear in detail, with text and `+`/`−`\nmarkers alongside color. Unresolved identities and coverage changes retain their\nreasons; partial counts are labeled observed and missing measurements never read\nas zero or measured savings. Whole-body measurements remain non-additive.\nChanged settings and provenance appear separately from application records.\nUnchanged details and empty inventory sections are omitted, while all inventory\ncoverage stays inspectable even in a no-change comparison.\n\nThe summary, provenance and native disclosure controls remain readable without\nJavaScript. Optional search/status filters, local anchors and theme changes are\npresentation state only; export retains the exact canonical comparison JSON,\nincluding hidden and filtered evidence. This is a comparison export, not either\noriginal capsule. Rendering escapes all retained text, admits a bounded validated\ncomparison, uses hash-bound inline assets and makes no network requests. Mobile\nbefore/after fields stack in the same explicit order as the desktop columns.\nThe `cli-report-viewer` task covers this renderer alongside the single-capsule view.\n",
+      "contentSha256": "585a8380351efa68c92cd146c286205067e392dfc1e3f194d2b4a59eae10684d",
       "id": "contract/report-comparison",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
-        "endLine": 1827,
+        "endLine": 1828,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Report comparison contract",
-        "sha256": "13613084b9b3b0b224e8cadd8e7c367ee2045c3821eb4cae08015256874cf80c",
+        "sha256": "c005332266ab3cf75eb990702a45c329f59e2b0d920f03b9e04636fcf79d8c3a",
         "startLine": 1683,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4b86f0fdb8b130a4d31e7615489d25882177a546"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a73da1e03c572b1897b7d59c317c2375a02dfd76"
       },
       "status": "candidate",
       "tags": [
@@ -1221,8 +1262,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_APPLICATION_ENTRY_LIFECYCLE_SIDE_EFFECT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1263,8 +1304,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_ARGUMENT_MISSING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1305,8 +1346,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_ARGUMENT_UNEXPECTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1347,8 +1388,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BINARY_RESOURCE_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1389,8 +1430,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BODY_DECODE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1431,8 +1472,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BODY_TOO_LARGE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1473,8 +1514,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BODY_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1515,8 +1556,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BUILD_OUT_UNSAFE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1557,8 +1598,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_BUILD_PROVIDER_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1599,8 +1640,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_BOUNDARY_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1641,8 +1682,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_BINDING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1683,8 +1724,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_CALLEE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1725,8 +1766,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_CONTEXT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1767,8 +1808,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_ENTRY",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1809,8 +1850,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_FORM",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1851,8 +1892,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_LIMIT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1893,8 +1934,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_PLACEMENT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1935,8 +1976,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_PROVIDER",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -1977,8 +2018,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_SCHEMAS",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2019,8 +2060,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_SCHEMA_CONFLICT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2061,8 +2102,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_SCHEMA_UNKNOWN",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2103,8 +2144,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_TARGET",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2145,8 +2186,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CALL_SOURCE_TARGET_LIMIT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2187,8 +2228,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_COMPILE_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2229,8 +2270,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_EFFECT_COLLECTION_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2271,8 +2312,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2313,8 +2354,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2355,8 +2396,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_NATIVE_PLAN_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2397,8 +2438,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2439,8 +2480,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_READ_LOOP_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2481,8 +2522,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_SCHEMA_ID_LITERAL_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2523,8 +2564,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CANONICAL_SCHEMA_MISSING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2565,8 +2606,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_COMMAND_UNKNOWN",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2607,8 +2648,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONFIG_IMPLICIT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2649,8 +2690,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONFIG_LOAD_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2691,8 +2732,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONFIG_NOT_FOUND",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2733,8 +2774,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONFIG_PLAN_PARITY_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2775,8 +2816,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONTINUATION_DOUBLE_RESUME",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2817,8 +2858,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_CONTINUATION_EXPIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2859,8 +2900,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_DEV_PROVIDER_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2901,8 +2942,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_DOCS_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2943,8 +2984,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_DOCS_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -2985,8 +3026,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_CAPACITY",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3027,8 +3068,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_CLAIMED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3069,8 +3110,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_MEMBER",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3111,8 +3152,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_OVERFLOW",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3153,8 +3194,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_OWNER",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3195,8 +3236,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_SEALED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3237,8 +3278,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EFFECT_COLLECTION_UNFLUSHED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3279,8 +3320,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_ENTRY_NOT_FOUND",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3321,8 +3362,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EVENT_TARGET_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3363,8 +3404,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3405,8 +3446,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3447,8 +3488,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_BACKEND_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3489,8 +3530,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_CLI_INSPECTION_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3531,8 +3572,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_CLI_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3573,8 +3614,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_EVENT_EMIT_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3615,8 +3656,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_EVENT_INGRESS_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3657,8 +3698,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3699,8 +3740,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3741,8 +3782,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_KV_BINDINGS_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3783,8 +3824,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_LOG_ENDPOINT_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3825,8 +3866,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_REQUEST_TIMEOUT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3867,8 +3908,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_SERVE_START_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3909,8 +3950,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FASTLY_SERVE_START_TIMEOUT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3951,8 +3992,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -3993,8 +4034,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_NETWORK",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4035,8 +4076,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_SCHEMA_WITHOUT_JSON",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4077,8 +4118,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_TIMEOUT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4119,8 +4160,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_FETCH_URL_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4161,8 +4202,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HANDLER_ASYNC_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4203,8 +4244,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_BINDING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4245,8 +4286,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_CONFLICT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4287,8 +4328,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_IMPORT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4329,8 +4370,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4371,8 +4412,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_OWNER",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4413,8 +4454,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_PLACEMENT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4455,8 +4496,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_PROTOCOL",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4497,8 +4538,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_SIGNATURE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4539,8 +4580,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_SOURCE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4581,8 +4622,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_HOST_EXTENSION_TARGET",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4623,8 +4664,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_INIT_FILE_EXISTS",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4665,8 +4706,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_INIT_NOT_EMPTY",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4707,8 +4748,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_ENTRY_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4749,8 +4790,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_EXPORT_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4791,8 +4832,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_GRAPH_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4833,8 +4874,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4875,8 +4916,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_APPLICATION_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4917,8 +4958,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_EXTERNAL_MODULE_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -4959,8 +5000,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_GRAPH_EDGE_AMBIGUOUS",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5001,8 +5042,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_GRAPH_MODULE_MISSING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5043,8 +5084,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_IMPORT_NOT_IN_GRAPH",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5085,8 +5126,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_COMPILE_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5127,8 +5168,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_KIND_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5169,8 +5210,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_NOT_FOUND",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5211,8 +5252,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_OUTSIDE_WORKSPACE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5253,8 +5294,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_MODULE_SOURCE_CHANGED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5295,8 +5336,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_PACKAGE_ESM_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5337,8 +5378,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5379,8 +5420,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_PACKAGE_PLAN_MISSING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5421,8 +5462,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_JAVASCRIPT_PACKAGE_REALIZATION_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5463,8 +5504,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_MCP_STATIC_BINDING_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5505,8 +5546,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NATIVE_EXPANSION_REPEATED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5547,8 +5588,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NATIVE_IMPORT_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5589,8 +5630,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NATIVE_TEXT_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5631,8 +5672,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NODE_VERSION_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5673,8 +5714,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_NUMERIC_WORKSPACE_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5715,8 +5756,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_OPAQUE_BODY_INSPECTION",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5757,8 +5798,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_BINDING_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5799,8 +5840,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_BINDING_OWNERSHIP_AMBIGUOUS",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5841,8 +5882,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_CAPABILITY_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5883,8 +5924,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_CONTRACT_NOT_RECOGNIZED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5925,8 +5966,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_JAVASCRIPT_REALIZATION_NOT_IMPLEMENTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -5967,8 +6008,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_LOWERING_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6009,8 +6050,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_OPERATION_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6051,8 +6092,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_REEXPORT_LOWERING_DEFERRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6093,8 +6134,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_SNAPSHOT_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6135,8 +6176,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_SNAPSHOT_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6177,8 +6218,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PACKAGE_SUBPATH_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6219,8 +6260,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROFILE_SELECTION_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6261,8 +6302,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROFILE_UNKNOWN",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6303,8 +6344,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROJECT_COMPILE_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6345,8 +6386,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROJECT_ROOT_MISSING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6387,8 +6428,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_CAPABILITY_MISSING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6429,8 +6470,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6471,8 +6512,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_COMPILE_ONLY",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6513,8 +6554,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_FLAG_REMOVED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6555,8 +6596,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_PACKAGE_NOT_FOUND",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6597,8 +6638,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_TOOLCHAIN_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6639,8 +6680,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6681,8 +6722,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_PROVIDER_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6716,15 +6757,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "diagnostic",
-      "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_EVIDENCE_MISSING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"Run pulse compile or pulse build with the selected Native profile, then retry report; report never builds automatically.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"A matching completed Wasm build and its required retained evidence are missing.\",\n  \"title\": \"Report Evidence Missing\"\n}",
-      "contentSha256": "a56f7742f16abf0029e67ca27890e66a0f5e4014390210b104c31ec5bd0198b9",
+      "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_EVIDENCE_MISSING\",\n  \"exitCode\": 3,\n  \"remediation\": [\n    \"For compare, provide two existing saved Report capsules. For report, run pulse compile or pulse build with the selected Native profile; neither command builds automatically.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"Required retained report evidence or a saved input capsule is missing.\",\n  \"title\": \"Report Evidence Missing\"\n}",
+      "contentSha256": "03b74756d1603ecabb016dc2481d94a0e6be40b4bd4dc74ed714b7407139b4cd",
       "id": "diagnostic/PULSE_REPORT_EVIDENCE_MISSING",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_EVIDENCE_MISSING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6765,8 +6806,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_HTML_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6807,8 +6848,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_INCOMPATIBLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6849,8 +6890,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_INPUT_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6891,8 +6932,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_OUTPUT_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6926,15 +6967,15 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "diagnostic",
-      "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_OUTPUT_UNSAFE\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Choose a .html file within the selected project root or artifact JSON parent, without symbolic links or parent traversal.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The HTML output path is not a contained regular .html file.\",\n  \"title\": \"Report Output Unsafe\"\n}",
-      "contentSha256": "4d9dad04d653f8e204f4cead1f4c59f59c381791a33cb9e8e7682aa06bc83e36",
+      "content": "{\n  \"category\": \"report\",\n  \"code\": \"PULSE_REPORT_OUTPUT_UNSAFE\",\n  \"exitCode\": 2,\n  \"remediation\": [\n    \"Choose a .html file within the selected report root, or the current directory for compare, without symbolic links or parent traversal.\"\n  ],\n  \"scope\": \"public\",\n  \"stability\": \"preview-stable\",\n  \"summary\": \"The HTML output path is not a contained regular .html file.\",\n  \"title\": \"Report Output Unsafe\"\n}",
+      "contentSha256": "007863bc56aff1b8c82c0a6bc8270f29d415466c3f38edf08c7c86026f493e6c",
       "id": "diagnostic/PULSE_REPORT_OUTPUT_UNSAFE",
       "pulseVersion": "1.0.0-beta.10",
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_OUTPUT_UNSAFE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -6975,8 +7016,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REPORT_STALE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7017,8 +7058,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_BODY_INVALID_UTF8",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7059,8 +7100,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_BODY_OWNERSHIP",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7101,8 +7142,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_BODY_TOO_LARGE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7143,8 +7184,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_CLOCK_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7185,8 +7226,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_DEADLINE_EXCEEDED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7227,8 +7268,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7269,8 +7310,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_DURATION_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7311,8 +7352,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_DURATION_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7353,8 +7394,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_CHUNK_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7395,8 +7436,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_CONFIG_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7437,8 +7478,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7479,8 +7520,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_HEADERS_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7521,8 +7562,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_REDIRECT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7563,8 +7604,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_REQUEST_FORWARDING_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7605,8 +7646,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_CASE_MISSING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7647,8 +7688,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_CASE_REFERENCE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7689,8 +7730,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_DESCRIPTOR_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7731,8 +7772,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_DESCRIPTOR_LITERAL_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7773,8 +7814,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RESPONSE_ENCODE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7815,8 +7856,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_RUNTIME_APPLICATION_EXPORT_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7857,8 +7898,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_CODECS_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7899,8 +7940,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_CODEC_REALIZATION_PENDING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7941,8 +7982,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_COMPILE_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -7983,8 +8024,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_CONTENT_TYPE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8025,8 +8066,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_DECODE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8067,8 +8108,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_ENCODE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8109,8 +8150,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_ID_DUPLICATE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8151,8 +8192,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_ID_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8193,8 +8234,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_DECLARATIONS_RETIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8235,8 +8276,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8277,8 +8318,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_LIMITS_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8319,8 +8360,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8361,8 +8402,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_JSON_MALFORMED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8403,8 +8444,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_REFERENCE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8445,8 +8486,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8487,8 +8528,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_SOURCE_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8529,8 +8570,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SCHEMA_TYPE_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8571,8 +8612,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_SOURCE_ONLY_REMOVED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8613,8 +8654,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TARGET_IMPLEMENTATION_PENDING",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8655,8 +8696,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_EVENT_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8697,8 +8738,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_EXPECT_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8739,8 +8780,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_HARNESS_EXPORT_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8781,8 +8822,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_HARNESS_NOT_FOUND",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8823,8 +8864,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TEST_PROVIDER_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8865,8 +8906,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_CHUNK_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8907,8 +8948,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_CLOSED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8949,8 +8990,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_CONFIG_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -8991,8 +9032,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_EOF_REQUIRED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -9033,8 +9074,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_HEADERS_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -9075,8 +9116,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_INPUT_LIMIT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -9117,8 +9158,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_OUTPUT_LIMIT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -9159,8 +9200,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_READ_LIMIT",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -9201,8 +9242,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -9243,8 +9284,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_TRANSFORM_UTF8_INVALID",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -9285,8 +9326,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_VICEROY_INSPECTION_FAILED",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -9327,8 +9368,8 @@ export const contextCorpus = freeze({
       "source": {
         "path": "wasm/packages/cli/src/diagnostics.js",
         "selection": "DIAGNOSTIC_CATALOG.PULSE_VICEROY_UNAVAILABLE",
-        "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+        "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
       },
       "status": "candidate",
       "tags": [
@@ -11030,8 +11071,8 @@ export const contextCorpus = freeze({
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",
-      "sha256": "13613084b9b3b0b224e8cadd8e7c367ee2045c3821eb4cae08015256874cf80c",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4b86f0fdb8b130a4d31e7615489d25882177a546"
+      "sha256": "c005332266ab3cf75eb990702a45c329f59e2b0d920f03b9e04636fcf79d8c3a",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a73da1e03c572b1897b7d59c317c2375a02dfd76"
     },
     {
       "path": "docs/concepts/bodies.md",
@@ -11215,13 +11256,13 @@ export const contextCorpus = freeze({
     },
     {
       "path": "wasm/packages/cli/src/command-spec.js",
-      "sha256": "6ebc3b391ff32f53051b35abf8a3ec3974311780d44d58ed903fd6718d00a51f",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/6b297a281f5938173c50d7d880d01682215a8f5c"
+      "sha256": "19bb97dc842118a3b1964068e46473383e4fc749629e13b525fa74d55c443822",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/8e738fe33e0a399e6111ef1ec160d71594861c2d"
     },
     {
       "path": "wasm/packages/cli/src/diagnostics.js",
-      "sha256": "ceba6802ce74869d5fa13c63976670dd09dc1b4771776552385eeeab8695bdef",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/25b69d6be2b641add719973779d4634fbc08a7bc"
+      "sha256": "4f452f6661d2f42d8190a18ab57dbcfb3c77c9ba470f2ab73ad749c92b063a9c",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/0ecc7816fc8d71add1a2ec82df46bf7ae92f7dc1"
     }
   ],
   "status": "candidate"

@@ -126,6 +126,11 @@ function createCommandReporter(options = {}) {
         collected: request.command === 'report' ? execution.result : undefined }));
       return execution;
     }
+    if (request.command === 'compare') {
+      if (request.html) stdout.write(require('./report/command').terminalText(execution.result.file, 4096) + '\n');
+      else stdout.write(require('./report/comparison').serializeComparison(execution.result));
+      return execution;
+    }
     if (request.command === 'report') {
       const report = require('./report/command');
       if (request.json) stdout.write(require('./report/capsule').serializeCapsule(execution.result.capsule));
@@ -159,7 +164,7 @@ function createCommandReporter(options = {}) {
       writeJson(stderr, { status: 'error', version: cliVersion, error: summary });
       return;
     }
-    const safe = request?.command === 'report' || String(context.argv?.[0]).toLowerCase() === 'report'
+    const safe = ['report', 'compare'].includes(request?.command || String(context.argv?.[0]).toLowerCase())
       ? require('./report/command').terminalText : value => value;
     stderr.write(`pulse: ${summary.code ? `${safe(summary.code)}: ` : ''}${safe(summary.message, 1000)}\n`);
     for (const step of summary.remediation || []) stderr.write(`  help: ${step}\n`);

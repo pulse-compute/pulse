@@ -45,6 +45,7 @@ command's options below retain the complete flags, limits and exit behavior.
 | [`pulse compile`](#pulse-compile) | Compile the canonical project into provider-neutral Pulse-owned WebAssembly. |
 | [`pulse build`](#pulse-build) | Build the Native or JavaScript target for the deployment provider selected by the active project profile. |
 | [`pulse report`](#pulse-report) | Review retained evidence from a completed Native build without rebuilding or executing project code. |
+| [`pulse compare`](#pulse-compare) | Compare two saved Report capsules without loading a project or rebuilding. |
 | [`pulse docs`](#pulse-docs) | Locate the offline documentation shipped with the executing CLI package. |
 
 Use `build` for the configured target and provider. `compile` is advanced provider-neutral Native output, not a prerequisite for `build`. See [Provider restrictions and build products](#provider-restrictions-and-build-products) for target differences.
@@ -514,7 +515,7 @@ pulse report --artifact ./dist/pulse-compile.json --json
 ### Related diagnostics
 
 - [`PULSE_REPORT_INPUT_INVALID`](diagnostics.md#pulse-report-input-invalid) — Report evidence is malformed, unsafe, or fails integrity validation.
-- [`PULSE_REPORT_EVIDENCE_MISSING`](diagnostics.md#pulse-report-evidence-missing) — A matching completed Wasm build and its required retained evidence are missing.
+- [`PULSE_REPORT_EVIDENCE_MISSING`](diagnostics.md#pulse-report-evidence-missing) — Required retained report evidence or a saved input capsule is missing.
 - [`PULSE_REPORT_STALE`](diagnostics.md#pulse-report-stale) — Retained Report evidence does not match the selected inputs or changed during collection.
 - [`PULSE_REPORT_INCOMPATIBLE`](diagnostics.md#pulse-report-incompatible) — The Report input version or output representation is unsupported.
 - [`PULSE_REPORT_OUTPUT_UNSAFE`](diagnostics.md#pulse-report-output-unsafe) — The HTML output path is not a contained regular .html file.
@@ -539,6 +540,63 @@ pulse report --artifact ./dist/pulse-compile.json --json
 ### Exit behavior
 
 0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence or an output write failure.
+
+## `pulse compare`
+
+Compare two saved Report capsules without loading a project or rebuilding.
+
+Syntax:
+
+```text
+pulse compare <before.json> <after.json> [--json | --html] [--out <file.html>]
+```
+
+### Positionals
+
+- `before.json` — Saved baseline Report capsule, resolved from the current directory.
+- `after.json` — Saved candidate Report capsule, resolved from the current directory.
+
+### Options
+
+| Option | Behavior |
+|---|---|
+| `--html` | Write a self-contained offline HTML report; mutually exclusive with --json. |
+| `--out <file.html>` | HTML destination under the current directory; requires --html. Defaults to .pulse/reports/pulse-comparison.html. |
+
+### Examples
+
+```bash
+pulse compare before.json after.json --json
+pulse compare before.json after.json --html --out review/compare.html
+```
+
+
+### Related diagnostics
+
+- [`PULSE_REPORT_INPUT_INVALID`](diagnostics.md#pulse-report-input-invalid) — Report evidence is malformed, unsafe, or fails integrity validation.
+- [`PULSE_REPORT_EVIDENCE_MISSING`](diagnostics.md#pulse-report-evidence-missing) — Required retained report evidence or a saved input capsule is missing.
+- [`PULSE_REPORT_STALE`](diagnostics.md#pulse-report-stale) — Retained Report evidence does not match the selected inputs or changed during collection.
+- [`PULSE_REPORT_INCOMPATIBLE`](diagnostics.md#pulse-report-incompatible) — The Report input version or output representation is unsupported.
+- [`PULSE_REPORT_OUTPUT_UNSAFE`](diagnostics.md#pulse-report-output-unsafe) — The HTML output path is not a contained regular .html file.
+- [`PULSE_REPORT_OUTPUT_FAILED`](diagnostics.md#pulse-report-output-failed) — The HTML report could not be written atomically.
+
+
+### Output
+
+- Default output and --json emit one canonical pulse.report-comparison v1 JSON object.
+- --html writes a self-contained offline comparison and prints its path. Both formats consume the same validated comparison.
+- Missing measurements remain unknown; incompatible artifact contexts retain compatibility reasons and unavailable deltas. Input provenance is historical, not proof of current source or common lineage.
+
+### Side effects
+
+- Reads only the two bounded saved Report capsules; no project discovery, compilation, execution, project dependency loading or network access.
+- Inputs may be outside the current directory. Build manifests and bare Wasm are not accepted; export capsules with pulse report --json first.
+- --out requires --html; HTML stays within the current directory, without parent traversal or symbolic links, and cannot overwrite either input.
+- HTML uses the existing atomic writer and generated-output receipt. --plan and --dry-run do not read inputs or write output.
+
+### Exit behavior
+
+0 for a valid comparison, including differences, missing optional evidence or incompatible artifact contexts; 2 for invalid arguments or unsafe output; 3 for missing, invalid or unsupported capsules, changed inputs during reading, or an output write failure.
 
 ## `pulse docs`
 

@@ -48,6 +48,32 @@ the package's documentation directory. This check does not audit every document
 or prove package integrity. `--plan` describes the locator without validating
 the index. `--evidence-status` wraps the result without claiming report evidence.
 
+## Compare saved reports
+
+External tooling can invoke the installed CLI with two saved Report capsules:
+
+```bash
+pulse compare before.json after.json --json
+pulse compare before.json after.json --html --out review/compare.html
+```
+
+Default output is the same canonical comparison JSON as `--json`. HTML uses the
+existing offline renderer, preserves the full comparison export, and prints the
+written path. No project, provider or compiler is loaded. Export build evidence
+with `pulse report --json` first; compare accepts capsules, not build manifests.
+Input paths resolve from the current directory and may be outside it. HTML output
+is contained within the current directory, defaults to
+`.pulse/reports/pulse-comparison.html`, and cannot overwrite either input.
+`--out` requires `--html`; `--json` and `--html` are mutually exclusive.
+
+A valid comparison exits 0 even when there are differences, missing measurements
+or incompatible artifact contexts. Unknown values stay unknown; incompatible
+contexts retain reasons and unavailable deltas. This is historical evidence,
+not a check of current source or common repository lineage. Invalid arguments or
+unsafe output exit 2; invalid/missing/unsupported capsules or write failures exit
+3. Diagnostics go to stderr, as one error object when `--json` is supplied.
+`--plan` describes the operation without reading inputs or writing files.
+
 ## Daily workflow
 
 ```bash
@@ -70,6 +96,7 @@ pulse build
 | [`test`](../reference/cli.md#pulse-test) | Execute configured request and explicit `kind: 'event'` cases through the provider-owned local conformance runtime. |
 | [`dev`](../reference/cli.md#pulse-dev) | Run a foreground local server and watch the project by default. |
 | [`build`](../reference/cli.md#pulse-build) | Write the configured Native or JavaScript target realization. |
+| [`compare`](../reference/cli.md#pulse-compare) | Compare saved capsules as JSON or offline HTML; see [Compare saved reports](#compare-saved-reports). |
 | [`report`](../reference/cli.md#pulse-report) | Review retained Native build evidence; see [Reports](#reports). |
 | [`compile`](../reference/cli.md#pulse-compile) | Produce provider-neutral Native Wasm for advanced inspection or integration; see [Compile-only output](#compile-only-output). |
 | [`docs`](../reference/cli.md#pulse-docs) | Locate the offline documentation shipped with the executing CLI version. |
