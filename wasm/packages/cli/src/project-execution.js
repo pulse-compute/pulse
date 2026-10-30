@@ -2863,6 +2863,7 @@ async function startDevServer(project, options = {}) {
       syncWatchFiles(compiled.watchFiles);
       events(Object.freeze({
         event: reason === 'initial' ? 'compiled' : 'reloaded',
+        executionEvidence: executeNative?.evidence || null,
         entry: relative(project.entryFile, project.root),
         sourceHash: compiled.metadata.sourceHash,
         projectSourceHash: compiled.metadata.projectSourceHash,
@@ -2974,6 +2975,7 @@ async function startDevServer(project, options = {}) {
     event: 'ready',
     version: PROJECT_EXECUTION_VERSION,
     provider: project.provider,
+    ...(executeNative?.evidence ? { executionEvidence: executeNative.evidence } : {}),
     host: boundHost,
     port: boundPort,
     url: `http://${urlHost}:${boundPort}`,

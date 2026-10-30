@@ -75,6 +75,30 @@ For a mixed HTTP/event project, `dev` serves only HTTP requests. It does not
 open an event listener or injection endpoint; use the harness for bounded event
 execution.
 
+### Fastly Native fixture KV lifetime
+
+Fastly Native applications using conditional KV (`getVersioned`,
+`insertIfAbsent`, `compareAndSwap`) select the exact-Wasm fixture ABI executor
+for `test` and `dev`. That executor creates a fresh KV authority and seeds it
+from the supplied fixtures for each invocation. Within one request, a write
+can be read back; the next request starts again from `dev.kv`. Harness cases
+also remain isolated. A successful write is not proof of cross-request
+persistence on this fixture path.
+
+For that executor, `dev --json` ready and successful compile/reload events
+include `executionEvidence.kind: "fastly-native-fixture-abi"`,
+`providerRealityValidated: false`, and `kvFixture` with
+`lifetime: "invocation"`, `initialization: "supplied-fixtures"`, and
+`crossRequestPersistence: false`. Human startup/reload output explains the
+same boundary once per lifecycle event. A reload that leaves this executor
+reports `executionEvidence: null`; failed reloads retain the last good program.
+The disclosure contains no fixture values or credentials. Other provider and
+execution paths have their own state lifetimes.
+
+Use the [Fastly stateful validation recipe](./deploying-fastly.md#stateful-validation)
+for persistence and contention checks in an actual local provider engine, then
+qualify deployed behavior separately.
+
 ## 5. Build the selected target
 
 ```bash
