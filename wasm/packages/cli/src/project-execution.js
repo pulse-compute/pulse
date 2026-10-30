@@ -1353,45 +1353,47 @@ async function materializeForwardedTestResponse(response, maxBytes) {
   } finally { reader.releaseLock(); }
 }
 
+const harnessAssertion = require('./internal/harness-assertion');
+const { errorSummary, secretTokens, redactValue } = require('./internal/execution-error.js');
+
 function assertExpectation(testCase, execution) {
   const expected = testCase.expect;
   const response = observableTestResponse(testCase, execution.response);
-  if (expected.status !== undefined) assert.equal(response.status, expected.status, `${testCase.name}: unexpected status`);
-  if (expected.bodyClass !== undefined) assert.equal(response.bodyClass, expected.bodyClass, `${testCase.name}: unexpected body class`);
-  if (Object.prototype.hasOwnProperty.call(expected, 'json') && expected.json !== undefined) assert.deepEqual(responseJson(response), expected.json, `${testCase.name}: unexpected JSON body`);
-  if (expected.text !== undefined) assert.equal(String(response.body || ''), expected.text, `${testCase.name}: unexpected text body`);
-  if (expected.headers) {
-    for (const [name, value] of expected.headers) assert.deepEqual(headerValue(response.headers, name), value, `${testCase.name}: unexpected header ${name}`);
-  }
+  const equal = (key, actual, value) => harnessAssertion.check(testCase, key,
+    () => assert.deepEqual(actual, value), response);
+  if (expected.status !== undefined) equal('response.status', response.status, expected.status);
+  if (expected.bodyClass !== undefined) equal('response.bodyClass', response.bodyClass, expected.bodyClass);
+  if (Object.prototype.hasOwnProperty.call(expected, 'json') && expected.json !== undefined) equal('response.json', responseJson(response), expected.json);
+  if (expected.text !== undefined) equal('response.text', String(response.body || ''), expected.text);
+  if (expected.headers) for (const [name, value] of expected.headers) equal('response.headers.' + name, headerValue(response.headers, name), value);
 }
-
-const { errorSummary, secretTokens, redactValue } = require('./internal/execution-error.js');
 
 function assertExpectedError(testCase, error) {
   const expected = testCase.expect.error;
-  if (!expected) throw error;
-  if (expected.name !== undefined) assert.equal(error.name, expected.name, `${testCase.name}: unexpected error name`);
-  if (expected.code !== undefined) assert.equal(error.code, expected.code, `${testCase.name}: unexpected error code`);
-  if (expected.category !== undefined) assert.equal(error.category, expected.category, `${testCase.name}: unexpected error category`);
-  if (expected.message !== undefined) assert.match(String(error.message || ''), new RegExp(String(expected.message)), `${testCase.name}: unexpected error message`);
+  if (!expected || harnessAssertion.isAssertion(error)) throw error;
+  for (const key of ['name', 'code', 'category']) if (expected[key] !== undefined) {
+    harnessAssertion.check(testCase, 'error.' + key, () => assert.equal(error[key], expected[key]));
+  }
+  if (expected.message !== undefined) harnessAssertion.check(testCase, 'error.message',
+    () => assert.match(String(error.message || ''), new RegExp(String(expected.message))));
 }
 
 function assertEventExpectation(testCase, execution) {
   const expected = testCase.expect;
   const result = eventContracts.normalizeEventExecutionResult(execution.result);
-  assert.equal(result.status, expected.status, `${testCase.name}: unexpected event execution status`);
+  const equal = (key, actual, value) => harnessAssertion.check(testCase, key, () => assert.deepEqual(actual, value));
+  equal('event.status', result.status, expected.status);
   if (Object.prototype.hasOwnProperty.call(expected, 'result')) {
-    assert.ok(Object.prototype.hasOwnProperty.call(result, 'result'), `${testCase.name}: missing event result`);
-    assert.deepEqual(result.result, expected.result, `${testCase.name}: unexpected event result`);
+    equal('event.result.present', Object.prototype.hasOwnProperty.call(result, 'result'), true);
+    equal('event.result', result.result, expected.result);
   }
   if (expected.error) {
-    assert.ok(result.error, `${testCase.name}: expected an event execution error`);
-    if (expected.error.name !== undefined) assert.equal(result.error.name, expected.error.name, `${testCase.name}: unexpected event error name`);
-    if (expected.error.code !== undefined) assert.equal(result.error.code, expected.error.code, `${testCase.name}: unexpected event error code`);
-    if (expected.error.category !== undefined) assert.equal(result.error.category, expected.error.category, `${testCase.name}: unexpected event error category`);
-    if (expected.error.message !== undefined) assert.match(String(result.error.message || ''), new RegExp(String(expected.error.message)), `${testCase.name}: unexpected event error message`);
+    equal('event.error.present', Boolean(result.error), true);
+    for (const key of ['name', 'code', 'category']) if (expected.error[key] !== undefined) equal('event.error.' + key, result.error[key], expected.error[key]);
+    if (expected.error.message !== undefined) harnessAssertion.check(testCase, 'event.error.message',
+      () => assert.match(String(result.error.message || ''), new RegExp(String(expected.error.message))));
   }
-  assert.deepEqual(execution.emittedFrames, expected.emitted, `${testCase.name}: unexpected emitted event frames`);
+  equal('event.emitted', execution.emittedFrames, expected.emitted);
   return result;
 }
 
@@ -1512,7 +1514,7 @@ async function runJavascriptProjectTests(project, options = {}) {
         bodyTransform: project.providerConfig.bodyTransform,
         networkFetch: project.dev.networkFetch
       });
-      if (testCase.expect.error) throw new assert.AssertionError({ message: `${testCase.name}: expected ${testCase.expect.error.name || 'an error'} but execution completed` });
+      if (testCase.expect.error) harnessAssertion.check(testCase, 'error.present', () => assert.equal(false, true));
       assertExpectation(testCase, Object.freeze({
         ...execution,
         response: materializeTestResponse(execution.response)
@@ -1651,7 +1653,7 @@ async function runProjectTests(project, options = {}) {
       const execution = exactNativeExecution
         ? await executeNative(executionOptions)
         : await executeCanonicalProgram(program, executionOptions);
-      if (testCase.expect.error) throw new assert.AssertionError({ message: `${testCase.name}: expected ${testCase.expect.error.name || 'an error'} but execution completed` });
+      if (testCase.expect.error) harnessAssertion.check(testCase, 'error.present', () => assert.equal(false, true));
       assertExpectation(testCase, Object.freeze({
         ...execution,
         response: compiled.metadata?.capabilities?.includes('request.body.forward')

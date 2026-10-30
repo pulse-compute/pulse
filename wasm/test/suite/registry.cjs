@@ -1069,6 +1069,7 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'deterministic conventional project creation'
   }),
+  'cli-harness-workflow': nodeTask('test/cli/assert-cli-harness-workflow.cjs', { evidence: 'cli', timeoutMs: 180000, description: 'Bounded redacted authored harness mismatches in source and packed CLI output' }),
   'cli-project-workflow': nodeTask('test/cli/assert-cli-project-workflow.cjs', {
     evidence: 'cli',
     timeoutMs: 180000,
@@ -1693,6 +1694,7 @@ const profiles = Object.freeze({
     'cli-command-spec',
     'cli-init-workflow',
     'cli-project-workflow',
+    'cli-harness-workflow',
     'cli-expansion-doctor',
     'cli-project-guards',
     'cli-dev-workflow',

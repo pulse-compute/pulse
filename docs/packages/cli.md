@@ -396,3 +396,20 @@ This makes diagnostic links and package README links usable from an installed ex
 - [Documentation versioning](../maintainers/documentation-versioning.md)
 - [Environment-variable reference](../reference/environment.md)
 - [Release acceptance](../maintainers/release-acceptance.md)
+
+### Harness expectation failures
+
+A failed HTTP, event or expected-error expectation emits `PULSE_TEST_ASSERTION`
+(category `test`) with `detail.version: 1`, case, kind, expectation, operator,
+expected and actual. Human output shows the same comparison. Completed test
+commands retain their pass/fail counts and exit 1 when a case fails. Application,
+compiler and provider errors keep their existing classification.
+
+Body and event payloads and error-message comparisons disclose type and, for
+strings/binary, byte length and SHA-256 rather than content. Header comparisons
+redact authorization, cookies, token, secret, password and API-key fields and
+configured secret values. Strings are limited to 256 characters and header lists
+to eight values; cyclic/complex values are summarized without traversal. A
+header mismatch includes the effective request method and whether that header
+was supplied, making a helper default distinguishable from an omitted header.
+Inspect private payloads in a controlled test environment when hashes differ.

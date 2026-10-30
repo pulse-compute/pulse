@@ -15,6 +15,7 @@ function entry(category, options = {}) {
 }
 
 const DIAGNOSTIC_DEFINITIONS = Object.freeze({
+  PULSE_TEST_ASSERTION: entry('test', { exitCode: 4, remediation: ['Compare the named expectation with the observed result and effective request.', 'Body and event payloads are represented by type, size and digest where available; inspect sensitive values in your controlled test environment.'] }),
   PULSE_HOST_EXTENSION_INVALID: entry('compile', { exitCode: 3, remediation: ['Provide the frozen v1 plain-data contribution envelope from the selected package lowerer.'] }),
   PULSE_HOST_EXTENSION_PROTOCOL: entry('compile', { exitCode: 3, remediation: ['Use pulse.host-extension.v1 and the admitted terminal-request-backend.v1 service.'] }),
   PULSE_HOST_EXTENSION_OWNER: entry('compile', { exitCode: 3, remediation: ['Keep the package, contract and contribution namespace aligned with the discovered package owner.'] }),
@@ -219,6 +220,7 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
  });
 
 const DIAGNOSTIC_SUMMARIES = Object.freeze({
+  PULSE_TEST_ASSERTION: 'A harness expectation did not match the observed HTTP, event or expected-error result.',
   PULSE_HOST_EXTENSION_INVALID: 'The host contribution envelope is malformed.',
   PULSE_HOST_EXTENSION_PROTOCOL: 'The host contribution protocol or service is unsupported.',
   PULSE_HOST_EXTENSION_OWNER: 'The host contribution does not belong to its selected package contract.',
