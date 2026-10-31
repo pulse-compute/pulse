@@ -25,9 +25,8 @@ a fixed loopback HTTP boundary. The app is shipped with the CLI examples, not
 inside the generic adapter tarball; its runtime needs no repository or upstream.
 See its README for installation status, client requests and three walkthroughs.
 
-Release status: supported Beta host extension in the synchronized
-`1.0.0-beta.10` candidate package set. Registry publication is pending the
-release-owner bootstrap and trusted-publisher handoff. These host APIs are used
+Release status: supported Beta host extension, published as `1.0.0-beta.10`
+in the synchronized package set. Use matching exact versions of Pulse packages. These host APIs are used
 outside Pulse guest handlers. Use `/pulse` for package-owned Native lowering.
 
 `server/discover` always works. Configuring `tools` enables `tools/list` and
@@ -53,7 +52,15 @@ declarations export `McpHttpOptions`, `McpHttpHandler`, `McpLimits`,
 The application owns the listener, authentication, shutdown and deployment.
 An application may compose this listener with its ordinary backend launcher.
 
-Until publication, pack the package and install that tarball in the host project:
+Install the published package in the host project:
+
+```sh
+npm install @pulse-compute/mcp@1.0.0-beta.10
+```
+
+For maintainer/development snapshots, pack the checkout and install that tarball
+instead. This tests checkout bytes; it is separate from installing the published
+release and does not change its immutable contents:
 
 ```sh
 # From the Pulse checkout; no build or lifecycle script is needed.

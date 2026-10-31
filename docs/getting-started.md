@@ -3,22 +3,24 @@
 This page creates and verifies a first project. The normal application journey
 continues through `init → doctor → test → dev → build`; see [Project
 lifecycle](./guides/project-lifecycle.md) for the canonical sequence and the
-optional `inspect` and advanced `compile` branches.
+optional `inspect` and advanced `compile` branches. For agent-assisted projects,
+start with the [cold-start checklist](./guides/project-lifecycle.md#cold-start-checklist).
 
 ## Requirements
 
 - Node.js `22.14.0` or newer on the 22.x line, or Node.js 24.x (`^22.14.0 || ^24.0.0`).
 - npm 10 or another npm-compatible package manager.
-- A repository checkout with its lockfile-pinned dependencies restored, using `pnpm pulse -- <command>`, or the synchronized public package set produced by release acceptance.
+- Access to the exact synchronized published package versions below, or a repository checkout with its lockfile-pinned dependencies restored.
 - A Fastly local execution engine only when running the external Fastly Compute reality workflow. Native compilation and configured-provider builds do not require one. The gate accepts the Fastly CLI through `PATH`/`PULSE_FASTLY_BIN` or direct Viceroy through `PULSE_VICEROY_BIN`.
 
 ## Create a project
 
-The command and documented result below are executed by the documentation test lane.
+Use the published CLI without a global install. The documentation test lane
+executes the same `init` operation and verifies the documented result.
 
-<!-- pulse-doc-run {"temp":true,"args":["init","hello-pulse","--json"],"display":"pnpm pulse -- init ./hello-pulse --json"} -->
+<!-- pulse-doc-run {"temp":true,"args":["init","hello-pulse","--json"],"display":"npm exec --package=@pulse-compute/cli@1.0.0-beta.10 -- pulse init ./hello-pulse --json"} -->
 ```bash
-pnpm pulse -- init ./hello-pulse --json
+npm exec --package=@pulse-compute/cli@1.0.0-beta.10 -- pulse init ./hello-pulse --json
 ```
 ```json
 {
@@ -35,6 +37,9 @@ pnpm pulse -- init ./hello-pulse --json
   ]
 }
 ```
+
+For a checkout with restored dependencies, `pnpm pulse -- init ./hello-pulse --json`
+executes the repository CLI instead.
 
 Then enter the project and install the exact dependencies written by `pulse init`:
 

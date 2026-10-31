@@ -15,6 +15,52 @@ profile, handler graph, schemas, provider bindings, target, and output
 directory. Provider and target selection come from configuration; no command
 silently changes them.
 
+## Cold-start checklist
+
+Use this checklist when starting a project with an agent or handing one to a
+new collaborator. Detailed commands and contracts stay in the linked guides.
+
+1. **Name the goal and execution constraints.** Record the intended API, provider,
+   Native or JavaScript target, exact synchronized Pulse package version, required
+   bindings and network/offline constraints. The generated default is Node Native;
+   configure another supported profile explicitly. Check the
+   [authoring contract](../reference/handler-authoring.md) and
+   [target support](../reference/compatibility-matrix.md) before adding behavior.
+2. **Check only the tools this workflow needs.** Confirm supported Node/npm and
+   access to the exact package versions and dependencies used by the
+   [published CLI bootstrap](../../README.md#start-here). A denied registry or
+   download is an environment-access failure; a missing executable needs setup;
+   a capability rejection needs a supported provider/target or source change.
+   Fastly CLI/Viceroy belongs to the separate provider-reality step, not Native
+   compilation or a configured-provider build.
+3. **Keep a passing baseline.** Follow the [first-project commands](../getting-started.md),
+   install the generated exact dependencies, then run `npm run doctor`, `npm test`
+   and `npm run build` before adding features. Save those results. Use the installed
+   CLI's `npm exec -- pulse docs --json` to locate version-matched offline docs;
+   use generated scripts for subsequent commands. When testing fails, inspect
+   the harness's effective request and helper defaults before changing the
+   application or its expectations.
+4. **Use MCP only after verifying the connection.** The optional
+   [context server workflow](../../examples/12-pulse-context-mcp/README.md#workflow)
+   explains protocol/profile selection and discovery/tool listing. Confirm those
+   responses and the corpus version; a hosted URL alone establishes neither a
+   working connection nor access to tools. Use `pulse.search` to find contracts,
+   `pulse.read` to retrieve cited IDs, `pulse.example` for maintained files and
+   `pulse.diagnostic` for a diagnostic's suggested checks. `pulse.start` returns
+   Node Native/JavaScript starter plans; hosting the server on Fastly does not
+   add Fastly starter generation. Keep tool requests on the project's exact version.
+5. **Validate state at the right boundary.** For Fastly, follow the
+   [separate-request write/read and distinguishable CAS recipe](./deploying-fastly.md#stateful-validation).
+   The [exact Native fixture's KV reset](#fastly-native-fixture-kv-lifetime)
+   cannot prove cross-request persistence. Keep fixture, local provider-engine
+   and deployed-service observations distinct; retain failing/unknown outcomes.
+6. **Leave a factual verification record.** Include each command and exit/result,
+   actual artifact/report path, observed source/package/artifact identities,
+   verification level and remaining unknowns. Use the existing
+   [evidence-status interpretation](./troubleshooting.md#agent-evidence-status)
+   when sharing command results. Record unavailable evidence as unknown; do not
+   infer a revision, freshness, deployment or qualification from a successful build.
+
 ## 1. Initialize
 
 ```bash
