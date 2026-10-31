@@ -14,12 +14,13 @@ function validate(plan, options) {
   const init = effect?.inputs?.find(input => input.name === 'init')?.value;
   const body = field(init, 'body'), method = field(init, 'method'), headers = field(init, 'headers');
   if (effects.length !== 1 || effect.kind !== 'fetch' || effect.grouped
+    || effect.fetchErrors !== undefined || effect.fetchTiming !== undefined
     || effect.result?.mode !== 'return' || effect.result?.valueKind !== 'opaque-response'
     || effect.resource?.kind !== 'literal' || options.bindings?.dynamicBackends
     || body?.name !== 'request.body.forward-marker' || method?.kind !== 'literal' || method.value !== 'POST'
     || init.entries.some(entry => !['method', 'body', 'headers', 'timeoutMs'].includes(entry.key?.value))
     || (headers && (headers.kind !== 'object' || headers.entries.some(entry => entry.key?.kind !== 'literal' || entry.value?.kind !== 'literal' || typeof entry.value.value !== 'string')))) {
-    throw forwardingError('Fastly Native forwarding admits one terminal opaque POST fetch with inline req.body(), a static backend, and optional literal headers/timeoutMs; groups, decoding, reuse, and dynamic backends are unsupported.');
+    throw forwardingError('Fastly Native forwarding admits one terminal opaque POST fetch with inline req.body(), a static backend, and optional literal headers/timeoutMs; outcome/timing options, groups, decoding, reuse, and dynamic backends are unsupported.');
   }
   const entries = headers?.entries || [];
   const hop = /^(connection|keep-alive|proxy-connection|transfer-encoding|te|trailer|upgrade|content-length|host|proxy-authenticate|proxy-authorization)$/i;

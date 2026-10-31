@@ -2190,8 +2190,12 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
   source = dynamicBackends.instrument(source, bindings, true, (options.bindings || options).backends);
-  source = require('./native-fetch-outcomes.js').instrument(source, plan);
-  source = require('./native-fetch-timing.js').instrument(source, plan);
+  // Forwarding owns a specialized terminal fetch implementation. Admission
+  // above rejects outcome/timing options; generic fetch anchors do not exist here.
+  if (!require('./native-body-forwarding.js').enabled(plan)) {
+    source = require('./native-fetch-outcomes.js').instrument(source, plan);
+    source = require('./native-fetch-timing.js').instrument(source, plan);
+  }
   lifecycle.assertSites();
   if (lifecycle.supportSource) source += '\n' + lifecycle.supportSource;
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
