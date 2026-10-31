@@ -25,6 +25,26 @@ function admission() {
   const valid = planFor(`return ctx.fetch('${url}',{method:'POST',body:ctx.req.body()});`);
   assert.throws(()=>generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(valid,{bindings:config.bindings,requirePlatformCapability:false}),{code:'PULSE_FASTLY_BODY_FORWARDING_INVALID'});
   assert.throws(()=>generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(valid,{...config,bindings:{...config.bindings,dynamicBackends:true},requirePlatformCapability:false}),{code:'PULSE_FASTLY_BODY_FORWARDING_INVALID'});
+  // Normal forwarding must build without generic fetch adapters, while
+  // ordinary unselected fetches keep both runtime admission guards.
+  const forwarded = generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(valid,{...config,requirePlatformCapability:false});
+  assert.ok(forwarded.source.includes('function __fwd_begin('));
+  assert.ok(!forwarded.source.includes('const errorsIndex = __pulse_fastly_find(init'));
+  assert.ok(!forwarded.source.includes('const timingIndex = __pulse_fastly_find(init'));
+  const ordinary = planFor(`return ctx.fetch('${url}');`);
+  const ordinarySource = generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(ordinary,{...config,requirePlatformCapability:false}).source;
+  assert.ok(ordinarySource.includes('const errorsIndex = __pulse_fastly_find(init'));
+  assert.ok(ordinarySource.includes('const timingIndex = __pulse_fastly_find(init'));
+  for (const module of ['native-fetch-outcomes','native-fetch-timing']) {
+    assert.throws(()=>require('../../../packages/provider-fastly/src/build/'+module+'.js').instrument('',ordinary), /boundary drift/);
+  }
+  for (const [field,value] of [['fetchErrors','collect'],['fetchTiming',true],['fetchTiming',false]]) {
+    const forged = structuredClone(valid); forged.effects[0][field] = value;
+    assert.throws(()=>generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(forged,{...config,requirePlatformCapability:false}),{code:'PULSE_FASTLY_BODY_FORWARDING_INVALID'});
+  }
+  for (const extra of ["errors:'collect'",'timing:true','timing:false',"errors:'collect',timing:true"]) {
+    assert.throws(()=>generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(planFor(`return ctx.fetch('${url}',{method:'POST',body:ctx.req.body(),${extra}});`),{...config,requirePlatformCapability:false}), error=>typeof error.code==='string' && error.code.startsWith('PULSE_'));
+  }
   for(const body of [
     `return ctx.fetch('${url}',{method:'PUT',body:ctx.req.body()});`,
     `const first=ctx.req.body();return ctx.fetch('${url}',{method:'POST',body:ctx.req.body()});`,
