@@ -299,6 +299,7 @@ const tasks = Object.freeze({
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'P03 structural Fastly lifecycle, compiled settlement and response authority'
   }),
+  'fastly-forwarding-evidence': nodeTask('test/provider/assert-fastly-forwarding-evidence.cjs', { timeoutMs: 30000, description: 'Complete streamed forwarding provenance and failure-safe report/fixture cleanup' }),
   'fastly-incoming-body-forwarding': nodeTask('test/provider/assert-fastly-incoming-body-forwarding.cjs', {
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'FWD9-03 normal Native build, adversarial ABI matrix and optional pinned Viceroy wire qualification'
@@ -1483,6 +1484,7 @@ const profiles = Object.freeze({
     'report-capsule-contract',
     'cli-report-workflow',
     'cli-compare-workflow',
+    'fastly-forwarding-evidence',
     'cli-report-viewer',
     'cli-report-retained-evidence',
     'cli-report-host-extensions',
