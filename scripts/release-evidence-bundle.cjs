@@ -186,6 +186,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-forwarding-accounting',
       'fastly-fetch-cohorts',
       'fastly-incoming-body-forwarding',
+      'fastly-forwarding-evidence',
       'fastly-conditional-kv',
       'clean-machine-acceptance' // installed conditional-KV adversarial corpus
     ])

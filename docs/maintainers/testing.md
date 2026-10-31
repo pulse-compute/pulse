@@ -743,3 +743,16 @@ installed-closure receipts assigned to B10-MCP-09/07, and do not replace the
 full release selection. `docs:sync` copies emitted resource files but never
 regenerates vectors; after changing canonical inputs, run explicit generation
 and finish with the read-only check.
+
+## Forwarding proof provenance
+
+`fastly-incoming-body-forwarding` hashes the complete byte stream produced by
+`git diff HEAD` with bounded memory. This retains the command's tracked staged
+and unstaged diff semantics; it does not add untracked files to that identity.
+Git spawn/read/exit/timeout failures are nonpassing provenance failures and
+never substitute an empty digest. Initialization and forwarding checks share
+the same owned-fixture cleanup guard. The proof records cleanup before writing
+its report; reporting/cleanup errors preserve the first failure and cannot turn
+a failed or incomplete proof into success. Its compiler-free regression is
+`fastly-forwarding-evidence`; the ordinary forwarding ABI task and optional
+selected Viceroy lane retain their existing assertions.
