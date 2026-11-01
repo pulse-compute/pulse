@@ -3,6 +3,12 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
 const {hash,load,terminalCases,controls}=require('./bundle.cjs');
 const {verify}=require('./verify.cjs');
 const pins=require('./engines.json');
+// Receipt validation must not pass while an executable qualification runner
+// cannot even load. Parse without executing network, package or engine work.
+const {Script}=require('node:vm');
+for(const file of fs.readdirSync(__dirname).filter(file=>file.endsWith('.cjs'))){
+ new Script(fs.readFileSync(path.join(__dirname,file),'utf8'),{filename:file});
+}
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'terminal-bundle-contract-'));
 // Synthetic receipt validation tests are not engine or hosted observations.
 try {

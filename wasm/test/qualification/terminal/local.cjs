@@ -97,8 +97,8 @@ async function run(proofDir, viceroy, pushpinRoot, output) {
       const before = originCount, ordinary = await request('/ordinary'); assert.deepEqual(ordinary, { status: 200, body: 'ordinary response' }); assert.equal(originCount, before);
       proof.cases.push({ id:fixture,status:'passed',scenario:'ordinary', artifactSha256, response: ordinary });
       if (!fixture.startsWith('websocket')) {
-        const response = await request('/handoff'); assert.deepEqual(response, { status: 200, body: 'terminal-origin' });
-        proof.cases.push({ id:fixture,status:'passed',scenario:'handoff', artifactSha256, response });
+        const handoff = await request('/handoff'); assert.deepEqual(handoff, { status: 200, body: 'terminal-origin' });
+        proof.cases.push({ id:fixture,status:'passed',scenario:'handoff', artifactSha256, response:handoff });
         held=false;
         let finished = false; const pending = request('/handoff', { 'x-pulse-terminal-hold': channel }).then(r => { finished = true; return r; });pending.catch(()=>{});
         for (let n = 0; n < 100 && !held; n++) await delay(20); assert(held);
