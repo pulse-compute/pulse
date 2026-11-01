@@ -46,7 +46,7 @@
         "sha256": "743f289d5f7b1a4cafa021de62bcd705122bad06ba5d3a2c971fd7d34b87752f"
       }
     ],
-    "dependencySource": "https://snapshot.ubuntu.com/ubuntu/20260828T000000Z",
+    "dependencySource": "https://archive.ubuntu.com/ubuntu",
     "systemServiceActivated": false
   },
   "version": "pulse.terminal-engine-pins.v1"
