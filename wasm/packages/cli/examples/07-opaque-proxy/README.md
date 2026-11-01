@@ -239,7 +239,7 @@ For build settings, see [Native build optimization](../../docs/reference/native-
 | Artifact | Default build |
 |---|---:|
 | Portable guest `canonical-native.wasm` | 2.2 KiB (2,205 bytes) |
-| Deployable Fastly module `bin/main.wasm` | 35.8 KiB (36,637 bytes) |
+| Deployable Fastly module `bin/main.wasm` | 36.6 KiB (37,471 bytes) |
 
 The executable documentation gate rebuilds and measures these default artifacts.
 Measured with Node 24.18.0 and lockfile-pinned AssemblyScript 0.28.18. The provider artifact includes Fastly transport handling, deadlines,
