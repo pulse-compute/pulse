@@ -45,7 +45,7 @@ jobs:
         env:
           PULSE_SOURCE_REVISION: 38bd0727982ebbeee41cd33d21afe749beddf72e
           PULSE_SOURCE_IDENTITY_KIND: git-commit
-        run: node wasm/scripts/run-wasm-tests.cjs --task kv-conditional-acceptance --task events-native-runtime --report wasm/.test-results/beta11-supplemental.json
+        run: node wasm/scripts/run-wasm-tests.cjs --task kv-conditional-acceptance --task events-native-runtime --report "$PWD/wasm/.test-results/beta11-supplemental.json"
       - name: Check complete terminal coverage and clean source
         shell: bash
         run: |
