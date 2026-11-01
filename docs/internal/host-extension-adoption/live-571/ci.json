@@ -1,0 +1,44 @@
+{
+  "workflow_runs": [
+    {
+      "id": 41274512113,
+      "name": "Maintainer scope",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 2161,
+      "jobs_url": "https://api.github.com/repos/pulse-compute/pulse/actions/runs/41274512113/jobs",
+      "logs_url": "https://api.github.com/repos/pulse-compute/pulse/actions/runs/41274512113/logs",
+      "workflow_id": 328773033
+    },
+    {
+      "id": 41274512106,
+      "name": "Documentation",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 2093,
+      "jobs_url": "https://api.github.com/repos/pulse-compute/pulse/actions/runs/41274512106/jobs",
+      "logs_url": "https://api.github.com/repos/pulse-compute/pulse/actions/runs/41274512106/logs",
+      "workflow_id": 328773031
+    },
+    {
+      "id": 41274512081,
+      "name": "Repository validation",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 2092,
+      "jobs_url": "https://api.github.com/repos/pulse-compute/pulse/actions/runs/41274512081/jobs",
+      "logs_url": "https://api.github.com/repos/pulse-compute/pulse/actions/runs/41274512081/logs",
+      "workflow_id": 328773036
+    },
+    {
+      "id": 41274512086,
+      "name": "Terminal local qualification",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 6,
+      "jobs_url": "https://api.github.com/repos/pulse-compute/pulse/actions/runs/41274512086/jobs",
+      "logs_url": "https://api.github.com/repos/pulse-compute/pulse/actions/runs/41274512086/logs",
+      "workflow_id": 400131208
+    }
+  ]
+}

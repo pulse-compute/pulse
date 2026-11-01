@@ -1,0 +1,43 @@
+{
+  "version": "pulse.terminal-live-evidence-ledger.v1",
+  "status": "passed",
+  "pr": "https://github.com/pulse-compute/pulse/pull/571",
+  "sourceRevision": "81c9952e6cc13810957b0a5ade0a34b04ff5daa0",
+  "sourceTree": "af365d231f4ee460c7418aaaada11d66e7742c52",
+  "workingTree": "",
+  "nodeVersion": "v24.18.0",
+  "nodeBinarySha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+  "cli": {
+    "file": "/workspace/scratch/664ac3039b0e/live-571/cli/usr/local/bin/fastly",
+    "version": "Fastly CLI version v17.0.0 (ab6d4a25)\nBuilt with go version go1.26.10 linux/amd64 (2026-11-01)",
+    "sha256": "b95ba2d9ef34c5c1afb4902d2022c7c7db94b75ce4b25e8fa4d21e49076d2b9d"
+  },
+  "localWorkflowRun": 41274512086,
+  "originWorkflowRun": 41274052165,
+  "failedAttempts": [
+    "missing local workspace dependency bindings before first hosted launch",
+    "original hosted probe failed on non-upgraded HTTP through WebSocket ABI after seven passing cells",
+    "first protocol edit had duplicate local declaration; fixed with a syntax admission check",
+    "fresh candidate attempt 1 stopped before build on HTTP 504 from pinned dependency mirror",
+    "Unchanged retry hit HTTP 503; all four dependency hashes were verified at Ubuntu primary archive before changing only dependencySource URL.",
+    "First final-candidate hosted run completed nine cells before a Fastly control-plane read timeout; unchanged complete rerun passed all fifteen cells, without per-request retries."
+  ],
+  "boundaries": [
+    "Installed package and terminal transport qualification only",
+    "Independent host-contract review and final release seal remain separate",
+    "No product runtime, ABI, package export, support tier or public API change",
+    "Only five explicitly owned temporary Fastly Compute services were created; original VCL service remains untouched",
+    "API token excluded from evidence and retained active by user direction"
+  ],
+  "winningHostedReceipt": "hosted-final-retry.json",
+  "hostedCases": 15,
+  "localCases": 15,
+  "deployedIdentitiesVerifiedBeforeAndAfter": 5,
+  "aggregateStatus": "passed",
+  "fetchTraceSha256": "72739fabe6ea342a531b265d5de6ffc077d21f0550dec34ef105c019cbab4418",
+  "externalCleanup": "passed",
+  "archiveSha256": "fb3334b5cd002acdd1b27320a4fecb85de77492bd3ab9c4e2cd14339d95636be",
+  "installedReceiptSha256": "458948b6a19e6977a7a8570f2719dbb6176711d67518c7e9aa6a0dbd8497f5da",
+  "tokenRetainedActive": true,
+  "tokenIncludedInEvidence": false
+}

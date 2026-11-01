@@ -1,0 +1,13 @@
+{
+  "version": "pulse.terminal-qualification.v1",
+  "status": "passed",
+  "candidate": {
+    "sourceRevision": "81c9952e6cc13810957b0a5ade0a34b04ff5daa0",
+    "sourceTree": "af365d231f4ee460c7418aaaada11d66e7742c52",
+    "workingTree": ""
+  },
+  "bundleSha256": "458948b6a19e6977a7a8570f2719dbb6176711d67518c7e9aa6a0dbd8497f5da",
+  "localReceiptSha256": "0d6306aefd6e7b1a7e69c9cb65ba00574a53c8e77dd1e8fb069b1bf866cab8ee",
+  "hostedReceiptSha256": "49f987f8881e366e5e4de51842ec6a74c93783349a50f86b26f2d509d0bbff33",
+  "qualification": "Installed package and terminal transport only; not a release seal"
+}

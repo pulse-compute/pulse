@@ -1,0 +1,55 @@
+{
+  "version": "pulse.terminal-live-cleanup.v1",
+  "status": "passed",
+  "services": [
+    {
+      "id": "fanout",
+      "serviceId": "OqXSwBwe5oSUycuPusk3fP",
+      "deleted": true,
+      "versionDeactivated": 2
+    },
+    {
+      "id": "fanout-router",
+      "serviceId": "kFkZOrswhmksJyS8tVBqYl",
+      "deleted": true,
+      "versionDeactivated": 2
+    },
+    {
+      "id": "websocket",
+      "serviceId": "xMGPBPwMYVVZhQ0yqGeopL",
+      "deleted": true,
+      "versionDeactivated": 2
+    },
+    {
+      "id": "websocket-router",
+      "serviceId": "mdhwzVwqFnG2GQicwqaY6j",
+      "deleted": true,
+      "versionDeactivated": 2
+    },
+    {
+      "id": "independent",
+      "serviceId": "wsBFTvnEaRrxmHYw6ZthsG",
+      "deleted": true,
+      "versionDeactivated": 2
+    }
+  ],
+  "remainingOwnedServices": [],
+  "originalVclPresent": true,
+  "originalVclMutatedByThisTask": false,
+  "tokenActive": true,
+  "tokenRevoked": false,
+  "temporaryOriginRuns": [
+    {
+      "run": 41272534102,
+      "status": "completed",
+      "conclusion": "success",
+      "stopOwnedProcesses": "success"
+    },
+    {
+      "run": 41274052165,
+      "status": "completed",
+      "conclusion": "success",
+      "stopOwnedProcesses": "success"
+    }
+  ]
+}
