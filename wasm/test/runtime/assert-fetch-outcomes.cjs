@@ -66,6 +66,10 @@ async function main() {
       checks++;
     }
     if(shape==='text') {
+      // Give cold real connections a finite transport budget. The injected
+      // cases above retain their 20ms deadlines and exact timeout assertions.
+      const realPlan=buildCanonicalNativePlan(compileCanonicalSource(`export default async function handler(ctx){const result=await ctx.fetch('${url}',{errors:'collect',timeoutMs:2000}).text();return ctx.json(result)}`,{fileName:'real-outcomes.ts',strict:false}));
+      const realWasm=compileCanonicalNativePlan(realPlan,{cwd:root,emitWat:false});
       const http=require('node:http'), {once}=require('node:events');
       let mode,requests=0;
       const server=http.createServer((req,res)=>{
@@ -77,7 +81,7 @@ async function main() {
       try {
         for(mode of ['reset','body-reset','stall']) {
           const adapter=node.createNodeProviderAdapter({fetchImplementation:(_url,init)=>fetch(`http://127.0.0.1:${server.address().port}/`,init)});
-          const result=await native.executeCanonicalNativeModule(wasm,{providerAdapter:adapter});
+          const result=await native.executeCanonicalNativeModule(realWasm,{providerAdapter:adapter});
           assert.deepEqual(JSON.parse(result.response.body),rejected(mode==='stall'?'PULSE_FETCH_TIMEOUT':'PULSE_FETCH_NETWORK'),`real Node ${mode}`);checks++;
         }
         assert.equal(requests,3,'one real transport attempt per operation');checks++;
