@@ -28,7 +28,7 @@ new collaborator. Detailed commands and contracts stay in the linked guides.
    [target support](../reference/compatibility-matrix.md) before adding behavior.
 2. **Check only the tools this workflow needs.** Confirm supported Node/npm and
    access to the exact package versions and dependencies used by the
-   [published CLI bootstrap](../../README.md#start-here). A denied registry or
+   [published CLI bootstrap](../getting-started.md#create-a-project). A denied registry or
    download is an environment-access failure; a missing executable needs setup;
    a capability rejection needs a supported provider/target or source change.
    Fastly CLI/Viceroy belongs to the separate provider-reality step, not Native
