@@ -1256,7 +1256,6 @@ function raceNativeSignal(value, signal, eventMode = true) {
   if (!signal) return Promise.resolve(value);
   const cancelled = () => eventMode ? nativeEventCancelled('Native event execution was cancelled during effect dispatch.')
     : nativeRequestCancelled(signal);
-  if (signal.aborted) return Promise.reject(cancelled());
   return new Promise((resolve, reject) => {
     let settled = false;
     const finish = (callback, result) => {
@@ -1271,6 +1270,10 @@ function raceNativeSignal(value, signal, eventMode = true) {
       (result) => finish(resolve, result),
       (error) => finish(reject, error)
     );
+    // Dispatch may have cancelled synchronously before returning this promise.
+    // Observe it even then: late completion cannot regain execution authority,
+    // and a late provider failure must not become an unhandled rejection.
+    if (signal.aborted) onAbort();
   });
 }
 
@@ -1559,6 +1562,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       try {
         const disposal = adapter.disposeExecution(Object.freeze({ executionId, metadata: controller.plan.canonical, plan: controller.plan, status: executionFailure ? 'failed' : 'completed', error: executionFailure }));
         if (eventMode) await disposal;
+        else Promise.resolve(disposal).catch(() => {}); // HTTP cleanup remains best effort, including asynchronous failures.
       } catch (_) {
         if (eventMode && !executionFailure) throw new CanonicalNativeHostError('Native event provider disposal failed.', 'PULSE_CANONICAL_NATIVE_EVENT_DISPOSAL_FAILED');
         // Preserve a primary execution failure.

@@ -376,6 +376,13 @@ request expiry and runtime integrity faults remain execution failures. HTTP
 error statuses remain response data. The outcome and transport timing boundaries
 are [recorded separately](../architecture/current-contracts.md#selected-fetch-outcome-and-transport-timing-boundaries).
 
+The Native host continues observing a dispatched provider promise even when
+dispatch cancels the invocation synchronously. Late rejection stays observed;
+late success cannot settle into the closed invocation or resume its guest.
+HTTP provider disposal remains best effort: asynchronous cleanup failures stay
+observed without replacing the response or primary execution failure. Event
+execution awaits provider disposal and reports disposal failure separately.
+
 ### Fastly Native observation and cleanup
 
 On Fastly Native, `timeoutMs` must be a positive numeric safe integer. Omission

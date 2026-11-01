@@ -1636,7 +1636,10 @@ function createCanonicalHostRuntime(options = {}) {
       throw executionFailure;
     } finally {
       invocations.close();
-      try { adapter.disposeExecution(Object.freeze({ executionId, metadata, status: executionStatus, error: executionFailure })); }
+      try {
+        const disposal = adapter.disposeExecution(Object.freeze({ executionId, metadata, status: executionStatus, error: executionFailure }));
+        Promise.resolve(disposal).catch(() => {});
+      }
       catch (_) { /* provider cleanup must not mask execution results */ }
     }
   }
