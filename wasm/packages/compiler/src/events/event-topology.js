@@ -56,11 +56,13 @@ function buildEventTopology(eventIr, handlerTable, options = {}) {
         throw new TypeError(`Unable to resolve canonical event handler identity for ${JSON.stringify(registration.type)}.`);
       }
       const schemaId = registration.declaration.schemaId;
+      const resultDeclaration = registration.declaration.resultSchemaId === undefined ? {} : { resultSchemaId: registration.declaration.resultSchemaId };
       const handlerEmitCallsites = emitCallsitesByHandler.get(handlerStableId) || [];
       return {
         type: registration.type,
         schemaId,
-        stableId: events.createEventStableId({ type: registration.type, schemaId, handlerStableId }),
+        ...resultDeclaration,
+        stableId: events.createEventStableId({ type: registration.type, schemaId, ...resultDeclaration, handlerStableId }),
         runtimeId,
         handlerStableId,
         source: portableSource(registration, options.cwd || process.cwd()),

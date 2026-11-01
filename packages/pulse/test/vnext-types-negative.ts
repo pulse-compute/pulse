@@ -22,3 +22,10 @@ defineConfig(() => ({ pulse: { defaultProfile: 'dev', crypto: ['hs256'] }, dev: 
 
 // @ts-expect-error realization pins must be exact known realization identifiers
 defineConfig(() => ({ pulse: { defaultProfile: 'dev' }, dev: { host: 'node', target: 'native', crypto: { HS256: { realization: 'webcrypto' } } } }))
+
+// @ts-expect-error resultSchema requires a non-void handler result
+app.on('event.missing', { schema: null, resultSchema: 'events.Checked' }, async () => undefined)
+// @ts-expect-error an explicitly typed event result must match its return type
+app.on<null, { accepted: boolean }>('event.bad', { schema: null, resultSchema: 'events.Checked' }, async () => ({ accepted: 'yes' }))
+// @ts-expect-error resultSchema cannot be null; omit it for void handlers
+app.on('event.null', { schema: null, resultSchema: null }, async () => undefined)

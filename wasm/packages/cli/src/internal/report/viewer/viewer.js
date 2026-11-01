@@ -669,6 +669,18 @@
       el('div',{class:'two-column'},el('div',{class:'surface panel-pad'},el('h3',{},'Capsule identity'),kv([['SHA-256',P.evidenceHash.value],['Profile / host',P.context.profile+' / '+P.context.host],['Recipe',P.provenance.recipe.name+' '+P.provenance.recipe.version],['Optimization',P.provenance.recipe.optimization],['Revision',P.provenance.revision??'Unknown'],['Dirty',P.provenance.dirty===null?'Unknown':String(P.provenance.dirty)]]),note('This digest identifies evidence; it is not a signature or security attestation.')),
       el('div',{class:'surface panel-pad'},el('h3',{},'Inventory coverage'),...Object.entries(P.coverage).map(([name,c])=>el('div',{class:'coverage-line'},el('div',{},name+' · '+c.status),el('p',{},`${c.observed} observed / ${c.expected??'unknown'} expected${c.reason?' · '+c.reason:''}`))))),
       sectionHeading('Recorded observations','Original producer, severity and code are retained.',P.observations.length),...P.observations.map(o=>el('article',{class:'surface panel-pad subsection'},el('h3',{},o.code),el('p',{},o.severity+' · '+o.producer.name+' '+o.producer.version),routeChips(o.subjectIds.filter(id=>routes.has(id))),...evidenceCards(o.evidenceIds))),P.observations.length?null:note('No observations recorded. Absence is not a pass.'),
+      sectionHeading('Host contributions','Unique package contributions and authored operation use sites are counted separately.'),
+      P.hostContributions ? el('div',{},
+        el('p',{},`${P.hostContributions.length} contributions · ${P.hostUseSites.length} use sites · inventory ${P.coverage.hostContributions.status}`),
+        ...P.hostContributions.map(c=>el('article',{class:'surface panel-pad subsection'},el('h3',{},c.package+' · '+c.operation),
+          kv([['Package version',c.packageVersion??'Not recorded'],['Contribution',c.contributionId],['Contract',c.contractId],['Protocol',c.protocol],['Service',c.service],['Implementation',c.implementation],['Target',c.target.provider+' / '+c.target.target+' / '+c.target.targetId],['Source digest',c.sourceSha256],['Import policy',c.policySha256]]),
+          el('h4',{},'Declared contribution imports'),el('pre',{class:'record-text'},JSON.stringify(c.declaredImports,null,2)),
+          el('h4',{},'Authored use sites'),...P.hostUseSites.filter(s=>s.contributionId===c.id).map(s=>el('p',{},sourceText(s.source)+' · '+s.sourceBasis+' · '+s.canonicalId)))),
+        ...P.hostAudits.map(a=>el('article',{class:'surface panel-pad subsection'},el('h3',{},'Final Wasm import audit'),
+          el('p',{},`${a.observedImports.length} observed imports · ${a.permittedImports.length} permitted imports · runtime observations unknown`),
+          el('p',{},'Attachment coverage: '+a.lifecycle.coverage),
+          el('details',{class:'details-block'},el('summary',{},'Observed imports, complete baseline policy and lifecycle attachment points'),el('pre',{class:'record-text'},JSON.stringify(a,null,2))))))
+        : note('Host contribution and observation coverage unknown: not recorded by this historical report.'),
       sectionHeading('Evidence records','A completed build is not a runtime parity or external-deployment claim.',P.evidence.length),...evidenceCards(P.evidence.map(e=>e.id)),
       el('details',{class:'details-block'},el('summary',{},'Provenance'),el('pre',{class:'record-text'},JSON.stringify(P.provenance,null,2))),el('details',{class:'details-block'},el('summary',{},'All entry records · '+P.entries.length),el('pre',{class:'record-text'},JSON.stringify(P.entries,null,2))));
   }

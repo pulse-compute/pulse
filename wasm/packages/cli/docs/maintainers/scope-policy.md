@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-25
-review-by: 2027-01-25
+last-reviewed: 2026-10-28
+review-by: 2027-04-28
 pulse-doc-meta:end -->
 
 # Scope policy
@@ -78,7 +78,14 @@ superseded state.
 
 ## Select validation
 
-The classifier returns required checks from the path policy. Portable checks can run in a source snapshot without the complete release dependency bundle. Dependency-bound checks remain mandatory before publication when their affected contract is touched.
+The classifier retains all required checks and separates local checks and discovered
+registry regressions from CI-owned broad checkpoints. Run change-specific Entry
+Point regressions locally; fast smoke and registry discovery are not complete
+subsystem coverage. Unknown and cross-cutting changes require a conservative
+coverage rationale. See [testing](./testing.md#selecting-development-checks) for
+exact-source CI handoffs and agent exit with pending integration coverage.
+Dependency-bound qualification remains mandatory when its contract is affected;
+this classification never grants a passing result or release authority.
 
 Run the classifier locally with a pull-request body saved to a file:
 

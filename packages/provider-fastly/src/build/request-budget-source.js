@@ -1,4 +1,8 @@
-// Provider-owned request lifecycle. No wall time or caller header grants time.
+'use strict';
+
+function runtimeSource(lifecycle, forwarding = false, fetchAccounting = false) {
+  const name = lifecycle?.legacyName('__request_send_timeout') || '__request_send_timeout';
+  return `// Provider-owned request lifecycle. No wall time or caller header grants time.
 @external('fastly_async_io', 'select') declare function __request_select(handles: usize, count: i32, timeout: i32, done: usize): i32
 let __request_deadline: i64 = -1;
 let __request_last_clock: i64 = -1;
@@ -27,18 +31,19 @@ function __request_check(index: i32 = -1): bool {
   __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 260, index);
   return false;
 }
+${fetchAccounting ? 'const __request_wait_handles = new StaticArray<i32>(1), __request_wait_ready = new StaticArray<i32>(1);' : ''}
 function __request_wait(handle: i32, index: i32): bool {
   const remaining = __request_remaining();
   if (remaining <= 0) return __request_check(index);
-  const handles = new StaticArray<i32>(1), ready = new StaticArray<i32>(1);
+  const handles = ${fetchAccounting ? '__request_wait_handles' : 'new StaticArray<i32>(1)'}, ready = ${fetchAccounting ? '__request_wait_ready' : 'new StaticArray<i32>(1)'};
   handles[0] = handle;
   const status = __request_select(changetype<usize>(handles), 1, remaining, changetype<usize>(ready));
   if (status != 0) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 261, index); return false; }
   if (ready[0] == -1) __request_expired = true;
   return __request_check(index);
 }
-function __request_send_timeout(): void {
-  // A timeout says nothing about remote acceptance of dispatched writes.
+${lifecycle?.active ? `function __request_send_timeout(): void {\n${lifecycle.site('response-timeout')}\n  ${name}()\n}\n` : ''}function ${name}(): void {
+${fetchAccounting ? '  if (__fca_error()) return;\n' : ''}${forwarding ? '  if (__fwd_ra !== null) { __fwd_fail(504); __fwd_error_response(); return; }\n' : ''}  // A timeout says nothing about remote acceptance of dispatched writes.
   __request_error_response = true;
   __pulse_fastly_last_error = 0;
   const options = host_value_object();
@@ -48,3 +53,6 @@ function __request_send_timeout(): void {
   const status = __pulse_fastly_send_result(response);
   if (status != 0) __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 262, -1);
 }
+`;
+}
+module.exports = { runtimeSource };

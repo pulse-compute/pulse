@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-10-09
-review-by: 2027-04-09
+last-reviewed: 2026-10-28
+review-by: 2027-04-28
 pulse-doc-meta:end -->
 
 # Testing Pulse
@@ -30,7 +30,7 @@ These commands cover the TypeScript workspace and package-level unit tests.
 | `cli` | commands, diagnostics, clean projects, live development, and executable documentation examples |
 | `release` | functional coverage with shared corpora owned by installed acceptance, package construction, deterministic artifacts, evidence authority, and offline deployment candidates |
 
-Run one profile or task:
+Inspect the registry and select a task or profile explicitly:
 
 ```bash
 node wasm/scripts/run-wasm-tests.cjs --profile unit
@@ -71,7 +71,77 @@ node wasm/scripts/run-wasm-tests.cjs --profile cli --through docs-example-03-fet
 
 `--from` and `--through` aid investigation. A release claim requires the complete release profile.
 
+## Selecting development checks
+
+Start with the changed behavior and the active Entry Point's evidence. The scope
+report separates `validation.local` from `validation.ci`; its status is a plan,
+not a pass. Run local policy checks and behavior-specific regressions before
+handoff. For example, crypto implementation changes require crypto tests, plus
+lowering/parity regressions if that behavior changes, not every portable profile.
+Registry `testFiles` and direct task ownership provide discovered tasks in the
+scope report. This is not a complete dependency graph: retain all Entry Point
+obligations, inspect shared consumers and add the regression for the actual fix.
+Unknown, mixed or cross-cutting changes keep conservative CI coverage and require
+an explicit local regression rationale; an empty discovery list is not a waiver.
+
+The existing fast selector can produce a source-bound smoke plan locally:
+
+```bash
+node scripts/maintainer-fast-validation.cjs --branch --base BASE_SHA --head HEAD_SHA --tested HEAD_SHA --report wasm/.test-results/local-selection.json
+```
+
+Replace the SHA placeholders with full commit IDs; `--tested` must equal the
+checkout's HEAD. Add `--run` to execute that smoke. Its bounded task set does not
+replace the subsystem's tests. Dirty-tree checks also need the tested diff or
+tree digest; commit identity alone is insufficient. The selector uses trusted
+base policy and preserves the exact changed range and tested source.
+
+Broad profiles and workspace builds selected by policy are CI-owned checkpoints,
+not a requirement to keep an implementation agent running. Existing non-main CI
+runs fast portable, Node-floor, maintenance and documentation checks. Main full
+portable and eligible pre-main qualification retain complete coverage; the latter
+also owns CLI/provider/release qualification. That producer is conditional: a
+prepared release or `Release qualification: required` in the ready main PR body
+enables the seal. If trusted-base scope requires this coverage without either,
+qualification identification fails with the obligations pending. Add the request
+and synchronize or reopen the PR to trigger existing CI. This guard does not
+automatically schedule a seal; skipped steps or job success alone are not evidence.
+A non-main fast pass is not a pass
+for those later checkpoints. Generated CLI docs are documentation inputs; mixed
+runtime/configuration/provider changes still union their own obligations.
+
+Before exiting, hand off the PR, base/head/tested revision and working-tree state,
+local commands/results/artifacts, required CI checks and workflow/run links, and
+remaining coverage with explicit passed/failed/pending/not-triggered states.
+Pushing a branch does not prove a later checkpoint is queued. If a required broad
+workflow has not triggered, name its existing trigger and retain it as an
+blocker for that checkpoint. The agent may finish the implementation session
+while CI runs or awaits that trigger; do not claim the corresponding integration
+or release checkpoint complete until its required exact-source evidence exists. Candidate qualification and release
+acceptance requirements are unchanged.
+
+Use [recoverable development runs](#recoverable-development-runs) when a local
+regression selection may outlast a session. Required local assertions cannot be
+replaced by a smoke pass or silently deferred. Preserve split evidence for dirty
+trees and ordinary runs, and existing receipts for eligible recovery.
+
 ## Compiler analytics qualification
+
+For intermittent report identity failures (#516), preserve the original failed
+attempt and inspect its first rejected comparison. Read/snapshot/import/lease
+errors carry bounded identity metadata; unavailable report evidence preserves
+owner-produced detail. Identities, stamps and lease tokens are hashed, with no
+source payload or absolute path. The retained-evidence and topology tasks emit
+one entry record and at most one terminal failure record with task phase, Node
+version and hashes of the test, runner, registry and report owners captured at
+task entry. The reported revision
+alone does not certify a clean tree. Runner timeout/process diagnostics remain
+the authority when a task cannot emit its terminal record.
+
+Use the focused retained-evidence/topology tasks to verify a new signal. Expand
+only for a specific ordering hypothesis; absent a demonstrated mismatch, park
+the investigation for the next signal. Passing reruns do not repair or erase a
+failed attempt, and older failures need not share a cause across runner changes.
 
 Run the focused AN9 boundary selection on one immutable candidate:
 
@@ -535,15 +605,19 @@ proofs in authoritative evidence.
 
 ### Recoverable development runs
 
-CI9-02 adds an opt-in, checkout-local diagnostic command:
+Use the existing CI9-02 checkout-local controller for durable development
+checkpoints. Choose the smallest justified selection; this schema example is
+not a universal validation set:
 
 ```bash
-node scripts/development-recovery.cjs --profile unit --profile native
+node scripts/development-recovery.cjs --task schema-registry --task schema-codecs
 node scripts/development-recovery.cjs --resume /absolute/path/to/checkout/.pulse-development/attempts/ATTEMPT
 ```
 
 Commit the tested source and install/build dependencies before starting. A fresh
-run requires explicit `--profile` and/or `--task` selections. Resume accepts only
+run requires explicit `--profile` and/or `--task` selections. Repeated flags are
+supported; use a whole profile only when its coverage is justified or required.
+Save the printed attempt directory as soon as it appears. Resume accepts only
 the printed attempt directory; it preserves that selection and creates a new
 attempt. It never edits the earlier manifest, report, receipts or logs, even if
 the old progress report is missing or truncated. Each report records executed
@@ -581,9 +655,47 @@ run cannot replace fresh performance measurements, hosted CI or a release seal.
 The `release-recovery-runner` unit task includes the development recovery probes,
 including 149 completed passes followed by one-task recovery.
 
-On an interruption or handoff, record the branch, base/head, uncommitted work,
-report/artifact paths, completed and running checks, blockers and the next action.
-A task handoff must distinguish implemented, validated, pushed and merged work.
+### Interruption handoff
+
+Before pausing, retain a compact evidence ledger outside the tested source tree:
+
+- Branch, base/head, exact commit and tree, checkout path, working-tree state and
+  tested diff/tree digest for any ordinary dirty-tree runs.
+- Exact launch command, requested profiles/tasks and expanded `selectedTasks`
+  from `manifest.json`; the selection belongs to the whole attempt.
+- Absolute attempt directory, `manifest.json`, `report.json`, `checkpoints/`
+  receipt paths (including each result's `checkpoint.receiptPath` where present), and
+  `run/tasks/` logs. Preserve predecessor attempts referenced by reused receipts.
+- Controller PID and child PID/process group from `.pulse-seal/active.json`,
+  report `activeChildPid`, completed/failed/running tasks, process exit if known,
+  blockers and the next command. Distinguish implemented, validated and pushed
+  work from human-owned merge status.
+
+A report still marked `running` is a progress snapshot, not proof that a process
+is alive or that its task passed. Inspect the controller and child process group
+on the recorded host/process namespace (for example, `ps` with PID, PPID, PGID
+and command columns on POSIX), then compare the report and logs. If still alive,
+continue observing the existing run; do not launch overlapping work. If liveness
+cannot be verified, retain the lock and investigate. Never delete a lock merely
+because its report is stale. The controller verifies stale takeover itself.
+
+Once the prior processes have ended, resume the eligible attempt using its exact
+printed directory and unchanged checkout, commit/tree, dependencies, tools,
+environment and selection. Do not pass new task/profile flags with `--resume`.
+The controller verifies receipts even when the old report is missing or
+truncated, creates a new attempt and reruns ineligible tasks. Retain both attempt
+paths and verify terminal status, coverage, task outcomes and process exit.
+
+Ordinary runner attempts, including `--no-report` runs, have no development
+recovery manifest/receipts and cannot be converted into a resumable attempt.
+Preserve available terminal task results, logs, aggregate summaries, failures
+and exact source identities as separate development evidence. Identify missing,
+failed or uncertain coverage and run a justified bounded follow-up; if no
+trustworthy completion evidence exists, treat that task as unresolved. Start a
+fresh recovery attempt for a new clean selection or changed inputs. Do not rerun
+an entire campaign solely to consolidate its reports, fabricate receipts or
+combine different source trees into a passing claim. A separately required full
+checkpoint must still complete under its own evidence rules.
 
 ## Provider evidence boundaries
 
@@ -631,3 +743,16 @@ installed-closure receipts assigned to B10-MCP-09/07, and do not replace the
 full release selection. `docs:sync` copies emitted resource files but never
 regenerates vectors; after changing canonical inputs, run explicit generation
 and finish with the read-only check.
+
+## Forwarding proof provenance
+
+`fastly-incoming-body-forwarding` hashes the complete byte stream produced by
+`git diff HEAD` with bounded memory. This retains the command's tracked staged
+and unstaged diff semantics; it does not add untracked files to that identity.
+Git spawn/read/exit/timeout failures are nonpassing provenance failures and
+never substitute an empty digest. Initialization and forwarding checks share
+the same owned-fixture cleanup guard. The proof records cleanup before writing
+its report; reporting/cleanup errors preserve the first failure and cannot turn
+a failed or incomplete proof into success. Its compiler-free regression is
+`fastly-forwarding-evidence`; the ordinary forwarding ABI task and optional
+selected Viceroy lane retain their existing assertions.

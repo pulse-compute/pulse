@@ -42,24 +42,29 @@ function utf8ByteLength(value) {
 
 function requireDataDeclaration(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Pulse.on declaration must be a plain object containing only schema.');
+    throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Pulse.on declaration must be a plain object containing schema and optional resultSchema.');
   }
   const prototype = Object.getPrototypeOf(value);
   if (prototype !== Object.prototype && prototype !== null) {
-    throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Pulse.on declaration must be a plain object containing only schema.');
+    throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Pulse.on declaration must be a plain object containing schema and optional resultSchema.');
   }
   if (Object.getOwnPropertySymbols(value).length > 0) {
     throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Pulse.on declaration must not contain symbol keys.');
   }
   const keys = Object.keys(value);
-  if (keys.length !== 1 || keys[0] !== 'schema') {
-    throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Pulse.on declaration must contain exactly one schema data property.', { fields: keys.sort() });
+  if (!keys.includes('schema') || keys.some(key => !['schema', 'resultSchema'].includes(key))) {
+    throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Pulse.on declaration requires schema and permits optional resultSchema.', { fields: keys.sort() });
   }
   const descriptor = Object.getOwnPropertyDescriptor(value, 'schema');
   if (!descriptor || !Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
     throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Pulse.on declaration.schema must be an own data property.');
   }
-  return descriptor.value;
+  for (const key of keys) {
+    if (!Object.prototype.hasOwnProperty.call(Object.getOwnPropertyDescriptor(value, key), 'value')) {
+      throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.DECLARATION_INVALID, 'Pulse.on declaration fields must be own data properties.');
+    }
+  }
+  return value;
 }
 
 function normalizeEventType(value) {
@@ -74,11 +79,17 @@ function normalizeEventType(value) {
 }
 
 function normalizeEventDeclaration(value) {
-  const schema = requireDataDeclaration(value);
+  const declaration = requireDataDeclaration(value);
+  const { schema } = declaration;
   if (schema !== null && (typeof schema !== 'string' || !SCHEMA_ID_PATTERN.test(schema) || utf8ByteLength(schema) > EVENT_SCHEMA_ID_MAX_BYTES)) {
     throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.SCHEMA_ID_INVALID, 'Pulse.on schema must be a bounded dotted schema ID or null.', { schema });
   }
-  return Object.freeze({ version: EVENT_DECLARATION_VERSION, schemaId: schema });
+  const hasResult = Object.prototype.hasOwnProperty.call(declaration, 'resultSchema');
+  const resultSchema = declaration.resultSchema;
+  if (hasResult && (typeof resultSchema !== 'string' || !SCHEMA_ID_PATTERN.test(resultSchema) || utf8ByteLength(resultSchema) > EVENT_SCHEMA_ID_MAX_BYTES)) {
+    throw registrationError(EVENT_REGISTRATION_DIAGNOSTIC_CODES.SCHEMA_ID_INVALID, 'Pulse.on resultSchema must be a bounded dotted schema ID.');
+  }
+  return Object.freeze({ version: EVENT_DECLARATION_VERSION, schemaId: schema, ...(hasResult ? { resultSchemaId: resultSchema } : {}) });
 }
 
 function normalizeEventRegistration(typeInput, declarationInput, handler) {

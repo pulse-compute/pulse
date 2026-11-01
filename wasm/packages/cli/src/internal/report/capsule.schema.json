@@ -118,6 +118,15 @@
         },
         "implementations": {
           "$ref": "#/$defs/Coverage"
+        },
+        "hostContributions": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "hostUseSites": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "hostAudits": {
+          "$ref": "#/$defs/Coverage"
         }
       },
       "required": [
@@ -196,6 +205,27 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/Body"
+      },
+      "maxItems": 100000
+    },
+    "hostContributions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/HostContribution"
+      },
+      "maxItems": 100000
+    },
+    "hostUseSites": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/HostUseSite"
+      },
+      "maxItems": 100000
+    },
+    "hostAudits": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/HostAudit"
       },
       "maxItems": 100000
     },
@@ -2058,6 +2088,503 @@
         "artifactId",
         "index",
         "bytes"
+      ],
+      "additionalProperties": false
+    },
+    "HostContribution": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "contributionId": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "package": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "packageVersion": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contractId": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "protocol": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "operation": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "service": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "implementation": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "target": {
+          "$ref": "#/$defs/HostTarget"
+        },
+        "sourceSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "entry": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "policySha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "declaredImports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HostImport"
+          },
+          "maxItems": 100000
+        },
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "id",
+        "contributionId",
+        "package",
+        "packageVersion",
+        "contractId",
+        "protocol",
+        "operation",
+        "service",
+        "implementation",
+        "target",
+        "sourceSha256",
+        "entry",
+        "policySha256",
+        "declaredImports",
+        "artifactId",
+        "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "HostTarget": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "target": {
+          "const": "native"
+        },
+        "targetId": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "provider",
+        "target",
+        "targetId"
+      ],
+      "additionalProperties": false
+    },
+    "HostImport": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "i32",
+              "i64",
+              "f32",
+              "f64"
+            ]
+          },
+          "maxItems": 100000
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "i32",
+              "i64",
+              "f32",
+              "f64"
+            ]
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "module",
+        "name",
+        "parameters",
+        "results"
+      ],
+      "additionalProperties": false
+    },
+    "HostUseSite": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "canonicalId": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "contributionId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "entryIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Source"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceBasis": {
+          "enum": [
+            "authored-operation",
+            "authored-entry",
+            "not-recorded"
+          ]
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "id",
+        "canonicalId",
+        "contributionId",
+        "entryIds",
+        "source",
+        "sourceBasis",
+        "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "HostAudit": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "policyVersion": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "policySha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "baselineSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "permittedImports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "module": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "kind": {
+                "enum": [
+                  "function",
+                  "table",
+                  "memory",
+                  "global"
+                ]
+              }
+            },
+            "required": [
+              "module",
+              "name",
+              "kind"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "observedImports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HostObservedImport"
+          },
+          "maxItems": 100000
+        },
+        "importCoverage": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "lifecycle": {
+          "type": "object",
+          "properties": {
+            "executionVersion": {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            "httpVersion": {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            "selectedPoints": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "site": {
+                    "type": "string",
+                    "maxLength": 1048576,
+                    "minLength": 1
+                  },
+                  "points": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "point": {
+                          "type": "string",
+                          "maxLength": 1048576,
+                          "minLength": 1
+                        },
+                        "kind": {
+                          "type": "string",
+                          "maxLength": 1048576,
+                          "minLength": 1
+                        },
+                        "contributions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "owner": {
+                                "type": "string",
+                                "maxLength": 1048576,
+                                "minLength": 1
+                              },
+                              "order": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              }
+                            },
+                            "required": [
+                              "owner",
+                              "order"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "maxItems": 100000
+                        }
+                      },
+                      "required": [
+                        "point",
+                        "kind",
+                        "contributions"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "maxItems": 100000
+                  }
+                },
+                "required": [
+                  "site",
+                  "points"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100000
+            },
+            "coverage": {
+              "const": "selected-points; normal-return-only after/end/closed; no trap finalizer"
+            }
+          },
+          "required": [
+            "executionVersion",
+            "httpVersion",
+            "selectedPoints",
+            "coverage"
+          ],
+          "additionalProperties": false
+        },
+        "runtimeObservationCoverage": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "id",
+        "artifactId",
+        "policyVersion",
+        "policySha256",
+        "baselineSha256",
+        "permittedImports",
+        "observedImports",
+        "importCoverage",
+        "lifecycle",
+        "runtimeObservationCoverage",
+        "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "HostObservedImport": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "function",
+            "table",
+            "memory",
+            "global"
+          ]
+        },
+        "parameters": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "i32",
+                  "i64",
+                  "f32",
+                  "f64"
+                ]
+              },
+              "maxItems": 100000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "results": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "i32",
+                  "i64",
+                  "f32",
+                  "f64"
+                ]
+              },
+              "maxItems": 100000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "module",
+        "name",
+        "kind",
+        "parameters",
+        "results"
       ],
       "additionalProperties": false
     },

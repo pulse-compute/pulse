@@ -70,7 +70,7 @@ assert.match(declarations, /export interface PulseEvent<Payload = unknown>/);
 assert.match(declarations, /export interface PulseEventContext<Payload = unknown> extends PulseExecutionContext/);
 assert.match(declarations, /export type PulseEmitEvent<Payload = unknown>/);
 assert.match(declarations, /emit<Payload = unknown>\(/);
-assert.match(declarations, /export type PulseEventHandler<Payload = unknown> = \(ctx: PulseEventContext<Payload>\) => Promise<void>/);
+assert.match(declarations, /export type PulseEventHandler<Payload = unknown, Result = void> = \(ctx: PulseEventContext<Payload>\) => Promise<Result>/);
 assert.match(declarations, /error\(message: string\): void/);
 assert.match(declarations, /warn\(message: string\): void/);
 assert.match(declarations, /info\(message: string\): void/);
@@ -154,6 +154,7 @@ const vnextFiles = [
   path.join(runtimeRoot, 'test', 'vnext-types-negative.ts'),
   path.join(runtimeRoot, 'test', 'canon-types.ts'),
   path.join(runtimeRoot, 'test', 'canon-types-negative.ts'),
+  path.join(runtimeRoot, 'test', 'fetch-method-types.ts'),
   path.join(runtimeRoot, 'test', 'host-types.ts'),
   path.join(pulseRoot, 'test', 'vnext-types.ts'),
   path.join(pulseRoot, 'test', 'vnext-types-negative.ts'),
@@ -185,4 +186,5 @@ assert.deepEqual(
   'runtime and Pulse async-shaped positive and negative TypeScript contract fixtures must type-check'
 );
 
+require('./fetch-method-types.cjs')(repoRoot);
 console.log('ok - runtime owns one async provider-neutral type algebra and Pulse re-exports it without a second Router value');

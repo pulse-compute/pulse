@@ -3,6 +3,8 @@
 const { CANONICAL_EFFECT_INVOCATION_POLICY } = require('@pulse-compute/wasm-contracts/handler/canonical-runtime');
 
 function runtimeSource(options = {}) {
+  const lifecycle = options.lifecycle;
+  const delivery = options.packageCompletion ? 'result == 0 ? pulse_package_set_effect_failure(index) : pulse_set_effect_result(index, result)' : 'pulse_set_effect_result(index, result)';
   return `
 const PULSE_FASTLY_MAX_EFFECT_INVOCATIONS: i32 = ${CANONICAL_EFFECT_INVOCATION_POLICY.defaultMaxEffects}
 let __pulse_invocation_count: i32 = 0
@@ -28,13 +30,13 @@ function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {
     || ticket <= 0 || unchecked(__pulse_invocation_tickets[index]) != ticket) {
     __pulse_fastly_fail(PULSE_ERROR_STATE, __pulse_invocation_failure, index); return 0
   }
-  unchecked(__pulse_invocation_tickets[index] = 0)
-  return ${options.packageCompletion ? "result == 0 ? pulse_package_set_effect_failure(index) : pulse_set_effect_result(index, result)" : "pulse_set_effect_result(index, result)"}
+${lifecycle?.site('effect-settle') ? lifecycle.site('effect-settle') + '\n' : ''}  unchecked(__pulse_invocation_tickets[index] = 0)
+  ${lifecycle ? lifecycle.site('effect-deliver', delivery) : 'return ' + delivery}
 }
 function __pulse_invocation_close(): void {
-  __pulse_invocation_closed = true
+${lifecycle?.site('invocation-close') ? lifecycle.site('invocation-close') + '\n' : ''}  __pulse_invocation_closed = true
   for (let i = 0; i < PULSE_FASTLY_EFFECT_COUNT; i += 1) unchecked(__pulse_invocation_tickets[i] = 0)
-}
+${lifecycle?.site('invocation-closed') ? lifecycle.site('invocation-closed') + '\n' : ''}}
 `;
 }
 

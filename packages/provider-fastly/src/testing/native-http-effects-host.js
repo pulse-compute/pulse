@@ -223,6 +223,15 @@ function executeFastlyNativeHttpEffects(input, options = {}) {
         trace.push({ module: 'fastly_http_req', name: 'header_insert', handle: Number(handle), header: [name, value] });
         return FASTLY_STATUS_OK;
       },
+      header_append(handle, namePointer, nameLength, valuePointer, valueLength) {
+        const request = requests.get(Number(handle));
+        if (!request) return FASTLY_STATUS_BADF;
+        const name = readUtf8(namePointer, nameLength);
+        const value = readUtf8(valuePointer, valueLength);
+        request.headers.push([name, value]);
+        trace.push({ module: 'fastly_http_req', name: 'header_append', handle: Number(handle), header: [name, value] });
+        return FASTLY_STATUS_OK;
+      },
       send_async(handle, bodyHandle, backendPointer, backendLength, pendingOut) {
         const request = requests.get(Number(handle));
         const body = bodies.get(Number(bodyHandle));

@@ -82,6 +82,12 @@ function assertExactProviderNative(native) {
       }
     );
   }
+  if (native.manifest.hostExtensions) {
+    const evidence = native.manifest.hostExtensions;
+    if (evidence.finalWasmSha256 !== observedSha256) throw providerBuildError(
+      'PULSE_HOST_EXTENSION_IMPORT', 'Terminal service evidence does not identify the packaged Wasm.', { automaticFallback: false });
+    require('@pulse-compute/wasm-contracts/provider/toolchain').hostExtensions.auditWasm(native.wasm, evidence.importPolicy);
+  }
   if (native.guestLink) {
     const audit = native.guestLink.audit;
     if (

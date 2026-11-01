@@ -168,6 +168,7 @@ function createDriver() {
         version: 'pulse.provider-target-descriptor.v1',
         target: 'native',
         targetId: 'fastly-compute-native',
+        hostExtensions: require('../build/host-extensions.js').ADMISSION,
         runtimeClass: 'native',
         status: 'supported',
         capabilities: Object.freeze([
@@ -361,7 +362,7 @@ function createDriver() {
           providerPackage: providerBuild.packageFile,
           providerSourceEntry: providerBuild.sourceEntryFile
         }),
-        build: { ...providerBuild.build, reportAttribution: native.reportAttribution, buildObservation: native.buildObservation },
+        build: { ...providerBuild.build, reportAttribution: native.reportAttribution, hostExtensions: native.manifest.hostExtensions, buildObservation: native.buildObservation },
         realization: publicRealization,
         packaging: audit ? Object.freeze({
           version: PROVIDER_PACKAGING_AUDIT_VERSION,

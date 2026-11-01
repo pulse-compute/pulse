@@ -59,6 +59,11 @@ const SHARD_DEFINITIONS = Object.freeze([
       'workspace-hygiene',
       'target-support',
       'provider-toolchain',
+      'lifecycle-contract',
+      'resource-admission',
+      'lifecycle-contract-installed',
+      'lifecycle-foundation-installed',
+      'terminal-qualification-contract',
       'provider-packages',
       'provider-fastly-package',
       'fastly-javascript-packaging'
@@ -82,6 +87,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'application-error-boundaries',
       'entities-javascript-runtime',
       'events-conformance',
+      'events-results',
       'canonical-api-runtime',
       'logging-runtime',
       'fastly-javascript-runtime'
@@ -142,6 +148,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'guest-link-audit-diagnostics',
       'jwt-package-owned-lowering',
       'jwt-javascript-admission',
+      'native-lifecycle',
+      'lifecycle-foundation',
       'canonical-native-wasm'
     ])
   }),
@@ -172,7 +180,14 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-driver-behavior-o09',
       'fastly-request-headers',
       'fastly-native-platform-capabilities',
+      'fastly-lifecycle',
+      'fastly-router-terminal',
+      'resource-ownership-cost',
+      'resource-ledger',
+      'fastly-forwarding-accounting',
+      'fastly-fetch-cohorts',
       'fastly-incoming-body-forwarding',
+      'fastly-forwarding-evidence',
       'fastly-conditional-kv',
       'clean-machine-acceptance' // installed conditional-KV adversarial corpus
     ])
@@ -211,6 +226,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'assets-native-embedded',
       'grip-package-owned-lowering',
       'grip-package-runtime',
+      'grip-terminal',
       'package-root-native',
       'assets-javascript-runtime',
       'entities-catalog',

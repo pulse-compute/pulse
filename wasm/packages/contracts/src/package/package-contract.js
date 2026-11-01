@@ -392,7 +392,9 @@ function normalizePackageBuilderResult(input, authorityInput = {}) {
   }
   assertNoForbiddenBoundaryFields(input.artifact, 'package builder result.artifact');
   const array = (name) => {
-    const value = input[name] == null ? [] : input[name];
+    const raw = input[name] == null ? [] : input[name];
+    const value = name === 'realizationArtifacts'
+      ? require('../provider/host-extension').normalizeArtifacts(raw, authority) : raw;
     if (!Array.isArray(value)) throw new TypeError(`package builder result.${name} must be an array.`);
     const normalized = immutableData(value, `package builder result.${name}`);
     assertNoForbiddenBoundaryFields(normalized, `package builder result.${name}`);
@@ -569,9 +571,17 @@ function normalizePackageLoweringBundle(input) {
   const packages = immutableData(input.packages || [], 'package lowering bundle.packages')
     .slice()
     .sort((left, right) => String(left.contractId || '').localeCompare(String(right.contractId || '')));
-  const byId = (name) => immutableData(input[name] || [], `package lowering bundle.${name}`)
-    .slice()
-    .sort((left, right) => String(left.id || '').localeCompare(String(right.id || '')));
+  const byId = (name) => {
+    const raw = input[name] || [];
+    const host = name === 'realizationArtifacts' ? require('../provider/host-extension') : null;
+    const artifacts = host ? host.normalizeArtifacts(raw) : raw;
+    if (host) for (const artifact of artifacts) {
+      if (artifact.kind === host.KIND && !packages.some(owner => owner.package === artifact.package && owner.contractId === artifact.contractId))
+        host.fail('OWNER', 'Host contribution must belong to a selected package in the lowering bundle.');
+    }
+    return immutableData(artifacts, `package lowering bundle.${name}`).slice()
+      .sort((left, right) => String(left.id || '').localeCompare(String(right.id || '')));
+  };
   const cryptoRequirements = immutableData(input.cryptoRequirements || [], 'package lowering bundle.cryptoRequirements')
     .slice()
     .sort((left, right) => String(left.requestedBy || '').localeCompare(String(right.requestedBy || ''))

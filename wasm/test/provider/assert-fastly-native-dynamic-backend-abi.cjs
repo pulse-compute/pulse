@@ -71,6 +71,7 @@ function strictHost(compiled, options = {}) {
       method_set(req, p, n) { assert.equal(text(p, n), 'GET'); return 0; },
       uri_set(req, p, n) { requests.get(req).url = text(p, n); return 0; },
       header_insert() { return 0; },
+      header_append() { return 0; },
       send_async(req, body, p, n, out) { const name = text(p, n); assert(backends.has(name) || name.startsWith('r06-static-'));
         const id = next++; pending.set(id, requests.get(req).url.endsWith('/alpha') ? 'alpha' : 'beta'); put(out, id); return 0; },
       pending_req_wait(id, resp, body) { assert(pending.has(id)); waits.push(pending.get(id)); const b = next++; bodies.set(b, pending.get(id)); pending.delete(id); put(resp, next++); put(body, b); return 0; }

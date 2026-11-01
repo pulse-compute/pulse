@@ -34,7 +34,13 @@ async function main() {
   assert.throws(() => owner.validateWorkflow(workflow.replace('--require-fastly', '')));
   assert.throws(() => owner.validateWorkflow(workflow.replace('test \"$CANDIDATE_RESULT\" = success', 'true')));
   git('init', '-q'); git('config', 'user.name', 'Fixture'); git('config', 'user.email', 'fixture@example.invalid');
-  prepare('1.0.0-beta.7'); write('.gitignore', 'node_modules/\nwasm/.test-results/\n.pulse-release/\n.pulse-qualification/\n');
+  prepare('1.0.0-beta.7');
+  const basePolicy = structuredClone(require('../../../release/maintenance-policy.json'));
+  // Existing base commits predate execution/checkpoint annotations.
+  for (const check of Object.values(basePolicy.checks)) { delete check.execution; delete check.checkpoint; }
+  write('release/maintenance-policy.json', basePolicy);
+  write('wasm/scripts/pulse.cjs', 'baseline launcher');
+  write('.gitignore', 'node_modules/\nwasm/.test-results/\n.pulse-release/\n.pulse-qualification/\n');
   const base = commit('base');
   prepare('1.0.0-beta.8', true); const head = commit('prepared');
   const tree = git('rev-parse', 'HEAD^{tree}');
@@ -182,6 +188,7 @@ async function main() {
   git('checkout', '-q', '--detach', docsMerge);
   const docsEvent = structuredClone(event); docsEvent.pull_request.head.sha = docs;
   assert.equal(identify(docsEvent, { ...env, GITHUB_SHA: docsMerge }).required, false);
+  assert.deepEqual(identify(docsEvent, { ...env, GITHUB_SHA: docsMerge }).scopeQualification, { policyRevision: base, checks: [], status: 'not-required' });
   docsEvent.pull_request.body = 'Release qualification: required';
   const requested = identify(docsEvent, { ...env, GITHUB_SHA: docsMerge });
   assert.equal(requested.required, true); assert.equal(requested.qualificationRequested, true);
@@ -189,6 +196,45 @@ async function main() {
   for (const body of ['Release qualification: skip', 'Release qualification: required\nRelease qualification: required']) {
     assert.throws(() => identify({ ...docsEvent, pull_request: { ...docsEvent.pull_request, body } }, { ...env, GITHUB_SHA: docsMerge }));
   }
+  // A successful candidate job with skipped seal steps cannot discharge these
+  // same-version obligations. This does not automatically schedule a seal.
+  for (const [file, requiredCheck] of [
+    ['scripts/release-pr-check.cjs', 'release'],
+    ['wasm/scripts/pulse.cjs', 'cli'],
+    ['wasm/packages/cli/examples/01-hello/src/handler.ts', 'cli'],
+    ['packages/provider-node/test/probe.test.ts', 'providers'],
+    ['new-unclassified-surface.xyz', 'cli']
+  ]) {
+    git('checkout', '-q', '--detach', base);
+    write(file, 'fixture');
+    // Proposed policy cannot remove the trusted base's obligations.
+    const weakened = structuredClone(require('../../../release/maintenance-policy.json'));
+    weakened.pathRules = [];
+    write('release/maintenance-policy.json', weakened);
+    const scopedHead = commit(`scope obligation ${requiredCheck}`);
+    const scopedMerge = git('commit-tree', git('rev-parse', 'HEAD^{tree}'), '-p', base, '-p', scopedHead, '-m', 'scope merge');
+    git('checkout', '-q', '--detach', scopedMerge);
+    const scopedEvent = structuredClone(event); scopedEvent.pull_request.head.sha = scopedHead;
+    assert.throws(() => identify(scopedEvent, { ...env, GITHUB_SHA: scopedMerge }),
+      error => error.message.includes('Pending scope qualification:') && error.message.includes(requiredCheck) && error.message.includes('would be skipped'), file);
+    scopedEvent.pull_request.body = 'Release qualification: required';
+    const scoped = identify(scopedEvent, { ...env, GITHUB_SHA: scopedMerge });
+    assert.equal(scoped.required, true, file);
+    assert.equal(scoped.preparation.preparedRelease, false, file);
+    assert.equal(scoped.scopeQualification.status, 'pending', 'request is not execution evidence');
+    assert.equal(scoped.scopeQualification.policyRevision, base);
+    assert(scoped.scopeQualification.checks.includes(requiredCheck), file);
+    assert.throws(() => owner.assertSeal({ ...seal, status: 'skipped' }, scoped), /Seal did not pass/);
+  }
+  git('checkout', '-q', '--detach', base);
+  fs.mkdirSync(path.join(repo, 'docs'), { recursive: true });
+  git('mv', 'wasm/scripts/pulse.cjs', 'docs/moved-launcher.md');
+  const renamedHead = commit('rename executable into docs');
+  const renamedMerge = git('commit-tree', git('rev-parse', 'HEAD^{tree}'), '-p', base, '-p', renamedHead, '-m', 'rename merge');
+  git('checkout', '-q', '--detach', renamedMerge);
+  const renamedEvent = structuredClone(event); renamedEvent.pull_request.head.sha = renamedHead;
+  assert.throws(() => identify(renamedEvent, { ...env, GITHUB_SHA: renamedMerge }), /Pending scope qualification: cli/);
+  git('checkout', '-q', '--detach', docsMerge);
   write('packages/runtime/index.js', 'changed product'); const unprepared = commit('unprepared');
   const badMerge = git('commit-tree', git('rev-parse', 'HEAD^{tree}'), '-p', base, '-p', unprepared, '-m', 'bad merge');
   git('checkout', '-q', '--detach', badMerge); docsEvent.pull_request.head.sha = unprepared;

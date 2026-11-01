@@ -243,3 +243,6 @@ assert.doesNotMatch(executionSource, /driver\.writeTarget\(\s*\{/);
 assert.doesNotMatch(executionSource, /driver\.inspectRealization\(\s*\{/);
 
 console.log('ok - provider toolchains, target descriptors, invocations, requirements, results, and final-byte packaging are exact, versioned, and fail closed');
+
+// The reserved package contribution is part of this existing provider boundary.
+require('./assert-host-extension-contract.cjs');

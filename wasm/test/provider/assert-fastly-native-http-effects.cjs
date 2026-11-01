@@ -84,6 +84,7 @@ try {
   require('./assert-fastly-native-dynamic-backend-abi.cjs').proveStrict();
   require('./assert-fastly-native-dynamic-backends.cjs').main();
   require('./assert-fastly-native-value-parity.cjs').main('http');
+  require('./assert-fastly-fetch-headers.cjs').main('http');
   const singlePlan = planForExample('fetchComposition');
   const singleOptions = {
     cwd: repoRoot,

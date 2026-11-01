@@ -1,5 +1,7 @@
 'use strict';
 
+const { fetchHeadersSource } = require('./native-fetch-headers.js');
+
 const dynamicBackends = require('./native-dynamic-backends.js');
 
 const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
@@ -7,6 +9,8 @@ const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonPro
 const { nativeLoggingSource } = require('./native-stdio.js');
 const applicationErrors = require('./native-application-errors.js');
 const effectInvocations = require('./effect-invocations.js');
+const lifecycleBindings = require('./lifecycle.js');
+const hostExtensions = require('./host-extensions.js');
 const packageApplication = require('./package-native-application.js');
 const nativeValueBudget = require('./native-value-budget.js');
 const { schemaNeedsValueProjection } = require('@pulse-compute/wasm-contracts/schema-json/registry');
@@ -126,6 +130,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   Object.freeze(['fastly_http_req', 'method_set']),
   Object.freeze(['fastly_http_req', 'uri_set']),
   Object.freeze(['fastly_http_req', 'header_insert']),
+  Object.freeze(['fastly_http_req', 'header_append']),
   Object.freeze(['fastly_http_req', 'send_async']),
   Object.freeze(['fastly_http_req', 'pending_req_wait_v2']),
   Object.freeze(['fastly_http_resp', 'new']),
@@ -189,7 +194,8 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   'kv.insertIfAbsent': 16,
   'kv.compareAndSwap': 17,
   'time.now': 18,
-  'crypto.digestText': 19
+  'crypto.digestText': 19,
+  'host.extension': 24
 });
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
@@ -198,6 +204,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
+  'host.extension',
   'time.now',
   'crypto.digestText',
   'fetch',
@@ -220,6 +227,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
+  'host.extension',
   'time.now',
   'crypto.digestText',
   'config.get',
@@ -684,6 +692,7 @@ function validatePlanBoundary(plan, options = {}) {
   if (!plan.ownership || plan.ownership.providerNeutral !== true || plan.ownership.javascriptRuntime !== false) {
     fail('Fastly native platform capability realization requires a provider-neutral plan without JavaScript runtime ownership.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_PLAN_OWNERSHIP_INVALID', { ownership: plan.ownership });
   }
+  const selectedExtensions = hostExtensions.select(plan, options);
   const effects = plan.effects || [];
   const unsupported = effects.filter((effect) => !FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.includes(effect.kind));
   if (unsupported.length > 0) {
@@ -711,7 +720,8 @@ function validatePlanBoundary(plan, options = {}) {
       && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3 && !digest;
+    const extension = effect.kind === 'host.extension' && selectedExtensions.some(item => hostExtensions.matches(effect, item.artifact));
+    return !grip && !assets && !jwt && !s3 && !digest && !extension;
   });
   if (unsupportedPackages.length > 0) {
     fail('Fastly native realization only accepts the trusted first-party Assets, GRIP, JWT, S3, and Crypto digest package contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', {
@@ -734,7 +744,8 @@ function validatePlanBoundary(plan, options = {}) {
       && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3 && !digest;
+    const extension = effect.kind === 'host.extension' && selectedExtensions.some(item => hostExtensions.matches(effect, item.artifact));
+    return !grip && !assets && !jwt && !s3 && !digest && !extension;
   });
   if (unsupportedDeclarations.length > 0) {
     fail('Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, and Crypto digest contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
@@ -1003,10 +1014,11 @@ function requiredImportsForPlan(plan, bindings) {
   if (kinds.has('fetch') || kinds.has('grip.publish') || kinds.has('grip.broadcast')) {
     for (const key of [
       'fastly_http_req:new', 'fastly_http_req:method_set', 'fastly_http_req:uri_set',
-      'fastly_http_req:header_insert', 'fastly_http_req:send_async', 'fastly_http_req:pending_req_wait_v2'
+      'fastly_http_req:header_append', 'fastly_http_req:send_async', 'fastly_http_req:pending_req_wait_v2'
     ]) keys.add(key);
   }
   if (bindings && dynamicBackends.active(bindings)) keys.add('fastly_http_req:register_dynamic_backend');
+  if (plan.effects.some(effect=>effect.fetchTiming)) keys.add('fastly_async_io:is_ready');
   if (kinds.has('fetch')) for (const key of ['wasi_snapshot_preview1:clock_time_get', 'fastly_async_io:select', 'fastly_http_req:pending_req_poll_v2', 'fastly_http_resp:close', 'fastly_http_body:close']) keys.add(key);
   if (planRequiresFetchBodyRead(plan)) keys.add('fastly_http_body:read');
   if (kinds.has('config.get')) for (const key of ['fastly_config_store:open', 'fastly_config_store:get']) keys.add(key);
@@ -1032,6 +1044,7 @@ function requiredImportsForPlan(plan, bindings) {
   }
   if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText') || kinds.has('s3.getBody')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
   if (require('./native-body-forwarding.js').enabled(plan)) {
+    keys.delete('fastly_http_req:header_append'); keys.add('fastly_http_req:header_insert');
     keys.delete('fastly_http_req:send_async'); keys.delete('fastly_http_req:pending_req_wait_v2');
     for (const key of require('./native-body-forwarding.js').IMPORTS) keys.add(key);
     keys.add('fastly_http_body:read');
@@ -1185,6 +1198,7 @@ function generateSchemaRuntime(plan) {
     `const __PULSE_SCHEMA_REQUIRE_JSON: bool = ${registry.contentTypePolicy === 'require-json' ? 'true' : 'false'}`,
     '',
     schemaJsonAdmissionSource(plan),
+    fetchHeadersSource(),
     schemaFetchJsonSource(),
     ...nodeLines,
     `function __pulse_fastly_schema_apply(schemaId: string, valueHandle: i32, encode: bool${textEncodeIds.size ? ', textResult: bool = false' : ''}): i32 {`,
@@ -1315,7 +1329,8 @@ function effectDispatchSource(plan) {
     'grip.channel': '__pulse_fastly_grip_channel_begin',
     'grip.hold': '__pulse_fastly_grip_hold_begin',
     'grip.publish': '__pulse_fastly_grip_publish_begin',
-    'grip.broadcast': '__pulse_fastly_grip_publish_begin'
+    'grip.broadcast': '__pulse_fastly_grip_publish_begin',
+    'host.extension': '__pulse_extension_begin'
   });
   const kinds = [...new Set((plan.effects || []).map((effect) => effect.kind))];
   const lines = [
@@ -1341,6 +1356,7 @@ function effectDispatchSource(plan) {
 }
 
 function fastlyRuntimeSource(plan, bindings, options = {}) {
+  const lifecycle = options.lifecycle;
   const textEncodeIds = schemaTextEncodeIds(plan);
   const effectCount = (plan.effects || []).length;
   const hasAssets = (plan.effects || []).some(effect => effect.kind === 'assets.lookup');
@@ -1414,7 +1430,7 @@ function __pulse_fastly_jwt_attach_evidence(handle: i32): void { void handle }
   // their specific responses here. Every remaining fatal path needs a response,
   // independently of whether JWT evidence was requested for this build.
   const terminalErrorSource = `
-function __pulse_fastly_jwt_send_error(): void {
+${lifecycle?.active ? `function __pulse_fastly_jwt_send_error(): void {\n${lifecycle.site('response-error')}\n  __pulse_fastly_jwt_send_error_impl()\n}\n` : ''}function ${lifecycle?.legacyName('__pulse_fastly_jwt_send_error') || '__pulse_fastly_jwt_send_error'}(): void {
   const output = new __PulseFastlyValue()
   output.kind = PULSE_VALUE_RESPONSE
   output.status = ${jwtReality ? '__pulse_fastly_jwt_error != 0 ? 400 : 500' : '500'}
@@ -1442,6 +1458,7 @@ function __pulse_fastly_jwt_send_error(): void {
 @external("fastly_http_req", "method_set") declare function fastly_http_req_method_set(handle: i32, method: usize, methodLength: i32): i32
 @external("fastly_http_req", "uri_set") declare function fastly_http_req_uri_set(handle: i32, uri: usize, uriLength: i32): i32
 @external("fastly_http_req", "header_insert") declare function fastly_http_req_header_insert(handle: i32, name: usize, nameLength: i32, value: usize, valueLength: i32): i32
+@external("fastly_http_req", "header_append") declare function fastly_http_req_header_append(handle: i32, name: usize, nameLength: i32, value: usize, valueLength: i32): i32
 @external("fastly_http_req", "send_async") declare function fastly_http_req_send_async(handle: i32, body: i32, backend: usize, backendLength: i32, pendingOut: usize): i32
 @external("fastly_http_req", "pending_req_wait_v2") declare function fastly_http_req_pending_req_wait_v2(handle: i32, detail: usize, responseOut: usize, bodyOut: usize): i32
 @external("fastly_http_resp", "new") declare function fastly_http_resp_new(handleOut: usize): i32
@@ -1449,7 +1466,7 @@ function __pulse_fastly_jwt_send_error(): void {
 @external("fastly_http_resp", "header_value_get") declare function fastly_http_resp_header_value_get(handle: i32, name: usize, nameLength: i32, value: usize, valueLength: i32, writtenOut: usize): i32
 @external("fastly_http_resp", "status_get") declare function fastly_http_resp_status_get(handle: i32, statusOut: usize): i32
 @external("fastly_http_resp", "status_set") declare function fastly_http_resp_status_set(handle: i32, status: i32): i32
-@external("fastly_http_resp", "send_downstream") declare function fastly_http_resp_send_downstream(handle: i32, body: i32, streaming: i32): i32
+@external("fastly_http_resp", "send_downstream") declare function ${lifecycle?.authority ? '__pulse_response_send_raw' : 'fastly_http_resp_send_downstream'}(handle: i32, body: i32, streaming: i32): i32
 @external("fastly_http_body", "new") declare function fastly_http_body_new(handleOut: usize): i32
 @external("fastly_http_body", "read") declare function fastly_http_body_read(handle: i32, buffer: usize, bufferLength: i32, readOut: usize): i32
 @external("fastly_http_body", "write") declare function fastly_http_body_write(handle: i32, buffer: usize, bufferLength: i32, end: i32, writtenOut: usize): i32
@@ -1526,6 +1543,7 @@ ${nativeStringFields}
   }
   responseHandle: i32 = 0
   bodyHandle: i32 = 0
+${options.fetchAccounting?.selection === 'canonical-fetch-cohorts' ? '  fetchHeaders: Array<__FCA_Header> | null = null;\n  fetchJsonType: i32 = 0;' : ''}
   bodyLoaded: i32 = 0
   s3Body: bool = false
   s3Deadline: i64 = 0
@@ -1803,26 +1821,29 @@ function __pulse_fastly_json(handle: i32, depth: i32): string {
 }
 function __pulse_fastly_parse_json(text: string): i32 { const parser = new __PulseJsonParser(text); const value = parser.parse(); if (parser.failed || value <= 0) { __pulse_fastly_fail(PULSE_ERROR_JSON, 3, -1); return 0 } return value }
 function __pulse_fastly_path(uri: string): string { let start = 0; const scheme = uri.indexOf("://"); if (scheme >= 0) { const slash = uri.indexOf("/", scheme + 3); start = slash >= 0 ? slash : uri.length } let end = uri.length; const query = uri.indexOf("?", start); if (query >= 0 && query < end) end = query; const fragment = uri.indexOf("#", start); if (fragment >= 0 && fragment < end) end = fragment; return start >= end ? "/" : uri.substring(start, end) }
-function __pulse_fastly_read_req_string(kind: i32): string { const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = kind == 0 ? fastly_http_req_method_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)) : fastly_http_req_uri_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 10 + kind, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
+function __pulse_fastly_read_req_string(kind: i32): string { const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = kind == 0 ? fastly_http_req_method_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)) : fastly_http_req_uri_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 10 + kind, -1); return "" } ${options.fetchAccounting?.selection === 'canonical-fetch-cohorts' ? 'if (__pulse_fastly_out_value(written)<0 || __pulse_fastly_out_value(written)>buffer.byteLength) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL,10+kind,-1);return ""; }' : ''} return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
 function __pulse_fastly_read_body(handle: i32, effectIndex: i32, requestText: bool = false): string {
-  const chunks = new Array<Uint8Array>(); let total = 0;
+  // One retained input allocation, including a byte to distinguish exact-limit
+  // EOF from overflow. Short reads never allocate another chunk or prefix.
+  if (__PULSE_SCHEMA_MAX_BYTES <= 0 || __PULSE_SCHEMA_MAX_BYTES > 1073741823) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 21, effectIndex); return "" }
+  const bytes = new Uint8Array(__PULSE_SCHEMA_MAX_BYTES + 1), read = __pulse_fastly_out_i32();
+  let total = 0;
   while (true) {
-    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();
-    const status = fastly_http_body_read(handle, buffer.dataStart, buffer.length, changetype<usize>(read));
+    if (!__pulse_fastly_body_read_ready(handle, effectIndex)) return "";
+    const capacity = min<i32>(PULSE_FASTLY_BUFFER_BYTES, bytes.length - total);
+    const status = fastly_http_body_read(handle, bytes.dataStart + total, capacity, changetype<usize>(read));
     if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" }
     const count = __pulse_fastly_out_value(read);
-    if (count < 0 || count > buffer.length) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" }
+    if (count < 0 || count > capacity) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" }
     if (!count) break;
     total += count;
-    if (total > __PULSE_SCHEMA_MAX_BYTES && __PULSE_SCHEMA_MAX_BYTES > 0) { __pulse_fastly_fail(requestText ? PULSE_ERROR_REQUEST_BODY : PULSE_ERROR_SCHEMA, 21, effectIndex); return "" }
-    chunks.push(buffer.subarray(0, count));
+    if (total > __PULSE_SCHEMA_MAX_BYTES) { __pulse_fastly_fail(requestText ? PULSE_ERROR_REQUEST_BODY : PULSE_ERROR_SCHEMA, 21, effectIndex); return "" }
   }
   // UTF-8 scalars may straddle host read chunks. Decode the bounded body once.
-  const bytes = new Uint8Array(total); let offset = 0;
-  for (let i = 0; i < chunks.length; i++) { bytes.set(chunks[i], offset); offset += chunks[i].length; }
-  if (requestText && !__pulse_request_utf8_valid(bytes)) { __pulse_fastly_fail(PULSE_ERROR_REQUEST_BODY, 24, effectIndex); return "" }
+  if (requestText && !__pulse_request_utf8_valid(bytes, total)) { __pulse_fastly_fail(PULSE_ERROR_REQUEST_BODY, 24, effectIndex); return "" }
   return __pulse_fastly_decode(bytes, total);
 }
+function __pulse_fastly_body_read_ready(handle: i32, effectIndex: i32): bool { return true }
 function __pulse_fastly_request_header_text(name: string): string { const value = __pulse_header_lookup(__pulse_fastly_request_handle, name, false); return value === null ? "" : value }
 function __pulse_fastly_fetch_header_text(responseHandle: i32, name: string): string { const value = __pulse_header_lookup(responseHandle, name, true); return value === null ? "" : value }
 function __pulse_fastly_fetch_body(value: __PulseFastlyValue): string { if (value.bodyLoaded == 0) { value.text = __pulse_fastly_read_body(value.bodyHandle, -1); value.bodyLoaded = 1 } return value.text }
@@ -1864,7 +1885,7 @@ function host_value_array_spread(target: i32, source: i32): void { const from = 
 function host_value_object(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_OBJECT; return __pulse_fastly_put(item) }
 function host_value_object_set(target: i32, keyHandle: i32, value: i32): void { const item = __pulse_fastly_value(target); if (item.kind != PULSE_VALUE_OBJECT || item.immutable) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 32, -1); return } const key = __pulse_fastly_string(keyHandle); const index = __pulse_fastly_find(item, key); if (index >= 0) unchecked(item.values[index] = value); else { item.keys.push(key); item.values.push(value) } }
 function host_value_object_spread(target: i32, source: i32): void { const from = __pulse_fastly_value(source); if (from.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 33, -1); return } for (let i = 0; i < from.keys.length; i += 1) host_value_object_set(target, __pulse_fastly_string_value(unchecked(from.keys[i])), unchecked(from.values[i])) }
-function host_value_property(target: i32, keyHandle: i32): i32 { const item = __pulse_fastly_value(target); const key = __pulse_fastly_string(keyHandle); if (item.kind == PULSE_VALUE_OBJECT) { const index = __pulse_fastly_find(item, key); return index >= 0 ? unchecked(item.values[index]) : host_value_undefined() } if (item.kind == PULSE_VALUE_FETCH && key == "status") { const out = __pulse_fastly_out_i32(); const status = fastly_http_resp_status_get(item.responseHandle, changetype<usize>(out)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 34, -1); return 0 } return host_value_number(__pulse_fastly_out_value(out)) } if ((item.kind == PULSE_VALUE_STRING || item.kind == PULSE_VALUE_ARRAY) && key == "length") return host_value_number(item.kind == PULSE_VALUE_STRING ? item.textLength : item.values.length); return host_value_undefined() }
+function host_value_property(target: i32, keyHandle: i32): i32 { const item = __pulse_fastly_value(target); const key = __pulse_fastly_string(keyHandle); if (item.kind == PULSE_VALUE_OBJECT) { const index = __pulse_fastly_find(item, key); return index >= 0 ? unchecked(item.values[index]) : host_value_undefined() } if (item.kind == PULSE_VALUE_FETCH && key == "status") { ${options.fetchAccounting?.selection === 'canonical-fetch-cohorts' ? 'return __fca_status(item);' : ''} const out = __pulse_fastly_out_i32(); const status = fastly_http_resp_status_get(item.responseHandle, changetype<usize>(out)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 34, -1); return 0 } return host_value_number(__pulse_fastly_out_value(out)) } if ((item.kind == PULSE_VALUE_STRING || item.kind == PULSE_VALUE_ARRAY) && key == "length") return host_value_number(item.kind == PULSE_VALUE_STRING ? item.textLength : item.values.length); return host_value_undefined() }
 function host_value_property_set(target: i32, key: i32, value: i32): i32 { host_value_object_set(target, key, value); return value }
 function host_value_element(target: i32, keyHandle: i32): i32 { const item = __pulse_fastly_value(target); if (item.kind == PULSE_VALUE_STRING) return __pulse_fastly_string_index(item, keyHandle); if (item.kind == PULSE_VALUE_ARRAY) { const index = i32(__pulse_fastly_number(keyHandle)); return index >= 0 && index < item.values.length ? unchecked(item.values[index]) : host_value_undefined() } return host_value_property(target, keyHandle) }
 function host_value_element_set(target: i32, keyHandle: i32, value: i32): i32 { const item = __pulse_fastly_value(target); if (item.immutable) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 35, -1); return 0 } if (item.kind == PULSE_VALUE_ARRAY) { const index = i32(__pulse_fastly_number(keyHandle)); if (index < 0) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 35, -1); return 0 } while (item.values.length <= index) item.values.push(host_value_undefined()); unchecked(item.values[index] = value); return value } return host_value_property_set(target, keyHandle, value) }
@@ -1920,8 +1941,8 @@ function host_grip_subscribe(responseHandle: i32, optionsHandle: i32): i32 { con
 function host_grip_handoff(optionsHandle: i32): i32 { const options = __pulse_fastly_value(optionsHandle); if (options.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 139, -1); return 0 } const output = new __PulseFastlyValue(); output.kind = PULSE_VALUE_RESPONSE; output.status = 200; const statusIndex = __pulse_fastly_find(options, "status"); if (statusIndex >= 0) output.status = i32(__pulse_fastly_number(unchecked(options.values[statusIndex]))); const bodyIndex = __pulse_fastly_find(options, "body"); if (bodyIndex >= 0) output.text = __pulse_fastly_string(unchecked(options.values[bodyIndex])); __pulse_fastly_headers_from_options(options, output); let hasContentType = false; for (let i = 0; i < output.headers.length; i += 1) if (unchecked(output.headers[i]).name.toLowerCase() == "content-type") hasContentType = true; if (!hasContentType) output.headers.push(new __PulseFastlyHeader("Content-Type", "application/websocket-events")); return __pulse_fastly_grip_frame(options, output) ? __pulse_fastly_put(output) : 0 }
 function host_kv_namespace(name: i32): i32 { return name }
 function host_fetch_text(responseHandle: i32): i32 { const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 42, -1); return 0 } return __pulse_fastly_string_value(__pulse_fastly_fetch_body(response)) }
-function host_fetch_json(responseHandle: i32, schemaHandle: i32): i32 { const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 43, -1); return 0 } if (__PULSE_SCHEMA_REQUIRE_JSON) { const contentType = __pulse_fastly_fetch_header_text(response.responseHandle, "content-type"); if (contentType.length == 0 || contentType.toLowerCase().indexOf("json") < 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 44, -1); return 0 } } const parsed = ${hasJsonAdmission(plan) ? '__pulse_fastly_schema_parse_json(__pulse_fastly_fetch_body(response), schemaHandle)' : '__pulse_fastly_parse_json(__pulse_fastly_fetch_body(response))'}; if (parsed <= 0) return 0; const schema = __pulse_fastly_value(schemaHandle); return schema.kind == PULSE_VALUE_STRING ? __pulse_fastly_schema_apply(schema.text, parsed, false) : parsed }
-function host_fetch_header(responseHandle: i32, nameHandle: i32): i32 { const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 45, -1); return 0 } const value = __pulse_header_lookup(response.responseHandle, __pulse_fastly_string(nameHandle), true); return value === null ? host_value_undefined() : __pulse_fastly_string_value(value) }
+function host_fetch_json(responseHandle: i32, schemaHandle: i32): i32 { const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 43, -1); return 0 } if (__PULSE_SCHEMA_REQUIRE_JSON) { ${options.fetchAccounting?.selection === 'canonical-fetch-cohorts' ? 'if (!__fca_json_type(response)) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA,44,-1); return 0; }' : `${options.fetchAccounting?.selection === 'canonical-single-get-json' ? 'if (!__fca_work()) return 0;' : ''} const contentType = __pulse_fastly_fetch_header_text(response.responseHandle, "content-type"); if (contentType.length == 0 || contentType.toLowerCase().indexOf("json") < 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 44, -1); return 0 }`} } const parsed = ${hasJsonAdmission(plan) ? '__pulse_fastly_schema_parse_json(__pulse_fastly_fetch_body(response), schemaHandle)' : '__pulse_fastly_parse_json(__pulse_fastly_fetch_body(response))'}; if (parsed <= 0) return 0; const schema = __pulse_fastly_value(schemaHandle); return schema.kind == PULSE_VALUE_STRING ? __pulse_fastly_schema_apply(schema.text, parsed, false) : parsed }
+function host_fetch_header(responseHandle: i32, nameHandle: i32): i32 { const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 45, -1); return 0 } const value = ${options.fetchAccounting?.selection === 'canonical-fetch-cohorts' ? '__fca_header(response, __pulse_fastly_string(nameHandle))' : '__pulse_header_lookup(response.responseHandle, __pulse_fastly_string(nameHandle), true)'}; return value === null ? host_value_undefined() : __pulse_fastly_string_value(value) }
 function __pulse_fastly_payload_field(payload: __PulseFastlyValue, name: string): i32 { const index = __pulse_fastly_find(payload, name); return index < 0 ? host_value_undefined() : unchecked(payload.values[index]) }
 function __pulse_fastly_ready_effect(effectIndex: i32, handle: i32): void { unchecked(__pulse_fastly_ready[effectIndex] = handle); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_READY) }
 function __pulse_fastly_open_config_store(effectIndex: i32): i32 { const nameBytes = __pulse_fastly_utf8(__pulse_fastly_config_store(effectIndex)); const out = __pulse_fastly_out_i32(); const status = fastly_config_store_open(changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(out)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 110, effectIndex); return 0 } return __pulse_fastly_out_value(out) }
@@ -1943,8 +1964,8 @@ function __pulse_fastly_jwt_capture_clock(effectIndex: i32): f64 { __pulse_fastl
 function __pulse_fastly_jwt_validate_schema(effectIndex: i32, schemaId: string, claimsHandle: i32): i32 { __pulse_fastly_jwt_schema_calls += 1; __pulse_fastly_jwt_event_order += "H"; if (__pulse_fastly_jwt_case_id() == "claims-schema-failure-after-registered-claims") return 0; return __pulse_fastly_schema_apply(schemaId, claimsHandle, false) }
 function __pulse_fastly_jwt_sign_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const result = pulse_jwt_fastly_sign(effectIndex, unchecked(__pulse_fastly_payloads[effectIndex])); if (result > 0 && __pulse_fastly_last_error == 0) __pulse_fastly_ready_effect(effectIndex, result) }
 function __pulse_fastly_jwt_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const result = pulse_jwt_fastly_verify(effectIndex, unchecked(__pulse_fastly_payloads[effectIndex])); if (result > 0 && __pulse_fastly_last_error == 0) __pulse_fastly_ready_effect(effectIndex, result) }
-function __pulse_fastly_start_request(effectIndex: i32, url: string, method: string, headers: __PulseFastlyValue, body: string, backend: string): void { __pulse_transport_slots[effectIndex] = null; const requestOut = __pulse_fastly_out_i32(); let status = fastly_http_req_new(changetype<usize>(requestOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 70, effectIndex); return } const requestHandle = __pulse_fastly_out_value(requestOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 71, effectIndex); return } const bodyHandle = __pulse_fastly_out_value(bodyOut); const methodBytes = __pulse_fastly_utf8(method); status = fastly_http_req_method_set(requestHandle, changetype<usize>(methodBytes), methodBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 72, effectIndex); return } const urlBytes = __pulse_fastly_utf8(url); status = fastly_http_req_uri_set(requestHandle, changetype<usize>(urlBytes), urlBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 73, effectIndex); return } if (headers.kind == PULSE_VALUE_OBJECT) { for (let i = 0; i < headers.keys.length; i += 1) { const nameBytes = __pulse_fastly_utf8(unchecked(headers.keys[i])); const valueBytes = __pulse_fastly_utf8(__pulse_fastly_string(unchecked(headers.values[i]))); status = fastly_http_req_header_insert(requestHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 74, effectIndex); return } } } if (body.length > 0) { status = __pulse_fastly_write_body(bodyHandle, body); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 75, effectIndex); return } } if (backend.length == 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 76, effectIndex); return } const backendBytes = __pulse_fastly_utf8(backend); const pendingOut = __pulse_fastly_out_i32(); status = fastly_http_req_send_async(requestHandle, bodyHandle, changetype<usize>(backendBytes), backendBytes.byteLength, changetype<usize>(pendingOut)); if (status != FASTLY_STATUS_OK) { __pulse_fetch_close_request(requestHandle); __pulse_fetch_close_body(bodyHandle); __pulse_transport_capture(effectIndex, status, 'send'); __pulse_fetch_fail(status, 77, effectIndex); return } unchecked(__pulse_fastly_pending[effectIndex] = __pulse_fastly_out_value(pendingOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_ASYNC) }
-function __pulse_fastly_fetch_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const urlIndex = __pulse_fastly_find(payload, "url"); if (urlIndex < 0) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 48, effectIndex); return } const url = __pulse_fastly_string(unchecked(payload.values[urlIndex])); const initIndex = __pulse_fastly_find(payload, "init"); const init = initIndex >= 0 ? __pulse_fastly_value(unchecked(payload.values[initIndex])) : new __PulseFastlyValue(); let method = "GET"; let body = ""; let headers = new __PulseFastlyValue(); headers.kind = PULSE_VALUE_OBJECT; if (init.kind == PULSE_VALUE_OBJECT) { const methodIndex = __pulse_fastly_find(init, "method"); if (methodIndex >= 0) method = __pulse_fastly_string(unchecked(init.values[methodIndex])).toUpperCase(); const headersIndex = __pulse_fastly_find(init, "headers"); if (headersIndex >= 0) headers = __pulse_fastly_value(unchecked(init.values[headersIndex])); const bodyIndex = __pulse_fastly_find(init, "body"); const jsonIndex = __pulse_fastly_find(init, "json"); if (bodyIndex >= 0) { const bodyValue = unchecked(init.values[bodyIndex]); const bodyObject = __pulse_fastly_value(bodyValue); body = bodyObject.kind == PULSE_VALUE_STRING ? bodyObject.text : __pulse_fastly_json(bodyValue, 0) } else if (jsonIndex >= 0) { body = __pulse_fastly_fetch_json_body(init, unchecked(init.values[jsonIndex])); if (__pulse_fastly_last_error != 0) return; headers = __pulse_fastly_fetch_json_headers(headers) } } __pulse_fastly_start_request(effectIndex, url, method, headers, body, __pulse_fastly_backend(effectIndex)) }
+function __pulse_fastly_start_request(effectIndex: i32, url: string, method: string, headers: __PulseFastlyValue, body: string, backend: string): void { __pulse_transport_slots[effectIndex] = null; const requestOut = __pulse_fastly_out_i32(); let status = ${options.fetchAccounting ? '__fca_new(0,' : 'fastly_http_req_new('}changetype<usize>(requestOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 70, effectIndex); return } const requestHandle = __pulse_fastly_out_value(requestOut); const bodyOut = __pulse_fastly_out_i32(); status = ${options.fetchAccounting ? '__fca_new(1,' : 'fastly_http_body_new('}changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 71, effectIndex); return } const bodyHandle = __pulse_fastly_out_value(bodyOut); const methodBytes = __pulse_fastly_utf8(method); ${options.fetchAccounting ? 'if (!__fca_work()) return;' : ''} status = fastly_http_req_method_set(requestHandle, changetype<usize>(methodBytes), methodBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 72, effectIndex); return } const urlBytes = __pulse_fastly_utf8(url); ${options.fetchAccounting ? 'if (!__fca_work()) return;' : ''} status = fastly_http_req_uri_set(requestHandle, changetype<usize>(urlBytes), urlBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 73, effectIndex); return } if (headers.kind == PULSE_VALUE_OBJECT) { for (let i = 0; i < headers.keys.length; i += 1) { const nameBytes = __pulse_fastly_utf8(unchecked(headers.keys[i])); const valueBytes = __pulse_fastly_utf8(__pulse_fastly_string(unchecked(headers.values[i]))); ${options.fetchAccounting ? 'if (!__fca_work()) return;' : ''} status = fastly_http_req_header_append(requestHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 74, effectIndex); return } } } if (body.length > 0) { status = ${options.fetchAccounting?.selection === 'canonical-fetch-cohorts' ? '__fca_write' : '__pulse_fastly_write_body'}(bodyHandle, body); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 75, effectIndex); return } } if (backend.length == 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 76, effectIndex); return } const backendBytes = __pulse_fastly_utf8(backend); const pendingOut = __pulse_fastly_out_i32(); status = ${options.fetchAccounting ? '__fca_dispatch' : 'fastly_http_req_send_async'}(requestHandle, bodyHandle, changetype<usize>(backendBytes), backendBytes.byteLength, changetype<usize>(pendingOut)); if (status != FASTLY_STATUS_OK) { ${options.fetchAccounting ? '__fca_cleanup();' : '__pulse_fetch_close_request(requestHandle); __pulse_fetch_close_body(bodyHandle);'} __pulse_transport_capture(effectIndex, status, 'send'); __pulse_fetch_fail(status, 77, effectIndex); return } unchecked(__pulse_fastly_pending[effectIndex] = __pulse_fastly_out_value(pendingOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_ASYNC) }
+function __pulse_fastly_fetch_begin(effectIndex: i32, payload: __PulseFastlyValue): void { ${options.fetchAccounting ? options.fetchAccounting.selection === 'canonical-fetch-cohorts' ? 'if (!__fca_start(effectIndex)) return;' : 'if (!__fca_start()) return;' : ''} const urlIndex = __pulse_fastly_find(payload, "url"); if (urlIndex < 0) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 48, effectIndex); return } const url = __pulse_fastly_string(unchecked(payload.values[urlIndex])); const initIndex = __pulse_fastly_find(payload, "init"); const init = initIndex >= 0 ? __pulse_fastly_value(unchecked(payload.values[initIndex])) : new __PulseFastlyValue(); let method = "GET"; let body = ""; let headers = new __PulseFastlyValue(); headers.kind = PULSE_VALUE_OBJECT; if (init.kind == PULSE_VALUE_OBJECT) { const methodIndex = __pulse_fastly_find(init, "method"); if (methodIndex >= 0) method = __pulse_fastly_string(unchecked(init.values[methodIndex])).toUpperCase(); const headersIndex = __pulse_fastly_find(init, "headers"); if (headersIndex >= 0) headers = __pulse_fastly_value(unchecked(init.values[headersIndex])); headers = __pulse_fastly_fetch_headers(headers, effectIndex); if (__pulse_fastly_last_error != 0) return; const bodyIndex = __pulse_fastly_find(init, "body"); const jsonIndex = __pulse_fastly_find(init, "json"); if (bodyIndex >= 0) { const bodyValue = unchecked(init.values[bodyIndex]); const bodyObject = __pulse_fastly_value(bodyValue); body = bodyObject.kind == PULSE_VALUE_STRING ? bodyObject.text : __pulse_fastly_json(bodyValue, 0) } else if (jsonIndex >= 0) { body = __pulse_fastly_fetch_json_body(init, unchecked(init.values[jsonIndex])); if (__pulse_fastly_last_error != 0) return; headers = __pulse_fastly_fetch_json_headers(headers) } } __pulse_fastly_start_request(effectIndex, url, method, headers, body, __pulse_fastly_backend(effectIndex)) }
 function __pulse_fastly_kv_get_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const store = __pulse_fastly_open_kv_store(effectIndex); if (__pulse_fastly_last_error != 0) return; const key = __pulse_fastly_string(__pulse_fastly_payload_field(payload, "key")); const keyBytes = __pulse_fastly_utf8(key); const lookupOut = __pulse_fastly_out_i32(); const config = new StaticArray<i32>(1); const status = fastly_kv_store_lookup(store, changetype<usize>(keyBytes), keyBytes.byteLength, 0, changetype<usize>(config), changetype<usize>(lookupOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 116, effectIndex); return } unchecked(__pulse_fastly_pending[effectIndex] = __pulse_fastly_out_value(lookupOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_ASYNC) }
 ${assetBeginSource}
 function __pulse_fastly_kv_put_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const store = __pulse_fastly_open_kv_store(effectIndex); if (__pulse_fastly_last_error != 0) return; const key = __pulse_fastly_string(__pulse_fastly_payload_field(payload, "key")); const value = __pulse_fastly_payload_field(payload, "value"); const bodyOut = __pulse_fastly_out_i32(); let status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 117, effectIndex); return } const body = __pulse_fastly_out_value(bodyOut); status = __pulse_fastly_write_body(body, "{\"__pulseKv\":1,\"value\":" + __pulse_fastly_json(value, 0) + "}"); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 118, effectIndex); return } const keyBytes = __pulse_fastly_utf8(key); const insertOut = __pulse_fastly_out_i32(); const config = new StaticArray<i64>(4); status = fastly_kv_store_insert(store, changetype<usize>(keyBytes), keyBytes.byteLength, body, 0, changetype<usize>(config), changetype<usize>(insertOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 119, effectIndex); return } unchecked(__pulse_fastly_pending[effectIndex] = __pulse_fastly_out_value(insertOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_ASYNC) }
@@ -1963,7 +1984,7 @@ function __pulse_fastly_wait_kv_get(effectIndex: i32): i32 { if (unchecked(__pul
 ${assetResultSource}
 function __pulse_fastly_wait_kv_put(effectIndex: i32): i32 { if (unchecked(__pulse_fastly_pending_mode[effectIndex]) != PULSE_FASTLY_PENDING_ASYNC) { __pulse_fastly_fail(PULSE_ERROR_STATE, 126, effectIndex); return 0 } const pending = unchecked(__pulse_fastly_pending[effectIndex]); const kvError = __pulse_fastly_out_i32(); const status = fastly_kv_store_insert_wait(pending, changetype<usize>(kvError)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_NONE); unchecked(__pulse_fastly_pending[effectIndex] = 0); if (status != FASTLY_STATUS_OK || __pulse_fastly_out_value(kvError) != 1) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 127, effectIndex); return 0 } return host_value_boolean(1) }
 function __pulse_fastly_write_body(bodyHandle: i32, value: string): i32 { const bytes = __pulse_fastly_utf8(value); let offset = 0; while (offset < bytes.byteLength) { const written = __pulse_fastly_out_i32(); const status = fastly_http_body_write(bodyHandle, changetype<usize>(bytes) + offset, bytes.byteLength - offset, 0, changetype<usize>(written)); if (status != FASTLY_STATUS_OK) return status; const count = __pulse_fastly_out_value(written); if (count <= 0) return 1; offset += count } return FASTLY_STATUS_OK }
-function __pulse_fastly_send_result(handle: i32): i32 { const value = __pulse_fastly_value(handle); ${bindings.s3.length ? 'if (value.s3Body) return __s3_send_body(value);' : ''} if (value.kind == PULSE_VALUE_FETCH) return fastly_http_resp_send_downstream(value.responseHandle, value.bodyHandle, 0); if (value.kind != PULSE_VALUE_RESPONSE) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 90, -1); return PULSE_ERROR_VALUE } const responseOut = __pulse_fastly_out_i32(); let status = fastly_http_resp_new(changetype<usize>(responseOut)); if (status != FASTLY_STATUS_OK) return status; const responseHandle = __pulse_fastly_out_value(responseOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) return status; const bodyHandle = __pulse_fastly_out_value(bodyOut); status = fastly_http_resp_status_set(responseHandle, value.status); if (status != FASTLY_STATUS_OK) return status; for (let i = 0; i < value.headers.length; i += 1) { const header = unchecked(value.headers[i]); const nameBytes = __pulse_fastly_utf8(header.name); const valueBytes = __pulse_fastly_utf8(header.value); status = fastly_http_resp_header_append(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) return status } status = __pulse_fastly_write_body(bodyHandle, value.text); if (status != FASTLY_STATUS_OK) return status; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0) }
+${lifecycle?.active ? `function __pulse_fastly_send_result(handle: i32): i32 {\n${lifecycle.site('response-send')}\n  return __pulse_fastly_send_result_impl(handle)\n}\n` : ''}function ${lifecycle?.legacyName('__pulse_fastly_send_result') || '__pulse_fastly_send_result'}(handle: i32): i32 { const value = __pulse_fastly_value(handle); ${bindings.s3.length ? 'if (value.s3Body) return __s3_send_body(value);' : ''} if (value.kind == PULSE_VALUE_FETCH) return ${options.fetchAccounting?.selection === 'canonical-fetch-cohorts' ? '__fca_transfer(value.responseHandle, value.bodyHandle)' : 'fastly_http_resp_send_downstream(value.responseHandle, value.bodyHandle, 0)'}; if (value.kind != PULSE_VALUE_RESPONSE) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 90, -1); return PULSE_ERROR_VALUE } const responseOut = __pulse_fastly_out_i32(); let status = fastly_http_resp_new(changetype<usize>(responseOut)); if (status != FASTLY_STATUS_OK) return status; const responseHandle = __pulse_fastly_out_value(responseOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) return status; const bodyHandle = __pulse_fastly_out_value(bodyOut); status = fastly_http_resp_status_set(responseHandle, value.status); if (status != FASTLY_STATUS_OK) return status; for (let i = 0; i < value.headers.length; i += 1) { const header = unchecked(value.headers[i]); const nameBytes = __pulse_fastly_utf8(header.name); const valueBytes = __pulse_fastly_utf8(header.value); status = fastly_http_resp_header_append(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) return status } status = __pulse_fastly_write_body(bodyHandle, value.text); if (status != FASTLY_STATUS_OK) return status; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0) }
 
 ${jwtEvidenceSource}
 ${terminalErrorSource}
@@ -1980,6 +2001,7 @@ ${effectResultSource(plan, bindings)}
 }
 
 function driverSource(plan, options = {}) {
+  const lifecycle = options.lifecycle;
   const entryName = options.guestLinked === true
     ? 'pulse_fastly_handle'
     : '_start';
@@ -1996,18 +2018,18 @@ export function ${entryName}(): void {
   if (__pulse_invocation_started) { __pulse_fastly_fail(PULSE_ERROR_STATE, 171, -1); return }
   __pulse_invocation_started = true
   __pulse_fastly_run_invocation()
-  ${plan.effects.some(e => e.kind === 's3.getBody') ? '__s3_close_bodies()' : ''}
+${lifecycle?.site('invocation-end') ? lifecycle.site('invocation-end') + '\n' : ''}  ${plan.effects.some(e => e.kind === 's3.getBody') ? '__s3_close_bodies()' : ''}
   __pulse_invocation_close()
 }
 function __pulse_fastly_run_invocation(): void {
   __pulse_fastly_last_error = fastly_abi_init(PULSE_FASTLY_EFFECTS_ABI_VERSION)
   if (__pulse_fastly_last_error != FASTLY_STATUS_OK) { __pulse_fastly_jwt_send_error(); return }
   const handles = new StaticArray<i32>(2)
-  const downstreamStatus = fastly_http_req_body_downstream_get(changetype<usize>(handles), changetype<usize>(handles) + 4)
+  const downstreamStatus = ${options.resourceAccounting ? '__fra_incoming' : 'fastly_http_req_body_downstream_get'}(changetype<usize>(handles), changetype<usize>(handles) + 4)
   if (downstreamStatus != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 100, -1); __pulse_fastly_jwt_send_error(); return }
   __pulse_fastly_request_handle = load<i32>(changetype<usize>(handles))
   __pulse_fastly_request_body_handle = load<i32>(changetype<usize>(handles) + 4)
-  __pulse_fastly_request_method = __pulse_fastly_read_req_string(0)
+${lifecycle?.site('request-acquired') ? lifecycle.site('request-acquired') + '\n' : ''}  __pulse_fastly_request_method = __pulse_fastly_read_req_string(0)
   if (__pulse_fastly_last_error != 0) { __pulse_fastly_jwt_send_error(); return }
   __pulse_fastly_request_url = __pulse_fastly_read_req_string(1)
   if (__pulse_fastly_last_error != 0) { __pulse_fastly_jwt_send_error(); return }
@@ -2027,7 +2049,7 @@ ${packageApplication.enabled(plan) ? packageApplication.driverLoop() : applicati
   if (runStatus != 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 102, -1); __pulse_fastly_jwt_send_error(); return }
   const result = pulse_result_handle()
   if (result <= 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 103, -1); __pulse_fastly_jwt_send_error(); return }
-  __pulse_fastly_jwt_attach_evidence(result)
+${lifecycle?.site('result-claim') ? lifecycle.site('result-claim') + '\n' : ''}  __pulse_fastly_jwt_attach_evidence(result)
   const sendStatus = __pulse_fastly_send_result(result)
   if (sendStatus != FASTLY_STATUS_OK) __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 104, -1)
 }
@@ -2096,13 +2118,22 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   const packageDuration = plan.packages?.application?.requestLimits?.maxDurationMs;
   if (packageDuration !== undefined) options = { ...options, maxDurationMs: Math.min(options.maxDurationMs ?? packageDuration, packageDuration) };
   const bindings = resolveCapabilityBindings(plan, options);
+  const selectedExtensions = hostExtensions.select(plan, options);
+  const extensionPolicy = selectedExtensions.length ? hostExtensions.policy(selectedExtensions,
+    (options.targetDescriptor?.finalWasmPolicy?.permittedImports || FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS.map(([module, name]) => ({ module, name, kind: 'function' })))) : undefined;
+  const forwardingAccounting = require('./native-forwarding-accounting.js').profile(plan, bindings);
+  const fetchAccounting = require('./native-fetch-accounting.js').profile(plan, bindings, FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES)
+    || require('./native-fetch-cohorts.js').profile(plan, bindings, FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES);
+  const resourceAccounting = forwardingAccounting || fetchAccounting;
+  // Trusted provider-internal services, never a project/package hook API.
+  const lifecycle = lifecycleBindings.create(plan, bindings, [...require('./native-fetch-accounting.js').hooks(fetchAccounting), ...hostExtensions.hooks(selectedExtensions), ...(options.lifecycleServices || [])]);
   // Keep final provider eligibility authoritative over the portable artifact
   // and caller options. Only the selected crypto guest uses the linked policy;
   // that policy excludes active codecs regardless of JSON arena configuration.
   const numericRegions = facts.guestUnits.length === 0 ? 'fastly-numeric-regions-v2'
     : jwtCrypto && jwtCrypto.guestUnitRequired ? 'fastly-linked-numeric-regions-v1' : undefined;
   const portable = packageApplication.enabled(plan) ? packageApplication.portable(plan) : generateCanonicalNativeAssemblyScript(plan, {
-    ...options, numericRegions,
+    ...options, numericRegions, lifecycle,
     handleOwnership: facts.guestUnits.length === 0 ? 'fastly-handle-tracing-v1' : undefined
   });
   nativeHandleOwnership.validateRoots(plan, portable.manifest);
@@ -2115,12 +2146,13 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     'export function __pulse_fastly_abort(message: string | null, fileName: string | null = null, line: u32 = 0, column: u32 = 0): void { unreachable() }',
     '',
     fastlyRuntimeSource(plan, bindings, {
-      ...options,
+      ...options, lifecycle, fetchAccounting,
       handleTracing: portable.manifest.handleOwnership?.enabled === true,
       jwtCrypto,
       es256KeyRecords
     }),
     jwtSource ? jwtSource.source : '',
+    ...(selectedExtensions.length ? [hostExtensions.source(selectedExtensions)] : []),
     ((plan.effects || []).some(effect => ['fetch', 'grip.publish', 'grip.broadcast'].includes(effect.kind)) || bindings.s3.length > 0)
       ? fs.readFileSync(path.join(__dirname, 'native-send-error-detail.as.ts'), 'utf8') : '',
     require('./s3-native.js').s3NativeSource(plan, bindings),
@@ -2133,29 +2165,39 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./native-header-lookup.js').runtimeSource(),
     fs.readFileSync(path.join(__dirname, 'native-transport-details.as.ts'), 'utf8'),
     require('./native-fetch-errors.js').runtimeSource(dynamicBackends.active(bindings)),
-    require('./native-fetch-deadlines.js').runtimeSource(plan),
+    require('./native-fetch-deadlines.js').runtimeSource(plan, fetchAccounting),
     applicationErrors.settlementEnabled(plan) ? applicationErrors.runtimeSource(plan) : '',
-    effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan) }),
+    effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan), lifecycle }),
     ...(portable.manifest.numericRegions?.accounting === 'fastly-read-loop-v1' && portable.manifest.numericRegions.regions.length > 0
       ? [nativeValueBudget.numericRegionSource()] : []),
     portableSource,
     nativeHandleOwnership.providerSource(plan, portable.manifest.handleOwnership?.enabled === true),
-    driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
+    driverSource(plan, { guestLinked: facts.guestUnits.length > 0, lifecycle, resourceAccounting: forwardingAccounting }),
+    ...(forwardingAccounting ? [require('./native-forwarding-accounting.js').source(forwardingAccounting)] : []),
+    ...(fetchAccounting ? [require(fetchAccounting.selection === 'canonical-fetch-cohorts' ? './native-fetch-cohorts.js' : './native-fetch-accounting.js').source(fetchAccounting)] : []),
     ''
   ].join('\n');
   if (applicationErrors.settlementEnabled(plan)) source = applicationErrors.instrument(source);
   source = require('./native-request-headers.js').instrument(source, applicationErrors.enabled(plan), /\bhost_request_headers\(/.test(portableSource));
-  source = require('./native-header-lookup.js').instrument(source);
-  source = require('./native-fetch-errors.js').instrument(source);
-  source = require('./native-fetch-deadlines.js').instrument(source, plan);
-  source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan));
+  source = require('./native-header-lookup.js').instrument(source, lifecycle);
+  source = require('./native-fetch-errors.js').instrument(source, lifecycle);
+  source = require('./native-fetch-deadlines.js').instrument(source, plan, fetchAccounting);
+  source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan), lifecycle);
   if (packageApplication.enabled(plan)) source = packageApplication.instrument(source);
   source = effectInvocations.instrument(source);
-  source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
+  source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan, lifecycle, fetchAccounting);
   source = packageApplication.terminalFailure(source, plan);
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
   source = dynamicBackends.instrument(source, bindings, true, (options.bindings || options).backends);
+  // Forwarding owns a specialized terminal fetch implementation. Admission
+  // above rejects outcome/timing options; generic fetch anchors do not exist here.
+  if (!require('./native-body-forwarding.js').enabled(plan)) {
+    source = require('./native-fetch-outcomes.js').instrument(source, plan);
+    source = require('./native-fetch-timing.js').instrument(source, plan);
+  }
+  lifecycle.assertSites();
+  if (lifecycle.supportSource) source += '\n' + lifecycle.supportSource;
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;
@@ -2170,6 +2212,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     imports: Object.freeze([...capabilityImports(effect), ...(bindings.backends.some(b => b.index === index && b.dynamic) ? ['fastly_http_req.register_dynamic_backend'] : [])])
   })));
   const manifest = Object.freeze({
+    ...(resourceAccounting ? { resourceAccounting } : {}),
     version: FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
     generatorVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_GENERATOR_VERSION,
     abiVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_ABI_VERSION,
@@ -2215,6 +2258,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       : Object.freeze({ status: 'inactive' }),
     effectCount: (plan.effects || []).length,
     effectInvocations: effectInvocations.policy,
+    ...(lifecycle.active ? { lifecycle: lifecycle.plan } : {}),
+    ...(selectedExtensions.length ? { hostExtensions: hostExtensions.evidence(selectedExtensions, lifecycle, extensionPolicy) } : {}),
     effectKinds,
     continuationCount: (plan.continuations || []).length,
     groupedContinuationCount: (plan.continuations || []).filter((entry) => (entry.effectIds || []).length > 1).length,
@@ -2293,7 +2338,9 @@ function inspectFastlyNativePlatformCapabilitiesWasm(input, options = {}) {
   const module = new WebAssembly.Module(bytes);
   const imports = WebAssembly.Module.imports(module).map((entry) => Object.freeze({ module: entry.module, name: entry.name, kind: entry.kind }));
   const exports = WebAssembly.Module.exports(module).map((entry) => Object.freeze({ name: entry.name, kind: entry.kind }));
-  const unexpected = imports.filter((entry) => !FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS.has(`${entry.module}:${entry.name}`));
+  const permitted = options.extensionPolicy ? new Set(options.extensionPolicy.permittedImports.map(entry => `${entry.module}:${entry.name}:${entry.kind}`)) : null;
+  if (options.extensionPolicy) require('@pulse-compute/wasm-contracts/provider/toolchain').hostExtensions.auditWasm(bytes, options.extensionPolicy);
+  const unexpected = imports.filter((entry) => permitted ? !permitted.has(`${entry.module}:${entry.name}:${entry.kind}`) : entry.kind !== 'function' || !FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS.has(`${entry.module}:${entry.name}`));
   if (unexpected.length > 0) fail('Generated Fastly native platform capabilities module imports functions outside the Pass98 ABI.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORT_UNSUPPORTED', { unexpected, imports });
   const forbidden = imports.filter((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`));
   if (forbidden.length > 0) fail('Generated Fastly native platform capabilities module imports a forbidden runtime.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_RUNTIME_FORBIDDEN', { forbidden });
@@ -2549,13 +2596,16 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       fs.writeFileSync(wasmFile, wasm);
       if (emitWat) fs.writeFileSync(watFile, wat, 'utf8');
     }
-    const inspection = inspectFastlyNativePlatformCapabilitiesWasm(wasm, { maxWasmBytes });
+    const inspection = inspectFastlyNativePlatformCapabilitiesWasm(wasm, { maxWasmBytes, extensionPolicy: generated.manifest.hostExtensions?.importPolicy });
     const imported = new Set(inspection.imports.map((entry) => `${entry.module}:${entry.name}`));
     const requiredImports = requiredImportsForPlan(plan, generated.bindings);
     const missingRequiredImports = requiredImports.filter((key) => !imported.has(key));
     if (missingRequiredImports.length > 0) fail('Generated Fastly native platform capabilities module is missing plan-required host imports.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORT_MISSING', { missingRequiredImports, imports: inspection.imports, requiredImports });
     const manifest = Object.freeze({
       ...generated.manifest,
+      ...(generated.manifest.hostExtensions ? { hostExtensions: Object.freeze({ ...generated.manifest.hostExtensions,
+        finalWasmSha256: inspection.sha256,
+        observedImports: require('@pulse-compute/wasm-contracts/provider/toolchain').hostExtensions.auditWasm(wasm, generated.manifest.hostExtensions.importPolicy).observedImports }) } : {}),
       compilerVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION,
       assemblyScript: Object.freeze({ package: 'assemblyscript', version: require(path.join(asc.packageRoot, 'package.json')).version }),
       jsonAs: jsonAs

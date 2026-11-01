@@ -143,6 +143,10 @@ async function main() {
             await new Promise(resolve => registry.server.close(resolve));
         }
         report.installed = verifyInstalled(packed.manifest);
+        fs.copyFileSync(path.join(root,'wasm/test/provider/assert-fastly-forwarding-accounting.cjs'), path.join(consumer,'accounting-check.cjs'));
+        const accounting = await run(process.execPath,['accounting-check.cjs','--installed']);
+        report.accounting = JSON.parse(accounting.stdout.trim().split('\n').at(-1));
+        assert.equal(report.accounting.status,'passed'); assert.equal(report.accounting.mode,'installed');
         saveReport();
         for (const name of ['src', '.pulse', 'tests'])
             fs.mkdirSync(path.join(consumer, name));
@@ -189,7 +193,7 @@ async function main() {
         report.variants = [];
         for (const [name, fastly, limits] of [
             ['independent-caps', { ...config, bodyForwarding: { requestMaxBytes: 33, responseMaxBytes: 65 } }, { requestCap: 33, responseCap: 65 }],
-            ['earlier-request-deadline', { ...config, maxDurationMs: 1000 }, { deadline: 1000 }]
+            ['earlier-request-deadline', { ...config, maxDurationMs: 1000 }, { deadline: 1000, requestDeadline:1000 }]
         ]) {
             project[selectedProfile].fastly = fastly;
             writeConfig();

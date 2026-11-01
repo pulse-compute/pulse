@@ -80,7 +80,7 @@ assert.equal(gripManifest.npmPackage, '@pulse-compute/grip', 'GRIP npm identity 
 assert.equal(gripManifest.lowerableSubpath, '@pulse-compute/grip', 'GRIP canonical root must be the package-owned lowerable subpath');
 assert.deepEqual(
   gripManifest.publicApi.compatibilitySubpaths,
-  ['@pulse-compute/grip/pulsewasm'],
+  ['@pulse-compute/grip/pulsewasm', '@pulse-compute/grip/experimental'],
   'GRIP must keep the explicit Native facade subpath'
 );
 assert.equal(gripManifest.compiler.entry, './pulsewasm.compiler.cjs', 'GRIP manifest must point at the package-owned compiler builder');

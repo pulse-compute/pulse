@@ -7,9 +7,9 @@
 > **Supported entry points:** `@pulse-compute/grip`<br>
 > **Stability:** The package root has bounded JavaScript and Native HTTP-framing realization plus configured Node/Fastly broadcast; /pulsewasm remains compatibility-only.<br>
 > **npm:** [`@pulse-compute/grip`](https://www.npmjs.com/package/@pulse-compute/grip)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.10/packages/grip/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.11/packages/grip/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.10` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.11` package policy.
 <!-- pulse-package-status:end -->
 
 The normal package root provides stateless GRIP/Fanout HTTP framing:
@@ -41,6 +41,24 @@ Pulse owns no WebSocket object or connection lifecycle. An external gateway owns
 `@pulse-compute/grip/pulsewasm` remains a compatibility Native facade for
 existing fixtures and is not recommended for new applications. Migration
 guidance is published at
-<https://pulsecompute.io/v1.0.0-beta.10/guides/compatibility-imports/>.
+<https://pulsecompute.io/v1.0.0-beta.11/guides/compatibility-imports/>.
 
 Broadcast configuration is provider-owned. It requires an explicit publish/control endpoint and may name a bearer-token secret reference; it never discovers an ambient endpoint or credential. Public gateway URLs and ingress routes are separate concerns. This bounded realization is included in both generally available JavaScript targets.
+
+## Experimental terminal handoff
+
+Candidate builds provide `handoffFanout(ctx, backend)` and
+`handoffWebSocket(ctx, backend)` as named exports from
+`@pulse-compute/grip/experimental`. Use one direct terminal return from a plain
+Fastly Native handler or one selected Router route, with the current context and
+a literal configured backend key. Ordinary text-response sibling routes retain
+their response authority and unmatched requests return 404. These methods use the shared terminal service; the root `grip` object and
+its existing pure `handoff` method are unchanged.
+
+This provisional subpath is outside the supported entry-point list. Its `never`
+return type represents terminal transfer, with no application completion value.
+Native compilation enforces the bounded placement separately. JavaScript calls
+throw `PULSE_HOST_EXTENSION_TARGET`; Node Native, helpers, middleware/error
+composition, parallel or multiple handoffs, escaped tokens and other effects
+(including sibling routes) are not admitted. Injected ABI and
+packed-consumer evidence does not claim hosted or local-engine qualification.

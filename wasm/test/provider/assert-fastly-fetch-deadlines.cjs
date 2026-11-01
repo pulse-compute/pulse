@@ -11,12 +11,14 @@ const cli = require('../../../packages/provider-fastly/src/testing/fastly-cli.js
 const base = 'https://deadline.example.test';
 const ack = {status:202,headers:[['x-ack','accepted']],body:'body'};
 function source(mode) {
-  const routes = [['run','1000'],['default',undefined],['short','100'],['one','1'],['long','9007199254740991'],
+  const routes = [['run','1000'],['default',undefined],['short','100'],['one','1'],['equal','600'],['long','9007199254740991'],
     ['zero','0'],['negative','-1'],['fraction','0.5'],['unsafe','9007199254740992']];
   return `import {Pulse} from '@pulse-compute/pulse';
 const app = new Pulse({auto:true});
 ${routes.map(([route,timeout]) => `app.get('/${route}', async ctx => {const response = await ctx.fetch('${base}/origin',{method:'POST',body:'dispatch'${timeout === undefined ? '' : `,timeoutMs:${timeout}`}}); if(response.status === 202 && response.header('x-ack') === 'accepted') return ctx.text('healthy',{headers:{'x-tick-dispatch':'acked'}}); return ctx.text('not-acked');});`).join('\n')}
 app.get('/checkpoint', async ctx => {const response = await ctx.fetch('${base}/origin',{timeoutMs:1000}); await ctx.kv('proof').put('checkpoint',true); return ctx.text('success');});
+app.get('/text', async ctx => {const body = await ctx.fetch('${base}/origin',{timeoutMs:100}).text(); return ctx.text(body);});
+app.get('/text-group', async ctx => {const result = await ctx.parallel({body:ctx.fetch('${base}/origin',{timeoutMs:100}).text(),other:ctx.fetch('${base}/fast',{timeoutMs:500})}); return ctx.text(result.body);});
 app.get('/group', async ctx => {const {slow,fast} = await ctx.parallel({slow:ctx.fetch('${base}/slow',{timeoutMs:2000}),fast:ctx.fetch('${base}/fast',{timeoutMs:500})}); if(slow.status === 202 && fast.status === 202) return ctx.text('both'); return ctx.text('bad');});
 app.get('/twice', async ctx => {const first=await ctx.fetch('${base}/origin',{timeoutMs:1000});if(first.status !== 202)return ctx.text('bad');const second=await ctx.fetch('${base}/origin',{timeoutMs:1000});if(second.status !== 202)return ctx.text('bad');return ctx.text('twice');});
 app.get('/recover-again', async ctx => {const response = await ctx.fetch('${base}/origin',{timeoutMs:1000});return ctx.text('success');});
@@ -65,6 +67,34 @@ export default defineConfig(_ => ({pulse:{entry:'src/index.ts',strict:false,defa
       const headers = run('/run',{delayMs:10,bodyDelayMs:10000,bodyReadStatus:1});
       assert.equal(headers.response.body,'healthy');assert.equal(headers.monotonicMs,10);
       assert.ok(!headers.trace.some(x=>x.module==='fastly_http_body' && x.name==='read'),'headers do not wait for body');checks++;
+      // The fixture's bodyDelayMs alone does not delay every body reader. Advance
+      // the actual read hostcall to prove the deadline boundary, not a fixture flag.
+      for (const route of ['/text','/text-group']) {
+        const body = run(route,{}, {
+          fixtures:{[`${base}/origin`]:{...ack,delayMs:10},[`${base}/fast`]:{...ack,delayMs:20}},
+          hostcallDelayMs:{'fastly_http_body.read':1000}
+        });
+        assert.ok(body.trace.some(x=>x.module==='fastly_http_body' && x.name==='read'));
+        assert.ok(body.monotonicMs>=1000);
+        assert.equal(body.response.body,mode==='budget'?'Gateway Timeout':'body',
+          'body acquisition outlives the header timeout but not the request budget');
+        assert.equal(body.instance.exports.pulse_fastly_request_expired?.() || 0,mode==='budget'?1:0);
+        checks++;
+      }
+      if(mode==='budget') {
+        for(const route of ['/equal','/group']) {
+          const equal = run(route,{neverHeaders:true},{fixtures:{
+            [`${base}/origin`]:{...ack,delayMs:600},
+            [`${base}/slow`]:{...ack,delayMs:600},
+            [`${base}/fast`]:{...ack,delayMs:100}
+          }});
+          assert.equal(equal.response.status,504);
+          assert.equal(equal.response.body,'Gateway Timeout');
+          assert.equal(equal.instance.exports.pulse_fastly_request_expired(),1);
+          assert.equal(equal.monotonicMs,600);
+          checks++;
+        }
+      }
       const large = run('/long',{delayMs:10});
       assert.equal(large.response.body,'healthy');assert.equal(large.monotonicMs,10);checks++;
       for (const [options,budgetStatus] of [

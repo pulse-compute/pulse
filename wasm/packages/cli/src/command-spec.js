@@ -1,8 +1,8 @@
 'use strict';
 
 const COMMAND_SPEC_VERSION = 'pulse.cli-command-spec.v5';
-const COMMANDS = Object.freeze(['init', 'dev', 'test', 'inspect', 'compile', 'build', 'doctor', 'report', 'docs']);
-const PUBLIC_COMMAND_ORDER = Object.freeze(['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report', 'docs']);
+const COMMANDS = Object.freeze(['init', 'dev', 'test', 'inspect', 'compile', 'build', 'doctor', 'report', 'compare', 'docs']);
+const PUBLIC_COMMAND_ORDER = Object.freeze(['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report', 'compare', 'docs']);
 
 function freezeOption(value) {
   return Object.freeze({
@@ -15,7 +15,7 @@ function freezeOption(value) {
 }
 
 const OPTION_SPECS = Object.freeze([
-  freezeOption({ id: 'html', key: 'html', flags: ['--html'], kind: 'boolean', commands: ['report'], visibility: 'public', description: 'Write a self-contained offline HTML report; mutually exclusive with --json.' }),
+  freezeOption({ id: 'html', key: 'html', flags: ['--html'], kind: 'boolean', commands: ['report', 'compare'], visibility: 'public', description: 'Write a self-contained offline HTML report; mutually exclusive with --json.' }),
   freezeOption({ id: 'help', key: 'help', flags: ['--help', '-h'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Print public CLI help and exit.' }),
   freezeOption({ id: 'evidence-status', key: 'evidenceStatus', flags: ['--evidence-status'], kind: 'boolean', commands: ['init', 'doctor', 'inspect', 'test', 'compile', 'build', 'report', 'docs'], visibility: 'public', description: 'Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html.' }),
   freezeOption({ id: 'json', key: 'json', flags: ['--json'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Emit machine-readable JSON. pulse dev emits one JSON event per line.' }),
@@ -32,7 +32,7 @@ const OPTION_SPECS = Object.freeze([
   freezeOption({ id: 'experimental-native-size', key: 'experimentalNativeSize', flags: ['--experimental-native-size'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Opt in to O3/shrink2 with convergence for Native Wasm. JavaScript build targets reject this flag.' }),
 
   freezeOption({ id: 'profile', key: 'profile', flags: ['--profile'], kind: 'value', valueName: '<profile>', commands: ['doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report'], visibility: 'public', description: 'Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.' }),
-  freezeOption({ id: 'out', key: 'outDir', flags: ['--out'], kind: 'value', valueName: '<dir>', valueNameByCommand: { report: '<file.html>' }, descriptionByCommand: { report: 'HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html.' }, commands: ['compile', 'build', 'report'], visibility: 'public', description: 'Override the project-relative artifact output directory.' }),
+  freezeOption({ id: 'out', key: 'outDir', flags: ['--out'], kind: 'value', valueName: '<dir>', valueNameByCommand: { report: '<file.html>', compare: '<file.html>' }, descriptionByCommand: { compare: 'HTML destination under the current directory; requires --html. Defaults to .pulse/reports/pulse-comparison.html.', report: 'HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html.' }, commands: ['compile', 'build', 'report', 'compare'], visibility: 'public', description: 'Override the project-relative artifact output directory.' }),
   freezeOption({ id: 'host', key: 'host', flags: ['--host'], kind: 'value', valueName: '<host>', commands: ['dev'], visibility: 'public', description: 'Override the development listen host.' }),
   freezeOption({ id: 'port', key: 'port', flags: ['--port'], kind: 'value', valueName: '<port>', parse: 'number', commands: ['dev'], visibility: 'public', description: 'Override the development listen port. Use 0 to request an ephemeral port.' }),
   freezeOption({ id: 'artifact', key: 'artifact', flags: ['--artifact'], kind: 'value', valueName: '<file.json>', descriptionByCommand: { report: 'Replay a saved Report capsule or supported completed-Wasm manifest without loading project code.' }, commands: ['inspect', 'report'], visibility: 'public', description: 'Inspect an existing JSON build or compiler artifact instead of a project.' }),
@@ -64,6 +64,21 @@ const COMMAND_SPECS = Object.freeze({
     outputs: ['Human output prints the installed CLI version and absolute documentation index path.', 'With --json, emits {status: "ok", version, docs: {root, index}} with the executing CLI version and absolute physical paths.'],
     sideEffects: ['Reads only the executing package documentation index; does not discover a project, compile code, install dependencies, contact the network, launch a server or open a browser.', 'Validates the index type, containment, readability and nonempty UTF-8 text; does not audit every document or establish package integrity.', '--plan and --dry-run describe the locator without reading or validating documentation.'],
     exit: '0 on success; 2 for invalid arguments; 5 when packaged documentation is unavailable or the index is invalid.'
+  }),
+  compare: freezeCommand({
+    name: 'compare',
+    summary: 'Compare two saved Report capsules without loading a project or rebuilding.',
+    usage: ['pulse compare <before.json> <after.json> [--json | --html] [--out <file.html>]'],
+    positionals: [
+      { name: 'before.json', key: 'before', description: 'Saved baseline Report capsule, resolved from the current directory.' },
+      { name: 'after.json', key: 'after', description: 'Saved candidate Report capsule, resolved from the current directory.' }
+    ],
+    optionIds: ['html', 'out'],
+    examples: ['pulse compare before.json after.json --json', 'pulse compare before.json after.json --html --out review/compare.html'],
+    diagnostics: ['PULSE_REPORT_INPUT_INVALID', 'PULSE_REPORT_EVIDENCE_MISSING', 'PULSE_REPORT_STALE', 'PULSE_REPORT_INCOMPATIBLE', 'PULSE_REPORT_OUTPUT_UNSAFE', 'PULSE_REPORT_OUTPUT_FAILED'],
+    outputs: ['Default output and --json emit one canonical pulse.report-comparison v1 JSON object.', '--html writes a self-contained offline comparison and prints its path. Both formats consume the same validated comparison.', 'Missing measurements remain unknown; incompatible artifact contexts retain compatibility reasons and unavailable deltas. Input provenance is historical, not proof of current source or common lineage.'],
+    sideEffects: ['Reads only the two bounded saved Report capsules; no project discovery, compilation, execution, project dependency loading or network access.', 'Inputs may be outside the current directory. Build manifests and bare Wasm are not accepted; export capsules with pulse report --json first.', '--out requires --html; HTML stays within the current directory, without parent traversal or symbolic links, and cannot overwrite either input.', 'HTML uses the existing atomic writer and generated-output receipt. --plan and --dry-run do not read inputs or write output.'],
+    exit: '0 for a valid comparison, including differences, missing optional evidence or incompatible artifact contexts; 2 for invalid arguments or unsafe output; 3 for missing, invalid or unsupported capsules, changed inputs during reading, or an output write failure.'
   }),
   report: freezeCommand({
     name: 'report',

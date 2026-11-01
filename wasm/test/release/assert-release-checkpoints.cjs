@@ -167,6 +167,39 @@ for (const dates of [
   });
 }
 
+// Rejection diagnostics bind one clock sample and the receipt actually read.
+// Exact expiry, future creation and excess lifetime remain fail-closed.
+for (const [label, createdOffset, expiresOffset, reason] of [
+  ['valid-boundary', 0, RETENTION_MS, null],
+  ['expired-boundary', -1, 0, 'expired'],
+  ['future-boundary', 1, 2, 'created-in-future'],
+  ['excess-boundary', 0, RETENTION_MS + 1, 'retention-exceeded'],
+  ['invalid-created', null, 1, 'invalid-timestamp'],
+  ['invalid-expires', 0, null, 'invalid-timestamp']
+]) {
+  fixture(({ attempt, specification, context }) => {
+    const first = attempt('first').record({ ...specification, result: passed });
+    const now = Date.parse('2026-01-01T00:00:00Z');
+    const createdAt = createdOffset === null ? 'invalid' : new Date(now + createdOffset).toISOString();
+    const expiresAt = expiresOffset === null ? 'invalid' : new Date(now + expiresOffset).toISOString();
+    rewriteReceipt(first.receiptPath, receipt => Object.assign(receipt, { createdAt, expiresAt }), true);
+    const clock = Date.now; let clockReads = 0;
+    Date.now = () => { clockReads++; return now; };
+    try {
+      const read = () => readCheckpointReceipt({ receiptPath: first.receiptPath, context });
+      if (reason === null) assert.equal(read().proofId, first.proofId, label);
+      else assert.throws(read, error => {
+        assert.deepEqual(error.retention, { reason, now,
+          created: createdOffset === null ? null : now + createdOffset,
+          expires: expiresOffset === null ? null : now + expiresOffset, maximumMs: RETENTION_MS }, label);
+        assert.match(error.message, new RegExp(reason));
+        return true;
+      });
+      assert.equal(clockReads, 1, label);
+    } finally { Date.now = clock; }
+  });
+}
+
 fixture(({ attempt, specification }) => {
   const first = attempt('first');
   const proof = first.record({ ...specification, result: passed });

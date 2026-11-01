@@ -37,7 +37,9 @@ const tasks = Object.freeze({
   'binary-resource-admission': nodeTask('test/contracts/assert-binary-resource-admission.cjs', {
     description: 'B10-08A explicit resource budgets, immutable identity, larger binary inputs and unchanged HTTP Assets policy'
   }),
+  'cli-report-host-extensions': nodeTask('test/cli/assert-report-host-extensions.cjs', { evidence: 'native', scheduling: { compiler: true }, timeoutMs: 180000, description: 'P12A host contribution/use-site attribution, exact import audit, historical comparison and private diagnostics' }),
   'cli-report-viewer': nodeTask('test/cli/assert-report-viewer.cjs', { description: 'PRPT-05 offline encoding, view projections and generated-output receipts' }),
+  'cli-compare-workflow': nodeTask('test/cli/assert-cli-compare-workflow.cjs', { description: 'Installed public comparison adapter, passive capsule replay and safe offline output' }),
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-graph-diagnostics': nodeTask('test/cli/assert-report-graph-diagnostics.cjs', {
     description: 'RPT8-03 bounded graph diagnostics, exhaustive direct-call joins, privacy and passive replay', timeoutMs: 60000
@@ -261,6 +263,50 @@ const tasks = Object.freeze({
     args:['--native'], timeoutMs:300000, evidence:'external',
     description:'STR-02B exact installed Node Native forwarding, emitted Wasm identity and real incremental HTTP'
   }),
+  'native-lifecycle': nodeTask('test/runtime/assert-native-lifecycle.cjs', {
+    timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P09A host lifecycle bindings and shared Fastly/Node execution traces'
+  }),
+  'lifecycle-foundation': nodeTask('test/runtime/assert-lifecycle-foundation.cjs', {
+    timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P10 mixed effects, sequential cohorts, repeated sites, ctx.call and Router recovery with selected lifecycle services'
+  }),
+  'terminal-installed': nodeTask('test/qualification/terminal/installed.cjs', {
+    timeoutMs: 600000, evidence: 'external', scheduling: { compiler: true },
+    description: 'P10/P13 exact-tarball terminal consumers, controls and separately retained injected failures'
+  }),
+  'terminal-qualification-contract': nodeTask('test/qualification/terminal/assert-bundle.cjs', {
+    description: 'P10/P13 evidence binding rejects changed artifacts and incomplete transport receipts'
+  }),
+  'lifecycle-foundation-installed': nodeTask('test/runtime/assert-lifecycle-foundation-installed.cjs', {
+    timeoutMs: 360000, evidence: 'external', scheduling: { compiler: true },
+    description: 'P14 source-free packed foundation compiler and driver replay outside the checkout'
+  }),
+  'resource-ownership-cost': nodeTask('test/performance/assert-resource-ownership-cost.cjs', {
+    timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P11A compiled ownership-only control, observer parity and mutation detection; no timing gate'
+  }),
+  'resource-ledger': nodeTask('test/runtime/assert-resource-ledger.cjs', {
+    timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P04 compiled bounded reservation, generation exhaustion, retained claims and protected cleanup kernel'
+  }),
+  'fastly-fetch-cohorts': nodeTask('test/provider/assert-fastly-fetch-cohorts.cjs', {
+    timeoutMs: 240000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P07 complete bounded fetch lifecycle: cohorts, aliases, uploads, transfer and uncertainty'
+  }),
+  'fastly-forwarding-accounting': nodeTask('test/provider/assert-fastly-forwarding-accounting.cjs', {
+    timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P07 bounded forwarding profile, production ledger ownership and original-deadline qualification'
+  }),
+  'fastly-router-terminal': nodeTask('test/provider/assert-fastly-router-terminal.cjs', {
+    timeoutMs: 180000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P16 bounded Router terminal handoff, sibling routes, rejection and lifecycle authority'
+  }),
+  'fastly-lifecycle': nodeTask('test/provider/assert-fastly-lifecycle.cjs', {
+    timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
+    description: 'P03 structural Fastly lifecycle, compiled settlement and response authority'
+  }),
+  'fastly-forwarding-evidence': nodeTask('test/provider/assert-fastly-forwarding-evidence.cjs', { timeoutMs: 30000, description: 'Complete streamed forwarding provenance and failure-safe report/fixture cleanup' }),
   'fastly-incoming-body-forwarding': nodeTask('test/provider/assert-fastly-incoming-body-forwarding.cjs', {
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'FWD9-03 normal Native build, adversarial ABI matrix and optional pinned Viceroy wire qualification'
@@ -374,6 +420,16 @@ const tasks = Object.freeze({
   'arc01-installed': nodeTask('test/provider/arc01-installed.cjs', {
     timeoutMs: 360000, evidence: 'external',
     description: 'ARC-01 exact compiler-only, Node-only, Fastly-only and bundled CLI package isolation'
+  }),
+  'lifecycle-contract': nodeTask('test/contracts/assert-lifecycle-contract.cjs', {
+    description: 'shared execution/HTTP semantics, strict symbolic bindings and deterministic dispatch plans'
+  }),
+  'resource-admission': nodeTask('test/contracts/assert-resource-admission.cjs', {
+    description: 'heterogeneous resource profiles, cumulative allocation envelopes and whole-selection admission'
+  }),
+  'lifecycle-contract-installed': nodeTask('test/contracts/assert-lifecycle-contract-installed.cjs', {
+    evidence: 'external', timeoutMs: 180000,
+    description: 'packed lifecycle/resource planner replay from an offline installed consumer outside the checkout'
   }),
   'provider-toolchain': nodeTask('test/contracts/assert-provider-toolchain-boundary.cjs', {
     evidence: 'unit',
@@ -809,6 +865,10 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'repository-only event normalization and conditional Native entry evidence'
   }),
+  'events-results': nodeTask('test/events/assert-events-results.cjs', {
+    evidence: 'conformance', timeoutMs: 240000, isolatedArtifacts: true,
+    description: 'shared route/event schemas, typed return parity, suspension, result bounds and detached instance reuse'
+  }),
   'events-static-topology': nodeTask('test/events/assert-events-static-topology.cjs', {
     evidence: 'external',
     timeoutMs: 180000,
@@ -998,6 +1058,10 @@ const tasks = Object.freeze({
     evidence: 'native',
     description: 'opaque body ownership and repeated Node headers'
   }),
+  'grip-terminal': nodeTask('test/package/assert-grip-terminal.cjs', {
+    evidence: 'native', timeoutMs: 180000, scheduling: { compiler: true },
+    description: 'Experimental GRIP terminal facade, shared service, omission and type boundaries'
+  }),
   'grip-package-runtime': nodeTask('test/package/assert-grip-package-runtime.cjs', {
     evidence: 'native',
     timeoutMs: 240000,
@@ -1013,6 +1077,7 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'deterministic conventional project creation'
   }),
+  'cli-harness-workflow': nodeTask('test/cli/assert-cli-harness-workflow.cjs', { evidence: 'cli', timeoutMs: 180000, description: 'Bounded redacted authored harness mismatches in source and packed CLI output' }),
   'cli-project-workflow': nodeTask('test/cli/assert-cli-project-workflow.cjs', {
     evidence: 'cli',
     timeoutMs: 180000,
@@ -1028,6 +1093,7 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'output containment, redaction, and provider truth guards'
   }),
+  'cli-fixture-state-workflow': nodeTask('test/cli/assert-cli-fixture-state-workflow.cjs', { evidence: 'cli', timeoutMs: 120000, description: 'Fastly exact Native fixture state lifetime and startup/reload evidence' }),
   'cli-dev-workflow': nodeTask('test/cli/assert-cli-dev-workflow.cjs', {
     evidence: 'cli',
     timeoutMs: 60000,
@@ -1134,7 +1200,9 @@ const tasks = Object.freeze({
   }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',
-    timeoutMs: 300000,
+    // Capability/accounting and transport corpora share this task's deadline.
+    // Keep a finite budget with headroom for parallel release compilation.
+    timeoutMs: 600000,
     description: 'Fastly Config, Secret, KV, and GRIP capabilities'
   }),
 
@@ -1424,8 +1492,11 @@ const profiles = Object.freeze({
     'binary-resource-admission',
     'report-capsule-contract',
     'cli-report-workflow',
+    'cli-compare-workflow',
+    'fastly-forwarding-evidence',
     'cli-report-viewer',
     'cli-report-retained-evidence',
+    'cli-report-host-extensions',
     'cli-report-size-evidence',
     'cli-report-capture-proof',
     'cli-report-entry-proof',
@@ -1471,6 +1542,8 @@ const profiles = Object.freeze({
     'external-lowerers',
     'package-runtime',
     'provider-toolchain',
+    'lifecycle-contract',
+    'resource-admission',
     'schema-registry',
     'continuation-registry',
     'entities-contracts',
@@ -1514,6 +1587,15 @@ const profiles = Object.freeze({
     'canonical-native-plan',
     'shared-stage-o19',
     'str02b-node-native',
+    'native-lifecycle',
+    'lifecycle-foundation',
+    'fastly-lifecycle',
+    'fastly-router-terminal',
+    'terminal-qualification-contract',
+    'resource-ownership-cost',
+    'resource-ledger',
+    'fastly-forwarding-accounting',
+    'fastly-fetch-cohorts',
     'fastly-incoming-body-forwarding',
     'str03a-generated-output',
     'str03c-bounded-transforms',
@@ -1556,6 +1638,7 @@ const profiles = Object.freeze({
     'canonical-api-runtime',
     'canonical-opaque-node-emission',
     'grip-package-runtime',
+    'grip-terminal',
     'package-root-native',
     'canonical-native-wasm'
   ]),
@@ -1583,6 +1666,7 @@ const profiles = Object.freeze({
     'multifile-source-identity',
     'text-capacity-conformance',
     'events-conformance',
+    'events-results',
     'node-router-context-parity',
     'catalog-router-parity',
     'fetch-projections-request-bodies',
@@ -1606,8 +1690,10 @@ const profiles = Object.freeze({
   cli: Object.freeze([
     'report-capsule-contract',
     'cli-report-workflow',
+    'cli-compare-workflow',
     'cli-report-viewer',
     'cli-report-retained-evidence',
+    'cli-report-host-extensions',
     'cli-report-size-evidence',
     'cli-report-capture-proof',
     'cli-report-entry-proof',
@@ -1621,9 +1707,11 @@ const profiles = Object.freeze({
     'cli-command-spec',
     'cli-init-workflow',
     'cli-project-workflow',
+    'cli-harness-workflow',
     'cli-expansion-doctor',
     'cli-project-guards',
     'cli-dev-workflow',
+    'cli-fixture-state-workflow',
     'cli-schema-json-workflow',
     'entities-node-native-workflow',
     'mcp-native-binding',
@@ -1666,6 +1754,8 @@ const profiles = Object.freeze({
     '@conformance',
     '@cli',
     '@providers',
+    'lifecycle-contract-installed',
+    'lifecycle-foundation-installed',
     'release-packages',
     'release-artifact-determinism',
     'clean-machine-acceptance',

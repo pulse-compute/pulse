@@ -19,7 +19,7 @@ function prepareNumericRegions({ plan, resources, policy, schemaActive, budgeted
   // helpers. Host caches and linked memory need independent qualification.
   const accounting = budgeted && readLoopBudget && policy === POLICY;
   const enabled = realizationEligible && (!budgeted || accounting);
-  const globals = [], regions = [], declined = [];
+  const globals = [], resets = [], regions = [], declined = [];
   const localIds = new Set((plan.locals || []).map(x => x.id));
   function proveExpression(e, definite) {
     if (!e) return null;
@@ -83,7 +83,10 @@ function prepareNumericRegions({ plan, resources, policy, schemaActive, budgeted
       if (!loop) continue;
       const index = regions.length, ids = [...writes];
       const names = new Map(ids.map((id, i) => [id, `__pulse_numeric_${index}_${i}`]));
-      for (const name of names.values()) globals.push(`let ${name}: f64 = 0`, `let ${name}_written: bool = false`);
+      for (const name of names.values()) {
+        globals.push(`let ${name}: f64 = 0`, `let ${name}_written: bool = false`);
+        resets.push(`${name} = 0`, `${name}_written = false`);
+      }
       regions.push(Object.freeze({ index, statementPaths: statements.slice(start, end).map(s => s.statementPath), localIds: ids }));
       for (let i = start; i < end; i++) selected.set(statements[i], {
         names, reset: i === start, box: i === end - 1
@@ -142,7 +145,7 @@ function prepareNumericRegions({ plan, resources, policy, schemaActive, budgeted
       ...(region.box ? [...region.names].map(([id, n]) => `if (${n}_written) ${localName(id)} = ${accounting ? '__pulse_numeric_box' : 'host_value_number'}(${n})`) : [])
     ];
   }
-  return { select, render, globals, manifest: () => Object.freeze({ policy: policy || POLICY, enabled,
+  return { select, render, globals, clear: () => resets, manifest: () => Object.freeze({ policy: policy || POLICY, enabled,
     reason: policy === LINKED_POLICY && schemaActive ? 'schema-active-linked' : budgeted && !accounting ? 'execution-budget' : !realizationEligible ? 'not-selected' : 'proven-regions-only',
     ...(accounting ? { accounting: 'fastly-read-loop-v1' } : {}),
     regions: Object.freeze(regions), declined: Object.freeze(declined) }) };
