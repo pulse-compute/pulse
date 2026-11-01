@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
-          ref: ef625751db00ea55248b107de6889fef0c066242
+          ref: ce29a1c8f7a5bb0a07d60edd3f3026bb3088fd8c
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
@@ -27,8 +27,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = ef625751db00ea55248b107de6889fef0c066242
-          test "$(git rev-parse HEAD^{tree})" = d056655e6b144a80a61b7363083fa9aed47d47a0
+          test "$(git rev-parse HEAD)" = ce29a1c8f7a5bb0a07d60edd3f3026bb3088fd8c
+          test "$(git rev-parse HEAD^{tree})" = eab588d09b914637dd8d7d01f5349bff7179f1a6
           npm install --global npm@11.15.0
           node scripts/pnpm-toolchain.cjs --install
           .validation-tools/pnpm/bin/pnpm install --frozen-lockfile --ignore-scripts
@@ -41,17 +41,17 @@ jobs:
           tar --no-same-owner -xzf .validation-tools/beta11-engines/viceroy.tar.gz -C .validation-tools/beta11-engines viceroy
           echo "PULSE_FASTLY_BIN=$PWD/.validation-tools/beta11-engines/fastly" >> "$GITHUB_ENV"
           echo "PULSE_VICEROY_BIN=$PWD/.validation-tools/beta11-engines/viceroy" >> "$GITHUB_ENV"
-      - name: Exact-candidate lifecycle foundation, K4 and Native event reuse
+      - name: Exact-candidate fetch outcomes, lifecycle foundation, K4 and Native event reuse
         env:
-          PULSE_SOURCE_REVISION: ef625751db00ea55248b107de6889fef0c066242
+          PULSE_SOURCE_REVISION: ce29a1c8f7a5bb0a07d60edd3f3026bb3088fd8c
           PULSE_SOURCE_IDENTITY_KIND: git-commit
-        run: node wasm/scripts/run-wasm-tests.cjs --task lifecycle-foundation --task kv-conditional-acceptance --task events-native-runtime --report "$PWD/wasm/.test-results/beta11-supplemental.json"
+        run: node wasm/scripts/run-wasm-tests.cjs --task fetch-projections-request-bodies --task lifecycle-foundation --task kv-conditional-acceptance --task events-native-runtime --report "$PWD/wasm/.test-results/beta11-supplemental.json"
       - name: Check complete terminal coverage and clean source
         shell: bash
         run: |
           set -euo pipefail
-          node -e "const a=require('node:assert/strict'),r=require('./wasm/.test-results/beta11-supplemental.json');a.equal(r.status,'passed');a.equal(r.sourceRevision,'ef625751db00ea55248b107de6889fef0c066242');a.deepEqual([...r.selectedTasks].sort(),['events-native-runtime','kv-conditional-acceptance','lifecycle-foundation']);for(const x of r.results){a.equal(x.status,'passed');a.equal(x.cleanup.status,'passed');}"
-          test "$(git rev-parse HEAD)" = ef625751db00ea55248b107de6889fef0c066242
+          node -e "const a=require('node:assert/strict'),r=require('./wasm/.test-results/beta11-supplemental.json');a.equal(r.status,'passed');a.equal(r.sourceRevision,'ce29a1c8f7a5bb0a07d60edd3f3026bb3088fd8c');a.deepEqual([...r.selectedTasks].sort(),['events-native-runtime','fetch-projections-request-bodies','kv-conditional-acceptance','lifecycle-foundation']);for(const x of r.results){a.equal(x.status,'passed');a.equal(x.cleanup.status,'passed');}"
+          test "$(git rev-parse HEAD)" = ce29a1c8f7a5bb0a07d60edd3f3026bb3088fd8c
           test -z "$(git status --porcelain --untracked-files=all)"
       - name: Retain candidate reports and raw K4 semantics
         if: always()
