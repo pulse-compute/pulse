@@ -1200,7 +1200,9 @@ const tasks = Object.freeze({
   }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',
-    timeoutMs: 300000,
+    // Capability/accounting and transport corpora share this task's deadline.
+    // Keep a finite budget with headroom for parallel release compilation.
+    timeoutMs: 600000,
     description: 'Fastly Config, Secret, KV, and GRIP capabilities'
   }),
 
