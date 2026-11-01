@@ -63,6 +63,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'resource-admission',
       'lifecycle-contract-installed',
       'lifecycle-foundation-installed',
+      'terminal-qualification-contract',
       'provider-packages',
       'provider-fastly-package',
       'fastly-javascript-packaging'

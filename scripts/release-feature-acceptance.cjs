@@ -12,6 +12,7 @@ const { RELEASE_VERSION, PACKAGE_SET } = require('./package-support.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const SCHEMA = 'pulse.release-feature-acceptance.v1';
 const GATES = Object.freeze([
+  { task: 'terminal-installed', feature: 'Versioned terminal package contract and both GRIP ABIs; transport evidence remains separate' },
   // Check the combined Native rejection seam before the long JWT workflows.
   { task: 'str02b-installed', feature: 'Node Native request-body forwarding' },
   { task: 'node01-installed', feature: 'Finite production Node HTTP launcher' },
