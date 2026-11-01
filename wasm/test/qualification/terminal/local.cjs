@@ -96,9 +96,9 @@ async function run(proofDir, viceroy, pushpinRoot, output) {
       const request = async (route, headers = {}) => { const r = await fetch(`http://127.0.0.1:${address}${route}`, { headers, signal: AbortSignal.timeout(7000) }); return { status: r.status, body: await r.text() }; };
       const before = originCount, ordinary = await request('/ordinary'); assert.deepEqual(ordinary, { status: 200, body: 'ordinary response' }); assert.equal(originCount, before);
       proof.cases.push({ id:fixture,status:'passed',scenario:'ordinary', artifactSha256, response: ordinary });
-      const response = await request('/handoff'); assert.deepEqual(response, { status: 200, body: 'terminal-origin' });
-      proof.cases.push({ id:fixture,status:'passed',scenario:'handoff', artifactSha256, response });
       if (!fixture.startsWith('websocket')) {
+        const response = await request('/handoff'); assert.deepEqual(response, { status: 200, body: 'terminal-origin' });
+        proof.cases.push({ id:fixture,status:'passed',scenario:'handoff', artifactSha256, response });
         held=false;
         let finished = false; const pending = request('/handoff', { 'x-pulse-terminal-hold': channel }).then(r => { finished = true; return r; });pending.catch(()=>{});
         for (let n = 0; n < 100 && !held; n++) await delay(20); assert(held);
@@ -107,7 +107,13 @@ async function run(proofDir, viceroy, pushpinRoot, output) {
           body: JSON.stringify({ items: [{ channel, formats: { 'http-response': { body: publishedBody } } }] }), signal: AbortSignal.timeout(3000) });
         assert.equal(published.status, 200); const response = await pending; assert.deepEqual(response, { status: 200, body: publishedBody });
         proof.cases.push({ id:fixture,status:'passed',scenario:'hold-publish', artifactSha256, response });
-      } else { const response = await websocket(address); assert.deepEqual(response, {status:101,frames:2}); proof.cases.push({ id:fixture,status:'passed',scenario:'bidirectional-websocket', artifactSha256, response }); }
+      } else {
+        // Match the hosted protocol: upgrade proves handoff, then two echoed
+        // frames prove bidirectional transport on that same connection.
+        const response = await websocket(address); assert.deepEqual(response, {status:101,frames:2});
+        proof.cases.push({ id:fixture,status:'passed',scenario:'handoff', artifactSha256, response:{status:response.status} });
+        proof.cases.push({ id:fixture,status:'passed',scenario:'bidirectional-websocket', artifactSha256, response });
+      }
       await stop(engine); engine = null; await stop(proxy);proxy=null;save();
     }
     assert.equal(load(proofDir).sha256,bundle.sha256);

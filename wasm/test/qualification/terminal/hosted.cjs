@@ -47,9 +47,11 @@ async function run(bundleDir,configFile,output){
    const request=async(route,headers={})=>{const r=await fetch(new URL(route,url),{headers,redirect:'error',signal:AbortSignal.any([controller.signal,AbortSignal.timeout(15000)])});return {status:r.status,body:await r.text()};};
    const record=scenario=>receipt.cases.push({id:c.id,scenario,status:'passed',artifactSha256:artifact.sha256});
    assert.deepEqual(await request('/ordinary'),{status:200,body:'ordinary response'});record('ordinary');
-   assert.deepEqual(await request('/handoff'),{status:200,body:'terminal-origin'});record('handoff');
-   if(c.id.startsWith('websocket')){const ws=new URL('/handoff',url);ws.protocol='wss:';assert.deepEqual(await websocket(ws.href),{status:101,frames:2});record('bidirectional-websocket');}
+   // WebSocket passthrough requires an actual upgrade. A plain HTTP request
+   // is not an admitted positive probe on the hosted WebSocket service.
+   if(c.id.startsWith('websocket')){const ws=new URL('/handoff',url);ws.protocol='wss:';assert.deepEqual(await websocket(ws.href),{status:101,frames:2});record('handoff');record('bidirectional-websocket');}
    else {
+    assert.deepEqual(await request('/handoff'),{status:200,body:'terminal-origin'});record('handoff');
     const channel='pulse-terminal-'+crypto.randomBytes(12).toString('hex'),body='published-'+crypto.randomBytes(12).toString('hex');
     let settled=false;const pending=request('/handoff',{'x-pulse-terminal-hold':channel}).then(r=>{settled=true;return r;});pending.catch(()=>{});
     await delay(1000);assert.equal(settled,false,'Response was not held');
