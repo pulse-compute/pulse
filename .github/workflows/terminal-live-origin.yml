@@ -3,12 +3,15 @@ on:
   push:
     branches: [evidence/571-live-origin]
     paths: ['.github/workflows/terminal-live-origin.yml']
+concurrency:
+  group: temporary-pr571-origin
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
   origin:
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
@@ -45,9 +48,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for attempt in $(seq 1 180); do
+          for attempt in $(seq 1 120); do
             kill -0 "$(cat "$RUNNER_TEMP/origin-evidence/origin.pid")"
             kill -0 "$(cat "$RUNNER_TEMP/origin-evidence/tunnel.pid")"
+            if curl --fail --silent https://raw.githubusercontent.com/pulse-compute/pulse/evidence/571-live-origin/stop-origin.txt >/dev/null; then break; fi
             sleep 10
           done
       - name: Stop owned fixture processes
