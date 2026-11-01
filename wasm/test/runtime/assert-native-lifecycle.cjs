@@ -5,7 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { createNativeExecutionLifecycle: create } = require('../../packages/host-runtime/src/runtime/native-execution-lifecycle');
-const { compileCanonicalSource } = require('../../packages/compiler/src/canonical-api-compiler');
+const { compileCanonicalSource, loadCanonicalModule } = require('../../packages/compiler/src/canonical-api-compiler');
 const { buildCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
 const { compileCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-compiler');
 const host = require('../../packages/host-runtime/src/runtime/canonical-native-host');
@@ -159,6 +159,70 @@ async function main() {
     providerAdapter: createNodeProviderAdapter({ config: { MODE: 'ok' } }), lifecycleServices: [hook('invocation.end', () => { eventTrace.push('end'); }), hook('invocation.closed', () => { eventTrace.push('closed'); })]
   });
   assert.equal(eventResult.status, 'completed'); assert.deepEqual(eventTrace, ['end','closed']); count++; console.log('ok - event execution selects no HTTP lifecycle capability');
+  const program = loadCanonicalModule(compileCanonicalSource(source, { requireAsync: true, strict: false }));
+  const generator = require('../../packages/host-runtime/src/runtime/canonical-api-runtime');
+  for (const target of ['native', 'generator']) {
+    for (const failed of [false, true]) {
+      const primary = new Error('primary-dispatch'), unhandled = [];
+      let rejectDisposal, disposed = 0;
+      const observe = error => unhandled.push(error);
+      process.on('unhandledRejection', observe);
+      try {
+        const options = { providerAdapter: {
+          id: 'disposal-review', dispatchEffect() { if (failed) throw primary; return 'ok'; },
+          disposeExecution() { disposed++; return new Promise((_resolve, reject) => { rejectDisposal = reject; }); }
+        } };
+        const execution = target === 'native' ? host.executeCanonicalNativeModule(native, options) : generator.executeCanonicalProgram(program, options);
+        // HTTP does not await asynchronous disposal. Preserve that behavior and
+        // its response/primary failure, while observing eventual cleanup errors.
+        const completed = failed ? assert.rejects(execution, error => error.message === primary.message)
+          : execution.then(result => assert.equal(result.response.body, 'ok'));
+        await Promise.race([completed, new Promise((_resolve, reject) => setImmediate(() => reject(new Error('HTTP waited for disposal'))))]);
+        assert.equal(disposed, 1);
+        rejectDisposal(new Error('secondary asynchronous cleanup'));
+        await new Promise(resolve => setImmediate(resolve));
+        assert.deepEqual(unhandled, [], `${target}: asynchronous disposal failure must remain observed`);
+        count++; console.log(`ok - ${target} observes asynchronous HTTP disposal after ${failed ? 'failure' : 'success'}`);
+      } finally { process.off('unhandledRejection', observe); }
+    }
+  }
+  // Providers may synchronously cancel during dispatch, before the driver can
+  // install its race. Their returned promise still belongs to that invocation.
+  for (const plane of ['http', 'event']) {
+    for (const mode of ['immediate-rejection', 'late-rejection', 'late-success', 'suspended-rejection']) {
+      const abort = new AbortController(), unhandled = [], trace = [];
+      const providerFailure = new Error('provider rejection after cancellation');
+      let settle, dispatched = 0, disposed = 0;
+      const observe = error => unhandled.push(error);
+      process.on('unhandledRejection', observe);
+      try {
+        const options = { signal: abort.signal, providerAdapter: {
+          id: 'cancellation-review', dispatchEffect() {
+            dispatched++;
+            if (mode === 'suspended-rejection') queueMicrotask(() => abort.abort());
+            else abort.abort();
+            return mode === 'immediate-rejection' ? Promise.reject(providerFailure)
+              : new Promise((resolve, reject) => { settle = () => mode === 'late-success' ? resolve('late') : reject(providerFailure); });
+          }, disposeExecution() { disposed++; }
+        }, lifecycleServices: [
+          hook('effect.settle', () => { trace.push('settle'); return true; }),
+          hook('invocation.close', () => { trace.push('close'); }),
+          hook('invocation.closed', () => { trace.push('closed'); })
+        ] };
+        if (plane === 'http') await assert.rejects(host.executeCanonicalNativeModule(native, options), { code: 'PULSE_RUNTIME_EFFECT_ABORTED' });
+        else {
+          const result = await host.executeCanonicalNativeEvent(eventNative, { version: 'pulse.event-frame.v1', type: 'system.tick', schemaId: null }, options);
+          assert.equal(result.status, 'failed'); assert.equal(result.error.category, 'cancelled'); assert.equal(Object.hasOwn(result, 'result'), false);
+        }
+        settle?.();
+        await new Promise(resolve => setImmediate(resolve));
+        assert.deepEqual(unhandled, [], `${plane}/${mode}: provider rejection must remain observed`);
+        assert.equal(dispatched, 1); assert.equal(disposed, 1);
+        assert.deepEqual(trace, ['close', 'closed'], 'late completion cannot settle into a closed guest');
+        count++; console.log(`ok - ${plane} cancellation observes ${mode} without late delivery`);
+      } finally { process.off('unhandledRejection', observe); }
+    }
+  }
   const absent = host.instantiateCanonicalNativeModule(native), empty = host.instantiateCanonicalNativeModule(native, { lifecycleServices: [] });
   assert.equal(absent.lifecycle, undefined); assert.equal(empty.lifecycle, undefined); assert.equal(Object.hasOwn(empty.instance, 'exports'), false);
   assert.equal(absent.wasmSha256, empty.wasmSha256); assert.deepEqual(WebAssembly.Module.imports(absent.module), WebAssembly.Module.imports(empty.module)); absent.close(); empty.close(); count++;
