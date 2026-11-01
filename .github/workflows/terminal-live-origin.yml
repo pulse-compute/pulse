@@ -1,0 +1,59 @@
+name: Temporary PR571 fixture origin
+on:
+  push:
+    branches: [evidence/571-live-origin]
+    paths: ['.github/workflows/terminal-live-origin.yml']
+permissions:
+  contents: read
+jobs:
+  origin:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: 9cef87016d622712dfe71c94133c883f723a72e6
+          persist-credentials: false
+      - name: Start bounded credential-free origin
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/origin-evidence"
+          curl --fail --location --retry 2 https://github.com/cloudflare/cloudflared/releases/download/2026.10.7/cloudflared-linux-amd64 -o "$RUNNER_TEMP/cloudflared"
+          echo "1f99fb518b83dec2ba8d870a7cc991d82a77e6196295a3d2754ba17ab9f91872  $RUNNER_TEMP/cloudflared" | sha256sum --check
+          chmod +x "$RUNNER_TEMP/cloudflared"
+          node wasm/test/qualification/terminal/origin.cjs 18715 > "$RUNNER_TEMP/origin-evidence/origin.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/origin-evidence/origin.pid"
+          "$RUNNER_TEMP/cloudflared" tunnel --url http://127.0.0.1:18715 --no-autoupdate --protocol http2 > "$RUNNER_TEMP/origin-evidence/tunnel.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/origin-evidence/tunnel.pid"
+          for attempt in $(seq 1 60); do
+            url=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare.com' "$RUNNER_TEMP/origin-evidence/tunnel.log" | head -1 || true)
+            if [ -n "$url" ]; then
+              printf '%s\n' "$url" > "$RUNNER_TEMP/origin-evidence/url.txt"
+              echo "Fixture origin: $url"
+              break
+            fi
+            sleep 1
+          done
+          test -s "$RUNNER_TEMP/origin-evidence/url.txt"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: terminal-origin-endpoint
+          path: ${{ runner.temp }}/origin-evidence
+          retention-days: 3
+      - name: Keep test origin available
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 180); do
+            kill -0 "$(cat "$RUNNER_TEMP/origin-evidence/origin.pid")"
+            kill -0 "$(cat "$RUNNER_TEMP/origin-evidence/tunnel.pid")"
+            sleep 10
+          done
+      - name: Stop owned fixture processes
+        if: always()
+        shell: bash
+        run: |
+          for file in "$RUNNER_TEMP/origin-evidence/"*.pid; do
+            test -f "$file" && kill "$(cat "$file")" 2>/dev/null || true
+          done
