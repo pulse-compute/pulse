@@ -1,0 +1,64 @@
+name: Beta11 supplemental qualification
+on:
+  pull_request:
+    branches: [latest]
+    types: [opened, synchronize, reopened]
+    paths: ['.github/workflows/beta11-supplemental.yml']
+permissions:
+  contents: read
+concurrency:
+  group: beta11-supplemental-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  supplemental:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ef625751db00ea55248b107de6889fef0c066242
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+      - name: Restore candidate-owned toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = ef625751db00ea55248b107de6889fef0c066242
+          test "$(git rev-parse HEAD^{tree})" = d056655e6b144a80a61b7363083fa9aed47d47a0
+          npm install --global npm@11.15.0
+          node scripts/pnpm-toolchain.cjs --install
+          .validation-tools/pnpm/bin/pnpm install --frozen-lockfile --ignore-scripts
+          mkdir -p .validation-tools/beta11-engines
+          curl --fail --location --retry 2 --max-time 120 https://github.com/fastly/cli/releases/download/v16.1.0/fastly_v16.1.0_linux-amd64.tar.gz -o .validation-tools/beta11-engines/fastly.tar.gz
+          echo '48e8b1dcf9fbe44c21fac06e32c3f9f670c1e9c611776199bfe61990e6dbe7ad  .validation-tools/beta11-engines/fastly.tar.gz' | sha256sum --check
+          tar --no-same-owner -xzf .validation-tools/beta11-engines/fastly.tar.gz -C .validation-tools/beta11-engines fastly
+          curl --fail --location --retry 2 --max-time 120 https://github.com/fastly/Viceroy/releases/download/v0.21.1/viceroy_v0.21.1_linux-amd64.tar.gz -o .validation-tools/beta11-engines/viceroy.tar.gz
+          echo '54a5b46ab05ce1492f4df136728b2eb81b350cb42da5d9f2eec66558ddc1e233  .validation-tools/beta11-engines/viceroy.tar.gz' | sha256sum --check
+          tar --no-same-owner -xzf .validation-tools/beta11-engines/viceroy.tar.gz -C .validation-tools/beta11-engines viceroy
+          echo "PULSE_FASTLY_BIN=$PWD/.validation-tools/beta11-engines/fastly" >> "$GITHUB_ENV"
+          echo "PULSE_VICEROY_BIN=$PWD/.validation-tools/beta11-engines/viceroy" >> "$GITHUB_ENV"
+      - name: Exact-candidate lifecycle foundation, K4 and Native event reuse
+        env:
+          PULSE_SOURCE_REVISION: ef625751db00ea55248b107de6889fef0c066242
+          PULSE_SOURCE_IDENTITY_KIND: git-commit
+        run: node wasm/scripts/run-wasm-tests.cjs --task lifecycle-foundation --task kv-conditional-acceptance --task events-native-runtime --report "$PWD/wasm/.test-results/beta11-supplemental.json"
+      - name: Check complete terminal coverage and clean source
+        shell: bash
+        run: |
+          set -euo pipefail
+          node -e "const a=require('node:assert/strict'),r=require('./wasm/.test-results/beta11-supplemental.json');a.equal(r.status,'passed');a.equal(r.sourceRevision,'ef625751db00ea55248b107de6889fef0c066242');a.deepEqual([...r.selectedTasks].sort(),['events-native-runtime','kv-conditional-acceptance','lifecycle-foundation']);for(const x of r.results){a.equal(x.status,'passed');a.equal(x.cleanup.status,'passed');}"
+          test "$(git rev-parse HEAD)" = ef625751db00ea55248b107de6889fef0c066242
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Retain candidate reports and raw K4 semantics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: beta11-supplemental-${{ github.run_id }}-${{ github.run_attempt }}
+          path: wasm/.test-results
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
