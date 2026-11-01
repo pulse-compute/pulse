@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "pulse.release-pr-qualification.v2",
+  "repository": "pulse-compute/pulse",
+  "workflow": ".github/workflows/release-qualify.yml",
+  "runId": 41301460387,
+  "attempt": 1,
+  "pullRequest": 591,
+  "base": "e69e4b6f1381a05bf0ee0b9b4c6385d2acefb20c",
+  "head": "3817f027cee36f9503d35420a775afdf639af568",
+  "sourceRef": "refs/pull/591/merge",
+  "candidate": {
+    "sourceRevision": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+    "sourceTree": "77e58f4f93bf3f90d1f3390423218bc6d8a20462",
+    "workingTree": ""
+  },
+  "preparation": {
+    "status": "passed",
+    "previousVersion": "1.0.0-beta.10",
+    "version": "1.0.0-beta.11",
+    "productChanged": true,
+    "preparedRelease": true,
+    "sealed": false
+  },
+  "releaseTag": "v1.0.0-beta.11",
+  "qualificationRequested": true,
+  "scopeQualification": {
+    "policyRevision": "e69e4b6f1381a05bf0ee0b9b4c6385d2acefb20c",
+    "checks": [
+      "cli",
+      "providers",
+      "release"
+    ],
+    "status": "pending"
+  },
+  "required": true,
+  "status": "passed",
+  "completedAt": "2026-11-01T12:27:45.398Z",
+  "artifact": "pulse-pr-release-qualification-41301460387-1",
+  "documentationMode": "source-only",
+  "sourceChecksSha256": "f50ddf1b11148bc09940ec42c1cc1043a7ec7b784d524e7a3292a0fbbc947619",
+  "sealSha256": "f09d1ae09b50f3d41b4d871ba6d29b2ecf5c8db1fb5248a4f63210e806dd49bf",
+  "bundleManifestSha256": "aa266486e5bee365e5de50e192e4d6d636738c87065df18e79e9d047a9530d14",
+  "qualificationContextSha256": "a7a7b8c7f3b2432356a11813ab0be650524b0f419a06812468161615c76a8ee8",
+  "separateGates": [
+    {
+      "task": "str03c-bounded-transforms",
+      "classification": "experimental",
+      "disposition": "Workspace evidence only; installed transform qualification pending"
+    },
+    {
+      "task": "kv-conditional-acceptance",
+      "classification": "external-required",
+      "disposition": "Separate local K4 execution; documented Viceroy 0.21.0/0.21.1 missing-key CAS discrepancy is non-blocking by human direction (2026-10-04). Other failures and deployed Pulse cross-location acceptance remain required; B6-05"
+    }
+  ]
+}

@@ -1,0 +1,2638 @@
+{
+  "schemaVersion": "pulse.beta11-qualification-observation.v1",
+  "observedAt": "2026-11-01T12:30:55.150Z",
+  "status": "automated-qualification-passed",
+  "repository": "pulse-compute/pulse",
+  "release": "1.0.0-beta.11",
+  "pullRequest": 591,
+  "base": "e69e4b6f1381a05bf0ee0b9b4c6385d2acefb20c",
+  "head": "3817f027cee36f9503d35420a775afdf639af568",
+  "candidate": {
+    "sourceRevision": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+    "sourceTree": "77e58f4f93bf3f90d1f3390423218bc6d8a20462"
+  },
+  "fullSeal": {
+    "run": 41301460387,
+    "job": 124833271345,
+    "status": "passed",
+    "accepted": true,
+    "attempt": 1,
+    "completedAt": "2026-11-01T12:27:45.398Z",
+    "documentationMode": "source-only",
+    "releaseTaskCount": 231,
+    "installedFeatureGateCount": 12,
+    "releaseTasks": [
+      {
+        "name": "binary-resource-admission",
+        "status": "passed",
+        "durationSeconds": 4.87,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/binary-resource-admission.log"
+      },
+      {
+        "name": "report-capsule-contract",
+        "status": "passed",
+        "durationSeconds": 21.36,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/report-capsule-contract.log"
+      },
+      {
+        "name": "cli-report-workflow",
+        "status": "passed",
+        "durationSeconds": 7.78,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-workflow.log"
+      },
+      {
+        "name": "cli-compare-workflow",
+        "status": "passed",
+        "durationSeconds": 9.48,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-compare-workflow.log"
+      },
+      {
+        "name": "fastly-forwarding-evidence",
+        "status": "passed",
+        "durationSeconds": 4.81,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-forwarding-evidence.log"
+      },
+      {
+        "name": "cli-report-viewer",
+        "status": "passed",
+        "durationSeconds": 17.62,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-viewer.log"
+      },
+      {
+        "name": "cli-report-retained-evidence",
+        "status": "passed",
+        "durationSeconds": 53.27,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-retained-evidence.log"
+      },
+      {
+        "name": "cli-report-host-extensions",
+        "status": "passed",
+        "durationSeconds": 37.82,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-host-extensions.log"
+      },
+      {
+        "name": "cli-report-size-evidence",
+        "status": "passed",
+        "durationSeconds": 5.45,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-size-evidence.log"
+      },
+      {
+        "name": "cli-report-capture-proof",
+        "status": "passed",
+        "durationSeconds": 14.79,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-capture-proof.log"
+      },
+      {
+        "name": "cli-report-entry-proof",
+        "status": "passed",
+        "durationSeconds": 47.41,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-entry-proof.log"
+      },
+      {
+        "name": "cli-report-reference-provenance",
+        "status": "passed",
+        "durationSeconds": 22.04,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-reference-provenance.log"
+      },
+      {
+        "name": "cli-report-handler-topology",
+        "status": "passed",
+        "durationSeconds": 66.92,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-handler-topology.log"
+      },
+      {
+        "name": "cli-report-handler-associations",
+        "status": "passed",
+        "durationSeconds": 6.29,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-handler-associations.log"
+      },
+      {
+        "name": "cli-report-relationships",
+        "status": "passed",
+        "durationSeconds": 11.51,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-relationships.log"
+      },
+      {
+        "name": "cli-report-imported-inputs",
+        "status": "passed",
+        "durationSeconds": 21.17,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-imported-inputs.log"
+      },
+      {
+        "name": "cli-report-resource-inventory",
+        "status": "passed",
+        "durationSeconds": 20.11,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-resource-inventory.log"
+      },
+      {
+        "name": "cli-report-graph-diagnostics",
+        "status": "passed",
+        "durationSeconds": 9.99,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-report-graph-diagnostics.log"
+      },
+      {
+        "name": "multifile-source-indexes",
+        "status": "passed",
+        "durationSeconds": 4.54,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/multifile-source-indexes.log"
+      },
+      {
+        "name": "guest-json-roundtrip",
+        "status": "passed",
+        "durationSeconds": 4.38,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/guest-json-roundtrip.log"
+      },
+      {
+        "name": "pure-helper-contract",
+        "status": "passed",
+        "durationSeconds": 5.62,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pure-helper-contract.log"
+      },
+      {
+        "name": "callable-source-admission",
+        "status": "passed",
+        "durationSeconds": 5.55,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/callable-source-admission.log"
+      },
+      {
+        "name": "suite-shape",
+        "status": "passed",
+        "durationSeconds": 4.6,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/suite-shape.log"
+      },
+      {
+        "name": "test-orchestration",
+        "status": "passed",
+        "durationSeconds": 19.89,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/test-orchestration.log"
+      },
+      {
+        "name": "package-exports",
+        "status": "passed",
+        "durationSeconds": 4.63,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/package-exports.log"
+      },
+      {
+        "name": "boundaries",
+        "status": "passed",
+        "durationSeconds": 4.59,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/boundaries.log"
+      },
+      {
+        "name": "workspace-hygiene",
+        "status": "passed",
+        "durationSeconds": 4.47,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/workspace-hygiene.log"
+      },
+      {
+        "name": "hidden-contracts",
+        "status": "passed",
+        "durationSeconds": 4.39,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/hidden-contracts.log"
+      },
+      {
+        "name": "release-feature-acceptance",
+        "status": "passed",
+        "durationSeconds": 13.69,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-feature-acceptance.log"
+      },
+      {
+        "name": "release-runtime-policy",
+        "status": "passed",
+        "durationSeconds": 7.39,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-runtime-policy.log"
+      },
+      {
+        "name": "release-seal-lifecycle",
+        "status": "passed",
+        "durationSeconds": 9.25,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-seal-lifecycle.log"
+      },
+      {
+        "name": "release-checkpoints",
+        "status": "passed",
+        "durationSeconds": 4.47,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-checkpoints.log"
+      },
+      {
+        "name": "release-recovery-runner",
+        "status": "passed",
+        "durationSeconds": 58.67,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-recovery-runner.log"
+      },
+      {
+        "name": "release-recovery",
+        "status": "passed",
+        "durationSeconds": 14.66,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-recovery.log"
+      },
+      {
+        "name": "release-tag",
+        "status": "passed",
+        "durationSeconds": 4.84,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-tag.log"
+      },
+      {
+        "name": "api-surface",
+        "status": "passed",
+        "durationSeconds": 6.06,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/api-surface.log"
+      },
+      {
+        "name": "logging-contract",
+        "status": "passed",
+        "durationSeconds": 4.29,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/logging-contract.log"
+      },
+      {
+        "name": "s3-design-contract",
+        "status": "passed",
+        "durationSeconds": 5.59,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/s3-design-contract.log"
+      },
+      {
+        "name": "kv-design-contract",
+        "status": "passed",
+        "durationSeconds": 5.5,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/kv-design-contract.log"
+      },
+      {
+        "name": "kv-conditional-runtime",
+        "status": "passed",
+        "durationSeconds": 5.35,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/kv-conditional-runtime.log"
+      },
+      {
+        "name": "kv-conditional-gates",
+        "status": "passed",
+        "durationSeconds": 4.8,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/kv-conditional-gates.log"
+      },
+      {
+        "name": "s3-read-contract",
+        "status": "passed",
+        "durationSeconds": 6.33,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/s3-read-contract.log"
+      },
+      {
+        "name": "s3-write-contract",
+        "status": "passed",
+        "durationSeconds": 4.46,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/s3-write-contract.log"
+      },
+      {
+        "name": "crypto-config-planning",
+        "status": "passed",
+        "durationSeconds": 4.79,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/crypto-config-planning.log"
+      },
+      {
+        "name": "crypto-es256-signing",
+        "status": "passed",
+        "durationSeconds": 4.3,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/crypto-es256-signing.log"
+      },
+      {
+        "name": "crypto-rs256",
+        "status": "passed",
+        "durationSeconds": 5.96,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/crypto-rs256.log"
+      },
+      {
+        "name": "crypto-digest-text-contract",
+        "status": "passed",
+        "durationSeconds": 4.64,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/crypto-digest-text-contract.log"
+      },
+      {
+        "name": "reachable-graph",
+        "status": "passed",
+        "durationSeconds": 4.46,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/reachable-graph.log"
+      },
+      {
+        "name": "project-modules",
+        "status": "passed",
+        "durationSeconds": 5.3,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/project-modules.log"
+      },
+      {
+        "name": "package-reachability",
+        "status": "passed",
+        "durationSeconds": 5.61,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/package-reachability.log"
+      },
+      {
+        "name": "external-lowerers",
+        "status": "passed",
+        "durationSeconds": 6.17,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/external-lowerers.log"
+      },
+      {
+        "name": "package-runtime",
+        "status": "passed",
+        "durationSeconds": 4.42,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/package-runtime.log"
+      },
+      {
+        "name": "provider-toolchain",
+        "status": "passed",
+        "durationSeconds": 4.59,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/provider-toolchain.log"
+      },
+      {
+        "name": "lifecycle-contract",
+        "status": "passed",
+        "durationSeconds": 4.44,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/lifecycle-contract.log"
+      },
+      {
+        "name": "resource-admission",
+        "status": "passed",
+        "durationSeconds": 4.44,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/resource-admission.log"
+      },
+      {
+        "name": "schema-registry",
+        "status": "passed",
+        "durationSeconds": 5.25,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/schema-registry.log"
+      },
+      {
+        "name": "continuation-registry",
+        "status": "passed",
+        "durationSeconds": 4.24,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/continuation-registry.log"
+      },
+      {
+        "name": "entities-contracts",
+        "status": "passed",
+        "durationSeconds": 4.32,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-contracts.log"
+      },
+      {
+        "name": "entities-schema-bridge",
+        "status": "passed",
+        "durationSeconds": 4.57,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-schema-bridge.log"
+      },
+      {
+        "name": "entities-javascript-runtime",
+        "status": "passed",
+        "durationSeconds": 5.02,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-javascript-runtime.log"
+      },
+      {
+        "name": "entities-json-rpc-corpus",
+        "status": "passed",
+        "durationSeconds": 4.34,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-json-rpc-corpus.log"
+      },
+      {
+        "name": "mcp-http",
+        "status": "passed",
+        "durationSeconds": 4.59,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/mcp-http.log"
+      },
+      {
+        "name": "pulse-context-corpus",
+        "status": "passed",
+        "durationSeconds": 5.16,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pulse-context-corpus.log"
+      },
+      {
+        "name": "pulse-context-build",
+        "status": "passed",
+        "durationSeconds": 78.94,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pulse-context-build.log"
+      },
+      {
+        "name": "pulse-context-application",
+        "status": "passed",
+        "durationSeconds": 11.42,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pulse-context-application.log"
+      },
+      {
+        "name": "pulse-context-host",
+        "status": "passed",
+        "durationSeconds": 7.9,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pulse-context-host.log"
+      },
+      {
+        "name": "mcp-compatibility",
+        "status": "passed",
+        "durationSeconds": 4.57,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/mcp-compatibility.log"
+      },
+      {
+        "name": "mcp-tools",
+        "status": "passed",
+        "durationSeconds": 4.54,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/mcp-tools.log"
+      },
+      {
+        "name": "mcp-authorization",
+        "status": "passed",
+        "durationSeconds": 7.26,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/mcp-authorization.log"
+      },
+      {
+        "name": "entities-package-owned-lowering",
+        "status": "passed",
+        "durationSeconds": 4.54,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-package-owned-lowering.log"
+      },
+      {
+        "name": "entities-catalog",
+        "status": "passed",
+        "durationSeconds": 4.56,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-catalog.log"
+      },
+      {
+        "name": "entities-inspection",
+        "status": "passed",
+        "durationSeconds": 15.94,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-inspection.log"
+      },
+      {
+        "name": "entities-orchestration-demo",
+        "status": "passed",
+        "durationSeconds": 11.57,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-orchestration-demo.log"
+      },
+      {
+        "name": "context-native-proof",
+        "status": "passed",
+        "durationSeconds": 33.07,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/context-native-proof.log"
+      },
+      {
+        "name": "npm-source-imports",
+        "status": "passed",
+        "durationSeconds": 9.63,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/npm-source-imports.log"
+      },
+      {
+        "name": "fastly-numeric-regions",
+        "status": "passed",
+        "durationSeconds": 74.05,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-numeric-regions.log"
+      },
+      {
+        "name": "fastly-numeric-budgets",
+        "status": "passed",
+        "durationSeconds": 51.67,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-numeric-budgets.log"
+      },
+      {
+        "name": "fastly-handle-ownership",
+        "status": "passed",
+        "durationSeconds": 47.46,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-handle-ownership.log"
+      },
+      {
+        "name": "fastly-handle-frames",
+        "status": "passed",
+        "durationSeconds": 96.25,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-handle-frames.log"
+      },
+      {
+        "name": "pure-helper-vocabulary",
+        "status": "passed",
+        "durationSeconds": 8.22,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pure-helper-vocabulary.log"
+      },
+      {
+        "name": "pure-string-index",
+        "status": "passed",
+        "durationSeconds": 10.29,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pure-string-index.log"
+      },
+      {
+        "name": "pure-field-projection",
+        "status": "passed",
+        "durationSeconds": 19.68,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pure-field-projection.log"
+      },
+      {
+        "name": "pure-guarded-arguments",
+        "status": "passed",
+        "durationSeconds": 48.57,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pure-guarded-arguments.log"
+      },
+      {
+        "name": "pure-source-helpers",
+        "status": "passed",
+        "durationSeconds": 15.61,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pure-source-helpers.log"
+      },
+      {
+        "name": "pure-record-helpers",
+        "status": "passed",
+        "durationSeconds": 25.07,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pure-record-helpers.log"
+      },
+      {
+        "name": "pure-argument-helpers",
+        "status": "passed",
+        "durationSeconds": 28.33,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pure-argument-helpers.log"
+      },
+      {
+        "name": "pure-loop-helpers",
+        "status": "passed",
+        "durationSeconds": 11.29,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pure-loop-helpers.log"
+      },
+      {
+        "name": "fastly-driver-behavior-o09",
+        "status": "passed",
+        "durationSeconds": 35.87,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-driver-behavior-o09.log"
+      },
+      {
+        "name": "kv-native-abi-feasibility",
+        "status": "passed",
+        "durationSeconds": 6.08,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/kv-native-abi-feasibility.log"
+      },
+      {
+        "name": "s3-body-read",
+        "status": "passed",
+        "durationSeconds": 13.18,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/s3-body-read.log"
+      },
+      {
+        "name": "s3-node-transport",
+        "status": "passed",
+        "durationSeconds": 5.18,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/s3-node-transport.log"
+      },
+      {
+        "name": "canonical-api-lowering",
+        "status": "passed",
+        "durationSeconds": 5.33,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/canonical-api-lowering.log"
+      },
+      {
+        "name": "canonical-native-plan",
+        "status": "passed",
+        "durationSeconds": 10.89,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/canonical-native-plan.log"
+      },
+      {
+        "name": "shared-stage-o19",
+        "status": "passed",
+        "durationSeconds": 11.2,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/shared-stage-o19.log"
+      },
+      {
+        "name": "str02b-node-native",
+        "status": "passed",
+        "durationSeconds": 12.38,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/str02b-node-native.log"
+      },
+      {
+        "name": "native-lifecycle",
+        "status": "passed",
+        "durationSeconds": 10.33,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/native-lifecycle.log"
+      },
+      {
+        "name": "lifecycle-foundation",
+        "status": "passed",
+        "durationSeconds": 46.43,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/lifecycle-foundation.log"
+      },
+      {
+        "name": "fastly-lifecycle",
+        "status": "passed",
+        "durationSeconds": 41.19,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-lifecycle.log"
+      },
+      {
+        "name": "fastly-router-terminal",
+        "status": "passed",
+        "durationSeconds": 40.97,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-router-terminal.log"
+      },
+      {
+        "name": "terminal-qualification-contract",
+        "status": "passed",
+        "durationSeconds": 4.9,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/terminal-qualification-contract.log"
+      },
+      {
+        "name": "resource-ownership-cost",
+        "status": "passed",
+        "durationSeconds": 14.76,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/resource-ownership-cost.log"
+      },
+      {
+        "name": "resource-ledger",
+        "status": "passed",
+        "durationSeconds": 15.74,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/resource-ledger.log"
+      },
+      {
+        "name": "fastly-forwarding-accounting",
+        "status": "passed",
+        "durationSeconds": 17.04,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-forwarding-accounting.log"
+      },
+      {
+        "name": "fastly-fetch-cohorts",
+        "status": "passed",
+        "durationSeconds": 47.2,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-fetch-cohorts.log"
+      },
+      {
+        "name": "fastly-incoming-body-forwarding",
+        "status": "passed",
+        "durationSeconds": 16.62,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-incoming-body-forwarding.log"
+      },
+      {
+        "name": "str03a-generated-output",
+        "status": "passed",
+        "durationSeconds": 25.59,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/str03a-generated-output.log"
+      },
+      {
+        "name": "str03c-bounded-transforms",
+        "status": "passed",
+        "durationSeconds": 20,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/str03c-bounded-transforms.log"
+      },
+      {
+        "name": "bounded-app-logic",
+        "status": "passed",
+        "durationSeconds": 49.97,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/bounded-app-logic.log"
+      },
+      {
+        "name": "bounded-read-loops",
+        "status": "passed",
+        "durationSeconds": 52.89,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/bounded-read-loops.log"
+      },
+      {
+        "name": "bounded-loop-helpers",
+        "status": "passed",
+        "durationSeconds": 11.31,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/bounded-loop-helpers.log"
+      },
+      {
+        "name": "logging-lowering",
+        "status": "passed",
+        "durationSeconds": 7.29,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/logging-lowering.log"
+      },
+      {
+        "name": "canonical-router-lowering",
+        "status": "passed",
+        "durationSeconds": 12.92,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/canonical-router-lowering.log"
+      },
+      {
+        "name": "canonical-router-terminal-middleware",
+        "status": "passed",
+        "durationSeconds": 13.74,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/canonical-router-terminal-middleware.log"
+      },
+      {
+        "name": "router-selected-groups",
+        "status": "passed",
+        "durationSeconds": 10.12,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/router-selected-groups.log"
+      },
+      {
+        "name": "json-as-compatibility",
+        "status": "passed",
+        "durationSeconds": 8.22,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/json-as-compatibility.log"
+      },
+      {
+        "name": "entities-envelope-feasibility",
+        "status": "passed",
+        "durationSeconds": 7.18,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-envelope-feasibility.log"
+      },
+      {
+        "name": "entities-managed-handler",
+        "status": "passed",
+        "durationSeconds": 4.79,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-managed-handler.log"
+      },
+      {
+        "name": "entities-managed-handler-effects",
+        "status": "passed",
+        "durationSeconds": 5.29,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-managed-handler-effects.log"
+      },
+      {
+        "name": "entities-native-runtime",
+        "status": "passed",
+        "durationSeconds": 12.3,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-native-runtime.log"
+      },
+      {
+        "name": "entities-hardening",
+        "status": "passed",
+        "durationSeconds": 39.04,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-hardening.log"
+      },
+      {
+        "name": "entities-node-native-workflow",
+        "status": "passed",
+        "durationSeconds": 26.91,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/entities-node-native-workflow.log"
+      },
+      {
+        "name": "pulse-context-tools",
+        "status": "passed",
+        "durationSeconds": 210.37,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pulse-context-tools.log"
+      },
+      {
+        "name": "pulse-context-quality-actual",
+        "status": "passed",
+        "durationSeconds": 65.53,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pulse-context-quality-actual.log"
+      },
+      {
+        "name": "pulse-context-quality-growth",
+        "status": "passed",
+        "durationSeconds": 67.37,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pulse-context-quality-growth.log"
+      },
+      {
+        "name": "pulse-context-quality-repeat",
+        "status": "passed",
+        "durationSeconds": 49.61,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/pulse-context-quality-repeat.log"
+      },
+      {
+        "name": "callable-public-contract",
+        "status": "passed",
+        "durationSeconds": 11.93,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/callable-public-contract.log"
+      },
+      {
+        "name": "callable-composition-proof",
+        "status": "passed",
+        "durationSeconds": 67.51,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/callable-composition-proof.log"
+      },
+      {
+        "name": "callable-authored-native",
+        "status": "passed",
+        "durationSeconds": 29.09,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/callable-authored-native.log"
+      },
+      {
+        "name": "callable-authored-composition",
+        "status": "passed",
+        "durationSeconds": 13.16,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/callable-authored-composition.log"
+      },
+      {
+        "name": "callable-authored-javascript",
+        "status": "passed",
+        "durationSeconds": 13.13,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/callable-authored-javascript.log"
+      },
+      {
+        "name": "callable-authored-routed",
+        "status": "passed",
+        "durationSeconds": 44.56,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/callable-authored-routed.log"
+      },
+      {
+        "name": "callable-lifetime",
+        "status": "passed",
+        "durationSeconds": 59.33,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/callable-lifetime.log"
+      },
+      {
+        "name": "mcp-native-binding",
+        "status": "passed",
+        "durationSeconds": 23.22,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/mcp-native-binding.log"
+      },
+      {
+        "name": "fastly-entities-native-workflow",
+        "status": "passed",
+        "durationSeconds": 89.56,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-entities-native-workflow.log"
+      },
+      {
+        "name": "crypto-native-guest-source",
+        "status": "passed",
+        "durationSeconds": 10.09,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/crypto-native-guest-source.log"
+      },
+      {
+        "name": "guest-link-package",
+        "status": "passed",
+        "durationSeconds": 12.19,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/guest-link-package.log"
+      },
+      {
+        "name": "guest-link-materialization-stage",
+        "status": "passed",
+        "durationSeconds": 48.44,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/guest-link-materialization-stage.log"
+      },
+      {
+        "name": "guest-link-audit-diagnostics",
+        "status": "passed",
+        "durationSeconds": 20.81,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/guest-link-audit-diagnostics.log"
+      },
+      {
+        "name": "assets-lowering-plan",
+        "status": "passed",
+        "durationSeconds": 5.12,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/assets-lowering-plan.log"
+      },
+      {
+        "name": "assets-package-owned-lowering",
+        "status": "passed",
+        "durationSeconds": 4.77,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/assets-package-owned-lowering.log"
+      },
+      {
+        "name": "assets-native-embedded",
+        "status": "passed",
+        "durationSeconds": 17.69,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/assets-native-embedded.log"
+      },
+      {
+        "name": "grip-package-owned-lowering",
+        "status": "passed",
+        "durationSeconds": 5.45,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/grip-package-owned-lowering.log"
+      },
+      {
+        "name": "jwt-package-owned-lowering",
+        "status": "passed",
+        "durationSeconds": 5.33,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/jwt-package-owned-lowering.log"
+      },
+      {
+        "name": "canonical-api-runtime",
+        "status": "passed",
+        "durationSeconds": 5.42,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/canonical-api-runtime.log"
+      },
+      {
+        "name": "canonical-opaque-node-emission",
+        "status": "passed",
+        "durationSeconds": 5.7,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/canonical-opaque-node-emission.log"
+      },
+      {
+        "name": "grip-package-runtime",
+        "status": "passed",
+        "durationSeconds": 5.13,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/grip-package-runtime.log"
+      },
+      {
+        "name": "grip-terminal",
+        "status": "passed",
+        "durationSeconds": 23.22,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/grip-terminal.log"
+      },
+      {
+        "name": "package-root-native",
+        "status": "passed",
+        "durationSeconds": 7.25,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/package-root-native.log"
+      },
+      {
+        "name": "canonical-native-wasm",
+        "status": "passed",
+        "durationSeconds": 87.19,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/canonical-native-wasm.log"
+      },
+      {
+        "name": "cli-javascript-target-compilation",
+        "status": "passed",
+        "durationSeconds": 22.21,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-javascript-target-compilation.log"
+      },
+      {
+        "name": "target-support",
+        "status": "passed",
+        "durationSeconds": 4.96,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/target-support.log"
+      },
+      {
+        "name": "jwt-javascript-admission",
+        "status": "passed",
+        "durationSeconds": 11.24,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/jwt-javascript-admission.log"
+      },
+      {
+        "name": "crypto-runtime-builtin",
+        "status": "passed",
+        "durationSeconds": 4.93,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/crypto-runtime-builtin.log"
+      },
+      {
+        "name": "javascript-effect-adapter",
+        "status": "passed",
+        "durationSeconds": 4.79,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/javascript-effect-adapter.log"
+      },
+      {
+        "name": "logging-runtime",
+        "status": "passed",
+        "durationSeconds": 4.44,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/logging-runtime.log"
+      },
+      {
+        "name": "assets-javascript-runtime",
+        "status": "passed",
+        "durationSeconds": 6.37,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/assets-javascript-runtime.log"
+      },
+      {
+        "name": "native-context-primitives",
+        "status": "passed",
+        "durationSeconds": 15.8,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/native-context-primitives.log"
+      },
+      {
+        "name": "binary-resource-execution",
+        "status": "passed",
+        "durationSeconds": 70.41,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/binary-resource-execution.log"
+      },
+      {
+        "name": "effect-collections",
+        "status": "passed",
+        "durationSeconds": 9.04,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/effect-collections.log"
+      },
+      {
+        "name": "effect-collection-providers",
+        "status": "passed",
+        "durationSeconds": 20.14,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/effect-collection-providers.log"
+      },
+      {
+        "name": "jwt-signing",
+        "status": "passed",
+        "durationSeconds": 21.35,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/jwt-signing.log"
+      },
+      {
+        "name": "jwt-es256-signing",
+        "status": "passed",
+        "durationSeconds": 46.13,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/jwt-es256-signing.log"
+      },
+      {
+        "name": "jwt-rs256",
+        "status": "passed",
+        "durationSeconds": 411.14,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/jwt-rs256.log"
+      },
+      {
+        "name": "crypto-cross-target-conformance",
+        "status": "passed",
+        "durationSeconds": 12.68,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/crypto-cross-target-conformance.log"
+      },
+      {
+        "name": "crypto-digest-text-conformance",
+        "status": "passed",
+        "durationSeconds": 17.68,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/crypto-digest-text-conformance.log"
+      },
+      {
+        "name": "crypto-digest-storage-conformance",
+        "status": "passed",
+        "durationSeconds": 16.99,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/crypto-digest-storage-conformance.log"
+      },
+      {
+        "name": "text-capacity-conformance",
+        "status": "passed",
+        "durationSeconds": 19.49,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/text-capacity-conformance.log"
+      },
+      {
+        "name": "events-conformance",
+        "status": "passed",
+        "durationSeconds": 7.45,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/events-conformance.log"
+      },
+      {
+        "name": "events-results",
+        "status": "passed",
+        "durationSeconds": 7.44,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/events-results.log"
+      },
+      {
+        "name": "node-router-context-parity",
+        "status": "passed",
+        "durationSeconds": 8.59,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/node-router-context-parity.log"
+      },
+      {
+        "name": "catalog-router-parity",
+        "status": "passed",
+        "durationSeconds": 33.08,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/catalog-router-parity.log"
+      },
+      {
+        "name": "fetch-projections-request-bodies",
+        "status": "passed",
+        "durationSeconds": 83.79,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fetch-projections-request-bodies.log"
+      },
+      {
+        "name": "config-secrets-kv-redaction",
+        "status": "passed",
+        "durationSeconds": 5.32,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/config-secrets-kv-redaction.log"
+      },
+      {
+        "name": "kv-conditional-conformance",
+        "status": "passed",
+        "durationSeconds": 13.13,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/kv-conditional-conformance.log"
+      },
+      {
+        "name": "fastly-conditional-kv",
+        "status": "passed",
+        "durationSeconds": 50.39,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-conditional-kv.log"
+      },
+      {
+        "name": "schema-codecs",
+        "status": "passed",
+        "durationSeconds": 144.67,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/schema-codecs.log"
+      },
+      {
+        "name": "schema-kv-parity",
+        "status": "passed",
+        "durationSeconds": 18.36,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/schema-kv-parity.log"
+      },
+      {
+        "name": "time-conformance",
+        "status": "passed",
+        "durationSeconds": 13.97,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/time-conformance.log"
+      },
+      {
+        "name": "time-consumer",
+        "status": "passed",
+        "durationSeconds": 26.95,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/time-consumer.log"
+      },
+      {
+        "name": "node-launcher",
+        "status": "passed",
+        "durationSeconds": 11.95,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/node-launcher.log"
+      },
+      {
+        "name": "application-errors",
+        "status": "passed",
+        "durationSeconds": 25.17,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/application-errors.log"
+      },
+      {
+        "name": "application-error-boundaries",
+        "status": "passed",
+        "durationSeconds": 10.17,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/application-error-boundaries.log"
+      },
+      {
+        "name": "node-cross-target-conformance",
+        "status": "passed",
+        "durationSeconds": 10.79,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/node-cross-target-conformance.log"
+      },
+      {
+        "name": "grip-cross-target-conformance",
+        "status": "passed",
+        "durationSeconds": 13.44,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/grip-cross-target-conformance.log"
+      },
+      {
+        "name": "four-mode-conformance",
+        "status": "passed",
+        "durationSeconds": 44.89,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/four-mode-conformance.log"
+      },
+      {
+        "name": "cli-command-spec",
+        "status": "passed",
+        "durationSeconds": 6.18,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-command-spec.log"
+      },
+      {
+        "name": "cli-init-workflow",
+        "status": "passed",
+        "durationSeconds": 32.46,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-init-workflow.log"
+      },
+      {
+        "name": "cli-project-workflow",
+        "status": "passed",
+        "durationSeconds": 98.81,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-project-workflow.log"
+      },
+      {
+        "name": "cli-harness-workflow",
+        "status": "passed",
+        "durationSeconds": 9.7,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-harness-workflow.log"
+      },
+      {
+        "name": "cli-expansion-doctor",
+        "status": "passed",
+        "durationSeconds": 17.03,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-expansion-doctor.log"
+      },
+      {
+        "name": "cli-project-guards",
+        "status": "passed",
+        "durationSeconds": 15.81,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-project-guards.log"
+      },
+      {
+        "name": "cli-dev-workflow",
+        "status": "passed",
+        "durationSeconds": 18.07,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-dev-workflow.log"
+      },
+      {
+        "name": "cli-fixture-state-workflow",
+        "status": "passed",
+        "durationSeconds": 14.37,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-fixture-state-workflow.log"
+      },
+      {
+        "name": "cli-schema-json-workflow",
+        "status": "passed",
+        "durationSeconds": 79.31,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-schema-json-workflow.log"
+      },
+      {
+        "name": "events-cli-workflow",
+        "status": "passed",
+        "durationSeconds": 75.04,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/events-cli-workflow.log"
+      },
+      {
+        "name": "cli-diagnostics",
+        "status": "passed",
+        "durationSeconds": 10.55,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-diagnostics.log"
+      },
+      {
+        "name": "docs-executable-contracts",
+        "status": "passed",
+        "durationSeconds": 237.76,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-executable-contracts.log"
+      },
+      {
+        "name": "docs-executable-init-dev",
+        "status": "passed",
+        "durationSeconds": 13.87,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-executable-init-dev.log"
+      },
+      {
+        "name": "docs-migration-schema-lowering",
+        "status": "passed",
+        "durationSeconds": 6.42,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-migration-schema-lowering.log"
+      },
+      {
+        "name": "docs-example-01-hello-json",
+        "status": "passed",
+        "durationSeconds": 21.18,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-01-hello-json.log"
+      },
+      {
+        "name": "docs-example-03-fetch-composition-dynamic-probes",
+        "status": "passed",
+        "durationSeconds": 47.15,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-03-fetch-composition-dynamic-probes.log"
+      },
+      {
+        "name": "docs-example-02-request-schema",
+        "status": "passed",
+        "durationSeconds": 29.25,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-02-request-schema.log"
+      },
+      {
+        "name": "docs-example-03-fetch-composition",
+        "status": "passed",
+        "durationSeconds": 20.66,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-03-fetch-composition.log"
+      },
+      {
+        "name": "docs-example-05-fastly-capabilities",
+        "status": "passed",
+        "durationSeconds": 42.33,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-05-fastly-capabilities.log"
+      },
+      {
+        "name": "docs-example-07-opaque-proxy",
+        "status": "passed",
+        "durationSeconds": 37.12,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-07-opaque-proxy.log"
+      },
+      {
+        "name": "docs-example-09-router-lowering",
+        "status": "passed",
+        "durationSeconds": 28.98,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-09-router-lowering.log"
+      },
+      {
+        "name": "docs-example-10-entities-tools",
+        "status": "passed",
+        "durationSeconds": 30.68,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-10-entities-tools.log"
+      },
+      {
+        "name": "docs-example-11-events",
+        "status": "passed",
+        "durationSeconds": 31.75,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-11-events.log"
+      },
+      {
+        "name": "docs-example-12-pulse-context-mcp",
+        "status": "passed",
+        "durationSeconds": 98.88,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-12-pulse-context-mcp.log"
+      },
+      {
+        "name": "docs-example-13-jwt-es256",
+        "status": "passed",
+        "durationSeconds": 60.21,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/docs-example-13-jwt-es256.log"
+      },
+      {
+        "name": "provider-packages",
+        "status": "passed",
+        "durationSeconds": 4.92,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/provider-packages.log"
+      },
+      {
+        "name": "provider-fastly-package",
+        "status": "passed",
+        "durationSeconds": 15.72,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/provider-fastly-package.log"
+      },
+      {
+        "name": "provider-fastly-apps",
+        "status": "passed",
+        "durationSeconds": 6.21,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/provider-fastly-apps.log"
+      },
+      {
+        "name": "canonical-grip-fastly",
+        "status": "passed",
+        "durationSeconds": 16.86,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/canonical-grip-fastly.log"
+      },
+      {
+        "name": "fastly-cli-gate-surface",
+        "status": "passed",
+        "durationSeconds": 5.08,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-cli-gate-surface.log"
+      },
+      {
+        "name": "fastly-javascript-packaging",
+        "status": "passed",
+        "durationSeconds": 5.42,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-javascript-packaging.log"
+      },
+      {
+        "name": "fastly-javascript-runtime",
+        "status": "passed",
+        "durationSeconds": 4.9,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-javascript-runtime.log"
+      },
+      {
+        "name": "fastly-javascript-tooling",
+        "status": "passed",
+        "durationSeconds": 23.47,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-javascript-tooling.log"
+      },
+      {
+        "name": "fastly-native-http-shell",
+        "status": "passed",
+        "durationSeconds": 11.38,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-native-http-shell.log"
+      },
+      {
+        "name": "fastly-native-http-effects",
+        "status": "passed",
+        "durationSeconds": 57.51,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-native-http-effects.log"
+      },
+      {
+        "name": "fastly-native-platform-capabilities",
+        "status": "passed",
+        "durationSeconds": 273.17,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-native-platform-capabilities.log"
+      },
+      {
+        "name": "fastly-request-headers",
+        "status": "passed",
+        "durationSeconds": 24.22,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/fastly-request-headers.log"
+      },
+      {
+        "name": "lifecycle-contract-installed",
+        "status": "passed",
+        "durationSeconds": 5.26,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/lifecycle-contract-installed.log"
+      },
+      {
+        "name": "lifecycle-foundation-installed",
+        "status": "passed",
+        "durationSeconds": 86.69,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/lifecycle-foundation-installed.log"
+      },
+      {
+        "name": "release-packages",
+        "status": "passed",
+        "durationSeconds": 6.22,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-packages.log"
+      },
+      {
+        "name": "release-artifact-determinism",
+        "status": "passed",
+        "durationSeconds": 20.27,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-artifact-determinism.log"
+      },
+      {
+        "name": "clean-machine-acceptance",
+        "status": "passed",
+        "durationSeconds": 341.05,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/clean-machine-acceptance.log"
+      },
+      {
+        "name": "cli-entities-installed-workflow",
+        "status": "passed",
+        "durationSeconds": 103.43,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/cli-entities-installed-workflow.log"
+      },
+      {
+        "name": "npm-source-installed-workflow",
+        "status": "passed",
+        "durationSeconds": 54.9,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/npm-source-installed-workflow.log"
+      },
+      {
+        "name": "release-evidence-authority",
+        "status": "passed",
+        "durationSeconds": 7.3,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/release-evidence-authority.log"
+      },
+      {
+        "name": "deployment-candidates",
+        "status": "passed",
+        "durationSeconds": 22.91,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T11-22-34-687Z--4607/tasks/deployment-candidates.log"
+      }
+    ],
+    "installedFeatureGates": [
+      {
+        "name": "terminal-installed",
+        "status": "passed",
+        "durationSeconds": 56.03,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/terminal-installed.log"
+      },
+      {
+        "name": "str02b-installed",
+        "status": "passed",
+        "durationSeconds": 23.21,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/str02b-installed.log"
+      },
+      {
+        "name": "node01-installed",
+        "status": "passed",
+        "durationSeconds": 16.7,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/node01-installed.log"
+      },
+      {
+        "name": "arc01-installed",
+        "status": "passed",
+        "durationSeconds": 54.06,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/arc01-installed.log"
+      },
+      {
+        "name": "jwt-installed-workflow",
+        "status": "passed",
+        "durationSeconds": 349.15,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/jwt-installed-workflow.log"
+      },
+      {
+        "name": "str02-installed",
+        "status": "passed",
+        "durationSeconds": 21.98,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/str02-installed.log"
+      },
+      {
+        "name": "str03b-installed",
+        "status": "passed",
+        "durationSeconds": 46.87,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/str03b-installed.log"
+      },
+      {
+        "name": "ast01-installed",
+        "status": "passed",
+        "durationSeconds": 7.64,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/ast01-installed.log"
+      },
+      {
+        "name": "ast02b-installed",
+        "status": "passed",
+        "durationSeconds": 8.24,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/ast02b-installed.log"
+      },
+      {
+        "name": "ast02d-installed",
+        "status": "passed",
+        "durationSeconds": 25.42,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/ast02d-installed.log"
+      },
+      {
+        "name": "mcp-installed",
+        "status": "passed",
+        "durationSeconds": 154.46,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/mcp-installed.log"
+      },
+      {
+        "name": "s3-body-installed",
+        "status": "passed",
+        "durationSeconds": 16.47,
+        "log": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-01T11-21-48-376Z-P9VWJU/artifacts/runs/2026-11-01T12-20-27-794Z--92699/tasks/s3-body-installed.log"
+      }
+    ],
+    "externalFastlyReality": "passed",
+    "cleanup": {
+      "status": "passed",
+      "verification": "Successful accepted capture enforces passed seal cleanup and unchanged clean source"
+    },
+    "sourceChecksSha256": "f50ddf1b11148bc09940ec42c1cc1043a7ec7b784d524e7a3292a0fbbc947619",
+    "sealSha256": "f09d1ae09b50f3d41b4d871ba6d29b2ecf5c8db1fb5248a4f63210e806dd49bf",
+    "bundleManifestSha256": "aa266486e5bee365e5de50e192e4d6d636738c87065df18e79e9d047a9530d14",
+    "qualificationContextSha256": "a7a7b8c7f3b2432356a11813ab0be650524b0f419a06812468161615c76a8ee8",
+    "receiptFile": "beta11-qualification-receipt.json",
+    "receiptObservation": "Decoded from authenticated candidate-job stdout; original receipt and bundle bytes remain in the accepted artifact",
+    "artifacts": [
+      {
+        "id": 13083118233,
+        "name": "pulse-pr-release-qualification-41301460387-1",
+        "size_in_bytes": 3448798,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13083118233",
+        "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13083118233/zip",
+        "expired": false,
+        "created_at": "2026-11-01T12:27:46Z",
+        "expires_at": "2026-12-01T12:27:45Z",
+        "updated_at": "2026-11-01T12:27:46Z",
+        "digest": "sha256:2de79c3f72776cda7ca2d575c7e69dfbc55e8e418523d1c11ae74911d1496324",
+        "workflow_run": {
+          "id": 41301460387,
+          "repository_id": 1325523547,
+          "head_repository_id": 1325523547,
+          "head_branch": "release/beta11-qualification",
+          "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+        }
+      },
+      {
+        "id": 13082873622,
+        "name": "pulse-pr-release-evidence-41301460387-1",
+        "size_in_bytes": 22804933,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13082873622",
+        "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13082873622/zip",
+        "expired": false,
+        "created_at": "2026-11-01T12:27:49Z",
+        "expires_at": "2026-12-01T12:27:47Z",
+        "updated_at": "2026-11-01T12:27:49Z",
+        "digest": "sha256:6ccf995937736884b1dd6d6f4eb13d9ef842438e00a99fa7b1460fa2ec8c7aba",
+        "workflow_run": {
+          "id": 41301460387,
+          "repository_id": 1325523547,
+          "head_repository_id": 1325523547,
+          "head_branch": "release/beta11-qualification",
+          "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+        }
+      }
+    ]
+  },
+  "ordinaryCI": {
+    "maintainer": {
+      "run": 41301460252,
+      "status": "success"
+    },
+    "documentation": {
+      "run": 41301460183,
+      "status": "success"
+    },
+    "portable": {
+      "run": 41301460273,
+      "status": "success",
+      "report": {
+        "schemaVersion": "pulse.portable-aggregate.v1",
+        "status": "passed",
+        "testedSha": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+        "workflowRunId": "41301460273",
+        "attempt": 1,
+        "profiles": [
+          "unit",
+          "native",
+          "javascript",
+          "conformance"
+        ],
+        "completedTasks": 191,
+        "shards": [
+          {
+            "name": "unit",
+            "attempt": 1,
+            "tasks": [
+              "binary-resource-admission",
+              "report-capsule-contract",
+              "cli-report-workflow",
+              "cli-compare-workflow",
+              "fastly-forwarding-evidence",
+              "cli-report-viewer",
+              "cli-report-retained-evidence",
+              "cli-report-host-extensions",
+              "cli-report-size-evidence",
+              "cli-report-capture-proof",
+              "cli-report-entry-proof",
+              "cli-report-reference-provenance",
+              "cli-report-handler-topology",
+              "cli-report-handler-associations",
+              "cli-report-relationships",
+              "cli-report-imported-inputs",
+              "cli-report-resource-inventory",
+              "cli-report-graph-diagnostics",
+              "multifile-source-indexes",
+              "guest-json-roundtrip",
+              "pure-helper-contract",
+              "callable-source-admission",
+              "suite-shape",
+              "test-orchestration",
+              "package-exports",
+              "boundaries",
+              "workspace-hygiene",
+              "hidden-contracts",
+              "release-feature-acceptance",
+              "release-runtime-policy",
+              "release-seal-lifecycle",
+              "release-checkpoints",
+              "release-recovery-runner",
+              "release-recovery",
+              "release-tag",
+              "api-surface",
+              "logging-contract",
+              "s3-design-contract",
+              "kv-design-contract",
+              "kv-conditional-runtime",
+              "kv-conditional-gates",
+              "s3-read-contract",
+              "s3-write-contract",
+              "crypto-config-planning",
+              "crypto-es256-signing",
+              "crypto-rs256",
+              "crypto-digest-text-contract",
+              "reachable-graph",
+              "project-modules",
+              "package-reachability",
+              "external-lowerers",
+              "package-runtime",
+              "provider-toolchain",
+              "lifecycle-contract",
+              "resource-admission",
+              "schema-registry",
+              "continuation-registry",
+              "entities-contracts",
+              "entities-schema-bridge",
+              "entities-javascript-runtime",
+              "entities-json-rpc-corpus",
+              "mcp-http",
+              "pulse-context-corpus",
+              "pulse-context-build",
+              "pulse-context-application",
+              "pulse-context-host",
+              "mcp-compatibility",
+              "mcp-tools",
+              "mcp-authorization",
+              "entities-package-owned-lowering",
+              "entities-catalog",
+              "entities-inspection",
+              "entities-orchestration-demo"
+            ],
+            "durationMs": 552896,
+            "startedAt": "2026-11-01T11:21:25.673Z",
+            "finishedAt": "2026-11-01T11:30:38.569Z"
+          },
+          {
+            "name": "native-a",
+            "attempt": 1,
+            "tasks": [
+              "context-native-proof",
+              "npm-source-imports",
+              "fastly-numeric-budgets",
+              "fastly-handle-ownership",
+              "fastly-handle-frames",
+              "pure-string-index",
+              "pure-record-helpers",
+              "pure-argument-helpers",
+              "canonical-api-lowering",
+              "shared-stage-o19",
+              "native-lifecycle",
+              "lifecycle-foundation",
+              "fastly-lifecycle",
+              "fastly-router-terminal",
+              "terminal-qualification-contract",
+              "resource-ownership-cost",
+              "resource-ledger",
+              "fastly-forwarding-accounting",
+              "fastly-fetch-cohorts",
+              "fastly-incoming-body-forwarding",
+              "str03c-bounded-transforms",
+              "logging-lowering",
+              "canonical-router-lowering",
+              "canonical-router-terminal-middleware",
+              "router-selected-groups",
+              "json-as-compatibility",
+              "entities-managed-handler",
+              "entities-managed-handler-effects",
+              "entities-native-runtime",
+              "entities-hardening",
+              "pulse-context-tools",
+              "pulse-context-quality-actual",
+              "pulse-context-quality-growth",
+              "pulse-context-quality-repeat",
+              "callable-public-contract",
+              "callable-composition-proof",
+              "callable-authored-native",
+              "callable-authored-composition",
+              "callable-authored-javascript",
+              "callable-authored-routed",
+              "callable-lifetime",
+              "mcp-native-binding",
+              "fastly-entities-native-workflow",
+              "guest-link-package",
+              "guest-link-materialization-stage",
+              "guest-link-audit-diagnostics",
+              "assets-lowering-plan",
+              "assets-package-owned-lowering",
+              "grip-package-owned-lowering",
+              "canonical-api-runtime",
+              "grip-terminal",
+              "canonical-native-wasm"
+            ],
+            "durationMs": 1499618,
+            "startedAt": "2026-11-01T11:21:25.658Z",
+            "finishedAt": "2026-11-01T11:46:25.276Z"
+          },
+          {
+            "name": "native-b",
+            "attempt": 1,
+            "tasks": [
+              "fastly-numeric-regions",
+              "pure-helper-vocabulary",
+              "pure-field-projection",
+              "pure-guarded-arguments",
+              "pure-source-helpers",
+              "pure-loop-helpers",
+              "fastly-driver-behavior-o09",
+              "kv-native-abi-feasibility",
+              "s3-native-read",
+              "s3-body-read",
+              "s3-node-transport",
+              "canonical-native-plan",
+              "str02b-node-native",
+              "str03a-generated-output",
+              "bounded-app-logic",
+              "bounded-read-loops",
+              "bounded-loop-helpers",
+              "entities-envelope-feasibility",
+              "entities-node-native-workflow",
+              "crypto-native-guest-source",
+              "assets-native-embedded",
+              "jwt-package-owned-lowering",
+              "canonical-opaque-node-emission",
+              "grip-package-runtime",
+              "package-root-native"
+            ],
+            "durationMs": 380899,
+            "startedAt": "2026-11-01T11:21:25.691Z",
+            "finishedAt": "2026-11-01T11:27:46.590Z"
+          },
+          {
+            "name": "javascript",
+            "attempt": 1,
+            "tasks": [
+              "cli-javascript-target-compilation",
+              "target-support",
+              "jwt-javascript-admission",
+              "crypto-runtime-builtin",
+              "javascript-effect-adapter",
+              "logging-runtime",
+              "assets-javascript-runtime"
+            ],
+            "durationMs": 26538,
+            "startedAt": "2026-11-01T11:21:25.259Z",
+            "finishedAt": "2026-11-01T11:21:51.797Z"
+          },
+          {
+            "name": "conformance-rsa",
+            "attempt": 1,
+            "tasks": [
+              "jwt-rs256"
+            ],
+            "durationMs": 312592,
+            "startedAt": "2026-11-01T11:21:24.009Z",
+            "finishedAt": "2026-11-01T11:26:36.601Z"
+          },
+          {
+            "name": "conformance-schema",
+            "attempt": 1,
+            "tasks": [
+              "schema-codecs",
+              "schema-kv-parity"
+            ],
+            "durationMs": 116292,
+            "startedAt": "2026-11-01T11:21:24.633Z",
+            "finishedAt": "2026-11-01T11:23:20.925Z"
+          },
+          {
+            "name": "conformance-rest",
+            "attempt": 1,
+            "tasks": [
+              "native-context-primitives",
+              "binary-resource-execution",
+              "effect-collections",
+              "effect-collection-providers",
+              "jwt-signing",
+              "jwt-es256-signing",
+              "s3-write-conformance",
+              "crypto-cross-target-conformance",
+              "crypto-digest-text-conformance",
+              "crypto-digest-storage-conformance",
+              "multifile-source-identity",
+              "text-capacity-conformance",
+              "events-conformance",
+              "events-results",
+              "node-router-context-parity",
+              "catalog-router-parity",
+              "fetch-projections-request-bodies",
+              "config-secrets-kv-redaction",
+              "kv-conditional-conformance",
+              "kv-conditional-adversarial",
+              "fastly-conditional-kv",
+              "time-conformance",
+              "time-consumer",
+              "request-budget-transport",
+              "node-launcher",
+              "http-input-outcomes",
+              "application-errors",
+              "application-error-boundaries",
+              "node-cross-target-conformance",
+              "grip-cross-target-conformance",
+              "four-mode-conformance"
+            ],
+            "durationMs": 526849,
+            "startedAt": "2026-11-01T11:21:25.656Z",
+            "finishedAt": "2026-11-01T11:30:12.505Z"
+          }
+        ],
+        "taskElapsedSumMs": 3415684,
+        "taskWallTimeMs": 1501267
+      },
+      "artifacts": [
+        {
+          "id": 13081764982,
+          "name": "pulse-portable-aggregate-41301460273-1",
+          "size_in_bytes": 2266,
+          "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081764982",
+          "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081764982/zip",
+          "expired": false,
+          "created_at": "2026-11-01T11:46:36Z",
+          "expires_at": "2026-11-15T11:46:36Z",
+          "updated_at": "2026-11-01T11:46:36Z",
+          "digest": "sha256:87d2fa67ad3e6ba0e94b85c3f9e3f8f5ffb5cad2cae7757e0f2dcad33d202039",
+          "workflow_run": {
+            "id": 41301460273,
+            "repository_id": 1325523547,
+            "head_repository_id": 1325523547,
+            "head_branch": "release/beta11-qualification",
+            "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+          }
+        },
+        {
+          "id": 13081727872,
+          "name": "pulse-portable-shard-41301460273-1-unit",
+          "size_in_bytes": 51580,
+          "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081727872",
+          "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081727872/zip",
+          "expired": false,
+          "created_at": "2026-11-01T11:30:39Z",
+          "expires_at": "2026-11-15T11:30:38Z",
+          "updated_at": "2026-11-01T11:30:39Z",
+          "digest": "sha256:37e2737750cbed22c680288ef53bd6637364973df20688ec37ac69238d011aeb",
+          "workflow_run": {
+            "id": 41301460273,
+            "repository_id": 1325523547,
+            "head_repository_id": 1325523547,
+            "head_branch": "release/beta11-qualification",
+            "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+          }
+        },
+        {
+          "id": 13081414219,
+          "name": "pulse-portable-shard-41301460273-1-native-a",
+          "size_in_bytes": 36701,
+          "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081414219",
+          "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081414219/zip",
+          "expired": false,
+          "created_at": "2026-11-01T11:46:26Z",
+          "expires_at": "2026-11-15T11:46:25Z",
+          "updated_at": "2026-11-01T11:46:26Z",
+          "digest": "sha256:3c11771e2efd1e306bdf1c7d964ef3e2e337dcff54e477ad91145cad0d7d2d39",
+          "workflow_run": {
+            "id": 41301460273,
+            "repository_id": 1325523547,
+            "head_repository_id": 1325523547,
+            "head_branch": "release/beta11-qualification",
+            "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+          }
+        },
+        {
+          "id": 13081366976,
+          "name": "pulse-portable-shard-41301460273-1-conformance-schema",
+          "size_in_bytes": 2754,
+          "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081366976",
+          "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081366976/zip",
+          "expired": false,
+          "created_at": "2026-11-01T11:23:21Z",
+          "expires_at": "2026-11-15T11:23:21Z",
+          "updated_at": "2026-11-01T11:23:21Z",
+          "digest": "sha256:fba4ecbf957e05f7b5490c1afb1917af4822469c15c081673943e463f5e6b581",
+          "workflow_run": {
+            "id": 41301460273,
+            "repository_id": 1325523547,
+            "head_repository_id": 1325523547,
+            "head_branch": "release/beta11-qualification",
+            "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+          }
+        },
+        {
+          "id": 13081247967,
+          "name": "pulse-portable-shard-41301460273-1-conformance-rest",
+          "size_in_bytes": 20131,
+          "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081247967",
+          "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081247967/zip",
+          "expired": false,
+          "created_at": "2026-11-01T11:30:13Z",
+          "expires_at": "2026-11-15T11:30:12Z",
+          "updated_at": "2026-11-01T11:30:13Z",
+          "digest": "sha256:f43953c794acff158cc00256b9826abfe2c92a037c6135f224a770a7045a9c19",
+          "workflow_run": {
+            "id": 41301460273,
+            "repository_id": 1325523547,
+            "head_repository_id": 1325523547,
+            "head_branch": "release/beta11-qualification",
+            "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+          }
+        },
+        {
+          "id": 13081212295,
+          "name": "pulse-portable-shard-41301460273-1-javascript",
+          "size_in_bytes": 4617,
+          "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081212295",
+          "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081212295/zip",
+          "expired": false,
+          "created_at": "2026-11-01T11:21:52Z",
+          "expires_at": "2026-11-15T11:21:51Z",
+          "updated_at": "2026-11-01T11:21:52Z",
+          "digest": "sha256:0a9ab8eed7d61ea9f4be628e5b91a0881b85832f74cfeaf30942491adba5bbae",
+          "workflow_run": {
+            "id": 41301460273,
+            "repository_id": 1325523547,
+            "head_repository_id": 1325523547,
+            "head_branch": "release/beta11-qualification",
+            "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+          }
+        },
+        {
+          "id": 13081182783,
+          "name": "pulse-portable-shard-41301460273-1-conformance-rsa",
+          "size_in_bytes": 2249,
+          "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081182783",
+          "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081182783/zip",
+          "expired": false,
+          "created_at": "2026-11-01T11:26:37Z",
+          "expires_at": "2026-11-15T11:26:36Z",
+          "updated_at": "2026-11-01T11:26:37Z",
+          "digest": "sha256:d66baf5fd1bbbe5694b187a3b17a04f75fa8bdc76e1bc93d4531c4f94aca7890",
+          "workflow_run": {
+            "id": 41301460273,
+            "repository_id": 1325523547,
+            "head_repository_id": 1325523547,
+            "head_branch": "release/beta11-qualification",
+            "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+          }
+        },
+        {
+          "id": 13081038512,
+          "name": "pulse-portable-shard-41301460273-1-native-b",
+          "size_in_bytes": 16888,
+          "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081038512",
+          "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081038512/zip",
+          "expired": false,
+          "created_at": "2026-11-01T11:27:47Z",
+          "expires_at": "2026-11-15T11:27:46Z",
+          "updated_at": "2026-11-01T11:27:47Z",
+          "digest": "sha256:2ee7038ea3e0191203114b49a603cc03e1e3fe53529ccab3cc94cb0badf46b4d",
+          "workflow_run": {
+            "id": 41301460273,
+            "repository_id": 1325523547,
+            "head_repository_id": 1325523547,
+            "head_branch": "release/beta11-qualification",
+            "head_sha": "3817f027cee36f9503d35420a775afdf639af568"
+          }
+        }
+      ]
+    }
+  },
+  "supplemental": {
+    "run": 41301552370,
+    "job": 124833337347,
+    "launcherHead": "fac9001e867eedf08d6eaaf13ed7ba782662e20e",
+    "testedSource": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+    "status": "passed",
+    "tasks": [
+      "kv-conditional-acceptance",
+      "events-native-runtime"
+    ],
+    "taskCleanup": "passed",
+    "cleanSource": true,
+    "artifact": {
+      "id": 13081147626,
+      "name": "beta11-supplemental-41301552370-1",
+      "size_in_bytes": 5221,
+      "url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081147626",
+      "archive_download_url": "https://api.github.com/repos/pulse-compute/pulse/actions/artifacts/13081147626/zip",
+      "expired": false,
+      "created_at": "2026-11-01T11:23:28Z",
+      "expires_at": "2026-12-01T11:23:27Z",
+      "updated_at": "2026-11-01T11:23:28Z",
+      "digest": "sha256:3bec6244a2d79532111dc485b3a1019bf296dfe663cd9c9f9b93badfa62e093d",
+      "workflow_run": {
+        "id": 41301552370,
+        "repository_id": 1325523547,
+        "head_repository_id": 1325523547,
+        "head_branch": "evidence/beta11-supplemental-38bd072",
+        "head_sha": "fac9001e867eedf08d6eaaf13ed7ba782662e20e"
+      }
+    },
+    "k4": {
+      "version": "pulse.kv-k4-packed.v1",
+      "status": "failed",
+      "results": {
+        "node-native": {
+          "status": "passed",
+          "requests": 171,
+          "groups": [
+            {
+              "width": 2,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 8,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 16,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            }
+          ],
+          "keyedParallel": true,
+          "boundaryValues": 4,
+          "failures": [],
+          "ambiguousCompletion": "passed"
+        },
+        "node-javascript": {
+          "status": "passed",
+          "requests": 171,
+          "groups": [
+            {
+              "width": 2,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 8,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 16,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            }
+          ],
+          "keyedParallel": true,
+          "boundaryValues": 4,
+          "failures": [],
+          "ambiguousCompletion": "passed"
+        },
+        "fastly-compute": {
+          "status": "failed",
+          "requests": 171,
+          "groups": [
+            {
+              "width": 2,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 8,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 16,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            }
+          ],
+          "keyedParallel": true,
+          "boundaryValues": 4,
+          "failures": [
+            {
+              "check": "missing-key-cas",
+              "expected": {
+                "acknowledgement": "conflict",
+                "subsequentRead": "not-found"
+              },
+              "actual": {
+                "acknowledgement": "stored",
+                "subsequentRead": "found"
+              }
+            }
+          ],
+          "lostResponse": {
+            "status": "passed",
+            "dispatchedRequests": 1,
+            "clientTransport": "connection-reset",
+            "committedReceiptObserved": true,
+            "typedKvUnknown": false
+          },
+          "toolchain": {
+            "launcher": "fastly-cli",
+            "fastlyCli": {
+              "version": "16.1.0",
+              "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+            },
+            "viceroy": {
+              "version": "0.21.1",
+              "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+            }
+          },
+          "manifestSha256": "e66b1535165813f1d92233de043878b0f42fe6010db895018f27c1c1bdb13e54"
+        }
+      },
+      "module": {
+        "sha256": "cdf32f0f198314264943d3e247a42553a8b010ae7f962feca3ca859345d1ca9d",
+        "bytes": 40590,
+        "imports": [
+          {
+            "module": "fastly_http_body",
+            "name": "close",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "send_downstream",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "write",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "read",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "wasi_snapshot_preview1",
+            "name": "clock_time_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "open",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "lookup_wait_v2",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "lookup",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "insert_wait",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "insert",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_set",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "header_append",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "uri_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "method_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "body_downstream_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_abi",
+            "name": "init",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_async_io",
+            "name": "select",
+            "kind": "function"
+          }
+        ]
+      },
+      "providerReality": true,
+      "deployed": "pending-T2",
+      "publicTypes": "passed",
+      "workspaceProductModules": 0,
+      "installedBytesUnchanged": true,
+      "packageCount": 20,
+      "packages": [
+        {
+          "name": "@pulse-compute/runtime",
+          "version": "1.0.0-beta.11",
+          "sha256": "fe4385044fc16b8e973acdc8f0893bedc8f8511ef97b60086d864ad764968fdc"
+        },
+        {
+          "name": "@pulse-compute/pulse",
+          "version": "1.0.0-beta.11",
+          "sha256": "a2c57c648ca60ba4ea9e78de7066ec458f7395ee274c8a1e6a50ec63ce8e6739"
+        },
+        {
+          "name": "@pulse-compute/cli",
+          "version": "1.0.0-beta.11",
+          "sha256": "1de69dfe9607e2747092d4b2b2758f73cf463e813070393d40c23ddba3465810"
+        },
+        {
+          "name": "@pulse-compute/provider-fastly",
+          "version": "1.0.0-beta.11",
+          "sha256": "20ec7ac3201e93077b0473a3fb807459139819fcf00a12a396af490a02d4df3d"
+        },
+        {
+          "name": "@pulse-compute/grip",
+          "version": "1.0.0-beta.11",
+          "sha256": "6f1c6d0a0e11c188c29587c64fa5b5b9cbf3c340adcc36981e44a7ec3b1e0476"
+        },
+        {
+          "name": "@pulse-compute/assets",
+          "version": "1.0.0-beta.11",
+          "sha256": "4a587ce59c7832ed7be130a5e550eb8d0e61d3133ca979bb88ff771445b64e66"
+        },
+        {
+          "name": "@pulse-compute/crypto",
+          "version": "1.0.0-beta.11",
+          "sha256": "83c7ac0cdaf65ebae2b0221bf5f6d7c629f1e4c1eca86da62e6f4e8c6f6d346a"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "version": "1.0.0-beta.11",
+          "sha256": "4655cca2737e868f45acf889ef2be65aff902a9f31e7cfc521437efde70b30a3"
+        },
+        {
+          "name": "@pulse-compute/entities",
+          "version": "1.0.0-beta.11",
+          "sha256": "ce62a8a47618d8f78d54b63fc4aa5795ec98cd4b14e99d45e93006bcf1179142"
+        },
+        {
+          "name": "@pulse-compute/mcp",
+          "version": "1.0.0-beta.11",
+          "sha256": "e7d1b4e3b51dfd2cece242bdaba78e45b5d7181d21a27f988ba8005563fb48cf"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "version": "1.0.0-beta.11",
+          "sha256": "83427158e90852686e8e69ffe230c1eebc51bf485c8048cda528e8f066db355b"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "version": "1.0.0-beta.11",
+          "sha256": "ab8a7e93a64a3de22d0f4f62770a42fe495773d9a5ba7c639f9dbab5b163e7b6"
+        },
+        {
+          "name": "@pulse-compute/wasm-compiler",
+          "version": "1.0.0-beta.11",
+          "sha256": "0d5517e208c9ad3bd40e5c3f839ad2d6d384f2fba26d7a6ecf44817f8dd02a3f"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "version": "1.0.0-beta.11",
+          "sha256": "4adce9e2a318f9eababb1f3d1af66aa6435ca5319c0139470513a4de6c89c14e"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "version": "1.0.0-beta.11",
+          "sha256": "6c5afc7675f05f77699666fd6e492d6d4fa25ab22cc735d42f2a6fd4ad54c7f4"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "version": "1.0.0-beta.11",
+          "sha256": "e0211cf2f1c7819191153f75125116cbe2815062a1cde61c5aa6e4768f08489b"
+        },
+        {
+          "name": "@pulse-compute/wasm-library-kit",
+          "version": "1.0.0-beta.11",
+          "sha256": "cb6844ee23ced330e634fbe9d1bcf613f94c3ef1aae225b0d3000d8f7fbad7b4"
+        },
+        {
+          "name": "@pulse-compute/provider-node",
+          "version": "1.0.0-beta.11",
+          "sha256": "e11a274f1b92ff3ad453ddc7c744f51bc2d31cb978c97af036c15afcbd875128"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "version": "1.0.0-beta.11",
+          "sha256": "b096c63c05453fb2877f169bdfe578f9fb2d70e34be62d1c27e81b323275711b"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "version": "1.0.0-beta.11",
+          "sha256": "685c24d8fb36807693b4ac9f173991f09ad3888029b5de15dbcd0c5afab0d0bf"
+        }
+      ],
+      "acceptance": {
+        "semanticStatus": "failed",
+        "deployedPulseCrossLocationStillRequired": true,
+        "status": "accepted-with-known-viceroy-discrepancy",
+        "releaseBlocking": false,
+        "knownIssues": [
+          {
+            "check": "missing-key-cas",
+            "engine": "Viceroy",
+            "version": "0.21.1",
+            "disposition": "non-blocking by explicit human release direction on 2026-10-04",
+            "evidence": "wasm/test/kv/k4/viceroy-0.21.1-beta6-evidence.json"
+          }
+        ]
+      },
+      "registry": {
+        "total": 12,
+        "packuments": 12,
+        "tarballs": 0,
+        "rejected": 0,
+        "missing": 0,
+        "missingPackuments": {},
+        "missingTarballs": 0
+      }
+    }
+  },
+  "packageComparisonWithCandidate5": {
+    "identical": true,
+    "packages": 20
+  },
+  "earlierAttempts": [
+    {
+      "attempt": 1,
+      "head": "ac132523b3be9d0baa649f6acd99cc14bad7f3ab",
+      "candidate": "f2374e5d0ab484729835b2bb7c181274329990e2",
+      "tree": "6aefa5d5c9fbf6ef65a085f8f3c8e0ae75329d80",
+      "run": 41288907859,
+      "job": 124795850424,
+      "status": "failed",
+      "finding": "Generated context README snippet stale after version preparation",
+      "artifact": {
+        "id": 13076760687,
+        "sha256": "c8eb39687a9f9112c516dc0002deeb62527a52301ea9e2314537c61cacc13f58"
+      }
+    },
+    {
+      "attempt": 2,
+      "head": "58acb569198d9b50075240332d35051439829ea7",
+      "tree": "2d70204ffaebb105508d2b61947e9ae76e06b5aa",
+      "run": 41289031832,
+      "job": 124796231271,
+      "status": "failed",
+      "finding": "Lifecycle installed guide linked to absent CLI README anchor",
+      "artifact": {
+        "id": 13075514980,
+        "sha256": "fa6d67e8a6622f2d338844472899ada8623ce741264862f3101aca55913bda98"
+      }
+    },
+    {
+      "attempt": 3,
+      "head": "6977abf176e7e494a4040c09cee13aaf82712a71",
+      "candidate": "9c2c750614ebb52f4a05dbedd82ab21540635336",
+      "tree": "3bc0eef750aa53d2a6ae98bf0e14883415577982",
+      "run": 41289274197,
+      "job": 124796939411,
+      "status": "failed",
+      "finding": "Composite Fastly capability task exceeded 300s budget with active compiler progress",
+      "tasks": {
+        "passed": 11,
+        "timeout": 1,
+        "interrupted": 1,
+        "notRun": 218
+      },
+      "artifact": {
+        "id": 13076648876,
+        "sha256": "f737f44efc7d50e282205bf5b483f3bc95c8105317c6718b9ed0518b3e07cad2"
+      }
+    },
+    {
+      "attempt": 4,
+      "head": "b3914b0e56677ffb0aa5ba3370455660959fc05e",
+      "candidate": "759de483b8351f8f754db95bcbe9a5793eb6cbe9",
+      "tree": "b7fe048a8f4cdefd776bbcc6c49907871fff7aa5",
+      "run": 41290863354,
+      "job": 124801651465,
+      "status": "failed",
+      "finding": "Exact capabilities example size expected 45928, actual 46756; remeasured canonical capabilities and proxy outputs",
+      "tasks": {
+        "passed": 202,
+        "failed": 1,
+        "interrupted": 1,
+        "notRun": 27
+      },
+      "artifact": {
+        "id": 13078852116,
+        "sha256": "776fd4d3dacaaf9c08fc73f5b5f805b888b254f8e9c989e4abb9689345118c8e"
+      }
+    },
+    {
+      "attempt": 5,
+      "head": "a860792932ec6c4e50a1b93f62755fd8bfd51fd8",
+      "candidate": "38bd0727982ebbeee41cd33d21afe749beddf72e",
+      "tree": "fc321a7df3d9cd344f495a83f7d400194e8cb590",
+      "run": 41295218370,
+      "job": 124814535599,
+      "status": "failed",
+      "finding": "Lifecycle control/observer trace compared live clock samples across an epoch-second boundary; fixture clock now pinned",
+      "tasks": {
+        "passed": 109,
+        "failed": 1,
+        "interrupted": 1,
+        "notRun": 120
+      },
+      "artifact": {
+        "id": 13079538339,
+        "sha256": "a7519559c4de03a0bc05d5054dfa733f66bc3bf9927d0d0d187046b11dcff244"
+      }
+    },
+    {
+      "attempt": 6,
+      "head": "bf64ca4dd42052bb6cbf47b9b4ec32ba4d675dbe",
+      "candidate": "ef625751db00ea55248b107de6889fef0c066242",
+      "tree": "d056655e6b144a80a61b7363083fa9aed47d47a0",
+      "run": 41297535031,
+      "job": 124821432662,
+      "status": "superseded-and-cancelled",
+      "finding": "Portable conformance real reset case returned PULSE_FETCH_TIMEOUT under shared 20ms deadline; source fixed before full seal completed",
+      "portableFailure": {
+        "run": 41297537222,
+        "job": 124821637295,
+        "artifact": {
+          "id": 13080068021,
+          "sha256": "195fe34cad87ffb22b38bc739682f2048fe3abdf03f6cf1a0da1c08425219654"
+        }
+      },
+      "artifact": {
+        "id": 13080302840,
+        "sha256": "8bca042d024786817e22eba9599228615dbeb1005e0e3dc4aad755aa2fd14ad2"
+      }
+    },
+    {
+      "attempt": 7,
+      "head": "bced139dc69c13cd0ab9140557eed1866640850b",
+      "candidate": "ce29a1c8f7a5bb0a07d60edd3f3026bb3088fd8c",
+      "tree": "eab588d09b914637dd8d7d01f5349bff7179f1a6",
+      "run": 41298201566,
+      "job": 124823674113,
+      "status": "superseded-and-cancelled",
+      "finding": "Two Native-A 20-minute CI job-ceiling cancellations while tasks passed and progressed; Native-A budget repaired to finite 30 minutes",
+      "portableRetry": {
+        "run": 41298201556,
+        "cancelledJob": 124823667482,
+        "cancelledArtifact": {
+          "id": 13080413718,
+          "sha256": "295d5ff2d3e0f58944c6f9080bb41ef13f61de997d968f592f1f43eb6954ce52"
+        },
+        "reason": "20-minute job ceiling while tests passed and progressed; no assertion failure in captured log",
+        "retry": "one supported same-source job retry",
+        "sourceHead": "bced139dc69c13cd0ab9140557eed1866640850b",
+        "testedMerge": "ce29a1c8f7a5bb0a07d60edd3f3026bb3088fd8c",
+        "retryJob": 124828070638,
+        "retryOutcome": "cancelled-at-20-minute-job-ceiling",
+        "retryArtifact": {
+          "id": 13081451284,
+          "sha256": "a19767ba050dddc89b7b91aa52e40fb6a8cbd5dc40e79a2378b2f97334d88248"
+        }
+      },
+      "artifact": {
+        "id": 13081616163,
+        "sha256": "9166538d7c6409460b5ef23159c4899d06eb930f95ce01fed4d670575dd7d2ad"
+      },
+      "supplemental": {
+        "run": 41298242456,
+        "status": "passed",
+        "tasks": [
+          "fetch-projections-request-bodies",
+          "lifecycle-foundation",
+          "kv-conditional-acceptance",
+          "events-native-runtime"
+        ],
+        "artifact": {
+          "id": 13080725457,
+          "sha256": "c727e0c967a6508afec19347c9954fd59aad0fa49863e7d820661ac18cf69569"
+        }
+      }
+    }
+  ],
+  "priorPortableRetry": {
+    "run": 41290863425,
+    "cancelledJob": 124801739720,
+    "successfulRetryJob": 124806804019,
+    "disposition": "supported latest-attempt-per-shard retry on identical prior source; not pooled into current candidate"
+  },
+  "launcherFailedAttempt": {
+    "run": 41295725751,
+    "job": 124816062567,
+    "finding": "Relative report path created unignored wasm/wasm/.test-results; clean-source guard rejected before packing; fixed only launcher path"
+  },
+  "separateReleaseObligations": [
+    {
+      "id": "#508/item07",
+      "status": "independent-integrated-review-pending"
+    },
+    {
+      "id": "hosted-provider-dispositions",
+      "status": "current-candidate-evidence-or-explicit-support-dispositions-required",
+      "note": "Earlier hosted #571 proof remains bound to its original source"
+    },
+    {
+      "id": "deployed-Pulse-cross-location-KV",
+      "status": "required",
+      "note": "K4 task acceptance preserves the known Viceroy 0.21.1 missing-key CAS semantic failure under 2026-10-04 standing direction"
+    }
+  ],
+  "deferred": [
+    "#516 (no new product signal)",
+    "#566",
+    "#577"
+  ],
+  "authority": {
+    "merged": false,
+    "tagged": false,
+    "published": false,
+    "deployed": false
+  },
+  "fixtureRepairDevelopmentEvidence": {
+    "source": "ce29a1c8f7a5bb0a07d60edd3f3026bb3088fd8c",
+    "run": 41298242456,
+    "status": "passed",
+    "tasks": [
+      "fetch-projections-request-bodies",
+      "lifecycle-foundation",
+      "kv-conditional-acceptance",
+      "events-native-runtime"
+    ],
+    "fetchOutcomeCases": 100,
+    "note": "Historical development evidence; not pooled into current seal"
+  },
+  "portableBudgetsMinutes": {
+    "native-a": 30,
+    "otherShards": 20
+  },
+  "measurement": {
+    "fetchCpuOverheadBaseline": "inconclusive",
+    "newAccountingContract": false
+  },
+  "countsNote": "Profile counts overlap and are not a sum of unique tests.",
+  "fullToSupplementalPackageComparison": {
+    "matching": true,
+    "packages": 20,
+    "corpusRecordsCompared": 5,
+    "recordKinds": [
+      "pulse.s3-packed-acceptance.v1",
+      "pulse.request-deadline-packed.v1",
+      "pulse.multifile-packed.v1",
+      "pulse.http-input-packed.v1",
+      "pulse.kv-k4-packed.v1"
+    ],
+    "purpose": "Per-package byte identities only; raw provider semantics remain supplemental"
+  },
+  "separateGatesFromProducer": [
+    {
+      "task": "str03c-bounded-transforms",
+      "classification": "experimental",
+      "disposition": "Workspace evidence only; installed transform qualification pending"
+    },
+    {
+      "task": "kv-conditional-acceptance",
+      "classification": "external-required",
+      "disposition": "Separate local K4 execution; documented Viceroy 0.21.0/0.21.1 missing-key CAS discrepancy is non-blocking by human direction (2026-10-04). Other failures and deployed Pulse cross-location acceptance remain required; B6-05"
+    }
+  ],
+  "archive": {
+    "branch": "evidence/beta11-qualification-67c984d",
+    "parent": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+    "dataOnly": true,
+    "changesQualifiedCandidate": false,
+    "intendedForMerge": false
+  },
+  "currentPullRequest": {
+    "number": 591,
+    "state": "open",
+    "head": "3817f027cee36f9503d35420a775afdf639af568",
+    "base": "e69e4b6f1381a05bf0ee0b9b4c6385d2acefb20c",
+    "mergeCandidate": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+    "merged": false
+  }
+}
