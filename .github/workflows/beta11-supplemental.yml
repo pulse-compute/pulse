@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
-          ref: 38bd0727982ebbeee41cd33d21afe749beddf72e
+          ref: 67c984d8dc223dd94d1146353534b12a89e0e50b
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
@@ -27,8 +27,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = 38bd0727982ebbeee41cd33d21afe749beddf72e
-          test "$(git rev-parse HEAD^{tree})" = fc321a7df3d9cd344f495a83f7d400194e8cb590
+          test "$(git rev-parse HEAD)" = 67c984d8dc223dd94d1146353534b12a89e0e50b
+          test "$(git rev-parse HEAD^{tree})" = 77e58f4f93bf3f90d1f3390423218bc6d8a20462
           npm install --global npm@11.15.0
           node scripts/pnpm-toolchain.cjs --install
           .validation-tools/pnpm/bin/pnpm install --frozen-lockfile --ignore-scripts
@@ -43,15 +43,15 @@ jobs:
           echo "PULSE_VICEROY_BIN=$PWD/.validation-tools/beta11-engines/viceroy" >> "$GITHUB_ENV"
       - name: Exact-candidate K4 and Native event reuse
         env:
-          PULSE_SOURCE_REVISION: 38bd0727982ebbeee41cd33d21afe749beddf72e
+          PULSE_SOURCE_REVISION: 67c984d8dc223dd94d1146353534b12a89e0e50b
           PULSE_SOURCE_IDENTITY_KIND: git-commit
         run: node wasm/scripts/run-wasm-tests.cjs --task kv-conditional-acceptance --task events-native-runtime --report "$PWD/wasm/.test-results/beta11-supplemental.json"
       - name: Check complete terminal coverage and clean source
         shell: bash
         run: |
           set -euo pipefail
-          node -e "const a=require('node:assert/strict'),r=require('./wasm/.test-results/beta11-supplemental.json');a.equal(r.status,'passed');a.equal(r.sourceRevision,'38bd0727982ebbeee41cd33d21afe749beddf72e');a.deepEqual(r.selectedTasks,['kv-conditional-acceptance','events-native-runtime']);for(const x of r.results){a.equal(x.status,'passed');a.equal(x.cleanup.status,'passed');}"
-          test "$(git rev-parse HEAD)" = 38bd0727982ebbeee41cd33d21afe749beddf72e
+          node -e "const a=require('node:assert/strict'),r=require('./wasm/.test-results/beta11-supplemental.json');a.equal(r.status,'passed');a.equal(r.sourceRevision,'67c984d8dc223dd94d1146353534b12a89e0e50b');a.deepEqual(r.selectedTasks,['kv-conditional-acceptance','events-native-runtime']);for(const x of r.results){a.equal(x.status,'passed');a.equal(x.cleanup.status,'passed');}"
+          test "$(git rev-parse HEAD)" = 67c984d8dc223dd94d1146353534b12a89e0e50b
           test -z "$(git status --porcelain --untracked-files=all)"
       - name: Retain candidate reports and raw K4 semantics
         if: always()
