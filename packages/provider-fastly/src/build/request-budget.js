@@ -1,7 +1,7 @@
 'use strict';
 const {normalizeRequestDuration} = require('@pulse-compute/runtime/host');
 
-function instrumentRequestBudget(input, duration, plan, lifecycle, fetchAccounting) {
+function instrumentRequestBudget(input, duration, plan, lifecycle, fetchAccounting, timeoutDiagnostics = false) {
   const ms = normalizeRequestDuration(duration);
   if (ms === undefined) return input;
   let source = input;
@@ -9,14 +9,18 @@ function instrumentRequestBudget(input, duration, plan, lifecycle, fetchAccounti
     if (!source.includes(before)) throw new Error('Fastly request budget boundary drift: ' + before.slice(0, 100));
     source = source.replace(before, after);
   };
-  replace('  __pulse_fastly_last_error = fastly_abi_init', `  __request_expired = false; __request_error_response = false; __request_last_clock = -1;
+  replace('  __pulse_fastly_last_error = fastly_abi_init', `${timeoutDiagnostics ? '  __request_diag_reset();\n' : ''}
+  __request_expired = false; __request_error_response = false; __request_last_clock = -1;
   __request_deadline = __request_clock() + i64(${ms}) * 1000000;
+${timeoutDiagnostics ? '  __request_diag_origin = __request_last_clock;\n' : ''}
   __pulse_fastly_last_error = fastly_abi_init`);
   replace('  const handles = new StaticArray<i32>(2)\n  const downstreamStatus', `  if (!__request_check()) { __request_send_timeout(); return; }
   const handles = new StaticArray<i32>(2)
   const downstreamStatus`);
-  replace('function host_effect_begin(effectIndex: i32, payload: i32): void {', 'function host_effect_begin(effectIndex: i32, payload: i32): void {\n  if (!__request_check(effectIndex)) return;');
-  replace('function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {', 'function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {\n  if (!__request_check(index)) return 0;');
+  if (timeoutDiagnostics) replace('  __pulse_fastly_request_handle = load<i32>(changetype<usize>(handles))',
+    '  __pulse_fastly_request_handle = load<i32>(changetype<usize>(handles))\n  __request_diag_capture_probe();');
+  replace('function host_effect_begin(effectIndex: i32, payload: i32): void {', `function host_effect_begin(effectIndex: i32, payload: i32): void {\n  if (!__request_check(effectIndex${timeoutDiagnostics ? ', 1' : ''})) return;`);
+  replace('function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {', `function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {\n  if (!__request_check(index${timeoutDiagnostics ? ', 3' : ''})) return 0;`);
   replace('  let runStatus = pulse_start()', '  if (!__request_check()) { __request_send_timeout(); return; }\n  let runStatus = pulse_start()');
   replace('function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {', `function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {
   if (!__request_check(effectIndex)) return 0;
@@ -36,11 +40,20 @@ function instrumentRequestBudget(input, duration, plan, lifecycle, fetchAccounti
   source = source.replaceAll('runStatus = pulse_resume()', 'if (!__request_check()) { __request_send_timeout(); return; }\n    runStatus = pulse_resume()');
   replace('  const result = pulse_result_handle()', '  if (!__request_check()) { __request_send_timeout(); return; }\n  const result = pulse_result_handle()');
   if (source.includes('__kv_deadline[index] = start +')) replace('__kv_deadline[index] = start + i64(__KV_timeoutMs) * 1000000;', '__kv_deadline[index] = min<i64>(__request_deadline, start + i64(__KV_timeoutMs) * 1000000);');
+  if (timeoutDiagnostics && source.includes('function __pulse_fastly_kv_conditional_begin(')) {
+    replace('function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyValue): void {',
+      'function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyValue): void {\n  __request_diag_kv_reset(index);');
+    for (const call of ['list', 'delete', 'lookup', 'insert']) {
+      replace('status = fastly_kv_store_' + call + '(storeHandle[0]',
+        '__request_diag_kv_dispatch(index);\n    status = fastly_kv_store_' + call + '(storeHandle[0]');
+    }
+  }
   if (source.includes('__s3_deadlines[index] = start +')) replace('__s3_deadlines[index] = start + i64(binding.timeout) * 1000000;', '__s3_deadlines[index] = min<i64>(__request_deadline, start + i64(binding.timeout) * 1000000);');
   if (source.includes('function __pulse_fastly_write_binary(')) replace('const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) {', 'const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) { if (!__request_check()) return 1;');
   replace('function __pulse_fetch_request_check(index: i32): bool { return true }', 'function __pulse_fetch_request_check(index: i32): bool { return __request_check(index) }');
   replace('function __pulse_fetch_request_remaining(): i32 { return 2147483647 }', 'function __pulse_fetch_request_remaining(): i32 { return __request_remaining() }');
   if (plan.callables?.length || plan.binaryResources || plan.numericWorkspaces?.length) replace('function __pulse_resource_request_check(): bool { return true }', 'function __pulse_resource_request_check(): bool { return __request_check() }');
-  return source + '\n' + require('./request-budget-source.js').runtimeSource(lifecycle, plan.capabilities.includes('request.body.forward'), fetchAccounting);
+  return source + '\n' + require('./request-budget-source.js').runtimeSource(lifecycle, plan.capabilities.includes('request.body.forward'), fetchAccounting, timeoutDiagnostics)
+    + (timeoutDiagnostics ? '\n' + require('./request-timeout-diagnostics.js').runtimeSource(plan, ms) : '');
 }
 module.exports = {instrumentRequestBudget};
