@@ -91,7 +91,8 @@ assert.throws(() => mock.executeFastlyNativePlatformCapabilities(fetchNative, {
   return error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED' && error.detail.errorStage === 260;
 });
 assert(preparationExpired);
-assert(afterPreparation.every(name => name === 'clock_time_get'), 'expired selected fetch cannot dispatch, clean up or deliver an error');
+assert(afterPreparation.every(name => name === 'clock_time_get' || name === 'fd_write'), 'only the clock and bounded diagnostic sink may run after expiry');
+assert.equal(afterPreparation.filter(name => name === 'fd_write').length, 1, 'one best-effort timeout record; no retry');
 assert.equal(preparedTooLate.trace.filter(x => x.module === 'fastly_http_req' && x.name === 'send_async').length, 0);
 console.log('ok - Fastly outbound preparation cannot dispatch fetch after expiry');
 
@@ -138,3 +139,5 @@ assert.equal(mock.executeFastlyNativePlatformCapabilities(errorNative, {
   ...errorOptions, fixtures: {'https://budget.example.invalid/one': {body: 'ready'}}
 }).response.status, 200);
 console.log('ok - shared error-driver settlement preserves the fatal-return deadline fence and transport diagnostics');
+
+require('./assert-fastly-request-timeout-diagnostics.cjs').main({native, plan});

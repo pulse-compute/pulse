@@ -6,6 +6,7 @@ function runtimeSource(lifecycle, forwarding = false, fetchAccounting = false) {
 @external('fastly_async_io', 'select') declare function __request_select(handles: usize, count: i32, timeout: i32, done: usize): i32
 let __request_deadline: i64 = -1;
 let __request_last_clock: i64 = -1;
+let __request_clock_invalid: bool = false;
 let __request_expired: bool = false;
 let __request_error_response: bool = false;
 export function pulse_fastly_request_expired(): i32 { return __request_expired ? 1 : 0; }
@@ -14,6 +15,7 @@ function __request_clock(): i64 {
   const out = __request_clock_result;
   if (wasi_snapshot_preview1_clock_time_get(1, 1, changetype<usize>(out)) != 0 || out[0] < __request_last_clock) {
     __request_expired = true;
+    __request_clock_invalid = true;
     return -1;
   }
   __request_last_clock = out[0];
@@ -29,6 +31,7 @@ function __request_check(index: i32 = -1): bool {
   if (__request_error_response) return true;
   if (__request_remaining() > 0) return true;
   __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 260, index);
+  __request_timeout_observe(index);
   return false;
 }
 ${fetchAccounting ? 'const __request_wait_handles = new StaticArray<i32>(1), __request_wait_ready = new StaticArray<i32>(1);' : ''}
@@ -42,7 +45,8 @@ function __request_wait(handle: i32, index: i32): bool {
   if (ready[0] == -1) __request_expired = true;
   return __request_check(index);
 }
-${lifecycle?.active ? `function __request_send_timeout(): void {\n${lifecycle.site('response-timeout')}\n  ${name}()\n}\n` : ''}function ${name}(): void {
+${lifecycle?.active ? `function __request_send_timeout(): void {\n  __request_timeout_observe(__pulse_fastly_error_effect);\n${lifecycle.site('response-timeout')}\n  ${name}()\n}\n` : ''}function ${name}(): void {
+  __request_timeout_observe(__pulse_fastly_error_effect);
 ${fetchAccounting ? '  if (__fca_error()) return;\n' : ''}${forwarding ? '  if (__fwd_ra !== null) { __fwd_fail(504); __fwd_error_response(); return; }\n' : ''}  // A timeout says nothing about remote acceptance of dispatched writes.
   __request_error_response = true;
   __pulse_fastly_last_error = 0;

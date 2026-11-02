@@ -41,6 +41,7 @@ function instrumentRequestBudget(input, duration, plan, lifecycle, fetchAccounti
   replace('function __pulse_fetch_request_check(index: i32): bool { return true }', 'function __pulse_fetch_request_check(index: i32): bool { return __request_check(index) }');
   replace('function __pulse_fetch_request_remaining(): i32 { return 2147483647 }', 'function __pulse_fetch_request_remaining(): i32 { return __request_remaining() }');
   if (plan.callables?.length || plan.binaryResources || plan.numericWorkspaces?.length) replace('function __pulse_resource_request_check(): bool { return true }', 'function __pulse_resource_request_check(): bool { return __request_check() }');
+  source = require('./request-timeout-diagnostics.js').instrument(source, ms);
   return source + '\n' + require('./request-budget-source.js').runtimeSource(lifecycle, plan.capabilities.includes('request.body.forward'), fetchAccounting);
 }
 module.exports = {instrumentRequestBudget};
