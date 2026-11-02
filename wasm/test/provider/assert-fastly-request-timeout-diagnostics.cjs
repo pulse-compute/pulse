@@ -46,7 +46,7 @@ function __fwd_fail(value: i32): void { status = value; }
 function __fwd_error_response(): void { responseBody = 'Gateway Timeout'; }
 function __fca_error(): bool { if (shortcut) { status = 504; responseBody = 'Gateway Timeout'; } return shortcut; }
 ${nativeStdioSource}
-${budget.runtimeSource(hooks, forwarding, fetchAccounting)}
+${budget.runtimeSource(hooks, forwarding, fetchAccounting, true)}
 ${diagnostic.runtimeSource(plan, 10000)}
 export function test_start(): void {
   __pulse_fastly_last_error = 0; __pulse_fastly_error_stage = 0; __pulse_fastly_error_effect = -1;

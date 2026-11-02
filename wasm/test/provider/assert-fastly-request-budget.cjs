@@ -1,6 +1,8 @@
 'use strict';
 const assert = require('node:assert/strict');
 const path = require('node:path');
+const fs = require('node:fs');
+const os = require('node:os');
 const {compileCanonicalSource} = require('../../packages/compiler/src/canonical-api-compiler');
 const {buildCanonicalNativePlan} = require('../../packages/compiler/src/canonical-native-plan');
 const platform = require('../../../packages/provider-fastly/src/build/native-platform-capabilities');
@@ -15,7 +17,7 @@ export default async function handler(ctx: PulseContext) {
 }`;
 const compiled = compileCanonicalSource(source,{fileName:path.join(__dirname,'request-budget-consumer.ts'),strict:false});
 const plan = buildCanonicalNativePlan(compiled);
-const native = platform.compileFastlyNativePlatformCapabilitiesPlan(plan,{cwd:path.resolve(__dirname,'../../..'),bindings:{kv:{catalog:'catalog'}},maxDurationMs:10000});
+const native = platform.compileFastlyNativePlatformCapabilitiesPlan(plan,{cwd:path.resolve(__dirname,'../../..'),bindings:{kv:{catalog:'catalog'}},maxDurationMs:10000,timeoutDiagnostics:true});
 const authority = createConditionalKvAuthority();authority.stores.set('catalog',new Map());
 let reads=0,inserts=0; const waits=[];
 const probe = '12345678-1234-4abc-8def-123456789abc';
@@ -71,10 +73,55 @@ for (const sample of [() => ({status: 1}), (() => {let n=0;return () => ({nanose
   assert.equal(failedClock.response.status, 504);
   assert.deepEqual(failedClock.trace.filter(x => x.module === 'pulse_kv_evidence' && x.name !== 'clock'), []);
 }
-const {inspectFastlyCanonicalTarget} = require('../../../packages/provider-fastly/src/build/canonical-target');
+const {inspectFastlyCanonicalTarget, writeFastlyCanonicalTarget} = require('../../../packages/provider-fastly/src/build/canonical-target');
 assert.throws(() => inspectFastlyCanonicalTarget({plan, native, providerConfig: {maxDurationMs: 9999}}), {code: 'PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH'});
 const {fastlyJavascriptProjectRestrictions} = require('../../../packages/provider-fastly/src/javascript/target-support-policy');
 assert.throws(() => fastlyJavascriptProjectRestrictions({}, {providerConfig: {maxDurationMs: 10000}}), {code: 'PULSE_REQUEST_DURATION_UNSUPPORTED'});
+assert.throws(() => fastlyJavascriptProjectRestrictions({}, {providerConfig: {maxDurationMs: 10000, timeoutDiagnostics:true}}), {code: 'PULSE_REQUEST_DURATION_UNSUPPORTED'});
+assert.throws(() => inspectFastlyCanonicalTarget({plan, native, providerConfig: {maxDurationMs:10000}}), {code:'PULSE_FASTLY_NATIVE_ARTIFACT_INVALID'});
+const legacyBindings = {...native.manifest.bindings}; delete legacyBindings.timeoutDiagnostics;
+const legacyDiagnostic = {...native, manifest:{...native.manifest, bindings:legacyBindings}};
+assert.throws(() => inspectFastlyCanonicalTarget({plan, native:legacyDiagnostic, providerConfig:{maxDurationMs:10000}}),
+  {code:'PULSE_FASTLY_NATIVE_ARTIFACT_INVALID'}, 'legacy always-on artifacts without the selection field require rebuilding');
+const providerPlan = require('../../../packages/provider-fastly/src/provider-contract').createFastlyLoweringPlan(compiled.metadata, {kv:{catalog:'catalog'}});
+function rejectedReuse(artifact, timeoutDiagnostics) {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-timeout-selection-'));
+  try {
+    assert.throws(() => writeFastlyCanonicalTarget({plan, providerPlan, native:artifact, outDir,
+      providerConfig:{maxDurationMs:10000,timeoutDiagnostics,bindings:{kv:{catalog:'catalog'}}}}),
+    {code:'PULSE_FASTLY_NATIVE_ARTIFACT_INVALID'});
+    assert.equal(fs.existsSync(path.join(outDir,'bin/main.wasm')), false);
+  } finally { fs.rmSync(outDir, {recursive:true,force:true}); }
+}
+rejectedReuse(native, false); rejectedReuse(legacyDiagnostic, false);
+
+// Omitted and explicit false retain the whole-request deadline, with no
+// diagnostic source, probe read, timing samples or timeout log side effects.
+for (const timeoutDiagnostics of [undefined, false]) {
+  const disabled = platform.compileFastlyNativePlatformCapabilitiesPlan(plan, {
+    maxDurationMs:10000, timeoutDiagnostics, bindings:{kv:{catalog:'catalog'}}
+  });
+  assert.ok(!disabled.source.includes('__request_diag'));
+  assert.ok(!disabled.source.includes('pulse.request-timeout.v1'));
+  assert.throws(() => inspectFastlyCanonicalTarget({plan, native:disabled, providerConfig:{maxDurationMs:10000,timeoutDiagnostics:true}}), {code:'PULSE_FASTLY_NATIVE_ARTIFACT_INVALID'});
+  rejectedReuse(disabled, true);
+  const offAuthority = createConditionalKvAuthority(); offAuthority.stores.set('catalog', new Map());
+  const offQuick = mock.executeFastlyNativePlatformCapabilities(disabled, {conditionalKv:{authority:offAuthority}});
+  assert.deepEqual(offQuick.response, quick.response);
+  assert.deepEqual(offQuick.logs, []);
+  const clocks = execution => execution.trace.filter(t => t.module === 'wasi_snapshot_preview1' && t.name === 'clock_time_get').length;
+  assert.equal(clocks(quick) - clocks(offQuick), 3, 'only opt-in adds one observational clock sample per KV dispatch');
+  assert.equal(offQuick.trace.some(t => t.name === 'header_value_get' && t.header === 'x-pulse-probe-id'), false);
+  offAuthority.stores.set('catalog', new Map());
+  const offTimeout = mock.executeFastlyNativePlatformCapabilities(disabled, {conditionalKv:{authority:offAuthority,
+    onCall(stage) { if (stage === 'insert') return {readyDelayMs:10001}; }
+  }});
+  assert.deepEqual(offTimeout.response, uncertain.response);
+  assert.equal(offTimeout.instance.exports.pulse_fastly_request_expired(), 1);
+  assert.ok(offAuthority.stores.get('catalog').has('checkpoint'), 'disabling diagnostics must not change write acceptance');
+  assert.deepEqual(offTimeout.logs, []);
+}
+console.log('ok - diagnostics default off preserves deadline, HTTP and remote acceptance without probe/timing/log overhead');
 
 const bodyCompiled = compileCanonicalSource(`import type {PulseContext} from '@pulse-compute/runtime';
 export default async function handler(ctx: PulseContext) { const body = await ctx.req.text(); const value = await ctx.config.get('after-body'); return ctx.text(body); }`,
@@ -95,14 +142,24 @@ assert.equal(admittedBeforeInit.response.status, 504);
 assert.equal(admittedBeforeInit.trace.filter(x => x.module === 'pulse_kv_evidence' && x.name !== 'clock').length, 0);
 console.log('ok - Fastly budget starts at request entry, before ABI setup');
 
-// A budget alone must select the diagnostic imports, without application logs
+// Explicit opt-in must select the diagnostic imports, without application logs
 // or effects. Exercise both existing sinks and their failure behavior.
 const plainPlan = buildCanonicalNativePlan(compileCanonicalSource(
   `export default async function handler(ctx) { return ctx.text('ok'); }`,
   {fileName: 'timeout-no-effects.ts', strict: false}));
+for (const timeoutDiagnostics of [undefined, false]) {
+  const plain = platform.compileFastlyNativePlatformCapabilitiesPlan(plainPlan, {
+    maxDurationMs:10000, timeoutDiagnostics, requirePlatformCapability:false
+  });
+  const imports = WebAssembly.Module.imports(new WebAssembly.Module(plain.wasm));
+  assert.equal(imports.some(i => ['header_value_get','fd_write','endpoint_get','write'].includes(i.name) && ['fastly_http_req','wasi_snapshot_preview1','fastly_log'].includes(i.module)), false);
+  const timeout = mock.executeFastlyNativePlatformCapabilities(plain, {hostcallDelayMs:{'fastly_abi.init':10000}});
+  assert.equal(timeout.response.status, 504); assert.equal(timeout.response.body, 'Gateway Timeout');
+  assert.deepEqual(timeout.logs, []);
+}
 for (const endpoint of [undefined, 'timeout-events']) {
   const plain = platform.compileFastlyNativePlatformCapabilitiesPlan(plainPlan, {
-    maxDurationMs: 10000, requirePlatformCapability: false,
+    maxDurationMs: 10000, timeoutDiagnostics: true, requirePlatformCapability: false,
     bindings: endpoint ? {logEndpoint: endpoint} : {}
   });
   for (const fault of [{}, {logWriteFailure:true}, {logWriteMaxBytes:0}, {logWriteMaxBytes:7},
@@ -123,13 +180,13 @@ for (const endpoint of [undefined, 'timeout-events']) {
     }
   }
 }
-console.log('ok - deadline-only Native builds audit both diagnostic sinks and preserve 504 under sink failures');
+console.log('ok - explicit diagnostic opt-in audits both sinks; disabled builds omit diagnostic-only imports');
 
 const fetchCompiled = compileCanonicalSource(`import type {PulseContext} from '@pulse-compute/runtime';
 export default async function handler(ctx: PulseContext) { const result = await ctx.fetch('https://example.test/data'); return ctx.text('done'); }`,
   {fileName: path.join(__dirname, 'request-budget-fetch.ts'), strict: false});
 const fetchNative = platform.compileFastlyNativePlatformCapabilitiesPlan(buildCanonicalNativePlan(fetchCompiled), {
-  cwd: path.resolve(__dirname, '../../..'), maxDurationMs: 10000, requirePlatformCapability: false, bindings: {backends: {'https://example.test': 'origin'}}
+  cwd: path.resolve(__dirname, '../../..'), maxDurationMs: 10000, timeoutDiagnostics: true, requirePlatformCapability: false, bindings: {backends: {'https://example.test': 'origin'}}
 });
 assert.equal(fetchNative.manifest.resourceAccounting.selection, 'canonical-fetch-cohorts');
 let preparedTooLate, preparationExpired = false; const afterPreparation = [];

@@ -250,7 +250,17 @@ effects, while preserving the original hostcall error for diagnostics.
 
 ### Native request-timeout diagnostics
 
-With a configured whole-request budget (`maxDurationMs`), expiry attempts one
+Timeout diagnostics are a build-time opt-in, disabled by default. Set
+`timeoutDiagnostics: true` alongside `maxDurationMs` in the Fastly provider
+configuration (or `fastly({ maxDurationMs: 10000, timeoutDiagnostics: true })`).
+Enabling diagnostics requires a configured request budget and the Native target;
+changing this option requires rebuilding the Native artifact.
+
+When omitted or `false`, no diagnostic state, probe-header read, conditional-KV
+timing samples, timeout record or diagnostic-only imports are generated. The
+configured request deadline and its HTTP behavior remain active independently.
+
+With diagnostics enabled, expiry attempts one
 newline-terminated `pulse.request-timeout.v1` JSON record, at most 1,024 UTF-8
 bytes, through the selected logging sink. The snapshot precedes timeout cleanup.
 Successful requests emit no timeout record. Logging failures, zero progress and
@@ -278,7 +288,7 @@ resource key or idempotency key is serialized.
 | `remoteAcceptance` | Always `unknown`. Timeout and local settlement do not prove a dispatched write's remote outcome. |
 
 The diagnostic leaves the configured deadline, HTTP timeout status/body/headers,
-retries and acceptance semantics unchanged. A budgeted request adds one bounded
+retries and acceptance semantics unchanged. An opted-in request adds one bounded
 header read and bounded per-effect timing slots. Conditional KV dispatch adds an
 observational monotonic clock read immediately before its lookup/insert/list/delete
 hostcall. The sample excludes preceding validation, encoding and body preparation;

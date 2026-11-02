@@ -540,6 +540,19 @@
       },
       {
         "required": false,
+        "default": "false",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Opt in to bounded request-timeout logging, probe correlation and conditional-KV dispatch timing. Requires maxDurationMs. Omitted or false compiles out diagnostic instrumentation and its imports; the request budget remains active. Changing this option requires rebuilding the Native artifact.",
+        "path": "fastly.timeoutDiagnostics",
+        "scope": "Fastly Native build",
+        "section": "fastly",
+        "type": "boolean"
+      },
+      {
+        "required": false,
         "default": "`{}`",
         "allowed": "—",
         "precedence": "Configuration value.",
@@ -1268,6 +1281,10 @@
         },
         "fastly.maxDurationMs": {
           "kind": "optional-number"
+        },
+        "fastly.timeoutDiagnostics": {
+          "kind": "boolean",
+          "default": false
         },
         "fastly.build.maxWasmBytes": {
           "kind": "positive-safe-integer",

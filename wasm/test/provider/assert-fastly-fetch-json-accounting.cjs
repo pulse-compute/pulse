@@ -128,13 +128,13 @@ function main(){
   check('original-deadline-fences-header-read-cleanup-and-exit',()=>{
     for(const target of ['pending_req_poll_v2','header_values_get','read']){let expired=false;const after=[];
       failure(()=>run(plain,{}, {afterHostcall(c){if(expired)after.push(c.module+':'+c.name);if(c.name===target&&!expired){c.advance(1000);expired=true;}}}));
-      assert(expired);assert(after.filter(x => x === 'wasi_snapshot_preview1:fd_write').length === 1 && after.every(x => x === 'wasi_snapshot_preview1:clock_time_get' || x === 'wasi_snapshot_preview1:fd_write'),JSON.stringify(after));
+      assert(expired);assert(after.every(x=>x==='wasi_snapshot_preview1:clock_time_get'),JSON.stringify(after));
     }
   });
   check('header-clock-failure-latches',()=>{
     let header=false,fault=false;const after=[];
     failure(()=>run(plain,{}, {afterHostcall(c){if(fault)after.push(c.name);if(c.name==='header_values_get')header=true;if(c.name==='clock_time_get'&&header&&!fault){fault=true;return 1;}}}));
-    assert(fault);assert(after.filter(x => x === 'fd_write').length === 1 && after.every(x => x === 'clock_time_get' || x === 'fd_write'));
+    assert(fault);assert(after.every(x=>x==='clock_time_get'));
   });
   check('selection-still-proves-literals-and-complete-control-tree',()=>{
     for(const [i,text] of [source.replace('timeoutMs:500,',''),source.replace('timeoutMs:500,','timeoutMs:500,timeoutMs:0,'),source.replace('ctx.json(body)','ctx.json({body})'),source.replace("'x-proof':'é'","'x-proof':ctx.req.method")].entries()){

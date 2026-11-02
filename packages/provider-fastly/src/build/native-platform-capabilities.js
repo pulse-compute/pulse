@@ -956,6 +956,7 @@ function resolveCapabilityBindings(plan, options = {}) {
 
   return Object.freeze({
     maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs),
+    timeoutDiagnostics: require('../toolchain/timeout-diagnostics.js').normalizeTimeoutDiagnostics(options.timeoutDiagnostics, options.maxDurationMs),
     bodyForwarding: require('../toolchain/body-forwarding.js').normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs),
     ...(source.logEndpoint === undefined ? {} : { logEndpoint: require('../toolchain/logging.js').normalizeFastlyLogEndpoint(source.logEndpoint) }),
     configStore,
@@ -1011,7 +1012,7 @@ function requiredImportsForPlan(plan, bindings) {
   ]);
   if (bindings && bindings.maxDurationMs !== undefined) {
     keys.add('wasi_snapshot_preview1:clock_time_get'); keys.add('fastly_async_io:select');
-    keys.add('fastly_http_req:header_value_get');
+    if (bindings.timeoutDiagnostics) keys.add('fastly_http_req:header_value_get');
   }
   const kinds = new Set((plan.effects || []).map((effect) => effect.kind));
   if (kinds.has('fetch') || kinds.has('grip.publish') || kinds.has('grip.broadcast')) {
@@ -1041,7 +1042,7 @@ function requiredImportsForPlan(plan, bindings) {
   if (kinds.has('kv.get') || kinds.has('assets.lookup')) for (const key of ['fastly_kv_store:lookup', 'fastly_kv_store:lookup_wait_v2', 'fastly_http_body:read']) keys.add(key);
   if (kinds.has('kv.put')) for (const key of ['fastly_kv_store:insert', 'fastly_kv_store:insert_wait']) keys.add(key);
   if (kinds.has('grip.hold')) keys.add('fastly_http_resp:header_append');
-  if (bindings?.maxDurationMs !== undefined || (plan.logging && plan.logging.enabledStatements > 0) || ['fetch', 'grip.publish', 'grip.broadcast', 's3.head', 's3.getText', 's3.putText', 's3.getBody'].some(kind => kinds.has(kind))) {
+  if (bindings?.timeoutDiagnostics || (plan.logging && plan.logging.enabledStatements > 0) || ['fetch', 'grip.publish', 'grip.broadcast', 's3.head', 's3.getText', 's3.putText', 's3.getBody'].some(kind => kinds.has(kind))) {
     if (bindings?.logEndpoint === undefined) keys.add('wasi_snapshot_preview1:fd_write');
     else { keys.add('fastly_log:endpoint_get'); keys.add('fastly_log:write'); }
   }
@@ -2188,7 +2189,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan), lifecycle);
   if (packageApplication.enabled(plan)) source = packageApplication.instrument(source);
   source = effectInvocations.instrument(source);
-  source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan, lifecycle, fetchAccounting);
+  source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan, lifecycle, fetchAccounting, bindings.timeoutDiagnostics);
   source = packageApplication.terminalFailure(source, plan);
   source = nativeValueBudget.instrument(source, plan);
   source = require('./native-body-forwarding.js').instrument(source, plan, bindings);

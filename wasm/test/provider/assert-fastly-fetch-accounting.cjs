@@ -106,7 +106,7 @@ function main(){
   check('original-deadline-denies-cleanup-and-exit',()=>{
     for(const target of ['method_set','pending_req_poll_v2','read']){let expired=false;const after=[];
       failure(()=>run(plain,{}, {afterHostcall(c){if(expired)after.push(c.module+':'+c.name);if(c.name===target&&!expired){c.advance(1000);expired=true;}}}));
-      assert(expired);assert(after.filter(x => x === 'wasi_snapshot_preview1:fd_write').length === 1 && after.every(x => x === 'wasi_snapshot_preview1:clock_time_get' || x === 'wasi_snapshot_preview1:fd_write'),JSON.stringify(after));
+      assert(expired);assert(after.every(x=>x==='wasi_snapshot_preview1:clock_time_get'),JSON.stringify(after));
     }
   });
   check('clock-failure-latches-across-valid-later-samples',()=>{
@@ -115,7 +115,7 @@ function main(){
       if(fault)after.push(c.module+':'+c.name);
       if(c.name==='send_async')dispatched=true;
       if(c.name==='clock_time_get'&&dispatched&&!fault){fault=true;return 1;}
-    }}));assert(fault);assert(after.filter(x => x === 'wasi_snapshot_preview1:fd_write').length === 1 && after.every(x => x === 'wasi_snapshot_preview1:clock_time_get' || x === 'wasi_snapshot_preview1:fd_write'));
+    }}));assert(fault);assert(after.every(x=>x==='wasi_snapshot_preview1:clock_time_get'));
   });
   check('unknown-disposal-is-never-retried',()=>{
     const r=run(observed,{}, {afterHostcall:c=>{if(c.module==='fastly_http_body'&&c.name==='close')return 1;}});
