@@ -129,7 +129,7 @@ function main() {
       if (c.module === 'fastly_http_body' && c.name === 'read') {calls++; c.advance(1001); expired = true;}
     }}), 260);
     assert.equal(calls, 1);
-    assert(after.every(name => name === 'clock_time_get'), 'selected fetch cannot spend fresh time on cleanup or error delivery');
+    assert(after.filter(name => name === 'fd_write').length === 1 && after.every(name => name === 'clock_time_get' || name === 'fd_write'), 'selected fetch cannot spend fresh time on cleanup or error delivery');
     calls = 0;
     const incoming = run(request, 'bounded', 1, {afterHostcall(c) {
       if (c.module === 'fastly_http_body' && c.name === 'read') {calls++; c.advance(1001);}

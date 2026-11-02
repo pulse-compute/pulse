@@ -9,14 +9,18 @@ function instrumentRequestBudget(input, duration, plan, lifecycle, fetchAccounti
     if (!source.includes(before)) throw new Error('Fastly request budget boundary drift: ' + before.slice(0, 100));
     source = source.replace(before, after);
   };
-  replace('  __pulse_fastly_last_error = fastly_abi_init', `  __request_expired = false; __request_error_response = false; __request_last_clock = -1;
+  replace('  __pulse_fastly_last_error = fastly_abi_init', `  __request_diag_reset();
+  __request_expired = false; __request_error_response = false; __request_last_clock = -1;
   __request_deadline = __request_clock() + i64(${ms}) * 1000000;
+  __request_diag_origin = __request_last_clock;
   __pulse_fastly_last_error = fastly_abi_init`);
   replace('  const handles = new StaticArray<i32>(2)\n  const downstreamStatus', `  if (!__request_check()) { __request_send_timeout(); return; }
   const handles = new StaticArray<i32>(2)
   const downstreamStatus`);
-  replace('function host_effect_begin(effectIndex: i32, payload: i32): void {', 'function host_effect_begin(effectIndex: i32, payload: i32): void {\n  if (!__request_check(effectIndex)) return;');
-  replace('function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {', 'function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {\n  if (!__request_check(index)) return 0;');
+  replace('  __pulse_fastly_request_handle = load<i32>(changetype<usize>(handles))',
+    '  __pulse_fastly_request_handle = load<i32>(changetype<usize>(handles))\n  __request_diag_capture_probe();');
+  replace('function host_effect_begin(effectIndex: i32, payload: i32): void {', 'function host_effect_begin(effectIndex: i32, payload: i32): void {\n  if (!__request_check(effectIndex, 1)) return;');
+  replace('function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {', 'function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {\n  if (!__request_check(index, 3)) return 0;');
   replace('  let runStatus = pulse_start()', '  if (!__request_check()) { __request_send_timeout(); return; }\n  let runStatus = pulse_start()');
   replace('function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {', `function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {
   if (!__request_check(effectIndex)) return 0;
@@ -41,6 +45,7 @@ function instrumentRequestBudget(input, duration, plan, lifecycle, fetchAccounti
   replace('function __pulse_fetch_request_check(index: i32): bool { return true }', 'function __pulse_fetch_request_check(index: i32): bool { return __request_check(index) }');
   replace('function __pulse_fetch_request_remaining(): i32 { return 2147483647 }', 'function __pulse_fetch_request_remaining(): i32 { return __request_remaining() }');
   if (plan.callables?.length || plan.binaryResources || plan.numericWorkspaces?.length) replace('function __pulse_resource_request_check(): bool { return true }', 'function __pulse_resource_request_check(): bool { return __request_check() }');
-  return source + '\n' + require('./request-budget-source.js').runtimeSource(lifecycle, plan.capabilities.includes('request.body.forward'), fetchAccounting);
+  return source + '\n' + require('./request-budget-source.js').runtimeSource(lifecycle, plan.capabilities.includes('request.body.forward'), fetchAccounting)
+    + '\n' + require('./request-timeout-diagnostics.js').runtimeSource(plan, ms);
 }
 module.exports = {instrumentRequestBudget};

@@ -248,6 +248,41 @@ present empty value returns `""`. Native lookup hostcall failures or malformed
 host results terminate the request with an explicit 500 response before later
 effects, while preserving the original hostcall error for diagnostics.
 
+### Native request-timeout diagnostics
+
+With a configured whole-request budget (`maxDurationMs`), expiry attempts one
+newline-terminated `pulse.request-timeout.v1` JSON record, at most 1,024 UTF-8
+bytes, through the selected logging sink. The snapshot precedes timeout cleanup.
+Successful requests emit no timeout record. Logging failures, zero progress and
+short writes are not retried and do not change the response; host traps and
+allocation exhaustion remain outside this best-effort guarantee.
+
+Send an optional `X-Pulse-Probe-Id` containing a lowercase UUID v4 to correlate
+an operator request journal with the record. A fixed-size header read ignores
+missing, malformed, oversized and failed values, recording `probeId: null`.
+This caller-supplied ID is untrusted correlation, grants no authority or time,
+and is not echoed into response headers. No authorization, JWT, body, URL,
+resource key or idempotency key is serialized.
+
+| Fields | Interpretation |
+| --- | --- |
+| `elapsedMs`, `budgetMs` | Observed monotonic elapsed time and the existing budget. Unreliable elapsed time is `null`; observing it does not advance the deadline. |
+| `timeoutStage`, `errorStage` | Timeout checkpoint 260 and the preserved primary error stage, which may differ. |
+| `effectIndex`, `effectKind`, `attribution` | Known checkpoint, sole live ticket, or unattributed when ambiguous. This does not establish which dependency caused the delay. |
+| `programCounter` | Root guest counter, meaningful only against this exact compiled artifact. Effect indices likewise are not stable across builds. |
+| `pendingCount`, `pendingCountScope` | Live effect tickets, not host-resource counts. Scope is `effect-tickets`. |
+| `pendingMode`, `pendingActive` | Local slot mode while its invocation ticket is live; active is 1 only for an observed async slot. Stale slots are ignored. |
+| `phase` | 0: general checkpoint; 1: before effect admission; 2: wait checkpoint; 3: settlement entry. |
+| `dispatchState`, `settlementState` | Local observations only: `not-started`, `async-slot-observed` or `unknown`; `unsettled`, `settlement-entered` or `no-live-ticket`. |
+| `remoteAcceptance` | Always `unknown`. Timeout and local settlement do not prove a dispatched write's remote outcome. |
+
+The diagnostic leaves the configured deadline, HTTP timeout status/body/headers,
+retries and acceptance semantics unchanged. A budgeted request adds one bounded
+header read; expiry adds a snapshot, observational clock read and best-effort log
+write. Delivery at a live log destination and performance overhead require
+separate measurement. Retain the exact artifact identity when interpreting a
+record and reconcile uncertain writes using the application's existing rules.
+
 ### Fastly JavaScript
 
 `target: 'javascript'` emits a deterministic, self-contained source closure:

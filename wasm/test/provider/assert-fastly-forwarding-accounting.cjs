@@ -96,7 +96,7 @@ function main(){
       if(c.name==='read'&&!expired){c.advance(2000);expired=true;}
     }}),e=>e.code==='PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED'
       && !e.detail.trace.some(x=>x.name==='send_downstream'));
-    assert(expired);assert(calls.every(x=>x==='wasi_snapshot_preview1:clock_time_get'));
+    assert(expired);assert(calls.filter(x => x === 'wasi_snapshot_preview1:fd_write').length === 1 && calls.every(x => x === 'wasi_snapshot_preview1:clock_time_get' || x === 'wasi_snapshot_preview1:fd_write'));
   });
   check('handle-zero-in-each-real-namespace',()=>{
     for(const kind of ['request','body','response','pending']){

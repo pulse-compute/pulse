@@ -18,12 +18,23 @@ const plan = buildCanonicalNativePlan(compiled);
 const native = platform.compileFastlyNativePlatformCapabilitiesPlan(plan,{cwd:path.resolve(__dirname,'../../..'),bindings:{kv:{catalog:'catalog'}},maxDurationMs:10000});
 const authority = createConditionalKvAuthority();authority.stores.set('catalog',new Map());
 let reads=0,inserts=0; const waits=[];
-const result=mock.executeFastlyNativePlatformCapabilities(native,{conditionalKv:{authority,onCall(stage,detail){if(stage==='select')waits.push(detail.timeout);if(stage==='lookup'){reads++;return {readyDelayMs:6000};}if(stage==='insert')inserts++;}}});
+const probe = '12345678-1234-4abc-8def-123456789abc';
+const result=mock.executeFastlyNativePlatformCapabilities(native,{request:{headers:{'x-pulse-probe-id':probe}},conditionalKv:{authority,onCall(stage,detail){if(stage==='select')waits.push(detail.timeout);if(stage==='lookup'){reads++;return {readyDelayMs:6000};}if(stage==='insert')inserts++;}}});
 assert.equal(result.response.status,504);assert.equal(result.instance.exports.pulse_fastly_request_expired(),1);
+assert.equal(result.response.body, 'Gateway Timeout');
+assert.deepEqual(result.response.headers, [['content-type', 'text/plain; charset=utf-8']]);
+const diagnostics = result.logs.filter(log => log.message.includes('pulse.request-timeout.v1'));
+assert.equal(diagnostics.length, 1);
+const diagnostic = JSON.parse(diagnostics[0].message);
+assert.equal(diagnostic.probeId, probe);
+assert.equal(diagnostic.budgetMs, 10000); assert.equal(diagnostic.elapsedMs, 10000);
+assert.equal(diagnostic.timeoutStage, 260); assert.equal(diagnostic.remoteAcceptance, 'unknown');
+assert.ok(Buffer.byteLength(diagnostics[0].message) <= 1024);
 assert.equal(reads,2);assert.equal(inserts,0);assert.equal(authority.stores.get('catalog').has('checkpoint'),false);
 assert.ok(waits.includes(4000));
 const quick=mock.executeFastlyNativePlatformCapabilities(native,{conditionalKv:{authority}});
 assert.equal(quick.response.status,200);assert.equal(quick.instance.exports.pulse_fastly_request_expired(),0);
+assert.deepEqual(quick.logs, []);
 console.log('ok - Fastly Native shares a total request budget across KV operations and blocks the checkpoint');
 
 const lateAuthority = createConditionalKvAuthority(); lateAuthority.stores.set('catalog', new Map());
@@ -75,6 +86,36 @@ assert.equal(admittedBeforeInit.response.status, 504);
 assert.equal(admittedBeforeInit.trace.filter(x => x.module === 'pulse_kv_evidence' && x.name !== 'clock').length, 0);
 console.log('ok - Fastly budget starts at request entry, before ABI setup');
 
+// A budget alone must select the diagnostic imports, without application logs
+// or effects. Exercise both existing sinks and their failure behavior.
+const plainPlan = buildCanonicalNativePlan(compileCanonicalSource(
+  `export default async function handler(ctx) { return ctx.text('ok'); }`,
+  {fileName: 'timeout-no-effects.ts', strict: false}));
+for (const endpoint of [undefined, 'timeout-events']) {
+  const plain = platform.compileFastlyNativePlatformCapabilitiesPlan(plainPlan, {
+    maxDurationMs: 10000, requirePlatformCapability: false,
+    bindings: endpoint ? {logEndpoint: endpoint} : {}
+  });
+  for (const fault of [{}, {logWriteFailure:true}, {logWriteMaxBytes:0}, {logWriteMaxBytes:7},
+    ...(endpoint ? [{logEndpointFailure:true}] : [])]) {
+    const timedOut = mock.executeFastlyNativePlatformCapabilities(plain, {
+      request: {headers: {'x-pulse-probe-id': probe}},
+      hostcallDelayMs: {'fastly_http_req.header_value_get':10000}, ...fault
+    });
+    assert.equal(timedOut.response.status, 504);
+    assert.equal(timedOut.response.body, 'Gateway Timeout');
+    const writes = timedOut.trace.filter(t => (t.module === 'fastly_log' && t.name === 'write')
+      || (t.module === 'wasi_snapshot_preview1' && t.name === 'fd_write'));
+    assert.equal(writes.length, fault.logEndpointFailure ? 0 : 1);
+    if (endpoint) assert.equal(timedOut.trace.some(t => t.name === 'fd_write'), false);
+    if (!Object.keys(fault).length) {
+      assert.equal(timedOut.logs[0].endpoint, endpoint || 'stdout');
+      assert.equal(JSON.parse(timedOut.logs[0].message).probeId, probe);
+    }
+  }
+}
+console.log('ok - deadline-only Native builds audit both diagnostic sinks and preserve 504 under sink failures');
+
 const fetchCompiled = compileCanonicalSource(`import type {PulseContext} from '@pulse-compute/runtime';
 export default async function handler(ctx: PulseContext) { const result = await ctx.fetch('https://example.test/data'); return ctx.text('done'); }`,
   {fileName: path.join(__dirname, 'request-budget-fetch.ts'), strict: false});
@@ -91,7 +132,9 @@ assert.throws(() => mock.executeFastlyNativePlatformCapabilities(fetchNative, {
   return error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED' && error.detail.errorStage === 260;
 });
 assert(preparationExpired);
-assert(afterPreparation.every(name => name === 'clock_time_get'), 'expired selected fetch cannot dispatch, clean up or deliver an error');
+assert(afterPreparation.every(name => name === 'clock_time_get' || name === 'fd_write'),
+  'expired selected fetch may emit its diagnostic but cannot dispatch, clean up or deliver an error');
+assert.equal(afterPreparation.filter(name => name === 'fd_write').length, 1);
 assert.equal(preparedTooLate.trace.filter(x => x.module === 'fastly_http_req' && x.name === 'send_async').length, 0);
 console.log('ok - Fastly outbound preparation cannot dispatch fetch after expiry');
 
