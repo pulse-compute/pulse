@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "deployments": [
+    {
+      "kind": "compute",
+      "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+      "activeVersions": [
+        "1"
+      ],
+      "domain": "pulse-k4-compute-5de09fab.edgecompute.app",
+      "filesHash": "c077af64fa611f42bd7d425ef8d704f444842cfcdfe19acca1fbd6d5710635617ff5b6cd6a3d99dc67f9537813bbbaef1232d992a3fd6c8b273a0d555784e2ef"
+    },
+    {
+      "kind": "iad",
+      "serviceId": "yajI0iuIjObRyxwAMJLszL",
+      "activeVersions": [
+        "1"
+      ],
+      "domain": "pulse-k4-iad-5de09fab.global.ssl.fastly.net",
+      "shield": "iad-va-us"
+    },
+    {
+      "kind": "lhr",
+      "serviceId": "SYA8SvG9Dz4Hj9Q22cU5Gq",
+      "activeVersions": [
+        "1"
+      ],
+      "domain": "pulse-k4-lhr-5de09fab.global.ssl.fastly.net",
+      "shield": "london-uk"
+    }
+  ],
+  "identity": {
+    "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+    "serviceVersion": "1",
+    "storeId": "5475f8scy7wj7172s88o3r",
+    "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505"
+  }
+}

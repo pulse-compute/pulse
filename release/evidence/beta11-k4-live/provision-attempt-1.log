@@ -1,0 +1,4 @@
+Created isolated KV store 5475f8scy7wj7172s88o3r
+Created compute YN5mZweFkYXqaGabK2QUlk
+Created iad yajI0iuIjObRyxwAMJLszL
+POST /service/yajI0iuIjObRyxwAMJLszL/version/1/domain: HTTP 400: {"msg":"The classic domains APIs are deprecated. Please use the domain management API, /domain-management/v1/domains"}

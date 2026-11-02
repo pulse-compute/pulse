@@ -1,0 +1,54 @@
+{
+  "version": "pulse.kv-k4-deployed.v1",
+  "status": "passed",
+  "identity": {
+    "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+    "serviceVersion": "1",
+    "storeId": "5475f8scy7wj7172s88o3r",
+    "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505"
+  },
+  "keyPrefix": "pulse-k4-fb3806fe-0044-4adb-a105-d1d73eefc8b5",
+  "locations": {
+    "iad": "IAD",
+    "lhr": "LHR"
+  },
+  "schedules": [
+    {
+      "schedule": 0,
+      "writers": 2,
+      "createWinners": 1,
+      "casWinners": 1,
+      "staleExcluded": true,
+      "missingExcluded": true,
+      "retainedTombstone": true
+    },
+    {
+      "schedule": 1,
+      "writers": 2,
+      "createWinners": 1,
+      "casWinners": 1,
+      "staleExcluded": true,
+      "missingExcluded": true,
+      "retainedTombstone": true
+    },
+    {
+      "schedule": 2,
+      "writers": 2,
+      "createWinners": 1,
+      "casWinners": 1,
+      "staleExcluded": true,
+      "missingExcluded": true,
+      "retainedTombstone": true
+    }
+  ],
+  "requests": 58,
+  "mutationRetries": 0,
+  "visibilityBudgetMs": 30000,
+  "ambiguousCompletion": {
+    "clientResponseLoss": true,
+    "committedReceiptObserved": true,
+    "typedKvUnknown": false
+  },
+  "scope": "bounded-deployed-probe-evidence",
+  "localK4GateStillRequired": true
+}

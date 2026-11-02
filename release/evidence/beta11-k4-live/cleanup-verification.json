@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "ownedServicesAbsent": true,
+  "deletedServiceIds": [
+    "YN5mZweFkYXqaGabK2QUlk",
+    "yajI0iuIjObRyxwAMJLszL",
+    "SYA8SvG9Dz4Hj9Q22cU5Gq"
+  ],
+  "remainingAccountServices": 2,
+  "storeRetained": {
+    "id": "5475f8scy7wj7172s88o3r",
+    "name": "pulse-k4-beta11-5de09fab"
+  },
+  "authorityKeysAndTombstonesRetained": true,
+  "tokenRevoked": false,
+  "otherServicesModified": false,
+  "privateProbeNonceRetired": true
+}

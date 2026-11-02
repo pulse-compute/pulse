@@ -1,0 +1,302 @@
+{
+  "schemaVersion": "pulse.beta11-k4-live-qualification.v1",
+  "status": "passed",
+  "source": {
+    "pullRequest": 591,
+    "base": "e69e4b6f1381a05bf0ee0b9b4c6385d2acefb20c",
+    "head": "3817f027cee36f9503d35420a775afdf639af568",
+    "mergeCandidate": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+    "tree": "77e58f4f93bf3f90d1f3390423218bc6d8a20462",
+    "productSourceChanged": false
+  },
+  "acceptedBundle": {
+    "artifactId": 13083118233,
+    "sha256": "2de79c3f72776cda7ca2d575c7e69dfbc55e8e418523d1c11ae74911d1496324",
+    "packages": 20,
+    "setup": "Exact candidate tarballs extracted into isolated real package directories; frozen external dependencies linked. No workspace product modules loaded.",
+    "sourceReleaseSealRun": 41301460387
+  },
+  "fixture": {
+    "consumer": "K2 command handler plus one private test-authentication header guard",
+    "build": {
+      "source": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+      "installedArtifactSha256": "2de79c3f72776cda7ca2d575c7e69dfbc55e8e418523d1c11ae74911d1496324",
+      "buildStatus": "built",
+      "outDir": "/workspace/scratch/664ac3039b0e/k4-live/consumer/dist",
+      "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505",
+      "moduleBytes": 41247,
+      "consumerSourceSha256": "6c9eea6afd12e172a74b8adad2771a15bce4f2340af59f12682bc4afdc4c7827",
+      "fixtureChange": "K2 command handler unchanged after one private test-authentication header guard",
+      "workspaceProductModules": 0
+    },
+    "probeNonceRetired": true,
+    "accountApiKeyIncluded": false
+  },
+  "deployed": {
+    "version": "pulse.kv-k4-deployed.v1",
+    "status": "passed",
+    "identity": {
+      "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+      "serviceVersion": "1",
+      "storeId": "5475f8scy7wj7172s88o3r",
+      "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505"
+    },
+    "keyPrefix": "pulse-k4-fb3806fe-0044-4adb-a105-d1d73eefc8b5",
+    "locations": {
+      "iad": "IAD",
+      "lhr": "LHR"
+    },
+    "schedules": [
+      {
+        "schedule": 0,
+        "writers": 2,
+        "createWinners": 1,
+        "casWinners": 1,
+        "staleExcluded": true,
+        "missingExcluded": true,
+        "retainedTombstone": true
+      },
+      {
+        "schedule": 1,
+        "writers": 2,
+        "createWinners": 1,
+        "casWinners": 1,
+        "staleExcluded": true,
+        "missingExcluded": true,
+        "retainedTombstone": true
+      },
+      {
+        "schedule": 2,
+        "writers": 2,
+        "createWinners": 1,
+        "casWinners": 1,
+        "staleExcluded": true,
+        "missingExcluded": true,
+        "retainedTombstone": true
+      }
+    ],
+    "requests": 58,
+    "mutationRetries": 0,
+    "visibilityBudgetMs": 30000,
+    "ambiguousCompletion": {
+      "clientResponseLoss": true,
+      "committedReceiptObserved": true,
+      "typedKvUnknown": false
+    },
+    "scope": "bounded-deployed-probe-evidence",
+    "localK4GateStillRequired": true
+  },
+  "installedBefore": {
+    "status": "passed",
+    "packages": 20,
+    "files": 1231,
+    "installedBytesUnchanged": true,
+    "packagesSha256": {
+      "@pulse-compute/runtime": "fe4385044fc16b8e973acdc8f0893bedc8f8511ef97b60086d864ad764968fdc",
+      "@pulse-compute/pulse": "a2c57c648ca60ba4ea9e78de7066ec458f7395ee274c8a1e6a50ec63ce8e6739",
+      "@pulse-compute/cli": "1de69dfe9607e2747092d4b2b2758f73cf463e813070393d40c23ddba3465810",
+      "@pulse-compute/provider-fastly": "20ec7ac3201e93077b0473a3fb807459139819fcf00a12a396af490a02d4df3d",
+      "@pulse-compute/grip": "6f1c6d0a0e11c188c29587c64fa5b5b9cbf3c340adcc36981e44a7ec3b1e0476",
+      "@pulse-compute/assets": "4a587ce59c7832ed7be130a5e550eb8d0e61d3133ca979bb88ff771445b64e66",
+      "@pulse-compute/crypto": "83c7ac0cdaf65ebae2b0221bf5f6d7c629f1e4c1eca86da62e6f4e8c6f6d346a",
+      "@pulse-compute/jwt": "4655cca2737e868f45acf889ef2be65aff902a9f31e7cfc521437efde70b30a3",
+      "@pulse-compute/entities": "ce62a8a47618d8f78d54b63fc4aa5795ec98cd4b14e99d45e93006bcf1179142",
+      "@pulse-compute/mcp": "e7d1b4e3b51dfd2cece242bdaba78e45b5d7181d21a27f988ba8005563fb48cf",
+      "@pulse-compute/s3": "83427158e90852686e8e69ffe230c1eebc51bf485c8048cda528e8f066db355b",
+      "@pulse-compute/wasm-build-support": "ab8a7e93a64a3de22d0f4f62770a42fe495773d9a5ba7c639f9dbab5b163e7b6",
+      "@pulse-compute/wasm-compiler": "0d5517e208c9ad3bd40e5c3f839ad2d6d384f2fba26d7a6ecf44817f8dd02a3f",
+      "@pulse-compute/wasm-guest-link": "4adce9e2a318f9eababb1f3d1af66aa6435ca5319c0139470513a4de6c89c14e",
+      "@pulse-compute/wasm-contracts": "6c5afc7675f05f77699666fd6e492d6d4fa25ab22cc735d42f2a6fd4ad54c7f4",
+      "@pulse-compute/wasm-host-runtime": "e0211cf2f1c7819191153f75125116cbe2815062a1cde61c5aa6e4768f08489b",
+      "@pulse-compute/wasm-library-kit": "cb6844ee23ced330e634fbe9d1bcf613f94c3ef1aae225b0d3000d8f7fbad7b4",
+      "@pulse-compute/provider-node": "e11a274f1b92ff3ad453ddc7c744f51bc2d31cb978c97af036c15afcbd875128",
+      "@pulse-compute/wasm-runtime-core-as": "b096c63c05453fb2877f169bdfe578f9fb2d70e34be62d1c27e81b323275711b",
+      "@pulse-compute/wasm-schema-json": "685c24d8fb36807693b4ac9f173991f09ad3888029b5de15dbcd0c5afab0d0bf"
+    }
+  },
+  "installedAfter": {
+    "status": "passed",
+    "packages": 20,
+    "files": 1231,
+    "installedBytesUnchanged": true,
+    "packagesSha256": {
+      "@pulse-compute/runtime": "fe4385044fc16b8e973acdc8f0893bedc8f8511ef97b60086d864ad764968fdc",
+      "@pulse-compute/pulse": "a2c57c648ca60ba4ea9e78de7066ec458f7395ee274c8a1e6a50ec63ce8e6739",
+      "@pulse-compute/cli": "1de69dfe9607e2747092d4b2b2758f73cf463e813070393d40c23ddba3465810",
+      "@pulse-compute/provider-fastly": "20ec7ac3201e93077b0473a3fb807459139819fcf00a12a396af490a02d4df3d",
+      "@pulse-compute/grip": "6f1c6d0a0e11c188c29587c64fa5b5b9cbf3c340adcc36981e44a7ec3b1e0476",
+      "@pulse-compute/assets": "4a587ce59c7832ed7be130a5e550eb8d0e61d3133ca979bb88ff771445b64e66",
+      "@pulse-compute/crypto": "83c7ac0cdaf65ebae2b0221bf5f6d7c629f1e4c1eca86da62e6f4e8c6f6d346a",
+      "@pulse-compute/jwt": "4655cca2737e868f45acf889ef2be65aff902a9f31e7cfc521437efde70b30a3",
+      "@pulse-compute/entities": "ce62a8a47618d8f78d54b63fc4aa5795ec98cd4b14e99d45e93006bcf1179142",
+      "@pulse-compute/mcp": "e7d1b4e3b51dfd2cece242bdaba78e45b5d7181d21a27f988ba8005563fb48cf",
+      "@pulse-compute/s3": "83427158e90852686e8e69ffe230c1eebc51bf485c8048cda528e8f066db355b",
+      "@pulse-compute/wasm-build-support": "ab8a7e93a64a3de22d0f4f62770a42fe495773d9a5ba7c639f9dbab5b163e7b6",
+      "@pulse-compute/wasm-compiler": "0d5517e208c9ad3bd40e5c3f839ad2d6d384f2fba26d7a6ecf44817f8dd02a3f",
+      "@pulse-compute/wasm-guest-link": "4adce9e2a318f9eababb1f3d1af66aa6435ca5319c0139470513a4de6c89c14e",
+      "@pulse-compute/wasm-contracts": "6c5afc7675f05f77699666fd6e492d6d4fa25ab22cc735d42f2a6fd4ad54c7f4",
+      "@pulse-compute/wasm-host-runtime": "e0211cf2f1c7819191153f75125116cbe2815062a1cde61c5aa6e4768f08489b",
+      "@pulse-compute/wasm-library-kit": "cb6844ee23ced330e634fbe9d1bcf613f94c3ef1aae225b0d3000d8f7fbad7b4",
+      "@pulse-compute/provider-node": "e11a274f1b92ff3ad453ddc7c744f51bc2d31cb978c97af036c15afcbd875128",
+      "@pulse-compute/wasm-runtime-core-as": "b096c63c05453fb2877f169bdfe578f9fb2d70e34be62d1c27e81b323275711b",
+      "@pulse-compute/wasm-schema-json": "685c24d8fb36807693b4ac9f173991f09ad3888029b5de15dbcd0c5afab0d0bf"
+    }
+  },
+  "artifactsBefore": {
+    "status": "passed",
+    "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505",
+    "moduleBytes": 41247,
+    "packageSha256": "4139f36a0eef8dfbf9c53383dfb0e309c2045e6da7b77463f8849024cacad139",
+    "packageBytes": 21149,
+    "cliSha256": "b95ba2d9ef34c5c1afb4902d2022c7c7db94b75ce4b25e8fa4d21e49076d2b9d",
+    "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+    "driverSha256": "b469b8e06bb05fdc7c917d27943b01088ded54a903d01f6035aa983c17763453",
+    "runnerSha256": "f89ad04343ac8b4da08bef44e89f31d9a36c75b59977a157deed2c7c0ac11143",
+    "corpusSha256": "b92ecff8bee35ba594800268991eb1400c3da774525ee013e78bb6ff28007fe1"
+  },
+  "artifactsAfter": {
+    "status": "passed",
+    "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505",
+    "moduleBytes": 41247,
+    "packageSha256": "4139f36a0eef8dfbf9c53383dfb0e309c2045e6da7b77463f8849024cacad139",
+    "packageBytes": 21149,
+    "cliSha256": "b95ba2d9ef34c5c1afb4902d2022c7c7db94b75ce4b25e8fa4d21e49076d2b9d",
+    "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+    "driverSha256": "b469b8e06bb05fdc7c917d27943b01088ded54a903d01f6035aa983c17763453",
+    "runnerSha256": "f89ad04343ac8b4da08bef44e89f31d9a36c75b59977a157deed2c7c0ac11143",
+    "corpusSha256": "b92ecff8bee35ba594800268991eb1400c3da774525ee013e78bb6ff28007fe1"
+  },
+  "deploymentBefore": {
+    "status": "passed",
+    "deployments": [
+      {
+        "kind": "compute",
+        "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+        "activeVersions": [
+          "1"
+        ],
+        "domain": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "filesHash": "c077af64fa611f42bd7d425ef8d704f444842cfcdfe19acca1fbd6d5710635617ff5b6cd6a3d99dc67f9537813bbbaef1232d992a3fd6c8b273a0d555784e2ef"
+      },
+      {
+        "kind": "iad",
+        "serviceId": "yajI0iuIjObRyxwAMJLszL",
+        "activeVersions": [
+          "1"
+        ],
+        "domain": "pulse-k4-iad-5de09fab.global.ssl.fastly.net",
+        "shield": "iad-va-us"
+      },
+      {
+        "kind": "lhr",
+        "serviceId": "SYA8SvG9Dz4Hj9Q22cU5Gq",
+        "activeVersions": [
+          "1"
+        ],
+        "domain": "pulse-k4-lhr-5de09fab.global.ssl.fastly.net",
+        "shield": "london-uk"
+      }
+    ],
+    "identity": {
+      "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+      "serviceVersion": "1",
+      "storeId": "5475f8scy7wj7172s88o3r",
+      "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505"
+    }
+  },
+  "deploymentAfter": {
+    "status": "passed",
+    "deployments": [
+      {
+        "kind": "compute",
+        "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+        "activeVersions": [
+          "1"
+        ],
+        "domain": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "filesHash": "c077af64fa611f42bd7d425ef8d704f444842cfcdfe19acca1fbd6d5710635617ff5b6cd6a3d99dc67f9537813bbbaef1232d992a3fd6c8b273a0d555784e2ef"
+      },
+      {
+        "kind": "iad",
+        "serviceId": "yajI0iuIjObRyxwAMJLszL",
+        "activeVersions": [
+          "1"
+        ],
+        "domain": "pulse-k4-iad-5de09fab.global.ssl.fastly.net",
+        "shield": "iad-va-us"
+      },
+      {
+        "kind": "lhr",
+        "serviceId": "SYA8SvG9Dz4Hj9Q22cU5Gq",
+        "activeVersions": [
+          "1"
+        ],
+        "domain": "pulse-k4-lhr-5de09fab.global.ssl.fastly.net",
+        "shield": "london-uk"
+      }
+    ],
+    "identity": {
+      "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+      "serviceVersion": "1",
+      "storeId": "5475f8scy7wj7172s88o3r",
+      "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505"
+    }
+  },
+  "lossRelay": {
+    "clientTransport": "ECONNRESET",
+    "dispatches": 1,
+    "applicationResponseDelivered": false,
+    "metadata": {
+      "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+      "serviceVersion": "1",
+      "storeId": "5475f8scy7wj7172s88o3r",
+      "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505",
+      "pop": "IAD",
+      "requestId": "5d922068-56bb-4c41-bd56-fabb241a3ad0"
+    }
+  },
+  "cleanup": {
+    "status": "passed",
+    "ownedServicesAbsent": true,
+    "deletedServiceIds": [
+      "YN5mZweFkYXqaGabK2QUlk",
+      "yajI0iuIjObRyxwAMJLszL",
+      "SYA8SvG9Dz4Hj9Q22cU5Gq"
+    ],
+    "remainingAccountServices": 2,
+    "storeRetained": {
+      "id": "5475f8scy7wj7172s88o3r",
+      "name": "pulse-k4-beta11-5de09fab"
+    },
+    "authorityKeysAndTombstonesRetained": true,
+    "tokenRevoked": false,
+    "otherServicesModified": false,
+    "privateProbeNonceRetired": true
+  },
+  "attempts": {
+    "completeDeployedCorpusAttempts": 1,
+    "mutationRetries": 0,
+    "partialPassesCombined": false,
+    "preflightAndSetupFailuresRetained": [
+      "Prior proxy CONNECT timeout; subsequently cleared without changing credentials",
+      "First recovered build setup used the wrong tarball directory; corrected before deployment",
+      "First VCL domain used freetls.fastly.net directly and was rejected; documented global.ssl.fastly.net registration succeeded before any corpus writes"
+    ]
+  },
+  "limits": [
+    "Bounded deployed Pulse two-POP proof, not exhaustive global consistency or a new public API promise",
+    "Local K4 gate remains separately required; its exact-candidate run and standing known-Viceroy discrepancy disposition are retained",
+    "The response-loss case proves client transport uncertainty, not a fabricated typed KV unknown",
+    "No physical deletion, expiry, cross-key transactions or restart durability claim",
+    "Other hosted-provider qualifications/dispositions remain separate"
+  ],
+  "authority": {
+    "userDirectedK4AndSuppliedTemporaryToken": true,
+    "tokenRevocationOwnedByUser": true,
+    "additionalIndependentReviewRequired": false,
+    "issue508AdministrativeClosure": "after publishing and public package tests",
+    "mergePerformed": false,
+    "tagCreated": false,
+    "packagesPublished": false
+  }
+}

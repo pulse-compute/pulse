@@ -1,0 +1,40 @@
+[
+  {
+    "probe": "iad",
+    "operation": "get",
+    "status": 200,
+    "resultStatus": "not-found",
+    "keyPrefix": null,
+    "metadata": {
+      "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+      "serviceVersion": "1",
+      "storeId": "5475f8scy7wj7172s88o3r",
+      "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505",
+      "pop": "IAD",
+      "requestId": "1e0c337c-032d-4bb0-85f7-fbff4601275e"
+    },
+    "computeServedBy": "cache-iad-khef600072-IAD",
+    "elapsedMs": 4862,
+    "responseBytes": 22,
+    "discarded": false
+  },
+  {
+    "probe": "lhr",
+    "operation": "get",
+    "status": 200,
+    "resultStatus": "not-found",
+    "keyPrefix": null,
+    "metadata": {
+      "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+      "serviceVersion": "1",
+      "storeId": "5475f8scy7wj7172s88o3r",
+      "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505",
+      "pop": "LHR",
+      "requestId": "5dcfd3e5-aac3-428d-8871-38a0dfc6278b"
+    },
+    "computeServedBy": "cache-lhr-egll1980094-LHR",
+    "elapsedMs": 5671,
+    "responseBytes": 22,
+    "discarded": false
+  }
+]

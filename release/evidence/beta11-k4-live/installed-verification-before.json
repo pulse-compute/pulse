@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "packages": 20,
+  "files": 1231,
+  "installedBytesUnchanged": true,
+  "packagesSha256": {
+    "@pulse-compute/runtime": "fe4385044fc16b8e973acdc8f0893bedc8f8511ef97b60086d864ad764968fdc",
+    "@pulse-compute/pulse": "a2c57c648ca60ba4ea9e78de7066ec458f7395ee274c8a1e6a50ec63ce8e6739",
+    "@pulse-compute/cli": "1de69dfe9607e2747092d4b2b2758f73cf463e813070393d40c23ddba3465810",
+    "@pulse-compute/provider-fastly": "20ec7ac3201e93077b0473a3fb807459139819fcf00a12a396af490a02d4df3d",
+    "@pulse-compute/grip": "6f1c6d0a0e11c188c29587c64fa5b5b9cbf3c340adcc36981e44a7ec3b1e0476",
+    "@pulse-compute/assets": "4a587ce59c7832ed7be130a5e550eb8d0e61d3133ca979bb88ff771445b64e66",
+    "@pulse-compute/crypto": "83c7ac0cdaf65ebae2b0221bf5f6d7c629f1e4c1eca86da62e6f4e8c6f6d346a",
+    "@pulse-compute/jwt": "4655cca2737e868f45acf889ef2be65aff902a9f31e7cfc521437efde70b30a3",
+    "@pulse-compute/entities": "ce62a8a47618d8f78d54b63fc4aa5795ec98cd4b14e99d45e93006bcf1179142",
+    "@pulse-compute/mcp": "e7d1b4e3b51dfd2cece242bdaba78e45b5d7181d21a27f988ba8005563fb48cf",
+    "@pulse-compute/s3": "83427158e90852686e8e69ffe230c1eebc51bf485c8048cda528e8f066db355b",
+    "@pulse-compute/wasm-build-support": "ab8a7e93a64a3de22d0f4f62770a42fe495773d9a5ba7c639f9dbab5b163e7b6",
+    "@pulse-compute/wasm-compiler": "0d5517e208c9ad3bd40e5c3f839ad2d6d384f2fba26d7a6ecf44817f8dd02a3f",
+    "@pulse-compute/wasm-guest-link": "4adce9e2a318f9eababb1f3d1af66aa6435ca5319c0139470513a4de6c89c14e",
+    "@pulse-compute/wasm-contracts": "6c5afc7675f05f77699666fd6e492d6d4fa25ab22cc735d42f2a6fd4ad54c7f4",
+    "@pulse-compute/wasm-host-runtime": "e0211cf2f1c7819191153f75125116cbe2815062a1cde61c5aa6e4768f08489b",
+    "@pulse-compute/wasm-library-kit": "cb6844ee23ced330e634fbe9d1bcf613f94c3ef1aae225b0d3000d8f7fbad7b4",
+    "@pulse-compute/provider-node": "e11a274f1b92ff3ad453ddc7c744f51bc2d31cb978c97af036c15afcbd875128",
+    "@pulse-compute/wasm-runtime-core-as": "b096c63c05453fb2877f169bdfe578f9fb2d70e34be62d1c27e81b323275711b",
+    "@pulse-compute/wasm-schema-json": "685c24d8fb36807693b4ac9f173991f09ad3888029b5de15dbcd0c5afab0d0bf"
+  }
+}

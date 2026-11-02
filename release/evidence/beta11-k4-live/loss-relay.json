@@ -1,0 +1,13 @@
+{
+  "clientTransport": "ECONNRESET",
+  "dispatches": 1,
+  "applicationResponseDelivered": false,
+  "metadata": {
+    "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+    "serviceVersion": "1",
+    "storeId": "5475f8scy7wj7172s88o3r",
+    "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505",
+    "pop": "IAD",
+    "requestId": "5d922068-56bb-4c41-bd56-fabb241a3ad0"
+  }
+}

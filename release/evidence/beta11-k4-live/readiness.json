@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "requests": [
+    {
+      "authenticated": false,
+      "status": 401,
+      "body": "unauthorized",
+      "servedBy": "cache-sjc10020-SJC"
+    },
+    {
+      "authenticated": true,
+      "status": 200,
+      "body": "{\"status\":\"not-found\"}",
+      "servedBy": "cache-sjc10031-SJC"
+    }
+  ]
+}

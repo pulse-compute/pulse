@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505",
+  "moduleBytes": 41247,
+  "packageSha256": "4139f36a0eef8dfbf9c53383dfb0e309c2045e6da7b77463f8849024cacad139",
+  "packageBytes": 21149,
+  "cliSha256": "b95ba2d9ef34c5c1afb4902d2022c7c7db94b75ce4b25e8fa4d21e49076d2b9d",
+  "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+  "driverSha256": "b469b8e06bb05fdc7c917d27943b01088ded54a903d01f6035aa983c17763453",
+  "runnerSha256": "f89ad04343ac8b4da08bef44e89f31d9a36c75b59977a157deed2c7c0ac11143",
+  "corpusSha256": "b92ecff8bee35ba594800268991eb1400c3da774525ee013e78bb6ff28007fe1"
+}

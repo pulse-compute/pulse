@@ -1,0 +1,22 @@
+node:fs:561
+  return binding.open(
+                 ^
+
+Error: ENOENT: no such file or directory, open '/workspace/scratch/664ac3039b0e/k4-live/consumer/node_modules/@pulse-compute/runtime/package.json'
+    at Object.openSync (node:fs:561:18)
+    at Object.readFileSync (node:fs:445:35)
+    at project (/workspace/scratch/664ac3039b0e/pulse-beta11-review/wasm/test/kv/k4/toolchain.cjs:30:33)
+    at Object.<anonymous> (/workspace/scratch/664ac3039b0e/k4-live/build.cjs:6:1)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspace/scratch/664ac3039b0e/k4-live/consumer/node_modules/@pulse-compute/runtime/package.json'
+}
+
+Node.js v24.18.0

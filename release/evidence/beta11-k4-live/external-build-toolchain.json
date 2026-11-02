@@ -1,0 +1,14 @@
+{
+  "assemblyscript": {
+    "version": "0.28.18",
+    "packageJsonSha256": "e09a22d5667fd83f4119862e9e717f722ae46d68fc57eec8c33620cde07d5916"
+  },
+  "typescript": {
+    "version": "5.9.3",
+    "packageJsonSha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+  },
+  "binaryen": {
+    "version": "129.0.0-nightly.20260428",
+    "packageJsonSha256": "3a6270de47ccf46f359c13afb6f7a93711ef3befabcff2235bf7091a3bf18680"
+  }
+}

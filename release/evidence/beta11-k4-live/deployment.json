@@ -1,0 +1,319 @@
+{
+  "services": [
+    {
+      "kind": "compute",
+      "type": "wasm",
+      "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+      "serviceVersion": "1",
+      "createdByThisTask": true,
+      "domain": "pulse-k4-compute-5de09fab.edgecompute.app",
+      "resourceLink": {
+        "id": "W6OAZHh1YVAECV6ocSg7J2",
+        "name": "k4_catalog",
+        "service_id": "YN5mZweFkYXqaGabK2QUlk",
+        "version": 1,
+        "created_at": "2026-11-02T01:59:53Z",
+        "updated_at": "2026-11-02T01:59:53Z",
+        "deleted_at": null,
+        "resource_id": "5475f8scy7wj7172s88o3r",
+        "resource_type": "kv-store",
+        "href": null
+      },
+      "linked": true,
+      "package": {
+        "service_id": "YN5mZweFkYXqaGabK2QUlk",
+        "version": 1,
+        "id": "MepIijXQkvL4rteI4Rh6G3",
+        "metadata": {
+          "name": "pulse-k4-local",
+          "description": "Pulse application",
+          "authors": null,
+          "language": "other",
+          "size": 21149,
+          "hashsum": "1d520a907b4feacbd795595a1b5f7a346a5c0313d20b86ab9de0eb6b5842ec501990253a1bd8512f835c8487339b1a99bc7aa39b9d718701c6ec52d9914ccdd6",
+          "files_hash": "c077af64fa611f42bd7d425ef8d704f444842cfcdfe19acca1fbd6d5710635617ff5b6cd6a3d99dc67f9537813bbbaef1232d992a3fd6c8b273a0d555784e2ef",
+          "wasm_metadata": {
+            "processed-by": {
+              "copa": "1.0.30"
+            }
+          }
+        },
+        "updated_at": "2026-11-02T01:59:59Z",
+        "deleted_at": null,
+        "created_at": "2026-11-02T01:59:59Z"
+      },
+      "uploaded": true,
+      "activation": {
+        "service_id": "YN5mZweFkYXqaGabK2QUlk",
+        "deployed": false,
+        "number": 1,
+        "testing": false,
+        "deleted_at": null,
+        "staging": false,
+        "active": true,
+        "environments": [],
+        "locked": true,
+        "created_at": "2026-11-02T01:58:47Z",
+        "comment": "",
+        "updated_at": "2026-11-02T01:59:59Z",
+        "msg": "Warning: No default director found\nat: (default Line 174 Pos 1)\n    set req.http.Fastly-Cachetype = \"ERROR\";\n--------------------------------------------"
+      },
+      "active": false,
+      "deactivation": {
+        "service_id": "YN5mZweFkYXqaGabK2QUlk",
+        "updated_at": "2026-11-02T02:00:05Z",
+        "comment": "",
+        "deployed": false,
+        "locked": true,
+        "deleted_at": null,
+        "active": false,
+        "number": 1,
+        "environments": [
+          {
+            "name": "production",
+            "service_id": "YN5mZweFkYXqaGabK2QUlk",
+            "active_version": 1
+          }
+        ],
+        "created_at": "2026-11-02T01:58:47Z",
+        "staging": false,
+        "testing": false
+      },
+      "deletion": {
+        "status": "ok"
+      },
+      "deleted": true
+    },
+    {
+      "kind": "iad",
+      "type": "vcl",
+      "serviceId": "yajI0iuIjObRyxwAMJLszL",
+      "serviceVersion": "1",
+      "createdByThisTask": true,
+      "domain": "pulse-k4-iad-5de09fab.global.ssl.fastly.net",
+      "backend": {
+        "name": "compute_origin",
+        "address": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "port": 443,
+        "use_ssl": true,
+        "ssl_check_cert": true,
+        "ssl_sni_hostname": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "ssl_cert_hostname": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "override_host": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "shield": "iad-va-us",
+        "connect_timeout": 5000,
+        "first_byte_timeout": 15000,
+        "between_bytes_timeout": 10000,
+        "auto_loadbalance": false,
+        "service_id": "yajI0iuIjObRyxwAMJLszL",
+        "version": 1,
+        "updated_at": "2026-11-02T02:00:09Z",
+        "deleted_at": null,
+        "weight": 100,
+        "share_key": null,
+        "healthcheck": null,
+        "tcp_keepalive_interval": null,
+        "max_tls_version": null,
+        "created_at": "2026-11-02T02:00:09Z",
+        "max_use": null,
+        "ssl_client_key": null,
+        "ssl_hostname": null,
+        "hostname": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "max_conn": 200,
+        "error_threshold": 0,
+        "ssl_client_cert": null,
+        "ssl_ciphers": null,
+        "prefer_ipv6": false,
+        "ipv6": null,
+        "ipv4": null,
+        "min_tls_version": null,
+        "tcp_keepalive_probes": null,
+        "comment": "",
+        "max_lifetime": null,
+        "request_condition": "",
+        "keepalive_time": null,
+        "client_cert": null,
+        "ssl_ca_cert": null,
+        "tcp_keepalive_time": null,
+        "tcp_keepalive_enable": null
+      },
+      "snippet_recv": true,
+      "snippet_fetch": true,
+      "snippet_error": true,
+      "valid": true,
+      "validation": {
+        "status": "ok",
+        "warnings": [],
+        "errors": [],
+        "messages": [],
+        "msg": null
+      },
+      "activation": {
+        "staging": false,
+        "number": 1,
+        "deleted_at": null,
+        "created_at": "2026-11-02T01:58:57Z",
+        "comment": "",
+        "active": true,
+        "service_id": "yajI0iuIjObRyxwAMJLszL",
+        "environments": [],
+        "locked": true,
+        "testing": false,
+        "deployed": false,
+        "updated_at": "2026-11-02T02:00:24Z",
+        "msg": null
+      },
+      "active": false,
+      "deactivation": {
+        "locked": true,
+        "updated_at": "2026-11-02T02:00:35Z",
+        "service_id": "yajI0iuIjObRyxwAMJLszL",
+        "comment": "",
+        "testing": false,
+        "staging": false,
+        "created_at": "2026-11-02T01:58:57Z",
+        "deleted_at": null,
+        "number": 1,
+        "active": false,
+        "environments": [
+          {
+            "name": "production",
+            "service_id": "yajI0iuIjObRyxwAMJLszL",
+            "active_version": 1
+          }
+        ],
+        "deployed": false
+      },
+      "deletion": {
+        "status": "ok"
+      },
+      "deleted": true
+    },
+    {
+      "kind": "lhr",
+      "type": "vcl",
+      "serviceId": "SYA8SvG9Dz4Hj9Q22cU5Gq",
+      "serviceVersion": "1",
+      "createdByThisTask": true,
+      "domain": "pulse-k4-lhr-5de09fab.global.ssl.fastly.net",
+      "backend": {
+        "name": "compute_origin",
+        "address": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "port": 443,
+        "use_ssl": true,
+        "ssl_check_cert": true,
+        "ssl_sni_hostname": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "ssl_cert_hostname": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "override_host": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "shield": "london-uk",
+        "connect_timeout": 5000,
+        "first_byte_timeout": 15000,
+        "between_bytes_timeout": 10000,
+        "auto_loadbalance": false,
+        "service_id": "SYA8SvG9Dz4Hj9Q22cU5Gq",
+        "version": 1,
+        "max_lifetime": null,
+        "ssl_client_key": null,
+        "ssl_hostname": null,
+        "max_use": null,
+        "comment": "",
+        "tcp_keepalive_probes": null,
+        "created_at": "2026-11-02T02:00:39Z",
+        "tcp_keepalive_time": null,
+        "tcp_keepalive_enable": null,
+        "hostname": "pulse-k4-compute-5de09fab.edgecompute.app",
+        "max_conn": 200,
+        "ssl_ca_cert": null,
+        "client_cert": null,
+        "error_threshold": 0,
+        "keepalive_time": null,
+        "request_condition": "",
+        "prefer_ipv6": false,
+        "deleted_at": null,
+        "ssl_client_cert": null,
+        "ssl_ciphers": null,
+        "updated_at": "2026-11-02T02:00:39Z",
+        "tcp_keepalive_interval": null,
+        "min_tls_version": null,
+        "max_tls_version": null,
+        "healthcheck": null,
+        "ipv4": null,
+        "share_key": null,
+        "ipv6": null,
+        "weight": 100
+      },
+      "snippet_recv": true,
+      "snippet_fetch": true,
+      "snippet_error": true,
+      "valid": true,
+      "validation": {
+        "status": "ok",
+        "warnings": [],
+        "messages": [],
+        "msg": null,
+        "errors": []
+      },
+      "activation": {
+        "updated_at": "2026-11-02T02:00:52Z",
+        "environments": [],
+        "comment": "",
+        "staging": false,
+        "deleted_at": null,
+        "deployed": false,
+        "active": true,
+        "number": 1,
+        "service_id": "SYA8SvG9Dz4Hj9Q22cU5Gq",
+        "locked": true,
+        "testing": false,
+        "created_at": "2026-11-02T01:59:42Z",
+        "msg": null
+      },
+      "active": false,
+      "deactivation": {
+        "environments": [
+          {
+            "name": "production",
+            "service_id": "SYA8SvG9Dz4Hj9Q22cU5Gq",
+            "active_version": 1
+          }
+        ],
+        "locked": true,
+        "updated_at": "2026-11-02T02:01:10Z",
+        "number": 1,
+        "testing": false,
+        "deleted_at": null,
+        "service_id": "SYA8SvG9Dz4Hj9Q22cU5Gq",
+        "active": false,
+        "comment": "",
+        "deployed": false,
+        "created_at": "2026-11-02T01:59:42Z",
+        "staging": false
+      },
+      "deletion": {
+        "status": "ok"
+      },
+      "deleted": true
+    }
+  ],
+  "authority": "User directed deployed K4 qualification and supplied temporary account token; isolated task-owned resources only",
+  "suffix": "5de09fab",
+  "storeId": "5475f8scy7wj7172s88o3r",
+  "storeCreation": {
+    "id": "5475f8scy7wj7172s88o3r",
+    "name": "pulse-k4-beta11-5de09fab",
+    "created_at": "2026-11-02 01:58:40",
+    "updated_at": "2026-11-02 01:58:40"
+  },
+  "identity": {
+    "serviceId": "YN5mZweFkYXqaGabK2QUlk",
+    "serviceVersion": "1",
+    "storeId": "5475f8scy7wj7172s88o3r",
+    "moduleSha256": "4ae3a0674fd0e965b09a49f94104079bfbc4bd312d072705ea2b1bee61077505"
+  },
+  "cleanup": {
+    "servicesDeleted": true,
+    "storeRetainedForEvidence": true,
+    "storeId": "5475f8scy7wj7172s88o3r",
+    "tokenRevoked": false
+  }
+}
