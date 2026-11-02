@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "version": "1.0.0-beta.11",
+  "tag": "v1.0.0-beta.11",
+  "tagObject": "b678e6f561326ec1ebbeed847511344f606329c2",
+  "commit": "dbad9e9b553d87999ae35a68c2f94335c99b3acc",
+  "tree": "77e58f4f93bf3f90d1f3390423218bc6d8a20462",
+  "annotated": true,
+  "localTagCreated": true,
+  "remoteTagPushed": false,
+  "published": false,
+  "releasePreparationCheck": "passed",
+  "helperFailure": "release-tag.cjs trims historical git-show bytes before hashing; existing release-pr-check.cjs verified exact raw historical bytes successfully",
+  "next": [
+    "git push origin refs/tags/v1.0.0-beta.11",
+    "gh workflow run npm-publish.yml --ref v1.0.0-beta.11 -f release_tag=v1.0.0-beta.11 -f operation=publish -f run_smoke=true"
+  ]
+}

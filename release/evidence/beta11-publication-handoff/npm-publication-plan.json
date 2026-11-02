@@ -1,0 +1,136 @@
+{
+  "schemaVersion": "pulse.npm-publication-plan.v1",
+  "status": "ready",
+  "releaseVersion": "1.0.0-beta.11",
+  "releaseTag": "v1.0.0-beta.11",
+  "channel": "beta",
+  "distTag": "latest",
+  "registry": "https://registry.npmjs.org",
+  "source": {
+    "commit": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+    "ref": "refs/pull/591/merge"
+  },
+  "packageCount": 20,
+  "packages": [
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-oaeT945w2gYVfa6E/gZBWjL8aXC4oqxFTOxZ1KFI68zGthaEOOLSKnnbaUOeL+8upG1NPPhxaSqDMz0qOT1jKw=="
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-j/oPL368iGunPgJE6WhVfrVQC19D2lzTesV1qiJC2QhaWJDCBQB4rFYkeO9FeaO+A3BmRPLKwhaux1WVUZbo3Q=="
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-r8XU/inw2Se6y5MOYJx9IuyqEgXyNQz3MLBo0Vfrrz0QnBCYisY9DH9QfRIrNh/Mt+ymP2KPc3jhXYd3MaJZKQ=="
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-HD8tHdJU9bDeQRFqVcAXrpOkoM/EkX8r24p804apdKr3JcpfkCakGWK0FDvtCXiH7HojPl3cmvaYuKoXeGoI+Q=="
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-5M5xRbwNWUZJzde0tQxs/JJcw1OLUx9e8TqN3mE8VajzJfdoWVAiCM/BVeC2vxTlmWGNCxQU7NHBYGxqL7F5XA=="
+    },
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-xrKOTsiR4o1VLfoVByF30nhQcLdCpzqq9og+3FrWtGKDbX982p+XCe4gGnzeh82BWMpU/6hcZ6k770wxjKw2Cg=="
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-W/ZDY8oMjYY9j45N/Efd1c7hQ4vv2NgC5mreJr2AeCI0N1lpaWtbB8p4QQj5dM6f0g9meLlaHk/wxWA9N2xp9g=="
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-UrRN3HSM6vd7+cMcHvU7fw+HTwyeTy1QCLmqL/KUPEnAkIA40hVJxB0gq8v/3UQF+9RiJSZzPzLeBhwPlXyrug=="
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-5T0O3iKymdNpt5gNiJ95LaEasoGB/rTY61hhniiGBxc4Ca0OPp1EMax8Yd4AHy92iPguLALzXanC8K7RUwoy7Q=="
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-K4aineVwJ22i5R1WUZ2hYlFju3kdnFgIzVfs9jQ5a0poyAyiYG+cZClyj5Iy1oZVBZQY3ArzOBF7GoRWcD1hGg=="
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-rJrgeBkZp8iUmU2X6lPGj6s4MohXfxdHyIEAPwtE41fIctCYEwTMSukLCRGsGx4C8qQDObXC1vf6HAKMoc6r1A=="
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-EryKlgdrF+RAqO0ZFGw/QCxloE69gfqcQUTMB+x0D9PAToHitszJ+FSsj2lgJXnwGSb5mM2qezS8eZWWJwIZfA=="
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-+Voll6R2xnzWR6hEm/wyOWNCuiSc6vtZuNIkJYQK1Ck5cAfejX81rNWBBRJs1g0qNrXpyjCw9d1e8WgEpea3uQ=="
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-HvVMIWNc8lhnEWimFp3vlHA2GL1+R/Su0Iqe2bGD3YXZGMvq9hT2c2Cd2/QofI3gg8iRzRpZeVBIvQHyOyTnpA=="
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-NoqaTWb5Q21ugVYVWoGZY4mTAGvRYFsYGVg2lDT+FmNqHSsB+h8K0Xi+EHG0Mw2Fdd+5V0fmeB8nWQIsU/NBag=="
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-wIvXCQqqugdRhXc/BLZQLmqhXv29kSKIjpkhANt26SlFupeDNLdjJqD6mEs9EqX2mE77F96sgi4M1UXQekxEGg=="
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-j5Ph2sGQYnBRTfxNxgebLhywfZJ5bMnIAI/qXrx8G3kRe5ybtCCE1Gs1YpAeWigNfJvICVPwQvly6tIOj8ukRA=="
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-9PPqhzIydMzesbyOsJAagCvM73ksIef3uSFjRIqKmeVn6U2KBNzcgpoWxxvIdz3nbby7S55KyivQBfQpDEuG0A=="
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-qyjsAHvc4UT6PlDHcFOFIhPVIwLf6RpenbFBLRLwOMQttnoXMrTEp+TmjKC3sbbqa7eSQIa4v6Guy1c5NszS/Q=="
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-beta.11",
+      "action": "publish",
+      "expectedIntegrity": "sha512-DOqSHcWSKKr8OHXlluAP52kc3ZLsKnUvREd7n9oX8rnd50d/xWPFzGRKu9KmnNNtjK0/RuKavCfBr98PyqdSdg=="
+    }
+  ]
+}

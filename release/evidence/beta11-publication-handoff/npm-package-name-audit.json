@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "pulse.npm-package-name-audit.v1",
+  "status": "ok",
+  "releaseVersion": "1.0.0-beta.11",
+  "registry": "https://registry.npmjs.org",
+  "packages": [
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/runtime",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "exists": true
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "exists": true
+    }
+  ],
+  "missing": []
+}

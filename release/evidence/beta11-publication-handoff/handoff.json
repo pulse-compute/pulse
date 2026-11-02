@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "pulse.beta11-publication-handoff.v1",
+  "status": "merged-awaiting-github-write-transport",
+  "releaseVersion": "1.0.0-beta.11",
+  "pullRequest": 591,
+  "mainCommit": "dbad9e9b553d87999ae35a68c2f94335c99b3acc",
+  "sourceTree": "77e58f4f93bf3f90d1f3390423218bc6d8a20462",
+  "originalQualificationSource": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+  "prHead": "3817f027cee36f9503d35420a775afdf639af568",
+  "qualifiedMergeBinding": "passed: exact tree, base parent and PR-head parent",
+  "releaseQualificationRun": 41301460387,
+  "acceptedArtifactId": 13083118233,
+  "acceptedArtifactSha256": "2de79c3f72776cda7ca2d575c7e69dfbc55e8e418523d1c11ae74911d1496324",
+  "tag": {
+    "status": "passed",
+    "version": "1.0.0-beta.11",
+    "tag": "v1.0.0-beta.11",
+    "tagObject": "b678e6f561326ec1ebbeed847511344f606329c2",
+    "commit": "dbad9e9b553d87999ae35a68c2f94335c99b3acc",
+    "tree": "77e58f4f93bf3f90d1f3390423218bc6d8a20462",
+    "annotated": true,
+    "localTagCreated": true,
+    "remoteTagPushed": false,
+    "published": false,
+    "releasePreparationCheck": "passed",
+    "helperFailure": "release-tag.cjs trims historical git-show bytes before hashing; existing release-pr-check.cjs verified exact raw historical bytes successfully",
+    "next": [
+      "git push origin refs/tags/v1.0.0-beta.11",
+      "gh workflow run npm-publish.yml --ref v1.0.0-beta.11 -f release_tag=v1.0.0-beta.11 -f operation=publish -f run_smoke=true"
+    ]
+  },
+  "tagBundle": {
+    "bytes": 245,
+    "sha256": "2687ff7712a72968d859707a166ef6b2a240fba2be8445afd79f419365d1951a",
+    "requiresTargetCommit": "dbad9e9b553d87999ae35a68c2f94335c99b3acc"
+  },
+  "githubWriteTransport": {
+    "connectorMergeSupported": true,
+    "connectorTagAndDispatchSupported": false,
+    "localGitPushDryRun": "fatal: could not read Username for https://github.com: terminal prompts disabled",
+    "ghCliPresent": false
+  },
+  "publicationWorkflow": {
+    "file": "npm-publish.yml",
+    "ref": "v1.0.0-beta.11",
+    "inputs": {
+      "release_tag": "v1.0.0-beta.11",
+      "operation": "publish",
+      "run_smoke": true
+    },
+    "dispatched": false,
+    "protectedEnvironment": "npm-publish",
+    "protectedEnvironmentApproval": "not reached; requires owner approval after actual workflow audit"
+  },
+  "published": false,
+  "issue508": "owner-accepted; close only after publication and public package tests",
+  "helperDefectIssue": 594,
+  "candidateSourceChanged": false,
+  "localReadOnlyNameAudit": "ok: all 20 package names exist",
+  "localPlan": "ready: 20 packages, all selected beta.11 versions absent and ready for exact-tarball publication; preparatory evidence, not the protected workflow audit"
+}
