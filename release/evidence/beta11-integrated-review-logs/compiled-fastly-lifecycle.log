@@ -1,0 +1,48 @@
+ok - common: authentication precedes service dispatch
+ok - common: guard rejection retains the ticket
+ok - common: rejected delivery runs reverse after notifications
+ok - common: closure invalidates pending work and cleanup is idempotent
+ok - common: trap 2 consumes once and skips after notifications
+ok - common: trap 4 consumes once and skips after notifications
+ok - authenticates before service guards and ticket consumption
+ok - guard rejection retains the active ticket for a valid retry
+ok - repeated sites receive fresh tickets and reject stale visits
+ok - rejected delivery consumes once and still runs reverse after notifications
+ok - trapped delivery consumes once and skips after/end/closed notifications
+ok - trapped before notification skips delivery and every after notification
+ok - normal end precedes closure and closed cleanup sees invalidated tickets
+ok - closure invalidates an outstanding result without delivery
+ok - compiled guards and claims short circuit in numeric contribution order
+ok - HTTP authority outcome 0/0
+ok - HTTP authority outcome 0/1
+ok - HTTP authority outcome 1/0
+ok - HTTP authority outcome 1/1
+ok - HTTP authority outcome 2/0
+ok - HTTP authority outcome 2/1
+ok - real Fastly driver and canonical setter execute all structural normal-return points
+ok - authority fences ordinary, error and timeout handling in the actual generated driver
+ok - registration permutations preserve generated source and Wasm
+ok - empty services preserve source, Wasm and imports and emit no lifecycle machinery
+ok - unbound package-owned emitters fail closed before generation
+ok - missing AS implementation, types, actions and structural sites reject
+ok - 27 compiled Fastly lifecycle cases; injected-host and emitted-template evidence, not hosted acceptance
+ok - @outside/terminal authentic completion uses shared response authority
+ok - @outside/terminal ordinary branch retains response and cleanup
+ok - @outside/terminal uncertain outcome never sends, retries, or disposes
+ok - @outside/terminal cleanup failure retires handles once and preserves authority
+ok - @outside/terminal raw setter cannot authenticate a dispatch result
+ok - @outside/terminal original deadline fences pre/post-dispatch
+ok - @outside/terminal uses the same optional observer binding
+ok - @outside/terminal rejects undeclared and malformed service/placement/binding
+ok - @independent/edge authentic completion uses shared response authority
+ok - @independent/edge ordinary branch retains response and cleanup
+ok - @independent/edge uncertain outcome never sends, retries, or disposes
+ok - @independent/edge cleanup failure retires handles once and preserves authority
+ok - @independent/edge raw setter cannot authenticate a dispatch result
+ok - @independent/edge original deadline fences pre/post-dispatch
+ok - @independent/edge uses the same optional observer binding
+ok - @independent/edge rejects undeclared and malformed service/placement/binding
+ok - compiled service guards authenticate ticket/token before consumption
+ok - unselected contributions omit service, observers and ABI machinery
+ok - final inspection rejects undeclared imports and mismatched contributed signatures
+ok - 19 Fastly terminal adapter groups; injected ABI only, no hosted acceptance

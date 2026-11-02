@@ -1,0 +1,15 @@
+ok - handoffFanout exact capture and replay
+ok - handoffWebSocket exact capture and replay
+ok - transfer exact capture and replay
+ok - independent identity and authored Router owner
+ok - unique contribution versus repeated report use sites
+ok - historical absence is unknown, never an addition from zero
+ok - source, implementation, target and policy changes are visible
+ok - replay rejects mismatched policy, import, coverage, source and foreign links
+ok - capture binds exact bytes and declared import/source identities
+ok - unused and absent controls produce known empty inventory without audit
+ok - catalogued errors expose only identities and relative authored location
+ok - real CLI placement diagnostics are authored and private-data free
+ok - Router binding error points at authored handler, not generated dispatcher
+ok - source-free historical replay
+{"status":"passed","checks":14,"operations":2,"independentPackages":1,"runtimeObservation":"not-recorded"}

@@ -1,0 +1,3 @@
+ok - provider toolchains, target descriptors, invocations, requirements, results, and final-byte packaging are exact, versioned, and fail closed
+ok - P15 graph-selected external package at independent npm versions, owned carrier, admission conflicts and builder containment
+ok - P15 host contribution contract: 92 schema, owner, selection, service, policy and binary ABI cases

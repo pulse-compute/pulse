@@ -1,0 +1,400 @@
+{
+  "schemaVersion": "pulse.beta11-integrated-review.v1",
+  "reviewDate": "2026-11-01",
+  "reviewTimezone": "America/Denver",
+  "candidate": {
+    "sourceRevision": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+    "head": "3817f027cee36f9503d35420a775afdf639af568",
+    "sourceTree": "77e58f4f93bf3f90d1f3390423218bc6d8a20462"
+  },
+  "status": "technical-review-complete",
+  "actionableProductionFindings": [],
+  "snapshot": {
+    "trackedFilesVerifiedBefore": 3749,
+    "trackedFilesVerifiedAfter": 3749,
+    "sourceMismatches": [],
+    "gitMetadata": "Unavailable in recovered worktree; all tracked files reconstructed and Git-blob-verified against the untruncated GitHub tree",
+    "reviewedFiles": [
+      {
+        "path": "wasm/packages/contracts/src/provider/host-extension.js",
+        "gitBlobSha1": "ecb5b37da6d1d3b6cf4153fc6f33ed447f455d2b",
+        "sha256": "b15a4182e02e0fb44fa030a8f773a55bd8f1a585fb860c5dea5d0aec9c80ffcf"
+      },
+      {
+        "path": "wasm/packages/contracts/src/package/package-contract.js",
+        "gitBlobSha1": "432eeb7adb85ea9da80d765f1cb89c6388a00c64",
+        "sha256": "096452695e9f04aa15e360f20746f2e553bc63e0c06dd6655b4c3926c30dd546"
+      },
+      {
+        "path": "wasm/packages/contracts/src/host/http-lifecycle.js",
+        "gitBlobSha1": "b2fd6f74bb17465a85f35fe5a5daa2d3a72a1803",
+        "sha256": "4aa0db2cf11837a95035beb2947504f093f0f3695d216289cb7c2ffb006ce427"
+      },
+      {
+        "path": "wasm/packages/compiler/src/spine/package-operation-seam.js",
+        "gitBlobSha1": "d9a7cca8e843b6e513c7a1f64c6d8c04212c5df9",
+        "sha256": "1462c3e18a7eb2f5fbf2f1e774ce673ff67748dcff39d982fff48d69e228c1b8"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/host-extensions.js",
+        "gitBlobSha1": "8fce2d729df2108fdf1db2f23488abde7d149c74",
+        "sha256": "ed646194027959a48550e579501c1318ba684a18f8512d947cbf5397e628c586"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/response-authority.js",
+        "gitBlobSha1": "4e3eb4847b8ccc5c220f07d2268ea3f9ef62222c",
+        "sha256": "aa21540d379f027682ea9ca3071e322c90988d947072c04d955c9ce282ec5622"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/effect-invocations.js",
+        "gitBlobSha1": "5987446e2129c71ee55188d58fb801f6f20ddcb1",
+        "sha256": "4e3c05512f251052b12d9d49d23275502bd395cfb1769545482762b04136eb8c"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/lifecycle.js",
+        "gitBlobSha1": "d637d1e0e30c65f6515babe52769694a55dad62d",
+        "sha256": "9e87759d33599f1b2dacc2444c281a1a4972005da6f2122c7319c82031ad317e"
+      },
+      {
+        "path": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+        "gitBlobSha1": "eb1a84bcf654efcf0d1666ca894c4257beeb7cae",
+        "sha256": "71136f5c487d7385206754de4369a49ef8ed953b8a1e96b3266de6432e4bfeba"
+      },
+      {
+        "path": "packages/grip/src/experimental.ts",
+        "gitBlobSha1": "6a8eca9d671388b86da0818fbcac135018eaffdc",
+        "sha256": "f51529ec1081f8616bd02776a7d345f1f1a6046efa5b29d672e7bc24240528fa"
+      },
+      {
+        "path": "wasm/packages/cli/src/internal/report/host-evidence.js",
+        "gitBlobSha1": "473a21b26639b7b313d8dfac352773976a12c84b",
+        "sha256": "5722f0accb1598544071aecd433c9dfce38d4ad50947d7e114ae30046b49a3ef"
+      },
+      {
+        "path": "docs/contributing/package-lowerer-contract.md",
+        "gitBlobSha1": "e2805a97a6964c47213355267a1af93444c24eff",
+        "sha256": "cc88e41594ac72f6a6d28bd4b75eb55b2db9dbe82a656cc2752d50ba586b9279"
+      },
+      {
+        "path": "docs/architecture/current-contracts.md",
+        "gitBlobSha1": "27f94972f9a058ecfb091532118c83685ccd7fc0",
+        "sha256": "9ac30d0d00ac8c66757df918248d211d0f1caec0a4d6165d69c868f555dce32b"
+      },
+      {
+        "path": "docs/packages/grip.md",
+        "gitBlobSha1": "dfcd5a34898461bd26268b83bca2e0abab6c81cd",
+        "sha256": "034938e1b88e80335b00833a64ddbd0711612522aacb2666cc6b4206cc31e299"
+      },
+      {
+        "path": "wasm/test/contracts/assert-host-extension-contract.cjs",
+        "gitBlobSha1": "ba2145f88104745d8daab88386378028550eab7d",
+        "sha256": "4152d631584eaef8e7b89b68f06a0a4d8e92a6d6bebd6c4ee4adc9056b6f4893"
+      },
+      {
+        "path": "wasm/test/provider/assert-fastly-host-extensions.cjs",
+        "gitBlobSha1": "1d1bb1086b2ae46e1e16fbc0aa713654614f6649",
+        "sha256": "3bf7ff6b18434a2181d8b93ed60d2da25a87fa9dff4870bfe6afa2c7b13a04fe"
+      },
+      {
+        "path": "wasm/test/provider/assert-fastly-router-terminal.cjs",
+        "gitBlobSha1": "2c62d48e277717ce3fadfd00606ba370bb1f4b5b",
+        "sha256": "d6cc00290b711eeee4112f1f96ac4084bda8e5cd1f0eeec80a8c75c961654f87"
+      },
+      {
+        "path": "wasm/test/qualification/terminal/verify.cjs",
+        "gitBlobSha1": "b59d847958925689af885573ab3d6aea5ea4268c",
+        "sha256": "8c6f1bb7724dd684d704b9e5d1c76fffc4e8d74f716120f2de4c7dd4c837eb3a"
+      },
+      {
+        "path": "wasm/test/qualification/terminal/hosted.cjs",
+        "gitBlobSha1": "89b987f77cc8beba9986ed4fd5e94c4eac860b40",
+        "sha256": "f63b5660daaa6b02ad9b602f97f3df15efc9d71b812e790a788dcd873fd7a244"
+      },
+      {
+        "path": "wasm/test/kv/k4/deployed.cjs",
+        "gitBlobSha1": "949576ae84a06bd36f4e9c23fdf63a3a2babecc7",
+        "sha256": "b92ecff8bee35ba594800268991eb1400c3da774525ee013e78bb6ff28007fe1"
+      },
+      {
+        "path": "wasm/test/kv/run-k4-deployed.cjs",
+        "gitBlobSha1": "e8cb47b864ff3aed928520d87e57e0b545d4a91b",
+        "sha256": "f89ad04343ac8b4da08bef44e89f31d9a36c75b59977a157deed2c7c0ac11143"
+      },
+      {
+        "path": "wasm/test/kv/K4.md",
+        "gitBlobSha1": "22b3ceedaf9a4c1b680bb9eb2243b3dce4cba352",
+        "sha256": "74bd8befc0804e5adc0f15898c8e9d7dc7f3b2ea925535f0b10c1bfcec683d12"
+      }
+    ]
+  },
+  "independence": {
+    "productionImplementationChangedByThisPass": false,
+    "reviewerPreviouslyPreparedQualificationFixes": true,
+    "formalIndependentApprovalClaimed": false,
+    "releaseOwnerAcceptance": "pending",
+    "note": "This technical review does not approve its own qualification fixture/CI changes or substitute for a separate independent sign-off."
+  },
+  "developmentEvidence": {
+    "providerToolchain": {
+      "name": "provider-toolchain",
+      "evidence": "unit",
+      "description": "exact compiler-to-provider toolchain invocation and result boundary",
+      "commandSignature": "6ddf8eff7bbed464b8dd0947385e36dbaa8320c9164ee51d2d22fe17fb8ed1e7",
+      "timeoutMs": 30000,
+      "durationMs": 782,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": ".test-results/runs/2026-11-02T00-45-49-140Z--2/tasks/provider-toolchain.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    "compiledReplay": {
+      "schemaVersion": 2,
+      "runId": "2026-11-02T00-47-08-528Z--2",
+      "sourceRevision": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+      "sourceIdentity": {
+        "sourceRevision": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+        "sourceIdentityKind": "verified-git-tree-snapshot",
+        "sourceDigestSha256": null,
+        "sourceFiles": 3749
+      },
+      "status": "passed",
+      "startedAt": "2026-11-02T00:47:08.529Z",
+      "updatedAt": "2026-11-02T00:49:47.268Z",
+      "finishedAt": "2026-11-02T00:49:47.268Z",
+      "durationMs": 158739,
+      "profiles": [],
+      "requestedTasks": [
+        "fastly-lifecycle",
+        "fastly-router-terminal",
+        "cli-report-host-extensions"
+      ],
+      "selectedTasks": [
+        "fastly-lifecycle",
+        "fastly-router-terminal",
+        "cli-report-host-extensions"
+      ],
+      "currentTask": null,
+      "currentTaskPhase": null,
+      "activeChildPid": null,
+      "activeChildPids": [],
+      "currentTasks": [],
+      "currentTaskPhases": {},
+      "completedTasks": 3,
+      "results": [
+        {
+          "name": "fastly-lifecycle",
+          "evidence": "native",
+          "description": "P03 structural Fastly lifecycle, compiled settlement and response authority",
+          "commandSignature": "12538ec98dea4757c9b30ac838ebf26a38ab2498a8ac6eca8a243cbb83e468bf",
+          "timeoutMs": 120000,
+          "durationMs": 43185,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": ".test-results/runs/2026-11-02T00-47-08-528Z--2/tasks/fastly-lifecycle.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-router-terminal",
+          "evidence": "native",
+          "description": "P16 bounded Router terminal handoff, sibling routes, rejection and lifecycle authority",
+          "commandSignature": "894370cde38e17666d2bef84f888db2f897ad19c2a58b0b1043711275ef00126",
+          "timeoutMs": 180000,
+          "durationMs": 45549,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": ".test-results/runs/2026-11-02T00-47-08-528Z--2/tasks/fastly-router-terminal.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        },
+        {
+          "name": "cli-report-host-extensions",
+          "evidence": "native",
+          "description": "P12A host contribution/use-site attribution, exact import audit, historical comparison and private diagnostics",
+          "commandSignature": "666e0e7cee9abfecbc743f0f3659d665dbceeab79f62d066c68a0295e6bdb11e",
+          "timeoutMs": 180000,
+          "durationMs": 69991,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": ".test-results/runs/2026-11-02T00-47-08-528Z--2/tasks/cli-report-host-extensions.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ],
+      "runDirectory": ".test-results/runs/2026-11-02T00-47-08-528Z--2"
+    },
+    "initialFailedAttempt": {
+      "schemaVersion": 2,
+      "runId": "2026-11-02T00-45-49-140Z--2",
+      "sourceRevision": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+      "sourceIdentity": {
+        "sourceRevision": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+        "sourceIdentityKind": "verified-git-tree-snapshot",
+        "sourceDigestSha256": null,
+        "sourceFiles": 3749
+      },
+      "status": "failed",
+      "startedAt": "2026-11-02T00:45:49.142Z",
+      "updatedAt": "2026-11-02T00:45:51.184Z",
+      "finishedAt": "2026-11-02T00:45:51.184Z",
+      "durationMs": 2042,
+      "profiles": [],
+      "requestedTasks": [
+        "provider-toolchain",
+        "fastly-lifecycle",
+        "fastly-router-terminal",
+        "cli-report-host-extensions"
+      ],
+      "selectedTasks": [
+        "provider-toolchain",
+        "fastly-lifecycle",
+        "fastly-router-terminal",
+        "cli-report-host-extensions"
+      ],
+      "currentTask": null,
+      "currentTaskPhase": null,
+      "activeChildPid": null,
+      "activeChildPids": [],
+      "currentTasks": [],
+      "currentTaskPhases": {},
+      "completedTasks": 2,
+      "results": [
+        {
+          "name": "provider-toolchain",
+          "evidence": "unit",
+          "description": "exact compiler-to-provider toolchain invocation and result boundary",
+          "commandSignature": "6ddf8eff7bbed464b8dd0947385e36dbaa8320c9164ee51d2d22fe17fb8ed1e7",
+          "timeoutMs": 30000,
+          "durationMs": 782,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": ".test-results/runs/2026-11-02T00-45-49-140Z--2/tasks/provider-toolchain.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        },
+        {
+          "name": "fastly-lifecycle",
+          "evidence": "native",
+          "description": "P03 structural Fastly lifecycle, compiled settlement and response authority",
+          "commandSignature": "12538ec98dea4757c9b30ac838ebf26a38ab2498a8ac6eca8a243cbb83e468bf",
+          "timeoutMs": 120000,
+          "durationMs": 1240,
+          "status": "failed",
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": ".test-results/runs/2026-11-02T00-45-49-140Z--2/tasks/fastly-lifecycle.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ],
+      "runDirectory": ".test-results/runs/2026-11-02T00-45-49-140Z--2"
+    },
+    "failureDisposition": "Recovery-only missing AssemblyScript dependency link. Existing local links restored; failed report retained. No tracked source changed. These focused reports are development evidence, not a replacement or pooled release seal.",
+    "maintainerCheck": {
+      "status": "passed",
+      "output": "ok - 7 change classes, 11 protected boundaries, 9 AGENTS files, 40 documented test commands, 10 workflows, 14 documentation deployment objects, and 24 scope cases validated"
+    },
+    "k4Gates": {
+      "status": "passed",
+      "claim": "Local fixture rejects mixed identities, same-POP evidence, replayed receipts, missing loss capability, unknown acknowledgements and missing executables; no deployed evidence"
+    }
+  },
+  "existingSeal": {
+    "runId": 41301460387,
+    "status": "passed",
+    "releaseTasks": 231,
+    "installedFeatureGates": 12,
+    "portableRunId": 41301460273,
+    "portableTasks": 191,
+    "unchanged": true
+  },
+  "hosted": {
+    "status": "blocked-missing-T2-inputs",
+    "liveRequestsThisPass": 0,
+    "driverProvided": false,
+    "required": [
+      "isolated Fastly service/version and catalog KV store binding",
+      "exact Native Wasm digest and deployment receipt",
+      "authenticated probe transport from two to eight distinct execution POPs",
+      "service-side POP and unique request-ID metadata",
+      "controlled response-loss relay on the first probe",
+      "reviewed createProbes driver and bounded transport cleanup",
+      "executor access to Fastly API, service and probe endpoints"
+    ],
+    "earlierBeta10OnlyGaps": [
+      "deployed stdout/log-tail",
+      "dynamic backends",
+      "named production logging destination",
+      "KV list/delete",
+      "cross-location conditional KV/CAS"
+    ],
+    "waiversInherited": false
+  },
+  "authority": {
+    "merge": false,
+    "tag": false,
+    "publication": false,
+    "deployment": false,
+    "githubApproval": false
+  }
+}

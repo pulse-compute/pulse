@@ -1,0 +1,28 @@
+ok - handoffWebSocket dispatch and ordinary siblings/exhaustion
+ok - handoffWebSocket uncertain outcomes and primary-error preservation
+ok - handoffWebSocket original deadline before/after handoff
+ok - handoffWebSocket raw and stale completions cannot resume sibling routes
+ok - handoffWebSocket shared observation and ordinary CLI build
+ok - handoffFanout dispatch and ordinary siblings/exhaustion
+ok - handoffFanout uncertain outcomes and primary-error preservation
+ok - handoffFanout original deadline before/after handoff
+ok - handoffFanout raw and stale completions cannot resume sibling routes
+ok - handoffFanout shared observation and ordinary CLI build
+ok - independent package uses identical Router service and ABI
+ok - reject before-effect
+ok - reject after-effect
+ok - reject sibling-effect
+ok - reject middleware
+ok - reject error-middleware
+ok - reject parallel
+ok - reject escaped-token
+ok - reject multiple-routes
+ok - reject multiple-branches
+ok - reject helper
+ok - reject dynamic-backend
+ok - reject wrong-context
+ok - reject next
+ok - reject state
+ok - admission binds the effect to one route and rejects target mismatch
+ok - absent and imported-unused Router controls omit terminal machinery
+{"status":"passed","checks":27,"qualification":"bounded Router placement; injected ABI only"}
