@@ -3,8 +3,10 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const ts = require('typescript');
 const root = path.resolve(__dirname,'../../..');
 const { buildReachableProjectGraph } = require('../../packages/compiler/src/project/reachable-graph-builder');
+const { projectFunctionResolver } = require('../../packages/compiler/src/project/router-module-linker');
 const { admitCallableSource } = require('../../packages/compiler/src/callable-source-admission');
 const { validateCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
 const { compileCanonicalProject } = require('../../packages/compiler/src/canonical-project-compiler');
@@ -64,6 +66,53 @@ try {
   const multiple=admit(`const a=${call};const b=ctx.call(second,input,${pair});`,"import {query,second} from './query';",target+'export function second(ctx,input){return {value:1};}');
   assert.equal(multiple.callees.length,2);accepted++;
   for(const source of ['export function query(ctx,input){input.value=2;return input;}','export function query(ctx,input){return {value:ctx.req.header("x")};}','export function query(ctx,input){return ctx.call(query,input);}'])reject(`const result=${call};`,'PULSE_CALL_SOURCE_CALLEE',undefined,source);
+
+  // Project import admission must not multiply whole-project work by the
+  // number of ordinary handlers. Count traversals instead of wall-clock time.
+  graph('',undefined,"export function query(ctx,input){return ctx.fetch('https://never.test');}");
+  fs.appendFileSync(path.join(cwd,'index.ts'),Array.from({length:32},(_,i)=>
+    `\nexport function route${i}(ctx){return ctx.text('ok');}`).join('')
+    +"\nexport function invalid(ctx){const escaped=ctx.call;return ctx.text('ok');}");
+  const manyGraph=buildReachableProjectGraph(path.join(cwd,'index.ts'),{rootDir:cwd,workspaceRoot:root,target:'native'});
+  function observeResolver(selectedGraph,{failFirst=false}={}) {
+    const actual=projectFunctionResolver(selectedGraph),counts={projectScans:0,resolutions:0};
+    const failure=new Error('injected import resolution failure');
+    const resolver=Object.freeze({...actual,
+      get modules(){counts.projectScans++;return actual.modules;},
+      resolve(...args){counts.resolutions++;if(failFirst&&counts.resolutions===1)throw failure;return actual.resolve(...args);}
+    });
+    return {resolver,counts,failure};
+  }
+  const observed=observeResolver(manyGraph),caller=observed.resolver.entry;
+  const functions=caller.sourceFile.statements.filter(ts.isFunctionDeclaration);
+  const select=fn=>({...caller,functionNode:fn,identity:`${caller.modulePath}#${fn.name.text}`});
+  for(const fn of functions.filter(fn=>fn.name.text!=='invalid')) {
+    const admitted=admitCallableSource(manyGraph,{schemaBundle,resolver:observed.resolver,entry:select(fn)});
+    assert.equal(admitted.callSites.length,0);assert.equal(admitted.callees.length,0);
+    assert.ok(admitted.consumedRuntimeImports.includes('index.ts\u0000query'));
+  }
+  assert.deepEqual(observed.counts,{projectScans:1,resolutions:1});accepted++;
+  assert.throws(()=>admitCallableSource(manyGraph,{schemaBundle,resolver:observed.resolver,
+    entry:select(functions.find(fn=>fn.name.text==='invalid'))}),error=>error.code==='PULSE_CALL_SOURCE_FORM');rejected++;
+  assert.deepEqual(observed.counts,{projectScans:1,resolutions:1});
+
+  // A partial failure must remain retryable on this resolver; only a complete
+  // successful pass may suppress later project work.
+  const retry=observeResolver(manyGraph,{failFirst:true});
+  assert.throws(()=>admitCallableSource(manyGraph,{schemaBundle,resolver:retry.resolver}),error=>error===retry.failure);rejected++;
+  assert.deepEqual(retry.counts,{projectScans:1,resolutions:1});
+  assert.ok(admitCallableSource(manyGraph,{schemaBundle,resolver:retry.resolver}).consumedRuntimeImports.includes('index.ts\u0000query'));
+  admitCallableSource(manyGraph,{schemaBundle,resolver:retry.resolver});
+  assert.deepEqual(retry.counts,{projectScans:2,resolutions:2});accepted++;
+
+  // A new compilation at the same paths owns a fresh resolver and must admit
+  // its changed imports independently of the earlier successful compilation.
+  const isolatedGraph=graph('',"import {query as changed} from './query';"),isolated=observeResolver(isolatedGraph);
+  const isolatedResult=admitCallableSource(isolatedGraph,{schemaBundle,resolver:isolated.resolver});
+  assert.ok(isolatedResult.consumedRuntimeImports.includes('index.ts\u0000changed'));
+  assert.ok(!isolatedResult.consumedRuntimeImports.includes('index.ts\u0000query'));
+  assert.deepEqual(isolated.counts,{projectScans:1,resolutions:1});accepted++;
+
   // Private admission alone remains non-executing. The ordinary project path
   // now consumes those facts and validates the complete caller into a plan.
   graph();

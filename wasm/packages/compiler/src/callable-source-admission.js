@@ -5,6 +5,33 @@ const { projectFunctionResolver } = require('./project/router-module-linker');
 const { compileCallable } = require('./canonical-callable');
 const { createHash } = require('node:crypto');
 
+const admittedImportResolvers = new WeakSet();
+
+function admitUnusedProjectImports(resolver) {
+  // Every caller shares this compilation's fixed module graph and consumed
+  // imports. Retry failed passes; never reuse admission across resolvers.
+  if (admittedImportResolvers.has(resolver)) return;
+  // An unreferenced named project function import cannot contribute executable
+  // behavior. Resolve it with the ordinary linker, but never compile its body.
+  // Other imports/references retain ordinary strict import validation.
+  for (const module of resolver.modules) for (const statement of module.sourceFile.statements) {
+    if (!ts.isImportDeclaration(statement)) continue;
+    const bindings = statement.importClause?.namedBindings;
+    if (!bindings || !ts.isNamedImports(bindings)) continue;
+    for (const binding of bindings.elements) {
+      let referenced = false;
+      function reference(node) {
+        if (node === statement || ts.isTypeNode(node)) return;
+        if (ts.isIdentifier(node) && node.text === binding.name.text) referenced = true;
+        ts.forEachChild(node, reference);
+      }
+      reference(module.sourceFile);
+      if (!referenced) resolver.resolve(module.modulePath, binding.name.text);
+    }
+  }
+  admittedImportResolvers.add(resolver);
+}
+
 // Original authored coordinates, retained only in the observational source
 // collection. Adapted computation coordinates are not authored source maps.
 function reportSource(node, sf, file) {
@@ -159,24 +186,7 @@ function admitCallableSource(graphBuild, { schemaBundle, binaryResources, resolv
     };
     checkContext(fn.body);
   }
-  // An unreferenced named project function import cannot contribute executable
-  // behavior. Resolve it with the ordinary linker, but never compile its body.
-  // Other imports/references retain ordinary strict import validation.
-  for (const module of resolver.modules) for (const statement of module.sourceFile.statements) {
-    if (!ts.isImportDeclaration(statement)) continue;
-    const bindings = statement.importClause?.namedBindings;
-    if (!bindings || !ts.isNamedImports(bindings)) continue;
-    for (const binding of bindings.elements) {
-      let referenced = false;
-      function reference(node) {
-        if (node === statement || ts.isTypeNode(node)) return;
-        if (ts.isIdentifier(node) && node.text === binding.name.text) referenced = true;
-        ts.forEachChild(node, reference);
-      }
-      reference(module.sourceFile);
-      if (!referenced) resolver.resolve(module.modulePath, binding.name.text);
-    }
-  }
+  admitUnusedProjectImports(resolver);
   return Object.freeze({version:'pulse.call-source-admission.v1',callerValidated:false,runtimeWired:false,
     entry:entry.identity,consumedRuntimeImports:resolver.consumedRuntimeImports(),
     callees:Object.freeze([...callees.values()]),callSites:Object.freeze(sites)});
