@@ -164,15 +164,15 @@ that state. Selection conveys no authorization. Historical table/harness
 emission rejects this form because its compatibility scanner has no eligibility
 contract. See [Selected groups](../guides/routing.md#selected-groups).
 
-The compiler also recognizes root-only `Pulse.on(type, { schema }, handler)`
+The compiler also recognizes root-only `Pulse.on(type, { schema, resultSchema? }, handler)`
 declarations as a separate static event topology. Event types and schema IDs
 must be literal, schema IDs must resolve through the project registry, each
 type has one owner, and event handlers receive the same checkout-independent
 canonical handler identity used by HTTP handlers. The resulting event catalog
 is inspectable and enters a plane-neutral application-entry table without
 becoming a Router route. Event handlers use exact event selection,
-schema-validated `ctx.event.payload`, shared non-HTTP context operations, void
-completion, and execution-owned failure.
+schema-validated `ctx.event.payload`, shared non-HTTP context operations,
+optional schema-bound result completion, and execution-owned failure.
 
 The transport-free JavaScript runtime host can directly execute one canonical
 event frame against a live Pulse application. Provider-neutral Native plans can
@@ -183,7 +183,7 @@ artifacts add no event imports, exports, code, catalog data, or byte changes.
 The Native host validates and detaches the frame and schema payload before
 entering the module, passes an artifact-local event runtime ID plus a host-owned
 payload handle, and drives the existing effect/continuation state machine to
-void completion or bounded failure. Event input never masquerades as an HTTP
+void or schema-bound result completion, or bounded failure. Event input never masquerades as an HTTP
 request, no Promise or Asyncify runtime is linked, and no target probing or
 fallback occurs. Node now supplies a bounded invocation-scoped reference
 adapter around this entry for direct JavaScript/Native parity. It is not a
@@ -812,6 +812,74 @@ Production qualification remains open. Applications must handle a continuing
 chain at the cap as incomplete rather than conclude that the searched value is
 absent.
 
+### Shared lifecycle planning and driver sites (P02/P03/P09A)
+
+The contracts package owns internal `executionLifecycle`, optional `httpLifecycle`
+and `lifecyclePlanner` objects through its existing `provider/toolchain` subpath.
+The six execution points extend the existing `pulse.effect-invocation.v1` policy:
+authenticate before consuming a ticket, consume before delivery, and never reopen
+a ticket after rejected or trapped delivery. Closure invalidates outstanding
+delivery authority before cleanup requiring closed invocation state. Driver
+storage and ABI representations remain provider/runtime-owned.
+
+`pulse.lifecycle-bindings.v1` declares symbolic sites, exact semantic parameter
+roles and provider-owned rejection/claim action IDs. The planner rejects malformed
+versions, missing roles/sites, duplicate owner/order pairs and error-claim sites
+without a preceding active response-authority fence. Its immutable
+`pulse.lifecycle-plan.v1` output contains ordered dispatch data, never source,
+ABI types, callbacks or a scheduler. Around after-notifications reverse order on
+normal return, including rejected delivery; traps do not promise finalization.
+Unselected contributions produce no dispatch sites. HTTP selection requires its
+explicit contract version, not a provider/device name; uncertain host outcomes
+never reopen authority or imply disposal, delivery or quiescence.
+
+These are internal adoption contracts, not application hooks, package registration
+or a new support tier. The shared AssemblyScript emitter in `runtime-core-as`
+realizes the plan at explicit Fastly driver and canonical setter sites. Ticket
+authentication precedes service guards and consumption; normal-return closure
+notifications distinguish pre-invalidation from closed state. Forwarding uses
+structural acquired/result/error/end points. Selected HTTP authority fences
+ordinary, error and timeout responders outside legacy handlers and fences raw
+send before the host call; nonzero or trapped outcomes never reopen authority.
+Empty selection emits no lifecycle machinery. Provider-internal service bodies
+are trusted generator inputs, not application or package hooks. Package-owned
+driver emitters with selected services reject until explicitly bound.
+
+Node Native binds the six execution points through a synchronous host adapter.
+It retains the existing ticket ledger, guards the host-visible result setter,
+runs reverse after notifications on normal accepted or rejected delivery, and
+invalidates tickets even if a pre-close observer throws. Host cleanup preserves
+primary errors. A managed host `finally` can close after a guest trap; this does
+not promise guest finalizers. Selected services wrap the host export view without
+changing guest bytes/imports; absent services retain the native export view.
+The controller does not own socket sends and rejects HTTP lifecycle contributions.
+Both driver styles run maintained common settlement/closure/trap cases; broader
+application, host and packed-consumer promotion gates remain open. No host
+handoff, accounting or support-tier change is exposed. The semantic owners live
+in the contracts package at `src/handler/execution-lifecycle.js`,
+`src/host/http-lifecycle.js` and `src/handler/lifecycle-planner.js`.
+
+### Internal resource profile planning (P05)
+
+The contracts package exposes `resourceAdmission` through the existing internal
+`provider/toolchain` subpath. `pulse.resource-profile.v1` describes a selected
+operation's realization, work and protected cleanup requirements. The immutable
+`pulse.resource-admission.v1` plan sums heterogeneous selected instances, execution
+exit and already-occupied capacity across distinct handles, cumulative payload
+backing, record slots, cleanup steps and effects. All dimensions must fit; no
+partial admission, phase discount, implicit refund or unchecked arithmetic is
+allowed. Namespaces remain distinct. Fixed-copy and bounded chunked-text models
+make allocation assumptions explicit, including intermediate backing retained
+for the invocation. Excluded memory is reported rather than treated as zero.
+
+This is a data calculation, not a reservation token or installed accounting
+service. Compiler/profile producers must prove selection/bounds, and the runtime
+must reserve atomically before acquisition under its original deadline. Existing
+value, effect, body, page and time budgets remain authoritative. There are no
+production RA defaults, cache profiles, new application/configuration surfaces
+or target support claims. The semantic owner is the contracts package's
+`src/handler/resource-admission.js`.
+
 ### Read-loop invocation lifecycle (PS2)
 
 `pulse.effect-invocation.v1` distinguishes reusable static effect/continuation
@@ -821,7 +889,7 @@ executions with the same caller-supplied execution label. Node Native effect and
 continuation traces include invocation IDs while retaining static site IDs.
 Original-source JavaScript continues to use its per-call effect identities.
 
-The managed Native controller (`pulse.canonical-native-host.v6`) accepts a pending effect's opaque ticket in
+The managed Native controller (`pulse.canonical-native-host.v7`) accepts a pending effect's opaque ticket in
 `setEffectResult(ticket, result)`. Object identity authenticates the ticket;
 copied fields, foreign executions, old loop visits and duplicate settlement fail
 with `PULSE_EFFECT_INVOCATION_INVALID` before allocating a result handle or
@@ -933,6 +1001,34 @@ shared state, logging, fetch, parallel, config, secret, KV, and outbound event
 authority but do
 not expose a Request, Response, route parameters, Router transfer, middleware,
 or response builders.
+
+Event declarations may name `resultSchema` from the same registry used for HTTP
+JSON bodies. Declared results are required, schema-validated, bounded by event
+payload limits and detached from invocation storage. JavaScript and Native expose
+`pulse.event-execution-result.v2` with separate completion status and optional
+application `result`. Undeclared results remain void; failures include no result.
+Completion is published after owned effects and required cleanup. A retained
+result remains valid across subsequent Native invocations. No new transport,
+HTTP context authority, or reflexive event routing is introduced.
+
+Native event controllers permit sequential `startEvent(frame)` calls on the
+same Wasm instance after successful completion with no pending effects. A new
+accepted entry clears guest locals, state, result/readiness slots, numeric
+storage and continuation bookkeeping, and creates fresh host value handles,
+effect tickets, context, trace, redactions and memory accounting. Reclamation
+never runs across an active invocation. Event-reachable portable artifacts use
+the incremental AssemblyScript runtime even without schemas; HTTP-only
+artifacts retain their existing allocator selection and single-use entry.
+
+Entry is refused while executing, suspended, or awaiting guest resume after
+effect settlement. Refusal does not consume the active invocation. Invalid
+ingress leaves the previous completed result intact. Controlled execution
+failure, explicit close, cancellation and traps require disposal; this contract
+does not recover failed continuations. Tickets from a prior invocation remain
+invalid after reuse, even at the same static effect slot. Raw ABI handles and
+setters remain trusted-host operations. Direct hosts own provider-work cleanup;
+the high-level execution helpers still instantiate and dispose per invocation.
+See [Native instance reuse](../guides/events.md#native-instance-reuse).
 
 Conditional KV is owned by the portable runtime authoring/host contract.
 `kv.getVersioned`, `kv.insertIfAbsent`, and `kv.compareAndSwap` lower through the
@@ -1136,11 +1232,18 @@ through response pumping and the final pre-close check. Successful streaming
 close relinquishes the writable handle and hands queued completion to Fastly;
 **it is not a drain receipt, client delivery guarantee, or retained cancellation
 authority**. This explicitly accepts the FWD9-01 host-handoff alternative.
-No pending-request cancellation ABI exists: cleanup polls once, discards late
-handles and leaves unresolved host work to invocation teardown, without retries
-or rollback claims. Before downstream commitment, upload overflow attempts 413,
-deadline expiry 504, and origin/protocol/response-limit failure 502. After
-commitment, failure abandons the stream and never sends a second response.
+The selected forwarding service reserves a fixed resource ledger before incoming
+acquisition, including overlapping send/poll outputs and protected cleanup/exit
+capacity. Uncertain acquisition, consumption or disposal remains charged; there
+is no speculative close or retry. General fetch does not inherit this profile.
+No pending-request cancellation ABI exists: cleanup may poll once under the
+original request deadline, discard known late handles and leave unresolved host
+work to invocation teardown. Before downstream commitment, upload overflow attempts
+413, an earlier fetch timeout 504, and origin/protocol/response-limit failure 502.
+After commitment, failure attempts to abandon the stream and never sends a second
+response. Original request expiry or an untrustworthy clock denies all further
+cleanup/error-response host calls; host teardown retains responsibility, and no
+new error response or guest disposal is guaranteed.
 FWD9-03 qualifies normal builds and exact installed candidate packages with an
 adversarial injected-ABI matrix and pinned Viceroy 0.21.1 HTTP replay. The
 `fwd9-03-installed` task checks doctor/inspect/test/build/report, artifact identity,
@@ -1275,6 +1378,72 @@ rollback guarantee is introduced. See the [operation deadline contract](../conce
 See [Effects and continuations](../concepts/effects-and-continuations.md),
 [routing](../guides/routing.md), and
 [structured and opaque bodies](../concepts/bodies.md).
+
+## Selected fetch outcome and transport timing boundaries
+
+Issue #565 selects the following boundary clarification on 29 October 2026 for
+the outcome/timing work in #563 and #564. Per-fetch `errors: 'collect'` is
+implemented for direct await, keyed groups and bounded collections on the
+JavaScript and Native targets. `timing: true` adds a transport-only `elapsedMs`
+field, with or without collection. Timing alone wraps successful payloads and
+preserves ordinary failure behavior. Omitted/false timing retains untimed shapes.
+The bounded spike in PR #576 established viability; production instrumentation
+uses provider observations and the existing Fastly poll/select loop.
+
+Elapsed time measures transport only. Start at provider dispatch initiation,
+not effect construction or group collection. End at status/header availability
+for an opaque response, or at final payload-byte acquisition for an explicitly
+body-consuming operation. Exclude text decoding, JSON parsing, schema validation,
+application transforms, sibling waiting and caller-continuation delay. Record
+the endpoint before those operations; do not infer it from final result wrapping.
+If body acquisition itself is deferred until group rejoin, that delay must not
+be mislabeled as transport time: the implementation must observe per-member
+acquisition completion independently. Timing must never force an opaque body
+read or buffering. The two endpoints describe different transport boundaries,
+so an opaque response's elapsed value is not a full-body latency measurement.
+
+Outcome settlement and the timing endpoint are distinct. A selected JSON result
+still requires parsing/validation before it can be fulfilled, even though its
+transport clock has already stopped. A transform failure does not become a
+transport failure merely because timing was selected. Final nonempty-read
+samples exclude subsequent EOF/trailer delay; empty bodies use EOF. JS/Node use
+`performance.now()` and Fastly Native uses monotonic WASI nanoseconds. Durations
+are fractional milliseconds with no added rounding, from zero through
+`Number.MAX_SAFE_INTEGER`. Invalid/unavailable optional samples produce null;
+unsupported providers fail explicitly. Scheduler/deadline clock faults remain
+fatal. No wall-clock fallback is allowed. See the [timing API](../../API.md#transport-timing)
+for optional storage and the incoming-forwarding exclusion.
+
+Timing does not alter `timeoutMs`. Preserve the
+[existing target-specific lifetimes](../concepts/effects-and-continuations.md#existing-fetch-timeout-boundaries),
+including Node Native structured acquisition and opt-in forwarding exceptions.
+The deadline clock can include preparation even though the transport measurement
+starts at dispatch. No group clock resets, second scheduler, group-only policy,
+or new group defaults are introduced.
+
+With collection selected, operational member timeouts may become rejected
+outcomes; HTTP statuses remain data. Enclosing cancellation/deadline expiry and
+runtime integrity faults remain fatal, including when expiry coincides with a
+member timeout. Preserve cancellation fences, response/body ownership, late
+result disposal and no implicit retries. Existing noncollecting behavior stays
+unchanged. Collection returns `PulseFetchOutcome<T>`: fulfilled with `value: T`,
+or rejected with only `error.code` (`PULSE_FETCH_NETWORK` or
+`PULSE_FETCH_TIMEOUT`). Provider messages, URLs and causes are not copied.
+Body acquisition transport failures are collectible; malformed JSON, schema
+failures, size bounds and invalid init remain failures. A noncollecting failed
+member keeps the existing group failure behavior. Projections settle before
+envelope construction; opaque values retain their original body ownership.
+Native requires an inline named `errors: 'collect'` literal, validated against
+its planned result shape; hidden selectors cannot change that shape at dispatch.
+The existing Fastly resource-accounting profiles do not certify collected
+outcome allocations. They remain unselected for this new init/result shape;
+the ordinary request deadline and bounded body reader still apply.
+
+New typed connect, first-byte and between-byte provider controls are deferred.
+Their capability mapping, precedence, backend registration identity/reuse and
+real-provider phase evidence are a separate workstream, not a prerequisite for
+the selected outcome/timing feature. No phase attribution is inferred from a
+generic host timeout.
 
 ## Selected bounded HTTP deadline contract
 
@@ -1516,8 +1685,9 @@ this optional block remain unchanged and display **Not recorded**.
 CMP8-01 owns the internal, pure `pulse.report-comparison` v1 result and
 `pulse.report-matching.v1` identity policy. The CLI, HTML and MCP adapters must
 consume that shared result rather than implement their own matching or arithmetic.
-CMP8-02 adds the offline HTML presentation. Command/MCP adapters remain separate
-integration work. No new public CLI option or package export is introduced here.
+CMP8-02 adds the offline HTML presentation. The public `pulse compare` command
+exposes this shared result and renderer for external consumers using saved Report
+capsules. MCP integration and a JavaScript package export remain separate work.
 
 `compareCapsules(before, after)` admits two validated Report v1 capsules and
 returns immutable evidence without IO, project loading, compilation or execution.
@@ -1624,7 +1794,7 @@ namespaces so one cannot overwrite the other.
 The offline comparison HTML adds authored inventory summaries, identity coverage,
 matching bases and semantic changed fields. Existing search, local links, native
 disclosures and complete JSON export include the new sections. It remains passive
-and self-contained; command/MCP integration and graph visualization are separate.
+and self-contained; MCP integration and graph visualization remain separate.
 
 The canonical schema and generated TypeScript declaration share the report fixture
 writer. The report-capsule-contract task includes comparison regressions for
@@ -2314,6 +2484,29 @@ create a host capability or expand the separate prebuilt-guest contract.
 A general compiler-plugin hook API remains deferred; the scoped external
 lowerer contract is available independently of that readiness gate.
 
+### Package-owned host-extension admission
+
+The existing package artifact carrier reserves `host-extension` for the exact
+`pulse.host-extension.v1` Native contribution protocol. Shared contracts own its
+strict data schema, source identity, selected-manifest ownership, exact-target
+selection, and `pulse.host-extension-import-policy.v1` import audit. The existing
+provider toolchain subpath exposes this owner as `hostExtensions`; a target may
+advertise `pulse.host-extension-admission.v1` with exact protocols and services.
+The generic `host.extension` provider requirement is transport vocabulary, not
+permission to invoke arbitrary host imports. Fastly Native advertises the initial
+`terminal-request-backend.v1` service; Node and JavaScript targets do not.
+
+Admission uses reachable trusted package discovery without package-name tables,
+registration, or npm-version equality. Each used owned operation selects exactly
+one compatible contribution; ambiguous matches, source entry collisions, ownership
+mismatches, and undeclared services fail. Source and policy hashes are deterministic
+content identities. The full provider baseline and selected function declarations
+form a precomputed import ceiling; the audit checks all emitted import kinds and
+exact contributed function signatures. Existing final-Wasm memory, export,
+feature, and start checks remain independently required. The exact schema and limits are in the
+[package lowerer contract](../contributing/package-lowerer-contract.md#host-extension-contribution-v1).
+
+
 See [Package-owned lowering](../concepts/package-owned-lowering.md), the
 [package lowerer contract](../contributing/package-lowerer-contract.md), and
 [plugin readiness](../maintainers/plugin-readiness.md).
@@ -2389,7 +2582,7 @@ without moving package semantics into the compiler or widening the trust model.
 
 ## JWT verification
 
-The synchronized `1.0.0-beta.10` JWT/crypto packages compose
+The synchronized `1.0.0-beta.11` JWT/crypto packages compose
 `@pulse-compute/jwt` over the lower-level, provider-neutral verification
 contract owned by `@pulse-compute/crypto`. The executable algorithm set is
 HS256 and ES256. Crypto verifies a MAC or signature over caller-supplied bytes
@@ -2514,7 +2707,7 @@ publish, promote, deploy, or activate the release.
 
 ## Support, release, and authority
 
-Pulse `1.0.0-beta.10` is a Beta intended for the `beta` channel.
+Pulse `1.0.0-beta.11` is a Beta intended for the `beta` channel.
 Documented, evidence-backed behavior is intentional, but public surfaces may
 change deliberately before a compatibility-bearing release. Unsupported
 behavior fails explicitly, historical and implementation subpaths gain no
@@ -2814,3 +3007,57 @@ resolves them through the current build default or invents compiler measurements
 Guest linking retains its independent final optimizer, retention and merging
 posture; bounded and shrink0 primary compilation both use `native-default`
 link posture. This does not change the guest prebuilt recipe.
+
+### Fastly Native terminal service
+
+The provider implements one direct terminal package effect in a plain HTTP
+handler or one selected Router route: `kind: host.extension`, declared result `host-terminal`, empty payload,
+and a literal configured backend key. Bounded pure method/path/URL conditions
+and ordinary text-response branches are allowed. A Router uses the existing
+canonical dispatcher and private terminal-route bodies; ordinary text-response
+sibling routes and the normal 404 exhaustion remain available. The one handoff
+must belong to its selected route and return directly, without resuming sibling
+routes. Router text responses may use a literal HTTP status option. Helpers,
+middleware/error-handler composition, parallel or multiple handoffs, other
+surrounding effects (including sibling-route effects), body forwarding,
+dynamic backends, guest-unit composition, and package-owned application emitters
+are rejected. The provisional `@pulse-compute/grip/experimental` named exports
+`handoffFanout(ctx, backend)` and `handoffWebSocket(ctx, backend)` select this
+service through package-owned contributions. They are absent from the package
+root and its `grip` object. Their `never` return type admits a terminal handler
+branch without inventing a Response or constructible completion token; Native
+placement is proved independently. JavaScript calls throw
+`PULSE_HOST_EXTENSION_TARGET`. See the [GRIP package guide](../packages/grip.md#experimental-fastly-native-terminal-handoff).
+
+Each selected contribution declares exactly one `(i32, i32, i32) -> i32`
+function. The service passes the borrowed ingress request handle and a bounded
+UTF-8 backend encoding. Backend bytes are limited to 1,024 (also capped by the
+canonical value-transfer limit); one private completion value is allocated
+before dispatch. These are logical allocation bounds, not total-memory or
+resource-accounting coverage. Package source is trusted executable build input.
+
+The existing driver owns tickets, readiness, deadlines and closure. The adapter
+binds the existing execution/HTTP lifecycle points structurally. It authenticates
+the exact live slot, ticket and completion before consuming or delivering a
+result. Raw setters, forged/stale tokens, duplicate settlement and closed
+invocations cannot complete a handoff. Optional provider-internal observers use
+the same ordered bindings for independently named packages; packages cannot
+supply hook bodies or acquire authority through an observer.
+
+The shared response fence enters outcome-unknown before the hostcall. The
+terminal service's zero-status convention transfers response authority; nonzero
+status or a trap leaves it unknown. Neither permits a replacement response or
+retry. Successful dispatch retains local request/body handles for one close
+attempt, separate from response authority. Known handles are retired before
+close calls; uncertain disposition is left to host teardown. Cleanup preserves
+an existing primary failure. Final completion requires the authenticated result.
+Ordinary, error and timeout responses use the same fence and original deadline.
+The Fastly request instance remains single-use; no trap-finalization or remote
+delivery guarantee is inferred.
+
+The provider manifest retains contribution identities, separate use sites,
+service/lifecycle versions, selected point coverage, limits, precomputed import
+policy, observed signatures and final Wasm identity. Packaging rechecks this
+identity and import policy. Unselected contributions emit no terminal service
+or observer machinery. This is build evidence; report/compare projection and
+hosted WebSocket/fan-out qualification remain separate work.

@@ -205,13 +205,13 @@ function responseIsStructured(method, headers, status = 200) {
     || contentType.includes('application/x-www-form-urlencoded');
 }
 
-async function readStructuredResponseText(response, maxBytes, signal) {
+async function readStructuredResponseText(response, maxBytes, signal, timing) {
   const limit = Number.isSafeInteger(Number(maxBytes)) && Number(maxBytes) > 0 ? Number(maxBytes) : 65_536;
   const declared = Number(response.headers && response.headers.get && response.headers.get('content-length'));
   if (Number.isSafeInteger(declared) && declared > limit) {
     throw new hostRuntime.CanonicalRuntimeError('BodyTooLargeError', 'PULSE_BODY_TOO_LARGE', `Fetched response exceeds the ${limit} byte structured-body limit.`, { bytes: declared, maxBytes: limit });
   }
-  if (!response.body) return '';
+  if (!response.body) { timing?.body(true); return ''; }
   const reader = response.body.getReader();
   const cancel = () => { Promise.resolve(reader.cancel(signal.reason)).catch(() => {}); };
   if (signal?.aborted) cancel();
@@ -223,8 +223,9 @@ async function readStructuredResponseText(response, maxBytes, signal) {
       signal?.throwIfAborted();
       const result = await reader.read();
       signal?.throwIfAborted();
-      if (result.done) break;
+      if (result.done) { timing?.body(true); break; }
       const chunk = result.value instanceof Uint8Array ? result.value : new Uint8Array(result.value || 0);
+      if (chunk.byteLength) timing?.body();
       bytes += chunk.byteLength;
       if (bytes > limit) {
         try { await reader.cancel(); } catch (_) { /* best effort */ }
@@ -254,6 +255,7 @@ async function executeLiveFetch(normalized, fetchImplementation, options = {}) {
   const timeout = Number.isFinite(timeoutMs) && timeoutMs > 0 ? setTimeout(() => controller.abort(new Error(`Fetch timed out after ${timeoutMs}ms.`)), timeoutMs) : undefined;
   try {
     controller.signal.throwIfAborted();
+    options.fetchTiming?.begin();
     const response = await fetchImplementation(normalized.parts.url, {
       method: normalized.init.method,
       headers: normalized.init.headers,
@@ -261,6 +263,7 @@ async function executeLiveFetch(normalized, fetchImplementation, options = {}) {
       signal: controller && controller.signal,
       redirect: 'follow'
     });
+    options.fetchTiming?.headers();
     if (controller.signal.aborted) {
       if (response.body) void response.body.cancel(controller.signal.reason).catch(() => {});
       throw controller.signal.reason;
@@ -272,7 +275,8 @@ async function executeLiveFetch(normalized, fetchImplementation, options = {}) {
     if (structured) {
       const body = normalized.init.method === 'HEAD' || !responseStatusAllowsBody(response.status)
         ? ''
-        : await readStructuredResponseText(response, options.maxFetchBodyBytes || options.maxBodyBytes, controller.signal);
+        : await readStructuredResponseText(response, options.maxFetchBodyBytes || options.maxBodyBytes, controller.signal, options.fetchTiming);
+      if (normalized.init.method === 'HEAD' || !responseStatusAllowsBody(response.status)) options.fetchTiming?.body();
       return { status: response.status, kind: 'text', headers, body };
     }
     const bodyStream = response.body && typeof Readable.fromWeb === 'function' ? Readable.fromWeb(response.body) : response.body;
@@ -287,6 +291,7 @@ async function executeLiveFetch(normalized, fetchImplementation, options = {}) {
     }
     return { status: response.status, kind: 'stream', headers, bodyStream };
   } catch (error) {
+    options.fetchTiming?.fail();
     options.signal?.throwIfAborted();
     if ((controller && controller.signal.aborted) || error && error.name === 'AbortError') {
       throw new hostRuntime.CanonicalRuntimeError('FetchTimeoutError', 'PULSE_FETCH_TIMEOUT', 'Live Node fetch exceeded the configured timeout.', { effectId: normalized.id, url: normalized.parts.url, timeoutMs });
@@ -507,6 +512,7 @@ function createNodeProviderAdapter(baseOptions = {}) {
       if (typeof fetchImplementation !== 'function') throw new hostRuntime.CanonicalRuntimeError('FetchNetworkError', 'PULSE_FETCH_NETWORK', 'Live Node fetch is unavailable in this runtime.', { effectId: normalized.id, url: normalized.parts.url });
       return executeLiveFetch(normalized, fetchImplementation, executionOptions);
     }
+    if (fixture) executionOptions.fetchTiming?.begin();
     if (!fixture) throw new hostRuntime.CanonicalRuntimeError('FetchNetworkError', 'PULSE_FETCH_NETWORK', `No Node provider fixture is configured for ${normalized.init.method} ${normalized.parts.url}.`, { effectId: normalized.id, url: normalized.parts.url });
     if (fixture.kind === 'network-error') throw new hostRuntime.CanonicalRuntimeError('FetchNetworkError', 'PULSE_FETCH_NETWORK', 'Node provider fixture produced a network failure.', { effectId: normalized.id, url: normalized.parts.url });
     if (fixture.kind === 'timeout') throw new hostRuntime.CanonicalRuntimeError('FetchTimeoutError', 'PULSE_FETCH_TIMEOUT', 'Node provider fixture exceeded the fetch timeout.', { effectId: normalized.id, url: normalized.parts.url });
@@ -517,6 +523,8 @@ function createNodeProviderAdapter(baseOptions = {}) {
       throw new hostRuntime.CanonicalRuntimeError('FetchTimeoutError', 'PULSE_FETCH_TIMEOUT', 'Node provider fixture exceeded the fetch timeout.', { effectId: normalized.id, url: normalized.parts.url, timeoutMs, delayMs });
     }
     if (delayMs > 0) await delay(delayMs);
+    executionOptions.fetchTiming?.headers();
+    executionOptions.fetchTiming?.body();
     const provider = routeHandlerEffects.createNodeRouteHandlerEffectProvider({ plan: minimalEffectPlan(executionOptions.metadata), backends: providerData.backends });
     const handle = provider.executeFetch(effectToProviderEffect(normalized), { route: provider.plan.routes[0] });
     let snapshot = handle;

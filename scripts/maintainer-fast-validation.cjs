@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 const { execFileSync, spawnSync } = require('node:child_process');
-const { matchesPattern } = require('./maintenance-policy.cjs');
+const { matchesPattern, ruleMatchesFile } = require('./maintenance-policy.cjs');
 const { revisionRange } = require('./maintainer-validation-routing.cjs');
 const { validateReport } = require('./maintainer-portable-validation.cjs');
 const { tasks } = require('../wasm/test/suite/registry.cjs');
@@ -74,7 +74,7 @@ function select(policy, files, registry = tasks, match = matchesPattern) {
   const fullSchemaReasons = [];
   for (const file of [...new Set(files)].sort()) {
     if (!file || file.startsWith('/') || file.split('/').includes('..')) throw new Error(`Invalid changed path: ${file}`);
-    const rules = policy.pathRules.filter((rule) => rule.patterns.some((pattern) => match(file, pattern)));
+    const rules = policy.pathRules.filter((rule) => ruleMatchesFile(file, rule, match));
     const boundaries = [...new Set(rules.flatMap((rule) => rule.boundaries))].sort();
     const schemaReason = fullSchemaReason(file, rules, match);
     if (schemaReason) fullSchemaReasons.push(schemaReason);

@@ -1,6 +1,7 @@
 'use strict';
 const portableKv = require('@pulse-compute/runtime/host');
 const { createEffectInvocations, normalizeMaxEffects } = require('./effect-invocations.js');
+const { createNativeExecutionLifecycle } = require('./native-execution-lifecycle.js');
 const { NativeValueBudget } = require('./native-value-budget.js');
 
 const crypto = require('node:crypto');
@@ -268,7 +269,7 @@ function nativeEffect(planEffect, payload) {
   if (planEffect.kind === 'time.now') return { ...base, providerKind: 'time', operation: 'now', capability: 'time.wall-clock' };
   if (planEffect.kind === 'fetch') {
     const response = nativeFetchResponseContract(planEffect, payload);
-    return { ...base, url: payload.url, init: payload.init, ...response };
+    return { ...base, url: payload.url, init: payload.init, ...response, fetchErrors: planEffect.fetchErrors, fetchTiming: planEffect.fetchTiming };
   }
   if (planEffect.kind === 'config.get' || planEffect.kind === 'secret.get') return { ...base, name: payload.name };
   if (planEffect.kind === 'kv.get' || planEffect.kind === 'kv.put') return { ...base, store: kvStoreName(payload.store), key: payload.key, value: planEffect.kind === 'kv.put' ? payload.value : undefined };
@@ -398,30 +399,76 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   const moduleShape = validateNativeModule(module, plan);
   const adapter = normalizeProviderAdapter(options.providerAdapter || options.provider);
   const executionPlane = options.executionPlane === 'event' ? 'event' : 'http';
-  const memoryBudget = (plan.callables?.length || runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
-    ? new NativeValueBudget(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, close) : undefined;
-  const heap = new ValueHeap(memoryBudget);
+  const lifecycle = createNativeExecutionLifecycle(options.lifecycleServices);
+  const createMemoryBudget = () => (plan.callables?.length || runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
+    ? new NativeValueBudget(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, closeAfterFailure) : undefined;
+  let memoryBudget = createMemoryBudget();
+  let heap = new ValueHeap(memoryBudget);
   const pending = [];
   // Retain the admitted arguments until settlement, including for hosts that
   // take pending tickets and prepare their results manually.
   const kvAdmissions = new Map();
-  const invocations = createEffectInvocations(() => {
+  const createInvocations = () => createEffectInvocations(() => {
     options.requestBudget?.check();
     if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
   });
-  function close() {
-    invocations.close();
-    pending.length = 0;
-    kvAdmissions.clear();
-    options.signal?.removeEventListener('abort', close);
-  }
-  function run(operation) {
+  let invocations = createInvocations();
+  let invocationState = 'ready';
+  let running = false;
+  let entering = false;
+  let closing = false;
+  function retire() {
+    if (closing || invocations.closed) return;
+    closing = true;
     try {
+      try { lifecycle?.observe('invocation.close'); }
+      finally {
+        // Even a failed service cannot preserve delivery authority or queues.
+        invocations.close();
+        pending.length = 0;
+        kvAdmissions.clear();
+      }
+      lifecycle?.observe('invocation.closed');
+    } finally { closing = false; }
+  }
+  function close() {
+    eventResult = undefined;
+    invocationState = 'closed';
+    options.signal?.removeEventListener('abort', onAbort);
+    retire();
+  }
+  function closeAfterFailure() { try { close(); } catch (_) { /* Preserve the primary execution failure. */ } }
+  function onAbort() { closeAfterFailure(); }
+  function run(operation) {
+    if (running) throw new CanonicalNativeHostError('Native invocation is already executing.', 'PULSE_CANONICAL_NATIVE_INVOCATION_ACTIVE');
+    try {
+      if (closing) throw new CanonicalNativeHostError('Native invocation is closing.', 'PULSE_EFFECT_INVOCATION_INVALID');
       invocations.assertOpen();
+      running = true;
+      invocationState = 'active';
       const status = operation();
-      if (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE || status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED) close();
+      invocations.assertOpen(); // Cancellation during a host callback is terminal.
+      if (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE || status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED) {
+        const completedResult = status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE && executionPlane === 'event'
+          ? validateEventResult() : undefined;
+        lifecycle?.observe('invocation.end');
+        invocations.assertOpen();
+        if (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE && executionPlane === 'event') {
+          if (invocations.pendingCount || pending.length || instance.exports.pulse_pending_count()) {
+            throw new CanonicalNativeHostError('Native completion has outstanding effects.', 'PULSE_CANONICAL_NATIVE_PENDING_MISMATCH');
+          }
+          retire();
+          if (invocationState !== 'closed') {
+            eventResult = completedResult;
+            invocationState = 'completed';
+          }
+        } else {
+          close();
+        }
+      }
       return status;
-    } catch (error) { close(); throw error; }
+    } catch (error) { closeAfterFailure(); throw error; }
+    finally { running = false; }
   }
   const trace = [];
   if (memoryBudget) Object.defineProperty(trace, 'push', { value(...entries) {
@@ -434,6 +481,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   for (const value of Array.isArray(options.redactionValues) ? options.redactionValues : []) {
     if (typeof value === 'string' && value.length > 0) sensitiveValues.add(value);
   }
+  const initialSensitiveValues = [...sensitiveValues];
   let instance;
   const preflightSchemaCodecs = options.schemaCodecs || createSchemaCodecs(plan.schemas && plan.schemas.registry);
   const schemaIndexes = new Map((preflightSchemaCodecs.ids || []).map((id, index) => [String(id), index]));
@@ -527,7 +575,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   });
   const plannedMaxBodyBytes = Number(plan.json && plan.json.limits && plan.json.limits.maxBytes || plan.schemas && plan.schemas.registry && plan.schemas.registry.maxBytes || 65536);
   const strict = options.strict === undefined ? plan.json && plan.json.strict === true : options.strict === true;
-  const context = canonicalRuntime.createCanonicalContext({
+  const createContext = () => canonicalRuntime.createCanonicalContext({
     ...options,
     strict,
     maxBodyBytes: options.maxBodyBytes === undefined ? plannedMaxBodyBytes : options.maxBodyBytes,
@@ -542,6 +590,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       return canonicalRuntime.redactRuntimeValue(message, sensitiveValues);
     }
   }, traceSink);
+  let context = createContext();
   function value(handle) { return heap.get(handle); }
   function put(input) { return heap.put(input); }
   function requireHttpSurface(surface) {
@@ -942,6 +991,23 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       actual: instance.exports.pulse_event_abi_version()
     });
   }
+  if (lifecycle) {
+    // Guard the host-visible ABI, including external controller callers. Keep
+    // guest bytes/imports unchanged. Trusted host code can instantiate the raw
+    // module itself; this view is an execution contract, not a security sandbox.
+    const exports = { ...instance.exports };
+    for (const name of ['pulse_set_effect_result', 'pulse_package_set_effect_failure']) {
+      const setter = exports[name];
+      if (!setter) continue;
+      exports[name] = (effect, result) => {
+        if (closing || invocations.closed || !Number.isInteger(effect) || effect < 0 || effect >= plan.effects.length) return runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.REJECTED;
+        if (!lifecycle.guard('effect.result', effect, result)) return runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.REJECTED;
+        if (closing || invocations.closed) return runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.REJECTED;
+        return setter(effect, result);
+      };
+    }
+    Object.defineProperty(instance, 'exports', { value: Object.freeze(exports) });
+  }
   const actualPlanHash = decodePlanHash(instance);
   if (actualPlanHash !== plan.planHash) throw new CanonicalNativeHostError('Native module plan hash does not match its supplied plan.', 'PULSE_CANONICAL_NATIVE_PLAN_HASH_MISMATCH', { expected: plan.planHash, actual: actualPlanHash });
   const nativeCrypto = createNativeGuestSourceCryptoVerifier({
@@ -999,30 +1065,69 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     return result;
   }
 
+  function guardSettlement(ticket, result) {
+    invocations.assertPending(ticket);
+    if (closing || !lifecycle.guard('effect.settle', ticket.slot, ticket, result)) {
+      throw new CanonicalNativeHostError('Native lifecycle service rejected settlement.', 'PULSE_CANONICAL_NATIVE_LIFECYCLE_REJECTED');
+    }
+  }
+
   function setEffectResult(ticket, result) {
+    if (lifecycle) guardSettlement(ticket, result);
     return invocations.settle(ticket, () => {
-      const handle = put(result);
-      const accepted = instance.exports.pulse_set_effect_result(ticket.slot, handle);
-      if (accepted !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
-        close();
-        throw new CanonicalNativeHostError('Native module rejected an invocation result.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: ticket.slot, errorCode: instance.exports.pulse_last_error_code() });
-      }
-      kvAdmissions.delete(ticket.slot);
-      return handle;
+      try {
+        const handle = put(result);
+        const accepted = lifecycle
+          ? lifecycle.around('effect.deliver', [ticket.slot, result], () => instance.exports.pulse_set_effect_result(ticket.slot, handle))
+          : instance.exports.pulse_set_effect_result(ticket.slot, handle);
+        if (accepted !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
+          throw new CanonicalNativeHostError('Native module rejected an invocation result.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: ticket.slot, errorCode: instance.exports.pulse_last_error_code() });
+        }
+        kvAdmissions.delete(ticket.slot);
+        return handle;
+      } catch (error) { closeAfterFailure(); throw error; }
     });
   }
 
   function setEffectFailure(ticket) {
+    if (lifecycle) guardSettlement(ticket, undefined);
     return invocations.settle(ticket, () => {
-      if (instance.exports.pulse_package_set_effect_failure(ticket.slot) !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
-        close();
-        throw new CanonicalNativeHostError('Native package rejected an invocation failure.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID');
-      }
-      kvAdmissions.delete(ticket.slot);
+      try {
+        const accepted = lifecycle
+          ? lifecycle.around('effect.deliver', [ticket.slot, undefined], () => instance.exports.pulse_package_set_effect_failure(ticket.slot))
+          : instance.exports.pulse_package_set_effect_failure(ticket.slot);
+        if (accepted !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
+          throw new CanonicalNativeHostError('Native package rejected an invocation failure.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID');
+        }
+        kvAdmissions.delete(ticket.slot);
+      } catch (error) { closeAfterFailure(); throw error; }
     });
   }
 
+  let eventResult;
   function resultValue() {
+    if (executionPlane === 'event') return invocationState === 'completed' ? eventResult : undefined;
+    return rawResultValue();
+  }
+  function validateEventResult() {
+    try {
+      const output = rawResultValue();
+      if (activeEvent.resultSchemaId === undefined) {
+        if (output !== undefined) throw new TypeError('Event without resultSchema must complete with void.');
+        return undefined;
+      }
+      const snapshot = eventContract.normalizeEventExecutionResult({
+        version: eventContract.EVENT_EXECUTION_RESULT_VERSION, status: 'completed', result: output
+      }, options.eventLimits).result;
+      const validated = schemaCodecs.decode(activeEvent.resultSchemaId, snapshot, 'event-result');
+      return eventContract.normalizeEventExecutionResult({
+        version: eventContract.EVENT_EXECUTION_RESULT_VERSION, status: 'completed', result: validated
+      }, options.eventLimits).result;
+    } catch (_) {
+      throw new CanonicalNativeHostError('Event result does not match its declaration.', 'PULSE_CANONICAL_NATIVE_EVENT_RESULT_INVALID');
+    }
+  }
+  function rawResultValue() {
     const handle = instance.exports.pulse_result_handle();
     return handle === 0 ? undefined : value(handle);
   }
@@ -1030,6 +1135,15 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   let activeEvent;
   function startEvent(inputFrame) {
     requireExecutionPlane('event');
+    if (invocationState === 'closed') invocations.assertOpen();
+    if (closing || running || entering || invocationState === 'active' || instance.exports.pulse_pending_count() > 0) {
+      throw new CanonicalNativeHostError('Native invocation is already active.', 'PULSE_CANONICAL_NATIVE_INVOCATION_ACTIVE');
+    }
+    entering = true;
+    try { return enterEvent(inputFrame); }
+    finally { entering = false; }
+  }
+  function enterEvent(inputFrame) {
     if (!eventReachable) {
       throw new CanonicalNativeHostError('Native plan does not contain an event entry.', 'PULSE_CANONICAL_NATIVE_EVENT_UNREACHABLE');
     }
@@ -1051,28 +1165,46 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
           ...frame,
           payload: schemaCodecs.decode(frame.schemaId, frame.payload, 'event-ingress')
         }, options.eventLimits);
+    // Validate ingress before retiring the previous invocation's observable
+    // result. Only successful completion permits reuse; close/failure is final.
+    options.requestBudget?.check();
+    if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
+    if (invocationState === 'completed') {
+      memoryBudget = createMemoryBudget();
+      heap = new ValueHeap(memoryBudget);
+      invocations = createInvocations();
+      trace.length = 0;
+      sensitiveValues.clear();
+      for (const value of initialSensitiveValues) sensitiveValues.add(value);
+      collectionAdmission = undefined;
+      applicationError = 0;
+      activeEvent = undefined;
+      eventResult = undefined;
+      context = createContext();
+    }
     const payloadHandle = frame.schemaId === null ? 0 : put(validated.payload);
     activeEvent = Object.freeze({
       runtimeId: selected.runtimeId,
       stableId: selected.stableId,
       type: selected.type,
       schemaId: selected.schemaId,
+      ...(selected.resultSchemaId === undefined ? {} : { resultSchemaId: selected.resultSchemaId }),
       payloadHandle
     });
     return run(() => instance.exports.pulse_event_start(selected.runtimeId, payloadHandle));
   }
 
-  options.signal?.addEventListener('abort', close, { once: true });
-  if (options.signal?.aborted) close();
+  options.signal?.addEventListener('abort', onAbort, { once: true });
+  if (options.signal?.aborted) onAbort();
   return Object.freeze({
     version: runtimeContract.CANONICAL_NATIVE_HOST_VERSION,
     plan,
     module,
     instance,
     exports: instance.exports,
-    heap,
+    get heap() { return heap; },
     adapter,
-    context,
+    get context() { return context; },
     schemaCodecs,
     trace,
     traceSink,
@@ -1080,12 +1212,13 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     cryptoVerifier: nativeCrypto.verifier,
     cryptoRealization: nativeCrypto.realization,
     executionPlane,
+    ...(lifecycle ? { lifecycle: lifecycle.plan } : {}),
     start() { requireExecutionPlane('http'); return run(() => instance.exports.pulse_start()); },
     startEvent,
     eventSelection() { return activeEvent; },
     resume() { return run(() => instance.exports.pulse_resume()); },
     close,
-    assertPendingEffect: invocations.assertPending,
+    assertPendingEffect(ticket) { return invocations.assertPending(ticket); },
     pendingEffects: takePending,
     prepareEffectResult,
     captureApplicationError,
@@ -1123,7 +1256,6 @@ function raceNativeSignal(value, signal, eventMode = true) {
   if (!signal) return Promise.resolve(value);
   const cancelled = () => eventMode ? nativeEventCancelled('Native event execution was cancelled during effect dispatch.')
     : nativeRequestCancelled(signal);
-  if (signal.aborted) return Promise.reject(cancelled());
   return new Promise((resolve, reject) => {
     let settled = false;
     const finish = (callback, result) => {
@@ -1138,6 +1270,10 @@ function raceNativeSignal(value, signal, eventMode = true) {
       (result) => finish(resolve, result),
       (error) => finish(reject, error)
     );
+    // Dispatch may have cancelled synchronously before returning this promise.
+    // Observe it even then: late completion cannot regain execution authority,
+    // and a late provider failure must not become an unhandled rejection.
+    if (signal.aborted) onAbort();
   });
 }
 
@@ -1235,7 +1371,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         });
         controller.assertPendingEffect(entry.ticket);
         controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-start', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, payload: privateEffect ? '<redacted>' : entry.payload }, controller.sensitiveValues)));
+        const fetchTiming = entry.effect.fetchTiming ? portableKv.createFetchTiming(options.fetchClock) : undefined;
         const effectExecution = {
+          fetchTiming,
           ...options,
           executionId,
           invocationId: entry.ticket.invocationId,
@@ -1253,21 +1391,32 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           }
         };
         options.outputExecution?.assertEffect();
-        const rawResult = normalized.kind.startsWith('output.')
-          ? await (options.outputExecution ? options.outputExecution.dispatch(normalized) : Promise.reject(new portableKv.PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires Node HTTP execution.')))
-          : conditional
-          ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)),
-              { ...effectExecution, onKvObservation: (event) => controller.trace.push(event) }, options)
-          : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), options.signal, eventMode);
-        options.requestBudget?.check();
-        controller.assertPendingEffect(entry.ticket);
-        // executeConditionalKv already validates, detaches, freezes and registers
-        // redactions using these execution limits. Reuse only that internal
-        // result; raw controller callers still use prepareEffectResult.
-        const result = conditional ? rawResult : controller.prepareEffectResult(entry.index, rawResult);
-        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
-        resolutionOrder.push(entry.effect.id);
-        return { entry, result };
+        try {
+          const rawResult = normalized.kind.startsWith('output.')
+            ? await (options.outputExecution ? options.outputExecution.dispatch(normalized) : Promise.reject(new portableKv.PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires Node HTTP execution.')))
+            : conditional
+            ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)),
+                { ...effectExecution, onKvObservation: (event) => controller.trace.push(event) }, options)
+            : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), options.signal, eventMode);
+          options.requestBudget?.check();
+          controller.assertPendingEffect(entry.ticket);
+          // executeConditionalKv already validates, detaches, freezes and registers
+          // redactions using these execution limits. Reuse only that internal
+          // result; raw controller callers still use prepareEffectResult.
+          let result = conditional ? rawResult : controller.prepareEffectResult(entry.index, rawResult);
+          if (entry.effect.fetchErrors === 'collect' || fetchTiming) result = Object.freeze({ ...portableKv.fetchOutcomes.fulfilled(result), ...(fetchTiming ? { elapsedMs: fetchTiming.elapsed(normalized.projection) } : {}) });
+          controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
+          resolutionOrder.push(entry.effect.id);
+          return { entry, result };
+        } catch (error) {
+          options.requestBudget?.check();
+          if (options.signal?.aborted) throw eventMode ? nativeEventCancelled('Native event execution was cancelled during fetch settlement.') : nativeRequestCancelled(options.signal);
+          if (entry.effect.fetchErrors !== 'collect') throw error;
+          fetchTiming?.fail();
+          const result = Object.freeze({ ...portableKv.fetchOutcomes.rejected(error), ...(fetchTiming ? { elapsedMs: fetchTiming.elapsed(normalized.projection, true) } : {}) });
+          resolutionOrder.push(entry.effect.id);
+          return { entry, result };
+        }
       })), options.signal, eventMode);
 
       if (eventMode && options.signal && options.signal.aborted) {
@@ -1320,15 +1469,11 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       if (options.signal && options.signal.aborted) {
         throw nativeEventCancelled('Native event execution was cancelled before completion.');
       }
-      if (controller.resultValue() !== undefined) {
-        throw new CanonicalNativeHostError('Native event handlers must complete with void.', 'PULSE_CANONICAL_NATIVE_EVENT_RESULT_INVALID', {
-          resultType: typeof controller.resultValue()
-        });
-      }
       const selection = controller.eventSelection();
       controller.trace.push(Object.freeze(redactValue({ type: 'native-event-execution-completed', executionId, eventStableId: selection.stableId, eventType: selection.type }, controller.sensitiveValues)));
       return Object.freeze({
         kind: 'event',
+        ...(controller.resultValue() === undefined ? {} : { result: controller.resultValue() }),
         executionId,
         planHash: controller.plan.planHash,
         wasmSha256: controller.wasmSha256,
@@ -1411,9 +1556,19 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
     invocationClosed = true;
     for (const body of ownedResponseBodies) if (body !== responseBodyTransferred) cancelBody(body);
     ownedResponseBodies.clear();
-    controller.close();
-    try { adapter.disposeExecution(Object.freeze({ executionId, metadata: controller.plan.canonical, plan: controller.plan, status: executionFailure ? 'failed' : 'completed', error: executionFailure })); }
-    catch (_) { /* provider cleanup must not mask execution */ }
+    try { controller.close(); }
+    catch (error) { if (!executionFailure) throw error; }
+    finally {
+      try {
+        const disposal = adapter.disposeExecution(Object.freeze({ executionId, metadata: controller.plan.canonical, plan: controller.plan, status: executionFailure ? 'failed' : 'completed', error: executionFailure }));
+        if (eventMode) await disposal;
+        else Promise.resolve(disposal).catch(() => {}); // HTTP cleanup remains best effort, including asynchronous failures.
+      } catch (_) {
+        if (eventMode && !executionFailure) throw new CanonicalNativeHostError('Native event provider disposal failed.', 'PULSE_CANONICAL_NATIVE_EVENT_DISPOSAL_FAILED');
+        // Preserve a primary execution failure.
+      }
+      if (eventMode && !executionFailure && options.signal?.aborted) throw nativeEventCancelled('Native event execution was cancelled during disposal.');
+    }
   }
 }
 
@@ -1433,6 +1588,8 @@ function nativeEventFailure(error) {
     ? 'handler-not-found'
     : code === 'PULSE_CANONICAL_NATIVE_EVENT_CANCELLED'
       ? 'cancelled'
+    : code === 'PULSE_CANONICAL_NATIVE_EVENT_DISPOSAL_FAILED'
+      ? 'disposal-failed'
     : code === 'PULSE_CANONICAL_NATIVE_EVENT_SCHEMA_MISMATCH'
       ? 'schema-mismatch'
       : code.startsWith('PULSE_SCHEMA_')
@@ -1456,7 +1613,8 @@ async function executeCanonicalNativeEvent(compiled, frame, options = {}) {
     if (typeof options.onEventExecutionEvidence === 'function') options.onEventExecutionEvidence(evidence);
     return eventContract.normalizeEventExecutionResult({
       version: eventContract.EVENT_EXECUTION_RESULT_VERSION,
-      status: eventContract.EVENT_EXECUTION_STATUS.COMPLETED
+      status: eventContract.EVENT_EXECUTION_STATUS.COMPLETED,
+      ...(Object.prototype.hasOwnProperty.call(evidence, 'result') ? { result: evidence.result } : {})
     }, options.eventLimits);
   } catch (error) {
     const evidence = error && error.execution;

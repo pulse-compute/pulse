@@ -81,10 +81,17 @@ export default async function handler(ctx: PulseContext) { const result = await 
 const fetchNative = platform.compileFastlyNativePlatformCapabilitiesPlan(buildCanonicalNativePlan(fetchCompiled), {
   cwd: path.resolve(__dirname, '../../..'), maxDurationMs: 10000, requirePlatformCapability: false, bindings: {backends: {'https://example.test': 'origin'}}
 });
-const preparedTooLate = mock.executeFastlyNativePlatformCapabilities(fetchNative, {
-  hostcallDelayMs: {'fastly_http_req.uri_set': 10000}
+assert.equal(fetchNative.manifest.resourceAccounting.selection, 'canonical-fetch-cohorts');
+let preparedTooLate, preparationExpired = false; const afterPreparation = [];
+assert.throws(() => mock.executeFastlyNativePlatformCapabilities(fetchNative, {
+  hostcallDelayMs: {'fastly_http_req.uri_set': 10000},
+  afterHostcall(c) { if (preparationExpired) afterPreparation.push(c.name); if (c.name === 'uri_set') preparationExpired = true; }
+}), error => {
+  preparedTooLate = error.detail;
+  return error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED' && error.detail.errorStage === 260;
 });
-assert.equal(preparedTooLate.response.status, 504);
+assert(preparationExpired);
+assert(afterPreparation.every(name => name === 'clock_time_get'), 'expired selected fetch cannot dispatch, clean up or deliver an error');
 assert.equal(preparedTooLate.trace.filter(x => x.module === 'fastly_http_req' && x.name === 'send_async').length, 0);
 console.log('ok - Fastly outbound preparation cannot dispatch fetch after expiry');
 

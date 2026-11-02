@@ -9,13 +9,17 @@ const app = new Pulse({ auto: true })
 
 app.get('/health', async (ctx) => ctx.text('ok'))
 
-app.on<DeviceReading>('device.reading', { schema: 'events.DeviceReading' }, async (ctx) => {
+app.on<DeviceReading>('device.reading', {
+  schema: 'events.DeviceReading',
+  resultSchema: 'events.DeviceReadingAccepted',
+}, async (ctx) => {
   const reading = ctx.event.payload
   ctx.log.info('device reading accepted')
   await ctx.emit('device.reading.accepted', {
     schema: 'events.DeviceReadingAccepted',
     payload: { deviceId: reading.deviceId, accepted: true },
   })
+  return { deviceId: reading.deviceId, accepted: true }
 })
 
 app.on('system.tick', { schema: null }, async (ctx) => {

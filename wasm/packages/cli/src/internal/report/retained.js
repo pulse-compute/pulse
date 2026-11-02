@@ -10,6 +10,7 @@ const { artifactId, serializeStoredCapsule, parseCapsule } = require('./capsule'
 const { classifyInput, admitCompletedBuild } = require('./completion');
 const { completionSchema, fileSchema } = require('./schema');
 const { validate } = require('./validate');
+const identity = require('./identity-diagnostic');
 const COMPLETION_FILE = 'pulse-report-completion.json';
 const INVENTORY_FILE = 'pulse-report-inventory.json';
 const INPUTS_FILE = 'pulse-report-inputs.json';
@@ -38,7 +39,12 @@ function acquireBuildLock(project, outDir) {
     process.removeListener('exit', release);
   }
   process.once('exit', release);
-  release.verify = () => ensure(parseJson(readFile(project.root, relative, 4096).bytes).token === token, 'REPORT_CONCURRENT_BUILD');
+  release.verify = () => {
+    const read = readFile(project.root, relative, 4096), observed = parseJson(read.bytes).token;
+    if (observed !== token) identity.reject('REPORT_CONCURRENT_BUILD', 'lease',
+      { tokenSha256: sha256(token) },
+      { tokenSha256: sha256(String(observed)), readSha256: read.sha256, stampSha256: sha256(read.token) });
+  };
   return release;
 }
 function beginBuild(project, options, outDir) {
@@ -46,7 +52,7 @@ function beginBuild(project, options, outDir) {
   if ((project.target || 'native') !== 'native' && options.operation !== 'compile') return { error: 'REPORT_UNSUPPORTED_TARGET' };
   try { return { snapshot: beginSnapshot(project, options, outDir) }; }
   catch (error) {
-    return { error: error.code || 'REPORT_INPUT_UNBOUND' };
+    return { error: error.code || 'REPORT_INPUT_UNBOUND', ...identity.retainedDetail(error) };
   }
 }
 function fileLink(file, bytes) { return { file, bytes: bytes.length, sha256: sha256(bytes) }; }
@@ -60,14 +66,22 @@ function artifactRecords(outDir, manifest) {
   return candidates.map(reference => {
     validate({ file: reference.file, bytes: reference.bytes, sha256: reference.sha256 }, fileSchema);
     const read = readFile(outDir, reference.file);
-    ensure(read.size === reference.bytes && read.sha256 === reference.sha256 && WebAssembly.validate(read.bytes), 'REPORT_ARTIFACT_HASH');
+    const validWasm = WebAssembly.validate(read.bytes);
+    if (read.size !== reference.bytes || read.sha256 !== reference.sha256 || !validWasm) {
+      // Capture this verified read, not a second read after the failure. No
+      // payload, absolute path or source content belongs in the diagnostic.
+      fail('REPORT_ARTIFACT_HASH', '$.artifacts', {
+        expected: { bytes: reference.bytes, sha256: reference.sha256 },
+        actual: { bytes: read.size, sha256: read.sha256, validWasm }
+      });
+    }
     return { id: artifactId(read.sha256), file: reference.file, bytes: read.size, sha256: read.sha256, stage: reference.stage, target: reference.target };
   });
 }
 function publishBuild(project, prepared, manifest, manifestFile, outDir, attempt) {
   attempt.assertLease?.();
   if (attempt.error) {
-    const result = Object.freeze({ ...manifest, reportEvidence: Object.freeze({ status: 'unavailable', reason: attempt.error }) });
+    const result = Object.freeze({ ...manifest, reportEvidence: Object.freeze({ status: 'unavailable', reason: attempt.error, ...identity.retainedDetail(attempt) }) });
     atomicWrite(outDir, path.basename(manifestFile), Buffer.from(JSON.stringify(result, null, 2) + '\n'));
     return result;
   }
@@ -75,11 +89,13 @@ function publishBuild(project, prepared, manifest, manifestFile, outDir, attempt
   try { retained = finishSnapshot(project, attempt.snapshot, prepared.compiled); }
   catch (error) {
     if (!UNAVAILABLE_SNAPSHOT.has(error.code)) throw error;
-    return publishBuild(project, prepared, manifest, manifestFile, outDir, { ...attempt, error: error.code });
+    return publishBuild(project, prepared, manifest, manifestFile, outDir, { ...attempt, error: error.code, ...identity.retainedDetail(error) });
   }
   const artifacts = artifactRecords(outDir, manifest);
+  if (prepared.providerHostExtensions) prepared = { ...prepared, hostEvidence: require('./host-evidence').capture(
+    prepared.providerHostExtensions, prepared.native.realizationArtifacts, artifacts[0], readFile(outDir, artifacts[0].file).bytes) };
   const build = attempt.timing?.finish(prepared, artifacts, manifest.status === 'compiled' ? 'compile' : 'native-build');
-  const capsule = collectInventory(project, prepared, artifacts, artifacts[0].id, attempt.snapshot.optimization, build);
+  const capsule = collectInventory(project, { ...prepared, reportPackageVersions: attempt.snapshot.dependencies.groups.map(({name, version}) => ({name, version})) }, artifacts, artifacts[0].id, attempt.snapshot.optimization, build);
   const inventory = Buffer.from(serializeStoredCapsule(capsule)), inputs = Buffer.from(canonicalJson(retained.inputs) + '\n');
   const completion = { kind: 'pulse.report-completion', completionVersion: 1, status: 'complete',
     operation: manifest.status === 'compiled' ? 'compile' : 'native-build', manifestVersion: manifest.version,
@@ -116,7 +132,7 @@ function publishBuild(project, prepared, manifest, manifestFile, outDir, attempt
   try { finishSnapshot(project, attempt.snapshot, prepared.compiled); }
   catch (error) {
     if (!UNAVAILABLE_SNAPSHOT.has(error.code)) throw error;
-    return publishBuild(project, prepared, manifest, manifestFile, outDir, { ...attempt, error: error.code });
+    return publishBuild(project, prepared, manifest, manifestFile, outDir, { ...attempt, error: error.code, ...identity.retainedDetail(error) });
   }
   attempt.assertLease?.();
   atomicWrite(outDir, COMPLETION_FILE, completionBytes);

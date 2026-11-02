@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/grip",
-  "version": "1.0.0-beta.10",
+  "version": "1.0.0-beta.11",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -24,6 +24,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./experimental": {
+      "types": "./dist/experimental.d.ts",
+      "import": "./dist/experimental.js",
+      "default": "./dist/experimental.js"
     }
   },
   "scripts": {
@@ -39,7 +44,8 @@
     "pulsewasm.manifest.cjs",
     "pulsewasm.compiler.cjs",
     "as",
-    "conformance"
+    "conformance",
+    "experimental.compiler.cjs"
   ],
   "pulsewasm": {
     "manifest": "./pulsewasm.manifest.cjs"
@@ -52,7 +58,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/grip"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.10/packages/grip/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.11/packages/grip/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   },

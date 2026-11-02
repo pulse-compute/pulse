@@ -53,7 +53,9 @@ function createFastlyJavascriptFetchCapability(options = {}) {
       ...(configuredBackend ? { backend: configuredBackend } : {})
     };
     try {
+      execution.fetchTiming?.begin();
       const response = await implementation(String(url), requestInit);
+      execution.fetchTiming?.headers();
       if (!(response instanceof Response) && !runtimeHost.isPulseFetchResponse(response)) {
         throw fastlyJavascriptProviderError(
           'PULSE_FASTLY_FETCH_RESPONSE_INVALID',
@@ -63,6 +65,7 @@ function createFastlyJavascriptFetchCapability(options = {}) {
       }
       return response;
     } catch (error) {
+      execution.fetchTiming?.fail();
       if (isPulseRuntimeError(error)) throw error;
       if (requestInit.signal && requestInit.signal.aborted) {
         const reason = requestInit.signal.reason;

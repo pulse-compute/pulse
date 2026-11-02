@@ -2,7 +2,8 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { canonicalJson, relativePath, fail } = require('./data');
+const { canonicalJson, relativePath, fail, sha256 } = require('./data');
+const identity = require('./identity-diagnostic');
 const { readFile, contained, stamp } = require('./files');
 const MAX_FILES = 20000, MAX_BYTES = 256 * 1024 * 1024;
 const ensure = (value, code = 'REPORT_INPUT_UNBOUND') => { if (!value) fail(code); };
@@ -63,9 +64,13 @@ function readSourcesChecked(root, records, workspace) {
     bytes += row.bytes; ensure(bytes <= MAX_BYTES, 'REPORT_LIMIT');
     const relative = path.relative(workspace.root, real).split(path.sep).join('/');
     const read = readFile(workspace.root, relative);
-    ensure(read.size === row.bytes && read.sha256 === row.sha256, 'REPORT_STALE_INPUTS');
+    if (read.size !== row.bytes || read.sha256 !== row.sha256) identity.reject('REPORT_STALE_INPUTS', 'import-content',
+      identity.record(row.identity, row), identity.record(row.identity, { bytes: read.size, sha256: read.sha256 }));
     if (row.kind === 'manifest') ensure(JSON.parse(read.bytes).name === row.identity);
-    const after = state(file); ensure(before.real === after.real && before.token === after.token, 'REPORT_CONCURRENT_CHANGE');
+    const after = state(file);
+    if (before.real !== after.real || before.token !== after.token) identity.reject('REPORT_CONCURRENT_CHANGE', 'import-read',
+      { identitySha256: sha256(row.identity), realSha256: sha256(before.real), stampSha256: sha256(before.token) },
+      { realSha256: sha256(after.real), stampSha256: sha256(after.token) });
     tokens.set(key, after.token); files.set(real, row);
   }
   return { records, tokens, files };
@@ -89,7 +94,9 @@ function captureSources(root, receipt, workspace) {
   }
   const ordered = [...unique].sort(([a], [b]) => a < b ? -1 : 1);
   const snapshot = readSources(root, ordered.map(([, row]) => row.retained), workspace);
-  for (const [key, row] of ordered) ensure(snapshot.tokens.get(key) === row.token, 'REPORT_CONCURRENT_CHANGE');
+  for (const [key, row] of ordered) if (snapshot.tokens.get(key) !== row.token) identity.reject('REPORT_CONCURRENT_CHANGE', 'import-stamp',
+    { identitySha256: sha256(row.retained.identity), stampSha256: sha256(row.token) },
+    { stampSha256: snapshot.tokens.has(key) ? sha256(snapshot.tokens.get(key)) : null });
   return snapshot;
 }
 module.exports = { captureSources, readSources };

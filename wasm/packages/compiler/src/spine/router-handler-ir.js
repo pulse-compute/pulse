@@ -98,6 +98,7 @@ function routerOwnership(frontend, generatedRange) {
       runtimeId: event.runtimeId,
       type: event.type,
       schemaId: event.schemaId,
+      ...(event.resultSchemaId === undefined ? {} : { resultSchemaId: event.resultSchemaId }),
       handlerStableId: event.handlerStableId
     }) : undefined
   });
@@ -121,6 +122,7 @@ function realizedEventTopology(topology, prepared) {
       return {
         type: event.type,
         schemaId: event.schemaId,
+        ...(event.resultSchemaId === undefined ? {} : { resultSchemaId: event.resultSchemaId }),
         stableId: event.stableId,
         runtimeId: event.runtimeId,
         handlerStableId: event.handlerStableId,
@@ -238,6 +240,7 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
         eventRuntimeId: event.runtimeId,
         eventType: event.type,
         eventSchemaId: event.schemaId,
+        eventResultSchemaId: event.resultSchemaId,
         generatedRange,
         generatedBlockRange: Object.freeze({ start: openingStart, end: synthetic.length })
       }));

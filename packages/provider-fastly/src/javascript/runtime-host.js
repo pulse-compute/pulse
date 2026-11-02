@@ -72,6 +72,7 @@ async function executeFastlyJavascriptApplication(application, request, options 
     maxEffects: options.maxEffects,
     maxRequestBodyBytes: options.maxRequestBodyBytes,
     maxFetchBodyBytes: options.maxFetchBodyBytes,
+    fetchClock: options.fetchClock,
     maxStructuredBodyBytes: options.maxStructuredBodyBytes,
     maxBindingNameBytes: options.maxBindingNameBytes,
     maxBindingValueBytes: options.maxBindingValueBytes,

@@ -47,3 +47,6 @@ app.get('/health', async (ctx) => {
 })
 const token = app.profile()
 void token
+
+app.on<{ id: string }, { accepted: boolean }>('user.check', { schema: 'events.UserCreated', resultSchema: 'events.Checked' }, async ctx => ({ accepted: ctx.event.payload.id.length > 0 }))
+app.on('system.result', { schema: null, resultSchema: 'events.Checked' }, async () => ({ accepted: true }))

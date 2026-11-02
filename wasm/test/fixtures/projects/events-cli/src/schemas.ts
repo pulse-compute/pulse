@@ -13,5 +13,6 @@ export default defineSchemaRegistry({
   schemas: {
     'events.Input': schema<EventInput>(),
     'events.Output': schema<EventOutput>(),
+    'events.Result': schema<EventOutput>(),
   },
 })

@@ -67,7 +67,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const source = assembleNativeSource({
     plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership, resources,
     stages, stageSites, stateEnabled, binaryIndex, eventReachable,
-    entryBlock: control.entryBlock, layout, guardStateCount
+    entryBlock: control.entryBlock, layout, guardStateCount, lifecycle: options.lifecycle
   });
   return assembleNativeResult({
     plan, source, nativeSchemaCodecs, nativeCrypto, expressions, pureHelpers,
@@ -80,7 +80,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
 function assembleNativeSource({
   plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric, ownership, resources,
   stages, stageSites, stateEnabled, binaryIndex, eventReachable,
-  entryBlock, layout, guardStateCount
+  entryBlock, layout, guardStateCount, lifecycle
 }) {
   const { errorGuard, dispatcherFunctions, partitioned, renderedBlocks, invalidProgramCounter } = layout;
   return [
@@ -97,6 +97,12 @@ function assembleNativeSource({
     ...support.globals,
     ...numeric.globals,
     ...resources.source,
+    ...(eventReachable ? [
+      'function __pulse_event_reset_storage(): void {',
+      ...numeric.clear().map(line => `  ${line}`),
+      ...resources.workspaces.clear().map(line => `  ${line}`),
+      '}'
+    ] : []),
     ...(plan.callable ? [
       'function __pulse_callable_close(): void {',
       ...support.valueRoots.map(name => `  ${name} = 0`),
@@ -118,7 +124,7 @@ function assembleNativeSource({
     ...errorGuard,
     ...dispatcherFunctions,
     ...renderNativeRun({ guardStateCount, partitioned, renderedBlocks, invalidProgramCounter }),
-    ...renderNativeExports({ eventReachable, stateEnabled, eventExports: support.eventExports, setterCases: support.setterCases }),
+    ...renderNativeExports({ eventReachable, stateEnabled, eventExports: support.eventExports, setterCases: support.setterCases, lifecycle }),
     ...nativeSchemaCodecs.exports,
     ...(plan.callables?.length ? [require('./canonical-native-callable.js').generateCallableSources(plan.callables, { resourceReferences: resources.references })] : []),
     ''
@@ -233,6 +239,8 @@ function assembleNativeResult({
 }
 
 module.exports = Object.freeze({
+  resourceLedgerSource: require('./resource-ledger.js').resourceLedgerSource,
+  createLifecycleEmitter: require('./lifecycle-emitter.js').createLifecycleEmitter,
   CANONICAL_NATIVE_AS_GENERATOR_VERSION,
   CanonicalNativeAssemblyScriptError,
   generateCanonicalNativeAssemblyScript,

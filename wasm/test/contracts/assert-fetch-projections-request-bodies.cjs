@@ -8,6 +8,9 @@ const {
 } = require('../support/fetch-projections-request-bodies.cjs');
 
 (async () => {
+  await require('../support/fetch-methods.cjs')();
+  await require('../runtime/assert-fetch-outcomes.cjs')();
+  await require('../runtime/assert-fetch-timing.cjs')();
   const proof = await buildFetchBodyProof();
   assert.equal(proof.version, FETCH_BODY_PROOF_VERSION);
   assert.deepEqual(proof.report.summary, { total: 12, passed: 12, failed: 0 });

@@ -147,6 +147,8 @@ function validateMaintenancePolicy(value) {
     if (!/^[a-z][a-z0-9-]*$/.test(id)) fail(`invalid check id ${id}`);
     nonEmpty(entry && entry.label, `checks.${id}.label`);
     nonEmpty(entry && entry.command, `checks.${id}.command`);
+    if (!['local', 'ci'].includes(entry.execution)) fail(`checks.${id}.execution must be local or ci`);
+    if (entry.execution === 'ci' && !['main-full-portable', 'pre-main-qualification'].includes(entry.checkpoint)) fail(`checks.${id}.checkpoint must identify existing CI coverage`);
     if (typeof entry.portable !== 'boolean') fail(`checks.${id}.portable must be boolean`);
   }
 
@@ -172,6 +174,9 @@ function validateMaintenancePolicy(value) {
     ruleIds.add(id);
     const patterns = stringArray(rule.patterns, `pathRules.${id}.patterns`);
     for (const pattern of patterns) globToRegExp(pattern);
+    if (rule.excludePatterns !== undefined) {
+      for (const pattern of stringArray(rule.excludePatterns, `pathRules.${id}.excludePatterns`)) globToRegExp(pattern);
+    }
     stringArray(rule.areas, `pathRules.${id}.areas`);
     const boundaries = stringArray(rule.boundaries, `pathRules.${id}.boundaries`, { allowEmpty: true });
     for (const boundary of boundaries) {
@@ -229,9 +234,14 @@ function matchesPattern(file, pattern) {
   return globToRegExp(pattern).test(slash(file).replace(/^\.\//, ''));
 }
 
+function ruleMatchesFile(file, rule, match = matchesPattern) {
+  return rule.patterns.some((pattern) => match(file, pattern)) &&
+    !(rule.excludePatterns || []).some((pattern) => match(file, pattern));
+}
+
 function rulesForFile(file, policy = MAINTENANCE_POLICY) {
   const normalized = slash(file).replace(/^\.\//, '');
-  return policy.pathRules.filter((rule) => rule.patterns.some((pattern) => matchesPattern(normalized, pattern)));
+  return policy.pathRules.filter((rule) => ruleMatchesFile(normalized, rule));
 }
 
 function classifyFiles(files, policy = MAINTENANCE_POLICY) {
@@ -257,6 +267,9 @@ function classifyFiles(files, policy = MAINTENANCE_POLICY) {
     fileDetails.push(Object.freeze({ file, rules: Object.freeze(rules.map((rule) => rule.id)) }));
   }
 
+  if (unmatchedFiles.length || normalizedFiles.length === 0) {
+    for (const check of ['unit', 'native', 'javascript', 'conformance', 'cli', 'build']) checks.add(check);
+  }
   if (unmatchedFiles.length) riskIndex = Math.max(riskIndex, RISK_ORDER.indexOf('medium'));
   return deepFreeze({
     files: normalizedFiles,
@@ -264,6 +277,8 @@ function classifyFiles(files, policy = MAINTENANCE_POLICY) {
     areas: [...areas].sort(),
     boundaries: [...boundaries].sort(),
     checks: [...checks].sort(),
+    localChecks: [...checks].filter((id) => policy.checks[id].execution === 'local').sort(),
+    ciChecks: [...checks].filter((id) => policy.checks[id].execution === 'ci').sort(),
     matchedRules: [...matchedRules].sort(),
     unmatchedFiles,
     risk: RISK_ORDER[riskIndex]
@@ -380,7 +395,7 @@ function maintainerReviewSchema(policy = MAINTENANCE_POLICY) {
 function renderMaintenanceReference(policy = MAINTENANCE_POLICY) {
   const classRows = Object.entries(policy.changeClasses).map(([id, entry]) => `| \`${id}\` | ${entry.label} | ${entry.agentMayImplement ? 'May prepare implementation' : 'Analysis only until approved'} | ${entry.humanDecisionRequired ? 'Yes' : 'No'} | ${entry.summary} |`);
   const boundaryRows = policy.protectedBoundaries.map((entry) => `| \`${entry.id}\` | ${entry.label} | ${entry.decisionKind} | ${entry.contractUpdateRequired ? 'Required' : 'When affected'} | ${entry.summary} |`);
-  const checkRows = Object.entries(policy.checks).map(([id, entry]) => `| \`${id}\` | ${entry.portable ? 'Portable' : 'Dependency-bound'} | \`${entry.command}\` |`);
+  const checkRows = Object.entries(policy.checks).map(([id, entry]) => `| \`${id}\` | ${entry.portable ? 'Portable' : 'Dependency-bound'} | ${entry.execution === 'local' ? 'Local' : `CI: ${entry.checkpoint}`} | \`${entry.command}\` |`);
   const actionRows = Object.entries(policy.github.actionPins).map(([action, pin]) => `| \`${action}\` | \`${pin.version}\` | \`${pin.sha}\` |`);
   const environmentRows = Object.entries(policy.github.protectedEnvironments).map(([name, entry]) => `| \`${name}\` | ${entry.authority} | \`${entry.allowedRefs}\` | ${entry.secrets.length ? entry.secrets.map((value) => `\`${value}\``).join(', ') : 'None'} | ${entry.variables.length ? entry.variables.map((value) => `\`${value}\``).join(', ') : 'None'} |`);
   const formRows = Object.entries(policy.issueForms).map(([file, entry]) => `| \`${file}\` | \`${entry.changeClass}\` | ${entry.labels.map((label) => `\`${label}\``).join(', ')} |`);
@@ -426,9 +441,17 @@ Path classification is intentionally conservative. Touching a protected path doe
 
 ## Validation catalog
 
-| Check ID | Availability | Command |
-|---|---|---|
+| Check ID | Availability | Execution owner | Command |
+|---|---|---|---|
 ${checkRows.join('\n')}
+
+Execution ownership is explicit in the JSON catalog: local checks accompany required
+change-specific Entry Point regressions; broad profiles and workspace builds are
+CI checkpoints. The scope report lists both without claiming either has passed.
+The fast selector is smoke evidence, never sufficient subsystem regression coverage.
+Main full-portable and pre-main qualification retain their complete selections.
+Agents may hand off a PR with pending CI links and exact source identity; pending
+or untriggered coverage blocks its integration/release checkpoint, not agent exit.
 
 Portable checks use the normal lockfile-pinned workspace installation and do not require the release-only dependency bundle or external provider credentials. Dependency-bound checks remain required before publication when their affected paths are touched.
 
@@ -530,6 +553,7 @@ module.exports = Object.freeze({
   RISK_ORDER,
   globToRegExp,
   matchesPattern,
+  ruleMatchesFile,
   rulesForFile,
   classifyFiles,
   validateMaintenancePolicy,

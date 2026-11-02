@@ -137,7 +137,10 @@ exact registered type; `ctx.event.payload` is an immutable schema-validated
 value, or `null` for a no-payload registration. Event handlers share state,
 logging, fetch, config, secret, KV, and keyed-parallel authority, but expose no
 request, route, response, middleware, or Router-transfer surface and complete
-with `void`.
+with `void` unless `resultSchema` declares a returned application value. Result
+schemas use the same project registry as HTTP JSON responses. The host receives
+a bounded, validated `result` separately from completion metadata; see the
+[events guide](./docs/guides/events.md#returned-application-data).
 
 Eligible handlers lower into plane-neutral application entries and execute
 through the conditional provider-neutral `pulse.native-event-abi.v1`
@@ -247,9 +250,11 @@ durable storage and does not cross an invocation boundary.
 
 ```ts
 interface PulseFetchInitBase {
-  readonly method?: 'GET' | 'HEAD' | 'POST'
+  readonly method?: 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH'
   readonly headers?: Readonly<Record<string, string>> | readonly [string, string][]
   readonly timeoutMs?: number
+  readonly errors?: 'collect'
+  readonly timing?: boolean
 }
 
 type PulseFetchInit = PulseFetchInitBase & (
@@ -258,15 +263,25 @@ type PulseFetchInit = PulseFetchInitBase & (
   | { readonly body?: never; readonly json: unknown; readonly schema?: string }
 )
 
-ctx.fetch(url: string, init?: PulseFetchInit): PulseFetchOperation
+ctx.fetch(url: string, init: PulseFetchInit & { errors: 'collect'; timing: true }): PulseFetchOperation<true, true>
+ctx.fetch(url: string, init: PulseFetchInit & { errors?: undefined; timing: true }): PulseFetchOperation<false, true>
+ctx.fetch(url: string, init: PulseFetchInit & { errors: 'collect'; timing?: false }): PulseFetchOperation<true>
+ctx.fetch(url: string, init?: PulseFetchInit & { errors?: undefined; timing?: false }): PulseFetchOperation
+ctx.fetch(url: string, init: PulseFetchInit): PulseFetchOperation<boolean, boolean>
 ```
+
+Outbound methods are `GET`, `HEAD`, `POST`, `PUT`, and `PATCH`. `GET` and
+`HEAD` cannot carry a body. `POST`, `PUT`, and `PATCH` accept text or JSON
+bodies; Native JSON requires a registered schema. Incoming opaque-body
+forwarding retains its separately admitted `POST`-only shape.
 
 Choose text/opaque `body` or `json`, never both. `schema` describes a JSON
 request body; it is invalid without `json`. `PulseIncomingBody` is the opaque
 request-forwarding handle under the explicit Node opt-in, not an arbitrary
 stream or buffer. See [incoming forwarding](./docs/concepts/bodies.md#incoming-forwarding-on-node).
 
-HTTP status is response data. Network and timeout failures are runtime failures.
+HTTP status is response data. Network and timeout failures are runtime failures
+unless that operation selects `errors: 'collect'`.
 The [Router recovery contract](./docs/guides/routing.md#next-is-a-terminal-transfer)
 owns which failures enter application error handling; the
 [deadline contract](./docs/concepts/effects-and-continuations.md#timeouts-have-two-scopes)
@@ -279,6 +294,89 @@ return ctx.json({ found: true, user })
 
 Consecutive independent fetches may lower into a deterministic effect group. Results are presented in declaration order, not host completion order.
 
+
+### Collected fetch outcomes
+
+Select `errors: 'collect'` on an individual fetch to turn transport failures and
+member timeouts into bounded data. This works under direct await,
+`ctx.parallel({ ... })`, and the existing bounded effect collection syntax.
+Text/JSON projections produce an outcome around the selected payload:
+
+```ts
+const { primary, secondary } = await ctx.parallel({
+  primary: ctx.fetch(primaryUrl, { errors: 'collect', timeoutMs: 1000 }).text(),
+  secondary: ctx.fetch(secondaryUrl, { errors: 'collect' }).text(),
+})
+return ctx.json({ primary, secondary })
+```
+
+```ts
+type PulseFetchOutcome<T> =
+  | { readonly status: 'fulfilled'; readonly value: T }
+  | { readonly status: 'rejected'; readonly error: {
+      readonly code: 'PULSE_FETCH_NETWORK' | 'PULSE_FETCH_TIMEOUT'
+    } }
+```
+
+Without a projection, `value` remains the opaque response. After narrowing on
+`status`, return `result.value` to forward it; the envelope does not acquire,
+decode or serialize its body. HTTP error statuses still produce fulfilled
+outcomes. Error objects contain no provider message, URL, credentials or cause.
+Malformed JSON, schema failures, size bounds, invalid options, enclosing
+cancellation/deadline expiry and runtime integrity failures remain failures.
+A failing ordinary member still fails a mixed group. No retries or group policy
+changes are introduced. Omission preserves existing shapes and failure behavior.
+
+For Native, use an inline named literal `errors: 'collect'`; dynamic selectors,
+computed names and selectors hidden in aliases/spreads are rejected. Existing
+projection/schema and collection admission rules still apply. These options do
+not change `timeoutMs` lifetimes.
+
+### Transport timing
+
+`timing: true` adds `elapsedMs: number | null` to the outcome. Without collection,
+success is a timed fulfilled envelope and failures still fail the operation.
+With collection, eligible failures also carry a duration. `timing: false` or
+omission preserves the untimed shape and skips optional clock samples/storage.
+Native requires inline literal `true`/`false`; ordinary JavaScript may select
+its policy at runtime.
+
+```ts
+const result = await ctx.fetch(url, { timing: true, errors: 'collect' }).text()
+// { status: 'fulfilled', value: string, elapsedMs: number | null }
+// or { status: 'rejected', error: { code }, elapsedMs: number | null }
+```
+
+Start is provider dispatch, after preparation. Opaque results stop at headers
+without reading their body. Text/JSON stop at acquisition of the final payload
+byte (empty bodies stop at EOF), before text decoding, JSON/schema processing,
+application transforms and continuation work. Each member records its own
+observations before join. Stream EOF/trailer delay after the final payload byte
+is excluded. A collected failure ends at its failure/timeout observation; a
+failure before dispatch has `elapsedMs: null`.
+
+Durations use monotonic clocks: `performance.now()` on the JavaScript hosts and
+Node Native, and WASI monotonic nanoseconds on Fastly Native. Values are
+nonnegative fractional milliseconds, without added rounding, bounded by
+`Number.MAX_SAFE_INTEGER`; source precision still applies. Valid zero is retained.
+A missing, throwing, nonfinite, negative or regressing optional measurement
+produces `null`. A host/provider without timing observations raises
+`PULSE_FETCH_TIMING_UNSUPPORTED`; there is no wall-clock fallback. Faults in an
+existing deadline/scheduling clock remain fatal. Incoming-body forwarding does
+not yet support timing and rejects selection before dispatch.
+
+Fastly Native reuses the fetch poll/select driver. Timed projected members each
+hold at most the existing body limit plus one overflow-detection byte until
+transport observations complete; decoding then consumes those snapshots.
+Timing never creates an opaque-body snapshot. Optional timestamp payload is
+16 bytes per static effect slot plus one 8-byte clock result; projected-read
+records, bounded body buffers and envelopes are additional allocations.
+Existing resource-accounting certifications do not extend to these shapes.
+
+Paired production builds of collected-text fixtures added 1,599 Wasm bytes at
+width 1 (35,546 → 37,145) and 2,207 at width 32 (47,041 → 49,248), plus the
+`fastly_async_io.is_ready` import. These are fixture-specific binary deltas,
+not a production CPU percentage or deployed Fastly qualification.
 
 ## `ctx.resources`
 
@@ -812,7 +910,7 @@ Older `/pulsewasm` imports are compatibility-only and are isolated in the
 
 ## Entities API
 
-`@pulse-compute/entities` is part of the synchronized `1.0.0-beta.10` package
+`@pulse-compute/entities` is part of the synchronized `1.0.0-beta.11` package
 set. The application surface has two runtime values:
 
 ```ts

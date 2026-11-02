@@ -533,6 +533,50 @@ function validateScopeClassifier() {
       expected: 'pass'
     },
     {
+      name: 'generated CLI documentation has no runtime obligation',
+      files: ['docs/maintainers/testing.md', 'wasm/packages/cli/docs/maintainers/testing.md'],
+      body: declaration('documentation', 'inside-developer-preview', [], 'not-required'),
+      expected: 'pass', expectedChecks: ['maintenance-policy', 'documentation'],
+      forbiddenChecks: ['unit', 'cli', 'native', 'javascript', 'conformance', 'build', 'release']
+    },
+    {
+      name: 'mixed generated docs and CLI runtime retain integration checks',
+      files: ['wasm/packages/cli/docs/maintainers/testing.md', 'wasm/packages/cli/src/project-execution.js'],
+      body: declaration('defect', 'inside-developer-preview', ['runtime-target-fluidity'], 'not-required'),
+      expected: 'pass', expectedChecks: ['unit', 'cli', 'native', 'javascript', 'conformance', 'build']
+    },
+    {
+      name: 'executable example neighbor retains CLI checks',
+      files: ['wasm/packages/cli/examples/12-pulse-context-mcp/src/handlers.ts'],
+      body: declaration('defect', 'inside-developer-preview', [], 'not-required'),
+      expected: 'pass', expectedChecks: ['unit', 'cli', 'build']
+    },
+    {
+      name: 'crypto source selects owned regressions without sibling profiles',
+      files: ['packages/crypto/src/index.ts'],
+      body: declaration('defect', 'inside-developer-preview', [], 'not-required'),
+      expected: 'pass', expectedChecks: ['unit', 'javascript', 'build'],
+      forbiddenChecks: ['cli', 'providers', 'release'], expectedTasks: ['crypto-runtime-builtin']
+    },
+    {
+      name: 'direct registry regression is not limited to fast smoke',
+      files: ['wasm/test/jwt/assert-jwt-rs256.cjs'],
+      body: declaration('hardening', 'inside-developer-preview', [], 'not-required'),
+      expected: 'pass', expectedTasks: ['jwt-rs256']
+    },
+    {
+      name: 'mixed docs and configuration retain protected checks',
+      files: ['wasm/packages/cli/docs/reference/project-config.md', 'wasm/packages/cli/src/project-config.js'],
+      body: declaration('defect', 'inside-developer-preview', ['configuration-contract'], 'not-required'),
+      expected: 'pass', expectedChecks: ['unit', 'cli', 'build'], expectedBoundary: 'configuration-contract'
+    },
+    {
+      name: 'mixed docs and provider retain protected checks',
+      files: ['wasm/packages/cli/docs/maintainers/testing.md', 'packages/provider-node/src/index.ts'],
+      body: declaration('defect', 'inside-developer-preview', ['provider-registry', 'runtime-target-fluidity'], 'not-required'),
+      expected: 'pass', expectedChecks: ['unit', 'native', 'javascript', 'conformance', 'providers', 'build']
+    },
+    {
       name: 'protected defect pass',
       files: ['API.md'],
       body: declaration('defect', 'inside-developer-preview', ['public-authoring-api'], 'not-required'),
@@ -558,6 +602,7 @@ function validateScopeClassifier() {
     },
     {
       name: 'unclassified path exposed',
+      expectedChecks: ['unit', 'native', 'javascript', 'conformance', 'cli', 'build'],
       files: ['new-unclassified-surface.xyz'],
       body: declaration('hardening', 'inside-developer-preview', [], 'required'),
       expected: 'decision-required'
@@ -603,6 +648,14 @@ function validateScopeClassifier() {
     if (report.status !== test.expected) fail(`scope classifier ${test.name} expected ${test.expected}, found ${report.status}: ${report.consistency.errors.join(', ')}`);
     if (test.expectedBoundary && !report.inferred.protectedBoundaries.includes(test.expectedBoundary)) fail(`scope classifier ${test.name} did not infer ${test.expectedBoundary}`);
     for (const check of test.expectedChecks || []) if (!report.inferred.requiredChecks.includes(check)) fail(`scope classifier ${test.name} did not require ${check}`);
+    for (const check of test.forbiddenChecks || []) if (report.inferred.requiredChecks.includes(check)) fail(`scope classifier ${test.name} incorrectly requires ${check}`);
+    for (const task of test.expectedTasks || []) if (!report.validation.local.regressions.tasks.includes(task)) fail(`scope classifier ${test.name} omitted regression ${task}`);
+    if (report.validation.status !== 'not-run' || report.validation.fastSmokeIsSubsystemCoverage !== false) fail('scope planning must not imply execution or complete regression coverage');
+    for (const check of report.validation.ci.checks) {
+      if (check.status !== 'pending' || report.validation.local.checks.includes(check.id)) fail(`scope CI check ${check.id} must remain pending and separate from local checks`);
+    }
+    const combined = [...report.validation.local.checks, ...report.validation.ci.checks.map((check) => check.id)].sort();
+    if (JSON.stringify(combined) !== JSON.stringify(report.inferred.requiredChecks)) fail('scope execution split lost required coverage');
   }
 
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-maintainer-scope-'));

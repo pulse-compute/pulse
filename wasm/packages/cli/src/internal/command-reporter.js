@@ -43,7 +43,17 @@ function writeHumanResult(stream, command, result) {
     return;
   }
   if (command === 'test') {
-    for (const entry of result.cases || []) stream.write(`${entry.status === 'passed' ? 'ok' : 'not ok'} - ${entry.name}\n`);
+    const safe = require('./report/command').terminalText;
+    for (const entry of result.cases || []) {
+      stream.write(`${entry.status === 'passed' ? 'ok' : 'not ok'} - ${safe(entry.name, 256)}\n`);
+      if (entry.error?.code === 'PULSE_TEST_ASSERTION') {
+        const d = entry.error.detail;
+        stream.write(`  ${entry.error.code}: ${d.expectation} (${d.operator})\n`);
+        stream.write(`  expected: ${JSON.stringify(d.expected)}\n  actual: ${JSON.stringify(d.actual)}\n`);
+        if (d.request) stream.write(`  request: ${JSON.stringify(d.request)}\n`);
+        stream.write(`  docs: ${entry.error.docs}\n`);
+      }
+    }
     stream.write(`${result.summary.passed}/${result.summary.total} Pulse project tests passed\n`);
     return;
   }
@@ -100,8 +110,15 @@ function createCommandReporter(options = {}) {
     const request = normalizeCommandRequest(requestValue);
     if (request.kind !== 'command') return;
     if (request.json) stdout.write(`${JSON.stringify(event)}\n`);
-    else if (event.event === 'ready') stdout.write(`pulse dev: ${event.url}\n`);
-    else if (event.event === 'reloaded') stdout.write(`reloaded ${event.entry}\n`);
+    else if (event.event === 'ready' || event.event === 'reloaded') {
+      stdout.write(event.event === 'ready' ? `pulse dev: ${event.url}\n` : `reloaded ${event.entry}\n`);
+      const evidence = event.executionEvidence;
+      if (evidence?.notice) {
+        const safe = require('./report/command').terminalText;
+        stdout.write(`  execution: ${safe(evidence.kind, 128)}; provider reality validated: ${evidence.providerRealityValidated === true}\n`);
+        stdout.write(`  ${safe(evidence.notice, 1024)}\n`);
+      }
+    }
     else if (event.event === 'compile-error') stderr.write(`compile error: ${event.error.message}\n`);
     else if (event.event === 'request-error') stderr.write(`request error: ${event.error.message}\n`);
   }
@@ -124,6 +141,11 @@ function createCommandReporter(options = {}) {
         outcome: execution.status === 0 ? 'completed' : 'failed', exitCode: execution.status,
         result: request.command === 'report' ? execution.result.capsule : execution.result,
         collected: request.command === 'report' ? execution.result : undefined }));
+      return execution;
+    }
+    if (request.command === 'compare') {
+      if (request.html) stdout.write(require('./report/command').terminalText(execution.result.file, 4096) + '\n');
+      else stdout.write(require('./report/comparison').serializeComparison(execution.result));
       return execution;
     }
     if (request.command === 'report') {
@@ -159,7 +181,7 @@ function createCommandReporter(options = {}) {
       writeJson(stderr, { status: 'error', version: cliVersion, error: summary });
       return;
     }
-    const safe = request?.command === 'report' || String(context.argv?.[0]).toLowerCase() === 'report'
+    const safe = ['report', 'compare'].includes(request?.command || String(context.argv?.[0]).toLowerCase())
       ? require('./report/command').terminalText : value => value;
     stderr.write(`pulse: ${summary.code ? `${safe(summary.code)}: ` : ''}${safe(summary.message, 1000)}\n`);
     for (const step of summary.remediation || []) stderr.write(`  help: ${step}\n`);

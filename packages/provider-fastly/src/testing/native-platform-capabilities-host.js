@@ -483,6 +483,16 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         trace.push({ module: 'fastly_http_req', name: 'header_insert', handle: Number(handle), header: redactRuntimeHeaders([[name, value]], privateUrls.has(request.url))[0] });
         return FASTLY_STATUS_OK;
       },
+      header_append(handle, namePointer, nameLength, valuePointer, valueLength) {
+        const request = requests.get(Number(handle));
+        if (!request) return FASTLY_STATUS_BADF;
+        const name = readUtf8(namePointer, nameLength);
+        const value = readUtf8(valuePointer, valueLength);
+        if (name.toLowerCase() === 'authorization' && value.includes('/s3/aws4_request')) privateUrls.add(request.url);
+        request.headers.push([name, value]);
+        trace.push({ module: 'fastly_http_req', name: 'header_append', handle: Number(handle), header: redactRuntimeHeaders([[name, value]], privateUrls.has(request.url))[0] });
+        return FASTLY_STATUS_OK;
+      },
       cache_override_set(handle, tag, ttl, swr) {
         const request = requests.get(Number(handle)); if (!request) return FASTLY_STATUS_BADF;
         request.cacheOverride = Number(tag); return FASTLY_STATUS_OK;

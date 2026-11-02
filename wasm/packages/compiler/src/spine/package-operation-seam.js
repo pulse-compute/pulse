@@ -336,6 +336,11 @@ function canonicalRealizationArtifact(artifact, record) {
       { id, version, kind, mediaType, contractId, package: packageName }
     );
   }
+  if (kind === 'host-extension') {
+    return require('@pulse-compute/wasm-contracts/provider/toolchain').hostExtensions.normalizeContribution(artifact, {
+      npmPackage: manifest.npmPackage, contractId: manifest.contractId
+    });
+  }
   if (kind === 'package-runtime-wasm') {
     try { return require('@pulse-compute/wasm-contracts/package/runtime-binding').validateRuntimeBinding(value).artifact; }
     catch { throw new PackageOperationSeamError('PULSE_PACKAGE_REALIZATION_ARTIFACT_INVALID', 'Package runtime Wasm must match the supported bounded ABI.', { id }); }

@@ -14,12 +14,13 @@ function validate(plan, options) {
   const init = effect?.inputs?.find(input => input.name === 'init')?.value;
   const body = field(init, 'body'), method = field(init, 'method'), headers = field(init, 'headers');
   if (effects.length !== 1 || effect.kind !== 'fetch' || effect.grouped
+    || effect.fetchErrors !== undefined || effect.fetchTiming !== undefined
     || effect.result?.mode !== 'return' || effect.result?.valueKind !== 'opaque-response'
     || effect.resource?.kind !== 'literal' || options.bindings?.dynamicBackends
     || body?.name !== 'request.body.forward-marker' || method?.kind !== 'literal' || method.value !== 'POST'
     || init.entries.some(entry => !['method', 'body', 'headers', 'timeoutMs'].includes(entry.key?.value))
     || (headers && (headers.kind !== 'object' || headers.entries.some(entry => entry.key?.kind !== 'literal' || entry.value?.kind !== 'literal' || typeof entry.value.value !== 'string')))) {
-    throw forwardingError('Fastly Native forwarding admits one terminal opaque POST fetch with inline req.body(), a static backend, and optional literal headers/timeoutMs; groups, decoding, reuse, and dynamic backends are unsupported.');
+    throw forwardingError('Fastly Native forwarding admits one terminal opaque POST fetch with inline req.body(), a static backend, and optional literal headers/timeoutMs; outcome/timing options, groups, decoding, reuse, and dynamic backends are unsupported.');
   }
   const entries = headers?.entries || [];
   const hop = /^(connection|keep-alive|proxy-connection|transfer-encoding|te|trailer|upgrade|content-length|host|proxy-authenticate|proxy-authorization)$/i;
@@ -49,15 +50,6 @@ function instrument(input, plan, bindings) {
     if (!line || !line.endsWith('}')) throw new Error('Fastly forwarding function boundary drift: ' + name);
     replace(line, `function ${name}(${args}): ${result} { ${body} }`);
   }
-  replace('function __pulse_fastly_send_result(handle: i32): i32 {',
-    'function __pulse_fastly_send_result(handle: i32): i32 { if (handle == __fwd_result && handle != 0) return __fwd_send();');
-  replace('function __pulse_fastly_jwt_send_error(): void {',
-    'function __pulse_fastly_jwt_send_error(): void { if (__fwd_error_response()) return;');
-  replace('function __request_send_timeout(): void {',
-    'function __request_send_timeout(): void { if (__fwd_committed) { __fwd_cleanup(); return; }');
-  replace('  __pulse_fastly_run_invocation()\n', '  __pulse_fastly_run_invocation()\n  __fwd_cleanup()\n');
-  replace('  __pulse_fastly_request_body_handle = load<i32>(changetype<usize>(handles) + 4)',
-    '  __pulse_fastly_request_body_handle = load<i32>(changetype<usize>(handles) + 4)\n  __fwd_source = __pulse_fastly_request_body_handle');
   // Generic request-budget code must not wait for headers before driving upload.
   const begin = source.indexOf('function __pulse_fastly_resolve_effect(');
   const end = source.indexOf('\n}', begin);
@@ -66,4 +58,16 @@ function instrument(input, plan, bindings) {
   return source + '\n' + `const __FWD_REQUEST_MAX: i32 = ${bindings.bodyForwarding.requestMaxBytes}\nconst __FWD_RESPONSE_MAX: i32 = ${bindings.bodyForwarding.responseMaxBytes}\n`
     + fs.readFileSync(path.join(__dirname, 'native-body-forwarding.as.ts'), 'utf8');
 }
-module.exports = {IMPORTS, enabled, validate, instrument};
+function hooks(plan) {
+  if (!enabled(plan)) return [];
+  const owner = 'body-forwarding', order = 10;
+  return [
+    { point: 'request.acquired', owner, order, body: '  __fwd_source = __pulse_fastly_request_body_handle' },
+    { point: 'response.error', owner, order, body: '  return __fwd_error_response()' },
+    { point: 'result.claim', owner, order, body: `  if (result != __fwd_result || result == 0) return false
+  if (__pulse_response_owned()) __fwd_send()
+  return true` },
+    { point: 'invocation.end', owner, order, body: '  __fwd_cleanup(); __fra_cleanup(true)'  }
+  ];
+}
+module.exports = {IMPORTS, enabled, validate, instrument, hooks};

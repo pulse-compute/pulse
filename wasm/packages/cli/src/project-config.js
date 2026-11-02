@@ -134,9 +134,12 @@ function normalizeExpectation(input = {}, kind = 'http') {
     if (status === eventContracts.EVENT_EXECUTION_STATUS.COMPLETED && error) {
       throw new PulseProjectError('PULSE_TEST_EXPECT_INVALID', 'A completed event expectation cannot include expect.error.');
     }
+    const hasResult = Object.prototype.hasOwnProperty.call(input, 'result');
+    if (hasResult && status === 'failed') throw new PulseProjectError('PULSE_TEST_EXPECT_INVALID', 'A failed event expectation cannot include expect.result.');
     return Object.freeze({
       error,
       status,
+      ...(hasResult ? { result: eventContracts.normalizeEventExecutionResult({ version: eventContracts.EVENT_EXECUTION_RESULT_VERSION, status: 'completed', result: input.result }).result } : {}),
       emitted: Object.freeze((input.emitted || []).map((event, index) => normalizeHarnessEvent(event, `expect.emitted[${index}]`)))
     });
   }

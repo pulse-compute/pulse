@@ -121,35 +121,50 @@ function requireString(label, value) {
   if (typeof value !== 'string') throw new TypeError(`Pulse ${label} must be a string.`);
 }
 
-function createFetchOperation(effectExecution, fetchEffect, fetchRequest, options, effectId) {
+function createFetchOperation(effectExecution, fetchEffect, fetchRequest, options, effectId, timing) {
   const projectionOptions = Object.freeze({
     ...options,
     maxBodyBytes: normalizeBodyLimit(options.maxFetchBodyBytes ?? options.maxStructuredBodyBytes),
     signal: options.signal,
     requestMethod: fetchRequest.init.method,
+    onTransportEnd: timing?.body,
+    onTransportFailure: timing?.fail,
     effectId
   });
-  const operation = effectExecution.project(
+  const response = effectExecution.project(
     fetchEffect,
     'response',
     (value) => normalizeFetchResponse(value, projectionOptions)
   );
+  const outcome = require('./fetch-outcome.js');
+  const collect = fetchRequest.init.errors === 'collect';
+  const envelope = (value, projection, failed = false) => Object.freeze({
+    ...(failed ? outcome.rejected(value) : outcome.fulfilled(value)),
+    ...(timing ? { elapsedMs: timing.elapsed(projection, failed) } : {})
+  });
+  const wrap = (effect, projection = 'response') => collect || timing
+    ? effectExecution.project(effect, 'fetch.outcome', value => envelope(value, projection), collect ? error => {
+      timing?.fail();
+      return envelope(error, projection, true);
+    } : undefined)
+    : effect;
+  const operation = wrap(response);
   Object.defineProperties(operation, {
     text: {
       enumerable: false,
-      value: () => effectExecution.project(
-        operation,
+      value: () => wrap(effectExecution.project(
+        response,
         'text',
         (response) => projectFetchResponse(response, 'text', undefined, projectionOptions)
-      )
+      ), 'text')
     },
     json: {
       enumerable: false,
-      value: (schemaId) => effectExecution.project(
-        operation,
+      value: (schemaId) => wrap(effectExecution.project(
+        response,
         'json',
         (response) => projectFetchResponse(response, 'json', schemaId, projectionOptions)
-      )
+      ), 'json')
     }
   });
   return operation;
@@ -208,6 +223,7 @@ function createContext(frame) {
         if (isIncomingBody(init?.body)) effects.invalidateAdmission(error);
         throw error;
       }
+      const timing = fetchRequest.init.timing ? require('./fetch-timing.js').createFetchTiming(options.fetchClock) : undefined;
       const fetchEffect = effects.dispatch({
         id: effectId,
         kind: 'fetch',
@@ -216,8 +232,8 @@ function createContext(frame) {
         capability: 'fetch',
         url: fetchRequest.url,
         init: fetchRequest.init
-      });
-      return createFetchOperation(effects, fetchEffect, fetchRequest, options, effectId);
+      }, undefined, timing);
+      return createFetchOperation(effects, fetchEffect, fetchRequest, options, effectId, timing);
     },
     time: Object.freeze({
       now(...args) {

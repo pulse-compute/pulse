@@ -23,6 +23,7 @@ function createCommandPlan(requestValue, options = {}) {
     return Object.freeze({ ok: true, command: 'completion', shell: request.shell, generatedFrom: 'pulse.command-spec' });
   }
   if (request.command === 'docs') return Object.freeze({ ok: true, command: 'docs', mode: 'installed-documentation', backgroundWork: false });
+  if (request.command === 'compare') return require('./report/compare-command.js').planCompare(request, { cwd });
   if (request.command === 'report') return require('./report/command.js').planReport(request, { cwd });
   if (request.command === 'init') {
     return Object.freeze({ ok: true, command: 'init', target: path.resolve(cwd, request.target || '.'), backgroundWork: false });

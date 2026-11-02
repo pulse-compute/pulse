@@ -115,20 +115,23 @@ function bodyAborted(label, reason) {
   );
 }
 
-async function readBodyBytes(owner, maxBytes, label, signal) {
+async function readBodyBytes(owner, maxBytes, label, signal, onTransportEnd, onTransportFailure) {
   if (!owner || typeof owner !== 'object') throw bodyUnavailable(label, { reason: 'missing-owner' });
   const declared = contentLength(owner.headers);
   if (declared !== undefined && declared > maxBytes) throw bodyTooLarge(label, declared, maxBytes);
   if (owner.bodyUsed) throw bodyUnavailable(label, { reason: 'already-consumed' });
   if (signal && signal.aborted) throw bodyAborted(label, signal.reason);
-  if (owner.body == null) return new Uint8Array(0);
+  if (owner.body == null) { onTransportEnd?.(true); return new Uint8Array(0); }
 
   if (typeof owner.body.getReader !== 'function') {
     if (typeof owner.arrayBuffer !== 'function') throw bodyUnavailable(label, { reason: 'reader-unavailable' });
     let buffer;
     try {
-      buffer = new Uint8Array(await owner.arrayBuffer());
+      const acquired = await owner.arrayBuffer();
+      onTransportEnd?.();
+      buffer = new Uint8Array(acquired);
     } catch (error) {
+      onTransportFailure?.();
       if (signal && signal.aborted) throw bodyAborted(label, signal.reason);
       throw bodyUnavailable(label, { reason: 'read-failed' }, error);
     }
@@ -153,8 +156,9 @@ async function readBodyBytes(owner, maxBytes, label, signal) {
       if (signal && signal.aborted) throw bodyAborted(label, signal.reason);
       const result = await reader.read();
       if (signal && signal.aborted) throw bodyAborted(label, signal.reason);
-      if (result.done) break;
+      if (result.done) { onTransportEnd?.(true); break; }
       const chunk = result.value instanceof Uint8Array ? result.value : new Uint8Array(result.value || 0);
+      if (chunk.byteLength) onTransportEnd?.();
       bytes += chunk.byteLength;
       if (bytes > maxBytes) {
         const error = bodyTooLarge(label, bytes, maxBytes);
@@ -166,6 +170,7 @@ async function readBodyBytes(owner, maxBytes, label, signal) {
       chunks.push(chunk);
     }
   } catch (error) {
+    onTransportFailure?.();
     if (error instanceof PulseRuntimeContractError) throw error;
     if (signal && signal.aborted) throw bodyAborted(label, signal.reason);
     throw bodyUnavailable(label, { reason: 'read-failed', bytes }, error);
@@ -201,7 +206,7 @@ function createStructuredBodyReader(owner, options = {}) {
   function bytes() {
     assertInspectable();
     if (!bytesPromise) {
-      bytesPromise = readBodyBytes(owner, maxBytes, label, signal);
+      bytesPromise = readBodyBytes(owner, maxBytes, label, signal, options.onTransportEnd, options.onTransportFailure);
       if (options.onReadSettled) bytesPromise = bytesPromise.finally(options.onReadSettled);
     }
     return bytesPromise;

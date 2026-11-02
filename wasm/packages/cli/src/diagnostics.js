@@ -15,6 +15,18 @@ function entry(category, options = {}) {
 }
 
 const DIAGNOSTIC_DEFINITIONS = Object.freeze({
+  PULSE_TEST_ASSERTION: entry('test', { exitCode: 4, remediation: ['Compare the named expectation with the observed result and effective request.', 'Body and event payloads are represented by type, size and digest where available; inspect sensitive values in your controlled test environment.'] }),
+  PULSE_HOST_EXTENSION_INVALID: entry('compile', { exitCode: 3, remediation: ['Provide the frozen v1 plain-data contribution envelope from the selected package lowerer.'] }),
+  PULSE_HOST_EXTENSION_PROTOCOL: entry('compile', { exitCode: 3, remediation: ['Use pulse.host-extension.v1 and the admitted terminal-request-backend.v1 service.'] }),
+  PULSE_HOST_EXTENSION_OWNER: entry('compile', { exitCode: 3, remediation: ['Keep the package, contract and contribution namespace aligned with the discovered package owner.'] }),
+  PULSE_HOST_EXTENSION_CONFLICT: entry('compile', { exitCode: 3, remediation: ['Supply exactly one matching contribution for each selected operation and target.'] }),
+  PULSE_HOST_EXTENSION_TARGET: entry('compile', { exitCode: 3, remediation: ['Select the admitted Fastly Native target; automatic fallback is not available.'] }),
+  PULSE_HOST_EXTENSION_SOURCE: entry('compile', { exitCode: 3, remediation: ['Regenerate bounded self-contained package source, its digest and its package-owned entry symbol.'] }),
+  PULSE_HOST_EXTENSION_SIGNATURE: entry('compile', { exitCode: 3, remediation: ['Align the declared MVP scalar signature with the exact final Wasm import.'] }),
+  PULSE_HOST_EXTENSION_IMPORT: entry('compile', { exitCode: 3, remediation: ['Rebuild with the selected contribution and complete provider baseline; do not alter the policy or artifact.'] }),
+  PULSE_HOST_EXTENSION_PLACEMENT: entry('compile', { exitCode: 3, remediation: ['Return one direct handoff from a plain handler or selected Router route. Remove surrounding effects, middleware composition, parallel handoffs, escaped tokens and unsupported helpers.'] }),
+  PULSE_HOST_EXTENSION_BINDING: entry('compile', { exitCode: 3, remediation: ['Configure the literal backend key for the selected profile and target; do not pass dynamic backend values.'] }),
+
   PULSE_CALL_SOURCE_ENTRY: entry('compile', { exitCode: 3, remediation: ["Place the call in a named plain handler, a reachable Router handler, or a selected managed operation."] }),
   PULSE_CALL_SOURCE_CONTEXT: entry('compile', { exitCode: 3, remediation: ["Use a simple named context parameter at the selected caller position."] }),
   PULSE_CALL_SOURCE_FORM: entry('compile', { exitCode: 3, remediation: ["Use ctx.call(importedFunction, input, { inputSchema: 'app.Input', outputSchema: 'app.Output' }) without aliases, computed access, type arguments or spreads."] }),
@@ -31,10 +43,10 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
   PULSE_CALL_BOUNDARY_INVALID: entry('runtime', { exitCode: 4, httpStatus: 500, remediation: ['Rebuild the application from admitted source; use each computation only within its request, static call count and invocation-owned view lifetime.'] }),
   PULSE_MCP_STATIC_BINDING_REQUIRED: entry('compile', { exitCode: 3, remediation: ['Declare one module-level MCP binding with literal protocol options, one local EntityRouter and a direct terminal handle(ctx) return.'] }),
   PULSE_REPORT_INPUT_INVALID: entry('report', { exitCode: 3, remediation: ['Use an unmodified supported Report capsule or a completed-Wasm manifest with its matching local files.'] }),
-  PULSE_REPORT_EVIDENCE_MISSING: entry('report', { exitCode: 3, remediation: ['Run pulse compile or pulse build with the selected Native profile, then retry report; report never builds automatically.'] }),
+  PULSE_REPORT_EVIDENCE_MISSING: entry('report', { exitCode: 3, remediation: ['For compare, provide two existing saved Report capsules. For report, run pulse compile or pulse build with the selected Native profile; neither command builds automatically.'] }),
   PULSE_REPORT_STALE: entry('report', { exitCode: 3, remediation: ['Rebuild the selected Native profile after inputs settle, or replay a saved capsule explicitly as historical evidence.'] }),
   PULSE_REPORT_INCOMPATIBLE: entry('report', { exitCode: 3, remediation: ['Use a supported Report v1 capsule or completed Native Wasm manifest; bare Wasm and JavaScript builds are not Report inputs.'] }),
-  PULSE_REPORT_OUTPUT_UNSAFE: entry('report', { exitCode: 2, remediation: ['Choose a .html file within the selected project root or artifact JSON parent, without symbolic links or parent traversal.'] }),
+  PULSE_REPORT_OUTPUT_UNSAFE: entry('report', { exitCode: 2, remediation: ['Choose a .html file within the selected report root, or the current directory for compare, without symbolic links or parent traversal.'] }),
   PULSE_REPORT_OUTPUT_FAILED: entry('report', { exitCode: 3, remediation: ['Check destination permissions and available disk space, then retry with a safe .html path.'] }),
   PULSE_REPORT_HTML_UNAVAILABLE: entry('report', { exitCode: 3, remediation: ['Use the terminal overview or --json; HTML output requires a build with the offline viewer.'] }),
 
@@ -208,6 +220,18 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
  });
 
 const DIAGNOSTIC_SUMMARIES = Object.freeze({
+  PULSE_TEST_ASSERTION: 'A harness expectation did not match the observed HTTP, event or expected-error result.',
+  PULSE_HOST_EXTENSION_INVALID: 'The host contribution envelope is malformed.',
+  PULSE_HOST_EXTENSION_PROTOCOL: 'The host contribution protocol or service is unsupported.',
+  PULSE_HOST_EXTENSION_OWNER: 'The host contribution does not belong to its selected package contract.',
+  PULSE_HOST_EXTENSION_CONFLICT: 'Host contribution selection is ambiguous or duplicated.',
+  PULSE_HOST_EXTENSION_TARGET: 'The selected target does not admit this host contribution.',
+  PULSE_HOST_EXTENSION_SOURCE: 'Host contribution source identity or entry is invalid.',
+  PULSE_HOST_EXTENSION_SIGNATURE: 'A host import has an invalid or mismatched ABI signature.',
+  PULSE_HOST_EXTENSION_IMPORT: 'The final Wasm import audit does not match the admitted policy.',
+  PULSE_HOST_EXTENSION_PLACEMENT: 'The authored terminal handoff is outside its admitted placement.',
+  PULSE_HOST_EXTENSION_BINDING: 'The authored terminal handoff has no valid static backend binding.',
+
   PULSE_CALL_SOURCE_ENTRY: "Computation calls need a selected project HTTP caller.",
   PULSE_CALL_SOURCE_CONTEXT: "The computation caller context parameter is unsupported.",
   PULSE_CALL_SOURCE_FORM: "Computation call syntax is not a direct static call.",
@@ -224,7 +248,7 @@ const DIAGNOSTIC_SUMMARIES = Object.freeze({
   PULSE_CALL_BOUNDARY_INVALID: 'A computation call violated its target, schema, count or lifetime boundary.',
   PULSE_MCP_STATIC_BINDING_REQUIRED: 'The MCP binding is dynamic, invalid or outside the supported static protocol and Entities composition contract.',
   PULSE_REPORT_INPUT_INVALID: 'Report evidence is malformed, unsafe, or fails integrity validation.',
-  PULSE_REPORT_EVIDENCE_MISSING: 'A matching completed Wasm build and its required retained evidence are missing.',
+  PULSE_REPORT_EVIDENCE_MISSING: 'Required retained report evidence or a saved input capsule is missing.',
   PULSE_REPORT_STALE: 'Retained Report evidence does not match the selected inputs or changed during collection.',
   PULSE_REPORT_INCOMPATIBLE: 'The Report input version or output representation is unsupported.',
   PULSE_REPORT_OUTPUT_UNSAFE: 'The HTML output path is not a contained regular .html file.',
@@ -455,9 +479,10 @@ function describeDiagnostic(code) {
   });
 }
 
-function decorateDiagnostic(value) {
+function decorateDiagnostic(value, root) {
   if (!value || typeof value !== 'object') return value;
   const descriptor = describeDiagnostic(value.code);
+  if (require('./internal/host-diagnostic').isHost(value)) value = require('./internal/host-diagnostic').project(value, descriptor, root);
   return Object.freeze({
     ...value,
     title: value.title || descriptor.title,

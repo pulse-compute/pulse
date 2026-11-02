@@ -97,7 +97,9 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization,
     const entry = raw.length ? owners.length === 1 && entries.get(owners[0].stableId) : capsule.entries[0];
     linkSchema(reference.id, entry);
   }
-  if (!references) for (const [stableId, event] of events) if (event.schemaId) linkSchema(event.schemaId, entries.get(stableId));
+  if (!references) for (const [stableId, event] of events) {
+    for (const schemaId of new Set([event.schemaId, event.resultSchemaId].filter(Boolean))) linkSchema(schemaId, entries.get(stableId));
+  }
   const bindings = new Map();
   function binding(kind, name, declared, entry) {
     const key = kind + ':' + name;
@@ -164,6 +166,7 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization,
     row.entryIds = capsule.entries.filter(entry => entry[key].includes(row.id)).map(entry => entry.id);
     row.routeIds = capsule.routes.filter(route => route[key].includes(row.id)).map(route => route.id);
   }
+  require('./host-evidence').addInventory(capsule, prepared, evidenceIds, value => source(value, project.root));
   require('./resource-inventory').addResourceInventory(capsule, prepared, evidenceIds);
   require('./computation').addComputation(capsule, references?.computation, project.root, evidenceIds);
   require('./resource-bytes').observeResourceBytes(capsule, prepared);

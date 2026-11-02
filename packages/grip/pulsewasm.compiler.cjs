@@ -3,6 +3,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const { buildExperimental } = require('./experimental.compiler.cjs');
+
 const phaseName = 'grip-lowering-plan';
 
 function loadContractsDiagnostics() {
@@ -284,6 +286,7 @@ function collectFacadeBindings(ts, sourceFile, manifest) {
   for (const statement of sourceFile.statements || []) {
     if (!ts.isImportDeclaration(statement)) continue;
     const moduleName = statement.moduleSpecifier && literalText(ts, statement.moduleSpecifier);
+    if (moduleName === '@pulse-compute/grip/experimental') continue;
     if (moduleName !== lowerableSubpath && !compatibilitySubpaths.has(moduleName)) continue;
     const canonicalRoot = moduleName === lowerableSubpath;
     const clause = statement.importClause;
@@ -919,6 +922,10 @@ function buildGripLoweringPlan(inputs = {}) {
     ts.forEachChild(node, visit);
   }
   visit(sourceFile);
+  const experimental = buildExperimental({ ts, sourceFile, unwrapExpression, placementForCall,
+    enclosingContextName, rangeFor, locFor, makeDiagnostic });
+  entries.push(...experimental.entries);
+  diagnostics.push(...experimental.diagnostics);
 
   for (const entry of entries) {
     if (entry.canonicalIntrinsic) continue;
@@ -1037,6 +1044,7 @@ function buildGripLoweringPlan(inputs = {}) {
     entries,
     canonicalEffects: canonicalEffects.filter(Boolean),
     canonicalIntrinsics,
+    realizationArtifacts: experimental.realizationArtifacts,
     diagnostics,
     manifest,
     packageCompilerBuilder,

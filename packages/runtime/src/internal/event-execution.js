@@ -13,7 +13,7 @@ const { createRedactionState } = require('./redaction.js');
 const { validateSchemaValue } = require('./schema.js');
 
 const EVENT_FRAME_VERSION = 'pulse.event-frame.v1';
-const EVENT_EXECUTION_RESULT_VERSION = 'pulse.event-execution-result.v1';
+const EVENT_EXECUTION_RESULT_VERSION = 'pulse.event-execution-result.v2';
 const EVENT_REGISTRATION_READER = Symbol.for('pulse.runtime.event-registration-reader.v1');
 const EVENT_DEFAULT_LIMITS = Object.freeze({
   maxTypeBytes: 128,
@@ -232,6 +232,7 @@ function normalizeRegistration(input, limits) {
     return Object.freeze({
       type: normalizeEventType(ownDataValue(input, 'type'), limits),
       schemaId: normalizeEventSchemaId(ownDataValue(declaration, 'schemaId'), limits),
+      resultSchemaId: ownDataValue(declaration, 'resultSchemaId'),
       handler
     });
   } catch (error) {
@@ -273,7 +274,7 @@ function executionError(category, error, redaction) {
     'schema-mismatch': 'Pulse event frame schemaId does not match the registered event schema.',
     'schema-validation-failed': 'Pulse event payload failed its declared schema.',
     'handler-failed': 'Pulse contained an unexpected event handler or runtime failure.',
-    'completion-invalid': 'Pulse event handlers must resolve with undefined.',
+    'completion-invalid': 'Pulse event result does not match its declaration.',
     cancelled: 'Pulse event execution was cancelled.',
     'disposal-failed': 'Pulse event execution disposal failed.',
     internal: 'Pulse event execution failed.'
@@ -293,9 +294,9 @@ function createEventCompletion(redaction = createRedactionState()) {
     settled = true;
   }
   return Object.freeze({
-    complete() {
+    complete(result) {
       claim();
-      return Object.freeze({ version: EVENT_EXECUTION_RESULT_VERSION, status: 'completed' });
+      return Object.freeze({ version: EVENT_EXECUTION_RESULT_VERSION, status: 'completed', ...(result === undefined ? {} : { result }) });
     },
     fail(category, error) {
       claim();
@@ -442,28 +443,41 @@ async function executeEvent(application, inputFrame, options = {}) {
   observeLoggingConfiguration(options);
 
   let handlerError;
+  let handlerFailed = false;
   let handlerFailureCategory = 'handler-failed';
   let output;
   try {
     const returned = registration.handler(context);
     if (!returned || typeof returned.then !== 'function') {
       handlerFailureCategory = 'completion-invalid';
-      throw contractError(EVENT_RUNTIME_CODES.HANDLER_ASYNC_REQUIRED, 'Pulse event handlers must return a Promise resolving to undefined.');
+      throw contractError(EVENT_RUNTIME_CODES.HANDLER_ASYNC_REQUIRED, 'Pulse event handlers must return a Promise.');
     }
     output = await returned;
+    handlerFailureCategory = 'completion-invalid';
+    if (registration.resultSchemaId === undefined) {
+      if (output !== undefined) throw contractError(EVENT_RUNTIME_CODES.HANDLER_RESULT_INVALID, 'Event without resultSchema must resolve with undefined.');
+    } else {
+      output = cloneEventPayload(validateSchemaValue(registration.resultSchemaId, cloneEventPayload(output, limits), {
+        schemaCodecs: options.schemaCodecs, strict: true, target: options.target, provider: options.provider
+      }, { source: 'event-result' }), limits);
+    }
+    handlerFailureCategory = 'handler-failed';
   } catch (error) {
+    handlerFailed = true;
     handlerError = error;
   }
   try {
     await effectExecution.assertIdle();
   } catch (error) {
-    if (handlerError === undefined) handlerError = error;
+    if (!handlerFailed) { handlerFailed = true; handlerError = error; }
   }
 
   let disposalError;
+  let disposalFailed = false;
   try {
     await effectExecution.close();
   } catch (error) {
+    disposalFailed = true;
     disposalError = error;
   }
   if (typeof options.onEffectSummary === 'function') {
@@ -474,18 +488,15 @@ async function executeEvent(application, inputFrame, options = {}) {
   if (options.signal && options.signal.aborted) {
     return completion.fail('cancelled', contractError(EVENT_RUNTIME_CODES.CANCELLED, 'Pulse event execution was cancelled.'));
   }
-  if (handlerError !== undefined) {
+  if (handlerFailed) {
     if (handlerFailureCategory === 'completion-invalid') {
       return completion.fail('completion-invalid', handlerError);
     }
     const safe = effectExecution.redactError(handlerError);
     return completion.fail('handler-failed', safe instanceof PulseUnhandledError ? safe : new PulseUnhandledError(safe));
   }
-  if (output !== undefined) {
-    return completion.fail('completion-invalid', contractError(EVENT_RUNTIME_CODES.HANDLER_RESULT_INVALID, 'Pulse event handlers must resolve with undefined.'));
-  }
-  if (disposalError !== undefined) return completion.fail('disposal-failed', disposalError);
-  return completion.complete();
+  if (disposalFailed) return completion.fail('disposal-failed', disposalError);
+  return completion.complete(output);
 }
 
 module.exports = Object.freeze({
