@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "pulse.k4-live-preflight.v1",
+  "observedAt": "2026-11-02T01:47:55.754Z",
+  "status": "blocked-before-authentication",
+  "intendedCandidate": "67c984d8dc223dd94d1146353534b12a89e0e50b",
+  "qualificationExecuted": false,
+  "preflight": {
+    "command": "curl --head --silent --show-error --connect-timeout 5 --max-time 10 https://api.fastly.com/",
+    "authenticated": false,
+    "exitCode": 28,
+    "elapsedSeconds": 4.93539929,
+    "error": "curl: (28) Proxy CONNECT aborted due to timeout",
+    "httpStatus": null
+  },
+  "environment": {
+    "runtimeStatusToolAvailable": false,
+    "networkPolicySnapshotPresent": false,
+    "identityManifestConfigured": false,
+    "fastlyConnectorAvailable": false
+  },
+  "infrastructure": {
+    "reviewedLiveDriverPresent": false,
+    "verifiedDistinctExecutionPops": 0
+  },
+  "mutations": {
+    "deployedServices": 0,
+    "activatedVersions": 0,
+    "kvWrites": 0
+  },
+  "nextRequirements": [
+    "Working approved outbound access to api.fastly.com and selected service/probe/relay endpoints",
+    "Isolated service/version/catalog store bound to exact installed candidate and Wasm digest",
+    "Two authenticated real execution POPs and controlled response-loss transport; implement/review concrete driver against existing createProbes contract"
+  ],
+  "scope": "No product source or release candidate changes. Not a K4 pass or semantic failure. #508 owner acceptance remains effective; its additional independent-review gate is removed."
+}
