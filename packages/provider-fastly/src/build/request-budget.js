@@ -40,6 +40,14 @@ function instrumentRequestBudget(input, duration, plan, lifecycle, fetchAccounti
   source = source.replaceAll('runStatus = pulse_resume()', 'if (!__request_check()) { __request_send_timeout(); return; }\n    runStatus = pulse_resume()');
   replace('  const result = pulse_result_handle()', '  if (!__request_check()) { __request_send_timeout(); return; }\n  const result = pulse_result_handle()');
   if (source.includes('__kv_deadline[index] = start +')) replace('__kv_deadline[index] = start + i64(__KV_timeoutMs) * 1000000;', '__kv_deadline[index] = min<i64>(__request_deadline, start + i64(__KV_timeoutMs) * 1000000);');
+  if (source.includes('function __pulse_fastly_kv_conditional_begin(')) {
+    replace('function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyValue): void {',
+      'function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyValue): void {\n  __request_diag_kv_reset(index);');
+    for (const call of ['list', 'delete', 'lookup', 'insert']) {
+      replace('status = fastly_kv_store_' + call + '(storeHandle[0]',
+        '__request_diag_kv_dispatch(index);\n    status = fastly_kv_store_' + call + '(storeHandle[0]');
+    }
+  }
   if (source.includes('__s3_deadlines[index] = start +')) replace('__s3_deadlines[index] = start + i64(binding.timeout) * 1000000;', '__s3_deadlines[index] = min<i64>(__request_deadline, start + i64(binding.timeout) * 1000000);');
   if (source.includes('function __pulse_fastly_write_binary(')) replace('const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) {', 'const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) { if (!__request_check()) return 1;');
   replace('function __pulse_fetch_request_check(index: i32): bool { return true }', 'function __pulse_fetch_request_check(index: i32): bool { return __request_check(index) }');

@@ -267,6 +267,7 @@ resource key or idempotency key is serialized.
 | Fields | Interpretation |
 | --- | --- |
 | `elapsedMs`, `budgetMs` | Observed monotonic elapsed time and the existing budget. Unreliable elapsed time is `null`; observing it does not advance the deadline. |
+| `requestElapsedAtDispatchMs`, `effectElapsedMs` | For native conditional KV (`getVersioned`, `insertIfAbsent`, `compareAndSwap`, `list`, `delete`), elapsed request time at hostcall entry and elapsed time from that entry to the timeout snapshot. Both are `null` without a matching live invocation ticket and reliable samples, for pre-admission expiry, or for other effect kinds. |
 | `timeoutStage`, `errorStage` | Timeout checkpoint 260 and the preserved primary error stage, which may differ. |
 | `effectIndex`, `effectKind`, `attribution` | Known checkpoint, sole live ticket, or unattributed when ambiguous. This does not establish which dependency caused the delay. |
 | `programCounter` | Root guest counter, meaningful only against this exact compiled artifact. Effect indices likewise are not stable across builds. |
@@ -278,7 +279,16 @@ resource key or idempotency key is serialized.
 
 The diagnostic leaves the configured deadline, HTTP timeout status/body/headers,
 retries and acceptance semantics unchanged. A budgeted request adds one bounded
-header read; expiry adds a snapshot, observational clock read and best-effort log
+header read and bounded per-effect timing slots. Conditional KV dispatch adds an
+observational monotonic clock read immediately before its lookup/insert/list/delete
+hostcall. The sample excludes preceding validation, encoding and body preparation;
+effect elapsed includes dispatch, readiness/wait and subsequent time up to the
+snapshot, not isolated remote service latency. Repeated effect sites use their
+current invocation ticket, and request reset invalidates earlier samples. Clock
+failure or regression only omits these fields and never mutates the deadline or
+primary error. This is internal diagnostic timing; KV return types and beta.11's
+separate opt-in fetch timing remain unchanged. Expiry adds a snapshot,
+observational clock read and best-effort log
 write. Delivery at a live log destination and performance overhead require
 separate measurement. Retain the exact artifact identity when interpreting a
 record and reconcile uncertain writes using the application's existing rules.

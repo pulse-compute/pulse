@@ -60,6 +60,8 @@ export function test_start(): void {
 export function test_slot(index: i32, ticket: i32, mode: i32): void {
   __pulse_invocation_tickets[index] = ticket; __pulse_fastly_pending_mode[index] = mode;
 }
+export function test_dispatch(index: i32): void { __request_diag_kv_dispatch(index); }
+export function test_dispatch_reset(index: i32): void { __request_diag_kv_reset(index); }
 export function test_check(index: i32, phase: i32): i32 { return __request_check(index, phase) ? 1 : 0; }
 export function test_wait(index: i32): i32 { return __request_wait(12, index) ? 1 : 0; }
 export function test_expire(): void { __request_expired = true; }
@@ -115,6 +117,48 @@ function exercise(create, label = 'compiled-wasm') {
     const h = make(); h.now += 10000000000; h.e.test_check(2, 1);
     const r = record(h); assert.equal(r.effectKind, 's3.put'); assert.equal(r.dispatchState, 'not-started');
     assert.equal(r.pendingCount, 0); assert.equal(r.remoteAcceptance, 'unknown');
+    assert.equal(r.requestElapsedAtDispatchMs, null); assert.equal(r.effectElapsedMs, null);
+  });
+  check('KV dispatch timing separates prior preparation from effect residence', () => {
+    const h = make(); h.e.test_slot(1, 8, 1); h.now += 7000000000;
+    const clock = h.e.test_last_clock(), deadline = h.e.test_deadline();
+    h.e.test_dispatch(1);
+    assert.equal(h.e.test_last_clock(), clock); assert.equal(h.e.test_deadline(), deadline);
+    h.e.test_slot(1, 8, 0); h.now += 3000000000; h.e.test_check(1, 3);
+    const r = record(h); assert.equal(r.elapsedMs, 10000);
+    assert.equal(r.requestElapsedAtDispatchMs, 7000); assert.equal(r.effectElapsedMs, 3000);
+    assert.equal(r.remoteAcceptance, 'unknown');
+    const slow = make(); slow.e.test_slot(1, 1, 1); slow.e.test_dispatch(1);
+    slow.now += 10000000000; slow.e.test_check(1, 3);
+    assert.equal(record(slow).requestElapsedAtDispatchMs, 0); assert.equal(record(slow).effectElapsedMs, 10000);
+  });
+  check('reused, delivered and never-dispatched tickets cannot reuse timing', () => {
+    for (const ticket of [0, 9]) {
+      const h = make(); h.e.test_slot(1, 8, 1); h.e.test_dispatch(1);
+      h.e.test_slot(1, ticket, 0); h.now += 10000000000; h.e.test_check(1, 3);
+      const r = record(h); assert.equal(r.requestElapsedAtDispatchMs, null); assert.equal(r.effectElapsedMs, null);
+    }
+    const reset = make(); reset.e.test_slot(1, 8, 1); reset.e.test_dispatch(1); reset.e.test_dispatch_reset(1);
+    reset.now += 10000000000; reset.e.test_check(1, 3); assert.equal(record(reset).effectElapsedMs, null);
+    const again = make(); again.e.test_slot(1, 8, 1); again.e.test_dispatch(1);
+    again.e.test_slot(1, 9, 1); again.now += 9000000000; again.e.test_dispatch(1);
+    again.now += 1000000000; again.e.test_check(1, 3);
+    assert.equal(record(again).requestElapsedAtDispatchMs, 9000); assert.equal(record(again).effectElapsedMs, 1000);
+    const pre = make(); pre.e.test_slot(1, 8, 1); pre.e.test_dispatch(1);
+    pre.now += 10000000000; pre.e.test_check(1, 1); assert.equal(record(pre).effectElapsedMs, null);
+  });
+  check('unreliable dispatch and snapshot clocks omit timing without changing budget', () => {
+    for (const failure of [true, false]) {
+      const h = make(); h.e.test_slot(1, 1, 1);
+      const clock = h.e.test_last_clock(), deadline = h.e.test_deadline();
+      h.clockError = failure; if (!failure) h.now--; h.e.test_dispatch(1);
+      assert.equal(h.e.test_last_clock(), clock); assert.equal(h.e.test_deadline(), deadline);
+      h.clockError = false; h.now = 11000000000; h.e.test_check(1, 3);
+      assert.equal(record(h).effectElapsedMs, null); assert.equal(record(h).requestElapsedAtDispatchMs, null);
+    }
+    const h = make(); h.e.test_slot(1, 1, 1); h.now += 9500000000; h.e.test_dispatch(1);
+    h.now -= 1000000000; h.e.test_expire(); h.e.test_emit(1, 3);
+    assert.equal(record(h).effectElapsedMs, null);
   });
   check('settlement entry remains a local observation, not acceptance', () => {
     const h = make(); h.e.test_slot(2, 4, 0); h.now += 10000000000; h.e.test_check(2, 3);
@@ -143,9 +187,10 @@ function exercise(create, label = 'compiled-wasm') {
     assert.ok(h.headerNames.every(n => n === 'x-pulse-probe-id'));
   });
   check('new request resets log latch and does not retain prior correlation', () => {
-    const h = make(); h.now += 10000000000; h.e.test_check(-1, 0); assert.equal(record(h).probeId, probe);
+    const h = make(); h.e.test_slot(1, 1, 1); h.e.test_dispatch(1);
+    h.now += 10000000000; h.e.test_check(-1, 0); assert.equal(record(h).probeId, probe);
     h.writes.length = 0; h.header = ''; h.e.test_start(); h.now += 10000000000; h.e.test_check(-1, 0);
-    assert.equal(record(h).probeId, null);
+    assert.equal(record(h).probeId, null); assert.equal(record(h).effectElapsedMs, null);
   });
   check('diagnostic clock failure or regression emits null without mutating budget', () => {
     for (const failure of [true, false]) {

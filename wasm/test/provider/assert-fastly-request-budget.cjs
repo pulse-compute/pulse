@@ -29,6 +29,7 @@ const diagnostic = JSON.parse(diagnostics[0].message);
 assert.equal(diagnostic.probeId, probe);
 assert.equal(diagnostic.budgetMs, 10000); assert.equal(diagnostic.elapsedMs, 10000);
 assert.equal(diagnostic.timeoutStage, 260); assert.equal(diagnostic.remoteAcceptance, 'unknown');
+assert.equal(diagnostic.requestElapsedAtDispatchMs, 6000); assert.equal(diagnostic.effectElapsedMs, 4000);
 assert.ok(Buffer.byteLength(diagnostics[0].message) <= 1024);
 assert.equal(reads,2);assert.equal(inserts,0);assert.equal(authority.stores.get('catalog').has('checkpoint'),false);
 assert.ok(waits.includes(4000));
@@ -43,6 +44,14 @@ const uncertain = mock.executeFastlyNativePlatformCapabilities(native, {conditio
 }});
 assert.equal(uncertain.response.status, 504);
 assert.ok(lateAuthority.stores.get('catalog').has('checkpoint'), '504 must not imply a dispatched conditional write rolled back');
+const lateDiagnostic = JSON.parse(uncertain.logs.find(log => log.message.includes('pulse.request-timeout.v1')).message);
+assert.equal(lateDiagnostic.requestElapsedAtDispatchMs, 0); assert.equal(lateDiagnostic.effectElapsedMs, 10000);
+const preparedLate = mock.executeFastlyNativePlatformCapabilities(native, {conditionalKv: {authority: lateAuthority,
+  onCall(stage) { if (stage === 'lookup') return {readyDelayMs: 1000}; if (stage === 'insert') return {readyDelayMs: 9000}; }
+}});
+assert.equal(preparedLate.response.status, 504);
+const preparedDiagnostic = JSON.parse(preparedLate.logs.find(log => log.message.includes('pulse.request-timeout.v1')).message);
+assert.equal(preparedDiagnostic.requestElapsedAtDispatchMs, 2000); assert.equal(preparedDiagnostic.effectElapsedMs, 8000);
 console.log('ok - Fastly deadline preserves remote acceptance uncertainty');
 
 // A noninterruptible final body write must be checked before response handoff.

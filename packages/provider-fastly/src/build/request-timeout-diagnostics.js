@@ -23,10 +23,31 @@ let __request_diag_probe: string = '';
 const __request_diag_clock = new StaticArray<i64>(1);
 const __request_diag_header = new Uint8Array(37);
 const __request_diag_written = new StaticArray<i32>(1);
+// Invocation identity, not the reusable effect index, owns each timing sample.
+const __request_diag_kv_starts = new StaticArray<i64>(PULSE_FASTLY_EFFECT_COUNT);
+const __request_diag_kv_tickets = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT);
 function __request_diag_reset(): void {
   __request_diag_emitted = false;
   __request_diag_origin = -1;
   __request_diag_probe = '';
+  for (let i = 0; i < PULSE_FASTLY_EFFECT_COUNT; i++) __request_diag_kv_tickets[i] = 0;
+}
+function __request_diag_kv_reset(index: i32): void {
+  if (index >= 0 && index < PULSE_FASTLY_EFFECT_COUNT) __request_diag_kv_tickets[index] = 0;
+}
+function __request_diag_kv_dispatch(index: i32): void {
+  if (index < 0 || index >= PULSE_FASTLY_EFFECT_COUNT) return;
+  const ticket = unchecked(__pulse_invocation_tickets[index]);
+  unchecked(__request_diag_kv_tickets[index] = ticket);
+  unchecked(__request_diag_kv_starts[index] = -1);
+  if (ticket <= 0) return;
+  // Observe only: a failed/regressing sample must not mutate budget or error state.
+  __request_diag_clock[0] = -1;
+  if (wasi_snapshot_preview1_clock_time_get(1, 1, changetype<usize>(__request_diag_clock)) == 0
+      && __request_diag_origin >= 0 && __request_diag_clock[0] >= __request_diag_origin
+      && __request_diag_clock[0] >= __request_last_clock) {
+    unchecked(__request_diag_kv_starts[index] = __request_diag_clock[0]);
+  }
 }
 function __request_diag_uuid(value: string): bool {
   if (value.length != 36 || value.charCodeAt(14) != 52) return false;
@@ -83,16 +104,24 @@ function __request_diag_emit(index: i32 = -1, phase: i32 = 0): void {
     : ticket > 0 ? 'unsettled' : 'no-live-ticket';
   // Observe a fresh monotonic time without calling the budget mutator. Select
   // timeouts otherwise leave the budget's last clock at the start of the wait.
-  let elapsed = 'null';
+  let elapsed = 'null', dispatchElapsed = 'null', effectElapsed = 'null';
   __request_diag_clock[0] = -1;
   if (wasi_snapshot_preview1_clock_time_get(1, 1, changetype<usize>(__request_diag_clock)) == 0
       && __request_diag_origin >= 0 && __request_diag_clock[0] >= __request_diag_origin
       && __request_diag_clock[0] >= __request_last_clock) {
     elapsed = i64((__request_diag_clock[0] - __request_diag_origin) / 1000000).toString();
+    if (phase != 1 && ticket > 0 && unchecked(__request_diag_kv_tickets[index]) == ticket) {
+      const start = unchecked(__request_diag_kv_starts[index]);
+      if (start >= __request_diag_origin && __request_diag_clock[0] >= start) {
+        dispatchElapsed = i64((start - __request_diag_origin) / 1000000).toString();
+        effectElapsed = i64((__request_diag_clock[0] - start) / 1000000).toString();
+      }
+    }
   }
   const probe = __request_diag_probe.length == 36 ? '"' + __request_diag_probe + '"' : 'null';
   const message = '{"event":"pulse.request-timeout.v1","probeId":' + probe
     + ',"elapsedMs":' + elapsed + ',"budgetMs":${durationMs},"timeoutStage":260'
+    + ',"requestElapsedAtDispatchMs":' + dispatchElapsed + ',"effectElapsedMs":' + effectElapsed
     + ',"errorStage":' + __pulse_fastly_error_stage.toString()
     + ',"effectIndex":' + index.toString()
     + ',"effectKind":"' + __request_diag_kind(index) + '"'
