@@ -15,6 +15,7 @@ Project configuration lives in `.pulse/config.ts`.
 > This release-status block is generated from the synchronized `Pulse 1.0.0-beta.10` package policy.
 <!-- pulse-package-status:end -->
 
+<a id="start-here"></a>
 ## Install and create a project
 
 Use Node.js 22.14 or newer on the 22.x line, or Node.js 24.x, with npm.
