@@ -240,6 +240,7 @@ function inspectFastlyCanonicalTarget(options = {}) {
         profile: options.profile,
         bindings,
         maxDurationMs: providerConfig.maxDurationMs,
+        latencyDiagnostics: options.latencyDiagnostics,
         bodyForwarding: providerConfig.bodyForwarding,
         maxWasmBytes,
         requirePlatformCapability: false,
@@ -260,6 +261,9 @@ function inspectFastlyCanonicalTarget(options = {}) {
     throw providerBuildError('PULSE_FASTLY_NATIVE_ARTIFACT_INVALID', 'Fastly artifact logging destination does not match the selected provider profile; rebuild the Native artifact.');
   }
   const duration = require('@pulse-compute/runtime/host').normalizeRequestDuration(providerConfig.maxDurationMs);
+  if (Boolean(native.manifest.latencyDiagnostics) !== (options.latencyDiagnostics === true)) {
+    throw providerBuildError('PULSE_FASTLY_NATIVE_ARTIFACT_INVALID', 'Fastly latency evidence selection differs from the artifact; rebuild it.');
+  }
   if (native.manifest.bindings?.maxDurationMs !== duration) {
     throw providerBuildError('PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH', 'Fastly artifact request deadline does not match the selected provider profile.');
   }

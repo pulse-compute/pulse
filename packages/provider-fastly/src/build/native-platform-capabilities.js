@@ -2198,6 +2198,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   }
   lifecycle.assertSites();
   if (lifecycle.supportSource) source += '\n' + lifecycle.supportSource;
+  source = require('./request-latency.js').instrument(source, options.latencyDiagnostics, plan, bindings.maxDurationMs);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;
@@ -2212,6 +2213,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     imports: Object.freeze([...capabilityImports(effect), ...(bindings.backends.some(b => b.index === index && b.dynamic) ? ['fastly_http_req.register_dynamic_backend'] : [])])
   })));
   const manifest = Object.freeze({
+    ...(options.latencyDiagnostics === true ? { latencyDiagnostics: 'pulse.request-latency.v1' } : {}),
     ...(resourceAccounting ? { resourceAccounting } : {}),
     version: FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
     generatorVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_GENERATOR_VERSION,
