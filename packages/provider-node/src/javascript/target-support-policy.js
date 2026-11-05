@@ -16,7 +16,7 @@ function classifyNodeJavascriptCapability(id, options = {}) {
     options.bodyForwarding ? 'eligible' : 'blocked', options.bodyForwarding ? 'node-incoming-body-forwarding' : 'node-incoming-body-forwarding-not-configured', 'provider-node');
   if (capability === 'package.invoke') return decision(capability, 'eligible', 'node-package-wasm-v1', 'provider-node');
   if (capability === 'crypto.digestText') return decision(capability, 'eligible', 'node-javascript-crypto-sha256-runtime-builtin', 'provider-node');
-  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(capability)) return decision(capability, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
+  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(capability)) return decision(capability, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (isJavascriptCoreCapability(capability)) {
     return decision(capability, 'eligible', 'node-router-context-parity', 'provider-node');
   }
@@ -96,7 +96,7 @@ function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, opt
   if (requirement === 'request.body.forward') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'package.invoke') return decision(requirement, 'eligible', 'node-package-wasm-v1', 'provider-node');
   if (requirement === 'crypto.digestText') return decision(requirement, 'eligible', 'node-javascript-crypto-sha256-runtime-builtin', 'provider-node');
-  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(requirement)) return decision(requirement, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
+  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(requirement)) return decision(requirement, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (requirement === 'request') {
     const bodyRequired = compilerCapabilities.some((entry) => entry === 'request.json' || entry.startsWith('request.body'));
     return bodyRequired

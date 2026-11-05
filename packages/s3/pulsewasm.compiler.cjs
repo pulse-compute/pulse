@@ -13,7 +13,7 @@ function buildS3LoweringPlan(input = {}) {
   const effects = [];
   const error = (node, suffix, message) => diagnostics.push(normalizeDiagnostic({
     phase: 's3-lowering', severity: 'error', code: `PULSEWASM_S3_${suffix}`, message,
-    hint: 'Use a supported s3 call with literal binding/options and runtime key/text in an awaited handler position.', loc: sourceLoc(source, node)
+    hint: 'Use a supported s3 call with a literal binding and the documented operation arguments in an awaited handler position.', loc: sourceLoc(source, node)
   }));
   for (const statement of source.statements) {
     if (!ts.isImportDeclaration(statement) || statement.moduleSpecifier.text !== S3_PACKAGE) continue;
@@ -35,15 +35,16 @@ function buildS3LoweringPlan(input = {}) {
       && ts.isIdentifier(node.expression.expression) && namespaces.has(node.expression.expression.text)) {
       const method = node.expression.name.text;
       const op = S3_OPERATIONS[method];
-      if (!op) { error(node, 'OPERATION_UNSUPPORTED', 'S3 supports head, getText, getBody and putText.'); return; }
+      if (!op) { error(node, 'OPERATION_UNSUPPORTED', 'S3 supports head, getText, getBody, putText, list and delete.'); return; }
       const put = method === 'putText';
+      const list = method === 'list';
       const body = method === 'getBody';
       let fn = node.parent;
       while (fn && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) fn = fn.parent;
       const ctx = fn && fn.parameters[0] && fn.parameters[0].name;
-      if (!(put ? [4, 5].includes(node.arguments.length) : body ? [3, 4].includes(node.arguments.length) : node.arguments.length === 3) || !ctx || !ts.isIdentifier(ctx)
+      if (!(list ? [2, 3].includes(node.arguments.length) : put ? [4, 5].includes(node.arguments.length) : body ? [3, 4].includes(node.arguments.length) : node.arguments.length === 3) || !ctx || !ts.isIdentifier(ctx)
         || !ts.isIdentifier(node.arguments[0]) || node.arguments[0].text !== ctx.text) {
-        error(node, 'ARGUMENTS_UNSUPPORTED', 'S3 requires current handler context, literal binding, runtime key and, for PUT, text with optional literal options.'); return;
+        error(node, 'ARGUMENTS_UNSUPPORTED', 'S3 requires current handler context and literal binding; LIST takes optional runtime options, other operations take a key and documented operation arguments.'); return;
       }
       const binding = node.arguments[1];
       if (!ts.isStringLiteralLike(binding) || !/^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(binding.text)) {
@@ -93,10 +94,10 @@ function buildS3LoweringPlan(input = {}) {
         version: CANONICAL_PACKAGE_EFFECT_VERSION, contractId: S3_CONTRACT_ID, package: S3_PACKAGE, import: S3_PACKAGE,
         ...op, providerKind: 's3', operation: method, placement,
         range: { start: node.getStart(source), end: node.getEnd() },
-        resource: { binding: binding.text }, payload: { binding: binding.text, ...options },
-        runtimeInputs: [{ name: 'key', argumentIndex: 2, source: 'package-call-argument' }, ...(put ? [{ name: 'text', argumentIndex: 3, source: 'package-call-argument' }] : [])],
+        resource: { binding: binding.text }, payload: { binding: binding.text, ...(list && node.arguments.length === 2 ? { options: {} } : {}), ...options },
+        runtimeInputs: list ? (node.arguments.length === 2 ? [] : [{ name: 'options', argumentIndex: 2, source: 'package-call-argument' }]) : [{ name: 'key', argumentIndex: 2, source: 'package-call-argument' }, ...(put ? [{ name: 'text', argumentIndex: 3, source: 'package-call-argument' }] : [])],
         providerRequirements: [op.kind, 'secret.get', 'time.wall-clock'], schemaReferences: [],
-        redaction: ['key', 'text', 'sha256', 'etag', 'contentType'], loc: sourceLoc(source, node)
+        redaction: list ? ['options', 'entries', 'nextContinuationToken'] : ['key', 'text', 'sha256', 'etag', 'contentType'], loc: sourceLoc(source, node)
       });
     }
     ts.forEachChild(node, visit);

@@ -2638,8 +2638,9 @@ staging inputs. Large host-staged hashes use a separate lazy digest frame. Nativ
 also checks guest memory ranges. JWT verification retains its separate limits.
 No target probes or falls back to a different realization.
 
-The supported-extension `@pulse-compute/s3` package owns `head`, `getText` and `putText`,
-literal binding/options authority, runtime key/text lowering, SigV4 composition
+The supported-extension `@pulse-compute/s3` package owns `head`, `getText`, `getBody`,
+`putText`, `list` and `delete`, literal binding authority, runtime key/text/list-option
+lowering, literal PUT/body options, SigV4 composition
 and bounded results. Node and Fastly own fixed endpoint/bucket/region mappings,
 credential lookup, deadlines and transport. Fastly requires a static backend.
 Reads and writes bypass cache, disable decompression and redirects, preserve
@@ -2649,6 +2650,23 @@ Only a complete 200 acknowledgement with a bounded empty body yields `stored`;
 its digest describes sent bytes, not durability. Request cancellation retains
 existing lifecycle behavior and does not fabricate a typed S3 outcome. Fastly
 pending requests lack a cancel ABI; invocation termination owns their release.
+
+LIST adds one ListObjectsV2 page per effect with runtime prefix, maximum keys
+(1–1000, default 100) and an opaque continuation token. Binding authority is
+unchanged. S3 owns query encoding/signing and a bounded 2 MiB XML parser in
+JavaScript and AssemblyScript; providers own transport and deadlines. The
+entire page, bucket/prefix, entry count and pagination metadata must validate
+before any inventory returns. Results contain keys, safe byte lengths, optional
+opaque ETags and a cursor only when truncated. No automatic traversal occurs.
+DELETE adds one exact-key effect. A complete empty 204 yields `deleted`, without
+asserting prior existence or erasure of version history; complete 4xx rejection
+except 408 yields `not-deleted`, and unconfirmed dispatched deletion yields
+`unknown`. No retries, bulk deletion, version selection or fallback is added.
+Both extend existing package admission and Node/Fastly Native realization;
+Fastly JavaScript remains blocked by raw-header evidence requirements. A shared
+three-target corpus covers signed pagination, malformed XML, deletion outcomes
+and cancellation, and repeats through installed tarballs. This is source/local
+ABI evidence, not deployed origin qualification or published beta.11 support.
 
 AST-01 consolidates JavaScript SigV4 canonicalization, key derivation and RFC3986
 segment encoding in S3's first-party `./signing` integration export. The existing

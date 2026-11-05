@@ -17,7 +17,7 @@ const intrinsics = new Set(['request.header', 'request.text', 'request.json', 'r
 const effects = new Set(['fetch', 'config.get', 'secret.get', 'kv.get', 'kv.put',
   'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete', 'time.now',
   'package.invoke', 'crypto.digestText', 'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast',
-  'assets.lookup', 'jwt.verify', 'jwt.sign', 's3.head', 's3.getText', 's3.putText', 's3.getBody']);
+  'assets.lookup', 'jwt.verify', 'jwt.sign', 's3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete']);
 const capabilities = new Set(['request', 'request.method', 'request.url', 'request.path',
   'request.headers', 'request.header', 'request.text', 'request.json', 'response.json',
   'response.text', 'schema.decode', 'schema.encode', 'state.get', 'state.set', 'logging',

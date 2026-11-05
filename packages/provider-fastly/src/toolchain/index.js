@@ -172,7 +172,7 @@ function createDriver() {
         runtimeClass: 'native',
         status: 'supported',
         capabilities: Object.freeze([
-          's3.head', 's3.getText', 's3.getBody',
+          's3.head', 's3.getText', 's3.getBody', 's3.list', 's3.delete',
           'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete',
           'jwt.verify',
           'jwt.sign',

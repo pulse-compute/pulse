@@ -3,7 +3,7 @@
 const NODE_JWT_VERIFY_CAPABILITY = 'jwt.verify';
 
 const NODE_CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
-  's3.head', 's3.getText', 's3.putText', 's3.getBody',
+  's3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete',
   'request',
   'package.invoke',
   'request.body.forward',
@@ -56,6 +56,7 @@ const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
   's3.getText': 'node.native.s3.getText',
   's3.putText': 'node.native.s3.putText',
   's3.getBody': 'node.s3.opaque-body',
+  's3.list': 'node.s3.list', 's3.delete': 'node.s3.delete',
   'assets.lookup': 'node.runtime.assets.lookup',
   'grip.broadcast': 'node.http.grip.publish',
   [NODE_JWT_VERIFY_CAPABILITY]: 'node.native.jwt.verify',
@@ -65,7 +66,7 @@ const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
 
 const NODE_NATIVE_TARGET_CAPABILITIES = Object.freeze([
   'package.invoke',
-  's3.head', 's3.getText', 's3.putText', 's3.getBody',
+  's3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete',
   NODE_JWT_VERIFY_CAPABILITY,
   'jwt.sign',
   'jwt.verify.hs256',

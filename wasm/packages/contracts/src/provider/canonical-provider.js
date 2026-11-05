@@ -32,7 +32,7 @@ const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   's3.head',
   's3.getText',
   's3.putText',
-  's3.getBody',
+  's3.getBody', 's3.list', 's3.delete',
   'opaque.pass-through'
 ]);
 

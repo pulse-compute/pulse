@@ -214,6 +214,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       's3-design-contract',
       's3-read-contract',
       's3-write-contract',
+      's3-list-delete-contract',
       'clean-machine-acceptance', // installed S3 read/write corpora
       's3-body-read',
       'jwt-signing',

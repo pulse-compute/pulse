@@ -188,6 +188,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   's3.getText': 13,
   's3.putText': 14,
   's3.getBody': 21,
+  's3.list': 25, 's3.delete': 26,
   'kv.delete': 22,
   'kv.list': 23,
   'kv.getVersioned': 15,
@@ -223,7 +224,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
   's3.head',
   's3.getText',
   's3.putText',
-  's3.getBody'
+  's3.getBody', 's3.list', 's3.delete'
 ]);
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
@@ -245,7 +246,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
   's3.head',
   's3.getText',
   's3.putText',
-  's3.getBody'
+  's3.getBody', 's3.list', 's3.delete'
 ]);
 
 class FastlyNativePlatformCapabilitiesError extends Error {
@@ -717,7 +718,7 @@ function validatePlanBoundary(plan, options = {}) {
       && ['verify', 'sign'].includes(effect.operation)
       && effect.kind === `jwt.${effect.operation}` && effect.capability === effect.kind;
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
-      && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
+      && ['head', 'getText', 'putText', 'getBody', 'list', 'delete'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
     const extension = effect.kind === 'host.extension' && selectedExtensions.some(item => hostExtensions.matches(effect, item.artifact));
@@ -741,7 +742,7 @@ function validatePlanBoundary(plan, options = {}) {
       && ['verify', 'sign'].includes(effect.operation)
       && effect.kind === `jwt.${effect.operation}` && effect.capability === effect.kind;
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
-      && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
+      && ['head', 'getText', 'putText', 'getBody', 'list', 'delete'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
     const extension = effect.kind === 'host.extension' && selectedExtensions.some(item => hostExtensions.matches(effect, item.artifact));
@@ -831,7 +832,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   const effects = plan.effects || [];
   const hasConfig = effects.some((effect) => effect.kind === 'config.get');
   const hasSecret = effects.some((effect) => (
-    effect.kind === 'secret.get' || ['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind)
+    effect.kind === 'secret.get' || ['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(effect.kind)
     || (['jwt.verify', 'jwt.sign'].includes(effect.kind) && effect.resource && effect.resource.keyType === 'secret')
   ));
   const hasGripHold = effects.some((effect) => effect.kind === 'grip.hold');
@@ -1038,11 +1039,11 @@ function requiredImportsForPlan(plan, bindings) {
   if (kinds.has('kv.get') || kinds.has('assets.lookup')) for (const key of ['fastly_kv_store:lookup', 'fastly_kv_store:lookup_wait_v2', 'fastly_http_body:read']) keys.add(key);
   if (kinds.has('kv.put')) for (const key of ['fastly_kv_store:insert', 'fastly_kv_store:insert_wait']) keys.add(key);
   if (kinds.has('grip.hold')) keys.add('fastly_http_resp:header_append');
-  if ((plan.logging && plan.logging.enabledStatements > 0) || ['fetch', 'grip.publish', 'grip.broadcast', 's3.head', 's3.getText', 's3.putText', 's3.getBody'].some(kind => kinds.has(kind))) {
+  if ((plan.logging && plan.logging.enabledStatements > 0) || ['fetch', 'grip.publish', 'grip.broadcast', 's3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].some(kind => kinds.has(kind))) {
     if (bindings?.logEndpoint === undefined) keys.add('wasi_snapshot_preview1:fd_write');
     else { keys.add('fastly_log:endpoint_get'); keys.add('fastly_log:write'); }
   }
-  if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText') || kinds.has('s3.getBody')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
+  if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText') || kinds.has('s3.getBody') || kinds.has('s3.list') || kinds.has('s3.delete')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
   if (require('./native-body-forwarding.js').enabled(plan)) {
     keys.delete('fastly_http_req:header_append'); keys.add('fastly_http_req:header_insert');
     keys.delete('fastly_http_req:send_async'); keys.delete('fastly_http_req:pending_req_wait_v2');
@@ -1275,7 +1276,7 @@ function effectResultSource(plan, bindings) {
     }
     const result = effect.result || {};
     const decoder = result.decoder;
-    const waiter = conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) ? '__pulse_fastly_kv_conditional_wait' : ['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
+    const waiter = conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) ? '__pulse_fastly_kv_conditional_wait' : ['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
       ? '__pulse_fastly_wait_fetch'
       : effect.kind === 'grip.publish'
         ? '__pulse_fastly_wait_grip_publish'
@@ -1322,6 +1323,7 @@ function effectDispatchSource(plan) {
     's3.getText': '__pulse_fastly_s3_begin',
     's3.putText': '__pulse_fastly_s3_begin',
     's3.getBody': '__pulse_fastly_s3_begin',
+    's3.list': '__pulse_fastly_s3_begin', 's3.delete': '__pulse_fastly_s3_begin',
     'kv.get': '__pulse_fastly_kv_get_begin',
     'kv.put': '__pulse_fastly_kv_put_begin',
     ...Object.fromEntries(conditionalKv.KV_CONDITIONAL_KINDS.map(kind => [kind, '__pulse_fastly_kv_conditional_begin'])),
