@@ -52,7 +52,7 @@ async function signRequest(input, crypto) {
   const { binding, method, encodedKey, accessId, secret, token, now } = input;
   const body = method === 'PUT' ? input.body : new Uint8Array();
   const contentType = method === 'PUT' ? normalizePutOptions({ contentType: input.contentType }).contentType : undefined;
-  if (!['HEAD', 'GET', 'PUT'].includes(method) || !(body instanceof Uint8Array) || body.length > binding.maxTextBytes || !credentialsValid(accessId, secret, token) || !Number.isFinite(now) || now < 0) throw new TypeError('S3 signing input is invalid.');
+  if (!['HEAD', 'GET', 'PUT', 'DELETE'].includes(method) || !(body instanceof Uint8Array) || body.length > binding.maxTextBytes || !credentialsValid(accessId, secret, token) || !Number.isFinite(now) || now < 0) throw new TypeError('S3 signing input is invalid.');
   const date = new Date(now).toISOString().replace(/[:-]|\.\d{3}/g, '');
   if (!/^\d{8}T\d{6}Z$/.test(date)) throw new TypeError('S3 signing clock is invalid.');
   const digest = hex(await crypto.sha256(body));
@@ -60,10 +60,11 @@ async function signRequest(input, crypto) {
   const headers = { ...(contentType === undefined ? {} : { 'content-type': contentType }), host, 'x-amz-content-sha256': digest, 'x-amz-date': date, ...(token === undefined ? {} : { 'x-amz-security-token': token }) };
   if (input.readOptions) Object.assign(headers, require('./body.js').bodyRequestHeaders(input.readOptions));
   const uri = `/${binding.bucket}/${encodedKey}`;
-  headers.authorization = await createAuthorization({ method, uri, query: '', headers, date,
+  const query = input.listOptions ? require('./list.js').listQuery(input.listOptions) : '';
+  headers.authorization = await createAuthorization({ method, uri, query, headers, date,
     region: binding.region, service: 's3', accessId, secret, payloadHash: digest }, crypto);
   headers['accept-encoding'] = 'identity';
-  return { method, url: binding.endpoint + uri, headers, ...(method === 'PUT' ? { body } : {}) };
+  return { method, url: binding.endpoint + uri + (query ? '?' + query : ''), headers, ...(method === 'PUT' ? { body } : {}) };
 }
 function failure(reason, httpStatus) { return Object.freeze({ status: 'failed', reason, ...(httpStatus === undefined ? {} : { httpStatus }) }); }
 function putFailure(reason, dispatched, httpStatus) {
@@ -73,6 +74,13 @@ function putStatusResult(status) {
   if (status === 200) return null;
   if (status >= 400 && status <= 499 && status !== 408) return putFailure(status === 401 || status === 403 ? 'not-authorized' : status === 429 ? 'throttled' : 'rejected', false, status);
   return putFailure(status === 408 ? 'timeout' : status >= 500 && status <= 599 ? 'unavailable' : 'protocol', true, status);
+}
+function deleteFailure(reason, dispatched, httpStatus) { return Object.freeze({ status: dispatched ? 'unknown' : 'not-deleted', reason, ...(httpStatus === undefined ? {} : { httpStatus }) }); }
+function deleteStatusResult(status) {
+  if (status === 204) return null;
+  const value = putStatusResult(status);
+  if (!value) return deleteFailure('protocol', true, status);
+  return deleteFailure(value.reason, value.status === 'unknown', status);
 }
 function statusResult(status) {
   if (status === 200) return null;
@@ -99,7 +107,18 @@ function metadataFromHeaders(headers, head) {
     ...(selected.has('content-type') ? { contentType: selected.get('content-type') } : {}) };
 }
 function normalizeResult(operation, result) {
-  if (!['head', 'getText', 'putText'].includes(operation)) throw new TypeError('Unknown S3 result operation.');
+  if (operation === 'list') {
+    record(result, ['status', 'reason', 'httpStatus', 'entries', 'isTruncated', 'nextContinuationToken']);
+    if (result.status === 'listed') return require('./list.js').normalizeListResult(result);
+  }
+  if (operation === 'delete') {
+    record(result, ['status','reason','httpStatus']);
+    if (result.status === 'deleted' && Object.keys(result).length === 1) return Object.freeze({ ...result });
+    const mapped = { ...result, status: result.status === 'not-deleted' ? 'not-stored' : result.status };
+    if (!['not-deleted','unknown'].includes(result.status) || ['invalid-text', 'too-large'].includes(result.reason)) throw new TypeError('Invalid S3 delete result.');
+    normalizeResult('putText', mapped); return Object.freeze({ ...result });
+  }
+  if (!['head', 'getText', 'putText', 'list'].includes(operation)) throw new TypeError('Unknown S3 result operation.');
   const allowed = ['status', 'reason', 'httpStatus', 'byteLength', 'etag', 'contentType', 'text', 'sha256'];
   record(result, allowed);
   if (operation === 'putText') {
@@ -111,10 +130,12 @@ function normalizeResult(operation, result) {
       || result.etag !== undefined && (typeof result.etag !== 'string' || !result.etag.length || !result.etag.isWellFormed() || bytes(result.etag).length > S3_LIMITS.metadataBytes || /[\u0000-\u001f\u007f-\u009f]/u.test(result.etag))) throw new TypeError('PUT returned an invalid bounded result.');
     return Object.freeze({ ...result });
   }
-  if (result.status === 'not-found' && Object.keys(result).length === 1) return Object.freeze({ ...result });
+  if (operation === 'list' && result.status === 'failed' && result.reason === 'invalid-options' && Object.keys(result).length === 2) return Object.freeze({ ...result });
+  if (operation !== 'list' && result.status === 'not-found' && Object.keys(result).length === 1) return Object.freeze({ ...result });
   if (result.status === 'failed' && ['invalid-key', 'configuration', 'credentials', 'not-authorized', 'throttled', 'unavailable', 'transport', 'timeout', 'protocol', 'too-large', 'invalid-utf8'].includes(result.reason)
     && Object.keys(result).every((name) => ['status', 'reason', 'httpStatus'].includes(name))
     && (result.httpStatus === undefined || Number.isInteger(result.httpStatus) && result.httpStatus >= 100 && result.httpStatus <= 599)) return Object.freeze({ ...result });
+  if (operation === 'list') throw new TypeError('Invalid S3 list result.');
   if (result.status !== 'found' || !Number.isSafeInteger(result.byteLength) || result.byteLength < 0 || Object.hasOwn(result, 'reason') || Object.hasOwn(result, 'httpStatus')) throw new TypeError('S3 returned an invalid bounded result.');
   if (operation === 'head' && (Object.hasOwn(result, 'text') || Object.hasOwn(result, 'sha256'))) throw new TypeError('HEAD cannot return object bytes or a digest.');
   if (operation === 'getText' && (typeof result.text !== 'string' || !result.text.isWellFormed() || bytes(result.text).length !== result.byteLength || result.byteLength > S3_LIMITS.textBytes || typeof result.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(result.sha256))) throw new TypeError('GET returned an invalid exact-text result.');
@@ -122,4 +143,4 @@ function normalizeResult(operation, result) {
   if (bytes(JSON.stringify(result)).length > S3_LIMITS.envelopeBytes) throw new TypeError('S3 result envelope exceeds its bound.');
   return Object.freeze({ ...result });
 }
-module.exports = Object.freeze({ ...require('./body.js'), normalizeBinding, namePattern, encodeKey, credentialsValid, normalizePutOptions, signRequest, signRead: signRequest, failure, putFailure, putStatusResult, statusResult, metadataFromHeaders, normalizeResult, hex, bytes });
+module.exports = Object.freeze({ ...require('./body.js'), ...require('./list.js'), deleteFailure, deleteStatusResult, normalizeBinding, namePattern, encodeKey, credentialsValid, normalizePutOptions, signRequest, signRead: signRequest, failure, putFailure, putStatusResult, statusResult, metadataFromHeaders, normalizeResult, hex, bytes });

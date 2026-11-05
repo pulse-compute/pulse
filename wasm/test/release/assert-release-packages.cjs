@@ -99,7 +99,7 @@ assert.equal(s3.supportTier, 'supported-extension');
 assert.deepEqual(s3.entryPoints, ['@pulse-compute/s3']);
 const s3Entries = readTarEntries(path.join(outDir, s3.tarball));
 for (const file of ['src/index.js', 'src/index.d.ts', 'src/provider.js', 'pulse.package.json',
-  'pulsewasm.manifest.cjs', 'pulsewasm.compiler.cjs', 'pulsewasm.native.cjs', 'as/read.as.ts', 'conformance/read.json']) {
+  'pulsewasm.manifest.cjs', 'pulsewasm.compiler.cjs', 'pulsewasm.native.cjs', 'as/read.as.ts', 'as/list.as.ts', 'src/list.js', 'conformance/read.json']) {
   assert.ok(s3Entries.has(`package/${file}`), `S3 packed lowering/runtime closure is missing ${file}`);
 }
 for (const provider of ['@pulse-compute/provider-node', '@pulse-compute/provider-fastly']) {

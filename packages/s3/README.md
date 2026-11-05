@@ -2,20 +2,25 @@
 
 <!-- pulse-package-status:start -->
 > **Support tier:** Supported provider/extension surface<br>
-> **Audience:** Applications using bounded exact-key object reads and writes through Pulse effects.<br>
+> **Audience:** Applications using bounded S3 reads, writes, single-key deletion and paginated listing through Pulse effects.<br>
 > **Install directly:** Yes, when an application uses S3 object operations.<br>
 > **Supported entry points:** `@pulse-compute/s3`<br>
-> **Stability:** The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate.<br>
+> **Stability:** The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. Current source adds bounded list and single-key delete; these additions are not in the published beta.11 artifacts. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate.<br>
 > **npm:** [`@pulse-compute/s3`](https://www.npmjs.com/package/@pulse-compute/s3)<br>
 > **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.11/packages/s3/)
 >
 > This release-status block is generated from the synchronized `Pulse 1.0.0-beta.11` package policy.
 <!-- pulse-package-status:end -->
 
-This package provides bounded, exact-key `head`, `getText` and `putText` effects for
+This package provides bounded `head`, `getText`, `getBody`, `putText`, `list` and
+single-key `delete` effects for
 Node Native, Node JavaScript and Fastly Native. Await an operation into a local
 variable or use it directly in keyed `ctx.parallel`. The binding is a literal
-logical name; key and text may be runtime strings.
+logical name; key and text may be runtime strings. LIST accepts runtime prefix,
+page size and opaque continuation token options and returns one bounded page.
+DELETE distinguishes acknowledged deletion, definite rejection and unknown
+outcomes. These two additions are unreleased source changes, not beta.11 npm
+features; see the package guide for bounds and versioning semantics.
 
 Providers own fixed HTTPS origin, bucket, region, named credential references,
 deadline and transport. Fastly additionally requires a named static backend.

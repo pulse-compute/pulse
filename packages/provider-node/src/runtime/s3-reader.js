@@ -38,12 +38,12 @@ function abortable(promise, signal) {
   });
 }
 async function readS3(effect, options, lookup) {
-  const operation = effect.operation, put = operation === 'putText', bodyRead = operation === 'getBody';
+  const operation = effect.operation, put = operation === 'putText', bodyRead = operation === 'getBody', list = operation === 'list', del = operation === 'delete', mutation = put || del;
   const payload = effect.payload || {};
-  if (!['head', 'getText', 'putText', 'getBody'].includes(operation) || effect.kind !== `s3.${operation}` || effect.capability !== effect.kind
+  if (!['head', 'getText', 'putText', 'getBody', 'list', 'delete'].includes(operation) || effect.kind !== `s3.${operation}` || effect.capability !== effect.kind
     || effect.package !== '@pulse-compute/s3' || effect.contractId !== 'pulse.s3' || effect.providerKind !== 's3') throw new TypeError('Invalid S3 package effect authority.');
   let dispatched = false, status;
-  const failure = (reason) => bodyRead ? new Response(null, { status: reason === 'timeout' ? 504 : 502, headers: { 'x-pulse-s3-error': reason } }) : put ? protocol.putFailure(reason, dispatched, status) : protocol.failure(reason, status);
+  const failure = (reason) => bodyRead ? new Response(null, { status: reason === 'timeout' ? 504 : 502, headers: { 'x-pulse-s3-error': reason } }) : del ? protocol.deleteFailure(reason, dispatched, status) : put ? protocol.putFailure(reason, dispatched, status) : protocol.failure(reason, status);
   if (options.signal && options.signal.aborted) throw options.signal.reason || new Error('Request cancelled.');
   const configured = typeof payload.binding === 'string' && options.s3 && Object.hasOwn(options.s3, payload.binding) && options.s3[payload.binding];
   let binding;
@@ -77,7 +77,9 @@ async function readS3(effect, options, lookup) {
     if (response) { try { response.close(); } catch {} }
   };
   try {
-    const key = protocol.encodeKey(payload.key);
+    const listOptions = list ? protocol.listOptions(payload.options) : undefined;
+    if (list && !listOptions) return failure('invalid-options');
+    const key = list ? '' : protocol.encodeKey(payload.key);
     if (key === null) return failure('invalid-key');
     let readOptions;
     if (bodyRead) {
@@ -108,7 +110,7 @@ async function readS3(effect, options, lookup) {
     if (!crypto || !Array.isArray(algorithms) || ['SHA-256', 'HMAC-SHA256'].some((algorithm) => !algorithms.some((entry) => entry.algorithm === algorithm && entry.available && entry.realization === realization))) return failure('configuration');
     let request;
     try {
-      request = await wait(protocol.signRequest({ binding, method: bodyRead ? readOptions.method : put ? 'PUT' : operation === 'head' ? 'HEAD' : 'GET', encodedKey: key, accessId, secret, token, now: Date.now(), body, contentType, readOptions }, crypto));
+      request = await wait(protocol.signRequest({ binding, method: bodyRead ? readOptions.method : del ? 'DELETE' : put ? 'PUT' : operation === 'head' ? 'HEAD' : 'GET', encodedKey: key, accessId, secret, token, now: Date.now(), body, contentType, readOptions, listOptions }, crypto));
     } catch (error) { check(); return failure('configuration'); }
     check();
     // The send primitive may have side effects even if it throws synchronously.
@@ -127,28 +129,36 @@ async function readS3(effect, options, lookup) {
       transferred = true;
       return new Response(stream, { status, headers: metadata.headers });
     }
-    const rejected = put ? protocol.putStatusResult(status) : protocol.statusResult(status);
-    if (rejected && (!put || rejected.status === 'unknown')) return rejected;
+    // LIST has no object-not-found result; a missing bucket is a failed request.
+    if (list && status === 404) return protocol.failure('unavailable', status);
+    const rejected = del ? protocol.deleteStatusResult(status) : put ? protocol.putStatusResult(status) : protocol.statusResult(status);
+    if (rejected && (!mutation || rejected.status === 'unknown')) return rejected;
     const metadata = protocol.metadataFromHeaders(response.headers, operation === 'head');
     if (!metadata) return failure('protocol');
     if (operation === 'head') return protocol.normalizeResult(operation, { status: 'found', ...metadata });
-    const maximum = put ? rejected ? binding.maxTextBytes : 0 : binding.maxTextBytes;
-    if (metadata.byteLength > maximum) return failure(put ? 'protocol' : 'too-large');
+    const maximum = mutation ? rejected ? binding.maxTextBytes : 0 : list ? 2097152 : binding.maxTextBytes;
+    if (metadata.byteLength > maximum) return failure(mutation ? 'protocol' : 'too-large');
     const chunks = []; let total = 0;
     if (response.body) for await (const chunk of response.body) {
       check(); total += chunk.length;
-      if (total > maximum) return failure(put ? 'protocol' : 'too-large');
-      if (!put) chunks.push(Buffer.from(chunk));
+      if (total > maximum) return failure(mutation ? 'protocol' : 'too-large');
+      if (!mutation) chunks.push(Buffer.from(chunk));
     }
     check();
     if (metadata.byteLength !== undefined && metadata.byteLength !== total) return failure('protocol');
+    if (del) return rejected || protocol.normalizeResult('delete', { status: 'deleted' });
     if (put) return rejected || protocol.normalizeResult(operation, { status: 'stored', byteLength: body.length, sha256: request.headers['x-amz-content-sha256'], ...(metadata.etag === undefined ? {} : { etag: metadata.etag }) });
     const raw = Buffer.concat(chunks, total);
-    const digest = protocol.hex(await wait(crypto.sha256(raw)));
+    const digest = list ? '' : protocol.hex(await wait(crypto.sha256(raw)));
     let text;
     try { text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(raw); }
     catch { return failure('invalid-utf8'); }
     check();
+    if (list) {
+      const page = protocol.parseList(text, listOptions, binding.bucket);
+      check();
+      return page || failure('protocol');
+    }
     return protocol.normalizeResult(operation, { status: 'found', ...metadata, byteLength: total, text, sha256: digest });
   } catch (error) {
     if (options.signal && options.signal.aborted) throw options.signal.reason || error;

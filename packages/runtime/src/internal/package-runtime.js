@@ -26,6 +26,8 @@ const TRUSTED_PACKAGE_EFFECT_CATALOG = Object.freeze({
   }),
   '@pulse-compute/s3': Object.freeze({
     contractId: 'pulse.s3', providerKind: 's3', operations: Object.freeze({
+      list: Object.freeze({ kind: 's3.list', capability: 's3.list', result: 's3-list-result' }),
+      delete: Object.freeze({ kind: 's3.delete', capability: 's3.delete', result: 's3-delete-result' }),
       getBody: Object.freeze({ kind: 's3.getBody', capability: 's3.getBody', result: 'opaque-response' }),
       head: Object.freeze({ kind: 's3.head', capability: 's3.head', result: 's3-head-result' }),
       getText: Object.freeze({ kind: 's3.getText', capability: 's3.getText', result: 's3-get-text-result' }),

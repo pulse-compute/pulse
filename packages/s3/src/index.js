@@ -5,6 +5,8 @@ const { normalizeResult, normalizePutOptions } = require('./provider.js');
 const { normalizeBodyOptions } = require('./body.js');
 const runtime = createPackageRuntime({ package: S3_PACKAGE, contractId: S3_CONTRACT_ID, providerKind: 's3', operations: S3_OPERATIONS });
 exports.s3 = Object.freeze({
+  list(ctx, binding, options = {}) { return runtime.effect(ctx, 'list', { binding, options }, result => normalizeResult('list', result)); },
+  delete(ctx, binding, key) { return runtime.effect(ctx, 'delete', { binding, key }, result => normalizeResult('delete', result)); },
   getBody(ctx, binding, key, options) {
     return runtime.effect(ctx, 'getBody', { binding, key, ...normalizeBodyOptions(options) }, result => {
       if (!(result instanceof Response)) throw new TypeError('S3 getBody requires an opaque provider Response.');

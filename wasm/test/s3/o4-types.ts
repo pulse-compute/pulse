@@ -1,7 +1,19 @@
-import { s3, type S3GetTextResult, type S3HeadResult, type S3PutTextResult } from '@pulse-compute/s3'
+import { s3, type S3GetTextResult, type S3HeadResult, type S3PutTextResult, type S3ListResult, type S3DeleteResult } from '@pulse-compute/s3'
 import type { PulseContext } from '@pulse-compute/runtime'
 
 export async function consume(ctx: PulseContext, key: string, text: string) {
+  const page: S3ListResult = await s3.list(ctx, 'objects', { prefix: 'demo/', maxKeys: 10 })
+  const removed: S3DeleteResult = await s3.delete(ctx, 'objects', key)
+  if (page.status === 'listed' && page.isTruncated) {
+    const cursor: string = page.nextContinuationToken
+    void cursor
+  }
+  if (removed.status === 'deleted') {
+    // @ts-expect-error acknowledged deletion does not establish prior existence
+    void removed.existed
+  }
+  // @ts-expect-error list options cannot change binding authority
+  s3.list(ctx, 'objects', { bucket: 'other' })
   const write: S3PutTextResult = await s3.putText(ctx, 'objects', key, text, { contentType: 'application/json' })
   const read = await ctx.parallel({
     metadata: s3.head(ctx, 'objects', key),

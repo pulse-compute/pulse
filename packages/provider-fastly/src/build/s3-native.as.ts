@@ -14,6 +14,7 @@ class __PulseS3Binding {
   contentType: string = ''; endpoint: string = ''; bucket: string = ''; region: string = ''; backend: string = '';
   id: string = ''; secret: string = ''; token: string = ''; max: i32 = 32768; timeout: i32 = 10000;
 }
+@lazy const __s3_list_options = new Array<__PulseS3ListOptions | null>(PULSE_FASTLY_EFFECT_COUNT).fill(null)
 @lazy const __s3_dispatched = new StaticArray<bool>(PULSE_FASTLY_EFFECT_COUNT)
 @lazy const __s3_sent_bytes = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)
 @lazy const __s3_digests = new Array<string>(PULSE_FASTLY_EFFECT_COUNT).fill('')
@@ -37,6 +38,7 @@ function __s3_result(status: string, reason: string = '', http: i32 = 0): i32 {
 }
 function __s3_failure(index: i32, reason: string, http: i32 = 0): i32 {
   if (__pulse_fastly_effect_kind(index) == 21) return __s3_body_failure(reason);
+  if (__pulse_fastly_effect_kind(index) == 26) return __s3_result(__s3_dispatched[index] ? 'unknown' : 'not-deleted', reason, http);
   return __s3_result(__pulse_fastly_effect_kind(index) == 14 ? (__s3_dispatched[index] ? 'unknown' : 'not-stored') : 'failed', reason, http);
 }
 function __s3_fail(index: i32, reason: string): void { __pulse_fastly_ready_effect(index, __s3_failure(index, reason)) }
@@ -59,15 +61,22 @@ function __s3_header(request: i32, name: string, value: string): bool {
 }
 function __pulse_fastly_s3_begin(index: i32, outer: __PulseFastlyValue): void {
   __pulse_transport_slots[index] = null;
-  __s3_dispatched[index] = false; __s3_sent_bytes[index] = 0; __s3_digests[index] = '';
-  const put = __pulse_fastly_effect_kind(index) == 14;
+  __s3_dispatched[index] = false; __s3_sent_bytes[index] = 0; __s3_digests[index] = ''; __s3_list_options[index] = null;
+  const put = __pulse_fastly_effect_kind(index) == 14, list = __pulse_fastly_effect_kind(index) == 25, del = __pulse_fastly_effect_kind(index) == 26;
   const payload = __pulse_fastly_value(__pulse_fastly_payload_field(outer, 'invocation'));
-  const input = __pulse_fastly_value(__pulse_fastly_payload_field(payload, 'key'));
-  if (input.kind != PULSE_VALUE_STRING) { __s3_fail(index, 'invalid-key'); return; }
-  const encoded = __pulse_s3_key(input.text);
-  if (encoded === null) { __s3_fail(index, 'invalid-key'); return; }
-  // Package effect payloads and signed paths must not enter provider logs.
-  __pulse_fastly_remember_secret(input.text);
+  let encoded = '', query = '';
+  if (list) {
+    const options = __s3_options(__pulse_fastly_value(__pulse_fastly_payload_field(payload, 'options')));
+    if (options === null) { __s3_fail(index, 'invalid-options'); return; }
+    __s3_list_options[index] = options; query = __pulse_s3_list_query(options);
+    __pulse_fastly_remember_secret(options.prefix); __pulse_fastly_remember_secret(options.continuationToken);
+  } else {
+    const input = __pulse_fastly_value(__pulse_fastly_payload_field(payload, 'key'));
+    if (input.kind != PULSE_VALUE_STRING) { __s3_fail(index, 'invalid-key'); return; }
+    const key = __pulse_s3_key(input.text);
+    if (key === null) { __s3_fail(index, 'invalid-key'); return; }
+    encoded = key; __pulse_fastly_remember_secret(input.text);
+  }
   const binding = __pulse_fastly_s3_binding(index), start = __s3_clock(1);
   if (start < 0) { __s3_fail(index, 'configuration'); return; }
   __s3_deadlines[index] = start + i64(binding.timeout) * 1000000;
@@ -87,17 +96,17 @@ function __pulse_fastly_s3_begin(index: i32, outer: __PulseFastlyValue): void {
   const token = binding.token.length ? __s3_secret(store[0], binding.token) : '';
   if (__s3_remaining(index) == 0) { __s3_fail(index, 'timeout'); return; }
   if (id === null || secret === null || token === null || !__pulse_s3_credentials(id, secret, token)) { __s3_fail(index, 'credentials'); return; }
-  const method = binding.method.length ? binding.method : put ? 'PUT' : __pulse_fastly_effect_kind(index) == 12 ? 'HEAD' : 'GET', path = '/' + binding.bucket + '/' + encoded;
+  const method = binding.method.length ? binding.method : del ? 'DELETE' : put ? 'PUT' : __pulse_fastly_effect_kind(index) == 12 ? 'HEAD' : 'GET', path = '/' + binding.bucket + '/' + encoded;
   const now = __s3_clock(0);
   if (now < 0 || !__pulse_s3_date(now / 1000000000).length) { __s3_fail(index, 'configuration'); return; }
-  const signature = __pulse_s3_sign(method, path, binding.endpoint.slice(8), binding.region, id, secret, token, now / 1000000000, data, binding.contentType, binding.range, binding.ifNoneMatch);
+  const signature = __pulse_s3_sign(method, path, binding.endpoint.slice(8), binding.region, id, secret, token, now / 1000000000, data, binding.contentType, binding.range, binding.ifNoneMatch, query);
   __s3_sent_bytes[index] = data.length; __s3_digests[index] = signature.digest;
   __pulse_fastly_remember_secret(signature.digest);
-  __pulse_fastly_remember_secret(signature.authorization); __pulse_fastly_remember_secret(binding.endpoint + path);
+  __pulse_fastly_remember_secret(signature.authorization); __pulse_fastly_remember_secret(binding.endpoint + path + (query.length ? '?' + query : ''));
   if (__s3_remaining(index) == 0) { __s3_fail(index, 'timeout'); return; }
   const request = new StaticArray<i32>(1), body = new StaticArray<i32>(1), pending = new StaticArray<i32>(1);
   if (fastly_http_req_new(changetype<usize>(request)) != 0) { __s3_fail(index, 'transport'); return; }
-  const req = request[0], url = __pulse_s3_bytes(binding.endpoint + path), verb = __pulse_s3_bytes(method), backend = __pulse_s3_bytes(binding.backend);
+  const req = request[0], url = __pulse_s3_bytes(binding.endpoint + path + (query.length ? '?' + query : '')), verb = __pulse_s3_bytes(method), backend = __pulse_s3_bytes(binding.backend);
   let ok = fastly_http_req_uri_set(req, url.dataStart, url.length) == 0 && fastly_http_req_method_set(req, verb.dataStart, verb.length) == 0
     && __s3_cache(req, 1, 0, 0) == 0 && __s3_decompress(req, 0) == 0
     && __s3_header(req, 'host', binding.endpoint.slice(8)) && __s3_header(req, 'x-amz-date', signature.date)
@@ -143,15 +152,16 @@ function __s3_list(buffer: Uint8Array, size: i32): Array<string> | null {
 }
 function __s3_read_response(index: i32, response: i32, body: i32, status: i32): i32 {
   if (__pulse_fastly_effect_kind(index) == 21) return __s3_body_response(index, response, body, status);
-  const put = __pulse_fastly_effect_kind(index) == 14;
-  const rejected = put && status >= 400 && status <= 499 && status != 408;
-  if (!put && status == 404) return __s3_result('not-found');
-  if (status != 200 && !rejected) return __s3_failure(index, __pulse_s3_status_reason(status), status);
+  const put = __pulse_fastly_effect_kind(index) == 14, list = __pulse_fastly_effect_kind(index) == 25, del = __pulse_fastly_effect_kind(index) == 26, mutation = put || del;
+  const rejected = mutation && status >= 400 && status <= 499 && status != 408;
+  if (!mutation && !list && status == 404) return __s3_result('not-found');
+  if (list && status == 404) return __s3_failure(index, 'unavailable', status);
+  if (status != (del ? 204 : 200) && !rejected) return __s3_failure(index, __pulse_s3_status_reason(status), status);
   const buffer = new Uint8Array(16384), end = new StaticArray<i64>(1), size = new StaticArray<i32>(1);
   if (__s3_header_names(response, buffer.dataStart, buffer.length, 0, changetype<usize>(end), changetype<usize>(size)) != 0 || end[0] >= 0) return __s3_failure(index, 'protocol', status);
   const names = __s3_list(buffer, size[0]); if (names === null) return __s3_failure(index, 'protocol', status);
   let total = 0, length: f64 = -1; const seen = new Set<string>();
-  const result = __s3_result(put ? 'stored' : 'found');
+  const result = __s3_result(del ? 'deleted' : put ? 'stored' : 'found');
   for (let i = 0; i < names.length; i++) {
     const rawName = names[i], name = rawName.toLowerCase(), bytes = __pulse_s3_bytes(rawName);
     if (__s3_header_values(response, bytes.dataStart, bytes.length, buffer.dataStart, buffer.length, 0, changetype<usize>(end), changetype<usize>(size)) != 0 || end[0] >= 0) return __s3_failure(index, 'protocol', status);
@@ -170,16 +180,16 @@ function __s3_read_response(index: i32, response: i32, body: i32, status: i32): 
         length = 0;
         for (let c = 0; c < value.length; c++) { const digit = value.charCodeAt(c) - 48; if (digit < 0 || digit > 9) return __s3_failure(index, 'protocol', status); length = length * 10 + digit; if (length > 9007199254740991) return __s3_failure(index, 'protocol', status); }
       }
-      if (name == 'etag') { if (!value.length) return __s3_failure(index, 'protocol', status); __s3_set(result, 'etag', __pulse_fastly_string_value(value)); }
-      if (name == 'content-type' && !put) __s3_set(result, 'contentType', __pulse_fastly_string_value(value));
+      if (name == 'etag') { if (!value.length) return __s3_failure(index, 'protocol', status); if (!del && !list) __s3_set(result, 'etag', __pulse_fastly_string_value(value)); }
+      if (name == 'content-type' && !mutation && !list) __s3_set(result, 'contentType', __pulse_fastly_string_value(value));
     }
   }
   if (__s3_remaining(index) == 0) return __s3_failure(index, 'timeout', status);
   const head = __pulse_fastly_effect_kind(index) == 12, binding = __pulse_fastly_s3_binding(index);
   if (head && length < 0) return __s3_failure(index, 'protocol', status);
   if (!head) {
-    const maximum = put && !rejected ? 0 : binding.max;
-    if (length > maximum) return __s3_failure(index, put ? 'protocol' : 'too-large', status);
+    const maximum = mutation && !rejected ? 0 : list ? 2097152 : binding.max;
+    if (length > maximum) return __s3_failure(index, mutation ? 'protocol' : 'too-large', status);
     const data = new Uint8Array(maximum + 1); let count = 0;
     while (true) {
       const ready = __s3_wait_ready(index, body);
@@ -187,19 +197,27 @@ function __s3_read_response(index: i32, response: i32, body: i32, status: i32): 
       if (fastly_http_body_read(body, data.dataStart + count, data.length - count, changetype<usize>(size)) != 0) return __s3_failure(index, 'protocol', status);
       if (size[0] < 0 || size[0] > data.length - count) return __s3_failure(index, 'protocol', status);
       if (size[0] == 0) break;
-      count += size[0]; if (count > maximum) return __s3_failure(index, put ? 'protocol' : 'too-large', status);
+      count += size[0]; if (count > maximum) return __s3_failure(index, mutation ? 'protocol' : 'too-large', status);
     }
     if (length >= 0 && length != count) return __s3_failure(index, 'protocol', status);
-    if (put) {
+    if (mutation) {
       if (__s3_remaining(index) == 0) return __s3_failure(index, 'timeout', status);
-      if (rejected) return __s3_result('not-stored', status == 401 || status == 403 ? 'not-authorized' : status == 429 ? 'throttled' : 'rejected', status);
+      if (rejected) return __s3_result(del ? 'not-deleted' : 'not-stored', status == 401 || status == 403 ? 'not-authorized' : status == 429 ? 'throttled' : 'rejected', status);
+      if (del) return result;
       const sent = new __PulseFastlyValue(); sent.kind = PULSE_VALUE_NUMBER; sent.number = f64(__s3_sent_bytes[index]);
       __s3_set(result, 'byteLength', __pulse_fastly_put(sent));
       __s3_set(result, 'sha256', __pulse_fastly_string_value(__s3_digests[index]));
       return result;
     }
-    length = f64(count); const raw = data.subarray(0, count), digest = __pulse_s3_hex(__pulse_s3_sha(raw));
+    length = f64(count); const raw = data.subarray(0, count);
     if (!__pulse_s3_utf8_valid(raw)) return __s3_failure(index, 'invalid-utf8', status);
+    if (list) {
+      const options = __s3_list_options[index]; if (options === null) return __s3_failure(index, 'configuration', status);
+      const page = __pulse_s3_parse_list(String.UTF8.decodeUnsafe(raw.dataStart, raw.length, false), options, binding.bucket);
+      if (__s3_remaining(index) == 0) return __s3_failure(index, 'timeout', status);
+      return page === null ? __s3_failure(index, 'protocol', status) : __s3_page(page);
+    }
+    const digest = __pulse_s3_hex(__pulse_s3_sha(raw));
     __s3_set(result, 'text', __pulse_fastly_string_value(String.UTF8.decodeUnsafe(raw.dataStart, raw.length, false)));
     __s3_set(result, 'sha256', __pulse_fastly_string_value(digest));
   }
@@ -225,4 +243,36 @@ function __pulse_fastly_s3_wait(index: i32): i32 {
   else result = __s3_remaining(index) == 0 ? __s3_failure(index, 'timeout', code[0]) : __s3_read_response(index, response[0], body[0], code[0]);
   if (!__pulse_fastly_value(result).s3Body) __s3_close_body(body[0]);
   __s3_close_resp(response[0]); return result;
+}
+
+function __s3_options(value: __PulseFastlyValue): __PulseS3ListOptions | null {
+  const options = new __PulseS3ListOptions();
+  if (value.kind == PULSE_VALUE_UNDEFINED) return options;
+  if (value.kind != PULSE_VALUE_OBJECT) return null;
+  for (let i = 0; i < value.keys.length; i++) {
+    const name = value.keys[i], field = __pulse_fastly_value(value.values[i]);
+    if (name != 'prefix' && name != 'continuationToken' && name != 'maxKeys') return null;
+    if (field.kind == PULSE_VALUE_UNDEFINED) continue;
+    if (name == 'maxKeys') {
+      if (field.kind != PULSE_VALUE_NUMBER || !isFinite(field.number) || field.number < 1 || field.number > 1000 || Math.floor(field.number) != field.number) return null;
+      options.maxKeys = i32(field.number);
+    } else {
+      if (field.kind != PULSE_VALUE_STRING || !__pulse_s3_list_scalar(field.text, name == 'prefix' ? 1024 : 4096)) return null;
+      if (name == 'prefix') options.prefix = field.text; else options.continuationToken = field.text;
+    }
+  }
+  return options;
+}
+function __s3_page(page: __PulseS3ListPage): i32 {
+  const result = __s3_result('listed'), entries = host_value_array();
+  for (let i = 0; i < page.entries.length; i++) {
+    const entry = page.entries[i], value = host_value_object();
+    __s3_set(value, 'key', __pulse_fastly_string_value(entry.key));
+    __s3_set(value, 'byteLength', host_value_number(entry.byteLength));
+    const etag = entry.etag; if (etag !== null) __s3_set(value, 'etag', __pulse_fastly_string_value(etag));
+    host_value_array_push(entries, value);
+  }
+  __s3_set(result, 'entries', entries); __s3_set(result, 'isTruncated', host_value_boolean(page.isTruncated ? 1 : 0));
+  const token = page.nextContinuationToken; if (token !== null) __s3_set(result, 'nextContinuationToken', __pulse_fastly_string_value(token));
+  return result;
 }

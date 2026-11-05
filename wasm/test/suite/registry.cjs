@@ -228,6 +228,13 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'Canonical PUT/HEAD/GET, ambiguous writes and cancellation on Node Native/JavaScript and Fastly Native'
   }),
+  's3-list-delete-contract': nodeTask('test/s3/assert-s3-list-delete-contract.cjs', {
+    description: 'S3 LIST/DELETE lowering, bounded options and result contracts'
+  }),
+  's3-list-delete-conformance': nodeTask('test/s3/run-list-delete-acceptance.cjs', {
+    timeoutMs: 180000,
+    description: 'S3 pagination, signing, malformed XML and delete uncertainty across Node and Fastly Native'
+  }),
   's3-body-read': nodeTask('test/s3/assert-body-read.cjs', {
     timeoutMs: 60000,
     description: 'AST-02A/C Node and Fastly Native bounded binary S3 response ownership and HTTP subset'
@@ -1481,6 +1488,7 @@ const tasks = Object.freeze({
 const installedCorpusOwners = Object.freeze({
   's3-native-read': 's3',
   's3-write-conformance': 's3',
+  's3-list-delete-conformance': 's3',
   'request-budget-transport': 'request-deadline',
   'multifile-source-identity': 'multifile',
   'http-input-outcomes': 'http-input',
@@ -1532,6 +1540,7 @@ const profiles = Object.freeze({
     'kv-conditional-gates',
     's3-read-contract',
     's3-write-contract',
+    's3-list-delete-contract',
     'crypto-config-planning',
     'crypto-es256-signing',
     'crypto-rs256',
@@ -1660,6 +1669,7 @@ const profiles = Object.freeze({
     'jwt-es256-signing',
     'jwt-rs256',
     's3-write-conformance',
+    's3-list-delete-conformance',
     'crypto-cross-target-conformance',
     'crypto-digest-text-conformance',
     'crypto-digest-storage-conformance',
