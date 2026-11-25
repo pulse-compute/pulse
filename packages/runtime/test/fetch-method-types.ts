@@ -16,15 +16,15 @@ const json: Promise<{ enabled: boolean }> = put.json('example.ItemUpdate')
 void projected
 void json
 ctx.fetch(url)
-for (const method of ['GET', 'HEAD', 'POST', 'PUT', 'PATCH'] as const) ctx.fetch(url, { method })
-for (const method of ['POST', 'PUT', 'PATCH'] as const) {
+for (const method of ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] as const) ctx.fetch(url, { method })
+for (const method of ['POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] as const) {
   ctx.fetch(url, { method, body: 'text' })
   ctx.fetch(url, { method, json: { enabled: true }, schema: 'example.ItemUpdate' })
 }
 // @ts-expect-error arbitrary outgoing methods remain unsupported
-ctx.fetch(url, { method: 'DELETE' })
-// @ts-expect-error the fix does not add OPTIONS
-ctx.fetch(url, { method: 'OPTIONS' })
+ctx.fetch(url, { method: 'TRACE' })
+// @ts-expect-error CONNECT remains unsupported
+ctx.fetch(url, { method: 'CONNECT' })
 // @ts-expect-error body and json remain mutually exclusive
 ctx.fetch(url, { method: 'PATCH', body: 'text', json: { enabled: true } })
 // @ts-expect-error schema requires json

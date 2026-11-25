@@ -4,7 +4,7 @@ const { PulseRuntimeContractError } = require('./errors.js');
 const { encodeSchemaValue, requireExplicitSchemaId } = require('./schema.js');
 const { isIncomingBody } = require('./incoming-body.js');
 
-const SUPPORTED_FETCH_METHODS = Object.freeze(new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH']));
+const SUPPORTED_FETCH_METHODS = Object.freeze(new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']));
 const SUPPORTED_FETCH_INIT_FIELDS = Object.freeze(new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs', 'errors', 'timing']));
 
 function fetchContractError(code, message, detail, cause) {
@@ -130,7 +130,7 @@ function normalizeFetchInit(input, options = {}) {
   if (!SUPPORTED_FETCH_METHODS.has(method)) {
     throw fetchContractError(
       'PULSE_FETCH_METHOD_UNSUPPORTED',
-      `Pulse fetch method ${method} is outside the portable GET, HEAD, POST, PUT, and PATCH contract.`,
+      `Pulse fetch method ${method} is outside the portable GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS contract.`,
       { method }
     );
   }
