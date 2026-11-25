@@ -941,6 +941,7 @@ function transformApiCopy(sourceRelative, content) {
   }
   if (sourceRelative === 'docs/preview-scope.md') {
     return stable(content
+      .replaceAll('../API.md', './API.md')
       .replaceAll('concepts/compilation-and-lowering.md', publicCliDoc('docs/concepts/compilation-and-lowering.md'))
       .replaceAll('concepts/bodies.md', publicCliDoc('docs/concepts/bodies.md'))
       .replaceAll('./reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))
