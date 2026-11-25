@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "pulse.upload-00.boundaries.v1",
+  "status": "passed",
+  "inspectedBase": "8faa3f9ff64d79598b5281ed14373c194a04418e",
+  "executionHead": "8faa3f9ff64d79598b5281ed14373c194a04418e",
+  "node": "v24.22.3",
+  "cases": [
+    {
+      "name": "upload-operation-not-admitted",
+      "observed": [
+        "PULSEWASM_S3_OPERATION_UNSUPPORTED"
+      ],
+      "status": "passed"
+    },
+    {
+      "name": "body-source-admission",
+      "observed": {
+        "post": "admitted",
+        "put": [
+          "PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED"
+        ],
+        "packaged": [
+          "PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED"
+        ]
+      },
+      "status": "passed"
+    },
+    {
+      "name": "marker-is-not-a-package-payload-capability",
+      "observed": {
+        "identityPreserved": false,
+        "serialized": "{\"body\":{}}"
+      },
+      "status": "passed"
+    },
+    {
+      "name": "node-put-denied-before-read-or-dispatch",
+      "observed": {
+        "code": "PULSE_FETCH_BODY_METHOD_UNSUPPORTED",
+        "reads": 0,
+        "dispatches": 0
+      },
+      "status": "passed"
+    },
+    {
+      "name": "current-s3-signer-requires-complete-bytes",
+      "observed": {
+        "bufferedBytesAccepted": 4,
+        "payloadDigest": "6d6f7836f1e146dc0204afb5133dae52fdc05603d8ac2dc793b481b0e0829fd1",
+        "streamRejected": true
+      },
+      "status": "passed"
+    },
+    {
+      "name": "fastly-forwarding-current-cap",
+      "observed": {
+        "maxBodyBytes": 1048576
+      },
+      "status": "passed"
+    }
+  ],
+  "sourceSha256": {
+    "packages/s3/src/index.d.ts": "e5650c973afa9406a418727fa1e556991a6c612fac3c0b8af3a893ee275a46a0",
+    "packages/s3/src/index.js": "c48d87eca5e6dd9707b1acf4e5de6e20025053d6208246c131612e81621f700d",
+    "packages/s3/src/provider.js": "0b3da2aee9c5f891da28c017231152a28e128165ba8c3a023b397862e7b73139",
+    "packages/s3/src/signing.js": "9d0a61f9428989805c7f61845bf67461c7a31c112b156a69a2b9b2f38d201d1d",
+    "packages/s3/pulsewasm.compiler.cjs": "8c494991a6be098614a9b57b1bfc87135f06348722ec4cb497925fff49179048",
+    "packages/s3/as/read.as.ts": "7a0a04a5bfb92ff7b6cefd0e916e9e6f231a182ca43c0e07e8c7c90601c90269",
+    "wasm/packages/contracts/src/s3/contracts.js": "c47c6255fb04f78cb06f6c2437e4d026062b9ebb1922a23e4048af9e1a8a61f0",
+    "packages/runtime/src/internal/incoming-body.js": "3852d03ba1bdda373615886dac9b5b2d741606f7a58c3a988f2b27d645be1bb6",
+    "packages/runtime/src/internal/package-runtime.js": "c92855275f92879e60d4a1d3bc53b0399fc646e3f667a20e4825c8fd2411b0ee",
+    "wasm/packages/compiler/src/spine/incoming-body-source.js": "2ca2c745b031094752a8b12569887a259eedb888deb08eed50e822930bac38e9",
+    "packages/provider-node/src/javascript/incoming-body.js": "b4ebb4af58ccaa7460badb9a96e57f6641eff25c67713d4407692baf409523de",
+    "packages/provider-node/src/runtime/s3-reader.js": "6092b14c8e8f6d994e068ae31e13c2f2da677ed9bee397369f2cff5bdfa84a1c",
+    "packages/provider-fastly/src/build/native-body-forwarding.js": "b28cd3274674fdf2f7edeee878b2477d3b052c688bab52dcfe8a106d1e034273",
+    "packages/provider-fastly/src/build/native-body-forwarding.as.ts": "64cc79f994605cb5711b4b54740b280b45e8c856b1400ffc73c397ca62e11043",
+    "packages/provider-fastly/src/toolchain/body-forwarding.js": "4a0414593483fdb58d0c3a3314f6ecaccb9c6aa5e3e2617bab0e10a036934d49",
+    "packages/provider-fastly/src/build/s3-native.as.ts": "d00322a09949617b6cb9e971dada0e0c92529f3a2ca56600950e47a078e7167c",
+    "wasm/test/s3/upload-00/probe.cjs": "f7645ad76238f8b79d0399af728572e222a79f56f3eb7ac2575571ae182e0cef"
+  },
+  "limits": {
+    "networkUsed": false,
+    "uploadImplemented": false,
+    "originCompatibilityProven": false,
+    "apiFrozen": false
+  }
+}

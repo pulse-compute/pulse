@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-11-25T06-16-25-236Z--5",
+  "sourceRevision": "8faa3f9ff64d79598b5281ed14373c194a04418e",
+  "status": "passed",
+  "startedAt": "2026-11-25T06:16:25.246Z",
+  "finishedAt": "2026-11-25T06:16:41.036Z",
+  "durationMs": 15790,
+  "requestedTasks": [
+    "s3-read-contract",
+    "s3-write-contract",
+    "fastly-incoming-body-forwarding"
+  ],
+  "selectedTasks": [
+    "s3-read-contract",
+    "s3-write-contract",
+    "fastly-incoming-body-forwarding"
+  ],
+  "completedTasks": 3,
+  "results": [
+    {
+      "name": "s3-read-contract",
+      "evidence": "unit",
+      "commandSignature": "4cee94230b8905d440aeecfb530ce044ce9843e1f6efc86689c126fb44512b96",
+      "durationMs": 3073,
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "cleanup": {
+        "status": "passed"
+      }
+    },
+    {
+      "name": "s3-write-contract",
+      "evidence": "unit",
+      "commandSignature": "86028db9777c9b5e50bffd1db1d30b78d334eeca875f56a930b0175459b38cc0",
+      "durationMs": 480,
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "cleanup": {
+        "status": "passed"
+      }
+    },
+    {
+      "name": "fastly-incoming-body-forwarding",
+      "evidence": "native",
+      "commandSignature": "650e986229703eee27004a9d3cc196a3a05dbbab37a206e38af3d5b323bf367d",
+      "durationMs": 12216,
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "cleanup": {
+        "status": "passed"
+      }
+    }
+  ],
+  "sourceWorkingTree": "clean at execution; no product changes in this spike",
+  "evidenceLimits": {
+    "viceroy": "not run",
+    "installedPackages": "not run",
+    "liveFastly": "not run",
+    "s3Upload": "not implemented or executed"
+  }
+}
