@@ -1,0 +1,225 @@
+{
+  "schemaVersion": "pulse.upload-01.v1",
+  "status": "passed",
+  "mode": "local",
+  "startedAt": "2026-11-25T06:57:11.420Z",
+  "node": "v24.22.3",
+  "executionHead": "f840fb474c4f3e9886dd71382cec27e2bbee8f6c",
+  "sourceSha256": {
+    "wasm/test/s3/upload-01/transport.cjs": "4d521094e744e76c692a3bb9c9705051f63f5c68d308c2a51b5bc0dd9d74cca3",
+    "wasm/test/s3/upload-01/local.cjs": "5a979b41580c62b6a0db7004c832227b265e5fd9ac207820de3c58fd14395949",
+    "wasm/test/s3/upload-01/run.cjs": "99099d73555a326112cb413c7e60cd78f53cdc9037cd7391ecd7b1f4500bd367",
+    "wasm/test/s3/o1/vectors.json": "41806b383d39abcca7935700bd43af47375428206e27482834322fa5bfac9d2e",
+    "packages/s3/src/signing.js": "9d0a61f9428989805c7f61845bf67461c7a31c112b156a69a2b9b2f38d201d1d",
+    "packages/s3/src/provider.js": "0b3da2aee9c5f891da28c017231152a28e128165ba8c3a023b397862e7b73139"
+  },
+  "limits": {
+    "maxUploadBytes": 1048576,
+    "producerChunkBytes": 16384,
+    "acknowledgementBytes": 16384,
+    "defaultAttemptTimeoutMs": 5000
+  },
+  "productSupportClaim": false,
+  "cases": [],
+  "local": {
+    "status": "passed",
+    "kind": "loopback-http-independent-sigv4-oracle",
+    "cases": [
+      {
+        "name": "live-target-containment",
+        "status": "passed"
+      },
+      {
+        "name": "aws-known-answer",
+        "status": "passed"
+      },
+      {
+        "name": "unsigned-0",
+        "status": "passed",
+        "put": {
+          "status": 200,
+          "responseBytes": 0,
+          "metadata": {
+            "byteLength": 0,
+            "etag": "\"fixture-opaque\""
+          },
+          "metrics": {
+            "generatedBytes": 0,
+            "writes": 0,
+            "maxChunkBytes": 0,
+            "uploadFinished": true,
+            "responseBeforeUploadFinished": false
+          }
+        },
+        "readback": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "exact": true
+        },
+        "prefixObservedBeforeProducerEOF": null
+      },
+      {
+        "name": "unsigned-1",
+        "status": "passed",
+        "put": {
+          "status": 200,
+          "responseBytes": 0,
+          "metadata": {
+            "byteLength": 0,
+            "etag": "\"fixture-opaque\""
+          },
+          "metrics": {
+            "generatedBytes": 1,
+            "writes": 1,
+            "maxChunkBytes": 1,
+            "uploadFinished": true,
+            "responseBeforeUploadFinished": false
+          }
+        },
+        "readback": {
+          "bytes": 1,
+          "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+          "exact": true
+        },
+        "prefixObservedBeforeProducerEOF": null
+      },
+      {
+        "name": "unsigned-16383",
+        "status": "passed",
+        "put": {
+          "status": 200,
+          "responseBytes": 0,
+          "metadata": {
+            "byteLength": 0,
+            "etag": "\"fixture-opaque\""
+          },
+          "metrics": {
+            "generatedBytes": 16383,
+            "writes": 1,
+            "maxChunkBytes": 16383,
+            "uploadFinished": true,
+            "responseBeforeUploadFinished": false
+          }
+        },
+        "readback": {
+          "bytes": 16383,
+          "sha256": "f8658612d0f23a5c5d5a14026b57c9ad7e20f18a135ca00dcc9568a04f5ee2e3",
+          "exact": true
+        },
+        "prefixObservedBeforeProducerEOF": null
+      },
+      {
+        "name": "unsigned-16384",
+        "status": "passed",
+        "put": {
+          "status": 200,
+          "responseBytes": 0,
+          "metadata": {
+            "byteLength": 0,
+            "etag": "\"fixture-opaque\""
+          },
+          "metrics": {
+            "generatedBytes": 16384,
+            "writes": 1,
+            "maxChunkBytes": 16384,
+            "uploadFinished": true,
+            "responseBeforeUploadFinished": false
+          }
+        },
+        "readback": {
+          "bytes": 16384,
+          "sha256": "fc8c8f45c9c079f6ce432b7d94d4f7b606ce520d2f1b01b4a9134e86917fbf49",
+          "exact": true
+        },
+        "prefixObservedBeforeProducerEOF": null
+      },
+      {
+        "name": "unsigned-16385",
+        "status": "passed",
+        "put": {
+          "status": 200,
+          "responseBytes": 0,
+          "metadata": {
+            "byteLength": 0,
+            "etag": "\"fixture-opaque\""
+          },
+          "metrics": {
+            "generatedBytes": 16385,
+            "writes": 2,
+            "maxChunkBytes": 16384,
+            "uploadFinished": true,
+            "responseBeforeUploadFinished": false
+          }
+        },
+        "readback": {
+          "bytes": 16385,
+          "sha256": "6ab451a6c1c43f752a927d31d904a73d5c917639071680e0b4d5fe36ee3271e3",
+          "exact": true
+        },
+        "prefixObservedBeforeProducerEOF": true
+      },
+      {
+        "name": "unsigned-1048576",
+        "status": "passed",
+        "put": {
+          "status": 200,
+          "responseBytes": 0,
+          "metadata": {
+            "byteLength": 0,
+            "etag": "\"fixture-opaque\""
+          },
+          "metrics": {
+            "generatedBytes": 1048576,
+            "writes": 64,
+            "maxChunkBytes": 16384,
+            "uploadFinished": true,
+            "responseBeforeUploadFinished": false
+          }
+        },
+        "readback": {
+          "bytes": 1048576,
+          "sha256": "dc6e5c46329e7019fca98b07fa2ddc98de06454448c457a47cf00922c9006deb",
+          "exact": true
+        },
+        "prefixObservedBeforeProducerEOF": true
+      },
+      {
+        "name": "hashed-control",
+        "status": "passed",
+        "httpStatus": 200
+      },
+      {
+        "name": "hashed-wrong-digest-rejected",
+        "status": "passed",
+        "httpStatus": 400
+      },
+      {
+        "name": "early-signature-rejection",
+        "status": "passed",
+        "httpStatus": 403,
+        "generatedBytes": 0
+      },
+      {
+        "name": "cap-plus-one-no-dispatch",
+        "status": "passed"
+      },
+      {
+        "name": "malformed-ack-rejected",
+        "status": "passed"
+      },
+      {
+        "name": "transport-deadline",
+        "status": "passed",
+        "timeoutMs": 100
+      }
+    ],
+    "requests": 30,
+    "limitations": [
+      "not Fastly Object Storage acceptance",
+      "not a Pulse provider",
+      "fixture storage buffers up to 1 MiB",
+      "no TLS/provider/host-memory claim"
+    ]
+  },
+  "finishedAt": "2026-11-25T06:57:11.647Z"
+}
