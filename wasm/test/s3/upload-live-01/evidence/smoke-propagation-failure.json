@@ -1,0 +1,68 @@
+{
+  "schema": "pulse.upload-live.v1",
+  "status": "failed",
+  "selection": "smoke",
+  "startedAt": "2026-11-25T21:20:39.418Z",
+  "service": "L47lcfUqEbbK5tXC9BTI00",
+  "version": 1,
+  "domain": "pulse-upload-live-ed259ae1cb.edgecompute.app",
+  "artifact": {
+    "kind": "research-scaffold",
+    "target": {
+      "endpoint": "https://us-central-1.object.fastlystorage.app",
+      "region": "us-central-1",
+      "bucket": "catalog-live-20261101-2da36f-objects",
+      "prefix": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/"
+    },
+    "capBytes": 33554432,
+    "operationMs": 10000,
+    "requestMs": 15000,
+    "wasmBytes": 52728,
+    "wasmSha256": "db71bb34ba95344e587e41b2ef4858df09b4510a079d2d704ab04d3e820043af",
+    "publicAdmission": false,
+    "telemetry": "Guest linear memory and successful close calls; not host RSS or pending-request reclamation"
+  },
+  "networkRoute": "environment-proxy",
+  "cases": [
+    {
+      "size": 65536,
+      "concurrency": 1,
+      "status": "failed",
+      "startedAt": "2026-11-25T21:20:39.419Z",
+      "uploadWallMs": 8718.735995,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/57b4eba2-9d47-4c8a-ba18-0b294441eefd"
+      ],
+      "errors": [
+        "Expected values to be strictly equal:\n\n500 !== 200\n"
+      ],
+      "p50Ms": 4202.414616,
+      "p95Ms": 4202.414616,
+      "finishedAt": "2026-11-25T21:20:48.139Z"
+    }
+  ],
+  "keys": [
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/57b4eba2-9d47-4c8a-ba18-0b294441eefd",
+      "size": 65536,
+      "declared": 65536,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:20:43.934Z",
+      "sentBytes": 65536,
+      "producerEofMs": 4093.51577,
+      "response": {
+        "httpStatus": 500,
+        "headersMs": 4201.784561,
+        "result": {
+          "text": "\n      <html>\n      <title>There is no Compute app here</title>\n      <body>\n      <iframe src='https://developer.fastly.com/help/unknown-ecp-domain' style='border:0; position: absolute; top: 0; left: 0; width: 100%; height: 100%'></iframe>\n      </body>\n "
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 4202.414616,
+        "sentBytes": 65536
+      }
+    }
+  ],
+  "publicAdmission": false,
+  "stoppedAtFailedCapacityCell": true,
+  "finishedAt": "2026-11-25T21:20:48.139Z"
+}

@@ -1,0 +1,14 @@
+{
+  "status": "retired",
+  "service": "L47lcfUqEbbK5tXC9BTI00",
+  "version": 1,
+  "domain": "pulse-upload-live-ed259ae1cb.edgecompute.app",
+  "secretStoreId": "jR5CcKBeXRtopymh1x86I3",
+  "deactivated": true,
+  "deactivatedAt": "2026-11-25T21:29:56.058690+00:00",
+  "objectKeyRevoked": true,
+  "serviceDeleted": true,
+  "secretStoreDeleted": true,
+  "managementTokenRevoked": false,
+  "scope": "Only resources created for this run; existing QA services/bucket unchanged except recorded unique probe keys."
+}

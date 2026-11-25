@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-11-25T21-17-34-565Z--928",
+  "sourceRevision": "3e1dbfe4afe7a165f7cf99fd65573efff7de400d",
+  "sourceIdentity": {
+    "sourceRevision": "3e1dbfe4afe7a165f7cf99fd65573efff7de400d",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-11-25T21:17:34.570Z",
+  "updatedAt": "2026-11-25T21:17:46.856Z",
+  "finishedAt": "2026-11-25T21:17:46.856Z",
+  "durationMs": 12286,
+  "profiles": [],
+  "requestedTasks": [
+    "s3-read-contract",
+    "s3-write-contract",
+    "fastly-incoming-body-forwarding"
+  ],
+  "selectedTasks": [
+    "s3-read-contract",
+    "s3-write-contract",
+    "fastly-incoming-body-forwarding"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "activeChildPid": null,
+  "activeChildPids": [],
+  "currentTasks": [],
+  "currentTaskPhases": {},
+  "completedTasks": 3,
+  "results": [
+    {
+      "name": "s3-read-contract",
+      "evidence": "unit",
+      "description": "S3 read binding authority, lowering negatives and bounded result contract",
+      "commandSignature": "4cee94230b8905d440aeecfb530ce044ce9843e1f6efc86689c126fb44512b96",
+      "timeoutMs": 30000,
+      "durationMs": 2260,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-11-25T21-17-34-565Z--928/tasks/s3-read-contract.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "s3-write-contract",
+      "evidence": "unit",
+      "description": "S3 PUT lowering, bounded outcomes, JavaScript Crypto bytes and pre-dispatch lifecycle",
+      "commandSignature": "86028db9777c9b5e50bffd1db1d30b78d334eeca875f56a930b0175459b38cc0",
+      "timeoutMs": 30000,
+      "durationMs": 392,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-11-25T21-17-34-565Z--928/tasks/s3-write-contract.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "fastly-incoming-body-forwarding",
+      "evidence": "native",
+      "description": "FWD9-03 normal Native build, adversarial ABI matrix and optional pinned Viceroy wire qualification",
+      "commandSignature": "650e986229703eee27004a9d3cc196a3a05dbbab37a206e38af3d5b323bf367d",
+      "timeoutMs": 120000,
+      "durationMs": 9623,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interruptedBy": null,
+      "error": null,
+      "cleanup": {
+        "status": "passed"
+      },
+      "logPath": "/tmp/runs/2026-11-25T21-17-34-565Z--928/tasks/fastly-incoming-body-forwarding.log",
+      "retainedTaskRoot": null,
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-11-25T21-17-34-565Z--928"
+}
