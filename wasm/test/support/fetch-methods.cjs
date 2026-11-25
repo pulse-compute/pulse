@@ -23,14 +23,15 @@ module.exports = async function assertFetchMethods() {
   const extracted = extractSchemaRegistry(path.join(fixture, 'src/pulse/schemas/index.ts'), { projectRoot: fixture });
   const bundle = buildCanonicalSchemaBundle(extracted.registry);
   const codecs = createCanonicalSchemaCodecs(bundle.registry);
-  const payload = { id: '7', name: 'PATCH/PUT é', score: 42.5, active: true };
+  const payload = { id: '7', name: 'fetch methods é', score: 42.5, active: true };
   const json = { json: payload, schema: 'app.user' };
 
   // Both runtime admission paths preserve the body/schema/timeout boundaries.
   for (const normalize of [init => normalizeFetchInit(init, { schemaCodecs: codecs, strict: true }),
     init => canonicalHost.normalizedInit(init, codecs, { strict: true })]) {
-    for (const method of ['GET', 'HEAD', 'POST', 'PUT', 'PATCH']) {
+    for (const method of ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']) {
       assert.equal(normalize({ method }).method, method);
+      assert.equal(normalize({ method: method.toLowerCase() }).method, method);
       for (const body of [{ body: 'text' }, json]) {
         if (method === 'GET' || method === 'HEAD') {
           assert.throws(() => normalize({ method, ...body }), { code: 'PULSE_FETCH_BODY_METHOD_UNSUPPORTED' });
@@ -40,7 +41,7 @@ module.exports = async function assertFetchMethods() {
         }
       }
     }
-    for (const method of ['DELETE', 'OPTIONS', 'TRACE']) {
+    for (const method of ['TRACE', 'CONNECT', 'CUSTOM']) {
       assert.throws(() => normalize({ method }), { code: 'PULSE_FETCH_METHOD_UNSUPPORTED' });
     }
     assert.throws(() => normalize({ method: 'PATCH', ...json, body: 'text' }), { code: 'PULSE_FETCH_BODY_AMBIGUOUS' });
@@ -50,10 +51,19 @@ module.exports = async function assertFetchMethods() {
     assert.throws(() => normalize({ method: 'PATCH', json: { ...payload, active: 'wrong' }, schema: 'app.user' }));
   }
 
-  for (const method of ['PATCH', 'PUT']) {
+  const cases = [
+    ...['PATCH', 'PUT'].map(method => ({ method, bodyKind: 'json' })),
+    ...['DELETE', 'OPTIONS'].flatMap(method => ['none', 'text', 'json'].map(bodyKind => ({ method, bodyKind }))),
+  ];
+  for (const { method, bodyKind } of cases) {
+    const requestBody = bodyKind === 'json' ? JSON.stringify(payload) : bodyKind === 'text' ? 'text é' : '';
+    const bodySource = bodyKind === 'json' ? `json: ${JSON.stringify(payload)}, schema: 'app.user',`
+      : bodyKind === 'text' ? `body: ${JSON.stringify(requestBody)},` : '';
+    const responseStatus = bodyKind === 'none' ? 204 : 200;
+    const responseBody = bodyKind === 'none' ? '' : 'stored';
     const source = `export default async function handler(ctx) {
       const response = await ctx.fetch('https://origin.test/users', {
-        method: '${method}', json: ${JSON.stringify(payload)}, schema: 'app.user',
+        method: '${method}', ${bodySource}
         headers: { 'x-request-id': '${method}' }, timeoutMs: 1000
       }).text();
       return ctx.text(response);
@@ -61,38 +71,38 @@ module.exports = async function assertFetchMethods() {
     const handler = Function(source.replace('export default ', '') + ';return handler')();
     const sent = [];
     const options = { strict: true, schemaCodecs: codecs, bindings: { backends: { 'https://origin.test': 'origin' } },
-      async fetchImplementation(url, init) { sent.push({ url, ...init }); return new Response('stored'); } };
+      async fetchImplementation(url, init) { sent.push({ url, ...init }); return new Response(responseBody || null, { status: responseStatus }); } };
     for (const execute of [nodeJs.executeNodeJavascriptApplication, fastlyJs.executeFastlyJavascriptApplication]) {
       const response = await execute(handler, new Request('https://app.test/'), options);
-      assert.equal(await response.text(), 'stored');
+      assert.equal(await response.text(), responseBody);
     }
-    const compiled = compileCanonicalSource(source, { fileName: `fetch-${method}.ts`, schemaBundle: bundle, strict: true, requireAsync: true });
+    const compiled = compileCanonicalSource(source, { fileName: `fetch-${method}-${bodyKind}.ts`, schemaBundle: bundle, strict: true, requireAsync: true });
     const plan = buildCanonicalNativePlan(compiled);
     const native = compileCanonicalNativePlan(plan, { cwd: root });
     const result = await nativeHost.executeCanonicalNativeModule(native, {
       providerAdapter: { id: 'node', dispatchEffect(effect) {
         sent.push({ url: effect.parts.url, ...effect.init });
-        return { status: 200, body: 'stored', headers: [] };
+        return { status: responseStatus, body: responseBody, headers: [] };
       } },
     });
-    assert.equal(result.response.body, 'stored');
+    assert.equal(result.response.body, responseBody);
     for (const [compile, execute] of [
       [http.compileFastlyNativeHttpEffectsPlan, httpHost.executeFastlyNativeHttpEffects],
       [platform.compileFastlyNativePlatformCapabilitiesPlan, platformHost.executeFastlyNativePlatformCapabilities],
     ]) {
       const artifact = compile(plan, { cwd: root, backends: { 'https://origin.test': 'origin' }, requirePlatformCapability: false });
-      const result = execute(artifact, { fixtures: { [`${method} https://origin.test/users`]: { status: 200, body: 'stored' } } });
-      assert.equal(result.response.body, 'stored');
+      const result = execute(artifact, { fixtures: { [`${method} https://origin.test/users`]: { status: responseStatus, body: responseBody } } });
+      assert.equal(result.response.body, responseBody);
       assert.equal(result.outboundRequests.length, 1);
       sent.push(...result.outboundRequests);
     }
     assert.equal(sent.length, 5);
     for (const [index, request] of sent.entries()) {
       assert.equal(request.method, method);
-      assert.deepEqual(Buffer.from(request.body), Buffer.from(JSON.stringify(payload)));
+      assert.deepEqual(Buffer.from(request.body || ''), Buffer.from(requestBody));
       assert.equal(new Headers(request.headers).get('x-request-id'), method, `lane ${index}: ${JSON.stringify(request.headers)}`);
-      assert.match(new Headers(request.headers).get('content-type'), /application\/json/);
+      if (bodyKind === 'json') assert.match(new Headers(request.headers).get('content-type'), /application\/json/);
     }
   }
-  console.log('ok - PATCH/PUT types align with JavaScript, Node Native and both Fastly Native generators (injected transport)');
+  console.log('ok - PUT/PATCH/DELETE/OPTIONS methods and bodies align with JavaScript, Node Native and both Fastly Native generators (injected transport)');
 };

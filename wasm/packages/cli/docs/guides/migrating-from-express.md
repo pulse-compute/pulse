@@ -152,8 +152,8 @@ order; do not pass the chain or array as one Pulse handler. See
 Methods match exactly: register `head` explicitly when an endpoint needs HEAD;
 a `get` route does not supply it. Method misses continue through the normal
 cursor and can exhaust to `404`, with no automatic `OPTIONS` or `405` response.
-Inbound `PUT`, `PATCH` and `DELETE` support does not widen outbound `ctx.fetch`,
-whose methods remain `GET`, `HEAD` and `POST`.
+Outbound method admission is a separate contract; see
+[`ctx.fetch` methods and body rules](../../API.md#ctxfetch).
 
 ## Keep request data request-owned
 
