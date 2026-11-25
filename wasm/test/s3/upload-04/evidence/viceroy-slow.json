@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "kind": "local-Viceroy",
+  "livePlatform": false,
+  "engine": {
+    "version": "0.21.1",
+    "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+  },
+  "wasmSha256": "9666980b967acc3e39b7596f6030e8bbda2e88ac4ddeb4d30878f9dd295a19ab",
+  "cases": [
+    {
+      "name": "1048576-8-slow-client",
+      "status": "passed",
+      "size": 1048576,
+      "concurrency": 8,
+      "pace": "slow-client",
+      "elapsedMs": 222.88187200000004,
+      "p50Ms": 211.23091200000005,
+      "p95Ms": 217.69223200000005,
+      "MiBPerSecond": 35.89345301263442,
+      "baselineRss": 28368896,
+      "peakRss": 80654336,
+      "afterRss": 53432320,
+      "samples": 36,
+      "peakOriginRequests": 5
+    },
+    {
+      "name": "8388608-8-slow-origin",
+      "status": "passed",
+      "size": 8388608,
+      "concurrency": 8,
+      "pace": "slow-origin",
+      "elapsedMs": 1430.6933450000001,
+      "p50Ms": 1345.823135,
+      "p95Ms": 1429.633053,
+      "MiBPerSecond": 44.73355539373114,
+      "baselineRss": 53432320,
+      "peakRss": 336904192,
+      "afterRss": 184778752,
+      "samples": 124,
+      "peakOriginRequests": 8
+    }
+  ],
+  "memoryScope": "sampled Viceroy process RSS, separate from producer/origin; retained allocator/JIT memory included; local only"
+}

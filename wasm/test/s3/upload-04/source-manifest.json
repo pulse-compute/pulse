@@ -1,0 +1,44 @@
+{
+  "schema": "pulse.upload04.research-manifest.v1",
+  "status": "blocked",
+  "sourceRevision": "2aa4cb0df490c85a3bd14c1b591fc5aebc056566",
+  "sourceTree": "48a9ced2a10e603f9b36456a1d7f2b056c08e9e8",
+  "workingTree": "?? wasm/test/s3/upload-04/",
+  "harnessSnapshotTiming": "Final reproduction harness; earlier development iterations are not relabelled exact-current-source acceptance",
+  "sourceSha256": {
+    "README.md": "1f5bad59d30f0f24a16ad757286e0c4a1186520da40f9af0383cd56c1d0cd2a2",
+    "build.cjs": "15472bc852fa41474d676a1afdb560d99457c521f37c03d7bed7c3840aac0f7d",
+    "capacity.cjs": "1e0c823e52f152b9d309ab7795f72d266c7d3d5c865a49b93b7c87f723bd546a",
+    "installed.cjs": "4535134671fd5cfae1bd7722c45aacb2f047fce4c483a604c10079252d12af6e",
+    "node-capacity.cjs": "8aace5e24e6e22720d78150fd92785a033f695faa2fc2f4eada88987869384a4",
+    "project.cjs": "4316ae4bba148cb2e44e253d22c733445d4dac3b013d2ac24671570ae78fda6e",
+    "viceroy.cjs": "dc2b5c7bd30784a18811c40223cfc23ec1eaca648de1863d463703e262985a45"
+  },
+  "reports": {
+    "artifacts.json": "612a3758ab67926552e6ac26d75aca026e4d6464d344cda83a3756ddf5b5112f",
+    "baseline.json": "8dd6ee93e4b7f471ad2b4ebbb613f0698ee21b85a41880b018049c45918b250d",
+    "development-attempts.json": "0749fbbcd4ff4bb68f67f998606b8975efcba20ac07f9f4ac8e8c1fbd62c24b5",
+    "installed.json": "59843e8734f73b2606d13188c175c1f88a2c7895cfdbe5aa3fdc9d28d2b6cbb9",
+    "node-capacity.json": "3b3d079f536a2c43b65415fa893751715a81d454126e3734ed3c3357cc58df6f",
+    "viceroy-capacity.json": "b81f211ac20b50a4244486e257b71905661875940c9a59972b7159ad325b1856",
+    "viceroy-settlement.json": "8bb97b0b5183b2dab6916e42a03c76ac19549c1b9d7658d49a2bf4585dc53ed2",
+    "viceroy-slow.json": "2d04fa9cd484be39cddb1fd6cd2c3b21dedfba572bafeeda47814504fe30ba11"
+  },
+  "archive": {
+    "url": "https://github.com/fastly/Viceroy/releases/download/v0.21.1/viceroy_v0.21.1_linux-amd64.tar.gz",
+    "sha256": "54a5b46ab05ce1492f4df136728b2eb81b350cb42da5d9f2eec66558ddc1e233"
+  },
+  "viceroySourceCommit": "ba6fb78c02b2f40b70f8c65ab86fa86c66f0641f",
+  "gates": {
+    "nodeCapacity": "passed-28-cells",
+    "installedPackageIntegrity": "passed-20-packages-1231-files",
+    "installedPublicUpload": "blocked-absent-operation",
+    "viceroyWire": "passed-after-explicit-framing",
+    "viceroyCapacity": "failed-32MiB-concurrency16",
+    "viceroyStreamingIngress": "failed-known-length-buffering",
+    "viceroyTimeoutCleanup": "unqualified-open-after-2s-grace",
+    "deployedCompute": "not-run"
+  },
+  "publicSupportClaim": false,
+  "liveWrites": false
+}

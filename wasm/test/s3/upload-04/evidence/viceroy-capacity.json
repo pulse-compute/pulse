@@ -1,0 +1,224 @@
+{
+  "status": "failed",
+  "kind": "local-Viceroy",
+  "livePlatform": false,
+  "engine": {
+    "version": "0.21.1",
+    "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+  },
+  "wasmSha256": "9666980b967acc3e39b7596f6030e8bbda2e88ac4ddeb4d30878f9dd295a19ab",
+  "cases": [
+    {
+      "name": "65536-1-normal",
+      "status": "passed",
+      "size": 65536,
+      "concurrency": 1,
+      "pace": "normal",
+      "elapsedMs": 12.14340199999998,
+      "p50Ms": 11.976966000000004,
+      "p95Ms": 11.976966000000004,
+      "MiBPerSecond": 5.146827882334794,
+      "baselineRss": 28422144,
+      "peakRss": 30248960,
+      "afterRss": 30810112,
+      "samples": 1,
+      "peakOriginRequests": 1
+    },
+    {
+      "name": "65536-8-normal",
+      "status": "passed",
+      "size": 65536,
+      "concurrency": 8,
+      "pace": "normal",
+      "elapsedMs": 25.290031999999997,
+      "p50Ms": 16.67630700000001,
+      "p95Ms": 18.990317000000005,
+      "MiBPerSecond": 19.770635323830355,
+      "baselineRss": 30810112,
+      "peakRss": 53706752,
+      "afterRss": 33296384,
+      "samples": 3,
+      "peakOriginRequests": 1
+    },
+    {
+      "name": "65536-16-normal",
+      "status": "passed",
+      "size": 65536,
+      "concurrency": 16,
+      "pace": "normal",
+      "elapsedMs": 35.64121399999999,
+      "p50Ms": 24.805530000000033,
+      "p95Ms": 32.32120400000002,
+      "MiBPerSecond": 28.057405676473316,
+      "baselineRss": 33296384,
+      "peakRss": 68104192,
+      "afterRss": 35794944,
+      "samples": 6,
+      "peakOriginRequests": 1
+    },
+    {
+      "name": "1048576-1-normal",
+      "status": "passed",
+      "size": 1048576,
+      "concurrency": 1,
+      "pace": "normal",
+      "elapsedMs": 17.79648199999997,
+      "p50Ms": 17.78294900000003,
+      "p95Ms": 17.78294900000003,
+      "MiBPerSecond": 56.19088087184882,
+      "baselineRss": 35794944,
+      "peakRss": 44371968,
+      "afterRss": 41308160,
+      "samples": 2,
+      "peakOriginRequests": 1
+    },
+    {
+      "name": "1048576-8-normal",
+      "status": "passed",
+      "size": 1048576,
+      "concurrency": 8,
+      "pace": "normal",
+      "elapsedMs": 93.84109000000001,
+      "p50Ms": 86.12507199999999,
+      "p95Ms": 92.94312499999995,
+      "MiBPerSecond": 85.25050167256155,
+      "baselineRss": 41308160,
+      "peakRss": 86597632,
+      "afterRss": 49872896,
+      "samples": 8,
+      "peakOriginRequests": 5
+    },
+    {
+      "name": "1048576-16-normal",
+      "status": "passed",
+      "size": 1048576,
+      "concurrency": 16,
+      "pace": "normal",
+      "elapsedMs": 235.86537800000008,
+      "p50Ms": 225.039355,
+      "p95Ms": 233.99611200000004,
+      "MiBPerSecond": 67.83530561233958,
+      "baselineRss": 49872896,
+      "peakRss": 123293696,
+      "afterRss": 55685120,
+      "samples": 10,
+      "peakOriginRequests": 12
+    },
+    {
+      "name": "8388608-1-normal",
+      "status": "passed",
+      "size": 8388608,
+      "concurrency": 1,
+      "pace": "normal",
+      "elapsedMs": 379.4786359999998,
+      "p50Ms": 379.450648,
+      "p95Ms": 379.450648,
+      "MiBPerSecond": 21.081555695272407,
+      "baselineRss": 55685120,
+      "peakRss": 114597888,
+      "afterRss": 103063552,
+      "samples": 52,
+      "peakOriginRequests": 1
+    },
+    {
+      "name": "8388608-8-normal",
+      "status": "passed",
+      "size": 8388608,
+      "concurrency": 8,
+      "pace": "normal",
+      "elapsedMs": 1502.154482,
+      "p50Ms": 1376.169985,
+      "p95Ms": 1499.08922,
+      "MiBPerSecond": 42.605471519007196,
+      "baselineRss": 103063552,
+      "peakRss": 359161856,
+      "afterRss": 111722496,
+      "samples": 95,
+      "peakOriginRequests": 8
+    },
+    {
+      "name": "8388608-16-normal",
+      "status": "passed",
+      "size": 8388608,
+      "concurrency": 16,
+      "pace": "normal",
+      "elapsedMs": 2683.5534570000004,
+      "p50Ms": 2575.6676290000005,
+      "p95Ms": 2682.391719,
+      "MiBPerSecond": 47.697950516362674,
+      "baselineRss": 111722496,
+      "peakRss": 503906304,
+      "afterRss": 160952320,
+      "samples": 57,
+      "peakOriginRequests": 16
+    },
+    {
+      "name": "33554432-1-normal",
+      "status": "passed",
+      "size": 33554432,
+      "concurrency": 1,
+      "pace": "normal",
+      "elapsedMs": 4184.178199,
+      "p50Ms": 4184.148947,
+      "p95Ms": 4184.148947,
+      "MiBPerSecond": 7.6478578296803565,
+      "baselineRss": 160952320,
+      "peakRss": 376692736,
+      "afterRss": 334827520,
+      "samples": 733,
+      "peakOriginRequests": 1
+    },
+    {
+      "name": "33554432-8-normal",
+      "status": "passed",
+      "size": 33554432,
+      "concurrency": 8,
+      "pace": "normal",
+      "elapsedMs": 11252.325706,
+      "p50Ms": 10431.798466999999,
+      "p95Ms": 11246.992323999999,
+      "MiBPerSecond": 22.750852285007614,
+      "baselineRss": 334827520,
+      "peakRss": 1237192704,
+      "afterRss": 665538560,
+      "samples": 1494,
+      "peakOriginRequests": 8
+    },
+    {
+      "name": "33554432-16-normal",
+      "status": "failed",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'unknown:timeout'\n- 'stored:33554432'\n",
+      "baselineRss": 665538560,
+      "peakRss": 1927663616
+    }
+  ],
+  "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'unknown:timeout'\n- 'stored:33554432'\n",
+  "originRecords": [
+    [
+      "/upload-fixture/wire-91",
+      {
+        "bytes": 33554432,
+        "digest": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    ],
+    [
+      "/upload-fixture/wire-92",
+      {
+        "bytes": 33554432,
+        "digest": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    ],
+    [
+      "/upload-fixture/wire-95",
+      {
+        "bytes": 33554432,
+        "digest": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    ]
+  ],
+  "runtimeLog": {
+    "stdout": "",
+    "stderr": "2026-11-25T19:22:36.846164Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:36.846262Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:36.846358Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:36.857931Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:36.873712Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:36.877212Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:36.884142Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:38.508035Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:38.798460Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:38.888207Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:38.912765Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:39.290037Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n2026-11-25T19:22:39.390420Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:37967/): error from user's HttpBody stream: Unfinished streaming body\n"
+  },
+  "memoryScope": "sampled Viceroy process RSS, separate from producer/origin; retained allocator/JIT memory included; local only"
+}
