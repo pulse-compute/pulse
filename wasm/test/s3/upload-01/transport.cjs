@@ -56,12 +56,14 @@ async function request(target, method, key, options = {}) {
     const responseArrived = new Promise(done => { releaseResponse = done; });
     const continued = new Promise(done => { releaseContinue = done; });
     const client = url.protocol === 'https:' ? https : http;
-    const req = client.request(url, { method, headers, agent: false, maxHeaderSize: 16384 });
+    // Explicit research-runner opt-in; retain one connection per attempt.
+    const agent = options.useEnvProxy ? new client.Agent({ keepAlive: false, proxyEnv: process.env }) : false;
+    const req = client.request(url, { method, headers, agent, maxHeaderSize: 16384 });
     const timer = setTimeout(() => finish(fail('DEADLINE')), options.timeoutMs ?? 5000);
     function finish(error, value) {
       if (settled) return;
       settled = true; stopped = true; clearTimeout(timer); releaseResponse(); releaseContinue();
-      response?.destroy(); req.destroy();
+      response?.destroy(); req.destroy(); if (agent) agent.destroy();
       error ? reject(error) : resolve(value);
     }
     req.on('error', () => finish(fail('TRANSPORT')));

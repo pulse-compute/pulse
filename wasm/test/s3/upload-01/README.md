@@ -1,15 +1,19 @@
 # UPLOAD-01 — signing and origin compatibility probe
 
-**Status: local proof passed; intended-origin acceptance blocked.** This is
+**Status: live upload/readback accepted; early-rejection gate failed.** This is
 the next experiment after [UPLOAD-00](../upload-00/README.md), based on `latest`
 at `f840fb474c4f3e9886dd71382cec27e2bbee8f6c`. No Pulse upload API, compiler
 admission, provider realization or RC1 inclusion is added.
 
-Fastly Object Storage is the intended origin. The current workspace exposes
-none of the five required target/credential values. The live runner exited 2
-with `status: blocked` before making any external request. Existing production
-documentation configuration identifies a different deployment purpose; neither
-its bucket nor its protected credentials were selected implicitly.
+The November 25 live probe reached Fastly Object Storage in `us-central-1`
+using the user's isolated QA account and a newly created bucket-scoped
+`read-write-objects` key. The bucket and regional endpoint were recovered from
+that account's existing access-key metadata and configured service backend.
+Only unique probe keys were written. The five valid uploads passed exact GET
+readback, including known-length `UNSIGNED-PAYLOAD` at 1 MiB. The deliberately
+invalid signature returned 403 but the producer had already generated and
+submitted the complete 1 MiB body. The full matrix therefore **failed** its
+early-rejection requirement; the acceptance checks were not weakened.
 
 The evidence task has no single matching Entry Point. Writes are confined to
 this directory; S3 protocol, provider, compiler, configuration, workflow and
@@ -49,9 +53,11 @@ documentation establishes Fastly acceptance. Sources reviewed November 24, 2026.
 
 [local-evidence.json](./local-evidence.json) records 14 passing cases and 30
 loopback requests on Node 24.22.3. Primary source/probe hashes and the inspected
-base revision are retained. New research files were present; product source was
-unchanged. The initial local run also passed; the final run adds live-target
-containment checks and pins the vector input.
+base revision are retained. The replay used head
+`d869c0c7377a110986cc5b2e0e2a73bbdfca115d` with the recorded research transport
+and runner edits present; product source was unchanged. The initial local run
+also passed. Source hashes identify the exact probe bytes independently of the
+checkout's commit ID.
 
 | Case | Observation |
 | --- | --- |
@@ -73,10 +79,35 @@ memory, Fastly backpressure, concurrency or throughput. Transport deadlines
 are prototype request deadlines; integration with Pulse's enclosing lifecycle
 and credential/signing deadline belongs to UPLOAD-02/03.
 
-[live-evidence.json](./live-evidence.json) retains the actual blocked attempt:
-no origin selection, credentials, requests, writes or cleanup were performed.
-Neither Viceroy nor deployed Fastly Compute was used. No compatibility result
-is inferred from the passing loopback fixture.
+[live-evidence.json](./live-evidence.json) retains the live matrix, using the
+workspace's configured network proxy. The hashed 1 KiB control and unsigned
+0/1/16,385/1,048,576-byte objects received complete 200 acknowledgements and
+passed byte-for-byte GET comparison and SHA-256 checks. The 1 MiB producer
+submitted 64 writes of at most 16 KiB without whole-object accumulation.
+
+The invalid signature received 403 and left no object, but all 1 MiB had been
+generated and submitted before the response arrived. This is a failure of the
+selected client/route's early-rejection gate. It does not establish when Fastly
+validated the signature or consumed bytes: intermediary buffering and response
+timing are unobserved. The loopback's zero-generation rejection remains a
+separate passing result. Neither Viceroy nor deployed Fastly Compute was used.
+
+The live run made 30 request attempts. All six attempted-write keys were deleted
+with 204 and then confirmed absent with HEAD 404, including the rejected key.
+[credential-cleanup.json](./credential-cleanup.json) records revocation of the
+new temporary bucket key (DELETE 204, subsequent lookup 404). Existing credentials
+and the user-supplied management token were not revoked. Secret values were
+removed from the execution workspace and are absent from retained evidence.
+
+Attempt history is retained:
+
+- [live-initial-blocked.json](./live-initial-blocked.json): original missing-input
+  attempt, zero external requests.
+- [live-direct-failed.json](./live-direct-failed.json): restored workspace's direct
+  transport failed at the initial HEAD, before any PUT. A separate unsigned HEAD
+  diagnostic returned `EAI_AGAIN`; the configured proxy route was reachable.
+- [live-evidence.json](./live-evidence.json): explicit proxy run; no per-request
+  retry, signing fallback, or hidden buffering was introduced to obtain a pass.
 
 ## Run and resume
 
@@ -96,12 +127,17 @@ in source, command arguments, PRs or receipts:
 | `UPLOAD01_ACCESS_KEY_ID` | Test credential allowed to operate on the probe objects. |
 | `UPLOAD01_SECRET_ACCESS_KEY` | Matching secret. |
 | `UPLOAD01_SESSION_TOKEN` | Optional token, only when needed by the selected credentials. |
+| `UPLOAD01_USE_ENV_PROXY` | Set to `1` to use the execution environment’s configured HTTP(S) proxy; default is direct. Requires Node 24.5+ or 22.21+. |
 
 Use a bucket-scoped test credential permitting PUT, GET, HEAD and DELETE of the
 generated objects. The user-selected experiment needs those writes and their
 cleanup, not account administration, bucket creation, settings changes or
 deployment permissions. Network access to the selected endpoint must be
 available. Node uses its standard HTTP/TLS transport with certificate validation.
+Proxy mode creates a dedicated Node agent per request with `proxyEnv: process.env`
+and destroys it at settlement. Proxy addresses and credentials are not recorded.
+The live receipt records the selected route and request-attempt count. Proxy
+buffering is outside the producer accounting and is not a streaming guarantee.
 
 The live matrix starts with a 1 KiB hashed control, then unsigned 0/1/16,385/1 MiB
 objects and a deliberately invalid signature. Keys include Unicode, a space
@@ -133,13 +169,19 @@ endpoint/region/credential policy and tested byte sizes, not all S3 origins.
 
 ## Decision still outstanding
 
-1. Supply the test target and scoped credentials, then run the unchanged live
-   matrix and retain its terminal receipt, exact source hashes and cleanup.
-2. If hashed control works but unsigned PUT fails, record that distinction and
-   separately evaluate `aws-chunked` signing/integrity before implementation.
-   Do not silently buffer, switch signing modes, or add multipart.
-3. If the candidate is accepted by the origin and its integrity limits are
-   acceptable, proceed to UPLOAD-02's actual Pulse ownership/transfer vertical.
+The signing/origin question is resolved for these sizes and this target:
+known-length unsigned PUT is accepted without a precomputed payload digest.
+Chunk signing is not required merely to achieve this observed acceptance;
+payload integrity requirements remain a separate design decision.
 
-**UPLOAD-01 remains open at the real-origin gate.** The prepared probe narrows
-the remaining work; it does not establish a go decision for uploads or RC1.
+The early-rejection gate is unresolved for the intended provider path. Do not
+rely on `Expect: 100-continue` or signature failure to bound bytes produced.
+The next useful evidence is UPLOAD-02's actual Pulse ownership/transfer vertical
+with explicit size/deadline limits, followed by rejection/cancellation settlement
+in UPLOAD-03. A provider-path probe must distinguish client generation, host
+submission, and observable origin behavior; repeating this proxy run cannot
+establish the missing timing guarantee.
+
+**The retained live matrix is failed, not an upload or RC1 go decision.** The
+successful transfer cases support continuing the evaluation with that limitation
+explicit; no public API, Native support or release promise follows from them.

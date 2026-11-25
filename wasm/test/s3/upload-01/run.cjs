@@ -31,6 +31,13 @@ async function live() {
   const target = Object.fromEntries(Object.entries(fields).map(([key, env]) => [key, process.env[env]]));
   if (process.env.UPLOAD01_SESSION_TOKEN) target.token = process.env.UPLOAD01_SESSION_TOKEN;
   T.validateTarget(target);
+  const useEnvProxy = process.env.UPLOAD01_USE_ENV_PROXY === '1';
+  report.networkRoute = useEnvProxy ? 'node-agent-environment-proxy' : 'direct';
+  report.requestAttempts = 0;
+  const request = (method, key, options = {}) => {
+    report.requestAttempts++; save();
+    return T.request(target, method, key, { timeoutMs: 30000, useEnvProxy, ...options });
+  };
   const prefix = `pulse-upload-01/${crypto.randomUUID()}/`;
   report.target = { endpoint: target.endpoint, bucket: target.bucket, region: target.region, prefix };
   report.remotePrefixConsumption = 'not observable from this client; loopback probe supplies separate prefix-before-EOF evidence';
@@ -44,25 +51,25 @@ async function live() {
     for (const plan of plans) {
       const key = prefix + plan.name + '/café %/雪.bin';
       const row = { name: plan.name, key, size: plan.size, status: 'running' }; report.cases.push(row); save();
-      const head = await T.request(target, 'HEAD', key, { timeoutMs: 30000 });
+      const head = await request('HEAD', key);
       row.initialStatus = head.status;
       if (head.status !== 404) { row.status = 'failed'; row.reason = 'isolated-key-not-confirmed-absent'; report.status = 'failed'; break; }
       // Retain intended cleanup before the first potentially mutating call,
       // including acknowledgement-loss and invalid-signature attempts.
       owned.push(key); row.putAttempted = true; save();
-      row.put = await T.request(target, 'PUT', key, { size: plan.size, timeoutMs: 30000,
+      row.put = await request('PUT', key, { size: plan.size,
         ...(plan.hashed ? { payloadHash: T.digest(plan.size) } : {}), badSignature: plan.badSignature,
         expectContinue: Boolean(plan.badSignature),
         afterFirstChunk: () => new Promise(done => setTimeout(done, 40)) });
       if (plan.badSignature) {
         row.status = row.put.status === 403 ? 'passed' : 'failed';
         row.earlyRejectionBeforeProducerEOF = row.put.metrics.generatedBytes < plan.size;
-        row.absentAfterRejection = (await T.request(target, 'HEAD', key, { timeoutMs: 30000 })).status === 404;
+        row.absentAfterRejection = (await request('HEAD', key)).status === 404;
         if (!row.absentAfterRejection || !row.earlyRejectionBeforeProducerEOF) row.status = 'failed';
       } else if (!T.acceptedPut(row.put, plan.size)) {
         row.status = 'failed'; row.reason = 'incomplete-or-unexpected-put-acknowledgement';
       } else {
-        const get = await T.request(target, 'GET', key, { timeoutMs: 30000 });
+        const get = await request('GET', key);
         row.readback = { status: get.status, ...get.readback };
         row.status = get.status === 200 && get.readback?.bytes === plan.size && get.readback.sha256 === T.digest(plan.size) && get.readback.exact ? 'passed' : 'failed';
       }
@@ -75,9 +82,9 @@ async function live() {
     for (const key of owned) {
       const cleanup = { key, status: 'running' }; report.cleanup.push(cleanup); save();
       try {
-        const removed = await T.request(target, 'DELETE', key, { timeoutMs: 30000 });
+        const removed = await request('DELETE', key);
         cleanup.deleteStatus = removed.status;
-        cleanup.headStatus = (await T.request(target, 'HEAD', key, { timeoutMs: 30000 })).status;
+        cleanup.headStatus = (await request('HEAD', key)).status;
         cleanup.status = removed.status === 204 && cleanup.headStatus === 404 ? 'passed' : 'failed';
       } catch (error) { cleanup.status = 'failed'; cleanup.reason = safeError(error); }
       save();
