@@ -1,0 +1,3009 @@
+{
+  "schema": "pulse.upload03.evidence.v1",
+  "status": "passed",
+  "startedAt": "2026-11-25T18:29:54.190Z",
+  "node": "v24.22.3",
+  "baseCommit": "fa98ff10fb7d0e7d7266877a98b410ba28d7da7a",
+  "baseTree": "c9b4e89bf79a747badb85cae18dea0f0dc18f82f",
+  "workingTree": "?? wasm/test/s3/upload-03/",
+  "sourceSha256": {
+    "native-overlay.cjs": "fb40742dd0e95147859a38a4d0661a62ac131453ae446d6c86feffb4562ba123",
+    "native-proof.cjs": "942290a2e20528fde9e001db6c6d5fdd523a35b3b86477c55dcacc1c98be4b92",
+    "node-proof.cjs": "06d10db889a90880ec7df8e4e3c88447a496574e75282cb44496767da0d96e4e",
+    "project.cjs": "626bc6923c46fd434cb703cb7b4e329d6c1642c216d8d5fe0280205251461ca4",
+    "run.cjs": "c13cde5b3f46e01f8ec7b9cfed7ea40ef2f308310a01e27c3c606bd2bbbff063"
+  },
+  "productSupportClaim": false,
+  "compilerAdmissionClaim": false,
+  "liveProviderClaim": false,
+  "attempts": [
+    {
+      "name": "node-javascript",
+      "status": "passed",
+      "startedAt": "2026-11-25T18:29:54.310Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-11-25T18:29:56.278Z",
+      "evidence": {
+        "status": "passed",
+        "mode": "javascript",
+        "cases": [
+          {
+            "name": "success",
+            "status": "passed",
+            "elapsedMs": 46,
+            "result": "stored:32769",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "source-underflow",
+            "status": "passed",
+            "elapsedMs": 8,
+            "result": "unknown",
+            "reads": 2,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 3,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 2,
+              "writes": 1,
+              "bytes": 3,
+              "dispatches": 1,
+              "maxChunkBytes": 3,
+              "maxSourceChunkBytes": 3,
+              "uploadFinished": false,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "source-overflow",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 5,
+              "maxSourceChunkBytes": 5,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "source-reset",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "source-stall",
+            "status": "passed",
+            "elapsedMs": 257,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "writer-stall",
+            "status": "passed",
+            "elapsedMs": 254,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 4096,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 1,
+              "bytes": 4096,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "origin-reset",
+            "status": "passed",
+            "elapsedMs": 7,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "headers-stall",
+            "status": "passed",
+            "elapsedMs": 253,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-body-stall",
+            "status": "passed",
+            "elapsedMs": 253,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-truncated",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-nonempty",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-oversized-rejection",
+            "status": "passed",
+            "elapsedMs": 6,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-duplicate-length",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-oversized-metadata",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-unsupported-encoding",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-200",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-403",
+            "status": "passed",
+            "elapsedMs": 2,
+            "result": "not-stored",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-408",
+            "status": "passed",
+            "elapsedMs": 2,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-429",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "not-stored",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-500",
+            "status": "passed",
+            "elapsedMs": 2,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-307",
+            "status": "passed",
+            "elapsedMs": 2,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "complete-rejection",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "not-stored",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "cancel-before-dispatch",
+            "status": "passed",
+            "elapsedMs": 2,
+            "result": "cancelled",
+            "failure": "UPLOAD03_CLIENT_DISCONNECT",
+            "reads": 0,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "cancel-during-input",
+            "status": "passed",
+            "elapsedMs": 2,
+            "result": "cancelled",
+            "failure": "UPLOAD03_CLIENT_DISCONNECT",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "cancel-after-prefix",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "cancelled",
+            "failure": "UPLOAD03_CLIENT_DISCONNECT",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 4096,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 1,
+              "bytes": 4096,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "cancel-after-upload",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "cancelled",
+            "failure": "UPLOAD03_CLIENT_DISCONNECT",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "late-provider-result",
+            "status": "passed",
+            "elapsedMs": 1,
+            "result": "cancelled",
+            "failure": "UPLOAD03_CLIENT_DISCONNECT",
+            "reads": 0,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "late-source-after-deadline",
+            "status": "passed",
+            "elapsedMs": 252,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "late-ack-after-deadline",
+            "status": "passed",
+            "elapsedMs": 252,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "request-deadline-source",
+            "status": "passed",
+            "elapsedMs": 77,
+            "result": "request-deadline",
+            "failure": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "request-deadline-ack",
+            "status": "passed",
+            "elapsedMs": 76,
+            "result": "request-deadline",
+            "failure": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "fresh-after-failures",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "stored:32769",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          }
+        ],
+        "limits": {
+          "operationMs": 250,
+          "requestMs": 2000,
+          "payloadBytes": 1048576,
+          "emittedChunkBytes": 16384,
+          "sourceBackingBytes": 65536
+        },
+        "limitations": [
+          "loopback HTTP; no TLS/live origin claim",
+          "Native uses putText compiler scaffold",
+          "write stall injected at existing afterWrite gate, not an OS send-buffer capacity measurement"
+        ]
+      }
+    },
+    {
+      "name": "node-native",
+      "status": "passed",
+      "startedAt": "2026-11-25T18:29:56.280Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-11-25T18:30:00.626Z",
+      "evidence": {
+        "status": "passed",
+        "mode": "native",
+        "cases": [
+          {
+            "name": "success",
+            "status": "passed",
+            "elapsedMs": 42,
+            "result": "stored:32769",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "source-underflow",
+            "status": "passed",
+            "elapsedMs": 9,
+            "result": "unknown",
+            "reads": 2,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 3,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 2,
+              "writes": 1,
+              "bytes": 3,
+              "dispatches": 1,
+              "maxChunkBytes": 3,
+              "maxSourceChunkBytes": 3,
+              "uploadFinished": false,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "source-overflow",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 5,
+              "maxSourceChunkBytes": 5,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "source-reset",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "source-stall",
+            "status": "passed",
+            "elapsedMs": 255,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "writer-stall",
+            "status": "passed",
+            "elapsedMs": 254,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 4096,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 1,
+              "bytes": 4096,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "origin-reset",
+            "status": "passed",
+            "elapsedMs": 6,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "headers-stall",
+            "status": "passed",
+            "elapsedMs": 254,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-body-stall",
+            "status": "passed",
+            "elapsedMs": 254,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-truncated",
+            "status": "passed",
+            "elapsedMs": 11,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-nonempty",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-oversized-rejection",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-duplicate-length",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-oversized-metadata",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "ack-unsupported-encoding",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-200",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-403",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "not-stored",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-408",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-429",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "not-stored",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-500",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "early-307",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "complete-rejection",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "not-stored",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "cancel-before-dispatch",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "cancelled",
+            "failure": "PULSE_RUNTIME_EFFECT_ABORTED",
+            "reads": 0,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "cancel-during-input",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "cancelled",
+            "failure": "PULSE_RUNTIME_EFFECT_ABORTED",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "cancel-after-prefix",
+            "status": "passed",
+            "elapsedMs": 6,
+            "result": "cancelled",
+            "failure": "PULSE_RUNTIME_EFFECT_ABORTED",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 4096,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 1,
+              "writes": 1,
+              "bytes": 4096,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "cancel-after-upload",
+            "status": "passed",
+            "elapsedMs": 4,
+            "result": "cancelled",
+            "failure": "PULSE_RUNTIME_EFFECT_ABORTED",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "late-provider-result",
+            "status": "passed",
+            "elapsedMs": 3,
+            "result": "cancelled",
+            "failure": "PULSE_RUNTIME_EFFECT_ABORTED",
+            "reads": 0,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 0,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "late-source-after-deadline",
+            "status": "passed",
+            "elapsedMs": 260,
+            "result": "unknown",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "late-ack-after-deadline",
+            "status": "passed",
+            "elapsedMs": 253,
+            "result": "unknown",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "request-deadline-source",
+            "status": "passed",
+            "elapsedMs": 77,
+            "result": "request-deadline",
+            "failure": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+            "reads": 1,
+            "cancels": 1,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 0,
+            "originComplete": false,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "request-deadline-ack",
+            "status": "passed",
+            "elapsedMs": 77,
+            "result": "request-deadline",
+            "failure": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 0,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "fresh-after-failures",
+            "status": "passed",
+            "elapsedMs": 5,
+            "result": "stored:32769",
+            "reads": 10,
+            "cancels": 0,
+            "continued": 1,
+            "dispatchCalls": 1,
+            "requests": 1,
+            "originBytes": 32769,
+            "originComplete": true,
+            "lateEnqueues": 0,
+            "metrics": {
+              "reads": 10,
+              "writes": 9,
+              "bytes": 32769,
+              "dispatches": 1,
+              "maxChunkBytes": 4096,
+              "maxSourceChunkBytes": 4096,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          }
+        ],
+        "wasm": {
+          "bytes": 6619,
+          "sha256": "3310f9e7effb5817ef376167a9b6472df8479435ebd2cf159902d6c2e270c7f2"
+        },
+        "limits": {
+          "operationMs": 250,
+          "requestMs": 2000,
+          "payloadBytes": 1048576,
+          "emittedChunkBytes": 16384,
+          "sourceBackingBytes": 65536
+        },
+        "limitations": [
+          "loopback HTTP; no TLS/live origin claim",
+          "Native uses putText compiler scaffold",
+          "write stall injected at existing afterWrite gate, not an OS send-buffer capacity measurement"
+        ]
+      }
+    },
+    {
+      "name": "fastly-upload02-regressions",
+      "status": "expected-failures-reproduced",
+      "startedAt": "2026-11-25T18:30:00.627Z",
+      "exitCode": 1,
+      "signal": null,
+      "finishedAt": "2026-11-25T18:30:05.170Z",
+      "evidence": {
+        "status": "failed",
+        "cases": [
+          {
+            "name": "success",
+            "status": "passed",
+            "result": "stored:32769",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "source-underflow",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 2,
+            "dispatches": 1,
+            "originBytes": 3,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "source-overflow",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 3,
+            "dispatches": 1,
+            "originBytes": 32768,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "source-reset",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "source-stall",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "writer-stall",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "writer-reset",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 1,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "send-error",
+            "status": "failed",
+            "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   bodies: 1,\n-   bodies: 0,\n    responses: 0\n  }\n\n    at clean (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:95:14)\n    at /workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:107:69\n    at check (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:64:46)\n    at run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:105:30)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:158:26)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 0,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 1,
+              "responses": 0
+            }
+          },
+          {
+            "name": "origin-reset",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "headers-stall",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-stall",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-reset",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-underflow",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-overflow",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-nonempty",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-oversized-rejection",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-duplicate-length",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-oversized-metadata",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-unsupported-encoding",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-200",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-403",
+            "status": "passed",
+            "result": "not-stored",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-408",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-429",
+            "status": "passed",
+            "result": "not-stored",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-500",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-307",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "complete-rejection",
+            "status": "passed",
+            "result": "not-stored",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-rejection-during-write",
+            "status": "passed",
+            "result": "not-stored",
+            "sourceReads": 1,
+            "dispatches": 1,
+            "originBytes": 1,
+            "monotonicMs": 5,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "fresh-after-failures",
+            "status": "passed",
+            "result": "stored:32769",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "late-early-rejection-cleanup",
+            "status": "failed",
+            "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'not-stored'\n- 'unknown'\n\n    at /workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:114:28\n    at check (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:64:46)\n    at run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:112:5)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:158:26)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)"
+          },
+          {
+            "name": "deadline-input-eof",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "deadline-upload-close",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "deadline-late-headers",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "deadline-ack-eof",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "deadline-response-close",
+            "status": "failed",
+            "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'stored:32769'\n- 'unknown'\n\n    at /workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:127:63\n    at check (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:64:46)\n    at run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:116:95)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:158:26)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+            "result": "stored:32769",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "disconnect-before-source",
+            "status": "passed",
+            "result": "cancelled",
+            "calls": 44,
+            "hostcallsAfterCancel": 0,
+            "cleanup": "host invocation teardown; guest cleanup cannot execute after trap",
+            "freshInvocationPassed": true
+          },
+          {
+            "name": "disconnect-during-write",
+            "status": "passed",
+            "result": "cancelled",
+            "calls": 55,
+            "hostcallsAfterCancel": 0,
+            "cleanup": "host invocation teardown; guest cleanup cannot execute after trap",
+            "freshInvocationPassed": true
+          },
+          {
+            "name": "disconnect-after-upload",
+            "status": "passed",
+            "result": "cancelled",
+            "calls": 214,
+            "hostcallsAfterCancel": 0,
+            "cleanup": "host invocation teardown; guest cleanup cannot execute after trap",
+            "freshInvocationPassed": true
+          },
+          {
+            "name": "disconnect-after-ack",
+            "status": "passed",
+            "result": "cancelled",
+            "calls": 233,
+            "hostcallsAfterCancel": 0,
+            "cleanup": "host invocation teardown; guest cleanup cannot execute after trap",
+            "freshInvocationPassed": true
+          },
+          {
+            "name": "request-deadline-upload",
+            "status": "passed",
+            "result": "request-deadline",
+            "continued": false,
+            "cleanup": "existing request-budget timeout response; invocation-scoped pending cleanup"
+          },
+          {
+            "name": "request-deadline-ack",
+            "status": "passed",
+            "result": "request-deadline",
+            "continued": false,
+            "cleanup": "existing request-budget timeout response; invocation-scoped pending cleanup"
+          }
+        ],
+        "originalContributionSha256": "67af91f7104210c09d610d1bac9d6a46a1f18cafaf3a27318c7f23fa7554f345",
+        "experimentalContributionSha256": "5e05ee6f7740da855deccf1ea75c66436211b77fcd78dc867fcd624dfd307519",
+        "wasm": {
+          "bytes": 51788,
+          "sha256": "5804d55bd275e7f19759ce995f96c3f59a45bc483dffe25eced3c44b181aa073"
+        },
+        "emittedSourceSha256": "7ec6374ad91674f6ca8633f76429072d95bbfa3e243b1a121bccdc4f25585528",
+        "sharedResolverAndDriverUnchanged": true,
+        "sharedFunctions": {
+          "__pulse_fastly_resolve_effect": "cbe909d7e7561e570db99ca4e40ed03634296903f520d66ce2a11900f9e94848",
+          "__pulse_fastly_run_invocation": "5a61647ee184c46556d53b1be6f761c5dd5f5e5425e600f08f621213be425e19"
+        },
+        "scaffoldSource": "import {Pulse} from '@pulse-compute/pulse'; import {s3} from '@pulse-compute/s3';\nconst app=new Pulse({auto:true}); app.post('/',async ctx=>{\n  const permission=await ctx.secret.get('AUTHORIZE');\n  if(permission!=='allowed') return ctx.text('denied',{status:403});\n  const key=ctx.req.header('x-object-key');\n  const result=await s3.putText(ctx,'objects',key,'',{contentType:'application/octet-stream'});\n  await ctx.secret.get('AFTER_UPLOAD');\n  if(result.status==='stored') return ctx.text('stored:'+result.byteLength);\n  return ctx.text(result.status);\n}); export default app;",
+        "payloadScratchBytes": 16384,
+        "limitations": [
+          "emitted S3 contribution experiment; putText is only a compiler scaffold",
+          "not public upload lowering or installed-package qualification",
+          "injected Fastly ABI; no Viceroy or deployed Compute",
+          "host queues and RSS unmeasured"
+        ]
+      },
+      "expectedFailures": [
+        "deadline-response-close",
+        "late-early-rejection-cleanup",
+        "send-error"
+      ]
+    },
+    {
+      "name": "fastly-fixed",
+      "status": "passed",
+      "startedAt": "2026-11-25T18:30:05.170Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-11-25T18:30:09.694Z",
+      "evidence": {
+        "status": "passed",
+        "cases": [
+          {
+            "name": "success",
+            "status": "passed",
+            "result": "stored:32769",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "source-underflow",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 2,
+            "dispatches": 1,
+            "originBytes": 3,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "source-overflow",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 3,
+            "dispatches": 1,
+            "originBytes": 32768,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "source-reset",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "source-stall",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "writer-stall",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "writer-reset",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 1,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "send-error",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 0,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "origin-reset",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "headers-stall",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-stall",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-reset",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-underflow",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-overflow",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-nonempty",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-oversized-rejection",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-duplicate-length",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-oversized-metadata",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "ack-unsupported-encoding",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-200",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-403",
+            "status": "passed",
+            "result": "not-stored",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-408",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-429",
+            "status": "passed",
+            "result": "not-stored",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-500",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-307",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "complete-rejection",
+            "status": "passed",
+            "result": "not-stored",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "early-rejection-during-write",
+            "status": "passed",
+            "result": "not-stored",
+            "sourceReads": 1,
+            "dispatches": 1,
+            "originBytes": 1,
+            "monotonicMs": 5,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "fresh-after-failures",
+            "status": "passed",
+            "result": "stored:32769",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 0,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "late-early-rejection-cleanup",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 0,
+            "dispatches": 1,
+            "originBytes": 0,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "deadline-input-eof",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "deadline-upload-close",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 1,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "deadline-late-headers",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "deadline-ack-eof",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "deadline-response-close",
+            "status": "passed",
+            "result": "unknown",
+            "sourceReads": 4,
+            "dispatches": 1,
+            "originBytes": 32769,
+            "monotonicMs": 1500,
+            "resources": {
+              "pendingRequests": 0,
+              "outboundRequests": 0
+            },
+            "ownedResources": {
+              "bodies": 0,
+              "responses": 0
+            }
+          },
+          {
+            "name": "disconnect-before-source",
+            "status": "passed",
+            "result": "cancelled",
+            "calls": 44,
+            "hostcallsAfterCancel": 0,
+            "cleanup": "host invocation teardown; guest cleanup cannot execute after trap",
+            "freshInvocationPassed": true
+          },
+          {
+            "name": "disconnect-during-write",
+            "status": "passed",
+            "result": "cancelled",
+            "calls": 55,
+            "hostcallsAfterCancel": 0,
+            "cleanup": "host invocation teardown; guest cleanup cannot execute after trap",
+            "freshInvocationPassed": true
+          },
+          {
+            "name": "disconnect-after-upload",
+            "status": "passed",
+            "result": "cancelled",
+            "calls": 214,
+            "hostcallsAfterCancel": 0,
+            "cleanup": "host invocation teardown; guest cleanup cannot execute after trap",
+            "freshInvocationPassed": true
+          },
+          {
+            "name": "disconnect-after-ack",
+            "status": "passed",
+            "result": "cancelled",
+            "calls": 233,
+            "hostcallsAfterCancel": 0,
+            "cleanup": "host invocation teardown; guest cleanup cannot execute after trap",
+            "freshInvocationPassed": true
+          },
+          {
+            "name": "request-deadline-upload",
+            "status": "passed",
+            "result": "request-deadline",
+            "continued": false,
+            "cleanup": "existing request-budget timeout response; invocation-scoped pending cleanup"
+          },
+          {
+            "name": "request-deadline-ack",
+            "status": "passed",
+            "result": "request-deadline",
+            "continued": false,
+            "cleanup": "existing request-budget timeout response; invocation-scoped pending cleanup"
+          }
+        ],
+        "originalContributionSha256": "67af91f7104210c09d610d1bac9d6a46a1f18cafaf3a27318c7f23fa7554f345",
+        "experimentalContributionSha256": "3fe59ca67f4d627c754296406dc1284794db56ac3b4866212c38dd1fa2fb5b3b",
+        "wasm": {
+          "bytes": 51829,
+          "sha256": "a8e4740cfa98275e9e404b6462649621e40254fcabde79dbf476051d50183a8e"
+        },
+        "emittedSourceSha256": "ba2b9d69d50b6bd619300650d16cf0af7cfbf316cf15d440aeb37c1787481858",
+        "sharedResolverAndDriverUnchanged": true,
+        "sharedFunctions": {
+          "__pulse_fastly_resolve_effect": "cbe909d7e7561e570db99ca4e40ed03634296903f520d66ce2a11900f9e94848",
+          "__pulse_fastly_run_invocation": "5a61647ee184c46556d53b1be6f761c5dd5f5e5425e600f08f621213be425e19"
+        },
+        "scaffoldSource": "import {Pulse} from '@pulse-compute/pulse'; import {s3} from '@pulse-compute/s3';\nconst app=new Pulse({auto:true}); app.post('/',async ctx=>{\n  const permission=await ctx.secret.get('AUTHORIZE');\n  if(permission!=='allowed') return ctx.text('denied',{status:403});\n  const key=ctx.req.header('x-object-key');\n  const result=await s3.putText(ctx,'objects',key,'',{contentType:'application/octet-stream'});\n  await ctx.secret.get('AFTER_UPLOAD');\n  if(result.status==='stored') return ctx.text('stored:'+result.byteLength);\n  return ctx.text(result.status);\n}); export default app;",
+        "payloadScratchBytes": 16384,
+        "limitations": [
+          "emitted S3 contribution experiment; putText is only a compiler scaffold",
+          "not public upload lowering or installed-package qualification",
+          "injected Fastly ABI; no Viceroy or deployed Compute",
+          "host queues and RSS unmeasured"
+        ]
+      }
+    }
+  ],
+  "finishedAt": "2026-11-25T18:30:09.697Z"
+}
