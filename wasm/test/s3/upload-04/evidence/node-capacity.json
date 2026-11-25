@@ -1,0 +1,3673 @@
+{
+  "status": "passed",
+  "sourceRevision": "665c6c256a7d02f91a7a80ad8ca241fd29b4152d",
+  "node": "v24.22.3",
+  "artifacts": {
+    "kind": "research-artifacts",
+    "capBytes": 33554432,
+    "operationMs": 10000,
+    "requestMs": 15000,
+    "artifacts": {
+      "node": {
+        "file": "/tmp/upload04-artifacts-debug/node.native",
+        "bytes": 116329,
+        "sha256": "a90b740595e6667649e27ac644c7a001994e1e316d7c1c7a9cf511268864ed9a",
+        "wasmBytes": 6695,
+        "wasmSha256": "d9f897210cc9cb9c0ad1f2ab04a64c1776da9e207fdfa85888b6233de3e08bfb"
+      },
+      "fastly": {
+        "file": "/tmp/upload04-artifacts-debug/fastly.wasm",
+        "bytes": 51855,
+        "sha256": "24d2cb658c16ed0053571df8f3ef20cf238828be78de53801ca83de195e6a3ec",
+        "wasmBytes": 51855,
+        "wasmSha256": "24d2cb658c16ed0053571df8f3ef20cf238828be78de53801ca83de195e6a3ec"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "javascript-65536-1-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 65536,
+      "concurrency": 1,
+      "pace": "normal",
+      "requests": 1,
+      "peakOriginRequests": 1,
+      "elapsedMs": 35.80446700000002,
+      "p50Ms": 35.361117999999976,
+      "p95Ms": 35.361117999999976,
+      "MiBPerSecond": 1.745592246911537,
+      "baseline": {
+        "rss": 54878208,
+        "heapTotal": 19898368,
+        "heapUsed": 10135424,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 57106432,
+        "heapTotal": 21110784,
+        "heapUsed": 11951752,
+        "external": 4377046,
+        "arrayBuffers": 410024
+      },
+      "afterGc": {
+        "rss": 57237504,
+        "heapTotal": 20848640,
+        "heapUsed": 11103256,
+        "external": 4377025,
+        "arrayBuffers": 212385
+      },
+      "samples": 5,
+      "requestMetrics": [
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-65536-8-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 65536,
+      "concurrency": 8,
+      "pace": "normal",
+      "requests": 8,
+      "peakOriginRequests": 1,
+      "elapsedMs": 71.466624,
+      "p50Ms": 54.96211299999999,
+      "p95Ms": 60.74143699999999,
+      "MiBPerSecond": 6.9962728335957225,
+      "baseline": {
+        "rss": 55099392,
+        "heapTotal": 20160512,
+        "heapUsed": 10134136,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 60473344,
+        "heapTotal": 21372928,
+        "heapUsed": 15144224,
+        "external": 5761177,
+        "arrayBuffers": 1794155
+      },
+      "afterGc": {
+        "rss": 60735488,
+        "heapTotal": 21635072,
+        "heapUsed": 11921224,
+        "external": 5761156,
+        "arrayBuffers": 212385
+      },
+      "samples": 15,
+      "requestMetrics": [
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-65536-16-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 65536,
+      "concurrency": 16,
+      "pace": "normal",
+      "requests": 16,
+      "peakOriginRequests": 1,
+      "elapsedMs": 119.10761199999999,
+      "p50Ms": 93.77224799999999,
+      "p95Ms": 105.17304999999999,
+      "MiBPerSecond": 8.395769029438691,
+      "baseline": {
+        "rss": 55197696,
+        "heapTotal": 20160512,
+        "heapUsed": 10134840,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 62689280,
+        "heapTotal": 22159360,
+        "heapUsed": 15736320,
+        "external": 6257049,
+        "arrayBuffers": 2255963
+      },
+      "afterGc": {
+        "rss": 62951424,
+        "heapTotal": 21897216,
+        "heapUsed": 12428336,
+        "external": 5233836,
+        "arrayBuffers": 212385
+      },
+      "samples": 25,
+      "requestMetrics": [
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-1048576-1-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 1048576,
+      "concurrency": 1,
+      "pace": "normal",
+      "requests": 1,
+      "peakOriginRequests": 1,
+      "elapsedMs": 61.56491700000001,
+      "p50Ms": 61.18227300000001,
+      "p95Ms": 61.18227300000001,
+      "MiBPerSecond": 16.243017106642082,
+      "baseline": {
+        "rss": 55357440,
+        "heapTotal": 20160512,
+        "heapUsed": 10132888,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 60600320,
+        "heapTotal": 21110784,
+        "heapUsed": 12797704,
+        "external": 7326170,
+        "arrayBuffers": 3359148
+      },
+      "afterGc": {
+        "rss": 60862464,
+        "heapTotal": 21372928,
+        "heapUsed": 11275296,
+        "external": 7326149,
+        "arrayBuffers": 212385
+      },
+      "samples": 5,
+      "requestMetrics": [
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-1048576-8-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 1048576,
+      "concurrency": 8,
+      "pace": "normal",
+      "requests": 8,
+      "peakOriginRequests": 2,
+      "elapsedMs": 210.95511200000004,
+      "p50Ms": 190.88950599999998,
+      "p95Ms": 199.70915199999996,
+      "MiBPerSecond": 37.922759605844476,
+      "baseline": {
+        "rss": 55218176,
+        "heapTotal": 19898368,
+        "heapUsed": 10134792,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 73437184,
+        "heapTotal": 22683648,
+        "heapUsed": 16226600,
+        "external": 13743041,
+        "arrayBuffers": 9741955
+      },
+      "afterGc": {
+        "rss": 73437184,
+        "heapTotal": 22421504,
+        "heapUsed": 12085392,
+        "external": 12570900,
+        "arrayBuffers": 212385
+      },
+      "samples": 17,
+      "requestMetrics": [
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-1048576-16-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 1048576,
+      "concurrency": 16,
+      "pace": "normal",
+      "requests": 16,
+      "peakOriginRequests": 3,
+      "elapsedMs": 393.879548,
+      "p50Ms": 356.804541,
+      "p95Ms": 382.42119,
+      "MiBPerSecond": 40.62155570463892,
+      "baseline": {
+        "rss": 54947840,
+        "heapTotal": 20160512,
+        "heapUsed": 10135000,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 79720448,
+        "heapTotal": 22945792,
+        "heapUsed": 15660288,
+        "external": 16052504,
+        "arrayBuffers": 12085503
+      },
+      "afterGc": {
+        "rss": 79196160,
+        "heapTotal": 22945792,
+        "heapUsed": 12593680,
+        "external": 6055256,
+        "arrayBuffers": 212385
+      },
+      "samples": 29,
+      "requestMetrics": [
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-8388608-1-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 8388608,
+      "concurrency": 1,
+      "pace": "normal",
+      "requests": 1,
+      "peakOriginRequests": 1,
+      "elapsedMs": 143.813884,
+      "p50Ms": 143.50292499999998,
+      "p95Ms": 143.50292499999998,
+      "MiBPerSecond": 55.62745249269535,
+      "baseline": {
+        "rss": 55197696,
+        "heapTotal": 20160512,
+        "heapUsed": 10134680,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 76787712,
+        "heapTotal": 22159360,
+        "heapUsed": 14399000,
+        "external": 14818888,
+        "arrayBuffers": 10851866
+      },
+      "afterGc": {
+        "rss": 76787712,
+        "heapTotal": 21372928,
+        "heapUsed": 11395600,
+        "external": 14818867,
+        "arrayBuffers": 212385
+      },
+      "samples": 8,
+      "requestMetrics": [
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-8388608-8-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 8388608,
+      "concurrency": 8,
+      "pace": "normal",
+      "requests": 8,
+      "peakOriginRequests": 7,
+      "elapsedMs": 1267.060308,
+      "p50Ms": 1194.370526,
+      "p95Ms": 1260.161275,
+      "MiBPerSecond": 50.51061863110623,
+      "baseline": {
+        "rss": 55148544,
+        "heapTotal": 19898368,
+        "heapUsed": 10134496,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 90304512,
+        "heapTotal": 30810112,
+        "heapUsed": 15962024,
+        "external": 23467281,
+        "arrayBuffers": 19506929
+      },
+      "afterGc": {
+        "rss": 84201472,
+        "heapTotal": 30547968,
+        "heapUsed": 10534208,
+        "external": 5085242,
+        "arrayBuffers": 212385
+      },
+      "samples": 27,
+      "requestMetrics": [
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-8388608-16-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 8388608,
+      "concurrency": 16,
+      "pace": "normal",
+      "requests": 16,
+      "peakOriginRequests": 9,
+      "elapsedMs": 2146.426576,
+      "p50Ms": 1701.921549,
+      "p95Ms": 2136.954415,
+      "MiBPerSecond": 59.633998866402415,
+      "baseline": {
+        "rss": 55103488,
+        "heapTotal": 19898368,
+        "heapUsed": 10134400,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 114704384,
+        "heapTotal": 31858688,
+        "heapUsed": 17777512,
+        "external": 35108113,
+        "arrayBuffers": 31147761
+      },
+      "afterGc": {
+        "rss": 109727744,
+        "heapTotal": 30810112,
+        "heapUsed": 11135680,
+        "external": 9568847,
+        "arrayBuffers": 212385
+      },
+      "samples": 44,
+      "requestMetrics": [
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-33554432-1-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 33554432,
+      "concurrency": 1,
+      "pace": "normal",
+      "requests": 1,
+      "peakOriginRequests": 1,
+      "elapsedMs": 482.54482399999995,
+      "p50Ms": 480.66806099999997,
+      "p95Ms": 480.66806099999997,
+      "MiBPerSecond": 66.31508288647606,
+      "baseline": {
+        "rss": 55103488,
+        "heapTotal": 20160512,
+        "heapUsed": 10132752,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 87478272,
+        "heapTotal": 21897216,
+        "heapUsed": 15158232,
+        "external": 21370818,
+        "arrayBuffers": 17382723
+      },
+      "afterGc": {
+        "rss": 78835712,
+        "heapTotal": 21372928,
+        "heapUsed": 11440600,
+        "external": 9997876,
+        "arrayBuffers": 212385
+      },
+      "samples": 13,
+      "requestMetrics": [
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-33554432-8-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 33554432,
+      "concurrency": 8,
+      "pace": "normal",
+      "requests": 8,
+      "peakOriginRequests": 8,
+      "elapsedMs": 4546.6349709999995,
+      "p50Ms": 3352.653157,
+      "p95Ms": 4538.357601,
+      "MiBPerSecond": 56.305377852599996,
+      "baseline": {
+        "rss": 54386688,
+        "heapTotal": 20160512,
+        "heapUsed": 10118432,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 124190720,
+        "heapTotal": 47063040,
+        "heapUsed": 18336320,
+        "external": 51833699,
+        "arrayBuffers": 45776195
+      },
+      "afterGc": {
+        "rss": 121847808,
+        "heapTotal": 47063040,
+        "heapUsed": 10495840,
+        "external": 13948987,
+        "arrayBuffers": 212385
+      },
+      "samples": 72,
+      "requestMetrics": [
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-33554432-16-normal",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 33554432,
+      "concurrency": 16,
+      "pace": "normal",
+      "requests": 16,
+      "peakOriginRequests": 16,
+      "elapsedMs": 7791.383844,
+      "p50Ms": 7121.965657,
+      "p95Ms": 7778.024517,
+      "MiBPerSecond": 65.71361522565489,
+      "baseline": {
+        "rss": 55169024,
+        "heapTotal": 20160512,
+        "heapUsed": 10134576,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 142413824,
+        "heapTotal": 48635904,
+        "heapUsed": 19637008,
+        "external": 61063963,
+        "arrayBuffers": 57103611
+      },
+      "afterGc": {
+        "rss": 129425408,
+        "heapTotal": 47325184,
+        "heapUsed": 11155024,
+        "external": 4833088,
+        "arrayBuffers": 212385
+      },
+      "samples": 80,
+      "requestMetrics": [
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-1048576-8-slow-client",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 1048576,
+      "concurrency": 8,
+      "pace": "slow-client",
+      "requests": 8,
+      "peakOriginRequests": 8,
+      "elapsedMs": 270.08710299999996,
+      "p50Ms": 257.012287,
+      "p95Ms": 261.756863,
+      "MiBPerSecond": 29.62007408402615,
+      "baseline": {
+        "rss": 55296000,
+        "heapTotal": 20160512,
+        "heapUsed": 10134536,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 73777152,
+        "heapTotal": 22945792,
+        "heapUsed": 16727296,
+        "external": 14126121,
+        "arrayBuffers": 10159099
+      },
+      "afterGc": {
+        "rss": 73355264,
+        "heapTotal": 21897216,
+        "heapUsed": 12162488,
+        "external": 14126100,
+        "arrayBuffers": 212385
+      },
+      "samples": 46,
+      "requestMetrics": [
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "javascript-8388608-8-slow-origin",
+      "status": "passed",
+      "mode": "javascript",
+      "size": 8388608,
+      "concurrency": 8,
+      "pace": "slow-origin",
+      "requests": 8,
+      "peakOriginRequests": 8,
+      "elapsedMs": 1389.1504929999999,
+      "p50Ms": 1370.180169,
+      "p95Ms": 1372.0833969999999,
+      "MiBPerSecond": 46.07132223794273,
+      "baseline": {
+        "rss": 54566912,
+        "heapTotal": 19898368,
+        "heapUsed": 10117656,
+        "external": 4134846,
+        "arrayBuffers": 146755
+      },
+      "peak": {
+        "rss": 96772096,
+        "heapTotal": 31334400,
+        "heapUsed": 16172576,
+        "external": 29175923,
+        "arrayBuffers": 24657219
+      },
+      "afterGc": {
+        "rss": 93274112,
+        "heapTotal": 30023680,
+        "heapUsed": 10465968,
+        "external": 10082843,
+        "arrayBuffers": 212385
+      },
+      "samples": 80,
+      "requestMetrics": [
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-65536-1-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 65536,
+      "concurrency": 1,
+      "pace": "normal",
+      "requests": 1,
+      "peakOriginRequests": 1,
+      "elapsedMs": 43.25626199999999,
+      "p50Ms": 42.815652,
+      "p95Ms": 42.815652,
+      "MiBPerSecond": 1.4448775069838447,
+      "baseline": {
+        "rss": 55472128,
+        "heapTotal": 20684800,
+        "heapUsed": 10357728,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 60977152,
+        "heapTotal": 21110784,
+        "heapUsed": 12473064,
+        "external": 6721565,
+        "arrayBuffers": 526319
+      },
+      "afterGc": {
+        "rss": 59047936,
+        "heapTotal": 21110784,
+        "heapUsed": 11399456,
+        "external": 6721544,
+        "arrayBuffers": 328714
+      },
+      "samples": 4,
+      "requestMetrics": [
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-65536-8-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 65536,
+      "concurrency": 8,
+      "pace": "normal",
+      "requests": 8,
+      "peakOriginRequests": 1,
+      "elapsedMs": 78.21646099999998,
+      "p50Ms": 54.59168700000001,
+      "p95Ms": 61.401088000000016,
+      "MiBPerSecond": 6.3925162760815795,
+      "baseline": {
+        "rss": 56012800,
+        "heapTotal": 19898368,
+        "heapUsed": 10374920,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 80523264,
+        "heapTotal": 22421504,
+        "heapUsed": 15446032,
+        "external": 23307744,
+        "arrayBuffers": 1514930
+      },
+      "afterGc": {
+        "rss": 63156224,
+        "heapTotal": 22421504,
+        "heapUsed": 12300136,
+        "external": 22648981,
+        "arrayBuffers": 328714
+      },
+      "samples": 15,
+      "requestMetrics": [
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-65536-16-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 65536,
+      "concurrency": 16,
+      "pace": "normal",
+      "requests": 16,
+      "peakOriginRequests": 1,
+      "elapsedMs": 178.479463,
+      "p50Ms": 134.435057,
+      "p95Ms": 139.30362,
+      "MiBPerSecond": 5.602885526386864,
+      "baseline": {
+        "rss": 55533568,
+        "heapTotal": 20684800,
+        "heapUsed": 10374376,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 99430400,
+        "heapTotal": 23207936,
+        "heapUsed": 16759048,
+        "external": 42090988,
+        "arrayBuffers": 2438318
+      },
+      "afterGc": {
+        "rss": 65097728,
+        "heapTotal": 23207936,
+        "heapUsed": 12778000,
+        "external": 40936645,
+        "arrayBuffers": 328714
+      },
+      "samples": 25,
+      "requestMetrics": [
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 5,
+          "writes": 4,
+          "bytes": 65536,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-1048576-1-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 1048576,
+      "concurrency": 1,
+      "pace": "normal",
+      "requests": 1,
+      "peakOriginRequests": 1,
+      "elapsedMs": 53.002520000000004,
+      "p50Ms": 52.223945000000015,
+      "p95Ms": 52.223945000000015,
+      "MiBPerSecond": 18.86702745454367,
+      "baseline": {
+        "rss": 55869440,
+        "heapTotal": 20160512,
+        "heapUsed": 10374472,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 64389120,
+        "heapTotal": 21372928,
+        "heapUsed": 13351424,
+        "external": 9670687,
+        "arrayBuffers": 3475441
+      },
+      "afterGc": {
+        "rss": 62660608,
+        "heapTotal": 21372928,
+        "heapUsed": 11586096,
+        "external": 9670666,
+        "arrayBuffers": 328714
+      },
+      "samples": 5,
+      "requestMetrics": [
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-1048576-8-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 1048576,
+      "concurrency": 8,
+      "pace": "normal",
+      "requests": 8,
+      "peakOriginRequests": 3,
+      "elapsedMs": 157.510755,
+      "p50Ms": 132.33364200000003,
+      "p95Ms": 140.01957899999996,
+      "MiBPerSecond": 50.79018254975668,
+      "baseline": {
+        "rss": 56143872,
+        "heapTotal": 20160512,
+        "heapUsed": 10375040,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 96645120,
+        "heapTotal": 22945792,
+        "heapUsed": 14828760,
+        "external": 31856789,
+        "arrayBuffers": 10063996
+      },
+      "afterGc": {
+        "rss": 79372288,
+        "heapTotal": 22945792,
+        "heapUsed": 12468936,
+        "external": 31856789,
+        "arrayBuffers": 722666
+      },
+      "samples": 15,
+      "requestMetrics": [
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-1048576-16-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 1048576,
+      "concurrency": 16,
+      "pace": "normal",
+      "requests": 16,
+      "peakOriginRequests": 4,
+      "elapsedMs": 484.64114599999994,
+      "p50Ms": 429.5317550000001,
+      "p95Ms": 456.85813599999994,
+      "MiBPerSecond": 33.0141180377615,
+      "baseline": {
+        "rss": 55943168,
+        "heapTotal": 20160512,
+        "heapUsed": 10374824,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 115564544,
+        "heapTotal": 24256512,
+        "heapUsed": 16132176,
+        "external": 50979313,
+        "arrayBuffers": 10318138
+      },
+      "afterGc": {
+        "rss": 75165696,
+        "heapTotal": 32645120,
+        "heapUsed": 12971752,
+        "external": 25133339,
+        "arrayBuffers": 328714
+      },
+      "samples": 28,
+      "requestMetrics": [
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-8388608-1-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 8388608,
+      "concurrency": 1,
+      "pace": "normal",
+      "requests": 1,
+      "peakOriginRequests": 1,
+      "elapsedMs": 114.62632100000002,
+      "p50Ms": 114.27772800000002,
+      "p95Ms": 114.27772800000002,
+      "MiBPerSecond": 69.79199829679607,
+      "baseline": {
+        "rss": 55627776,
+        "heapTotal": 20160512,
+        "heapUsed": 10374416,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 81711104,
+        "heapTotal": 22421504,
+        "heapUsed": 14894576,
+        "external": 17507540,
+        "arrayBuffers": 11312294
+      },
+      "afterGc": {
+        "rss": 79695872,
+        "heapTotal": 21897216,
+        "heapUsed": 11715744,
+        "external": 17507519,
+        "arrayBuffers": 328714
+      },
+      "samples": 7,
+      "requestMetrics": [
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-8388608-8-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 8388608,
+      "concurrency": 8,
+      "pace": "normal",
+      "requests": 8,
+      "peakOriginRequests": 6,
+      "elapsedMs": 1315.8242610000002,
+      "p50Ms": 1071.764874,
+      "p95Ms": 1290.897385,
+      "MiBPerSecond": 48.63871407216742,
+      "baseline": {
+        "rss": 56299520,
+        "heapTotal": 20160512,
+        "heapUsed": 10374312,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 112455680,
+        "heapTotal": 31596544,
+        "heapUsed": 16247040,
+        "external": 44074389,
+        "arrayBuffers": 22247532
+      },
+      "afterGc": {
+        "rss": 95866880,
+        "heapTotal": 31596544,
+        "heapUsed": 10893736,
+        "external": 8274454,
+        "arrayBuffers": 328714
+      },
+      "samples": 27,
+      "requestMetrics": [
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-8388608-16-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 8388608,
+      "concurrency": 16,
+      "pace": "normal",
+      "requests": 16,
+      "peakOriginRequests": 10,
+      "elapsedMs": 2334.671436,
+      "p50Ms": 2025.244622,
+      "p95Ms": 2320.417756,
+      "MiBPerSecond": 54.82570182093922,
+      "baseline": {
+        "rss": 55840768,
+        "heapTotal": 20160512,
+        "heapUsed": 10374960,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 145551360,
+        "heapTotal": 33431552,
+        "heapUsed": 19281056,
+        "external": 72569512,
+        "arrayBuffers": 36943018
+      },
+      "afterGc": {
+        "rss": 108785664,
+        "heapTotal": 32120832,
+        "heapUsed": 11480664,
+        "external": 19230974,
+        "arrayBuffers": 328714
+      },
+      "samples": 47,
+      "requestMetrics": [
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-33554432-1-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 33554432,
+      "concurrency": 1,
+      "pace": "normal",
+      "requests": 1,
+      "peakOriginRequests": 1,
+      "elapsedMs": 581.684679,
+      "p50Ms": 581.134879,
+      "p95Ms": 581.134879,
+      "MiBPerSecond": 55.01262308474864,
+      "baseline": {
+        "rss": 55705600,
+        "heapTotal": 20422656,
+        "heapUsed": 10375432,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 94289920,
+        "heapTotal": 22683648,
+        "heapUsed": 15579792,
+        "external": 31530631,
+        "arrayBuffers": 23381000
+      },
+      "afterGc": {
+        "rss": 90578944,
+        "heapTotal": 22159360,
+        "heapUsed": 11756096,
+        "external": 8901823,
+        "arrayBuffers": 328714
+      },
+      "samples": 15,
+      "requestMetrics": [
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-33554432-8-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 33554432,
+      "concurrency": 8,
+      "pace": "normal",
+      "requests": 8,
+      "peakOriginRequests": 8,
+      "elapsedMs": 4656.194333,
+      "p50Ms": 3178.207468,
+      "p95Ms": 4641.479673999999,
+      "MiBPerSecond": 54.98052308204637,
+      "baseline": {
+        "rss": 55848960,
+        "heapTotal": 20422656,
+        "heapUsed": 10374896,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 134455296,
+        "heapTotal": 31858688,
+        "heapUsed": 18296960,
+        "external": 62326546,
+        "arrayBuffers": 47498432
+      },
+      "afterGc": {
+        "rss": 110592000,
+        "heapTotal": 30547968,
+        "heapUsed": 10863736,
+        "external": 9693633,
+        "arrayBuffers": 328714
+      },
+      "samples": 51,
+      "requestMetrics": [
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-33554432-16-normal",
+      "status": "passed",
+      "mode": "native",
+      "size": 33554432,
+      "concurrency": 16,
+      "pace": "normal",
+      "requests": 16,
+      "peakOriginRequests": 16,
+      "elapsedMs": 7341.540848,
+      "p50Ms": 6652.700896,
+      "p95Ms": 7330.1310140000005,
+      "MiBPerSecond": 69.74012821020813,
+      "baseline": {
+        "rss": 55922688,
+        "heapTotal": 20160512,
+        "heapUsed": 10374192,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 176496640,
+        "heapTotal": 50470912,
+        "heapUsed": 23841120,
+        "external": 91843428,
+        "arrayBuffers": 54459716
+      },
+      "afterGc": {
+        "rss": 124583936,
+        "heapTotal": 48898048,
+        "heapUsed": 11468360,
+        "external": 38901804,
+        "arrayBuffers": 328898
+      },
+      "samples": 71,
+      "requestMetrics": [
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 2049,
+          "writes": 2048,
+          "bytes": 33554432,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-1048576-8-slow-client",
+      "status": "passed",
+      "mode": "native",
+      "size": 1048576,
+      "concurrency": 8,
+      "pace": "slow-client",
+      "requests": 8,
+      "peakOriginRequests": 8,
+      "elapsedMs": 255.772931,
+      "p50Ms": 232.24317200000002,
+      "p95Ms": 247.69845300000003,
+      "MiBPerSecond": 31.27774299149741,
+      "baseline": {
+        "rss": 55828480,
+        "heapTotal": 20160512,
+        "heapUsed": 10373936,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 95191040,
+        "heapTotal": 22945792,
+        "heapUsed": 15981240,
+        "external": 35004683,
+        "arrayBuffers": 13190796
+      },
+      "afterGc": {
+        "rss": 76873728,
+        "heapTotal": 22945792,
+        "heapUsed": 12526784,
+        "external": 31691669,
+        "arrayBuffers": 328714
+      },
+      "samples": 43,
+      "requestMetrics": [
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 65,
+          "writes": 64,
+          "bytes": 1048576,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    },
+    {
+      "name": "native-8388608-8-slow-origin",
+      "status": "passed",
+      "mode": "native",
+      "size": 8388608,
+      "concurrency": 8,
+      "pace": "slow-origin",
+      "requests": 8,
+      "peakOriginRequests": 8,
+      "elapsedMs": 1248.965471,
+      "p50Ms": 1226.2159510000001,
+      "p95Ms": 1241.00177,
+      "MiBPerSecond": 51.242409406849006,
+      "baseline": {
+        "rss": 55754752,
+        "heapTotal": 20160512,
+        "heapUsed": 10374960,
+        "external": 4251175,
+        "arrayBuffers": 263084
+      },
+      "peak": {
+        "rss": 119193600,
+        "heapTotal": 31596544,
+        "heapUsed": 18039056,
+        "external": 55304459,
+        "arrayBuffers": 32966284
+      },
+      "afterGc": {
+        "rss": 95076352,
+        "heapTotal": 30547968,
+        "heapUsed": 10841736,
+        "external": 27819420,
+        "arrayBuffers": 328714
+      },
+      "samples": 77,
+      "requestMetrics": [
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        },
+        {
+          "reads": 513,
+          "writes": 512,
+          "bytes": 8388608,
+          "dispatches": 1,
+          "maxChunkBytes": 16384,
+          "maxSourceChunkBytes": 16384,
+          "uploadFinished": true,
+          "inputEOF": true,
+          "closed": true
+        }
+      ],
+      "memoryScope": "whole isolated worker including runtime, producer and loopback origin; sampled RSS, not a hard peak bound"
+    }
+  ]
+}
