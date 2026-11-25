@@ -1,0 +1,104 @@
+{
+  "kind": "development-only; not final source qualification",
+  "attempts": [
+    {
+      "name": "u3-fastly-before",
+      "status": "failed",
+      "wasm": {
+        "bytes": 51788,
+        "sha256": "5804d55bd275e7f19759ce995f96c3f59a45bc483dffe25eced3c44b181aa073"
+      },
+      "emittedSourceSha256": "7ec6374ad91674f6ca8633f76429072d95bbfa3e243b1a121bccdc4f25585528",
+      "totalCases": 37,
+      "failedCases": [
+        {
+          "name": "send-error",
+          "status": "failed",
+          "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   bodies: 1,\n-   bodies: 0,\n    responses: 0\n  }\n\n    at clean (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:95:14)\n    at /workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:107:69\n    at check (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:64:46)\n    at run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:105:30)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:143:26)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)",
+          "result": "unknown",
+          "sourceReads": 0,
+          "dispatches": 0,
+          "originBytes": 0,
+          "monotonicMs": 0,
+          "resources": {
+            "pendingRequests": 0,
+            "outboundRequests": 0
+          },
+          "ownedResources": {
+            "bodies": 1,
+            "responses": 0
+          }
+        },
+        {
+          "name": "deadline-response-close",
+          "status": "failed",
+          "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'stored:32769'\n- 'unknown'\n\n    at /workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:123:63\n    at check (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:64:46)\n    at run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:112:95)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:143:26)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+          "result": "stored:32769",
+          "sourceReads": 4,
+          "dispatches": 1,
+          "originBytes": 32769,
+          "monotonicMs": 1500,
+          "resources": {
+            "pendingRequests": 0,
+            "outboundRequests": 0
+          },
+          "ownedResources": {
+            "bodies": 0,
+            "responses": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "u3-fastly-fixed",
+      "status": "failed",
+      "wasm": {
+        "bytes": 51824,
+        "sha256": "dfa67032a5344580c5eb5c69dc969b815a01381a5acf7581f58a4ab2a06f251e"
+      },
+      "emittedSourceSha256": "9c42f2e03ce327c913c1200b6c3e0c47553e2e8455213c58b08cf8d78fea3879",
+      "totalCases": 39,
+      "failedCases": [
+        {
+          "name": "send-error",
+          "status": "failed",
+          "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   bodies: 1,\n-   bodies: 0,\n    responses: 0\n  }\n\n    at clean (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:95:14)\n    at /workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:107:69\n    at check (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:64:46)\n    at run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:105:30)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:153:26)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)",
+          "result": "unknown",
+          "sourceReads": 0,
+          "dispatches": 0,
+          "originBytes": 0,
+          "monotonicMs": 0,
+          "resources": {
+            "pendingRequests": 0,
+            "outboundRequests": 0
+          },
+          "ownedResources": {
+            "bodies": 1,
+            "responses": 0
+          }
+        },
+        {
+          "name": "request-deadline-upload",
+          "status": "failed",
+          "error": "AssertionError [ERR_ASSERTION]: Missing expected exception.\n    at /workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:139:14\n    at check (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:64:46)\n    at run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:137:41)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:153:26)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)"
+        },
+        {
+          "name": "request-deadline-ack",
+          "status": "failed",
+          "error": "AssertionError [ERR_ASSERTION]: Missing expected exception.\n    at /workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:139:14\n    at check (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:64:46)\n    at run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:137:41)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/s3/upload-03/native-proof.cjs:153:26)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)"
+        }
+      ]
+    },
+    {
+      "name": "u3-fastly-fixed2",
+      "status": "passed",
+      "wasm": {
+        "bytes": 51829,
+        "sha256": "a8e4740cfa98275e9e404b6462649621e40254fcabde79dbf476051d50183a8e"
+      },
+      "emittedSourceSha256": "ba2b9d69d50b6bd619300650d16cf0af7cfbf316cf15d440aeb37c1787481858",
+      "totalCases": 39,
+      "failedCases": []
+    }
+  ]
+}
