@@ -894,6 +894,9 @@ function filesUnder(root, predicate = () => true, out = []) {
 
 function transformCliCopy(sourceRelative, content) {
   let out = content;
+  if (sourceRelative === 'docs/guides/project-lifecycle.md') {
+    out = out.replaceAll('../../README.md#start-here', publicCliDoc('README.md', 'start-here'));
+  }
   if (sourceRelative === 'docs/README.md') {
     out = out.replaceAll(
       '[PulseWasm package boundaries](../wasm/docs/PACKAGE-BOUNDARIES.md)',
