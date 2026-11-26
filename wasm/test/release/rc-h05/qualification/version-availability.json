@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "pulse.rc-h05-version-availability.v1",
+  "checkedAt": "2026-11-26T22:05:20.864269+00:00",
+  "registry": "https://registry.npmjs.org",
+  "version": "1.0.0-rc.1",
+  "results": [
+    {
+      "name": "@pulse-compute/runtime",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "status": "candidate-version-absent",
+      "publishedVersions": 7
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "status": "candidate-version-absent",
+      "publishedVersions": 11
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "status": "candidate-version-absent",
+      "publishedVersions": 12
+    }
+  ],
+  "status": "passed",
+  "limitation": "Read-only observation; refresh before protected publication. Does not reserve names or approve publication."
+}

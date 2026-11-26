@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "pulse.rc-h05-ci-status.v1",
+  "head": "77ea6e193a2b5e7d4c749fdc3c988cf34a5a63c7",
+  "mergeCandidate": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+  "tree": "b71499b6caa15954c4cb880d556791621efe0c9b",
+  "fullCI": {
+    "runId": 45901154055,
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/pulse-compute/pulse/actions/runs/45901154055"
+  },
+  "aggregate": {
+    "runId": 45901090332,
+    "status": "running",
+    "conclusion": null
+  }
+}

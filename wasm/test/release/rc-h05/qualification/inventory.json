@@ -12,6 +12,11 @@
       "bytes": 877
     },
     {
+      "file": "ci-status.json",
+      "sha256": "e1246f1a39a394b5850923495d274db0fd0bae8ca9b5f68428c38f1ac1603057",
+      "bytes": 497
+    },
+    {
       "file": "docs-check-3.log",
       "sha256": "691d8565b286fd23b2c6778164ea9ccb4832525014e852051b4b30bcba2ff7d4",
       "bytes": 333896
@@ -20,6 +25,11 @@
       "file": "docs-release-final.log",
       "sha256": "95f9cc5c402cb7a3cf8f43a887d8bfe72fa3fb53bf4f222e69019ced56585d86",
       "bytes": 320292
+    },
+    {
+      "file": "guest-provenance-binding.json",
+      "sha256": "7e3a9c2cc3f733474197d1e1bb9db08581bf2c14ba45200849d26a717e906dca",
+      "bytes": 657
     },
     {
       "file": "harness/README.md",
@@ -55,6 +65,11 @@
       "file": "harness/verify-deployed-archives.py",
       "sha256": "8e203dbafe1e5ffe129ee093aae57e27d3da60df8bd3f58c8fd25f255253c95c",
       "bytes": 957
+    },
+    {
+      "file": "harness/verify-sealed-pack.cjs",
+      "sha256": "45c37ef2c370e968db98cf148e70fd0a27f9c247fe1da2584324ba45444f507a",
+      "bytes": 2188
     },
     {
       "file": "k4-2.log",
@@ -150,6 +165,11 @@
       "file": "terminal-installed.log",
       "sha256": "c2f84dda616c0fa51884e7eb56a934294316baab36b08f5bb8d82ac0af57870a",
       "bytes": 1076
+    },
+    {
+      "file": "version-availability.json",
+      "sha256": "c0b8bbbbc27e6602bb272c2eb99127ad4154247898fa39fb91429c7f72ed588a",
+      "bytes": 2955
     }
   ]
 }

@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "artifactIdentityUnchanged": {
+    "file": "prebuilt/es256-verifier.wasm",
+    "bytes": 36378,
+    "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf"
+  },
+  "sourceIdentityUnchanged": {
+    "included": true,
+    "directory": "source",
+    "treeSha256": "581fa765f228bd1a3ab6a40ee3cbb35a9d7a101e2839d32e36ececc94b66a741"
+  },
+  "beforeBuildScriptSha256": "041347c2542fe2fe43cb24c9042556151f9f11a21da53c5eded362ede54ca2eb",
+  "afterBuildScriptSha256": "6eba250974ba8c97e6a6c5f4ee800748a40d206bd551ff5745a42e25779cc47a",
+  "constantsChange": "only package version and versioned reconstruction-script hash"
+}
