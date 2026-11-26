@@ -1,0 +1,501 @@
+{
+  "schemaVersion": "pulse.rc-h03-packed-claims.v1",
+  "sourceRevision": "b716082b9fdb414d47df36961020a1e43dbf0f67",
+  "sourceTree": "e97fc8747fed3df74e7b05f354795244d07cdcd0",
+  "classification": "packed export closure; runtime target evidence is recorded separately",
+  "packageCount": 20,
+  "declaredEntryPointCount": 34,
+  "runtimeTargets": [
+    {
+      "id": "node",
+      "label": "Node",
+      "mode": "execute",
+      "summary": "Explicit Native and generally available JavaScript execution over one canonical application contract."
+    },
+    {
+      "id": "fastly",
+      "label": "Fastly Compute",
+      "mode": "execute-and-build",
+      "summary": "Explicit Native direct-host-ABI Wasm and generally available JavaScript source/deployment candidates."
+    },
+    {
+      "id": "none",
+      "label": "Compile only",
+      "mode": "compile",
+      "summary": "Compilation and inspection without a runnable provider target."
+    }
+  ],
+  "packages": [
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-beta.11",
+      "tier": "canonical-application",
+      "sha256": "8937e8fd4f0da54633400aaa20d7d61bd9ff1a1dbded762cdb063160a3df5ea8",
+      "tarball": "pulse-compute-runtime-1.0.0-beta.11.tgz",
+      "bytes": 99890,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/runtime",
+          "packedFiles": [
+            "./src/index.d.ts",
+            "./src/index.js"
+          ]
+        }
+      ],
+      "stability": "Supported application authoring and execution contract."
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-beta.11",
+      "tier": "canonical-application",
+      "sha256": "a2c57c648ca60ba4ea9e78de7066ec458f7395ee274c8a1e6a50ec63ce8e6739",
+      "tarball": "pulse-compute-pulse-1.0.0-beta.11.tgz",
+      "bytes": 15536,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/pulse",
+          "packedFiles": [
+            "./src/index.d.ts",
+            "./src/index.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/pulse/schema",
+          "packedFiles": [
+            "./src/schema.d.ts",
+            "./src/schema.js"
+          ]
+        }
+      ],
+      "stability": "Supported conventional application, project-configuration, and schema-authoring contract."
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-beta.11",
+      "tier": "canonical-application",
+      "sha256": "3f75daa33ff1e2fd5dbc32d39c6fd7215ab5f1ca098d4f6d31d0ae6f20fff2c1",
+      "tarball": "pulse-compute-cli-1.0.0-beta.11.tgz",
+      "bytes": 1479392,
+      "entryPoints": [
+        {
+          "entryPoint": "pulse binary",
+          "packedFiles": [
+            "./bin/pulse.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli",
+          "packedFiles": [
+            "./src/index.d.ts",
+            "./src/index.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/workflow",
+          "packedFiles": [
+            "./src/workflow.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/project-config",
+          "packedFiles": [
+            "./src/project-config.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/project-execution",
+          "packedFiles": [
+            "./src/project-execution.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/project-config-schema",
+          "packedFiles": [
+            "./src/project-config-schema.d.ts",
+            "./src/project-config-schema.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/diagnostics",
+          "packedFiles": [
+            "./src/diagnostics.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/project-config.schema.json",
+          "packedFiles": [
+            "./project-config.schema.json"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/cli-spec.json",
+          "packedFiles": [
+            "./cli-spec.json"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/release-manifest.json",
+          "packedFiles": [
+            "./release-manifest.json"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/documentation-versions.json",
+          "packedFiles": [
+            "./documentation-versions.json"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/cli/documentation-site.json",
+          "packedFiles": [
+            "./documentation-site.json"
+          ]
+        }
+      ],
+      "stability": "Supported Beta workflow and project-configuration contract."
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-beta.11",
+      "tier": "supported-extension",
+      "sha256": "20ec7ac3201e93077b0473a3fb807459139819fcf00a12a396af490a02d4df3d",
+      "tarball": "pulse-compute-provider-fastly-1.0.0-beta.11.tgz",
+      "bytes": 284486,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/provider-fastly",
+          "packedFiles": [
+            "./dist/index.d.ts",
+            "./dist/index.js",
+            "./src/index.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/provider-fastly/contract",
+          "packedFiles": [
+            "./src/provider-contract.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/provider-fastly/toolchain",
+          "packedFiles": [
+            "./src/toolchain/index.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/provider-fastly/config-schema",
+          "packedFiles": [
+            "./src/config-schema.d.ts",
+            "./src/config-schema.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/provider-fastly/runtime/canonical-api-runtime",
+          "packedFiles": [
+            "./src/runtime/canonical-api-runtime.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/provider-fastly/build/canonical-target",
+          "packedFiles": [
+            "./src/build/canonical-target.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/provider-fastly/testing/fastly-cli",
+          "packedFiles": [
+            "./src/testing/fastly-cli.js"
+          ]
+        }
+      ],
+      "stability": "The listed entry points are supported for the Beta; all other exported subpaths are implementation-only."
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-beta.11",
+      "tier": "supported-extension",
+      "sha256": "6f1c6d0a0e11c188c29587c64fa5b5b9cbf3c340adcc36981e44a7ec3b1e0476",
+      "tarball": "pulse-compute-grip-1.0.0-beta.11.tgz",
+      "bytes": 27132,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/grip",
+          "packedFiles": [
+            "./dist/index.d.ts",
+            "./dist/index.js"
+          ]
+        }
+      ],
+      "stability": "The package root has bounded JavaScript and Native HTTP-framing realization plus configured Node/Fastly broadcast; /pulsewasm remains compatibility-only."
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-beta.11",
+      "tier": "supported-extension",
+      "sha256": "4a587ce59c7832ed7be130a5e550eb8d0e61d3133ca979bb88ff771445b64e66",
+      "tarball": "pulse-compute-assets-1.0.0-beta.11.tgz",
+      "bytes": 50324,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/assets",
+          "packedFiles": [
+            "./dist/index.d.ts",
+            "./dist/index.js"
+          ]
+        }
+      ],
+      "stability": "The package root is the supported JavaScript API and canonical Native authoring surface, including bounded embedded Assets bytes on their qualified targets. /pulsewasm remains a compatibility subpath; manifest/compiler subpaths are toolchain integration. No application binary inspection is exposed."
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-beta.11",
+      "tier": "supported-extension",
+      "sha256": "83c7ac0cdaf65ebae2b0221bf5f6d7c629f1e4c1eca86da62e6f4e8c6f6d346a",
+      "tarball": "pulse-compute-crypto-1.0.0-beta.11.tgz",
+      "bytes": 233225,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/crypto",
+          "packedFiles": [
+            "./dist/index.d.ts",
+            "./dist/index.js"
+          ]
+        }
+      ],
+      "stability": "The package root supports bounded verification and request-owned exact-text digests; provider, manifest/compiler and Native integration subpaths remain toolchain-only."
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-beta.11",
+      "tier": "supported-extension",
+      "sha256": "4655cca2737e868f45acf889ef2be65aff902a9f31e7cfc521437efde70b30a3",
+      "tarball": "pulse-compute-jwt-1.0.0-beta.11.tgz",
+      "bytes": 65794,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/jwt",
+          "packedFiles": [
+            "./dist/index.d.ts",
+            "./dist/index.js"
+          ]
+        }
+      ],
+      "stability": "The package root supports provider-neutral verification and bounded HS256/ES256/RS256 signing; provider and compiler integration subpaths are not application APIs."
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-beta.11",
+      "tier": "supported-extension",
+      "sha256": "ce62a8a47618d8f78d54b63fc4aa5795ec98cd4b14e99d45e93006bcf1179142",
+      "tarball": "pulse-compute-entities-1.0.0-beta.11.tgz",
+      "bytes": 51775,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/entities",
+          "packedFiles": [
+            "./dist/index.d.ts",
+            "./dist/index.js"
+          ]
+        }
+      ],
+      "stability": "The package root and first-party JSON-RPC adapter are supported Beta contracts; compiler integration subpaths remain toolchain-only."
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "version": "1.0.0-beta.11",
+      "tier": "supported-extension",
+      "sha256": "e7d1b4e3b51dfd2cece242bdaba78e45b5d7181d21a27f988ba8005563fb48cf",
+      "tarball": "pulse-compute-mcp-1.0.0-beta.11.tgz",
+      "bytes": 40965,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/mcp",
+          "packedFiles": [
+            "./src/index.d.ts",
+            "./src/index.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/mcp/node",
+          "packedFiles": [
+            "./src/node.d.ts",
+            "./src/node.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/mcp/pulse",
+          "packedFiles": [
+            "./src/pulse.d.ts",
+            "./src/pulse.js"
+          ]
+        }
+      ],
+      "stability": "The root Fetch handler and /node HTTP bridge retain fixed-backend host behavior. /pulse supplies a static package-owned Native binding with local Entities dispatch, strict HTTP admission and no fallback. Protocol resources, prompts, sessions and stdio are unsupported."
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-beta.11",
+      "tier": "supported-extension",
+      "sha256": "83427158e90852686e8e69ffe230c1eebc51bf485c8048cda528e8f066db355b",
+      "tarball": "pulse-compute-s3-1.0.0-beta.11.tgz",
+      "bytes": 23657,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/s3",
+          "packedFiles": [
+            "./src/index.d.ts",
+            "./src/index.js"
+          ]
+        }
+      ],
+      "stability": "The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate."
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-beta.11",
+      "tier": "implementation",
+      "sha256": "ab8a7e93a64a3de22d0f4f62770a42fe495773d9a5ba7c639f9dbab5b163e7b6",
+      "tarball": "pulse-compute-wasm-build-support-1.0.0-beta.11.tgz",
+      "bytes": 21397,
+      "entryPoints": [
+        {
+          "entryPoint": "None for application authors.",
+          "classification": "no-application-entry"
+        }
+      ],
+      "stability": "Internal release-set interface; exported modules may change with compiler implementation needs."
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-beta.11",
+      "tier": "implementation",
+      "sha256": "0d5517e208c9ad3bd40e5c3f839ad2d6d384f2fba26d7a6ecf44817f8dd02a3f",
+      "tarball": "pulse-compute-wasm-compiler-1.0.0-beta.11.tgz",
+      "bytes": 338651,
+      "entryPoints": [
+        {
+          "entryPoint": "None for application authors.",
+          "classification": "no-application-entry"
+        }
+      ],
+      "stability": "Internal compiler interface; no application-author compatibility guarantee."
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-beta.11",
+      "tier": "implementation",
+      "sha256": "4adce9e2a318f9eababb1f3d1af66aa6435ca5319c0139470513a4de6c89c14e",
+      "tarball": "pulse-compute-wasm-guest-link-1.0.0-beta.11.tgz",
+      "bytes": 40044,
+      "entryPoints": [
+        {
+          "entryPoint": "None for application authors.",
+          "classification": "no-application-entry"
+        }
+      ],
+      "stability": "Internal first-party prebuilt guest-link interface synchronized with the compiler; no application-author or third-party guest compatibility guarantee."
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-beta.11",
+      "tier": "implementation",
+      "sha256": "6c5afc7675f05f77699666fd6e492d6d4fa25ab22cc735d42f2a6fd4ad54c7f4",
+      "tarball": "pulse-compute-wasm-contracts-1.0.0-beta.11.tgz",
+      "bytes": 182502,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/wasm-contracts/provider/toolchain",
+          "packedFiles": [
+            "./src/provider/toolchain.js"
+          ]
+        }
+      ],
+      "stability": "The provider toolchain contract is versioned and supported for the Beta; other protocol and proof interfaces remain internal."
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-beta.11",
+      "tier": "implementation",
+      "sha256": "f1292c318ff8d92b89a2051937af93cdb14aec3f6103ea12036d522e313f282d",
+      "tarball": "pulse-compute-wasm-host-runtime-1.0.0-beta.11.tgz",
+      "bytes": 98596,
+      "entryPoints": [
+        {
+          "entryPoint": "None for application authors.",
+          "classification": "no-application-entry"
+        }
+      ],
+      "stability": "Internal compiler/runtime interface synchronized with this release set."
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-beta.11",
+      "tier": "implementation",
+      "sha256": "cb6844ee23ced330e634fbe9d1bcf613f94c3ef1aae225b0d3000d8f7fbad7b4",
+      "tarball": "pulse-compute-wasm-library-kit-1.0.0-beta.11.tgz",
+      "bytes": 25660,
+      "entryPoints": [
+        {
+          "entryPoint": "None for application authors.",
+          "classification": "no-application-entry"
+        }
+      ],
+      "stability": "Internal package-lowering interface synchronized with this release set."
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-beta.11",
+      "tier": "implementation",
+      "sha256": "e11a274f1b92ff3ad453ddc7c744f51bc2d31cb978c97af036c15afcbd875128",
+      "tarball": "pulse-compute-provider-node-1.0.0-beta.11.tgz",
+      "bytes": 115992,
+      "entryPoints": [
+        {
+          "entryPoint": "@pulse-compute/provider-node/toolchain",
+          "packedFiles": [
+            "./src/toolchain.js"
+          ]
+        },
+        {
+          "entryPoint": "@pulse-compute/provider-node/server",
+          "packedFiles": [
+            "./src/server/index.d.ts",
+            "./src/server/index.js"
+          ]
+        }
+      ],
+      "stability": "The /server export is an explicit supported-entry-point exception within this implementation package: finite production HTTP for explicit Node Native and JavaScript builds. Forwarding, generated output, transforms, S3-body bindings and blob-specific production qualification remain separate. /toolchain serves the CLI; all other provider subpaths remain internal."
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-beta.11",
+      "tier": "implementation",
+      "sha256": "b096c63c05453fb2877f169bdfe578f9fb2d70e34be62d1c27e81b323275711b",
+      "tarball": "pulse-compute-wasm-runtime-core-as-1.0.0-beta.11.tgz",
+      "bytes": 126001,
+      "entryPoints": [
+        {
+          "entryPoint": "None for application authors.",
+          "classification": "no-application-entry"
+        }
+      ],
+      "stability": "Internal code-generation interface synchronized with this release set."
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-beta.11",
+      "tier": "implementation",
+      "sha256": "685c24d8fb36807693b4ac9f173991f09ad3888029b5de15dbcd0c5afab0d0bf",
+      "tarball": "pulse-compute-wasm-schema-json-1.0.0-beta.11.tgz",
+      "bytes": 61508,
+      "entryPoints": [
+        {
+          "entryPoint": "None for application authors.",
+          "classification": "no-application-entry"
+        }
+      ],
+      "stability": "Internal schema compiler interface synchronized with this release set."
+    }
+  ],
+  "sourceCatalogSha256": "9e9667698579888bc815c675507dbc566964619f8a8b1cf07854bea351e6cc61"
+}
