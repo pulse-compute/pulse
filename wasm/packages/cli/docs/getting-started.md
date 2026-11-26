@@ -18,9 +18,9 @@ start with the [cold-start checklist](./guides/project-lifecycle.md#cold-start-c
 Use the published CLI without a global install. The documentation test lane
 executes the same `init` operation and verifies the documented result.
 
-<!-- pulse-doc-run {"temp":true,"args":["init","hello-pulse","--json"],"display":"npm exec --package=@pulse-compute/cli@1.0.0-beta.10 -- pulse init ./hello-pulse --json"} -->
+<!-- pulse-doc-run {"temp":true,"args":["init","hello-pulse","--json"],"display":"npm exec --package=@pulse-compute/cli@1.0.0-beta.11 -- pulse init ./hello-pulse --json"} -->
 ```bash
-npm exec --package=@pulse-compute/cli@1.0.0-beta.10 -- pulse init ./hello-pulse --json
+npm exec --package=@pulse-compute/cli@1.0.0-beta.11 -- pulse init ./hello-pulse --json
 ```
 ```json
 {

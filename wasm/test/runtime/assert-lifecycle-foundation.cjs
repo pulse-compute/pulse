@@ -141,7 +141,9 @@ async function main() {
         const artifact = selected ? observed : plain;
         const authority = load('provider-fastly', 'testing/conditional-kv-host').createConditionalKvAuthority();
         authority.stores.set('pages', new Map());
+        // Compare observers under the same fixture clock, including every clock host call.
         const actual = executeFastly(artifact, { configStore: 'config', config, secretStore: 'secrets', secrets,
+          clockUnixSeconds: 1700000000,
           conditionalKv: { authority }, fixtures: { [url]: { status: 200, body: 'origin' } } });
         assert.deepEqual(response(actual.response), expected, entry.name + '/fastly');
         assert.equal(actual.trace.filter(row => row.name === 'send_downstream').length, 1);
